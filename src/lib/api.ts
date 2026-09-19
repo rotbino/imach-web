@@ -6,6 +6,8 @@
 // • Access token در حافظه (zustand) نگه داشته می‌شود؛ رفرش‌توکن httpOnly
 //   کوکی است؛ پاسخ 401 یک‌بار ساکت رفرش و سپس تلاش مجدد می‌شود.
 
+import { readLocaleCookie } from "@/i18n/config";
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -76,6 +78,8 @@ export async function api<T>(path: string, options: RequestOptions = {}): Promis
 
   const headers: Record<string, string> = {};
   if (body !== undefined) headers["Content-Type"] = "application/json";
+  // i18n: اطلاع‌رسانی زبان فعال به بک‌اند تا پیام‌های خطا هم‌زبان UI برگردند
+  headers["Accept-Language"] = readLocaleCookie();
   if (auth) {
     const token = getAccessToken();
     if (token) headers.Authorization = `Bearer ${token}`;

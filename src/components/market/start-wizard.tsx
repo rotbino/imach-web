@@ -7,6 +7,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { useCategories, useGoods, useMyBusinesses, useUpsertListing } from "@/lib/queries";
 import { CITIES, fa, ROLE_HINTS, ROLE_LABELS, unitLabel } from "@/lib/format";
 import { AppHeader, AppFooter, ArmLinkCard, RoleBadge, ROLE_ICONS } from "./chrome";
+import { LanguageSelect } from "./language-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -562,6 +563,9 @@ function AuthStep({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="mx-auto max-w-md px-4 py-10">
+      <div className="mb-3 flex justify-start">
+        <LanguageSelect />
+      </div>
       <div className="rounded-2xl border bg-white p-6 shadow-sm">
         <div className="mb-5 text-center">
           <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">

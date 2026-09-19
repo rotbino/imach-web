@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AppProviders } from "./providers";
+import { LOCALE_COOKIE, getDir, getLocale } from "@/i18n/config";
 
 // فونت ایران‌سنس لوکال (self-hosted) — بدون وابستگی به CDN
 // weight فقط 400 موجود است؛ وزن‌های سنگین‌تر با synthetic bold رندر می‌شوند
@@ -28,15 +30,26 @@ export const viewport: Viewport = {
   themeColor: "#f97316",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // ── i18n: THE single place where language & direction are applied ──────
+  // The locale comes from the cookie (set by the language switcher);
+  // every component inherits direction from here via logical CSS
+  // properties and the Radix DirectionProvider — nothing else sets dir.
+  const locale = getLocale((await cookies()).get(LOCALE_COOKIE)?.value);
+
   return (
-    <html lang="fa" dir="rtl" className={iranSans.variable} suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={getDir(locale)}
+      className={iranSans.variable}
+      suppressHydrationWarning
+    >
       <body className="antialiased bg-background text-foreground font-sans">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders initialLocale={locale}>{children}</AppProviders>
         <Toaster />
       </body>
     </html>
