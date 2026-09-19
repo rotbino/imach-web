@@ -64,3 +64,6 @@ Caddyfile
 
 # IDE
 .idea/
+
+# sandbox artifacts
+tool-results/
