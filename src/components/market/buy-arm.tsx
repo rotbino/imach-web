@@ -231,7 +231,7 @@ export default function BuyArm({ slug }: { slug: string }) {
                       <div>
                         <p className="font-extrabold">{l.good.name}</p>
                         <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                          <Badge variant="outline" className="border-amber-300 bg-amber-50 text-amber-700">
+                          <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">
                             {fa(l.volume as number)} {unitLabel(l.good.unit)}
                           </Badge>
                           <span>هر {frequencyLabel(l.frequency ?? "MONTHLY")}</span>
@@ -385,8 +385,8 @@ function OfferCard({
           <div>
             <p className="flex items-center gap-1.5 text-sm font-bold">
               {offer.seller.name}
-              {offer.isSpecial && <Badge className="bg-amber-500 text-[10px]">قیمت ویژه برای شما</Badge>}
-              {cheapest && <Badge className="bg-primary text-[10px]">ارزان‌ترین پیشنهاد</Badge>}
+              {offer.isSpecial && <Badge className="bg-primary text-[10px]">قیمت ویژه برای شما</Badge>}
+              {cheapest && <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary text-[10px]">ارزان‌ترین پیشنهاد</Badge>}
             </p>
             <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
               <RoleBadge role={offer.seller.role} />

@@ -203,12 +203,12 @@ export default function SellArm({ slug }: { slug: string }) {
                     <div
                       key={q.id}
                       className={`rounded-2xl border bg-white p-4 shadow-sm ${
-                        isNew ? "animate-fade-up border-amber-300 ring-1 ring-amber-200" : ""
+                        isNew ? "animate-fade-up border-primary/40 ring-1 ring-primary/15" : ""
                       }`}
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="grid size-9 place-items-center rounded-xl bg-amber-50 text-base font-black text-amber-600">
+                          <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-base font-black text-primary">
                             {q.buyer.name.slice(0, 1)}
                           </span>
                           <div>
@@ -305,7 +305,7 @@ export default function SellArm({ slug }: { slug: string }) {
                         <span className="text-muted-foreground">به دنبال خرید: </span>
                         <span className="font-bold">{m.goodName}</span>
                         <span className="text-muted-foreground"> — </span>
-                        <span className="font-bold text-amber-700">
+                        <span className="font-bold text-primary">
                           {fa(m.volume)} {unitLabel(m.unit)} {frequencyLabel(m.frequency)}
                         </span>
                       </div>

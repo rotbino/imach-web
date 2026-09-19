@@ -31,9 +31,9 @@ const ROLE_CARDS: {
   icon: React.ComponentType<{ className?: string }>;
   color: string;
 }[] = [
-  { title: "می‌خرم و می‌فروشم", example: "خرده‌فروش، عمده‌فروش", icon: ArrowLeftRight, color: "bg-primary" },
-  { title: "فقط می‌فروشم", example: "بازاریاب، تولیدکننده", icon: Handshake, color: "bg-amber-600" },
-  { title: "فقط می‌خرم", example: "کارگاهی که مواد اولیه می‌خرد", icon: ShoppingBasket, color: "bg-stone-600" },
+  { title: "می‌خرم و می‌فروشم", example: "خرده‌فروش، عمده‌فروش", icon: ArrowLeftRight, color: "bg-primary text-white" },
+  { title: "فقط می‌فروشم", example: "بازاریاب، تولیدکننده", icon: Handshake, color: "bg-primary/15 text-primary" },
+  { title: "فقط می‌خرم", example: "کارگاهی که مواد اولیه می‌خرد", icon: ShoppingBasket, color: "bg-stone-800 text-white" },
 ];
 
 const STEPS = [
@@ -137,7 +137,7 @@ export default function Landing() {
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {ROLE_CARDS.map((r) => (
               <div key={r.title} className="rounded-2xl border p-5 shadow-sm">
-                <span className={`grid size-11 place-items-center rounded-xl text-white ${r.color}`}>
+                <span className={`grid size-11 place-items-center rounded-xl ${r.color}`}>
                   <r.icon className="size-5" />
                 </span>
                 <p className="mt-3 font-bold">{r.title}</p>

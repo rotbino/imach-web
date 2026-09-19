@@ -342,8 +342,8 @@ export default function StartWizard() {
                           )}
 
                           {showBuy && (
-                            <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/40 p-3">
-                              <p className="mb-2 flex items-center gap-1 text-xs font-bold text-amber-700">
+                            <div className="mt-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
+                              <p className="mb-2 flex items-center gap-1 text-xs font-bold text-stone-700">
                                 <ShoppingCart className="size-3.5" />
                                 مشخصات خرید
                               </p>

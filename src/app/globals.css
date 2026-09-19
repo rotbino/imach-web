@@ -44,42 +44,43 @@
 }
 
 /*
- * iMach — نارنجیِ طوسی (burnt orange over warm taupe)
+ * iMach — یک نارنجیِ روشن و پرجان روی خنثیِ نزدیک به سفید
+ * (vivid orange over soft near-white neutral)
  * Light theme only for now; tokens are LTR/RTL-neutral (logical utilities only).
  */
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.962 0.009 78);
-  --foreground: oklch(0.26 0.018 55);
+  --background: oklch(0.987 0.0025 75);
+  --foreground: oklch(0.245 0.012 60);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.26 0.018 55);
+  --card-foreground: oklch(0.245 0.012 60);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.26 0.018 55);
-  --primary: oklch(0.615 0.152 44);
-  --primary-foreground: oklch(0.985 0.005 85);
-  --secondary: oklch(0.925 0.014 72);
-  --secondary-foreground: oklch(0.32 0.02 60);
-  --muted: oklch(0.93 0.012 75);
-  --muted-foreground: oklch(0.47 0.022 68);
-  --accent: oklch(0.925 0.03 62);
-  --accent-foreground: oklch(0.36 0.06 50);
+  --popover-foreground: oklch(0.245 0.012 60);
+  --primary: oklch(0.705 0.19 45);
+  --primary-foreground: oklch(0.995 0.002 85);
+  --secondary: oklch(0.955 0.005 75);
+  --secondary-foreground: oklch(0.3 0.012 60);
+  --muted: oklch(0.955 0.004 75);
+  --muted-foreground: oklch(0.5 0.012 60);
+  --accent: oklch(0.945 0.035 55);
+  --accent-foreground: oklch(0.4 0.09 45);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.885 0.014 74);
-  --input: oklch(0.885 0.014 74);
-  --ring: oklch(0.63 0.13 46);
-  --chart-1: oklch(0.615 0.152 44);
-  --chart-2: oklch(0.55 0.09 70);
-  --chart-3: oklch(0.45 0.05 65);
-  --chart-4: oklch(0.78 0.12 70);
-  --chart-5: oklch(0.72 0.15 50);
-  --sidebar: oklch(0.985 0.005 80);
-  --sidebar-foreground: oklch(0.26 0.018 55);
-  --sidebar-primary: oklch(0.615 0.152 44);
-  --sidebar-primary-foreground: oklch(0.985 0.005 85);
-  --sidebar-accent: oklch(0.93 0.02 72);
-  --sidebar-accent-foreground: oklch(0.32 0.02 60);
-  --sidebar-border: oklch(0.885 0.014 74);
-  --sidebar-ring: oklch(0.63 0.13 46);
+  --border: oklch(0.905 0.005 75);
+  --input: oklch(0.905 0.005 75);
+  --ring: oklch(0.705 0.19 45);
+  --chart-1: oklch(0.705 0.19 45);
+  --chart-2: oklch(0.62 0.12 55);
+  --chart-3: oklch(0.45 0.06 60);
+  --chart-4: oklch(0.8 0.13 60);
+  --chart-5: oklch(0.75 0.16 50);
+  --sidebar: oklch(0.99 0.002 75);
+  --sidebar-foreground: oklch(0.245 0.012 60);
+  --sidebar-primary: oklch(0.705 0.19 45);
+  --sidebar-primary-foreground: oklch(0.995 0.002 85);
+  --sidebar-accent: oklch(0.955 0.005 75);
+  --sidebar-accent-foreground: oklch(0.3 0.012 60);
+  --sidebar-border: oklch(0.905 0.005 75);
+  --sidebar-ring: oklch(0.705 0.19 45);
 }
 
 .dark {
@@ -89,7 +90,7 @@
   --card-foreground: oklch(0.96 0.008 80);
   --popover: oklch(0.21 0.012 60);
   --popover-foreground: oklch(0.96 0.008 80);
-  --primary: oklch(0.7 0.14 48);
+  --primary: oklch(0.74 0.16 48);
   --primary-foreground: oklch(0.18 0.02 55);
   --secondary: oklch(0.27 0.015 65);
   --secondary-foreground: oklch(0.96 0.008 80);
@@ -135,17 +136,22 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.8 0.025 70);
+  background: oklch(0.86 0.006 75);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.7 0.05 55);
+  background: oklch(0.76 0.03 55);
 }
 
 /* ── الگوی نقطه‌ای ملایم برای هیرو ── */
 .dot-grid {
-  background-image: radial-gradient(oklch(0.62 0.12 50 / 11%) 1px, transparent 1px);
+  background-image: radial-gradient(oklch(0.705 0.19 45 / 9%) 1px, transparent 1px);
   background-size: 18px 18px;
+}
+
+/* ── انتخاب متن ── */
+::selection {
+  background: oklch(0.705 0.19 45 / 18%);
 }
 
 /* ── انیمیشن‌ها ── */

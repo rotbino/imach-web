@@ -170,14 +170,14 @@ export function ArmLinkCard({
   return (
     <div
       className={`rounded-2xl border p-5 ${
-        isSell ? "border-primary/25 bg-accent/50" : "border-amber-300/60 bg-amber-50/50"
+        isSell ? "border-primary/25 bg-accent/50" : "border-stone-300/70 bg-stone-50/70"
       }`}
     >
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2 font-bold">
           <span
             className={`grid size-9 place-items-center rounded-xl text-white shadow-sm ${
-              isSell ? "bg-primary" : "bg-amber-600"
+              isSell ? "bg-primary" : "bg-stone-700"
             }`}
           >
             {isSell ? <Store className="size-4" /> : <ShoppingBasket className="size-4" />}
@@ -204,10 +204,10 @@ export function ArmLinkCard({
           className="shrink-0 rounded-xl border bg-white p-1.5 shadow-sm"
           title="برای باز کردن لینک در موبایل، اسکن کنید"
         >
-          <QRCodeSVG value={fullUrl} size={64} fgColor="#a4501a" bgColor="#ffffff" />
+          <QRCodeSVG value={fullUrl} size={64} fgColor="#f97316" bgColor="#ffffff" />
         </div>
         <div className="grid grow gap-2">
-          <Button onClick={onView} className={isSell ? "" : "bg-amber-600 hover:bg-amber-700"}>
+          <Button onClick={onView} className={isSell ? "" : "bg-stone-800 hover:bg-stone-900"}>
             {isSell ? "مشاهده بازوی فروش" : "مشاهده بازوی خرید"}
             <ArrowLeftRight className="size-4" />
           </Button>
@@ -229,14 +229,14 @@ export function ArmLinkCard({
 
 // ─── حلقه امتیاز تطبیق ───
 export function MatchRing({ score, size = 44 }: { score: number; size?: number }) {
-  const color = score >= 85 ? "#b45309" : score >= 70 ? "#c05f1e" : "#a8a29e";
+  const color = score >= 85 ? "#e0490a" : score >= 70 ? "#f97316" : "#a8a29e";
   return (
     <div
       className="relative grid shrink-0 place-items-center rounded-full"
       style={{
         width: size,
         height: size,
-        background: `conic-gradient(${color} ${score}%, #e7e2da ${score}%)`,
+        background: `conic-gradient(${color} ${score}%, #e8e7e5 ${score}%)`,
       }}
       role="img"
       aria-label={`امتیاز تطبیق ${fa(score)} درصد`}
@@ -335,7 +335,7 @@ export function ArmIdentity({
             size="sm"
             variant="secondary"
             onClick={onSwitch}
-            className={otherArm === "sell" ? "" : "bg-amber-600 hover:bg-amber-700 text-white"}
+            className={otherArm === "sell" ? "" : "bg-stone-800 hover:bg-stone-900 text-white"}
           >
             <ArrowLeftRight className="size-4" />
             {otherLabel}
