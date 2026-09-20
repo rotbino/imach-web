@@ -46,7 +46,7 @@ export const qk = {
 export function useGoods(params: { q?: string; category?: string; limit?: number }): UseQueryResult<PageDto<GoodDto>> {
   return useQuery({
     queryKey: qk.goods(params),
-    queryFn: () => goodsApi.list(params),
+    queryFn: () => goodsApi.getGoods(params),
     staleTime: 5 * 60_000,
   });
 }
@@ -54,7 +54,7 @@ export function useGoods(params: { q?: string; category?: string; limit?: number
 export function useCategories(): UseQueryResult<string[]> {
   return useQuery({
     queryKey: qk.categories(),
-    queryFn: () => goodsApi.categories(),
+    queryFn: () => goodsApi.getCategories(),
     staleTime: 5 * 60_000,
   });
 }
@@ -62,7 +62,7 @@ export function useCategories(): UseQueryResult<string[]> {
 export function useBusinessProfile(slug: string): UseQueryResult<BusinessProfileDto> {
   return useQuery({
     queryKey: qk.businessProfile(slug),
-    queryFn: () => businessesApi.profile(slug),
+    queryFn: () => businessesApi.getBusiness(slug),
     staleTime: 60_000,
     enabled: !!slug,
   });
@@ -74,7 +74,7 @@ export function useBusinessProfile(slug: string): UseQueryResult<BusinessProfile
 export function useMyBusinesses(): UseQueryResult<(BusinessSummaryDto & { _count: { listings: number } })[]> {
   return useQuery({
     queryKey: qk.myBusinesses(),
-    queryFn: () => businessesApi.mine(),
+    queryFn: () => businessesApi.getMyBusinesses(),
     enabled: useAuthStore((s) => s.status) === "authed",
     staleTime: 5 * 60_000,
   });
@@ -89,7 +89,7 @@ export function useMyBusiness(): BusinessSummaryDto | null {
 export function useMyListings(businessId: string | null | undefined): UseQueryResult<GoodItemDto[]> {
   return useQuery({
     queryKey: qk.myListings(businessId ?? ""),
-    queryFn: () => listingsApi.mine(businessId as string),
+    queryFn: () => listingsApi.getMyListings(businessId as string),
     enabled: !!businessId,
     staleTime: 60_000,
   });
@@ -98,7 +98,7 @@ export function useMyListings(businessId: string | null | undefined): UseQueryRe
 export function useUpsertListing() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: listingsApi.upsert,
+    mutationFn: listingsApi.saveListing,
     onSuccess: (listing) => {
       void qc.invalidateQueries({ queryKey: ["listings"] });
       void qc.invalidateQueries({ queryKey: ["business"] });
@@ -114,7 +114,7 @@ export function useQuoteRequest() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ listingId, note }: { listingId: string; note?: string }) =>
-      marketApi.quoteRequest(listingId, note),
+      marketApi.requestQuote(listingId, note),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
     },
@@ -124,7 +124,7 @@ export function useQuoteRequest() {
 export function useOffers(businessId: string | null | undefined): UseQueryResult<PageDto<OfferDto>> {
   return useQuery({
     queryKey: qk.offers(businessId ?? ""),
-    queryFn: () => marketApi.offers(businessId as string),
+    queryFn: () => marketApi.getOffers(businessId as string),
     enabled: !!businessId,
     staleTime: 15_000,
   });
@@ -133,7 +133,7 @@ export function useOffers(businessId: string | null | undefined): UseQueryResult
 export function useIncomingInquiries(businessId: string | null | undefined): UseQueryResult<InquiryPageDto> {
   return useQuery({
     queryKey: qk.inquiries(businessId ?? ""),
-    queryFn: () => marketApi.inquiries(businessId as string),
+    queryFn: () => marketApi.getInquiries(businessId as string),
     enabled: !!businessId,
     staleTime: 15_000,
   });
@@ -162,7 +162,7 @@ export function useSendOffer() {
 export function useFollows(businessId: string | null | undefined): UseQueryResult<FollowDto[]> {
   return useQuery({
     queryKey: qk.follows(businessId ?? ""),
-    queryFn: () => marketApi.follows(businessId as string),
+    queryFn: () => marketApi.getFollows(businessId as string),
     enabled: !!businessId,
     staleTime: 60_000,
   });
@@ -172,7 +172,7 @@ export function useFollowToggle() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ businessId, supplierId, follow }: { businessId: string; supplierId: string; follow: boolean }) =>
-      follow ? marketApi.follow(businessId, supplierId) : marketApi.unfollow(businessId, supplierId),
+      follow ? marketApi.followSupplier(businessId, supplierId) : marketApi.unfollowSupplier(businessId, supplierId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
     },
@@ -182,7 +182,7 @@ export function useFollowToggle() {
 export function useBoard(businessId: string | null | undefined): UseQueryResult<BoardRowDto[]> {
   return useQuery({
     queryKey: qk.board(businessId ?? ""),
-    queryFn: () => marketApi.board(businessId as string),
+    queryFn: () => marketApi.getPriceBoard(businessId as string),
     enabled: !!businessId,
     staleTime: 30_000,
   });
@@ -191,7 +191,7 @@ export function useBoard(businessId: string | null | undefined): UseQueryResult<
 export function useSuggestions(businessId: string | null | undefined): UseQueryResult<SuggestionDto[]> {
   return useQuery({
     queryKey: qk.suggestions(businessId ?? ""),
-    queryFn: () => marketApi.suggestions(businessId as string),
+    queryFn: () => marketApi.getSuggestions(businessId as string),
     enabled: !!businessId,
     staleTime: 60_000,
   });

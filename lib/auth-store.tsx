@@ -48,7 +48,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   boot: async () => {
     try {
-      const session = await authApi.refresh();
+      const session = await authApi.refreshSession();
       get().setSession(session);
     } catch {
       set({ status: "guest", accessToken: null, user: null, businesses: [] });
@@ -56,18 +56,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   login: async (phone, password) => {
-    const session = await authApi.login({ phone, password });
+    const session = await authApi.loginUser({ phone, password });
     get().setSession(session);
   },
 
   register: async (name, phone, password) => {
-    const session = await authApi.register({ name, phone, password });
+    const session = await authApi.registerUser({ name, phone, password });
     get().setSession(session);
   },
 
   logout: async () => {
     try {
-      await authApi.logout();
+      await authApi.logoutUser();
     } finally {
       set({ status: "guest", accessToken: null, user: null, businesses: [] });
     }
@@ -79,7 +79,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (!refreshPromise) {
       refreshPromise = (async () => {
         try {
-          const session = await authApi.refresh();
+          const session = await authApi.refreshSession();
           get().setSession(session);
           return session.accessToken;
         } catch (err) {

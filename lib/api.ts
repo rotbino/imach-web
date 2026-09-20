@@ -246,67 +246,67 @@ export interface QuoteRequestResultDto {
   offers: OfferDto[];
 }
 
-// ─── اندپوینت‌ها ───
+// ─── اندپوینت‌ها — نام‌گذاری اکشن‌محور، هم‌نام با کنترلرهای NestJS ───
 
 export const authApi = {
-  login: (body: { phone: string; password: string }) =>
-    api<AuthResponseDto>("/auth/login", { method: "POST", body, auth: false }),
-  register: (body: { name: string; phone: string; password: string }) =>
-    api<AuthResponseDto>("/auth/register", { method: "POST", body, auth: false }),
-  refresh: () => api<AuthResponseDto>("/auth/refresh", { method: "POST", auth: false }),
-  logout: () => api<{ ok: boolean }>("/auth/logout", { method: "POST" }),
-  me: () => api<{ user: UserDto; businesses: BusinessSummaryDto[] }>("/auth/me"),
+  loginUser: (body: { phone: string; password: string }) =>
+    api<AuthResponseDto>("/auth/loginUser", { method: "POST", body, auth: false }),
+  registerUser: (body: { name: string; phone: string; password: string }) =>
+    api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
+  refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
+  logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
+  getMe: () => api<{ user: UserDto; businesses: BusinessSummaryDto[] }>("/auth/getMe"),
 };
 
 export const goodsApi = {
-  list: (params: { q?: string; category?: string; cursor?: string; limit?: number }) =>
-    api<PageDto<GoodDto>>("/goods", { params, auth: false }),
-  categories: () => api<string[]>("/goods/categories", { auth: false }),
+  getGoods: (params: { q?: string; category?: string; cursor?: string; limit?: number }) =>
+    api<PageDto<GoodDto>>("/goods/getGoods", { params, auth: false }),
+  getCategories: () => api<string[]>("/goods/getCategories", { auth: false }),
 };
 
 export const businessesApi = {
-  mine: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/mine"),
-  create: (body: { name: string; role: string; city: string; phone?: string }) =>
-    api<BusinessSummaryDto & { slug: string }>("/businesses", { method: "POST", body }),
-  profile: (slug: string) => api<BusinessProfileDto>(`/businesses/${slug}`, { auth: false }),
+  getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),
+  createBusiness: (body: { name: string; role: string; city: string; phone?: string }) =>
+    api<BusinessSummaryDto & { slug: string }>("/businesses/createBusiness", { method: "POST", body }),
+  getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
 };
 
 export const listingsApi = {
-  mine: (businessId: string) =>
-    api<GoodItemDto[]>("/listings/mine", { params: { businessId } }),
-  upsert: (body: {
+  getMyListings: (businessId: string) =>
+    api<GoodItemDto[]>("/listings/getMyListings", { params: { businessId } }),
+  saveListing: (body: {
     businessId: string;
     goodId: string;
     mode: string;
     sell?: { price: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
-  }) => api<GoodItemDto>("/listings", { method: "PUT", body }),
-  remove: (id: string) => api<{ ok: boolean }>(`/listings/${id}`, { method: "DELETE" }),
+  }) => api<GoodItemDto>("/listings/saveListing", { method: "PUT", body }),
+  deleteListing: (id: string) => api<{ ok: boolean }>(`/listings/deleteListing/${id}`, { method: "DELETE" }),
 };
 
 export const marketApi = {
-  quoteRequest: (listingId: string, note?: string) =>
-    api<QuoteRequestResultDto>(`/market/listings/${listingId}/quote-request`, {
+  requestQuote: (listingId: string, note?: string) =>
+    api<QuoteRequestResultDto>(`/market/requestQuote/${listingId}`, {
       method: "POST",
       body: note ? { note } : {},
     }),
-  offers: (businessId: string) =>
-    api<PageDto<OfferDto>>("/market/offers", { params: { businessId, limit: 100 } }),
-  inquiries: (businessId: string) =>
-    api<InquiryPageDto>("/market/inquiries", { params: { businessId, limit: 50 } }),
+  getOffers: (businessId: string) =>
+    api<PageDto<OfferDto>>("/market/getOffers", { params: { businessId, limit: 100 } }),
+  getInquiries: (businessId: string) =>
+    api<InquiryPageDto>("/market/getInquiries", { params: { businessId, limit: 50 } }),
   markInquiryRead: (id: string) =>
-    api<{ ok: boolean }>(`/market/inquiries/${id}/read`, { method: "POST" }),
+    api<{ ok: boolean }>(`/market/markInquiryRead/${id}`, { method: "POST" }),
   sendOffer: (body: { inquiryId: string; price: number; note?: string }) =>
-    api<OfferDto>("/market/offers", { method: "POST", body }),
-  follows: (businessId: string) => api<FollowDto[]>("/market/follows", { params: { businessId } }),
-  follow: (businessId: string, supplierId: string) =>
-    api<{ ok: boolean }>("/market/follows", { method: "POST", body: { businessId, supplierId } }),
-  unfollow: (businessId: string, supplierId: string) =>
-    api<{ ok: boolean }>(`/market/follows/${supplierId}`, {
-      method: "DELETE",
-      params: { businessId },
+    api<OfferDto>("/market/sendOffer", { method: "POST", body }),
+  getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),
+  followSupplier: (businessId: string, supplierId: string) =>
+    api<{ ok: boolean }>("/market/followSupplier", { method: "POST", body: { businessId, supplierId } }),
+  unfollowSupplier: (businessId: string, supplierId: string) =>
+    api<{ ok: boolean }>(`/market/unfollowSupplier/${supplierId}`, {
+      method: "POST",
+      body: { businessId },
     }),
-  board: (businessId: string) => api<BoardRowDto[]>("/market/board", { params: { businessId } }),
-  suggestions: (businessId: string) =>
-    api<SuggestionDto[]>("/market/suggestions", { params: { businessId } }),
+  getPriceBoard: (businessId: string) => api<BoardRowDto[]>("/market/getPriceBoard", { params: { businessId } }),
+  getSuggestions: (businessId: string) =>
+    api<SuggestionDto[]>("/market/getSuggestions", { params: { businessId } }),
 };

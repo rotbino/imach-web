@@ -8,6 +8,7 @@ import { useCategories, useGoods, useMyBusinesses, useUpsertListing } from "@/li
 import { CITIES, fa, ROLE_HINTS, ROLE_LABELS, unitLabel } from "@/lib/format";
 import { AppHeader, AppFooter, ArmLinkCard, RoleBadge, ROLE_ICONS } from "./chrome";
 import { LanguageSelect } from "./language-select";
+import { useMessages } from "@/i18n/messages/use-messages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -521,6 +522,7 @@ function AuthStep({ onDone }: { onDone: () => void }) {
   const { toast } = useToast();
   const login = useAuthStore((s) => s.login);
   const register = useAuthStore((s) => s.register);
+  const m = useMessages(); // صفحه ورود/ثبت‌نام — نمونه چندزبانه (fa/ar/en)
   const [tab, setTab] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -529,11 +531,11 @@ function AuthStep({ onDone }: { onDone: () => void }) {
 
   const submit = async () => {
     if (!/^09\d{9}$/.test(phone)) {
-      toast({ title: "شماره موبایل معتبر نیست", description: "مثلا 09121234567", variant: "destructive" });
+      toast({ title: m.auth.toasts.invalidPhone, description: m.auth.toasts.invalidPhoneDesc, variant: "destructive" });
       return;
     }
     if (password.length < 8) {
-      toast({ title: "رمز عبور حداقل ۸ کاراکتر باشد", variant: "destructive" });
+      toast({ title: m.auth.toasts.passwordShort, variant: "destructive" });
       return;
     }
     setBusy(true);
@@ -542,18 +544,18 @@ function AuthStep({ onDone }: { onDone: () => void }) {
         await login(phone, password);
       } else {
         if (name.trim().length < 2) {
-          toast({ title: "نام خود را بنویسید", variant: "destructive" });
+          toast({ title: m.auth.toasts.nameRequired, variant: "destructive" });
           setBusy(false);
           return;
         }
         await register(name.trim(), phone, password);
       }
-      toast({ title: "خوش آمدید!" });
+      toast({ title: m.auth.toasts.welcome });
       onDone();
     } catch (err) {
       toast({
-        title: "احراز هویت ناموفق بود",
-        description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
+        title: m.auth.toasts.authFailed,
+        description: err instanceof ApiError ? err.message : m.auth.toasts.tryAgain,
         variant: "destructive",
       });
     } finally {
@@ -572,49 +574,49 @@ function AuthStep({ onDone }: { onDone: () => void }) {
             {tab === "login" ? <LogIn className="size-6" /> : <UserPlus className="size-6" />}
           </span>
           <h1 className="mt-3 text-lg font-extrabold">
-            {tab === "login" ? "ورود به iMach" : "ساخت حساب کاربری"}
+            {tab === "login" ? m.auth.titleLogin : m.auth.titleRegister}
           </h1>
           <p className="mt-1 text-xs text-muted-foreground">
-            با شماره موبایل وارد شوید تا بازوهایتان به حساب شما متصل بمانند.
+            {m.auth.subtitle}
           </p>
         </div>
 
         <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "register")}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">ورود</TabsTrigger>
-            <TabsTrigger value="register">ثبت‌نام</TabsTrigger>
+            <TabsTrigger value="login">{m.auth.tabs.login}</TabsTrigger>
+            <TabsTrigger value="register">{m.auth.tabs.register}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="login" className="mt-4 grid gap-3">
-            <Field label="موبایل">
-              <Input dir="ltr" placeholder="09121234567" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Field label={m.auth.fields.mobile}>
+              <Input dir="ltr" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
             </Field>
-            <Field label="رمز عبور">
+            <Field label={m.auth.fields.password}>
               <Input
                 dir="ltr"
                 type="password"
-                placeholder="••••••••"
+                placeholder={m.auth.placeholders.password}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Field>
             <p className="rounded-lg bg-muted px-3 py-2 text-[11px] leading-5 text-muted-foreground" dir="ltr">
-              demo: 09120000001 / ImachDemo1234
+              {m.auth.demoHint}
             </p>
           </TabsContent>
 
           <TabsContent value="register" className="mt-4 grid gap-3">
-            <Field label="نام و نام خانوادگی">
-              <Input placeholder="مثلا علی رضایی" value={name} onChange={(e) => setName(e.target.value)} />
+            <Field label={m.auth.fields.fullName}>
+              <Input placeholder={m.auth.placeholders.fullName} value={name} onChange={(e) => setName(e.target.value)} />
             </Field>
-            <Field label="موبایل">
-              <Input dir="ltr" placeholder="09121234567" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Field label={m.auth.fields.mobile}>
+              <Input dir="ltr" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
             </Field>
-            <Field label="رمز عبور (حداقل ۸ کاراکتر)">
+            <Field label={m.auth.fields.passwordRegister}>
               <Input
                 dir="ltr"
                 type="password"
-                placeholder="••••••••"
+                placeholder={m.auth.placeholders.password}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -624,7 +626,7 @@ function AuthStep({ onDone }: { onDone: () => void }) {
 
         <Button className="mt-4 w-full" onClick={() => void submit()} disabled={busy}>
           {busy && <Loader2 className="size-4 animate-spin" />}
-          {tab === "login" ? "ورود و ادامه" : "ساخت حساب و ادامه"}
+          {tab === "login" ? m.auth.submitLogin : m.auth.submitRegister}
         </Button>
       </div>
     </div>
@@ -652,7 +654,7 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
     if (!role) return void toast({ title: "نقش کسب‌وکار را انتخاب کنید", variant: "destructive" });
     setBusy(true);
     try {
-      const created = await businessesApi.create({
+      const created = await businessesApi.createBusiness({
         name: name.trim(),
         city,
         role,

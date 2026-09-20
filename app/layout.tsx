@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AppProviders } from "./providers";
-import { LOCALE_COOKIE, getDir, getLocale } from "@/i18n/config";
+import {
+  LOCALE_COOKIE,
+  detectLocaleFromAcceptLanguage,
+  getDir,
+  getLocale,
+} from "@/i18n/config";
 
 // فونت ایران‌سنس لوکال (self-hosted) — بدون وابستگی به CDN
 // weight فقط 400 موجود است؛ وزن‌های سنگین‌تر با synthetic bold رندر می‌شوند
@@ -36,10 +41,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   // ── i18n: THE single place where language & direction are applied ──────
-  // The locale comes from the cookie (set by the language switcher);
-  // every component inherits direction from here via logical CSS
+  // Priority: cookie (visitor's explicit choice) → Accept-Language
+  // (their location/browser language, e.g. fa-IR → fa) → Persian.
+  // Every component inherits direction from here via logical CSS
   // properties and the Radix DirectionProvider — nothing else sets dir.
-  const locale = getLocale((await cookies()).get(LOCALE_COOKIE)?.value);
+  const cookieStore = await cookies();
+  const headerStore = await headers();
+  const locale = getLocale(
+    cookieStore.get(LOCALE_COOKIE)?.value ?? detectLocaleFromAcceptLanguage(headerStore.get("accept-language"))
+  );
 
   return (
     <html

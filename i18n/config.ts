@@ -1,13 +1,16 @@
 /**
- * i18n base — the single source of truth for languages & text direction.
+ * i18n — the single source of truth for languages & text direction.
  *
- * Persian is the only available locale today. When the app goes
- * multilingual, add an entry here (flip `available: true`) and provide
- * translation dictionaries — the direction, layout and Radix UI
- * components will follow automatically.
+ * • Persian (fa, RTL) is the default.
+ * • Arabic (ar, RTL) and English (en, LTR) are enabled — the auth
+ *   page is the multilingual reference implementation; other pages
+ *   follow when their dictionaries are added.
+ * • The default language comes from the visitor: cookie →
+ *   Accept-Language (e.g. fa-IR → fa) → Persian.
  *
- * NOTE (on purpose): UI texts still live inside the components.
- * Translation files will be introduced in the dedicated i18n milestone.
+ * UI texts live in i18n/messages/*; the root layout is the ONLY place
+ * that writes <html lang/dir>; everything else inherits via logical
+ * CSS properties and the Radix DirectionProvider.
  */
 
 export interface LocaleDef {
@@ -17,13 +20,14 @@ export interface LocaleDef {
   label: string;
   /** Writing direction of the whole document. */
   dir: "rtl" | "ltr";
-  /** Visible in the language switcher? (fa only, for now) */
+  /** Visible in the language switcher? */
   available: boolean;
 }
 
 export const LOCALES: readonly LocaleDef[] = [
   { code: "fa", label: "فارسی", dir: "rtl", available: true },
-  { code: "en", label: "English", dir: "ltr", available: false },
+  { code: "ar", label: "العربية", dir: "rtl", available: true },
+  { code: "en", label: "English", dir: "ltr", available: true },
 ] as const;
 
 export const DEFAULT_LOCALE = "fa";
@@ -55,6 +59,30 @@ export function isRtl(code: string): boolean {
 /** Locales currently offered in the language switcher. */
 export function availableLocales(): LocaleDef[] {
   return LOCALES.filter((l) => l.available);
+}
+
+/**
+ * First-match locale from an Accept-Language header
+ * (e.g. "fa-IR,fa;q=0.9,en;q=0.8" → fa). Mirrors the API resolver.
+ */
+export function detectLocaleFromAcceptLanguage(header: string | undefined | null): LocaleDef["code"] {
+  if (!header) return DEFAULT_LOCALE;
+  const tags = header
+    .split(",")
+    .map((part) => {
+      const trimmed = part.trim();
+      const rawTag = trimmed.split(";")[0]?.trim() ?? "";
+      const qParam = trimmed.split(";")[1]?.trim() ?? "";
+      const q = /^q=([\d.]+)$/.exec(qParam)?.[1];
+      return { tag: rawTag.toLowerCase(), quality: q ? Number.parseFloat(q) || 0 : 1 };
+    })
+    .sort((a, b) => b.quality - a.quality);
+
+  for (const { tag } of tags) {
+    const base = tag.split("-")[0] ?? "";
+    if (isLocale(base)) return base;
+  }
+  return DEFAULT_LOCALE;
 }
 
 /** Read the locale cookie in the browser (client components). */
