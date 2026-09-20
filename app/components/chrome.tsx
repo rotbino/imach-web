@@ -111,8 +111,8 @@ export function AppFooter() {
   return (
     <footer className="mt-auto border-t bg-white/60 pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:flex-row">
-        <p>iMach — ساده‌ترین راه اتصال حلقه‌های زنجیره تامین</p>
-        <p>نسخه آنلاین با احراز هویت و دیتابیس واقعی</p>
+        <p>iMach — ارزان‌تر بخر، بیشتر بفروش</p>
+        <p>بازار عمده‌ی آنلاین کسب‌وکارها</p>
       </div>
     </footer>
   );

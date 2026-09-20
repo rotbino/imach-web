@@ -2,8 +2,8 @@
  * i18n — the single source of truth for languages & text direction.
  *
  * • Persian (fa, RTL) is the default.
- * • Arabic (ar, RTL) and English (en, LTR) are enabled — the auth
- *   page is the multilingual reference implementation; other pages
+ * • For now the product is bilingual — fa + en — and multilingualism
+ *   is only required on the auth (login/register) page; other pages
  *   follow when their dictionaries are added.
  * • The default language comes from the visitor: cookie →
  *   Accept-Language (e.g. fa-IR → fa) → Persian.
@@ -26,7 +26,6 @@ export interface LocaleDef {
 
 export const LOCALES: readonly LocaleDef[] = [
   { code: "fa", label: "فارسی", dir: "rtl", available: true },
-  { code: "ar", label: "العربية", dir: "rtl", available: true },
   { code: "en", label: "English", dir: "ltr", available: true },
 ] as const;
 

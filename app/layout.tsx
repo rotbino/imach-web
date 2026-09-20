@@ -12,20 +12,21 @@ import {
 } from "@/i18n/config";
 
 // فونت ایران‌سنس لوکال (self-hosted) — بدون وابستگی به CDN
-// weight فقط 400 موجود است؛ وزن‌های سنگین‌تر با synthetic bold رندر می‌شوند
+// وزن ۴۰۰ (Regular) + وزن ۷۰۰ (Bold) — عنوان‌ها از این پس بولد واقعی‌اند، نه synthetic
 const iranSans = localFont({
-  src: "../fonts/IRANSansWeb.woff",
-  weight: "400",
-  style: "normal",
+  src: [
+    { path: "../fonts/IRANSansWeb.woff", weight: "400", style: "normal" },
+    { path: "../fonts/IRANSansWeb_Bold.woff2", weight: "700", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-iran",
   fallback: ["Tahoma", "Arial", "sans-serif"],
 });
 
 export const metadata: Metadata = {
-  title: "iMach — بازار عمده خرید و تامین",
+  title: "iMach — ارزان‌تر بخر، بیشتر بفروش | بازار عمده آنلاین",
   description:
-    "با یک فرم ساده، بازوی خرید و بازوی فروش اختصاصی بگیر؛ تامین‌کننده‌های درست را پیدا کن و قیمت‌گیری را فعال کن.",
+    "iMach مغازه‌ها و کارگاه‌ها را مستقیم به تامین‌کننده‌ها و خریدارها می‌رساند: قیمت را بدون واسطه بگیر، کاتالوگت را بفرست دست مغازه‌ها و پیشنهادها را یک‌جا مقایسه کن.",
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },

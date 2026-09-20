@@ -22,8 +22,8 @@ import {
   useOffers,
   useQuoteRequest,
 } from "@/lib/queries";
-import { ArmIdentity, MatchRing, RoleBadge, SectionTitle } from "./chrome";
-import { AppFooter, AppHeader } from "./chrome";
+import { ArmIdentity, MatchRing, RoleBadge, SectionTitle } from "@/app/components/chrome";
+import { AppFooter, AppHeader } from "@/app/components/chrome";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
