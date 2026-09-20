@@ -76,7 +76,7 @@ export default function SellArm({ slug }: { slug: string }) {
       <div className="mx-auto max-w-3xl px-4 py-16 text-center">
         <p className="text-lg font-bold">این لینک پیدا نشد</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          ممکن است بازوی فروش حذف شده باشد. از صفحه اصلی دوباره شروع کنید.
+          ممکن است آدرس اشتباه باشد یا بازوی فروش حذف شده باشد. از صاحب کاتالوگ لینک تازه بگیرید.
         </p>
         <Link href="/">
           <Button className="mt-4">صفحه اصلی</Button>

@@ -24,9 +24,9 @@ const iranSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "iMach — ارزان‌تر بخر، بیشتر بفروش | بازار عمده آنلاین",
+  title: "iMach — کاتالوگ فروش و لیست خرید هوشمند | رایگان",
   description:
-    "iMach مغازه‌ها و کارگاه‌ها را مستقیم به تامین‌کننده‌ها و خریدارها می‌رساند: قیمت را بدون واسطه بگیر، کاتالوگت را بفرست دست مغازه‌ها و پیشنهادها را یک‌جا مقایسه کن.",
+    "کاتالوگ فروش هوشمندت را رایگان بساز؛ مشتری‌هایت فالو می‌کنند و همیشه آخرین قیمت‌ها را می‌بینند. لیست خریدت را برای تامین‌کننده‌ها بفرست و پیشنهادها را یک‌جا مقایسه کن.",
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
@@ -56,7 +56,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={getDir(locale)}
-      className={iranSans.variable}
+      className={`${iranSans.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground font-sans">
