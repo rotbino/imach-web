@@ -2,17 +2,16 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { businessesApi, ApiError, type BusinessSummaryDto } from "@/lib/api";
+import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { useCategories, useGoods, useMyBusinesses, useUpsertListing } from "@/lib/queries";
-import { CITIES, fa, ROLE_HINTS, ROLE_LABELS, unitLabel } from "@/lib/format";
-import { AppHeader, AppFooter, ArmLinkCard, RoleBadge, ROLE_ICONS } from "@/app/components/chrome";
+import { useCategories, useCreateBusiness, useGoods, useSaveListing } from "@/lib/queries";
+import { CITIES, fa, FREQUENCY_LABELS, unitLabel } from "@/lib/format";
+import { AppHeader, AppFooter } from "@/app/components/chrome";
 import { LanguageSelect } from "@/app/components/language-select";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -23,75 +22,37 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import {
-  BadgeCheck,
   Check,
-  Eye,
-  Info,
   Loader2,
   LogIn,
-  Radio,
   Search,
-  ShoppingCart,
-  Sparkles,
+  ShoppingBasket,
   Store,
-  Tag,
   UserPlus,
-  Wand2,
-  X,
   type LucideIcon,
 } from "lucide-react";
 
-type Mode = "SELL" | "BUY" | "BOTH";
+/*
+ * ویزارد افقی شروع — یک مرحله در هر لحظه:
+ *   ۱) حساب (ورود / ثبت‌نام)      ← ورود مستقیم به پنل می‌رود
+ *   ۲) کسب‌وکار (نام، شهر، نقش)   ← نقش = دو چک‌باکس ساده
+ *   ۳) اولین کالا                 ← تا کاتالوگ خالی نماند؛ بعدش: پنل
+ */
+
 type Frequency = "WEEKLY" | "MONTHLY" | "OCCASIONAL";
 
-interface DraftItem {
-  mode: Mode;
-  sell: { price: number; stock: number; minOrder: number };
-  buy: { volume: number; frequency: Frequency };
-}
-
-const MODES: { value: Mode; label: string }[] = [
-  { value: "SELL", label: "فقط می‌فروشم" },
-  { value: "BUY", label: "فقط می‌خرم" },
-  { value: "BOTH", label: "هر دو" },
+const STEPS: { title: string }[] = [
+  { title: "حساب" },
+  { title: "کسب‌وکار" },
+  { title: "اولین کالا" },
 ];
-
-const FREQUENCIES: { value: Frequency; label: string }[] = [
-  { value: "WEEKLY", label: "هفتگی" },
-  { value: "MONTHLY", label: "ماهانه" },
-  { value: "OCCASIONAL", label: "موردی" },
-];
-
-type Step = "auth" | "business" | "goods" | "done";
 
 export default function StartWizard() {
   const router = useRouter();
-  const { toast } = useToast();
   const { status: authStatus } = useAuthStore();
-
-  const [step, setStep] = useState<Step>("business");
+  const [step, setStep] = useState(1);
   const [biz, setBiz] = useState<BusinessSummaryDto | null>(null);
-  const [errorGood, setErrorGood] = useState<string | null>(null);
 
-  // گام ۳: دیتای کالاها
-  const [cat, setCat] = useState<string>("");
-  const [query, setQuery] = useState("");
-  const [draft, setDraft] = useState<Record<string, DraftItem>>({});
-
-  const goodsQ = useGoods({ limit: 100 });
-  const categoriesQ = useCategories();
-  const upsertMutation = useUpsertListing();
-  const goods = goodsQ.data?.items ?? [];
-  const categories = categoriesQ.data ?? [];
-
-  useMemo(() => {
-    if (!cat && categories.length > 0) setCat(categories[0]);
-  }, [cat, categories]);
-
-  const selectedIds = Object.keys(draft);
-  const goodById = useMemo(() => new Map(goods.map((g) => [g.id, g])), [goods]);
-
-  // ناوبری بر اساس وضعیت احراز هویت
   if (authStatus === "booting") {
     return (
       <div className="grid place-items-center py-32">
@@ -100,429 +61,87 @@ export default function StartWizard() {
     );
   }
 
-  const effectiveStep: Step = authStatus === "guest" ? "auth" : step;
-
-  // ── گام ۱: احراز هویت ──
-  if (effectiveStep === "auth") {
-    return (
-      <>
-        <AppHeader />
-        <main className="grow">
-          <AuthStep onDone={() => setStep("business")} />
-        </main>
-        <AppFooter />
-      </>
-    );
-  }
-
-  // ── گام ۴: موفقیت ──
-  if (effectiveStep === "done" && biz) {
-    return (
-      <>
-        <AppHeader />
-        <main className="grow">
-          <SuccessStep biz={biz} onGoSell={() => router.push(`/sell/${biz.slug}`)} onGoBuy={() => router.push(`/buy/${biz.slug}`)} />
-        </main>
-        <AppFooter />
-      </>
-    );
-  }
+  // کاربر واردشده به‌هیچ‌وجه گام حساب را نمی‌بیند؛
+  // ورود از مسیر پنل برای «کسب‌وکار جدید» هم همین‌جا رندر می‌شود.
+  const current = authStatus === "guest" ? 1 : Math.max(step, 2);
 
   return (
     <>
       <AppHeader />
       <main className="grow">
-        <div className="mx-auto max-w-3xl px-4 py-8">
-          <div className="mb-6 flex items-center justify-between gap-2">
-            <div>
-              <h1 className="text-xl font-black sm:text-2xl">ثبت کالاها</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                یک‌بار ثبت کن؛ دو بازوی اختصاصی خرید و فروش با لینک مخصوص خودت بساز.
-              </p>
-            </div>
-          </div>
-
-          <BusinessStep
-            onCreated={(b) => {
-              setBiz(b);
-              setStep("goods");
-            }}
-          />
-
-          {biz && (
-            <>
-              {/* ── انتخاب کالاها ── */}
-              <section className="mt-5 rounded-2xl border bg-white p-5 shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h2 className="flex items-center gap-2 text-base font-extrabold">
-                    <ShoppingCart className="size-5 text-primary" />
-                    کالاها
-                  </h2>
-                  {selectedIds.length > 0 && (
-                    <span className="text-xs text-muted-foreground">
-                      {fa(selectedIds.length)} کالا انتخاب شد
-                    </span>
-                  )}
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  کالاهایی که می‌خرید یا می‌فروشید را انتخاب کنید؛ جزئیات پایین‌تر تنظیم می‌شود.
-                </p>
-
-                <div className="relative mt-3">
-                  <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    aria-label="جست‌وجوی کالا"
-                    placeholder="جست‌وجو… مثلا برنج، رب، کارتن"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="pe-9"
-                  />
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {categories.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => {
-                        setCat(c);
-                        setQuery("");
-                      }}
-                      className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-                        query === "" && cat === c
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "bg-white text-muted-foreground hover:border-primary/40"
+        <div className="mx-auto max-w-2xl px-4 py-8">
+          {/* نشانگر افقی مراحل */}
+          <ol className="mb-6 flex items-center gap-2" aria-label="مراحل ثبت‌نام">
+            {STEPS.map((s, i) => {
+              const n = i + 1;
+              const done = n < current;
+              const active = n === current;
+              return (
+                <li key={s.title} className="flex flex-1 items-center gap-2">
+                  <span
+                    aria-current={active ? "step" : undefined}
+                    className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-bold transition ${
+                      active
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : done
+                          ? "bg-accent text-primary"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    <span
+                      className={`grid size-4.5 place-items-center rounded-full text-[10px] ${
+                        active ? "bg-white/25" : done ? "bg-primary text-white" : "bg-white"
                       }`}
                     >
-                      {c}
-                    </button>
-                  ))}
-                </div>
+                      {done ? <Check className="size-3" /> : fa(n)}
+                    </span>
+                    {s.title}
+                  </span>
+                  {n < STEPS.length && <span className="h-px grow bg-border" aria-hidden />}
+                </li>
+              );
+            })}
+          </ol>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {(query.trim()
-                    ? goods.filter((g) => g.name.includes(query.trim()) || g.category.includes(query.trim()))
-                    : goods.filter((g) => g.category === cat)
-                  ).map((g) => {
-                    const sel = !!draft[g.id];
-                    return (
-                      <button
-                        key={g.id}
-                        type="button"
-                        onClick={() => toggleGood(g.id)}
-                        aria-pressed={sel}
-                        className={`flex items-center justify-between rounded-xl border p-3 text-start transition ${
-                          sel ? "border-primary bg-accent ring-1 ring-primary" : "bg-white hover:border-primary/40"
-                        }`}
-                      >
-                        <span>
-                          <span className="block text-sm font-bold">{g.name}</span>
-                          <span className="text-[11px] text-muted-foreground">
-                            واحد رایج: {unitLabel(g.unit)}
-                          </span>
-                        </span>
-                        <span
-                          className={`grid size-5 place-items-center rounded-full border ${
-                            sel ? "border-primary bg-primary text-white" : "border-input"
-                          }`}
-                        >
-                          {sel && <Check className="size-3.5" />}
-                        </span>
-                      </button>
-                    );
-                  })}
-                  {goodsQ.isLoading && (
-                    <div className="col-span-2 flex items-center gap-2 py-6 text-sm text-muted-foreground sm:col-span-3">
-                      <Loader2 className="size-4 animate-spin" /> در حال دریافت کاتالوگ…
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              {/* ── جزئیات کالاهای انتخاب‌شده ── */}
-              {selectedIds.length > 0 && (
-                <section className="mt-5">
-                  <h2 className="flex items-center gap-2 text-base font-extrabold">
-                    <Tag className="size-5 text-primary" />
-                    جزئیات کالاها
-                  </h2>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    برای هر کالا مشخص کنید فقط می‌فروشید، فقط می‌خرید یا هر دو؛ بعد حجم و قیمت را وارد کنید.
-                  </p>
-
-                  <div className="mt-3 space-y-3">
-                    {selectedIds.map((id) => {
-                      const g = goodById.get(id);
-                      const item = draft[id];
-                      if (!g || !item) return null;
-                      const showSell = item.mode === "SELL" || item.mode === "BOTH";
-                      const showBuy = item.mode === "BUY" || item.mode === "BOTH";
-                      const invalid = errorGood === id;
-                      return (
-                        <div
-                          key={id}
-                          className={`rounded-2xl border bg-white p-4 shadow-sm ${
-                            invalid ? "border-destructive ring-1 ring-destructive" : ""
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <p className="text-sm font-extrabold">{g.name}</p>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="size-7"
-                              onClick={() => toggleGood(id)}
-                              aria-label={`حذف ${g.name}`}
-                            >
-                              <X className="size-4" />
-                            </Button>
-                          </div>
-
-                          <div className="mt-2 grid grid-cols-3 gap-1 rounded-xl bg-muted p-1">
-                            {MODES.map((m) => (
-                              <button
-                                key={m.value}
-                                type="button"
-                                onClick={() => patchMode(id, m.value)}
-                                className={`rounded-lg px-2 py-1.5 text-xs font-bold transition ${
-                                  item.mode === m.value
-                                    ? "bg-white text-primary shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground"
-                                }`}
-                              >
-                                {m.label}
-                              </button>
-                            ))}
-                          </div>
-
-                          {showSell && (
-                            <div className="mt-3 rounded-xl border border-primary/15 bg-accent/40 p-3">
-                              <p className="mb-2 flex items-center gap-1 text-xs font-bold text-primary">
-                                <Store className="size-3.5" />
-                                مشخصات فروش
-                              </p>
-                              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                <Field label="قیمت هر واحد (تومان)">
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    placeholder="85000"
-                                    value={item.sell.price || ""}
-                                    onChange={(e) => patchDraft(id, "sell", { price: Number(e.target.value) })}
-                                  />
-                                </Field>
-                                <Field label="موجودی">
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    placeholder="500"
-                                    value={item.sell.stock || ""}
-                                    onChange={(e) => patchDraft(id, "sell", { stock: Number(e.target.value) })}
-                                  />
-                                </Field>
-                                <Field label="حداقل سفارش">
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    placeholder="10"
-                                    value={item.sell.minOrder || ""}
-                                    onChange={(e) => patchDraft(id, "sell", { minOrder: Number(e.target.value) })}
-                                  />
-                                </Field>
-                                <Field label="واحد">
-                                  <Select value={g.unit} disabled>
-                                    <SelectTrigger aria-label="واحد فروش">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value={g.unit}>{g.unit}</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </Field>
-                              </div>
-                            </div>
-                          )}
-
-                          {showBuy && (
-                            <div className="mt-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
-                              <p className="mb-2 flex items-center gap-1 text-xs font-bold text-stone-700">
-                                <ShoppingCart className="size-3.5" />
-                                مشخصات خرید
-                              </p>
-                              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                                <Field label="حجم خرید در هر دوره">
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    placeholder="2000"
-                                    value={item.buy.volume || ""}
-                                    onChange={(e) => patchDraft(id, "buy", { volume: Number(e.target.value) })}
-                                  />
-                                </Field>
-                                <Field label="واحد">
-                                  <Select value={g.unit} disabled>
-                                    <SelectTrigger aria-label="واحد خرید">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value={g.unit}>{g.unit}</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </Field>
-                                <Field label="تناوب خرید">
-                                  <Select
-                                    value={item.buy.frequency}
-                                    onValueChange={(v) => patchDraft(id, "buy", { frequency: v as Frequency })}
-                                  >
-                                    <SelectTrigger aria-label="تناوب خرید">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {FREQUENCIES.map((f) => (
-                                        <SelectItem key={f.value} value={f.value}>
-                                          {f.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </Field>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-              )}
-
-              {/* ── ارسال ── */}
-              <div className="sticky bottom-3 mt-6">
-                <div className="flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-3 shadow-lg backdrop-blur">
-                  <p className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground">
-                    <Info className="size-4 shrink-0" />
-                    {selectedIds.length === 0
-                      ? "برای ساخت بازوها، حداقل یک کالا انتخاب کنید."
-                      : "بعد از ثبت، دو لینک اختصاصی بازوی خرید و فروش ساخته می‌شود."}
-                  </p>
-                  <Button
-                    onClick={() => void submit()}
-                    className="shrink-0"
-                    disabled={upsertMutation.isPending}
-                  >
-                    {upsertMutation.isPending ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <Sparkles className="size-4" />
-                    )}
-                    ساخت بازوی خرید و فروش
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
+          <div key={current} className="animate-step-slide">
+            {current === 1 && (
+              <AuthStep
+                onLoggedIn={() => router.push("/panel")}
+                onRegistered={() => setStep(2)}
+              />
+            )}
+            {current === 2 && (
+              <BusinessStep
+                onCreated={(b) => {
+                  setBiz(b);
+                  setStep(3);
+                }}
+              />
+            )}
+            {current === 3 && biz && <FirstGoodStep biz={biz} />}
+          </div>
         </div>
       </main>
       <AppFooter />
     </>
   );
-
-  // ── توابع داخلی ──
-  function toggleGood(goodId: string) {
-    setDraft((d) => {
-      const next = { ...d };
-      if (next[goodId]) {
-        delete next[goodId];
-      } else {
-        next[goodId] = {
-          mode: "BOTH",
-          sell: { price: 0, stock: 0, minOrder: 0 },
-          buy: { volume: 0, frequency: "MONTHLY" },
-        };
-      }
-      return next;
-    });
-  }
-
-  function patchMode(goodId: string, mode: Mode) {
-    setDraft((d) => ({ ...d, [goodId]: { ...d[goodId], mode } }));
-  }
-
-  function patchDraft<K extends "sell" | "buy">(
-    goodId: string,
-    part: K,
-    patch: Partial<DraftItem[K]>
-  ) {
-    setDraft((d) => ({
-      ...d,
-      [goodId]: { ...d[goodId], [part]: { ...d[goodId][part], ...patch } },
-    }));
-  }
-
-  async function submit() {
-    if (!biz) return;
-    if (selectedIds.length === 0) {
-      toast({ title: "حداقل یک کالا انتخاب کنید", variant: "destructive" });
-      return;
-    }
-    for (const id of selectedIds) {
-      const item = draft[id];
-      const g = goodById.get(id);
-      if (!g || !item) continue;
-      if (item.mode !== "BUY" && (item.sell.price <= 0 || item.sell.stock <= 0)) {
-        setErrorGood(id);
-        toast({
-          title: `مشخصات فروش «${g.name}» کامل نیست`,
-          description: "قیمت و موجودی فروش را وارد کنید.",
-          variant: "destructive",
-        });
-        return;
-      }
-      if (item.mode !== "SELL" && item.buy.volume <= 0) {
-        setErrorGood(id);
-        toast({
-          title: `مشخصات خرید «${g.name}» کامل نیست`,
-          description: "حجم خرید در هر دوره را وارد کنید.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-    setErrorGood(null);
-
-    const upsert = upsertMutation;
-    try {
-      for (const id of selectedIds) {
-        const item = draft[id];
-        await upsert.mutateAsync({
-          businessId: biz.id,
-          goodId: id,
-          mode: item.mode,
-          ...(item.mode !== "BUY" ? { sell: item.sell } : {}),
-          ...(item.mode !== "SELL" ? { buy: item.buy } : {}),
-        });
-      }
-      toast({ title: "بازوها ساخته شد", description: "دو لینک اختصاصی برای شما آماده است." });
-      setStep("done");
-    } catch (err) {
-      toast({
-        title: "ثبت کالاها ناموفق بود",
-        description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
-        variant: "destructive",
-      });
-    }
-  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام احراز هویت
+// گام ۱ — حساب: ورود (می‌رود به پنل) یا ثبت‌نام (ادامه به کسب‌وکار)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function AuthStep({ onDone }: { onDone: () => void }) {
+function AuthStep({
+  onLoggedIn,
+  onRegistered,
+}: {
+  onLoggedIn: () => void;
+  onRegistered: () => void;
+}) {
   const { toast } = useToast();
   const login = useAuthStore((s) => s.login);
   const register = useAuthStore((s) => s.register);
-  const m = useMessages(); // صفحه ورود/ثبت‌نام — نمونه چندزبانه (fa/ar/en)
+  const m = useMessages(); // ورود/ثبت‌نام — دوزبانه (fa/en)
   const [tab, setTab] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -534,7 +153,7 @@ function AuthStep({ onDone }: { onDone: () => void }) {
       toast({ title: m.auth.toasts.invalidPhone, description: m.auth.toasts.invalidPhoneDesc, variant: "destructive" });
       return;
     }
-    if (password.length < 8) {
+    if (password.length < 6) {
       toast({ title: m.auth.toasts.passwordShort, variant: "destructive" });
       return;
     }
@@ -542,6 +161,8 @@ function AuthStep({ onDone }: { onDone: () => void }) {
     try {
       if (tab === "login") {
         await login(phone, password);
+        toast({ title: m.auth.toasts.welcome });
+        onLoggedIn(); // لاگین → مستقیم پنل
       } else {
         if (name.trim().length < 2) {
           toast({ title: m.auth.toasts.nameRequired, variant: "destructive" });
@@ -549,9 +170,9 @@ function AuthStep({ onDone }: { onDone: () => void }) {
           return;
         }
         await register(name.trim(), phone, password);
+        toast({ title: m.auth.toasts.welcome });
+        onRegistered(); // ثبت‌نام → ادامه ساخت کسب‌وکار
       }
-      toast({ title: m.auth.toasts.welcome });
-      onDone();
     } catch (err) {
       toast({
         title: m.auth.toasts.authFailed,
@@ -564,103 +185,98 @@ function AuthStep({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="mx-auto max-w-md px-4 py-10">
-      <div className="mb-3 flex justify-start">
-        <LanguageSelect />
-      </div>
-      <div className="rounded-2xl border bg-white p-6 shadow-sm">
-        <div className="mb-5 text-center">
-          <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
-            {tab === "login" ? <LogIn className="size-6" /> : <UserPlus className="size-6" />}
-          </span>
-          <h1 className="mt-3 text-lg font-extrabold">
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="mb-5 flex items-start justify-between">
+        <div>
+          <h1 className="text-lg font-extrabold">
             {tab === "login" ? m.auth.titleLogin : m.auth.titleRegister}
           </h1>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {m.auth.subtitle}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{m.auth.subtitle}</p>
         </div>
-
-        <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "register")}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">{m.auth.tabs.login}</TabsTrigger>
-            <TabsTrigger value="register">{m.auth.tabs.register}</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="login" className="mt-4 grid gap-3">
-            <Field label={m.auth.fields.mobile}>
-              <Input dir="ltr" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
-            </Field>
-            <Field label={m.auth.fields.password}>
-              <Input
-                dir="ltr"
-                type="password"
-                placeholder={m.auth.placeholders.password}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Field>
-            <p className="rounded-lg bg-muted px-3 py-2 text-[11px] leading-5 text-muted-foreground" dir="ltr">
-              {m.auth.demoHint}
-            </p>
-          </TabsContent>
-
-          <TabsContent value="register" className="mt-4 grid gap-3">
-            <Field label={m.auth.fields.fullName}>
-              <Input placeholder={m.auth.placeholders.fullName} value={name} onChange={(e) => setName(e.target.value)} />
-            </Field>
-            <Field label={m.auth.fields.mobile}>
-              <Input dir="ltr" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
-            </Field>
-            <Field label={m.auth.fields.passwordRegister}>
-              <Input
-                dir="ltr"
-                type="password"
-                placeholder={m.auth.placeholders.password}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Field>
-          </TabsContent>
-        </Tabs>
-
-        <Button className="mt-4 w-full" onClick={() => void submit()} disabled={busy}>
-          {busy && <Loader2 className="size-4 animate-spin" />}
-          {tab === "login" ? m.auth.submitLogin : m.auth.submitRegister}
-        </Button>
+        <LanguageSelect />
       </div>
+
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "register")}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="login">{m.auth.tabs.login}</TabsTrigger>
+          <TabsTrigger value="register">{m.auth.tabs.register}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="login" className="mt-4 grid gap-3">
+          <Field label={m.auth.fields.mobile}>
+            <Input dir="ltr" inputMode="numeric" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </Field>
+          <Field label={m.auth.fields.password}>
+            <Input
+              dir="ltr"
+              type="password"
+              placeholder={m.auth.placeholders.password}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Field>
+        </TabsContent>
+
+        <TabsContent value="register" className="mt-4 grid gap-3">
+          <Field label={m.auth.fields.fullName}>
+            <Input placeholder={m.auth.placeholders.fullName} value={name} onChange={(e) => setName(e.target.value)} />
+          </Field>
+          <Field label={m.auth.fields.mobile}>
+            <Input dir="ltr" inputMode="numeric" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </Field>
+          <Field label={m.auth.fields.passwordRegister}>
+            <Input
+              dir="ltr"
+              type="password"
+              placeholder={m.auth.placeholders.password}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Field>
+        </TabsContent>
+      </Tabs>
+
+      <Button className="mt-4 w-full" onClick={() => void submit()} disabled={busy}>
+        {busy && <Loader2 className="size-4 animate-spin" />}
+        {tab === "login" ? m.auth.submitLogin : m.auth.submitRegister}
+      </Button>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام اطلاعات کسب‌وکار
+// گام ۲ — کسب‌وکار: نام + شهر + نقش در بازار عمده (دو چک‌باکس) — موبایل نمی‌گیریم
 // ─────────────────────────────────────────────────────────────────────────────
+
+const ROLE_OPTIONS: { key: "sells" | "buys"; label: string; icon: LucideIcon }[] = [
+  { key: "buys", label: "خرید عمده دارم", icon: ShoppingBasket },
+  { key: "sells", label: "فروش عمده دارم", icon: Store },
+];
 
 function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => void }) {
   const { toast } = useToast();
-  const businessesQ = useMyBusinesses();
-  const mine = businessesQ.data ?? [];
-  const [pick, setPick] = useState<string>("new");
+  const createMutation = useCreateBusiness();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
-  const [role, setRole] = useState("");
-  const [phone, setPhone] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [sells, setSells] = useState(false);
+  const [buys, setBuys] = useState(false);
 
   const create = async () => {
-    if (!name.trim()) return void toast({ title: "نام کسب‌وکار را بنویسید", variant: "destructive" });
-    if (!city) return void toast({ title: "شهر را انتخاب کنید", variant: "destructive" });
-    if (!role) return void toast({ title: "نقش کسب‌وکار را انتخاب کنید", variant: "destructive" });
-    setBusy(true);
+    if (name.trim().length < 2) {
+      toast({ title: "نام کسب‌وکار را بنویسید", variant: "destructive" });
+      return;
+    }
+    if (!city) {
+      toast({ title: "شهر را انتخاب کنید", variant: "destructive" });
+      return;
+    }
+    if (!sells && !buys) {
+      toast({ title: "حداقل یکی از دو گزینه را تیک بزنید", description: "خرید عمده دارم یا فروش عمده دارم", variant: "destructive" });
+      return;
+    }
     try {
-      const created = await businessesApi.createBusiness({
-        name: name.trim(),
-        city,
-        role,
-        phone: phone.trim() || undefined,
-      });
-      toast({ title: "کسب‌وکار ساخته شد", description: created.slug });
+      const created = await createMutation.mutateAsync({ name: name.trim(), city, sells, buys });
+      toast({ title: "کسب‌وکار ساخته شد", description: created.name });
       onCreated(created);
     } catch (err) {
       toast({
@@ -668,185 +284,286 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
         description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
         variant: "destructive",
       });
-    } finally {
-      setBusy(false);
     }
   };
 
   return (
-    <section className="rounded-2xl border bg-white p-5 shadow-sm">
-      <h2 className="flex items-center gap-2 text-base font-extrabold">
-        <BadgeCheck className="size-5 text-primary" />
-        اطلاعات کسب‌وکار
-      </h2>
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <h1 className="text-lg font-extrabold">کسب‌وکار خود را معرفی کنید</h1>
+      <p className="mt-1 text-xs text-muted-foreground">
+        نام، شهر و نقش شما در بازار عمده — همین و بس.
+      </p>
 
-      {mine.length > 0 && (
-        <div className="mt-4">
-          <Label>کدام کسب‌وکار؟</Label>
-          <Tabs value={pick} onValueChange={setPick} className="mt-1">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="new">کسب‌وکار جدید</TabsTrigger>
-              <TabsTrigger value="existing">{mine[0].name}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="existing" className="mt-2">
-              <Button
-                className="w-full"
-                onClick={() => {
-                  const b = mine[0];
-                  if (b) onCreated(b);
-                }}
-              >
-                ادامه با «{mine[0].name}»
-              </Button>
-            </TabsContent>
-          </Tabs>
+      <div className="mt-4 grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="biz-name">نام کسب‌وکار *</Label>
+          <Input
+            id="biz-name"
+            placeholder="مثلا خورشید مارکت"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
-      )}
 
-      {(pick === "new" || mine.length === 0) && (
-        <>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <div className="grid gap-2">
-              <Label htmlFor="biz-name">نام کسب‌وکار *</Label>
-              <Input
-                id="biz-name"
-                placeholder="مثلا خورشید مارکت"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label>شهر *</Label>
-              <Select value={city} onValueChange={setCity}>
-                <SelectTrigger aria-label="شهر">
-                  <SelectValue placeholder="شهر را انتخاب کنید" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CITIES.map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {c}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2 sm:col-span-2">
-              <Label>نقش کسب‌وکار *</Label>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {(Object.keys(ROLE_LABELS) as (keyof typeof ROLE_LABELS)[]).map((r) => {
-                  const Icon: LucideIcon | undefined = ROLE_ICONS[r];
-                  return (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setRole(r)}
-                      className={`rounded-xl border p-3 text-start transition ${
-                        role === r ? "border-primary bg-accent ring-1 ring-primary" : "bg-white hover:border-primary/40"
-                      }`}
-                    >
-                      <span className="flex items-center gap-1.5">
-                        {Icon && <Icon className="size-3.5 text-primary" />}
-                        <span className="block text-sm font-bold">{ROLE_LABELS[r]}</span>
-                      </span>
-                      <span className="mt-0.5 block text-[11px] text-muted-foreground">{ROLE_HINTS[r]}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="biz-phone">موبایل</Label>
-              <Input
-                id="biz-phone"
-                dir="ltr"
-                placeholder="0912…"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between gap-3">
-            {role && (
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                نقش شما: <RoleBadge role={role} />
-              </p>
-            )}
-            <Button onClick={() => void create()} disabled={busy} className="ms-auto">
-              {busy ? <Loader2 className="size-4 animate-spin" /> : <Wand2 className="size-4" />}
-              ذخیره و انتخاب کالاها
-            </Button>
-          </div>
-        </>
-      )}
-    </section>
+        <div className="grid gap-2">
+          <Label>شهر *</Label>
+          <Select value={city} onValueChange={setCity}>
+            <SelectTrigger aria-label="شهر">
+              <SelectValue placeholder="شهر را انتخاب کنید" />
+            </SelectTrigger>
+            <SelectContent>
+              {CITIES.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <fieldset className="grid gap-2">
+          <legend className="mb-1 text-[11px] text-muted-foreground">نقش در بازار عمده *</legend>
+          {ROLE_OPTIONS.map((o) => {
+            const checked = o.key === "sells" ? sells : buys;
+            return (
+              <label
+                key={o.key}
+                className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3.5 transition ${
+                  checked ? "border-primary bg-accent/60 ring-1 ring-primary" : "bg-white hover:border-primary/40"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={checked}
+                  onChange={(e) => (o.key === "sells" ? setSells(e.target.checked) : setBuys(e.target.checked))}
+                />
+                <span
+                  aria-hidden
+                  className={`grid size-5 shrink-0 place-items-center rounded-md border transition ${
+                    checked ? "border-primary bg-primary text-white" : "border-input bg-white"
+                  }`}
+                >
+                  {checked && <Check className="size-3.5" />}
+                </span>
+                <o.icon className={`size-4.5 ${checked ? "text-primary" : "text-muted-foreground"}`} />
+                <span className="text-sm font-bold">{o.label}</span>
+              </label>
+            );
+          })}
+        </fieldset>
+      </div>
+
+      <Button className="mt-5 w-full" onClick={() => void create()} disabled={createMutation.isPending}>
+        {createMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+        ذخیره و ثبت اولین کالا
+      </Button>
+    </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام موفقیت: لینک‌ها و QR
+// گام ۳ — اولین کالا: فروش تیک خورده؟ یک کالا برای فروش؛ فقط خرید؟ یک کالا برای خرید
 // ─────────────────────────────────────────────────────────────────────────────
 
-const AFTER_STEPS: { icon: LucideIcon; title: string; desc: string }[] = [
-  {
-    icon: Radio,
-    title: "قیمت‌گیری",
-    desc: "هر وقت خواستی قیمت بگیری، کالای موردنظر را در بازوی خرید فعال می‌کنی؛ تامین‌کننده‌های مناسب می‌بینند و پیشنهاد می‌دهند.",
-  },
-  {
-    icon: Eye,
-    title: "فالو و تابلوی قیمت",
-    desc: "تامین‌کننده‌های مناسب را فالو کن تا قیمت‌هایشان همیشه در یک جدول جمع و مقایسه شود.",
-  },
-];
+function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const saveMutation = useSaveListing();
 
-function SuccessStep({
-  biz,
-  onGoSell,
-  onGoBuy,
-}: {
-  biz: BusinessSummaryDto;
-  onGoSell: () => void;
-  onGoBuy: () => void;
-}) {
+  const isSell = biz.sells; // اگر فروش دارد، اولین کالا برای فروش است؛ وگرنه خرید
+
+  const [goodId, setGoodId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [cat, setCat] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [minOrder, setMinOrder] = useState("");
+  const [volume, setVolume] = useState("");
+  const [frequency, setFrequency] = useState<Frequency>("MONTHLY");
+
+  const goodsQ = useGoods({ limit: 100 });
+  const categoriesQ = useCategories();
+  const goods = goodsQ.data?.items ?? [];
+  const categories = categoriesQ.data ?? [];
+  const activeCat = query.trim() ? "" : cat || categories[0] || "";
+
+  const visible = useMemo(
+    () =>
+      query.trim()
+        ? goods.filter((g) => g.name.includes(query.trim()) || g.category.includes(query.trim()))
+        : goods.filter((g) => g.category === activeCat),
+    [goods, query, activeCat]
+  );
+  const good = goods.find((g) => g.id === goodId) ?? null;
+
+  const save = async () => {
+    if (!good) {
+      toast({ title: "یک کالا انتخاب کنید", variant: "destructive" });
+      return;
+    }
+    if (isSell) {
+      if (Number(price) <= 0 || Number(stock) <= 0) {
+        toast({ title: "قیمت و موجودی را وارد کنید", variant: "destructive" });
+        return;
+      }
+    } else if (Number(volume) <= 0) {
+      toast({ title: "حجم خرید را وارد کنید", variant: "destructive" });
+      return;
+    }
+
+    try {
+      await saveMutation.mutateAsync({
+        businessId: biz.id,
+        goodId: good.id,
+        mode: isSell ? "SELL" : "BUY",
+        ...(isSell
+          ? { sell: { price: Number(price), stock: Number(stock), minOrder: Number(minOrder) || 0 } }
+          : { buy: { volume: Number(volume), frequency } }),
+      });
+      toast({ title: "اولین کالای شما ثبت شد" });
+      router.push("/panel"); // بعد از ثبت اولین خرید/فروش → پنل
+    } catch (err) {
+      toast({
+        title: "ثبت کالا ناموفق بود",
+        description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <div className="text-center">
-        <span className="animate-pop-in mx-auto grid size-16 place-items-center rounded-full bg-accent text-primary ring-8 ring-accent/60">
-          <BadgeCheck className="size-9" />
-        </span>
-        <h1 className="mt-4 text-xl font-black sm:text-2xl">{biz.name} عزیز، بازوهایت ساخته شد!</h1>
-        <p className="mx-auto mt-2 max-w-lg text-sm leading-7 text-muted-foreground">
-          دو صفحه اختصاصی برای تو ساخته شد؛ لینک هر بازو مخصوص توست و هر وقت خواستی برای
-          طرف مقابل می‌فرستی.
-        </p>
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-          <RoleBadge role={biz.role} />
-          <Badge variant="secondary">{biz.city}</Badge>
-        </div>
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <h1 className="text-lg font-extrabold">
+        {isSell ? "اولین کالای فروشتان را ثبت کنید" : "اولین کالای خریدتان را ثبت کنید"}
+      </h1>
+      <p className="mt-1 text-xs text-muted-foreground">
+        {isSell
+          ? "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود. بقیه کالاها را بعدا از پنل اضافه کنید."
+          : "این نیاز در بازوی خریدتان نمایش داده می‌شود تا تامین‌کننده‌ها پیشنهاد بدهند."}
+      </p>
+
+      {/* جست‌وجو */}
+      <div className="relative mt-4">
+        <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          aria-label="جست‌وجوی کالا"
+          placeholder="جست‌وجو… مثلا برنج، رب، کارتن"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="pe-9"
+        />
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <ArmLinkCard kind="sell" slug={biz.slug} bizName={biz.name} onView={onGoSell} />
-        <ArmLinkCard kind="buy" slug={biz.slug} bizName={biz.name} onView={onGoBuy} />
+      {/* دسته‌ها */}
+      <div className="mt-3 flex flex-wrap gap-2">
+        {categories.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => {
+              setCat(c);
+              setQuery("");
+            }}
+            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+              activeCat === c
+                ? "border-primary bg-primary text-primary-foreground"
+                : "bg-white text-muted-foreground hover:border-primary/40"
+            }`}
+          >
+            {c}
+          </button>
+        ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border bg-white p-5 shadow-sm">
-        <div className="space-y-3">
-          {AFTER_STEPS.map((s, i) => (
-            <div key={s.title} className="flex gap-3 rounded-xl bg-muted/60 p-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-primary shadow-sm">
-                <s.icon className="size-4.5" />
+      {/* انتخاب یک کالا */}
+      <div className="mt-3 grid max-h-64 grid-cols-2 gap-2 overflow-y-auto pe-1 sm:grid-cols-3">
+        {visible.map((g) => {
+          const sel = g.id === goodId;
+          return (
+            <button
+              key={g.id}
+              type="button"
+              onClick={() => setGoodId(g.id)}
+              aria-pressed={sel}
+              className={`flex items-center justify-between rounded-xl border p-3 text-start transition ${
+                sel ? "border-primary bg-accent ring-1 ring-primary" : "bg-white hover:border-primary/40"
+              }`}
+            >
+              <span>
+                <span className="block text-sm font-bold">{g.name}</span>
+                <span className="text-[11px] text-muted-foreground">واحد رایج: {unitLabel(g.unit)}</span>
               </span>
-              <div>
-                <p className="text-sm font-bold">
-                  {fa(i + 1)}. {s.title}
-                </p>
-                <p className="mt-1 text-xs leading-6 text-muted-foreground">{s.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+              <span
+                className={`grid size-5 place-items-center rounded-full border ${
+                  sel ? "border-primary bg-primary text-white" : "border-input"
+                }`}
+              >
+                {sel && <Check className="size-3.5" />}
+              </span>
+            </button>
+          );
+        })}
+        {goodsQ.isLoading && (
+          <div className="col-span-2 flex items-center gap-2 py-6 text-sm text-muted-foreground sm:col-span-3">
+            <Loader2 className="size-4 animate-spin" /> در حال دریافت کاتالوگ…
+          </div>
+        )}
       </div>
+
+      {/* مشخصات */}
+      {good && (
+        <div className={`mt-4 rounded-xl border p-4 ${isSell ? "border-primary/15 bg-accent/40" : "border-stone-200 bg-stone-50"}`}>
+          <p className="mb-3 flex items-center gap-1.5 text-sm font-extrabold">
+            {isSell ? <Store className="size-4 text-primary" /> : <ShoppingBasket className="size-4 text-stone-700" />}
+            {isSell ? `مشخصات فروش «${good.name}»` : `مشخصات خرید «${good.name}»`}
+          </p>
+          {isSell ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <Field label="قیمت هر واحد (تومان)">
+                <Input type="number" min={0} placeholder="85000" value={price} onChange={(e) => setPrice(e.target.value)} />
+              </Field>
+              <Field label="موجودی">
+                <Input type="number" min={0} placeholder="500" value={stock} onChange={(e) => setStock(e.target.value)} />
+              </Field>
+              <Field label="حداقل سفارش">
+                <Input type="number" min={0} placeholder="10" value={minOrder} onChange={(e) => setMinOrder(e.target.value)} />
+              </Field>
+              <Field label="واحد">
+                <Input value={unitLabel(good.unit)} disabled />
+              </Field>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <Field label="حجم خرید در هر دوره">
+                <Input type="number" min={0} placeholder="2000" value={volume} onChange={(e) => setVolume(e.target.value)} />
+              </Field>
+              <Field label="واحد">
+                <Input value={unitLabel(good.unit)} disabled />
+              </Field>
+              <Field label="تناوب خرید">
+                <Select value={frequency} onValueChange={(v) => setFrequency(v as Frequency)}>
+                  <SelectTrigger aria-label="تناوب خرید">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(Object.keys(FREQUENCY_LABELS) as Frequency[]).map((f) => (
+                      <SelectItem key={f} value={f}>
+                        {FREQUENCY_LABELS[f]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
+          )}
+        </div>
+      )}
+
+      <Button className="mt-5 w-full" onClick={() => void save()} disabled={saveMutation.isPending}>
+        {saveMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+        ثبت و ورود به پنل
+      </Button>
     </div>
   );
 }

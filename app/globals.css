@@ -198,3 +198,21 @@
 .animate-soft-pulse {
   animation: soft-pulse 1.6s ease-in-out infinite;
 }
+
+/* ── گذار افقی مراحل ویزارد — جهت‌آگاه (در RTL مرحله بعد از چپ می‌آید) ── */
+@keyframes step-slide {
+  from {
+    opacity: 0;
+    transform: translateX(var(--step-from, -28px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-step-slide {
+  animation: step-slide 0.35s ease-out both;
+}
+[dir="ltr"] .animate-step-slide {
+  --step-from: 28px;
+}

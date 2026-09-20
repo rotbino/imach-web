@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
@@ -47,10 +47,35 @@ export function AppProviders({
   return (
     <QueryClientProvider client={client}>
       <LocaleProvider initialLocale={initialLocale}>
-        <Directional>{children}</Directional>
+        <Directional>
+          <AuthCacheSync />
+          {children}
+        </Directional>
       </LocaleProvider>
     </QueryClientProvider>
   );
+}
+
+/**
+ * Session identity changed (login / logout / another user) → drop ALL
+ * server state. Otherwise the next session could see the previous
+ * session's businesses list. Mounted queries refetch automatically.
+ */
+function AuthCacheSync() {
+  const status = useAuthStore((s) => s.status);
+  const userId = useAuthStore((s) => s.user?.id ?? null);
+  const qc = useQueryClient();
+  const prev = useRef<string | null>(null);
+
+  const identity = status === "authed" ? `user:${userId ?? ""}` : status;
+  useEffect(() => {
+    if (prev.current !== null && prev.current !== identity) {
+      qc.removeQueries();
+    }
+    prev.current = identity;
+  }, [identity, qc]);
+
+  return null;
 }
 
 /** Bridges locale state into Radix UI's direction context. */

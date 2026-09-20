@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { fa, roleLabel, ROLE_HINTS } from "@/lib/format";
+import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,58 +12,41 @@ import {
   ArrowLeftRight,
   Check,
   Copy,
-  Factory,
   Link2,
   LogIn,
   LogOut,
   MapPin,
-  Megaphone,
   MessageCircle,
   Send,
   ShoppingBasket,
   Store,
-  Warehouse,
-  type LucideIcon,
 } from "lucide-react";
 
-// ─── آیکون و برچسب نقش‌ها (enum های سرور) ───
-export const ROLE_ICONS: Record<string, LucideIcon> = {
-  RETAILER: Store,
-  WHOLESALER: Warehouse,
-  PRODUCER: Factory,
-  MARKETER: Megaphone,
-};
-
-export const roleColor = (role: string): string => {
-  switch (role) {
-    case "RETAILER":
-      return "bg-orange-50 text-orange-700 border-orange-200";
-    case "WHOLESALER":
-      return "bg-stone-100 text-stone-700 border-stone-300";
-    case "PRODUCER":
-      return "bg-amber-50 text-amber-700 border-amber-200";
-    case "MARKETER":
-      return "bg-rose-50 text-rose-700 border-rose-200";
-    default:
-      return "bg-muted text-muted-foreground border-border";
-  }
-};
-
-export function RoleBadge({ role }: { role: string }) {
-  const Icon = ROLE_ICONS[role];
+// ─── نشان بازوها (جایگزین نقش‌های قدیمی) ───
+export function ArmBadges({ sells, buys }: { sells: boolean; buys: boolean }) {
+  if (!sells && !buys) return null;
   return (
-    <Badge variant="outline" className={`gap-1 ${roleColor(role)}`}>
-      {Icon && <Icon className="size-3" />}
-      {roleLabel(role)}
-    </Badge>
+    <span className="inline-flex items-center gap-1">
+      {sells && (
+        <Badge variant="outline" className="gap-1 border-orange-200 bg-orange-50 text-orange-700">
+          <Store className="size-3" />
+          فروش عمده
+        </Badge>
+      )}
+      {buys && (
+        <Badge variant="outline" className="gap-1 border-stone-300 bg-stone-100 text-stone-700">
+          <ShoppingBasket className="size-3" />
+          خرید عمده
+        </Badge>
+      )}
+    </span>
   );
 }
 
 // ─── هدر کلی ───
 export function AppHeader() {
   const router = useRouter();
-  const { status, user, businesses, logout } = useAuthStore();
-  const mine = businesses[0];
+  const { status, user, logout } = useAuthStore();
 
   return (
     <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur-md">
@@ -79,25 +62,21 @@ export function AppHeader() {
           iMach
         </button>
         <div className="flex items-center gap-2">
-          {status === "authed" && mine && (
-            <Button size="sm" variant="outline" onClick={() => router.push(`/sell/${mine.slug}`)}>
-              <ArrowLeftRight className="size-4 text-primary" />
-              بازوهای من
-            </Button>
-          )}
-          <Button size="sm" onClick={() => router.push("/start")}>
-            <ShoppingBasket className="size-4" />
-            ثبت کالاها
-          </Button>
-          {status === "authed" && user ? (
-            <Button size="sm" variant="ghost" onClick={() => void logout()} aria-label="خروج">
-              <LogOut className="size-4" />
-              <span className="hidden sm:inline">{user.name.split(" ")[0]}</span>
-            </Button>
+          {status === "authed" ? (
+            <>
+              <Button size="sm" onClick={() => router.push("/panel")}>
+                <ArrowLeftRight className="size-4" />
+                بازوهای من
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => void logout()} aria-label="خروج">
+                <LogOut className="size-4" />
+                <span className="hidden sm:inline">{user?.name.split(" ")[0]}</span>
+              </Button>
+            </>
           ) : (
-            <Button size="sm" variant="ghost" onClick={() => router.push("/start")} aria-label="ورود">
+            <Button size="sm" onClick={() => router.push("/start")}>
               <LogIn className="size-4" />
-              <span className="hidden sm:inline">ورود</span>
+              ورود | ثبت‌نام
             </Button>
           )}
         </div>
@@ -282,7 +261,8 @@ export function SectionTitle({
 // ─── هویت کسب‌وکار در بالای بازوها ───
 export function ArmIdentity({
   bizName,
-  bizRole,
+  bizSells,
+  bizBuys,
   bizCity,
   bizPhone,
   armKind,
@@ -292,16 +272,18 @@ export function ArmIdentity({
   onCopyLink,
 }: {
   bizName: string;
-  bizRole: string;
+  bizSells: boolean;
+  bizBuys: boolean;
   bizCity: string;
   bizPhone?: string | null;
   armKind: "sell" | "buy";
+  /** بازوی مقابل فقط وقتی نشان داده می‌شود که واقعا وجود داشته باشد */
   otherArm: "sell" | "buy";
   otherLabel: string;
   onSwitch: () => void;
   onCopyLink: () => void;
 }) {
-  const Icon = ROLE_ICONS[bizRole] ?? Store;
+  const otherExists = otherArm === "sell" ? bizSells : bizBuys;
   return (
     <div className="rounded-2xl border bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -312,14 +294,13 @@ export function ArmIdentity({
           <div>
             <p className="text-lg font-extrabold leading-6">{bizName}</p>
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <RoleBadge role={bizRole} />
+              <ArmBadges sells={bizSells} buys={bizBuys} />
               <span className="flex items-center gap-1">
                 <MapPin className="size-3.5" />
                 {bizCity}
               </span>
               {bizPhone && (
                 <span className="flex items-center gap-1" dir="ltr">
-                  <Icon className="size-3.5" />
                   {bizPhone}
                 </span>
               )}
@@ -331,15 +312,17 @@ export function ArmIdentity({
             <Copy className="size-4" />
             کپی لینک این صفحه
           </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={onSwitch}
-            className={otherArm === "sell" ? "" : "bg-stone-800 hover:bg-stone-900 text-white"}
-          >
-            <ArrowLeftRight className="size-4" />
-            {otherLabel}
-          </Button>
+          {otherExists && (
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={onSwitch}
+              className={otherArm === "sell" ? "" : "bg-stone-800 hover:bg-stone-900 text-white"}
+            >
+              <ArrowLeftRight className="size-4" />
+              {otherLabel}
+            </Button>
+          )}
         </div>
       </div>
       <p className="mt-3 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
@@ -350,5 +333,3 @@ export function ArmIdentity({
     </div>
   );
 }
-
-export { ROLE_HINTS };

@@ -22,7 +22,7 @@ import {
   useOffers,
   useQuoteRequest,
 } from "@/lib/queries";
-import { ArmIdentity, MatchRing, RoleBadge, SectionTitle } from "@/app/components/chrome";
+import { ArmBadges, ArmIdentity, MatchRing, SectionTitle } from "@/app/components/chrome";
 import { AppFooter, AppHeader } from "@/app/components/chrome";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -170,7 +170,8 @@ export default function BuyArm({ slug }: { slug: string }) {
         <div className="mx-auto max-w-4xl space-y-5 px-4 py-6">
           <ArmIdentity
             bizName={biz.name}
-            bizRole={biz.role}
+            bizSells={biz.sells}
+            bizBuys={biz.buys}
             bizCity={biz.city}
             bizPhone={biz.phone}
             armKind="buy"
@@ -218,7 +219,7 @@ export default function BuyArm({ slug }: { slug: string }) {
                 }
               />
               {buyListings.length === 0 && (
-                <EmptyBox text="هنوز کالایی برای خرید ثبت نشده است. از «ثبت کالاها» اضافه کنید." />
+                <EmptyBox text="هنوز کالایی برای خرید ثبت نشده است. از پنل «بازوهای من» اضافه کنید." />
               )}
               {buyListings.map((l) => {
                 const offers = offersByGood.get(l.good.id) ?? [];
@@ -389,7 +390,7 @@ function OfferCard({
               {cheapest && <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary text-[10px]">ارزان‌ترین پیشنهاد</Badge>}
             </p>
             <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-              <RoleBadge role={offer.seller.role} />
+              <ArmBadges sells={offer.seller.sells} buys={offer.seller.buys} />
               <span className="flex items-center gap-0.5">
                 <MapPin className="size-3" />
                 {offer.seller.city} · {proximityLabel(p)}

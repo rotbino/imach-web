@@ -116,7 +116,8 @@ export interface BusinessSummaryDto {
   id: string;
   slug: string;
   name: string;
-  role: string;
+  sells: boolean;
+  buys: boolean;
   city: string;
   isVerified: boolean;
 }
@@ -155,7 +156,8 @@ export interface BusinessProfileDto {
   id: string;
   slug: string;
   name: string;
-  role: string;
+  sells: boolean;
+  buys: boolean;
   city: string;
   phone: string | null;
   isVerified: boolean;
@@ -167,7 +169,8 @@ export interface SellerDto {
   id: string;
   slug: string;
   name: string;
-  role: string;
+  sells: boolean;
+  buys: boolean;
   city: string;
   isVerified: boolean;
 }
@@ -229,7 +232,8 @@ export interface SuggestionDto {
   buyerId: string;
   buyerName: string;
   buyerSlug: string;
-  buyerRole: string;
+  buyerSells: boolean;
+  buyerBuys: boolean;
   buyerCity: string;
   buyerVerified: boolean;
   buyListingId: string;
@@ -266,8 +270,10 @@ export const goodsApi = {
 
 export const businessesApi = {
   getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),
-  createBusiness: (body: { name: string; role: string; city: string; phone?: string }) =>
+  createBusiness: (body: { name: string; city: string; sells: boolean; buys: boolean }) =>
     api<BusinessSummaryDto & { slug: string }>("/businesses/createBusiness", { method: "POST", body }),
+  editBusiness: (id: string, body: { name?: string; city?: string; sells?: boolean; buys?: boolean }) =>
+    api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
 };
 

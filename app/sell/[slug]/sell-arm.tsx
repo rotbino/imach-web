@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { fa, money, proximity, proximityLabel, roleLabel, timeAgo, unitLabel, frequencyLabel } from "@/lib/format";
+import { fa, money, proximity, proximityLabel, timeAgo, unitLabel, frequencyLabel } from "@/lib/format";
 import { ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import {
@@ -13,7 +13,7 @@ import {
   useSendOffer,
   useSuggestions,
 } from "@/lib/queries";
-import { ArmIdentity, MatchRing, RoleBadge, SectionTitle } from "@/app/components/chrome";
+import { ArmBadges, ArmIdentity, MatchRing, SectionTitle } from "@/app/components/chrome";
 import { AppFooter, AppHeader } from "@/app/components/chrome";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -105,7 +105,8 @@ export default function SellArm({ slug }: { slug: string }) {
         <div className="mx-auto max-w-4xl space-y-5 px-4 py-6">
           <ArmIdentity
             bizName={biz.name}
-            bizRole={biz.role}
+            bizSells={biz.sells}
+            bizBuys={biz.buys}
             bizCity={biz.city}
             bizPhone={biz.phone}
             armKind="sell"
@@ -217,7 +218,7 @@ export default function SellArm({ slug }: { slug: string }) {
                               {isNew && <Badge className="bg-primary text-[10px]">جدید</Badge>}
                             </p>
                             <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                              <RoleBadge role={q.buyer.role} />
+                              <ArmBadges sells={q.buyer.sells} buys={q.buyer.buys} />
                               <span className="flex items-center gap-0.5">
                                 <MapPin className="size-3" />
                                 {q.buyer.city} · {proximityLabel(proximity(q.buyer.city, biz.city))}
@@ -292,7 +293,7 @@ export default function SellArm({ slug }: { slug: string }) {
                         <div>
                           <p className="font-extrabold">{m.buyerName}</p>
                           <div className="mt-1 flex flex-wrap items-center gap-2">
-                            <RoleBadge role={m.buyerRole} />
+                            <ArmBadges sells={m.buyerSells} buys={m.buyerBuys} />
                             <span className="flex items-center gap-1 text-xs text-muted-foreground">
                               <MapPin className="size-3.5" />
                               {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, biz.city))}
@@ -328,7 +329,7 @@ export default function SellArm({ slug }: { slug: string }) {
               <Link href="/start" className="font-bold text-primary underline">
                 ثبت‌نام کنید
               </Link>{" "}
-              — {roleLabel(biz.role)} بودن اجباری نیست!
+              — رایگان و در چند دقیقه!
             </p>
           )}
         </div>

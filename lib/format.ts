@@ -12,20 +12,6 @@ export const fa = (n: number | string): string => {
 export const money = (n: number): string => fa(n) + " تومان";
 
 // ── برچسب enum های سرور ──
-export const ROLE_LABELS: Record<string, string> = {
-  RETAILER: "خرده‌فروش",
-  WHOLESALER: "عمده‌فروش",
-  PRODUCER: "تولیدکننده",
-  MARKETER: "بازاریاب",
-};
-
-export const ROLE_HINTS: Record<string, string> = {
-  RETAILER: "می‌خرم و می‌فروشم",
-  WHOLESALER: "می‌خرم و می‌فروشم",
-  PRODUCER: "می‌فروشم؛ مواد اولیه می‌خرم",
-  MARKETER: "فقط می‌فروشم",
-};
-
 export const UNIT_LABELS: Record<string, string> = {
   KILOGRAM: "کیلوگرم",
   TON: "تن",
@@ -49,7 +35,6 @@ export const MODE_LABELS: Record<string, string> = {
 };
 
 export const unitLabel = (u: string): string => UNIT_LABELS[u] ?? u;
-export const roleLabel = (r: string): string => ROLE_LABELS[r] ?? r;
 export const frequencyLabel = (f: string): string => FREQUENCY_LABELS[f] ?? f;
 
 /** زمان نسبی خوانا برای createdAt های سرور */

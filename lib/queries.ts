@@ -95,7 +95,17 @@ export function useMyListings(businessId: string | null | undefined): UseQueryRe
   });
 }
 
-export function useUpsertListing() {
+export function useCreateBusiness() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: businessesApi.createBusiness,
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["businesses"] });
+    },
+  });
+}
+
+export function useSaveListing() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: listingsApi.saveListing,
@@ -104,6 +114,19 @@ export function useUpsertListing() {
       void qc.invalidateQueries({ queryKey: ["business"] });
       void qc.invalidateQueries({ queryKey: ["market"] });
       return listing;
+    },
+  });
+}
+
+/** فعال‌سازی/غیرفعال‌سازی بازوها و ویرایش کسب‌وکار از پنل */
+export function useEditBusiness() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...body }: { id: string; name?: string; city?: string; sells?: boolean; buys?: boolean }) =>
+      businessesApi.editBusiness(id, body),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["businesses"] });
+      void qc.invalidateQueries({ queryKey: ["business"] });
     },
   });
 }
