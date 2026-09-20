@@ -659,19 +659,22 @@ function ProductTour() {
                         className="gap-2 border-primary/30 bg-white px-3.5 py-1.5 text-xs text-primary shadow-sm"
                     >
                         <span className="size-1.5 animate-soft-pulse rounded-full bg-primary" />
-                        آی‌مچ · بازوی خرید و فروش عمده
+                        آی‌مچ · ابزار ساخت و انتشار کاتالوگ فروش عمده
                     </Badge>
 
-                    <h1 className="mt-4 text-2xl font-black leading-[1.6] sm:text-4xl sm:leading-[1.5]">
-                        یک کاتالوگ برای فروش،
-                        <br />
-                        <span className="text-primary">یک بازوی خرید برای خرید.</span>
+
+                    <p className="mt-4  leading-7 text-muted-foreground sm:text-base">
+                        اگر به هر نحوی خرید یا فروش عمده داری، آی مچ به شما
+                    </p>
+
+                    <h1 className="mt-4 text-xl font-black leading-[2.2] sm:text-2xl sm:leading-[1.5]">
+                        <div className="text-primary"> کاتالوگ اختصاصی میده برای فروش عمده</div>
+
+                        <div className="text-green-600"> بازوی خرید اختصاصی میده برای خرید عمده</div>
                     </h1>
 
-                    <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">
-                        برای کسب‌وکارت یک صفحه شخصی بساز؛ قیمت‌هایت را با مشتری‌ها به
-                        اشتراک بگذار، از تأمین‌کننده‌ها قیمت بگیر و کاتالوگ‌هایشان را
-                        دنبال کن.
+                    <p className="mt-4  leading-7 text-muted-foreground sm:text-base">
+                       رایگان بساز، منتشر کن، شبکه سازی کن
                     </p>
                 </div>
 
