@@ -13,7 +13,7 @@ import {
   useSendOffer,
   useSuggestions,
 } from "@/lib/queries";
-import { ArmBadges, ArmIdentity, MatchRing, SectionTitle } from "@/app/components/chrome";
+import { ArmIdentity, MatchRing, SectionTitle } from "@/app/components/chrome";
 import { AppFooter, AppHeader } from "@/app/components/chrome";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -105,8 +105,6 @@ export default function SellArm({ slug }: { slug: string }) {
         <div className="mx-auto max-w-4xl space-y-5 px-4 py-6">
           <ArmIdentity
             bizName={biz.name}
-            bizSells={biz.sells}
-            bizBuys={biz.buys}
             bizCity={biz.city}
             bizPhone={biz.phone}
             armKind="sell"
@@ -218,7 +216,6 @@ export default function SellArm({ slug }: { slug: string }) {
                               {isNew && <Badge className="bg-primary text-[10px]">جدید</Badge>}
                             </p>
                             <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                              <ArmBadges sells={q.buyer.sells} buys={q.buyer.buys} />
                               <span className="flex items-center gap-0.5">
                                 <MapPin className="size-3" />
                                 {q.buyer.city} · {proximityLabel(proximity(q.buyer.city, biz.city))}
@@ -292,13 +289,10 @@ export default function SellArm({ slug }: { slug: string }) {
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <p className="font-extrabold">{m.buyerName}</p>
-                          <div className="mt-1 flex flex-wrap items-center gap-2">
-                            <ArmBadges sells={m.buyerSells} buys={m.buyerBuys} />
-                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <MapPin className="size-3.5" />
-                              {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, biz.city))}
-                            </span>
-                          </div>
+                          <span className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin className="size-3.5" />
+                            {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, biz.city))}
+                          </span>
                         </div>
                         <MatchRing score={m.score} />
                       </div>

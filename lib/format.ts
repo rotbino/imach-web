@@ -34,6 +34,24 @@ export const MODE_LABELS: Record<string, string> = {
   BOTH: "هر دو",
 };
 
+// ── نوع فعالیت کسب‌وکار — همان ۱۰ مقدار مجازِ بک‌اند ──
+// در ثبت‌نام پرسیده نمی‌شود؛ از پنل، هر وقت خواست، انتخاب می‌کند.
+export const ACTIVITY_TYPES: { key: string; fa: string; en: string }[] = [
+  { key: "PRODUCER", fa: "تولیدکننده", en: "Producer" },
+  { key: "WHOLESALER", fa: "عمده‌فروش", en: "Wholesaler" },
+  { key: "RETAILER", fa: "خرده‌فروش", en: "Retailer" },
+  { key: "DISTRIBUTOR", fa: "پخش‌کننده", en: "Distributor" },
+  { key: "MERCHANT", fa: "بازرگان", en: "Merchant" },
+  { key: "SALES_AGENT", fa: "نماینده فروش", en: "Sales Agent" },
+  { key: "MARKETER", fa: "بازاریاب", en: "Marketer" },
+  { key: "SERVICE_PROVIDER", fa: "ارائه‌دهنده خدمات", en: "Service Provider" },
+  { key: "CONTRACTOR", fa: "پیمانکار", en: "Contractor" },
+  { key: "BUSINESS_CONSUMER", fa: "مصرف‌کننده تجاری", en: "Business Consumer" },
+];
+
+export const activityTypeLabel = (key: string | null | undefined): string =>
+  ACTIVITY_TYPES.find((a) => a.key === key)?.fa ?? "";
+
 export const unitLabel = (u: string): string => UNIT_LABELS[u] ?? u;
 export const frequencyLabel = (f: string): string => FREQUENCY_LABELS[f] ?? f;
 

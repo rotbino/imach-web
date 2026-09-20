@@ -118,11 +118,11 @@ export function useSaveListing() {
   });
 }
 
-/** فعال‌سازی/غیرفعال‌سازی بازوها و ویرایش کسب‌وکار از پنل */
+/** ویرایش کسب‌وکار از پنل (نام، شهر، نوع فعالیت) */
 export function useEditBusiness() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, ...body }: { id: string; name?: string; city?: string; sells?: boolean; buys?: boolean }) =>
+    mutationFn: ({ id, ...body }: { id: string; name?: string; city?: string; activityType?: string | null }) =>
       businessesApi.editBusiness(id, body),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });

@@ -22,27 +22,6 @@ import {
   Store,
 } from "lucide-react";
 
-// ─── نشان بازوها (جایگزین نقش‌های قدیمی) ───
-export function ArmBadges({ sells, buys }: { sells: boolean; buys: boolean }) {
-  if (!sells && !buys) return null;
-  return (
-    <span className="inline-flex items-center gap-1">
-      {sells && (
-        <Badge variant="outline" className="gap-1 border-orange-200 bg-orange-50 text-orange-700">
-          <Store className="size-3" />
-          فروش عمده
-        </Badge>
-      )}
-      {buys && (
-        <Badge variant="outline" className="gap-1 border-stone-300 bg-stone-100 text-stone-700">
-          <ShoppingBasket className="size-3" />
-          خرید عمده
-        </Badge>
-      )}
-    </span>
-  );
-}
-
 // ─── هدر کلی ───
 export function AppHeader() {
   const router = useRouter();
@@ -261,8 +240,6 @@ export function SectionTitle({
 // ─── هویت کسب‌وکار در بالای بازوها ───
 export function ArmIdentity({
   bizName,
-  bizSells,
-  bizBuys,
   bizCity,
   bizPhone,
   armKind,
@@ -272,18 +249,15 @@ export function ArmIdentity({
   onCopyLink,
 }: {
   bizName: string;
-  bizSells: boolean;
-  bizBuys: boolean;
   bizCity: string;
   bizPhone?: string | null;
   armKind: "sell" | "buy";
-  /** بازوی مقابل فقط وقتی نشان داده می‌شود که واقعا وجود داشته باشد */
+  /** بازوی مقابل — هر کسب‌وکار هر دو بازو را دارد */
   otherArm: "sell" | "buy";
   otherLabel: string;
   onSwitch: () => void;
   onCopyLink: () => void;
 }) {
-  const otherExists = otherArm === "sell" ? bizSells : bizBuys;
   return (
     <div className="rounded-2xl border bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -294,7 +268,6 @@ export function ArmIdentity({
           <div>
             <p className="text-lg font-extrabold leading-6">{bizName}</p>
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <ArmBadges sells={bizSells} buys={bizBuys} />
               <span className="flex items-center gap-1">
                 <MapPin className="size-3.5" />
                 {bizCity}
@@ -312,17 +285,15 @@ export function ArmIdentity({
             <Copy className="size-4" />
             کپی لینک این صفحه
           </Button>
-          {otherExists && (
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={onSwitch}
-              className={otherArm === "sell" ? "" : "bg-stone-800 hover:bg-stone-900 text-white"}
-            >
-              <ArrowLeftRight className="size-4" />
-              {otherLabel}
-            </Button>
-          )}
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={onSwitch}
+            className={otherArm === "sell" ? "" : "bg-stone-800 hover:bg-stone-900 text-white"}
+          >
+            <ArrowLeftRight className="size-4" />
+            {otherLabel}
+          </Button>
         </div>
       </div>
       <p className="mt-3 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">

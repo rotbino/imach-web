@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation";
 import type { BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { useEditBusiness, useMyBusinesses } from "@/lib/queries";
-import { AppFooter, AppHeader, ArmBadges, ArmLinkCard } from "@/app/components/chrome";
+import { activityTypeLabel } from "@/lib/format";
+import { AppFooter, AppHeader, ArmLinkCard } from "@/app/components/chrome";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
+  Briefcase,
   Check,
   ChevronDown,
   LogOut,
@@ -18,6 +21,13 @@ import {
   Store,
 } from "lucide-react";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -26,6 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ACTIVITY_TYPES } from "@/lib/format";
 import { useToast } from "@/hooks/use-toast";
 
 /*
@@ -36,7 +47,9 @@ import { useToast } from "@/hooks/use-toast";
  * • «کسب‌وکار جدید» پشت سه‌نقطه پنهان است — نه جلوی چشم؛ چون ۹۰٪
  *   افراد فقط یک کسب‌وکار دارند.
  * • سوییچر بازوها دو دکمه‌ای است، دقیقا مثل سوییچر ورود/ثبت‌نام.
- * • بازویی که هنوز فعال نشده همین‌جا با یک دکمه فعال می‌شود.
+ * • هر دو بازو برای همه فعال است — حتی سوپرمارکتی که بعضی کالاها را
+ *   عمده می‌فروشد. عمده یا خرده بودن، ویژگیِ هر کالاست، نه کسب‌وکار.
+ * • «نوع فعالیت» اختیاری است و هر وقت خواست از همین پنل انتخاب می‌کند.
  */
 
 type Arm = "sell" | "buy";
@@ -112,9 +125,6 @@ function PanelBody({
   const router = useRouter();
   const many = mine.length > 1;
 
-  // سوییچر با اولین بازوی موجودِ این کسب‌وکار شروع می‌شود
-  const [arm, setArm] = useState<Arm>(biz.sells ? "sell" : "buy");
-
   return (
     <div className="space-y-5">
       {/* ── هدر پنل: نام کسب‌وکار + دراپ‌داون + سه‌نقطه ── */}
@@ -150,7 +160,11 @@ function PanelBody({
                 )}
               </DropdownMenu>
               <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                <ArmBadges sells={biz.sells} buys={biz.buys} />
+                {biz.activityType && (
+                  <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
+                    {activityTypeLabel(biz.activityType)}
+                  </Badge>
+                )}
                 <span>{biz.city}</span>
               </div>
             </div>
@@ -180,7 +194,7 @@ function PanelBody({
       </div>
 
       {/* ── سوییچر دو دکمه‌ای بازوها — مثل سوییچر ورود/ثبت‌نام ── */}
-      <Tabs value={arm} onValueChange={(v) => setArm(v as Arm)}>
+      <Tabs defaultValue="sell">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="sell" className="gap-1.5">
             <Store className="size-4" />
@@ -193,26 +207,21 @@ function PanelBody({
         </TabsList>
 
         <TabsContent value="sell" className="mt-4">
-          {biz.sells ? (
-            <ArmSection biz={biz} kind="sell" />
-          ) : (
-            <EnableArm biz={biz} kind="sell" />
-          )}
+          <ArmSection biz={biz} kind="sell" />
         </TabsContent>
 
         <TabsContent value="buy" className="mt-4">
-          {biz.buys ? (
-            <ArmSection biz={biz} kind="buy" />
-          ) : (
-            <EnableArm biz={biz} kind="buy" />
-          )}
+          <ArmSection biz={biz} kind="buy" />
         </TabsContent>
       </Tabs>
+
+      {/* ── نوع فعالیت — اختیاری؛ از پنل هر وقت خواست ── */}
+      <ActivityCard biz={biz} />
     </div>
   );
 }
 
-// ─── محتوای یک بازوی فعال: لینک اختصاصی + مدیریت ───
+// ─── محتوای یک بازو: لینک اختصاصی + مدیریت ───
 
 function ArmSection({ biz, kind }: { biz: BusinessSummaryDto; kind: Arm }) {
   const router = useRouter();
@@ -231,40 +240,49 @@ function ArmSection({ biz, kind }: { biz: BusinessSummaryDto; kind: Arm }) {
   );
 }
 
-// ─── بازویی که هنوز فعال نشده — همین‌جا با یک تیک فعال می‌شود ───
+// ─── نوع فعالیت: ۱۰ گزینه؛ اختیاری، هر وقت خواست عوضش می‌کند ───
 
-function EnableArm({ biz, kind }: { biz: BusinessSummaryDto; kind: Arm }) {
+function ActivityCard({ biz }: { biz: BusinessSummaryDto }) {
   const { toast } = useToast();
   const edit = useEditBusiness();
-  const isSell = kind === "sell";
-  const Icon = isSell ? Store : ShoppingBasket;
 
-  const enable = async () => {
+  const setActivity = async (v: string) => {
+    const value = v === "NONE" ? null : v;
     try {
-      await edit.mutateAsync({ id: biz.id, ...(isSell ? { sells: true } : { buys: true }) });
-      toast({ title: isSell ? "بازوی فروش فعال شد" : "بازوی خرید فعال شد" });
+      await edit.mutateAsync({ id: biz.id, activityType: value });
+      toast({ title: value ? `نوع فعالیت: ${activityTypeLabel(value)}` : "نوع فعالیت حذف شد" });
     } catch {
-      toast({ title: "فعال‌سازی ناموفق بود", description: "دوباره تلاش کنید", variant: "destructive" });
+      toast({ title: "ذخیره ناموفق بود", description: "دوباره تلاش کنید", variant: "destructive" });
     }
   };
 
   return (
-    <div className="rounded-2xl border border-dashed bg-white/60 p-8 text-center">
-      <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-muted text-muted-foreground">
-        <Icon className="size-6" />
-      </span>
-      <p className="mt-3 text-sm font-extrabold">
-        {isSell ? "هنوز بازوی فروش ندارید" : "هنوز بازوی خرید ندارید"}
-      </p>
-      <p className="mx-auto mt-1 max-w-sm text-xs leading-6 text-muted-foreground">
-        {isSell
-          ? "با فعال‌سازی، کاتالوگ فروش عمده می‌سازید و خریدارها کالاهایتان را می‌بینند."
-          : "با فعال‌سازی، لیست نیازهای خریدتان ساخته می‌شود و تامین‌کننده‌ها پیشنهاد می‌دهند."}
-      </p>
-      <Button className="mt-4" onClick={() => void enable()} disabled={edit.isPending}>
-        {edit.isPending && <Loader2 className="size-4 animate-spin" />}
-        فعال‌سازی {isSell ? "بازوی فروش" : "بازوی خرید"}
-      </Button>
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-muted text-muted-foreground">
+          <Briefcase className="size-4" />
+        </span>
+        <div>
+          <p className="text-sm font-bold">نوع فعالیت</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {biz.activityType ? activityTypeLabel(biz.activityType) : "اختیاری — تولیدکننده، پخش‌کننده، خرده‌فروش و…"}
+          </p>
+        </div>
+      </div>
+
+      <Select value={biz.activityType ?? ""} onValueChange={(v) => void setActivity(v)}>
+        <SelectTrigger className="w-full sm:w-48" aria-label="نوع فعالیت">
+          <SelectValue placeholder="انتخاب کنید…" />
+        </SelectTrigger>
+        <SelectContent>
+          {ACTIVITY_TYPES.map((a) => (
+            <SelectItem key={a.key} value={a.key}>
+              {a.fa}
+            </SelectItem>
+          ))}
+          {biz.activityType && <SelectItem value="NONE">حذف انتخاب</SelectItem>}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
@@ -279,7 +297,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       </span>
       <p className="mt-4 text-lg font-extrabold">کسب‌وکارتان را بسازید</p>
       <p className="mx-auto mt-1 max-w-sm text-sm leading-7 text-muted-foreground">
-        با نام، شهر و نقش خود در بازار عمده — در کمتر از یک دقیقه.
+        فقط نام و شهر — در کمتر از یک دقیقه. بازوهای خرید و فروش هر دو از همان اول در اختیار شماست.
       </p>
       <Button className="mt-5" onClick={onCreate}>
         ساخت کسب‌وکار

@@ -24,19 +24,16 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Check,
   Loader2,
-  LogIn,
   Search,
   ShoppingBasket,
   Store,
-  UserPlus,
-  type LucideIcon,
 } from "lucide-react";
 
 /*
  * ویزارد افقی شروع — یک مرحله در هر لحظه:
  *   ۱) حساب (ورود / ثبت‌نام)      ← ورود مستقیم به پنل می‌رود
- *   ۲) کسب‌وکار (نام، شهر، نقش)   ← نقش = دو چک‌باکس ساده
- *   ۳) اولین کالا                 ← تا کاتالوگ خالی نماند؛ بعدش: پنل
+ *   ۲) کسب‌وکار (نام + شهر)       ← بدون موبایل، بدون نقش؛ هر دو بازو از اول فعال‌اند
+ *   ۳) اولین کالا                 ← فروش یا خرید، انتخاب با خود کاربر؛ بعدش: پنل
  */
 
 type Frequency = "WEEKLY" | "MONTHLY" | "OCCASIONAL";
@@ -245,21 +242,15 @@ function AuthStep({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام ۲ — کسب‌وکار: نام + شهر + نقش در بازار عمده (دو چک‌باکس) — موبایل نمی‌گیریم
+// گام ۲ — کسب‌وکار: فقط نام + شهر — موبایل از ثبت‌نام می‌آید، نقش هم نمی‌پرسیم؛
+// هر دو بازوی خرید و فروش از همان اول در اختیار کاربر است.
 // ─────────────────────────────────────────────────────────────────────────────
-
-const ROLE_OPTIONS: { key: "sells" | "buys"; label: string; icon: LucideIcon }[] = [
-  { key: "buys", label: "خرید عمده دارم", icon: ShoppingBasket },
-  { key: "sells", label: "فروش عمده دارم", icon: Store },
-];
 
 function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => void }) {
   const { toast } = useToast();
   const createMutation = useCreateBusiness();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
-  const [sells, setSells] = useState(false);
-  const [buys, setBuys] = useState(false);
 
   const create = async () => {
     if (name.trim().length < 2) {
@@ -270,12 +261,8 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
       toast({ title: "شهر را انتخاب کنید", variant: "destructive" });
       return;
     }
-    if (!sells && !buys) {
-      toast({ title: "حداقل یکی از دو گزینه را تیک بزنید", description: "خرید عمده دارم یا فروش عمده دارم", variant: "destructive" });
-      return;
-    }
     try {
-      const created = await createMutation.mutateAsync({ name: name.trim(), city, sells, buys });
+      const created = await createMutation.mutateAsync({ name: name.trim(), city });
       toast({ title: "کسب‌وکار ساخته شد", description: created.name });
       onCreated(created);
     } catch (err) {
@@ -291,7 +278,7 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <h1 className="text-lg font-extrabold">کسب‌وکار خود را معرفی کنید</h1>
       <p className="mt-1 text-xs text-muted-foreground">
-        نام، شهر و نقش شما در بازار عمده — همین و بس.
+        نام و شهر — همین و بس. بازوهای خرید و فروش هر دو از اول در اختیار شماست.
       </p>
 
       <div className="mt-4 grid gap-4">
@@ -320,38 +307,6 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
             </SelectContent>
           </Select>
         </div>
-
-        <fieldset className="grid gap-2">
-          <legend className="mb-1 text-[11px] text-muted-foreground">نقش در بازار عمده *</legend>
-          {ROLE_OPTIONS.map((o) => {
-            const checked = o.key === "sells" ? sells : buys;
-            return (
-              <label
-                key={o.key}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3.5 transition ${
-                  checked ? "border-primary bg-accent/60 ring-1 ring-primary" : "bg-white hover:border-primary/40"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={checked}
-                  onChange={(e) => (o.key === "sells" ? setSells(e.target.checked) : setBuys(e.target.checked))}
-                />
-                <span
-                  aria-hidden
-                  className={`grid size-5 shrink-0 place-items-center rounded-md border transition ${
-                    checked ? "border-primary bg-primary text-white" : "border-input bg-white"
-                  }`}
-                >
-                  {checked && <Check className="size-3.5" />}
-                </span>
-                <o.icon className={`size-4.5 ${checked ? "text-primary" : "text-muted-foreground"}`} />
-                <span className="text-sm font-bold">{o.label}</span>
-              </label>
-            );
-          })}
-        </fieldset>
       </div>
 
       <Button className="mt-5 w-full" onClick={() => void create()} disabled={createMutation.isPending}>
@@ -363,7 +318,7 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام ۳ — اولین کالا: فروش تیک خورده؟ یک کالا برای فروش؛ فقط خرید؟ یک کالا برای خرید
+// گام ۳ — اولین کالا: کاربر خودش برمی‌گزیند اولین ثبتش «فروش» باشد یا «خرید»
 // ─────────────────────────────────────────────────────────────────────────────
 
 function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
@@ -371,7 +326,8 @@ function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
   const { toast } = useToast();
   const saveMutation = useSaveListing();
 
-  const isSell = biz.sells; // اگر فروش دارد، اولین کالا برای فروش است؛ وگرنه خرید
+  const [kind, setKind] = useState<"sell" | "buy">("sell"); // پیش‌فرض: کاتالوگ فروش
+  const isSell = kind === "sell";
 
   const [goodId, setGoodId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -442,6 +398,20 @@ function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
           ? "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود. بقیه کالاها را بعدا از پنل اضافه کنید."
           : "این نیاز در بازوی خریدتان نمایش داده می‌شود تا تامین‌کننده‌ها پیشنهاد بدهند."}
       </p>
+
+      {/* انتخاب بازو: اولین ثبت، فروش یا خرید — هر دو بازو از اول در دسترس است */}
+      <Tabs value={kind} onValueChange={(v) => setKind(v as "sell" | "buy")}>
+        <TabsList className="mt-4 grid w-full grid-cols-2">
+          <TabsTrigger value="sell" className="gap-1.5">
+            <Store className="size-4" />
+            برای فروش
+          </TabsTrigger>
+          <TabsTrigger value="buy" className="gap-1.5">
+            <ShoppingBasket className="size-4" />
+            برای خرید
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* جست‌وجو */}
       <div className="relative mt-4">
