@@ -6,6 +6,7 @@ import { fa, money, unitLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useBusinessProfile, useFollowToggle } from "@/lib/queries";
 import { ContactButton } from "@/app/components/contact-gate";
+import { AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +26,9 @@ import {
  * نمای بیرونی بازوی فروش — کاتالوگ عمومی قیمت.
  *
  * این صفحه چیزهایی است که فروشنده لینکش را برای مشتری‌هایش می‌فرستد؛
- * مثل یک آلبوم تصویری/کاتالوگ زیبا — اصلا شبیه پنل نیست.
+ * مثل یک آلبوم تصویری/کاتالوگ زیبا — بدنه‌اش شبیه پنل نیست.
+ * نویگیشن اینستاگرامی (هدر/فوتر موبایل) اینجا هم هست — نویگیشن دقیقا
+ * برای سوییچ بین بازوهاست و نباید روی بازوها غیبت کند.
  * موتور ویروسی iMach: برای تماس باید عضو شد («گیت تماس») و
  * پایین صفحه «ساخته شده با iMach» بازدیدکننده را به سیستم می‌آورد.
  */
@@ -89,22 +92,22 @@ export default function SellArm({ slug }: { slug: string }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-accent/40 via-white to-white">
-      {/* نوار باریک بالای صفحه — فقط نشان iMach */}
-      <header className="flex h-12 items-center justify-between border-b bg-white/80 px-4 backdrop-blur">
-        <Link href="/" className="flex items-center gap-1.5 text-sm font-extrabold" aria-label="iMach">
-          <span className="grid size-6 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <Store className="size-3" />
-          </span>
-          iMach
-        </Link>
-        {isOwner && (
-          <Link href="/panel" className="rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-primary-foreground shadow-sm">
-            مدیریت کاتالوگ
-          </Link>
-        )}
-      </header>
+      {/* نویگیشن اینستاگرامی — روی بازو هم هست؛ برای سوییچ بین بازوهاست */}
+      <AppHeader />
 
-      <main className="mx-auto w-full max-w-4xl grow px-4 py-6">
+      <main className="mx-auto w-full max-w-4xl grow px-4 py-5">
+        {/* میان‌بر مدیریت برای صاحب کاتالوگ */}
+        {isOwner && (
+          <div className="mb-3 flex justify-center">
+            <Link
+              href="/panel"
+              className="rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-primary-foreground shadow-sm"
+            >
+              مدیریت کاتالوگ
+            </Link>
+          </div>
+        )}
+
         {/* هدر کاتالوگ — مشخصات کسب‌وکار */}
         <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
           <div className="flex flex-col items-center text-center">
@@ -219,7 +222,7 @@ export default function SellArm({ slug }: { slug: string }) {
       </main>
 
       {/* فوتر ویروسی — درِ ورود بازدیدکننده‌ها به iMach */}
-      <footer className="border-t bg-white/70 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-center">
+      <footer className="mt-auto border-t bg-white/70 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-center mb-[4.25rem] sm:mb-0">
         <Link
           href="/start"
           className="inline-flex items-center gap-1.5 text-sm font-extrabold text-primary hover:underline"
@@ -233,6 +236,9 @@ export default function SellArm({ slug }: { slug: string }) {
           {user ? "پنل فروش و خرید شما" : "کاتالوگ فروش و لیست خرید هوشمند — رایگان"}
         </p>
       </footer>
+
+      {/* فوتر چسبان موبایل — سوییچ بازوها */}
+      <MobileTabBar />
     </div>
   );
 }

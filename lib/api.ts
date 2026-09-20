@@ -163,6 +163,28 @@ export interface BusinessProfileDto {
   listings: GoodItemDto[];
 }
 
+/** یک ردیف اکسپلور — کالای یک کسب‌وکارِ دیگر، آماده برای چیدمان شهر/حجم */
+export interface ExploreItemDto {
+  id: string;
+  mode: string;
+  price: number | null;
+  stock: number | null;
+  minOrder: number | null;
+  volume: number | null;
+  frequency: string | null;
+  updatedAt: string;
+  good: { id: string; name: string; category: string; unit: string };
+  business: {
+    id: string;
+    slug: string;
+    name: string;
+    city: string;
+    isVerified: boolean;
+    activityType: string | null;
+    _count: { followers: number };
+  };
+}
+
 export interface SellerDto {
   id: string;
   slug: string;
@@ -271,6 +293,9 @@ export const businessesApi = {
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
   /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
   getContact: (slug: string) => api<{ phone: string | null; name: string }>(`/businesses/getContact/${slug}`),
+  /** اکسپلور — کالاهای خرید و فروش همه؛ چیدمان ساده: شهر اول، بعد حجم/تازگی */
+  getExplore: (params: { mode?: "SELL" | "BUY"; city?: string }) =>
+    api<ExploreItemDto[]>("/businesses/getExplore", { params, auth: false }),
 };
 
 export const listingsApi = {

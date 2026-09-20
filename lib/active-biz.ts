@@ -27,3 +27,11 @@ export function useActiveBusiness(): BusinessSummaryDto | null {
   const activeId = useActiveBizStore((s) => s.activeId);
   return mine.find((b) => b.id === activeId) ?? mine[0] ?? null;
 }
+
+/**
+ * خانه‌ی کاربرِ واردشده = بازوی فروش او. نه صفحه اصلی.
+ * بدون کسب‌وکار → پنل (که مسیر ساخت کسب‌وکار را نشان می‌دهد).
+ */
+export function sellArmHref(slug: string | null | undefined): string {
+  return slug ? `/sell/${slug}` : "/panel";
+}

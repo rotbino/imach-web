@@ -6,6 +6,7 @@ import { fa, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useBusinessProfile } from "@/lib/queries";
 import { ContactButton } from "@/app/components/contact-gate";
+import { AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,6 +25,7 @@ import {
  * خریدار همین لینک را برای تامین‌کننده‌هایش می‌فرستد؛ دقیقا مثل لیستی
  * که روی واتساپ برای تامین‌کننده می‌فرستد — با این تفاوت که همیشه
  * به‌روز است و تماس پشت گیت ثبت‌نام iMach است (موتور ویروسی جذب تامین‌کننده).
+ * نویگیشن اینستاگرامی اینجا هم هست — سوییچ بین بازوها همه‌جا باید باشد.
  */
 export default function BuyArm({ slug }: { slug: string }) {
   const { status } = useAuthStore();
@@ -65,22 +67,22 @@ export default function BuyArm({ slug }: { slug: string }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-stone-100 via-white to-white">
-      {/* نوار باریک بالای صفحه */}
-      <header className="flex h-12 items-center justify-between border-b bg-white/80 px-4 backdrop-blur">
-        <Link href="/" className="flex items-center gap-1.5 text-sm font-extrabold" aria-label="iMach">
-          <span className="grid size-6 place-items-center rounded-lg bg-stone-800 text-white">
-            <Store className="size-3" />
-          </span>
-          iMach
-        </Link>
-        {isOwner && (
-          <Link href="/panel" className="rounded-full bg-stone-800 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm">
-            مدیریت لیست خرید
-          </Link>
-        )}
-      </header>
+      {/* نویگیشن اینستاگرامی — روی بازو هم هست */}
+      <AppHeader />
 
-      <main className="mx-auto w-full max-w-2xl grow px-4 py-6">
+      <main className="mx-auto w-full max-w-2xl grow px-4 py-5">
+        {/* میان‌بر مدیریت برای صاحب لیست */}
+        {isOwner && (
+          <div className="mb-3 flex justify-center">
+            <Link
+              href="/panel"
+              className="rounded-full bg-stone-800 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm"
+            >
+              مدیریت لیست خرید
+            </Link>
+          </div>
+        )}
+
         {/* هدر لیست خرید */}
         <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
           <div className="flex flex-col items-center text-center">
@@ -183,7 +185,7 @@ export default function BuyArm({ slug }: { slug: string }) {
       </main>
 
       {/* فوتر ویروسی */}
-      <footer className="border-t bg-white/70 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-center">
+      <footer className="mt-auto border-t bg-white/70 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-center mb-[4.25rem] sm:mb-0">
         <Link
           href="/start"
           className="inline-flex items-center gap-1.5 text-sm font-extrabold text-stone-800 hover:underline"
@@ -195,6 +197,9 @@ export default function BuyArm({ slug }: { slug: string }) {
         </Link>
         <p className="mt-1 pb-2 text-[11px] text-muted-foreground">لیست خرید هوشمند و کاتالوگ فروش — رایگان</p>
       </footer>
+
+      {/* فوتر چسبان موبایل — سوییچ بازوها */}
+      <MobileTabBar />
     </div>
   );
 }

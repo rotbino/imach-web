@@ -9,6 +9,7 @@ import {
   type BoardRowDto,
   type BusinessProfileDto,
   type BusinessSummaryDto,
+  type ExploreItemDto,
   type FollowDto,
   type GoodDto,
   type GoodItemDto,
@@ -32,6 +33,7 @@ export const qk = {
   goods: (params: { q?: string; category?: string }) => ["goods", params] as const,
   categories: () => ["goods", "categories"] as const,
   businessProfile: (slug: string) => ["business", slug] as const,
+  explore: (mode: string, city?: string) => ["explore", mode, city ?? ""] as const,
   myBusinesses: () => ["businesses", "mine"] as const,
   myListings: (bizId: string) => ["listings", bizId] as const,
   offers: (bizId: string) => ["market", "offers", bizId] as const,
@@ -65,6 +67,18 @@ export function useBusinessProfile(slug: string): UseQueryResult<BusinessProfile
     queryFn: () => businessesApi.getBusiness(slug),
     staleTime: 60_000,
     enabled: !!slug,
+  });
+}
+
+/**
+ * اکسپلور — کالاهای خرید و فروش همه کسب‌وکارها.
+ * چیدمان ساده v۰ (سمت بک‌اند): شهرِ من اول، بعد حجم/تازگی.
+ */
+export function useExploreFeed(mode: "SELL" | "BUY", city?: string): UseQueryResult<ExploreItemDto[]> {
+  return useQuery({
+    queryKey: qk.explore(mode, city),
+    queryFn: () => businessesApi.getExplore({ mode, city }),
+    staleTime: 60_000,
   });
 }
 

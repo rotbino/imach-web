@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { useActiveBusiness } from "@/lib/active-biz";
+import { sellArmHref, useActiveBusiness } from "@/lib/active-biz";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -14,39 +14,43 @@ import {
   ArrowLeftRight,
   Check,
   CircleUserRound,
+  Compass,
   Copy,
   Link2,
   LogIn,
   MapPin,
   MessageCircle,
-  PlusCircle,
   Send,
   ShoppingBasket,
+  SquarePlus,
   Store,
 } from "lucide-react";
 
 /*
- * نویگیشن به سبک اینستاگرام:
- * • موبایل → فوتر چسبان با چهار آیتم: بازوی فروش، کالای جدید، بازوی خرید، پروفایل
- * • دسکتاپ → همان آیتم‌ها بالا، سمت مقابل لوگو
- * • سوییچر بازوها از پنل به بیرون کشیده شد؛ خود آیتم‌های نویگیشن سوییچرند.
+ * نویگیشن به سبک اینستاگرام — سوییچر بازوها، همیشه و همه‌جا:
+ * • پنج آیتم: بازوی فروش، بازوی خرید، کالای جدید (به‌علاوه، وسط)، اکسپلور، پروفایل
+ * • موبایل → فوتر چسبان؛ دسکتاپ → بالا، سمت مقابل لوگو
+ * • آیکن‌ها ظریف (خط نازک)، عنوان‌ها زیر آیکن، ریز و بدون بولد — خلوت.
+ * • این نویگیشن روی همه صفحات اصلی هست، از جمله خود بازوها —
+ *   دقیقا برای همین است که کاربر بین بازوها سوییچ کند.
  * • مهمان فقط «ورود | ثبت‌نام» می‌بیند.
  */
 
 // ─── آیتم‌های نویگیشن ───
 function useNavItems() {
-  const active = useActiveBusiness();
-  const slug = active?.slug;
+  const slug = useActiveBusiness()?.slug;
   return [
     { href: slug ? `/sell/${slug}` : "/panel", label: "بازوی فروش", icon: Store },
-    { href: "/panel/new", label: "کالای جدید", icon: PlusCircle },
     { href: slug ? `/buy/${slug}` : "/panel", label: "بازوی خرید", icon: ShoppingBasket },
+    { href: "/panel/new", label: "کالای جدید", icon: SquarePlus },
+    { href: "/explore", label: "اکسپلور", icon: Compass },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
 }
 
 function isActivePath(href: string, pathname: string): boolean {
   if (href === "/panel/new") return pathname.startsWith("/panel/new");
+  if (href === "/explore") return pathname.startsWith("/explore");
   if (href === "/profile") return pathname.startsWith("/profile");
   if (href.startsWith("/sell/")) return pathname.startsWith("/sell/");
   if (href.startsWith("/buy/")) return pathname.startsWith("/buy/");
@@ -59,14 +63,15 @@ export function AppHeader() {
   const pathname = usePathname();
   const { status, user } = useAuthStore();
   const items = useNavItems();
+  const slug = useActiveBusiness()?.slug;
 
   return (
     <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push(status === "authed" ? sellArmHref(slug) : "/")}
           className="flex items-center gap-2 text-lg font-extrabold"
-          aria-label="iMach — خانه"
+          aria-label="iMach"
         >
           <span className="grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
             <Link2 className="size-4" />
@@ -76,20 +81,25 @@ export function AppHeader() {
 
         {status === "authed" ? (
           <nav className="hidden items-center gap-1 sm:flex" aria-label="نویگیشن اصلی">
-            {items.map((it) => (
-              <Link
-                key={it.label}
-                href={it.href}
-                className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold transition ${
-                  isActivePath(it.href, pathname)
-                    ? "bg-accent text-primary"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <it.icon className="size-4.5" />
-                {it.label}
-              </Link>
-            ))}
+            {items.map((it) => {
+              const on = isActivePath(it.href, pathname);
+              return (
+                <Link
+                  key={it.label}
+                  href={it.href}
+                  aria-current={on ? "page" : undefined}
+                  className={`flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 transition ${
+                    on ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <it.icon
+                    className={`size-5 ${on ? "fill-primary/10" : ""}`}
+                    strokeWidth={on ? 2 : 1.75}
+                  />
+                  <span className="text-[10px] font-normal leading-none">{it.label}</span>
+                </Link>
+              );
+            })}
           </nav>
         ) : (
           <div className="flex items-center gap-2">
@@ -124,19 +134,19 @@ export function MobileTabBar() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       {status === "authed" ? (
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {items.map((it) => {
             const on = isActivePath(it.href, pathname);
             return (
               <Link
                 key={it.label}
                 href={it.href}
-                className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-bold transition ${
+                className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition ${
                   on ? "text-primary" : "text-muted-foreground"
                 }`}
                 aria-current={on ? "page" : undefined}
               >
-                <it.icon className={`size-5.5 ${on ? "fill-primary/10" : ""}`} strokeWidth={on ? 2.4 : 2} />
+                <it.icon className={`size-5.5 ${on ? "fill-primary/10" : ""}`} strokeWidth={on ? 2.2 : 1.75} />
                 {it.label}
               </Link>
             );
