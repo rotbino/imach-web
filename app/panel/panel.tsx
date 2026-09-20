@@ -2,24 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { BusinessSummaryDto } from "@/lib/api";
+import type { BusinessSummaryDto, GoodItemDto } from "@/lib/api";
+import { ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { useEditBusiness, useMyBusinesses } from "@/lib/queries";
-import { activityTypeLabel } from "@/lib/format";
-import { AppFooter, AppHeader, ArmLinkCard } from "@/app/components/chrome";
+import { useActiveBizStore } from "@/lib/active-biz";
+import { useDeleteListing, useEditBusiness, useMyBusinesses, useMyListings, useQuoteRequest } from "@/lib/queries";
+import { activityTypeLabel, fa, frequencyLabel, money, unitLabel } from "@/lib/format";
+import { AppFooter, AppHeader, ArmLinkCard, MobileTabBar, SectionTitle } from "@/app/components/chrome";
+import { BoardSection, EmptyBox, InquiriesSection, OffersSection, SuggestionsSection } from "./manage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import {
-  Briefcase,
-  Check,
-  ChevronDown,
-  LogOut,
-  MoreVertical,
-  Plus,
-  ShoppingBasket,
-  Store,
-} from "lucide-react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -27,6 +27,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Briefcase,
+  Check,
+  ChevronDown,
+  Loader2,
+  MoreVertical,
+  Package,
+  Plus,
+  Radio,
+  Trash2,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,33 +47,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ACTIVITY_TYPES } from "@/lib/format";
-import { useToast } from "@/hooks/use-toast";
 
 /*
- * پنل — مدیریت بازوها
+ * پنل — جای کار؛ ویترین عمومی هر بازو در /sell/{slug} و /buy/{slug} است.
  *
- * • نام کسب‌وکار در هدر پنل نوشته شده؛ مثل اینستاگرام با بیش از یک
- *   کسب‌وکار، از همین هدر به‌صورت دراپ‌داون جابه‌جا می‌شود.
- * • «کسب‌وکار جدید» پشت سه‌نقطه پنهان است — نه جلوی چشم؛ چون ۹۰٪
- *   افراد فقط یک کسب‌وکار دارند.
- * • سوییچر بازوها دو دکمه‌ای است، دقیقا مثل سوییچر ورود/ثبت‌نام.
- * • هر دو بازو برای همه فعال است — حتی سوپرمارکتی که بعضی کالاها را
- *   عمده می‌فروشد. عمده یا خرده بودن، ویژگیِ هر کالاست، نه کسب‌وکار.
- * • «نوع فعالیت» اختیاری است و هر وقت خواست از همین پنل انتخاب می‌کند.
+ * • نام کسب‌وکار در هدر پنل؛ مثل اینستاگرام با بیش از یک کسب‌وکار، از همین
+ *   هدر جابه‌جا می‌شود (کسب‌وکار فعال = مقصد آیتم‌های نویگیشن).
+ * • «کسب‌وکار جدید» پشت سه‌نقطه پنهان است. خروج از حساب به صفحه پروفایل
+ *   منتقل شد — پنل فقط کارِ کسب‌وکار.
+ * • سوییچر بازوها به نویگیشن منتقل شد؛ پس اینجا همه بخش‌ها پشت هم‌اند.
  */
-
-type Arm = "sell" | "buy";
 
 export default function Panel() {
   const router = useRouter();
-  const { status, logout } = useAuthStore();
+  const { status } = useAuthStore();
 
   const businessesQ = useMyBusinesses();
   const mine = businessesQ.data ?? [];
 
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const activeId = useActiveBizStore((s) => s.activeId);
   const active = mine.find((b) => b.id === activeId) ?? mine[0] ?? null;
 
   // مهمان → ویزارد شروع
@@ -79,6 +84,7 @@ export default function Panel() {
           </div>
         </main>
         <AppFooter />
+        <MobileTabBar />
       </>
     );
   }
@@ -91,39 +97,23 @@ export default function Panel() {
           {mine.length === 0 ? (
             <EmptyState onCreate={() => router.push("/start")} />
           ) : (
-            active && (
-              // key={active.id}: با جابه‌جایی کسب‌وکار، سوییچر بازو هم ریست می‌شود
-              <PanelBody
-                key={active.id}
-                biz={active}
-                mine={mine}
-                onPick={setActiveId}
-                onLogout={() => void logout()}
-              />
-            )
+            // key={active.id}: با جابه‌جایی کسب‌وکار، همه بخش‌ها تازه می‌شوند
+            <PanelBody key={active!.id} biz={active!} mine={mine} />
           )}
         </div>
       </main>
       <AppFooter />
+      <MobileTabBar />
     </>
   );
 }
 
-// ─── بدنه پنل برای یک کسب‌وکار فعال ───
+// ─── بدنه پنل برای کسب‌وکار فعال ───
 
-function PanelBody({
-  biz,
-  mine,
-  onPick,
-  onLogout,
-}: {
-  biz: BusinessSummaryDto;
-  mine: BusinessSummaryDto[];
-  onPick: (id: string) => void;
-  onLogout: () => void;
-}) {
+function PanelBody({ biz, mine }: { biz: BusinessSummaryDto; mine: BusinessSummaryDto[] }) {
   const router = useRouter();
   const many = mine.length > 1;
+  const setActive = useActiveBizStore((s) => s.setActive);
 
   return (
     <div className="space-y-5">
@@ -148,7 +138,7 @@ function PanelBody({
                     <DropdownMenuLabel>کسب‌وکارهای من</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {mine.map((b) => (
-                      <DropdownMenuItem key={b.id} onClick={() => onPick(b.id)} className="gap-2">
+                      <DropdownMenuItem key={b.id} onClick={() => setActive(b.id)} className="gap-2">
                         <span className="grid size-6 place-items-center rounded-md bg-primary/10 text-xs font-black text-primary">
                           {b.name.slice(0, 1)}
                         </span>
@@ -170,7 +160,7 @@ function PanelBody({
             </div>
           </div>
 
-          {/* سه‌نقطه: کارهای کم‌تکرار اینجا پنهان‌اند */}
+          {/* سه‌نقطه: کارهای کم‌تکرار — خروج به پروفایل منتقل شد */}
           <DropdownMenu>
             <DropdownMenuTrigger
               className="grid size-9 place-items-center rounded-xl border bg-white text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
@@ -183,59 +173,183 @@ function PanelBody({
                 <Plus className="size-4 text-primary" />
                 کسب‌وکار جدید
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onLogout} className="gap-2 text-destructive">
-                <LogOut className="size-4" />
-                خروج از حساب
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
-      {/* ── سوییچر دو دکمه‌ای بازوها — مثل سوییچر ورود/ثبت‌نام ── */}
-      <Tabs defaultValue="sell">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="sell" className="gap-1.5">
-            <Store className="size-4" />
-            بازوی فروش
-          </TabsTrigger>
-          <TabsTrigger value="buy" className="gap-1.5">
-            <ShoppingBasket className="size-4" />
-            بازوی خرید
-          </TabsTrigger>
-        </TabsList>
+      {/* ── لینک اختصاصی بازوها — ابزار اشتراک ── */}
+      <ArmLinkCard kind="sell" slug={biz.slug} bizName={biz.name} onView={() => window.location.assign(`/sell/${biz.slug}`)} />
+      <ArmLinkCard kind="buy" slug={biz.slug} bizName={biz.name} onView={() => window.location.assign(`/buy/${biz.slug}`)} />
 
-        <TabsContent value="sell" className="mt-4">
-          <ArmSection biz={biz} kind="sell" />
-        </TabsContent>
+      {/* ── کالاهای من ── */}
+      <ListingsSection bizId={biz.id} />
 
-        <TabsContent value="buy" className="mt-4">
-          <ArmSection biz={biz} kind="buy" />
-        </TabsContent>
-      </Tabs>
+      {/* ── سمت فروش ── */}
+      <SellSide biz={biz} />
 
-      {/* ── نوع فعالیت — اختیاری؛ از پنل هر وقت خواست ── */}
+      {/* ── سمت خرید ── */}
+      <BuySide biz={biz} />
+
+      {/* ── نوع فعالیت — اختیاری؛ هر وقت خواست ── */}
       <ActivityCard biz={biz} />
     </div>
   );
 }
 
-// ─── محتوای یک بازو: لینک اختصاصی + مدیریت ───
+// ─── کالاهای من: لیست + حذف + کالای جدید + قیمت‌گیری ───
 
-function ArmSection({ biz, kind }: { biz: BusinessSummaryDto; kind: Arm }) {
+function ListingsSection({ bizId }: { bizId: string }) {
+  const { toast } = useToast();
   const router = useRouter();
-  const isSell = kind === "sell";
+  const listingsQ = useMyListings(bizId);
+  const deleteListing = useDeleteListing();
+  const quoteRequest = useQuoteRequest();
+
+  const [target, setTarget] = useState<GoodItemDto | null>(null);
+
+  const listings = listingsQ.data ?? [];
+
+  const remove = async () => {
+    if (!target) return;
+    try {
+      await deleteListing.mutateAsync(target.id);
+      toast({ title: "کالا حذف شد", description: target.good.name });
+    } catch {
+      toast({ title: "حذف ناموفق بود", variant: "destructive" });
+    } finally {
+      setTarget(null);
+    }
+  };
+
+  const activateQuote = (l: GoodItemDto) => {
+    quoteRequest.mutate(
+      { listingId: l.id },
+      {
+        onSuccess: (res) =>
+          toast({ title: "پیشنهاد قیمت رسید", description: `${fa(res.created)} تامین‌کننده برای «${l.good.name}» پیشنهاد دادند.` }),
+        onError: (e) =>
+          toast({ title: "قیمت‌گیری ناموفق بود", description: e instanceof ApiError ? e.message : "دوباره تلاش کنید", variant: "destructive" }),
+      }
+    );
+  };
+
   return (
-    <div className="space-y-4">
-      <ArmLinkCard kind={kind} slug={biz.slug} bizName={biz.name} onView={() => router.push(`/${kind}/${biz.slug}`)} />
-      <Button
-        variant="outline"
-        className="w-full"
-        onClick={() => router.push(`/${kind}/${biz.slug}`)}
-      >
-        {isSell ? "مشاهده و مدیریت بازوی فروش" : "مشاهده و مدیریت بازوی خرید"}
-      </Button>
+    <section className="rounded-2xl border bg-white p-5 shadow-sm">
+      <SectionTitle
+        icon={<Package className="size-4.5 text-primary" />}
+        title="کالاهای من"
+        hint="کالاها هم در کاتالوگ فروش و هم در لیست خرید نمایان می‌شوند."
+        action={
+          <Button size="sm" onClick={() => router.push("/panel/new")}>
+            <Plus className="size-4" />
+            کالای جدید
+          </Button>
+        }
+      />
+
+      {listings.length === 0 && <EmptyBox text="هنوز کالایی ثبت نکرده‌اید — اولین کالای‌تان را اضافه کنید." />}
+
+      <div className="space-y-2">
+        {listings.map((l) => {
+          const isSell = l.mode === "SELL" || l.mode === "BOTH";
+          const isBuy = l.mode === "BUY" || l.mode === "BOTH";
+          return (
+            <div key={l.id} className="flex items-center gap-3 rounded-xl border bg-muted/20 p-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-base font-black text-primary">
+                {l.good.name.slice(0, 1)}
+              </span>
+              <div className="min-w-0 grow">
+                <p className="truncate text-sm font-extrabold">{l.good.name}</p>
+                <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                  {isSell && l.price !== null && (
+                    <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
+                      فروش · {money(l.price)}
+                    </Badge>
+                  )}
+                  {isBuy && l.volume !== null && (
+                    <Badge variant="outline">
+                      خرید · {fa(l.volume)} {unitLabel(l.good.unit)} {frequencyLabel(l.frequency ?? "MONTHLY")}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-1">
+                {isBuy && l.volume !== null && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => activateQuote(l)}
+                    disabled={quoteRequest.isPending}
+                    aria-label={`قیمت‌گیری ${l.good.name}`}
+                    className="text-primary"
+                  >
+                    <Radio className="size-4" />
+                    قیمت‌گیری
+                  </Button>
+                )}
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setTarget(l)}
+                  aria-label={`حذف ${l.good.name}`}
+                  className="size-8 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* تایید حذف */}
+      <Dialog open={!!target} onOpenChange={(o) => !o && setTarget(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>حذف «{target?.good.name}»؟</DialogTitle>
+            <DialogDescription>
+              این کالا از کاتالوگ فروش و لیست خرید شما حذف می‌شود. این کار برگشت‌پذیر نیست.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setTarget(null)}>
+              انصراف
+            </Button>
+            <Button variant="destructive" onClick={() => void remove()} disabled={deleteListing.isPending}>
+              {deleteListing.isPending && <Loader2 className="size-4 animate-spin" />}
+              حذف کن
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+
+// ─── سمت فروش: درخواست‌ها + خریدارهای پیشنهادی ───
+
+function SellSide({ biz }: { biz: BusinessSummaryDto }) {
+  const listingsQ = useMyListings(biz.id);
+  const sellListings = (listingsQ.data ?? [])
+    .filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.price !== null)
+    .map((l) => ({ goodId: l.good.id, price: l.price }));
+
+  return (
+    <div className="space-y-5">
+      <InquiriesSection bizId={biz.id} myCity={biz.city} sellListings={sellListings} />
+      <SuggestionsSection bizId={biz.id} myCity={biz.city} />
+    </div>
+  );
+}
+
+// ─── سمت خرید: پیشنهادها + تابلوی قیمت ───
+
+function BuySide({ biz }: { biz: BusinessSummaryDto }) {
+  return (
+    <div className="space-y-5">
+      <OffersSection bizId={biz.id} myCity={biz.city} />
+      <BoardSection bizId={biz.id} />
     </div>
   );
 }

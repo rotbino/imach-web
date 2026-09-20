@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
+import { useActiveBusiness } from "@/lib/active-biz";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -11,24 +13,55 @@ import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeftRight,
   Check,
+  CircleUserRound,
   Copy,
   Link2,
   LogIn,
-  LogOut,
   MapPin,
   MessageCircle,
+  PlusCircle,
   Send,
   ShoppingBasket,
   Store,
 } from "lucide-react";
 
-// ─── هدر کلی ───
+/*
+ * نویگیشن به سبک اینستاگرام:
+ * • موبایل → فوتر چسبان با چهار آیتم: بازوی فروش، کالای جدید، بازوی خرید، پروفایل
+ * • دسکتاپ → همان آیتم‌ها بالا، سمت مقابل لوگو
+ * • سوییچر بازوها از پنل به بیرون کشیده شد؛ خود آیتم‌های نویگیشن سوییچرند.
+ * • مهمان فقط «ورود | ثبت‌نام» می‌بیند.
+ */
+
+// ─── آیتم‌های نویگیشن ───
+function useNavItems() {
+  const active = useActiveBusiness();
+  const slug = active?.slug;
+  return [
+    { href: slug ? `/sell/${slug}` : "/panel", label: "بازوی فروش", icon: Store },
+    { href: "/panel/new", label: "کالای جدید", icon: PlusCircle },
+    { href: slug ? `/buy/${slug}` : "/panel", label: "بازوی خرید", icon: ShoppingBasket },
+    { href: "/profile", label: "پروفایل", icon: CircleUserRound },
+  ];
+}
+
+function isActivePath(href: string, pathname: string): boolean {
+  if (href === "/panel/new") return pathname.startsWith("/panel/new");
+  if (href === "/profile") return pathname.startsWith("/profile");
+  if (href.startsWith("/sell/")) return pathname.startsWith("/sell/");
+  if (href.startsWith("/buy/")) return pathname.startsWith("/buy/");
+  return false;
+}
+
+// ─── هدر بالا: لوگو یک طرف، آیتم‌ها طرف دیگر (دسکتاپ) ───
 export function AppHeader() {
   const router = useRouter();
-  const { status, user, logout } = useAuthStore();
+  const pathname = usePathname();
+  const { status, user } = useAuthStore();
+  const items = useNavItems();
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         <button
           onClick={() => router.push("/")}
@@ -40,34 +73,91 @@ export function AppHeader() {
           </span>
           iMach
         </button>
-        <div className="flex items-center gap-2">
-          {status === "authed" ? (
-            <>
-              <Button size="sm" onClick={() => router.push("/panel")}>
-                <ArrowLeftRight className="size-4" />
-                بازوهای من
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => void logout()} aria-label="خروج">
-                <LogOut className="size-4" />
-                <span className="hidden sm:inline">{user?.name.split(" ")[0]}</span>
-              </Button>
-            </>
-          ) : (
+
+        {status === "authed" ? (
+          <nav className="hidden items-center gap-1 sm:flex" aria-label="نویگیشن اصلی">
+            {items.map((it) => (
+              <Link
+                key={it.label}
+                href={it.href}
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold transition ${
+                  isActivePath(it.href, pathname)
+                    ? "bg-accent text-primary"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <it.icon className="size-4.5" />
+                {it.label}
+              </Link>
+            ))}
+          </nav>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={() => router.push("/start")}>
+              ورود
+            </Button>
             <Button size="sm" onClick={() => router.push("/start")}>
               <LogIn className="size-4" />
-              ورود | ثبت‌نام
+              ثبت‌نام
             </Button>
-          )}
-        </div>
+          </div>
+        )}
+        {status === "authed" && (
+          <span className="sr-only">{user?.name}</span>
+        )}
       </div>
     </header>
   );
 }
 
-// ─── فوتر چسبیده ───
+// ─── فوتر چسبان موبایل — نویگیشن اینستاگرامی ───
+export function MobileTabBar() {
+  const { status } = useAuthStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const items = useNavItems();
+
+  return (
+    <nav
+      aria-label="نویگیشن موبایل"
+      className="fixed inset-x-0 bottom-0 z-40 border-t bg-white/95 backdrop-blur-md sm:hidden"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      {status === "authed" ? (
+        <div className="grid grid-cols-4">
+          {items.map((it) => {
+            const on = isActivePath(it.href, pathname);
+            return (
+              <Link
+                key={it.label}
+                href={it.href}
+                className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-bold transition ${
+                  on ? "text-primary" : "text-muted-foreground"
+                }`}
+                aria-current={on ? "page" : undefined}
+              >
+                <it.icon className={`size-5.5 ${on ? "fill-primary/10" : ""}`} strokeWidth={on ? 2.4 : 2} />
+                {it.label}
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-2 p-2">
+          <Button variant="outline" onClick={() => router.push("/start")}>
+            ورود
+          </Button>
+          <Button onClick={() => router.push("/start")}>ثبت‌نام</Button>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+// ─── فوتر ───
 export function AppFooter() {
   return (
-    <footer className="mt-auto border-t bg-white/60 pb-[env(safe-area-inset-bottom)]">
+    <footer className="mb-[4.25rem] mt-auto border-t bg-white/60 pb-[env(safe-area-inset-bottom)] sm:mb-0">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:flex-row">
         <p>iMach — ارزان‌تر بخر، بیشتر بفروش</p>
         <p>کاتالوگ فروش و لیست خرید هوشمند — رایگان</p>
@@ -233,74 +323,6 @@ export function SectionTitle({
         {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
       </div>
       {action}
-    </div>
-  );
-}
-
-// ─── هویت کسب‌وکار در بالای بازوها ───
-export function ArmIdentity({
-  bizName,
-  bizCity,
-  bizPhone,
-  armKind,
-  otherArm,
-  otherLabel,
-  onSwitch,
-  onCopyLink,
-}: {
-  bizName: string;
-  bizCity: string;
-  bizPhone?: string | null;
-  armKind: "sell" | "buy";
-  /** بازوی مقابل — هر کسب‌وکار هر دو بازو را دارد */
-  otherArm: "sell" | "buy";
-  otherLabel: string;
-  onSwitch: () => void;
-  onCopyLink: () => void;
-}) {
-  return (
-    <div className="rounded-2xl border bg-white p-5 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-xl font-black text-primary">
-            {bizName.slice(0, 1)}
-          </span>
-          <div>
-            <p className="text-lg font-extrabold leading-6">{bizName}</p>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <MapPin className="size-3.5" />
-                {bizCity}
-              </span>
-              {bizPhone && (
-                <span className="flex items-center gap-1" dir="ltr">
-                  {bizPhone}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={onCopyLink}>
-            <Copy className="size-4" />
-            کپی لینک این صفحه
-          </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={onSwitch}
-            className={otherArm === "sell" ? "" : "bg-stone-800 hover:bg-stone-900 text-white"}
-          >
-            <ArrowLeftRight className="size-4" />
-            {otherLabel}
-          </Button>
-        </div>
-      </div>
-      <p className="mt-3 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
-        {armKind === "buy"
-          ? "این بازوی اختصاصی خرید شماست؛ تامین‌کننده‌های مناسب نیازهایتان را اینجا می‌بینند و پیشنهاد قیمت می‌دهند."
-          : "این بازوی اختصاصی فروش شماست؛ خریدارها کاتالوگتان را می‌بینند و درخواست قیمت می‌فرستند."}
-      </p>
     </div>
   );
 }

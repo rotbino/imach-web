@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // منابع توسعه (HMR و…) برای 127.0.0.1 هم باز باشد — وگرنه کلاینت هیدریت نمی‌شود
+  allowedDevOrigins: ["127.0.0.1"],
   async rewrites() {
     return [
       {

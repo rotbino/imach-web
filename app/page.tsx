@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fa } from "@/lib/format";
-import { AppFooter, AppHeader } from "@/app/components/chrome";
+import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -1108,53 +1108,6 @@ function FinalCta() {
     );
 }
 
-/* ─── نوار چسبان موبایل ─── */
-
-function StickyCta() {
-    const [show, setShow] = useState(false);
-    const [dismissed, setDismissed] = useState(false);
-
-    useEffect(() => {
-        const onScroll = () => setShow(window.scrollY > 560);
-
-        onScroll();
-
-        window.addEventListener("scroll", onScroll, {
-            passive: true,
-        });
-
-        return () =>
-            window.removeEventListener("scroll", onScroll);
-    }, []);
-
-    if (dismissed || !show) return null;
-
-    return (
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex animate-[fade-up_0.3s_ease_both] justify-center p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-            <div className="pointer-events-auto flex items-center gap-2 rounded-full border bg-white/95 p-1.5 pr-4 shadow-lg backdrop-blur">
-                <p className="whitespace-nowrap text-xs font-bold">
-                    کاتالوگت را رایگان بساز
-                </p>
-
-                <Link href="/start">
-                    <Button size="sm" className="rounded-full">
-                        شروع کن
-                    </Button>
-                </Link>
-
-                <button
-                    onClick={() => setDismissed(true)}
-                    aria-label="بستن"
-                    className="grid size-7 place-items-center rounded-full text-muted-foreground hover:bg-muted"
-                >
-                    <X className="size-3.5" />
-                </button>
-            </div>
-        </div>
-    );
-}
-
-/* ─── صفحه ─── */
 
 export default function Home() {
     return (
@@ -1199,7 +1152,7 @@ export default function Home() {
             </main>
 
             <AppFooter />
-            <StickyCta />
+            <MobileTabBar />
         </div>
     );
 }

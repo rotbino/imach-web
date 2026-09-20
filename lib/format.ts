@@ -28,12 +28,6 @@ export const FREQUENCY_LABELS: Record<string, string> = {
   OCCASIONAL: "موردی",
 };
 
-export const MODE_LABELS: Record<string, string> = {
-  SELL: "فقط می‌فروشم",
-  BUY: "فقط می‌خرم",
-  BOTH: "هر دو",
-};
-
 // ── نوع فعالیت کسب‌وکار — همان ۱۰ مقدار مجازِ بک‌اند ──
 // در ثبت‌نام پرسیده نمی‌شود؛ از پنل، هر وقت خواست، انتخاب می‌کند.
 export const ACTIVITY_TYPES: { key: string; fa: string; en: string }[] = [

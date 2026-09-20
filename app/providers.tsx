@@ -69,7 +69,11 @@ function AuthCacheSync() {
 
   const identity = status === "authed" ? `user:${userId ?? ""}` : status;
   useEffect(() => {
-    if (prev.current !== null && prev.current !== identity) {
+    // فقط وقتی هویتِ کاربر عوض می‌شود (کاربر↔کاربر یا خروج) کش پاک می‌شود؛
+    // مهمان→کاربر پاک‌سازی ندارد تا دیالوگ‌های عمومی (مثل گیت تماس) باز بمانند —
+    // کوئری‌های احرازشده خودشان با فعال‌شدنِ enabled تازه می‌شوند.
+    const prevWasUser = prev.current?.startsWith("user:") ?? false;
+    if (prev.current !== null && prev.current !== identity && (prevWasUser || identity === "guest")) {
       qc.removeQueries();
     }
     prev.current = identity;

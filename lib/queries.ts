@@ -118,6 +118,18 @@ export function useSaveListing() {
   });
 }
 
+export function useDeleteListing() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: listingsApi.deleteListing,
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["listings"] });
+      void qc.invalidateQueries({ queryKey: ["business"] });
+      void qc.invalidateQueries({ queryKey: ["market"] });
+    },
+  });
+}
+
 /** ویرایش کسب‌وکار از پنل (نام، شهر، نوع فعالیت) */
 export function useEditBusiness() {
   const qc = useQueryClient();

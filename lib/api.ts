@@ -157,9 +157,9 @@ export interface BusinessProfileDto {
   name: string;
   activityType: string | null;
   city: string;
-  phone: string | null;
   isVerified: boolean;
   isDemo: boolean;
+  _count: { followers: number };
   listings: GoodItemDto[];
 }
 
@@ -269,6 +269,8 @@ export const businessesApi = {
   editBusiness: (id: string, body: { name?: string; city?: string; activityType?: string | null }) =>
     api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
+  /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
+  getContact: (slug: string) => api<{ phone: string | null; name: string }>(`/businesses/getContact/${slug}`),
 };
 
 export const listingsApi = {
