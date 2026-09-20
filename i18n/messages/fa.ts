@@ -21,7 +21,7 @@ export const fa = {
     placeholders: {
       fullName: "مثلا علی رضایی",
       mobile: "09121234567",
-      password: "••••••••",
+      password: "",
     },
     demoHint: "demo: 09120000001 / ImachDemo1234",
     submitLogin: "ورود و ادامه",
