@@ -76,20 +76,20 @@ const CATALOG_ROWS = [
 
 const OFFER_ROWS = [
     {
-        name: "پخش گستر البرز",
-        price: 420000,
+        name: "عمده فروشی میوه سبلان",
+        price: 4200000,
         best: true,
         when: "۱۰ دقیقه پیش",
     },
     {
         name: "طبیعت‌دانه پخش",
-        price: 435000,
+        price: 4350000,
         best: false,
         when: "۲۵ دقیقه پیش",
     },
     {
-        name: "شیرین‌عسل اردبیل",
-        price: 445000,
+        name: "تره بار آرتام",
+        price: 4450000,
         best: false,
         when: "۱ ساعت پیش",
     },
@@ -456,7 +456,7 @@ function BuyScreen() {
           </span>
 
                     <div>
-                        <p className="text-xs font-extrabold">لیست خرید هفته</p>
+                        <p className="text-xs font-extrabold">لیست خرید رستوران آراد</p>
 
                         <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
                             <MapPin className="size-3" />
@@ -470,18 +470,32 @@ function BuyScreen() {
         </span>
             </div>
 
-            <div className="border-b bg-muted/30 px-3.5 py-3">
-                <div className="flex items-center justify-between gap-2 rounded-xl border bg-white px-3 py-2.5 shadow-sm">
+            <div className="border-b bg-muted/200 px-3.5 py-3">
+                <div className="flex items-center justify-between gap-2 rounded-xl border bg-primary/20 px-3 py-2.5 shadow-sm">
                     <div>
-                        <p className="text-[10px] text-muted-foreground">نیاز شما</p>
-                        <p className="text-xs font-extrabold">پیاز — ۲۰ گونی</p>
+                        <p className="text-[10px] text-muted-foreground">اعلام نیاز</p>
+                        <p className="text-xs font-extrabold">پیاز — 1 تن</p>
                     </div>
 
                     <span className="whitespace-nowrap rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-bold text-stone-700">
-            ۳ پیشنهاد رسید
-          </span>
+                    ۳ پیشنهاد رسید
+                  </span>
                 </div>
             </div>
+
+            <div className="border-b bg-muted/30 px-3.5 py-3">
+                <div className="flex items-center justify-between gap-2 rounded-xl border bg-white px-3 py-2.5 shadow-sm">
+                    <div>
+                        <p className="text-[10px] text-muted-foreground">اعلام نیاز</p>
+                        <p className="text-xs font-extrabold">برنج طارم درجه 1 — 100 کیسه</p>
+                    </div>
+
+                    <span className="whitespace-nowrap rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-bold text-stone-700">
+                    10 پیشنهاد رسید
+                  </span>
+                </div>
+            </div>
+
 
             <div className="bg-white">
                 <p className="px-3.5 pb-1 pt-3 text-[10px] font-bold text-muted-foreground">
@@ -659,23 +673,39 @@ function ProductTour() {
                         className="gap-2 border-primary/30 bg-white px-3.5 py-1.5 text-xs text-primary shadow-sm"
                     >
                         <span className="size-1.5 animate-soft-pulse rounded-full bg-primary" />
-                        آی‌مچ · ابزار ساخت و انتشار کاتالوگ فروش عمده
+                        آی‌مچ · پلتفرم شبکه‌سازی خرید و فروش عمده
                     </Badge>
 
 
-                    <p className="mt-4  leading-7 text-muted-foreground sm:text-base">
-                        اگر به هر نحوی خرید یا فروش عمده داری، آی مچ به شما
-                    </p>
 
-                    <h1 className="mt-4 text-xl font-black leading-[2.2] sm:text-2xl sm:leading-[1.5]">
-                        <div className="text-primary"> کاتالوگ اختصاصی میده برای فروش عمده</div>
-
-                        <div className="text-green-600"> بازوی خرید اختصاصی میده برای خرید عمده</div>
+                    <h1 className="mt-4 text-xl font-black leading-[2.2] sm:text-2xl sm:leading-[2]">
+                        <div className="text-primary">کاتالوگ قیمت بساز برای فروش عمده</div>
+                        <div className="text-green-600">لیست خرید بساز برای خرید عمده</div>
                     </h1>
 
-                    <p className="mt-4  leading-7 text-muted-foreground sm:text-base">
-                       رایگان بساز، منتشر کن، شبکه سازی کن
-                    </p>
+
+                </div>
+
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-1.5 text-xs font-bold sm:flex-nowrap">
+                    {["بساز", "به اشتراک بزار", "شبکه‌سازی کن"].map(
+                        (item, index) => (
+                            <div key={item} className="flex items-center">
+                                <div
+                                    className={`rounded-lg border px-3.5 py-2 shadow-sm ${
+                                        index === 0
+                                            ? "border-primary/30 bg-primary/5 text-primary"
+                                            : "border-border bg-white text-foreground"
+                                    }`}
+                                >
+                                    {item}
+                                </div>
+
+                                {index < 2 && (
+                                    <span className="mx-1 text-muted-foreground/50">←</span>
+                                )}
+                            </div>
+                        )
+                    )}
                 </div>
 
                 <div className="mt-8 flex justify-center">
@@ -689,7 +719,7 @@ function ProductTour() {
                                     : "text-muted-foreground hover:text-foreground"
                             }`}
                         >
-                            کاتالوگ فروش
+                            کاتالوگ قیمت
                         </button>
 
                         <button
