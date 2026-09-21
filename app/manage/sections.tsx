@@ -33,11 +33,12 @@ import {
   useSendOffer,
 } from "@/lib/queries";
 import { MatchRing, SectionTitle } from "@/app/components/chrome";
+import { ShareContent } from "@/app/components/share";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowDownWideNarrow,
   ArrowLeftRight,
@@ -47,16 +48,16 @@ import {
   Briefcase,
   Check,
   ChevronDown,
-  Copy,
   Loader2,
   MapPin,
-  MessageCircle,
   Minus,
   Package,
   Plus,
   Radio,
   RefreshCw,
   Send,
+  Settings2,
+  Share2,
   ShoppingBasket,
   Signal,
   Store,
@@ -66,6 +67,7 @@ import {
   TrendingUp,
   Users,
   UsersRound,
+  type LucideIcon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -135,7 +137,7 @@ export function ManageHeader({ kind, biz }: { kind: "sell" | "buy"; biz: Busines
         <span className="truncate text-sm font-bold text-muted-foreground">{biz.name}</span>
       )}
 
-      <Link href="/arm">
+      <Link href={isSell ? `/sell/${biz.slug}` : `/buy/${biz.slug}`}>
         <Button size="sm" variant="outline">
           <ArrowLeftRight className="size-4" />
           {isSell ? "دیدن کاتالوگ" : "دیدن لیست خرید"}
@@ -163,6 +165,34 @@ export function StatsStrip({
         </div>
       ))}
     </div>
+  );
+}
+
+// ─── تب داشبورد مدیریت — هر موضوع در یک تب ───
+
+export function ManageTabTrigger({
+  value,
+  icon: Icon,
+  label,
+  count,
+}: {
+  value: string;
+  icon: LucideIcon;
+  label: string;
+  count?: number;
+}) {
+  return (
+    <TabsTrigger value={value} className="flex-col gap-1 rounded-xl py-2 sm:flex-row sm:gap-1.5">
+      <span className="relative">
+        <Icon className="size-4.5 sm:size-4" />
+        {!!count && count > 0 && (
+          <span className="absolute -end-2 -top-1.5 grid min-w-[1rem] place-items-center rounded-full bg-primary px-1 text-[9px] font-bold leading-4 text-primary-foreground">
+            {fa(count)}
+          </span>
+        )}
+      </span>
+      <span className="text-[10px] leading-none sm:text-xs">{label}</span>
+    </TabsTrigger>
   );
 }
 
@@ -704,42 +734,7 @@ export function ShareCard({
   bizName?: string;
   onView: () => void;
 }) {
-  const { toast } = useToast();
-  const [copied, setCopied] = useState(false);
   const isSell = kind === "sell";
-  const path = `${kind}/${slug}`;
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://imach.app";
-  const fullUrl = `${origin}/${path}`;
-  const shareText = isSell
-    ? `کاتالوگ فروش ${bizName ? `«${bizName}» ` : ""}در iMach`
-    : `نیازهای خرید ${bizName ? `«${bizName}» ` : ""}در iMach — اگر این کالا را دارید، پیشنهاد بدهید`;
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(fullUrl);
-    } catch {
-      /* clipboard may fail — ignore */
-    }
-    setCopied(true);
-    toast({ title: "لینک کپی شد", description: path });
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const shareTelegram = () => {
-    window.open(
-      `https://t.me/share/url?url=${encodeURIComponent(fullUrl)}&text=${encodeURIComponent(shareText)}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
-  const shareWhatsApp = () => {
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(`${shareText}: ${fullUrl}`)}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
 
   return (
     <div
@@ -747,7 +742,7 @@ export function ShareCard({
         isSell ? "border-primary/25 bg-accent/50" : "border-stone-300/70 bg-stone-50/70"
       }`}
     >
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2 font-bold">
           <span
             className={`grid size-9 place-items-center rounded-xl text-white shadow-sm ${
@@ -767,36 +762,7 @@ export function ShareCard({
           {isSell ? "فروش" : "خرید"}
         </Badge>
       </div>
-      <div className="flex items-center gap-2 rounded-xl border bg-white p-2 ps-3" dir="ltr">
-        <span className="grow truncate text-left text-sm font-medium text-primary">{path}</span>
-        <Button size="icon" variant="ghost" onClick={() => void copy()} aria-label="کپی لینک" className="size-8">
-          {copied ? <Check className="size-4 text-primary" /> : <Copy className="size-4" />}
-        </Button>
-      </div>
-      <div className="mt-3 flex items-center gap-3">
-        <div
-          className="shrink-0 rounded-xl border bg-white p-1.5 shadow-sm"
-          title="برای باز کردن لینک در موبایل، اسکن کنید"
-        >
-          <QRCodeSVG value={fullUrl} size={64} fgColor="#f97316" bgColor="#ffffff" />
-        </div>
-        <div className="grid grow gap-2">
-          <Button onClick={onView} className={isSell ? "" : "bg-stone-800 hover:bg-stone-900"}>
-            <ArrowLeftRight className="size-4" />
-            {isSell ? "دیدن کاتالوگ" : "دیدن لیست خرید"}
-          </Button>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" onClick={shareTelegram}>
-              <Send className="size-3.5 text-sky-600" />
-              تلگرام
-            </Button>
-            <Button variant="outline" size="sm" onClick={shareWhatsApp}>
-              <MessageCircle className="size-3.5 text-green-600" />
-              واتساپ
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ShareContent kind={kind} slug={slug} bizName={bizName} onView={onView} />
     </div>
   );
 }

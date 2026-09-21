@@ -2,25 +2,26 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Bell, Loader2, Package, Settings2, Share2 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useBusinessProfile, useIncomingInquiries, useMyListings } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import {
   ActivityCard,
   FollowCard,
   InquiriesSection,
   ManageHeader,
+  ManageTabTrigger,
   MyItemsSection,
   ShareCard,
   StatsStrip,
 } from "../sections";
 
 /*
- * مدیریت بازوی فروش — داشبورد سبک.
- * پیشنهادهای تطبیق به اکسپلور رفتند؛ اینجا فقط کار است:
- * درخواست‌های قیمت، کالاهای فروشی، لینک کاتالوگ، دنبال‌کننده‌ها و آمار.
+ * مدیریت بازوی فروش — هر موضوع مدیریتی در یک تب:
+ * درخواست‌ها · کالاها · اشتراک · تنظیم. نوار آمار بالا، کل وضعیت را یک‌جا می‌دهد.
  */
 export default function ManageSellPage() {
   const router = useRouter();
@@ -100,8 +101,8 @@ function ManageSellDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveB
         <div className="mx-auto max-w-2xl px-4 py-6">
           <ManageHeader kind="sell" biz={biz} />
 
-          <div className="space-y-5">
-            {/* آمار — داشبورد */}
+          {/* آمار — کل وضعیت یک‌جا */}
+          <div className="mt-5">
             <StatsStrip
               stats={[
                 { label: "کالاهای فروشی", value: sellCount },
@@ -109,13 +110,36 @@ function ManageSellDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveB
                 { label: "درخواست باز", value: unread, accent: true },
               ]}
             />
-
-            <InquiriesSection bizId={bizId} myCity={city} sellListings={sellListings} />
-            <MyItemsSection bizId={bizId} side="sell" />
-            <ShareCard kind="sell" slug={slug} bizName={name} onView={() => window.location.assign(`/sell/${slug}`)} />
-            <FollowCard kind="followers" slug={slug} />
-            <ActivityCard biz={biz} />
           </div>
+
+          {/* هر موضوع مدیریتی در یک تب */}
+          <Tabs defaultValue="inquiries" className="mt-5">
+            <TabsList className="grid h-auto w-full grid-cols-4">
+              <ManageTabTrigger value="inquiries" icon={Bell} label="درخواست‌ها" count={unread} />
+              <ManageTabTrigger value="items" icon={Package} label="کالاها" />
+              <ManageTabTrigger value="share" icon={Share2} label="اشتراک" />
+              <ManageTabTrigger value="settings" icon={Settings2} label="تنظیم" />
+            </TabsList>
+
+            <TabsContent value="inquiries" className="mt-5">
+              <InquiriesSection bizId={bizId} myCity={city} sellListings={sellListings} />
+            </TabsContent>
+
+            <TabsContent value="items" className="mt-5">
+              <MyItemsSection bizId={bizId} side="sell" />
+            </TabsContent>
+
+            <TabsContent value="share" className="mt-5">
+              <div className="space-y-5">
+                <ShareCard kind="sell" slug={slug} bizName={name} onView={() => window.location.assign(`/sell/${slug}`)} />
+                <FollowCard kind="followers" slug={slug} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="settings" className="mt-5">
+              <ActivityCard biz={biz} />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <AppFooter />

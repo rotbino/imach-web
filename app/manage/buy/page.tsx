@@ -2,16 +2,18 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Package, Settings2, Share2, Signal, Table2 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useBusinessProfile, useFollows, useMyListings, useOffers } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import {
   ActivityCard,
   BoardSection,
   FollowCard,
   ManageHeader,
+  ManageTabTrigger,
   MyItemsSection,
   OffersSection,
   ShareCard,
@@ -19,9 +21,8 @@ import {
 } from "../sections";
 
 /*
- * مدیریت بازوی خرید — داشبورد سبک.
- * پیشنهادهای تطبیق به اکسپلور رفتند؛ اینجا فقط کار است:
- * پیشنهادهای دریافتی، تابلوی قیمت دنبال‌شده‌ها، نیازهای خرید، لینک و آمار.
+ * مدیریت بازوی خرید — هر موضوع مدیریتی در یک تب:
+ * پیشنهادها · تابلو · کالاها · اشتراک · تنظیم. نوار آمار بالا، کل وضعیت را یک‌جا می‌دهد.
  */
 export default function ManageBuyPage() {
   const router = useRouter();
@@ -98,8 +99,8 @@ function ManageBuyDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveBu
         <div className="mx-auto max-w-2xl px-4 py-6">
           <ManageHeader kind="buy" biz={biz} />
 
-          <div className="space-y-5">
-            {/* آمار — داشبورد */}
+          {/* آمار — کل وضعیت یک‌جا */}
+          <div className="mt-5">
             <StatsStrip
               stats={[
                 { label: "نیازهای خرید", value: buyCount },
@@ -107,14 +108,41 @@ function ManageBuyDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveBu
                 { label: "پیشنهاد تازه", value: freshOffers, accent: true },
               ]}
             />
-
-            <OffersSection bizId={bizId} myCity={city} />
-            <BoardSection bizId={bizId} />
-            <MyItemsSection bizId={bizId} side="buy" />
-            <ShareCard kind="buy" slug={slug} bizName={name} onView={() => window.location.assign(`/buy/${slug}`)} />
-            <FollowCard kind="following" slug={slug} />
-            <ActivityCard biz={biz} />
           </div>
+
+          {/* هر موضوع مدیریتی در یک تب */}
+          <Tabs defaultValue="offers" className="mt-5">
+            <TabsList className="grid h-auto w-full grid-cols-5">
+              <ManageTabTrigger value="offers" icon={Signal} label="پیشنهادها" count={freshOffers} />
+              <ManageTabTrigger value="board" icon={Table2} label="تابلو" />
+              <ManageTabTrigger value="items" icon={Package} label="کالاها" />
+              <ManageTabTrigger value="share" icon={Share2} label="اشتراک" />
+              <ManageTabTrigger value="settings" icon={Settings2} label="تنظیم" />
+            </TabsList>
+
+            <TabsContent value="offers" className="mt-5">
+              <OffersSection bizId={bizId} myCity={city} />
+            </TabsContent>
+
+            <TabsContent value="board" className="mt-5">
+              <BoardSection bizId={bizId} />
+            </TabsContent>
+
+            <TabsContent value="items" className="mt-5">
+              <MyItemsSection bizId={bizId} side="buy" />
+            </TabsContent>
+
+            <TabsContent value="share" className="mt-5">
+              <div className="space-y-5">
+                <ShareCard kind="buy" slug={slug} bizName={name} onView={() => window.location.assign(`/buy/${slug}`)} />
+                <FollowCard kind="following" slug={slug} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="settings" className="mt-5">
+              <ActivityCard biz={biz} />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <AppFooter />

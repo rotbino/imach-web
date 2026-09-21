@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { fa, money, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useBusinessProfile, useFollowersBySlug, useFollowToggle, useFollowingBySlug } from "@/lib/queries";
 import { manageHref } from "@/lib/active-biz";
 import { ContactButton } from "@/app/components/contact-gate";
+import { ShareDialog } from "@/app/components/share";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -15,11 +17,12 @@ import {
   BadgeCheck,
   Briefcase,
   ClipboardList,
+  Eye,
   Loader2,
   MapPin,
   Package,
   Settings2,
-  Store,
+  Share2,
   Users,
   UsersRound,
 } from "lucide-react";
@@ -32,20 +35,66 @@ import {
  * آمار اینستاگرامی (کالا · دنبال‌کننده · دنبال‌شونده) کلیک‌پذیر است و
  * لیستش را باز می‌کند — مثل اینستاگرام، برای همه visible تا حلقه ویروسی
  * بچرخد (خریدار می‌بیند چه کسانی اینجا خرید می‌کنند).
- * دکمه مدیریت فقط برای صاحب بازو دیده می‌شود و به داشبورد سبک همان بازو می‌رود.
+ * نوار آیکون مالک (مدیریت · دیدن · اشتراک‌گذاری) فقط برای صاحب بازو یا ادمین
+ * بالای کاتالوگ ظاهر می‌شود — بازدیدکننده ویترین خالص می‌بیند.
  */
+
+// ─── نوار مالک بالای کاتالوگ — فقط برای صاحب بازو یا ادمین ───
+
+export function isCatalogOwner(
+  slug: string,
+  businesses: { slug: string }[],
+  role?: string
+): boolean {
+  return !!businesses.find((b) => b.slug === slug) || role === "ADMIN";
+}
+
+function OwnerBar({ kind, slug }: { kind: "sell" | "buy"; slug: string }) {
+  const pathname = usePathname();
+  const [shareOpen, setShareOpen] = useState(false);
+  const isSell = kind === "sell";
+  // روی صفحه عمومی، آیکون چشم معنا ندارد — خودِ ویترین باز است
+  const onPublic = pathname.startsWith(`/${kind}/`);
+  const btn =
+    "grid size-9 place-items-center rounded-xl text-muted-foreground transition hover:bg-accent hover:text-primary";
+
+  return (
+    <>
+      <div className="mb-3 flex justify-center">
+        <div
+          className={`inline-flex items-center gap-0.5 rounded-2xl border bg-white p-1 shadow-sm ${
+            isSell ? "border-primary/20" : "border-stone-200"
+          }`}
+        >
+          <Link href={manageHref(kind)} aria-label="مدیریت" className={btn}>
+            <Settings2 className="size-4.5" />
+          </Link>
+          {!onPublic && (
+            <Link href={`/${kind}/${slug}`} target="_blank" aria-label={isSell ? "دیدن کاتالوگ" : "دیدن لیست خرید"} className={btn}>
+              <Eye className="size-4.5" />
+            </Link>
+          )}
+          <button type="button" onClick={() => setShareOpen(true)} aria-label="اشتراک‌گذاری" className={btn}>
+            <Share2 className="size-4.5" />
+          </button>
+        </div>
+      </div>
+      <ShareDialog kind={kind} slug={slug} open={shareOpen} onOpenChange={setShareOpen} />
+    </>
+  );
+}
 
 // ─── نمای بازوی فروش (کاتالوگ عمومی قیمت) ───
 export function SellArmView({ slug }: { slug: string }) {
   const { toast } = useToast();
-  const { status, businesses: storeBizs } = useAuthStore();
+  const { status, businesses: storeBizs, user } = useAuthStore();
   const followToggle = useFollowToggle();
   const [listKind, setListKind] = useState<"followers" | "following" | null>(null);
 
   const profileQ = useBusinessProfile(slug);
   const biz = profileQ.data;
 
-  const isOwner = !!storeBizs.find((b) => b.slug === slug);
+  const isOwner = isCatalogOwner(slug, storeBizs, user?.role);
 
   const sellListings = (biz?.listings ?? []).filter(
     (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.price !== null
@@ -96,18 +145,8 @@ export function SellArmView({ slug }: { slug: string }) {
 
   return (
     <>
-      {/* میان‌بر مدیریت برای صاحب کاتالوگ */}
-      {isOwner && (
-        <div className="mb-3 flex justify-center">
-          <Link
-            href={manageHref("sell")}
-            className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-primary-foreground shadow-sm"
-          >
-            <Settings2 className="size-3.5" />
-            مدیریت بازوی فروش
-          </Link>
-        </div>
-      )}
+      {/* نوار مالک — مدیریت · دیدن · اشتراک‌گذاری */}
+      {isOwner && <OwnerBar kind="sell" slug={slug} />}
 
       {/* هدر کاتالوگ — مشخصات کسب‌وکار */}
       <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
@@ -151,12 +190,6 @@ export function SellArmView({ slug }: { slug: string }) {
               </Button>
             )}
           </div>
-          {isOwner && (
-            <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <Store className="size-3.5 text-primary" />
-              این کاتالوگ شماست — لینکش را برای مشتری‌هایتان بفرستید
-            </p>
-          )}
         </div>
       </section>
 
@@ -217,13 +250,13 @@ export function SellArmView({ slug }: { slug: string }) {
 
 // ─── نمای بازوی خرید (لیست خرید عمومی) ───
 export function BuyArmView({ slug }: { slug: string }) {
-  const { status } = useAuthStore();
+  const { status, businesses: storeBizs, user } = useAuthStore();
   const [listKind, setListKind] = useState<"followers" | "following" | null>(null);
 
   const profileQ = useBusinessProfile(slug);
   const biz = profileQ.data;
 
-  const isOwner = !!useAuthStore((s) => s.businesses).find((b) => b.slug === slug);
+  const isOwner = isCatalogOwner(slug, storeBizs, user?.role);
 
   const buyListings = (biz?.listings ?? []).filter(
     (l) => (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
@@ -257,18 +290,8 @@ export function BuyArmView({ slug }: { slug: string }) {
 
   return (
     <>
-      {/* میان‌بر مدیریت برای صاحب لیست */}
-      {isOwner && (
-        <div className="mb-3 flex justify-center">
-          <Link
-            href={manageHref("buy")}
-            className="flex items-center gap-1.5 rounded-full bg-stone-800 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm"
-          >
-            <Settings2 className="size-3.5" />
-            مدیریت بازوی خرید
-          </Link>
-        </div>
-      )}
+      {/* نوار مالک — مدیریت · دیدن · اشتراک‌گذاری */}
+      {isOwner && <OwnerBar kind="buy" slug={slug} />}
 
       {/* هدر لیست خرید */}
       <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
@@ -312,11 +335,6 @@ export function BuyArmView({ slug }: { slug: string }) {
               className="bg-stone-800 hover:bg-stone-900 sm:min-w-44"
             />
           </div>
-          {isOwner && (
-            <p className="mt-3 text-[11px] text-muted-foreground">
-              این لیست خرید شماست — لینکش را برای تامین‌کننده‌هایتان بفرستید
-            </p>
-          )}
         </div>
       </section>
 
