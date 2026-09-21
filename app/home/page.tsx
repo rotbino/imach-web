@@ -75,17 +75,19 @@ function HomeFeed({ bizId }: { bizId: string }) {
   const buyQ = useHomeFeed(bizId, "BUY");
 
   return (
-    <UnderlineTabs
-      defaultValue="sell"
-      items={[
-        { value: "sell", label: "پیشنهادهای فروش", icon: Store },
-        { value: "buy", label: "درخواست‌های خرید", icon: ShoppingBag },
-      ]}
-      panels={{
-        sell: <SellHomeFeed q={sellQ} />,
-        buy: <BuyHomeFeed q={buyQ} />,
-      }}
-    />
+    <div className="mx-auto w-full max-w-7xl">
+      <UnderlineTabs
+        defaultValue="sell"
+        items={[
+          { value: "sell", label: "تامین‌کنندگان", icon: Store },
+          { value: "buy", label: "درخواست‌های خرید عمده", icon: ShoppingBag },
+        ]}
+        panels={{
+          sell: <SellHomeFeed q={sellQ} />,
+          buy: <BuyHomeFeed q={buyQ} />,
+        }}
+      />
+    </div>
   );
 }
 
@@ -102,7 +104,7 @@ function SellHomeFeed({ q }: { q: FeedQ }) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {items.map((l) => (
         <ExploreSellCard key={l.id} item={l} />
       ))}
@@ -121,7 +123,7 @@ function BuyHomeFeed({ q }: { q: FeedQ }) {
   }
 
   return (
-    <div className="space-y-3 px-4 pt-4">
+    <div className="grid gap-3 px-4 pt-4 lg:grid-cols-2">
       {items.map((l) => (
         <ExploreBuyRow key={l.id} item={l} />
       ))}

@@ -65,17 +65,19 @@ export default function MarketPage() {
         ) : !active ? (
           <NoBusiness />
         ) : (
-          <UnderlineTabs
-            defaultValue="buy"
-            items={[
-              { value: "buy", label: "درخواست‌های خرید", icon: ClipboardList },
-              { value: "sell", label: "پیشنهادهای فروش", icon: Store },
-            ]}
-            panels={{
-              buy: <BuyPanel bizId={active.id} city={active.city} />,
-              sell: <SellPanel bizId={active.id} city={active.city} />,
-            }}
-          />
+          <div className="mx-auto w-full max-w-7xl">
+            <UnderlineTabs
+              defaultValue="buy"
+              items={[
+                { value: "buy", label: "درخواست‌های خرید عمده", icon: ClipboardList },
+                { value: "sell", label: "تامین‌کنندگان", icon: Store },
+              ]}
+              panels={{
+                buy: <BuyPanel bizId={active.id} city={active.city} />,
+                sell: <SellPanel bizId={active.id} city={active.city} />,
+              }}
+            />
+          </div>
         )}
       </main>
 
@@ -97,8 +99,27 @@ function BuyPanel({ bizId, city }: { bizId: string; city: string }) {
 }
 
 function BuyerStrip({ bizId, city }: { bizId: string; city: string }) {
+  const { toast } = useToast();
   const suggestionsQ = useSuggestions(bizId);
+  const followsQ = useFollows(bizId);
+  const followToggle = useFollowToggle();
+
   const items = suggestionsQ.data ?? [];
+  const followedIds = useMemo(() => new Set((followsQ.data ?? []).map((f) => f.supplierId)), [followsQ.data]);
+
+  const toggleFollow = (m: SuggestionDto) => {
+    const wasFollowed = followedIds.has(m.buyerId);
+    followToggle.mutate(
+      { businessId: bizId, supplierId: m.buyerId, follow: !wasFollowed },
+      {
+        onSuccess: () =>
+          toast({
+            title: wasFollowed ? `${m.buyerName} دنبال نمی‌شود` : `${m.buyerName} دنبال شد`,
+            description: wasFollowed ? undefined : "درخواست‌های خریدش در هوم شما می‌آید.",
+          }),
+      }
+    );
+  };
 
   if (suggestionsQ.isLoading) {
     return (
@@ -112,39 +133,66 @@ function BuyerStrip({ bizId, city }: { bizId: string; city: string }) {
   return (
     <Strip label="خریدارهای پیشنهادی" icon={<Users className="size-3.5" />}>
       {items.map((m) => (
-        <BuyerStripCard key={`${m.buyerId}-${m.goodId}`} m={m} myCity={city} />
+        <BuyerStripCard
+          key={`${m.buyerId}-${m.goodId}`}
+          m={m}
+          myCity={city}
+          followed={followedIds.has(m.buyerId)}
+          onFollow={() => toggleFollow(m)}
+          busy={followToggle.isPending}
+        />
       ))}
     </Strip>
   );
 }
 
-function BuyerStripCard({ m, myCity }: { m: SuggestionDto; myCity: string }) {
+function BuyerStripCard({
+  m,
+  myCity,
+  followed,
+  onFollow,
+  busy,
+}: {
+  m: SuggestionDto;
+  myCity: string;
+  followed: boolean;
+  onFollow: () => void;
+  busy: boolean;
+}) {
   return (
-    <Link href={`/buy/${m.buyerSlug}`} className="w-60 shrink-0 snap-start" aria-label={`لیست خرید ${m.buyerName}`}>
-      <article className="animate-fade-up h-full rounded-2xl border bg-white p-3.5 shadow-sm transition hover:shadow-md">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <p className="flex items-center gap-1 truncate text-sm font-extrabold">
-              {m.buyerName}
-              {m.buyerVerified && <BadgeCheck className="size-3.5 shrink-0 text-primary" aria-label="تاییدشده" />}
-            </p>
-            <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
-              <MapPin className="size-3" />
-              {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, myCity))}
-            </p>
-          </div>
-          <MatchRing score={m.score} size={38} />
+    <article className="animate-fade-up flex h-full w-60 shrink-0 snap-start flex-col rounded-2xl border bg-white p-3.5 shadow-sm transition hover:shadow-md">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="flex items-center gap-1 truncate text-sm font-extrabold">
+            {m.buyerName}
+            {m.buyerVerified && <BadgeCheck className="size-3.5 shrink-0 text-primary" aria-label="تاییدشده" />}
+          </p>
+          <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+            <MapPin className="size-3" />
+            {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, myCity))}
+          </p>
         </div>
-        <div className="mt-2.5 rounded-lg bg-muted/70 px-2.5 py-1.5 text-xs">
-          <span className="text-muted-foreground">می‌خواهد: </span>
-          <span className="font-bold">{m.goodName}</span>
-          <span className="ms-1 font-bold text-primary">
-            {fa(m.volume)} {unitLabel(m.unit)}
-          </span>
-        </div>
-        <p className="mt-1.5 text-[11px] text-muted-foreground">{frequencyLabel(m.frequency)}</p>
-      </article>
-    </Link>
+        <MatchRing score={m.score} size={38} />
+      </div>
+      <div className="mt-2.5 rounded-lg bg-muted/70 px-2.5 py-1.5 text-xs">
+        <span className="text-muted-foreground">می‌خواهد: </span>
+        <span className="font-bold">{m.goodName}</span>
+        <span className="ms-1 font-bold text-primary">
+          {fa(m.volume)} {unitLabel(m.unit)}
+        </span>
+      </div>
+      <p className="mt-1.5 text-[11px] text-muted-foreground">{frequencyLabel(m.frequency)}</p>
+      <div className="mt-auto flex items-center gap-1.5 pt-2.5">
+        <Button size="sm" variant={followed ? "secondary" : "default"} onClick={onFollow} disabled={busy} className="h-7 flex-1 text-xs">
+          {followed ? "دنبال می‌شود" : "دنبال کردن"}
+        </Button>
+        <Link href={`/buy/${m.buyerSlug}`} className="flex-1">
+          <Button size="sm" variant="outline" className="h-7 w-full text-xs">
+            لیست خرید
+          </Button>
+        </Link>
+      </div>
+    </article>
   );
 }
 
@@ -164,7 +212,7 @@ function RelevantBuyList({ bizId }: { bizId: string }) {
   }
 
   return (
-    <div className="space-y-3 px-4 pt-4">
+    <div className="grid gap-3 px-4 pt-4 lg:grid-cols-2">
       {items.map((l) => (
         <ExploreBuyRow key={l.id} item={l} />
       ))}
@@ -172,7 +220,7 @@ function RelevantBuyList({ bizId }: { bizId: string }) {
   );
 }
 
-// ─── تب پیشنهادهای فروش ───
+// ─── تب تامین‌کنندگان ───
 
 function SellPanel({ bizId, city }: { bizId: string; city: string }) {
   return (
@@ -291,7 +339,7 @@ function RelevantSellList({ bizId }: { bizId: string }) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {items.map((l) => (
         <ExploreSellCard key={l.id} item={l} />
       ))}
@@ -319,17 +367,19 @@ function Strip({ label, icon, children }: { label: string; icon?: React.ReactNod
 
 function GuestMarket() {
   return (
-    <UnderlineTabs
-      defaultValue="buy"
-      items={[
-        { value: "buy", label: "درخواست‌های خرید", icon: ClipboardList },
-        { value: "sell", label: "پیشنهادهای فروش", icon: Store },
-      ]}
-      panels={{
-        buy: <GuestFeed mode="BUY" />,
-        sell: <GuestFeed mode="SELL" />,
-      }}
-    />
+    <div className="mx-auto w-full max-w-7xl">
+      <UnderlineTabs
+        defaultValue="buy"
+        items={[
+          { value: "buy", label: "درخواست‌های خرید عمده", icon: ClipboardList },
+          { value: "sell", label: "تامین‌کنندگان", icon: Store },
+        ]}
+        panels={{
+          buy: <GuestFeed mode="BUY" />,
+          sell: <GuestFeed mode="SELL" />,
+        }}
+      />
+    </div>
   );
 }
 
@@ -349,13 +399,13 @@ function GuestFeed({ mode }: { mode: "BUY" | "SELL" }) {
           />
         </div>
       ) : mode === "SELL" ? (
-        <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {items.map((l) => (
             <ExploreSellCard key={l.id} item={l} />
           ))}
         </div>
       ) : (
-        <div className="space-y-3 px-4 pt-4">
+        <div className="grid gap-3 px-4 pt-4 lg:grid-cols-2">
           {items.map((l) => (
             <ExploreBuyRow key={l.id} item={l} />
           ))}

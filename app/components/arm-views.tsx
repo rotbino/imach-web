@@ -21,7 +21,7 @@ import {
   Loader2,
   MapPin,
   Package,
-  Settings2,
+  Settings,
   Share2,
   Users,
   UsersRound,
@@ -60,24 +60,19 @@ function OwnerBar({ kind, slug }: { kind: "sell" | "buy"; slug: string }) {
 
   return (
     <>
-      <div className="mb-3 flex justify-center">
-        <div
-          className={`inline-flex items-center gap-0.5 rounded-2xl border bg-white p-1 shadow-sm ${
-            isSell ? "border-primary/20" : "border-stone-200"
-          }`}
-        >
-          <Link href={manageHref(kind)} aria-label="مدیریت" className={btn}>
-            <Settings2 className="size-4.5" />
+      {/* نوار ابزار تخت، هم‌عرض کاتالوگ؛ ابزارها گوشه انتهایی ردیف */}
+      <div className="mb-3 flex items-center justify-end rounded-2xl border bg-white p-1">
+        <Link href={manageHref(kind)} aria-label="مدیریت" className={btn}>
+          <Settings className="size-4.5" />
+        </Link>
+        {!onPublic && (
+          <Link href={`/${kind}/${slug}`} target="_blank" aria-label={isSell ? "دیدن کاتالوگ" : "دیدن لیست خرید"} className={btn}>
+            <Eye className="size-4.5" />
           </Link>
-          {!onPublic && (
-            <Link href={`/${kind}/${slug}`} target="_blank" aria-label={isSell ? "دیدن کاتالوگ" : "دیدن لیست خرید"} className={btn}>
-              <Eye className="size-4.5" />
-            </Link>
-          )}
-          <button type="button" onClick={() => setShareOpen(true)} aria-label="اشتراک‌گذاری" className={btn}>
-            <Share2 className="size-4.5" />
-          </button>
-        </div>
+        )}
+        <button type="button" onClick={() => setShareOpen(true)} aria-label="اشتراک‌گذاری" className={btn}>
+          <Share2 className="size-4.5" />
+        </button>
       </div>
       <ShareDialog kind={kind} slug={slug} open={shareOpen} onOpenChange={setShareOpen} />
     </>

@@ -67,7 +67,7 @@ export function AppHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <div className="flex min-w-0 items-center gap-2.5">
           <button
             onClick={() => router.push(status === "authed" ? "/arm" : "/")}

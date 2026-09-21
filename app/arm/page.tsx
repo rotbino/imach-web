@@ -8,6 +8,7 @@ import { useActiveBizStore } from "@/lib/active-biz";
 import { useMyBusinesses } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { BuyArmView, SellArmView } from "@/app/components/arm-views";
+import { UnderlineTabs } from "@/app/components/underline-tabs";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,13 +18,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /*
  * بازوی من — لینک یکتای نویگیشن برای هر دو بازو.
- * سوییچر خرید/فروش مثل اکسپلور بالای صفحه است؛ زیرش همان ویترینی است
- * که دنیا از این بازو می‌بیند (کاتالوگ فروش یا لیست خرید).
- * کارهای مدیریتی اینجا نیست — دکمه «مدیریت بازو…» داخل هر ویترین به
+ * سوییچر خرید/فروش تبِ واقعی است؛ هر تب مثل یک صفحه مستقل:
+ * نوار ابزار مالک + همان ویترینی که دنیا از این بازو می‌بیند.
+ * کارهای مدیریتی اینجا نیست — آیکون چرخ‌دنده نوار ابزار به
  * داشبورد سبک همان بازو می‌رود (/manage/sell یا /manage/buy).
  */
 
@@ -137,27 +137,19 @@ function ArmBody() {
             </div>
           )}
 
-          {/* سوییچر بازو — قلب این صفحه */}
-          <Tabs defaultValue="sell">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="sell" className="gap-1.5">
-                <Store className="size-4" />
-                بازوی فروش
-              </TabsTrigger>
-              <TabsTrigger value="buy" className="gap-1.5">
-                <ShoppingBasket className="size-4" />
-                بازوی خرید
-              </TabsTrigger>
-            </TabsList>
-
-            {/* key={active.id}: با جابه‌جایی کسب‌وکار، ویترین تازه می‌شود */}
-            <TabsContent value="sell" className="mt-5">
-              <SellArmView key={`s-${active.id}`} slug={active.slug} />
-            </TabsContent>
-            <TabsContent value="buy" className="mt-5">
-              <BuyArmView key={`b-${active.id}`} slug={active.slug} />
-            </TabsContent>
-          </Tabs>
+          {/* سوییچر بازو — تب واقعی؛ هر بازو مثل یک صفحه مستقل */}
+          {/* key={active.id}: با جابه‌جایی کسب‌وکار، ویترین تازه می‌شود */}
+          <UnderlineTabs
+            defaultValue="sell"
+            items={[
+              { value: "sell", label: "بازوی فروش", icon: Store },
+              { value: "buy", label: "بازوی خرید", icon: ShoppingBasket },
+            ]}
+            panels={{
+              sell: <SellArmView key={`s-${active.id}`} slug={active.slug} />,
+              buy: <BuyArmView key={`b-${active.id}`} slug={active.slug} />,
+            }}
+          />
         </div>
       </main>
       <AppFooter />

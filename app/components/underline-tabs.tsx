@@ -10,8 +10,9 @@ export interface UnderlineTab {
 }
 
 /**
- * تب واقعی — نوار تمام‌عرض چسبیده زیر هدر؛ تب فعال با زیرخط مشخص می‌شود.
- * جای سوییچرهای قرصی؛ مینیمال و خوانا.
+ * تب واقعی — نوار تب چسبیده زیر هدر.
+ * تب فعال: زیرخط نارنجی + ته‌رنگ ملایم با گوشه‌های گرد بالا (حس تب پوشه‌ای).
+ * موبایل: تب‌ها تمام‌عرض تقسیم می‌شوند؛ دسکتاپ: هر تب به‌اندازه محتوایش می‌نشیند.
  */
 export function UnderlineTabs({
   items,
@@ -24,15 +25,15 @@ export function UnderlineTabs({
 }) {
   return (
     <Tabs defaultValue={defaultValue}>
-      <TabsList className="h-12 w-full justify-stretch rounded-none border-b bg-transparent p-0">
+      <TabsList className="h-11 w-full justify-stretch rounded-none border-b bg-transparent p-0">
         {items.map((t) => (
           <TabsTrigger
             key={t.value}
             value={t.value}
-            className="flex-1 gap-1.5 rounded-none border-b-2 border-transparent bg-transparent px-2 pb-2.5 pt-2 text-sm font-bold shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none"
+            className="min-w-0 flex-1 gap-1.5 rounded-t-lg border-b-2 border-transparent bg-transparent px-2 pb-2 pt-1.5 text-[13px] font-bold text-muted-foreground shadow-none transition-colors hover:bg-accent/30 hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-accent/40 data-[state=active]:text-primary data-[state=active]:shadow-none sm:flex-none sm:px-6"
           >
-            {t.icon && <t.icon className="size-4" strokeWidth={1.75} />}
-            {t.label}
+            {t.icon && <t.icon className="size-4 shrink-0" strokeWidth={1.75} />}
+            <span className="truncate">{t.label}</span>
           </TabsTrigger>
         ))}
       </TabsList>
