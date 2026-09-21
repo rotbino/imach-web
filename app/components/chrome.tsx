@@ -169,14 +169,14 @@ export function MobileTabBar() {
 
 // ─── فوتر ───
 export function AppFooter() {
-  return (
+  return null /*(
     <footer className="mb-[4.25rem] mt-auto border-t bg-white/60 pb-[env(safe-area-inset-bottom)] sm:mb-0">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:flex-row">
         <p>iMach — ارزان‌تر بخر، بیشتر بفروش</p>
         <p>کاتالوگ فروش و لیست خرید هوشمند — رایگان</p>
       </div>
     </footer>
-  );
+  );*/
 }
 
 // ─── حلقه امتیاز تطبیق ───

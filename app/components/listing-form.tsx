@@ -111,24 +111,17 @@ export function ListingForm({
           {isSell ? "اولین کالای فروشتان را ثبت کنید" : "اولین کالای خریدتان را ثبت کنید"}
         </h1>
       )}
-      {firstGood && (
-        <p className="mt-1 text-xs text-muted-foreground">
-          {isSell
-            ? "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود."
-            : "این نیاز در بازوی خریدتان نمایش داده می‌شود تا تامین‌کننده‌ها پیشنهاد بدهند."}
-        </p>
-      )}
 
       {/* انتخاب بازو: فروش یا خرید — هر دو بازو از اول در دسترس است */}
       <Tabs value={kind} onValueChange={(v) => setKind(v as ListingKind)}>
         <TabsList className="mt-4 grid w-full grid-cols-2">
           <TabsTrigger value="sell" className="gap-1.5">
             <Store className="size-4" />
-            برای فروش
+            برای فروش عمده
           </TabsTrigger>
           <TabsTrigger value="buy" className="gap-1.5">
             <ShoppingBasket className="size-4" />
-            برای خرید
+            برای خرید عمده
           </TabsTrigger>
         </TabsList>
       </Tabs>
