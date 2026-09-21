@@ -242,7 +242,7 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
         icon={<Package className="size-4.5 text-primary" />}
         title={isSell ? "کالاهای فروشی من" : "نیازهای خرید من"}
         action={
-          <Button size="sm" onClick={() => router.push("/new")}>
+          <Button size="sm" onClick={() => router.push(isSell ? "/new?tab=sell" : "/new?tab=buy")}>
             <Plus className="size-4" />
             کالای جدید
           </Button>

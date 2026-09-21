@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
-import { ListingForm } from "@/app/components/listing-form";
+import { ListingForm, type ListingKind } from "@/app/components/listing-form";
+import { useTabParam } from "@/app/components/url-tabs";
 import { Loader2 } from "lucide-react";
 
 /*
  * کالای جدید — مقصد آیتم وسط نویگیشن (+).
- * کالا به کسب‌وکارِ فعال اضافه می‌شود؛ اگر کسب‌وکاری نیست، مسیر ساخت نشان داده می‌شود.
- * بعد از ثبت، کاربر به «بازوی من» می‌رود تا کالایش را در ویترین ببیند.
+ * تب فروش/خرید با URL سینک است (/new?tab=sell|buy) — لینک مستقیم به ثبتِ همان بازو.
+ * کالا به کسب‌وکارِ فعال اضافه می‌شود؛ بعد از ثبت، کاربر به تب همان بازو در «بازوی من» می‌رود.
  */
 export default function NewListingPage() {
   return (
@@ -19,7 +20,15 @@ export default function NewListingPage() {
       <AppHeader />
       <main className="grow">
         <div className="mx-auto max-w-2xl px-4 py-8">
-          <NewListingBody />
+          <Suspense
+            fallback={
+              <div className="grid place-items-center py-32">
+                <Loader2 className="size-6 animate-spin text-primary" />
+              </div>
+            }
+          >
+            <NewListingBody />
+          </Suspense>
         </div>
       </main>
       <AppFooter />
@@ -32,6 +41,7 @@ function NewListingBody() {
   const router = useRouter();
   const { status } = useAuthStore();
   const active = useActiveBusiness();
+  const [kind, setKind] = useTabParam("sell", ["sell", "buy"]);
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
@@ -65,8 +75,10 @@ function NewListingBody() {
   return (
     <ListingForm
       bizId={active.id}
+      kind={kind as ListingKind}
+      onKindChange={setKind}
       submitLabel="ثبت کالا"
-      onSaved={() => router.push("/arm")}
+      onSaved={(k) => router.push(`/arm?tab=${k}`)}
     />
   );
 }

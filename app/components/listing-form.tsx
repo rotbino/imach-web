@@ -32,17 +32,27 @@ export function ListingForm({
   firstGood = false,
   submitLabel,
   onSaved,
+  kind: kindProp,
+  onKindChange,
 }: {
   bizId: string;
   /** حالت ویزارد: لحن «اولین کالا» */
   firstGood?: boolean;
   submitLabel: string;
   onSaved: (kind: ListingKind) => void;
+  /** کنترل‌شده — وقتی صفحه، تب را با URL سینک می‌کند (/new?tab=sell|buy) */
+  kind?: ListingKind;
+  onKindChange?: (kind: ListingKind) => void;
 }) {
   const { toast } = useToast();
   const saveMutation = useSaveListing();
 
-  const [kind, setKind] = useState<ListingKind>("sell"); // پیش‌فرض: کاتالوگ فروش
+  const [innerKind, setInnerKind] = useState<ListingKind>(kindProp ?? "sell"); // پیش‌فرض: کاتالوگ فروش
+  const kind = kindProp ?? innerKind;
+  const setKind = (k: ListingKind) => {
+    setInnerKind(k);
+    onKindChange?.(k);
+  };
   const isSell = kind === "sell";
 
   const [goodId, setGoodId] = useState<string | null>(null);

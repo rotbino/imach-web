@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Package, Settings2, Share2, Signal, Table2 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useBusinessProfile, useFollows, useMyListings, useOffers } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { useTabParam } from "@/app/components/url-tabs";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import {
   ActivityCard,
@@ -48,7 +49,26 @@ export default function ManageBuyPage() {
     );
   }
 
-  return <ManageBuyBody />;
+  return (
+    <Suspense fallback={<ManageSpinner />}>
+      <ManageBuyBody />
+    </Suspense>
+  );
+}
+
+function ManageSpinner() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <AppHeader />
+      <main className="grow">
+        <div className="grid place-items-center py-32">
+          <Loader2 className="size-6 animate-spin text-primary" />
+        </div>
+      </main>
+      <AppFooter />
+      <MobileTabBar />
+    </div>
+  );
 }
 
 function ManageBuyBody() {
@@ -81,6 +101,7 @@ function ManageBuyBody() {
 
 function ManageBuyDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveBusiness>> }) {
   const { id: bizId, slug, name, city } = biz;
+  const [tab, setTab] = useTabParam("offers", ["offers", "board", "items", "share", "settings"]);
 
   const listingsQ = useMyListings(bizId);
   const profileQ = useBusinessProfile(slug);
@@ -110,8 +131,8 @@ function ManageBuyDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveBu
             />
           </div>
 
-          {/* هر موضوع مدیریتی در یک تب */}
-          <Tabs defaultValue="offers" className="mt-5">
+          {/* هر موضوع مدیریتی در یک تب — با آدرس اختصاصی (?tab=…) */}
+          <Tabs value={tab} onValueChange={setTab} className="mt-5">
             <TabsList className="grid h-auto w-full grid-cols-5">
               <ManageTabTrigger value="offers" icon={Signal} label="پیشنهادها" count={freshOffers} />
               <ManageTabTrigger value="board" icon={Table2} label="تابلو" />

@@ -8,7 +8,7 @@ import { useActiveBizStore } from "@/lib/active-biz";
 import { useMyBusinesses } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { BuyArmView, SellArmView } from "@/app/components/arm-views";
-import { UnderlineTabs } from "@/app/components/underline-tabs";
+import { UrlTabs } from "@/app/components/url-tabs";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -137,9 +137,9 @@ function ArmBody() {
             </div>
           )}
 
-          {/* سوییچر بازو — تب واقعی؛ هر بازو مثل یک صفحه مستقل */}
+          {/* سوییچر بازو — تب واقعی با آدرس اختصاصی (/arm?tab=sell|buy) */}
           {/* key={active.id}: با جابه‌جایی کسب‌وکار، ویترین تازه می‌شود */}
-          <UnderlineTabs
+          <UrlTabs
             defaultValue="sell"
             items={[
               { value: "sell", label: "بازوی فروش", icon: Store },

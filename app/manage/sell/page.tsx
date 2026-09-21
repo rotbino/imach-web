@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, Loader2, Package, Settings2, Share2 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useBusinessProfile, useIncomingInquiries, useMyListings } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { useTabParam } from "@/app/components/url-tabs";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import {
   ActivityCard,
@@ -47,7 +48,26 @@ export default function ManageSellPage() {
     );
   }
 
-  return <ManageSellBody />;
+  return (
+    <Suspense fallback={<ManageSpinner />}>
+      <ManageSellBody />
+    </Suspense>
+  );
+}
+
+function ManageSpinner() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <AppHeader />
+      <main className="grow">
+        <div className="grid place-items-center py-32">
+          <Loader2 className="size-6 animate-spin text-primary" />
+        </div>
+      </main>
+      <AppFooter />
+      <MobileTabBar />
+    </div>
+  );
 }
 
 function ManageSellBody() {
@@ -80,6 +100,7 @@ function ManageSellBody() {
 
 function ManageSellDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveBusiness>> }) {
   const { id: bizId, slug, name, city } = biz;
+  const [tab, setTab] = useTabParam("inquiries", ["inquiries", "items", "share", "settings"]);
 
   const listingsQ = useMyListings(bizId);
   const profileQ = useBusinessProfile(slug);
@@ -112,8 +133,8 @@ function ManageSellDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveB
             />
           </div>
 
-          {/* هر موضوع مدیریتی در یک تب */}
-          <Tabs defaultValue="inquiries" className="mt-5">
+          {/* هر موضوع مدیریتی در یک تب — با آدرس اختصاصی (?tab=…) */}
+          <Tabs value={tab} onValueChange={setTab} className="mt-5">
             <TabsList className="grid h-auto w-full grid-cols-4">
               <ManageTabTrigger value="inquiries" icon={Bell} label="درخواست‌ها" count={unread} />
               <ManageTabTrigger value="items" icon={Package} label="کالاها" />

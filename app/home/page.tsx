@@ -7,7 +7,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useHomeFeed } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
-import { UnderlineTabs } from "@/app/components/underline-tabs";
+import { UrlTabs } from "@/app/components/url-tabs";
 import { ExploreBuyRow, ExploreSellCard, FeedSpinner } from "@/app/components/feed-cards";
 import { Button } from "@/components/ui/button";
 
@@ -76,7 +76,7 @@ function HomeFeed({ bizId }: { bizId: string }) {
 
   return (
     <div className="mx-auto w-full max-w-7xl">
-      <UnderlineTabs
+      <UrlTabs
         defaultValue="sell"
         items={[
           { value: "sell", label: "تامین‌کنندگان", icon: Store },
@@ -99,7 +99,7 @@ function SellHomeFeed({ q }: { q: FeedQ }) {
 
   if (items.length === 0) {
     return (
-      <EmptyFollowed text="از دنبال‌شونده‌هایتان فعلا کالایی برای فروش نیامده است." />
+      <EmptyFollowed tab="sell" text="از دنبال‌شونده‌هایتان فعلا کالایی برای فروش نیامده است." />
     );
   }
 
@@ -118,7 +118,7 @@ function BuyHomeFeed({ q }: { q: FeedQ }) {
 
   if (items.length === 0) {
     return (
-      <EmptyFollowed text="از دنبال‌شونده‌هایتان فعلا درخواست خریدی نیامده است." />
+      <EmptyFollowed tab="buy" text="از دنبال‌شونده‌هایتان فعلا درخواست خریدی نیامده است." />
     );
   }
 
@@ -131,14 +131,14 @@ function BuyHomeFeed({ q }: { q: FeedQ }) {
   );
 }
 
-function EmptyFollowed({ text }: { text: string }) {
+function EmptyFollowed({ text, tab }: { text: string; tab: "sell" | "buy" }) {
   return (
     <div className="m-4 rounded-3xl border border-dashed bg-white/70 p-10 text-center">
       <span className="mx-auto grid size-12 place-items-center">
         <UserRoundCheck className="size-6 text-primary/40" />
       </span>
       <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground">{text}</p>
-      <Link href="/explore">
+      <Link href={`/explore?tab=${tab}`}>
         <Button variant="outline" className="mt-4 gap-1.5">
           <Compass className="size-4" />
           رفتن به بازار

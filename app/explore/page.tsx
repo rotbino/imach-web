@@ -16,7 +16,7 @@ import {
   useSupplierSuggestions,
 } from "@/lib/queries";
 import { AppFooter, AppHeader, MatchRing, MobileTabBar } from "@/app/components/chrome";
-import { UnderlineTabs } from "@/app/components/underline-tabs";
+import { UrlTabs } from "@/app/components/url-tabs";
 import {
   BadgeCheck,
   ClipboardList,
@@ -65,19 +65,17 @@ export default function MarketPage() {
         ) : !active ? (
           <NoBusiness />
         ) : (
-          <div className="mx-auto w-full max-w-7xl">
-            <UnderlineTabs
-              defaultValue="buy"
-              items={[
-                { value: "buy", label: "درخواست‌های خرید عمده", icon: ClipboardList },
-                { value: "sell", label: "تامین‌کنندگان", icon: Store },
-              ]}
-              panels={{
-                buy: <BuyPanel bizId={active.id} city={active.city} />,
-                sell: <SellPanel bizId={active.id} city={active.city} />,
-              }}
-            />
-          </div>
+          <UrlTabs
+            defaultValue="buy"
+            items={[
+              { value: "buy", label: "درخواست‌های خرید عمده", icon: ClipboardList },
+              { value: "sell", label: "تامین‌کنندگان", icon: Store },
+            ]}
+            panels={{
+              buy: <BuyPanel bizId={active.id} city={active.city} />,
+              sell: <SellPanel bizId={active.id} city={active.city} />,
+            }}
+          />
         )}
       </main>
 
@@ -87,13 +85,15 @@ export default function MarketPage() {
   );
 }
 
-// ─── تب درخواست‌های خرید ───
+// ─── تب درخواست‌های خرید عمده — نوار پیشنهاد تمام‌عرض، لیست در ستون محتوا ───
 
 function BuyPanel({ bizId, city }: { bizId: string; city: string }) {
   return (
     <div className="pb-6">
       <BuyerStrip bizId={bizId} city={city} />
-      <RelevantBuyList bizId={bizId} />
+      <div className="mx-auto w-full max-w-7xl">
+        <RelevantBuyList bizId={bizId} />
+      </div>
     </div>
   );
 }
@@ -220,13 +220,15 @@ function RelevantBuyList({ bizId }: { bizId: string }) {
   );
 }
 
-// ─── تب تامین‌کنندگان ───
+// ─── تب تامین‌کنندگان — نوار پیشنهاد تمام‌عرض، لیست در ستون محتوا ───
 
 function SellPanel({ bizId, city }: { bizId: string; city: string }) {
   return (
     <div className="pb-6">
       <SupplierStrip bizId={bizId} />
-      <RelevantSellList bizId={bizId} />
+      <div className="mx-auto w-full max-w-7xl">
+        <RelevantSellList bizId={bizId} />
+      </div>
     </div>
   );
 }
@@ -352,11 +354,11 @@ function RelevantSellList({ bizId }: { bizId: string }) {
 function Strip({ label, icon, children }: { label: string; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className="border-b bg-accent/20 pb-3 pt-3">
-      <p className="mb-2 flex items-center gap-1 px-4 text-xs font-bold text-muted-foreground">
+      <p className="mb-2 flex items-center gap-1 px-4 text-xs font-bold text-muted-foreground sm:px-6 lg:px-8">
         {icon}
         {label}
       </p>
-      <div className="flex snap-x gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex snap-x gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden">
         {children}
       </div>
     </section>
@@ -368,7 +370,7 @@ function Strip({ label, icon, children }: { label: string; icon?: React.ReactNod
 function GuestMarket() {
   return (
     <div className="mx-auto w-full max-w-7xl">
-      <UnderlineTabs
+      <UrlTabs
         defaultValue="buy"
         items={[
           { value: "buy", label: "درخواست‌های خرید عمده", icon: ClipboardList },
