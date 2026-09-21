@@ -159,7 +159,7 @@ export interface BusinessProfileDto {
   city: string;
   isVerified: boolean;
   isDemo: boolean;
-  _count: { followers: number };
+  _count: { followers: number; following: number };
   listings: GoodItemDto[];
 }
 
@@ -261,6 +261,31 @@ export interface SuggestionDto {
   score: number;
 }
 
+/** تامین‌کننده پیشنهادی برای نیازهای خرید من — موتور دنبال کردن سمت خرید */
+export interface SupplierSuggestionDto {
+  supplierId: string;
+  supplierName: string;
+  supplierSlug: string;
+  supplierCity: string;
+  supplierVerified: boolean;
+  listingId: string;
+  goodId: string;
+  goodName: string;
+  unit: string;
+  price: number;
+  minOrder: number;
+  score: number;
+}
+
+/** یک کسب‌وکار در لیست دنبال‌کننده/دنبال‌شونده */
+export interface FollowBizDto {
+  slug: string;
+  name: string;
+  city: string;
+  isVerified: boolean;
+  since: string;
+}
+
 export interface QuoteRequestResultDto {
   created: number;
   offers: OfferDto[];
@@ -296,6 +321,12 @@ export const businessesApi = {
   /** اکسپلور — کالاهای خرید و فروش همه؛ چیدمان ساده: شهر اول، بعد حجم/تازگی */
   getExplore: (params: { mode?: "SELL" | "BUY"; city?: string }) =>
     api<ExploreItemDto[]>("/businesses/getExplore", { params, auth: false }),
+  /** لیست عمومی دنبال‌کننده‌ها — خریدارهایی که این کسب‌وکار را دنبال می‌کنند */
+  getFollowersBySlug: (slug: string) =>
+    api<FollowBizDto[]>(`/businesses/getFollowers/${slug}`, { auth: false }),
+  /** لیست عمومی دنبال‌شونده‌ها — کسب‌وکارهایی که این کسب‌وکار دنبال می‌کند */
+  getFollowingBySlug: (slug: string) =>
+    api<FollowBizDto[]>(`/businesses/getFollowing/${slug}`, { auth: false }),
 };
 
 export const listingsApi = {
@@ -336,4 +367,13 @@ export const marketApi = {
   getPriceBoard: (businessId: string) => api<BoardRowDto[]>("/market/getPriceBoard", { params: { businessId } }),
   getSuggestions: (businessId: string) =>
     api<SuggestionDto[]>("/market/getSuggestions", { params: { businessId } }),
+  /** تامین‌کننده‌های پیشنهادی برای نیازهای خرید من (سمت خرید) */
+  getSupplierSuggestions: (businessId: string) =>
+    api<SupplierSuggestionDto[]>("/market/getSupplierSuggestions", { params: { businessId } }),
+  /** هوم — تازه‌ترین کالاهای کسب‌وکارهایی که دنبال می‌کنم */
+  getHomeFeed: (businessId: string, mode: "SELL" | "BUY") =>
+    api<ExploreItemDto[]>("/market/getHomeFeed", { params: { businessId, mode } }),
+  /** خریدارهایی که کسب‌وکار من را دنبال می‌کنند — خریدارهای شخصی من */
+  getMyFollowers: (businessId: string) =>
+    api<FollowBizDto[]>("/market/getFollowers", { params: { businessId } }),
 };

@@ -1,6 +1,6 @@
-import SellArm from "./sell-arm";
+import SellPublic from "./sell-public";
 
 export default async function SellPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <SellArm slug={slug} />;
+  return <SellPublic slug={slug} />;
 }

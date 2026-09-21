@@ -1,35 +1,50 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
-import type { ExploreItemDto } from "@/lib/api";
-import { fa, money, unitLabel, frequencyLabel } from "@/lib/format";
+import type { ExploreItemDto, SupplierSuggestionDto, SuggestionDto } from "@/lib/api";
+import { fa, money, proximity, proximityLabel, unitLabel, frequencyLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
-import { useExploreFeed } from "@/lib/queries";
-import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { useExploreFeed, useFollows, useFollowToggle, useSuggestions, useSupplierSuggestions } from "@/lib/queries";
+import { AppFooter, AppHeader, MatchRing, MobileTabBar, SectionTitle } from "@/app/components/chrome";
+import {
+  BuyFeedIcon,
+  EmptyFeed,
+  ExploreBuyRow,
+  ExploreSellCard,
+  FeedSpinner,
+  SellFeedIcon,
+} from "@/app/components/feed-cards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import {
   BadgeCheck,
   ClipboardList,
+  Handshake,
   Loader2,
   MapPin,
+  Package,
   ShoppingBag,
   ShoppingBasket,
+  Sparkles,
   Store,
+  Users,
 } from "lucide-react";
 
 /*
- * اکسپلور — بازار باز و دیدنی iMach.
+ * اکسپلور — موتور تطبیق iMach؛ جایی که هدف اصلی سیستم زندگی می‌کند.
  *
- * کالاهایی که کسب‌وکارها برای فروش و خرید گذاشته‌اند، در دو تب.
- * الگوریتم چیدمان v۰ (عمدا ساده — بعدا با نوع کالاهای کاربر کامل می‌شود):
- *   ۱) کالاهای هم‌شهرِ کاربر اول
- *   ۲) سمت خرید: بزرگ‌ترین حجم خرید اول — سمت فروش: تازه‌ترین قیمت‌ها
- * این صفحه هم مثل بقیه صفحات اصلی نویگیشن دارد؛ برای مهمان‌ها هم
- * باز است — دیدنِ بازار، اولین انگیزه عضویت است.
+ * برای هر کاربر، بهترین پیشنهادها در دو سمت:
+ * • تب فروش → «خریدارهای پیشنهادی»: خریدارهایی که دنبال کالاهایی هستند
+ *   که من می‌فروشم — تطبیق کالای مرجع + نزدیکی شهر + هجمه‌ی خرید.
+ * • تب خرید → «تامین‌کننده‌های پیشنهادی»: فروشنده‌های همان کالاهایی
+ *   که من نیاز دارم — با دکمه دنبال کردن؛ ستون فقرات رابطه بلندمدت.
+ *
+ * زیر پیشنهادها، «تازه‌های بازار» می‌آید — چیدمان عمومی v۰
+ * (شهرِ من اول، بعد حجم/تازگی). مهمان‌ها همان بازارِ باز را می‌بینند.
  */
 
 export default function ExplorePage() {
@@ -50,13 +65,14 @@ export default function ExplorePage() {
           <header className="mb-4">
             <h1 className="flex items-center gap-2 text-xl font-extrabold">
               <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                <Store className="size-4.5" />
+                <Sparkles className="size-4.5" />
               </span>
               اکسپلور
             </h1>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              کالاهای خرید و فروش کسب‌وکارها
-              {city ? ` — اول کالاهای شهر شما (${city})` : " — تازه‌ترین‌ها"}
+              {status === "authed" && active
+                ? "بهترین تطبیق‌ها برای خرید و فروش شما — بر اساس کالای مرجع، شهر و حجم"
+                : "بازار خرید و فروش کسب‌وکارها"}
             </p>
           </header>
 
@@ -72,11 +88,14 @@ export default function ExplorePage() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="sell" className="mt-4">
-              <SellTab city={city} excludeSlug={active?.slug} />
+            <TabsContent value="sell" className="mt-4 space-y-6">
+              {status === "authed" && active && <BuyerSuggestions bizId={active.id} myCity={active.city} />}
+              <PublicFeedSection mode="SELL" city={city} excludeSlug={active?.slug} />
             </TabsContent>
-            <TabsContent value="buy" className="mt-4">
-              <BuyTab city={city} excludeSlug={active?.slug} />
+
+            <TabsContent value="buy" className="mt-4 space-y-6">
+              {status === "authed" && active && <SupplierSuggestions bizId={active.id} />}
+              <PublicFeedSection mode="BUY" city={city} excludeSlug={active?.slug} />
             </TabsContent>
           </Tabs>
 
@@ -85,7 +104,7 @@ export default function ExplorePage() {
             <section className="mt-8 rounded-3xl border border-primary/25 bg-white p-6 text-center shadow-sm">
               <p className="text-base font-extrabold">این بازار، بازار شما هم می‌تواند باشد</p>
               <p className="mx-auto mt-1 max-w-sm text-xs leading-6 text-muted-foreground">
-                کاتالوگ فروش و لیست خرید هوشمند iMach — رایگان. همین حالا کسب‌وکارتان را بسازید.
+                کاتالوگ فروش و لیست خرید هوشمند iMach — رایگان. همین حالا کسب‌وکارتان را بسازید تا اکسپلور برای شما پیشنهاد بدهد.
               </p>
               <Link href="/start">
                 <Button className="mt-4 rounded-xl px-6 shadow-lg shadow-primary/25">
@@ -104,69 +123,252 @@ export default function ExplorePage() {
   );
 }
 
-// ─── تب فروش — کاتالوگ‌های همه، مثل آلبوم ───
+// ─── تب فروش — خریدارهای پیشنهادی (موتور تطبیق) ───
 
-function SellTab({ city, excludeSlug }: { city?: string; excludeSlug?: string }) {
-  const feedQ = useExploreFeed("SELL", city);
-  const items = (feedQ.data ?? []).filter((l) => l.business.slug !== excludeSlug);
+function BuyerSuggestions({ bizId, myCity }: { bizId: string; myCity: string }) {
+  const suggestionsQ = useSuggestions(bizId);
+  const suggestions = suggestionsQ.data ?? [];
 
-  if (feedQ.isLoading) return <FeedSpinner />;
-
-  if (items.length === 0) {
-    return <EmptyFeed icon={<Store className="size-6 text-primary/40" />} text="هنوز هیچ کالایی برای فروش ثبت نشده است." />;
+  if (suggestionsQ.isLoading) {
+    return (
+      <section className="grid place-items-center py-10">
+        <Loader2 className="size-5 animate-spin text-primary" />
+      </section>
+    );
   }
 
   return (
+    <section>
+      <SectionTitle
+        icon={<Handshake className="size-4.5 text-primary" />}
+        title="خریدارهای پیشنهادی برای کالاهای شما"
+        hint="بر اساس کالای مرجع مشترک، نزدیکی شهر و حجم نیاز — در مدیریت بازوی فروش هم دنبالشان کنید."
+      />
+      {suggestions.length === 0 ? (
+        <EmptyBox
+          text="هنوز تطبیقی برای کالاهای فروش شما پیدا نشد — هرچه کاتالوگ کامل‌تر باشد، شانس دیده شدن بیشتر است."
+          action={
+            <Link href="/new">
+              <Button size="sm" variant="outline">
+                <Package className="size-4" />
+                افزودن کالا
+              </Button>
+            </Link>
+          }
+        />
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {suggestions.map((m) => (
+            <BuyerSuggestionCard key={`${m.buyerId}-${m.goodId}`} m={m} myCity={myCity} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function BuyerSuggestionCard({ m, myCity }: { m: SuggestionDto; myCity: string }) {
+  return (
+    <div className="animate-fade-up rounded-2xl border bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="flex items-center gap-1.5 font-extrabold">
+            {m.buyerName}
+            {m.buyerVerified && <BadgeCheck className="size-4 text-primary" aria-label="تاییدشده" />}
+          </p>
+          <span className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="size-3.5" />
+            {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, myCity))}
+          </span>
+        </div>
+        <MatchRing score={m.score} />
+      </div>
+      <div className="mt-3 rounded-lg bg-muted/70 px-3 py-2 text-xs">
+        <span className="text-muted-foreground">به دنبال خرید: </span>
+        <span className="font-bold">{m.goodName}</span>
+        <span className="text-muted-foreground"> — </span>
+        <span className="font-bold text-primary">
+          {fa(m.volume)} {unitLabel(m.unit)} {frequencyLabel(m.frequency)}
+        </span>
+      </div>
+      <Link href={`/buy/${m.buyerSlug}`}>
+        <Button size="sm" variant="outline" className="mt-3 w-full">
+          <ClipboardList className="size-4" />
+          دیدن لیست خرید این خریدار
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+// ─── تب خرید — تامین‌کننده‌های پیشنهادی (موتور تطبیق + دنبال کردن) ───
+
+function SupplierSuggestions({ bizId }: { bizId: string }) {
+  const { toast } = useToast();
+  const suggestionsQ = useSupplierSuggestions(bizId);
+  const followsQ = useFollows(bizId);
+  const followToggle = useFollowToggle();
+
+  const suggestions = suggestionsQ.data ?? [];
+  const followedIds = useMemo(() => new Set((followsQ.data ?? []).map((f) => f.supplierId)), [followsQ.data]);
+
+  if (suggestionsQ.isLoading) {
+    return (
+      <section className="grid place-items-center py-10">
+        <Loader2 className="size-5 animate-spin text-primary" />
+      </section>
+    );
+  }
+
+  const toggleFollow = (s: SupplierSuggestionDto) => {
+    const wasFollowed = followedIds.has(s.supplierId);
+    followToggle.mutate(
+      { businessId: bizId, supplierId: s.supplierId, follow: !wasFollowed },
+      {
+        onSuccess: () =>
+          toast({
+            title: wasFollowed ? `${s.supplierName} دنبال نمی‌شود` : `${s.supplierName} دنبال شد`,
+            description: wasFollowed ? undefined : "قیمت‌هایش در «تابلوی قیمت» مدیریت بازوی خرید جمع می‌شود.",
+          }),
+      }
+    );
+  };
+
+  return (
+    <section>
+      <SectionTitle
+        icon={<Users className="size-4.5 text-primary" />}
+        title="تامین‌کننده‌های پیشنهادی برای نیازهای شما"
+        hint="همان کالایی که نیاز دارید، از نزدیک‌ترین و مناسب‌ترین فروشنده — دنبال کنید تا قیمت‌هایشان همیشه دستتان باشد."
+      />
+      {suggestions.length === 0 ? (
+        <EmptyBox
+          text="هنوز تطبیقی برای نیازهای خرید شما پیدا نشد — نیازهایتان را در بازوی خرید کامل کنید."
+          action={
+            <Link href="/new">
+              <Button size="sm" variant="outline">
+                <Package className="size-4" />
+                افزودن کالا
+              </Button>
+            </Link>
+          }
+        />
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {suggestions.map((s) => (
+            <SupplierSuggestionCard
+              key={s.listingId}
+              s={s}
+              followed={followedIds.has(s.supplierId)}
+              onFollow={() => toggleFollow(s)}
+              busy={followToggle.isPending}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function SupplierSuggestionCard({
+  s,
+  followed,
+  onFollow,
+  busy,
+}: {
+  s: SupplierSuggestionDto;
+  followed: boolean;
+  onFollow: () => void;
+  busy: boolean;
+}) {
+  return (
+    <div className="animate-fade-up rounded-2xl border bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="flex items-center gap-1.5 font-extrabold">
+            {s.supplierName}
+            {s.supplierVerified && <BadgeCheck className="size-4 text-primary" aria-label="تاییدشده" />}
+          </p>
+          <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="size-3.5" />
+            {s.supplierCity}
+          </p>
+        </div>
+        <MatchRing score={s.score} />
+      </div>
+      <div className="mt-3 rounded-lg bg-muted/70 px-3 py-2 text-xs">
+        <span className="text-muted-foreground">می‌فروشد: </span>
+        <span className="font-bold">{s.goodName}</span>
+        <span className="text-muted-foreground"> — </span>
+        <span className="font-bold text-primary">{money(s.price)}</span>
+        <span className="text-muted-foreground"> هر {unitLabel(s.unit)}</span>
+      </div>
+      <div className="mt-3 flex items-center gap-2">
+        <Button size="sm" variant={followed ? "secondary" : "default"} onClick={onFollow} disabled={busy} className="flex-1">
+          {followed ? "دنبال می‌شود" : "دنبال کردن"}
+        </Button>
+        <Link href={`/sell/${s.supplierSlug}`} className="flex-1">
+          <Button size="sm" variant="outline" className="w-full">
+            <Store className="size-4" />
+            دیدن کاتالوگ
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─── تازه‌های بازار — فید عمومی (همراه پیشنهادها، و کل دید مهمان) ───
+
+function PublicFeedSection({ mode, city, excludeSlug }: { mode: "SELL" | "BUY"; city?: string; excludeSlug?: string }) {
+  const authed = useAuthStore((s) => s.status === "authed");
+  const feedQ = useExploreFeed(mode, city);
+  const items = (feedQ.data ?? []).filter((l) => l.business.slug !== excludeSlug);
+
+  return (
+    <section>
+      <SectionTitle
+        icon={mode === "SELL" ? <Store className="size-4.5 text-primary" /> : <ClipboardList className="size-4.5 text-stone-600" />}
+        title={authed ? "تازه‌های بازار" : mode === "SELL" ? "کالاهای فروش" : "درخواست‌های خرید"}
+        hint={
+          city
+            ? mode === "SELL"
+              ? `اول کالاهای شهر شما (${city})`
+              : `اول نیازهای شهر شما (${city}) — بزرگ‌ترین حجم‌ها جلوتر`
+            : "تازه‌ترین‌های همه کسب‌وکارها"
+        }
+      />
+      <PublicFeed mode={mode} items={items} loading={feedQ.isLoading} />
+    </section>
+  );
+}
+
+function PublicFeed({
+  mode,
+  items,
+  loading,
+}: {
+  mode: "SELL" | "BUY";
+  items: ExploreItemDto[];
+  loading: boolean;
+}) {
+  if (loading) return <FeedSpinner />;
+
+  if (items.length === 0) {
+    return mode === "SELL" ? (
+      <EmptyFeed icon={<SellFeedIcon />} text="هنوز هیچ کالایی برای فروش ثبت نشده است." />
+    ) : (
+      <EmptyFeed icon={<BuyFeedIcon />} text="هنوز هیچ نیاز خریدی ثبت نشده است." />
+    );
+  }
+
+  return mode === "SELL" ? (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
       {items.map((l) => (
         <ExploreSellCard key={l.id} item={l} />
       ))}
     </div>
-  );
-}
-
-function ExploreSellCard({ item: l }: { item: ExploreItemDto }) {
-  return (
-    <Link href={`/sell/${l.business.slug}`} aria-label={`کاتالوگ ${l.business.name}`}>
-      <article className="animate-fade-up h-full overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
-        {/* تا زمان سیستم فایل‌ها: کاشی حرفیِ تخت به‌جای عکس */}
-        <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
-          <span className="text-5xl font-black text-primary/20" aria-hidden>
-            {l.good.name.slice(0, 1)}
-          </span>
-        </div>
-        <div className="p-3">
-          <p className="truncate font-extrabold" title={l.good.name}>
-            {l.good.name}
-          </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{l.good.category}</p>
-          {l.price !== null && (
-            <p className="mt-2 text-lg font-black text-primary">{money(l.price)}</p>
-          )}
-          <p className="mt-0.5 text-[11px] text-muted-foreground">
-            هر {unitLabel(l.good.unit)}
-            {l.minOrder ? ` · حداقل ${fa(l.minOrder)} ${unitLabel(l.good.unit)}` : ""}
-          </p>
-          <BizRow item={l} tone="sell" />
-        </div>
-      </article>
-    </Link>
-  );
-}
-
-// ─── تب خرید — نیازهای همه، مثل لیست ───
-
-function BuyTab({ city, excludeSlug }: { city?: string; excludeSlug?: string }) {
-  const feedQ = useExploreFeed("BUY", city);
-  const items = (feedQ.data ?? []).filter((l) => l.business.slug !== excludeSlug);
-
-  if (feedQ.isLoading) return <FeedSpinner />;
-
-  if (items.length === 0) {
-    return <EmptyFeed icon={<ClipboardList className="size-6 text-stone-400" />} text="هنوز هیچ نیاز خریدی ثبت نشده است." />;
-  }
-
-  return (
+  ) : (
     <div className="space-y-3">
       {items.map((l) => (
         <ExploreBuyRow key={l.id} item={l} />
@@ -175,72 +377,13 @@ function BuyTab({ city, excludeSlug }: { city?: string; excludeSlug?: string }) 
   );
 }
 
-function ExploreBuyRow({ item: l }: { item: ExploreItemDto }) {
-  return (
-    <Link href={`/buy/${l.business.slug}`} aria-label={`لیست خرید ${l.business.name}`}>
-      <article className="animate-fade-up flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md">
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
-          {l.good.name.slice(0, 1)}
-        </span>
-        <div className="min-w-0 grow">
-          <p className="truncate font-extrabold" title={l.good.name}>
-            {l.good.name}
-          </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{l.good.category}</p>
-          <BizRow item={l} tone="buy" />
-        </div>
-        <div className="shrink-0 text-end">
-          <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
-            {fa(l.volume as number)} {unitLabel(l.good.unit)}
-          </Badge>
-          <p className="mt-1 text-[11px] text-muted-foreground">{frequencyLabel(l.frequency ?? "MONTHLY")}</p>
-        </div>
-      </article>
-    </Link>
-  );
-}
+// ─── مشترک ───
 
-// ─── مشترک‌ها ───
-
-/** سطر کسب‌وکار — صاحبِ کالا، با نشان تایید و شهر */
-function BizRow({ item: l, tone }: { item: ExploreItemDto; tone: "sell" | "buy" }) {
+function EmptyBox({ text, action }: { text: string; action?: React.ReactNode }) {
   return (
-    <div className="mt-2.5 flex items-center gap-1.5 border-t pt-2.5 text-[11px] text-muted-foreground">
-      <span
-        className={`grid size-5 shrink-0 place-items-center rounded-md text-[10px] font-black ${
-          tone === "sell" ? "bg-primary/10 text-primary" : "bg-stone-200 text-stone-700"
-        }`}
-        aria-hidden
-      >
-        {l.business.name.slice(0, 1)}
-      </span>
-      <span className="flex min-w-0 items-center gap-1">
-        <span className="truncate font-bold text-foreground">{l.business.name}</span>
-        {l.business.isVerified && (
-          <BadgeCheck className={`size-3.5 shrink-0 ${tone === "sell" ? "text-primary" : "text-stone-600"}`} aria-label="تاییدشده" />
-        )}
-      </span>
-      <span className="ms-auto flex shrink-0 items-center gap-0.5">
-        <MapPin className="size-3" />
-        {l.business.city}
-      </span>
-    </div>
-  );
-}
-
-function FeedSpinner() {
-  return (
-    <div className="grid place-items-center py-24">
-      <Loader2 className="size-6 animate-spin text-primary" />
-    </div>
-  );
-}
-
-function EmptyFeed({ icon, text }: { icon: React.ReactNode; text: string }) {
-  return (
-    <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
-      <span className="mx-auto grid size-12 place-items-center">{icon}</span>
-      <p className="mt-2 text-sm text-muted-foreground">{text}</p>
+    <div className="rounded-2xl border border-dashed bg-white/60 p-6 text-center">
+      <p className="mx-auto max-w-md text-sm leading-7 text-muted-foreground">{text}</p>
+      {action && <div className="mt-3 flex justify-center">{action}</div>}
     </div>
   );
 }

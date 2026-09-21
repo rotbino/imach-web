@@ -1,0 +1,956 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  fa,
+  money,
+  proximity,
+  proximityLabel,
+  timeAgo,
+  unitLabel,
+  frequencyLabel,
+  activityTypeLabel,
+  ACTIVITY_TYPES,
+} from "@/lib/format";
+import { ApiError, type BusinessSummaryDto, type GoodItemDto, type OfferDto } from "@/lib/api";
+import { useActiveBizStore } from "@/lib/active-biz";
+import {
+  useBoard,
+  useDeleteListing,
+  useEditBusiness,
+  useFollows,
+  useFollowToggle,
+  useFollowersBySlug,
+  useFollowingBySlug,
+  useIncomingInquiries,
+  useMarkInquiryRead,
+  useMyBusinesses,
+  useMyListings,
+  useOffers,
+  useQuoteRequest,
+  useSendOffer,
+} from "@/lib/queries";
+import { MatchRing, SectionTitle } from "@/app/components/chrome";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { QRCodeSVG } from "qrcode.react";
+import {
+  ArrowDownWideNarrow,
+  ArrowLeftRight,
+  Bell,
+  BookmarkCheck,
+  BookmarkPlus,
+  Briefcase,
+  Check,
+  ChevronDown,
+  ClipboardList,
+  Copy,
+  Handshake,
+  Loader2,
+  MapPin,
+  MessageCircle,
+  Minus,
+  Package,
+  Plus,
+  Radio,
+  RefreshCw,
+  Send,
+  Settings2,
+  ShoppingBasket,
+  Signal,
+  Store,
+  Table2,
+  Trash2,
+  TrendingDown,
+  TrendingUp,
+  Users,
+  UsersRound,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+/*
+ * بخش‌های داشبورد مدیریت — سبک و جمع:
+ * هر بازو داشبورد خودش را دارد (/manage/sell و /manage/buy)؛
+ * پیشنهادهای تطبیق به اکسپلور منتقل شده‌اند و اینجا فقط «کار» است:
+ * درخواست‌ها/پیشنهادها، کالاهای من، اشتراک‌گذاری لینک، آمار و تنظیم.
+ */
+
+// ─── سرصفحه داشبورد: نام بازو + جابه‌جایی کسب‌وکار + لینک ویترین ───
+
+export function ManageHeader({ kind, biz }: { kind: "sell" | "buy"; biz: BusinessSummaryDto }) {
+  const { data: mine = [] } = useMyBusinesses();
+  const setActive = useActiveBizStore((s) => s.setActive);
+  const many = mine.length > 1;
+  const isSell = kind === "sell";
+
+  return (
+    <header className="mb-5">
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="flex items-center gap-2 text-xl font-extrabold">
+          <span
+            className={`grid size-9 place-items-center rounded-xl ${
+              isSell ? "bg-primary/10 text-primary" : "bg-stone-800/10 text-stone-700"
+            }`}
+          >
+            {isSell ? <Store className="size-4.5" /> : <ShoppingBasket className="size-4.5" />}
+          </span>
+          مدیریت {isSell ? "بازوی فروش" : "بازوی خرید"}
+        </h1>
+
+        <div className="flex items-center gap-2">
+          <Link href="/arm" className="hidden sm:block">
+            <Button size="sm" variant="outline">
+              <ArrowLeftRight className="size-4" />
+              دیدن ویترین
+            </Button>
+          </Link>
+
+          {many && (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className="flex items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-sm font-bold shadow-sm"
+                aria-label="تغییر کسب‌وکار"
+              >
+                <span className="max-w-[30vw] truncate">{biz.name}</span>
+                <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuLabel>کسب‌وکارهای من</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {mine.map((b) => (
+                  <DropdownMenuItem key={b.id} onClick={() => setActive(b.id)} className="gap-2">
+                    <span className="grid size-6 place-items-center rounded-md bg-primary/10 text-xs font-black text-primary">
+                      {b.name.slice(0, 1)}
+                    </span>
+                    <span className="truncate">{b.name}</span>
+                    {b.id === biz.id && <Check className="ms-auto size-4 text-primary" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      </div>
+      <p className="mt-1.5 text-xs text-muted-foreground">
+        {isSell
+          ? "درخواست‌های قیمت خریدارها، کالاهای فروشی و لینک کاتالوگ برای مشتری‌ها"
+          : "پیشنهادهای تامین‌کننده‌ها، تابلوی قیمت و لینک لیست خرید برای فروشنده‌ها"}
+      </p>
+    </header>
+  );
+}
+
+// ─── نوار آمار — داشبورد سبک ───
+
+export function StatsStrip({
+  stats,
+}: {
+  stats: { label: string; value: number; accent?: boolean }[];
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      {stats.map((s) => (
+        <div key={s.label} className="rounded-2xl border bg-white p-3 text-center shadow-sm sm:p-4">
+          <p className={`text-lg font-black sm:text-xl ${s.accent ? "text-primary" : ""}`}>
+            {fa(s.value)}
+          </p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── کالاهای من — فقط یک سمتِ بازو ───
+
+export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | "buy" }) {
+  const { toast } = useToast();
+  const router = useRouter();
+  const listingsQ = useMyListings(bizId);
+  const deleteListing = useDeleteListing();
+  const quoteRequest = useQuoteRequest();
+
+  const [target, setTarget] = useState<GoodItemDto | null>(null);
+
+  const isSell = side === "sell";
+  const listings = (listingsQ.data ?? []).filter((l) =>
+    isSell ? (l.mode === "SELL" || l.mode === "BOTH") && l.price !== null : (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
+  );
+
+  const remove = async () => {
+    if (!target) return;
+    try {
+      await deleteListing.mutateAsync(target.id);
+      toast({ title: "کالا حذف شد", description: target.good.name });
+    } catch {
+      toast({ title: "حذف ناموفق بود", variant: "destructive" });
+    } finally {
+      setTarget(null);
+    }
+  };
+
+  const activateQuote = (l: GoodItemDto) => {
+    quoteRequest.mutate(
+      { listingId: l.id },
+      {
+        onSuccess: (res) =>
+          toast({ title: "قیمت‌گیری انجام شد", description: `${fa(res.created)} تامین‌کننده برای «${l.good.name}» پیشنهاد دادند.` }),
+        onError: (e) =>
+          toast({ title: "قیمت‌گیری ناموفق بود", description: e instanceof ApiError ? e.message : "دوباره تلاش کنید", variant: "destructive" }),
+      }
+    );
+  };
+
+  return (
+    <section className="rounded-2xl border bg-white p-5 shadow-sm">
+      <SectionTitle
+        icon={<Package className="size-4.5 text-primary" />}
+        title={isSell ? "کالاهای فروشی من" : "نیازهای خرید من"}
+        hint={
+          isSell
+            ? "این کالاها در کاتالوگ فروش شما، همه‌جا دیده می‌شوند."
+            : "این نیازها در لیست خرید شماست؛ تامین‌کننده‌ها همان را می‌بینند و پیشنهاد می‌دهند."
+        }
+        action={
+          <Button size="sm" onClick={() => router.push("/new")}>
+            <Plus className="size-4" />
+            کالای جدید
+          </Button>
+        }
+      />
+
+      {listings.length === 0 && (
+        <EmptyBox
+          text={
+            isSell
+              ? "هنوز کالایی برای فروش ثبت نکرده‌اید — اولین کالای‌تان را اضافه کنید."
+              : "هنوز نیاز خریدی ثبت نکرده‌اید — با ثبت نیاز، تامین‌کننده‌ها پیشنهاد می‌دهند."
+          }
+        />
+      )}
+
+      <div className="space-y-2">
+        {listings.map((l) => (
+          <div key={l.id} className="flex items-center gap-3 rounded-xl border bg-muted/20 p-3">
+            <span
+              className={`grid size-10 shrink-0 place-items-center rounded-xl text-base font-black ${
+                isSell ? "bg-primary/10 text-primary" : "bg-stone-200 text-stone-700"
+              }`}
+            >
+              {l.good.name.slice(0, 1)}
+            </span>
+            <div className="min-w-0 grow">
+              <p className="truncate text-sm font-extrabold">{l.good.name}</p>
+              <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                {isSell ? (
+                  <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
+                    فروش · {money(l.price as number)}
+                  </Badge>
+                ) : (
+                  <Badge variant="outline">
+                    خرید · {fa(l.volume as number)} {unitLabel(l.good.unit)} {frequencyLabel(l.frequency ?? "MONTHLY")}
+                  </Badge>
+                )}
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              {!isSell && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => activateQuote(l)}
+                  disabled={quoteRequest.isPending}
+                  aria-label={`قیمت‌گیری ${l.good.name}`}
+                  className="text-primary"
+                >
+                  <Radio className="size-4" />
+                  قیمت‌گیری
+                </Button>
+              )}
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setTarget(l)}
+                aria-label={`حذف ${l.good.name}`}
+                className="size-8 text-destructive hover:text-destructive"
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* تایید حذف */}
+      <Dialog open={!!target} onOpenChange={(o) => !o && setTarget(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>حذف «{target?.good.name}»؟</DialogTitle>
+            <DialogDescription>
+              {isSell
+                ? "این کالا از کاتالوگ فروش شما حذف می‌شود. این کار برگشت‌پذیر نیست."
+                : "این نیاز از لیست خرید شما حذف می‌شود. این کار برگشت‌پذیر نیست."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setTarget(null)}>
+              انصراف
+            </Button>
+            <Button variant="destructive" onClick={() => void remove()} disabled={deleteListing.isPending}>
+              {deleteListing.isPending && <Loader2 className="size-4 animate-spin" />}
+              حذف کن
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+
+// ─── درخواست‌های قیمت (سمت فروش) ───
+export function InquiriesSection({ bizId, myCity, sellListings }: { bizId: string; myCity: string; sellListings: { goodId: string; price: number | null }[] }) {
+  const { toast } = useToast();
+  const inquiriesQ = useIncomingInquiries(bizId);
+  const sendOffer = useSendOffer();
+  const markRead = useMarkInquiryRead();
+
+  // علامت‌گذاری خودکار درخواست‌های خوانده‌نشده (یک‌بار برای هر دیتا)
+  const markedRef = useRef(false);
+  useEffect(() => {
+    if (markedRef.current || inquiriesQ.isLoading) return;
+    const unread = (inquiriesQ.data?.items ?? []).filter((i) => !i.isRead);
+    if (unread.length > 0) {
+      markedRef.current = true;
+      for (const i of unread) markRead.mutate(i.id);
+    }
+  }, [inquiriesQ.data, inquiriesQ.isLoading, markRead]);
+
+  const inquiries = inquiriesQ.data?.items ?? [];
+
+  return (
+    <section className="space-y-3">
+      <SectionTitle
+        icon={<Bell className="size-4.5 text-primary" />}
+        title="درخواست‌های قیمت"
+        hint="خریدارها روی نیازهایشان قیمت‌گیری زده‌اند؛ حجم و شهرشان را ببینید و پیشنهاد بدهید."
+      />
+      {inquiries.length === 0 && <EmptyBox text="فعلا درخواست قیمتی ندارید. کاتالوگ کامل‌تر = درخواست بیشتر." />}
+      {inquiries.map((q) => {
+        const answered = q.status === "ANSWERED";
+        const isNew = !q.isRead;
+        const mySell = sellListings.find((l) => l.goodId === q.listing.good.id);
+        return (
+          <div key={q.id} className={`rounded-2xl border bg-white p-4 shadow-sm ${isNew ? "animate-fade-up border-primary/40 ring-1 ring-primary/15" : ""}`}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-base font-black text-primary">
+                  {q.buyer.name.slice(0, 1)}
+                </span>
+                <div>
+                  <p className="flex items-center gap-1.5 text-sm font-bold">
+                    {q.buyer.name}
+                    {isNew && <Badge className="bg-primary text-[10px]">جدید</Badge>}
+                  </p>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                    <span className="flex items-center gap-0.5">
+                      <MapPin className="size-3" />
+                      {q.buyer.city} · {proximityLabel(proximity(q.buyer.city, myCity))}
+                    </span>
+                    <span>{timeAgo(q.createdAt)}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-end">
+                <p className="text-sm font-bold">{q.listing.good.name}</p>
+                <p className="text-[11px] text-muted-foreground">نیاز: {fa(q.volume)} {unitLabel(q.listing.good.unit)}</p>
+              </div>
+            </div>
+
+            {q.note && <p className="mt-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">«{q.note}»</p>}
+
+            {answered ? (
+              <p className="mt-3 flex items-center gap-1.5 rounded-lg bg-accent px-3 py-2 text-xs font-bold text-primary">
+                پیشنهاد ارسال شد — منتظر پاسخ خریدار بمانید
+              </p>
+            ) : (
+              <OfferSender
+                suggested={mySell?.price ?? 0}
+                unit={unitLabel(q.listing.good.unit)}
+                busy={sendOffer.isPending}
+                onSend={(price) => {
+                  sendOffer.mutate(
+                    { inquiryId: q.id, price },
+                    {
+                      onSuccess: () => toast({ title: "پیشنهاد ارسال شد", description: `پیشنهاد شما برای ${q.buyer.name} در بازوی خریدشان نمایش داده می‌شود.` }),
+                      onError: (e) => toast({ title: "ارسال ناموفق بود", description: e instanceof ApiError ? e.message : "دوباره تلاش کنید", variant: "destructive" }),
+                    }
+                  );
+                }}
+              />
+            )}
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+// ─── پیشنهادهای دریافتی (سمت خرید) ───
+export function OffersSection({ bizId, myCity }: { bizId: string; myCity: string }) {
+  const { toast } = useToast();
+  const offersQ = useOffers(bizId);
+  const followsQ = useFollows(bizId);
+  const followToggle = useFollowToggle();
+
+  const [sortMode, setSortMode] = useState<"score" | "price">("score");
+
+  const offersByGood = useMemo(() => {
+    const map = new Map<string, OfferDto[]>();
+    for (const o of offersQ.data?.items ?? []) {
+      const gid = o.listing.good.id;
+      const arr = map.get(gid) ?? [];
+      arr.push(o);
+      map.set(gid, arr);
+    }
+    return map;
+  }, [offersQ.data]);
+
+  const followedIds = new Set((followsQ.data ?? []).map((f) => f.supplierId));
+
+  const toggleFollow = (supplierId: string, supplierName: string) => {
+    const wasFollowed = followedIds.has(supplierId);
+    followToggle.mutate(
+      { businessId: bizId, supplierId, follow: !wasFollowed },
+      {
+        onSuccess: () =>
+          toast({
+            title: wasFollowed ? `${supplierName} دنبال نمی‌شود` : `${supplierName} دنبال شد`,
+            description: wasFollowed ? undefined : "قیمت‌هایش در «تابلوی قیمت» جمع می‌شود.",
+          }),
+      }
+    );
+  };
+
+  return (
+    <section className="space-y-3">
+      <SectionTitle
+        icon={<Signal className="size-4.5 text-primary" />}
+        title="پیشنهادهای تامین‌کننده‌ها"
+        hint="پاسخ قیمت‌گیری‌های بازوی خرید شما — گروه‌شده بر اساس کالا."
+      />
+      {(offersQ.data?.items ?? []).length === 0 && <EmptyBox text="هنوز پیشنهادی ندارید؛ از «نیازهای خرید من» روی کالاها قیمت‌گیری بزنید." />}
+      {[...offersByGood.entries()].map(([gid, offers]) => {
+        const cheapest = sortMode === "price" ? [...offers].sort((a, b) => a.price - b.price)[0] : null;
+        return (
+          <div key={gid} className="rounded-2xl border bg-white p-4 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-extrabold">{offers[0].listing.good.name}</p>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary">{fa(offers.length)} پیشنهاد</Badge>
+                <div className="flex items-center gap-0.5 rounded-lg bg-muted p-0.5">
+                  <ArrowDownWideNarrow className="mx-1 size-3.5 text-muted-foreground" />
+                  {([
+                    { v: "score" as const, label: "مناسب‌ترین" },
+                    { v: "price" as const, label: "ارزان‌ترین" },
+                  ]).map((o) => (
+                    <button
+                      key={o.v}
+                      type="button"
+                      onClick={() => setSortMode(o.v)}
+                      className={`rounded-md px-2 py-1 text-[11px] font-bold transition ${
+                        sortMode === o.v ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 space-y-2">
+              {[...offers]
+                .sort((a, b) => (sortMode === "price" ? a.price - b.price : b.score - a.score))
+                .map((o, i) => (
+                  <OfferCard
+                    key={o.id}
+                    offer={o}
+                    index={i}
+                    myCity={myCity}
+                    followed={followedIds.has(o.seller.id)}
+                    cheapest={cheapest?.id === o.id && offers.length > 1}
+                    onFollow={() => toggleFollow(o.seller.id, o.seller.name)}
+                  />
+                ))}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+// ─── تابلوی قیمت (سمت خرید) ───
+export function BoardSection({ bizId }: { bizId: string }) {
+  const boardQ = useBoard(bizId);
+  const rows = boardQ.data ?? [];
+
+  return (
+    <section className="space-y-3">
+      <SectionTitle
+        icon={<Table2 className="size-4.5 text-primary" />}
+        title="تابلوی قیمت دنبال‌شده‌ها"
+        hint="قیمت‌های تامین‌کننده‌هایی که دنبال کرده‌اید؛ دکمه «بررسی به‌روزرسانی» تغییرات قیمت را همین‌جا نشان می‌دهد."
+        action={
+          rows.length > 0 ? (
+            <Button size="sm" variant="outline" onClick={() => void boardQ.refetch()}>
+              <RefreshCw className={boardQ.isFetching ? "size-4 animate-spin" : "size-4"} />
+              بررسی به‌روزرسانی
+            </Button>
+          ) : undefined
+        }
+      />
+      {rows.length === 0 ? (
+        <EmptyBox text="هنوز تامین‌کننده‌ای دنبال نکرده‌اید. از پیشنهادهای اکسپلور دنبال کنید تا قیمت‌ها اینجا جمع شود." />
+      ) : (
+        <BoardView rows={rows} />
+      )}
+    </section>
+  );
+}
+
+// ─── کارت پیشنهاد قیمت ───
+function OfferCard({ offer, index, myCity, followed, cheapest, onFollow }: {
+  offer: OfferDto;
+  index: number;
+  myCity: string;
+  followed: boolean;
+  cheapest?: boolean;
+  onFollow: () => void;
+}) {
+  const p = proximity(myCity, offer.seller.city);
+  return (
+    <div className="animate-fade-up rounded-xl border bg-muted/30 p-3" style={{ animationDelay: `${index * 120}ms` }}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-base font-black text-primary">
+            {offer.seller.name.slice(0, 1)}
+          </span>
+          <div>
+            <p className="flex items-center gap-1.5 text-sm font-bold">
+              {offer.seller.name}
+              {offer.isSpecial && <Badge className="bg-primary text-[10px]">قیمت ویژه برای شما</Badge>}
+              {cheapest && <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary text-[10px]">ارزان‌ترین پیشنهاد</Badge>}
+            </p>
+            <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-0.5">
+                <MapPin className="size-3" />
+                {offer.seller.city} · {proximityLabel(p)}
+              </span>
+              <span>{timeAgo(offer.createdAt)}</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="text-end">
+            <p className="text-base font-black text-primary">{money(offer.price)}</p>
+            <p className="text-[11px] text-muted-foreground">
+              هر {unitLabel(offer.listing.good.unit)} · حداقل {fa(offer.minOrder)} {unitLabel(offer.listing.good.unit)}
+            </p>
+          </div>
+          {offer.score > 0 && <MatchRing score={offer.score} size={40} />}
+        </div>
+      </div>
+      <div className="mt-2.5 flex items-center justify-end gap-2 border-t pt-2.5">
+        <Button size="sm" variant={followed ? "secondary" : "default"} onClick={onFollow}>
+          {followed ? (
+            <>
+              <BookmarkCheck className="size-4 text-primary" />
+              دنبال می‌شود
+            </>
+          ) : (
+            <>
+              <BookmarkPlus className="size-4" />
+              دنبال کردن
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ─── تابلوی قیمت ───
+function BoardView({ rows }: { rows: Awaited<ReturnType<typeof useBoard>>["data"] }) {
+  const byGood = useMemo(() => {
+    const map = new Map<string, NonNullable<typeof rows>>();
+    for (const r of rows ?? []) {
+      const arr = map.get(r.good.id) ?? [];
+      arr.push(r);
+      map.set(r.good.id, arr);
+    }
+    return map;
+  }, [rows]);
+
+  return (
+    <div className="space-y-4">
+      {[...byGood.entries()].map(([goodId, list]) => {
+        const best = Math.min(...list.map((r) => r.price));
+        return (
+          <div key={goodId} className="overflow-hidden rounded-2xl border bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b bg-muted/50 px-4 py-2.5">
+              <p className="text-sm font-extrabold">{list[0]?.good.name}</p>
+              <Badge variant="outline" className="bg-white">
+                {fa(list.length)} تامین‌کننده
+              </Badge>
+            </div>
+            <div className="divide-y">
+              {list.map((r) => {
+                const log = r.priceLogs[0];
+                const trend = log ? (r.price < log.oldPrice ? "down" : r.price > log.oldPrice ? "up" : "flat") : "flat";
+                return (
+                  <div key={r.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <span className="grid size-8 place-items-center rounded-lg bg-primary/10 text-sm font-black text-primary">
+                        {r.business.name.slice(0, 1)}
+                      </span>
+                      <div>
+                        <p className="text-sm font-bold">{r.business.name}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {r.business.city} · حداقل {fa(r.minOrder ?? 0)} {unitLabel(r.good.unit)} · {timeAgo(r.updatedAt)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <TrendChip dir={trend} />
+                      <div className="text-end">
+                        <p className="text-sm font-extrabold text-primary">{money(r.price)}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          هر {unitLabel(r.good.unit)}
+                          {log && log.oldPrice !== r.price && (
+                            <span className="ms-1 text-muted-foreground/70 line-through">{fa(log.oldPrice)}</span>
+                          )}
+                        </p>
+                      </div>
+                      {r.price === best && <Badge className="bg-primary">ارزان‌ترین</Badge>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function TrendChip({ dir }: { dir: "up" | "down" | "flat" }) {
+  if (dir === "down")
+    return (
+      <span className="flex items-center gap-0.5 text-[10px] font-bold text-emerald-600">
+        <TrendingDown className="size-3.5" />
+        کاهش
+      </span>
+    );
+  if (dir === "up")
+    return (
+      <span className="flex items-center gap-0.5 text-[10px] font-bold text-rose-600">
+        <TrendingUp className="size-3.5" />
+        افزایش
+      </span>
+    );
+  return (
+    <span className="flex items-center gap-0.5 text-[10px] font-bold text-muted-foreground">
+      <Minus className="size-3.5" />
+      ثابت
+    </span>
+  );
+}
+
+// ─── فرم ارسال پیشنهاد قیمت ───
+function OfferSender({ suggested, unit, busy, onSend }: { suggested: number; unit: string; busy: boolean; onSend: (price: number) => void }) {
+  const [price, setPrice] = useState(suggested ? String(suggested) : "");
+  return (
+    <div className="mt-3 flex items-end gap-2 border-t pt-3">
+      <div className="grid grow gap-1.5">
+        <span className="text-[11px] text-muted-foreground">
+          قیمت پیشنهادی شما (تومان / هر {unit})
+          {suggested > 0 && " — پیشنهاد ما همان قیمت کاتالوگ شماست"}
+        </span>
+        <Input
+          type="number"
+          min={0}
+          dir="ltr"
+          className="text-left"
+          placeholder={suggested ? String(suggested) : "قیمت…"}
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+      </div>
+      <Button size="sm" onClick={() => onSend(Number(price))} disabled={busy || !price}>
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+        ارسال پیشنهاد
+      </Button>
+    </div>
+  );
+}
+
+// ─── کارت لینک اختصاصی بازو — ابزار اشتراک‌گذاری ───
+export function ShareCard({
+  kind,
+  slug,
+  bizName,
+  onView,
+}: {
+  kind: "sell" | "buy";
+  slug: string;
+  bizName?: string;
+  onView: () => void;
+}) {
+  const { toast } = useToast();
+  const [copied, setCopied] = useState(false);
+  const isSell = kind === "sell";
+  const path = `${kind}/${slug}`;
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://imach.app";
+  const fullUrl = `${origin}/${path}`;
+  const shareText = isSell
+    ? `کاتالوگ فروش ${bizName ? `«${bizName}» ` : ""}در iMach`
+    : `نیازهای خرید ${bizName ? `«${bizName}» ` : ""}در iMach — اگر این کالا را دارید، پیشنهاد بدهید`;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+    } catch {
+      /* clipboard may fail — ignore */
+    }
+    setCopied(true);
+    toast({ title: "لینک کپی شد", description: path });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareTelegram = () => {
+    window.open(
+      `https://t.me/share/url?url=${encodeURIComponent(fullUrl)}&text=${encodeURIComponent(shareText)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  const shareWhatsApp = () => {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(`${shareText}: ${fullUrl}`)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  return (
+    <div
+      className={`rounded-2xl border p-5 ${
+        isSell ? "border-primary/25 bg-accent/50" : "border-stone-300/70 bg-stone-50/70"
+      }`}
+    >
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2 font-bold">
+          <span
+            className={`grid size-9 place-items-center rounded-xl text-white shadow-sm ${
+              isSell ? "bg-primary" : "bg-stone-700"
+            }`}
+          >
+            {isSell ? <Store className="size-4" /> : <ShoppingBasket className="size-4" />}
+          </span>
+          <div>
+            <p className="text-sm">{isSell ? "لینک کاتالوگ فروش" : "لینک لیست خرید"}</p>
+            <p className="text-xs font-normal text-muted-foreground">
+              {isSell ? "برای مشتری‌هایتان بفرستید" : "برای تامین‌کننده‌هایتان بفرستید"}
+            </p>
+          </div>
+        </div>
+        <Badge variant="outline" className="bg-white">
+          {isSell ? "فروش" : "خرید"}
+        </Badge>
+      </div>
+      <div className="flex items-center gap-2 rounded-xl border bg-white p-2 ps-3" dir="ltr">
+        <span className="grow truncate text-left text-sm font-medium text-primary">{path}</span>
+        <Button size="icon" variant="ghost" onClick={() => void copy()} aria-label="کپی لینک" className="size-8">
+          {copied ? <Check className="size-4 text-primary" /> : <Copy className="size-4" />}
+        </Button>
+      </div>
+      <div className="mt-3 flex items-center gap-3">
+        <div
+          className="shrink-0 rounded-xl border bg-white p-1.5 shadow-sm"
+          title="برای باز کردن لینک در موبایل، اسکن کنید"
+        >
+          <QRCodeSVG value={fullUrl} size={64} fgColor="#f97316" bgColor="#ffffff" />
+        </div>
+        <div className="grid grow gap-2">
+          <Button onClick={onView} className={isSell ? "" : "bg-stone-800 hover:bg-stone-900"}>
+            <ArrowLeftRight className="size-4" />
+            {isSell ? "دیدن کاتالوگ" : "دیدن لیست خرید"}
+          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" onClick={shareTelegram}>
+              <Send className="size-3.5 text-sky-600" />
+              تلگرام
+            </Button>
+            <Button variant="outline" size="sm" onClick={shareWhatsApp}>
+              <MessageCircle className="size-3.5 text-green-600" />
+              واتساپ
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── کارت دنبال‌کننده‌ها / دنبال‌شونده‌ها ───
+export function FollowCard({ kind, slug }: { kind: "followers" | "following"; slug: string }) {
+  const [open, setOpen] = useState(false);
+  const followersQ = useFollowersBySlug(open && kind === "followers" ? slug : null);
+  const followingQ = useFollowingBySlug(open && kind === "following" ? slug : null);
+  const rows = (kind === "followers" ? followersQ.data : followingQ.data) ?? [];
+  const isFollowers = kind === "followers";
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+          {isFollowers ? <Users className="size-4" /> : <UsersRound className="size-4" />}
+        </span>
+        <div>
+          <p className="text-sm font-bold">{isFollowers ? "دنبال‌کننده‌های من" : "دنبال‌شونده‌های من"}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {isFollowers
+              ? "خریدارهایی که کاتالوگ شما را دنبال می‌کنند — خریدارهای شخصی شما"
+              : "تامین‌کننده‌هایی که دنبال می‌کنید — قیمت‌هایشان در تابلوی قیمت است"}
+          </p>
+        </div>
+      </div>
+      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+        دیدن لیست
+      </Button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{isFollowers ? "دنبال‌کننده‌ها" : "دنبال‌شونده‌ها"}</DialogTitle>
+          </DialogHeader>
+          {followersQ.isLoading ? (
+            <div className="grid place-items-center py-10">
+              <Loader2 className="size-5 animate-spin text-primary" />
+            </div>
+          ) : rows.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              {isFollowers ? "هنوز کسی شما را دنبال نکرده است." : "هنوز کسی را دنبال نکرده‌اید."}
+            </p>
+          ) : (
+            <div className="max-h-80 space-y-1.5 overflow-y-auto pe-1">
+              {rows.map((b) => (
+                <Link
+                  key={b.slug}
+                  href={`/sell/${b.slug}`}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-xl border bg-white p-2.5 transition hover:border-primary/40"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-sm font-black text-primary">
+                    {b.name.slice(0, 1)}
+                  </span>
+                  <div className="min-w-0 grow">
+                    <p className="truncate text-sm font-bold">{b.name}</p>
+                    <p className="flex items-center gap-0.5 text-[11px] text-muted-foreground">
+                      <MapPin className="size-3" />
+                      {b.city}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+// ─── نوع فعالیت: ۱۰ گزینه؛ اختیاری، هر وقت خواست عوضش می‌کند ───
+export function ActivityCard({ biz }: { biz: BusinessSummaryDto }) {
+  const { toast } = useToast();
+  const edit = useEditBusiness();
+
+  const setActivity = async (v: string) => {
+    const value = v === "NONE" ? null : v;
+    try {
+      await edit.mutateAsync({ id: biz.id, activityType: value });
+      toast({ title: value ? `نوع فعالیت: ${activityTypeLabel(value)}` : "نوع فعالیت حذف شد" });
+    } catch {
+      toast({ title: "ذخیره ناموفق بود", description: "دوباره تلاش کنید", variant: "destructive" });
+    }
+  };
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-muted text-muted-foreground">
+          <Briefcase className="size-4" />
+        </span>
+        <div>
+          <p className="text-sm font-bold">نوع فعالیت</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {biz.activityType ? activityTypeLabel(biz.activityType) : "اختیاری — تولیدکننده، پخش‌کننده، خرده‌فروش و…"}
+          </p>
+        </div>
+      </div>
+
+      <Select value={biz.activityType ?? ""} onValueChange={(v) => void setActivity(v)}>
+        <SelectTrigger className="w-full sm:w-48" aria-label="نوع فعالیت">
+          <SelectValue placeholder="انتخاب کنید…" />
+        </SelectTrigger>
+        <SelectContent>
+          {ACTIVITY_TYPES.map((a) => (
+            <SelectItem key={a.key} value={a.key}>
+              {a.fa}
+            </SelectItem>
+          ))}
+          {biz.activityType && <SelectItem value="NONE">حذف انتخاب</SelectItem>}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+// ─── جعبه خالی ───
+export function EmptyBox({ text, action }: { text: string; action?: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-dashed bg-white/60 p-6 text-center">
+      <p className="mx-auto max-w-md text-sm leading-7 text-muted-foreground">{text}</p>
+      {action && <div className="mt-3 flex justify-center">{action}</div>}
+    </div>
+  );
+}

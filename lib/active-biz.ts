@@ -29,9 +29,14 @@ export function useActiveBusiness(): BusinessSummaryDto | null {
 }
 
 /**
- * خانه‌ی کاربرِ واردشده = بازوی فروش او. نه صفحه اصلی.
- * بدون کسب‌وکار → پنل (که مسیر ساخت کسب‌وکار را نشان می‌دهد).
+ * خانه‌ی کاربرِ واردشده = «بازوی من» — ویترین عمومی خودش با سوییچر خرید/فروش.
+ * بدون کسب‌وکار → مسیر ساخت کسب‌وکار.
  */
-export function sellArmHref(slug: string | null | undefined): string {
-  return slug ? `/sell/${slug}` : "/panel";
+export function myArmHref(): string {
+  return "/arm";
+}
+
+/** مدیریت بازوها — داشبورد سبک هر بازو (جدا از نمای عمومی) */
+export function manageHref(kind: "sell" | "buy"): string {
+  return kind === "sell" ? "/manage/sell" : "/manage/buy";
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { sellArmHref } from "@/lib/active-biz";
+import { myArmHref } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1115,12 +1115,11 @@ function FinalCta() {
 export default function Home() {
     const router = useRouter();
     const status = useAuthStore((s) => s.status);
-    const firstBizSlug = useAuthStore((s) => s.businesses[0]?.slug);
 
-    // کاربر واردشده خانه‌اش بازوی فروش خودش است — صفحه اصلی فقط مال مهمان‌هاست.
+    // کاربر واردشده خانه‌اش «بازوی من» است — صفحه اصلی فقط مال مهمان‌هاست.
     useEffect(() => {
-        if (status === "authed") router.replace(sellArmHref(firstBizSlug));
-    }, [status, firstBizSlug, router]);
+        if (status === "authed") router.replace(myArmHref());
+    }, [status, router]);
 
     return (
         <div className="flex min-h-screen flex-col">
