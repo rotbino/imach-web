@@ -110,6 +110,7 @@ export interface UserDto {
   name: string;
   phone: string;
   role: string;
+  country: string;
 }
 
 export interface BusinessSummaryDto {
@@ -118,6 +119,8 @@ export interface BusinessSummaryDto {
   name: string;
   activityType: string | null;
   city: string;
+  country?: string;
+  currency?: string;
   isVerified: boolean;
 }
 
@@ -127,11 +130,49 @@ export interface AuthResponseDto {
   businesses: BusinessSummaryDto[];
 }
 
+// ─── کاتالوگ — درخت دسته + کالای مرجع + برند ───
+
+export interface CategoryAttrOption {
+  v: string;
+  fa: string;
+  en: string;
+}
+
+export interface CategoryAttr {
+  key: string;
+  fa: string;
+  en: string;
+  type: "enum" | "text";
+  options?: CategoryAttrOption[];
+}
+
+export interface CategoryNodeDto {
+  id: string;
+  slug: string;
+  nameFa: string;
+  nameEn: string;
+  attrs?: CategoryAttr[] | null;
+  children: CategoryNodeDto[];
+}
+
 export interface GoodDto {
   id: string;
-  name: string;
-  category: string;
+  nameFa: string;
+  nameEn: string | null;
+  aliases: string[];
   unit: string;
+  category: {
+    id: string;
+    slug: string;
+    nameFa: string;
+    nameEn: string;
+    attrs?: CategoryAttr[] | null;
+  };
+}
+
+export interface BrandDto {
+  id: string;
+  name: string;
 }
 
 export interface PageDto<T> {
@@ -142,13 +183,22 @@ export interface PageDto<T> {
 export interface GoodItemDto {
   id: string;
   mode: string;
-  price: number | null;
+  priceMinor: number | null;
+  currency: string | null;
+  attrs?: Record<string, string> | null;
   stock: number | null;
   minOrder: number | null;
   volume: number | null;
   frequency: string | null;
   updatedAt?: string;
-  good: { id: string; name: string; category: string; unit: string };
+  brand?: { id: string; name: string } | null;
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { slug: string; nameFa: string; nameEn: string };
+  };
 }
 
 export interface BusinessProfileDto {
@@ -157,6 +207,8 @@ export interface BusinessProfileDto {
   name: string;
   activityType: string | null;
   city: string;
+  country?: string;
+  currency?: string;
   isVerified: boolean;
   isDemo: boolean;
   _count: { followers: number; following: number };
@@ -167,13 +219,20 @@ export interface BusinessProfileDto {
 export interface ExploreItemDto {
   id: string;
   mode: string;
-  price: number | null;
+  priceMinor: number | null;
+  currency: string | null;
   stock: number | null;
   minOrder: number | null;
   volume: number | null;
   frequency: string | null;
   updatedAt: string;
-  good: { id: string; name: string; category: string; unit: string };
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { slug: string; nameFa: string; nameEn: string };
+  };
   business: {
     id: string;
     slug: string;
@@ -198,7 +257,8 @@ export interface SellerDto {
 
 export interface OfferDto {
   id: string;
-  price: number;
+  priceMinor: number;
+  currency: string;
   minOrder: number;
   score: number;
   isSpecial: boolean;
@@ -206,9 +266,16 @@ export interface OfferDto {
   createdAt: string;
   listing: {
     id: string;
-    price: number | null;
+    priceMinor: number | null;
+    currency: string | null;
     minOrder: number | null;
-    good: { id: string; name: string; category: string; unit: string };
+    good: {
+      id: string;
+      nameFa: string;
+      nameEn: string | null;
+      unit: string;
+      category: { slug: string; nameFa: string; nameEn: string };
+    };
   };
   seller: SellerDto;
 }
@@ -222,8 +289,15 @@ export interface InquiryDto {
   createdAt: string;
   listing: {
     id: string;
-    price: number | null;
-    good: { id: string; name: string; category: string; unit: string };
+    priceMinor: number | null;
+    currency: string | null;
+    good: {
+      id: string;
+      nameFa: string;
+      nameEn: string | null;
+      unit: string;
+      category: { slug: string; nameFa: string; nameEn: string };
+    };
   };
   buyer: SellerDto;
 }
@@ -240,13 +314,20 @@ export interface FollowDto {
 
 export interface BoardRowDto {
   id: string;
-  price: number;
+  priceMinor: number;
+  currency: string | null;
   stock: number | null;
   minOrder: number | null;
   updatedAt: string;
-  good: { id: string; name: string; category: string; unit: string };
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { slug: string; nameFa: string; nameEn: string };
+  };
   business: SellerDto;
-  priceLogs: { oldPrice: number; newPrice: number; createdAt: string }[];
+  priceLogs: { oldMinor: number; newMinor: number; createdAt: string }[];
 }
 
 export interface SuggestionDto {
@@ -275,7 +356,8 @@ export interface SupplierSuggestionDto {
   goodId: string;
   goodName: string;
   unit: string;
-  price: number;
+  priceMinor: number;
+  currency: string | null;
   minOrder: number;
   score: number;
 }
@@ -299,7 +381,7 @@ export interface QuoteRequestResultDto {
 export const authApi = {
   loginUser: (body: { phone: string; password: string }) =>
     api<AuthResponseDto>("/auth/loginUser", { method: "POST", body, auth: false }),
-  registerUser: (body: { name: string; phone: string; password: string }) =>
+  registerUser: (body: { name: string; phone: string; password: string; country?: string }) =>
     api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
@@ -307,9 +389,16 @@ export const authApi = {
 };
 
 export const goodsApi = {
-  getGoods: (params: { q?: string; category?: string; cursor?: string; limit?: number }) =>
+  /** جستجوی کالای مرجع (fa/en/alias) یا مرور با categoryId */
+  getGoods: (params: { q?: string; categoryId?: string; cursor?: string; limit?: number }) =>
     api<PageDto<GoodDto>>("/goods/getGoods", { params, auth: false }),
-  getCategories: () => api<string[]>("/goods/getCategories", { auth: false }),
+  /** درخت کامل دسته‌بندی‌ها */
+  getCategories: () => api<CategoryNodeDto[]>("/goods/getCategories", { auth: false }),
+  /** پیشنهاد برند برای فرم ثبت کالا */
+  getBrands: (q?: string) => api<BrandDto[]>("/goods/getBrands", { params: { q }, auth: false }),
+  /** ثبت کالای مرجع جدید وقتی جستجو نتیجه‌ای نداشت */
+  createGood: (body: { name: string; categoryId: string; nameEn?: string; aliases?: string[]; unit: string }) =>
+    api<GoodDto>("/goods/createGood", { method: "POST", body }),
 };
 
 export const businessesApi = {
@@ -339,7 +428,9 @@ export const listingsApi = {
     businessId: string;
     goodId: string;
     mode: string;
-    sell?: { price: number; stock: number; minOrder: number };
+    brandName?: string;
+    attrs?: Record<string, string>;
+    sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
   }) => api<GoodItemDto>("/listings/saveListing", { method: "PUT", body }),
   deleteListing: (id: string) => api<{ ok: boolean }>(`/listings/deleteListing/${id}`, { method: "DELETE" }),
@@ -357,7 +448,7 @@ export const marketApi = {
     api<InquiryPageDto>("/market/getInquiries", { params: { businessId, limit: 50 } }),
   markInquiryRead: (id: string) =>
     api<{ ok: boolean }>(`/market/markInquiryRead/${id}`, { method: "POST" }),
-  sendOffer: (body: { inquiryId: string; price: number; note?: string }) =>
+  sendOffer: (body: { inquiryId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),
   followSupplier: (businessId: string, supplierId: string) =>

@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import type { SupplierSuggestionDto, SuggestionDto } from "@/lib/api";
-import { fa, money, proximity, proximityLabel, unitLabel, frequencyLabel } from "@/lib/format";
+import { fa, fmtMoney, proximity, proximityLabel, unitLabel, frequencyLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import {
@@ -309,7 +309,7 @@ function SupplierStripCard({
       <div className="mt-2.5 rounded-lg bg-muted/70 px-2.5 py-1.5 text-xs">
         <span className="text-muted-foreground">می‌فروشد: </span>
         <span className="font-bold">{s.goodName}</span>
-        <span className="ms-1 font-bold text-primary">{money(s.price)}</span>
+        <span className="ms-1 font-bold text-primary">{fmtMoney(s.priceMinor, s.currency)}</span>
       </div>
       <div className="mt-2.5 flex items-center gap-1.5">
         <Button size="sm" variant={followed ? "secondary" : "default"} onClick={onFollow} disabled={busy} className="h-7 flex-1 text-xs">

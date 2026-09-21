@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { fa, money, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
+import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useBusinessProfile, useFollowersBySlug, useFollowToggle, useFollowingBySlug } from "@/lib/queries";
 import { manageHref } from "@/lib/active-biz";
@@ -92,7 +92,7 @@ export function SellArmView({ slug }: { slug: string }) {
   const isOwner = isCatalogOwner(slug, storeBizs, user?.role);
 
   const sellListings = (biz?.listings ?? []).filter(
-    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.price !== null
+    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null
   );
 
   useEffect(() => {
@@ -206,16 +206,17 @@ export function SellArmView({ slug }: { slug: string }) {
                 {/* تا زمان سیستم فایل‌ها: کاشی حرفیِ تخت به‌جای عکس */}
                 <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
                   <span className="text-5xl font-black text-primary/20" aria-hidden>
-                    {l.good.name.slice(0, 1)}
+                    {goodName(l.good).slice(0, 1)}
                   </span>
                 </div>
                 <div className="p-3">
-                  <p className="truncate font-extrabold" title={l.good.name}>
-                    {l.good.name}
+                  <p className="truncate font-extrabold" title={goodName(l.good)}>
+                    {goodName(l.good)}
+                    {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">{l.good.category}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
                   <p className="mt-2 text-lg font-black text-primary">
-                    {money(l.price as number)}
+                    {fmtMoney(l.priceMinor, l.currency)}
                   </p>
                   <p className="mt-0.5 text-[11px] text-muted-foreground">
                     هر {unitLabel(l.good.unit)} · حداقل {fa(l.minOrder ?? 0)} {unitLabel(l.good.unit)}
@@ -349,13 +350,14 @@ export function BuyArmView({ slug }: { slug: string }) {
             {buyListings.map((l) => (
               <article key={l.id} className="animate-fade-up flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm">
                 <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
-                  {l.good.name.slice(0, 1)}
+                  {goodName(l.good).slice(0, 1)}
                 </span>
                 <div className="min-w-0 grow">
-                  <p className="truncate font-extrabold" title={l.good.name}>
-                    {l.good.name}
+                  <p className="truncate font-extrabold" title={goodName(l.good)}>
+                    {goodName(l.good)}
+                    {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">{l.good.category}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
                 </div>
                 <div className="shrink-0 text-end">
                   <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">

@@ -9,6 +9,7 @@ import {
   type BoardRowDto,
   type BusinessProfileDto,
   type BusinessSummaryDto,
+  type CategoryNodeDto,
   type ExploreItemDto,
   type FollowBizDto,
   type FollowDto,
@@ -33,8 +34,9 @@ import { useAuthStore } from "./auth-store";
 
 // ── کلیدها ──
 export const qk = {
-  goods: (params: { q?: string; category?: string }) => ["goods", params] as const,
+  goods: (params: { q?: string; categoryId?: string }) => ["goods", params] as const,
   categories: () => ["goods", "categories"] as const,
+  brands: (q?: string) => ["goods", "brands", q ?? ""] as const,
   businessProfile: (slug: string) => ["business", slug] as const,
   explore: (mode: string, city?: string) => ["explore", mode, city ?? ""] as const,
   buyRequests: (bizId: string) => ["market", "buyRequests", bizId] as const,
@@ -55,19 +57,43 @@ export const qk = {
 
 // ── پابلیک ──
 
-export function useGoods(params: { q?: string; category?: string; limit?: number }): UseQueryResult<PageDto<GoodDto>> {
+/** جستجوی کالای مرجع — فرم ثبت کالا (debounce در فرم اعمال می‌شود) */
+export function useGoods(params: { q?: string; categoryId?: string; limit?: number }): UseQueryResult<PageDto<GoodDto>> {
   return useQuery({
     queryKey: qk.goods(params),
     queryFn: () => goodsApi.getGoods(params),
     staleTime: 5 * 60_000,
+    enabled: !!(params.q?.trim() || params.categoryId),
   });
 }
 
-export function useCategories(): UseQueryResult<string[]> {
+/** درخت دسته‌بندی‌ها (fa/en) */
+export function useCategories(): UseQueryResult<CategoryNodeDto[]> {
   return useQuery({
     queryKey: qk.categories(),
     queryFn: () => goodsApi.getCategories(),
     staleTime: 5 * 60_000,
+  });
+}
+
+/** پیشنهاد برند — برای فیلد اختیاری برند در فرم ثبت کالا */
+export function useBrands(q: string | null): UseQueryResult<{ id: string; name: string }[]> {
+  return useQuery({
+    queryKey: qk.brands(q ?? undefined),
+    queryFn: () => goodsApi.getBrands(q ?? undefined),
+    staleTime: 5 * 60_000,
+    enabled: q !== null && q.trim().length >= 1,
+  });
+}
+
+/** ثبت کالای مرجع جدید — مسیر رشد پنهان کاتالوگ */
+export function useCreateGood() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: goodsApi.createGood,
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["goods"] });
+    },
   });
 }
 

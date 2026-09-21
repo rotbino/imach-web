@@ -75,9 +75,9 @@ function NewListingBody() {
   return (
     <ListingForm
       bizId={active.id}
+      currency={active.currency}
       kind={kind as ListingKind}
       onKindChange={setKind}
-      submitLabel="ثبت کالا"
       onSaved={(k) => router.push(`/arm?tab=${k}`)}
     />
   );
