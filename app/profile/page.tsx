@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { LanguageSelect } from "@/app/components/language-select";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, ShieldCheck } from "lucide-react";
 
 /*
  * پروفایل — فعلا ساده: نام کاربر، موبایل و خروج.
@@ -65,6 +66,18 @@ export default function ProfilePage() {
             <p className="text-sm text-muted-foreground">زبان / Language</p>
             <LanguageSelect />
           </div>
+
+          {user.role === "ADMIN" && (
+            <Link
+              href="/admin"
+              className="mt-4 flex items-center gap-2.5 rounded-2xl border bg-white px-4 py-3 shadow-sm transition hover:shadow-md"
+            >
+              <span className="grid size-8 place-items-center rounded-lg bg-primary/10 text-primary">
+                <ShieldCheck className="size-4.5" strokeWidth={1.75} />
+              </span>
+              <span className="text-sm font-extrabold">پنل مدیریت</span>
+            </Link>
+          )}
         </div>
       </main>
       <AppFooter />
