@@ -20,7 +20,7 @@ export const fa = {
     },
     placeholders: {
       fullName: "مثلا علی رضایی",
-      mobile: "09121234567",
+      mobile: "",
       password: "",
     },
     submitLogin: "ورود و ادامه",

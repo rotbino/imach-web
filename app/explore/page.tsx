@@ -131,7 +131,7 @@ function BuyerStrip({ bizId, city }: { bizId: string; city: string }) {
   if (items.length === 0) return null;
 
   return (
-    <Strip label="خریدارهای پیشنهادی" icon={<Users className="size-3.5" />}>
+    <Strip label="درخواستهای خرید مناسب شما" icon={<Users className="size-3.5" />}>
       {items.map((m) => (
         <BuyerStripCard
           key={`${m.buyerId}-${m.goodId}`}
@@ -175,7 +175,7 @@ function BuyerStripCard({
         <MatchRing score={m.score} size={38} />
       </div>
       <div className="mt-2.5 rounded-lg bg-muted/70 px-2.5 py-1.5 text-xs">
-        <span className="text-muted-foreground">می‌خواهد: </span>
+        <span className="text-muted-foreground">نیاز به خرید </span>
         <span className="font-bold">{m.goodName}</span>
         <span className="ms-1 font-bold text-primary">
           {fa(m.volume)} {unitLabel(m.unit)}

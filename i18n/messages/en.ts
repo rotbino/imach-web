@@ -19,8 +19,8 @@ export const en: Messages = {
     },
     placeholders: {
       fullName: "e.g. Ali Rezaei",
-      mobile: "09121234567",
-      password: "••••••••",
+      mobile: "",
+      password: "",
     },
     submitLogin: "Sign in & continue",
     submitRegister: "Create account & continue",

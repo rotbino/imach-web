@@ -80,7 +80,9 @@ function HomeFeed({ bizId }: { bizId: string }) {
         defaultValue="sell"
         items={[
           { value: "sell", label: "تامین‌کنندگان", icon: Store },
-          { value: "buy", label: "درخواست‌های خرید عمده", icon: ShoppingBag },
+          { value: "buy", label: "درخواست‌های خرید", icon: ShoppingBag },
+          { value: "sell1", label: "تامین‌کنندگان من", icon: Store },
+          { value: "buy1", label: "خریداران من", icon: ShoppingBag },
         ]}
         panels={{
           sell: <SellHomeFeed q={sellQ} />,
@@ -99,7 +101,7 @@ function SellHomeFeed({ q }: { q: FeedQ }) {
 
   if (items.length === 0) {
     return (
-      <EmptyFollowed tab="sell" text="از دنبال‌شونده‌هایتان فعلا کالایی برای فروش نیامده است." />
+      <EmptyFollowed tab="sell" text=" تامین کنندگانی که دنبال می کنید. کالایی برای فروش ثبت نکرده اند." />
     );
   }
 
@@ -118,7 +120,7 @@ function BuyHomeFeed({ q }: { q: FeedQ }) {
 
   if (items.length === 0) {
     return (
-      <EmptyFollowed tab="buy" text="از دنبال‌شونده‌هایتان فعلا درخواست خریدی نیامده است." />
+      <EmptyFollowed tab="buy" text="خریدارانی که دنبال می کنید هنوز کسی درخواست خرید ثبت نکرده است." />
     );
   }
 
