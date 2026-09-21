@@ -66,7 +66,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Ban className="size-7" />
           </span>
           <p className="mt-4 font-extrabold">{m.admin.forbiddenTitle}</p>
-          <Link href="/home" className="mt-5 inline-block text-sm font-bold text-primary hover:underline">
+          <Link href="/" className="mt-5 inline-block text-sm font-bold text-primary hover:underline">
             {m.admin.backToSite}
           </Link>
         </div>
@@ -210,7 +210,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="mt-auto flex flex-col gap-3 border-t pt-4">
           <Link
-            href="/home"
+            href="/"
             className="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
           >
             <Globe className="size-4.5" strokeWidth={1.75} />
@@ -234,7 +234,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="ms-auto flex items-center gap-1">
             <LanguageSelect />
             <Link
-              href="/home"
+              href="/"
               aria-label={m.admin.backToSite}
               className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
             >

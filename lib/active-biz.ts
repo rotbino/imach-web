@@ -5,9 +5,8 @@ import { useMyBusinesses } from "./queries";
 import type { BusinessSummaryDto } from "./api";
 
 /**
- * کسب‌وکار فعال — همان چیزی که آیتم‌های نویگیشن (بازوی فروش / کالای جدید /
- * بازوی خرید) به آن اشاره می‌کنند. مثل اینستاگرام: یک هویت جاری در طول
- * نشست؛ با دراپ‌داون پنل عوض می‌شود و بعد از رفرش به اولین کسب‌وکار برمی‌گردد.
+ * کسب‌وکار فعال — صاحب صفحه‌ها. مثل اینستاگرام: یک هویت جاری در طول نشست؛
+ * با دراپ‌داون عوض می‌شود و بعد از رفرش به اولین کسب‌وکار برمی‌گردد.
  */
 
 interface ActiveBizState {
@@ -28,15 +27,24 @@ export function useActiveBusiness(): BusinessSummaryDto | null {
   return mine.find((b) => b.id === activeId) ?? mine[0] ?? null;
 }
 
-/**
- * خانه‌ی کاربرِ واردشده = «بازوی من» — ویترین عمومی خودش با سوییچر خرید/فروش.
- * بدون کسب‌وکار → مسیر ساخت کسب‌وکار.
- */
-export function myArmHref(): string {
-  return "/arm";
+// ─── محیط‌ها — آخرین محیطِ باز‌شده، پیش‌فرض ورود (سند فصل ۴.۵) ───
+
+export type Env = "sell" | "buy" | "market";
+
+const ENV_KEY = "imach.env";
+
+export function lastEnv(): Env {
+  if (typeof window === "undefined") return "sell";
+  const v = window.localStorage.getItem(ENV_KEY);
+  return v === "buy" || v === "market" || v === "sell" ? v : "sell";
 }
 
-/** مدیریت بازوها — داشبورد سبک هر بازو (جدا از نمای عمومی) */
-export function manageHref(kind: "sell" | "buy"): string {
-  return kind === "sell" ? "/manage/sell" : "/manage/buy";
+export function setLastEnv(env: Env): void {
+  if (typeof window !== "undefined") window.localStorage.setItem(ENV_KEY, env);
+}
+
+/** مقصد ورود کاربر واردشده = محیط فروش، یا آخرین محیطی که باز کرده بود */
+export function myEnvHref(): string {
+  const env = lastEnv();
+  return env === "buy" ? "/buy" : env === "market" ? "/market" : "/sell";
 }

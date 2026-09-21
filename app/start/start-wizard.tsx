@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { myArmHref } from "@/lib/active-biz";
+import { myEnvHref } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
 import { CITIES, fa, normalizePhone, COUNTRIES, countryLabel } from "@/lib/format";
 import { useLocale } from "@/i18n/locale-context";
@@ -99,7 +99,7 @@ export default function StartWizard() {
             {current === 1 && (
               <AuthStep
                 // ورود موفق → مستقیم «بازوی من»؛ نه صفحه اصلی، نه هیچ جای دیگر
-                onLoggedIn={() => router.push(myArmHref())}
+                onLoggedIn={() => router.push(myEnvHref())}
                 onRegistered={() => setStep(2)}
               />
             )}
@@ -343,7 +343,7 @@ function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
       bizId={biz.id}
       currency={biz.currency}
       firstGood
-      onSaved={() => router.push(myArmHref())} // بعد از ثبت اولین خرید/فروش → بازوی من
+      onSaved={() => router.push(myEnvHref())} // بعد از ثبت اولین خرید/فروش → محیط کاربر
     />
   );
 }

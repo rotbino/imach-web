@@ -4,38 +4,35 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
+import { myEnvHref } from "@/lib/active-biz";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
 import {
   CircleUserRound,
   Compass,
-  House,
   Link2,
+  ShoppingBasket,
   SquarePlus,
   Store,
 } from "lucide-react";
 
 /*
- * نویگیشن به سبک اینستاگرام — پنج آیتم، همیشه و همه‌جا:
- * • هوم (فید دنبال‌شونده‌ها) · اکسپلور (پیشنهادهای تطبیق) ·
- *   کالای جدید (به‌علاوه، وسط) · بازوی من (ویترین خودم) · پروفایل
- * • دو لینک جدا برای بازوها نیست — «بازوی من» یک لینک است و سوییچر
- *   خرید/فروش مثل اکسپلور داخل خود صفحه است.
+ * نویگیشن محیط‌محور — پنج آیتم، همیشه و همه‌جا (سند فصل ۴):
+ * • محیط فروش (کاتالوگ) · محیط خرید (میز خرید) · بازار (کشف عمومی) ·
+ *   کالای جدید (به‌علاوه، وسط) · پروفایل
+ * • هر محیط دنیای خودش را دارد؛ هیچ صفحه‌ای بین محیط‌ها سوییچ دستی نمی‌خواهد —
+ *   سوییچ با همین نویگیشن همیشگی است (سه مقصد ثابت: فروش/خرید/بازار).
  * • موبایل → فوتر چسبان؛ دسکتاپ → بالا، سمت مقابل لوگو
- * • آیکن‌ها ظریف (خط نازک)، عنوان‌ها زیر آیکن، ریز و بدون بولد — خلوت.
- * • این نویگیشن روی همه صفحات اصلی هست، از جمله خود بازوها.
- * • مهمان فقط «ورود | ثبت‌نام» می‌بیند.
+ * • لوگو → آخرین محیطِ باز‌شده (سند ۴.۵)؛ مهمان فقط «ورود | ثبت‌نام» می‌بیند.
  */
 
 // ─── عنوان صفحه‌ها — توی هدر، نه بدنه صفحه ───
 const PAGE_TITLES: [string, string][] = [
-  ["/manage/sell", "مدیریت بازوی فروش"],
-  ["/manage/buy", "مدیریت بازوی خرید"],
-  ["/explore", "بازار"],
-  ["/home", "هوم"],
-  ["/arm", "بازوی من"],
-  ["/profile", "پروفایل"],
+  ["/sell", "محیط فروش"],
+  ["/buy", "محیط خرید"],
+  ["/market", "بازار"],
   ["/new", "کالای جدید"],
+  ["/profile", "پروفایل"],
 ];
 
 function pageTitle(pathname: string): string | null {
@@ -45,10 +42,10 @@ function pageTitle(pathname: string): string | null {
 // ─── آیتم‌های نویگیشن ───
 export function useNavItems() {
   return [
-    { href: "/home", label: "هوم", icon: House },
-    { href: "/explore", label: "بازار", icon: Compass },
+    { href: "/sell", label: "فروش", icon: Store },
+    { href: "/buy", label: "خرید", icon: ShoppingBasket },
+    { href: "/market", label: "بازار", icon: Compass },
     { href: "/new", label: "کالای جدید", icon: SquarePlus },
-    { href: "/arm", label: "بازوی من", icon: Store },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
 }
@@ -65,12 +62,16 @@ export function AppHeader() {
   const items = useNavItems();
   const title = pageTitle(pathname);
 
+  const goHome = () => {
+    router.push(status === "authed" ? myEnvHref() : "/");
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <div className="flex min-w-0 items-center gap-2.5">
           <button
-            onClick={() => router.push(status === "authed" ? "/arm" : "/")}
+            onClick={goHome}
             className="flex shrink-0 items-center gap-2 text-lg font-extrabold"
             aria-label="iMach"
           >
@@ -123,7 +124,7 @@ export function AppHeader() {
   );
 }
 
-// ─── فوتر چسبان موبایل — نویگیشن اینستاگرامی ───
+// ─── فوتر چسبان موبایل — نویگیشن محیط‌محور ───
 export function MobileTabBar() {
   const { status } = useAuthStore();
   const router = useRouter();

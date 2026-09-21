@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { myArmHref } from "@/lib/active-biz";
+import { myEnvHref } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1118,7 +1118,7 @@ export default function Home() {
 
     // کاربر واردشده خانه‌اش «بازوی من» است — صفحه اصلی فقط مال مهمان‌هاست.
     useEffect(() => {
-        if (status === "authed") router.replace(myArmHref());
+        if (status === "authed") router.replace(myEnvHref());
     }, [status, router]);
 
     return (

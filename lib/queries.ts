@@ -21,7 +21,6 @@ import {
   type PageDto,
   type QuoteRequestResultDto,
   type SupplierSuggestionDto,
-  type SuggestionDto,
 } from "./api";
 import { useAuthStore } from "./auth-store";
 
@@ -40,10 +39,6 @@ export const qk = {
   businessProfile: (slug: string) => ["business", slug] as const,
   explore: (mode: string, city?: string) => ["explore", mode, city ?? ""] as const,
   buyRequests: (bizId: string) => ["market", "buyRequests", bizId] as const,
-  sellOffers: (bizId: string) => ["market", "sellOffers", bizId] as const,
-  homeFeed: (bizId: string, mode: string) => ["market", "home", bizId, mode] as const,
-  followersBySlug: (slug: string) => ["business", slug, "followers"] as const,
-  followingBySlug: (slug: string) => ["business", slug, "following"] as const,
   myBusinesses: () => ["businesses", "mine"] as const,
   myListings: (bizId: string) => ["listings", bizId] as const,
   offers: (bizId: string) => ["market", "offers", bizId] as const,
@@ -51,7 +46,6 @@ export const qk = {
   follows: (bizId: string) => ["market", "follows", bizId] as const,
   myFollowers: (bizId: string) => ["market", "myFollowers", bizId] as const,
   board: (bizId: string) => ["market", "board", bizId] as const,
-  suggestions: (bizId: string) => ["market", "suggestions", bizId] as const,
   supplierSuggestions: (bizId: string) => ["market", "supplierSuggestions", bizId] as const,
 };
 
@@ -118,52 +112,12 @@ export function useExploreFeed(mode: "SELL" | "BUY", city?: string): UseQueryRes
   });
 }
 
-/** بازار — مرتبط‌ترین درخواست‌های خرید برای من (احرازشده) */
+/** تقاضای مرتبط با کالاهای من — جریان تقاضای محیط فروش */
 export function useBuyRequests(businessId: string | null | undefined): UseQueryResult<MarketItemDto[]> {
   return useQuery({
     queryKey: qk.buyRequests(businessId ?? ""),
     queryFn: () => marketApi.getBuyRequests(businessId as string),
     enabled: !!businessId,
-    staleTime: 60_000,
-  });
-}
-
-/** بازار — مرتبط‌ترین پیشنهادهای فروش برای من (احرازشده) */
-export function useSellOffers(businessId: string | null | undefined): UseQueryResult<MarketItemDto[]> {
-  return useQuery({
-    queryKey: qk.sellOffers(businessId ?? ""),
-    queryFn: () => marketApi.getSellOffers(businessId as string),
-    enabled: !!businessId,
-    staleTime: 60_000,
-  });
-}
-
-/** هوم — تازه‌ترین کالاهای کسب‌وکارهایی که دنبال می‌کنم (احرازشده) */
-export function useHomeFeed(businessId: string | null | undefined, mode: "SELL" | "BUY"): UseQueryResult<ExploreItemDto[]> {
-  return useQuery({
-    queryKey: qk.homeFeed(businessId ?? "", mode),
-    queryFn: () => marketApi.getHomeFeed(businessId as string, mode),
-    enabled: !!businessId,
-    staleTime: 30_000,
-  });
-}
-
-/** لیست عمومی دنبال‌کننده‌های یک کسب‌وکار */
-export function useFollowersBySlug(slug: string | null | undefined): UseQueryResult<FollowBizDto[]> {
-  return useQuery({
-    queryKey: qk.followersBySlug(slug ?? ""),
-    queryFn: () => businessesApi.getFollowersBySlug(slug as string),
-    enabled: !!slug,
-    staleTime: 60_000,
-  });
-}
-
-/** لیست عمومی دنبال‌شونده‌های یک کسب‌وکار */
-export function useFollowingBySlug(slug: string | null | undefined): UseQueryResult<FollowBizDto[]> {
-  return useQuery({
-    queryKey: qk.followingBySlug(slug ?? ""),
-    queryFn: () => businessesApi.getFollowingBySlug(slug as string),
-    enabled: !!slug,
     staleTime: 60_000,
   });
 }
@@ -323,15 +277,6 @@ export function useBoard(businessId: string | null | undefined): UseQueryResult<
   });
 }
 
-export function useSuggestions(businessId: string | null | undefined): UseQueryResult<SuggestionDto[]> {
-  return useQuery({
-    queryKey: qk.suggestions(businessId ?? ""),
-    queryFn: () => marketApi.getSuggestions(businessId as string),
-    enabled: !!businessId,
-    staleTime: 60_000,
-  });
-}
-
 /** تامین‌کننده‌های پیشنهادی برای نیازهای خرید من — موتور دنبال کردن سمت خرید */
 export function useSupplierSuggestions(businessId: string | null | undefined): UseQueryResult<SupplierSuggestionDto[]> {
   return useQuery({
@@ -342,7 +287,7 @@ export function useSupplierSuggestions(businessId: string | null | undefined): U
   });
 }
 
-/** خریدارهایی که کسب‌وکار من را دنبال می‌کنند — خریدارهای شخصی من */
+/** خریدارهایی که کاتالوگ من را پیگیری می‌کنند — خریدارهای شخصی من */
 export function useMyFollowers(businessId: string | null | undefined): UseQueryResult<FollowBizDto[]> {
   return useQuery({
     queryKey: qk.myFollowers(businessId ?? ""),

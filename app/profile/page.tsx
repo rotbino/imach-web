@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
+import { useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { LanguageSelect } from "@/app/components/language-select";
+import { BusinessCard } from "./business-card";
 import { Button } from "@/components/ui/button";
 import { LogOut, ShieldCheck } from "lucide-react";
 
@@ -16,6 +18,7 @@ import { LogOut, ShieldCheck } from "lucide-react";
 export default function ProfilePage() {
   const router = useRouter();
   const { status, user, logout } = useAuthStore();
+  const active = useActiveBusiness();
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
@@ -66,6 +69,12 @@ export default function ProfilePage() {
             <p className="text-sm text-muted-foreground">زبان / Language</p>
             <LanguageSelect />
           </div>
+
+          {active && (
+            <div className="mt-4">
+              <BusinessCard biz={active} />
+            </div>
+          )}
 
           {user.role === "ADMIN" && (
             <Link

@@ -11,8 +11,8 @@ import { Loader2 } from "lucide-react";
 
 /*
  * کالای جدید — مقصد آیتم وسط نویگیشن (+).
- * تب فروش/خرید با URL سینک است (/new?tab=sell|buy) — لینک مستقیم به ثبتِ همان بازو.
- * کالا به کسب‌وکارِ فعال اضافه می‌شود؛ بعد از ثبت، کاربر به تب همان بازو در «بازوی من» می‌رود.
+ * تب فروش/خرید با URL سینک است (/new?tab=sell|buy) — لینک مستقیم به ثبتِ همان محیط.
+ * کالا به کسب‌وکارِ فعال اضافه می‌شود؛ بعد از ثبت، کاربر به کاتالوگ یا میز خرید می‌رود.
  */
 export default function NewListingPage() {
   return (
@@ -78,7 +78,7 @@ function NewListingBody() {
       currency={active.currency}
       kind={kind as ListingKind}
       onKindChange={setKind}
-      onSaved={(k) => router.push(`/arm?tab=${k}`)}
+      onSaved={(k) => router.push(k === "sell" ? "/sell?tab=catalog" : "/buy?tab=desk")}
     />
   );
 }
