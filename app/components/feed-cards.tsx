@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ExploreItemDto } from "@/lib/api";
-import { fa, money, unitLabel, frequencyLabel } from "@/lib/format";
+import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { BadgeCheck, ClipboardList, Loader2, MapPin, Store } from "lucide-react";
 
@@ -35,20 +35,20 @@ export function ExploreSellCard({ item: l }: { item: ExploreItemDto }) {
         {/* تا زمان سیستم فایل‌ها: کاشی حرفیِ تخت به‌جای عکس */}
         <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
           <span className="text-5xl font-black text-primary/20" aria-hidden>
-            {l.good.name.slice(0, 1)}
+            {goodName(l.good).slice(0, 1)}
           </span>
         </div>
         <div className="p-3">
-          <p className="truncate font-extrabold" title={l.good.name}>
-            {l.good.name}
+          <p className="truncate font-extrabold" title={goodName(l.good)}>
+            {goodName(l.good)}
           </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{l.good.category}</p>
-          {l.price !== null && (
-            <p className="mt-2 text-lg font-black text-primary">{money(l.price)}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
+          {l.priceMinor !== null && (
+            <p className="mt-2 text-lg font-black text-primary">{fmtMoney(l.priceMinor, l.currency)}</p>
           )}
           <p className="mt-0.5 text-[11px] text-muted-foreground">
-            هر {unitLabel(l.good.unit)}
-            {l.minOrder ? ` · حداقل ${fa(l.minOrder)} ${unitLabel(l.good.unit)}` : ""}
+            {unitLabel(l.good.unit)}
+            {l.minOrder ? ` · ${fa(l.minOrder)} ${unitLabel(l.good.unit)}` : ""}
           </p>
           <BizRow item={l} tone="sell" />
         </div>
@@ -62,13 +62,13 @@ export function ExploreBuyRow({ item: l }: { item: ExploreItemDto }) {
     <Link href={`/buy/${l.business.slug}`} aria-label={`لیست خرید ${l.business.name}`}>
       <article className="animate-fade-up flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md">
         <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
-          {l.good.name.slice(0, 1)}
+          {goodName(l.good).slice(0, 1)}
         </span>
         <div className="min-w-0 grow">
-          <p className="truncate font-extrabold" title={l.good.name}>
-            {l.good.name}
+          <p className="truncate font-extrabold" title={goodName(l.good)}>
+            {goodName(l.good)}
           </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{l.good.category}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
           <BizRow item={l} tone="buy" />
         </div>
         <div className="shrink-0 text-end">

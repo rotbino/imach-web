@@ -6,7 +6,8 @@ import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { myArmHref } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
-import { CITIES, fa, normalizePhone } from "@/lib/format";
+import { CITIES, fa, normalizePhone, COUNTRIES, countryLabel } from "@/lib/format";
+import { useLocale } from "@/i18n/locale-context";
 import { AppHeader, AppFooter, MobileTabBar } from "@/app/components/chrome";
 import { LanguageSelect } from "@/app/components/language-select";
 import { ListingForm } from "@/app/components/listing-form";
@@ -135,10 +136,12 @@ function AuthStep({
   const login = useAuthStore((s) => s.login);
   const register = useAuthStore((s) => s.register);
   const m = useMessages(); // ورود/ثبت‌نام — دوزبانه (fa/en)
+  const { locale } = useLocale();
   const [tab, setTab] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [country, setCountry] = useState("IR"); // واحد پول کاتالوگ از همین‌جا می‌آید
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
@@ -163,7 +166,7 @@ function AuthStep({
           setBusy(false);
           return;
         }
-        await register(name.trim(), phoneNorm, password);
+        await register(name.trim(), phoneNorm, password, country);
         toast({ title: m.auth.toasts.welcome });
         onRegistered(); // ثبت‌نام → ادامه ساخت کسب‌وکار
       }
@@ -222,6 +225,21 @@ function AuthStep({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+          </Field>
+          <Field label={m.auth.fields.country}>
+            <Select value={country} onValueChange={setCountry}>
+              <SelectTrigger aria-label={m.auth.fields.country}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {COUNTRIES.map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {countryLabel(c.code, locale)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-[10px] leading-4 text-muted-foreground">{m.auth.hints.country}</p>
           </Field>
         </TabsContent>
       </Tabs>
@@ -320,8 +338,8 @@ function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
   return (
     <ListingForm
       bizId={biz.id}
+      currency={biz.currency}
       firstGood
-      submitLabel="ثبت و رفتن به بازوی من"
       onSaved={() => router.push(myArmHref())} // بعد از ثبت اولین خرید/فروش → بازوی من
     />
   );

@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ApiError } from "@/lib/api";
-import { useCategories, useGoods, useSaveListing } from "@/lib/queries";
-import { FREQUENCY_LABELS, unitLabel } from "@/lib/format";
+import { useEffect, useState } from "react";
+import { ApiError, type GoodDto } from "@/lib/api";
+import { useBrands, useCategories, useCreateGood, useGoods, useSaveListing } from "@/lib/queries";
+import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
+import { useMessages } from "@/i18n/messages/use-messages";
+import { useLocale } from "@/i18n/locale-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,12 +18,17 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Check, Loader2, Search, ShoppingBasket, Store } from "lucide-react";
+import { Check, ChevronDown, Loader2, PackagePlus, Search, ShoppingBasket, Store, X } from "lucide-react";
 
 /*
- * فرم ثبت کالا — مشترک بین گام ۳ ویزارد و صفحه «کالای جدید» پنل.
- * هر دو بازو برای همه فعال است؛ عمده/خرده بودنِ هر کالا در بازطراحی
- * بعدی «ثبت کالا» به همین فرم اضافه می‌شود.
+ * فرم ثبت کالا — مشترک بین گام ۳ ویزارد و صفحه «کالای جدید».
+ *
+ * کالا = «کالای مرجع» (کلاس قابل معامله، مثل «خرمای خازویی»)، نه برند×وزن.
+ * جریان عمدا ساده نگه داشته شده:
+ *   ۱) جست‌وجو (دوزبانه: فارسی/انگلیسی/مترادف) یا مرور درخت دسته‌ها
+ *   ۲) اگر پیدا نشد — ثبت همان کالا به‌عنوان مرجع جدید، بدون ترک فرم
+ *   ۳) برند اختیاری (اگر برند ندارد، خالی می‌ماند) + اتریبیوت‌های دسته
+ *   ۴) قیمت همیشه در کوچک‌ترین واحدِ ارزِ بازوی فروش (از کشورِ ثبت‌نام)
  */
 
 type Frequency = "WEEKLY" | "MONTHLY" | "OCCASIONAL";
@@ -29,6 +36,7 @@ export type ListingKind = "sell" | "buy";
 
 export function ListingForm({
   bizId,
+  currency = "IRR",
   firstGood = false,
   submitLabel,
   onSaved,
@@ -36,16 +44,21 @@ export function ListingForm({
   onKindChange,
 }: {
   bizId: string;
+  /** واحد پول بازوی فروش — از کشورِ انتخابیِ ثبت‌نام می‌آید */
+  currency?: string;
   /** حالت ویزارد: لحن «اولین کالا» */
   firstGood?: boolean;
-  submitLabel: string;
+  submitLabel?: string;
   onSaved: (kind: ListingKind) => void;
-  /** کنترل‌شده — وقتی صفحه، تب را با URL سینک می‌کند (/new?tab=sell|buy) */
+  /** کنترل‌شده — صفحه، تب را با URL سینک می‌کند (/new?tab=sell|buy) */
   kind?: ListingKind;
   onKindChange?: (kind: ListingKind) => void;
 }) {
   const { toast } = useToast();
+  const m = useMessages();
+  const { locale } = useLocale();
   const saveMutation = useSaveListing();
+  const createGoodMutation = useCreateGood();
 
   const [innerKind, setInnerKind] = useState<ListingKind>(kindProp ?? "sell"); // پیش‌فرض: کاتالوگ فروش
   const kind = kindProp ?? innerKind;
@@ -55,70 +68,150 @@ export function ListingForm({
   };
   const isSell = kind === "sell";
 
-  const [goodId, setGoodId] = useState<string | null>(null);
+  // ── انتخاب کالای مرجع ──
   const [query, setQuery] = useState("");
-  const [cat, setCat] = useState("");
+  const [debounced, setDebounced] = useState("");
+  const [rootSlug, setRootSlug] = useState("");
+  const [leafId, setLeafId] = useState("");
+  const [selected, setSelected] = useState<GoodDto | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+
+  // ── برند + اتریبیوت + مشخصات ──
+  const [brandName, setBrandName] = useState("");
+  const [attrs, setAttrs] = useState<Record<string, string>>({});
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [minOrder, setMinOrder] = useState("");
   const [volume, setVolume] = useState("");
   const [frequency, setFrequency] = useState<Frequency>("MONTHLY");
 
-  const goodsQ = useGoods({ limit: 100 });
+  // ── فرم کالای جدید (پیدا نشد) ──
+  const [newName, setNewName] = useState("");
+  const [newRoot, setNewRoot] = useState("");
+  const [newLeaf, setNewLeaf] = useState("");
+  const [newUnit, setNewUnit] = useState("PIECE");
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(query.trim()), 300);
+    return () => clearTimeout(t);
+  }, [query]);
+
   const categoriesQ = useCategories();
-  const goods = goodsQ.data?.items ?? [];
-  const categories = categoriesQ.data ?? [];
-  const activeCat = query.trim() ? "" : cat || categories[0] || "";
+  const roots = categoriesQ.data ?? [];
+  const activeRoot = roots.find((r) => r.slug === rootSlug) ?? null;
+  const searchQ = useGoods(debounced ? { q: debounced, limit: 30 } : {});
+  const browseQ = useGoods(leafId && !debounced ? { categoryId: leafId, limit: 100 } : {});
+  const searching = searchQ.isFetching;
+  const results = debounced ? (searchQ.data?.items ?? []) : (browseQ.data?.items ?? []);
 
-  const visible = useMemo(
-    () =>
-      query.trim()
-        ? goods.filter((g) => g.name.includes(query.trim()) || g.category.includes(query.trim()))
-        : goods.filter((g) => g.category === activeCat),
-    [goods, query, activeCat]
-  );
-  const good = goods.find((g) => g.id === goodId) ?? null;
+  const brandsQ = useBrands(brandName.trim().length >= 1 ? brandName.trim() : null);
+  const brandSuggestions = (brandsQ.data ?? []).filter((b) => b.name !== brandName.trim());
 
-  const save = async () => {
-    if (!good) {
-      toast({ title: "یک کالا انتخاب کنید", variant: "destructive" });
+  const curDef = CURRENCIES[currency] ?? CURRENCIES.IRR;
+  const curName = currencyLabel(currency, locale);
+
+  // پنل «ثبت کالای جدید» وقتی جستجو بی‌نتیجه است، خودش باز می‌شود
+  useEffect(() => {
+    if (debounced && !searching && results.length === 0) {
+      setShowCreate(true);
+      setNewName((n) => n || debounced);
+    }
+  }, [debounced, searching, results.length]);
+
+  const pickGood = (g: GoodDto) => {
+    setSelected(g);
+    setShowCreate(false);
+    setAttrs({});
+    setPrice("");
+    setStock("");
+    setMinOrder("");
+    setVolume("");
+  };
+
+  const newRootObj = roots.find((r) => r.slug === newRoot) ?? null;
+  const newLeafObj = newRootObj?.children.find((c) => c.id === newLeaf) ?? null;
+
+  const createNewGood = async () => {
+    if (newName.trim().length < 2) {
+      toast({ title: m.listing.errors.nameShort, variant: "destructive" });
       return;
     }
-    if (isSell) {
-      if (Number(price) <= 0 || Number(stock) <= 0) {
-        toast({ title: "قیمت و موجودی را وارد کنید", variant: "destructive" });
-        return;
-      }
-    } else if (Number(volume) <= 0) {
-      toast({ title: "حجم خرید را وارد کنید", variant: "destructive" });
+    if (!newLeafObj) {
+      toast({ title: m.listing.errors.pickCategory, variant: "destructive" });
       return;
     }
-
     try {
-      await saveMutation.mutateAsync({
-        businessId: bizId,
-        goodId: good.id,
-        mode: isSell ? "SELL" : "BUY",
-        ...(isSell
-          ? { sell: { price: Number(price), stock: Number(stock), minOrder: Number(minOrder) || 0 } }
-          : { buy: { volume: Number(volume), frequency } }),
+      const created = await createGoodMutation.mutateAsync({
+        name: newName.trim(),
+        categoryId: newLeafObj.id,
+        unit: newUnit,
       });
-      toast({ title: firstGood ? "اولین کالای شما ثبت شد" : "کالا ثبت شد" });
-      onSaved(kind);
+      pickGood(created);
+      setQuery("");
+      setDebounced("");
+      toast({ title: goodName(created, locale) });
     } catch (err) {
       toast({
-        title: "ثبت کالا ناموفق بود",
-        description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
+        title: m.listing.errors.createGoodFailed,
+        description: err instanceof ApiError ? err.message : m.auth.toasts.tryAgain,
         variant: "destructive",
       });
     }
   };
 
+  const save = async () => {
+    if (!selected) {
+      toast({ title: m.listing.errors.selectGood, variant: "destructive" });
+      return;
+    }
+    if (isSell) {
+      if (Number(price) <= 0 || Number(stock) <= 0) {
+        toast({ title: m.listing.errors.sellSpec, variant: "destructive" });
+        return;
+      }
+    } else if (Number(volume) <= 0) {
+      toast({ title: m.listing.errors.buySpec, variant: "destructive" });
+      return;
+    }
+
+    const filledAttrs = Object.fromEntries(Object.entries(attrs).filter(([, v]) => v.trim() !== ""));
+
+    try {
+      await saveMutation.mutateAsync({
+        businessId: bizId,
+        goodId: selected.id,
+        mode: isSell ? "SELL" : "BUY",
+        ...(brandName.trim() ? { brandName: brandName.trim() } : {}),
+        ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
+        ...(isSell
+          ? {
+              sell: {
+                priceMinor: Math.round(Number(price) * 10 ** curDef.exp),
+                stock: Number(stock),
+                minOrder: Number(minOrder) || 0,
+              },
+            }
+          : { buy: { volume: Number(volume), frequency } }),
+      });
+      toast({ title: firstGood ? m.listing.success.savedFirst : m.listing.success.saved });
+      onSaved(kind);
+    } catch (err) {
+      toast({
+        title: m.listing.errors.saveFailed,
+        description: err instanceof ApiError ? err.message : m.auth.toasts.tryAgain,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const catLabel = (g: GoodDto): string => goodName(g.category, locale);
+  const attrsOf = selected?.category.attrs ?? [];
+
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       {firstGood && (
         <h1 className="text-lg font-extrabold">
-          {isSell ? "اولین کالای فروشتان را ثبت کنید" : "اولین کالای خریدتان را ثبت کنید"}
+          {isSell ? m.listing.firstGood.sell : m.listing.firstGood.buy}
         </h1>
       )}
 
@@ -127,122 +220,334 @@ export function ListingForm({
         <TabsList className="mt-4 grid w-full grid-cols-2">
           <TabsTrigger value="sell" className="gap-1.5">
             <Store className="size-4" />
-            برای فروش عمده
+            {m.listing.tabs.sell}
           </TabsTrigger>
           <TabsTrigger value="buy" className="gap-1.5">
             <ShoppingBasket className="size-4" />
-            برای خرید عمده
+            {m.listing.tabs.buy}
           </TabsTrigger>
         </TabsList>
       </Tabs>
 
-      {/* جست‌وجو */}
+      {/* جست‌وجوی کالای مرجع — دوزبانه */}
       <div className="relative mt-4">
         <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          aria-label="جست‌وجوی کالا"
-          placeholder="جست‌وجو… مثلا برنج، رب، کارتن"
+          aria-label={m.listing.search.aria}
+          placeholder={m.listing.search.placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="pe-9"
         />
       </div>
 
-      {/* دسته‌ها */}
-      <div className="mt-3 flex flex-wrap gap-2">
-        {categories.map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => {
-              setCat(c);
-              setQuery("");
-            }}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-              activeCat === c
-                ? "border-primary bg-primary text-primary-foreground"
-                : "bg-white text-muted-foreground hover:border-primary/40"
-            }`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-
-      {/* انتخاب یک کالا */}
-      <div className="mt-3 grid max-h-64 grid-cols-2 gap-2 overflow-y-auto pe-1 sm:grid-cols-3">
-        {visible.map((g) => {
-          const sel = g.id === goodId;
-          return (
-            <button
-              key={g.id}
-              type="button"
-              onClick={() => setGoodId(g.id)}
-              aria-pressed={sel}
-              className={`flex items-center justify-between rounded-xl border p-3 text-start transition ${
-                sel ? "border-primary bg-accent ring-1 ring-primary" : "bg-white hover:border-primary/40"
-              }`}
-            >
-              <span>
-                <span className="block text-sm font-bold">{g.name}</span>
-                <span className="text-[11px] text-muted-foreground">واحد رایج: {unitLabel(g.unit)}</span>
+      {/* کالای انتخاب‌شده */}
+      {selected && (
+        <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-primary/20 bg-accent/50 px-3.5 py-2.5">
+          <div className="min-w-0">
+            <p className="truncate text-sm font-extrabold text-primary">
+              {goodName(selected, locale)}
+              <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">
+                {catLabel(selected)} · {unitLabel(selected.unit, locale)}
               </span>
-              <span
-                className={`grid size-5 place-items-center rounded-full border ${
-                  sel ? "border-primary bg-primary text-white" : "border-input"
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSelected(null)}
+            aria-label="remove"
+            className="grid size-7 shrink-0 place-items-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
+
+      {/* نتایج جست‌وجو */}
+      {!selected && debounced && (
+        <div className="mt-3">
+          {results.length > 0 && (
+            <>
+              <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.search.results}</p>
+              <GoodGrid
+                items={results}
+                onPick={pickGood}
+                locale={locale}
+                catLabel={catLabel}
+                emptyLabel={m.listing.search.empty}
+              />
+            </>
+          )}
+          {searching && (
+            <p className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+              <Loader2 className="size-4 animate-spin" />
+              {m.listing.catalogLoading}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* مرور درخت دسته‌ها (وقتی جستجو خالی است) */}
+      {!selected && !debounced && (
+        <div className="mt-3">
+          <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.search.browse}</p>
+          <div className="flex flex-wrap gap-2">
+            {roots.map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => {
+                  setRootSlug(rootSlug === r.slug ? "" : r.slug);
+                  setLeafId("");
+                }}
+                aria-pressed={rootSlug === r.slug}
+                className={`rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                  rootSlug === r.slug
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "bg-white text-muted-foreground hover:border-primary/40"
                 }`}
               >
-                {sel && <Check className="size-3.5" />}
-              </span>
-            </button>
-          );
-        })}
-        {goodsQ.isLoading && (
-          <div className="col-span-2 flex items-center gap-2 py-6 text-sm text-muted-foreground sm:col-span-3">
-            <Loader2 className="size-4 animate-spin" /> در حال دریافت کاتالوگ…
+                {goodName(r, locale)}
+              </button>
+            ))}
           </div>
-        )}
-      </div>
 
-      {/* مشخصات */}
-      {good && (
+          {activeRoot && (
+            <div className="mt-2.5 flex flex-wrap gap-2">
+              {activeRoot.children.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setLeafId(leafId === c.id ? "" : c.id)}
+                  aria-pressed={leafId === c.id}
+                  className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                    leafId === c.id
+                      ? "border-primary bg-accent text-primary"
+                      : "bg-white text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  {goodName(c, locale)}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-3">
+            {leafId && browseQ.isFetching && (
+              <p className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+                <Loader2 className="size-4 animate-spin" />
+                {m.listing.catalogLoading}
+              </p>
+            )}
+            {leafId && !browseQ.isFetching && (
+              <GoodGrid
+                items={results}
+                onPick={pickGood}
+                locale={locale}
+                catLabel={catLabel}
+                emptyLabel={m.listing.search.empty}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ثبت کالای مرجع جدید — وقتی پیدا نشد */}
+      {(showCreate || (!selected && debounced && !searching && results.length === 0)) && (
+        <div className="mt-3 rounded-xl border border-dashed border-primary/30 bg-accent/30 p-4">
+          <p className="flex items-center gap-1.5 text-sm font-extrabold">
+            <PackagePlus className="size-4 text-primary" />
+            {m.listing.create.title.replace("{name}", newName || debounced)}
+          </p>
+          <p className="mt-1 text-[11px] text-muted-foreground">{m.listing.search.notFoundHint}</p>
+
+          <div className="mt-3 grid gap-2.5">
+            <Field label={m.listing.create.nameLabel}>
+              <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              <Field label={m.listing.create.categoryLabel}>
+                <Select
+                  value={newRoot}
+                  onValueChange={(v) => {
+                    setNewRoot(v);
+                    setNewLeaf("");
+                  }}
+                >
+                  <SelectTrigger aria-label={m.listing.create.categoryLabel}>
+                    <SelectValue placeholder={m.listing.create.categoryPlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roots.map((r) => (
+                      <SelectItem key={r.id} value={r.slug}>
+                        {goodName(r, locale)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field label="‌">
+                <Select value={newLeaf} onValueChange={setNewLeaf} disabled={!newRootObj}>
+                  <SelectTrigger aria-label={m.listing.create.categoryLabel}>
+                    <SelectValue placeholder={m.listing.create.categoryPlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(newRootObj?.children ?? []).map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {goodName(c, locale)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
+
+            <Field label={m.listing.create.unitLabel}>
+              <Select value={newUnit} onValueChange={setNewUnit}>
+                <SelectTrigger aria-label={m.listing.create.unitLabel}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {["KILOGRAM", "TON", "CARTON", "SACK", "PIECE", "LITER", "METER", "GRAM", "SERVICE"].map((u) => (
+                    <SelectItem key={u} value={u}>
+                      {unitLabel(u, locale)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+          </div>
+
+          <Button
+            type="button"
+            size="sm"
+            className="mt-3 w-full"
+            onClick={() => void createNewGood()}
+            disabled={createGoodMutation.isPending}
+          >
+            {createGoodMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+            {createGoodMutation.isPending ? m.listing.create.selecting : m.listing.create.submit}
+          </Button>
+        </div>
+      )}
+
+      {/* برند اختیاری + اتریبیوت‌ها + مشخصات */}
+      {selected && (
         <div className={`mt-4 rounded-xl border p-4 ${isSell ? "border-primary/15 bg-accent/40" : "border-stone-200 bg-stone-50"}`}>
-          <p className="mb-3 flex items-center gap-1.5 text-sm font-extrabold">
+          {/* برند */}
+          <div className="relative grid gap-1.5">
+            <Label className="text-[11px] text-muted-foreground">{m.listing.brand.label}</Label>
+            <Input
+              value={brandName}
+              onChange={(e) => setBrandName(e.target.value)}
+              placeholder={m.listing.brand.placeholder}
+            />
+            {brandName.trim() && brandSuggestions.length > 0 && (
+              <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border bg-white shadow-lg">
+                <p className="border-b bg-muted/60 px-3 py-1.5 text-[10px] font-bold text-muted-foreground">
+                  {m.listing.brand.suggestions}
+                </p>
+                {brandSuggestions.slice(0, 6).map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => setBrandName(b.name)}
+                    className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
+                  >
+                    <span className="font-bold">{b.name}</span>
+                    <Check className="size-3.5 text-primary" />
+                  </button>
+                ))}
+              </div>
+            )}
+            {brandName.trim() && brandSuggestions.length === 0 && !brandsQ.isFetching && (
+              <p className="text-[10px] text-muted-foreground">{m.listing.brand.newHint}</p>
+            )}
+          </div>
+
+          {/* اتریبیوت‌های دسته — همه اختیاری */}
+          {attrsOf.length > 0 && (
+            <div className="mt-4">
+              <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.specs.attrsTitle}</p>
+              <div className="grid grid-cols-2 gap-2.5">
+                {attrsOf.map((a) => (
+                  <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
+                    {a.type === "enum" && a.options ? (
+                      <Select
+                        value={attrs[a.key] ?? ""}
+                        onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
+                      >
+                        <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
+                          <SelectValue placeholder="—" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {a.options.map((o) => (
+                            <SelectItem key={o.v} value={o.v}>
+                              {locale === "en" ? o.en : o.fa}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        value={attrs[a.key] ?? ""}
+                        onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
+                      />
+                    )}
+                  </Field>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* مشخصات فروش/خرید */}
+          <p className="mb-3 mt-4 flex items-center gap-1.5 text-sm font-extrabold">
             {isSell ? <Store className="size-4 text-primary" /> : <ShoppingBasket className="size-4 text-stone-700" />}
-            {isSell ? `مشخصات فروش «${good.name}»` : `مشخصات خرید «${good.name}»`}
+            {isSell
+              ? m.listing.specs.sellTitle.replace("{name}", goodName(selected, locale))
+              : m.listing.specs.buyTitle.replace("{name}", goodName(selected, locale))}
           </p>
           {isSell ? (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Field label="قیمت هر واحد (تومان)">
-                <Input type="number" min={0} placeholder="85000" value={price} onChange={(e) => setPrice(e.target.value)} />
+              <Field label={`${m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))} (${curName})`}>
+                <Input
+                  type="number"
+                  min={0}
+                  dir="ltr"
+                  inputMode="numeric"
+                  placeholder={String(curDef.exp === 0 ? 7200000 : 120)}
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
               </Field>
-              <Field label="موجودی">
-                <Input type="number" min={0} placeholder="500" value={stock} onChange={(e) => setStock(e.target.value)} />
+              <Field label={m.listing.specs.stock}>
+                <Input type="number" min={0} value={stock} onChange={(e) => setStock(e.target.value)} />
               </Field>
-              <Field label="حداقل سفارش">
-                <Input type="number" min={0} placeholder="10" value={minOrder} onChange={(e) => setMinOrder(e.target.value)} />
+              <Field label={m.listing.specs.minOrder}>
+                <Input type="number" min={0} value={minOrder} onChange={(e) => setMinOrder(e.target.value)} />
               </Field>
-              <Field label="واحد">
-                <Input value={unitLabel(good.unit)} disabled />
+              <Field label={m.listing.specs.unit}>
+                <Input value={unitLabel(selected.unit, locale)} disabled />
               </Field>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              <Field label="حجم خرید در هر دوره">
-                <Input type="number" min={0} placeholder="2000" value={volume} onChange={(e) => setVolume(e.target.value)} />
+              <Field label={m.listing.specs.volume}>
+                <Input type="number" min={0} placeholder="200" value={volume} onChange={(e) => setVolume(e.target.value)} />
               </Field>
-              <Field label="واحد">
-                <Input value={unitLabel(good.unit)} disabled />
+              <Field label={m.listing.specs.unit}>
+                <Input value={unitLabel(selected.unit, locale)} disabled />
               </Field>
-              <Field label="تناوب خرید">
+              <Field label={m.listing.specs.frequency}>
                 <Select value={frequency} onValueChange={(v) => setFrequency(v as Frequency)}>
-                  <SelectTrigger aria-label="تناوب خرید">
+                  <SelectTrigger aria-label={m.listing.specs.frequency}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {(Object.keys(FREQUENCY_LABELS) as Frequency[]).map((f) => (
+                    {(Object.keys(FREQUENCY_KEYS) as Frequency[]).map((f) => (
                       <SelectItem key={f} value={f}>
-                        {FREQUENCY_LABELS[f]}
+                        {frequencyLabel(f, locale)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -255,8 +560,48 @@ export function ListingForm({
 
       <Button className="mt-5 w-full" onClick={() => void save()} disabled={saveMutation.isPending}>
         {saveMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-        {submitLabel}
+        {submitLabel ?? m.listing.save}
       </Button>
+    </div>
+  );
+}
+
+const FREQUENCY_KEYS = { WEEKLY: 1, MONTHLY: 1, OCCASIONAL: 1 } as const;
+
+function GoodGrid({
+  items,
+  onPick,
+  locale,
+  catLabel,
+  emptyLabel,
+}: {
+  items: GoodDto[];
+  onPick: (g: GoodDto) => void;
+  locale: string;
+  catLabel: (g: GoodDto) => string;
+  emptyLabel: string;
+}) {
+  return (
+    <div className="grid max-h-64 grid-cols-2 gap-2 overflow-y-auto pe-1 sm:grid-cols-3">
+      {items.map((g) => (
+        <button
+          key={g.id}
+          type="button"
+          onClick={() => onPick(g)}
+          className="flex items-center justify-between rounded-xl border p-3 text-start transition hover:border-primary/40"
+        >
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-bold">{goodName(g, locale)}</span>
+            <span className="block truncate text-[11px] text-muted-foreground">
+              {catLabel(g)} · {unitLabel(g.unit, locale)}
+            </span>
+          </span>
+          <ChevronDown className="size-4 shrink-0 -rotate-90 text-muted-foreground/50" />
+        </button>
+      ))}
+      {items.length === 0 && (
+        <p className="col-span-2 py-4 text-sm text-muted-foreground sm:col-span-3">{emptyLabel}</p>
+      )}
     </div>
   );
 }

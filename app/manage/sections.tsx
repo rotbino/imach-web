@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   fa,
-  money,
+  CURRENCIES,
+  categoryName,
+  currencyLabel,
+  fmtMoney,
+  goodName,
   proximity,
   proximityLabel,
   timeAgo,
@@ -209,14 +213,14 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
 
   const isSell = side === "sell";
   const listings = (listingsQ.data ?? []).filter((l) =>
-    isSell ? (l.mode === "SELL" || l.mode === "BOTH") && l.price !== null : (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
+    isSell ? (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null : (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
   );
 
   const remove = async () => {
     if (!target) return;
     try {
       await deleteListing.mutateAsync(target.id);
-      toast({ title: "کالا حذف شد", description: target.good.name });
+      toast({ title: "کالا حذف شد", description: goodName(target.good) });
     } catch {
       toast({ title: "حذف ناموفق بود", variant: "destructive" });
     } finally {
@@ -229,7 +233,7 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
       { listingId: l.id },
       {
         onSuccess: (res) =>
-          toast({ title: "قیمت‌گیری انجام شد", description: `${fa(res.created)} تامین‌کننده برای «${l.good.name}» پیشنهاد دادند.` }),
+          toast({ title: "قیمت‌گیری انجام شد", description: `${fa(res.created)} تامین‌کننده برای «${goodName(l.good)}» پیشنهاد دادند.` }),
         onError: (e) =>
           toast({ title: "قیمت‌گیری ناموفق بود", description: e instanceof ApiError ? e.message : "دوباره تلاش کنید", variant: "destructive" }),
       }
@@ -267,14 +271,17 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
                 isSell ? "bg-primary/10 text-primary" : "bg-stone-200 text-stone-700"
               }`}
             >
-              {l.good.name.slice(0, 1)}
+              {goodName(l.good).slice(0, 1)}
             </span>
             <div className="min-w-0 grow">
-              <p className="truncate text-sm font-extrabold">{l.good.name}</p>
+              <p className="truncate text-sm font-extrabold">
+                {goodName(l.good)}
+                {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
+              </p>
               <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
                 {isSell ? (
                   <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
-                    فروش · {money(l.price as number)}
+                    فروش · {fmtMoney(l.priceMinor, l.currency)}
                   </Badge>
                 ) : (
                   <Badge variant="outline">
@@ -290,7 +297,7 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
                   variant="ghost"
                   onClick={() => activateQuote(l)}
                   disabled={quoteRequest.isPending}
-                  aria-label={`قیمت‌گیری ${l.good.name}`}
+                  aria-label={`قیمت‌گیری ${goodName(l.good)}`}
                   className="text-primary"
                 >
                   <Radio className="size-4" />
@@ -301,7 +308,7 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
                 size="icon"
                 variant="ghost"
                 onClick={() => setTarget(l)}
-                aria-label={`حذف ${l.good.name}`}
+                aria-label={`حذف ${goodName(l.good)}`}
                 className="size-8 text-destructive hover:text-destructive"
               >
                 <Trash2 className="size-4" />
@@ -315,7 +322,7 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
       <Dialog open={!!target} onOpenChange={(o) => !o && setTarget(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>حذف «{target?.good.name}»؟</DialogTitle>
+            <DialogTitle>حذف «{target ? goodName(target.good) : ""}»؟</DialogTitle>
             <DialogDescription>
               {isSell
                 ? "این کالا از کاتالوگ فروش شما حذف می‌شود. این کار برگشت‌پذیر نیست."
@@ -338,7 +345,7 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
 }
 
 // ─── درخواست‌های قیمت (سمت فروش) ───
-export function InquiriesSection({ bizId, myCity, sellListings }: { bizId: string; myCity: string; sellListings: { goodId: string; price: number | null }[] }) {
+export function InquiriesSection({ bizId, myCity, sellListings }: { bizId: string; myCity: string; sellListings: { goodId: string; priceMinor: number | null; currency: string | null }[] }) {
   const { toast } = useToast();
   const inquiriesQ = useIncomingInquiries(bizId);
   const sendOffer = useSendOffer();
@@ -390,7 +397,7 @@ export function InquiriesSection({ bizId, myCity, sellListings }: { bizId: strin
                 </div>
               </div>
               <div className="text-end">
-                <p className="text-sm font-bold">{q.listing.good.name}</p>
+                <p className="text-sm font-bold">{goodName(q.listing.good)}</p>
                 <p className="text-[11px] text-muted-foreground">نیاز: {fa(q.volume)} {unitLabel(q.listing.good.unit)}</p>
               </div>
             </div>
@@ -403,12 +410,13 @@ export function InquiriesSection({ bizId, myCity, sellListings }: { bizId: strin
               </p>
             ) : (
               <OfferSender
-                suggested={mySell?.price ?? 0}
+                suggestedMinor={mySell?.priceMinor ?? 0}
+                currency={mySell?.currency ?? "IRR"}
                 unit={unitLabel(q.listing.good.unit)}
                 busy={sendOffer.isPending}
-                onSend={(price) => {
+                onSend={(minorPrice) => {
                   sendOffer.mutate(
-                    { inquiryId: q.id, price },
+                    { inquiryId: q.id, priceMinor: minorPrice },
                     {
                       onSuccess: () => toast({ title: "پیشنهاد ارسال شد", description: `پیشنهاد شما برای ${q.buyer.name} در بازوی خریدشان نمایش داده می‌شود.` }),
                       onError: (e) => toast({ title: "ارسال ناموفق بود", description: e instanceof ApiError ? e.message : "دوباره تلاش کنید", variant: "destructive" }),
@@ -468,11 +476,11 @@ export function OffersSection({ bizId, myCity }: { bizId: string; myCity: string
       />
       {(offersQ.data?.items ?? []).length === 0 && <EmptyBox text="هنوز پیشنهادی ندارید؛ از «نیازهای خرید من» روی کالاها قیمت‌گیری بزنید." />}
       {[...offersByGood.entries()].map(([gid, offers]) => {
-        const cheapest = sortMode === "price" ? [...offers].sort((a, b) => a.price - b.price)[0] : null;
+        const cheapest = sortMode === "price" ? [...offers].sort((a, b) => a.priceMinor - b.priceMinor)[0] : null;
         return (
           <div key={gid} className="rounded-2xl border bg-white p-4 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-extrabold">{offers[0].listing.good.name}</p>
+              <p className="text-sm font-extrabold">{goodName(offers[0].listing.good)}</p>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary">{fa(offers.length)} پیشنهاد</Badge>
                 <div className="flex items-center gap-0.5 rounded-lg bg-muted p-0.5">
@@ -497,7 +505,7 @@ export function OffersSection({ bizId, myCity }: { bizId: string; myCity: string
             </div>
             <div className="mt-3 space-y-2">
               {[...offers]
-                .sort((a, b) => (sortMode === "price" ? a.price - b.price : b.score - a.score))
+                .sort((a, b) => (sortMode === "price" ? a.priceMinor - b.priceMinor : b.score - a.score))
                 .map((o, i) => (
                   <OfferCard
                     key={o.id}
@@ -579,7 +587,7 @@ function OfferCard({ offer, index, myCity, followed, cheapest, onFollow }: {
         </div>
         <div className="flex items-center gap-3">
           <div className="text-end">
-            <p className="text-base font-black text-primary">{money(offer.price)}</p>
+            <p className="text-base font-black text-primary">{fmtMoney(offer.priceMinor, offer.currency)}</p>
             <p className="text-[11px] text-muted-foreground">
               هر {unitLabel(offer.listing.good.unit)} · حداقل {fa(offer.minOrder)} {unitLabel(offer.listing.good.unit)}
             </p>
@@ -621,11 +629,11 @@ function BoardView({ rows }: { rows: Awaited<ReturnType<typeof useBoard>>["data"
   return (
     <div className="space-y-4">
       {[...byGood.entries()].map(([goodId, list]) => {
-        const best = Math.min(...list.map((r) => r.price));
+        const best = Math.min(...list.map((r) => r.priceMinor));
         return (
           <div key={goodId} className="overflow-hidden rounded-2xl border bg-white shadow-sm">
             <div className="flex items-center justify-between border-b bg-muted/50 px-4 py-2.5">
-              <p className="text-sm font-extrabold">{list[0]?.good.name}</p>
+              <p className="text-sm font-extrabold">{list[0] ? goodName(list[0].good) : ""}</p>
               <Badge variant="outline" className="bg-white">
                 {fa(list.length)} تامین‌کننده
               </Badge>
@@ -633,7 +641,7 @@ function BoardView({ rows }: { rows: Awaited<ReturnType<typeof useBoard>>["data"
             <div className="divide-y">
               {list.map((r) => {
                 const log = r.priceLogs[0];
-                const trend = log ? (r.price < log.oldPrice ? "down" : r.price > log.oldPrice ? "up" : "flat") : "flat";
+                const trend = log ? (r.priceMinor < log.oldMinor ? "down" : r.priceMinor > log.oldMinor ? "up" : "flat") : "flat";
                 return (
                   <div key={r.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
                     <div className="flex items-center gap-2">
@@ -650,15 +658,15 @@ function BoardView({ rows }: { rows: Awaited<ReturnType<typeof useBoard>>["data"
                     <div className="flex items-center gap-2">
                       <TrendChip dir={trend} />
                       <div className="text-end">
-                        <p className="text-sm font-extrabold text-primary">{money(r.price)}</p>
+                        <p className="text-sm font-extrabold text-primary">{fmtMoney(r.priceMinor, r.currency)}</p>
                         <p className="text-[11px] text-muted-foreground">
                           هر {unitLabel(r.good.unit)}
-                          {log && log.oldPrice !== r.price && (
-                            <span className="ms-1 text-muted-foreground/70 line-through">{fa(log.oldPrice)}</span>
+                          {log && log.oldMinor !== r.priceMinor && (
+                            <span className="ms-1 text-muted-foreground/70 line-through">{fmtMoney(log.oldMinor, r.currency)}</span>
                           )}
                         </p>
                       </div>
-                      {r.price === best && <Badge className="bg-primary">ارزان‌ترین</Badge>}
+                      {r.priceMinor === best && <Badge className="bg-primary">ارزان‌ترین</Badge>}
                     </div>
                   </div>
                 );
@@ -694,27 +702,45 @@ function TrendChip({ dir }: { dir: "up" | "down" | "flat" }) {
   );
 }
 
-// ─── فرم ارسال پیشنهاد قیمت ───
-function OfferSender({ suggested, unit, busy, onSend }: { suggested: number; unit: string; busy: boolean; onSend: (price: number) => void }) {
-  const [price, setPrice] = useState(suggested ? String(suggested) : "");
+// ─── فرم ارسال پیشنهاد قیمت — ورودی به واحد اصلی ارز، ارسال به کوچک‌ترین واحد ───
+function OfferSender({
+  suggestedMinor,
+  currency,
+  unit,
+  busy,
+  onSend,
+}: {
+  suggestedMinor: number;
+  currency: string;
+  unit: string;
+  busy: boolean;
+  onSend: (priceMinor: number) => void;
+}) {
+  const exp = CURRENCIES[currency]?.exp ?? 0;
+  const suggestedMajor = suggestedMinor ? suggestedMinor / 10 ** exp : 0;
+  const [price, setPrice] = useState(suggestedMajor ? String(suggestedMajor) : "");
   return (
     <div className="mt-3 flex items-end gap-2 border-t pt-3">
       <div className="grid grow gap-1.5">
         <span className="text-[11px] text-muted-foreground">
-          قیمت پیشنهادی شما (تومان / هر {unit})
-          {suggested > 0 && " — پیشنهاد ما همان قیمت کاتالوگ شماست"}
+          قیمت پیشنهادی شما ({currencyLabel(currency)} / هر {unit})
+          {suggestedMajor > 0 && " — پیشنهاد ما همان قیمت کاتالوگ شماست"}
         </span>
         <Input
           type="number"
           min={0}
           dir="ltr"
           className="text-left"
-          placeholder={suggested ? String(suggested) : "قیمت…"}
+          placeholder={suggestedMajor ? String(suggestedMajor) : "قیمت…"}
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
       </div>
-      <Button size="sm" onClick={() => onSend(Number(price))} disabled={busy || !price}>
+      <Button
+        size="sm"
+        onClick={() => onSend(Math.round(Number(price) * 10 ** exp))}
+        disabled={busy || !price}
+      >
         {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
         ارسال پیشنهاد
       </Button>

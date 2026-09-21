@@ -415,7 +415,7 @@ function CatalogScreen() {
                                 <>
                                     <p className="whitespace-nowrap text-xs font-black text-primary">
                                         {fa(row.price)}{" "}
-                                        <span className="text-[9px] font-normal">تومان</span>
+                                        <span className="text-[9px] font-normal">ریال</span>
                                     </p>
 
                                     {row.special && (
@@ -544,7 +544,7 @@ function BuyScreen() {
                                     }`}
                                 >
                                     {fa(row.price)}{" "}
-                                    <span className="text-[9px] font-normal">تومان</span>
+                                    <span className="text-[9px] font-normal">ریال</span>
                                 </p>
                             </div>
                         </div>
@@ -896,7 +896,7 @@ function ViewerCard({
                 >
                     {fa(price!)}{" "}
                     <span className="text-[10px] font-normal text-muted-foreground">
-            تومان
+            ریال
           </span>
                 </p>
             )}

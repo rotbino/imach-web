@@ -107,13 +107,13 @@ function ManageSellDash({ biz }: { biz: NonNullable<ReturnType<typeof useActiveB
   const inquiriesQ = useIncomingInquiries(bizId);
 
   const listings = listingsQ.data ?? [];
-  const sellCount = listings.filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.price !== null).length;
+  const sellCount = listings.filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null).length;
   const unread = inquiriesQ.data?.unreadCount ?? 0;
   const followers = profileQ.data?._count.followers ?? 0;
 
   const sellListings = listings
-    .filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.price !== null)
-    .map((l) => ({ goodId: l.good.id, price: l.price }));
+    .filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null)
+    .map((l) => ({ goodId: l.good.id, priceMinor: l.priceMinor, currency: l.currency }));
 
   return (
     <div className="flex min-h-screen flex-col">
