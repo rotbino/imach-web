@@ -24,11 +24,11 @@ const iranSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "iMach — کاتالوگ فروش و لیست خرید هوشمند | رایگان",
+  title: "iMach | تطبیق نیازهای خریدار عمده با تامین کنندگان مناسب ",
   description:
     "کاتالوگ فروش هوشمندت را رایگان بساز؛ مشتری‌هایت فالو می‌کنند و همیشه آخرین قیمت‌ها را می‌بینند. لیست خریدت را برای تامین‌کننده‌ها بفرست و پیشنهادها را یک‌جا مقایسه کن.",
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/logo.svg",
   },
 };
 

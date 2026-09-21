@@ -682,8 +682,8 @@ function ProductTour() {
 
 
                     <h1 className="mt-4 text-xl font-black leading-[2.2] sm:text-2xl sm:leading-[2]">
-                        <div className="text-primary">کاتالوگ قیمت بساز برای فروش عمده</div>
-                        <div className="text-green-600">لیست خرید بساز برای خرید عمده</div>
+                        <div className="text-primary">برای فروش عمده کاتالوگ قیمت بساز </div>
+                        <div className="text-green-600">برای خرید عمده لیست خرید بساز </div>
                     </h1>
 
 
@@ -796,7 +796,7 @@ function ProductTour() {
 
                 <div className="mt-12 border-t pt-6">
                     <p className="mb-4 text-center text-[11px] font-bold text-muted-foreground">
-                        چند نمونه از آنچه در آی‌مچ ساخته می‌شود
+                       جدیدترین کاتالوگها و لیست های ساخته شده
                     </p>
 
                     <div className="space-y-3">
@@ -914,8 +914,8 @@ function PricePrivacy() {
             <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
                 <SectionHead
                     eyebrow="حریم قیمت"
-                    title="قیمت را برای هر مشتری، همان‌طور که می‌خواهی نمایش بده"
-                    sub="در آی‌مچ خودت تعیین می‌کنی چه کسی چه قیمتی را ببیند؛ حتی می‌توانی قیمت بعضی کالاها را پنهان کنی."
+                    title="قیمت را برای هر گروه مشتری اختصاصی کن"
+                    sub="در آی مچ می تونی به هر گروه مشتری قیمت خاص نشون بدی و یا قیمت رو پنهان کنی."
                 />
 
                 <div className="mx-auto mt-8 max-w-3xl rounded-2xl border bg-white p-5 shadow-sm sm:p-6">

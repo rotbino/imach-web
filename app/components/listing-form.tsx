@@ -116,11 +116,11 @@ export function ListingForm({
       <p className="mt-1 text-xs text-muted-foreground">
         {isSell
           ? firstGood
-            ? "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود. بقیه کالاها را بعدا از پنل اضافه کنید."
-            : "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود."
+            ? ""
+            : "."
           : firstGood
-            ? "این نیاز در بازوی خریدتان نمایش داده می‌شود تا تامین‌کننده‌ها پیشنهاد بدهند."
-            : "این نیاز در بازوی خریدتان نمایش داده می‌شود تا تامین‌کننده‌ها پیشنهاد بدهند."}
+            ? ""
+            : ""}
       </p>
 
       {/* انتخاب بازو: فروش یا خرید — هر دو بازو از اول در دسترس است */}
@@ -128,11 +128,11 @@ export function ListingForm({
         <TabsList className="mt-4 grid w-full grid-cols-2">
           <TabsTrigger value="sell" className="gap-1.5">
             <Store className="size-4" />
-            برای فروش
+            برای فروش عمده
           </TabsTrigger>
           <TabsTrigger value="buy" className="gap-1.5">
             <ShoppingBasket className="size-4" />
-            برای خرید
+            برای خرید عمده
           </TabsTrigger>
         </TabsList>
       </Tabs>
