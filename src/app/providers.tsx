@@ -1,0 +1,60 @@
+"use client";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { DirectionProvider } from "@radix-ui/react-direction";
+import { useEffect, useRef, useState } from "react";
+import { useAuthStore } from "@/lib/auth-store";
+import { LocaleProvider, useLocale } from "@/i18n/locale-context";
+
+/**
+ * Application-level providers:
+ *  • TanStack Query — all server state (staleTime lives in lib/queries.ts)
+ *  • Locale — language + document direction state (i18n base)
+ *  • Radix DirectionProvider — makes dropdowns/dialogs/tooltips follow
+ *    the document direction automatically (RTL ⇄ LTR with the language)
+ *  • Auth boot — silent refresh-token round-trip on first mount
+ */
+export function AppProviders({
+  initialLocale,
+  children,
+}: {
+  initialLocale?: string;
+  children: React.ReactNode;
+}) {
+  const [client] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+            staleTime: 30_000,
+          },
+        },
+      })
+  );
+
+  const boot = useAuthStore((s) => s.boot);
+  const booted = useRef(false);
+
+  useEffect(() => {
+    if (!booted.current) {
+      booted.current = true;
+      void boot();
+    }
+  }, [boot]);
+
+  return (
+    <QueryClientProvider client={client}>
+      <LocaleProvider initialLocale={initialLocale}>
+        <Directional>{children}</Directional>
+      </LocaleProvider>
+    </QueryClientProvider>
+  );
+}
+
+/** Bridges locale state into Radix UI's direction context. */
+function Directional({ children }: { children: React.ReactNode }) {
+  const { dir } = useLocale();
+  return <DirectionProvider dir={dir}>{children}</DirectionProvider>;
+}
