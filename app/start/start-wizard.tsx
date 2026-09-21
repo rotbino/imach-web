@@ -243,6 +243,9 @@ function AuthStep({
           </Field>
         </TabsContent>
       </Tabs>
+      <div className={"p-4"}>
+         09120000000 / ImachDemo1234
+      </div>
 
       <Button className="mt-4 w-full" onClick={() => void submit()} disabled={busy}>
         {busy && <Loader2 className="size-4 animate-spin" />}
