@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import type { ExploreItemDto } from "@/lib/api";
-import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel } from "@/lib/format";
+import { fa, categoryName, goodName, unitLabel, frequencyLabel } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
-import { BadgeCheck, ClipboardList, Loader2, MapPin, Store } from "lucide-react";
+import { BadgeCheck, Loader2, MapPin } from "lucide-react";
 
 /*
- * کارت‌های فید مشترک — هم اکسپلور و هم هوم از این‌ها استفاده می‌کنند:
+ * کارت‌های فید مشترک — بازار و کارتابل‌ها از این‌ها استفاده می‌کنند:
  * کارت فروش شبیه آلبوم اینستاگرام، سطر خرید شبیه لیست.
  */
 
@@ -25,35 +25,6 @@ export function EmptyFeed({ icon, text }: { icon: React.ReactNode; text: string 
       <span className="mx-auto grid size-12 place-items-center">{icon}</span>
       <p className="mt-2 text-sm text-muted-foreground">{text}</p>
     </div>
-  );
-}
-
-export function ExploreSellCard({ item: l }: { item: ExploreItemDto }) {
-  return (
-    <Link href={`/sell/${l.business.slug}`} aria-label={`کاتالوگ ${l.business.name}`}>
-      <article className="animate-fade-up h-full overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
-        {/* تا زمان سیستم فایل‌ها: کاشی حرفیِ تخت به‌جای عکس */}
-        <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
-          <span className="text-5xl font-black text-primary/20" aria-hidden>
-            {goodName(l.good).slice(0, 1)}
-          </span>
-        </div>
-        <div className="p-3">
-          <p className="truncate font-extrabold" title={goodName(l.good)}>
-            {goodName(l.good)}
-          </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
-          {l.priceMinor !== null && (
-            <p className="mt-2 text-lg font-black text-primary">{fmtMoney(l.priceMinor, l.currency)}</p>
-          )}
-          <p className="mt-0.5 text-[11px] text-muted-foreground">
-            {unitLabel(l.good.unit)}
-            {l.minOrder ? ` · ${fa(l.minOrder)} ${unitLabel(l.good.unit)}` : ""}
-          </p>
-          <BizRow item={l} tone="sell" />
-        </div>
-      </article>
-    </Link>
   );
 }
 
@@ -80,14 +51,6 @@ export function ExploreBuyRow({ item: l }: { item: ExploreItemDto }) {
       </article>
     </Link>
   );
-}
-
-export function SellFeedIcon() {
-  return <Store className="size-6 text-primary/40" />;
-}
-
-export function BuyFeedIcon() {
-  return <ClipboardList className="size-6 text-stone-400" />;
 }
 
 /** سطر کسب‌وکار — صاحبِ کالا، با نشان تایید و شهر */

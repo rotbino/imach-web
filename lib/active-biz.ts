@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { create } from "zustand";
 import { useMyBusinesses } from "./queries";
 import type { BusinessSummaryDto } from "./api";
@@ -27,24 +28,51 @@ export function useActiveBusiness(): BusinessSummaryDto | null {
   return mine.find((b) => b.id === activeId) ?? mine[0] ?? null;
 }
 
-// ─── محیط‌ها — آخرین محیطِ باز‌شده، پیش‌فرض ورود (سند فصل ۴.۵) ───
+// ─── بازوها — دو صفحه‌ی حساب، مثل پیج‌های اینستاگرام (سند فصل ۴) ───
+// • کاتالوگ فروش من (sell) — بازوی فروشنده
+// • دستیار خرید (buy) — بازوی خریدار
+// بازو از مسیر فعلی خوانده می‌شود؛ در صفحات مشترک از آخرین بازوی
+// باز‌شده (localStorage) که با ورود اولین کالا تعیین شده است.
 
-export type Env = "sell" | "buy" | "market";
+export type Arm = "sell" | "buy";
 
-const ENV_KEY = "imach.env";
+const ARM_KEY = "imach.arm";
 
-export function lastEnv(): Env {
+export function storedArm(): Arm {
   if (typeof window === "undefined") return "sell";
-  const v = window.localStorage.getItem(ENV_KEY);
-  return v === "buy" || v === "market" || v === "sell" ? v : "sell";
+  return window.localStorage.getItem(ARM_KEY) === "buy" ? "buy" : "sell";
 }
 
-export function setLastEnv(env: Env): void {
-  if (typeof window !== "undefined") window.localStorage.setItem(ENV_KEY, env);
+interface ArmState {
+  arm: Arm;
+  /** تعویض بازو — هم استور و هم localStorage را به‌روز می‌کند */
+  setArm: (arm: Arm) => void;
 }
 
-/** مقصد ورود کاربر واردشده = محیط فروش، یا آخرین محیطی که باز کرده بود */
-export function myEnvHref(): string {
-  const env = lastEnv();
-  return env === "buy" ? "/buy" : env === "market" ? "/market" : "/sell";
+export const useArmStore = create<ArmState>((set) => ({
+  arm: "sell",
+  setArm: (arm) => {
+    if (typeof window !== "undefined") window.localStorage.setItem(ARM_KEY, arm);
+    set({ arm });
+  },
+}));
+
+/** بازوی جاری — بعد از mount با localStorage همگام می‌شود (رفرش روی صفحات مشترک) */
+export function useArm(): Arm {
+  const arm = useArmStore((s) => s.arm);
+  useEffect(() => {
+    const stored = storedArm();
+    if (stored !== useArmStore.getState().arm) useArmStore.setState({ arm: stored });
+  }, []);
+  return arm;
+}
+
+/** ثبت بازوی باز‌شده — صفحات هر بازو در mount صدا می‌زنند (خارج از رندر) */
+export function setArmActive(arm: Arm): void {
+  useArmStore.getState().setArm(arm);
+}
+
+/** مقصد ورود کاربر واردشده = بازوی خودش: کاتالوگ فروش یا دستیار خرید */
+export function myArmHref(): string {
+  return storedArm() === "buy" ? "/buy" : "/sell";
 }

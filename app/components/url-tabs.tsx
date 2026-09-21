@@ -45,7 +45,7 @@ export function useTabParam(
   return [value, setTab];
 }
 
-/** تب‌های آماده با آدرس اختصاصی — بازار، هوم، بازوی من. */
+/** تب‌های آماده با آدرس اختصاصی — بازار و فرم کالای جدید. */
 export function UrlTabs({
   items,
   defaultValue,

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
+import { useArm } from "@/lib/active-biz";
 import { useExploreFeed } from "@/lib/queries";
 import type { ExploreItemDto } from "@/lib/api";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
@@ -20,24 +21,30 @@ import { EmptyFeed, FeedSpinner } from "@/app/components/feed-cards";
 
 /*
  * بازار — میدان کشف عمومی آی‌ماچ (سند فصل ۴.۴):
- * سطح اپ است و جزو هیچ محیطی نیست؛ بدون عضویت هم کامل کار می‌کند تا
+ * سطح اپ است و جزو هیچ بازویی نیست؛ بدون عضویت هم کامل کار می‌کند تا
  * غریبه‌ای که لینکی را در گروهی باز کرده، از همین‌جا هم بتواند بگردد.
- * پیشنهادهای شخصی‌سازی‌شده در کارتابلِ محیط‌ها زندگی می‌کنند، نه اینجا.
+ * برای عضوها، تب پیش‌فرض متناسب بازوست: فروشنده «خریدارها» را می‌بیند
+ * (درخواست‌های خرید) و خریدار «فروشنده‌ها» را (کالاهای در حال فروش).
+ * پیشنهادهای شخصی‌سازی‌شده در کارتابلِ بازوها زندگی می‌کنند، نه اینجا.
  */
 
 export default function MarketPage() {
   const { status } = useAuthStore();
+  const arm = useArm();
 
   useEffect(() => {
     document.title = "بازار | iMach";
   }, []);
+
+  // تب پیش‌فرض: عضوِ بازوی فروش → درخواست‌های خرید (خریدارها)؛ عضوِ بازوی خرید → کالاهای فروش (فروشنده‌ها)
+  const defaultTab = status === "authed" ? (arm === "buy" ? "sell" : "buy") : "sell";
 
   return (
     <div className="flex min-h-screen flex-col">
       <AppHeader />
       <main className="grow">
         <UrlTabs
-          defaultValue="sell"
+          defaultValue={defaultTab}
           items={[
             { value: "sell", label: "کالاهای در حال فروش", icon: ShoppingBag },
             { value: "buy", label: "درخواست‌های خرید", icon: ClipboardList },

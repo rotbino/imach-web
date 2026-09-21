@@ -9,8 +9,8 @@ import { ArrowLeftRight, Check, Copy, MessageCircle, Send } from "lucide-react";
 
 /*
  * ابزار اشتراک‌گذاری — یک بار تعریف، دو جا استفاده:
- * • ShareContent — داخل کارت «اشتراک» داشبورد مدیریت (با دکمه دیدن ویترین)
- * • ShareDialog — دکمه اشتراک‌گذاری نوار مالک بالای کاتالوگ
+ * • ShareContent — داخل کارت «اشتراک» صفحه‌های بازو (کاتالوگ فروش من / دستیار خرید)
+ * • ShareDialog — دکمه اشتراک‌گذاری نوار مالک بالای صفحات عمومی
  */
 
 export function ShareContent({

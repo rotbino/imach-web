@@ -3,16 +3,17 @@
 import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-import { useActiveBusiness } from "@/lib/active-biz";
+import { setArmActive, useActiveBusiness, useArm, useArmStore } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { ListingForm, type ListingKind } from "@/app/components/listing-form";
 import { useTabParam } from "@/app/components/url-tabs";
 import { Loader2 } from "lucide-react";
 
 /*
- * کالای جدید — مقصد آیتم وسط نویگیشن (+).
- * تب فروش/خرید با URL سینک است (/new?tab=sell|buy) — لینک مستقیم به ثبتِ همان محیط.
- * کالا به کسب‌وکارِ فعال اضافه می‌شود؛ بعد از ثبت، کاربر به کاتالوگ یا میز خرید می‌رود.
+ * کالای جدید / خرید جدید — مقصد آیتم سوم نویگیشن.
+ * تب فروش/خرید با URL سینک است (/new?tab=sell|buy) و با بازوی جاری همگام می‌شود.
+ * بعد از ثبت، کاربر به همان بازویی می‌رود که کالا را برایش ثبت کرده:
+ * فروش → کاتالوگ فروش من، خرید → دستیار خرید.
  */
 export default function NewListingPage() {
   return (
@@ -40,12 +41,19 @@ export default function NewListingPage() {
 function NewListingBody() {
   const router = useRouter();
   const { status } = useAuthStore();
+  const arm = useArm();
   const active = useActiveBusiness();
-  const [kind, setKind] = useTabParam("sell", ["sell", "buy"]);
+  // تب پیش‌فرض = بازوی جاری؛ انتخاب کاربر با URL سینک می‌شود
+  const [kind, setKind] = useTabParam(arm, ["sell", "buy"]);
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
   }, [status, router]);
+
+  // تب فرم، بازوی جاری را تعیین می‌کند تا نویگیشن و عنوان هدر هم‌راستا بمانند
+  useEffect(() => {
+    setArmActive(kind as "sell" | "buy");
+  }, [kind]);
 
   if (status !== "authed") {
     return (
@@ -78,7 +86,10 @@ function NewListingBody() {
       currency={active.currency}
       kind={kind as ListingKind}
       onKindChange={setKind}
-      onSaved={(k) => router.push(k === "sell" ? "/sell?tab=catalog" : "/buy?tab=desk")}
+      onSaved={(k) => {
+        useArmStore.getState().setArm(k);
+        router.push(k === "sell" ? "/sell" : "/buy");
+      }}
     />
   );
 }

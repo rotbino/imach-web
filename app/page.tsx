@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { myEnvHref } from "@/lib/active-biz";
+import { myArmHref } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,7 @@ import {
  * صفحه اول iMatch
  *
  * ساختار:
- *  ۱) معرفی iMatch + پیش‌نمایش کاتالوگ فروش / بازوی خرید
+ *  ۱) معرفی iMatch + پیش‌نمایش کاتالوگ فروش / دستیار خرید
  *  ۲) نمایش نمونه‌های واقعی‌نما از کاتالوگ‌ها و لیست‌های خرید
  *  ۳) حریم قیمت
  *  ۴) سه قدم شروع
@@ -177,12 +177,12 @@ const ARMS = {
     },
 
     buy: {
-        chip: "بازوی خرید",
+        chip: "دستیار خرید",
         chipCls: "border-stone-300 bg-stone-100 text-stone-700",
         checkCls: "text-stone-500",
-        title: "بازوی خرید خودت را بساز",
+        title: "دستیار خرید خودت را بساز",
         lead: "نیازت را ثبت کن، قیمت بگیر و تأمین‌کننده‌هایت را دنبال کن.",
-        cta: "ساخت بازوی خرید",
+        cta: "ساخت دستیار خرید",
         bullets: [
             {
                 strong: "نیازت را دقیق ثبت کن:",
@@ -198,7 +198,7 @@ const ARMS = {
             },
             {
                 strong: "همه‌چیز خریدت یک‌جا باشد:",
-                rest: "نیازهای خرید و ارتباطت با تأمین‌کننده‌ها را در همان بازوی خرید مدیریت کن.",
+                rest: "نیازهای خرید و ارتباطت با تأمین‌کننده‌ها را در همان دستیار خرید مدیریت کن.",
             },
         ] as Bullet[],
     },
@@ -249,7 +249,7 @@ const STEPS = [
 const FAQS = [
     {
         q: "آی‌مچ واقعاً رایگان است؟",
-        a: "بله. ساخت کاتالوگ فروش و بازوی خرید، ثبت کالا و به‌روزرسانی قیمت رایگان است.",
+        a: "بله. ساخت کاتالوگ فروش و دستیار خرید، ثبت کالا و به‌روزرسانی قیمت رایگان است.",
     },
     {
         q: "مشتری‌هایم باید اپی نصب کنند؟",
@@ -734,7 +734,7 @@ function ProductTour() {
                                     : "text-muted-foreground hover:text-foreground"
                             }`}
                         >
-                            بازوی خرید
+                            دستیار خرید
                         </button>
                     </div>
                 </div>
@@ -968,7 +968,7 @@ function HowToStart() {
             <SectionHead
                 eyebrow="شروع"
                 title="شروعش ساده است"
-                sub="سه قدم تا کاتالوگ یا بازوی خرید آماده."
+                sub="سه قدم تا کاتالوگ یا دستیار خرید آماده."
             />
 
             <div className="relative mt-9 grid gap-4 sm:grid-cols-3 sm:gap-6">
@@ -1084,11 +1084,11 @@ function FinalCta() {
         </span>
 
                 <h2 className="mt-4 text-2xl font-black sm:text-3xl">
-                    کاتالوگ یا بازوی خریدت را بساز
+                    کاتالوگ یا دستیار خریدت را بساز
                 </h2>
 
                 <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-muted-foreground">
-                    کاتالوگ فروشت یا بازوی خریدت را در چند دقیقه بساز،
+                    کاتالوگ فروشت یا دستیار خریدت را در چند دقیقه بساز،
                     لینک را بفرست و استفاده از آی‌مچ را شروع کن.
                 </p>
 
@@ -1116,9 +1116,9 @@ export default function Home() {
     const router = useRouter();
     const status = useAuthStore((s) => s.status);
 
-    // کاربر واردشده خانه‌اش «بازوی من» است — صفحه اصلی فقط مال مهمان‌هاست.
+    // کاربر واردشده خانه‌اش «صفحه‌ی خودش» است — صفحه اصلی فقط مال مهمان‌هاست.
     useEffect(() => {
-        if (status === "authed") router.replace(myEnvHref());
+        if (status === "authed") router.replace(myArmHref());
     }, [status, router]);
 
     return (

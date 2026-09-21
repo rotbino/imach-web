@@ -112,7 +112,7 @@ export function useExploreFeed(mode: "SELL" | "BUY", city?: string): UseQueryRes
   });
 }
 
-/** تقاضای مرتبط با کالاهای من — جریان تقاضای محیط فروش */
+/** تقاضای مرتبط با کالاهای من — جریان تقاضای کارتابل فروش */
 export function useBuyRequests(businessId: string | null | undefined): UseQueryResult<MarketItemDto[]> {
   return useQuery({
     queryKey: qk.buyRequests(businessId ?? ""),
@@ -132,12 +132,6 @@ export function useMyBusinesses(): UseQueryResult<(BusinessSummaryDto & { _count
     enabled: useAuthStore((s) => s.status) === "authed",
     staleTime: 5 * 60_000,
   });
-}
-
-/** اولین کسب‌وکار کاربر (MVP: یک کسب‌وکار) */
-export function useMyBusiness(): BusinessSummaryDto | null {
-  const q = useMyBusinesses();
-  return q.data?.[0] ?? null;
 }
 
 export function useMyListings(businessId: string | null | undefined): UseQueryResult<GoodItemDto[]> {

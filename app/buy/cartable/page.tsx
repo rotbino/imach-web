@@ -1,28 +1,114 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
-import { BadgeCheck, MapPin, Package } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Loader2, MapPin, Package, BadgeCheck } from "lucide-react";
+import { useAuthStore } from "@/lib/auth-store";
+import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
+import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { EmptyBox, OffersSection, StatsStrip } from "@/app/components/sections";
 import type { SupplierSuggestionDto } from "@/lib/api";
 import { fmtMoney } from "@/lib/format";
 import {
   useFollows,
   useFollowToggle,
+  useMyBusinesses,
   useMyListings,
   useOffers,
   useSupplierSuggestions,
 } from "@/lib/queries";
-import { EmptyBox, OffersSection, StatsStrip } from "@/app/components/sections";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 /*
- * کارتابل خرید — صندوق خبرهای خرید (سند فصل ۷.۱):
+ * کارتابل خرید — صندوق خبرهای بازوی خرید (سند فصل ۷.۱):
  * پیشنهادهای دریافتی از تامین‌کننده‌ها و تامین‌کننده‌های پیشنهادی برای
- * نیازهای خرید من. خبرهای محیط فروش اینجا دیده نمی‌شود.
+ * نیازهای خرید من. خبرهای بازوی فروش اینجا دیده نمی‌شود.
  */
 
-export function BuyCartable({ bizId, slug, city }: { bizId: string; slug: string; city: string }) {
+export default function BuyCartablePage() {
+  const router = useRouter();
+  const { status } = useAuthStore();
+
+  useEffect(() => {
+    document.title = "کارتابل خرید | iMach";
+    setArmActive("buy");
+    if (status === "guest") router.replace("/start");
+  }, [status, router]);
+
+  if (status !== "authed") {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <AppHeader />
+        <main className="grow">
+          <div className="grid place-items-center py-32">
+            <Loader2 className="size-6 animate-spin text-stone-700" />
+          </div>
+        </main>
+        <AppFooter />
+        <MobileTabBar />
+      </div>
+    );
+  }
+
+  return <BuyCartableBody />;
+}
+
+function BuyCartableBody() {
+  const active = useActiveBusiness();
+  const bizQ = useMyBusinesses();
+
+  if (bizQ.isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <AppHeader />
+        <main className="grow">
+          <div className="grid place-items-center py-32">
+            <Loader2 className="size-6 animate-spin text-stone-700" />
+          </div>
+        </main>
+        <AppFooter />
+        <MobileTabBar />
+      </div>
+    );
+  }
+
+  if (!active) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <AppHeader />
+        <main className="grow">
+          <div className="mx-auto max-w-xl px-4 py-16 text-center">
+            <p className="text-lg font-extrabold">اول کسب‌وکارتان را بسازید</p>
+            <p className="mt-2 text-sm text-muted-foreground">فقط نام و شهر — بقیه‌اش با ما.</p>
+            <button
+              onClick={() => (window.location.href = "/start")}
+              className="mt-4 rounded-xl bg-stone-800 px-5 py-2.5 text-sm font-bold text-white shadow-sm"
+            >
+              ساخت کسب‌وکار
+            </button>
+          </div>
+        </main>
+        <AppFooter />
+        <MobileTabBar />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <AppHeader />
+      <main className="grow">
+        <BuyCartable bizId={active.id} slug={active.slug} city={active.city} />
+      </main>
+      <AppFooter />
+      <MobileTabBar />
+    </div>
+  );
+}
+
+function BuyCartable({ bizId, slug, city }: { bizId: string; slug: string; city: string }) {
   const listingsQ = useMyListings(bizId);
   const offersQ = useOffers(bizId);
   const followsQ = useFollows(bizId);
@@ -48,7 +134,7 @@ export function BuyCartable({ bizId, slug, city }: { bizId: string; slug: string
         </div>
         <div className="mt-6">
           <EmptyBox
-            text="تابلوهای قیمت دنبال‌شده و نیازهای خرید، در «میز خرید» جمع شده‌اند."
+            text="تابلوهای قیمت دنبال‌شده و نیازهای خرید، در «دستیار خرید» جمع شده‌اند."
             action={
               <Link href={`/buy/${slug}`} className="text-xs font-bold text-primary hover:underline">
                 دیدن لیست خرید عمومی
@@ -80,7 +166,7 @@ function SupplierStrip({ bizId }: { bizId: string }) {
         onSuccess: () =>
           toast({
             title: wasFollowed ? `${s.supplierName} دنبال نمی‌شود` : `${s.supplierName} دنبال شد`,
-            description: wasFollowed ? undefined : "قیمت‌هایش در «تابلوهای دنبال‌شده» میز خرید جمع می‌شود.",
+            description: wasFollowed ? undefined : "قیمت‌هایش در «تابلوهای دنبال‌شده» دستیار خرید جمع می‌شود.",
           }),
       }
     );

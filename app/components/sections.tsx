@@ -68,7 +68,7 @@ import {
 } from "@/components/ui/dialog";
 
 /*
- * بخش‌های مشترک محیط‌ها — یک بار تعریف، محیط فروش و محیط خرید:
+ * بخش‌های مشترک بازوها — یک بار تعریف، بازوی فروش و بازوی خرید:
  * استعلام‌ها/پیشنهادها، کالاهای من، تابلوی قیمت، اشتراک‌گذاری لینک، آمار.
  */
 
@@ -141,7 +141,7 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
         action={
           <Button size="sm" onClick={() => router.push(isSell ? "/new?tab=sell" : "/new?tab=buy")}>
             <Plus className="size-4" />
-            کالای جدید
+            {isSell ? "کالای جدید" : "خرید جدید"}
           </Button>
         }
       />
@@ -311,7 +311,7 @@ export function InquiriesSection({ bizId, myCity, sellListings }: { bizId: strin
                   sendOffer.mutate(
                     { inquiryId: q.id, priceMinor: minorPrice },
                     {
-                      onSuccess: () => toast({ title: "پیشنهاد ارسال شد", description: `پیشنهاد شما برای ${q.buyer.name} در محیط خریدشان نمایش داده می‌شود.` }),
+                      onSuccess: () => toast({ title: "پیشنهاد ارسال شد", description: `پیشنهاد شما برای ${q.buyer.name} در دستیار خریدِ او نمایش داده می‌شود.` }),
                       onError: (e) => toast({ title: "ارسال ناموفق بود", description: e instanceof ApiError ? e.message : "دوباره تلاش کنید", variant: "destructive" }),
                     }
                   );
@@ -418,7 +418,7 @@ export function OffersSection({ bizId, myCity }: { bizId: string; myCity: string
   );
 }
 
-// ─── تابلوهای دنبال‌شده (میز خرید) ───
+// ─── تابلوهای دنبال‌شده (دستیار خرید) ───
 export function BoardSection({ bizId }: { bizId: string }) {
   const boardQ = useBoard(bizId);
   const rows = boardQ.data ?? [];

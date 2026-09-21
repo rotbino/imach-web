@@ -26,7 +26,7 @@ import {
  * نمای بازوها — یک بار تعریف، دو جا استفاده:
  * صفحات عمومی /sell/{slug} و /buy/{slug} (لینکی که برای مشتری/تامین‌کننده می‌فرستید).
  * شمارنده‌ی فالوور عمومی نداریم (سند ۵.۱) — خریدارها در کارتابلِ خودِ صاحب کاتالوگ دیده می‌شوند.
- * نوار آیکون مالک (تنظیم · اشتراک‌گذاری) فقط برای صاحب بازو یا ادمین
+ * نوار آیکون مالک (ویرایش در کاتالوگ · اشتراک‌گذاری) فقط برای صاحب بازو یا ادمین
  * بالای صفحه ظاهر می‌شود — بازدیدکننده ویترین خالص می‌بیند.
  */
 
@@ -51,8 +51,8 @@ function OwnerBar({ kind, slug }: { kind: "sell" | "buy"; slug: string }) {
       {/* نوار ابزار تخت، هم‌عرض صفحه؛ ابزارها گوشه انتهایی ردیف */}
       <div className="mb-3 flex items-center justify-end rounded-2xl border bg-white p-1">
         <Link
-          href={isSell ? "/sell?tab=catalog" : "/buy?tab=desk"}
-          aria-label="تنظیم"
+          href={isSell ? "/sell" : "/buy"}
+          aria-label="ویرایش در صفحه‌ی خودم"
           className={btn}
         >
           <Settings className="size-4.5" />
@@ -98,7 +98,7 @@ export function SellArmView({ slug }: { slug: string }) {
     }
     followToggle.mutate(
       { businessId: mine.id, supplierId: biz!.id, follow: true },
-      { onSuccess: () => toast({ title: `${biz!.name} دنبال شد`, description: "قیمت‌هایش در «تابلوهای دنبال‌شده» میز خرید شما جمع می‌شود." }) }
+      { onSuccess: () => toast({ title: `${biz!.name} دنبال شد`, description: "قیمت‌هایش در «تابلوهای دنبال‌شده» دستیار خرید شما جمع می‌شود." }) }
     );
   };
 

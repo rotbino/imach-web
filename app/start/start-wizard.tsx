@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { myEnvHref } from "@/lib/active-biz";
+import { myArmHref, useArmStore } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
 import { CITIES, fa, normalizePhone, COUNTRIES, countryLabel } from "@/lib/format";
 import { useLocale } from "@/i18n/locale-context";
@@ -28,9 +28,11 @@ import { Check, Loader2 } from "lucide-react";
 
 /*
  * ویزارد افقی شروع — یک مرحله در هر لحظه:
- *   ۱) حساب (ورود / ثبت‌نام)      ← ورود مستقیم به پنل می‌رود
- *   ۲) کسب‌وکار (نام + شهر)       ← بدون موبایل، بدون نقش؛ هر دو بازو از اول فعال‌اند
- *   ۳) اولین کالا                 ← فروش یا خرید، انتخاب با خود کاربر؛ بعدش: پنل
+ *   ۱) حساب (ورود / ثبت‌نام)      ← ورود مستقیم به صفحه‌ی خودِ کاربر می‌رود
+ *   ۲) کسب‌وکار (نام + شهر)       ← بدون موبایل، بدون نقش
+ *   ۳) اولین کالا                 ← فروش یا خرید، انتخاب با خود کاربر؛
+ *     همین انتخاب تعیین می‌کند کاربر وارد کدام بازو شود:
+ *     فروش → کاتالوگ فروش من، خرید → دستیار خرید — شاید هیچ‌وقت سوییچ نخواهد کرد.
  */
 
 const STEPS: { title: string }[] = [
@@ -98,8 +100,8 @@ export default function StartWizard() {
           <div key={current} className="animate-step-slide">
             {current === 1 && (
               <AuthStep
-                // ورود موفق → مستقیم «بازوی من»؛ نه صفحه اصلی، نه هیچ جای دیگر
-                onLoggedIn={() => router.push(myEnvHref())}
+                // ورود موفق → مستقیم صفحه‌ی خود کاربر (آخرین بازو)
+                onLoggedIn={() => router.push(myArmHref())}
                 onRegistered={() => setStep(2)}
               />
             )}
@@ -257,7 +259,7 @@ function AuthStep({
 
 // ─────────────────────────────────────────────────────────────────────────────
 // گام ۲ — کسب‌وکار: فقط نام + شهر — موبایل از ثبت‌نام می‌آید، نقش هم نمی‌پرسیم؛
-// هر دو بازوی خرید و فروش از همان اول در اختیار کاربر است.
+// انتخاب مسیر (فروش یا خرید) با اولین کالاست، نه با فرم.
 // ─────────────────────────────────────────────────────────────────────────────
 
 function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => void }) {
@@ -292,7 +294,7 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <h1 className="text-lg font-extrabold">کسب‌وکار خود را معرفی کنید</h1>
       <p className="mt-1 text-xs text-muted-foreground">
-        نام و شهر — همین و بس. بازوهای خرید و فروش هر دو از اول در اختیار شماست.
+        نام و شهر — همین و بس. بعدش اولین کالای‌تان را ثبت می‌کنید.
       </p>
 
       <div className="mt-4 grid gap-4">
@@ -332,7 +334,8 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام ۳ — اولین کالا: کاربر خودش برمی‌گزیند اولین ثبتش «فروش» باشد یا «خرید»
+// گام ۳ — اولین کالا: کاربر خودش برمی‌گزیند اولین ثبتش «فروش» باشد یا «خرید»؛
+// همین انتخاب تعیین می‌کند وارد کدام صفحه شود (کاتالوگ فروش من یا دستیار خرید)
 // (فرم مشترکِ ثبت کالا در app/components/listing-form.tsx است)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -343,7 +346,11 @@ function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
       bizId={biz.id}
       currency={biz.currency}
       firstGood
-      onSaved={() => router.push(myEnvHref())} // بعد از ثبت اولین خرید/فروش → محیط کاربر
+      onSaved={(kind) => {
+        // اولین کالا، در بازوی همان کالا باز می‌شود (سوییچ بعدا از هدر ممکن است)
+        useArmStore.getState().setArm(kind);
+        router.push(kind === "sell" ? "/sell" : "/buy");
+      }}
     />
   );
 }
