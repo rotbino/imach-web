@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { GoodSheet } from "./good-sheet";
-import { useAdminGoods, type AdminGoodDto } from "../api";
+import { useAdminGoods, useAdminCategories, type AdminGoodDto, type AdminCreator } from "../api";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { fa, categoryName, unitLabel } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
@@ -13,12 +13,18 @@ import { Loader2, Package, Plus, Search, X } from "lucide-react";
 
 /*
  * صف باغبانی کاتالوگ — لیست کالاهای مرجع با جستجو و فیلترِ سینک با URL
- * (?q= ?status= ?source=)؛ رفرش و لینک مستقیم به صف «در انتظار» کار می‌کند.
- * ردیف‌ها لمسی‌اند: لمس = شیت ویرایش. اسکرول بی‌نهایت با sensro تقاطع.
+ * (?q= ?status= ?creator= ?categoryId=)؛ رفرش و لینک مستقیم (مثلا از درخت
+ * دسته‌بندی‌ها یا کارت اورویو) کار می‌کند. ردیف‌ها لمسی‌اند: لمس = شیت ویرایش.
  */
 
 const STATUSES = ["ACTIVE", "PROVISIONAL"] as const;
-const SOURCES = ["SEED", "USER"] as const;
+const CREATORS = ["USER", "ADMIN", "BRAND_OWNER", "SYSTEM"] as const;
+
+const creatorBadgeClass: Record<AdminCreator, string> = {
+  USER: "bg-sky-100 text-sky-700 hover:bg-sky-100",
+  ADMIN: "bg-primary/10 text-primary hover:bg-primary/10",
+  BRAND_OWNER: "bg-violet-100 text-violet-700 hover:bg-violet-100",
+};
 
 function GoodsManager() {
   const m = useMessages();
@@ -27,12 +33,29 @@ function GoodsManager() {
 
   const qParam = searchParams.get("q") ?? "";
   const statusParam = searchParams.get("status") ?? "";
-  const sourceParam = searchParams.get("source") ?? "";
+  const creatorParam = searchParams.get("creator") ?? "";
+  const categoryParam = searchParams.get("categoryId") ?? "";
 
   const [qInput, setQInput] = useState(qParam);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [active, setActive] = useState<AdminGoodDto | null>(null);
   const sentinel = useRef<HTMLDivElement | null>(null);
+
+  // نام دسته‌ی فیلترشده — برای پیل قابل حذف
+  const { data: catTree } = useAdminCategories();
+  const findCat = useCallback(
+    (id: string) => {
+      const stack = [...(catTree ?? [])];
+      while (stack.length) {
+        const n = stack.pop()!;
+        if (n.id === id) return n;
+        stack.push(...n.children);
+      }
+      return null;
+    },
+    [catTree]
+  );
+  const activeCat = categoryParam ? findCat(categoryParam) : null;
 
   // debounce جستجو به URL
   useEffect(() => {
@@ -72,8 +95,13 @@ function GoodsManager() {
   }, [qParam]);
 
   const filters = useMemo(
-    () => ({ q: qParam, status: statusParam, source: sourceParam }),
-    [qParam, statusParam, sourceParam]
+    () => ({
+      q: qParam,
+      status: statusParam,
+      creator: creatorParam,
+      categoryId: categoryParam,
+    }),
+    [qParam, statusParam, creatorParam, categoryParam]
   );
   const list = useAdminGoods(filters);
   const items = list.data?.pages.flatMap((p) => p.items) ?? [];
@@ -108,7 +136,11 @@ function GoodsManager() {
     </button>
   );
 
-  const activeFilterCount = [statusParam, sourceParam].filter(Boolean).length;
+  const creatorKey = (c: string) => (c === "BRAND_OWNER" ? "brandOwner" : c.toLowerCase()) as "user" | "admin" | "brandOwner";
+  const creatorLabel = (c: string) =>
+    c === "SYSTEM" ? m.admin.creator.system : m.admin.creator[creatorKey(c)];
+
+  const activeFilterCount = [statusParam, creatorParam, categoryParam].filter(Boolean).length;
 
   return (
     <div className="animate-fade-up">
@@ -148,7 +180,7 @@ function GoodsManager() {
         </div>
 
         <div className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none]">
-          {pill(m.admin.filter.all, activeFilterCount === 0, () => clearParams(["status", "source"]))}
+          {pill(m.admin.filter.all, activeFilterCount === 0, () => clearParams(["status", "creator", "categoryId"]))}
           {STATUSES.map((st) =>
             pill(
               st === "ACTIVE" ? m.admin.filter.active : m.admin.filter.provisional,
@@ -156,10 +188,18 @@ function GoodsManager() {
               () => patchParam("status", statusParam === st ? null : st)
             )
           )}
-          {SOURCES.map((src) =>
-            pill(src === "SEED" ? m.admin.filter.seed : m.admin.filter.user, sourceParam === src, () =>
-              patchParam("source", sourceParam === src ? null : src)
-            )
+          {CREATORS.map((c) =>
+            pill(creatorLabel(c), creatorParam === c, () => patchParam("creator", creatorParam === c ? null : c))
+          )}
+          {activeCat && (
+            <button
+              type="button"
+              onClick={() => patchParam("categoryId", null)}
+              className="flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary"
+            >
+              {categoryName(activeCat)}
+              <X className="size-3" />
+            </button>
           )}
         </div>
       </div>
@@ -197,10 +237,19 @@ function GoodsManager() {
                     {m.admin.filter.provisional}
                   </Badge>
                 )}
+                {g.creatorRole && (
+                  <Badge
+                    variant="secondary"
+                    className={`h-5 shrink-0 px-1.5 text-[10px] font-bold ${creatorBadgeClass[g.creatorRole]}`}
+                  >
+                    {m.admin.creator[creatorKey(g.creatorRole)]}
+                  </Badge>
+                )}
               </div>
               <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
                 {categoryName(g.category)} · {unitLabel(g.unit)}
                 {g.nameEn ? ` · ${g.nameEn}` : ""}
+                {g.createdBy ? ` · ${g.createdBy.name}` : ""}
               </p>
             </div>
             <div className="shrink-0 text-end">
