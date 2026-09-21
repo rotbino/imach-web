@@ -109,16 +109,9 @@ function ArmBody() {
       <AppHeader />
       <main className="grow">
         <div className="mx-auto max-w-4xl px-4 py-5">
-          {/* سرصفحه: بازوی من + جابه‌جایی بین کسب‌وکارها (مثل اینستاگرام) */}
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <h1 className="flex items-center gap-2 text-xl font-extrabold">
-              <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                <Store className="size-4.5" />
-              </span>
-              بازوی من
-            </h1>
-
-            {mine.length > 1 && (
+          {/* جابه‌جایی بین کسب‌وکارها — فقط وقتی بیش از یکی است */}
+          {mine.length > 1 && (
+            <div className="mb-4 flex justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger
                   className="flex max-w-[50vw] items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-sm font-bold shadow-sm"
@@ -141,8 +134,8 @@ function ArmBody() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* سوییچر بازو — قلب این صفحه */}
           <Tabs defaultValue="sell">

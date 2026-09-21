@@ -62,7 +62,7 @@ export function timeAgo(iso: string): string {
   return new Date(iso).toLocaleDateString("fa-IR");
 }
 
-// ── شهرها (گراف مجاورت سمت فرانت فقط برای نمایش برچسب نزدیکی) ──
+// ── شهرها و استان‌ها — هم‌شهری > هم‌استان > دور (مطابق موتور تطبیق) ──
 export const CITIES = [
   "تهران",
   "کرج",
@@ -73,27 +73,55 @@ export const CITIES = [
   "تبریز",
   "اردبیل",
   "رشت",
+  "همدان",
+  "کرمانشاه",
+  "ارومیه",
+  "قزوین",
+  "زنجان",
+  "سنندج",
+  "یزد",
+  "کرمان",
+  "اهواز",
 ] as const;
 
-const NEIGHBORS: Record<string, readonly string[]> = {
-  تهران: ["کرج", "قم"],
-  کرج: ["تهران", "قم"],
-  قم: ["تهران", "کرج", "اصفهان"],
-  اصفهان: ["قم", "شیراز"],
-  شیراز: ["اصفهان"],
-  مشهد: [],
-  تبریز: ["اردبیل"],
-  اردبیل: ["تبریز", "رشت"],
-  رشت: ["اردبیل"],
+const CITY_PROVINCE: Record<string, string> = {
+  تهران: "تهران",
+  کرج: "البرز",
+  قم: "قم",
+  اصفهان: "اصفهان",
+  شیراز: "فارس",
+  مشهد: "خراسان رضوی",
+  تبریز: "آذربایجان شرقی",
+  اردبیل: "اردبیل",
+  رشت: "گیلان",
+  همدان: "همدان",
+  کرمانشاه: "کرمانشاه",
+  ارومیه: "آذربایجان غربی",
+  قزوین: "قزوین",
+  زنجان: "زنجان",
+  سنندج: "کردستان",
+  یزد: "یزد",
+  کرمان: "کرمان",
+  اهواز: "خوزستان",
 };
 
 export type Proximity = "same" | "near" | "far";
 
 export const proximity = (a: string, b: string): Proximity => {
   if (a === b) return "same";
-  if (NEIGHBORS[a]?.includes(b)) return "near";
+  const pa = CITY_PROVINCE[a];
+  if (pa && pa === CITY_PROVINCE[b]) return "near";
   return "far";
 };
 
 export const proximityLabel = (p: Proximity): string =>
-  p === "same" ? "هم‌شهری" : p === "near" ? "شهر نزدیک" : "فاصله دور";
+  p === "same" ? "هم‌شهری" : p === "near" ? "هم‌استان" : "فاصله دور";
+
+/** هر فرمت شماره‌گیری را به شکل استاندارد 09xxxxxxxxx می‌رساند (پیشوند +98 در UI جدا است) */
+export const normalizePhone = (raw: string): string => {
+  let p = raw.replace(/[\s\-()]/g, "").replace(/^\+/, "");
+  if (p.startsWith("0098")) p = `0${p.slice(4)}`;
+  else if (p.startsWith("98") && p.length === 12) p = `0${p.slice(2)}`;
+  else if (p.length === 10 && p.startsWith("9")) p = `0${p}`;
+  return p;
+};

@@ -27,11 +27,26 @@ import {
  * • مهمان فقط «ورود | ثبت‌نام» می‌بیند.
  */
 
+// ─── عنوان صفحه‌ها — توی هدر، نه بدنه صفحه ───
+const PAGE_TITLES: [string, string][] = [
+  ["/manage/sell", "مدیریت بازوی فروش"],
+  ["/manage/buy", "مدیریت بازوی خرید"],
+  ["/explore", "بازار"],
+  ["/home", "هوم"],
+  ["/arm", "بازوی من"],
+  ["/profile", "پروفایل"],
+  ["/new", "کالای جدید"],
+];
+
+function pageTitle(pathname: string): string | null {
+  return PAGE_TITLES.find(([p]) => pathname === p || pathname.startsWith(`${p}/`))?.[1] ?? null;
+}
+
 // ─── آیتم‌های نویگیشن ───
 export function useNavItems() {
   return [
     { href: "/home", label: "هوم", icon: House },
-    { href: "/explore", label: "اکسپلور", icon: Compass },
+    { href: "/explore", label: "بازار", icon: Compass },
     { href: "/new", label: "کالای جدید", icon: SquarePlus },
     { href: "/arm", label: "بازوی من", icon: Store },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
@@ -42,26 +57,30 @@ function isActivePath(href: string, pathname: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-// ─── هدر بالا: لوگو یک طرف، آیتم‌ها طرف دیگر (دسکتاپ) ───
+// ─── هدر بالا: لوگو + عنوان صفحه یک طرف، آیتم‌ها طرف دیگر ───
 export function AppHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const { status, user } = useAuthStore();
   const items = useNavItems();
+  const title = pageTitle(pathname);
 
   return (
     <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <button
-          onClick={() => router.push(status === "authed" ? "/arm" : "/")}
-          className="flex items-center gap-2 text-lg font-extrabold"
-          aria-label="iMach"
-        >
-          <span className="grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <Link2 className="size-4" />
-          </span>
-          iMach
-        </button>
+        <div className="flex min-w-0 items-center gap-2.5">
+          <button
+            onClick={() => router.push(status === "authed" ? "/arm" : "/")}
+            className="flex shrink-0 items-center gap-2 text-lg font-extrabold"
+            aria-label="iMach"
+          >
+            <span className="grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+              <Link2 className="size-4" />
+            </span>
+            {!title && "iMach"}
+          </button>
+          {title && <span className="truncate text-base font-extrabold">{title}</span>}
+        </div>
 
         {status === "authed" ? (
           <nav className="hidden items-center gap-1 sm:flex" aria-label="نویگیشن اصلی">

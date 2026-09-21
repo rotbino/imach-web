@@ -6,7 +6,7 @@ import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { myArmHref } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
-import { CITIES, fa } from "@/lib/format";
+import { CITIES, fa, normalizePhone } from "@/lib/format";
 import { AppHeader, AppFooter, MobileTabBar } from "@/app/components/chrome";
 import { LanguageSelect } from "@/app/components/language-select";
 import { ListingForm } from "@/app/components/listing-form";
@@ -142,7 +142,8 @@ function AuthStep({
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
-    if (!/^09\d{9}$/.test(phone)) {
+    const phoneNorm = normalizePhone(phone);
+    if (!/^09\d{9}$/.test(phoneNorm)) {
       toast({ title: m.auth.toasts.invalidPhone, description: m.auth.toasts.invalidPhoneDesc, variant: "destructive" });
       return;
     }
@@ -153,16 +154,16 @@ function AuthStep({
     setBusy(true);
     try {
       if (tab === "login") {
-        await login(phone, password);
+        await login(phoneNorm, password);
         toast({ title: m.auth.toasts.welcome });
-        onLoggedIn(); // لاگین → مستقیم پنل
+        onLoggedIn(); // لاگین → مستقیم بازوی من
       } else {
         if (name.trim().length < 2) {
           toast({ title: m.auth.toasts.nameRequired, variant: "destructive" });
           setBusy(false);
           return;
         }
-        await register(name.trim(), phone, password);
+        await register(name.trim(), phoneNorm, password);
         toast({ title: m.auth.toasts.welcome });
         onRegistered(); // ثبت‌نام → ادامه ساخت کسب‌وکار
       }
@@ -196,9 +197,7 @@ function AuthStep({
         </TabsList>
 
         <TabsContent value="login" className="mt-4 grid gap-3">
-          <Field label={m.auth.fields.mobile}>
-            <Input dir="ltr" inputMode="numeric" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </Field>
+          <PhoneField label={m.auth.fields.mobile} value={phone} onChange={setPhone} placeholder={m.auth.placeholders.mobile} />
           <Field label={m.auth.fields.password}>
             <Input
               dir="ltr"
@@ -214,9 +213,7 @@ function AuthStep({
           <Field label={m.auth.fields.fullName}>
             <Input placeholder={m.auth.placeholders.fullName} value={name} onChange={(e) => setName(e.target.value)} />
           </Field>
-          <Field label={m.auth.fields.mobile}>
-            <Input dir="ltr" inputMode="numeric" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </Field>
+          <PhoneField label={m.auth.fields.mobile} value={phone} onChange={setPhone} placeholder={m.auth.placeholders.mobile} />
           <Field label={m.auth.fields.passwordRegister}>
             <Input
               dir="ltr"
@@ -336,5 +333,37 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <Label className="text-[11px] text-muted-foreground">{label}</Label>
       {children}
     </div>
+  );
+}
+
+/** ورودی موبایل با پیشوند کد کشور +98 — هر فرمتی را می‌پذیرد، خودش استاندارد می‌کند */
+function PhoneField({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+}) {
+  return (
+    <Field label={label}>
+      <div
+        dir="ltr"
+        className="flex items-center rounded-xl border border-input bg-transparent focus-within:ring-2 focus-within:ring-ring/30"
+      >
+        <span className="select-none border-e px-3 py-2.5 text-sm font-bold text-muted-foreground">+98</span>
+        <Input
+          dir="ltr"
+          inputMode="numeric"
+          className="border-0 shadow-none focus-visible:ring-0"
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </div>
+    </Field>
   );
 }

@@ -2,12 +2,33 @@
 
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
-import type { ExploreItemDto, SupplierSuggestionDto, SuggestionDto } from "@/lib/api";
+import type { SupplierSuggestionDto, SuggestionDto } from "@/lib/api";
 import { fa, money, proximity, proximityLabel, unitLabel, frequencyLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
-import { useExploreFeed, useFollows, useFollowToggle, useSuggestions, useSupplierSuggestions } from "@/lib/queries";
-import { AppFooter, AppHeader, MatchRing, MobileTabBar, SectionTitle } from "@/app/components/chrome";
+import {
+  useBuyRequests,
+  useExploreFeed,
+  useFollows,
+  useFollowToggle,
+  useSellOffers,
+  useSuggestions,
+  useSupplierSuggestions,
+} from "@/lib/queries";
+import { AppFooter, AppHeader, MatchRing, MobileTabBar } from "@/app/components/chrome";
+import { UnderlineTabs } from "@/app/components/underline-tabs";
+import {
+  BadgeCheck,
+  ClipboardList,
+  Loader2,
+  MapPin,
+  Package,
+  ShoppingBag,
+  Store,
+  Users,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import {
   BuyFeedIcon,
   EmptyFeed,
@@ -16,44 +37,22 @@ import {
   FeedSpinner,
   SellFeedIcon,
 } from "@/app/components/feed-cards";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import {
-  BadgeCheck,
-  ClipboardList,
-  Handshake,
-  Loader2,
-  MapPin,
-  Package,
-  ShoppingBag,
-  ShoppingBasket,
-  Sparkles,
-  Store,
-  Users,
-} from "lucide-react";
 
 /*
- * اکسپلور — موتور تطبیق iMach؛ جایی که هدف اصلی سیستم زندگی می‌کند.
+ * بازار — قلب iMach.
  *
- * برای هر کاربر، بهترین پیشنهادها در دو سمت:
- * • تب فروش → «خریدارهای پیشنهادی»: خریدارهایی که دنبال کالاهایی هستند
- *   که من می‌فروشم — تطبیق کالای مرجع + نزدیکی شهر + هجمه‌ی خرید.
- * • تب خرید → «تامین‌کننده‌های پیشنهادی»: فروشنده‌های همان کالاهایی
- *   که من نیاز دارم — با دکمه دنبال کردن؛ ستون فقرات رابطه بلندمدت.
- *
- * زیر پیشنهادها، «تازه‌های بازار» می‌آید — چیدمان عمومی v۰
- * (شهرِ من اول، بعد حجم/تازگی). مهمان‌ها همان بازارِ باز را می‌بینند.
+ * تب درخواست‌های خرید: نوار «خریدارهای پیشنهادی» + لیست مرتبط‌ترین‌ها.
+ * تب پیشنهادهای فروش: نوار «تامین‌کننده‌های پیشنهادی» + لیست مرتبط‌ترین‌ها.
+ * رتبه‌بندی کار موتور تطبیق است؛ اینجا فقط نتیجه نشان داده می‌شود.
+ * مهمان‌ها بازارِ باز را می‌بینند (دعوت عضویت پایین صفحه).
  */
 
-export default function ExplorePage() {
+export default function MarketPage() {
   const { status } = useAuthStore();
   const active = useActiveBusiness();
-  const city = status === "authed" ? active?.city : undefined;
 
   useEffect(() => {
-    document.title = "اکسپلور | iMach";
+    document.title = "بازار | iMach";
   }, []);
 
   return (
@@ -61,60 +60,23 @@ export default function ExplorePage() {
       <AppHeader />
 
       <main className="grow">
-        <div className="mx-auto max-w-4xl px-4 py-6">
-          <header className="mb-4">
-            <h1 className="flex items-center gap-2 text-xl font-extrabold">
-              <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                <Sparkles className="size-4.5" />
-              </span>
-              اکسپلور
-            </h1>
-            <p className="mt-1.5 text-xs text-muted-foreground">
-              {status === "authed" && active
-                ? "بهترین تطبیق‌ها برای خرید و فروش شما — بر اساس کالای مرجع، شهر و حجم"
-                : "بازار خرید و فروش کسب‌وکارها"}
-            </p>
-          </header>
-
-          <Tabs defaultValue="sell">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="sell" className="gap-1.5">
-                <Store className="size-4" />
-                فروش
-              </TabsTrigger>
-              <TabsTrigger value="buy" className="gap-1.5">
-                <ShoppingBasket className="size-4" />
-                خرید
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="sell" className="mt-4 space-y-6">
-              {status === "authed" && active && <BuyerSuggestions bizId={active.id} myCity={active.city} />}
-              <PublicFeedSection mode="SELL" city={city} excludeSlug={active?.slug} />
-            </TabsContent>
-
-            <TabsContent value="buy" className="mt-4 space-y-6">
-              {status === "authed" && active && <SupplierSuggestions bizId={active.id} />}
-              <PublicFeedSection mode="BUY" city={city} excludeSlug={active?.slug} />
-            </TabsContent>
-          </Tabs>
-
-          {/* دعوت مهمان‌ها — دیدن بازار، اولین قدم عضویت */}
-          {status !== "authed" && (
-            <section className="mt-8 rounded-3xl border border-primary/25 bg-white p-6 text-center shadow-sm">
-              <p className="text-base font-extrabold">این بازار، بازار شما هم می‌تواند باشد</p>
-              <p className="mx-auto mt-1 max-w-sm text-xs leading-6 text-muted-foreground">
-                کاتالوگ فروش و لیست خرید هوشمند iMach — رایگان. همین حالا کسب‌وکارتان را بسازید تا اکسپلور برای شما پیشنهاد بدهد.
-              </p>
-              <Link href="/start">
-                <Button className="mt-4 rounded-xl px-6 shadow-lg shadow-primary/25">
-                  <ShoppingBag className="size-4" />
-                  ساخت کسب‌وکار رایگان من
-                </Button>
-              </Link>
-            </section>
-          )}
-        </div>
+        {status !== "authed" ? (
+          <GuestMarket />
+        ) : !active ? (
+          <NoBusiness />
+        ) : (
+          <UnderlineTabs
+            defaultValue="buy"
+            items={[
+              { value: "buy", label: "درخواست‌های خرید", icon: ClipboardList },
+              { value: "sell", label: "پیشنهادهای فروش", icon: Store },
+            ]}
+            panels={{
+              buy: <BuyPanel bizId={active.id} city={active.city} />,
+              sell: <SellPanel bizId={active.id} city={active.city} />,
+            }}
+          />
+        )}
       </main>
 
       <AppFooter />
@@ -123,102 +85,112 @@ export default function ExplorePage() {
   );
 }
 
-// ─── تب فروش — خریدارهای پیشنهادی (موتور تطبیق) ───
+// ─── تب درخواست‌های خرید ───
 
-function BuyerSuggestions({ bizId, myCity }: { bizId: string; myCity: string }) {
-  const suggestionsQ = useSuggestions(bizId);
-  const suggestions = suggestionsQ.data ?? [];
-
-  if (suggestionsQ.isLoading) {
-    return (
-      <section className="grid place-items-center py-10">
-        <Loader2 className="size-5 animate-spin text-primary" />
-      </section>
-    );
-  }
-
+function BuyPanel({ bizId, city }: { bizId: string; city: string }) {
   return (
-    <section>
-      <SectionTitle
-        icon={<Handshake className="size-4.5 text-primary" />}
-        title="خریدارهای پیشنهادی برای کالاهای شما"
-        hint="بر اساس کالای مرجع مشترک، نزدیکی شهر و حجم نیاز — در مدیریت بازوی فروش هم دنبالشان کنید."
-      />
-      {suggestions.length === 0 ? (
-        <EmptyBox
-          text="هنوز تطبیقی برای کالاهای فروش شما پیدا نشد — هرچه کاتالوگ کامل‌تر باشد، شانس دیده شدن بیشتر است."
-          action={
-            <Link href="/new">
-              <Button size="sm" variant="outline">
-                <Package className="size-4" />
-                افزودن کالا
-              </Button>
-            </Link>
-          }
-        />
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {suggestions.map((m) => (
-            <BuyerSuggestionCard key={`${m.buyerId}-${m.goodId}`} m={m} myCity={myCity} />
-          ))}
-        </div>
-      )}
-    </section>
-  );
-}
-
-function BuyerSuggestionCard({ m, myCity }: { m: SuggestionDto; myCity: string }) {
-  return (
-    <div className="animate-fade-up rounded-2xl border bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="flex items-center gap-1.5 font-extrabold">
-            {m.buyerName}
-            {m.buyerVerified && <BadgeCheck className="size-4 text-primary" aria-label="تاییدشده" />}
-          </p>
-          <span className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="size-3.5" />
-            {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, myCity))}
-          </span>
-        </div>
-        <MatchRing score={m.score} />
-      </div>
-      <div className="mt-3 rounded-lg bg-muted/70 px-3 py-2 text-xs">
-        <span className="text-muted-foreground">به دنبال خرید: </span>
-        <span className="font-bold">{m.goodName}</span>
-        <span className="text-muted-foreground"> — </span>
-        <span className="font-bold text-primary">
-          {fa(m.volume)} {unitLabel(m.unit)} {frequencyLabel(m.frequency)}
-        </span>
-      </div>
-      <Link href={`/buy/${m.buyerSlug}`}>
-        <Button size="sm" variant="outline" className="mt-3 w-full">
-          <ClipboardList className="size-4" />
-          دیدن لیست خرید این خریدار
-        </Button>
-      </Link>
+    <div className="pb-6">
+      <BuyerStrip bizId={bizId} city={city} />
+      <RelevantBuyList bizId={bizId} />
     </div>
   );
 }
 
-// ─── تب خرید — تامین‌کننده‌های پیشنهادی (موتور تطبیق + دنبال کردن) ───
+function BuyerStrip({ bizId, city }: { bizId: string; city: string }) {
+  const suggestionsQ = useSuggestions(bizId);
+  const items = suggestionsQ.data ?? [];
 
-function SupplierSuggestions({ bizId }: { bizId: string }) {
+  if (suggestionsQ.isLoading) {
+    return (
+      <section className="grid place-items-center border-b py-6">
+        <Loader2 className="size-5 animate-spin text-primary" />
+      </section>
+    );
+  }
+  if (items.length === 0) return null;
+
+  return (
+    <Strip label="خریدارهای پیشنهادی" icon={<Users className="size-3.5" />}>
+      {items.map((m) => (
+        <BuyerStripCard key={`${m.buyerId}-${m.goodId}`} m={m} myCity={city} />
+      ))}
+    </Strip>
+  );
+}
+
+function BuyerStripCard({ m, myCity }: { m: SuggestionDto; myCity: string }) {
+  return (
+    <Link href={`/buy/${m.buyerSlug}`} className="w-60 shrink-0 snap-start" aria-label={`لیست خرید ${m.buyerName}`}>
+      <article className="animate-fade-up h-full rounded-2xl border bg-white p-3.5 shadow-sm transition hover:shadow-md">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className="flex items-center gap-1 truncate text-sm font-extrabold">
+              {m.buyerName}
+              {m.buyerVerified && <BadgeCheck className="size-3.5 shrink-0 text-primary" aria-label="تاییدشده" />}
+            </p>
+            <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+              <MapPin className="size-3" />
+              {m.buyerCity} · {proximityLabel(proximity(m.buyerCity, myCity))}
+            </p>
+          </div>
+          <MatchRing score={m.score} size={38} />
+        </div>
+        <div className="mt-2.5 rounded-lg bg-muted/70 px-2.5 py-1.5 text-xs">
+          <span className="text-muted-foreground">می‌خواهد: </span>
+          <span className="font-bold">{m.goodName}</span>
+          <span className="ms-1 font-bold text-primary">
+            {fa(m.volume)} {unitLabel(m.unit)}
+          </span>
+        </div>
+        <p className="mt-1.5 text-[11px] text-muted-foreground">{frequencyLabel(m.frequency)}</p>
+      </article>
+    </Link>
+  );
+}
+
+function RelevantBuyList({ bizId }: { bizId: string }) {
+  const listQ = useBuyRequests(bizId);
+  const items = listQ.data ?? [];
+
+  if (listQ.isLoading) return <FeedSpinner />;
+
+  if (items.length === 0) {
+    return (
+      <EmptyFeed
+        icon={<BuyFeedIcon />}
+        text="فعلا درخواست خرید مرتبطی پیدا نشد."
+      />
+    );
+  }
+
+  return (
+    <div className="space-y-3 px-4 pt-4">
+      {items.map((l) => (
+        <ExploreBuyRow key={l.id} item={l} />
+      ))}
+    </div>
+  );
+}
+
+// ─── تب پیشنهادهای فروش ───
+
+function SellPanel({ bizId, city }: { bizId: string; city: string }) {
+  return (
+    <div className="pb-6">
+      <SupplierStrip bizId={bizId} />
+      <RelevantSellList bizId={bizId} />
+    </div>
+  );
+}
+
+function SupplierStrip({ bizId }: { bizId: string }) {
   const { toast } = useToast();
   const suggestionsQ = useSupplierSuggestions(bizId);
   const followsQ = useFollows(bizId);
   const followToggle = useFollowToggle();
 
-  const suggestions = suggestionsQ.data ?? [];
+  const items = suggestionsQ.data ?? [];
   const followedIds = useMemo(() => new Set((followsQ.data ?? []).map((f) => f.supplierId)), [followsQ.data]);
-
-  if (suggestionsQ.isLoading) {
-    return (
-      <section className="grid place-items-center py-10">
-        <Loader2 className="size-5 animate-spin text-primary" />
-      </section>
-    );
-  }
 
   const toggleFollow = (s: SupplierSuggestionDto) => {
     const wasFollowed = followedIds.has(s.supplierId);
@@ -234,43 +206,31 @@ function SupplierSuggestions({ bizId }: { bizId: string }) {
     );
   };
 
+  if (suggestionsQ.isLoading) {
+    return (
+      <section className="grid place-items-center border-b py-6">
+        <Loader2 className="size-5 animate-spin text-primary" />
+      </section>
+    );
+  }
+  if (items.length === 0) return null;
+
   return (
-    <section>
-      <SectionTitle
-        icon={<Users className="size-4.5 text-primary" />}
-        title="تامین‌کننده‌های پیشنهادی برای نیازهای شما"
-        hint="همان کالایی که نیاز دارید، از نزدیک‌ترین و مناسب‌ترین فروشنده — دنبال کنید تا قیمت‌هایشان همیشه دستتان باشد."
-      />
-      {suggestions.length === 0 ? (
-        <EmptyBox
-          text="هنوز تطبیقی برای نیازهای خرید شما پیدا نشد — نیازهایتان را در بازوی خرید کامل کنید."
-          action={
-            <Link href="/new">
-              <Button size="sm" variant="outline">
-                <Package className="size-4" />
-                افزودن کالا
-              </Button>
-            </Link>
-          }
+    <Strip label="تامین‌کننده‌های پیشنهادی" icon={<Package className="size-3.5" />}>
+      {items.map((s) => (
+        <SupplierStripCard
+          key={s.listingId}
+          s={s}
+          followed={followedIds.has(s.supplierId)}
+          onFollow={() => toggleFollow(s)}
+          busy={followToggle.isPending}
         />
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {suggestions.map((s) => (
-            <SupplierSuggestionCard
-              key={s.listingId}
-              s={s}
-              followed={followedIds.has(s.supplierId)}
-              onFollow={() => toggleFollow(s)}
-              busy={followToggle.isPending}
-            />
-          ))}
-        </div>
-      )}
-    </section>
+      ))}
+    </Strip>
   );
 }
 
-function SupplierSuggestionCard({
+function SupplierStripCard({
   s,
   followed,
   onFollow,
@@ -282,108 +242,156 @@ function SupplierSuggestionCard({
   busy: boolean;
 }) {
   return (
-    <div className="animate-fade-up rounded-2xl border bg-white p-4 shadow-sm">
+    <article className="animate-fade-up w-60 shrink-0 snap-start rounded-2xl border bg-white p-3.5 shadow-sm">
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="flex items-center gap-1.5 font-extrabold">
+        <div className="min-w-0">
+          <p className="flex items-center gap-1 truncate text-sm font-extrabold">
             {s.supplierName}
-            {s.supplierVerified && <BadgeCheck className="size-4 text-primary" aria-label="تاییدشده" />}
+            {s.supplierVerified && <BadgeCheck className="size-3.5 shrink-0 text-primary" aria-label="تاییدشده" />}
           </p>
-          <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="size-3.5" />
+          <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+            <MapPin className="size-3" />
             {s.supplierCity}
           </p>
         </div>
-        <MatchRing score={s.score} />
+        <MatchRing score={s.score} size={38} />
       </div>
-      <div className="mt-3 rounded-lg bg-muted/70 px-3 py-2 text-xs">
+      <div className="mt-2.5 rounded-lg bg-muted/70 px-2.5 py-1.5 text-xs">
         <span className="text-muted-foreground">می‌فروشد: </span>
         <span className="font-bold">{s.goodName}</span>
-        <span className="text-muted-foreground"> — </span>
-        <span className="font-bold text-primary">{money(s.price)}</span>
-        <span className="text-muted-foreground"> هر {unitLabel(s.unit)}</span>
+        <span className="ms-1 font-bold text-primary">{money(s.price)}</span>
       </div>
-      <div className="mt-3 flex items-center gap-2">
-        <Button size="sm" variant={followed ? "secondary" : "default"} onClick={onFollow} disabled={busy} className="flex-1">
+      <div className="mt-2.5 flex items-center gap-1.5">
+        <Button size="sm" variant={followed ? "secondary" : "default"} onClick={onFollow} disabled={busy} className="h-7 flex-1 text-xs">
           {followed ? "دنبال می‌شود" : "دنبال کردن"}
         </Button>
         <Link href={`/sell/${s.supplierSlug}`} className="flex-1">
-          <Button size="sm" variant="outline" className="w-full">
-            <Store className="size-4" />
-            دیدن کاتالوگ
+          <Button size="sm" variant="outline" className="h-7 w-full text-xs">
+            کاتالوگ
           </Button>
         </Link>
       </div>
-    </div>
+    </article>
   );
 }
 
-// ─── تازه‌های بازار — فید عمومی (همراه پیشنهادها، و کل دید مهمان) ───
+function RelevantSellList({ bizId }: { bizId: string }) {
+  const listQ = useSellOffers(bizId);
+  const items = listQ.data ?? [];
 
-function PublicFeedSection({ mode, city, excludeSlug }: { mode: "SELL" | "BUY"; city?: string; excludeSlug?: string }) {
-  const authed = useAuthStore((s) => s.status === "authed");
-  const feedQ = useExploreFeed(mode, city);
-  const items = (feedQ.data ?? []).filter((l) => l.business.slug !== excludeSlug);
-
-  return (
-    <section>
-      <SectionTitle
-        icon={mode === "SELL" ? <Store className="size-4.5 text-primary" /> : <ClipboardList className="size-4.5 text-stone-600" />}
-        title={authed ? "تازه‌های بازار" : mode === "SELL" ? "کالاهای فروش" : "درخواست‌های خرید"}
-        hint={
-          city
-            ? mode === "SELL"
-              ? `اول کالاهای شهر شما (${city})`
-              : `اول نیازهای شهر شما (${city}) — بزرگ‌ترین حجم‌ها جلوتر`
-            : "تازه‌ترین‌های همه کسب‌وکارها"
-        }
-      />
-      <PublicFeed mode={mode} items={items} loading={feedQ.isLoading} />
-    </section>
-  );
-}
-
-function PublicFeed({
-  mode,
-  items,
-  loading,
-}: {
-  mode: "SELL" | "BUY";
-  items: ExploreItemDto[];
-  loading: boolean;
-}) {
-  if (loading) return <FeedSpinner />;
+  if (listQ.isLoading) return <FeedSpinner />;
 
   if (items.length === 0) {
-    return mode === "SELL" ? (
-      <EmptyFeed icon={<SellFeedIcon />} text="هنوز هیچ کالایی برای فروش ثبت نشده است." />
-    ) : (
-      <EmptyFeed icon={<BuyFeedIcon />} text="هنوز هیچ نیاز خریدی ثبت نشده است." />
+    return (
+      <EmptyFeed
+        icon={<SellFeedIcon />}
+        text="فعلا پیشنهاد فروش مرتبطی پیدا نشد."
+      />
     );
   }
 
-  return mode === "SELL" ? (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+  return (
+    <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3">
       {items.map((l) => (
         <ExploreSellCard key={l.id} item={l} />
       ))}
     </div>
-  ) : (
-    <div className="space-y-3">
-      {items.map((l) => (
-        <ExploreBuyRow key={l.id} item={l} />
-      ))}
+  );
+}
+
+// ─── نوار افقی بالای هر تب ───
+
+function Strip({ label, icon, children }: { label: string; icon?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <section className="border-b bg-accent/20 pb-3 pt-3">
+      <p className="mb-2 flex items-center gap-1 px-4 text-xs font-bold text-muted-foreground">
+        {icon}
+        {label}
+      </p>
+      <div className="flex snap-x gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+// ─── مهمان: بازارِ باز ───
+
+function GuestMarket() {
+  return (
+    <UnderlineTabs
+      defaultValue="buy"
+      items={[
+        { value: "buy", label: "درخواست‌های خرید", icon: ClipboardList },
+        { value: "sell", label: "پیشنهادهای فروش", icon: Store },
+      ]}
+      panels={{
+        buy: <GuestFeed mode="BUY" />,
+        sell: <GuestFeed mode="SELL" />,
+      }}
+    />
+  );
+}
+
+function GuestFeed({ mode }: { mode: "BUY" | "SELL" }) {
+  const feedQ = useExploreFeed(mode);
+  const items = feedQ.data ?? [];
+
+  return (
+    <div className="pb-6">
+      {feedQ.isLoading ? (
+        <FeedSpinner />
+      ) : items.length === 0 ? (
+        <div className="pt-4">
+          <EmptyFeed
+            icon={mode === "SELL" ? <SellFeedIcon /> : <BuyFeedIcon />}
+            text={mode === "SELL" ? "هنوز هیچ کالایی برای فروش ثبت نشده است." : "هنوز هیچ نیاز خریدی ثبت نشده است."}
+          />
+        </div>
+      ) : mode === "SELL" ? (
+        <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3">
+          {items.map((l) => (
+            <ExploreSellCard key={l.id} item={l} />
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-3 px-4 pt-4">
+          {items.map((l) => (
+            <ExploreBuyRow key={l.id} item={l} />
+          ))}
+        </div>
+      )}
+
+      <section className="mx-4 mt-8 rounded-3xl border border-primary/25 bg-white p-6 text-center shadow-sm">
+        <p className="text-base font-extrabold">این بازار، بازار شما هم می‌تواند باشد</p>
+        <p className="mx-auto mt-1 max-w-sm text-xs leading-6 text-muted-foreground">
+          کاتالوگ فروش و لیست خرید هوشمند iMach — رایگان.
+        </p>
+        <Link href="/start">
+          <Button className="mt-4 rounded-xl px-6 shadow-lg shadow-primary/25">
+            <ShoppingBag className="size-4" />
+            ساخت کسب‌وکار رایگان من
+          </Button>
+        </Link>
+      </section>
     </div>
   );
 }
 
-// ─── مشترک ───
+// ─── کاربر بدون کسب‌وکار ───
 
-function EmptyBox({ text, action }: { text: string; action?: React.ReactNode }) {
+function NoBusiness() {
   return (
-    <div className="rounded-2xl border border-dashed bg-white/60 p-6 text-center">
-      <p className="mx-auto max-w-md text-sm leading-7 text-muted-foreground">{text}</p>
-      {action && <div className="mt-3 flex justify-center">{action}</div>}
+    <div className="mx-auto max-w-xl px-4 py-16">
+      <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
+        <p className="text-base font-extrabold">اول کسب‌وکارتان را بسازید</p>
+        <p className="mx-auto mt-1 max-w-sm text-sm leading-7 text-muted-foreground">
+          برای دیدن پیشنهادهای مرتبط، به یک کسب‌وکار نیاز دارید — فقط نام و شهر.
+        </p>
+        <Link href="/start">
+          <Button className="mt-4">ساخت کسب‌وکار</Button>
+        </Link>
+      </div>
     </div>
   );
 }

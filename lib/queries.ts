@@ -15,6 +15,7 @@ import {
   type GoodDto,
   type GoodItemDto,
   type InquiryPageDto,
+  type MarketItemDto,
   type OfferDto,
   type PageDto,
   type QuoteRequestResultDto,
@@ -36,6 +37,8 @@ export const qk = {
   categories: () => ["goods", "categories"] as const,
   businessProfile: (slug: string) => ["business", slug] as const,
   explore: (mode: string, city?: string) => ["explore", mode, city ?? ""] as const,
+  buyRequests: (bizId: string) => ["market", "buyRequests", bizId] as const,
+  sellOffers: (bizId: string) => ["market", "sellOffers", bizId] as const,
   homeFeed: (bizId: string, mode: string) => ["market", "home", bizId, mode] as const,
   followersBySlug: (slug: string) => ["business", slug, "followers"] as const,
   followingBySlug: (slug: string) => ["business", slug, "following"] as const,
@@ -85,6 +88,26 @@ export function useExploreFeed(mode: "SELL" | "BUY", city?: string): UseQueryRes
   return useQuery({
     queryKey: qk.explore(mode, city),
     queryFn: () => businessesApi.getExplore({ mode, city }),
+    staleTime: 60_000,
+  });
+}
+
+/** بازار — مرتبط‌ترین درخواست‌های خرید برای من (احرازشده) */
+export function useBuyRequests(businessId: string | null | undefined): UseQueryResult<MarketItemDto[]> {
+  return useQuery({
+    queryKey: qk.buyRequests(businessId ?? ""),
+    queryFn: () => marketApi.getBuyRequests(businessId as string),
+    enabled: !!businessId,
+    staleTime: 60_000,
+  });
+}
+
+/** بازار — مرتبط‌ترین پیشنهادهای فروش برای من (احرازشده) */
+export function useSellOffers(businessId: string | null | undefined): UseQueryResult<MarketItemDto[]> {
+  return useQuery({
+    queryKey: qk.sellOffers(businessId ?? ""),
+    queryFn: () => marketApi.getSellOffers(businessId as string),
+    enabled: !!businessId,
     staleTime: 60_000,
   });
 }

@@ -185,6 +185,9 @@ export interface ExploreItemDto {
   };
 }
 
+/** ردیف شخصی‌سازی‌شده بازار — همان شکل اکسپلور با امتیاز تطبیق */
+export type MarketItemDto = ExploreItemDto & { score: number };
+
 export interface SellerDto {
   id: string;
   slug: string;
@@ -370,6 +373,12 @@ export const marketApi = {
   /** تامین‌کننده‌های پیشنهادی برای نیازهای خرید من (سمت خرید) */
   getSupplierSuggestions: (businessId: string) =>
     api<SupplierSuggestionDto[]>("/market/getSupplierSuggestions", { params: { businessId } }),
+  /** بازار — مرتبط‌ترین درخواست‌های خرید برای من */
+  getBuyRequests: (businessId: string) =>
+    api<MarketItemDto[]>("/market/getBuyRequests", { params: { businessId } }),
+  /** بازار — مرتبط‌ترین پیشنهادهای فروش برای من */
+  getSellOffers: (businessId: string) =>
+    api<MarketItemDto[]>("/market/getSellOffers", { params: { businessId } }),
   /** هوم — تازه‌ترین کالاهای کسب‌وکارهایی که دنبال می‌کنم */
   getHomeFeed: (businessId: string, mode: "SELL" | "BUY") =>
     api<ExploreItemDto[]>("/market/getHomeFeed", { params: { businessId, mode } }),

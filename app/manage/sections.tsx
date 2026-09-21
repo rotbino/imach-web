@@ -47,9 +47,7 @@ import {
   Briefcase,
   Check,
   ChevronDown,
-  ClipboardList,
   Copy,
-  Handshake,
   Loader2,
   MapPin,
   MessageCircle,
@@ -59,7 +57,6 @@ import {
   Radio,
   RefreshCw,
   Send,
-  Settings2,
   ShoppingBasket,
   Signal,
   Store,
@@ -110,58 +107,40 @@ export function ManageHeader({ kind, biz }: { kind: "sell" | "buy"; biz: Busines
   const isSell = kind === "sell";
 
   return (
-    <header className="mb-5">
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="flex items-center gap-2 text-xl font-extrabold">
-          <span
-            className={`grid size-9 place-items-center rounded-xl ${
-              isSell ? "bg-primary/10 text-primary" : "bg-stone-800/10 text-stone-700"
-            }`}
+    <header className="mb-5 flex items-center justify-between gap-2">
+      {many ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className="flex max-w-[50vw] items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-sm font-bold shadow-sm"
+            aria-label="تغییر کسب‌وکار"
           >
-            {isSell ? <Store className="size-4.5" /> : <ShoppingBasket className="size-4.5" />}
-          </span>
-          مدیریت {isSell ? "بازوی فروش" : "بازوی خرید"}
-        </h1>
+            <span className="truncate">{biz.name}</span>
+            <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56">
+            <DropdownMenuLabel>کسب‌وکارهای من</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {mine.map((b) => (
+              <DropdownMenuItem key={b.id} onClick={() => setActive(b.id)} className="gap-2">
+                <span className="grid size-6 place-items-center rounded-md bg-primary/10 text-xs font-black text-primary">
+                  {b.name.slice(0, 1)}
+                </span>
+                <span className="truncate">{b.name}</span>
+                {b.id === biz.id && <Check className="ms-auto size-4 text-primary" />}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <span className="truncate text-sm font-bold text-muted-foreground">{biz.name}</span>
+      )}
 
-        <div className="flex items-center gap-2">
-          <Link href="/arm" className="hidden sm:block">
-            <Button size="sm" variant="outline">
-              <ArrowLeftRight className="size-4" />
-              دیدن ویترین
-            </Button>
-          </Link>
-
-          {many && (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                className="flex items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-sm font-bold shadow-sm"
-                aria-label="تغییر کسب‌وکار"
-              >
-                <span className="max-w-[30vw] truncate">{biz.name}</span>
-                <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                <DropdownMenuLabel>کسب‌وکارهای من</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {mine.map((b) => (
-                  <DropdownMenuItem key={b.id} onClick={() => setActive(b.id)} className="gap-2">
-                    <span className="grid size-6 place-items-center rounded-md bg-primary/10 text-xs font-black text-primary">
-                      {b.name.slice(0, 1)}
-                    </span>
-                    <span className="truncate">{b.name}</span>
-                    {b.id === biz.id && <Check className="ms-auto size-4 text-primary" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-      </div>
-      <p className="mt-1.5 text-xs text-muted-foreground">
-        {isSell
-          ? "درخواست‌های قیمت خریدارها، کالاهای فروشی و لینک کاتالوگ برای مشتری‌ها"
-          : "پیشنهادهای تامین‌کننده‌ها، تابلوی قیمت و لینک لیست خرید برای فروشنده‌ها"}
-      </p>
+      <Link href="/arm">
+        <Button size="sm" variant="outline">
+          <ArrowLeftRight className="size-4" />
+          {isSell ? "دیدن کاتالوگ" : "دیدن لیست خرید"}
+        </Button>
+      </Link>
     </header>
   );
 }
@@ -232,11 +211,6 @@ export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | 
       <SectionTitle
         icon={<Package className="size-4.5 text-primary" />}
         title={isSell ? "کالاهای فروشی من" : "نیازهای خرید من"}
-        hint={
-          isSell
-            ? "این کالاها در کاتالوگ فروش شما، همه‌جا دیده می‌شوند."
-            : "این نیازها در لیست خرید شماست؛ تامین‌کننده‌ها همان را می‌بینند و پیشنهاد می‌دهند."
-        }
         action={
           <Button size="sm" onClick={() => router.push("/new")}>
             <Plus className="size-4" />
@@ -358,7 +332,6 @@ export function InquiriesSection({ bizId, myCity, sellListings }: { bizId: strin
       <SectionTitle
         icon={<Bell className="size-4.5 text-primary" />}
         title="درخواست‌های قیمت"
-        hint="خریدارها روی نیازهایشان قیمت‌گیری زده‌اند؛ حجم و شهرشان را ببینید و پیشنهاد بدهید."
       />
       {inquiries.length === 0 && <EmptyBox text="فعلا درخواست قیمتی ندارید. کاتالوگ کامل‌تر = درخواست بیشتر." />}
       {inquiries.map((q) => {
@@ -462,7 +435,6 @@ export function OffersSection({ bizId, myCity }: { bizId: string; myCity: string
       <SectionTitle
         icon={<Signal className="size-4.5 text-primary" />}
         title="پیشنهادهای تامین‌کننده‌ها"
-        hint="پاسخ قیمت‌گیری‌های بازوی خرید شما — گروه‌شده بر اساس کالا."
       />
       {(offersQ.data?.items ?? []).length === 0 && <EmptyBox text="هنوز پیشنهادی ندارید؛ از «نیازهای خرید من» روی کالاها قیمت‌گیری بزنید." />}
       {[...offersByGood.entries()].map(([gid, offers]) => {
@@ -525,7 +497,6 @@ export function BoardSection({ bizId }: { bizId: string }) {
       <SectionTitle
         icon={<Table2 className="size-4.5 text-primary" />}
         title="تابلوی قیمت دنبال‌شده‌ها"
-        hint="قیمت‌های تامین‌کننده‌هایی که دنبال کرده‌اید؛ دکمه «بررسی به‌روزرسانی» تغییرات قیمت را همین‌جا نشان می‌دهد."
         action={
           rows.length > 0 ? (
             <Button size="sm" variant="outline" onClick={() => void boardQ.refetch()}>
@@ -847,9 +818,7 @@ export function FollowCard({ kind, slug }: { kind: "followers" | "following"; sl
         <div>
           <p className="text-sm font-bold">{isFollowers ? "دنبال‌کننده‌های من" : "دنبال‌شونده‌های من"}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            {isFollowers
-              ? "خریدارهایی که کاتالوگ شما را دنبال می‌کنند — خریدارهای شخصی شما"
-              : "تامین‌کننده‌هایی که دنبال می‌کنید — قیمت‌هایشان در تابلوی قیمت است"}
+            {isFollowers ? "خریدارهای شخصی شما" : "قیمت‌هایشان در تابلوی قیمت است"}
           </p>
         </div>
       </div>

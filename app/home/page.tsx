@@ -7,16 +7,13 @@ import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useHomeFeed } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { UnderlineTabs } from "@/app/components/underline-tabs";
 import { ExploreBuyRow, ExploreSellCard, FeedSpinner } from "@/app/components/feed-cards";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 
 /*
- * هوم — مثل اینستاگرام: اینجا تازه‌های کسب‌وکارهایی که دنبال می‌کنید می‌آید.
- * دو تب (فروش/خرید) چون هم پیشنهاد فروش داریم و هم درخواست خرید.
- * دنبال کردن جای فالو: دنبال کردن یعنی «تامین‌کننده‌های منتخب من» —
- * قیمت‌هایشان در تابلوی قیمت مدیریت بازوی خرید جمع می‌شود.
- * مهمان → دعوت عضویت؛ بازارِ باز در اکسپلور است.
+ * هوم — تازه‌های کسب‌وکارهایی که دنبال می‌کنید؛ دو تب: فروش / خرید.
+ * مهمان → دعوت عضویت؛ بازارِ باز در بازار (اکسپلور) است.
  */
 
 export default function HomePage() {
@@ -51,20 +48,8 @@ function HomeBody() {
     <div className="flex min-h-screen flex-col">
       <AppHeader />
       <main className="grow">
-        <div className="mx-auto max-w-4xl px-4 py-6">
-          <header className="mb-4">
-            <h1 className="flex items-center gap-2 text-xl font-extrabold">
-              <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                <UserRoundCheck className="size-4.5" />
-              </span>
-              هوم
-            </h1>
-            <p className="mt-1.5 text-xs text-muted-foreground">
-              تازه‌ترین کالاهای فروش و نیازهای خرید کسب‌وکارهایی که دنبال می‌کنید
-            </p>
-          </header>
-
-          {!active ? (
+        {!active ? (
+          <div className="mx-auto max-w-xl px-4 py-16">
             <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
               <p className="text-base font-extrabold">اول کسب‌وکارتان را بسازید</p>
               <p className="mx-auto mt-1 max-w-sm text-sm leading-7 text-muted-foreground">
@@ -74,10 +59,10 @@ function HomeBody() {
                 <Button className="mt-4">ساخت کسب‌وکار</Button>
               </Link>
             </div>
-          ) : (
-            <HomeFeed bizId={active.id} />
-          )}
-        </div>
+          </div>
+        ) : (
+          <HomeFeed bizId={active.id} />
+        )}
       </main>
       <AppFooter />
       <MobileTabBar />
@@ -90,25 +75,17 @@ function HomeFeed({ bizId }: { bizId: string }) {
   const buyQ = useHomeFeed(bizId, "BUY");
 
   return (
-    <Tabs defaultValue="sell">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="sell" className="gap-1.5">
-          <Store className="size-4" />
-          پیشنهادهای فروش
-        </TabsTrigger>
-        <TabsTrigger value="buy" className="gap-1.5">
-          <ShoppingBag className="size-4" />
-          درخواست‌های خرید
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="sell" className="mt-4">
-        <SellHomeFeed q={sellQ} />
-      </TabsContent>
-      <TabsContent value="buy" className="mt-4">
-        <BuyHomeFeed q={buyQ} />
-      </TabsContent>
-    </Tabs>
+    <UnderlineTabs
+      defaultValue="sell"
+      items={[
+        { value: "sell", label: "پیشنهادهای فروش", icon: Store },
+        { value: "buy", label: "درخواست‌های خرید", icon: ShoppingBag },
+      ]}
+      panels={{
+        sell: <SellHomeFeed q={sellQ} />,
+        buy: <BuyHomeFeed q={buyQ} />,
+      }}
+    />
   );
 }
 
@@ -120,15 +97,12 @@ function SellHomeFeed({ q }: { q: FeedQ }) {
 
   if (items.length === 0) {
     return (
-      <EmptyFollowed
-        text="از کسب‌وکارهایی که دنبال می‌کنید فعلا کالایی برای فروش نگذاشته‌اند — یا هنوز کسی را دنبال نکرده‌اید."
-        hint="در اکسپلور، تامین‌کننده‌های مناسب کالاهای شما پیشنهاد می‌شوند."
-      />
+      <EmptyFollowed text="از دنبال‌شونده‌هایتان فعلا کالایی برای فروش نیامده است." />
     );
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 px-4 pt-4 sm:grid-cols-3">
       {items.map((l) => (
         <ExploreSellCard key={l.id} item={l} />
       ))}
@@ -142,15 +116,12 @@ function BuyHomeFeed({ q }: { q: FeedQ }) {
 
   if (items.length === 0) {
     return (
-      <EmptyFollowed
-        text="از کسب‌وکارهایی که دنبال می‌کنید فعلا درخواست خریدی ثبت نشده است."
-        hint="کالاهایی که دنبال می‌کنید هر نیاز تازه‌ای بگذارند، همین‌جا می‌بینید."
-      />
+      <EmptyFollowed text="از دنبال‌شونده‌هایتان فعلا درخواست خریدی نیامده است." />
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 px-4 pt-4">
       {items.map((l) => (
         <ExploreBuyRow key={l.id} item={l} />
       ))}
@@ -158,18 +129,17 @@ function BuyHomeFeed({ q }: { q: FeedQ }) {
   );
 }
 
-function EmptyFollowed({ text, hint }: { text: string; hint?: string }) {
+function EmptyFollowed({ text }: { text: string }) {
   return (
-    <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
+    <div className="m-4 rounded-3xl border border-dashed bg-white/70 p-10 text-center">
       <span className="mx-auto grid size-12 place-items-center">
         <UserRoundCheck className="size-6 text-primary/40" />
       </span>
       <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground">{text}</p>
-      {hint && <p className="mx-auto mt-1 max-w-md text-xs leading-6 text-muted-foreground/80">{hint}</p>}
       <Link href="/explore">
         <Button variant="outline" className="mt-4 gap-1.5">
           <Compass className="size-4" />
-          رفتن به اکسپلور
+          رفتن به بازار
         </Button>
       </Link>
     </div>

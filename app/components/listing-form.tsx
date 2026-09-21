@@ -106,22 +106,18 @@ export function ListingForm({
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <h1 className="text-lg font-extrabold">
-        {firstGood
-          ? isSell
-            ? "اولین کالای فروشتان را ثبت کنید"
-            : "اولین کالای خریدتان را ثبت کنید"
-          : "کالای جدید"}
-      </h1>
-      <p className="mt-1 text-xs text-muted-foreground">
-        {isSell
-          ? firstGood
-            ? "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود. بقیه کالاها را بعدا از پنل اضافه کنید."
-            : "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود."
-          : firstGood
-            ? "این نیاز در بازوی خریدتان نمایش داده می‌شود تا تامین‌کننده‌ها پیشنهاد بدهند."
+      {firstGood && (
+        <h1 className="text-lg font-extrabold">
+          {isSell ? "اولین کالای فروشتان را ثبت کنید" : "اولین کالای خریدتان را ثبت کنید"}
+        </h1>
+      )}
+      {firstGood && (
+        <p className="mt-1 text-xs text-muted-foreground">
+          {isSell
+            ? "این کالا در کاتالوگ بازوی فروشتان نمایش داده می‌شود."
             : "این نیاز در بازوی خریدتان نمایش داده می‌شود تا تامین‌کننده‌ها پیشنهاد بدهند."}
-      </p>
+        </p>
+      )}
 
       {/* انتخاب بازو: فروش یا خرید — هر دو بازو از اول در دسترس است */}
       <Tabs value={kind} onValueChange={(v) => setKind(v as ListingKind)}>
