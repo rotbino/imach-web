@@ -1,60 +1,45 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { sellArmHref, useActiveBusiness } from "@/lib/active-biz";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import { QRCodeSVG } from "qrcode.react";
+import { LogIn } from "lucide-react";
 import {
-  ArrowLeftRight,
-  Check,
   CircleUserRound,
   Compass,
-  Copy,
+  House,
   Link2,
-  LogIn,
-  MapPin,
-  MessageCircle,
-  Send,
-  ShoppingBasket,
   SquarePlus,
   Store,
 } from "lucide-react";
 
 /*
- * نویگیشن به سبک اینستاگرام — سوییچر بازوها، همیشه و همه‌جا:
- * • پنج آیتم: بازوی فروش، بازوی خرید، کالای جدید (به‌علاوه، وسط)، اکسپلور، پروفایل
+ * نویگیشن به سبک اینستاگرام — پنج آیتم، همیشه و همه‌جا:
+ * • هوم (فید دنبال‌شونده‌ها) · اکسپلور (پیشنهادهای تطبیق) ·
+ *   کالای جدید (به‌علاوه، وسط) · بازوی من (ویترین خودم) · پروفایل
+ * • دو لینک جدا برای بازوها نیست — «بازوی من» یک لینک است و سوییچر
+ *   خرید/فروش مثل اکسپلور داخل خود صفحه است.
  * • موبایل → فوتر چسبان؛ دسکتاپ → بالا، سمت مقابل لوگو
  * • آیکن‌ها ظریف (خط نازک)، عنوان‌ها زیر آیکن، ریز و بدون بولد — خلوت.
- * • این نویگیشن روی همه صفحات اصلی هست، از جمله خود بازوها —
- *   دقیقا برای همین است که کاربر بین بازوها سوییچ کند.
+ * • این نویگیشن روی همه صفحات اصلی هست، از جمله خود بازوها.
  * • مهمان فقط «ورود | ثبت‌نام» می‌بیند.
  */
 
 // ─── آیتم‌های نویگیشن ───
-function useNavItems() {
-  const slug = useActiveBusiness()?.slug;
+export function useNavItems() {
   return [
-    { href: slug ? `/sell/${slug}` : "/panel", label: "بازوی فروش", icon: Store },
-    { href: slug ? `/buy/${slug}` : "/panel", label: "بازوی خرید", icon: ShoppingBasket },
-    { href: "/panel/new", label: "کالای جدید", icon: SquarePlus },
+    { href: "/home", label: "هوم", icon: House },
     { href: "/explore", label: "اکسپلور", icon: Compass },
+    { href: "/new", label: "کالای جدید", icon: SquarePlus },
+    { href: "/arm", label: "بازوی من", icon: Store },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
 }
 
 function isActivePath(href: string, pathname: string): boolean {
-  if (href === "/panel/new") return pathname.startsWith("/panel/new");
-  if (href === "/explore") return pathname.startsWith("/explore");
-  if (href === "/profile") return pathname.startsWith("/profile");
-  if (href.startsWith("/sell/")) return pathname.startsWith("/sell/");
-  if (href.startsWith("/buy/")) return pathname.startsWith("/buy/");
-  return false;
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 // ─── هدر بالا: لوگو یک طرف، آیتم‌ها طرف دیگر (دسکتاپ) ───
@@ -63,13 +48,12 @@ export function AppHeader() {
   const pathname = usePathname();
   const { status, user } = useAuthStore();
   const items = useNavItems();
-  const slug = useActiveBusiness()?.slug;
 
   return (
     <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         <button
-          onClick={() => router.push(status === "authed" ? sellArmHref(slug) : "/")}
+          onClick={() => router.push(status === "authed" ? "/arm" : "/")}
           className="flex items-center gap-2 text-lg font-extrabold"
           aria-label="iMach"
         >
@@ -85,7 +69,7 @@ export function AppHeader() {
               const on = isActivePath(it.href, pathname);
               return (
                 <Link
-                  key={it.label}
+                  key={it.href}
                   href={it.href}
                   aria-current={on ? "page" : undefined}
                   className={`flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 transition ${
@@ -139,7 +123,7 @@ export function MobileTabBar() {
             const on = isActivePath(it.href, pathname);
             return (
               <Link
-                key={it.label}
+                key={it.href}
                 href={it.href}
                 className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition ${
                   on ? "text-primary" : "text-muted-foreground"
@@ -173,115 +157,6 @@ export function AppFooter() {
         <p>کاتالوگ فروش و لیست خرید هوشمند — رایگان</p>
       </div>
     </footer>
-  );
-}
-
-// ─── کارت لینک اختصاصی بازو ───
-export function ArmLinkCard({
-  kind,
-  slug,
-  bizName,
-  onView,
-}: {
-  kind: "sell" | "buy";
-  slug: string;
-  bizName?: string;
-  onView: () => void;
-}) {
-  const { toast } = useToast();
-  const [copied, setCopied] = useState(false);
-  const isSell = kind === "sell";
-  const path = `${kind}/${slug}`;
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://imach.app";
-  const fullUrl = `${origin}/${path}`;
-  const shareText = isSell
-    ? `کاتالوگ فروش ${bizName ? `«${bizName}» ` : ""}در iMach`
-    : `نیازهای خرید ${bizName ? `«${bizName}» ` : ""}در iMach — اگر این کالا را دارید، پیشنهاد بدهید`;
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(fullUrl);
-    } catch {
-      /* clipboard may fail — ignore */
-    }
-    setCopied(true);
-    toast({ title: "لینک کپی شد", description: path });
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const shareTelegram = () => {
-    window.open(
-      `https://t.me/share/url?url=${encodeURIComponent(fullUrl)}&text=${encodeURIComponent(shareText)}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
-  const shareWhatsApp = () => {
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(`${shareText}: ${fullUrl}`)}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
-  return (
-    <div
-      className={`rounded-2xl border p-5 ${
-        isSell ? "border-primary/25 bg-accent/50" : "border-stone-300/70 bg-stone-50/70"
-      }`}
-    >
-      <div className="mb-2 flex items-center justify-between">
-        <div className="flex items-center gap-2 font-bold">
-          <span
-            className={`grid size-9 place-items-center rounded-xl text-white shadow-sm ${
-              isSell ? "bg-primary" : "bg-stone-700"
-            }`}
-          >
-            {isSell ? <Store className="size-4" /> : <ShoppingBasket className="size-4" />}
-          </span>
-          <div>
-            <p className="text-sm">{isSell ? "بازوی فروش" : "بازوی خرید"}</p>
-            <p className="text-xs font-normal text-muted-foreground">
-              {isSell ? "کاتالوگ فروش شما برای خریدارها" : "نیازهای خرید شما برای تامین‌کننده‌ها"}
-            </p>
-          </div>
-        </div>
-        <Badge variant="outline" className="bg-white">
-          {isSell ? "فروش" : "خرید"}
-        </Badge>
-      </div>
-      <div className="flex items-center gap-2 rounded-xl border bg-white p-2 ps-3" dir="ltr">
-        <span className="grow truncate text-left text-sm font-medium text-primary">{path}</span>
-        <Button size="icon" variant="ghost" onClick={() => void copy()} aria-label="کپی لینک" className="size-8">
-          {copied ? <Check className="size-4 text-primary" /> : <Copy className="size-4" />}
-        </Button>
-      </div>
-      <div className="mt-3 flex items-center gap-3">
-        <div
-          className="shrink-0 rounded-xl border bg-white p-1.5 shadow-sm"
-          title="برای باز کردن لینک در موبایل، اسکن کنید"
-        >
-          <QRCodeSVG value={fullUrl} size={64} fgColor="#f97316" bgColor="#ffffff" />
-        </div>
-        <div className="grid grow gap-2">
-          <Button onClick={onView} className={isSell ? "" : "bg-stone-800 hover:bg-stone-900"}>
-            {isSell ? "مشاهده بازوی فروش" : "مشاهده بازوی خرید"}
-            <ArrowLeftRight className="size-4" />
-          </Button>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" onClick={shareTelegram}>
-              <Send className="size-3.5 text-sky-600" />
-              تلگرام
-            </Button>
-            <Button variant="outline" size="sm" onClick={shareWhatsApp}>
-              <MessageCircle className="size-3.5 text-green-600" />
-              واتساپ
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 

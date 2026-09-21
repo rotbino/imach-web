@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { sellArmHref } from "@/lib/active-biz";
+import { myArmHref } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
 import { CITIES, fa } from "@/lib/format";
 import { AppHeader, AppFooter, MobileTabBar } from "@/app/components/chrome";
@@ -97,8 +97,8 @@ export default function StartWizard() {
           <div key={current} className="animate-step-slide">
             {current === 1 && (
               <AuthStep
-                // ورود موفق → مستقیم بازوی فروش کاربر؛ نه پنل، نه صفحه اصلی
-                onLoggedIn={() => router.push(sellArmHref(useAuthStore.getState().businesses[0]?.slug))}
+                // ورود موفق → مستقیم «بازوی من»؛ نه صفحه اصلی، نه هیچ جای دیگر
+                onLoggedIn={() => router.push(myArmHref())}
                 onRegistered={() => setStep(2)}
               />
             )}
@@ -324,8 +324,8 @@ function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
     <ListingForm
       bizId={biz.id}
       firstGood
-      submitLabel="ثبت و ورود به پنل"
-      onSaved={() => router.push("/panel")} // بعد از ثبت اولین خرید/فروش → پنل
+      submitLabel="ثبت و رفتن به بازوی من"
+      onSaved={() => router.push(myArmHref())} // بعد از ثبت اولین خرید/فروش → بازوی من
     />
   );
 }

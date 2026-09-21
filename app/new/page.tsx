@@ -9,8 +9,9 @@ import { ListingForm } from "@/app/components/listing-form";
 import { Loader2 } from "lucide-react";
 
 /*
- * کالای جدید — مقصد آیتم وسط نویگیشن.
- * کالا به کسب‌وکارِ فعال اضافه می‌شود؛ اگر کسب‌وکاری نیست، پنل مسیر را نشان می‌دهد.
+ * کالای جدید — مقصد آیتم وسط نویگیشن (+).
+ * کالا به کسب‌وکارِ فعال اضافه می‌شود؛ اگر کسب‌وکاری نیست، مسیر ساخت نشان داده می‌شود.
+ * بعد از ثبت، کاربر به «بازوی من» می‌رود تا کالایش را در ویترین ببیند.
  */
 export default function NewListingPage() {
   return (
@@ -49,13 +50,13 @@ function NewListingBody() {
       <div className="rounded-2xl border border-dashed bg-white/60 p-10 text-center">
         <p className="text-lg font-extrabold">اول کسب‌وکارتان را بسازید</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          برای ثبت کالا به یک کسب‌وکار نیاز دارید — از پنل بسازید.
+          برای ثبت کالا به یک کسب‌وکار نیاز دارید — فقط نام و شهر می‌خواهد.
         </p>
         <button
-          onClick={() => router.push("/panel")}
+          onClick={() => router.push("/start")}
           className="mt-4 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm"
         >
-          رفتن به پنل
+          ساخت کسب‌وکار
         </button>
       </div>
     );
@@ -65,7 +66,7 @@ function NewListingBody() {
     <ListingForm
       bizId={active.id}
       submitLabel="ثبت کالا"
-      onSaved={() => router.push("/panel")}
+      onSaved={() => router.push("/arm")}
     />
   );
 }
