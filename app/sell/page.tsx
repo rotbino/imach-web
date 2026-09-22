@@ -5,38 +5,32 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
-import { MyItemsSection, ShareCard } from "@/app/components/sections";
+import { fa, activityTypeLabel, categoryName, fmtMoney, goodName, unitLabel } from "@/lib/format";
+import { useMyBusinesses, useMyListings } from "@/lib/queries";
+import type { GoodItemDto } from "@/lib/api";
+import { ShareDialog } from "@/app/components/share";
+import { ProductSettingsDialog } from "./product-settings";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useEditBusiness, useMyBusinesses } from "@/lib/queries";
-import { ACTIVITY_TYPES, CITIES, activityTypeLabel } from "@/lib/format";
-import { ApiError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { BadgeCheck, Briefcase, Loader2, MapPin, PencilLine } from "lucide-react";
+import {
+  BadgeCheck,
+  Briefcase,
+  LayoutDashboard,
+  Loader2,
+  MapPin,
+  Package,
+  Plus,
+  Share2,
+  Settings2,
+} from "lucide-react";
 
 /*
- * کاتالوگ فروش من — صفحه‌ی بازوی فروش (خواسته‌ی کاربر):
- * مدیریت و نمایش یکی‌اند؛ دقیقا مثل اینستاگرام که کاربر همان صفحه‌ی خودش را
- * ویرایش می‌کند — همان‌چیزی که می‌بینی ویرایش می‌کنی:
- * • نوع فعالیت و مشخصات → مدادِ کنارش
- * • اشتراک‌گذاری لینک → همین‌جا
- * • کالای جدید → دکمه‌ی کالای جدید؛ حذف → آیکون حذف کنار کالا
+ * کاتالوگ فروش من — ویترین (خواسته‌ی کاربر: «اولین چیزی که می‌بینی ویترین است»):
+ * مدیریت و نمایش یکی‌اند — WYSIWYG، مثل اینستاگرام:
+ * • همه‌چیزِ مدیریتی مستقیم روی خود ویترین است:
+ *   کالای جدید · اشتراک‌گذاری لینک · چرخ‌دنده‌ی هر کالا (تنظیمات + حذف)
+ * • داشبورد و تنظیمات هدر → «داشبورد» (/sell/panel) با دکمه بازگشت.
  */
 
 export default function SellPage() {
@@ -105,21 +99,16 @@ function SellBody() {
     <div className="flex min-h-screen flex-col">
       <AppHeader />
       <main className="grow">
-        <div className="mx-auto max-w-2xl space-y-5 px-4 py-6">
-          <BizIdentityCard
+        <div className="mx-auto max-w-2xl px-4 py-6">
+          <ShowcaseHeader
             bizId={active.id}
+            slug={active.slug}
             name={active.name}
             city={active.city}
             activityType={active.activityType}
             isVerified={active.isVerified}
+            currency={active.currency ?? "IRR"}
           />
-          <ShareCard
-            kind="sell"
-            slug={active.slug}
-            bizName={active.name}
-            onView={() => window.location.assign(`/sell/${active.slug}`)}
-          />
-          <MyItemsSection bizId={active.id} side="sell" />
         </div>
       </main>
       <AppFooter />
@@ -128,171 +117,165 @@ function SellBody() {
   );
 }
 
-// ─── هویت کسب‌وکار — همان‌جا که می‌بینی ویرایش کن (مداد) ───
+// ─── ویترین — هدر کاتالوگ + آلبوم کالاها + ابزارهای مستقیم ───
 
-function BizIdentityCard({
+function ShowcaseHeader({
   bizId,
+  slug,
   name,
   city,
   activityType,
   isVerified,
+  currency,
 }: {
   bizId: string;
+  slug: string;
   name: string;
   city: string;
   activityType: string | null;
   isVerified: boolean;
+  currency: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const listingsQ = useMyListings(bizId);
+  const [settingsFor, setSettingsFor] = useState<GoodItemDto | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
+
+  const listings = (listingsQ.data ?? []).filter(
+    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null
+  );
+
+  const toolBtn =
+    "grid size-9 place-items-center rounded-xl text-muted-foreground transition hover:bg-accent hover:text-primary";
 
   return (
-    <section className="rounded-2xl border bg-white p-5 shadow-sm">
-      <div className="flex items-center gap-4">
-        <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-2xl font-black text-primary">
-          {name.slice(0, 1)}
-        </span>
-        <div className="min-w-0 grow">
-          <h1 className="flex items-center gap-1.5 text-lg font-black">
-            <span className="truncate">{name}</span>
-            {isVerified && <BadgeCheck className="size-4.5 shrink-0 text-primary" aria-label="تاییدشده" />}
+    <>
+      {/* نوار ابزار تخت — کالای جدید یک‌سر، داشبورد و اشتراک‌گذاری آن‌سر */}
+      <div className="mb-3 flex items-center justify-between rounded-2xl border bg-white p-1.5 shadow-sm">
+        <Button size="sm" onClick={() => router.push("/new?tab=sell")} className="gap-1">
+          <Plus className="size-4" />
+          کالای جدید
+        </Button>
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={() => setShareOpen(true)}
+            aria-label="اشتراک‌گذاری کاتالوگ"
+            className={toolBtn}
+          >
+            <Share2 className="size-4.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/sell/panel")}
+            aria-label="داشبورد و تنظیمات"
+            className={toolBtn}
+          >
+            <LayoutDashboard className="size-4.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* هدر کاتالوگ — همان چیزی که مشتری می‌بیند */}
+      <section className="rounded-3xl border bg-white p-5 text-center shadow-sm sm:p-7">
+        <div className="flex flex-col items-center">
+          <span className="grid size-20 place-items-center rounded-3xl bg-primary/10 text-4xl font-black text-primary shadow-inner">
+            {name.slice(0, 1)}
+          </span>
+          <h1 className="mt-3 flex items-center gap-1.5 text-2xl font-black">
+            {name}
+            {isVerified && <BadgeCheck className="size-5 text-primary" aria-label="تاییدشده" />}
           </h1>
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
-              <Briefcase className="size-3" />
-              {activityType ? activityTypeLabel(activityType) : "نوع فعالیت"}
-            </Badge>
-            <span className="flex items-center gap-0.5">
-              <MapPin className="size-3" />
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+            {activityType && (
+              <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
+                <Briefcase className="size-3" />
+                {activityTypeLabel(activityType)}
+              </Badge>
+            )}
+            <span className="flex items-center gap-1">
+              <MapPin className="size-3.5" />
               {city}
             </span>
           </div>
-        </div>
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={() => setOpen(true)}
-          aria-label="ویرایش کسب‌وکار"
-          className="shrink-0 text-muted-foreground hover:text-primary"
-        >
-          <PencilLine className="size-4.5" />
-        </Button>
-      </div>
 
-      <EditBizDialog
-        bizId={bizId}
-        open={open}
-        onOpenChange={setOpen}
-        initial={{ name, city, activityType }}
-      />
-    </section>
-  );
-}
-
-function EditBizDialog({
-  bizId,
-  open,
-  onOpenChange,
-  initial,
-}: {
-  bizId: string;
-  open: boolean;
-  onOpenChange: (o: boolean) => void;
-  initial: { name: string; city: string; activityType: string | null };
-}) {
-  const { toast } = useToast();
-  const edit = useEditBusiness();
-  const [name, setName] = useState(initial.name);
-  const [city, setCity] = useState(initial.city);
-  const [activityType, setActivityType] = useState(initial.activityType ?? "");
-
-  // هر بار باز شدن، از مقادیر جاری پر شود
-  useEffect(() => {
-    if (open) {
-      setName(initial.name);
-      setCity(initial.city);
-      setActivityType(initial.activityType ?? "");
-    }
-  }, [open, initial]);
-
-  const save = async () => {
-    if (name.trim().length < 2) {
-      toast({ title: "نام کسب‌وکار را بنویسید", variant: "destructive" });
-      return;
-    }
-    try {
-      await edit.mutateAsync({
-        id: bizId,
-        name: name.trim(),
-        city,
-        activityType: activityType === "" ? null : activityType,
-      });
-      toast({ title: "ذخیره شد" });
-      onOpenChange(false);
-    } catch (err) {
-      toast({
-        title: "ذخیره ناموفق بود",
-        description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
-        variant: "destructive",
-      });
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>ویرایش کسب‌وکار</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-3">
-          <div className="grid gap-1.5">
-            <Label className="text-[11px] text-muted-foreground">نام کسب‌وکار</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="grid gap-1.5">
-            <Label className="text-[11px] text-muted-foreground">شهر</Label>
-            <Select value={city} onValueChange={setCity}>
-              <SelectTrigger aria-label="شهر">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {CITIES.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid gap-1.5">
-            <Label className="text-[11px] text-muted-foreground">نوع فعالیت</Label>
-            <Select
-              value={activityType === "" ? "NONE" : activityType}
-              onValueChange={(v) => setActivityType(v === "NONE" ? "" : v)}
-            >
-              <SelectTrigger aria-label="نوع فعالیت">
-                <SelectValue placeholder="انتخاب کنید…" />
-              </SelectTrigger>
-              <SelectContent>
-                {ACTIVITY_TYPES.map((a) => (
-                  <SelectItem key={a.key} value={a.key}>
-                    {a.fa}
-                  </SelectItem>
-                ))}
-                {activityType && <SelectItem value="NONE">حذف انتخاب</SelectItem>}
-              </SelectContent>
-            </Select>
+          <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار کاتالوگ">
+            <div>
+              <p className="text-lg font-black">{fa(listings.length)}</p>
+              <p className="text-[11px] text-muted-foreground">کالا</p>
+            </div>
           </div>
         </div>
-        <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            انصراف
-          </Button>
-          <Button onClick={() => void save()} disabled={edit.isPending}>
-            {edit.isPending && <Loader2 className="size-4 animate-spin" />}
-            ذخیره
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </section>
+
+      {/* آلبوم کالاها — هر کالا چرخ‌دنده‌ی تنظیمات خودش را دارد */}
+      <section className="mt-6">
+        <h2 className="mb-3 flex items-center gap-1.5 px-1 text-sm font-extrabold text-muted-foreground">
+          <Package className="size-4 text-primary" />
+          کالاهای فروشی
+        </h2>
+
+        {listings.length === 0 ? (
+          <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
+            <p className="text-sm text-muted-foreground">هنوز کالایی در کاتالوگتان نیست.</p>
+            <Button className="mt-4" onClick={() => router.push("/new?tab=sell")}>
+              <Plus className="size-4" />
+              ثبت اولین کالا
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {listings.map((l) => (
+              <article
+                key={l.id}
+                className="animate-fade-up overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
+              >
+                <div className="relative grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
+                  <span className="text-5xl font-black text-primary/20" aria-hidden>
+                    {goodName(l.good).slice(0, 1)}
+                  </span>
+                  {/* چرخ‌دنده — مستقیم روی خود کالا، مثل ویرایش همین‌جا */}
+                  <button
+                    type="button"
+                    onClick={() => setSettingsFor(l)}
+                    aria-label={`تنظیمات ${goodName(l.good)}`}
+                    className="absolute end-2 top-2 grid size-8 place-items-center rounded-xl border bg-white/95 text-muted-foreground shadow-sm transition hover:text-primary"
+                  >
+                    <Settings2 className="size-4" />
+                  </button>
+                </div>
+                <div className="p-3">
+                  <p className="truncate font-extrabold" title={goodName(l.good)}>
+                    {goodName(l.good)}
+                    {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
+                  <p className="mt-2 text-lg font-black text-primary">
+                    {fmtMoney(l.priceMinor, l.currency)}
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    هر {unitLabel(l.good.unit)} · حداقل {fa(l.minOrder ?? 0)} {unitLabel(l.good.unit)}
+                  </p>
+                  <Badge variant="secondary" className="mt-2">
+                    موجودی: {fa(l.stock ?? 0)}
+                  </Badge>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {settingsFor && (
+        <ProductSettingsDialog
+          listing={settingsFor}
+          bizId={bizId}
+          currency={currency}
+          open
+          onOpenChange={(o) => !o && setSettingsFor(null)}
+        />
+      )}
+      <ShareDialog kind="sell" slug={slug} bizName={name} open={shareOpen} onOpenChange={setShareOpen} />
+    </>
   );
 }

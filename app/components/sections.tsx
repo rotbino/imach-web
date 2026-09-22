@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   fa,
   CURRENCIES,
@@ -15,22 +14,18 @@ import {
   unitLabel,
   frequencyLabel,
 } from "@/lib/format";
-import { ApiError, type GoodItemDto, type OfferDto } from "@/lib/api";
+import { ApiError, type OfferDto } from "@/lib/api";
 import {
   useBoard,
-  useDeleteListing,
   useFollows,
   useFollowToggle,
   useIncomingInquiries,
   useMarkInquiryRead,
   useMyFollowers,
-  useMyListings,
   useOffers,
-  useQuoteRequest,
   useSendOffer,
 } from "@/lib/queries";
 import { MatchRing, SectionTitle } from "@/app/components/chrome";
-import { ShareContent } from "@/app/components/share";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -43,16 +38,10 @@ import {
   Loader2,
   MapPin,
   Minus,
-  Package,
-  Plus,
-  Radio,
   RefreshCw,
   Send,
-  ShoppingBasket,
   Signal,
-  Store,
   Table2,
-  Trash2,
   TrendingDown,
   TrendingUp,
   Users,
@@ -61,15 +50,14 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 
 /*
- * بخش‌های مشترک بازوها — یک بار تعریف، بازوی فروش و بازوی خرید:
- * استعلام‌ها/پیشنهادها، کالاهای من، تابلوی قیمت، اشتراک‌گذاری لینک، آمار.
+ * بخش‌های مشترک بازوها — یک بار تعریف، دو داشبورد استفاده:
+ * آمار، استعلام‌ها/پیشنهادها، تابلوی قیمت، پیگیری‌ها — برگه‌ی داشبورد هر بازو.
+ * خودِ ویترین‌ها (کاتالوگ/دستیار خرید) این‌جا نیستند — صفحات بازو هستند.
  */
 
 // ─── نوار آمار — وضعیت کل محیط یک‌جا ───
@@ -90,150 +78,6 @@ export function StatsStrip({
         </div>
       ))}
     </div>
-  );
-}
-
-// ─── کالاهای من — فقط یک سمتِ محیط ───
-
-export function MyItemsSection({ bizId, side }: { bizId: string; side: "sell" | "buy" }) {
-  const { toast } = useToast();
-  const router = useRouter();
-  const listingsQ = useMyListings(bizId);
-  const deleteListing = useDeleteListing();
-  const quoteRequest = useQuoteRequest();
-
-  const [target, setTarget] = useState<GoodItemDto | null>(null);
-
-  const isSell = side === "sell";
-  const listings = (listingsQ.data ?? []).filter((l) =>
-    isSell ? (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null : (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
-  );
-
-  const remove = async () => {
-    if (!target) return;
-    try {
-      await deleteListing.mutateAsync(target.id);
-      toast({ title: "کالا حذف شد", description: goodName(target.good) });
-    } catch {
-      toast({ title: "حذف ناموفق بود", variant: "destructive" });
-    } finally {
-      setTarget(null);
-    }
-  };
-
-  const activateQuote = (l: GoodItemDto) => {
-    quoteRequest.mutate(
-      { listingId: l.id },
-      {
-        onSuccess: (res) =>
-          toast({ title: "قیمت‌گیری انجام شد", description: `${fa(res.created)} تامین‌کننده برای «${goodName(l.good)}» پیشنهاد دادند.` }),
-        onError: (e) =>
-          toast({ title: "قیمت‌گیری ناموفق بود", description: e instanceof ApiError ? e.message : "دوباره تلاش کنید", variant: "destructive" }),
-      }
-    );
-  };
-
-  return (
-    <section className="rounded-2xl border bg-white p-5 shadow-sm">
-      <SectionTitle
-        icon={<Package className="size-4.5 text-primary" />}
-        title={isSell ? "کالاهای فروشی من" : "نیازهای خرید من"}
-        action={
-          <Button size="sm" onClick={() => router.push(isSell ? "/new?tab=sell" : "/new?tab=buy")}>
-            <Plus className="size-4" />
-            {isSell ? "کالای جدید" : "خرید جدید"}
-          </Button>
-        }
-      />
-
-      {listings.length === 0 && (
-        <EmptyBox
-          text={
-            isSell
-              ? "هنوز کالایی برای فروش ثبت نکرده‌اید — اولین کالای‌تان را اضافه کنید."
-              : "هنوز نیاز خریدی ثبت نکرده‌اید — با ثبت نیاز، تامین‌کننده‌ها پیشنهاد می‌دهند."
-          }
-        />
-      )}
-
-      <div className="space-y-2">
-        {listings.map((l) => (
-          <div key={l.id} className="flex items-center gap-3 rounded-xl border bg-muted/20 p-3">
-            <span
-              className={`grid size-10 shrink-0 place-items-center rounded-xl text-base font-black ${
-                isSell ? "bg-primary/10 text-primary" : "bg-stone-200 text-stone-700"
-              }`}
-            >
-              {goodName(l.good).slice(0, 1)}
-            </span>
-            <div className="min-w-0 grow">
-              <p className="truncate text-sm font-extrabold">
-                {goodName(l.good)}
-                {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
-              </p>
-              <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
-                {isSell ? (
-                  <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
-                    فروش · {fmtMoney(l.priceMinor, l.currency)}
-                  </Badge>
-                ) : (
-                  <Badge variant="outline">
-                    خرید · {fa(l.volume as number)} {unitLabel(l.good.unit)} {frequencyLabel(l.frequency ?? "MONTHLY")}
-                  </Badge>
-                )}
-              </div>
-            </div>
-            <div className="flex shrink-0 items-center gap-1">
-              {!isSell && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => activateQuote(l)}
-                  disabled={quoteRequest.isPending}
-                  aria-label={`قیمت‌گیری ${goodName(l.good)}`}
-                  className="text-primary"
-                >
-                  <Radio className="size-4" />
-                  قیمت‌گیری
-                </Button>
-              )}
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => setTarget(l)}
-                aria-label={`حذف ${goodName(l.good)}`}
-                className="size-8 text-destructive hover:text-destructive"
-              >
-                <Trash2 className="size-4" />
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* تایید حذف */}
-      <Dialog open={!!target} onOpenChange={(o) => !o && setTarget(null)}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>حذف «{target ? goodName(target.good) : ""}»؟</DialogTitle>
-            <DialogDescription>
-              {isSell
-                ? "این کالا از کاتالوگ فروش شما حذف می‌شود. این کار برگشت‌پذیر نیست."
-                : "این نیاز از لیست خرید شما حذف می‌شود. این کار برگشت‌پذیر نیست."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setTarget(null)}>
-              انصراف
-            </Button>
-            <Button variant="destructive" onClick={() => void remove()} disabled={deleteListing.isPending}>
-              {deleteListing.isPending && <Loader2 className="size-4 animate-spin" />}
-              حذف کن
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </section>
   );
 }
 
@@ -637,51 +481,6 @@ function OfferSender({
         {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
         ارسال پیشنهاد
       </Button>
-    </div>
-  );
-}
-
-// ─── کارت لینک اختصاصی محیط — ابزار اشتراک‌گذاری ───
-export function ShareCard({
-  kind,
-  slug,
-  bizName,
-  onView,
-}: {
-  kind: "sell" | "buy";
-  slug: string;
-  bizName?: string;
-  onView: () => void;
-}) {
-  const isSell = kind === "sell";
-
-  return (
-    <div
-      className={`rounded-2xl border p-5 ${
-        isSell ? "border-primary/25 bg-accent/50" : "border-stone-300/70 bg-stone-50/70"
-      }`}
-    >
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2 font-bold">
-          <span
-            className={`grid size-9 place-items-center rounded-xl text-white shadow-sm ${
-              isSell ? "bg-primary" : "bg-stone-700"
-            }`}
-          >
-            {isSell ? <Store className="size-4" /> : <ShoppingBasket className="size-4" />}
-          </span>
-          <div>
-            <p className="text-sm">{isSell ? "لینک کاتالوگ فروش" : "لینک لیست خرید"}</p>
-            <p className="text-xs font-normal text-muted-foreground">
-              {isSell ? "برای مشتری‌هایتان بفرستید" : "برای تامین‌کننده‌هایتان بفرستید"}
-            </p>
-          </div>
-        </div>
-        <Badge variant="outline" className="bg-white">
-          {isSell ? "فروش" : "خرید"}
-        </Badge>
-      </div>
-      <ShareContent kind={kind} slug={slug} bizName={bizName} onView={onView} />
     </div>
   );
 }

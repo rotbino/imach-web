@@ -13,13 +13,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogIn } from "lucide-react";
+import { LogIn, type LucideIcon } from "lucide-react";
 import {
   Check,
   ChevronDown,
   CircleUserRound,
   Compass,
-  Inbox,
+  LayoutDashboard,
   ShoppingBasket,
   SquarePlus,
   Store,
@@ -27,16 +27,24 @@ import {
 
 /*
  * هدر پیج‌محور — دقیقا مثل اینستاگرام (خواسته‌ی کاربر):
- * • لوگو + عنوان صفحه‌ی جاری با دراپ‌داون سوییچ بین دو صفحه‌ی حساب:
- *   «کاتالوگ فروش من» ↔ «دستیار خرید»
+ * • فقط لوگو (بدون متن iMach) هم‌تراز با عنوان صفحه‌ی جاری؛
+ *   عنوان با دراپ‌داون سوییچ بین دو صفحه‌ی حساب: «کاتالوگ فروش من» ↔ «دستیار خرید»
  * • پنج آیتم نویگیشن در هر دو بازو یکسان‌اند، اما برچسب و مقصدشان
  *   متناسب با بازوی انتخاب‌شده عوض می‌شود — خریدارِ خرده‌فروش هیچ‌وقت
  *   «فروش» را کنار «خرید» نمی‌بیند.
- *   بازوی فروش: کاتالوگ · کارتابل · کالای جدید · خریدارها · پروفایل
- *   بازوی خرید: دستیار خرید · کارتابل خرید · خرید جدید · فروشنده‌ها · پروفایل
- * • موبایل → نوار پایین چسبان؛ دسکتاپ → بالای هدر، سمت مقابل لوگو.
+ *   بازوی فروش: کاتالوگ · داشبورد · کالای جدید · خریدارها · پروفایل
+ *   بازوی خرید: دستیار خرید · داشبورد · خرید جدید · فروشنده‌ها · پروفایل
+ * • موبایل → نوار پایین چسبان با دکمه‌ی گرد «+»؛ دسکتاپ → بالای هدر.
  * • لوگو → آخرین بازوی باز‌شده؛ مهمان فقط «ورود | ثبت‌نام» می‌بیند.
  */
+
+export interface NavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  /** آیتم «کالای/خرید جدید» — در موبایل دکمه‌ی گرد بزرگ */
+  round?: boolean;
+}
 
 // ─── عنوان صفحه‌ها در هدر ───
 export function armTitle(arm: Arm): string {
@@ -44,21 +52,21 @@ export function armTitle(arm: Arm): string {
 }
 
 // ─── آیتم‌های نویگیشن — محتوای هر آیتم با بازو عوض می‌شود ───
-export function useNavItems(arm: Arm) {
+export function useNavItems(arm: Arm): NavItem[] {
   const isSell = arm === "sell";
   return [
     isSell
       ? { href: "/sell", label: "کاتالوگ", icon: Store }
       : { href: "/buy", label: "دستیار خرید", icon: ShoppingBasket },
     isSell
-      ? { href: "/sell/cartable", label: "کارتابل", icon: Inbox }
-      : { href: "/buy/cartable", label: "کارتابل خرید", icon: Inbox },
+      ? { href: "/sell/panel", label: "داشبورد", icon: LayoutDashboard }
+      : { href: "/buy/panel", label: "داشبورد", icon: LayoutDashboard },
     isSell
-      ? { href: "/new?tab=sell", label: "کالای جدید", icon: SquarePlus }
-      : { href: "/new?tab=buy", label: "خرید جدید", icon: SquarePlus },
+      ? { href: "/new?tab=sell", label: "کالای جدید", icon: SquarePlus, round: true }
+      : { href: "/new?tab=buy", label: "خرید جدید", icon: SquarePlus, round: true },
     isSell
-      ? { href: "/market?tab=buy", label: "خریدارها", icon: Compass }
-      : { href: "/market?tab=sell", label: "فروشنده‌ها", icon: Compass },
+      ? { href: "/market", label: "خریدارها", icon: Compass }
+      : { href: "/market", label: "فروشنده‌ها", icon: Compass },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
 }
@@ -74,8 +82,8 @@ function useCurrentArm(): Arm {
 
 function isActivePath(href: string, pathname: string): boolean {
   const base = href.split("?")[0];
-  if (base === "/sell") return pathname === "/sell" || (pathname.startsWith("/sell/") && !pathname.startsWith("/sell/cartable"));
-  if (base === "/buy") return pathname === "/buy" || (pathname.startsWith("/buy/") && !pathname.startsWith("/buy/cartable"));
+  if (base === "/sell") return pathname === "/sell" || (pathname.startsWith("/sell/") && !pathname.startsWith("/sell/panel"));
+  if (base === "/buy") return pathname === "/buy" || (pathname.startsWith("/buy/") && !pathname.startsWith("/buy/panel"));
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
@@ -89,8 +97,8 @@ function useArmSwitch() {
     setArm(target);
     // روی صفحات خودِ بازو، به صفحه‌ی متناظر بازوی دیگر می‌رویم؛
     // روی صفحات مشترک (بازار/کالای جدید/پروفایل) فقط متن عوض می‌شود.
-    if (pathname.startsWith("/sell/cartable") || pathname.startsWith("/buy/cartable")) {
-      router.push(target === "sell" ? "/sell/cartable" : "/buy/cartable");
+    if (pathname.startsWith("/sell/panel") || pathname.startsWith("/buy/panel")) {
+      router.push(target === "sell" ? "/sell/panel" : "/buy/panel");
     } else if (pathname === "/sell" || pathname.startsWith("/sell/")) {
       router.push("/buy");
     } else if (pathname === "/buy" || pathname.startsWith("/buy/")) {
@@ -115,14 +123,14 @@ export function AppHeader() {
   return (
     <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-        <div className="flex min-w-0 items-center gap-1.5">
+        {/* لوگو + سوییچر — یک ردیف، هم‌تراز افقی (خواسته‌ی کاربر: فقط لوگو، بدون متن) */}
+        <div className="flex min-w-0 items-center">
           <button
             onClick={goHome}
-            className="flex shrink-0 items-center gap-2"
+            className="grid size-9 shrink-0 place-items-center rounded-xl transition hover:bg-accent"
             aria-label="iMach"
           >
-            <Image src="/logo.svg" alt="iMach" width={28} height={29} className="size-7" priority />
-            <span className="text-lg font-extrabold">iMach</span>
+            <Image src="/logo.svg" alt="iMach" width={26} height={27} className="size-6" priority />
           </button>
 
           {status === "authed" && (
@@ -211,6 +219,25 @@ export function MobileTabBar() {
         <div className="grid grid-cols-5">
           {items.map((it) => {
             const on = isActivePath(it.href, pathname ?? "");
+            // آیتم «کالای/خرید جدید» — دکمه‌ی گرد بزرگ، متمایز از بقیه (خواسته‌ی کاربر)
+            if (it.round) {
+              return (
+                <Link
+                  key={it.label}
+                  href={it.href}
+                  aria-label={it.label}
+                  className="flex items-center justify-center"
+                >
+                  <span
+                    className={`grid size-10 place-items-center rounded-full bg-primary text-white shadow-md shadow-primary/30 transition active:scale-95 ${
+                      on ? "ring-2 ring-primary/25 ring-offset-2" : ""
+                    }`}
+                  >
+                    <it.icon className="size-5.5" strokeWidth={2.2} />
+                  </span>
+                </Link>
+              );
+            }
             return (
               <Link
                 key={it.label}
