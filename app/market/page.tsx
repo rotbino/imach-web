@@ -214,7 +214,7 @@ function ReferralProgress({ state }: { state: MarketStateDto }) {
       <p className="mb-1.5 flex items-center justify-between gap-2 text-xs font-extrabold">
         <span className="flex items-center gap-1.5">
           <Users className="size-3.5 text-primary" />
-          عضو آورده‌شده با لینک شما
+          اعضای عضو شده از طریق کاتالوگ شما
         </span>
         <span className="text-primary">
           {fa(state.referral.count)} از {fa(state.referral.required)}
@@ -482,7 +482,10 @@ function OfferButton({
             <DialogHeader>
               <DialogTitle>برای ارسال پیشنهاد، حد نصاب دعوت را کامل کنید</DialogTitle>
               <DialogDescription>
-                بهای دسترسی به خریدارها، آوردنشان است: {fa(state?.referral.required ?? 10)} عضو با لینک کاتالوگ شما.
+                <div className={"text-justify"}>
+                  بهای ارسال پیشنهاد قیمت به خریدار آماده، دعوت از خریداران جدید است. با جذب 10 خریدار جدید دسترسی همیشگی به همه خریدارن مرتبط با کالاهای خود خواهید داشت. لینک کاتالوگ خود را برای خریداران خود ارسال کنید تا هم کاتالوگ شمار را فالو کنند و هم برای فالو ثبت نام کنند. خریدارانی که از طریق شما ثبت نام کنند. دعوت شده و فالور شما خواهند شد: {fa(state?.referral.required ?? 10)} عضو با لینک کاتالوگ شما.
+                </div>
+
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4">

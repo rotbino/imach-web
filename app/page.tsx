@@ -177,7 +177,7 @@ const ARMS = {
     },
 
     buy: {
-        chip: "دستیار خرید",
+        chip: "دستیار خرید ",
         chipCls: "border-stone-300 bg-stone-100 text-stone-700",
         checkCls: "text-stone-500",
         title: "دستیار خرید خودت را بساز",

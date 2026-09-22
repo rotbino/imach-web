@@ -49,7 +49,7 @@ export interface NavItem {
 
 // ─── عنوان صفحه‌ها در هدر ───
 export function armTitle(arm: Arm): string {
-  return arm === "sell" ? "کاتالوگ فروش من" : "دستیار خرید";
+  return arm === "sell" ? "کاتالوگ فروش من" : "دستیار خرید من";
 }
 
 // ─── آیتم‌های نویگیشن — محتوای هر آیتم با بازو عوض می‌شود ───
@@ -158,7 +158,7 @@ export function AppHeader() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => switchArm("buy")} className="gap-2">
                   <ShoppingBasket className="size-4 text-stone-700" />
-                  <span className="grow">دستیار خرید</span>
+                  <span className="grow">دستیار خرید من</span>
                   {arm === "buy" && <Check className="size-4 text-primary" />}
                 </DropdownMenuItem>
               </DropdownMenuContent>
