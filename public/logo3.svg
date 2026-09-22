@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 40" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 52" fill="none">
     <defs>
         <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#FB923C"/>
@@ -15,16 +15,33 @@
             <stop offset="100%" stop-color="#F97316" stop-opacity="0"/>
         </radialGradient>
     </defs>
-    <text x="0" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">i</text>
-    <g transform="translate(9, 0)">
-        <circle cx="6" cy="6" r="12" fill="url(#dotGlow)"/>
-        <circle cx="6" cy="6" r="5.5" fill="url(#dotGradient)">
-            <animate attributeName="r" values="5.5;5.9;5.5" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
-        </circle>
-        <circle cx="4.4" cy="4.2" r="1.5" fill="#FFFFFF" opacity="0.55"/>
-        <path d="M5 30 V19 L16 23 L27 11 V28" stroke="url(#brandGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g transform="translate(0, 6)">
+
+        <!-- i بدون نقطه -->
+        <text x="0" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">ı</text>
+
+        <!-- نقطه‌ی گرافیکی دقیقاً روی i -->
+        <g transform="translate(0.5, 3)">
+            <circle cx="6" cy="6" r="8" fill="url(#dotGlow)"/>
+            <circle cx="6" cy="6" r="3.5" fill="url(#dotGradient)">
+                <animate attributeName="r" values="3.5;3.8;3.5" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+            </circle>
+            <circle cx="4.8" cy="4.8" r="1" fill="#FFFFFF" opacity="0.55"/>
+        </g>
+
+        <!-- M بدون نقطه -->
+        <g transform="translate(9, 0)">
+            <path d="M5 30 V19 L16 23 L27 11 V28" stroke="url(#brandGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+
+        <!-- a -->
+        <text x="41" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">a</text>
+
+        <!-- c -->
+        <text x="59" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">c</text>
+
+        <!-- h -->
+        <text x="76" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">h</text>
     </g>
-    <text x="41" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">a</text>
-    <text x="59" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">c</text>
-    <text x="76" y="31" font-family="Verdana, Geneva, sans-serif" font-size="26" font-weight="700" fill="#F97316">h</text>
 </svg>

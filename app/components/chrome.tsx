@@ -130,13 +130,20 @@ export function AppHeader() {
     <header className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         {/* لوگو + سوییچر — یک ردیف، هم‌تراز افقی (خواسته‌ی کاربر: فقط لوگو، بدون متن) */}
-        <div className="flex min-w-0 items-center">
+        <div className="flex min-w-0 items-center justify-center">
           <button
-            onClick={goHome}
-            className="grid size-9 shrink-0 place-items-center rounded-xl transition hover:bg-accent"
-            aria-label="iMach"
+              onClick={goHome}
+              className="grid shrink-0 place-items-center rounded-xl transition hover:bg-accent"
+              aria-label="iMach"
           >
-            <Image src="/logo.svg" alt="iMach" width={26} height={27} className="size-6" priority />
+            <Image
+                src="/logo3.svg"
+                alt="iMach"
+                width={100}
+                height={35}
+                priority
+                className="pb-1"
+            />
           </button>
 
           {status === "authed" && (

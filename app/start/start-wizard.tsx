@@ -271,12 +271,12 @@ function AuthStep({
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <div className="mb-5 flex items-start justify-between">
+     {/* <div className="mb-5 flex items-start justify-between">
         <h1 className="text-lg font-extrabold">
           {tab === "login" ? m.auth.titleLogin : m.auth.titleRegister}
         </h1>
         <LanguageSelect />
-      </div>
+      </div>*/}
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "register")}>
         <TabsList className="grid w-full grid-cols-2">
@@ -352,7 +352,7 @@ function AuthStep({
               />
             </Field>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className=" space-y-3">
             <Field label={m.auth.fields.mobile}>
               <PhoneField
                 value={phone}
