@@ -249,6 +249,10 @@ function ShowcaseHeader({
                     {goodName(l.good)}
                     {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
                   </p>
+                  {/* واریانت — همان کالای مرجع با مشخصات متفاوت («۵۰۰ گرمی · کارتن») */}
+                  {l.variantLabel && (
+                    <p className="mt-0.5 truncate text-[11px] font-bold text-primary/70">{l.variantLabel}</p>
+                  )}
                   <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
                   <p className="mt-2 text-lg font-black text-primary">
                     {fmtMoney(l.priceMinor, l.currency)}

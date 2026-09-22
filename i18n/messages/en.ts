@@ -72,6 +72,7 @@ export const en: Messages = {
       unitLabel: "Wholesale unit",
       submit: "Add & select",
       selecting: "Adding…",
+      open: "Your product is not here? Add a new reference product",
     },
     brand: {
       label: "Brand (optional)",

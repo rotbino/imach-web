@@ -5,6 +5,7 @@ import { ApiError, type GoodItemDto } from "@/lib/api";
 import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useLocale } from "@/i18n/locale-context";
 import { useDeleteListing, useGoods, useSaveListing } from "@/lib/queries";
+import { NumberInput } from "@/components/number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,15 +55,16 @@ export function ProductSettingsDialog({
   const exp = (CURRENCIES[currency] ?? CURRENCIES.IRR).exp;
   const curName = currencyLabel(currency, locale);
   const isBoth = listing.mode !== "SELL";
+  const unit = unitLabel(listing.good.unit, locale);
 
-  const [price, setPrice] = useState(() =>
-    listing.priceMinor !== null ? String(listing.priceMinor / 10 ** exp) : ""
+  const [price, setPrice] = useState<number | null>(() =>
+    listing.priceMinor !== null ? listing.priceMinor / 10 ** exp : null
   );
-  const [stock, setStock] = useState(() => (listing.stock !== null ? String(listing.stock) : ""));
-  const [minOrder, setMinOrder] = useState(() => (listing.minOrder ? String(listing.minOrder) : ""));
+  const [stock, setStock] = useState<number | null>(() => listing.stock ?? null);
+  const [minOrder, setMinOrder] = useState<number | null>(() => listing.minOrder ?? null);
   const [brandName, setBrandName] = useState(listing.brand?.name ?? "");
   const [attrs, setAttrs] = useState<Record<string, string>>(listing.attrs ?? {});
-  const [volume, setVolume] = useState(() => (listing.volume !== null ? String(listing.volume) : ""));
+  const [volume, setVolume] = useState<number | null>(() => listing.volume ?? null);
   const [frequency, setFrequency] = useState<Frequency>((listing.frequency as Frequency) ?? "MONTHLY");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -75,7 +77,7 @@ export function ProductSettingsDialog({
   const attrsOf = goodDef?.category.attrs ?? [];
 
   const save = async () => {
-    if (Number(price) <= 0 || Number(stock) <= 0) {
+    if ((price ?? 0) <= 0 || (stock ?? 0) <= 0) {
       toast({ title: "قیمت و موجودی را درست بنویسید", variant: "destructive" });
       return;
     }
@@ -88,13 +90,13 @@ export function ProductSettingsDialog({
         ...(brandName.trim() ? { brandName: brandName.trim() } : {}),
         ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
         sell: {
-          priceMinor: Math.round(Number(price) * 10 ** exp),
-          stock: Number(stock),
-          minOrder: Number(minOrder) || 0,
+          priceMinor: Math.round((price ?? 0) * 10 ** exp),
+          stock: stock ?? 0,
+          minOrder: minOrder ?? 0,
         },
         // کالای BOTH: مشخصات خرید باید دوباره ارسال شود وگرنه صفر می‌شود
         ...(isBoth
-          ? { buy: { volume: Number(volume) || listing.volume || 1, frequency } }
+          ? { buy: { volume: volume ?? listing.volume ?? 1, frequency } }
           : {}),
       });
       toast({ title: "ذخیره شد", description: goodName(listing.good, locale) });
@@ -149,26 +151,17 @@ export function ProductSettingsDialog({
               مشخصات فروش
             </p>
             <div className="grid grid-cols-2 gap-3">
-              <Field label={`قیمت هر ${unitLabel(listing.good.unit, locale)} (${curName})`}>
-                <Input
-                  type="number"
-                  min={0}
-                  dir="ltr"
-                  inputMode="numeric"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
+              <Field label={`قیمت هر ${unit}`}>
+                <NumberInput value={price} onChange={setPrice} min={0} suffix={curName} aria-label={`قیمت هر ${unit}`} />
               </Field>
               <Field label="موجودی">
-                <Input type="number" min={0} value={stock} onChange={(e) => setStock(e.target.value)} />
+                <NumberInput value={stock} onChange={setStock} min={0} suffix={unit} aria-label="موجودی" />
               </Field>
-              <Field label={`حداقل سفارش (${unitLabel(listing.good.unit, locale)})`}>
-                <Input type="number" min={0} value={minOrder} onChange={(e) => setMinOrder(e.target.value)} />
-              </Field>
-              <Field label="واحد">
-                <Input value={unitLabel(listing.good.unit, locale)} disabled />
+              <Field label={`حداقل سفارش`}>
+                <NumberInput value={minOrder} onChange={setMinOrder} min={0} suffix={unit} aria-label="حداقل سفارش" />
               </Field>
             </div>
+            <p className="text-[11px] text-muted-foreground">واحد معامله: هر {unit}</p>
           </div>
 
           {/* برند — اختیاری */}
@@ -221,8 +214,8 @@ export function ProductSettingsDialog({
             <div className="grid gap-3 rounded-xl border p-3">
               <p className="text-sm font-extrabold">مشخصات خرید</p>
               <div className="grid grid-cols-2 gap-3">
-                <Field label={`حجم (${unitLabel(listing.good.unit, locale)})`}>
-                  <Input type="number" min={0} value={volume} onChange={(e) => setVolume(e.target.value)} />
+                <Field label="حجم خرید در هر دوره">
+                  <NumberInput value={volume} onChange={setVolume} min={0} suffix={unit} aria-label="حجم خرید" />
                 </Field>
                 <Field label="تناوب">
                   <Select value={frequency} onValueChange={(v) => setFrequency(v as Frequency)}>

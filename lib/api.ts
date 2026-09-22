@@ -184,6 +184,10 @@ export interface PageDto<T> {
 export interface GoodItemDto {
   id: string;
   mode: string;
+  /** مشخص‌کننده‌ی واریانت سمت سرور («weight=500g») — "" = بدون واریانت */
+  variantKey?: string;
+  /** برچسب خوانای واریانت («۵۰۰ گرمی · کارتن») */
+  variantLabel?: string | null;
   priceMinor: number | null;
   currency: string | null;
   attrs?: Record<string, string> | null;

@@ -6,6 +6,7 @@ import { useBrands, useCategories, useCreateGood, useGoods, useSaveListing } fro
 import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
+import { NumberInput } from "@/components/number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,6 +34,35 @@ import { Check, ChevronDown, Loader2, PackagePlus, Search, ShoppingBasket, Store
 
 type Frequency = "WEEKLY" | "MONTHLY" | "OCCASIONAL";
 export type ListingKind = "sell" | "buy";
+
+/**
+ * واحد پیشنهادی برای کالای مرجع جدید — بر اساس برگِ دسته (استاندارد B2B:
+ * واحد مرجعِ ثابت پایه‌ی مقایسه‌پذیری قیمت و تطابق است؛ بسته‌بندی/وزن
+ * واریانتِ همان کالا می‌شود، نه واحد دیگر). کاربر می‌تواند عوضش کند.
+ */
+const UNIT_BY_LEAF: Record<string, string> = {
+  "dried-fruit": "KILOGRAM",
+  "grains-legumes": "KILOGRAM",
+  "fruits-veg": "KILOGRAM",
+  livestock: "KILOGRAM",
+  pantry: "KILOGRAM",
+  dairy: "KILOGRAM",
+  drinks: "LITER",
+  "bakery-snacks": "CARTON",
+  polymers: "KILOGRAM",
+  chemicals: "KILOGRAM",
+  packaging: "PIECE",
+  steel: "KILOGRAM",
+  copper: "KILOGRAM",
+  "metal-scrap": "KILOGRAM",
+  "plastic-scrap": "KILOGRAM",
+  clothing: "PIECE",
+  fabric: "METER",
+  "gold-items": "GRAM",
+  logistics: "SERVICE",
+  "contract-production": "SERVICE",
+};
+const FALLBACK_UNIT = "PIECE";
 
 export function ListingForm({
   bizId,
@@ -79,17 +109,17 @@ export function ListingForm({
   // ── برند + اتریبیوت + مشخصات ──
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
-  const [minOrder, setMinOrder] = useState("");
-  const [volume, setVolume] = useState("");
+  const [price, setPrice] = useState<number | null>(null);
+  const [stock, setStock] = useState<number | null>(null);
+  const [minOrder, setMinOrder] = useState<number | null>(null);
+  const [volume, setVolume] = useState<number | null>(null);
   const [frequency, setFrequency] = useState<Frequency>("MONTHLY");
 
   // ── فرم کالای جدید (پیدا نشد) ──
   const [newName, setNewName] = useState("");
   const [newRoot, setNewRoot] = useState("");
   const [newLeaf, setNewLeaf] = useState("");
-  const [newUnit, setNewUnit] = useState("PIECE");
+  const [newUnit, setNewUnit] = useState(FALLBACK_UNIT);
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query.trim()), 300);
@@ -122,10 +152,10 @@ export function ListingForm({
     setSelected(g);
     setShowCreate(false);
     setAttrs({});
-    setPrice("");
-    setStock("");
-    setMinOrder("");
-    setVolume("");
+    setPrice(null);
+    setStock(null);
+    setMinOrder(null);
+    setVolume(null);
   };
 
   const newRootObj = roots.find((r) => r.slug === newRoot) ?? null;
@@ -165,11 +195,11 @@ export function ListingForm({
       return;
     }
     if (isSell) {
-      if (Number(price) <= 0 || Number(stock) <= 0) {
+      if ((price ?? 0) <= 0 || (stock ?? 0) <= 0) {
         toast({ title: m.listing.errors.sellSpec, variant: "destructive" });
         return;
       }
-    } else if (Number(volume) <= 0) {
+    } else if ((volume ?? 0) <= 0) {
       toast({ title: m.listing.errors.buySpec, variant: "destructive" });
       return;
     }
@@ -186,12 +216,12 @@ export function ListingForm({
         ...(isSell
           ? {
               sell: {
-                priceMinor: Math.round(Number(price) * 10 ** curDef.exp),
-                stock: Number(stock),
-                minOrder: Number(minOrder) || 0,
+                priceMinor: Math.round((price ?? 0) * 10 ** curDef.exp),
+                stock: stock ?? 0,
+                minOrder: minOrder ?? 0,
               },
             }
-          : { buy: { volume: Number(volume), frequency } }),
+          : { buy: { volume: volume ?? 0, frequency } }),
       });
       toast({ title: firstGood ? m.listing.success.savedFirst : m.listing.success.saved });
       onSaved(kind);
@@ -276,6 +306,20 @@ export function ListingForm({
                 catLabel={catLabel}
                 emptyLabel={m.listing.search.empty}
               />
+              {/* درختی که نتیجه می‌آید ممکن است همان کالا با املای دیگر باشد —
+                  ساخت رکورد جدید همیشه در دسترس می‌ماند تا کاتالوگ دوپلی نشود */}
+              {!showCreate && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCreate(true);
+                    setNewName((n) => n || debounced);
+                  }}
+                  className="mt-2 w-full rounded-xl border border-dashed border-primary/30 px-3 py-2 text-xs font-bold text-primary transition hover:bg-accent/50"
+                >
+                  {m.listing.create.open}
+                </button>
+              )}
             </>
           )}
           {searching && (
@@ -388,7 +432,16 @@ export function ListingForm({
                 </Select>
               </Field>
               <Field label="‌">
-                <Select value={newLeaf} onValueChange={setNewLeaf} disabled={!newRootObj}>
+                <Select
+                  value={newLeaf}
+                  onValueChange={(v) => {
+                    setNewLeaf(v);
+                    // واحد پیشنهادی دسته — قابل تغییر
+                    const leaf = newRootObj?.children.find((c) => c.id === v);
+                    setNewUnit(UNIT_BY_LEAF[leaf?.slug ?? ""] ?? FALLBACK_UNIT);
+                  }}
+                  disabled={!newRootObj}
+                >
                   <SelectTrigger aria-label={m.listing.create.categoryLabel}>
                     <SelectValue placeholder={m.listing.create.categoryPlaceholder} />
                   </SelectTrigger>
@@ -509,35 +562,47 @@ export function ListingForm({
               : m.listing.specs.buyTitle.replace("{name}", goodName(selected, locale))}
           </p>
           {isSell ? (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Field label={`${m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))} (${curName})`}>
-                <Input
-                  type="number"
-                  min={0}
-                  dir="ltr"
-                  inputMode="numeric"
-                  placeholder={String(curDef.exp === 0 ? 7200000 : 120)}
+            <div className="grid grid-cols-2 gap-3">
+              <Field label={m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))}>
+                <NumberInput
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={setPrice}
+                  min={0}
+                  suffix={curName}
+                  placeholder={curDef.exp === 0 ? "7200000" : "120"}
+                  aria-label={m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))}
                 />
               </Field>
               <Field label={m.listing.specs.stock}>
-                <Input type="number" min={0} value={stock} onChange={(e) => setStock(e.target.value)} />
+                <NumberInput
+                  value={stock}
+                  onChange={setStock}
+                  min={0}
+                  suffix={unitLabel(selected.unit, locale)}
+                  aria-label={m.listing.specs.stock}
+                />
               </Field>
               <Field label={m.listing.specs.minOrder}>
-                <Input type="number" min={0} value={minOrder} onChange={(e) => setMinOrder(e.target.value)} />
-              </Field>
-              <Field label={m.listing.specs.unit}>
-                <Input value={unitLabel(selected.unit, locale)} disabled />
+                <NumberInput
+                  value={minOrder}
+                  onChange={setMinOrder}
+                  min={0}
+                  suffix={unitLabel(selected.unit, locale)}
+                  aria-label={m.listing.specs.minOrder}
+                />
               </Field>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3">
               <Field label={m.listing.specs.volume}>
-                <Input type="number" min={0} placeholder="200" value={volume} onChange={(e) => setVolume(e.target.value)} />
-              </Field>
-              <Field label={m.listing.specs.unit}>
-                <Input value={unitLabel(selected.unit, locale)} disabled />
+                <NumberInput
+                  value={volume}
+                  onChange={setVolume}
+                  min={0}
+                  suffix={unitLabel(selected.unit, locale)}
+                  placeholder="200"
+                  aria-label={m.listing.specs.volume}
+                />
               </Field>
               <Field label={m.listing.specs.frequency}>
                 <Select value={frequency} onValueChange={(v) => setFrequency(v as Frequency)}>
