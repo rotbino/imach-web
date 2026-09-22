@@ -121,14 +121,12 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
         </div>
 
         <div className="grid gap-1.5">
-          <Label className="text-[11px] text-muted-foreground">لوکیشن دقیق (اختیاری)</Label>
-          <div>
+          <Label className="text-[11px] text-muted-foreground">لوکیشن کسب و کار</Label>
+          <div className={""}>
             <LocationPicker value={loc} onChange={setLoc} />
           </div>
           <p className="text-[11px] leading-5 text-muted-foreground">
-            اگر می‌خواهی مشتری و خریدارِ دقیق‌تر و به‌صرفه‌تری معرفی شوی، لوکیشن دقیق را
-            غیر از شهر ثبت کن — مثلا بازاریابی که فقط در منطقه ۱ تهران کار می‌کند.
-            فقط مبنای تطابق است؛ پینِ دقیق علنی نمی‌شود.
+             لوکیشن به مشتریان و تامین کنندگان کمک می کند راحتر شما را پیدا کنند. همچنین هوش مصنوعی آی مچ، مشتریان یا تامین کنندگان دقیقتری را به شما پیشنهاد می دهد
           </p>
         </div>
 
