@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Loader2, Package } from "lucide-react";
+import { Loader2, Package } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
@@ -28,7 +28,7 @@ import {
  * داشبورد دستیار خرید — محیط مدیریت دو‌برگه‌ای (خواسته‌ی کاربر):
  * • برگه‌ی «داشبورد»: آمار + پیشنهادهای دریافتی + تامین‌کننده‌های پیشنهادی + تابلوهای دنبال‌شده
  * • برگه‌ی «تنظیمات»: ویرایش هدر (نام، شهر، نوع فعالیت)
- * • دکمه‌ی «بازگشت به دستیار خرید» همیشه بالای صفحه است تا کاربر گم نشود.
+ * • نویگیشن بالای صفحه خودش «دستیار خرید» را دارد — دکمه‌ی بازگشت دیگر لازم نیست.
  */
 
 export default function BuyPanelPage() {
@@ -98,15 +98,6 @@ function BuyPanelBody() {
       <AppHeader />
       <main className="grow">
         <div className="mx-auto max-w-2xl px-4 py-6">
-          {/* بازگشت به ویترین دستیار خرید — همیشه دیده می‌شود */}
-          <Link
-            href="/buy"
-            className="inline-flex items-center gap-1.5 rounded-xl border bg-white px-3.5 py-2 text-sm font-bold shadow-sm transition hover:border-stone-400 hover:text-stone-700"
-          >
-            <ArrowRight className="size-4" />
-            بازگشت به دستیار خرید
-          </Link>
-
           <Suspense fallback={<PanelTabsFallback />}>
             <BuyPanelTabs bizId={active.id} city={active.city} />
           </Suspense>

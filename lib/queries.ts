@@ -10,8 +10,8 @@ import {
   type BusinessProfileDto,
   type BusinessSummaryDto,
   type CategoryNodeDto,
+  type CustomerRowDto,
   type ExploreItemDto,
-  type FollowBizDto,
   type FollowDto,
   type GoodDto,
   type GoodItemDto,
@@ -281,12 +281,24 @@ export function useSupplierSuggestions(businessId: string | null | undefined): U
   });
 }
 
-/** خریدارهایی که کاتالوگ من را پیگیری می‌کنند — خریدارهای شخصی من */
-export function useMyFollowers(businessId: string | null | undefined): UseQueryResult<FollowBizDto[]> {
+/** مشتریان من — خریدارهایی که کاتالوگ من را دنبال می‌کنند (غنی + مرتب‌شده) */
+export function useMyFollowers(businessId: string | null | undefined): UseQueryResult<CustomerRowDto[]> {
   return useQuery({
     queryKey: qk.myFollowers(businessId ?? ""),
     queryFn: () => marketApi.getMyFollowers(businessId as string),
     enabled: !!businessId,
     staleTime: 60_000,
+  });
+}
+
+/** حذف یک فالوور از لیست مشتریان من (فالوور بی‌ارزش) */
+export function useRemoveFollower() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ businessId, followerBusinessId }: { businessId: string; followerBusinessId: string }) =>
+      marketApi.removeFollower(businessId, followerBusinessId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market"] });
+    },
   });
 }

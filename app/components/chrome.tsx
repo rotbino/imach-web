@@ -19,10 +19,11 @@ import {
   ChevronDown,
   CircleUserRound,
   Compass,
+  Handshake,
   LayoutDashboard,
   ShoppingBasket,
-  SquarePlus,
   Store,
+  Users,
 } from "lucide-react";
 
 /*
@@ -32,9 +33,10 @@ import {
  * • پنج آیتم نویگیشن در هر دو بازو یکسان‌اند، اما برچسب و مقصدشان
  *   متناسب با بازوی انتخاب‌شده عوض می‌شود — خریدارِ خرده‌فروش هیچ‌وقت
  *   «فروش» را کنار «خرید» نمی‌بیند.
- *   بازوی فروش: کاتالوگ · داشبورد · کالای جدید · خریدارها · پروفایل
- *   بازوی خرید: دستیار خرید · داشبورد · خرید جدید · فروشنده‌ها · پروفایل
- * • موبایل → نوار پایین چسبان با دکمه‌ی گرد «+»؛ دسکتاپ → بالای هدر.
+ *   بازوی فروش: کاتالوگ · داشبورد · مشتریان من · خریدارها · پروفایل
+ *   بازوی خرید: دستیار خرید · داشبورد · تامین من · فروشنده‌ها · پروفایل
+ * • دکمه‌ی «+» حذف شد (خواسته‌ی کاربر) — افزودن کالا مستقیم از روی
+ *   ویترین/میز خرید انجام می‌شود؛ جای آن شبکه‌ی دوطرفه نشسته است.
  * • لوگو → آخرین بازوی باز‌شده؛ مهمان فقط «ورود | ثبت‌نام» می‌بیند.
  */
 
@@ -42,8 +44,6 @@ export interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  /** آیتم «کالای/خرید جدید» — در موبایل دکمه‌ی گرد بزرگ */
-  round?: boolean;
 }
 
 // ─── عنوان صفحه‌ها در هدر ───
@@ -61,9 +61,10 @@ export function useNavItems(arm: Arm): NavItem[] {
     isSell
       ? { href: "/sell/panel", label: "داشبورد", icon: LayoutDashboard }
       : { href: "/buy/panel", label: "داشبورد", icon: LayoutDashboard },
+    // شبکه‌ی دوطرفه — جای دکمه‌ی «+» (خواسته‌ی کاربر)
     isSell
-      ? { href: "/new?tab=sell", label: "کالای جدید", icon: SquarePlus, round: true }
-      : { href: "/new?tab=buy", label: "خرید جدید", icon: SquarePlus, round: true },
+      ? { href: "/sell/customers", label: "مشتریان من", icon: Users }
+      : { href: "/buy/suppliers", label: "تامین من", icon: Handshake },
     isSell
       ? { href: "/market", label: "خریدارها", icon: Compass }
       : { href: "/market", label: "فروشنده‌ها", icon: Compass },
@@ -82,8 +83,10 @@ function useCurrentArm(): Arm {
 
 function isActivePath(href: string, pathname: string): boolean {
   const base = href.split("?")[0];
-  if (base === "/sell") return pathname === "/sell" || (pathname.startsWith("/sell/") && !pathname.startsWith("/sell/panel"));
-  if (base === "/buy") return pathname === "/buy" || (pathname.startsWith("/buy/") && !pathname.startsWith("/buy/panel"));
+  if (base === "/sell")
+    return pathname === "/sell" || (pathname.startsWith("/sell/") && !pathname.startsWith("/sell/panel") && !pathname.startsWith("/sell/customers"));
+  if (base === "/buy")
+    return pathname === "/buy" || (pathname.startsWith("/buy/") && !pathname.startsWith("/buy/panel") && !pathname.startsWith("/buy/suppliers"));
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
@@ -96,9 +99,11 @@ function useArmSwitch() {
     if (pathname.startsWith("/buy") === (target === "buy")) return;
     setArm(target);
     // روی صفحات خودِ بازو، به صفحه‌ی متناظر بازوی دیگر می‌رویم؛
-    // روی صفحات مشترک (بازار/کالای جدید/پروفایل) فقط متن عوض می‌شود.
+    // روی صفحات مشترک (بازار/پروفایل) فقط متن عوض می‌شود.
     if (pathname.startsWith("/sell/panel") || pathname.startsWith("/buy/panel")) {
       router.push(target === "sell" ? "/sell/panel" : "/buy/panel");
+    } else if (pathname.startsWith("/sell/customers") || pathname.startsWith("/buy/suppliers")) {
+      router.push(target === "sell" ? "/sell/customers" : "/buy/suppliers");
     } else if (pathname === "/sell" || pathname.startsWith("/sell/")) {
       router.push("/buy");
     } else if (pathname === "/buy" || pathname.startsWith("/buy/")) {
@@ -219,25 +224,6 @@ export function MobileTabBar() {
         <div className="grid grid-cols-5">
           {items.map((it) => {
             const on = isActivePath(it.href, pathname ?? "");
-            // آیتم «کالای/خرید جدید» — دکمه‌ی گرد بزرگ، متمایز از بقیه (خواسته‌ی کاربر)
-            if (it.round) {
-              return (
-                <Link
-                  key={it.label}
-                  href={it.href}
-                  aria-label={it.label}
-                  className="flex items-center justify-center"
-                >
-                  <span
-                    className={`grid size-10 place-items-center rounded-full bg-primary text-white shadow-md shadow-primary/30 transition active:scale-95 ${
-                      on ? "ring-2 ring-primary/25 ring-offset-2" : ""
-                    }`}
-                  >
-                    <it.icon className="size-5.5" strokeWidth={2.2} />
-                  </span>
-                </Link>
-              );
-            }
             return (
               <Link
                 key={it.label}

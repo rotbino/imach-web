@@ -25,7 +25,7 @@ interface AuthState {
 
   boot: () => Promise<void>;
   login: (phone: string, password: string) => Promise<void>;
-  register: (name: string, phone: string, password: string, country?: string) => Promise<void>;
+  register: (name: string, phone: string, password: string, country?: string, ref?: string) => Promise<void>;
   logout: () => Promise<void>;
   setSession: (session: { accessToken: string; user: UserDto; businesses: BusinessSummaryDto[] }) => void;
   /** refresh ساکت برای api client — توکن جدید را برمی‌گرداند */
@@ -60,8 +60,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     get().setSession(session);
   },
 
-  register: async (name, phone, password, country) => {
-    const session = await authApi.registerUser({ name, phone, password, country });
+  register: async (name, phone, password, country, ref) => {
+    const session = await authApi.registerUser({ name, phone, password, country, ref });
     get().setSession(session);
   },
 

@@ -307,6 +307,8 @@ export interface InquiryPageDto extends PageDto<InquiryDto> {
 export interface FollowDto {
   supplierId: string;
   createdAt: string;
+  /** این دنبال کردن از لینک دعوت/کاتالوگ به وجود آمده */
+  viaRef?: boolean;
   supplier: SellerDto;
 }
 
@@ -345,13 +347,23 @@ export interface SupplierSuggestionDto {
   score: number;
 }
 
-/** یک کسب‌وکار در لیست دنبال‌کننده/دنبال‌شونده */
-export interface FollowBizDto {
+/** یک کسب‌وکار در لیست «مشتریان من» — غنی‌شده با آخرین درخواست خرید فعال */
+export interface CustomerRowDto {
+  id: string;
   slug: string;
   name: string;
   city: string;
   isVerified: boolean;
-  since: string;
+  followedAt: string;
+  /** از طریق لینک دعوت/کاتالوگ صاحب لیست ثبت‌نام کرده */
+  viaRef: boolean;
+  /** آخرین درخواست خرید فعال (لیستینگ BUY/BOTH با حجم) — null یعنی درخواست فعالی ندارد */
+  latestRequest: {
+    volume: number;
+    frequency: string | null;
+    updatedAt: string;
+    good: { nameFa: string; nameEn: string | null; unit: string };
+  } | null;
 }
 
 export interface QuoteRequestResultDto {
@@ -364,7 +376,7 @@ export interface QuoteRequestResultDto {
 export const authApi = {
   loginUser: (body: { phone: string; password: string }) =>
     api<AuthResponseDto>("/auth/loginUser", { method: "POST", body, auth: false }),
-  registerUser: (body: { name: string; phone: string; password: string; country?: string }) =>
+  registerUser: (body: { name: string; phone: string; password: string; country?: string; ref?: string }) =>
     api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
@@ -442,7 +454,13 @@ export const marketApi = {
   /** تقاضای مرتبط با کالاهای من (سمت فروش) */
   getBuyRequests: (businessId: string) =>
     api<MarketItemDto[]>("/market/getBuyRequests", { params: { businessId } }),
-  /** خریدارهایی که کاتالوگ من را پیگیری می‌کنند — خریدارهای شخصی من */
+  /** مشتریان من — خریدارهایی که کاتالوگ من را دنبال می‌کنند (غنی + مرتب‌شده) */
   getMyFollowers: (businessId: string) =>
-    api<FollowBizDto[]>("/market/getFollowers", { params: { businessId } }),
+    api<CustomerRowDto[]>("/market/getFollowers", { params: { businessId } }),
+  /** حذف یک فالوور از لیست مشتریان من */
+  removeFollower: (businessId: string, followerBusinessId: string) =>
+    api<{ ok: boolean; removed: number }>("/market/removeFollower", {
+      method: "POST",
+      body: { businessId, followerBusinessId },
+    }),
 };

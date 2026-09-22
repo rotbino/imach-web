@@ -300,6 +300,7 @@ export function BuyArmView({ slug }: { slug: string }) {
               slug={slug}
               bizName={biz.name}
               label={`تماس با ${isOwner ? "خریدار" : biz.name}`}
+              arm="buy"
               className="bg-stone-800 hover:bg-stone-900 sm:min-w-44"
             />
           </div>

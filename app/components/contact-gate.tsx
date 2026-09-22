@@ -17,6 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Phone, PhoneCall } from "lucide-react";
+import { clearReferralCode, saveReferralCode } from "@/lib/referral";
 
 /** پراپ‌های استاندارد دکمه shadcn — برای تایپ شفاف ContactButton */
 type ButtonProps = React.ComponentProps<typeof Button>;
@@ -31,11 +32,14 @@ export function ContactButton({
   slug,
   bizName,
   label,
+  arm = "sell",
   ...btn
 }: {
   slug: string;
   bizName: string;
   label: string;
+  /** بازوی صفحه‌ای که گیت روی آن نشسته — کد رفرال را جهت‌دار می‌کند */
+  arm?: "sell" | "buy";
 } & ButtonProps) {
   const { toast } = useToast();
   const m = useMessages();
@@ -67,6 +71,10 @@ export function ContactButton({
   };
 
   const openGate = () => {
+    // این گیت روی صفحه‌ی یک کسب‌وکار نشسته — صاحب همان صفحه‌ی دعوت‌کننده است.
+    // اگر مهمان از همین‌جا عضو شود، با کد رفرال صاحب صفحه ثبت می‌شود:
+    // کاتالوگ → مشتری شدن · دستیار خرید → تامین‌کننده شدن.
+    saveReferralCode(arm === "buy" ? `buy:${slug}` : slug);
     if (status === "authed") {
       setOpen(true);
       void fetchContact();
@@ -95,7 +103,9 @@ export function ContactButton({
           setBusy(false);
           return;
         }
-        await register(name.trim(), phone, password);
+        // ثبت‌نام با کد رفرال صاحب کاتالوگ/لیست خرید (خواسته‌ی کاربر)
+        await register(name.trim(), phone, password, undefined, arm === "buy" ? `buy:${slug}` : slug);
+        clearReferralCode();
       }
       toast({ title: m.auth.toasts.welcome, description: `حالا می‌توانید با ${bizName} تماس بگیرید` });
       await fetchContact();

@@ -29,7 +29,11 @@ export function ShareContent({
   const isSell = kind === "sell";
   const path = `${kind}/${slug}`;
   const origin = typeof window !== "undefined" ? window.location.origin : "https://imach.app";
-  const fullUrl = `${origin}/${path}`;
+  // کد رفرال صاحب صفحه همیشه انتهای لینک است (خواسته‌ی کاربر) — هر ثبت‌نامی
+  // که از این لینک بیاید به صاحب کاتالوگ/لیست خرید منتسب می‌شود:
+  // کاتالوگ → ref={slug} (مشتری شدن) · دستیار خرید → ref=buy:{slug} (تامین‌کننده شدن)
+  const refCode = isSell ? slug : `buy:${slug}`;
+  const fullUrl = `${origin}/${path}?ref=${encodeURIComponent(refCode)}`;
   const shareText = isSell
     ? `کاتالوگ فروش ${bizName ? `«${bizName}» ` : ""}در iMach`
     : `نیازهای خرید ${bizName ? `«${bizName}» ` : ""}در iMach — اگر این کالا را دارید، پیشنهاد بدهید`;

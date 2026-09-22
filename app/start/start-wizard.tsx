@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { myArmHref, useArmStore } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
+import { clearReferralCode, loadReferralCode, saveReferralCode } from "@/lib/referral";
 import { CITIES, fa, normalizePhone, COUNTRIES, countryLabel } from "@/lib/format";
 import { useLocale } from "@/i18n/locale-context";
 import { AppHeader, AppFooter, MobileTabBar } from "@/app/components/chrome";
@@ -139,6 +140,13 @@ function AuthStep({
   const register = useAuthStore((s) => s.register);
   const m = useMessages(); // ورود/ثبت‌نام — دوزبانه (fa/en)
   const { locale } = useLocale();
+  const searchParams = useSearchParams();
+  // کد رفرال — از ?ref= لینک دعوت، یا آخرین کد ذخیره‌شده (گیت تماس)
+  const refCode = searchParams.get("ref") ?? loadReferralCode();
+  useEffect(() => {
+    const r = searchParams.get("ref");
+    if (r) saveReferralCode(r);
+  }, [searchParams]);
   const [tab, setTab] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -168,7 +176,8 @@ function AuthStep({
           setBusy(false);
           return;
         }
-        await register(name.trim(), phoneNorm, password, country);
+        await register(name.trim(), phoneNorm, password, country, refCode);
+        clearReferralCode();
         toast({ title: m.auth.toasts.welcome });
         onRegistered(); // ثبت‌نام → ادامه ساخت کسب‌وکار
       }

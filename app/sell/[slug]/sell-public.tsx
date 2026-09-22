@@ -6,15 +6,19 @@ import { AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { SellArmView } from "@/app/components/arm-views";
 import { ShoppingBasket, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { saveReferralCode } from "@/lib/referral";
 
 /*
  * صفحه عمومی بازوی فروش — کاتالوگ قیمتی که فروشنده لینکش را می‌فرستد.
  * بدنه از arm-views می‌آید (همان چیزی که در «بازوی من» هم دیده می‌شود)؛
  * این قاب فقط هویت صفحه را می‌سازد: پس‌زمینه، نویگیشن، فوتر ویروسی.
  * موتور ویروسی: گیت تماس + «ساخته شده با iMach» → عضویت بازدیدکننده.
+ * فوتر و CTA لینک را با کد رفرال صاحب کاتالوگ می‌فرستند (سرنخ ثبت‌نام).
  */
 export default function SellPublic({ slug }: { slug: string }) {
   const { status } = useAuthStore();
+  // هر لمس به لینک‌های عضویت این صفحه، کد رفرال صاحب کاتالوگ را نگه می‌دارد
+  const keepRef = () => saveReferralCode(slug);
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-accent/40 via-white to-white">
       <AppHeader />
@@ -28,7 +32,7 @@ export default function SellPublic({ slug }: { slug: string }) {
             <p className="mx-auto mt-1 max-w-sm text-xs leading-6 text-muted-foreground">
               کاتالوگ فروش و لیست خرید هوشمند iMach — رایگان. همین حالا بسازید و لینکش را به مشتری‌هایتان بفرستید.
             </p>
-            <Link href="/start">
+            <Link href={`/start?ref=${encodeURIComponent(slug)}`} onClick={keepRef}>
               <Button className="mt-4 rounded-xl px-6 shadow-lg shadow-primary/25">
                 <ShoppingBasket className="size-4" />
                 ساخت کاتالوگ رایگان من
@@ -38,10 +42,11 @@ export default function SellPublic({ slug }: { slug: string }) {
         )}
       </main>
 
-      {/* فوتر ویروسی — درِ ورود بازدیدکننده‌ها به iMach */}
+      {/* فوتر ویروسی — درِ ورود بازدیدکننده‌ها به iMach؛ با کد رفرال صاحب کاتالوگ */}
       <footer className="mb-[4.25rem] mt-auto border-t bg-white/70 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-center sm:mb-0">
         <Link
-          href="/start"
+          href={`/start?ref=${encodeURIComponent(slug)}`}
+          onClick={keepRef}
           className="inline-flex items-center gap-1.5 text-sm font-extrabold text-primary hover:underline"
         >
           <span className="grid size-6 place-items-center rounded-lg bg-primary text-primary-foreground">

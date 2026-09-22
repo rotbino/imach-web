@@ -3,7 +3,7 @@
 import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
@@ -25,7 +25,7 @@ import {
  * ویترین دیگر بار مدیریتی ندارد؛ گزارش‌ها و تنظیمات این‌جاست:
  * • برگه‌ی «داشبورد»: آمار + استعلام‌های ورودی + تقاضای مرتبط
  * • برگه‌ی «تنظیمات»: ویرایش هدر (نام، شهر، نوع فعالیت)
- * • دکمه‌ی «بازگشت به کاتالوگ» همیشه بالای صفحه است تا کاربر گم نشود.
+ * • نویگیشن بالای صفحه خودش «کاتالوگ» را دارد — دکمه‌ی بازگشت دیگر لازم نیست.
  */
 
 export default function SellPanelPage() {
@@ -95,15 +95,6 @@ function SellPanelBody() {
       <AppHeader />
       <main className="grow">
         <div className="mx-auto max-w-2xl px-4 py-6">
-          {/* بازگشت به ویترین — همیشه دیده می‌شود */}
-          <Link
-            href="/sell"
-            className="inline-flex items-center gap-1.5 rounded-xl border bg-white px-3.5 py-2 text-sm font-bold shadow-sm transition hover:border-primary/40 hover:text-primary"
-          >
-            <ArrowRight className="size-4" />
-            بازگشت به کاتالوگ
-          </Link>
-
           <Suspense fallback={<PanelTabsFallback />}>
             <SellPanelTabs bizId={active.id} slug={active.slug} name={active.name} city={active.city} />
           </Suspense>
@@ -207,11 +198,16 @@ function RelatedDemand({ bizId }: { bizId: string }) {
 function PanelFooterHint({ slug, name }: { slug: string; name: string }) {
   return (
     <EmptyBox
-      text={`لینک کاتالوگ «${name}» را در گروه‌های صنف پخش کنید؛ هر بازدید یک فرصت فروش است.`}
+      text={`لینک کاتالوگ «${name}» را برای مشتری‌هایتان بفرستید؛ هر ثبت‌نام از لینک شما، مشتری شما می‌شود.`}
       action={
-        <Link href={`/sell/${slug}`} className="text-xs font-bold text-primary hover:underline">
-          دیدن کاتالوگ عمومی
-        </Link>
+        <span className="flex items-center gap-4 text-xs font-bold">
+          <Link href="/sell/customers" className="text-primary hover:underline">
+            مشتریان من
+          </Link>
+          <Link href={`/sell/${slug}`} className="text-muted-foreground hover:text-primary hover:underline">
+            دیدن کاتالوگ عمومی
+          </Link>
+        </span>
       }
     />
   );
