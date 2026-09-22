@@ -3,7 +3,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { UploadCloud, X, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils';
 import { useDeleteFile } from '@/lib/api/apiHooks';
 
 interface FileUploaderProps {

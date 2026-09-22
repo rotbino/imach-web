@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useEditBusiness } from "@/lib/queries";
-import { ACTIVITY_TYPES, CITIES, activityTypeLabel } from "@/lib/format";
+import { ACTIVITY_TYPES, activityTypeLabel } from "@/lib/format";
+import { iranCityItems } from "@/lib/iran-geo";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { BadgeCheck, Briefcase, Loader2, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { SearchSelect } from "@/components/search-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -90,18 +92,20 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
 
         <div className="grid gap-1.5">
           <Label className="text-[11px] text-muted-foreground">شهر</Label>
-          <Select value={city} onValueChange={setCity}>
-            <SelectTrigger aria-label="شهر">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {CITIES.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* لیست کامل ایران — سرچ‌دار؛ مقدار ذخیره‌شده‌ی خارج از لیست هم دست‌نخورده نشان داده می‌شود */}
+          <SearchSelect
+            items={
+              city && !iranCityItems.some((i) => i.value === city)
+                ? [...iranCityItems, { value: city, label: city }]
+                : iranCityItems
+            }
+            value={city}
+            onChange={setCity}
+            placeholder="شهر را انتخاب کنید"
+            searchPlaceholder="جست‌وجوی شهر…"
+            emptyText="پیدا نشد"
+            ariaLabel="شهر"
+          />
         </div>
 
         <div className="grid gap-1.5">

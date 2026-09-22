@@ -7,7 +7,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { myArmHref, useArmStore } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
 import { clearReferralCode, loadReferralCode, saveReferralCode } from "@/lib/referral";
-import { CITIES } from "@/lib/format";
+import { iranCityItems, provinceOfCity } from "@/lib/iran-geo";
 import {
   LANGUAGES,
   guessCountryCode,
@@ -45,6 +45,11 @@ import { Check, Loader2 } from "lucide-react";
  * و کاربر می‌تواند عوضش کند. با تغییر کشور، کد تلفن و زبانِ رسمی خودکار
  * می‌آیند؛ زبان را کاربر مستقل هم می‌تواند عوض کند. شماره موبایل با کد کشور و
  * بدون صفر اول ذخیره می‌شود تا شناسه‌ی یکتای جهانی باشد.
+ *
+ * شهر: یک دراپ‌داون سرچ‌دار روی «همه‌ی شهرهای ایران» (lacal-data) — کاربر
+ * استان انتخاب نمی‌کند؛ استان پشت‌صحنه از روی سطرِ شهر ست می‌شود و فقط در
+ * فرانت می‌ماند (عامل سورتِ تطابق آینده؛ به هیچ مدلی از دیتابیس نمی‌رود).
+ * برای کشورهای غیر ایران، شهر متن آزاد است.
  */
 
 const LANGUAGE_ITEMS = LANGUAGES.map((l) => ({
@@ -52,8 +57,6 @@ const LANGUAGE_ITEMS = LANGUAGES.map((l) => ({
   label: l.label,
   keywords: [l.code],
 }));
-
-const CITY_ITEMS = CITIES.map((c) => ({ value: c, label: c }));
 
 export default function StartWizard() {
   const router = useRouter();
@@ -165,6 +168,9 @@ function AuthStep({
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [country, setCountry] = useState("IR");
+  // استان — فقط فرانت: از سطرِ انتخاب‌شده‌ی دراپ‌داون شهر ست می‌شود، به کاربر
+  // نشان داده نمی‌شود و به هیچ API‌ای نمی‌رود (پایه‌ی سورتِ استانی تطابق آینده)
+  const [province, setProvince] = useState<string | null>(null);
   // زبان = زبان رسمی کشور، مگر کاربر خودش دستی انتخاب کرده باشد؛
   // تغییر کشور انتخاب دستی را پاک می‌کند — پس زبان همیشه با کشور می‌آید،
   // ولی تغییر زبان هرگز کشور را عوض نمی‌کند (قانون یک‌طرفه‌ی کاربر).
@@ -188,6 +194,10 @@ function AuthStep({
     setLangOverride(null); // زبان دوباره از کشورِ تازه مشتق شود
     const lang = langOfCountry(code);
     if (isLocale(lang)) setLocale(lang); // زبان پشتیبانی‌شده‌ی UI — فورا اعمال شود
+    if (code !== country) {
+      setCity(""); // شهر و استانِ کشور قبلی معنا ندارند
+      setProvince(null);
+    }
   };
 
   // تغییر دستی زبان — فقط زبان؛ کشور دست‌نخورده می‌ماند
@@ -365,9 +375,14 @@ function AuthStep({
           <Field label={m.auth.fields.city}>
             {country === "IR" ? (
               <SearchSelect
-                items={CITY_ITEMS}
+                items={iranCityItems}
                 value={city}
                 onChange={setCity}
+                // استان از همین سطر ست می‌شود — کاربر اصلا درگیر انتخاب استان نیست
+                onPick={(item) => {
+                  setCity(item.value);
+                  setProvince(item.hint ?? provinceOfCity(item.value));
+                }}
                 placeholder={m.auth.placeholders.city}
                 searchPlaceholder={m.auth.search.city}
                 emptyText={m.auth.search.empty}
@@ -377,7 +392,10 @@ function AuthStep({
               <Input
                 placeholder={m.auth.placeholders.cityOther}
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  setProvince(null);
+                }}
               />
             )}
           </Field>
@@ -457,7 +475,7 @@ function BusinessStep({
           <Label>شهر *</Label>
           {country === "IR" ? (
             <SearchSelect
-              items={CITY_ITEMS}
+              items={iranCityItems}
               value={city}
               onChange={setCity}
               placeholder="شهر را انتخاب کنید"

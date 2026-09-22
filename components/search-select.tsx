@@ -33,6 +33,8 @@ export interface SearchSelectItem {
   hint?: string;
   /** توکن‌های اضافی برای جست‌وجو */
   keywords?: string[];
+  /** کلید یکتای رندر — وقتی value تکراری است (مثلا شهر هم‌نام در دو استان) */
+  id?: string;
 }
 
 interface SearchSelectProps {
@@ -48,12 +50,15 @@ interface SearchSelectProps {
   align?: "start" | "center" | "end";
   /** رندر دلخواه تریگر — پیش‌فرض: label انتخاب‌شده (مثلا برای نمایش فقط «+98») */
   renderLabel?: (selected: SearchSelectItem | null) => React.ReactNode;
+  /** سطر کاملِ انتخاب‌شده — برای داده‌های پشت‌صحنه (مثلا استان از روی سطر شهر) */
+  onPick?: (item: SearchSelectItem) => void;
 }
 
 export function SearchSelect({
   items,
   value,
   onChange,
+  onPick,
   placeholder,
   searchPlaceholder,
   emptyText,
@@ -98,11 +103,12 @@ export function SearchSelect({
             <CommandGroup>
               {items.map((item) => (
                 <CommandItem
-                  key={item.value}
+                  key={item.id ?? item.value}
                   // مقدار یکتا برای cmdk — برچسب + keywords تا جست‌وجو همه را بپوشاند
                   value={[item.label, ...(item.keywords ?? [])].join(" ")}
                   keywords={item.keywords}
                   onSelect={() => {
+                    onPick?.(item);
                     onChange(item.value);
                     setOpen(false);
                   }}

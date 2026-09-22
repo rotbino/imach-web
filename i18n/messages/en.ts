@@ -204,4 +204,13 @@ export const en: Messages = {
       hint: "Grey: direct goods · Orange: whole subtree. Tap a name to open its goods list.",
     },
   },
+  location: {
+    triggerEmpty: "Location — not set yet",
+    triggerSet: "Location set",
+    title: "Pick a location on the map",
+    hint: "Tap the map or drag the pin",
+    locating: "Getting your position…",
+    confirm: "Save location",
+    clear: "Remove location",
+  },
 };
