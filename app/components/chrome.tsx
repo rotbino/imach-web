@@ -66,8 +66,8 @@ export function useNavItems(arm: Arm): NavItem[] {
       ? { href: "/sell/customers", label: "مشتریان من", icon: Users }
       : { href: "/buy/suppliers", label: "تامین من", icon: Handshake },
     isSell
-      ? { href: "/market", label: "خریدارها", icon: Compass }
-      : { href: "/market", label: "فروشنده‌ها", icon: Compass },
+      ? { href: "/market", label: "بازار خرید", icon: Compass }
+      : { href: "/market", label: "بازار فروش", icon: Compass },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
 }
