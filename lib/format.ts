@@ -33,6 +33,19 @@ export const CURRENCIES: Record<string, { exp: number; fa: string; en: string }>
   AFN: { exp: 2, fa: "افغانی", en: "Afghani" },
   IQD: { exp: 3, fa: "دینار عراق", en: "Iraqi Dinar" },
   RUB: { exp: 2, fa: "روبل", en: "Ruble" },
+  SAR: { exp: 2, fa: "ریال سعودی", en: "Saudi Riyal" },
+  QAR: { exp: 2, fa: "ریال قطر", en: "Qatari Riyal" },
+  KWD: { exp: 3, fa: "دینار کویت", en: "Kuwaiti Dinar" },
+  BHD: { exp: 3, fa: "دینار بحرین", en: "Bahraini Dinar" },
+  OMR: { exp: 3, fa: "ریال عمان", en: "Omani Rial" },
+  SYP: { exp: 2, fa: "پوند سوریه", en: "Syrian Pound" },
+  LBP: { exp: 2, fa: "پوند لبنان", en: "Lebanese Pound" },
+  JOD: { exp: 3, fa: "دینار اردن", en: "Jordanian Dinar" },
+  EGP: { exp: 2, fa: "پوند مصر", en: "Egyptian Pound" },
+  YER: { exp: 2, fa: "ریال یمن", en: "Yemeni Rial" },
+  TMT: { exp: 2, fa: "منات ترکمنستان", en: "Turkmen Manat" },
+  AZN: { exp: 2, fa: "منات آذربایجان", en: "Azerbaijani Manat" },
+  AMD: { exp: 2, fa: "درام ارمنستان", en: "Armenian Dram" },
 };
 
 export const currencyLabel = (currency: string | null | undefined, locale?: string): string => {
@@ -95,28 +108,8 @@ export const frequencyLabel = (f: string, locale?: string): string => {
   return loc === "en" ? def.en : def.fa;
 };
 
-// ── کشورها — انتخاب در ثبت‌نام؛ واحد پول پیش‌فرض بازو از همین‌جا می‌آید ──
-export const COUNTRIES: { code: string; fa: string; en: string; currency: string }[] = [
-  { code: "IR", fa: "ایران", en: "Iran", currency: "IRR" },
-  { code: "AE", fa: "امارات", en: "United Arab Emirates", currency: "AED" },
-  { code: "TR", fa: "ترکیه", en: "Türkiye", currency: "TRY" },
-  { code: "IQ", fa: "عراق", en: "Iraq", currency: "IQD" },
-  { code: "AF", fa: "افغانستان", en: "Afghanistan", currency: "AFN" },
-  { code: "PK", fa: "پاکستان", en: "Pakistan", currency: "PKR" },
-  { code: "CN", fa: "چین", en: "China", currency: "CNY" },
-  { code: "IN", fa: "هند", en: "India", currency: "INR" },
-  { code: "RU", fa: "روسیه", en: "Russia", currency: "RUB" },
-  { code: "DE", fa: "آلمان", en: "Germany", currency: "EUR" },
-  { code: "GB", fa: "بریتانیا", en: "United Kingdom", currency: "GBP" },
-  { code: "US", fa: "آمریکا", en: "United States", currency: "USD" },
-];
-
-export const countryLabel = (code: string, locale?: string): string => {
-  const loc = locale ?? readLocaleCookie();
-  const c = COUNTRIES.find((x) => x.code === code);
-  if (!c) return code;
-  return loc === "en" ? c.en : c.fa;
-};
+// ── کشورها و زبان‌ها به lib/countries.ts منتقل شدند — منبع یگانه‌ی داده ──
+// (دراپ‌داون سرچ‌دار: components/search-select.tsx)
 
 // ── نوع فعالیت کسب‌وکار — همان ۱۰ مقدار مجازِ بک‌اند ──
 // در ثبت‌نام پرسیده نمی‌شود؛ از پنل، هر وقت خواست، انتخاب می‌کند.
@@ -207,12 +200,3 @@ export const proximity = (a: string, b: string): Proximity => {
 
 export const proximityLabel = (p: Proximity): string =>
   p === "same" ? "هم‌شهری" : p === "near" ? "هم‌استان" : "فاصله دور";
-
-/** هر فرمت شماره‌گیری را به شکل استاندارد 09xxxxxxxxx می‌رساند (پیشوند +98 در UI جدا است) */
-export const normalizePhone = (raw: string): string => {
-  let p = raw.replace(/[\s\-()]/g, "").replace(/^\+/, "");
-  if (p.startsWith("0098")) p = `0${p.slice(4)}`;
-  else if (p.startsWith("98") && p.length === 12) p = `0${p.slice(2)}`;
-  else if (p.length === 10 && p.startsWith("9")) p = `0${p}`;
-  return p;
-};

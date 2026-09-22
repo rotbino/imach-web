@@ -214,10 +214,13 @@ export function AppHeader() {
 // ─── فوتر چسبان موبایل — نویگیشن پیج‌محور ───
 export function MobileTabBar() {
   const { status } = useAuthStore();
-  const router = useRouter();
   const pathname = usePathname();
   const arm = useCurrentArm();
   const items = useNavItems(arm);
+
+  // مهمان/بوت: هیچ — ورود و ثبت‌نام فقط در هدر است؛ دوباره‌کاری پایین صفحه
+  // کاربر را گیج می‌کرد (خواسته‌ی کاربر: عین دسکتاپ)
+  if (status !== "authed") return null;
 
   return (
     <nav
@@ -225,33 +228,24 @@ export function MobileTabBar() {
       className="fixed inset-x-0 bottom-0 z-40 border-t bg-white/95 backdrop-blur-md sm:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {status === "authed" ? (
-        <div className="grid grid-cols-5">
-          {items.map((it) => {
-            const on = isActivePath(it.href, pathname ?? "");
-            return (
-              <Link
-                key={it.label}
-                href={it.href}
-                className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition ${
-                  on ? "text-primary" : "text-muted-foreground"
-                }`}
-                aria-current={on ? "page" : undefined}
-              >
-                <it.icon className={`size-5.5 ${on ? "fill-primary/10" : ""}`} strokeWidth={on ? 2.2 : 1.75} />
-                {it.label}
-              </Link>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-2 p-2">
-          <Button variant="outline" onClick={() => router.push("/start")}>
-            ورود
-          </Button>
-          <Button onClick={() => router.push("/start")}>ثبت‌نام</Button>
-        </div>
-      )}
+      <div className="grid grid-cols-5">
+        {items.map((it) => {
+          const on = isActivePath(it.href, pathname ?? "");
+          return (
+            <Link
+              key={it.label}
+              href={it.href}
+              className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition ${
+                on ? "text-primary" : "text-muted-foreground"
+              }`}
+              aria-current={on ? "page" : undefined}
+            >
+              <it.icon className={`size-5.5 ${on ? "fill-primary/10" : ""}`} strokeWidth={on ? 2.2 : 1.75} />
+              {it.label}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

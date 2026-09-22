@@ -111,6 +111,7 @@ export interface UserDto {
   phone: string;
   role: string;
   country: string;
+  language: string;
 }
 
 export interface BusinessSummaryDto {
@@ -398,9 +399,9 @@ export interface MarketStateDto {
 // ─── اندپوینت‌ها — نام‌گذاری اکشن‌محور، هم‌نام با کنترلرهای NestJS ───
 
 export const authApi = {
-  loginUser: (body: { phone: string; password: string }) =>
+  loginUser: (body: { phone: string; password: string; country?: string }) =>
     api<AuthResponseDto>("/auth/loginUser", { method: "POST", body, auth: false }),
-  registerUser: (body: { name: string; phone: string; password: string; country?: string; ref?: string }) =>
+  registerUser: (body: { name: string; phone: string; password: string; country?: string; language?: string; ref?: string }) =>
     api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),

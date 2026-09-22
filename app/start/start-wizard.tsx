@@ -1,52 +1,68 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { myArmHref, useArmStore } from "@/lib/active-biz";
 import { useCreateBusiness } from "@/lib/queries";
 import { clearReferralCode, loadReferralCode, saveReferralCode } from "@/lib/referral";
-import { CITIES, fa, normalizePhone, COUNTRIES, countryLabel } from "@/lib/format";
+import { CITIES } from "@/lib/format";
+import {
+  LANGUAGES,
+  guessCountryCode,
+  langOfCountry,
+  normalizeIntlPhone,
+} from "@/lib/countries";
+import { isLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/locale-context";
 import { AppHeader, AppFooter, MobileTabBar } from "@/app/components/chrome";
 import { LanguageSelect } from "@/app/components/language-select";
 import { ListingForm } from "@/app/components/listing-form";
+import { PhoneField, countrySelectItems } from "@/app/components/phone-field";
 import { useMessages } from "@/i18n/messages/use-messages";
+import { SearchSelect } from "@/components/search-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Check, Loader2 } from "lucide-react";
 
 /*
- * ویزارد افقی شروع — یک مرحله در هر لحظه:
- *   ۱) حساب (ورود / ثبت‌نام)      ← ورود مستقیم به صفحه‌ی خودِ کاربر می‌رود
- *   ۲) کسب‌وکار (نام + شهر)       ← بدون موبایل، بدون نقش
- *   ۳) اولین کالا                 ← فروش یا خرید، انتخاب با خود کاربر؛
- *     همین انتخاب تعیین می‌کند کاربر وارد کدام بازو شود:
- *     فروش → کاتالوگ فروش من، خرید → دستیار خرید — شاید هیچ‌وقت سوییچ نخواهد کرد.
+ * مسیر شروع — بدون نوار مراحل (خواسته‌ی کاربر: فرم خلوت باشد):
+ *   ۱) حساب — ورود / ثبت‌نام؛ ثبت‌نام همزمان نام کسب‌وکار + شهر + کشور و
+ *      زبان می‌گیرد (نام کسب‌وکار با توضیح نرم: کشاورز هم می‌تواند اسم خودش
+ *      را بنویسد) و بلافاصله کاتالوگ ساخته می‌شود — یک قدم به جلو.
+ *   ۲) کسب‌وکار — فقط برای کاربر واردشده که «کسب‌وکار جدید» می‌سازد، یا
+ *      پشتیبانِ اگر ساخت خودکار ناموفق ماند (با مقادیر تایپ‌شده پر می‌شود).
+ *   ۳) اولین کالا — فروش یا خرید؛ همین انتخاب تعیین می‌کند کاربر وارد کدام
+ *      بازو شود.
+ *
+ * کشور: با timezone مرورگر خودکار حدس زده می‌شود (لوکیشن تقریبی، بدون VPN-گولی)
+ * و کاربر می‌تواند عوضش کند. با تغییر کشور، کد تلفن و زبانِ رسمی خودکار
+ * می‌آیند؛ زبان را کاربر مستقل هم می‌تواند عوض کند. شماره موبایل با کد کشور و
+ * بدون صفر اول ذخیره می‌شود تا شناسه‌ی یکتای جهانی باشد.
  */
 
-const STEPS: { title: string }[] = [
-  { title: "حساب" },
-  { title: "کسب‌وکار" },
-  { title: "اولین کالا" },
-];
+const LANGUAGE_ITEMS = LANGUAGES.map((l) => ({
+  value: l.code,
+  label: l.label,
+  keywords: [l.code],
+}));
+
+const CITY_ITEMS = CITIES.map((c) => ({ value: c, label: c }));
 
 export default function StartWizard() {
   const router = useRouter();
+  const { toast } = useToast();
+  const m = useMessages();
   const { status: authStatus } = useAuthStore();
   const [step, setStep] = useState(1);
   const [biz, setBiz] = useState<BusinessSummaryDto | null>(null);
+  const [bizIntent, setBizIntent] = useState<{ name: string; city: string } | null>(null);
+  const [creatingBiz, setCreatingBiz] = useState(false);
+  const createBiz = useCreateBusiness();
 
   if (authStatus === "booting") {
     return (
@@ -60,62 +76,55 @@ export default function StartWizard() {
   // ورود از مسیر پنل برای «کسب‌وکار جدید» هم همین‌جا رندر می‌شود.
   const current = authStatus === "guest" ? 1 : Math.max(step, 2);
 
+  // ── بعد از ثبت‌نام: کاتالوگ با همان نام و شهری که کاربر تایپ کرده ساخته
+  // می‌شود — قدم جداگانه حذف. اگر ساخت شکست، گام ۲ با مقادیر پرشده می‌آید.
+  const handleRegistered = async (intent: { name: string; city: string }) => {
+    setCreatingBiz(true);
+    setBizIntent(intent);
+    try {
+      const created = await createBiz.mutateAsync(intent);
+      setBiz(created);
+      setStep(3);
+    } catch {
+      setStep(2);
+    } finally {
+      setCreatingBiz(false);
+    }
+  };
+
   return (
     <>
       <AppHeader />
       <main className="grow">
         <div className="mx-auto max-w-2xl px-4 py-8">
-          {/* نشانگر افقی مراحل */}
-          <ol className="mb-6 flex items-center gap-2" aria-label="مراحل ثبت‌نام">
-            {STEPS.map((s, i) => {
-              const n = i + 1;
-              const done = n < current;
-              const active = n === current;
-              return (
-                <li key={s.title} className="flex flex-1 items-center gap-2">
-                  <span
-                    aria-current={active ? "step" : undefined}
-                    className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-bold transition ${
-                      active
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : done
-                          ? "bg-accent text-primary"
-                          : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    <span
-                      className={`grid size-4.5 place-items-center rounded-full text-[10px] ${
-                        active ? "bg-white/25" : done ? "bg-primary text-white" : "bg-white"
-                      }`}
-                    >
-                      {done ? <Check className="size-3" /> : fa(n)}
-                    </span>
-                    {s.title}
-                  </span>
-                  {n < STEPS.length && <span className="h-px grow bg-border" aria-hidden />}
-                </li>
-              );
-            })}
-          </ol>
+          {creatingBiz && (
+            <div className="rounded-2xl border bg-white p-10 shadow-sm" data-testid="creating-biz">
+              <div className="grid place-items-center gap-3 text-sm text-muted-foreground">
+                <Loader2 className="size-6 animate-spin text-primary" />
+                {m.auth.creatingBiz}
+              </div>
+            </div>
+          )}
 
-          <div key={current} className="animate-step-slide">
-            {current === 1 && (
-              <AuthStep
-                // ورود موفق → مستقیم صفحه‌ی خود کاربر (آخرین بازو)
-                onLoggedIn={() => router.push(myArmHref())}
-                onRegistered={() => setStep(2)}
-              />
-            )}
-            {current === 2 && (
-              <BusinessStep
-                onCreated={(b) => {
-                  setBiz(b);
-                  setStep(3);
-                }}
-              />
-            )}
-            {current === 3 && biz && <FirstGoodStep biz={biz} />}
-          </div>
+          {!creatingBiz && current === 1 && (
+            <AuthStep
+              onLoggedIn={() => router.push(myArmHref())}
+              onRegistered={(intent) => void handleRegistered(intent)}
+            />
+          )}
+
+          {!creatingBiz && current === 2 && (
+            <BusinessStep
+              initialName={bizIntent?.name ?? ""}
+              initialCity={bizIntent?.city ?? ""}
+              onCreated={(b) => {
+                setBiz(b);
+                setStep(3);
+              }}
+            />
+          )}
+
+          {!creatingBiz && current === 3 && biz && <FirstGoodStep biz={biz} />}
         </div>
       </main>
       <AppFooter />
@@ -125,7 +134,7 @@ export default function StartWizard() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام ۱ — حساب: ورود (می‌رود به پنل) یا ثبت‌نام (ادامه به کسب‌وکار)
+// گام ۱ — حساب: ورود (می‌رود به پنل) یا ثبت‌نام (کاتالوگ فوری می‌سازد)
 // ─────────────────────────────────────────────────────────────────────────────
 
 function AuthStep({
@@ -133,13 +142,13 @@ function AuthStep({
   onRegistered,
 }: {
   onLoggedIn: () => void;
-  onRegistered: () => void;
+  onRegistered: (intent: { name: string; city: string }) => void;
 }) {
   const { toast } = useToast();
   const login = useAuthStore((s) => s.login);
   const register = useAuthStore((s) => s.register);
   const m = useMessages(); // ورود/ثبت‌نام — دوزبانه (fa/en)
-  const { locale } = useLocale();
+  const { locale, setLocale } = useLocale();
   const searchParams = useSearchParams();
   // کد رفرال — از ?ref= لینک دعوت، یا آخرین کد ذخیره‌شده (گیت تماس)
   const refCode = searchParams.get("ref") ?? loadReferralCode();
@@ -147,17 +156,75 @@ function AuthStep({
     const r = searchParams.get("ref");
     if (r) saveReferralCode(r);
   }, [searchParams]);
+
   const [tab, setTab] = useState<"login" | "register">("login");
-  const [name, setName] = useState("");
+  const [bizName, setBizName] = useState("");
+  const [city, setCity] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [country, setCountry] = useState("IR"); // واحد پول کاتالوگ از همین‌جا می‌آید
+  const [country, setCountry] = useState("IR");
+  const [language, setLanguage] = useState("fa");
   const [busy, setBusy] = useState(false);
+  const guessed = useRef(false);
+
+  // لوکیشن تقریبی: کشور از timezone مرورگر — سمت کلاینت، یک‌بار
+  // (در رندر اولیه IR می‌ماند تا hydration mismatch نشود)
+  useEffect(() => {
+    if (guessed.current) return;
+    guessed.current = true;
+    const code = guessCountryCode();
+    setCountry(code);
+    setLanguage(langOfCountry(code));
+  }, []);
+
+  // تغییر کشور → کد تلفن و زبان رسمی خودکار می‌آیند (زبان دستی هم آزاد است)
+  const pickCountry = (code: string) => {
+    setCountry(code);
+    const lang = langOfCountry(code);
+    setLanguage(lang);
+    if (isLocale(lang)) setLocale(lang); // زبان پشتیبانی‌شده‌ی UI — فورا اعمال شود
+  };
 
   const submit = async () => {
-    const phoneNorm = normalizePhone(phone);
-    if (!/^09\d{9}$/.test(phoneNorm)) {
+    if (tab === "login") {
+      const phoneIntl = normalizeIntlPhone(phone, country);
+      if (!phoneIntl) {
+        toast({ title: m.auth.toasts.invalidPhone, description: m.auth.toasts.invalidPhoneDesc, variant: "destructive" });
+        return;
+      }
+      if (password.length === 0) {
+        toast({ title: m.auth.toasts.passwordShort, variant: "destructive" });
+        return;
+      }
+      setBusy(true);
+      try {
+        await login(phoneIntl, password, country);
+        toast({ title: m.auth.toasts.welcome });
+        onLoggedIn(); // لاگین → مستقیم بازوی من
+      } catch (err) {
+        toast({
+          title: m.auth.toasts.authFailed,
+          description: err instanceof ApiError ? err.message : m.auth.toasts.tryAgain,
+          variant: "destructive",
+        });
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
+
+    // ── ثبت‌نام ──
+    const phoneIntl = normalizeIntlPhone(phone, country);
+    if (!phoneIntl) {
       toast({ title: m.auth.toasts.invalidPhone, description: m.auth.toasts.invalidPhoneDesc, variant: "destructive" });
+      return;
+    }
+    if (bizName.trim().length < 2) {
+      toast({ title: m.auth.toasts.nameRequired, variant: "destructive" });
+      return;
+    }
+    if (city.trim().length < 2) {
+      toast({ title: m.auth.toasts.cityRequired, variant: "destructive" });
       return;
     }
     if (password.length < 6) {
@@ -166,28 +233,17 @@ function AuthStep({
     }
     setBusy(true);
     try {
-      if (tab === "login") {
-        await login(phoneNorm, password);
-        toast({ title: m.auth.toasts.welcome });
-        onLoggedIn(); // لاگین → مستقیم بازوی من
-      } else {
-        if (name.trim().length < 2) {
-          toast({ title: m.auth.toasts.nameRequired, variant: "destructive" });
-          setBusy(false);
-          return;
-        }
-        await register(name.trim(), phoneNorm, password, country, refCode);
-        clearReferralCode();
-        toast({ title: m.auth.toasts.welcome });
-        onRegistered(); // ثبت‌نام → ادامه ساخت کسب‌وکار
-      }
+      await register(bizName.trim(), phoneIntl, password, country, language, refCode);
+      clearReferralCode();
+      toast({ title: m.auth.toasts.welcome });
+      // ادامه در والد: ساخت فوری کاتالوگ با همین نام و شهر
+      onRegistered({ name: bizName.trim(), city: city.trim() });
     } catch (err) {
       toast({
         title: m.auth.toasts.authFailed,
         description: err instanceof ApiError ? err.message : m.auth.toasts.tryAgain,
         variant: "destructive",
       });
-    } finally {
       setBusy(false);
     }
   };
@@ -195,12 +251,9 @@ function AuthStep({
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <div className="mb-5 flex items-start justify-between">
-        <div>
-          <h1 className="text-lg font-extrabold">
-            {tab === "login" ? m.auth.titleLogin : m.auth.titleRegister}
-          </h1>
-          <p className="mt-1 text-xs text-muted-foreground">{m.auth.subtitle}</p>
-        </div>
+        <h1 className="text-lg font-extrabold">
+          {tab === "login" ? m.auth.titleLogin : m.auth.titleRegister}
+        </h1>
         <LanguageSelect />
       </div>
 
@@ -210,8 +263,30 @@ function AuthStep({
           <TabsTrigger value="register">{m.auth.tabs.register}</TabsTrigger>
         </TabsList>
 
+        {/* ── ورود — کشور هم دارد (کد تلفن از لیست کشور می‌آید) ── */}
         <TabsContent value="login" className="mt-4 grid gap-3">
-          <PhoneField label={m.auth.fields.mobile} value={phone} onChange={setPhone} placeholder={m.auth.placeholders.mobile} />
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={m.auth.fields.country}>
+              <SearchSelect
+                items={countrySelectItems}
+                value={country}
+                onChange={setCountry}
+                placeholder={m.auth.fields.country}
+                searchPlaceholder={m.auth.search.country}
+                emptyText={m.auth.search.empty}
+                ariaLabel={m.auth.fields.country}
+              />
+            </Field>
+            <Field label={m.auth.fields.mobile}>
+              <PhoneField
+                value={phone}
+                onChange={setPhone}
+                countryCode={country}
+                ariaLabel={m.auth.fields.mobile}
+                placeholder={m.auth.placeholders.mobile}
+              />
+            </Field>
+          </div>
           <Field label={m.auth.fields.password}>
             <Input
               dir="ltr"
@@ -223,40 +298,80 @@ function AuthStep({
           </Field>
         </TabsContent>
 
+        {/* ── ثبت‌نام — نام کسب‌وکار + شهر + کشور/زبان + موبایل + رمز ── */}
         <TabsContent value="register" className="mt-4 grid gap-3">
-          <Field label={m.auth.fields.fullName}>
-            <Input placeholder={m.auth.placeholders.fullName} value={name} onChange={(e) => setName(e.target.value)} />
-          </Field>
-          <PhoneField label={m.auth.fields.mobile} value={phone} onChange={setPhone} placeholder={m.auth.placeholders.mobile} />
-          <Field label={m.auth.fields.passwordRegister}>
+          <Field label={m.auth.fields.bizName} hint={m.auth.hints.bizName}>
             <Input
-              dir="ltr"
-              type="password"
-              placeholder={m.auth.placeholders.password}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder={m.auth.placeholders.bizName}
+              value={bizName}
+              onChange={(e) => setBizName(e.target.value)}
             />
           </Field>
-          <Field label={m.auth.fields.country}>
-            <Select value={country} onValueChange={setCountry}>
-              <SelectTrigger aria-label={m.auth.fields.country}>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {COUNTRIES.map((c) => (
-                  <SelectItem key={c.code} value={c.code}>
-                    {countryLabel(c.code, locale)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-[10px] leading-4 text-muted-foreground">{m.auth.hints.country}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={m.auth.fields.country}>
+              <SearchSelect
+                items={countrySelectItems}
+                value={country}
+                onChange={pickCountry}
+                placeholder={m.auth.fields.country}
+                searchPlaceholder={m.auth.search.country}
+                emptyText={m.auth.search.empty}
+                ariaLabel={m.auth.fields.country}
+              />
+            </Field>
+            <Field label={m.auth.fields.language}>
+              <SearchSelect
+                items={LANGUAGE_ITEMS}
+                value={language}
+                onChange={setLanguage}
+                placeholder={m.auth.fields.language}
+                searchPlaceholder={m.auth.search.language}
+                emptyText={m.auth.search.empty}
+                ariaLabel={m.auth.fields.language}
+              />
+            </Field>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={m.auth.fields.mobile}>
+              <PhoneField
+                value={phone}
+                onChange={setPhone}
+                countryCode={country}
+                ariaLabel={m.auth.fields.mobile}
+                placeholder={m.auth.placeholders.mobile}
+              />
+            </Field>
+            <Field label={m.auth.fields.passwordRegister}>
+              <Input
+                dir="ltr"
+                type="password"
+                placeholder={m.auth.placeholders.password}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Field>
+          </div>
+          <Field label={m.auth.fields.city}>
+            {country === "IR" ? (
+              <SearchSelect
+                items={CITY_ITEMS}
+                value={city}
+                onChange={setCity}
+                placeholder={m.auth.placeholders.city}
+                searchPlaceholder={m.auth.search.city}
+                emptyText={m.auth.search.empty}
+                ariaLabel={m.auth.fields.city}
+              />
+            ) : (
+              <Input
+                placeholder={m.auth.placeholders.cityOther}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              />
+            )}
           </Field>
         </TabsContent>
       </Tabs>
-      <div className={"p-4"}>
-         09120000000 / ImachDemo1234
-      </div>
 
       <Button className="mt-4 w-full" onClick={() => void submit()} disabled={busy}>
         {busy && <Loader2 className="size-4 animate-spin" />}
@@ -267,15 +382,25 @@ function AuthStep({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// گام ۲ — کسب‌وکار: فقط نام + شهر — موبایل از ثبت‌نام می‌آید، نقش هم نمی‌پرسیم؛
-// انتخاب مسیر (فروش یا خرید) با اولین کالاست، نه با فرم.
+// گام ۲ — کسب‌وکار: فقط برای کاربر واردشده (کسب‌وکار جدید از پنل) یا پشتیبان
+// ثبت‌نام؛ با مقادیر تایپ‌شده‌ی فرم ثبت‌نام از قبل پر می‌شود.
 // ─────────────────────────────────────────────────────────────────────────────
 
-function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => void }) {
+function BusinessStep({
+  initialName,
+  initialCity,
+  onCreated,
+}: {
+  initialName?: string;
+  initialCity?: string;
+  onCreated: (biz: BusinessSummaryDto) => void;
+}) {
   const { toast } = useToast();
   const createMutation = useCreateBusiness();
-  const [name, setName] = useState("");
-  const [city, setCity] = useState("");
+  const user = useAuthStore((s) => s.user);
+  const [name, setName] = useState(initialName ?? "");
+  const [city, setCity] = useState(initialCity ?? "");
+  const country = user?.country ?? "IR";
 
   const create = async () => {
     if (name.trim().length < 2) {
@@ -319,18 +444,23 @@ function BusinessStep({ onCreated }: { onCreated: (biz: BusinessSummaryDto) => v
 
         <div className="grid gap-2">
           <Label>شهر *</Label>
-          <Select value={city} onValueChange={setCity}>
-            <SelectTrigger aria-label="شهر">
-              <SelectValue placeholder="شهر را انتخاب کنید" />
-            </SelectTrigger>
-            <SelectContent>
-              {CITIES.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {country === "IR" ? (
+            <SearchSelect
+              items={CITY_ITEMS}
+              value={city}
+              onChange={setCity}
+              placeholder="شهر را انتخاب کنید"
+              searchPlaceholder="جست‌وجوی شهر…"
+              emptyText="پیدا نشد"
+              ariaLabel="شهر"
+            />
+          ) : (
+            <Input
+              placeholder="مثلا Istanbul"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
+          )}
         </div>
       </div>
 
@@ -364,43 +494,12 @@ function FirstGoodStep({ biz }: { biz: BusinessSummaryDto }) {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-1.5">
       <Label className="text-[11px] text-muted-foreground">{label}</Label>
       {children}
+      {hint && <p className="text-[10px] leading-4 text-muted-foreground">{hint}</p>}
     </div>
-  );
-}
-
-/** ورودی موبایل با پیشوند کد کشور +98 — هر فرمتی را می‌پذیرد، خودش استاندارد می‌کند */
-function PhoneField({
-  label,
-  value,
-  onChange,
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder: string;
-}) {
-  return (
-    <Field label={label}>
-      <div
-        dir="ltr"
-        className="flex items-center rounded-xl border border-input bg-transparent focus-within:ring-2 focus-within:ring-ring/30"
-      >
-        <span className="select-none border-e px-3 py-2.5 text-sm font-bold text-muted-foreground">+98</span>
-        <Input
-          dir="ltr"
-          inputMode="numeric"
-          className="border-0 shadow-none focus-visible:ring-0"
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      </div>
-    </Field>
   );
 }

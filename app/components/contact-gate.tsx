@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ApiError, businessesApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
+import { guessCountryCode, langOfCountry, normalizeIntlPhone, fmtPhone } from "@/lib/countries";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Phone, PhoneCall } from "lucide-react";
 import { clearReferralCode, saveReferralCode } from "@/lib/referral";
+import { PhoneField } from "@/app/components/phone-field";
 
 /** پراپ‌های استاندارد دکمه shadcn — برای تایپ شفاف ContactButton */
 type ButtonProps = React.ComponentProps<typeof Button>;
@@ -50,7 +52,16 @@ export function ContactButton({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [country, setCountry] = useState("IR");
   const [busy, setBusy] = useState(false);
+  const guessed = useRef(false);
+
+  // کشور تقریبی از timezone — VPN گول نمی‌زند؛ کاربر می‌تواند عوضش کند
+  useEffect(() => {
+    if (!open || guessed.current) return;
+    guessed.current = true;
+    setCountry(guessCountryCode());
+  }, [open]);
 
   /** شماره آشکارشده — null یعنی هنوز؛ false یعنی کسب‌وکار شماره ندارد */
   const [revealed, setRevealed] = useState<string | null | false>(null);
@@ -85,7 +96,8 @@ export function ContactButton({
   };
 
   const submitAuth = async () => {
-    if (!/^09\d{9}$/.test(phone)) {
+    const phoneIntl = normalizeIntlPhone(phone, country);
+    if (!phoneIntl) {
       toast({ title: m.auth.toasts.invalidPhone, description: m.auth.toasts.invalidPhoneDesc, variant: "destructive" });
       return;
     }
@@ -96,7 +108,7 @@ export function ContactButton({
     setBusy(true);
     try {
       if (tab === "login") {
-        await login(phone, password);
+        await login(phoneIntl, password, country);
       } else {
         if (name.trim().length < 2) {
           toast({ title: m.auth.toasts.nameRequired, variant: "destructive" });
@@ -104,7 +116,14 @@ export function ContactButton({
           return;
         }
         // ثبت‌نام با کد رفرال صاحب کاتالوگ/لیست خرید (خواسته‌ی کاربر)
-        await register(name.trim(), phone, password, undefined, arm === "buy" ? `buy:${slug}` : slug);
+        await register(
+          name.trim(),
+          phoneIntl,
+          password,
+          country,
+          langOfCountry(country),
+          arm === "buy" ? `buy:${slug}` : slug
+        );
         clearReferralCode();
       }
       toast({ title: m.auth.toasts.welcome, description: `حالا می‌توانید با ${bizName} تماس بگیرید` });
@@ -146,7 +165,14 @@ export function ContactButton({
 
                 <TabsContent value="login" className="mt-3 grid gap-3">
                   <Field label={m.auth.fields.mobile}>
-                    <Input dir="ltr" inputMode="numeric" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <PhoneField
+                      value={phone}
+                      onChange={setPhone}
+                      countryCode={country}
+                      onCountryChange={setCountry}
+                      ariaLabel={m.auth.fields.mobile}
+                      placeholder={m.auth.placeholders.mobile}
+                    />
                   </Field>
                   <Field label={m.auth.fields.password}>
                     <Input dir="ltr" type="password" placeholder={m.auth.placeholders.password} value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -154,11 +180,18 @@ export function ContactButton({
                 </TabsContent>
 
                 <TabsContent value="register" className="mt-3 grid gap-3">
-                  <Field label={m.auth.fields.fullName}>
-                    <Input placeholder={m.auth.placeholders.fullName} value={name} onChange={(e) => setName(e.target.value)} />
+                  <Field label={m.auth.fields.bizName} hint={m.auth.hints.bizName}>
+                    <Input placeholder={m.auth.placeholders.bizName} value={name} onChange={(e) => setName(e.target.value)} />
                   </Field>
                   <Field label={m.auth.fields.mobile}>
-                    <Input dir="ltr" inputMode="numeric" placeholder={m.auth.placeholders.mobile} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <PhoneField
+                      value={phone}
+                      onChange={setPhone}
+                      countryCode={country}
+                      onCountryChange={setCountry}
+                      ariaLabel={m.auth.fields.mobile}
+                      placeholder={m.auth.placeholders.mobile}
+                    />
                   </Field>
                   <Field label={m.auth.fields.passwordRegister}>
                     <Input dir="ltr" type="password" placeholder={m.auth.placeholders.password} value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -184,10 +217,10 @@ export function ContactButton({
               ) : (
                 <div className="grid gap-3">
                   <p dir="ltr" className="text-center text-2xl font-black tracking-wider">
-                    {revealed}
+                    {fmtPhone(revealed)}
                   </p>
                   <Button asChild size="lg">
-                    <a href={`tel:${revealed}`}>
+                    <a href={`tel:+${revealed}`}>
                       <PhoneCall className="size-5" />
                       تماس با {bizName}
                     </a>
@@ -202,11 +235,12 @@ export function ContactButton({
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-1.5">
       <Label className="text-xs text-muted-foreground">{label}</Label>
       {children}
+      {hint && <p className="text-[10px] leading-4 text-muted-foreground">{hint}</p>}
     </div>
   );
 }

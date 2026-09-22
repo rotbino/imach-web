@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { useContacts, useInviteContact, useSyncContacts } from "@/lib/queries";
 import type { ContactRowDto } from "@/lib/api";
+import { useAuthStore } from "@/lib/auth-store";
+import { dialOf, fmtPhone, normalizeIntlPhone } from "@/lib/countries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,15 +36,6 @@ function contactPicker(): ContactsManager | null {
   return (navigator as unknown as { contacts?: ContactsManager }).contacts ?? null;
 }
 
-/** همان نرمال‌سازی سمت سرور — 09xxxxxxxxx */
-function normalizePhone(raw: string): string {
-  let d = raw.replace(/\D/g, "");
-  if (d.startsWith("0098")) d = d.slice(4);
-  else if (d.startsWith("98") && d.length === 12) d = d.slice(2);
-  if (d.startsWith("9") && d.length === 10) d = `0${d}`;
-  return d;
-}
-
 export function ContactsGate({
   open,
   onOpenChange,
@@ -61,6 +54,9 @@ export function ContactsGate({
   const contactsQ = useContacts();
   const sync = useSyncContacts();
   const invite = useInviteContact();
+  // کشور صاحب دفترچه — کد تلفن مخاطبین از همین‌جا می‌آید (همان قاعده‌ی سرور)
+  const user = useAuthStore((s) => s.user);
+  const ownerCountry = user?.country ?? "IR";
 
   const isSell = kind === "sell";
   const actionLabel = isSell ? "ارسال کاتالوگ" : "ارسال لیست خرید";
@@ -86,8 +82,11 @@ export function ContactsGate({
     try {
       const picked = await picker.select(["name", "tel"], { multiple: true });
       const rows = picked
-        .map((c) => ({ name: (c.name?.[0] ?? "").trim(), phone: normalizePhone(c.tel?.[0] ?? "") }))
-        .filter((r) => /^09\d{9}$/.test(r.phone));
+        .map((c) => ({
+          name: (c.name?.[0] ?? "").trim(),
+          phone: normalizeIntlPhone(c.tel?.[0] ?? "", ownerCountry) ?? "",
+        }))
+        .filter((r) => r.phone !== "");
       if (rows.length === 0) {
         toast({ title: "مخاطب قابل افزودنی انتخاب نشد" });
         return;
@@ -102,9 +101,9 @@ export function ContactsGate({
   };
 
   const addManually = () => {
-    const p = normalizePhone(phone);
-    if (!/^09\d{9}$/.test(p)) {
-      toast({ title: "شماره موبایل معتبر نیست", description: "مثال: 09123456789", variant: "destructive" });
+    const p = normalizeIntlPhone(phone, ownerCountry);
+    if (!p) {
+      toast({ title: "شماره موبایل معتبر نیست", description: `شماره را کامل و بدون صفر اول بنویسید — پیشوند +${dialOf(ownerCountry)}`, variant: "destructive" });
       return;
     }
     sync.mutate([{ name: name.trim() || p, phone: p }], {
@@ -123,7 +122,7 @@ export function ContactsGate({
     if (c.member) {
       toast({ title: "در iMach برایش اطلاع دادیم", description: `${c.name} کاتالوگ شما را در اپ می‌بیند.` });
     } else {
-      window.location.href = `sms:${c.phone}?body=${encodeURIComponent(inviteText)}`;
+      window.location.href = `sms:+${c.phone}?body=${encodeURIComponent(inviteText)}`;
       toast({ title: "پیامک آماده شد", description: "لینک دعوت شما ضمیمه‌ی پیامک است." });
     }
   };
@@ -152,7 +151,7 @@ export function ContactsGate({
             <Input
               dir="ltr"
               inputMode="numeric"
-              placeholder="09xxxxxxxxx"
+              placeholder={`+${dialOf(ownerCountry)} …`}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="h-9 text-left"
@@ -197,7 +196,7 @@ export function ContactsGate({
                       </span>
                       <span className="mt-0.5 flex items-center gap-1.5">
                         <span dir="ltr" className="text-[11px] text-muted-foreground">
-                          {c.phone}
+                          {fmtPhone(c.phone)}
                         </span>
                         {c.member ? (
                           <Badge className="border-transparent bg-primary/10 px-1.5 py-0 text-[10px] text-primary" variant="outline">

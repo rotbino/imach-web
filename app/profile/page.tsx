@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
+import { fmtPhone } from "@/lib/countries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { LanguageSelect } from "@/app/components/language-select";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ export default function ProfilePage() {
               <div className="min-w-0">
                 <p className="truncate text-lg font-extrabold">{user.name}</p>
                 <p dir="ltr" className="mt-0.5 text-sm text-muted-foreground">
-                  {user.phone}
+                  {fmtPhone(user.phone)}
                 </p>
               </div>
             </div>
