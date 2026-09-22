@@ -19,12 +19,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { LocationPicker, type GeoPoint } from "@/components/location-picker";
 
 /*
- * ویرایش هدر صفحه — نام، شهر، نوع فعالیت.
+ * ویرایش هدر صفحه — نام، شهر، نوع فعالیت، لوکیشن دقیق.
  * محل اصلی: برگه‌ی «تنظیمات» داشبورد هر بازو (خواسته‌ی کاربر:
  * ویرایش هدر مثل عنوان یا تصویر در تب تنظیمات می‌آید).
  * دو شکل از یک فرم: کارت تنظیمات (داخل برگه) — بعدا شکل دیالوگ هم همین‌جا.
+ *
+ * لوکیشن دقیق به خودِ Business تعلق دارد (نه به کاربر، نه به هر لیستینگ):
+ * اختیاری و با رضایت صاحب کاتالوگ؛ مبنای لایه‌ی فاصله‌ی تطابق آینده است
+ * («خریدارِ دقیق‌تر و به‌صرفه‌تر») — مثلا بازاریابی که فقط در یک منطقه
+ * کار می‌کند. پینِ دقیق علنی نمی‌شود؛ کاتالوگ عمومی فقط شهر را نشان می‌دهد.
  */
 
 export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
@@ -35,6 +41,9 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
   const [name, setName] = useState(biz.name);
   const [city, setCity] = useState(biz.city);
   const [activityType, setActivityType] = useState(biz.activityType ?? "");
+  const [loc, setLoc] = useState<GeoPoint | null>(
+    biz.lat != null && biz.lng != null ? { lat: biz.lat, lng: biz.lng } : null
+  );
 
   const save = async () => {
     if (name.trim().length < 2) {
@@ -47,6 +56,9 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
         name: name.trim(),
         city,
         activityType: activityType === "" ? null : activityType,
+        // null صریح = پاک کردن لوکیشن؛ مقدار = ثبت/به‌روزرسانی
+        lat: loc?.lat ?? null,
+        lng: loc?.lng ?? null,
       });
       toast({ title: "ذخیره شد", description: "هدر صفحه‌ی شما به‌روز شد." });
     } catch (err) {
@@ -106,6 +118,18 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
             emptyText="پیدا نشد"
             ariaLabel="شهر"
           />
+        </div>
+
+        <div className="grid gap-1.5">
+          <Label className="text-[11px] text-muted-foreground">لوکیشن دقیق (اختیاری)</Label>
+          <div>
+            <LocationPicker value={loc} onChange={setLoc} />
+          </div>
+          <p className="text-[11px] leading-5 text-muted-foreground">
+            اگر می‌خواهی مشتری و خریدارِ دقیق‌تر و به‌صرفه‌تری معرفی شوی، لوکیشن دقیق را
+            غیر از شهر ثبت کن — مثلا بازاریابی که فقط در منطقه ۱ تهران کار می‌کند.
+            فقط مبنای تطابق است؛ پینِ دقیق علنی نمی‌شود.
+          </p>
         </div>
 
         <div className="grid gap-1.5">

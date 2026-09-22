@@ -190,8 +190,17 @@ export function useDeleteListing() {
 export function useEditBusiness() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, ...body }: { id: string; name?: string; city?: string; activityType?: string | null }) =>
-      businessesApi.editBusiness(id, body),
+    mutationFn: ({
+      id,
+      ...body
+    }: {
+      id: string;
+      name?: string;
+      city?: string;
+      activityType?: string | null;
+      lat?: number | null;
+      lng?: number | null;
+    }) => businessesApi.editBusiness(id, body),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });
       void qc.invalidateQueries({ queryKey: ["business"] });

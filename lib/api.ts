@@ -123,6 +123,9 @@ export interface BusinessSummaryDto {
   country?: string;
   currency?: string;
   isVerified: boolean;
+  /** لوکیشن دقیق اختیاری — فقط مبنای تطابق؛ علنی نمی‌شود */
+  lat?: number | null;
+  lng?: number | null;
 }
 
 export interface AuthResponseDto {
