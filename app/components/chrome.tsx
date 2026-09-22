@@ -57,7 +57,7 @@ export function useNavItems(arm: Arm): NavItem[] {
   return [
     isSell
       ? { href: "/sell", label: "کاتالوگ", icon: Store }
-      : { href: "/buy", label: "دستیار خرید", icon: ShoppingBasket },
+      : { href: "/buy", label: "میز خرید", icon: ShoppingBasket },
     isSell
       ? { href: "/sell/panel", label: "داشبورد", icon: LayoutDashboard }
       : { href: "/buy/panel", label: "داشبورد", icon: LayoutDashboard },

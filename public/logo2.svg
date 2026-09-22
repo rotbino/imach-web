@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 44" fill="none">
+    <defs>
+        <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FB923C"/>
+            <stop offset="100%" stop-color="#EA580C"/>
+        </linearGradient>
+        <radialGradient id="dotGradient" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#FDBA74"/>
+            <stop offset="60%" stop-color="#F97316"/>
+            <stop offset="100%" stop-color="#EA580C"/>
+        </radialGradient>
+        <radialGradient id="dotGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#F97316" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#F97316" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <!-- i -->
+    <text x="-2" y="37" font-family="Verdana, Geneva, sans-serif" font-size="32" font-weight="700" fill="#F97316">i</text>
+
+    <!-- M گرافیکی -->
+    <g transform="translate(10, 4)">
+        <circle cx="6" cy="6" r="12" fill="url(#dotGlow)"/>
+        <circle cx="6" cy="6" r="5.5" fill="url(#dotGradient)">
+            <animate attributeName="r" values="5.5;5.9;5.5" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+        </circle>
+        <circle cx="4.4" cy="4.2" r="1.5" fill="#FFFFFF" opacity="0.55"/>
+        <path d="M5 30 V19 L16 23 L27 11 V28" stroke="url(#brandGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- a -->
+    <text x="44" y="37" font-family="Verdana, Geneva, sans-serif" font-size="32" font-weight="700" fill="#F97316">a</text>
+
+    <!-- c -->
+    <text x="65" y="37" font-family="Verdana, Geneva, sans-serif" font-size="32" font-weight="700" fill="#F97316">c</text>
+
+    <!-- h -->
+    <text x="84" y="37" font-family="Verdana, Geneva, sans-serif" font-size="32" font-weight="700" fill="#F97316">h</text>
+</svg>
