@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { myArmHref, useArm, useArmStore, type Arm } from "@/lib/active-biz";
+import { NotificationsBell } from "@/app/components/notifications";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -166,27 +167,31 @@ export function AppHeader() {
         </div>
 
         {status === "authed" ? (
-          <nav className="hidden items-center gap-1 sm:flex" aria-label="نویگیشن اصلی">
-            {items.map((it) => {
-              const on = isActivePath(it.href, pathname ?? "");
-              return (
-                <Link
-                  key={it.label}
-                  href={it.href}
-                  aria-current={on ? "page" : undefined}
-                  className={`flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 transition ${
-                    on ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <it.icon
-                    className={`size-5 ${on ? "fill-primary/10" : ""}`}
-                    strokeWidth={on ? 2 : 1.75}
-                  />
-                  <span className="text-[10px] font-normal leading-none">{it.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+          <div className="flex items-center gap-1">
+            {/* زنگ اعلان‌ها — همیشه رو (موبایل هم از نوار پایین استفاده نمی‌کند اینجا) */}
+            <NotificationsBell />
+            <nav className="hidden items-center gap-1 sm:flex" aria-label="نویگیشن اصلی">
+              {items.map((it) => {
+                const on = isActivePath(it.href, pathname ?? "");
+                return (
+                  <Link
+                    key={it.label}
+                    href={it.href}
+                    aria-current={on ? "page" : undefined}
+                    className={`flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 transition ${
+                      on ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <it.icon
+                      className={`size-5 ${on ? "fill-primary/10" : ""}`}
+                      strokeWidth={on ? 2 : 1.75}
+                    />
+                    <span className="text-[10px] font-normal leading-none">{it.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
         ) : (
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => router.push("/start")}>

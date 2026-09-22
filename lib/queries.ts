@@ -7,6 +7,7 @@ import {
   goodsApi,
   listingsApi,
   marketApi,
+  notificationsApi,
   type BoardRowDto,
   type BusinessProfileDto,
   type BusinessSummaryDto,
@@ -20,6 +21,7 @@ import {
   type InquiryPageDto,
   type MarketItemDto,
   type MarketStateDto,
+  type NotificationsPageDto,
   type OfferDto,
   type PageDto,
   type QuoteRequestResultDto,
@@ -52,6 +54,7 @@ export const qk = {
   supplierSuggestions: (bizId: string) => ["market", "supplierSuggestions", bizId] as const,
   marketState: (bizId: string) => ["market", "state", bizId] as const,
   contacts: () => ["contacts"] as const,
+  notifications: () => ["notifications"] as const,
 };
 
 // ── پابلیک ──
@@ -372,6 +375,34 @@ export function useInviteContact() {
     mutationFn: (id: string) => contactsApi.invite(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["contacts"] });
+    },
+  });
+}
+
+// ── زنگ اعلان‌ها ──
+
+/**
+ * فید اعلان‌ها + شمارنده‌ی نخوانده‌ها — پولینگ ۳۰ ثانیه‌ای مادام که کاربر
+ * وارد است؛ زنده بودن زنگ بخشی از خودش است.
+ */
+export function useNotifications(): UseQueryResult<NotificationsPageDto> {
+  const authed = useAuthStore((s) => s.status) === "authed";
+  return useQuery({
+    queryKey: qk.notifications(),
+    queryFn: () => notificationsApi.getNotifications(),
+    enabled: authed,
+    staleTime: 15_000,
+    refetchInterval: 30_000,
+  });
+}
+
+/** همه خوانده شد — موقع باز شدن پنل زنگ */
+export function useReadAllNotifications() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: notificationsApi.readAll,
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 }

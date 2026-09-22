@@ -529,3 +529,36 @@ export const contactsApi = {
   /** ثبت دعوت — «این مخاطب دعوت شده» */
   invite: (id: string) => api<{ ok: boolean }>(`/contacts/invite/${id}`, { method: "POST" }),
 };
+
+// ─── زنگ اعلان‌ها — فید درون‌برنامه‌ای ───
+
+export type NotificationType =
+  | "FOLLOW_SUPPLIER" // خریداری کاتالوگ من را فالو کرد (مشتری جدید)
+  | "FOLLOW_BUYER" // تامین‌کننده‌ای لیست خرید مرا فالو کرد
+  | "OFFER" // پیشنهاد تازه روی درخواست خرید من
+  | "QUOTE" // استعلام موتور تطبیق به من رسید
+  | "CONTACT_JOINED"; // شماره‌ای از دفترچه‌ی من عضو شد
+
+/** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد */
+export interface NotificationDto {
+  id: string;
+  type: NotificationType;
+  actorId: string | null;
+  actorName: string | null;
+  actorSlug: string | null;
+  good: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface NotificationsPageDto {
+  items: NotificationDto[];
+  unreadCount: number;
+}
+
+export const notificationsApi = {
+  /** ۳۰ ردیف آخر + شمارنده‌ی نخوانده‌ها */
+  getNotifications: () => api<NotificationsPageDto>("/notifications/getNotifications"),
+  /** همه خوانده شد — الگوی باز کردن پنل */
+  readAll: () => api<{ ok: boolean }>("/notifications/readAll", { method: "POST" }),
+};
