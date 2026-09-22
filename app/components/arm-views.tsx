@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { useBusinessProfile, useFollowToggle } from "@/lib/queries";
+import { useBusinessProfile, useFollowBuyerToggle, useFollowToggle, useMarketState } from "@/lib/queries";
 import { ContactButton } from "@/app/components/contact-gate";
 import { ShareDialog } from "@/app/components/share";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,11 @@ import { useToast } from "@/hooks/use-toast";
 import {
   BadgeCheck,
   Briefcase,
+  Check,
   ClipboardList,
   LayoutDashboard,
   Loader2,
+  Lock,
   MapPin,
   Package,
   Share2,
@@ -221,12 +223,44 @@ export function SellArmView({ slug }: { slug: string }) {
 
 // ─── نمای بازوی خرید (لیست خرید عمومی) ───
 export function BuyArmView({ slug }: { slug: string }) {
+  const { toast } = useToast();
   const { status, businesses: storeBizs, user } = useAuthStore();
+  const followBuyerToggle = useFollowBuyerToggle();
 
+  // فالوی خریدار — قرینه‌ی «دنبال کردن» کاتالوگ؛ پشت گیت معرف (از وضعیت بازار)
+  const mine = storeBizs[0];
   const profileQ = useBusinessProfile(slug);
   const biz = profileQ.data;
-
   const isOwner = isCatalogOwner(slug, storeBizs, user?.role);
+  const stateQ = useMarketState(status === "authed" && !isOwner ? (mine?.id ?? null) : null);
+  const mState = stateQ.data;
+  const deskFollowed = !!biz && !!mState && mState.followedBuyerIds.includes(biz.id);
+  const deskLocked = !!mState && !mState.referral.unlocked;
+
+  const followDesk = () => {
+    if (!biz || !mine) return;
+    if (deskFollowed) {
+      followBuyerToggle.mutate(
+        { businessId: mine.id, buyerId: biz.id, follow: false },
+        { onSuccess: () => toast({ title: "فالو برداشته شد" }) }
+      );
+      return;
+    }
+    if (deskLocked && mState) {
+      toast({
+        title: "هنوز فعال نیست",
+        description: `با لینک کاتالوگتان ${fa(mState.referral.count)} از ${fa(mState.referral.required)} عضو آورده‌اید.`,
+      });
+      return;
+    }
+    followBuyerToggle.mutate(
+      { businessId: mine.id, buyerId: biz.id, follow: true },
+      {
+        onSuccess: () => toast({ title: "فالو شد", description: "به عنوان تامین‌کننده در «تامین من» او ظاهر می‌شوید." }),
+        onError: (e) => toast({ title: e.message || "خطا", variant: "destructive" }),
+      }
+    );
+  };
 
   const buyListings = (biz?.listings ?? []).filter(
     (l) => (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
@@ -295,7 +329,7 @@ export function BuyArmView({ slug }: { slug: string }) {
             </div>
           </div>
 
-          <div className="mt-5 flex w-full flex-col sm:w-auto sm:flex-row">
+          <div className="mt-5 flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
             <ContactButton
               slug={slug}
               bizName={biz.name}
@@ -303,6 +337,23 @@ export function BuyArmView({ slug }: { slug: string }) {
               arm="buy"
               className="bg-stone-800 hover:bg-stone-900 sm:min-w-44"
             />
+            {!isOwner && status === "authed" && mine && (
+              <Button
+                variant="outline"
+                onClick={followDesk}
+                disabled={followBuyerToggle.isPending}
+                className={`sm:min-w-36 ${deskFollowed ? "border-stone-300 bg-stone-100 text-stone-700" : ""}`}
+              >
+                {followBuyerToggle.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : deskFollowed ? (
+                  <Check className="size-4" />
+                ) : deskLocked ? (
+                  <Lock className="size-4" />
+                ) : null}
+                {deskFollowed ? "فالو شد" : "دنبال کردن"}
+              </Button>
+            )}
           </div>
         </div>
       </section>

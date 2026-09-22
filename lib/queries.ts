@@ -17,6 +17,7 @@ import {
   type GoodItemDto,
   type InquiryPageDto,
   type MarketItemDto,
+  type MarketStateDto,
   type OfferDto,
   type PageDto,
   type QuoteRequestResultDto,
@@ -47,6 +48,7 @@ export const qk = {
   myFollowers: (bizId: string) => ["market", "myFollowers", bizId] as const,
   board: (bizId: string) => ["market", "board", bizId] as const,
   supplierSuggestions: (bizId: string) => ["market", "supplierSuggestions", bizId] as const,
+  marketState: (bizId: string) => ["market", "state", bizId] as const,
 };
 
 // ── پابلیک ──
@@ -297,6 +299,39 @@ export function useRemoveFollower() {
   return useMutation({
     mutationFn: ({ businessId, followerBusinessId }: { businessId: string; followerBusinessId: string }) =>
       marketApi.removeFollower(businessId, followerBusinessId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market"] });
+    },
+  });
+}
+
+/** وضعیت گیت رشد برای بازار خریدارها (بازوی فروش) */
+export function useMarketState(businessId: string | null | undefined): UseQueryResult<MarketStateDto> {
+  return useQuery({
+    queryKey: qk.marketState(businessId ?? ""),
+    queryFn: () => marketApi.getMarketState(businessId as string),
+    enabled: !!businessId,
+    staleTime: 30_000,
+  });
+}
+
+/** فالو/آنفالوی خریدار از بازار (فالو پشت گیت ۱۰ معرف است) */
+export function useFollowBuyerToggle() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ businessId, buyerId, follow }: { businessId: string; buyerId: string; follow: boolean }) =>
+      follow ? marketApi.followBuyer(businessId, buyerId) : marketApi.unfollowBuyer(businessId, buyerId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market"] });
+    },
+  });
+}
+
+/** پیشنهاد قیمت مستقیم روی درخواست خرید (پشت گیت ۱۰ معرف) */
+export function useOfferBuyRequest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: marketApi.offerBuyRequest,
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
     },

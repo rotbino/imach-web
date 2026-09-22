@@ -197,6 +197,11 @@ function SupplierRow({ f, bizId }: { f: FollowDto; bizId: string }) {
                 با لینک
               </Badge>
             )}
+            {f.origin === "theirs" && (
+              <Badge variant="outline" className="border-primary/30 bg-accent px-1.5 text-[10px] text-primary">
+                خودش آمد
+              </Badge>
+            )}
           </p>
           <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
             <MapPin className="size-3" />

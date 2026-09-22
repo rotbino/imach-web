@@ -309,6 +309,11 @@ export interface FollowDto {
   createdAt: string;
   /** این دنبال کردن از لینک دعوت/کاتالوگ به وجود آمده */
   viaRef?: boolean;
+  /**
+   * mine → خودم انتخابش کرده‌ام (فالوی کاتالوگش) ·
+   * theirs → از بازار خریدارها، میز خرید مرا فالو کرده («خودش آمد»)
+   */
+  origin?: "mine" | "theirs";
   supplier: SellerDto;
 }
 
@@ -369,6 +374,25 @@ export interface CustomerRowDto {
 export interface QuoteRequestResultDto {
   created: number;
   offers: OfferDto[];
+}
+
+/**
+ * وضعیت گیت رشد برای بازار خریدارها (بازوی فروش) — یک فراخوان:
+ * شمارنده معرف (گیت ۱۰تایی)، کالاهای فروشی (گیت کاتالوگ خالی)،
+ * و فالو/پیشنهادهای قبلی من روی خریدارهای بازار.
+ */
+export interface MarketStateDto {
+  referral: { count: number; required: number; unlocked: boolean };
+  /** تعداد کالاهای فروشی من — صفر یعنی بازار هنوز برای من باز نمی‌شود */
+  sellCount: number;
+  /** کالاهایی که واقعا می‌فروشم — پیشنهاد فقط برای این‌ها فعال است */
+  sellGoodIds: string[];
+  /** خریدارهایی که فالو کرده‌ام (SELL من → BUY او) */
+  followedBuyerIds: string[];
+  /** خریدارهایی که برایشان پیشنهاد داده‌ام */
+  offeredBuyerIds: string[];
+  /** ارز پیش‌فرض کسب‌وکار من — برای فرم پیشنهاد */
+  currency?: string;
 }
 
 // ─── اندپوینت‌ها — نام‌گذاری اکشن‌محور، هم‌نام با کنترلرهای NestJS ───
@@ -463,4 +487,22 @@ export const marketApi = {
       method: "POST",
       body: { businessId, followerBusinessId },
     }),
+  /** وضعیت گیت رشد برای بازار خریدارها (بازوی فروش) */
+  getMarketState: (businessId: string) =>
+    api<MarketStateDto>("/market/getMarketState", { params: { businessId } }),
+  /** فالو کردن خریدار از بازار — پشت گیت ۱۰ معرف */
+  followBuyer: (businessId: string, buyerBusinessId: string) =>
+    api<{ ok: boolean }>("/market/followBuyer", {
+      method: "POST",
+      body: { businessId, buyerBusinessId },
+    }),
+  /** برداشتن فالوی خریدار — همیشه آزاد */
+  unfollowBuyer: (businessId: string, buyerBusinessId: string) =>
+    api<{ ok: boolean }>(`/market/unfollowBuyer/${buyerBusinessId}`, {
+      method: "POST",
+      body: { businessId },
+    }),
+  /** پیشنهاد قیمت مستقیم روی درخواست خرید — پشت گیت ۱۰ معرف */
+  offerBuyRequest: (body: { businessId: string; buyListingId: string; priceMinor: number; note?: string }) =>
+    api<OfferDto>("/market/offerBuyRequest", { method: "POST", body }),
 };
