@@ -44,6 +44,14 @@ export function AppProviders({
     }
   }, [boot]);
 
+  // سرویس‌ورکر Web Push — یک‌بار در کل اپ گرم می‌شود؛ فعال‌سازیِ واقعی
+  // (اجازه + subscribe) فقط با کلیک کاربر در زنگ اعلان‌ها انجام می‌شود.
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={client}>
       <LocaleProvider initialLocale={initialLocale}>

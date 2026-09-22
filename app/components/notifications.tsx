@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useNotifications, useReadAllNotifications } from "@/lib/queries";
 import { fa } from "@/lib/format";
+import { usePushSetup } from "@/lib/push";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { NotificationDto } from "@/lib/api";
 import { Bell, ClipboardList, Handshake, Tag, UserPlus, Users } from "lucide-react";
@@ -72,6 +73,7 @@ export function NotificationsBell() {
   const [fresh, setFresh] = useState<Set<string>>(new Set());
   const { data } = useNotifications();
   const readAll = useReadAllNotifications();
+  const push = usePushSetup();
 
   const unread = data?.unreadCount ?? 0;
   const items = data?.items ?? [];
@@ -111,6 +113,38 @@ export function NotificationsBell() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
         <div className="border-b px-3 py-2 text-sm font-extrabold">اعلان‌ها</div>
+        {/* بنر فعال‌سازی پوش — خواسته‌ی کاربر: کاربر باید بداند بدون فعال‌سازی
+            خبر «مشتری مناسب / فالو / درخواست قیمت» فقط داخل اپ می‌آید */}
+        {push.supported && !push.subscribed && (
+          <div className="border-b bg-primary/5 px-3 py-2.5">
+            <p className="text-[11px] leading-5 text-foreground">
+              برای اینکه هر وقت <b>مشتری مناسب</b> آمد، کسی شما را <b>فالو کرد</b> یا
+              <b> قیمت خواست</b> فوری باخبر شوی، نوتیفیکیشن‌ها را فعال کن —
+              همین اعلان‌ها بیرون از اپ هم می‌آیند.
+            </p>
+            {push.permission === "granted" ? (
+              <button
+                onClick={() => void push.enable()}
+                disabled={push.busy}
+                className="mt-1.5 text-[11px] font-bold text-primary hover:underline disabled:opacity-50"
+              >
+                {push.busy ? "در حال فعال‌سازی…" : "اتمام فعال‌سازی پوش"}
+              </button>
+            ) : push.permission === "denied" ? (
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                نوتیفیکیشن در مرورگر شما مسدود شده — از تنظیمات سایت (آیکون کنار آدرس) فعالش کن.
+              </p>
+            ) : (
+              <button
+                onClick={() => void push.enable()}
+                disabled={push.busy}
+                className="mt-2 w-full rounded-lg bg-primary px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-primary/90 disabled:opacity-50"
+              >
+                {push.busy ? "در حال فعال‌سازی…" : "فعال‌سازی اعلان‌ها"}
+              </button>
+            )}
+          </div>
+        )}
         <div className="max-h-96 overflow-y-auto">
           {items.length === 0 ? (
             <p className="px-3 py-8 text-center text-xs text-muted-foreground">فعلاً خبری نیست</p>

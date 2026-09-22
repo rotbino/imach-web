@@ -27,10 +27,14 @@ const DEFAULT_CENTER: GeoPoint = { lat: 35.6892, lng: 51.389 };
 export function LocationPicker({
                                  value,
                                  onChange,
+                                 onPickAddress,
                                  className,
                                }: {
   value: GeoPoint | null;
   onChange: (p: GeoPoint | null) => void;
+  /** بعد از «تایید»، آدرسِ متنیِ نقطه‌ی انتخابی (معکوس‌یابی OSM) به بیرون
+   *  داده می‌شود تا مثلا در تکست‌باکسِ آدرس پیش‌پر شود؛ ناموفق = سکوت. */
+  onPickAddress?: (address: string) => void;
   className?: string;
 }) {
   const m = useMessages();
@@ -38,6 +42,26 @@ export function LocationPicker({
   const [center, setCenter] = useState<GeoPoint>(DEFAULT_CENTER);
   const [draft, setDraft] = useState<GeoPoint | null>(null);
   const [locating, setLocating] = useState(false);
+
+  /** معکوس‌یابی نقطه → متن آدرس (Nominatim/OSM — همان منبع کاشی‌های نقشه؛
+   *  بدون کلید، با accept-language=fa). fire-and-forget بعد از بستن دیالوگ:
+   *  تکست‌باکسِ آدرس وقتی جواب رسید پر می‌شود؛ خطا ساکت رد می‌شود. */
+  const reverseGeocode = async (p: GeoPoint) => {
+    if (!onPickAddress) return;
+    try {
+      const url =
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2` +
+        `&lat=${p.lat}&lon=${p.lng}&zoom=18&accept-language=fa`;
+      const r = await fetch(url, { headers: { Accept: "application/json" } });
+      if (r.ok) {
+        const j = (await r.json()) as { display_name?: string };
+        const text = j.display_name?.trim();
+        if (text) onPickAddress(text);
+      }
+    } catch {
+      /* آدرس پیش‌فرض بی‌اهمیت است — کاربر خودش می‌نویسد */
+    }
+  };
 
   const handleOpen = (next: boolean) => {
     if (next) {
@@ -122,6 +146,7 @@ export function LocationPicker({
                 disabled={!draft}
                 onClick={() => {
                   onChange(draft);
+                  if (draft) void reverseGeocode(draft);
                   setOpen(false);
                 }}
             >

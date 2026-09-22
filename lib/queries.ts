@@ -200,6 +200,7 @@ export function useEditBusiness() {
       activityType?: string | null;
       lat?: number | null;
       lng?: number | null;
+      address?: string | null;
     }) => businessesApi.editBusiness(id, body),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });

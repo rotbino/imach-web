@@ -126,6 +126,8 @@ export interface BusinessSummaryDto {
   /** لوکیشن دقیق اختیاری — فقط مبنای تطابق؛ علنی نمی‌شود */
   lat?: number | null;
   lng?: number | null;
+  /** آدرس متنی قابل ویرایش — این یکی علنی است */
+  address?: string | null;
 }
 
 export interface AuthResponseDto {
@@ -569,4 +571,18 @@ export const notificationsApi = {
   getNotifications: () => api<NotificationsPageDto>("/notifications/getNotifications"),
   /** همه خوانده شد — الگوی باز کردن پنل */
   readAll: () => api<{ ok: boolean }>("/notifications/readAll", { method: "POST" }),
+  /** کلید عمومی VAPID — خالی یعنی سرور پوش ندارد */
+  getVapidPublicKey: () => api<{ publicKey: string }>("/notifications/getVapidPublicKey"),
+  /** اشتراک این مرورگر بعد از موافقت کاربر */
+  subscribePush: (sub: { endpoint: string; keys: { p256dh: string; auth: string } }) =>
+    api<{ ok: boolean }>("/notifications/subscribePush", {
+      method: "POST",
+      body: JSON.stringify(sub),
+    }),
+  /** لغو اشتراک این مرورگر */
+  unsubscribePush: (endpoint: string) =>
+    api<{ ok: boolean }>("/notifications/unsubscribePush", {
+      method: "POST",
+      body: JSON.stringify({ endpoint }),
+    }),
 };

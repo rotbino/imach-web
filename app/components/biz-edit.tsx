@@ -44,6 +44,9 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
   const [loc, setLoc] = useState<GeoPoint | null>(
     biz.lat != null && biz.lng != null ? { lat: biz.lat, lng: biz.lng } : null
   );
+  // آدرس متنی — وقتی پین تایید شد از معکوس‌یابی پیش‌پر می‌شود و کاربر
+  // هر وقت بخواهد ویرایشش می‌کند؛ با ذخیره، همراه پین به بک‌اند می‌رود.
+  const [address, setAddress] = useState(biz.address ?? "");
 
   const save = async () => {
     if (name.trim().length < 2) {
@@ -59,6 +62,8 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
         // null صریح = پاک کردن لوکیشن؛ مقدار = ثبت/به‌روزرسانی
         lat: loc?.lat ?? null,
         lng: loc?.lng ?? null,
+        // آدرس متنی — همراه لوکیشن ذخیره می‌شود؛ خالی = پاک کردن
+        address: address.trim() || null,
       });
       toast({ title: "ذخیره شد", description: "هدر صفحه‌ی شما به‌روز شد." });
     } catch (err) {
@@ -123,8 +128,20 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
         <div className="grid gap-1.5">
           <Label className="text-[11px] text-muted-foreground">لوکیشن کسب و کار</Label>
           <div className={""}>
-            <LocationPicker value={loc} onChange={setLoc} />
+            <LocationPicker
+              value={loc}
+              onChange={setLoc}
+              // پین تایید شد → آدرسِ معکوس‌یابی‌شده در تکست‌باکس می‌ریزد
+              onPickAddress={(a) => setAddress(a)}
+            />
           </div>
+          <Input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="آدرس — بعد از انتخاب لوکیشن خودکار پر می‌شود؛ دستی هم می‌توانید بنویسید یا ویرایش کنید"
+            aria-label="آدرس کسب و کار"
+            maxLength={300}
+          />
           <p className="text-[11px] leading-5 text-muted-foreground">
              لوکیشن به مشتریان و تامین کنندگان کمک می کند راحتر شما را پیدا کنند. همچنین هوش مصنوعی آی مچ، مشتریان یا تامین کنندگان دقیقتری را به شما پیشنهاد می دهد
           </p>
