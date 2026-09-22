@@ -14,6 +14,8 @@ import {
   langOfCountry,
   normalizeIntlPhone,
 } from "@/lib/countries";
+// زبانِ فرم هرگز state مستقل نیست — از کشور مشتق می‌شود تا هیچ مسیری
+// (حتی تغییر کشور در تب ورود) نتواند زبان و کشور را از هم بگسلد.
 import { isLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/locale-context";
 import { AppHeader, AppFooter, MobileTabBar } from "@/app/components/chrome";
@@ -163,26 +165,35 @@ function AuthStep({
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [country, setCountry] = useState("IR");
-  const [language, setLanguage] = useState("fa");
+  // زبان = زبان رسمی کشور، مگر کاربر خودش دستی انتخاب کرده باشد؛
+  // تغییر کشور انتخاب دستی را پاک می‌کند — پس زبان همیشه با کشور می‌آید،
+  // ولی تغییر زبان هرگز کشور را عوض نمی‌کند (قانون یک‌طرفه‌ی کاربر).
+  const [langOverride, setLangOverride] = useState<string | null>(null);
+  const language = langOverride ?? langOfCountry(country);
   const [busy, setBusy] = useState(false);
   const guessed = useRef(false);
 
   // لوکیشن تقریبی: کشور از timezone مرورگر — سمت کلاینت، یک‌بار
-  // (در رندر اولیه IR می‌ماند تا hydration mismatch نشود)
+  // (در رندر اولیه IR می‌ماند تا hydration mismatch نشود؛
+  // زبان لازم نیست جدا ست شود — از کشور مشتق می‌شود)
   useEffect(() => {
     if (guessed.current) return;
     guessed.current = true;
-    const code = guessCountryCode();
-    setCountry(code);
-    setLanguage(langOfCountry(code));
+    setCountry(guessCountryCode());
   }, []);
 
-  // تغییر کشور → کد تلفن و زبان رسمی خودکار می‌آیند (زبان دستی هم آزاد است)
+  // تغییر کشور → کد تلفن و زبان رسمی خودکار می‌آیند (در هر دو تب)
   const pickCountry = (code: string) => {
     setCountry(code);
+    setLangOverride(null); // زبان دوباره از کشورِ تازه مشتق شود
     const lang = langOfCountry(code);
-    setLanguage(lang);
     if (isLocale(lang)) setLocale(lang); // زبان پشتیبانی‌شده‌ی UI — فورا اعمال شود
+  };
+
+  // تغییر دستی زبان — فقط زبان؛ کشور دست‌نخورده می‌ماند
+  const pickLanguage = (code: string) => {
+    setLangOverride(code);
+    if (isLocale(code)) setLocale(code);
   };
 
   const submit = async () => {
@@ -270,7 +281,7 @@ function AuthStep({
               <SearchSelect
                 items={countrySelectItems}
                 value={country}
-                onChange={setCountry}
+                onChange={pickCountry}
                 placeholder={m.auth.fields.country}
                 searchPlaceholder={m.auth.search.country}
                 emptyText={m.auth.search.empty}
@@ -323,7 +334,7 @@ function AuthStep({
               <SearchSelect
                 items={LANGUAGE_ITEMS}
                 value={language}
-                onChange={setLanguage}
+                onChange={pickLanguage}
                 placeholder={m.auth.fields.language}
                 searchPlaceholder={m.auth.search.language}
                 emptyText={m.auth.search.empty}
