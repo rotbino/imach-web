@@ -506,3 +506,26 @@ export const marketApi = {
   offerBuyRequest: (body: { businessId: string; buyListingId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/offerBuyRequest", { method: "POST", body }),
 };
+
+// ─── گیت اشتراک مخاطبین — دفترچه‌ی تلفن کاربر با اجازه‌ی خودش ───
+
+/** یک مخاطب کاربر — عضویت در زمان خواندن با User.phone تطبیق خورده است */
+export interface ContactRowDto {
+  id: string;
+  name: string;
+  /** نرمال‌شده‌ی 09xxxxxxxxx */
+  phone: string;
+  /** عضو iMach = کسب‌وکارش برای لینک دادن؛ null = هنوز عضو نشده */
+  member: { id: string; slug: string; name: string; city: string } | null;
+  lastInvitedAt: string | null;
+}
+
+export const contactsApi = {
+  /** همگام‌سازی دسته‌ای از گوشی/ورود دستی — تا ۵۰۰ ردیف در هر فراخوان */
+  sync: (contacts: { name: string; phone: string }[]) =>
+    api<{ saved: number; received: number }>("/contacts/sync", { method: "POST", body: { contacts } }),
+  /** مخاطبین من — اعضا اول، بعد الفبای فارسی */
+  getContacts: () => api<ContactRowDto[]>("/contacts/getContacts"),
+  /** ثبت دعوت — «این مخاطب دعوت شده» */
+  invite: (id: string) => api<{ ok: boolean }>(`/contacts/invite/${id}`, { method: "POST" }),
+};

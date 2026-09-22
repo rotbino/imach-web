@@ -33,20 +33,21 @@ import type {
 } from "@/lib/api";
 import { AppFooter, AppHeader, MatchRing, MobileTabBar } from "@/app/components/chrome";
 import { ShareContent } from "@/app/components/share";
+import { ContactButton } from "@/app/components/contact-gate";
 import { EmptyFeed, FeedSpinner } from "@/app/components/feed-cards";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
   BadgeCheck,
   Check,
   ClipboardList,
-  Link2,
   Loader2,
-  Lock,
   MapPin,
   Package,
+  Phone,
   ShoppingBag,
   Users,
 } from "lucide-react";
@@ -55,13 +56,14 @@ import {
  * خریدارها / فروشنده‌ها — میدان کشف آی‌ماچ:
  * • بازوی فروش → «خریدارها»: درخواست‌های خرید مرتبط با کالاهای من.
  *   گیت ۱ — کاتالوگ خالی: بدون حداقل یک کالا، لیستی نیست (سیمگن تطبیق نداریم).
- *   گیت ۲ — معرف: فالو و ارسال پیشنهاد فقط بعد از آوردن {REFERRAL_TARGET}
- *   عضو با لینک کاتالوگ فعال می‌شود؛ پیشرفت همیشه بالای صفحه دیده می‌شود
- *   (خواسته‌ی کاربر: هیچ‌چیز مفت به دست نمی‌آید — بهای دسترسی، توزیع است).
- *   گشتن در کل بازار آزاد است؛ عمل کردن گیت دارد.
+ *   گیت ۲ — فقط «ارسال پیشنهاد» پشت حد نصاب معرف است؛ و UX خودش در لحظه‌ی
+ *   کلیک حرف می‌زند: دکمه همیشه فعالی است، مدالِ لحظه‌ی ارسال پیشرفت و
+ *   ابزارهای اشتراک (مخاطبین + پیام‌رسان‌ها) را نشان می‌دهد.
+ *   فالو رایگان است (سمت تقاضا اذیت نمی‌شود) — دکمه‌ها بالای کارت، روبه‌روی
+ *   عنوان، جلوی چشم (خواسته‌ی کاربر).
  * • بازوی خرید → «فروشنده‌ها»: تامین‌کننده‌های مرتبط + کالاهای در حال فروش؛
- *   فالوی تامین‌کننده برای خریدار رایگان است — خریدارِ کمیاب نباید بهایی بدهد
- *   (نقد پذیرفته‌شده؛ سمت تقاضا باید آزاد بماند).
+ *   فالو و تماس رایگان — خریدارِ کمیاب نباید بهایی بدهد؛ جذب تامین‌کننده
+ *   مسیر رشد بهتری می‌خواهد (خواسته‌ی کاربر).
  * • لیست تک‌ستونی در max-w-4xl.
  */
 
@@ -163,21 +165,23 @@ function BuyersField({ authed }: { authed: boolean }) {
     return <EmptyFeed icon={<ClipboardList className="size-6 text-stone-700" />} text="هنوز هیچ نیاز خریدی ثبت نشده است." />;
   }
 
-  const locked = !!state && !state.referral.unlocked;
-
   return (
     <div className="space-y-6 pb-6">
-      {/* گیت ۲ — نوار پیشرفت معرف: تا آنلاک، همیشه جلوی چشم */}
-      {state && locked && active && (
-        <ReferralStrip state={state} slug={active.slug} name={active.name} />
-      )}
-
       {related.length > 0 && (
         <section>
           <h2 className="mb-3 text-sm font-extrabold text-muted-foreground">مرتبط‌ترین با کالاهای شما</h2>
           <div className="space-y-3">
             {related.map((l) => (
-              <BuyRequestRow key={l.id} item={l} score={l.score} authed={authed} state={state} bizId={active?.id ?? null} />
+              <BuyRequestRow
+                key={l.id}
+                item={l}
+                score={l.score}
+                authed={authed}
+                state={state}
+                bizId={active?.id ?? null}
+                mySlug={active?.slug ?? ""}
+                myName={active?.name}
+              />
             ))}
           </div>
         </section>
@@ -185,16 +189,12 @@ function BuyersField({ authed }: { authed: boolean }) {
 
       {others.length > 0 && (
         <section>
-          {/* مشکل ۲ — وقتی مچ دقیق خالی است، صادقانه؛ گشتن آزاد، عمل کردن گیت‌دار */}
-          {state && !locked && related.length === 0 && active && (
-            <ShareNudge slug={active.slug} name={active.name} />
-          )}
           <h2 className="mb-3 text-sm font-extrabold text-muted-foreground">
             {related.length > 0 ? "سایر درخواست‌های خرید" : "تمام درخواست‌های خرید بازار"}
           </h2>
           <div className="space-y-3">
             {others.map((l) => (
-              <BuyRequestRow key={l.id} item={l} authed={authed} state={state} bizId={active?.id ?? null} />
+              <BuyRequestRow key={l.id} item={l} authed={authed} state={state} bizId={active?.id ?? null} mySlug={active?.slug ?? ""} myName={active?.name} />
             ))}
           </div>
         </section>
@@ -205,55 +205,35 @@ function BuyersField({ authed }: { authed: boolean }) {
   );
 }
 
-// ─── نوار گیت معرف — پیشرفت + ابزار اشتراک (موتور رشد) ───
+// ─── نوار پیشرفت معرف — داخل مدال پیشنهاد؛ پیش از حد نصاب نشان داده می‌شود ───
 
-function ReferralStrip({ state, slug, name }: { state: MarketStateDto; slug: string; name: string }) {
+function ReferralProgress({ state }: { state: MarketStateDto }) {
   const pct = Math.min(100, Math.round((state.referral.count / state.referral.required) * 100));
   return (
-    <section className="rounded-2xl border border-primary/25 bg-accent/50 p-4">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="flex items-center gap-1.5 text-sm font-extrabold">
-          <Users className="size-4 text-primary" />
-          فالو و پیشنهاد قیمت
-          <span className="text-primary">
-            {fa(state.referral.count)} از {fa(state.referral.required)}
-          </span>
-        </p>
-        <div
-          className="h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-white"
-          role="progressbar"
-          aria-valuenow={pct}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
-        </div>
+    <div>
+      <p className="mb-1.5 flex items-center justify-between gap-2 text-xs font-extrabold">
+        <span className="flex items-center gap-1.5">
+          <Users className="size-3.5 text-primary" />
+          عضو آورده‌شده با لینک شما
+        </span>
+        <span className="text-primary">
+          {fa(state.referral.count)} از {fa(state.referral.required)}
+        </span>
+      </p>
+      <div
+        className="h-2 overflow-hidden rounded-full bg-stone-100"
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
       </div>
-      <ShareContent kind="sell" slug={slug} bizName={name} />
-      <p className="mt-3 flex items-center gap-1 text-[11px] text-muted-foreground">
-        <Link2 className="size-3" />
-        هر ثبت‌نام از این لینک، هم مشتری شما می‌شود هم یک قدم تا فعال شدن پیشنهاد قیمت.
-      </p>
-    </section>
+    </div>
   );
 }
 
-// ─── نوار اشتراک وقتی مچ دقیق خالی است — بدون بن‌بست ───
-
-function ShareNudge({ slug, name }: { slug: string; name: string }) {
-  return (
-    <section className="mb-3 rounded-2xl border border-primary/25 bg-accent/50 p-4">
-      <p className="mb-3 text-sm font-extrabold">هنوز درخواستی دقیقاً برای کالاهای شما ثبت نشده</p>
-      <ShareContent kind="sell" slug={slug} bizName={name} />
-      <p className="mt-3 flex items-center gap-1 text-[11px] text-muted-foreground">
-        <Link2 className="size-3" />
-        خریدارهای مرتبط از لینک کاتالوگ شما می‌آیند.
-      </p>
-    </section>
-  );
-}
-
-// ─── کارت درخواست خرید + اقدام‌های گیت‌دار (فالو / ارسال پیشنهاد) ───
+// ─── کارت درخواست خرید — اقدام‌ها بالای کارت، روبه‌روی عنوان ───
 
 function BuyRequestRow({
   item: l,
@@ -261,96 +241,99 @@ function BuyRequestRow({
   authed,
   state,
   bizId,
+  mySlug,
+  myName,
 }: {
   item: ExploreItemDto;
   score?: number;
   authed: boolean;
   state: MarketStateDto | undefined;
   bizId: string | null;
+  mySlug: string;
+  myName?: string;
 }) {
-  const locked = !!state && !state.referral.unlocked;
   const followed = !!state && state.followedBuyerIds.includes(l.business.id);
   const offered = !!state && state.offeredBuyerIds.includes(l.business.id);
   const canOffer = !!state && state.sellGoodIds.includes(l.good.id);
 
   return (
     <article className="animate-fade-up rounded-2xl border bg-white p-4 shadow-sm transition hover:border-stone-300 hover:shadow-md">
-      <Link href={`/buy/${l.business.slug}`} className="block">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="truncate font-extrabold" title={goodName(l.good)}>
-              نیاز به خرید {goodName(l.good)}
-            </p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
+      {/* عنوان + اقدام‌ها — یک نگاه، هم‌زمان دیده می‌شوند (خواسته‌ی کاربر) */}
+      <div className="flex items-start justify-between gap-3">
+        <Link href={`/buy/${l.business.slug}`} className="block min-w-0 grow">
+          <p className="truncate font-extrabold" title={goodName(l.good)}>
+            نیاز به خرید {goodName(l.good)}
+          </p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
+        </Link>
+        {authed && state && bizId && (
+          <div className="flex shrink-0 items-center gap-1.5">
+            <FollowBuyerButton bizId={bizId} buyerId={l.business.id} followed={followed} />
+            {canOffer && (
+              <OfferButton
+                bizId={bizId}
+                listingId={l.id}
+                offered={offered}
+                buyerName={l.business.name}
+                state={state}
+                mySlug={mySlug}
+                myName={myName}
+              />
+            )}
           </div>
-          {score !== undefined && score > 0 && <MatchRing score={score} size={44} />}
-        </div>
+        )}
+      </div>
 
-        {/* مشخصات خرید — حجم + تناوب */}
-        <div className="mt-3 flex flex-wrap items-center gap-1.5">
-          <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
-            {fa(l.volume as number)} {unitLabel(l.good.unit)}
-          </Badge>
-          <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
-            {frequencyLabel(l.frequency ?? "MONTHLY")}
-          </Badge>
-        </div>
-
-        {/* خریدار — صاحب نیاز */}
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-[11px] text-muted-foreground">
-          <span className="flex min-w-0 items-center gap-1.5">
-            <span
-              className="grid size-5 shrink-0 place-items-center rounded-md bg-stone-200 text-[10px] font-black text-stone-700"
-              aria-hidden
-            >
-              {l.business.name.slice(0, 1)}
-            </span>
-            <span className="truncate font-bold text-foreground">{l.business.name}</span>
-            {l.business.isVerified && <BadgeCheck className="size-3.5 shrink-0 text-stone-600" aria-label="تاییدشده" />}
-            <span className="flex shrink-0 items-center gap-0.5">
-              <MapPin className="size-3" />
-              {l.business.city}
-            </span>
+      {/* مشخصات خرید — حجم + تناوب + امتیاز تطبیق */}
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
+          {fa(l.volume as number)} {unitLabel(l.good.unit)}
+        </Badge>
+        <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
+          {frequencyLabel(l.frequency ?? "MONTHLY")}
+        </Badge>
+        {score !== undefined && score > 0 && (
+          <span className="ms-auto">
+            <MatchRing score={score} size={40} />
           </span>
-          <span className="shrink-0">{timeAgo(l.updatedAt)}</span>
-        </div>
-      </Link>
+        )}
+      </div>
 
-      {/* اقدام‌ها — پشت گیت معرف (خواسته‌ی کاربر) */}
-      {authed && state && bizId && (
-        <div className="mt-3 flex items-center gap-2 border-t pt-3">
-          <FollowBuyerButton bizId={bizId} buyerId={l.business.id} locked={locked} followed={followed} />
-          {canOffer && <OfferButton bizId={bizId} listingId={l.id} locked={locked} offered={offered} buyerName={l.business.name} />}
-        </div>
-      )}
+      {/* خریدار — صاحب نیاز */}
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-[11px] text-muted-foreground">
+        <span className="flex min-w-0 items-center gap-1.5">
+          <span
+            className="grid size-5 shrink-0 place-items-center rounded-md bg-stone-200 text-[10px] font-black text-stone-700"
+            aria-hidden
+          >
+            {l.business.name.slice(0, 1)}
+          </span>
+          <span className="truncate font-bold text-foreground">{l.business.name}</span>
+          {l.business.isVerified && <BadgeCheck className="size-3.5 shrink-0 text-stone-600" aria-label="تاییدشده" />}
+          <span className="flex shrink-0 items-center gap-0.5">
+            <MapPin className="size-3" />
+            {l.business.city}
+          </span>
+        </span>
+        <span className="shrink-0">{timeAgo(l.updatedAt)}</span>
+      </div>
     </article>
   );
 }
 
-// ─── دکمه فالو خریدار — قفل/فعال/فالوشده ───
+// ─── دکمه فالو خریدار — رایگان (خواسته‌ی کاربر: سمت تقاضا اذیت نمی‌شود) ───
 
 function FollowBuyerButton({
   bizId,
   buyerId,
-  locked,
   followed,
 }: {
   bizId: string;
   buyerId: string;
-  locked: boolean;
   followed: boolean;
 }) {
   const { toast } = useToast();
   const toggle = useFollowBuyerToggle();
-
-  if (locked) {
-    return (
-      <Button size="sm" variant="outline" disabled className="h-8 gap-1.5 rounded-xl px-3 text-xs text-muted-foreground">
-        <Lock className="size-3" />
-        فالو
-      </Button>
-    );
-  }
 
   return (
     <Button
@@ -381,41 +364,37 @@ function FollowBuyerButton({
   );
 }
 
-// ─── دکمه + فرم ارسال پیشنهاد — روی کالاهایی که واقعاً می‌فروشم ───
+// ─── ارسال پیشنهاد — دکمه همیشه فعال؛ UX در لحظه‌ی کلیک حرف می‌زند:
+//     حد نصاب کامل → مدال فرم پیشنهاد · ناقص → مدال پیشرفت + ابزار اشتراک ───
 
 function OfferButton({
   bizId,
   listingId,
-  locked,
   offered,
   buyerName,
+  state,
+  mySlug,
+  myName,
 }: {
   bizId: string;
   listingId: string;
-  locked: boolean;
   offered: boolean;
   buyerName: string;
+  state: MarketStateDto | undefined;
+  mySlug: string;
+  myName?: string;
 }) {
   const { toast } = useToast();
   const offerMut = useOfferBuyRequest();
-  const state = useMarketState(bizId);
-  const cur = state.data?.currency ?? "IRR";
+  const cur = state?.currency ?? "IRR";
   const exp = CURRENCIES[cur]?.exp ?? 0;
+  const unlocked = !!state?.referral.unlocked;
 
   const [open, setOpen] = useState(false);
   const [price, setPrice] = useState("");
   const [note, setNote] = useState("");
   const digits = price.replace(/\D/g, "");
   const valid = digits.length > 0 && Number(digits) > 0;
-
-  if (locked) {
-    return (
-      <Button size="sm" variant="outline" disabled className="h-8 gap-1.5 rounded-xl px-3 text-xs text-muted-foreground">
-        <Lock className="size-3" />
-        ارسال پیشنهاد
-      </Button>
-    );
-  }
 
   const submit = () => {
     if (!valid) return;
@@ -434,61 +413,86 @@ function OfferButton({
   };
 
   return (
-    <div className="grow">
+    <>
       <Button
         size="sm"
         variant={offered ? "secondary" : "outline"}
         className={`h-8 gap-1.5 rounded-xl px-3 text-xs ${
           offered ? "border-primary/30 bg-primary/10 text-primary hover:bg-primary/15" : ""
         }`}
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen(true)}
       >
         {offered ? <Check className="size-3" /> : null}
         {offered ? "ارسال شد" : "ارسال پیشنهاد"}
       </Button>
 
-      {open && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit();
-          }}
-          className="mt-2.5 rounded-xl border border-primary/25 bg-accent/40 p-3"
-        >
-          <div className="flex items-center gap-2">
-            <Input
-              dir="ltr"
-              inputMode="numeric"
-              placeholder="قیمت هر واحد"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className="h-9 grow text-left"
-              aria-label="قیمت پیشنهادی هر واحد"
-            />
-            <span className="shrink-0 rounded-xl border bg-white px-3 py-2 text-xs font-bold text-muted-foreground">
-              {currencyLabel(cur)}
-            </span>
-          </div>
-          <Input
-            placeholder="توضیح (اختیاری)"
-            value={note}
-            maxLength={300}
-            onChange={(e) => setNote(e.target.value)}
-            className="mt-2 h-9"
-            aria-label="توضیح پیشنهاد"
-          />
-          <div className="mt-2.5 flex items-center justify-end gap-2">
-            <Button type="button" size="sm" variant="ghost" className="h-8 rounded-xl px-3 text-xs" onClick={() => setOpen(false)}>
-              بی‌خیال
-            </Button>
-            <Button type="submit" size="sm" disabled={offerMut.isPending || !valid} className="h-8 rounded-xl px-4 text-xs">
-              {offerMut.isPending ? <Loader2 className="size-3 animate-spin" /> : null}
-              ارسال
-            </Button>
-          </div>
-        </form>
+      {unlocked ? (
+        /* حد نصاب کامل — فرم پیشنهاد در مدال */
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>پیشنهاد برای {buyerName}</DialogTitle>
+              <DialogDescription>در پیشنهادهای دریافتی او می‌افتد و مستقیم دیده می‌شود.</DialogDescription>
+            </DialogHeader>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit();
+              }}
+              className="grid gap-2.5"
+            >
+              <div className="flex items-center gap-2">
+                <Input
+                  dir="ltr"
+                  inputMode="numeric"
+                  placeholder="قیمت هر واحد"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="h-9 grow text-left"
+                  aria-label="قیمت پیشنهادی هر واحد"
+                />
+                <span className="shrink-0 rounded-xl border bg-white px-3 py-2 text-xs font-bold text-muted-foreground">
+                  {currencyLabel(cur)}
+                </span>
+              </div>
+              <Input
+                placeholder="توضیح (اختیاری)"
+                value={note}
+                maxLength={300}
+                onChange={(e) => setNote(e.target.value)}
+                className="h-9"
+                aria-label="توضیح پیشنهاد"
+              />
+              <div className="flex items-center justify-end gap-2">
+                <Button type="button" size="sm" variant="ghost" className="h-8 rounded-xl px-3 text-xs" onClick={() => setOpen(false)}>
+                  بی‌خیال
+                </Button>
+                <Button type="submit" size="sm" disabled={offerMut.isPending || !valid} className="h-8 rounded-xl px-4 text-xs">
+                  {offerMut.isPending ? <Loader2 className="size-3 animate-spin" /> : null}
+                  ارسال
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        /* پیش از حد نصاب — پیامِ درست، همان لحظه‌ای که می‌خواهد اقدام کند */
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>برای ارسال پیشنهاد، حد نصاب دعوت را کامل کنید</DialogTitle>
+              <DialogDescription>
+                بهای دسترسی به خریدارها، آوردنشان است: {fa(state?.referral.required ?? 10)} عضو با لینک کاتالوگ شما.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4">
+              {state && <ReferralProgress state={state} />}
+              {mySlug && <ShareContent kind="sell" slug={mySlug} bizName={myName} />}
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
-    </div>
+    </>
   );
 }
 
@@ -642,6 +646,18 @@ function SupplierMatchRow({
         </div>
         {s.score > 0 && <MatchRing score={s.score} size={44} />}
       </Link>
+      {/* تماس — حتی برای مهمان (گیت ویروسی عضویت) · خودمان را نمی‌بینیم */}
+      {selfId !== s.supplierId && (
+        <ContactButton
+          slug={s.supplierSlug}
+          bizName={s.supplierName}
+          label="تماس"
+          arm="sell"
+          variant="outline"
+          size="sm"
+          className="h-8 shrink-0 gap-1.5 rounded-xl px-3 text-xs"
+        />
+      )}
       {showFollow && bizId && (
         <FollowSupplierButton bizId={bizId} supplierId={s.supplierId} supplierName={s.supplierName} followedIds={followedIds} />
       )}
@@ -691,6 +707,18 @@ function SellRow({
           <p className="mt-0.5 text-[11px] text-muted-foreground">هر {unitLabel(l.good.unit)}</p>
         </div>
       </Link>
+      {/* تماس — حتی برای مهمان (گیت ویروسی عضویت) · خودمان را نمی‌بینیم */}
+      {selfId !== l.business.id && (
+        <ContactButton
+          slug={l.business.slug}
+          bizName={l.business.name}
+          label="تماس"
+          arm="sell"
+          variant="outline"
+          size="sm"
+          className="h-8 shrink-0 gap-1.5 rounded-xl px-3 text-xs"
+        />
+      )}
       {showFollow && bizId && (
         <FollowSupplierButton bizId={bizId} supplierId={l.business.id} supplierName={l.business.name} followedIds={followedIds} />
       )}

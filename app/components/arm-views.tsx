@@ -18,7 +18,6 @@ import {
   ClipboardList,
   LayoutDashboard,
   Loader2,
-  Lock,
   MapPin,
   Package,
   Share2,
@@ -227,7 +226,8 @@ export function BuyArmView({ slug }: { slug: string }) {
   const { status, businesses: storeBizs, user } = useAuthStore();
   const followBuyerToggle = useFollowBuyerToggle();
 
-  // فالوی خریدار — قرینه‌ی «دنبال کردن» کاتالوگ؛ پشت گیت معرف (از وضعیت بازار)
+  // فالوی خریدار — قرینه‌ی «دنبال کردن» کاتالوگ؛ رایگان (خواسته‌ی کاربر:
+  // سمت تقاضا اذیت نمی‌شود — جذب تامین‌کننده مسیر رشد بهتری می‌خواهد)
   const mine = storeBizs[0];
   const profileQ = useBusinessProfile(slug);
   const biz = profileQ.data;
@@ -235,28 +235,18 @@ export function BuyArmView({ slug }: { slug: string }) {
   const stateQ = useMarketState(status === "authed" && !isOwner ? (mine?.id ?? null) : null);
   const mState = stateQ.data;
   const deskFollowed = !!biz && !!mState && mState.followedBuyerIds.includes(biz.id);
-  const deskLocked = !!mState && !mState.referral.unlocked;
 
   const followDesk = () => {
     if (!biz || !mine) return;
-    if (deskFollowed) {
-      followBuyerToggle.mutate(
-        { businessId: mine.id, buyerId: biz.id, follow: false },
-        { onSuccess: () => toast({ title: "فالو برداشته شد" }) }
-      );
-      return;
-    }
-    if (deskLocked && mState) {
-      toast({
-        title: "هنوز فعال نیست",
-        description: `با لینک کاتالوگتان ${fa(mState.referral.count)} از ${fa(mState.referral.required)} عضو آورده‌اید.`,
-      });
-      return;
-    }
     followBuyerToggle.mutate(
-      { businessId: mine.id, buyerId: biz.id, follow: true },
+      { businessId: mine.id, buyerId: biz.id, follow: !deskFollowed },
       {
-        onSuccess: () => toast({ title: "فالو شد", description: "به عنوان تامین‌کننده در «تامین من» او ظاهر می‌شوید." }),
+        onSuccess: () =>
+          toast(
+            deskFollowed
+              ? { title: "فالو برداشته شد" }
+              : { title: "فالو شد", description: "به عنوان تامین‌کننده در «تامین من» او ظاهر می‌شوید." }
+          ),
         onError: (e) => toast({ title: e.message || "خطا", variant: "destructive" }),
       }
     );
@@ -348,8 +338,6 @@ export function BuyArmView({ slug }: { slug: string }) {
                   <Loader2 className="size-4 animate-spin" />
                 ) : deskFollowed ? (
                   <Check className="size-4" />
-                ) : deskLocked ? (
-                  <Lock className="size-4" />
                 ) : null}
                 {deskFollowed ? "فالو شد" : "دنبال کردن"}
               </Button>

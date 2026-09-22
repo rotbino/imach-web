@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import {
   businessesApi,
+  contactsApi,
   goodsApi,
   listingsApi,
   marketApi,
@@ -10,6 +11,7 @@ import {
   type BusinessProfileDto,
   type BusinessSummaryDto,
   type CategoryNodeDto,
+  type ContactRowDto,
   type CustomerRowDto,
   type ExploreItemDto,
   type FollowDto,
@@ -49,6 +51,7 @@ export const qk = {
   board: (bizId: string) => ["market", "board", bizId] as const,
   supplierSuggestions: (bizId: string) => ["market", "supplierSuggestions", bizId] as const,
   marketState: (bizId: string) => ["market", "state", bizId] as const,
+  contacts: () => ["contacts"] as const,
 };
 
 // ── پابلیک ──
@@ -334,6 +337,41 @@ export function useOfferBuyRequest() {
     mutationFn: marketApi.offerBuyRequest,
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
+    },
+  });
+}
+
+// ── گیت اشتراک مخاطبین — دفترچه‌ی تلفن کاربر ──
+
+/** مخاطبین من — اعضا اول؛ فقط برای کاربر واردشده فعال است */
+export function useContacts(): UseQueryResult<ContactRowDto[]> {
+  const authed = useAuthStore((s) => s.status) === "authed";
+  return useQuery({
+    queryKey: qk.contacts(),
+    queryFn: () => contactsApi.getContacts(),
+    enabled: authed,
+    staleTime: 30_000,
+  });
+}
+
+/** همگام‌سازی دسته‌ای مخاطبین (انتخاب از گوشی یا ورود دستی) */
+export function useSyncContacts() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: contactsApi.sync,
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["contacts"] });
+    },
+  });
+}
+
+/** ثبت دعوت یک مخاطب — «این مخاطب دعوت شده» */
+export function useInviteContact() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => contactsApi.invite(id),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["contacts"] });
     },
   });
 }
