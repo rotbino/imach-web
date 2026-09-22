@@ -21,7 +21,7 @@ export const fa = {
       language: "زبان",
     },
     placeholders: {
-      bizName: "مثلا خورشید مارکت",
+      bizName: "مثلا سوپرمارکت آریا",
       city: "مثلا تهران",
       cityOther: "مثلا Istanbul",
       mobile: "912 345 6789",

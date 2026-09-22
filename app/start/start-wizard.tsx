@@ -276,7 +276,7 @@ function AuthStep({
 
         {/* ── ورود — کشور هم دارد (کد تلفن از لیست کشور می‌آید) ── */}
         <TabsContent value="login" className="mt-4 grid gap-3">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-4">
             <Field label={m.auth.fields.country}>
               <SearchSelect
                 items={countrySelectItems}
@@ -447,7 +447,7 @@ function BusinessStep({
           <Label htmlFor="biz-name">نام کسب‌وکار *</Label>
           <Input
             id="biz-name"
-            placeholder="مثلا خورشید مارکت"
+            placeholder="مثلا سوپرمارکت آریا"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />

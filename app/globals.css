@@ -216,3 +216,10 @@
 [dir="ltr"] .animate-step-slide {
   --step-from: 28px;
 }
+
+
+/* برای همه input و textarea ها در کل پروژه */
+::placeholder {
+  color: #b0b0b0; /* یک خاکستری روشن و کمرنگ */
+  opacity: 0.8;   /* شفافیت رو هم می‌تونی کم کنی */
+}
