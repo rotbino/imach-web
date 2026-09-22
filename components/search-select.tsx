@@ -33,6 +33,14 @@ export interface SearchSelectItem {
   hint?: string;
   /** توکن‌های اضافی برای جست‌وجو */
   keywords?: string[];
+  /**
+   * متن جست‌وجوی اختصاصی — پیش‌فرض: label + keywords.
+   * وقتی می‌خواهیم جست‌وجو فقط روی برچسب باشد و hint در جست‌وجو دخالت نکند
+   * (مثلا شهر: تایپِ «همدان» فقط شهرِ همدان، نه همه‌ی شهرهای استان همدان)
+   * از این فیلد استفاده می‌کنیم؛ برای سطرهای هم‌متن باید یکتا باشد
+   * تا ناوبری کیبورد cmdk بین‌شان گم نشود.
+   */
+  searchValue?: string;
   /** کلید یکتای رندر — وقتی value تکراری است (مثلا شهر هم‌نام در دو استان) */
   id?: string;
 }
@@ -104,8 +112,9 @@ export function SearchSelect({
               {items.map((item) => (
                 <CommandItem
                   key={item.id ?? item.value}
-                  // مقدار یکتا برای cmdk — برچسب + keywords تا جست‌وجو همه را بپوشاند
-                  value={[item.label, ...(item.keywords ?? [])].join(" ")}
+                  // مقدار یکتا برای cmdk — اگر searchValue دادیم فقط همان
+                  // (جست‌وجو فقط روی متن اختصاصی؛ hint/keywords دخالت نمی‌کنند)
+                  value={item.searchValue ?? [item.label, ...(item.keywords ?? [])].join(" ")}
                   keywords={item.keywords}
                   onSelect={() => {
                     onPick?.(item);
