@@ -152,7 +152,7 @@ function AuthStep({
   const login = useAuthStore((s) => s.login);
   const register = useAuthStore((s) => s.register);
   const m = useMessages(); // ورود/ثبت‌نام — دوزبانه (fa/en)
-  const { setLocale } = useLocale();
+  const { locale, setLocale } = useLocale();
   const searchParams = useSearchParams();
   // کد رفرال — از ?ref= لینک دعوت، یا آخرین کد ذخیره‌شده (گیت تماس)
   const refCode = searchParams.get("ref") ?? loadReferralCode();
@@ -188,6 +188,17 @@ function AuthStep({
   const [phoneTaken, setPhoneTaken] = useState(false);
   const guessed = useRef(false);
 
+  // ── زبانِ UI = زبانِ پشتیبانی‌شده‌ی کشور — ایران/افغانستان → فارسی،
+  // بقیه → انگلیسی (UI فعلا دوزبانه است). هم برای حدس اولیه و هم تغییر دستی؛
+  // نکته‌ی حیاتی: کاربر ایرانی با ویندوز/مرورگر انگلیسی Accept-Language=en می‌فرستد
+  // و سرور انگلیسی رندر می‌کند — بدون این سینک، زبان فقط با انتخاب دستیِ مجدد
+  // کشور فارسی می‌شد و کاربر فارسی‌زبان فرم را نمی‌فهمید و می‌رفت.
+  const syncLangWithCountry = (code: string) => {
+    const lang = langOfCountry(code);
+    const target = isLocale(lang) ? lang : "en"; // زبان رسمیِ پشتیبانی‌نشده → انگلیسی
+    if (target !== locale) setLocale(target); // گارد: refresh بی‌خودیِ سرور ممنوع
+  };
+
   // لوکیشن تقریبی: کشور از timezone مرورگر — سمت کلاینت، یک‌بار
   // (در رندر اولیه IR می‌ماند تا hydration mismatch نشود)
   useEffect(() => {
@@ -195,7 +206,9 @@ function AuthStep({
     guessed.current = true;
     const c = guessCountryCode();
     setCountry(c);
+    syncLangWithCountry(c); // زبان هم با کشورِ حدسی هماهنگ شود — نه فقط با انتخاب دستی
     if (c !== "IR") setShowCountry(true); // کاربر غیر ایران — سلیکت از اول باز
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- یک‌بار در mount؛ locale از رندر اول همین است
   }, []);
 
   // تغییر شماره/کشور → خطای «شماره قبلاً ثبت شده» قدیمی معتبر نیست
@@ -203,8 +216,7 @@ function AuthStep({
 
   const pickCountry = (code: string) => {
     setCountry(code);
-    const lang = langOfCountry(code);
-    if (isLocale(lang)) setLocale(lang); // زبان پشتیبانی‌شده‌ی UI — فورا اعمال شود
+    syncLangWithCountry(code); // زبان پشتیبانی‌شده‌ی UI — فورا اعمال شود
     if (code !== country) {
       setCity(""); // شهر و استانِ کشور قبلی معنا ندارند
       setProvince(null);
