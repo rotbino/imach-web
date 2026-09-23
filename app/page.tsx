@@ -781,7 +781,7 @@ function ProductTour() {
                             ))}
                         </ul>
 
-                        <Link href="/start" className="mt-6 inline-block">
+                        <Link href="/start?mode=register" className="mt-6 inline-block">
                             <Button
                                 className={`rounded-xl px-6 ${
                                     isSale
@@ -1094,7 +1094,7 @@ function FinalCta() {
                     لینک را بفرست و استفاده از آی‌مچ را شروع کن.
                 </p>
 
-                <Link href="/start" className="mt-6 inline-block">
+                <Link href="/start?mode=register" className="mt-6 inline-block">
                     <Button
                         size="lg"
                         className="rounded-xl px-8 shadow-lg shadow-primary/25"

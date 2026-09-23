@@ -12,6 +12,9 @@ import { cn } from "@/lib/utils";
  * • جداکننده‌ی هزارگان حین ویرایش (مثلا ۹۸۰٬۰۰۰ / 980,000)
  * • مقدار عددی خام به والد می‌رود (null یعنی خالی)
  * • دامنه‌ی min/max روی بلور اعمال می‌شود
+ * • suffix (واحد) در «تهِ» تکست‌باکس می‌نشیند — در RTL یعنی سمت چپ
+ *   (خواسته‌ی کاربر: «واحد باید ته تکست‌باکس باشد، نه اول آن»)؛
+ *   کانتینر dir=ltr ندارد تا از صفحه RTL ارث ببرد و ترتیب طبیعی باشد
  */
 
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
@@ -89,8 +92,8 @@ export function NumberInput({
 
   return (
     <div
-      dir="ltr"
       className={cn(
+        // بدون dir=ltr — از RTL صفحه ارث می‌برد تا suffix در انتهای باکس (چپ) بنشیند
         "flex items-center rounded-xl border border-input bg-transparent transition-colors",
         "focus-within:ring-2 focus-within:ring-ring/40",
         disabled && "opacity-50",
@@ -107,7 +110,7 @@ export function NumberInput({
         type="text"
         inputMode="numeric"
         disabled={disabled}
-        className="w-full min-w-0 bg-transparent px-3 py-2.5 text-sm shadow-none outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+        className="w-full min-w-0 bg-transparent px-3 py-2.5 text-right text-sm shadow-none outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
         value={display}
         onChange={handleChange}
         onFocus={() => setFocused(true)}

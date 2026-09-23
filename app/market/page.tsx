@@ -130,7 +130,7 @@ function BuyersField({ authed }: { authed: boolean }) {
           بازار خریدارها با کسب‌وکار شما تطبیق می‌خورد.
         </p>
         <Link
-          href="/start"
+          href="/start?mode=register"
           className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm"
         >
           ساخت کسب‌وکار
@@ -738,7 +738,7 @@ function GuestCta() {
       <p className="mx-auto mt-1 max-w-sm text-xs leading-6 text-muted-foreground">
         کاتالوگ فروش و لیست خرید هوشمند iMach — رایگان.
       </p>
-      <Link href="/start">
+      <Link href="/start?mode=register">
         <Button className="mt-4 rounded-xl px-6 shadow-lg shadow-primary/25">
           <ShoppingBag className="size-4" />
           ساخت کسب‌وکار رایگان من

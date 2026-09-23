@@ -3,17 +3,15 @@
 import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-import { setArmActive, useActiveBusiness, useArm, useArmStore } from "@/lib/active-biz";
+import { useActiveBusiness, useArmStore } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
-import { ListingForm, type ListingKind } from "@/app/components/listing-form";
-import { useTabParam } from "@/app/components/url-tabs";
+import { ListingForm } from "@/app/components/listing-form";
 import { Loader2 } from "lucide-react";
 
 /*
- * کالای جدید / خرید جدید — مقصد آیتم سوم نویگیشن.
- * تب فروش/خرید با URL سینک است (/new?tab=sell|buy) و با بازوی جاری همگام می‌شود.
- * بعد از ثبت، کاربر به همان بازویی می‌رود که کالا را برایش ثبت کرده:
- * فروش → کاتالوگ فروش من، خرید → دستیار خرید.
+ * کالای جدید — فرم واحد سرچ‌محور: اول نوع کالا، بعد دو کادر فروش عمده/خرید عمده.
+ * بعد از ثبت، کاربر به بازویی می‌رود که ثبت در آن انجام شده:
+ * فروش → کاتالوگ فروش من، خرید (یا هر دو) → کاتالوگ فروش (فروش اولویت دارد).
  */
 export default function NewListingPage() {
   return (
@@ -41,19 +39,11 @@ export default function NewListingPage() {
 function NewListingBody() {
   const router = useRouter();
   const { status } = useAuthStore();
-  const arm = useArm();
   const active = useActiveBusiness();
-  // تب پیش‌فرض = بازوی جاری؛ انتخاب کاربر با URL سینک می‌شود
-  const [kind, setKind] = useTabParam(arm, ["sell", "buy"]);
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
   }, [status, router]);
-
-  // تب فرم، بازوی جاری را تعیین می‌کند تا نویگیشن و عنوان هدر هم‌راستا بمانند
-  useEffect(() => {
-    setArmActive(kind as "sell" | "buy");
-  }, [kind]);
 
   if (status !== "authed") {
     return (
@@ -71,7 +61,7 @@ function NewListingBody() {
           برای ثبت کالا به یک کسب‌وکار نیاز دارید — فقط نام و شهر می‌خواهد.
         </p>
         <button
-          onClick={() => router.push("/start")}
+          onClick={() => router.push("/start?mode=register")}
           className="mt-4 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm"
         >
           ساخت کسب‌وکار
@@ -84,8 +74,6 @@ function NewListingBody() {
     <ListingForm
       bizId={active.id}
       currency={active.currency}
-      kind={kind as ListingKind}
-      onKindChange={setKind}
       onSaved={(k) => {
         useArmStore.getState().setArm(k);
         router.push(k === "sell" ? "/sell" : "/buy");

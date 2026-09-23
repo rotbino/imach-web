@@ -448,7 +448,8 @@ export const goodsApi = {
   /** پیشنهاد برند برای فرم ثبت کالا */
   getBrands: (q?: string) => api<BrandDto[]>("/goods/getBrands", { params: { q }, auth: false }),
   /** ثبت کالای مرجع جدید وقتی جستجو نتیجه‌ای نداشت */
-  createGood: (body: { name: string; categoryId: string; nameEn?: string; aliases?: string[]; unit: string }) =>
+  // categoryId اختیاری — وقتی ندهند بک‌اند خودکار در سبد «سایر › جدید» پارک می‌کند
+  createGood: (body: { name: string; categoryId?: string; nameEn?: string; aliases?: string[]; unit?: string }) =>
     api<GoodDto>("/goods/createGood", { method: "POST", body }),
 };
 

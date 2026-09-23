@@ -77,7 +77,7 @@ function SellPanelBody() {
             <p className="text-lg font-extrabold">اول کسب‌وکارتان را بسازید</p>
             <p className="mt-2 text-sm text-muted-foreground">فقط نام و شهر — بقیه‌اش با ما.</p>
             <button
-              onClick={() => (window.location.href = "/start")}
+              onClick={() => (window.location.href = "/start?mode=register")}
               className="mt-4 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm"
             >
               ساخت کسب‌وکار

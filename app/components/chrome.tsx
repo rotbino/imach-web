@@ -199,12 +199,13 @@ export function AppHeader() {
               })}
             </nav>
           </div>
-        ) : (
+        ) : pathname?.startsWith("/start") ? null : (
+          // مهمان در صفحه‌ی شروع — دکمه‌ی ورود/ثبت‌نام معنا ندارد (خواسته‌ی کاربر)
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => router.push("/start")}>
               ورود
             </Button>
-            <Button size="sm" onClick={() => router.push("/start")}>
+            <Button size="sm" onClick={() => router.push("/start?mode=register")}>
               <LogIn className="size-4" />
               ثبت‌نام
             </Button>

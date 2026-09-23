@@ -161,8 +161,13 @@ function AuthStep({
     if (r) saveReferralCode(r);
   }, [searchParams]);
 
-  // تب ≠ اینجا؛ سوییچ ورود/ثبت‌نام با لینک متنی زیر فرم انجام می‌شود
-  const [mode, setMode] = useState<"login" | "register">("login");
+  // تب ≠ اینجا؛ سوییچ ورود/ثبت‌نام با لینک متنی زیر فرم انجام می‌شود —
+  // و با URL هم سینک است: /start?mode=register مستقیم تب ثبت‌نام را باز می‌کند
+  // (دکمه‌ی «ثبت‌نام» هدر و CTAهای کاتالوگ همین‌جا را باز می‌کنند — کاربری که
+  // از کاتالوگ دیگری می‌آید، مستقیم به فرم ثبت‌نام می‌رسد نه ورود)
+  const [mode, setMode] = useState<"login" | "register">(() =>
+    searchParams.get("mode") === "register" ? "register" : "login"
+  );
   // گام ۱ هویت شخص (نام/نام خانوادگی/موبایل/رمز) → گام ۲ هویت کسب‌وکار
   const [rStep, setRStep] = useState<1 | 2>(1);
 
@@ -224,8 +229,33 @@ function AuthStep({
   };
 
   const phoneIntl = normalizeIntlPhone(phone, country);
-  const showCountrySelect = showCountry || country !== "IR";
-  const language = langOfCountry(country); // زبان = زبان رسمی کشور؛ بدون UI جدا
+  const language = langOfCountry(country); // زبان رسمی کشور — برای ذخیره در User (بدون UI جدا)
+
+  // ── کشور — بالای تکست‌باکس موبایل (خواسته‌ی کاربر):
+  // ثبت‌نام: همیشه سلیکت کامل دیده می‌شود؛ ورود: فقط لینک «تغییر کشور»
+  // که با کلیک، سلیکت را باز می‌کند؛ گام ۲ (کسب‌وکار): اصلاً نیست.
+  const countrySelectField = (
+    <Field label={m.auth.fields.country}>
+      <SearchSelect
+        items={countrySelectItems}
+        value={country}
+        onChange={pickCountry}
+        placeholder={m.auth.fields.country}
+        searchPlaceholder={m.auth.search.country}
+        emptyText={m.auth.search.empty}
+        ariaLabel={m.auth.fields.country}
+      />
+    </Field>
+  );
+  const countryLink = (
+    <button
+      type="button"
+      onClick={() => setShowCountry(true)}
+      className="self-start text-[11px] text-primary hover:underline"
+    >
+      {m.auth.changeCountry}
+    </button>
+  );
 
   // ── اعتبارسنجی زنده — دکمه تا معتبر شدنِ کامل غیرفعال است (نه خطای دیرهنگام)
   const step1Valid =
@@ -332,37 +362,17 @@ function AuthStep({
     }
   };
 
-  // کشور — پیش‌فرض پنهان؛ با لینک کوچک «کشور رو عوض کن» باز می‌شود
-  // (سه‌جا استفاده می‌شود: ورود / گام ۱ / گام ۲)
-  const countryField = showCountrySelect ? (
-    <Field label={m.auth.fields.country}>
-      <SearchSelect
-        items={countrySelectItems}
-        value={country}
-        onChange={pickCountry}
-        placeholder={m.auth.fields.country}
-        searchPlaceholder={m.auth.search.country}
-        emptyText={m.auth.search.empty}
-        ariaLabel={m.auth.fields.country}
-      />
-    </Field>
-  ) : (
-    <button
-      type="button"
-      onClick={() => setShowCountry(true)}
-      className="self-start text-[11px] text-primary hover:underline"
-    >
-      {m.auth.changeCountry}
-    </button>
-  );
+  // کشور — بالای موبایل؛ پیش‌فرض پنهان فقط در ورود (لینک متنی)
+  // سه‌جا استفاده می‌شود: ورود (لینک) / گام ۱ (همیشه سلیکت) / گام ۲ (هیچ)
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      {/* ── ورود — موبایل + رمز؛ کشور پنهان ── */}
+      {/* ── ورود — کشور (لینک) بالای موبایل + رمز ── */}
       {mode === "login" && (
         <>
           <h1 className="text-lg font-extrabold">{m.auth.titleLogin}</h1>
           <div className="mt-4 grid gap-3">
+            {showCountry ? countrySelectField : countryLink}
             <Field label={m.auth.fields.mobile}>
               <PhoneField
                 value={phone}
@@ -373,7 +383,6 @@ function AuthStep({
               />
               {phoneTaken && <p className="text-[11px] font-bold text-red-500">{m.auth.toasts.phoneTaken}</p>}
             </Field>
-            {countryField}
             <Field label={m.auth.fields.password}>
               <Input
                 dir="ltr"
@@ -432,6 +441,8 @@ function AuthStep({
                 />
               </Field>
             </div>
+            {/* کشور — همیشه پیدا و بالای موبایل (خواسته‌ی کاربر) */}
+            {countrySelectField}
             <Field label={m.auth.fields.mobile}>
               <PhoneField
                 value={phone}
@@ -442,7 +453,6 @@ function AuthStep({
               />
               {phoneTaken && <p className="text-[11px] font-bold text-red-500">{m.auth.toasts.phoneTaken}</p>}
             </Field>
-            {countryField}
             <Field label={m.auth.fields.passwordRegister}>
               <Input
                 dir="ltr"
@@ -478,7 +488,7 @@ function AuthStep({
         </>
       )}
 
-      {/* ── ثبت‌نام گام ۲ — هویت کسب‌وکار: نام کسب‌وکار + شهر ── */}
+      {/* ── ثبت‌نام گام ۲ — ثبت کسب و کار: عنوان کاتالوگ + شهر ── */}
       {mode === "register" && rStep === 2 && (
         <>
           <h1 className="text-lg font-extrabold">{m.auth.steps.bizTitle}</h1>
@@ -518,7 +528,7 @@ function AuthStep({
                 />
               )}
             </Field>
-            {countryField}
+            {/* کشور اینجا معنا ندارد — از گام ۱ آمده و دیگر عوض نمی‌شود (خواسته‌ی کاربر) */}
           </div>
           <Button className="mt-4 w-full" onClick={() => void submitRegister()} disabled={busy || !step2Valid}>
             {busy && <Loader2 className="size-4 animate-spin" />}
@@ -562,7 +572,7 @@ function BusinessStep({
 
   const create = async () => {
     if (name.trim().length < 2) {
-      toast({ title: "نام کسب‌وکار را بنویسید", variant: "destructive" });
+      toast({ title: "عنوان کاتالوگ را بنویسید", variant: "destructive" });
       return;
     }
     if (!city) {
@@ -584,14 +594,14 @@ function BusinessStep({
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <h1 className="text-lg font-extrabold">کاتالوگ شما ساخته شد</h1>
+      <h1 className="text-lg font-extrabold">ثبت کسب و کار</h1>
       <p className="mt-1 text-xs text-muted-foreground">
         تایید و اولین کالا را وارد کنید
       </p>
 
       <div className="mt-4 grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="biz-name">نام کسب‌وکار *</Label>
+          <Label htmlFor="biz-name">عنوان کاتالوگ *</Label>
           <Input
             id="biz-name"
             placeholder="مثلا سوپرمارکت آریا"

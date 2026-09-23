@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ApiError, type GoodDto } from "@/lib/api";
+import { useEffect, useMemo, useState } from "react";
+import { ApiError, type CategoryNodeDto, type GoodDto } from "@/lib/api";
 import { useBrands, useCategories, useCreateGood, useGoods, useSaveListing } from "@/lib/queries";
 import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -17,28 +17,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Check, ChevronDown, Loader2, PackagePlus, Search, Settings2, ShoppingBasket, Store, X } from "lucide-react";
 
 /**
  * فرم ثبت کالا — مشترک بین گام ۳ ویزارد و صفحه «کالای جدید».
  *
- * کالا = «کالای مرجع» (کلاس قابل معامله، مثل «خرمای خازویی»)، نه برند×وزن.
- * جریان عمدا ساده نگه داشته شده — ابتدا ساده، بعداً غنی:
- *   ۱) جست‌وجو (دوزبانه: فارسی/انگلیسی/مترادف) یا مرور درخت دسته‌ها
- *   ۲) اگر پیدا نشد — ثبت همان کالا به‌عنوان مرجع جدید، بدون ترک فرم
- *      (واحد از برگِ دسته خودکار پیش‌پر می‌شود)
- *   ۳) هسته‌ی فرم = قیمت + حداقل سفارش + موجودی — سوخت موتور تطبیق
- *   ۴) برند و اتریبیوت‌ها اختیاری و جمع‌شده — پرشان کردنی است، اما
- *      هیچ‌کس را متوقف نمی‌کند؛ در ویرایش هم قابل اضافه شدن است
- *   ۵) قیمت همیشه در کوچک‌ترین واحدِ ارزِ بازوی فروش (از کشورِ ثبت‌نام)
+ * طراحی تازه (خواسته‌ی کاربر — «ساده‌سازی تا حد هلو»):
+ *   ۱) کاربر وارد که می‌شود هیچ چیزی نیست جز یک سرچ‌باکس هوشمندِ «نوع کالا» —
+ *      نه مرور دسته‌ها، نه تب فروش/خرید، نه دکمه‌ی اضافه.
+ *   ۲) نتایج با مسیر دسته (مثلا «مواد غذایی › برنج») می‌آیند تا کاربر بداند
+ *      چه چیزی را انتخاب می‌کند؛ دسته‌بندی هرگز مستقیم به او نشان داده نمی‌شود.
+ *   ۳) اگر پیدا نشد — عین الگوی برند: زیر سرچ می‌نویسیم «به‌عنوان نوع کالای
+ *      جدید ثبت می‌شود» و همان عبارت جست‌وجو ثبت می‌شود؛ بدون انتخاب
+ *      گروه/زیرگروه/واحد — خودکار در سبد «سایر › جدید» با واحد «عدد» پارک
+ *      می‌شود و ادمین بعداً باغبانی می‌کند. راهنمای جست‌وجوی بهتر هم بالای آن.
+ *   ۴) بعد از انتخاب نوع کالا دو کادر می‌آید:
+ *        «اگر برای این کالا فروش عمده دارید این قسمت را پر کنید»
+ *        «اگر برای این کالا خرید عمده دارید این قسمت را پر کنید»
+ *      خریدِ عمده با رنگ برند بولد است تا خرده‌فروش اشتباه نکند. هر کدام
+ *      (یا هر دو) پر شوند — بک‌اند با mode=SELL/BUY/BOTH یک‌جا ذخیره می‌کند.
+ *   ۵) واژه‌شناسی: هرگز «کالای مرجع» — همیشه «نوع کالا» (خواسته‌ی کاربر:
+ *      «کالای مرجع» کاربر را به ثبت «کنسرو مکنزی ۲۴۰ گرم» می‌کشاند).
+ *   ۶) قیمت همیشه در کوچک‌ترین واحدِ ارزِ بازوی فروش (از کشورِ ثبت‌نام).
  */
 
 type Frequency = "WEEKLY" | "MONTHLY" | "OCCASIONAL";
 export type ListingKind = "sell" | "buy";
-
-const FALLBACK_UNIT = "PIECE";
 
 export function ListingForm({
   bizId,
@@ -47,8 +52,6 @@ export function ListingForm({
   submitLabel,
   onSaved,
   onSkip,
-  kind: kindProp,
-  onKindChange,
 }: {
   bizId: string;
   /** واحد پول بازوی فروش — از کشورِ انتخابیِ ثبت‌نام می‌آید */
@@ -59,9 +62,6 @@ export function ListingForm({
   onSaved: (kind: ListingKind) => void;
   /** «بعداً، بذار توی کاتالوگم» — فقط در حالت ویزارد اولین کالا رندر می‌شود */
   onSkip?: () => void;
-  /** کنترل‌شده — صفحه، تب را با URL سینک می‌کند (/new?tab=sell|buy) */
-  kind?: ListingKind;
-  onKindChange?: (kind: ListingKind) => void;
 }) {
   const { toast } = useToast();
   const m = useMessages();
@@ -69,23 +69,12 @@ export function ListingForm({
   const saveMutation = useSaveListing();
   const createGoodMutation = useCreateGood();
 
-  const [innerKind, setInnerKind] = useState<ListingKind>(kindProp ?? "sell"); // پیش‌فرض: کاتالوگ فروش
-  const kind = kindProp ?? innerKind;
-  const setKind = (k: ListingKind) => {
-    setInnerKind(k);
-    onKindChange?.(k);
-  };
-  const isSell = kind === "sell";
-
-  // ── انتخاب کالای مرجع ──
+  // ── انتخاب نوع کالا — سرچ‌محور؛ بدون مرور دسته‌ها
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
-  const [rootSlug, setRootSlug] = useState("");
-  const [leafId, setLeafId] = useState("");
   const [selected, setSelected] = useState<GoodDto | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
 
-  // ── برند + اتریبیوت + مشخصات ──
+  // ── مشخصات دو کادر
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
   const [showOptional, setShowOptional] = useState(false); // برند+اتریبیوت جمع‌شده — ثبت سریع اول
@@ -95,24 +84,50 @@ export function ListingForm({
   const [volume, setVolume] = useState<number | null>(null);
   const [frequency, setFrequency] = useState<Frequency>("MONTHLY");
 
-  // ── فرم کالای جدید (پیدا نشد) ──
-  const [newName, setNewName] = useState("");
-  const [newRoot, setNewRoot] = useState("");
-  const [newLeaf, setNewLeaf] = useState("");
-  const [newUnit, setNewUnit] = useState(FALLBACK_UNIT);
-
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query.trim()), 300);
     return () => clearTimeout(t);
   }, [query]);
 
   const categoriesQ = useCategories();
-  const roots = categoriesQ.data ?? [];
-  const activeRoot = roots.find((r) => r.slug === rootSlug) ?? null;
   const searchQ = useGoods(debounced ? { q: debounced, limit: 30 } : {});
-  const browseQ = useGoods(leafId && !debounced ? { categoryId: leafId, limit: 100 } : {});
   const searching = searchQ.isFetching;
-  const results = debounced ? (searchQ.data?.items ?? []) : (browseQ.data?.items ?? []);
+  const results = debounced ? (searchQ.data?.items ?? []) : [];
+
+  // مسیر دسته از درخت: برگ → ریشه («مواد غذایی › برنج») — بدون درگیر کردن کاربر
+  const parentOf = useMemo(() => {
+    const map = new Map<string, string>();
+    const walk = (nodes: CategoryNodeDto[], parent: string | null) => {
+      for (const n of nodes) {
+        if (parent) map.set(n.id, parent);
+        walk(n.children, n.id);
+      }
+    };
+    walk(categoriesQ.data ?? [], null);
+    return map;
+  }, [categoriesQ.data]);
+  const nameOf = useMemo(() => {
+    const map = new Map<string, string>();
+    const walk = (nodes: CategoryNodeDto[]) => {
+      for (const n of nodes) {
+        map.set(n.id, goodName(n, locale));
+        walk(n.children);
+      }
+    };
+    walk(categoriesQ.data ?? []);
+    return map;
+  }, [categoriesQ.data, locale]);
+
+  const pathOf = (catId: string): string => {
+    const parts: string[] = [];
+    let cur: string | undefined = catId;
+    while (cur && parts.length < 5) {
+      const label = nameOf.get(cur);
+      if (label) parts.unshift(label);
+      cur = parentOf.get(cur);
+    }
+    return parts.join(" › ");
+  };
 
   const brandsQ = useBrands(brandName.trim().length >= 1 ? brandName.trim() : null);
   const brandSuggestions = (brandsQ.data ?? []).filter((b) => b.name !== brandName.trim());
@@ -120,47 +135,31 @@ export function ListingForm({
   const curDef = CURRENCIES[currency] ?? CURRENCIES.IRR;
   const curName = currencyLabel(currency, locale);
 
-  // پنل «ثبت کالای جدید» وقتی جستجو بی‌نتیجه است، خودش باز می‌شود
-  useEffect(() => {
-    if (debounced && !searching && results.length === 0) {
-      setShowCreate(true);
-      setNewName((n) => n || debounced);
-    }
-  }, [debounced, searching, results.length]);
-
   const pickGood = (g: GoodDto) => {
     setSelected(g);
-    setShowCreate(false);
     setShowOptional(false); // هر کالای تازه = شروع سریع؛ تکمیلی‌ها جمع‌شده می‌مانند
     setAttrs({});
     setPrice(null);
     setStock(null);
     setMinOrder(null);
     setVolume(null);
+    setQuery("");
+    setDebounced("");
   };
 
-  const newRootObj = roots.find((r) => r.slug === newRoot) ?? null;
-  const newLeafObj = newRootObj?.children.find((c) => c.id === newLeaf) ?? null;
-
+  // عین الگوی برند: عبارت جست‌وجو خودش نوع کالای جدید می‌شود — بدون هیچ
+  // انتخاب دسته/واحد؛ بک‌اند خودکار در «سایر › جدید» با واحد عدد پارک می‌کند
+  // و اگر همین عبارت از قبل وجود داشته باشد، همان رکورد موجود برمی‌گردد.
   const createNewGood = async () => {
-    if (newName.trim().length < 2) {
+    const name = debounced || query.trim();
+    if (name.length < 2) {
       toast({ title: m.listing.errors.nameShort, variant: "destructive" });
       return;
     }
-    if (!newLeafObj) {
-      toast({ title: m.listing.errors.pickCategory, variant: "destructive" });
-      return;
-    }
     try {
-      const created = await createGoodMutation.mutateAsync({
-        name: newName.trim(),
-        categoryId: newLeafObj.id,
-        unit: newUnit,
-      });
-      pickGood(created);
-      setQuery("");
-      setDebounced("");
+      const created = await createGoodMutation.mutateAsync({ name });
       toast({ title: goodName(created, locale) });
+      pickGood(created);
     } catch (err) {
       toast({
         title: m.listing.errors.createGoodFailed,
@@ -175,18 +174,27 @@ export function ListingForm({
       toast({ title: m.listing.errors.selectGood, variant: "destructive" });
       return;
     }
-    if (isSell) {
-      if ((price ?? 0) <= 0 || (stock ?? 0) <= 0) {
-        toast({ title: m.listing.errors.sellSpec, variant: "destructive" });
-        return;
-      }
-      if ((minOrder ?? 0) <= 0) {
-        // حداقل سفارش هسته‌ی تطبیق است — «چه حجمی از چه کالایی» بدون آن بی‌معناست
+    // دو کادر مستقل: هر کدام که پر شده اعتبارسنجی و ثبت می‌شود — یا هر دو
+    const sellTouched = price !== null || stock !== null || minOrder !== null;
+    const sellValid = (price ?? 0) > 0 && (stock ?? 0) > 0 && (minOrder ?? 0) > 0;
+    const buyTouched = volume !== null;
+    const buyValid = (volume ?? 0) > 0;
+
+    if (sellTouched && !sellValid) {
+      // اگر فقط حداقل سفارش جا مانده، پیام دقیق‌تر بده — هسته‌ی تطبیق است
+      if ((price ?? 0) > 0 && (stock ?? 0) > 0 && (minOrder ?? 0) <= 0) {
         toast({ title: m.listing.errors.minOrder, variant: "destructive" });
-        return;
+      } else {
+        toast({ title: m.listing.errors.sellSpec, variant: "destructive" });
       }
-    } else if ((volume ?? 0) <= 0) {
+      return;
+    }
+    if (buyTouched && !buyValid) {
       toast({ title: m.listing.errors.buySpec, variant: "destructive" });
+      return;
+    }
+    if (!sellValid && !buyValid) {
+      toast({ title: m.listing.errors.nothingFilled, variant: "destructive" });
       return;
     }
 
@@ -196,10 +204,10 @@ export function ListingForm({
       await saveMutation.mutateAsync({
         businessId: bizId,
         goodId: selected.id,
-        mode: isSell ? "SELL" : "BUY",
-        ...(brandName.trim() ? { brandName: brandName.trim() } : {}),
-        ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
-        ...(isSell
+        mode: sellValid && buyValid ? "BOTH" : sellValid ? "SELL" : "BUY",
+        ...(sellValid && brandName.trim() ? { brandName: brandName.trim() } : {}),
+        ...(sellValid && Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
+        ...(sellValid
           ? {
               sell: {
                 priceMinor: Math.round((price ?? 0) * 10 ** curDef.exp),
@@ -207,10 +215,11 @@ export function ListingForm({
                 minOrder: minOrder ?? 0,
               },
             }
-          : { buy: { volume: volume ?? 0, frequency } }),
+          : {}),
+        ...(buyValid ? { buy: { volume: volume ?? 0, frequency } } : {}),
       });
       toast({ title: firstGood ? m.listing.success.savedFirst : m.listing.success.saved });
-      onSaved(kind);
+      onSaved(sellValid ? "sell" : "buy");
     } catch (err) {
       toast({
         title: m.listing.errors.saveFailed,
@@ -220,53 +229,48 @@ export function ListingForm({
     }
   };
 
-  const catLabel = (g: GoodDto): string => goodName(g.category, locale);
   const attrsOf = selected?.category.attrs ?? [];
+  const nothingFound = !!debounced && !searching && results.length === 0 && !selected;
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      {firstGood && (
-        <h1 className="text-lg font-extrabold">
-          {isSell ? m.listing.firstGood.sell : m.listing.firstGood.buy}
-        </h1>
+      {/* ── عنوان فرم ── */}
+      <h1 className="text-lg font-extrabold">
+        {firstGood ? m.listing.firstGood.title : m.listing.formTitle}
+      </h1>
+      <p className="mt-1 text-xs text-muted-foreground">{m.listing.formDesc}</p>
+
+      {/* ── گام ۱: سرچ‌باکس هوشمند نوع کالا — تنها چیزِ ابتدای فرم ── */}
+      {!selected && (
+        <div className="mt-4">
+          <Label className="text-[11px] text-muted-foreground">{m.listing.search.aria}</Label>
+          <div className="relative mt-1.5">
+            <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              aria-label={m.listing.search.aria}
+              placeholder={m.listing.search.placeholder}
+              value={query}
+              maxLength={40}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pe-9"
+              autoFocus
+            />
+          </div>
+          <p className="mt-1.5 text-[10px] leading-4 text-muted-foreground">{m.listing.search.typeExplainer}</p>
+        </div>
       )}
 
-      {/* انتخاب بازو: فروش یا خرید — هر دو بازو از اول در دسترس است */}
-      <Tabs value={kind} onValueChange={(v) => setKind(v as ListingKind)}>
-        <TabsList className="mt-4 grid w-full grid-cols-2">
-          <TabsTrigger value="sell" className="gap-1.5">
-            <Store className="size-4" />
-            {m.listing.tabs.sell}
-          </TabsTrigger>
-          <TabsTrigger value="buy" className="gap-1.5">
-            <ShoppingBasket className="size-4" />
-            {m.listing.tabs.buy}
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-
-      {/* جست‌وجوی کالای مرجع — دوزبانه */}
-      <div className="relative mt-4">
-        <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          aria-label={m.listing.search.aria}
-          placeholder={m.listing.search.placeholder}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="pe-9"
-        />
-      </div>
-
-      {/* کالای انتخاب‌شده */}
+      {/* ── نوع کالای انتخاب‌شده ── */}
       {selected && (
-        <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-primary/20 bg-accent/50 px-3.5 py-2.5">
+        <div className="mt-4 flex items-center justify-between gap-2 rounded-xl border border-primary/20 bg-accent/50 px-3.5 py-2.5">
           <div className="min-w-0">
             <p className="truncate text-sm font-extrabold text-primary">
               {goodName(selected, locale)}
               <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">
-                {catLabel(selected)} · {unitLabel(selected.unit, locale)}
+                {unitLabel(selected.unit, locale)}
               </span>
             </p>
+            <p className="truncate text-[11px] text-muted-foreground">{pathOf(selected.category.id)}</p>
           </div>
           <button
             type="button"
@@ -279,185 +283,48 @@ export function ListingForm({
         </div>
       )}
 
-      {/* نتایج جست‌وجو */}
-      {!selected && debounced && (
+      {/* ── نتایج جست‌وجو — مسیر دسته زیر هر نتیجه ── */}
+      {!selected && debounced && results.length > 0 && (
         <div className="mt-3">
-          {results.length > 0 && (
-            <>
-              <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.search.results}</p>
-              <GoodGrid
-                items={results}
-                onPick={pickGood}
-                locale={locale}
-                catLabel={catLabel}
-                emptyLabel={m.listing.search.empty}
-              />
-              {/* درختی که نتیجه می‌آید ممکن است همان کالا با املای دیگر باشد —
-                  ساخت رکورد جدید همیشه در دسترس می‌ماند تا کاتالوگ دوپلی نشود */}
-              {!showCreate && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCreate(true);
-                    setNewName((n) => n || debounced);
-                  }}
-                  className="mt-2 w-full rounded-xl border border-dashed border-primary/30 px-3 py-2 text-xs font-bold text-primary transition hover:bg-accent/50"
-                >
-                  {m.listing.create.open}
-                </button>
-              )}
-            </>
-          )}
-          {searching && (
-            <p className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" />
-              {m.listing.catalogLoading}
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* مرور درخت دسته‌ها (وقتی جستجو خالی است) */}
-      {!selected && !debounced && (
-        <div className="mt-3">
-          <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.search.browse}</p>
-          <div className="flex flex-wrap gap-2">
-            {roots.map((r) => (
+          <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.search.results}</p>
+          <div className="grid max-h-64 gap-2 overflow-y-auto pe-1">
+            {results.map((g) => (
               <button
-                key={r.id}
+                key={g.id}
                 type="button"
-                onClick={() => {
-                  setRootSlug(rootSlug === r.slug ? "" : r.slug);
-                  setLeafId("");
-                }}
-                aria-pressed={rootSlug === r.slug}
-                className={`rounded-full border px-3 py-1.5 text-xs font-bold transition ${
-                  rootSlug === r.slug
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "bg-white text-muted-foreground hover:border-primary/40"
-                }`}
+                onClick={() => pickGood(g)}
+                className="flex items-center justify-between rounded-xl border p-3 text-start transition hover:border-primary/40"
               >
-                {goodName(r, locale)}
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-bold">{goodName(g, locale)}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">
+                    {pathOf(g.category.id)} · {unitLabel(g.unit, locale)}
+                  </span>
+                </span>
+                <ChevronDown className="size-4 shrink-0 -rotate-90 text-muted-foreground/50" />
               </button>
             ))}
           </div>
-
-          {activeRoot && (
-            <div className="mt-2.5 flex flex-wrap gap-2">
-              {activeRoot.children.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => setLeafId(leafId === c.id ? "" : c.id)}
-                  aria-pressed={leafId === c.id}
-                  className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-                    leafId === c.id
-                      ? "border-primary bg-accent text-primary"
-                      : "bg-white text-muted-foreground hover:border-primary/40"
-                  }`}
-                >
-                  {goodName(c, locale)}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-3">
-            {leafId && browseQ.isFetching && (
-              <p className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" />
-                {m.listing.catalogLoading}
-              </p>
-            )}
-            {leafId && !browseQ.isFetching && (
-              <GoodGrid
-                items={results}
-                onPick={pickGood}
-                locale={locale}
-                catLabel={catLabel}
-                emptyLabel={m.listing.search.empty}
-              />
-            )}
-          </div>
         </div>
       )}
 
-      {/* ثبت کالای مرجع جدید — وقتی پیدا نشد */}
-      {(showCreate || (!selected && debounced && !searching && results.length === 0)) && (
+      {searching && (
+        <p className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          {m.listing.catalogLoading}
+        </p>
+      )}
+
+      {/* ── پیدا نشد؟ راهنمای جست‌وجوی بهتر + ثبت عین الگوی برند ── */}
+      {nothingFound && (
         <div className="mt-3 rounded-xl border border-dashed border-primary/30 bg-accent/30 p-4">
           <p className="flex items-center gap-1.5 text-sm font-extrabold">
             <PackagePlus className="size-4 text-primary" />
-            {m.listing.create.title.replace("{name}", newName || debounced)}
+            {m.listing.search.notFoundTitle}
           </p>
-          <p className="mt-1 text-[11px] text-muted-foreground">{m.listing.search.notFoundHint}</p>
-
-          <div className="mt-3 grid gap-2.5">
-            <Field label={m.listing.create.nameLabel}>
-              <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
-            </Field>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              <Field label={m.listing.create.categoryLabel}>
-                <Select
-                  value={newRoot}
-                  onValueChange={(v) => {
-                    setNewRoot(v);
-                    setNewLeaf("");
-                  }}
-                >
-                  <SelectTrigger aria-label={m.listing.create.categoryLabel}>
-                    <SelectValue placeholder={m.listing.create.categoryPlaceholder} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {roots.map((r) => (
-                      <SelectItem key={r.id} value={r.slug}>
-                        {goodName(r, locale)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field label="‌">
-                <Select
-                  value={newLeaf}
-                  onValueChange={(v) => {
-                    setNewLeaf(v);
-                    // واحد از خود برگ دسته (API) پیش‌پر می‌شود — نه از نقش ثابت
-                    const leaf = newRootObj?.children.find((c) => c.id === v);
-                    setNewUnit(leaf?.unit ?? FALLBACK_UNIT);
-                  }}
-                  disabled={!newRootObj}
-                >
-                  <SelectTrigger aria-label={m.listing.create.categoryLabel}>
-                    <SelectValue placeholder={m.listing.create.categoryPlaceholder} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(newRootObj?.children ?? []).map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {goodName(c, locale)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            </div>
-
-            <Field label={m.listing.create.unitLabel}>
-              <Select value={newUnit} onValueChange={setNewUnit}>
-                <SelectTrigger aria-label={m.listing.create.unitLabel}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {["KILOGRAM", "TON", "CARTON", "SACK", "PIECE", "LITER", "METER", "GRAM", "SERVICE"].map((u) => (
-                    <SelectItem key={u} value={u}>
-                      {unitLabel(u, locale)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
-
+          <p className="mt-1.5 text-[11px] leading-5 text-muted-foreground">{m.listing.search.searchHint}</p>
+          <p className="mt-1 text-[11px] leading-5 text-muted-foreground">{m.listing.create.asNew.replace("{name}", debounced)}</p>
+          <p className="mt-1 text-[10px] leading-4 text-muted-foreground">{m.listing.create.note}</p>
           <Button
             type="button"
             size="sm"
@@ -471,16 +338,17 @@ export function ListingForm({
         </div>
       )}
 
-      {/* هسته‌ی فرم — قیمت/حداقل سفارش/موجودی: سوخت موتور تطبیق */}
+      {/* ── گام ۲: دو کادر — فروش عمده و خرید عمده؛ هر کدام که دارید ── */}
       {selected && (
-        <div className={`mt-4 rounded-xl border p-4 ${isSell ? "border-primary/15 bg-accent/40" : "border-stone-200 bg-stone-50"}`}>
-          <p className="mb-3 flex items-center gap-1.5 text-sm font-extrabold">
-            {isSell ? <Store className="size-4 text-primary" /> : <ShoppingBasket className="size-4 text-stone-700" />}
-            {isSell
-              ? m.listing.specs.sellTitle.replace("{name}", goodName(selected, locale))
-              : m.listing.specs.buyTitle.replace("{name}", goodName(selected, locale))}
-          </p>
-          {isSell ? (
+        <>
+          {/* فروش عمده */}
+          <div className="mt-4 rounded-xl border border-primary/15 bg-accent/40 p-4">
+            <p className="mb-3 flex items-center gap-1.5 text-sm">
+              <Store className="size-4 text-primary" />
+              <span>
+                اگر برای این کالا <b className="font-extrabold">فروش عمده</b> دارید، این قسمت را پر کنید
+              </span>
+            </p>
             <div className="grid grid-cols-2 gap-3">
               {/* قیمت — قهرمان فرم؛ ردیف کامل */}
               <div className="col-span-2">
@@ -514,7 +382,103 @@ export function ListingForm({
                 />
               </Field>
             </div>
-          ) : (
+
+            {/* تکمیلی اختیاری — برند و اتریبیوت‌ها، جمع‌شده تا ثبتِ سریع هیچ‌کس را متوقف نکند */}
+            <div className="mt-3 rounded-lg border border-dashed border-primary/25 p-3">
+              <button
+                type="button"
+                onClick={() => setShowOptional((s) => !s)}
+                aria-expanded={showOptional}
+                className="flex w-full items-center justify-between gap-2 text-start"
+              >
+                <span className="flex items-center gap-1.5 text-xs font-bold">
+                  <Settings2 className="size-3.5 text-primary" />
+                  {m.listing.specs.optionalToggle}
+                </span>
+                <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition ${showOptional ? "rotate-180" : ""}`} />
+              </button>
+
+              {showOptional && (
+                <div className="mt-3 grid gap-4">
+                  <p className="text-[11px] leading-5 text-muted-foreground">{m.listing.specs.optionalHint}</p>
+                  {/* برند */}
+                  <div className="relative grid gap-1.5">
+                    <Label className="text-[11px] text-muted-foreground">{m.listing.brand.label}</Label>
+                    <Input
+                      value={brandName}
+                      onChange={(e) => setBrandName(e.target.value)}
+                      placeholder={m.listing.brand.placeholder}
+                    />
+                    {brandName.trim() && brandSuggestions.length > 0 && (
+                      <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border bg-white shadow-lg">
+                        <p className="border-b bg-muted/60 px-3 py-1.5 text-[10px] font-bold text-muted-foreground">
+                          {m.listing.brand.suggestions}
+                        </p>
+                        {brandSuggestions.slice(0, 6).map((b) => (
+                          <button
+                            key={b.id}
+                            type="button"
+                            onClick={() => setBrandName(b.name)}
+                            className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
+                          >
+                            <span className="font-bold">{b.name}</span>
+                            <Check className="size-3.5 text-primary" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {brandName.trim() && brandSuggestions.length === 0 && !brandsQ.isFetching && (
+                      <p className="text-[10px] text-muted-foreground">{m.listing.brand.newHint}</p>
+                    )}
+                  </div>
+
+                  {/* اتریبیوت‌های دسته — همه اختیاری */}
+                  {attrsOf.length > 0 && (
+                    <div>
+                      <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.specs.attrsTitle}</p>
+                      <div className="grid grid-cols-2 gap-2.5">
+                        {attrsOf.map((a) => (
+                          <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
+                            {a.type === "enum" && a.options ? (
+                              <Select
+                                value={attrs[a.key] ?? ""}
+                                onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
+                              >
+                                <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
+                                  <SelectValue placeholder="—" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {a.options.map((o) => (
+                                    <SelectItem key={o.v} value={o.v}>
+                                      {locale === "en" ? o.en : o.fa}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <Input
+                                value={attrs[a.key] ?? ""}
+                                onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
+                              />
+                            )}
+                          </Field>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* خرید عمده — با رنگ برند بولد تا خرده‌فروش اشتباه نکند */}
+          <div className="mt-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
+            <p className="mb-3 flex items-center gap-1.5 text-sm">
+              <ShoppingBasket className="size-4 text-primary" />
+              <span>
+                اگر برای این کالا <b className="font-extrabold text-primary">خرید عمده</b> دارید، این قسمت را پر کنید
+              </span>
+            </p>
             <div className="grid grid-cols-2 gap-3">
               <Field label={m.listing.specs.volume}>
                 <NumberInput
@@ -541,100 +505,15 @@ export function ListingForm({
                 </Select>
               </Field>
             </div>
-          )}
-        </div>
+          </div>
+        </>
       )}
 
-      {/* تکمیلی اختیاری — برند و اتریبیوت‌ها، جمع‌شده تا ثبتِ سریع هیچ‌کس را متوقف نکند */}
-      {selected && (
-        <div className="mt-3 rounded-xl border border-dashed border-primary/25 p-4">
-          <button
-            type="button"
-            onClick={() => setShowOptional((s) => !s)}
-            aria-expanded={showOptional}
-            className="flex w-full items-center justify-between gap-2 text-start"
-          >
-            <span className="flex items-center gap-1.5 text-sm font-bold">
-              <Settings2 className="size-4 text-primary" />
-              {m.listing.specs.optionalToggle}
-            </span>
-            <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition ${showOptional ? "rotate-180" : ""}`} />
-          </button>
-
-          {showOptional && (
-            <div className="mt-4 grid gap-4">
-              <p className="text-[11px] leading-5 text-muted-foreground">{m.listing.specs.optionalHint}</p>
-              {/* برند */}
-              <div className="relative grid gap-1.5">
-                <Label className="text-[11px] text-muted-foreground">{m.listing.brand.label}</Label>
-                <Input
-                  value={brandName}
-                  onChange={(e) => setBrandName(e.target.value)}
-                  placeholder={m.listing.brand.placeholder}
-                />
-                {brandName.trim() && brandSuggestions.length > 0 && (
-                  <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border bg-white shadow-lg">
-                    <p className="border-b bg-muted/60 px-3 py-1.5 text-[10px] font-bold text-muted-foreground">
-                      {m.listing.brand.suggestions}
-                    </p>
-                    {brandSuggestions.slice(0, 6).map((b) => (
-                      <button
-                        key={b.id}
-                        type="button"
-                        onClick={() => setBrandName(b.name)}
-                        className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
-                      >
-                        <span className="font-bold">{b.name}</span>
-                        <Check className="size-3.5 text-primary" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {brandName.trim() && brandSuggestions.length === 0 && !brandsQ.isFetching && (
-                  <p className="text-[10px] text-muted-foreground">{m.listing.brand.newHint}</p>
-                )}
-              </div>
-
-              {/* اتریبیوت‌های دسته — همه اختیاری */}
-              {attrsOf.length > 0 && (
-                <div>
-                  <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.specs.attrsTitle}</p>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {attrsOf.map((a) => (
-                      <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
-                        {a.type === "enum" && a.options ? (
-                          <Select
-                            value={attrs[a.key] ?? ""}
-                            onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
-                          >
-                            <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
-                              <SelectValue placeholder="—" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {a.options.map((o) => (
-                                <SelectItem key={o.v} value={o.v}>
-                                  {locale === "en" ? o.en : o.fa}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <Input
-                            value={attrs[a.key] ?? ""}
-                            onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
-                          />
-                        )}
-                      </Field>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      <Button className="mt-5 w-full" onClick={() => void save()} disabled={saveMutation.isPending}>
+      <Button
+        className="mt-5 w-full"
+        onClick={() => void save()}
+        disabled={saveMutation.isPending || createGoodMutation.isPending}
+      >
         {saveMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
         {submitLabel ?? m.listing.save}
       </Button>
@@ -654,44 +533,6 @@ export function ListingForm({
 }
 
 const FREQUENCY_KEYS = { WEEKLY: 1, MONTHLY: 1, OCCASIONAL: 1 } as const;
-
-function GoodGrid({
-  items,
-  onPick,
-  locale,
-  catLabel,
-  emptyLabel,
-}: {
-  items: GoodDto[];
-  onPick: (g: GoodDto) => void;
-  locale: string;
-  catLabel: (g: GoodDto) => string;
-  emptyLabel: string;
-}) {
-  return (
-    <div className="grid max-h-64 grid-cols-2 gap-2 overflow-y-auto pe-1 sm:grid-cols-3">
-      {items.map((g) => (
-        <button
-          key={g.id}
-          type="button"
-          onClick={() => onPick(g)}
-          className="flex items-center justify-between rounded-xl border p-3 text-start transition hover:border-primary/40"
-        >
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-bold">{goodName(g, locale)}</span>
-            <span className="block truncate text-[11px] text-muted-foreground">
-              {catLabel(g)} · {unitLabel(g.unit, locale)}
-            </span>
-          </span>
-          <ChevronDown className="size-4 shrink-0 -rotate-90 text-muted-foreground/50" />
-        </button>
-      ))}
-      {items.length === 0 && (
-        <p className="col-span-2 py-4 text-sm text-muted-foreground sm:col-span-3">{emptyLabel}</p>
-      )}
-    </div>
-  );
-}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
