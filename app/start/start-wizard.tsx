@@ -572,9 +572,9 @@ function BusinessStep({
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <h1 className="text-lg font-extrabold">کسب‌وکار خود را معرفی کنید</h1>
+      <h1 className="text-lg font-extrabold">کاتالوگ شما ساخته شد</h1>
       <p className="mt-1 text-xs text-muted-foreground">
-        نام و شهر — همین و بس. بعدش اولین کالای‌تان را ثبت می‌کنید.
+        تایید و اولین کالا را وارد کنید
       </p>
 
       <div className="mt-4 grid gap-4">
