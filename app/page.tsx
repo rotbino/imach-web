@@ -685,7 +685,9 @@ function ProductTour() {
                         <div className="text-primary">برای فروش عمده کاتالوگ قیمت بساز </div>
                         <div className="text-green-600">برای خرید عمده لیست خرید بساز </div>
                     </h1>
-
+                    <h1 className="mt-5 pb-4 pt-3 md:pt-6 text-xl  font-black leading-[1.5] tracking-tight text-stone-950 dark:text-white sm:text-xl md:text-[1.5rem] md:leading-[1.35]">
+                        ما لایه های مختلف بازار عمده از خرده فروش تا صادر کننده را می کاویم تا  هر تامین کننده را به خریدارن هدف  وصل کنیم
+                    </h1>
 
                 </div>
 
