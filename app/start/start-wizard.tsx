@@ -594,8 +594,6 @@ function BusinessStep({
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <h1 className="text-lg font-extrabold">ثبت کسب و کار</h1>
-
-
       <div className="mt-4 grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="biz-name">عنوان کاتالوگ *</Label>
