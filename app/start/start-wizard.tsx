@@ -351,7 +351,6 @@ function AuthStep({
         <>
           <h1 className="text-lg font-extrabold">{m.auth.titleLogin}</h1>
           <div className="mt-4 grid gap-3">
-            {countryField}
             <Field label={m.auth.fields.mobile}>
               <PhoneField
                 value={phone}
@@ -362,7 +361,7 @@ function AuthStep({
               />
               {phoneTaken && <p className="text-[11px] font-bold text-red-500">{m.auth.toasts.phoneTaken}</p>}
             </Field>
-
+            {countryField}
             <Field label={m.auth.fields.password}>
               <Input
                 dir="ltr"
