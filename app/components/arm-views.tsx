@@ -8,6 +8,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { useBusinessProfile, useFollowBuyerToggle, useFollowToggle, useMarketState } from "@/lib/queries";
 import { ContactButton } from "@/app/components/contact-gate";
 import { ShareDialog } from "@/app/components/share";
+import { useMessages } from "@/i18n/messages/use-messages";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +22,7 @@ import {
   MapPin,
   Package,
   Share2,
+  UserRound,
 } from "lucide-react";
 
 /*
@@ -64,6 +66,25 @@ function OwnerBar({ kind, slug }: { kind: "sell" | "buy"; slug: string }) {
       </div>
       <ShareDialog kind={kind} slug={slug} open={shareOpen} onOpenChange={setShareOpen} />
     </>
+  );
+}
+
+// ─── ویترین اعتماد — نام شخصِ صاحب کاتالوگ (عکس بعداً):
+// در عمده‌فروشی طرف می‌خواهد بداند با چه کسی معامله می‌کند.
+function ownerDisplayName(owner?: { name: string; firstName: string | null; lastName: string | null } | null) {
+  if (!owner) return null;
+  return [owner.firstName, owner.lastName].filter(Boolean).join(" ") || owner.name;
+}
+
+function OwnerLine({ owner, tone }: { owner: Parameters<typeof ownerDisplayName>[0]; tone: "sell" | "buy" }) {
+  const m = useMessages();
+  const name = ownerDisplayName(owner);
+  if (!name) return null;
+  return (
+    <p className="mt-1 flex items-center justify-center gap-1 text-xs text-muted-foreground">
+      <UserRound className={`size-3.5 ${tone === "sell" ? "text-primary" : "text-stone-600"}`} />
+      {m.common.ownerLine.replace("{name}", name)}
+    </p>
   );
 }
 
@@ -152,8 +173,7 @@ export function SellArmView({ slug }: { slug: string }) {
               {biz.city}
             </span>
           </div>
-
-          {/* آمار — بدون شمارنده‌ی اجتماعی (سند ۵.۱) */}
+          <OwnerLine owner={biz.owner} tone="sell" />
           <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار کاتالوگ">
             <div>
               <p className="text-lg font-black">{fa(sellListings.length)}</p>
@@ -310,6 +330,7 @@ export function BuyArmView({ slug }: { slug: string }) {
               {biz.city}
             </span>
           </div>
+          <OwnerLine owner={biz.owner} tone="buy" />
 
           {/* آمار — کلیک = لیست */}
           <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار لیست خرید">

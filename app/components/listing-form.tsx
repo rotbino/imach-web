@@ -70,6 +70,7 @@ export function ListingForm({
   firstGood = false,
   submitLabel,
   onSaved,
+  onSkip,
   kind: kindProp,
   onKindChange,
 }: {
@@ -80,6 +81,8 @@ export function ListingForm({
   firstGood?: boolean;
   submitLabel?: string;
   onSaved: (kind: ListingKind) => void;
+  /** «بعداً، بذار توی کاتالوگم» — فقط در حالت ویزارد اولین کالا رندر می‌شود */
+  onSkip?: () => void;
   /** کنترل‌شده — صفحه، تب را با URL سینک می‌کند (/new?tab=sell|buy) */
   kind?: ListingKind;
   onKindChange?: (kind: ListingKind) => void;
@@ -627,6 +630,17 @@ export function ListingForm({
         {saveMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
         {submitLabel ?? m.listing.save}
       </Button>
+
+      {firstGood && onSkip && (
+        <Button
+          variant="ghost"
+          className="mt-2 w-full text-muted-foreground hover:text-foreground"
+          onClick={onSkip}
+          disabled={saveMutation.isPending}
+        >
+          {m.listing.firstGood.skip}
+        </Button>
+      )}
     </div>
   );
 }

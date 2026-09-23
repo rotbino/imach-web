@@ -26,7 +26,8 @@ interface AuthState {
   boot: () => Promise<void>;
   login: (phone: string, password: string, country?: string) => Promise<void>;
   register: (
-    name: string,
+    firstName: string,
+    lastName: string,
     phone: string,
     password: string,
     country?: string,
@@ -67,8 +68,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     get().setSession(session);
   },
 
-  register: async (name, phone, password, country, language, ref) => {
-    const session = await authApi.registerUser({ name, phone, password, country, language, ref });
+  register: async (firstName, lastName, phone, password, country, language, ref) => {
+    const session = await authApi.registerUser({ firstName, lastName, phone, password, country, language, ref });
     get().setSession(session);
   },
 

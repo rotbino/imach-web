@@ -108,6 +108,9 @@ export async function api<T>(path: string, options: RequestOptions = {}): Promis
 export interface UserDto {
   id: string;
   name: string;
+  /** هویت شخص — از روز اول جدا از نام کسب‌وکار ذخیره می‌شود؛ ردیف‌های قدیمی null */
+  firstName: string | null;
+  lastName: string | null;
   phone: string;
   role: string;
   country: string;
@@ -221,6 +224,12 @@ export interface BusinessProfileDto {
   currency?: string;
   isVerified: boolean;
   isDemo: boolean;
+  /** صاحب کاتالوگ — ویترین اعتماد: در عمده‌فروشی طرف می‌خواهد بداند با چه کسی طرف است */
+  owner?: {
+    name: string;
+    firstName: string | null;
+    lastName: string | null;
+  } | null;
   listings: GoodItemDto[];
 }
 
@@ -410,7 +419,18 @@ export interface MarketStateDto {
 export const authApi = {
   loginUser: (body: { phone: string; password: string; country?: string }) =>
     api<AuthResponseDto>("/auth/loginUser", { method: "POST", body, auth: false }),
-  registerUser: (body: { name: string; phone: string; password: string; country?: string; language?: string; ref?: string }) =>
+  /** گام ۱ ثبت‌نام — تک‌بررسیِ غیرهمگام که کلاینت از عهده‌اش برنمی‌آید */
+  checkPhone: (body: { phone: string; country?: string }) =>
+    api<{ available: boolean }>("/auth/checkPhone", { method: "POST", body, auth: false }),
+  registerUser: (body: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    password: string;
+    country?: string;
+    language?: string;
+    ref?: string;
+  }) =>
     api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
