@@ -125,8 +125,8 @@ export function NumberInput({
     <div
       className={cn(
         // بدون dir=ltr — از RTL صفحه ارث می‌برد تا suffix در انتهای باکس (چپ) بنشیند
-        "flex items-center rounded-xl border border-input bg-transparent transition-colors",
-        "focus-within:ring-2 focus-within:ring-ring/40",
+        "flex items-center rounded-sm border border-input bg-transparent transition-colors",
+        "focus-within:ring-2 focus-within:ring-ring/40 ",
         disabled && "opacity-50",
         className
       )}
