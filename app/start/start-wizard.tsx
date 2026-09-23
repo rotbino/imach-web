@@ -421,7 +421,6 @@ function AuthStep({
       {mode === "register" && rStep === 1 && (
         <>
           <h1 className="text-lg font-extrabold">{m.auth.steps.accountTitle}</h1>
-          <p className="mt-1 text-xs text-muted-foreground">{m.auth.steps.accountDesc}</p>
           <div className="mt-4 grid gap-3">
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label={m.auth.fields.firstName}>
@@ -595,9 +594,7 @@ function BusinessStep({
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <h1 className="text-lg font-extrabold">ثبت کسب و کار</h1>
-      <p className="mt-1 text-xs text-muted-foreground">
-        تایید و اولین کالا را وارد کنید
-      </p>
+
 
       <div className="mt-4 grid gap-4">
         <div className="grid gap-2">

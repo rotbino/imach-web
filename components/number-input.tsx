@@ -4,17 +4,19 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /*
- * NumberInput — ورودی عددی با فرمت‌بندی زنده (خواسته‌ی کاربر برای قیمت‌ها
- * و همه‌ی اعداد). قانون پروژه: هر عددی که کاربر تایپ می‌کند (قیمت، موجودی،
- * حداقل سفارش، …) با این کامپوننت گرفته شود، نه Input خام.
+ * NumberInput — ورودی عددی با فرمت‌بندی زنده‌ی هزارگان (خواسته‌ی کاربر:
+ * «قیمت فرمت نمی‌خوره» — فرمت فقط بعد از blur کافی نبود؛ حین تایپ هم
+ * جداکننده‌ی هزارگان می‌نشیند، مثلا ۴٬۸۰۰٬۰۰۰).
+ *
+ * قانون پروژه: هر عددی که کاربر تایپ می‌کند (قیمت، موجودی، حداقل سفارش، …)
+ * با این کامپوننت گرفته شود، نه Input خام.
  *
  * • ارقام فارسی/عربی هم می‌پذیرد و خودش به لاتین تبدیل می‌کند
- * • جداکننده‌ی هزارگان حین ویرایش (مثلا ۹۸۰٬۰۰۰ / 980,000)
+ * • جداکننده‌ی هزارگان به‌صورت زنده حین تایپ — با حفظ مکان‌نما روی همان رقم
  * • مقدار عددی خام به والد می‌رود (null یعنی خالی)
- * • دامنه‌ی min/max روی بلور اعمال می‌شود
+ * • دامنه‌ی min/max روی blur اعمال می‌شود
  * • suffix (واحد) در «تهِ» تکست‌باکس می‌نشیند — در RTL یعنی سمت چپ
- *   (خواسته‌ی کاربر: «واحد باید ته تکست‌باکس باشد، نه اول آن»)؛
- *   کانتینر dir=ltr ندارد تا از صفحه RTL ارث ببرد و ترتیب طبیعی باشد
+ *   (خواسته‌ی کاربر: «واحد باید ته تکست‌باکس باشد، نه اول آن»)
  */
 
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
@@ -33,6 +35,25 @@ function group(v: string, locale: "fa" | "en"): string {
   } catch {
     return v;
   }
+}
+
+/** شمارش رقم‌های قبل از مکان‌نما — برای بازگرداندن مکان‌نما بعد از فرمت */
+function digitsBefore(text: string, caret: number): number {
+  return toEnDigits(text.slice(0, Math.max(0, caret))).replace(/\D/g, "").length;
+}
+
+/** موقعیت مکان‌نما بعد از رقمِ nاُم در رشته‌ی فرمت‌شده */
+function caretForDigit(formatted: string, digitIndex: number): number {
+  if (digitIndex <= 0) return 0;
+  const isDigit = (ch: string) => /[0-9\u06F0-\u06F9\u0660-\u0669]/.test(ch);
+  let seen = 0;
+  for (let i = 0; i < formatted.length; i++) {
+    if (isDigit(formatted[i])) {
+      seen++;
+      if (seen === digitIndex) return i + 1;
+    }
+  }
+  return formatted.length;
 }
 
 interface NumberInputProps
@@ -60,14 +81,13 @@ export function NumberInput({
   disabled,
   ...props
 }: NumberInputProps) {
-  const [focused, setFocused] = React.useState(false);
-  // رقم‌های لاتین خام — منبع حقیقت حین تایپ
-  const [raw, setRaw] = React.useState<string>(() => (value === null ? "" : String(value)));
+  // رقم‌های لاتین خام — منبع حقیقت؛ نمایش همیشه فرمت‌شده است (حین تایپ هم)
+  const [raw, setRaw] = React.useState<string>(() => (value === null || value === undefined ? "" : String(value)));
 
-  // تغییر بیرونی مقدار → همگام‌سازی وقتی کاربر در حال تایپ نیست
+  // تغییر بیرونی مقدار → همگام‌سازی
   React.useEffect(() => {
-    if (!focused) setRaw(value === null || value === undefined ? "" : String(value));
-  }, [value, focused]);
+    setRaw(value === null || value === undefined ? "" : String(value));
+  }, [value]);
 
   const commit = (next: string) => {
     setRaw(next);
@@ -75,20 +95,31 @@ export function NumberInput({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let d = toEnDigits(e.target.value).replace(/[^\d]/g, "");
-    d = d.replace(/^0+(?=\d)/, ""); // بدون صفرهای آغازین
+    const el = e.target;
+    // مکان‌نما را قبل از فرمت دوباره روی همان رقم بازمی‌گذاریم — وگرنه
+    // پرش مکان‌نما به انتها تجربه‌ی تایپ در میانه‌ی عدد را خراب می‌کند
+    const before = digitsBefore(el.value, el.selectionStart ?? el.value.length);
+    const d = toEnDigits(el.value).replace(/\D/g, "").replace(/^0+(?=\d)/, "");
     commit(d);
+    const formatted = group(d, locale);
+    const pos = before === 0 ? 0 : caretForDigit(formatted, before);
+    requestAnimationFrame(() => {
+      try {
+        el.setSelectionRange(pos, pos);
+      } catch {
+        /* برخی input ها setSelectionRange ندارند */
+      }
+    });
   };
 
   const handleBlur = () => {
-    setFocused(false);
     let n = raw === "" ? null : Number(raw);
     if (n !== null && min !== undefined && n < min) n = min;
     if (n !== null && max !== undefined && n > max) n = max;
     commit(n === null ? "" : String(n));
   };
 
-  const display = focused ? raw : group(raw, locale);
+  const display = group(raw, locale);
 
   return (
     <div
@@ -113,7 +144,6 @@ export function NumberInput({
         className="w-full min-w-0 bg-transparent px-3 py-2.5 text-right text-sm shadow-none outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
         value={display}
         onChange={handleChange}
-        onFocus={() => setFocused(true)}
         onBlur={handleBlur}
         {...props}
       />
