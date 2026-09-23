@@ -19,49 +19,25 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Check, ChevronDown, Loader2, PackagePlus, Search, ShoppingBasket, Store, X } from "lucide-react";
+import { Check, ChevronDown, Loader2, PackagePlus, Search, Settings2, ShoppingBasket, Store, X } from "lucide-react";
 
-/*
+/**
  * فرم ثبت کالا — مشترک بین گام ۳ ویزارد و صفحه «کالای جدید».
  *
  * کالا = «کالای مرجع» (کلاس قابل معامله، مثل «خرمای خازویی»)، نه برند×وزن.
- * جریان عمدا ساده نگه داشته شده:
+ * جریان عمدا ساده نگه داشته شده — ابتدا ساده، بعداً غنی:
  *   ۱) جست‌وجو (دوزبانه: فارسی/انگلیسی/مترادف) یا مرور درخت دسته‌ها
  *   ۲) اگر پیدا نشد — ثبت همان کالا به‌عنوان مرجع جدید، بدون ترک فرم
- *   ۳) برند اختیاری (اگر برند ندارد، خالی می‌ماند) + اتریبیوت‌های دسته
- *   ۴) قیمت همیشه در کوچک‌ترین واحدِ ارزِ بازوی فروش (از کشورِ ثبت‌نام)
+ *      (واحد از برگِ دسته خودکار پیش‌پر می‌شود)
+ *   ۳) هسته‌ی فرم = قیمت + حداقل سفارش + موجودی — سوخت موتور تطبیق
+ *   ۴) برند و اتریبیوت‌ها اختیاری و جمع‌شده — پرشان کردنی است، اما
+ *      هیچ‌کس را متوقف نمی‌کند؛ در ویرایش هم قابل اضافه شدن است
+ *   ۵) قیمت همیشه در کوچک‌ترین واحدِ ارزِ بازوی فروش (از کشورِ ثبت‌نام)
  */
 
 type Frequency = "WEEKLY" | "MONTHLY" | "OCCASIONAL";
 export type ListingKind = "sell" | "buy";
 
-/**
- * واحد پیشنهادی برای کالای مرجع جدید — بر اساس برگِ دسته (استاندارد B2B:
- * واحد مرجعِ ثابت پایه‌ی مقایسه‌پذیری قیمت و تطابق است؛ بسته‌بندی/وزن
- * واریانتِ همان کالا می‌شود، نه واحد دیگر). کاربر می‌تواند عوضش کند.
- */
-const UNIT_BY_LEAF: Record<string, string> = {
-  "dried-fruit": "KILOGRAM",
-  "grains-legumes": "KILOGRAM",
-  "fruits-veg": "KILOGRAM",
-  livestock: "KILOGRAM",
-  pantry: "KILOGRAM",
-  dairy: "KILOGRAM",
-  drinks: "LITER",
-  "bakery-snacks": "CARTON",
-  polymers: "KILOGRAM",
-  chemicals: "KILOGRAM",
-  packaging: "PIECE",
-  steel: "KILOGRAM",
-  copper: "KILOGRAM",
-  "metal-scrap": "KILOGRAM",
-  "plastic-scrap": "KILOGRAM",
-  clothing: "PIECE",
-  fabric: "METER",
-  "gold-items": "GRAM",
-  logistics: "SERVICE",
-  "contract-production": "SERVICE",
-};
 const FALLBACK_UNIT = "PIECE";
 
 export function ListingForm({
@@ -112,6 +88,7 @@ export function ListingForm({
   // ── برند + اتریبیوت + مشخصات ──
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
+  const [showOptional, setShowOptional] = useState(false); // برند+اتریبیوت جمع‌شده — ثبت سریع اول
   const [price, setPrice] = useState<number | null>(null);
   const [stock, setStock] = useState<number | null>(null);
   const [minOrder, setMinOrder] = useState<number | null>(null);
@@ -154,6 +131,7 @@ export function ListingForm({
   const pickGood = (g: GoodDto) => {
     setSelected(g);
     setShowCreate(false);
+    setShowOptional(false); // هر کالای تازه = شروع سریع؛ تکمیلی‌ها جمع‌شده می‌مانند
     setAttrs({});
     setPrice(null);
     setStock(null);
@@ -200,6 +178,11 @@ export function ListingForm({
     if (isSell) {
       if ((price ?? 0) <= 0 || (stock ?? 0) <= 0) {
         toast({ title: m.listing.errors.sellSpec, variant: "destructive" });
+        return;
+      }
+      if ((minOrder ?? 0) <= 0) {
+        // حداقل سفارش هسته‌ی تطبیق است — «چه حجمی از چه کالایی» بدون آن بی‌معناست
+        toast({ title: m.listing.errors.minOrder, variant: "destructive" });
         return;
       }
     } else if ((volume ?? 0) <= 0) {
@@ -439,9 +422,9 @@ export function ListingForm({
                   value={newLeaf}
                   onValueChange={(v) => {
                     setNewLeaf(v);
-                    // واحد پیشنهادی دسته — قابل تغییر
+                    // واحد از خود برگ دسته (API) پیش‌پر می‌شود — نه از نقش ثابت
                     const leaf = newRootObj?.children.find((c) => c.id === v);
-                    setNewUnit(UNIT_BY_LEAF[leaf?.slug ?? ""] ?? FALLBACK_UNIT);
+                    setNewUnit(leaf?.unit ?? FALLBACK_UNIT);
                   }}
                   disabled={!newRootObj}
                 >
@@ -488,77 +471,10 @@ export function ListingForm({
         </div>
       )}
 
-      {/* برند اختیاری + اتریبیوت‌ها + مشخصات */}
+      {/* هسته‌ی فرم — قیمت/حداقل سفارش/موجودی: سوخت موتور تطبیق */}
       {selected && (
         <div className={`mt-4 rounded-xl border p-4 ${isSell ? "border-primary/15 bg-accent/40" : "border-stone-200 bg-stone-50"}`}>
-          {/* برند */}
-          <div className="relative grid gap-1.5">
-            <Label className="text-[11px] text-muted-foreground">{m.listing.brand.label}</Label>
-            <Input
-              value={brandName}
-              onChange={(e) => setBrandName(e.target.value)}
-              placeholder={m.listing.brand.placeholder}
-            />
-            {brandName.trim() && brandSuggestions.length > 0 && (
-              <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border bg-white shadow-lg">
-                <p className="border-b bg-muted/60 px-3 py-1.5 text-[10px] font-bold text-muted-foreground">
-                  {m.listing.brand.suggestions}
-                </p>
-                {brandSuggestions.slice(0, 6).map((b) => (
-                  <button
-                    key={b.id}
-                    type="button"
-                    onClick={() => setBrandName(b.name)}
-                    className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
-                  >
-                    <span className="font-bold">{b.name}</span>
-                    <Check className="size-3.5 text-primary" />
-                  </button>
-                ))}
-              </div>
-            )}
-            {brandName.trim() && brandSuggestions.length === 0 && !brandsQ.isFetching && (
-              <p className="text-[10px] text-muted-foreground">{m.listing.brand.newHint}</p>
-            )}
-          </div>
-
-          {/* اتریبیوت‌های دسته — همه اختیاری */}
-          {attrsOf.length > 0 && (
-            <div className="mt-4">
-              <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.specs.attrsTitle}</p>
-              <div className="grid grid-cols-2 gap-2.5">
-                {attrsOf.map((a) => (
-                  <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
-                    {a.type === "enum" && a.options ? (
-                      <Select
-                        value={attrs[a.key] ?? ""}
-                        onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
-                      >
-                        <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
-                          <SelectValue placeholder="—" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {a.options.map((o) => (
-                            <SelectItem key={o.v} value={o.v}>
-                              {locale === "en" ? o.en : o.fa}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <Input
-                        value={attrs[a.key] ?? ""}
-                        onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
-                      />
-                    )}
-                  </Field>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* مشخصات فروش/خرید */}
-          <p className="mb-3 mt-4 flex items-center gap-1.5 text-sm font-extrabold">
+          <p className="mb-3 flex items-center gap-1.5 text-sm font-extrabold">
             {isSell ? <Store className="size-4 text-primary" /> : <ShoppingBasket className="size-4 text-stone-700" />}
             {isSell
               ? m.listing.specs.sellTitle.replace("{name}", goodName(selected, locale))
@@ -566,14 +482,26 @@ export function ListingForm({
           </p>
           {isSell ? (
             <div className="grid grid-cols-2 gap-3">
-              <Field label={m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))}>
+              {/* قیمت — قهرمان فرم؛ ردیف کامل */}
+              <div className="col-span-2">
+                <Field label={m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))}>
+                  <NumberInput
+                    value={price}
+                    onChange={setPrice}
+                    min={0}
+                    suffix={curName}
+                    placeholder={curDef.exp === 0 ? "7200000" : "120"}
+                    aria-label={m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))}
+                  />
+                </Field>
+              </div>
+              <Field label={m.listing.specs.minOrder}>
                 <NumberInput
-                  value={price}
-                  onChange={setPrice}
+                  value={minOrder}
+                  onChange={setMinOrder}
                   min={0}
-                  suffix={curName}
-                  placeholder={curDef.exp === 0 ? "7200000" : "120"}
-                  aria-label={m.listing.specs.price.replace("{unit}", unitLabel(selected.unit, locale))}
+                  suffix={unitLabel(selected.unit, locale)}
+                  aria-label={m.listing.specs.minOrder}
                 />
               </Field>
               <Field label={m.listing.specs.stock}>
@@ -583,15 +511,6 @@ export function ListingForm({
                   min={0}
                   suffix={unitLabel(selected.unit, locale)}
                   aria-label={m.listing.specs.stock}
-                />
-              </Field>
-              <Field label={m.listing.specs.minOrder}>
-                <NumberInput
-                  value={minOrder}
-                  onChange={setMinOrder}
-                  min={0}
-                  suffix={unitLabel(selected.unit, locale)}
-                  aria-label={m.listing.specs.minOrder}
                 />
               </Field>
             </div>
@@ -621,6 +540,95 @@ export function ListingForm({
                   </SelectContent>
                 </Select>
               </Field>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* تکمیلی اختیاری — برند و اتریبیوت‌ها، جمع‌شده تا ثبتِ سریع هیچ‌کس را متوقف نکند */}
+      {selected && (
+        <div className="mt-3 rounded-xl border border-dashed border-primary/25 p-4">
+          <button
+            type="button"
+            onClick={() => setShowOptional((s) => !s)}
+            aria-expanded={showOptional}
+            className="flex w-full items-center justify-between gap-2 text-start"
+          >
+            <span className="flex items-center gap-1.5 text-sm font-bold">
+              <Settings2 className="size-4 text-primary" />
+              {m.listing.specs.optionalToggle}
+            </span>
+            <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition ${showOptional ? "rotate-180" : ""}`} />
+          </button>
+
+          {showOptional && (
+            <div className="mt-4 grid gap-4">
+              <p className="text-[11px] leading-5 text-muted-foreground">{m.listing.specs.optionalHint}</p>
+              {/* برند */}
+              <div className="relative grid gap-1.5">
+                <Label className="text-[11px] text-muted-foreground">{m.listing.brand.label}</Label>
+                <Input
+                  value={brandName}
+                  onChange={(e) => setBrandName(e.target.value)}
+                  placeholder={m.listing.brand.placeholder}
+                />
+                {brandName.trim() && brandSuggestions.length > 0 && (
+                  <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border bg-white shadow-lg">
+                    <p className="border-b bg-muted/60 px-3 py-1.5 text-[10px] font-bold text-muted-foreground">
+                      {m.listing.brand.suggestions}
+                    </p>
+                    {brandSuggestions.slice(0, 6).map((b) => (
+                      <button
+                        key={b.id}
+                        type="button"
+                        onClick={() => setBrandName(b.name)}
+                        className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
+                      >
+                        <span className="font-bold">{b.name}</span>
+                        <Check className="size-3.5 text-primary" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {brandName.trim() && brandSuggestions.length === 0 && !brandsQ.isFetching && (
+                  <p className="text-[10px] text-muted-foreground">{m.listing.brand.newHint}</p>
+                )}
+              </div>
+
+              {/* اتریبیوت‌های دسته — همه اختیاری */}
+              {attrsOf.length > 0 && (
+                <div>
+                  <p className="mb-2 text-[11px] font-bold text-muted-foreground">{m.listing.specs.attrsTitle}</p>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {attrsOf.map((a) => (
+                      <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
+                        {a.type === "enum" && a.options ? (
+                          <Select
+                            value={attrs[a.key] ?? ""}
+                            onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
+                          >
+                            <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
+                              <SelectValue placeholder="—" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {a.options.map((o) => (
+                                <SelectItem key={o.v} value={o.v}>
+                                  {locale === "en" ? o.en : o.fa}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Input
+                            value={attrs[a.key] ?? ""}
+                            onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
+                          />
+                        )}
+                      </Field>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

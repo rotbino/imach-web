@@ -161,6 +161,8 @@ export interface CategoryNodeDto {
   nameFa: string;
   nameEn: string;
   attrs?: CategoryAttr[] | null;
+  /** default wholesale unit of the leaf (KILOGRAM | TON | …) — prefills new goods */
+  unit?: string | null;
   children: CategoryNodeDto[];
 }
 

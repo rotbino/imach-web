@@ -115,6 +115,8 @@ export const en: Messages = {
       frequency: "Frequency",
       unit: "Unit",
       attrsTitle: "Attributes (optional)",
+      optionalToggle: "Optional details — brand & attributes",
+      optionalHint: "Optional — but buyers looking for exactly your product will find you faster.",
     },
     attrs: {
       weight: "Pack weight",
@@ -126,6 +128,7 @@ export const en: Messages = {
     errors: {
       selectGood: "Pick a product first",
       sellSpec: "Enter price and stock",
+      minOrder: "Enter the minimum order — it powers order matching",
       buySpec: "Enter the buying volume",
       saveFailed: "Saving failed",
       createGoodFailed: "Adding the reference product failed",
