@@ -76,32 +76,36 @@ export const en: Messages = {
   },
   listing: {
     formTitle: "Post a wholesale offer or request",
-    firstGood: { skip: "Later — set up my catalog" },
+    firstGood: { title: "Add your first item", skip: "Later — set up my catalog" },
+    back: "Back",
+    catalogLoading: "Loading the catalog…",
     search: {
       aria: "Search product groups",
       placeholder: "Search a product group… e.g. rice or canned tuna",
-      searching: "Searching…",
+      notFoundTitle: "The product group you're looking for isn't registered yet",
     },
-    selected: { unit: "Unit: {unit}" },
     create: {
-      asNew: "Register “{name}” as a new product group",
+      asNew: "“{name}” will be registered as a new product group",
+      submit: "Register this product group",
       selecting: "Registering…",
+    },
+    sections: {
+      sell: "Wholesale selling",
+      buy: "Wholesale buying",
+      or: "or",
+      addBuy: "Add a wholesale-buying section",
+      removeBuy: "Remove buying section",
     },
     brand: {
       label: "Brand",
       placeholder: "e.g. Omid — leave empty if unbranded",
-      suggestions: "Existing brands",
     },
     specs: {
-      sellTitle: "Wholesale selling",
-      buyTitle: "Wholesale buying",
-      optionalChip: "Optional",
       price: "Price per {unit}",
       stock: "Stock",
       minOrder: "Minimum order",
       volume: "Volume per period",
       frequency: "Frequency",
-      attrsTitle: "Attributes",
       optionalToggle: "Brand & attributes (optional)",
     },
     attrs: {
@@ -112,7 +116,6 @@ export const en: Messages = {
     },
     save: "Save item",
     errors: {
-      selectGood: "Pick or register a product group first",
       nothingFilled: "Fill at least one of the two sections — wholesale selling or wholesale buying",
       sellSpec: "For selling: complete price, minimum order and stock",
       minOrder: "Enter the minimum order — it powers order matching",
@@ -132,7 +135,7 @@ export const en: Messages = {
       basicData: "Basic Data",
       goods: "Product Groups",
       brands: "Brands",
-      categories: "Categories",
+      categories: "Goods Categories",
     },
     stats: {
       goods: "Product groups",
@@ -191,8 +194,8 @@ export const en: Messages = {
       aliases: "Alternative names (comma separated)",
       unit: "Unit",
       status: "Status",
-      rootCat: "Main category",
-      childCat: "Subcategory",
+      rootCat: "Main goods category",
+      childCat: "Goods subcategory",
     },
     merge: "Merge",
     mergeInto: "Merge into which product group?",
@@ -206,15 +209,15 @@ export const en: Messages = {
     brandInUse: "This brand is used on listings — merge it first",
     errors: {
       nameShort: "Write a more complete name",
-      pickCategory: "Pick a category",
+      pickCategory: "Pick a goods category",
     },
     brands: {
       searchPlaceholder: "Search brands…",
     },
     categories: {
-      searchPlaceholder: "Search categories…",
+      searchPlaceholder: "Search goods categories…",
       collapseAll: "Collapse",
-      hint: "Grey: direct goods · Orange: whole subtree. Tap a name to open its goods list.",
+      hint: "Grey: direct product groups · Orange: whole subtree. Tap a name to open its product groups.",
     },
   },
   location: {
