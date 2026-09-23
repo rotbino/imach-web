@@ -45,7 +45,7 @@ export const fa = {
     },
     continue: "ادامه",
     back: "برگشت",
-    changeCountry: "کشور رو عوض کن",
+    changeCountry: "تغییر کشور",
     links: {
       toLogin: "قبلاً ثبت‌نام کردی؟ وارد شو",
       toRegister: "کاربر جدیدی؟ ثبت‌نام کن",
