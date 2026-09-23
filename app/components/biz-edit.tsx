@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useEditBusiness } from "@/lib/queries";
+import { useEditBusiness, useBusinessLogo, useRemoveFile, useUploadFile } from "@/lib/queries";
 import { ACTIVITY_TYPES, activityTypeLabel } from "@/lib/format";
 import { iranCityItems } from "@/lib/iran-geo";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { BadgeCheck, Briefcase, Loader2, MapPin } from "lucide-react";
+import { FileUploader } from "@/components/FileUploader";
 import { Badge } from "@/components/ui/badge";
 import { SearchSelect } from "@/components/search-select";
 import { Button } from "@/components/ui/button";
@@ -22,10 +23,11 @@ import { useToast } from "@/hooks/use-toast";
 import { LocationPicker, type GeoPoint } from "@/components/location-picker";
 
 /*
- * ویرایش هدر صفحه — نام، شهر، نوع فعالیت، لوکیشن دقیق.
+ * ویرایش هدر صفحه — لوگو، نام، شهر، نوع فعالیت، لوکیشن دقیق.
  * محل اصلی: برگه‌ی «تنظیمات» داشبورد هر بازو (خواسته‌ی کاربر:
  * ویرایش هدر مثل عنوان یا تصویر در تب تنظیمات می‌آید).
- * دو شکل از یک فرم: کارت تنظیمات (داخل برگه) — بعدا شکل دیالوگ هم همین‌جا.
+ * لوگو بلافاصله آپلود می‌شود (مدل Business از قبل هست) و در هر دو بازوی
+ * فروش و خرید همان لحظه نمایش داده می‌شود.
  *
  * لوکیشن دقیق به خودِ Business تعلق دارد (نه به کاربر، نه به هر لیستینگ):
  * اختیاری و با رضایت صاحب کاتالوگ؛ مبنای لایه‌ی فاصله‌ی تطابق آینده است
@@ -36,6 +38,29 @@ import { LocationPicker, type GeoPoint } from "@/components/location-picker";
 export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
   const { toast } = useToast();
   const edit = useEditBusiness();
+  const logoQ = useBusinessLogo(biz.id);
+  const uploadFile = useUploadFile();
+  const removeFile = useRemoveFile();
+
+  const logo = logoQ.data;
+
+  const uploadLogo = (file: File) => {
+    uploadFile.mutate(
+      { file, model: "Business", modelId: biz.id, key: "logo" },
+      {
+        onSuccess: () => toast({ title: "لوگو آپلود شد", description: "در کاتالوگ و لیست خرید شما نمایش داده می‌شود." }),
+        onError: (e) => toast({ title: "آپلود لوگو ناموفق بود", description: e.message, variant: "destructive" }),
+      }
+    );
+  };
+
+  const removeLogo = () => {
+    if (!logo) return;
+    removeFile.mutate(logo.id, {
+      onSuccess: () => toast({ title: "لوگو حذف شد" }),
+      onError: (e) => toast({ title: "حذف ناموفق بود", description: e.message, variant: "destructive" }),
+    });
+  };
 
   // فرم از مقادیر جاری ساخته می‌شود؛ بعد از ذخیره، کش رفرش و کارت به‌روز می‌شود
   const [name, setName] = useState(biz.name);
@@ -78,7 +103,16 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
   return (
     <section className="rounded-2xl border bg-white p-5 shadow-sm">
       <div className="flex items-center gap-3 border-b pb-4">
-        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-primary/10 text-xl font-black text-primary">
+        <FileUploader
+          shape="square"
+          size={56}
+          value={logo ? { url: logo.url, thumbUrl: logo.thumbUrl } : null}
+          uploading={uploadFile.isPending}
+          label="لوگو"
+          onSelect={uploadLogo}
+          onRemove={logo ? removeLogo : undefined}
+        />
+        <span className="hidden size-12 shrink-0 place-items-center rounded-2xl bg-primary/10 text-xl font-black text-primary" aria-hidden>
           {biz.name.slice(0, 1)}
         </span>
         <div className="min-w-0">

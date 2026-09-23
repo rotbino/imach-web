@@ -1,4 +1,4 @@
-import { LayoutDashboard, Database, Package, Tag, ListTree } from "lucide-react";
+import { LayoutDashboard, Database, Package, Tag, ListTree, ImageOff } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 /*
@@ -26,6 +26,7 @@ export type NavNode = NavLeaf | NavGroup;
 
 export const ADMIN_NAV: NavNode[] = [
   { kind: "leaf", href: "/admin", labelKey: "overview", icon: LayoutDashboard, exact: true },
+  { kind: "leaf", href: "/admin/files", labelKey: "files", icon: ImageOff },
   {
     kind: "group",
     labelKey: "basicData",

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ApiError, type CategoryNodeDto, type GoodDto } from "@/lib/api";
-import { useBrands, useCategories, useCreateGood, useGoods, useSaveListing } from "@/lib/queries";
+import { useBrands, useCategories, useCreateGood, useGoods, useSaveListing, useUploadFile } from "@/lib/queries";
 import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
@@ -16,12 +16,14 @@ import {
   ArrowLeft,
   Check,
   ChevronDown,
+  ImagePlus,
   Loader2,
   PackagePlus,
   Plus,
   Search,
   ShoppingBasket,
   Store,
+  X,
 } from "lucide-react";
 
 /**
@@ -84,6 +86,13 @@ export function ListingForm({
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
   const [showAttrs, setShowAttrs] = useState(false);
+
+  // ── گالری کالا — فایل‌ها همین‌جا نگه داشته می‌شوند و بلافاصله بعد از ثبتِ
+  // آگهی آپلود می‌شوند (فایل قبل از ذخیره‌ی مدل آپلود نشود — خواسته‌ی کاربر)
+  const uploadFile = useUploadFile();
+  const [pendingImages, setPendingImages] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query.trim()), 300);
@@ -149,6 +158,8 @@ export function ListingForm({
     setBrandName("");
     setAttrs({});
     setShowAttrs(false);
+    setPendingImages([]);
+    setImageUrls([]);
     setQuery("");
     setDebounced("");
   };
@@ -170,6 +181,36 @@ export function ListingForm({
         variant: "destructive",
       });
     }
+  };
+
+  const addImage = (file: File) => {
+    if (pendingImages.length >= 6) {
+      toast({ title: m.files.tooMany, variant: "destructive" });
+      return;
+    }
+    setPendingImages((list) => [...list, file]);
+    setImageUrls((list) => [...list, URL.createObjectURL(file)]);
+  };
+
+  const removeImage = (index: number) => {
+    setPendingImages((list) => list.filter((_, i) => i !== index));
+    setImageUrls((list) => list.filter((_, i) => i !== index));
+  };
+
+  /** آپلود گالری بعد از ثبت آگهی — غیرمسدودکننده: آگهی ذخیره‌شده می‌ماند */
+  const uploadGallery = async (listingId: string) => {
+    if (pendingImages.length === 0) return;
+    setUploadingImages(true);
+    let failed = 0;
+    for (const file of pendingImages) {
+      try {
+        await uploadFile.mutateAsync({ file, model: "Listing", modelId: listingId, key: "gallery", replace: false });
+      } catch {
+        failed++;
+      }
+    }
+    setUploadingImages(false);
+    if (failed > 0) toast({ title: m.files.failed, description: m.files.galleryPending });
   };
 
   const save = async () => {
@@ -205,7 +246,7 @@ export function ListingForm({
     const filledAttrs = Object.fromEntries(Object.entries(attrs).filter(([, v]) => v.trim() !== ""));
 
     try {
-      await saveMutation.mutateAsync({
+      const created = await saveMutation.mutateAsync({
         businessId: bizId,
         goodId: selected.id,
         mode: arm === "both" ? "BOTH" : arm === "sell" ? "SELL" : "BUY",
@@ -222,6 +263,8 @@ export function ListingForm({
             : {}),
         ...(buyValid ? { buy: { volume: volume ?? 0, frequency } } : {}),
       });
+      // آگهی ذخیره شد → حالا (و فقط حالا) عکس‌ها آپلود می‌شوند
+      await uploadGallery(created.id);
       toast({ title: firstGood ? m.listing.success.savedFirst : m.listing.success.saved });
       onSaved(arm === "buy" ? "buy" : "sell");
     } catch (err) {
@@ -554,20 +597,63 @@ export function ListingForm({
                     </section>
                 )}
 
+                {/* ───── گالری کالا ───── */}
+                {arm && (
+                    <section className="mt-4">
+                      <p className="flex items-center gap-1.5 text-sm font-bold">
+                        <ImagePlus className="size-4 text-primary" />
+                        {m.files.galleryTitle}
+                      </p>
+                      <p className="mt-1 text-[11px] leading-5 text-muted-foreground">{m.files.galleryHint}</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {imageUrls.map((url, i) => (
+                            <div key={url} className="relative size-20 overflow-hidden rounded-xl border">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={url} alt="" className="h-full w-full object-cover" />
+                              <button
+                                  type="button"
+                                  aria-label="remove"
+                                  className="absolute end-0.5 top-0.5 grid size-5 place-items-center rounded-full bg-black/60 text-white transition hover:bg-destructive"
+                                  onClick={() => removeImage(i)}
+                              >
+                                <X className="size-3" />
+                              </button>
+                            </div>
+                        ))}
+                        {pendingImages.length < 6 && (
+                            <label className="grid size-20 cursor-pointer place-items-center rounded-xl border border-dashed text-muted-foreground transition hover:border-primary/60 hover:bg-accent/40 hover:text-primary">
+                              <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    e.target.value = "";
+                                    if (file) addImage(file);
+                                  }}
+                                  disabled={uploadingImages}
+                              />
+                              <ImagePlus className="size-5" strokeWidth={1.75} />
+                            </label>
+                        )}
+                      </div>
+                    </section>
+                )}
+
                 {/* ───── ثبت ───── */}
                 {arm && (
                     <Button
                         className="mt-6 w-full"
                         size="lg"
                         onClick={() => void save()}
-                        disabled={saveMutation.isPending || createGoodMutation.isPending}
+                        disabled={saveMutation.isPending || createGoodMutation.isPending || uploadingImages}
                     >
-                      {saveMutation.isPending ? (
+                      {saveMutation.isPending || uploadingImages ? (
                           <Loader2 className="size-4 animate-spin" />
                       ) : (
                           <Check className="size-4" />
                       )}
-                      {submitLabel ?? m.listing.save}
+                      {uploadingImages ? m.files.uploading : (submitLabel ?? m.listing.save)}
                     </Button>
                 )}
               </>

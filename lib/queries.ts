@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tan
 import {
   businessesApi,
   contactsApi,
+  filesApi,
   goodsApi,
   listingsApi,
   marketApi,
@@ -15,6 +16,7 @@ import {
   type ContactRowDto,
   type CustomerRowDto,
   type ExploreItemDto,
+  type FileDto,
   type FollowDto,
   type GoodDto,
   type GoodItemDto,
@@ -415,4 +417,65 @@ export function useReadAllNotifications() {
       void qc.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
+}
+
+
+// ── فایل‌ها — آپلود/حذف عکس (آواتار، لوگو، گالری آگهی) ────────────────────────
+
+/** آپلود با فشرده‌سازی پیش‌فرض سمت کلاینت؛ onSuccess سبک‌های مرتبط را باطل می‌کند */
+export function useUploadFile() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (opts: { file: File; model: "User" | "Business" | "Listing"; modelId?: string; key: string; description?: string; replace?: boolean }) =>
+      filesApi.upload(opts),
+    onSuccess: (_data, opts) => {
+      // همان قرارداد بقیه‌ی هوک‌ها: پیشوندهای کلید کافی‌اند تا همه‌ی صفحات
+      // مرتبط (کاتالوگ، پنل، پروفایل) تازه شوند
+      if (opts.model === "Listing") void queryClient.invalidateQueries({ queryKey: ["listings"] });
+      if (opts.model === "Business") void queryClient.invalidateQueries({ queryKey: ["business"] });
+      if (opts.model === "User") void queryClient.invalidateQueries({ queryKey: ["me"] });
+    },
+  });
+}
+
+/** حذف فایل از سرور و ابر — عکس سرگردان باقی نمی‌ماند */
+export function useRemoveFile() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => filesApi.remove(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["listings"] });
+      void queryClient.invalidateQueries({ queryKey: ["business"] });
+      void queryClient.invalidateQueries({ queryKey: ["me"] });
+    },
+  });
+}
+
+export type { FileDto };
+
+
+/**
+ * اسلات‌های تکی ۴۰۴-محتمل‌اند (کاربر هنوز عکس نگذاشته) — retry خاموش و
+ * خطا = «بدون عکس» تا کاشی حرفی آرام جایگزین شود.
+ */
+function useFileSlot(model: "User" | "Business", modelId: string | null | undefined, key: string) {
+  return useQuery({
+    queryKey: ["file", model, key, modelId ?? ""],
+    queryFn: () => filesApi.getUrl(model, modelId!, key),
+    enabled: !!modelId,
+    retry: false,
+    staleTime: 60_000,
+  });
+}
+
+/** عکس پروفایل کاربر فعلی */
+export function useMyAvatar(userId: string | null | undefined) {
+  const q = useFileSlot("User", userId, "avatar");
+  return { ...q, data: q.error ? null : (q.data ?? null) };
+}
+
+/** لوگوی یک کسب‌وکار (پنل تنظیمات) */
+export function useBusinessLogo(bizId: string | null | undefined) {
+  const q = useFileSlot("Business", bizId, "logo");
+  return { ...q, data: q.error ? null : (q.data ?? null) };
 }

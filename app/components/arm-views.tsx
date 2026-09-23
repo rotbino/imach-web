@@ -154,9 +154,18 @@ export function SellArmView({ slug }: { slug: string }) {
       {/* هدر کاتالوگ — مشخصات کسب‌وکار */}
       <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-col items-center text-center">
-          <span className="grid size-20 place-items-center rounded-3xl bg-primary/10 text-4xl font-black text-primary shadow-inner">
-            {biz.name.slice(0, 1)}
-          </span>
+          {biz.logo?.thumbUrl || biz.logo?.url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={(biz.logo?.thumbUrl ?? biz.logo?.url)!}
+              alt={biz.name}
+              className="size-20 rounded-3xl object-cover shadow-inner"
+            />
+          ) : (
+            <span className="grid size-20 place-items-center rounded-3xl bg-primary/10 text-4xl font-black text-primary shadow-inner">
+              {biz.name.slice(0, 1)}
+            </span>
+          )}
           <h1 className="mt-3 flex items-center gap-1.5 text-2xl font-black">
             {biz.name}
             {biz.isVerified && <BadgeCheck className="size-5 text-primary" aria-label="تاییدشده" />}
@@ -206,14 +215,21 @@ export function SellArmView({ slug }: { slug: string }) {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {sellListings.map((l) => (
+            {sellListings.map((l) => {
+              const photo = l.gallery?.[0];
+              return (
               <article key={l.id} className="animate-fade-up overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
-                {/* تا زمان سیستم فایل‌ها: کاشی حرفیِ تخت به‌جای عکس */}
-                <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
-                  <span className="text-5xl font-black text-primary/20" aria-hidden>
-                    {goodName(l.good).slice(0, 1)}
-                  </span>
-                </div>
+                {photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photo.thumbUrl ?? photo.url} alt={goodName(l.good)} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+                ) : (
+                  // بی‌عکس: کاشی حرفیِ تخت — همان هویت پیش از سیستم فایل‌ها
+                  <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
+                    <span className="text-5xl font-black text-primary/20" aria-hidden>
+                      {goodName(l.good).slice(0, 1)}
+                    </span>
+                  </div>
+                )}
                 <div className="p-3">
                   <p className="truncate font-extrabold" title={goodName(l.good)}>
                     {goodName(l.good)}
@@ -231,7 +247,8 @@ export function SellArmView({ slug }: { slug: string }) {
                   </Badge>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
@@ -310,9 +327,18 @@ export function BuyArmView({ slug }: { slug: string }) {
       {/* هدر لیست خرید */}
       <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-col items-center text-center">
-          <span className="grid size-20 place-items-center rounded-3xl bg-stone-800/10 text-4xl font-black text-stone-700 shadow-inner">
-            {biz.name.slice(0, 1)}
-          </span>
+          {biz.logo?.thumbUrl || biz.logo?.url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={(biz.logo?.thumbUrl ?? biz.logo?.url)!}
+              alt={biz.name}
+              className="size-20 rounded-3xl object-cover shadow-inner"
+            />
+          ) : (
+            <span className="grid size-20 place-items-center rounded-3xl bg-stone-800/10 text-4xl font-black text-stone-700 shadow-inner">
+              {biz.name.slice(0, 1)}
+            </span>
+          )}
           <h1 className="mt-3 flex items-center gap-1.5 text-2xl font-black">
             {biz.name}
             {biz.isVerified && <BadgeCheck className="size-5 text-stone-600" aria-label="تاییدشده" />}
@@ -380,11 +406,18 @@ export function BuyArmView({ slug }: { slug: string }) {
           </div>
         ) : (
           <div className="space-y-3">
-            {buyListings.map((l) => (
+            {buyListings.map((l) => {
+              const photo = l.gallery?.[0];
+              return (
               <article key={l.id} className="animate-fade-up flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm">
-                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
-                  {goodName(l.good).slice(0, 1)}
-                </span>
+                {photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photo.thumbUrl ?? photo.url} alt={goodName(l.good)} loading="lazy" className="size-11 shrink-0 rounded-xl object-cover" />
+                ) : (
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
+                    {goodName(l.good).slice(0, 1)}
+                  </span>
+                )}
                 <div className="min-w-0 grow">
                   <p className="truncate font-extrabold" title={goodName(l.good)}>
                     {goodName(l.good)}
@@ -399,7 +432,8 @@ export function BuyArmView({ slug }: { slug: string }) {
                   <p className="mt-1 text-[11px] text-muted-foreground">{frequencyLabel(l.frequency ?? "MONTHLY")}</p>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         )}
 

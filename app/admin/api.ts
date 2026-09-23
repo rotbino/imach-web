@@ -128,7 +128,47 @@ export const ak = {
     ["admin", "goods", params] as const,
   brands: (params: { q?: string; status?: string }) => ["admin", "brands", params] as const,
   categories: ["admin", "categories"] as const,
+  files: ["admin", "files"] as const,
 };
+
+// ── فایل‌ها ──────────────────────────────────────────────────────────────────
+
+export interface AdminFileDto {
+  id: string;
+  fieldKey: string;
+  url: string;
+  thumbUrl: string | null;
+  description: string | null;
+  size: number;
+  mimeType: string;
+  createdAt: string;
+}
+
+export interface AdminUsageRow {
+  ownerId: string;
+  name: string;
+  phone: string;
+  files: number;
+  bytes: number;
+}
+
+export const adminFilesApi = {
+  getOrphans: () =>
+    api<{ staged: AdminFileDto[]; dangling: AdminFileDto[] }>("/admin/files/getOrphans"),
+  purgeOrphans: (ids?: string[]) =>
+    api<{ deleted: number }>("/admin/files/purgeOrphans", { method: "POST", params: ids ? { ids: ids.join(",") } : undefined }),
+  deleteOrphan: (id: string) =>
+    api<{ deleted: number }>(`/admin/files/orphans/${encodeURIComponent(id)}`, { method: "DELETE" }),
+  getUsage: () => api<{ items: AdminUsageRow[] }>("/admin/files/getUsage"),
+};
+
+export function useAdminOrphans() {
+  return useQuery({ queryKey: ak.files, queryFn: adminFilesApi.getOrphans });
+}
+
+export function useAdminUsage() {
+  return useQuery({ queryKey: [...ak.files, "usage"], queryFn: adminFilesApi.getUsage });
+}
 
 export function useAdminStats() {
   return useQuery({ queryKey: ak.stats, queryFn: adminApi.getStats, staleTime: 15_000 });

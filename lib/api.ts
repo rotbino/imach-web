@@ -38,6 +38,8 @@ export interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   params?: Record<string, string | number | undefined>;
   body?: unknown;
+  /** multipart body — Content-Type را مرورگر می‌سازد (boundary) */
+  form?: FormData;
   /** پیش‌فرض true — درخواست احراز می‌شود */
   auth?: boolean;
   /** تلاش مجدد بعد از رفرش ساکت (داخلی) */
@@ -74,7 +76,7 @@ async function parse<T>(res: Response): Promise<T> {
 }
 
 export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = "GET", params, body, auth = true, _retried = false } = options;
+  const { method = "GET", params, body, form, auth = true, _retried = false } = options;
 
   const headers: Record<string, string> = {};
   if (body !== undefined) headers["Content-Type"] = "application/json";
@@ -89,7 +91,7 @@ export async function api<T>(path: string, options: RequestOptions = {}): Promis
     method,
     headers,
     credentials: "include",
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: form ?? (body !== undefined ? JSON.stringify(body) : undefined),
   });
 
   // 401 → یک تلاش رفرش ساکت، بعد تکرار همان درخواست
@@ -137,6 +139,13 @@ export interface AuthResponseDto {
   accessToken: string;
   user: UserDto;
   businesses: BusinessSummaryDto[];
+}
+
+/** پاسخ getMe — عکس پروفایل کاربر اگر آپلود کرده باشد */
+export interface MeResponseDto {
+  user: UserDto;
+  businesses: BusinessSummaryDto[];
+  avatar: { url: string; thumbUrl: string | null } | null;
 }
 
 // ─── کاتالوگ — درخت دسته + کالای مرجع + برند ───
@@ -207,6 +216,8 @@ export interface GoodItemDto {
   frequency: string | null;
   updatedAt?: string;
   brand?: { id: string; name: string } | null;
+  /** گالری آگهی — خوانده‌شده از سیستم فایل‌ها (خالی = بی‌عکس، کاشی حرفی) */
+  gallery?: FileDto[];
   good: {
     id: string;
     nameFa: string;
@@ -232,6 +243,8 @@ export interface BusinessProfileDto {
     firstName: string | null;
     lastName: string | null;
   } | null;
+  /** لوگوی کسب‌وکار — اسلات «logo» جدول فایل‌ها (null = کاشی حرفی) */
+  logo?: { url: string; thumbUrl: string | null } | null;
   listings: GoodItemDto[];
 }
 
@@ -418,6 +431,49 @@ export interface MarketStateDto {
 
 // ─── اندپوینت‌ها — نام‌گذاری اکشن‌محور، هم‌نام با کنترلرهای NestJS ───
 
+// ─── فایل‌ها — یک جدول چندریختی برای هر عکسی که مدل‌ها لازم دارند ───
+
+/** آیتم فایل از بک‌اند — url مستقیم ابر آروان است (بدون توکن لود می‌شود) */
+export interface FileDto {
+  id: string;
+  fieldKey: string;
+  url: string;
+  thumbUrl: string | null;
+  description: string | null;
+  size: number;
+  mimeType: string;
+  createdAt: string;
+}
+
+export const filesApi = {
+  /**
+   * آپلود multipart — مدل و اسلات (کلید) از سمت کلاینت می‌آید:
+   * model = User | Business | Listing · key = avatar | logo | gallery | …
+   * replace=true (پیش‌فرض) اسلات تک‌فایلی است: بعد از موفقیتِ آپلود، قبلی‌ها
+   * سمت سرور پاک می‌شوند — اولی آپلود شود، تمام که شد قبلی حذف شود.
+   */
+  upload: (opts: { file: File; model: "User" | "Business" | "Listing"; modelId?: string; key: string; description?: string; replace?: boolean }) => {
+    const form = new FormData();
+    form.append("file", opts.file);
+    if (opts.modelId) form.append("modelId", opts.modelId);
+    if (opts.description) form.append("description", opts.description);
+    if (opts.replace === false) form.append("replace", "false");
+    return api<FileDto>("/files/upload", {
+      method: "POST",
+      form,
+      params: { model: opts.model, key: opts.key },
+    });
+  },
+  /** خواندن عمومی یک اسلات — آخرین رکورد؛ ۴۰۴ = هنوز عکسی نیست */
+  getUrl: (model: "User" | "Business" | "Listing", modelId: string, key: string) =>
+    api<FileDto>("/files/getUrl", { params: { model, modelId, key }, auth: false }),
+  /** خواندن عمومی همه‌ی فایل‌های یک اسلات (گالری) یا همه‌ی اسلات‌ها */
+  getList: (model: "User" | "Business" | "Listing", modelId: string, key?: string) =>
+    api<{ items: FileDto[] }>("/files/getList", { params: { model, modelId, key }, auth: false }),
+  /** حذف — از ابر و دیتابیس؛ فقط مالک یا مالک کسب‌وکار/آگهی */
+  remove: (id: string) => api<{ ok: boolean }>(`/files/delete/${encodeURIComponent(id)}`, { method: "DELETE" }),
+};
+
 export const authApi = {
   loginUser: (body: { phone: string; password: string; country?: string }) =>
     api<AuthResponseDto>("/auth/loginUser", { method: "POST", body, auth: false }),
@@ -436,7 +492,7 @@ export const authApi = {
     api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
-  getMe: () => api<{ user: UserDto; businesses: BusinessSummaryDto[] }>("/auth/getMe"),
+  getMe: () => api<MeResponseDto>("/auth/getMe"),
 };
 
 export const goodsApi = {
