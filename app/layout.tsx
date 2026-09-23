@@ -4,6 +4,8 @@ import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AppProviders } from "./providers";
+import { InstallPrompt } from "@/components/install-prompt";
+import { PwaRegister } from "@/components/pwa-register";
 import {
   LOCALE_COOKIE,
   detectLocaleFromAcceptLanguage,
@@ -27,8 +29,16 @@ export const metadata: Metadata = {
   title: "iMach | تطبیق نیازهای خریدار عمده با تامین کنندگان مناسب ",
   description:
     "کاتالوگ فروش هوشمندت را رایگان بساز؛ مشتری‌هایت دنبالت می‌کنند و همیشه آخرین قیمت‌ها را می‌بینند. لیست خریدت را برای تامین‌کننده‌ها بفرست و پیشنهادها را یک‌جا مقایسه کن.",
+  manifest: "/manifest.webmanifest",
   icons: {
     icon: "/logo.svg",
+    apple: "/icons/apple-touch-icon.png",
+  },
+  // iOS: اپِ وب تمام‌صفحه با آیکون خودش روی صفحه‌ی اصلی
+  appleWebApp: {
+    capable: true,
+    title: "iMach",
+    statusBarStyle: "default",
   },
 };
 
@@ -60,7 +70,12 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground font-sans">
-        <AppProviders initialLocale={locale}>{children}</AppProviders>
+        <AppProviders initialLocale={locale}>
+          {children}
+          {/* مدال «نصب برنامه» — فقط موبایل، فقط وقتی نصب نکرده باشد */}
+          <InstallPrompt />
+        </AppProviders>
+        <PwaRegister />
         <Toaster />
       </body>
     </html>

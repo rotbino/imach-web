@@ -223,3 +223,22 @@
   color: #b0b0b0; /* یک خاکستری روشن و کمرنگ */
   opacity: 0.8;   /* شفافیت رو هم می‌تونی کم کنی */
 }
+
+
+/* ── PWA install sheet (components/install-prompt.tsx) ───────────────────── */
+@keyframes imach-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes imach-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
