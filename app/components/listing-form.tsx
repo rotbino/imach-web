@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ApiError, type CategoryNodeDto, type GoodDto } from "@/lib/api";
 import { useBrands, useCategories, useCreateGood, useGoods, useSaveListing, useUploadFile } from "@/lib/queries";
-import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
+import { compressImage } from "@/lib/compress";
+import { CURRENCIES, currencyLabel, fa, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { NumberInput } from "@/components/number-input";
@@ -89,10 +90,14 @@ export function ListingForm({
 
   // ── گالری کالا — فایل‌ها همین‌جا نگه داشته می‌شوند و بلافاصله بعد از ثبتِ
   // آگهی آپلود می‌شوند (فایل قبل از ذخیره‌ی مدل آپلود نشود — خواسته‌ی کاربر)
+  // آپلود ترتیبی است و درصدِ هر عکس روی همان کاشی دیده می‌شود
   const uploadFile = useUploadFile();
   const [pendingImages, setPendingImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [uploadIndex, setUploadIndex] = useState<number | null>(null);
+  const [progress, setProgress] = useState(0);
+  const pctLabel = (p: number) => (numLocale === "fa" ? `${fa(p)}٪` : `${p}%`);
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query.trim()), 300);
@@ -197,19 +202,34 @@ export function ListingForm({
     setImageUrls((list) => list.filter((_, i) => i !== index));
   };
 
-  /** آپلود گالری بعد از ثبت آگهی — غیرمسدودکننده: آگهی ذخیره‌شده می‌ماند */
+  /**
+   * آپلود گالری بعد از ثبت آگهی — غیرمسدودکننده: آگهی ذخیره‌شده می‌ماند.
+   * هر عکس اول سمت کلاینت فشرده می‌شود (هدف ≤ ۵۰۰KB) بعد می‌رود؛ درصدِ
+   * پیشرفت روی کاشیِ همان عکس نمایش داده می‌شود (خواسته‌ی کاربر).
+   */
   const uploadGallery = async (listingId: string) => {
     if (pendingImages.length === 0) return;
     setUploadingImages(true);
     let failed = 0;
-    for (const file of pendingImages) {
+    for (let i = 0; i < pendingImages.length; i++) {
+      setUploadIndex(i);
+      setProgress(0);
       try {
-        await uploadFile.mutateAsync({ file, model: "Listing", modelId: listingId, key: "gallery", replace: false });
+        const file = await compressImage(pendingImages[i]);
+        await uploadFile.mutateAsync({
+          file,
+          model: "Listing",
+          modelId: listingId,
+          key: "gallery",
+          replace: false,
+          onProgress: setProgress,
+        });
       } catch {
         failed++;
       }
     }
     setUploadingImages(false);
+    setUploadIndex(null);
     if (failed > 0) toast({ title: m.files.failed, description: m.files.galleryPending });
   };
 
@@ -440,8 +460,10 @@ export function ListingForm({
                         <Store className="size-4 text-primary" />
                         {m.listing.sections.sell}
                       </h3>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="col-span-2">
+                      {/* موبایل: هر فیلد یک ردیف کامل — عددهای بزرگ جا می‌شوند
+                          (خواسته‌ی کاربر: «توی موبایل بنداز زیر هم») */}
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div className="sm:col-span-2">
                           <Field label={m.listing.specs.price.replace("{unit}", unit)}>
                             <NumberInput
                                 value={price}
@@ -485,7 +507,7 @@ export function ListingForm({
                         <ShoppingBasket className="size-4 text-primary" />
                         {m.listing.sections.buy}
                       </h3>
-                      <div className="flex gap-2">
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <Field label={m.listing.specs.volume}>
                           <NumberInput
                               value={volume}
@@ -562,7 +584,7 @@ export function ListingForm({
 
                               {/* اتریبیوت‌ها */}
                               {attrsOf.length > 0 && (
-                                  <div className="grid grid-cols-2 gap-3">
+                                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     {attrsOf.map((a) => (
                                         <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
                                           {a.type === "enum" && a.options ? (
@@ -610,6 +632,17 @@ export function ListingForm({
                             <div key={url} className="relative size-20 overflow-hidden rounded-xl border">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={url} alt="" className="h-full w-full object-cover" />
+                              {uploadingImages && uploadIndex === i && (
+                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55">
+                                    <span className="text-xs font-black tabular-nums text-white">{pctLabel(progress)}</span>
+                                    <span className="absolute inset-x-0 bottom-0 h-1 bg-white/25">
+                                      <span
+                                          className="block h-full bg-primary transition-[width] duration-200"
+                                          style={{ width: `${progress}%` }}
+                                      />
+                                    </span>
+                                  </div>
+                              )}
                               <button
                                   type="button"
                                   aria-label="remove"

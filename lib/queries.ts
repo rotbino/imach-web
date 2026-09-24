@@ -426,13 +426,29 @@ export function useReadAllNotifications() {
 export function useUploadFile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (opts: { file: File; model: "User" | "Business" | "Listing"; modelId?: string; key: string; description?: string; replace?: boolean }) =>
-      filesApi.upload(opts),
+    mutationFn: (opts: {
+      file: File;
+      model: "User" | "Business" | "Listing";
+      modelId?: string;
+      key: string;
+      description?: string;
+      replace?: boolean;
+      /** درصد ۰–۱۰۰ حین آپلود — برای نمایش زنده روی عکس */
+      onProgress?: (pct: number) => void;
+    }) => filesApi.upload(opts),
     onSuccess: (_data, opts) => {
       // همان قرارداد بقیه‌ی هوک‌ها: پیشوندهای کلید کافی‌اند تا همه‌ی صفحات
-      // مرتبط (کاتالوگ، پنل، پروفایل) تازه شوند
-      if (opts.model === "Listing") void queryClient.invalidateQueries({ queryKey: ["listings"] });
-      if (opts.model === "Business") void queryClient.invalidateQueries({ queryKey: ["business"] });
+      // مرتبط تازه شوند. «business» = پروفایل عمومی کاتالوگ (arm-views) —
+      // بدون آن عکس تازه تا سقف staleTime در کاتالوگ دیده نمی‌شود
+      // (خواسته‌ی کاربر: «بلافاصله بعد از ثبت کالا عکس در کاتالوگ دیده بشه»)
+      if (opts.model === "Listing") {
+        void queryClient.invalidateQueries({ queryKey: ["listings"] });
+        void queryClient.invalidateQueries({ queryKey: ["business"] });
+      }
+      if (opts.model === "Business") {
+        void queryClient.invalidateQueries({ queryKey: ["business"] });
+        void queryClient.invalidateQueries({ queryKey: ["businesses"] });
+      }
       if (opts.model === "User") void queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });

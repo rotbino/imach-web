@@ -17,6 +17,18 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   // منابع توسعه (HMR و…) برای 127.0.0.1 هم باز باشد — وگرنه کلاینت هیدریت نمی‌شود
   allowedDevOrigins: ["127.0.0.1"],
+  images: {
+    // عکس‌های آپلودی مستقیم از ابر آروان می‌آیند (خواسته‌ی کاربر: دانلود بدون
+    // توکن و بدون پروکسی) — next/image آنها را در همان مسیر بهینه می‌کند:
+    // srcset + فرمت مدرن (webp/avif). کلیدهای آروان تغییرناپذیرند → کش بلند.
+    remotePatterns: [
+      { protocol: "https", hostname: "**.arvanstorage.ir" },
+      // درایور لوکال (STORAGE_DRIVER=local) — فقط توسعه
+      { protocol: "http", hostname: "localhost" },
+      { protocol: "http", hostname: "127.0.0.1" },
+    ],
+    minimumCacheTTL: 2_592_000, // ۳۰ روز — url هر عکس یکتاست و هرگز عوض نمی‌شود
+  },
   async rewrites() {
     return [
       {

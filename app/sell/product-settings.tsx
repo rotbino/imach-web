@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { ApiError, type GoodItemDto } from "@/lib/api";
-import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
+import { CURRENCIES, currencyLabel, fa, frequencyLabel, goodName, unitLabel } from "@/lib/format";
+import { compressImage } from "@/lib/compress";
 import { useLocale } from "@/i18n/locale-context";
 import { useDeleteListing, useGoods, useRemoveFile, useSaveListing, useUploadFile } from "@/lib/queries";
 import type { FileDto } from "@/lib/api";
@@ -75,6 +77,9 @@ export function ProductSettingsDialog({
   const removeFile = useRemoveFile();
   const [gallery, setGallery] = useState<FileDto[]>(listing.gallery ?? []);
   const [galleryBusy, setGalleryBusy] = useState(false);
+  // درصد آپلود عکسِ در جریان — روی کاشیِ «افزودن» دیده می‌شود (خواسته‌ی کاربر)
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
+  const pctLabel = (p: number) => (locale === "en" ? `${p}%` : `${fa(p)}٪`);
 
   const addGalleryImage = async (file: File) => {
     if (gallery.length >= 6) {
@@ -82,15 +87,19 @@ export function ProductSettingsDialog({
       return;
     }
     setGalleryBusy(true);
+    setUploadPct(0);
     try {
+      const compressed = await compressImage(file);
       const created = await uploadFile.mutateAsync({
-        file, model: "Listing", modelId: listing.id, key: "gallery", replace: false,
+        file: compressed, model: "Listing", modelId: listing.id, key: "gallery", replace: false,
+        onProgress: setUploadPct,
       });
       setGallery((list) => [...list, created]);
     } catch (err) {
       toast({ title: "آپلود عکس ناموفق بود", description: err instanceof ApiError ? err.message : undefined, variant: "destructive" });
     } finally {
       setGalleryBusy(false);
+      setUploadPct(null);
     }
   };
 
@@ -188,7 +197,8 @@ export function ProductSettingsDialog({
               <Package className="size-4 text-primary" />
               مشخصات فروش
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            {/* موبایل: هر فیلد یک ردیف کامل — عددهای بزرگ جا می‌شوند */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Field label={`قیمت هر ${unit}`}>
                 <NumberInput value={price} onChange={setPrice} min={0} suffix={curName} aria-label={`قیمت هر ${unit}`} />
               </Field>
@@ -216,7 +226,7 @@ export function ProductSettingsDialog({
           {attrsOf.length > 0 && (
             <div className="grid gap-3">
               <p className="text-sm font-extrabold">ویژگی‌ها</p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {attrsOf.map((a) => (
                   <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
                     {a.type === "enum" && a.options ? (
@@ -251,7 +261,7 @@ export function ProductSettingsDialog({
           {isBoth && (
             <div className="grid gap-3 rounded-xl border p-3">
               <p className="text-sm font-extrabold">مشخصات خرید</p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label="حجم خرید در هر دوره">
                   <NumberInput value={volume} onChange={setVolume} min={0} suffix={unit} aria-label="حجم خرید" />
                 </Field>
@@ -282,8 +292,7 @@ export function ProductSettingsDialog({
             <div className="mt-2 flex flex-wrap gap-2">
               {gallery.map((f) => (
                 <div key={f.id} className="relative size-16 overflow-hidden rounded-lg border">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={f.thumbUrl ?? f.url} alt="" className="h-full w-full object-cover" />
+                  <Image src={f.thumbUrl ?? f.url} alt="" width={64} height={64} className="h-full w-full object-cover" />
                   <button
                     type="button"
                     aria-label="حذف عکس"
@@ -312,7 +321,16 @@ export function ProductSettingsDialog({
                       if (file) void addGalleryImage(file);
                     }}
                   />
-                  {galleryBusy ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" strokeWidth={1.75} />}
+                  {uploadPct !== null ? (
+                    <span className="flex flex-col items-center gap-1">
+                      <span className="text-[11px] font-black tabular-nums">{pctLabel(uploadPct)}</span>
+                      <span className="h-0.5 w-8 overflow-hidden rounded-full bg-muted">
+                        <span className="block h-full bg-primary transition-[width] duration-200" style={{ width: `${uploadPct}%` }} />
+                      </span>
+                    </span>
+                  ) : (
+                    <ImagePlus className="size-4" strokeWidth={1.75} />
+                  )}
                 </label>
               )}
             </div>

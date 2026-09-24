@@ -445,25 +445,94 @@ export interface FileDto {
   createdAt: string;
 }
 
+/**
+ * آپلود multipart با رویداد پیشرفت — fetch رویداد upload ندارد؛ XHR دارد.
+ * همان قرارداد api() را پیاده می‌کند: BASE + XTransformPort، هدر زبان،
+ * Bearer، و روی 401 یک رفرش ساکت + تلاش مجدد.
+ */
+function uploadWithProgress(opts: {
+  file: File;
+  model: "User" | "Business" | "Listing";
+  modelId?: string;
+  key: string;
+  description?: string;
+  replace?: boolean;
+  onProgress?: (pct: number) => void;
+  _retried?: boolean;
+}): Promise<FileDto> {
+  const form = new FormData();
+  form.append("file", opts.file);
+  if (opts.modelId) form.append("modelId", opts.modelId);
+  if (opts.description) form.append("description", opts.description);
+  if (opts.replace === false) form.append("replace", "false");
+
+  return new Promise<FileDto>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", buildUrl("/files/upload", { model: opts.model, key: opts.key }));
+    xhr.withCredentials = true;
+    xhr.responseType = "text";
+    xhr.setRequestHeader("Accept-Language", readLocaleCookie());
+    const token = getAccessToken();
+    if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.upload.onprogress = (e) => {
+      if (!opts.onProgress || !e.lengthComputable) return;
+      // ۹۹٪ سقفِ نوار است — ۱۰۰ فقط وقتی پاسخ سرور واقعا آمد
+      opts.onProgress(Math.min(99, Math.round((e.loaded / e.total) * 100)));
+    };
+
+    xhr.onload = async () => {
+      if (xhr.status === 401 && !opts._retried) {
+        const fresh = await silentRefresh();
+        if (fresh) {
+          try {
+            resolve(await uploadWithProgress({ ...opts, _retried: true }));
+          } catch (err) {
+            reject(err);
+          }
+          return;
+        }
+      }
+      let data: { error?: string; message?: string } | null = null;
+      try {
+        data = JSON.parse(xhr.responseText) as { error?: string; message?: string };
+      } catch {
+        /* non-JSON error body */
+      }
+      if (xhr.status >= 200 && xhr.status < 300 && data) {
+        opts.onProgress?.(100);
+        resolve(data as FileDto);
+      } else {
+        reject(
+          new ApiError(xhr.status, data?.error ?? "HTTP_ERROR", data?.message ?? `خطای ${xhr.status}`)
+        );
+      }
+    };
+    xhr.onerror = () => reject(new ApiError(0, "NETWORK_ERROR", "خطای شبکه در آپلود فایل"));
+    xhr.send(form);
+  });
+}
+
 export const filesApi = {
   /**
    * آپلود multipart — مدل و اسلات (کلید) از سمت کلاینت می‌آید:
    * model = User | Business | Listing · key = avatar | logo | gallery | …
    * replace=true (پیش‌فرض) اسلات تک‌فایلی است: بعد از موفقیتِ آپلود، قبلی‌ها
    * سمت سرور پاک می‌شوند — اولی آپلود شود، تمام که شد قبلی حذف شود.
+   *
+   * زیرِ hood یک XHR است نه fetch — فقط XHR رویداد upload.onprogress دارد تا
+   * درصد پیشرفت هر عکس زنده نمایش داده شود (خواسته‌ی کاربر).
    */
-  upload: (opts: { file: File; model: "User" | "Business" | "Listing"; modelId?: string; key: string; description?: string; replace?: boolean }) => {
-    const form = new FormData();
-    form.append("file", opts.file);
-    if (opts.modelId) form.append("modelId", opts.modelId);
-    if (opts.description) form.append("description", opts.description);
-    if (opts.replace === false) form.append("replace", "false");
-    return api<FileDto>("/files/upload", {
-      method: "POST",
-      form,
-      params: { model: opts.model, key: opts.key },
-    });
-  },
+  upload: (opts: {
+    file: File;
+    model: "User" | "Business" | "Listing";
+    modelId?: string;
+    key: string;
+    description?: string;
+    replace?: boolean;
+    /** درصد ۰–۱۰۰ حین آپلود */
+    onProgress?: (pct: number) => void;
+  }) => uploadWithProgress(opts),
   /** خواندن عمومی یک اسلات — آخرین رکورد؛ ۴۰۴ = هنوز عکسی نیست */
   getUrl: (model: "User" | "Business" | "Listing", modelId: string, key: string) =>
     api<FileDto>("/files/getUrl", { params: { model, modelId, key }, auth: false }),

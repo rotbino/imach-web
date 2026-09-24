@@ -132,7 +132,7 @@ export function NumberInput({
       )}
     >
       {prefix && (
-        <span className="select-none border-e px-3 py-2.5 text-sm font-bold text-muted-foreground">
+        <span className="select-none border-e px-2 py-2.5 text-sm font-bold text-muted-foreground sm:px-3">
           {prefix}
         </span>
       )}
@@ -141,14 +141,14 @@ export function NumberInput({
         type="text"
         inputMode="numeric"
         disabled={disabled}
-        className="w-full min-w-0 bg-transparent px-3 py-2.5 text-right text-sm shadow-none outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+        className="w-full min-w-0 bg-transparent px-2 py-2.5 text-right text-sm shadow-none outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed sm:px-3"
         value={display}
         onChange={handleChange}
         onBlur={handleBlur}
         {...props}
       />
       {suffix && (
-        <span className="select-none border-s px-3 py-2.5 text-sm font-bold text-muted-foreground">
+        <span className="select-none border-s px-2 py-2.5 text-sm font-bold text-muted-foreground sm:px-3">
           {suffix}
         </span>
       )}

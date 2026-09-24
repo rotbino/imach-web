@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   adminFilesApi,
   useAdminMutation,
@@ -76,10 +77,9 @@ export default function AdminFilesPage() {
 
   const fileCard = (f: AdminFileDto, label: string) => (
     <div key={f.id} className="overflow-hidden rounded-xl border bg-white">
-      <div className="grid aspect-square place-items-center bg-accent/20">
+      <div className="relative grid aspect-square place-items-center bg-accent/20">
         {f.thumbUrl || f.url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={f.thumbUrl ?? f.url} alt="" className="h-full w-full object-cover" />
+          <Image src={f.thumbUrl ?? f.url} alt="" fill sizes="200px" className="object-cover" />
         ) : (
           <ImageOff className="size-6 text-muted-foreground" />
         )}

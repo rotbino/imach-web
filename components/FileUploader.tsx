@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { compressImage } from "@/lib/compress";
@@ -96,8 +97,19 @@ export function FileUploader({
           <Loader2 className="size-6 animate-spin text-primary" />
         ) : showPreview ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={showPreview} alt="" className={cn("h-full w-full object-cover", rounded)} />
+            {/* عکس سروری → next/image (بهینه‌سازی خودکار)؛ پیش‌نمایش blob محلی → img خام */}
+            {/^https?:\/\//.test(showPreview) ? (
+              <Image
+                src={showPreview}
+                alt=""
+                width={size}
+                height={size}
+                className={cn("h-full w-full object-cover", rounded)}
+              />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={showPreview} alt="" className={cn("h-full w-full object-cover", rounded)} />
+            )}
             {onRemove && !disabled && (
               <button
                 type="button"

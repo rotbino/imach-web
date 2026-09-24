@@ -174,7 +174,7 @@ export const en: Messages = {
     failed: "Photo upload failed",
     removeFailed: "Photo removal failed",
     galleryTitle: "Product images (optional)",
-    galleryHint: "Real photos build buyer trust — up to 6 images, max 10 MB each",
+    galleryHint: "Real photos build buyer trust — up to 6 images; images are optimized for the web automatically",
     galleryPending: "Images upload right after the listing is saved",
     tooMany: "Up to 6 images",
   },

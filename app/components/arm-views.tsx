@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
@@ -155,10 +156,12 @@ export function SellArmView({ slug }: { slug: string }) {
       <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-col items-center text-center">
           {biz.logo?.thumbUrl || biz.logo?.url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            /* next/image — بهینه‌سازی خودکار (خواسته‌ی کاربر) */
+            <Image
               src={(biz.logo?.thumbUrl ?? biz.logo?.url)!}
               alt={biz.name}
+              width={80}
+              height={80}
               className="size-20 rounded-3xl object-cover shadow-inner"
             />
           ) : (
@@ -220,8 +223,16 @@ export function SellArmView({ slug }: { slug: string }) {
               return (
               <article key={l.id} className="animate-fade-up overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
                 {photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={photo.thumbUrl ?? photo.url} alt={goodName(l.good)} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+                  /* next/image — تامبنیل ابر با srcset و فرمت بهینه */
+                  <div className="relative aspect-[4/3] w-full overflow-hidden">
+                    <Image
+                      src={photo.thumbUrl ?? photo.url}
+                      alt={goodName(l.good)}
+                      fill
+                      sizes="(min-width: 640px) 33vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   // بی‌عکس: کاشی حرفیِ تخت — همان هویت پیش از سیستم فایل‌ها
                   <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
@@ -328,10 +339,11 @@ export function BuyArmView({ slug }: { slug: string }) {
       <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-col items-center text-center">
           {biz.logo?.thumbUrl || biz.logo?.url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={(biz.logo?.thumbUrl ?? biz.logo?.url)!}
               alt={biz.name}
+              width={80}
+              height={80}
               className="size-20 rounded-3xl object-cover shadow-inner"
             />
           ) : (
@@ -411,8 +423,13 @@ export function BuyArmView({ slug }: { slug: string }) {
               return (
               <article key={l.id} className="animate-fade-up flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm">
                 {photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={photo.thumbUrl ?? photo.url} alt={goodName(l.good)} loading="lazy" className="size-11 shrink-0 rounded-xl object-cover" />
+                  <Image
+                    src={photo.thumbUrl ?? photo.url}
+                    alt={goodName(l.good)}
+                    width={44}
+                    height={44}
+                    className="size-11 shrink-0 rounded-xl object-cover"
+                  />
                 ) : (
                   <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
                     {goodName(l.good).slice(0, 1)}
