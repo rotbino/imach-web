@@ -41,15 +41,30 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
   const logoQ = useBusinessLogo(biz.id);
   const uploadFile = useUploadFile();
   const removeFile = useRemoveFile();
+  // درصد/فاز زنده‌ی آپلود لوگو — برای حلقه‌ی پیشرفت برند (UploadRing)
+  const [logoPct, setLogoPct] = useState<number | null>(null);
+  const [logoPhase, setLogoPhase] = useState<"sending" | "processing">("sending");
 
   const logo = logoQ.data;
 
   const uploadLogo = (file: File) => {
+    setLogoPct(0);
+    setLogoPhase("sending");
     uploadFile.mutate(
-      { file, model: "Business", modelId: biz.id, key: "logo" },
+      {
+        file,
+        model: "Business",
+        modelId: biz.id,
+        key: "logo",
+        onProgress: (pct, phase) => {
+          setLogoPct(pct);
+          setLogoPhase(phase);
+        },
+      },
       {
         onSuccess: () => toast({ title: "لوگو آپلود شد", description: "در کاتالوگ و لیست خرید شما نمایش داده می‌شود." }),
         onError: (e) => toast({ title: "آپلود لوگو ناموفق بود", description: e.message, variant: "destructive" }),
+        onSettled: () => setLogoPct(null),
       }
     );
   };
@@ -108,6 +123,8 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
           size={56}
           value={logo ? { url: logo.url, thumbUrl: logo.thumbUrl } : null}
           uploading={uploadFile.isPending}
+          progress={logoPct}
+          phase={logoPhase}
           label="لوگو"
           onSelect={uploadLogo}
           onRemove={logo ? removeLogo : undefined}

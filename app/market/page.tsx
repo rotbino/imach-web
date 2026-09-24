@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   CURRENCIES,
@@ -260,11 +261,28 @@ function BuyRequestRow({
     <article className="animate-fade-up rounded-2xl border bg-white p-4 shadow-sm transition hover:border-stone-300 hover:shadow-md">
       {/* عنوان + اقدام‌ها — یک نگاه، هم‌زمان دیده می‌شوند (خواسته‌ی کاربر) */}
       <div className="flex items-start justify-between gap-3">
-        <Link href={`/buy/${l.business.slug}`} className="block min-w-0 grow">
-          <p className="truncate font-extrabold" title={goodName(l.good)}>
-            نیاز به خرید {goodName(l.good)}
-          </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
+        <Link href={`/buy/${l.business.slug}`} className="flex min-w-0 grow items-center gap-3">
+          {/* اولین عکس کالا — هر کارتِ کالا عکس می‌خواهد (خواسته‌ی کاربر) */}
+          {l.gallery?.[0] ? (
+            <Image
+              src={l.gallery[0].thumbUrl ?? l.gallery[0].url}
+              alt={goodName(l.good)}
+              width={48}
+              height={48}
+              unoptimized
+              className="size-12 shrink-0 rounded-xl object-cover"
+            />
+          ) : (
+            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-500">
+              {goodName(l.good).slice(0, 1)}
+            </span>
+          )}
+          <div className="min-w-0">
+            <p className="truncate font-extrabold" title={goodName(l.good)}>
+              نیاز به خرید {goodName(l.good)}
+            </p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
+          </div>
         </Link>
         {authed && state && bizId && (
           <div className="flex shrink-0 items-center gap-1.5">
@@ -687,9 +705,21 @@ function SellRow({
   return (
     <article className="flex animate-fade-up items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:border-stone-300 hover:shadow-md">
       <Link href={`/sell/${l.business.slug}`} className="flex min-w-0 grow items-center gap-3">
-        <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent/70 via-accent/30 to-transparent text-xl font-black text-primary/40">
-          {goodName(l.good).slice(0, 1)}
-        </div>
+        {/* اولین عکس کالا — هر کارتِ کالا عکس می‌خواهد (خواسته‌ی کاربر) */}
+        {l.gallery?.[0] ? (
+          <Image
+            src={l.gallery[0].thumbUrl ?? l.gallery[0].url}
+            alt={goodName(l.good)}
+            width={48}
+            height={48}
+            unoptimized
+            className="size-12 shrink-0 rounded-xl object-cover"
+          />
+        ) : (
+          <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent/70 via-accent/30 to-transparent text-xl font-black text-primary/40">
+            {goodName(l.good).slice(0, 1)}
+          </div>
+        )}
         <div className="min-w-0">
           <p className="truncate font-extrabold" title={goodName(l.good)}>
             {goodName(l.good)}

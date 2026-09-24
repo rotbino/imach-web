@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
@@ -245,14 +246,29 @@ function ShowcaseHeader({
           </div>
         ) : (
           <div className="space-y-3">
-            {listings.map((l) => (
+            {listings.map((l) => {
+              // اولین عکس گالری — هم‌راستا با ویترین عمومی خرید (هر جا کارت کالا هست، عکس هم هست)
+              const photo = l.gallery?.[0];
+              return (
               <article
                 key={l.id}
                 className="animate-fade-up flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm"
               >
-                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
-                  {goodName(l.good).slice(0, 1)}
-                </span>
+                {photo ? (
+                  /* تامبنیل ابر آروان — unoptimized تا next/image سرِ هاست‌کانفیگ کرش نکند */
+                  <Image
+                    src={photo.thumbUrl ?? photo.url}
+                    alt={goodName(l.good)}
+                    width={44}
+                    height={44}
+                    unoptimized
+                    className="size-11 shrink-0 rounded-xl object-cover"
+                  />
+                ) : (
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-600">
+                    {goodName(l.good).slice(0, 1)}
+                  </span>
+                )}
                 <div className="min-w-0 grow">
                   <p className="truncate font-extrabold" title={goodName(l.good)}>
                     {goodName(l.good)}
@@ -290,7 +306,8 @@ function ShowcaseHeader({
                   </button>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

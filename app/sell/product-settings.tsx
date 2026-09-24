@@ -3,12 +3,13 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { ApiError, type GoodItemDto } from "@/lib/api";
-import { CURRENCIES, currencyLabel, fa, frequencyLabel, goodName, unitLabel } from "@/lib/format";
+import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { compressImage } from "@/lib/compress";
 import { useLocale } from "@/i18n/locale-context";
 import { useDeleteListing, useGoods, useRemoveFile, useSaveListing, useUploadFile } from "@/lib/queries";
 import type { FileDto } from "@/lib/api";
 import { NumberInput } from "@/components/number-input";
+import { UploadRing } from "@/components/upload-ring";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -77,9 +78,9 @@ export function ProductSettingsDialog({
   const removeFile = useRemoveFile();
   const [gallery, setGallery] = useState<FileDto[]>(listing.gallery ?? []);
   const [galleryBusy, setGalleryBusy] = useState(false);
-  // درصد آپلود عکسِ در جریان — روی کاشیِ «افزودن» دیده می‌شود (خواسته‌ی کاربر)
+  // درصد/فاز آپلود عکسِ در جریان — حلقه‌ی برند روی کاشیِ «افزودن» (خواسته‌ی کاربر)
   const [uploadPct, setUploadPct] = useState<number | null>(null);
-  const pctLabel = (p: number) => (locale === "en" ? `${p}%` : `${fa(p)}٪`);
+  const [uploadPhase, setUploadPhase] = useState<"sending" | "processing">("sending");
 
   const addGalleryImage = async (file: File) => {
     if (gallery.length >= 6) {
@@ -88,11 +89,15 @@ export function ProductSettingsDialog({
     }
     setGalleryBusy(true);
     setUploadPct(0);
+    setUploadPhase("sending");
     try {
       const compressed = await compressImage(file);
       const created = await uploadFile.mutateAsync({
         file: compressed, model: "Listing", modelId: listing.id, key: "gallery", replace: false,
-        onProgress: setUploadPct,
+        onProgress: (pct, phase) => {
+          setUploadPct(pct);
+          setUploadPhase(phase);
+        },
       });
       setGallery((list) => [...list, created]);
     } catch (err) {
@@ -324,12 +329,13 @@ export function ProductSettingsDialog({
                     }}
                   />
                   {uploadPct !== null ? (
-                    <span className="flex flex-col items-center gap-1">
-                      <span className="text-[11px] font-black tabular-nums">{pctLabel(uploadPct)}</span>
-                      <span className="h-0.5 w-8 overflow-hidden rounded-full bg-muted">
-                        <span className="block h-full bg-primary transition-[width] duration-200" style={{ width: `${uploadPct}%` }} />
-                      </span>
-                    </span>
+                    /* حلقه‌ی پیشرفت برند — هم‌خانواده‌ی حلقه‌ی فرم ثبت کالا */
+                    <UploadRing
+                      progress={uploadPct}
+                      phase={uploadPhase}
+                      size={52}
+                      processingLabel={locale === "en" ? "Processing" : "پردازش"}
+                    />
                   ) : (
                     <ImagePlus className="size-4" strokeWidth={1.75} />
                   )}

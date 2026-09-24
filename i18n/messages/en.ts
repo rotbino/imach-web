@@ -169,6 +169,7 @@ export const en: Messages = {
     logoLabel: "Logo",
     addPhoto: "Add photo",
     uploading: "Uploading…",
+    processing: "Processing…",
     uploaded: "Photo uploaded",
     removed: "Photo removed",
     failed: "Photo upload failed",

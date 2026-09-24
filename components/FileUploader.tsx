@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { ImagePlus, Loader2, X } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { compressImage } from "@/lib/compress";
+import { UploadRing } from "@/components/upload-ring";
 
 /*
  * FileUploader — انتخابگر عکس تخت و مینیمال (فلسفه‌ی UI پروژه: اورنج/گرای،
@@ -30,6 +31,10 @@ export interface FileUploaderProps {
   value?: UploaderValue | null;
   /** آپلود/انتظار در جریان است */
   uploading?: boolean;
+  /** درصد زنده‌ی آپلود (۰–۹۹) — اگر والد ندهد حلقه فقط می‌چرخد */
+  progress?: number | null;
+  /** فاز آپلود — sending = بایت‌ها، processing = کارِ سرور */
+  phase?: "sending" | "processing";
   disabled?: boolean;
   /** برچسب کاشی خالی — i18n از بیرون می‌آید */
   label?: string;
@@ -46,6 +51,8 @@ export function FileUploader({
   accept = "image/*",
   value,
   uploading = false,
+  progress = null,
+  phase = "sending",
   disabled = false,
   label,
   onSelect,
@@ -94,7 +101,14 @@ export function FileUploader({
         <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={handleSelect} disabled={disabled || uploading} />
 
         {uploading ? (
-          <Loader2 className="size-6 animate-spin text-primary" />
+          /* حلقه‌ی پیشرفت برند — هم‌خانواده‌ی حلقه‌ی گالری؛ اگر والد درصد ندهد
+             فقط قوس چرخان (پردازش) دیده می‌شود */
+          <UploadRing
+            progress={progress ?? 0}
+            phase={progress === null ? "processing" : phase}
+            size={Math.max(40, Math.min(72, size * 0.72))}
+            showPercent={progress !== null}
+          />
         ) : showPreview ? (
           <>
             {/* عکس سروری (آروان — از قبل فشرده+تامبنیل) → unoptimized تا next/image

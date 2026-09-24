@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
@@ -225,15 +226,34 @@ function ShowcaseHeader({
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {listings.map((l) => (
+            {listings.map((l) => {
+              // اولین عکس گالری — همان که در ویترین عمومی دیده می‌شود (WYSIWYG)
+              const photo = l.gallery?.[0];
+              return (
               <article
                 key={l.id}
                 className="animate-fade-up overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
               >
-                <div className="relative grid aspect-[4/3] place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
-                  <span className="text-5xl font-black text-primary/20" aria-hidden>
-                    {goodName(l.good).slice(0, 1)}
-                  </span>
+                <div className="relative aspect-[4/3] w-full overflow-hidden">
+                  {photo ? (
+                    /* تامبنیل ابر آروان — unoptimized: عکس از قبل فشرده است و
+                       next/image نباید سرِ هاست‌کانفیگ کرش کند */
+                    <Image
+                      src={photo.thumbUrl ?? photo.url}
+                      alt={goodName(l.good)}
+                      fill
+                      sizes="(min-width: 640px) 33vw, 50vw"
+                      unoptimized
+                      className="object-cover"
+                    />
+                  ) : (
+                    /* بی‌عکس: کاشی حرفیِ تخت */
+                    <div className="grid h-full w-full place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
+                      <span className="text-5xl font-black text-primary/20" aria-hidden>
+                        {goodName(l.good).slice(0, 1)}
+                      </span>
+                    </div>
+                  )}
                   {/* چرخ‌دنده — مستقیم روی خود کالا، مثل ویرایش همین‌جا */}
                   <button
                     type="button"
@@ -265,7 +285,8 @@ function ShowcaseHeader({
                   </Badge>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

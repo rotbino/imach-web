@@ -8,6 +8,7 @@ import { CURRENCIES, currencyLabel, fa, frequencyLabel, goodName, unitLabel } fr
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { NumberInput } from "@/components/number-input";
+import { UploadRing } from "@/components/upload-ring";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,7 +98,8 @@ export function ListingForm({
   const [uploadingImages, setUploadingImages] = useState(false);
   const [uploadIndex, setUploadIndex] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
-  const pctLabel = (p: number) => (numLocale === "fa" ? `${fa(p)}٪` : `${p}%`);
+  /** فاز آپلود فعلی — sending = بایت‌ها، processing = کارِ سرور (آروان + تامبنیل) */
+  const [uploadPhase, setUploadPhase] = useState<"sending" | "processing">("sending");
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query.trim()), 300);
@@ -214,6 +216,7 @@ export function ListingForm({
     for (let i = 0; i < pendingImages.length; i++) {
       setUploadIndex(i);
       setProgress(0);
+      setUploadPhase("sending");
       try {
         const file = await compressImage(pendingImages[i]);
         await uploadFile.mutateAsync({
@@ -222,7 +225,10 @@ export function ListingForm({
           modelId: listingId,
           key: "gallery",
           replace: false,
-          onProgress: setProgress,
+          onProgress: (pct, phase) => {
+            setProgress(pct);
+            setUploadPhase(phase);
+          },
         });
       } catch {
         failed++;
@@ -633,14 +639,16 @@ export function ListingForm({
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={url} alt="" className="h-full w-full object-cover" />
                               {uploadingImages && uploadIndex === i && (
-                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55">
-                                    <span className="text-xs font-black tabular-nums text-white">{pctLabel(progress)}</span>
-                                    <span className="absolute inset-x-0 bottom-0 h-1 bg-white/25">
-                                      <span
-                                          className="block h-full bg-primary transition-[width] duration-200"
-                                          style={{ width: `${progress}%` }}
-                                      />
-                                    </span>
+                                  /* حلقه‌ی پیشرفت برند — بزرگ، درصد با رنگ برند وسط حلقه؛
+                                     در فاز پردازشِ سرور قوس چرخان + «در حال پردازش» تا درصدِ
+                                     ۹۹ دیگر الکی به‌نظر نرسد (خواسته‌ی کاربر) */
+                                  <div className="absolute inset-0 z-10 grid place-items-center bg-background/85 backdrop-blur-[1.5px]">
+                                    <UploadRing
+                                      progress={progress}
+                                      phase={uploadPhase}
+                                      size={72}
+                                      processingLabel={m.files.processing}
+                                    />
                                   </div>
                               )}
                               <button
