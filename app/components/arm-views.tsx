@@ -156,12 +156,14 @@ export function SellArmView({ slug }: { slug: string }) {
       <section className="rounded-3xl border bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-col items-center text-center">
           {biz.logo?.thumbUrl || biz.logo?.url ? (
-            /* next/image — بهینه‌سازی خودکار (خواسته‌ی کاربر) */
+            /* عکس ابر آروان (از قبل فشرده+تامبنیل) — unoptimized تا next/image
+               هیچ‌وقت سرِ هاست‌کانفیگ کرش نکند (خطای stale-build کاربر) */
             <Image
               src={(biz.logo?.thumbUrl ?? biz.logo?.url)!}
               alt={biz.name}
               width={80}
               height={80}
+              unoptimized
               className="size-20 rounded-3xl object-cover shadow-inner"
             />
           ) : (
@@ -223,13 +225,15 @@ export function SellArmView({ slug }: { slug: string }) {
               return (
               <article key={l.id} className="animate-fade-up overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
                 {photo ? (
-                  /* next/image — تامبنیل ابر با srcset و فرمت بهینه */
+                  /* تامبنیل ابر — unoptimized: عکس از قبل فشرده است و next/image
+                     نباید سرِ هاست‌کانفیگ کرش کند */
                   <div className="relative aspect-[4/3] w-full overflow-hidden">
                     <Image
                       src={photo.thumbUrl ?? photo.url}
                       alt={goodName(l.good)}
                       fill
                       sizes="(min-width: 640px) 33vw, 50vw"
+                      unoptimized
                       className="object-cover"
                     />
                   </div>
@@ -344,6 +348,7 @@ export function BuyArmView({ slug }: { slug: string }) {
               alt={biz.name}
               width={80}
               height={80}
+              unoptimized
               className="size-20 rounded-3xl object-cover shadow-inner"
             />
           ) : (
@@ -428,6 +433,7 @@ export function BuyArmView({ slug }: { slug: string }) {
                     alt={goodName(l.good)}
                     width={44}
                     height={44}
+                    unoptimized
                     className="size-11 shrink-0 rounded-xl object-cover"
                   />
                 ) : (

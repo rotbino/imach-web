@@ -78,8 +78,9 @@ export default function AdminFilesPage() {
   const fileCard = (f: AdminFileDto, label: string) => (
     <div key={f.id} className="overflow-hidden rounded-xl border bg-white">
       <div className="relative grid aspect-square place-items-center bg-accent/20">
+        {/* unoptimized — عکس آروان از قبل فشرده/تامبنیل؛ ضد کرش هاست‌کانفیگ */}
         {f.thumbUrl || f.url ? (
-          <Image src={f.thumbUrl ?? f.url} alt="" fill sizes="200px" className="object-cover" />
+          <Image src={f.thumbUrl ?? f.url} alt="" fill sizes="200px" unoptimized className="object-cover" />
         ) : (
           <ImageOff className="size-6 text-muted-foreground" />
         )}

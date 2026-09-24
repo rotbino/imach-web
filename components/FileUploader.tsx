@@ -97,13 +97,15 @@ export function FileUploader({
           <Loader2 className="size-6 animate-spin text-primary" />
         ) : showPreview ? (
           <>
-            {/* عکس سروری → next/image (بهینه‌سازی خودکار)؛ پیش‌نمایش blob محلی → img خام */}
+            {/* عکس سروری (آروان — از قبل فشرده+تامبنیل) → unoptimized تا next/image
+                هیچ‌وقت سرِ هاست‌کانفیگ next.config کرش نکند؛ پیش‌نمایش blob محلی → img خام */}
             {/^https?:\/\//.test(showPreview) ? (
               <Image
                 src={showPreview}
                 alt=""
                 width={size}
                 height={size}
+                unoptimized
                 className={cn("h-full w-full object-cover", rounded)}
               />
             ) : (

@@ -292,7 +292,9 @@ export function ProductSettingsDialog({
             <div className="mt-2 flex flex-wrap gap-2">
               {gallery.map((f) => (
                 <div key={f.id} className="relative size-16 overflow-hidden rounded-lg border">
-                  <Image src={f.thumbUrl ?? f.url} alt="" width={64} height={64} className="h-full w-full object-cover" />
+                  {/* unoptimized — عکس آروان از قبل فشرده/تامبنیل؛ next/image نباید
+                      سرِ هاست‌کانفیگ next.config کرش کند (خطای stale-build) */}
+                  <Image src={f.thumbUrl ?? f.url} alt="" width={64} height={64} unoptimized className="h-full w-full object-cover" />
                   <button
                     type="button"
                     aria-label="حذف عکس"
