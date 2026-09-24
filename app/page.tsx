@@ -23,14 +23,18 @@ import {
     BadgeCheck,
     BatteryMedium,
     BellRing,
+    Building2,
     Check,
     CheckCircle2,
     ChevronDown,
     Clock3,
+    Copy,
     Link2,
     MapPin,
+    MessageCircle,
     PencilLine,
     Plus,
+    Quote,
     Search,
     Send,
     Share2,
@@ -38,6 +42,7 @@ import {
     Signal,
     Store,
     Timer,
+    TrendingUp,
     Users,
     Wifi,
 } from "lucide-react";
@@ -109,14 +114,71 @@ const FAQS = [
 ] as const;
 
 /* ─────────────────────────────────────────────────────────────
+ * Testimonials — دید خریدار، فروشنده، بازاریاب، تولیدکننده
+ * ───────────────────────────────────────────────────────────── */
+
+const TESTIMONIALS = [
+    {
+        name: "حسن احمدی",
+        role: "مدیر فروش · ایس مک",
+        tone: "sell" as const,
+        quote:
+            "قبلاً برای هر مشتری قیمت‌ها را دستی می‌فرستادم. حالا یک لینک دارم که همیشه به‌روزه. مشتری‌هام می‌دونن هر وقت بازش کنن، آخرین قیمت رو می‌بینن.",
+    },
+    {
+        name: "علی صبوری",
+        role: "بازاریاب · پخش علوی",
+        tone: "sell" as const,
+        quote:
+            "لینک کاتالوگم رو توی گروه‌های صنفی فرستادم. دو تا مشتری جدید فقط از همون‌جا اومدن. خودم هم باورم نمی‌شد این‌قدر سریع جواب بده.",
+    },
+    {
+        name: "رضا صادقی",
+        role: "مسئول خرید · کارگاه کابینت",
+        tone: "buy" as const,
+        quote:
+            "لیست خریدم رو برای سه تا تأمین‌کننده فرستادم. قیمت‌ها رو کنار هم دیدم و بدون تماس تلفنی، بهترین رو انتخاب کردم. وقت زیادی صرفه‌جویی شد.",
+    },
+    {
+        name: "زهرا کریمی",
+        role: "مدیر تولید · لبنیات سپید",
+        tone: "sell" as const,
+        quote:
+            "چون کاتالوگم لینک ثابت داره، دیگه هر بار قیمت عوض می‌کنم، لازم نیست به همه خبر بدم. مشتری‌ها خودشون آخرین قیمت رو می‌بینن.",
+    },
+    {
+        name: "محمد نوری",
+        role: "خریدار عمده · رستوران آراد",
+        tone: "buy" as const,
+        quote:
+            "قبلاً برای پیدا کردن تأمین‌کننده پیاز، کلی وقت تلف می‌کردم. حالا لیست نیازم رو می‌فرستم و تأمین‌کننده‌ها خودشون پیشنهاد می‌دن.",
+    },
+] as const;
+
+/* ─────────────────────────────────────────────────────────────
+ * Brands — کسب‌وکارهایی که از آی‌مچ استفاده می‌کنن
+ * ───────────────────────────────────────────────────────────── */
+
+const BRANDS = [
+    "ایس مک",
+    "پخش علوی",
+    "لبنیات سپید",
+    "کارگاه کابینت آراد",
+    "پخش میوه سبلان",
+    "طبیعت‌دانه",
+    "تره‌بار آرتام",
+    "پخش سوپرمارکتی آسمان",
+] as const;
+
+/* ─────────────────────────────────────────────────────────────
  * Shared
  * ───────────────────────────────────────────────────────────── */
 
 function SectionHead({
-    eyebrow,
-    title,
-    sub,
-}: {
+                         eyebrow,
+                         title,
+                         sub,
+                     }: {
     eyebrow?: string;
     title: string;
     sub?: string;
@@ -143,11 +205,7 @@ function SectionHead({
     );
 }
 
-function PhoneFrame({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+function PhoneFrame({ children }: { children: React.ReactNode }) {
     return (
         <div className="relative mx-auto w-full max-w-[315px]">
             <div
@@ -161,7 +219,6 @@ function PhoneFrame({
                         aria-hidden
                         className="absolute left-1/2 top-0 z-20 h-5 w-24 -translate-x-1/2 rounded-b-2xl bg-stone-900"
                     />
-
                     {children}
                 </div>
             </div>
@@ -176,9 +233,7 @@ function StatusBar() {
             className="flex items-center justify-between border-b bg-white px-4 py-1.5 pt-2 text-[9px] font-bold text-muted-foreground"
         >
             <span>۹:۴۱</span>
-
             <span className="h-2.5 w-10 rounded-full bg-stone-100" />
-
             <span className="flex items-center gap-1">
                 <Signal className="size-3" />
                 <Wifi className="size-3" />
@@ -193,21 +248,9 @@ function StatusBar() {
  * ───────────────────────────────────────────────────────────── */
 
 const CATALOG_ROWS = [
-    {
-        name: "روغن سرخ‌کردنی ۱۰ لیتری",
-        price: 420000,
-        when: "امروز · ۹:۴۰",
-    },
-    {
-        name: "برنج طارم اعلا ۱۰ کیلویی",
-        price: 980000,
-        when: "امروز · ۹:۴۰",
-    },
-    {
-        name: "پیاز — کیسه ۲۵ کیلویی",
-        price: 310000,
-        when: "دیروز",
-    },
+    { name: "روغن سرخ‌کردنی ۱۰ لیتری", price: 420000, when: "امروز · ۹:۴۰" },
+    { name: "برنج طارم اعلا ۱۰ کیلویی", price: 980000, when: "امروز · ۹:۴۰" },
+    { name: "پیاز — کیسه ۲۵ کیلویی", price: 310000, when: "دیروز" },
 ];
 
 function CatalogScreen() {
@@ -295,24 +338,9 @@ function CatalogScreen() {
  * ───────────────────────────────────────────────────────────── */
 
 const OFFER_ROWS = [
-    {
-        name: "عمده‌فروشی میوه سبلان",
-        price: 4200000,
-        best: true,
-        when: "۱۰ دقیقه پیش",
-    },
-    {
-        name: "طبیعت‌دانه پخش",
-        price: 4350000,
-        best: false,
-        when: "۲۵ دقیقه پیش",
-    },
-    {
-        name: "تره‌بار آرتام",
-        price: 4450000,
-        best: false,
-        when: "۱ ساعت پیش",
-    },
+    { name: "عمده‌فروشی میوه سبلان", price: 4200000, best: true, when: "۱۰ دقیقه پیش" },
+    { name: "طبیعت‌دانه پخش", price: 4350000, best: false, when: "۲۵ دقیقه پیش" },
+    { name: "تره‌بار آرتام", price: 4450000, best: false, when: "۱ ساعت پیش" },
 ];
 
 function BuyScreen() {
@@ -381,16 +409,16 @@ function BuyScreen() {
                         <div
                             key={row.name}
                             className={`flex items-center justify-between gap-2 px-3.5 py-3 ${
-    row.best ? "bg-accent/45" : ""
-}`}
+                                row.best ? "bg-accent/45" : ""
+                            }`}
                         >
                             <div className="min-w-0">
                                 <p
                                     className={`truncate text-xs ${
-    row.best
-        ? "font-black"
-        : "font-bold text-muted-foreground"
-}`}
+                                        row.best
+                                            ? "font-black"
+                                            : "font-bold text-muted-foreground"
+                                    }`}
                                 >
                                     {row.name}
                                 </p>
@@ -409,10 +437,10 @@ function BuyScreen() {
 
                                 <p
                                     className={`whitespace-nowrap text-xs ${
-    row.best
-        ? "font-black text-primary"
-        : "font-bold text-muted-foreground"
-}`}
+                                        row.best
+                                            ? "font-black text-primary"
+                                            : "font-bold text-muted-foreground"
+                                    }`}
                                 >
                                     {fa(row.price)}{" "}
                                     <span className="text-[8px] font-normal">
@@ -499,10 +527,10 @@ function Hero() {
                                 type="button"
                                 onClick={() => setTab("sell")}
                                 className={`group relative w-full overflow-hidden rounded-3xl border p-3 text-right transition-all sm:p-4 ${
-    isSell
-        ? "border-primary/40 bg-accent/35 shadow-xl shadow-primary/10"
-        : "border-stone-200 bg-white hover:border-primary/20 hover:shadow-lg"
-}`}
+                                    isSell
+                                        ? "border-primary/40 bg-accent/35 shadow-xl shadow-primary/10"
+                                        : "border-stone-200 bg-white hover:border-primary/20 hover:shadow-lg"
+                                }`}
                             >
                                 <div className="relative">
                                     <CatalogScreen />
@@ -555,10 +583,10 @@ function Hero() {
                                 type="button"
                                 onClick={() => setTab("buy")}
                                 className={`group relative w-full overflow-hidden rounded-3xl border p-3 text-right transition-all sm:p-4 ${
-    !isSell
-        ? "border-stone-400 bg-stone-50 shadow-xl shadow-stone-900/10"
-        : "border-stone-200 bg-white hover:border-stone-300 hover:shadow-lg"
-}`}
+                                    !isSell
+                                        ? "border-stone-400 bg-stone-50 shadow-xl shadow-stone-900/10"
+                                        : "border-stone-200 bg-white hover:border-stone-300 hover:shadow-lg"
+                                }`}
                             >
                                 <div className="relative">
                                     <BuyScreen />
@@ -621,48 +649,59 @@ function Hero() {
 }
 
 /* ─────────────────────────────────────────────────────────────
- * Live activity
+ * Live activity — مارکی تمام‌عرض، آیتم‌های درشت
  * ───────────────────────────────────────────────────────────── */
 
-function LivePill({
-    icon: Icon,
-    tone,
-    name,
-    detail,
-}: {
+function LiveCard({
+                      icon: Icon,
+                      tone,
+                      name,
+                      detail,
+                      city,
+                  }: {
     icon: typeof Store;
     tone: "sell" | "buy";
     name: string;
     detail: string;
+    city?: string;
 }) {
     return (
-        <span className="flex shrink-0 items-center gap-2 rounded-full border bg-white px-3 py-1.5 shadow-sm">
+        <div className="flex shrink-0 items-center gap-3 rounded-2xl border bg-white px-4 py-3 shadow-sm">
             <span
-                className={`grid size-6 shrink-0 place-items-center rounded-full ${
-    tone === "sell"
-        ? "bg-accent text-primary"
-        : "bg-stone-100 text-stone-600"
-}`}
+                className={`grid size-10 shrink-0 place-items-center rounded-xl ${
+                    tone === "sell"
+                        ? "bg-accent text-primary"
+                        : "bg-stone-100 text-stone-700"
+                }`}
             >
-                <Icon className="size-3" />
+                <Icon className="size-5" />
             </span>
 
-            <span className="whitespace-nowrap text-[11px] font-extrabold">
-                {name}
-            </span>
+            <div className="min-w-0">
+                <p className="truncate text-sm font-extrabold">{name}</p>
 
-            <span className="whitespace-nowrap text-[10px] text-muted-foreground">
-                {detail}
-            </span>
-        </span>
+                <p className="mt-0.5 flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground">
+                    {detail}
+                    {city && (
+                        <>
+                            <span className="opacity-40">·</span>
+                            <span className="flex items-center gap-0.5">
+                                <MapPin className="size-3" />
+                                {city}
+                            </span>
+                        </>
+                    )}
+                </p>
+            </div>
+        </div>
     );
 }
 
 function MarqueeRow({
-    items,
-    reverse = false,
-    duration = 60,
-}: {
+                        items,
+                        reverse = false,
+                        duration = 60,
+                    }: {
     items: React.ReactNode;
     reverse?: boolean;
     duration?: number;
@@ -670,27 +709,20 @@ function MarqueeRow({
     return (
         <div className="group relative overflow-hidden">
             <div
-                className="marquee-track flex w-max group-hover:[animation-play-state:paused]"
+                className="marquee-track flex w-max gap-3 group-hover:[animation-play-state:paused]"
                 style={{
                     animation: `marquee ${duration}s linear infinite`,
                     animationDirection: reverse ? "reverse" : "normal",
                 }}
             >
-                <div className="flex gap-2.5 pe-2.5">
-                    {items}
-                </div>
-
-                <div
-                    className="flex gap-2.5 pe-2.5"
-                    aria-hidden
-                >
+                <div className="flex gap-3 pe-3">{items}</div>
+                <div className="flex gap-3 pe-3" aria-hidden>
                     {items}
                 </div>
             </div>
 
-            <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-16 bg-gradient-to-r from-muted/20 via-muted/20/80 to-transparent" />
-
-            <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-16 bg-gradient-to-l from-muted/20 via-muted/20/80 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-24 bg-gradient-to-r from-transparent to-white" />
+            <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-24 bg-gradient-to-l from-transparent to-white" />
         </div>
     );
 }
@@ -701,13 +733,8 @@ function LiveActivity() {
     const sell = useExploreFeed("SELL");
     const buy = useExploreFeed("BUY");
 
-    const sellRows = (sell.data ?? [])
-        .filter((r) => r.priceMinor != null)
-        .slice(0, 10);
-
-    const buyRows = (buy.data ?? [])
-        .filter((r) => r.volume != null)
-        .slice(0, 10);
+    const sellRows = (sell.data ?? []).filter((r) => r.priceMinor != null).slice(0, 12);
+    const buyRows = (buy.data ?? []).filter((r) => r.volume != null).slice(0, 12);
 
     const hasSell = sellRows.length >= MIN_ROWS_TO_SHOW;
     const hasBuy = buyRows.length >= MIN_ROWS_TO_SHOW;
@@ -715,53 +742,261 @@ function LiveActivity() {
     if (!hasSell && !hasBuy) return null;
 
     return (
-        <section className="border-b bg-muted/20">
-            <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-                <div className="mb-4 flex items-center justify-center gap-2">
-                    <span className="size-1.5 animate-soft-pulse rounded-full bg-emerald-500" />
-                    <p className="text-[11px] font-bold text-muted-foreground">
-                        همین حالا در آی‌مچ
-                    </p>
+        <section className="overflow-hidden border-b bg-white py-8">
+            <div className="mb-5 flex items-center justify-center gap-2">
+                <span className="size-2 animate-soft-pulse rounded-full bg-emerald-500" />
+                <p className="text-sm font-extrabold text-muted-foreground">
+                    همین حالا در آی‌مچ
+                </p>
+            </div>
+
+            <div className="space-y-4">
+                {hasSell && (
+                    <MarqueeRow
+                        duration={75}
+                        items={sellRows.map((r) => (
+                            <LiveCard
+                                key={r.id}
+                                icon={Store}
+                                tone="sell"
+                                name={r.business.name}
+                                detail={`${goodName(r.good)} · ${fmtMoney(r.priceMinor, r.currency)}`}
+                                city={r.business.city}
+                            />
+                        ))}
+                    />
+                )}
+
+                {hasBuy && (
+                    <MarqueeRow
+                        reverse
+                        duration={65}
+                        items={buyRows.map((r) => (
+                            <LiveCard
+                                key={r.id}
+                                icon={ShoppingBasket}
+                                tone="buy"
+                                name={r.business.name}
+                                detail={`${goodName(r.good)} — ${fa(r.volume as number)} ${unitLabel(r.good.unit)}`}
+                                city={r.business.city}
+                            />
+                        ))}
+                    />
+                )}
+            </div>
+        </section>
+    );
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * Share Section — قلب هدف ما: تشویق به اشتراک‌گذاری
+ * ───────────────────────────────────────────────────────────── */
+
+const SHARE_BENEFITS = [
+    {
+        icon: Send,
+        title: "برای هرکس بفرست، بدون نصب",
+        sub: "مشتری یا تأمین‌کننده فقط لینک را باز می‌کند. نه ثبت‌نام، نه نصب، نه ورود.",
+    },
+    {
+        icon: TrendingUp,
+        title: "اطلاعات دقیق‌تر = اتصال دقیق‌تر",
+        sub: "هرچه کاتالوگ‌ها و لیست‌های خرید بیشتری وارد شوند، آی‌مچ تأمین‌کننده‌های مرتبط‌تری پیدا می‌کند.",
+    },
+    {
+        icon: Users,
+        title: "شبکه‌ی خودت را وارد کن",
+        sub: "مشتری‌ها، همکاران صنفی و تأمین‌کننده‌هایی که می‌شناسی؛ یک لینک کافی است.",
+    },
+] as const;
+
+function ShareSection() {
+    return (
+        <section className="relative overflow-hidden border-b bg-gradient-to-b from-accent/25 via-white to-white">
+            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+                <SectionHead
+                    eyebrow="هدف اصلی آی‌مچ"
+                    title="لینک کاتالوگ یا لیست خریدت را بفرست"
+                    sub="آی‌مچ وقتی کار می‌کند که اطلاعات واقعی خرید و فروش وارد شود. ساده‌ترین راه شروع، ساختن یک کاتالوگ یا لیست خرید و فرستادن لینک آن برای کسانی است که می‌شناسی."
+                />
+
+                <div className="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
+                    {SHARE_BENEFITS.map((item) => (
+                        <div
+                            key={item.title}
+                            className="rounded-2xl border bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+                        >
+                            <span className="grid size-11 place-items-center rounded-xl bg-accent text-primary">
+                                <item.icon className="size-5" />
+                            </span>
+
+                            <h3 className="mt-4 text-sm font-extrabold">
+                                {item.title}
+                            </h3>
+
+                            <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                                {item.sub}
+                            </p>
+                        </div>
+                    ))}
                 </div>
 
-                <div className="space-y-3">
-                    {hasSell && (
-                        <MarqueeRow
-                            duration={65}
-                            items={sellRows.map((r) => (
-                                <LivePill
-                                    key={r.id}
-                                    icon={Store}
-                                    tone="sell"
-                                    name={r.business.name}
-                                    detail={`${goodName(r.good)} · ${fmtMoney(
-    r.priceMinor,
-    r.currency
-)}`}
-                                />
-                            ))}
-                        />
-                    )}
+                {/* Mockup اشتراک‌گذاری */}
+                <div className="mx-auto mt-10 max-w-3xl overflow-hidden rounded-3xl border bg-white shadow-lg">
+                    <div className="flex items-center gap-2 border-b bg-muted/40 px-4 py-3">
+                        <span className="size-2.5 rounded-full bg-red-400" />
+                        <span className="size-2.5 rounded-full bg-amber-400" />
+                        <span className="size-2.5 rounded-full bg-emerald-400" />
 
-                    {hasBuy && (
-                        <MarqueeRow
-                            reverse
-                            duration={55}
-                            items={buyRows.map((r) => (
-                                <LivePill
-                                    key={r.id}
-                                    icon={ShoppingBasket}
-                                    tone="buy"
-                                    name={r.business.name}
-                                    detail={`${goodName(r.good)} — ${fa(
-    r.volume as number
-)} ${unitLabel(
-    r.good.unit
-)} · ${r.business.city}`}
-                                />
-                            ))}
-                        />
-                    )}
+                        <span className="mx-auto flex items-center gap-1.5 rounded-md bg-white px-3 py-1 text-[10px] font-bold text-muted-foreground shadow-sm">
+                            <Link2 className="size-3" />
+                            imach.ir/s/sepidsupermarket
+                        </span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 p-5">
+                        <div className="flex items-center gap-3">
+                            <span className="grid size-11 place-items-center rounded-xl bg-primary text-white">
+                                <Store className="size-5" />
+                            </span>
+
+                            <div>
+                                <p className="text-sm font-extrabold">
+                                    سپید کالا · پخش عمده
+                                </p>
+                                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                                    ۲۴ قلم کالا · آخرین به‌روزرسانی: امروز
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <span className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-bold text-muted-foreground">
+                                <Copy className="size-3.5" />
+                                کپی
+                            </span>
+                            <span className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[11px] font-bold text-white">
+                                <Share2 className="size-3.5" />
+                                اشتراک‌گذاری
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 flex justify-center">
+                    <Link href="/start?mode=register">
+                        <Button size="lg" className="rounded-xl px-7 shadow-lg shadow-primary/25">
+                            کاتالوگ خودت را بساز
+                            <ArrowLeft className="size-4 ltr:rotate-180" />
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * Testimonials
+ * ───────────────────────────────────────────────────────────── */
+
+function TestimonialCard({
+                             name,
+                             role,
+                             quote,
+                             tone,
+                         }: {
+    name: string;
+    role: string;
+    quote: string;
+    tone: "sell" | "buy";
+}) {
+    const initial = name.trim().charAt(0);
+
+    return (
+        <div className="flex h-full flex-col rounded-2xl border bg-white p-5 shadow-sm">
+            <Quote
+                className={`size-5 shrink-0 ${
+                    tone === "sell" ? "text-primary" : "text-stone-400"
+                }`}
+            />
+
+            <p className="mt-3 grow text-xs leading-7 text-stone-700 sm:text-[13px]">
+                {quote}
+            </p>
+
+            <div className="mt-4 flex items-center gap-3 border-t pt-4">
+                <span
+                    className={`grid size-10 shrink-0 place-items-center rounded-full text-sm font-black ${
+                        tone === "sell"
+                            ? "bg-accent text-primary"
+                            : "bg-stone-100 text-stone-700"
+                    }`}
+                >
+                    {initial}
+                </span>
+
+                <div className="min-w-0">
+                    <p className="truncate text-xs font-extrabold">{name}</p>
+
+                    <p className="truncate text-[10px] text-muted-foreground">
+                        {role}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function Testimonials() {
+    return (
+        <section className="border-b bg-muted/20">
+            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+                <SectionHead
+                    eyebrow="از زبان کاربران"
+                    title="کسانی که این مسیر را رفته‌اند"
+                    sub="فروشنده، خریدار، بازاریاب و تولیدکننده — همه از یک چیز می‌گویند: سادگی و نتیجه."
+                />
+
+                <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {TESTIMONIALS.map((t) => (
+                        <TestimonialCard key={t.name} {...t} />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * Brands — کسب‌وکارهایی که از آی‌مچ استفاده می‌کنن
+ * ───────────────────────────────────────────────────────────── */
+
+function Brands() {
+    return (
+        <section className="border-b bg-white py-12">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <p className="text-center text-[11px] font-extrabold text-muted-foreground">
+                    کسب‌وکارهایی که از آی‌مچ استفاده می‌کنند
+                </p>
+
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                    {BRANDS.map((brand) => (
+                        <div
+                            key={brand}
+                            className="flex items-center gap-2 rounded-full border bg-white px-4 py-2 shadow-sm transition-shadow hover:shadow-md"
+                        >
+                            <span className="grid size-6 place-items-center rounded-full bg-accent text-primary">
+                                <Building2 className="size-3" />
+                            </span>
+
+                            <span className="whitespace-nowrap text-xs font-bold text-stone-700">
+                                {brand}
+                            </span>
+
+                            <BadgeCheck className="size-3.5 shrink-0 text-primary" />
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>
@@ -860,19 +1095,16 @@ function CoreValue() {
                             </div>
 
                             <div className="mt-5 flex flex-wrap gap-2">
-                                {[
-                                    "کالا",
-                                    "قیمت",
-                                    "موجودی",
-                                    "شرایط تأمین",
-                                ].map((item) => (
-                                    <span
-                                        key={item}
-                                        className="rounded-full bg-muted px-3 py-1.5 text-[9px] font-bold text-muted-foreground"
-                                    >
-                                        {item}
-                                    </span>
-                                ))}
+                                {["کالا", "قیمت", "موجودی", "شرایط تأمین"].map(
+                                    (item) => (
+                                        <span
+                                            key={item}
+                                            className="rounded-full bg-muted px-3 py-1.5 text-[9px] font-bold text-muted-foreground"
+                                        >
+                                            {item}
+                                        </span>
+                                    )
+                                )}
                             </div>
                         </div>
                     </div>
@@ -1024,20 +1256,16 @@ function NetworkSection() {
                         </p>
 
                         <div className="mt-6 flex flex-wrap gap-2">
-                            {[
-                                "کالای دقیق",
-                                "قیمت",
-                                "موجودی",
-                                "موقعیت",
-                                "شرایط تأمین",
-                            ].map((item) => (
-                                <span
-                                    key={item}
-                                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-bold text-stone-300"
-                                >
-                                    {item}
-                                </span>
-                            ))}
+                            {["کالای دقیق", "قیمت", "موجودی", "موقعیت", "شرایط تأمین"].map(
+                                (item) => (
+                                    <span
+                                        key={item}
+                                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-bold text-stone-300"
+                                    >
+                                        {item}
+                                    </span>
+                                )
+                            )}
                         </div>
                     </div>
 
@@ -1067,26 +1295,17 @@ function NetworkSection() {
 
                             <div className="grid gap-3 sm:grid-cols-3">
                                 {[
-                                    {
-                                        name: "تأمین‌کننده اول",
-                                        detail: "قیمت + موجودی",
-                                    },
-                                    {
-                                        name: "تأمین‌کننده دوم",
-                                        detail: "قیمت + شرایط",
-                                    },
-                                    {
-                                        name: "تأمین‌کننده سوم",
-                                        detail: "موجودی + ارسال",
-                                    },
+                                    { name: "تأمین‌کننده اول", detail: "قیمت + موجودی" },
+                                    { name: "تأمین‌کننده دوم", detail: "قیمت + شرایط" },
+                                    { name: "تأمین‌کننده سوم", detail: "موجودی + ارسال" },
                                 ].map((item, index) => (
                                     <div
                                         key={item.name}
                                         className={`rounded-2xl border p-4 ${
-    index === 0
-        ? "border-primary/40 bg-primary/10"
-        : "border-white/10 bg-white/5"
-}`}
+                                            index === 0
+                                                ? "border-primary/40 bg-primary/10"
+                                                : "border-white/10 bg-white/5"
+                                        }`}
                                     >
                                         <div className="flex items-center gap-2">
                                             <span className="grid size-8 place-items-center rounded-lg bg-white/10">
@@ -1117,11 +1336,11 @@ function NetworkSection() {
  * ───────────────────────────────────────────────────────────── */
 
 function FaqItem({
-    q,
-    a,
-    open,
-    onToggle,
-}: {
+                     q,
+                     a,
+                     open,
+                     onToggle,
+                 }: {
     q: string;
     a: string;
     open: boolean;
@@ -1130,8 +1349,8 @@ function FaqItem({
     return (
         <div
             className={`overflow-hidden rounded-2xl border bg-white transition-shadow ${
-    open ? "shadow-sm" : ""
-}`}
+                open ? "shadow-sm" : ""
+            }`}
         >
             <button
                 type="button"
@@ -1143,8 +1362,8 @@ function FaqItem({
 
                 <ChevronDown
                     className={`size-4 shrink-0 text-muted-foreground transition-transform duration-300 ${
-    open ? "rotate-180" : ""
-}`}
+                        open ? "rotate-180" : ""
+                    }`}
                 />
             </button>
 
@@ -1175,9 +1394,7 @@ function Faq() {
                             {...faq}
                             open={open === index}
                             onToggle={() =>
-                                setOpen(
-                                    open === index ? null : index
-                                )
+                                setOpen(open === index ? null : index)
                             }
                         />
                     ))}
@@ -1266,29 +1483,17 @@ export default function Home() {
         <div className="flex min-h-screen flex-col bg-white">
             <style>{`
 @keyframes fade-up {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes marquee {
-    from {
-        transform: translateX(-50%);
-    }
-    to {
-        transform: translateX(0);
-    }
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-.marquee-track {
-        animation: none !important;
-    }
+.marquee-track { animation: none !important; }
 }
 `}</style>
 
@@ -1298,6 +1503,9 @@ export default function Home() {
                 <Hero />
                 <LiveActivity />
                 <CoreValue />
+                <ShareSection />
+                <Testimonials />
+                <Brands />
                 <Baseline />
                 <HowToStart />
                 <NetworkSection />
@@ -1310,4 +1518,3 @@ export default function Home() {
         </div>
     );
 }
-
