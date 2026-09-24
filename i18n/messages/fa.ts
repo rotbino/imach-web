@@ -169,6 +169,7 @@ export const fa = {
     logoLabel: "لوگو",
     addPhoto: "افزودن عکس",
     uploading: "در حال آپلود…",
+    processing: "در حال پردازش…",
     uploaded: "عکس آپلود شد",
     removed: "عکس حذف شد",
     failed: "آپلود عکس ناموفق بود",

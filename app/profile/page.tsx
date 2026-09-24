@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
@@ -27,6 +27,9 @@ export default function ProfilePage() {
   const avatarQ = useMyAvatar(status === "authed" ? user?.id : null);
   const uploadFile = useUploadFile();
   const removeFile = useRemoveFile();
+  // درصد/فاز زنده‌ی آپلود آواتار — برای حلقه‌ی پیشرفت برند (UploadRing)
+  const [avatarPct, setAvatarPct] = useState<number | null>(null);
+  const [avatarPhase, setAvatarPhase] = useState<"sending" | "processing">("sending");
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
@@ -46,11 +49,23 @@ export default function ProfilePage() {
   const avatar = avatarQ.data;
 
   const uploadAvatar = (file: File) => {
+    setAvatarPct(0);
+    setAvatarPhase("sending");
     uploadFile.mutate(
-      { file, model: "User", modelId: user.id, key: "avatar" },
+      {
+        file,
+        model: "User",
+        modelId: user.id,
+        key: "avatar",
+        onProgress: (pct, phase) => {
+          setAvatarPct(pct);
+          setAvatarPhase(phase);
+        },
+      },
       {
         onSuccess: () => toast({ title: "عکس پروفایل آپلود شد" }),
         onError: (e) => toast({ title: "آپلود ناموفق بود", description: e.message, variant: "destructive" }),
+        onSettled: () => setAvatarPct(null),
       }
     );
   };
@@ -75,6 +90,8 @@ export default function ProfilePage() {
                 size={72}
                 value={avatar ? { url: avatar.url, thumbUrl: avatar.thumbUrl } : null}
                 uploading={uploadFile.isPending}
+                progress={avatarPct}
+                phase={avatarPhase}
                 label="عکس پروفایل"
                 onSelect={uploadAvatar}
                 onRemove={avatar ? removeAvatar : undefined}

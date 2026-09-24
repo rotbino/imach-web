@@ -259,6 +259,8 @@ export interface ExploreItemDto {
   volume: number | null;
   frequency: string | null;
   updatedAt: string;
+  /** گالری آگهی — اولین عکس روی کارت‌های بازار دیده می‌شود (خواسته‌ی کاربر) */
+  gallery?: FileDto[];
   good: {
     id: string;
     nameFa: string;
@@ -449,7 +451,14 @@ export interface FileDto {
  * آپلود multipart با رویداد پیشرفت — fetch رویداد upload ندارد؛ XHR دارد.
  * همان قرارداد api() را پیاده می‌کند: BASE + XTransformPort، هدر زبان،
  * Bearer، و روی 401 یک رفرش ساکت + تلاش مجدد.
+ *
+ * فازها صادقانه‌اند (خواسته‌ی کاربر: درصدِ ۹۹ِ فوری «الکی» بود):
+ *   • "sending"    — بایت‌ها در جریان است (تا سقف ۹۹)
+ *   • "processing" — بایت‌ها تمام شده؛ سرور مشغول ذخیره در آروان + تامبنیل است.
+ *                     زمانِ واقعی همین‌جاست و قبلاً دیده نمی‌شد.
  */
+export type UploadPhase = "sending" | "processing";
+
 function uploadWithProgress(opts: {
   file: File;
   model: "User" | "Business" | "Listing";
@@ -457,7 +466,7 @@ function uploadWithProgress(opts: {
   key: string;
   description?: string;
   replace?: boolean;
-  onProgress?: (pct: number) => void;
+  onProgress?: (pct: number, phase: UploadPhase) => void;
   _retried?: boolean;
 }): Promise<FileDto> {
   const form = new FormData();
@@ -477,8 +486,11 @@ function uploadWithProgress(opts: {
 
     xhr.upload.onprogress = (e) => {
       if (!opts.onProgress || !e.lengthComputable) return;
-      // ۹۹٪ سقفِ نوار است — ۱۰۰ فقط وقتی پاسخ سرور واقعا آمد
-      opts.onProgress(Math.min(99, Math.round((e.loaded / e.total) * 100)));
+      // ۹۹٪ سقفِ ارسال است — ۱۰۰ فقط وقتی پاسخ سرور واقعا آمد
+      const pct = Math.min(99, Math.round((e.loaded / e.total) * 100));
+      // بایت‌ها تمام شد؟ فاز پردازشِ سمت سرور شروع می‌شود (آروان + تامبنیل)
+      const phase: UploadPhase = e.loaded >= e.total ? "processing" : "sending";
+      opts.onProgress(pct, phase);
     };
 
     xhr.onload = async () => {
@@ -500,7 +512,7 @@ function uploadWithProgress(opts: {
         /* non-JSON error body */
       }
       if (xhr.status >= 200 && xhr.status < 300 && data) {
-        opts.onProgress?.(100);
+        opts.onProgress?.(100, "processing");
         resolve(data as FileDto);
       } else {
         reject(
@@ -530,8 +542,8 @@ export const filesApi = {
     key: string;
     description?: string;
     replace?: boolean;
-    /** درصد ۰–۱۰۰ حین آپلود */
-    onProgress?: (pct: number) => void;
+    /** درصد ۰–۱۰۰ + فاز (sending = بایت‌ها، processing = کارِ سرور) حین آپلود */
+    onProgress?: (pct: number, phase: UploadPhase) => void;
   }) => uploadWithProgress(opts),
   /** خواندن عمومی یک اسلات — آخرین رکورد؛ ۴۰۴ = هنوز عکسی نیست */
   getUrl: (model: "User" | "Business" | "Listing", modelId: string, key: string) =>

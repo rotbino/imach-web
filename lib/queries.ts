@@ -433,8 +433,8 @@ export function useUploadFile() {
       key: string;
       description?: string;
       replace?: boolean;
-      /** درصد ۰–۱۰۰ حین آپلود — برای نمایش زنده روی عکس */
-      onProgress?: (pct: number) => void;
+      /** درصد ۰–۱۰۰ + فاز حین آپلود — برای حلقه‌ی پیشرفت زنده (UploadRing) */
+      onProgress?: (pct: number, phase: "sending" | "processing") => void;
     }) => filesApi.upload(opts),
     onSuccess: (_data, opts) => {
       // همان قرارداد بقیه‌ی هوک‌ها: پیشوندهای کلید کافی‌اند تا همه‌ی صفحات
