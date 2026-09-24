@@ -1,4 +1,21 @@
 import type { NextConfig } from "next";
+import { execSync } from "node:child_process";
+
+/**
+ * مُهر بیلد — هش گیت هنگام build/start خوانده می‌شود و کنار لوگو نشان داده
+ * می‌شود (lib/build-info.ts). با یک نگاه معلوم است کدِ در حال اجرا با ریپو
+ * هم‌خوان است یا هاست بیلدِ کهنه بالا آورده (کلاس باگی که کاربر خودش یک بار
+ * تشخیص داد: «خطا داشته بیلد نشده»).
+ */
+function gitShortHash(): string {
+  try {
+    return execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
+  } catch {
+    return "";
+  }
+}
 
 /**
  * iMach — frontend (Next.js 16)
@@ -11,6 +28,9 @@ const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN ?? "http://127.0.0.1:4000";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  env: {
+    NEXT_PUBLIC_BUILD_ID: gitShortHash(),
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogIn, type LucideIcon } from "lucide-react";
+import { BUILD_ID } from "@/lib/build-info";
 import {
   Check,
   ChevronDown,
@@ -143,6 +144,15 @@ export function AppHeader() {
                 priority
                 className="pb-1"
             />
+            {/* مُهر بیلد — هش گیتِ بیلدِ در حال اجرا؛ برای تشخیص فوری «بیلد کهنه»
+                (کلاس باگی که کاربر خودش یک بار تجربه کرد: بیلد نشده بود) */}
+            <span
+                aria-label={`build ${BUILD_ID}`}
+                title={`build ${BUILD_ID}`}
+                className="-mt-1 select-none font-mono text-[8px] leading-none text-muted-foreground/50"
+            >
+              b{BUILD_ID}
+            </span>
           </button>
 
           {status === "authed" && (

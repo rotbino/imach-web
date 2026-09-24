@@ -146,7 +146,10 @@ function ShowcaseHeader({
   const [shareOpen, setShareOpen] = useState(false);
 
   const listings = (listingsQ.data ?? []).filter(
-    (l) => (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
+    // فیلتر «فقط با حجم» برداشته شد — لیست خرید کم‌کم تشکیل می‌شود (خواسته‌ی
+    // کاربر): آیتمِ تیک‌خورده از انتخابگر بدون مقدار هم می‌نشیند و با نشان
+    // «مقدار بعداً» صبر می‌کند تا خریدار عددش را بدهد.
+    (l) => l.mode === "BUY" || l.mode === "BOTH"
   );
 
   const activateQuote = (l: GoodItemDto) => {
@@ -277,7 +280,10 @@ function ShowcaseHeader({
                   <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
                   <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                     <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
-                      {fa(l.volume as number)} {unitLabel(l.good.unit)}
+                      {l.volume !== null
+                        ? `${fa(l.volume)} ${unitLabel(l.good.unit)}`
+                        : /* «لیست خرید کم‌کم تشکیل می‌شود» — مقدار بعداً */
+                          "مقدار بعداً"}
                     </Badge>
                     <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
                       {frequencyLabel(l.frequency ?? "MONTHLY")}

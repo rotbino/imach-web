@@ -9,6 +9,7 @@ import {
   listingsApi,
   marketApi,
   notificationsApi,
+  productsApi,
   type BoardRowDto,
   type BusinessProfileDto,
   type BusinessSummaryDto,
@@ -26,6 +27,7 @@ import {
   type NotificationsPageDto,
   type OfferDto,
   type PageDto,
+  type ProductPageDto,
   type QuoteRequestResultDto,
   type SupplierSuggestionDto,
 } from "./api";
@@ -97,6 +99,47 @@ export function useCreateGood() {
     mutationFn: goodsApi.createGood,
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["goods"] });
+    },
+  });
+}
+
+/**
+ * فید انتخابگر کاتالوگ مرجع — برگه‌بندی مکانی با نشان‌های فروشنده/داریش.
+ * درون انتخابگر صفحه‌بندی می‌شود (cursor در کلید).
+ */
+export function useProducts(params: {
+  businessId: string;
+  q?: string;
+  categoryId?: string;
+  cursor?: string;
+  limit?: number;
+  enabled?: boolean;
+}): UseQueryResult<ProductPageDto> {
+  return useQuery({
+    queryKey: ["products", params.businessId, params.q ?? "", params.categoryId ?? "", params.cursor ?? ""],
+    queryFn: () =>
+      productsApi.getProducts({
+        businessId: params.businessId,
+        q: params.q,
+        categoryId: params.categoryId,
+        cursor: params.cursor,
+        limit: params.limit,
+      }),
+    enabled: params.enabled !== false && !!params.businessId,
+    staleTime: 30_000,
+  });
+}
+
+/** ثبت گروهی انتخابگر — یک تأیید، N آگهی */
+export function useBulkSaveListings() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: listingsApi.bulkSave,
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["listings"] });
+      void qc.invalidateQueries({ queryKey: ["business"] });
+      void qc.invalidateQueries({ queryKey: ["market"] });
+      void qc.invalidateQueries({ queryKey: ["products"] });
     },
   });
 }

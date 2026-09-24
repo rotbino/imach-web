@@ -152,8 +152,9 @@ function PanelStats({ bizId }: { bizId: string }) {
   const offersQ = useOffers(bizId);
   const followsQ = useFollows(bizId);
 
+  // همه‌ی نیازهای خرید — آیتم‌های بدونِ مقدار هم نیازند (لیست خرید کم‌کم تشکیل می‌شود)
   const buyCount = (listingsQ.data ?? []).filter(
-    (l) => (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
+    (l) => l.mode === "BUY" || l.mode === "BOTH"
   ).length;
   const freshOffers = offersQ.data?.items.length ?? 0;
   const following = followsQ.data?.length ?? 0;
