@@ -3,26 +3,32 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fa } from "@/lib/format";
+import {
+    fa,
+    fmtMoney,
+    goodName,
+    unitLabel,
+} from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { myArmHref } from "@/lib/active-biz";
-import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
-import { Badge } from "@/components/ui/badge";
+import { useExploreFeed } from "@/lib/queries";
+import {
+    AppFooter,
+    AppHeader,
+    MobileTabBar,
+} from "@/app/components/chrome";
 import { Button } from "@/components/ui/button";
 import {
     ArrowLeft,
     BadgeCheck,
     BatteryMedium,
     BellRing,
+    Check,
     CheckCircle2,
     ChevronDown,
-    Clock,
-    EyeOff,
-    Factory,
+    Clock3,
     Link2,
-    Lock,
     MapPin,
-    Package,
     PencilLine,
     Plus,
     Search,
@@ -32,250 +38,85 @@ import {
     Signal,
     Store,
     Timer,
+    Users,
     Wifi,
-    X,
 } from "lucide-react";
 
-/*
- * صفحه اول iMatch
- *
- * ساختار:
- *  ۱) معرفی iMatch + پیش‌نمایش کاتالوگ فروش / دستیار خرید
- *  ۲) نمایش نمونه‌های واقعی‌نما از کاتالوگ‌ها و لیست‌های خرید
- *  ۳) حریم قیمت
- *  ۴) سه قدم شروع
- *  ۵) پرسش‌های متداول
- *  ۶) CTA پایانی + نوار چسبان موبایل
- */
+/* ─────────────────────────────────────────────────────────────
+ * داده‌های ثابت
+ * ───────────────────────────────────────────────────────────── */
 
-/* ─── داده‌های نمونه‌ی ماکت‌ها ─── */
-
-const CATALOG_ROWS = [
-    {
-        name: "روغن سرخ‌کردنی ۱۰ لیتری",
-        price: 420000,
-        when: "امروز · ۹:۴۰",
-        special: true,
-    },
-    {
-        name: "برنج طارم اعلا ۱۰ کیلویی",
-        price: 980000,
-        when: "امروز · ۹:۴۰",
-        special: false,
-    },
-    {
-        name: "پیاز — کیسه ۲۵ کیلویی",
-        price: 310000,
-        when: "دیروز",
-        special: false,
-    },
-    {
-        name: "رب گوجه‌فرنگی ۸۰۰ گرمی",
-        price: null,
-        when: "امروز",
-        special: false,
-    },
-];
-
-const OFFER_ROWS = [
-    {
-        name: "عمده فروشی میوه سبلان",
-        price: 4200000,
-        best: true,
-        when: "۱۰ دقیقه پیش",
-    },
-    {
-        name: "طبیعت‌دانه پخش",
-        price: 4350000,
-        best: false,
-        when: "۲۵ دقیقه پیش",
-    },
-    {
-        name: "تره بار آرتام",
-        price: 4450000,
-        best: false,
-        when: "۱ ساعت پیش",
-    },
-];
-
-const LATEST_CATALOGS = [
-    { name: "سپید کالا", city: "اصفهان", items: 48 },
-    { name: "برنج طارم آرا", city: "تهران", items: 31 },
-    { name: "پخش شیرین‌عسل", city: "اردبیل", items: 19 },
-    { name: "چرم مشهد", city: "مشهد", items: 27 },
-    { name: "یدک‌پارس", city: "کرمان", items: 42 },
-    { name: "مهرآباد توزیع", city: "تهران", items: 35 },
-    { name: "گلستان نان", city: "گرگان", items: 23 },
-];
-
-const LATEST_LISTS = [
-    { name: "پیاز — ۲۰ گونی", city: "تبریز", offers: 3 },
-    { name: "روغن ۱۰ لیتری — ۵۰ عدد", city: "مشهد", offers: 5 },
-    { name: "برنج طارم — ۳۰۰ کیلو", city: "رشت", offers: 2 },
-    { name: "رب گوجه — ۲۰۰ کارتن", city: "شیراز", offers: 4 },
-    { name: "شکر بسته‌بندی — ۱ تن", city: "قم", offers: 6 },
-    { name: "مرغ منجمد — ۵۰۰ کیلو", city: "اصفهان", offers: 3 },
-    { name: "شیر خشک — ۸۰ کارتن", city: "کرج", offers: 2 },
-];
-
-/* ─── بخش‌های عمومی ─── */
-
-const TRUST = [
-    {
-        icon: BadgeCheck,
-        title: "رایگان شروع کن",
-        sub: "بدون کارمزد و قرارداد",
-    },
-    {
-        icon: Timer,
-        title: "سریع راه می‌افتد",
-        sub: "در چند دقیقه آماده استفاده",
-    },
+const BASELINE = [
     {
         icon: Link2,
-        title: "همه‌چیز با یک لینک",
-        sub: "بدون نیاز به سایت و اپ",
+        title: "یک لینک، همیشه به‌روز",
+        sub: "کاتالوگ فروشت را بساز و همان یک لینک را برای مشتری‌هایت بفرست.",
     },
     {
-        icon: EyeOff,
-        title: "قیمت دست خودت است",
-        sub: "نمایش قیمت را خودت کنترل کن",
-    },
-];
-
-type Bullet = {
-    strong: string;
-    rest: string;
-};
-
-const ARMS = {
-    sale: {
-        chip: "کاتالوگ فروش",
-        chipCls: "border-primary/30 bg-accent text-primary",
-        checkCls: "text-primary",
-        title: "کاتالوگ فروشت را همیشه جلوی چشم مشتری‌هایت نگه دار",
-        lead: "قیمت‌ها را یک‌جا منتشر کن و هر وقت خواستی به‌روز کن.",
-        cta: "ساخت کاتالوگ فروش",
-        bullets: [
-            {
-                strong: "مشتری‌ها همیشه آخرین قیمت را می‌بینند:",
-                rest: "هر بار قیمت را تغییر بدهی، کاتالوگ هم به‌روز می‌شود.",
-            },
-            {
-                strong: "یک لینک برای همه‌چیز:",
-                rest: "به‌جای فرستادن عکس، فایل و لیست قیمت، فقط لینک کاتالوگت را بفرست.",
-            },
-            {
-                strong: "محصولاتت همیشه جلوی چشم مشتری است:",
-                rest: "مشتری هر وقت نیاز داشت، کاتالوگت را باز می‌کند و محصولات و قیمت‌ها را می‌بیند.",
-            },
-            {
-                strong: "ارتباط مستقیم با مشتری:",
-                rest: "مشتری هر وقت خواست می‌تواند از داخل کاتالوگ با خودت تماس بگیرد.",
-            },
-        ] as Bullet[],
-    },
-
-    buy: {
-        chip: "دستیار خرید ",
-        chipCls: "border-stone-300 bg-stone-100 text-stone-700",
-        checkCls: "text-stone-500",
-        title: "دستیار خرید خودت را بساز",
-        lead: "نیازت را ثبت کن، قیمت بگیر و تأمین‌کننده‌هایت را دنبال کن.",
-        cta: "ساخت دستیار خرید",
-        bullets: [
-            {
-                strong: "نیازت را دقیق ثبت کن:",
-                rest: "کالا، مقدار و هر توضیحی که برای خرید لازم است را یک‌جا بنویس.",
-            },
-            {
-                strong: "از تأمین‌کننده‌ها قیمت بگیر:",
-                rest: "لیست خریدت را برای تأمین‌کننده‌هایی که می‌شناسی بفرست و پیشنهادشان را دریافت کن.",
-            },
-            {
-                strong: "قیمت تأمین‌کننده‌ها را دنبال کن:",
-                rest: "کاتالوگ تأمین‌کننده‌هایت را ذخیره کن و قیمت‌های روزشان را ببین.",
-            },
-            {
-                strong: "همه‌چیز خریدت یک‌جا باشد:",
-                rest: "نیازهای خرید و ارتباطت با تأمین‌کننده‌ها را در همان دستیار خرید مدیریت کن.",
-            },
-        ] as Bullet[],
-    },
-};
-
-const VIEWERS = [
-    {
-        label: "مشتری عادی",
-        price: 420000,
-        note: "قیمت عادی را می‌بیند",
-        hidden: false,
-        special: false,
+        icon: BellRing,
+        title: "قیمت همیشه به‌روز",
+        sub: "قیمت را یک‌بار تغییر بده؛ هرکس لینک را باز کند، آخرین قیمت را می‌بیند.",
     },
     {
-        label: "مشتری ویژه",
-        price: 395000,
-        note: "قیمت عمده — فقط خودش",
-        hidden: false,
-        special: true,
+        icon: BadgeCheck,
+        title: "رایگان و بدون نصب",
+        sub: "مشتری یا تأمین‌کننده برای دیدن صفحه‌ات نیازی به نصب برنامه ندارد.",
     },
-    {
-        label: "بقیه",
-        price: null,
-        note: "این قیمت را نمی‌بینند",
-        hidden: true,
-        special: false,
-    },
-];
+] as const;
 
 const STEPS = [
     {
         icon: PencilLine,
+        number: "۱",
         title: "بساز",
-        desc: "کاتالوگ فروش یا لیست خریدت را بساز و اطلاعاتش را وارد کن.",
+        desc: "کاتالوگ فروش یا لیست خریدت را در چند دقیقه آماده کن.",
     },
     {
         icon: Send,
+        number: "۲",
         title: "بفرست",
-        desc: "لینک کاتالوگ را برای مشتری‌ها یا لیست خرید را برای تأمین‌کننده‌ها بفرست.",
+        desc: "لینکش را برای مشتری‌ها یا تأمین‌کننده‌هایی که می‌شناسی بفرست.",
     },
     {
-        icon: BellRing,
-        title: "ادامه بده",
-        desc: "قیمت‌ها را به‌روز کن، پیشنهادها را ببین و ارتباطت را با مشتری‌ها و تأمین‌کننده‌ها ادامه بده.",
+        icon: Timer,
+        number: "۳",
+        title: "به‌روز نگه دار",
+        desc: "قیمت یا نیازت که تغییر کرد، همان صفحه را به‌روزرسانی کن.",
     },
-];
+] as const;
 
 const FAQS = [
     {
-        q: "آی‌مچ واقعاً رایگان است؟",
-        a: "بله. ساخت کاتالوگ فروش و دستیار خرید، ثبت کالا و به‌روزرسانی قیمت رایگان است.",
+        q: "آی‌مچ دقیقاً چیست؟",
+        a: "آی‌مچ یک بستر B2B برای اتصال نیاز خریداران به تأمین‌کننده‌های مناسب است. کاتالوگ فروش و لیست خرید، ساده‌ترین راه برای شروع کار با آی‌مچ هستند.",
     },
     {
-        q: "مشتری‌هایم باید اپی نصب کنند؟",
-        a: "نه. مشتری فقط لینک کاتالوگت را باز می‌کند و محصولات و قیمت‌ها را می‌بیند.",
+        q: "کاتالوگ فروش چه فایده‌ای دارد؟",
+        a: "محصولات و قیمت‌هایت را در یک صفحه‌ی همیشه‌به‌روز قرار می‌دهی و فقط لینک آن را برای مشتری‌هایت می‌فرستی. هر زمان قیمت یا محصولی تغییر کند، همان لینک به‌روز می‌شود.",
     },
     {
-        q: "آیا همه قیمت‌های من را می‌بینند؟",
-        a: "نه. خودت تعیین می‌کنی هر قیمت برای چه کسی نمایش داده شود. حتی می‌توانی قیمت بعضی کالاها را پنهان کنی.",
+        q: "لیست خرید چه کاری انجام می‌دهد؟",
+        a: "نیاز خریدت را ثبت می‌کنی و می‌توانی آن را برای تأمین‌کننده‌هایی که می‌شناسی بفرستی. اطلاعات نیاز خرید، نقطه شروع اتصال تو به تأمین‌کننده‌های مناسب است.",
     },
     {
-        q: "اگر قیمت‌ها را تغییر بدهم چه می‌شود؟",
-        a: "کاتالوگت همان لحظه به‌روز می‌شود و کسانی که کاتالوگت را دنبال می‌کنند، آخرین قیمت‌ها را می‌بینند.",
+        q: "آیا برای استفاده از آی‌مچ باید برنامه نصب کنم؟",
+        a: "نه. کاتالوگ‌ها و صفحه‌های خرید از طریق لینک قابل مشاهده‌اند و برای مشتری یا تأمین‌کننده نیازی به نصب برنامه نیست.",
     },
     {
-        q: "چه کسی لیست خرید من را می‌بیند؟",
-        a: "خودت انتخاب می‌کنی. می‌توانی لیست خریدت را فقط برای تأمین‌کننده‌هایی که می‌شناسی و با آن‌ها کار می‌کنی بفرستی.",
+        q: "آیا آی‌مچ فقط یک ابزار ساخت کاتالوگ است؟",
+        a: "نه. کاتالوگ و لیست خرید فقط نقطه شروع هستند. هدف آی‌مچ این است که نیاز خریدار هر کالا را با اطلاعات تأمین‌کنندگان مناسب همان کالا نزدیک کند.",
     },
-];
+] as const;
 
-/* ─── اجزای مشترک ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Shared
+ * ───────────────────────────────────────────────────────────── */
 
 function SectionHead({
-                         eyebrow,
-                         title,
-                         sub,
-                     }: {
+    eyebrow,
+    title,
+    sub,
+}: {
     eyebrow?: string;
     title: string;
     sub?: string;
@@ -283,12 +124,15 @@ function SectionHead({
     return (
         <div className="mx-auto max-w-2xl text-center">
             {eyebrow && (
-                <span className="mb-3 inline-block rounded-full border border-primary/25 bg-accent/60 px-3.5 py-1.5 text-[11px] font-bold text-primary">
-          {eyebrow}
-        </span>
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-accent/60 px-3 py-1.5 text-[11px] font-extrabold text-primary">
+                    <span className="size-1.5 rounded-full bg-primary" />
+                    {eyebrow}
+                </div>
             )}
 
-            <h2 className="text-2xl font-black sm:text-3xl">{title}</h2>
+            <h2 className="text-2xl font-black tracking-tight sm:text-3xl">
+                {title}
+            </h2>
 
             {sub && (
                 <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base">
@@ -299,16 +143,25 @@ function SectionHead({
     );
 }
 
-function PhoneFrame({ children }: { children: React.ReactNode }) {
+function PhoneFrame({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     return (
-        <div className="relative mx-auto w-full max-w-[320px]">
+        <div className="relative mx-auto w-full max-w-[315px]">
             <div
                 aria-hidden
-                className="absolute -inset-3 rounded-[2.5rem] bg-gradient-to-b from-primary/10 to-transparent"
+                className="absolute -inset-5 rounded-[3rem] bg-gradient-to-b from-primary/15 via-primary/5 to-transparent blur-xl"
             />
 
-            <div className="relative rounded-[2rem] border-2 border-stone-200 bg-white p-1.5 shadow-xl shadow-stone-200/60">
-                <div className="overflow-hidden rounded-[1.6rem] border bg-background">
+            <div className="relative rounded-[2.25rem] border-[6px] border-stone-900 bg-stone-900 p-1 shadow-2xl shadow-stone-900/20">
+                <div className="relative overflow-hidden rounded-[1.65rem] border border-stone-200 bg-background">
+                    <div
+                        aria-hidden
+                        className="absolute left-1/2 top-0 z-20 h-5 w-24 -translate-x-1/2 rounded-b-2xl bg-stone-900"
+                    />
+
                     {children}
                 </div>
             </div>
@@ -320,71 +173,78 @@ function StatusBar() {
     return (
         <div
             aria-hidden
-            className="flex items-center justify-between border-b bg-white px-4 py-1.5 text-[10px] font-bold text-muted-foreground"
+            className="flex items-center justify-between border-b bg-white px-4 py-1.5 pt-2 text-[9px] font-bold text-muted-foreground"
         >
             <span>۹:۴۱</span>
 
-            <span className="h-3 w-12 rounded-full bg-stone-100" />
+            <span className="h-2.5 w-10 rounded-full bg-stone-100" />
 
             <span className="flex items-center gap-1">
-        <Signal className="size-3" />
-        <Wifi className="size-3" />
-        <BatteryMedium className="size-3.5" />
-      </span>
+                <Signal className="size-3" />
+                <Wifi className="size-3" />
+                <BatteryMedium className="size-3.5" />
+            </span>
         </div>
     );
 }
 
-/* ─── ماکت کاتالوگ ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Catalog mock
+ * ───────────────────────────────────────────────────────────── */
+
+const CATALOG_ROWS = [
+    {
+        name: "روغن سرخ‌کردنی ۱۰ لیتری",
+        price: 420000,
+        when: "امروز · ۹:۴۰",
+    },
+    {
+        name: "برنج طارم اعلا ۱۰ کیلویی",
+        price: 980000,
+        when: "امروز · ۹:۴۰",
+    },
+    {
+        name: "پیاز — کیسه ۲۵ کیلویی",
+        price: 310000,
+        when: "دیروز",
+    },
+];
 
 function CatalogScreen() {
     return (
         <PhoneFrame>
             <StatusBar />
 
-            <div className="flex items-center justify-between gap-2 border-b bg-white px-3.5 py-3">
-                <div className="flex min-w-0 items-center gap-2.5">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-white">
-            <Store className="size-4" />
-          </span>
+            <div className="border-b bg-white px-3.5 pb-3 pt-4">
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-white shadow-sm">
+                            <Store className="size-4" />
+                        </span>
 
-                    <div className="min-w-0">
-                        <p className="truncate text-xs font-extrabold">
-                            سپید کالا · پخش عمده
-                        </p>
+                        <div className="min-w-0">
+                            <p className="truncate text-xs font-extrabold">
+                                سپید کالا · پخش عمده
+                            </p>
 
-                        <p className="flex items-center gap-1 text-[10px] text-emerald-600">
-                            <span className="size-1.5 animate-soft-pulse rounded-full bg-emerald-500" />
-                            آخرین قیمت‌ها
-                        </p>
+                            <p className="mt-0.5 flex items-center gap-1 text-[9px] text-emerald-600">
+                                <span className="size-1.5 animate-soft-pulse rounded-full bg-emerald-500" />
+                                آخرین قیمت‌ها
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <span className="flex shrink-0 items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[10px] font-bold text-white">
-          <Plus className="size-3" />
-          دنبال کردن کاتالوگ
-        </span>
+                    <span className="flex shrink-0 items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[9px] font-bold text-white">
+                        <Plus className="size-3" />
+                        دنبال کردن
+                    </span>
+                </div>
             </div>
 
             <div className="border-b bg-white px-3.5 pb-3 pt-2.5">
-                <div className="flex items-center gap-2 rounded-xl border bg-muted/40 px-3 py-2 text-[11px] text-muted-foreground">
+                <div className="flex items-center gap-2 rounded-xl border bg-muted/40 px-3 py-2 text-[10px] text-muted-foreground">
                     <Search className="size-3.5" />
                     جست‌وجو در کاتالوگ…
-                </div>
-
-                <div className="mt-2.5 flex gap-1.5">
-                    {["همه", "روغن", "لبنیات", "غلات"].map((c, i) => (
-                        <span
-                            key={c}
-                            className={`whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-bold ${
-                                i === 0
-                                    ? "bg-primary/10 text-primary"
-                                    : "border text-muted-foreground"
-                            }`}
-                        >
-              {c}
-            </span>
-                    ))}
                 </div>
             </div>
 
@@ -395,173 +255,177 @@ function CatalogScreen() {
                         className="flex items-center justify-between gap-2 px-3.5 py-3"
                     >
                         <div className="min-w-0">
-                            <p className="truncate text-xs font-bold text-foreground">
+                            <p className="truncate text-xs font-bold">
                                 {row.name}
                             </p>
 
-                            <p className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
-                                <Clock className="size-3" />
-                                به‌روزرسانی: {row.when}
+                            <p className="mt-1 flex items-center gap-1 text-[9px] text-muted-foreground">
+                                <Clock3 className="size-3" />
+                                {row.when}
                             </p>
                         </div>
 
-                        <div className="shrink-0 text-left">
-                            {row.price === null ? (
-                                <p className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground">
-                                    <Lock className="size-3" />
-                                    قیمت مخفی
-                                </p>
-                            ) : (
-                                <>
-                                    <p className="whitespace-nowrap text-xs font-black text-primary">
-                                        {fa(row.price)}{" "}
-                                        <span className="text-[9px] font-normal">ریال</span>
-                                    </p>
-
-                                    {row.special && (
-                                        <span className="mt-0.5 inline-block rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold text-accent-foreground">
-                      قیمت ویژه شما
-                    </span>
-                                    )}
-                                </>
-                            )}
-                        </div>
+                        <p className="shrink-0 whitespace-nowrap text-xs font-black text-primary">
+                            {fa(row.price)}{" "}
+                            <span className="text-[8px] font-normal">
+                                ریال
+                            </span>
+                        </p>
                     </div>
                 ))}
             </div>
 
             <div className="flex items-center justify-between border-t bg-white px-3.5 py-2.5">
-                <p className="flex items-center gap-1 text-[10px] font-bold text-emerald-600">
+                <p className="flex items-center gap-1 text-[9px] font-bold text-emerald-600">
                     <CheckCircle2 className="size-3.5" />
                     قیمت‌ها به‌روز هستند
                 </p>
 
-                <span className="flex items-center gap-1 text-[10px] font-bold text-primary">
-          <Share2 className="size-3.5" />
-          ارسال لینک
-        </span>
+                <span className="flex items-center gap-1 text-[9px] font-bold text-primary">
+                    <Share2 className="size-3.5" />
+                    ارسال لینک
+                </span>
             </div>
         </PhoneFrame>
     );
 }
 
-/* ─── ماکت بازوی خرید ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Buy mock
+ * ───────────────────────────────────────────────────────────── */
+
+const OFFER_ROWS = [
+    {
+        name: "عمده‌فروشی میوه سبلان",
+        price: 4200000,
+        best: true,
+        when: "۱۰ دقیقه پیش",
+    },
+    {
+        name: "طبیعت‌دانه پخش",
+        price: 4350000,
+        best: false,
+        when: "۲۵ دقیقه پیش",
+    },
+    {
+        name: "تره‌بار آرتام",
+        price: 4450000,
+        best: false,
+        when: "۱ ساعت پیش",
+    },
+];
 
 function BuyScreen() {
     return (
         <PhoneFrame>
             <StatusBar />
 
-            <div className="flex items-center justify-between gap-2 border-b bg-white px-3.5 py-3">
-                <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-stone-800 text-white">
-            <ShoppingBasket className="size-4" />
-          </span>
+            <div className="border-b bg-white px-3.5 pb-3 pt-4">
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-stone-900 text-white">
+                            <ShoppingBasket className="size-4" />
+                        </span>
 
-                    <div>
-                        <p className="text-xs font-extrabold">لیست خرید رستوران آراد</p>
+                        <div className="min-w-0">
+                            <p className="truncate text-xs font-extrabold">
+                                لیست خرید رستوران آراد
+                            </p>
 
-                        <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                            <MapPin className="size-3" />
-                            تبریز · ۱ قلم نیاز
-                        </p>
-                    </div>
-                </div>
-
-                <span className="grid size-8 place-items-center rounded-full border text-muted-foreground">
-          <Share2 className="size-3.5" />
-        </span>
-            </div>
-
-            <div className="border-b bg-muted/200 px-3.5 py-3">
-                <div className="flex items-center justify-between gap-2 rounded-xl border bg-primary/20 px-3 py-2.5 shadow-sm">
-                    <div>
-                        <p className="text-[10px] text-muted-foreground">اعلام نیاز</p>
-                        <p className="text-xs font-extrabold">پیاز — 1 تن</p>
+                            <p className="mt-0.5 flex items-center gap-1 text-[9px] text-muted-foreground">
+                                <MapPin className="size-3" />
+                                تبریز · ۱ قلم نیاز
+                            </p>
+                        </div>
                     </div>
 
-                    <span className="whitespace-nowrap rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-bold text-stone-700">
-                    ۳ پیشنهاد رسید
-                  </span>
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full border text-muted-foreground">
+                        <Share2 className="size-3.5" />
+                    </span>
                 </div>
             </div>
 
-            <div className="border-b bg-muted/30 px-3.5 py-3">
-                <div className="flex items-center justify-between gap-2 rounded-xl border bg-white px-3 py-2.5 shadow-sm">
-                    <div>
-                        <p className="text-[10px] text-muted-foreground">اعلام نیاز</p>
-                        <p className="text-xs font-extrabold">برنج طارم درجه 1 — 100 کیسه</p>
-                    </div>
+            <div className="border-b bg-muted/20 px-3.5 py-3">
+                <div className="rounded-xl border bg-primary/10 px-3 py-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                        <div>
+                            <p className="text-[9px] text-muted-foreground">
+                                نیاز خرید
+                            </p>
 
-                    <span className="whitespace-nowrap rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-bold text-stone-700">
-                    10 پیشنهاد رسید
-                  </span>
+                            <p className="mt-0.5 text-xs font-extrabold">
+                                پیاز — ۱ تن
+                            </p>
+                        </div>
+
+                        <span className="whitespace-nowrap rounded-full bg-white px-2.5 py-1 text-[9px] font-bold text-stone-700 shadow-sm">
+                            ۳ پیشنهاد
+                        </span>
+                    </div>
                 </div>
             </div>
-
 
             <div className="bg-white">
-                <p className="px-3.5 pb-1 pt-3 text-[10px] font-bold text-muted-foreground">
-                    پیشنهادها — مقایسه در یک نگاه
-                </p>
+                <div className="flex items-center justify-between px-3.5 pb-1 pt-3">
+                    <p className="text-[9px] font-bold text-muted-foreground">
+                        پیشنهادهای تأمین
+                    </p>
+
+                    <span className="text-[8px] text-muted-foreground">
+                        مقایسه در یک نگاه
+                    </span>
+                </div>
 
                 <div className="divide-y">
                     {OFFER_ROWS.map((row) => (
                         <div
                             key={row.name}
                             className={`flex items-center justify-between gap-2 px-3.5 py-3 ${
-                                row.best ? "bg-accent/50" : ""
-                            }`}
+    row.best ? "bg-accent/45" : ""
+}`}
                         >
-                            <div>
+                            <div className="min-w-0">
                                 <p
-                                    className={`text-xs ${
-                                        row.best
-                                            ? "font-black"
-                                            : "font-bold text-muted-foreground"
-                                    }`}
+                                    className={`truncate text-xs ${
+    row.best
+        ? "font-black"
+        : "font-bold text-muted-foreground"
+}`}
                                 >
                                     {row.name}
                                 </p>
 
-                                <p className="mt-0.5 text-[10px] text-muted-foreground">
+                                <p className="mt-0.5 text-[9px] text-muted-foreground">
                                     {row.when}
                                 </p>
                             </div>
 
                             <div className="flex shrink-0 items-center gap-1.5">
                                 {row.best && (
-                                    <span className="rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold text-white">
-                    پیشنهاد مناسب
-                  </span>
+                                    <span className="rounded-full bg-primary px-2 py-0.5 text-[8px] font-bold text-white">
+                                        قیمت بهتر
+                                    </span>
                                 )}
 
                                 <p
                                     className={`whitespace-nowrap text-xs ${
-                                        row.best
-                                            ? "font-black text-primary"
-                                            : "font-bold text-muted-foreground"
-                                    }`}
+    row.best
+        ? "font-black text-primary"
+        : "font-bold text-muted-foreground"
+}`}
                                 >
                                     {fa(row.price)}{" "}
-                                    <span className="text-[9px] font-normal">ریال</span>
+                                    <span className="text-[8px] font-normal">
+                                        ریال
+                                    </span>
                                 </p>
                             </div>
                         </div>
                     ))}
-
-                    <div className="flex items-center justify-between gap-2 px-3.5 py-3">
-                        <p className="text-xs text-muted-foreground">بازار تبریز</p>
-
-                        <p className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                            <span className="size-1.5 animate-soft-pulse rounded-full bg-amber-400" />
-                            در حال دریافت پیشنهاد…
-                        </p>
-                    </div>
                 </div>
 
                 <div className="p-3.5 pt-2">
-                    <div className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed py-2.5 text-[11px] font-bold text-muted-foreground">
+                    <div className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed py-2.5 text-[10px] font-bold text-muted-foreground">
                         <Plus className="size-3.5" />
                         ارسال برای تأمین‌کننده دیگر
                     </div>
@@ -571,63 +435,234 @@ function BuyScreen() {
     );
 }
 
-/* ─── قرص‌های نوار متحرک ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Hero
+ * ───────────────────────────────────────────────────────────── */
 
-function CatalogPill({
-                         name,
-                         city,
-                         items,
-                     }: (typeof LATEST_CATALOGS)[number]) {
+function Hero() {
+    const [tab, setTab] = useState<"sell" | "buy">("sell");
+    const isSell = tab === "sell";
+
     return (
-        <span className="flex shrink-0 items-center gap-2 rounded-full border bg-white px-3 py-1.5 shadow-sm">
-      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent text-primary">
-        <Store className="size-3" />
-      </span>
+        <section className="relative overflow-hidden border-b bg-white">
+            <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_50%_0%,hsl(var(--primary)/0.10),transparent_60%)]"
+            />
 
-      <span className="whitespace-nowrap text-[11px] font-extrabold">
-        {name}
-      </span>
+            <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-10 sm:px-6 sm:pb-20 sm:pt-16 lg:px-8">
+                <div className="mx-auto max-w-3xl text-center">
+                    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-accent/60 px-3.5 py-1.5 text-[11px] font-extrabold text-primary">
+                        <span className="size-1.5 rounded-full bg-primary" />
+                        برای خرید و فروش عمده
+                    </div>
 
-      <span className="whitespace-nowrap text-[10px] text-muted-foreground">
-        {fa(items)} کالا · {city}
-      </span>
-    </span>
+                    <h1 className="text-[28px] font-black leading-[1.55] tracking-tight sm:text-4xl sm:leading-[1.45] lg:text-[42px]">
+                        نیازت را بگو،
+                        <br className="sm:hidden" />{" "}
+                        <span className="text-primary">
+                            تأمین‌کننده مناسبش را پیدا کن
+                        </span>
+                    </h1>
+
+                    <p className="mx-auto mt-5 max-w-2xl text-sm leading-8 text-muted-foreground sm:text-base sm:leading-8">
+                        آی‌مچ نیاز خریداران هر کالا را با اطلاعات تأمین‌کننده‌های
+                        مناسب همان کالا نزدیک می‌کند؛ از قیمت و موجودی گرفته تا
+                        شرایط و امکان تأمین.
+                    </p>
+
+                    <p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-muted-foreground">
+                        کاتالوگ فروش و لیست خرید، ساده‌ترین راه برای شروع این
+                        ارتباط هستند.
+                    </p>
+                </div>
+
+                <div className="mx-auto mt-9 max-w-4xl">
+                    <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
+                        <div className="order-2 lg:order-1">
+                            <div className="mb-4 text-center lg:text-right">
+                                <span className="text-[11px] font-extrabold text-primary">
+                                    اگر می‌فروشی
+                                </span>
+
+                                <h2 className="mt-1 text-lg font-black">
+                                    کاتالوگ فروشت را بساز
+                                </h2>
+
+                                <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                                    محصولات و قیمت‌هایت را در یک لینک همیشه‌به‌روز
+                                    به مشتری‌هایت نشان بده.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setTab("sell")}
+                                className={`group relative w-full overflow-hidden rounded-3xl border p-3 text-right transition-all sm:p-4 ${
+    isSell
+        ? "border-primary/40 bg-accent/35 shadow-xl shadow-primary/10"
+        : "border-stone-200 bg-white hover:border-primary/20 hover:shadow-lg"
+}`}
+                            >
+                                <div className="relative">
+                                    <CatalogScreen />
+                                </div>
+
+                                {isSell && (
+                                    <div className="absolute inset-x-5 bottom-4 flex justify-center">
+                                        <span className="rounded-full bg-primary px-4 py-2 text-[10px] font-bold text-white shadow-lg">
+                                            همین را بساز
+                                        </span>
+                                    </div>
+                                )}
+                            </button>
+                        </div>
+
+                        <div className="order-1 flex justify-center lg:order-2">
+                            <div className="relative hidden h-28 w-28 place-items-center lg:grid">
+                                <div className="absolute inset-0 rounded-full bg-accent/70" />
+                                <div className="relative grid size-16 place-items-center rounded-full bg-primary text-white shadow-xl shadow-primary/25">
+                                    <Link2 className="size-7" />
+                                </div>
+
+                                <span className="absolute -bottom-2 whitespace-nowrap rounded-full border bg-white px-3 py-1 text-[9px] font-bold text-muted-foreground shadow-sm">
+                                    آی‌مچ
+                                </span>
+                            </div>
+
+                            <div className="grid size-12 place-items-center rounded-full bg-accent text-primary lg:hidden">
+                                <ArrowLeft className="size-5 ltr:rotate-180" />
+                            </div>
+                        </div>
+
+                        <div className="order-3">
+                            <div className="mb-4 text-center lg:text-right">
+                                <span className="text-[11px] font-extrabold text-stone-700">
+                                    اگر می‌خری
+                                </span>
+
+                                <h2 className="mt-1 text-lg font-black">
+                                    نیاز خریدت را ثبت کن
+                                </h2>
+
+                                <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                                    کالای موردنیازت را بگو تا مسیر رسیدن به
+                                    تأمین‌کننده مناسب شروع شود.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setTab("buy")}
+                                className={`group relative w-full overflow-hidden rounded-3xl border p-3 text-right transition-all sm:p-4 ${
+    !isSell
+        ? "border-stone-400 bg-stone-50 shadow-xl shadow-stone-900/10"
+        : "border-stone-200 bg-white hover:border-stone-300 hover:shadow-lg"
+}`}
+                            >
+                                <div className="relative">
+                                    <BuyScreen />
+                                </div>
+
+                                {!isSell && (
+                                    <div className="absolute inset-x-5 bottom-4 flex justify-center">
+                                        <span className="rounded-full bg-stone-900 px-4 py-2 text-[10px] font-bold text-white shadow-lg">
+                                            همین را بساز
+                                        </span>
+                                    </div>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                    <Link href="/start?mode=register">
+                        <Button
+                            size="lg"
+                            className="w-full rounded-xl px-7 shadow-lg shadow-primary/25 sm:w-auto"
+                        >
+                            ساخت کاتالوگ فروش
+                            <ArrowLeft className="size-4 ltr:rotate-180" />
+                        </Button>
+                    </Link>
+
+                    <Link href="/start?mode=register">
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="w-full rounded-xl border-stone-300 px-7 sm:w-auto"
+                        >
+                            ثبت نیاز خرید
+                            <ArrowLeft className="size-4 ltr:rotate-180" />
+                        </Button>
+                    </Link>
+                </div>
+
+                <div className="mx-auto mt-7 flex max-w-2xl flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[10px] font-bold text-muted-foreground">
+                    <span className="flex items-center gap-1.5">
+                        <Check className="size-3.5 text-primary" />
+                        رایگان برای شروع
+                    </span>
+
+                    <span className="flex items-center gap-1.5">
+                        <Check className="size-3.5 text-primary" />
+                        بدون نصب برای مشتری
+                    </span>
+
+                    <span className="flex items-center gap-1.5">
+                        <Check className="size-3.5 text-primary" />
+                        لینک همیشه به‌روز
+                    </span>
+                </div>
+            </div>
+        </section>
     );
 }
 
-function ListPill({
-                      name,
-                      city,
-                      offers,
-                  }: (typeof LATEST_LISTS)[number]) {
+/* ─────────────────────────────────────────────────────────────
+ * Live activity
+ * ───────────────────────────────────────────────────────────── */
+
+function LivePill({
+    icon: Icon,
+    tone,
+    name,
+    detail,
+}: {
+    icon: typeof Store;
+    tone: "sell" | "buy";
+    name: string;
+    detail: string;
+}) {
     return (
         <span className="flex shrink-0 items-center gap-2 rounded-full border bg-white px-3 py-1.5 shadow-sm">
-      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-stone-100 text-stone-600">
-        <ShoppingBasket className="size-3" />
-      </span>
+            <span
+                className={`grid size-6 shrink-0 place-items-center rounded-full ${
+    tone === "sell"
+        ? "bg-accent text-primary"
+        : "bg-stone-100 text-stone-600"
+}`}
+            >
+                <Icon className="size-3" />
+            </span>
 
-      <span className="whitespace-nowrap text-[11px] font-extrabold">
-        {name}
-      </span>
+            <span className="whitespace-nowrap text-[11px] font-extrabold">
+                {name}
+            </span>
 
-      <span className="whitespace-nowrap text-[10px] text-muted-foreground">
-        {fa(offers)} پیشنهاد · {city}
-      </span>
-    </span>
+            <span className="whitespace-nowrap text-[10px] text-muted-foreground">
+                {detail}
+            </span>
+        </span>
     );
 }
-
-/* ─── نوار آرام ─── */
 
 function MarqueeRow({
-                        label,
-                        icon: Icon,
-                        items,
-                        reverse = false,
-                        duration = 70,
-                    }: {
-    label: string;
-    icon: React.ComponentType<{ className?: string }>;
+    items,
+    reverse = false,
+    duration = 60,
+}: {
     items: React.ReactNode;
     reverse?: boolean;
     duration?: number;
@@ -641,320 +676,221 @@ function MarqueeRow({
                     animationDirection: reverse ? "reverse" : "normal",
                 }}
             >
-                <div className="flex gap-2.5 pe-2.5">{items}</div>
+                <div className="flex gap-2.5 pe-2.5">
+                    {items}
+                </div>
 
-                <div className="flex gap-2.5 pe-2.5" aria-hidden>
+                <div
+                    className="flex gap-2.5 pe-2.5"
+                    aria-hidden
+                >
                     {items}
                 </div>
             </div>
 
-            <div className="pointer-events-none absolute inset-y-0 start-0 z-10 flex items-center bg-gradient-to-l from-white via-white/95 to-transparent pe-12 ps-4">
-        <span className="flex items-center gap-1.5 whitespace-nowrap rounded-full border bg-white px-3 py-1.5 text-[10px] font-bold text-muted-foreground shadow-sm">
-          <Icon className="size-3" />
-            {label}
-        </span>
-            </div>
+            <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-16 bg-gradient-to-r from-muted/20 via-muted/20/80 to-transparent" />
 
-            <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-14 bg-gradient-to-r from-white via-white/70 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-16 bg-gradient-to-l from-muted/20 via-muted/20/80 to-transparent" />
         </div>
     );
 }
 
-/* ─── ۱) آی‌مچ چیست؟ ─── */
+const MIN_ROWS_TO_SHOW = 4;
 
-function ProductTour() {
-    const [tab, setTab] = useState<"sale" | "buy">("sale");
-    const arm = ARMS[tab];
-    const isSale = tab === "sale";
+function LiveActivity() {
+    const sell = useExploreFeed("SELL");
+    const buy = useExploreFeed("BUY");
+
+    const sellRows = (sell.data ?? [])
+        .filter((r) => r.priceMinor != null)
+        .slice(0, 10);
+
+    const buyRows = (buy.data ?? [])
+        .filter((r) => r.volume != null)
+        .slice(0, 10);
+
+    const hasSell = sellRows.length >= MIN_ROWS_TO_SHOW;
+    const hasBuy = buyRows.length >= MIN_ROWS_TO_SHOW;
+
+    if (!hasSell && !hasBuy) return null;
 
     return (
-        <section id="tour" className="border-b bg-white">
-            <div className="mx-auto max-w-5xl px-4 pb-10 pt-10 sm:pt-14">
-                <div className="mx-auto max-w-2xl text-center">
-                    <Badge
-                        variant="outline"
-                        className="gap-2 border-primary/30 bg-white px-3.5 py-1.5 text-xs text-primary shadow-sm"
-                    >
-                        <span className="size-1.5 animate-soft-pulse rounded-full bg-primary" />
-                        آی‌مچ · پلتفرم شبکه‌سازی خرید و فروش عمده
-                    </Badge>
-
-
-
-                    <h1 className="mt-4 text-xl font-black leading-[2.2] sm:text-2xl sm:leading-[2]">
-                        <div className="text-primary">برای فروش عمده کاتالوگ قیمت بساز </div>
-                        <div className="text-green-600">برای خرید عمده لیست خرید بساز </div>
-                    </h1>
-                    <h1 className="mt-5 pb-4 pt-3 md:pt-6 text-xl  font-black leading-[1.5] tracking-tight text-stone-950 dark:text-white sm:text-xl md:text-[1.5rem] md:leading-[1.35]">
-                        ما لایه های مختلف بازار عمده از خرده فروش تا صادر کننده را می کاویم تا  هر تامین کننده را به خریدارن هدف  وصل کنیم
-                    </h1>
-
+        <section className="border-b bg-muted/20">
+            <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+                <div className="mb-4 flex items-center justify-center gap-2">
+                    <span className="size-1.5 animate-soft-pulse rounded-full bg-emerald-500" />
+                    <p className="text-[11px] font-bold text-muted-foreground">
+                        همین حالا در آی‌مچ
+                    </p>
                 </div>
 
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-1.5 text-xs font-bold sm:flex-nowrap">
-                    {["بساز", "به اشتراک بزار", "شبکه‌سازی کن"].map(
-                        (item, index) => (
-                            <div key={item} className="flex items-center">
-                                <div
-                                    className={`rounded-lg border px-3.5 py-2 shadow-sm ${
-                                        index === 0
-                                            ? "border-primary/30 bg-primary/5 text-primary"
-                                            : "border-border bg-white text-foreground"
-                                    }`}
-                                >
-                                    {item}
-                                </div>
+                <div className="space-y-3">
+                    {hasSell && (
+                        <MarqueeRow
+                            duration={65}
+                            items={sellRows.map((r) => (
+                                <LivePill
+                                    key={r.id}
+                                    icon={Store}
+                                    tone="sell"
+                                    name={r.business.name}
+                                    detail={`${goodName(r.good)} · ${fmtMoney(
+    r.priceMinor,
+    r.currency
+)}`}
+                                />
+                            ))}
+                        />
+                    )}
 
-                                {index < 2 && (
-                                    <span className="mx-1 text-muted-foreground/50">←</span>
-                                )}
-                            </div>
-                        )
+                    {hasBuy && (
+                        <MarqueeRow
+                            reverse
+                            duration={55}
+                            items={buyRows.map((r) => (
+                                <LivePill
+                                    key={r.id}
+                                    icon={ShoppingBasket}
+                                    tone="buy"
+                                    name={r.business.name}
+                                    detail={`${goodName(r.good)} — ${fa(
+    r.volume as number
+)} ${unitLabel(
+    r.good.unit
+)} · ${r.business.city}`}
+                                />
+                            ))}
+                        />
                     )}
                 </div>
-
-                <div className="mt-8 flex justify-center">
-                    <div className="inline-flex rounded-full border bg-background p-1 shadow-sm">
-                        <button
-                            onClick={() => setTab("sale")}
-                            aria-pressed={isSale}
-                            className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                                isSale
-                                    ? "bg-primary text-white shadow"
-                                    : "text-muted-foreground hover:text-foreground"
-                            }`}
-                        >
-                            کاتالوگ قیمت
-                        </button>
-
-                        <button
-                            onClick={() => setTab("buy")}
-                            aria-pressed={!isSale}
-                            className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                                !isSale
-                                    ? "bg-stone-800 text-white shadow"
-                                    : "text-muted-foreground hover:text-foreground"
-                            }`}
-                        >
-                            دستیار خرید
-                        </button>
-                    </div>
-                </div>
-
-                <div
-                    key={tab}
-                    className="mt-9 grid animate-[fade-up_0.4s_ease_both] items-center gap-10 lg:grid-cols-2 lg:gap-12"
-                >
-                    <div aria-hidden="true">
-                        {isSale ? <CatalogScreen /> : <BuyScreen />}
-                    </div>
-
-                    <div className="text-center lg:text-right">
-                        <Badge
-                            variant="outline"
-                            className={`px-3 py-1 text-[11px] ${arm.chipCls}`}
-                        >
-                            {arm.chip}
-                        </Badge>
-
-                        <h2 className="mt-3 text-xl font-black">{arm.title}</h2>
-
-                        <p className="mt-1 text-sm font-bold text-primary">
-                            {arm.lead}
-                        </p>
-
-                        <ul className="mt-5 grid gap-3 text-right">
-                            {arm.bullets.map((b) => (
-                                <li
-                                    key={b.strong}
-                                    className="flex items-start gap-2.5 text-sm leading-6 text-muted-foreground"
-                                >
-                                    <CheckCircle2
-                                        className={`mt-0.5 size-4 shrink-0 ${arm.checkCls}`}
-                                    />
-
-                                    <span>
-                    <b className="text-foreground">{b.strong}</b>{" "}
-                                        {b.rest}
-                  </span>
-                                </li>
-                            ))}
-                        </ul>
-
-                        <Link href="/start?mode=register" className="mt-6 inline-block">
-                            <Button
-                                className={`rounded-xl px-6 ${
-                                    isSale
-                                        ? ""
-                                        : "bg-stone-800 hover:bg-stone-900"
-                                }`}
-                            >
-                                {arm.cta}
-                                <ArrowLeft className="size-4 ltr:rotate-180" />
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-
-                <div className="mt-12 border-t pt-6">
-                    <p className="mb-4 text-center text-[11px] font-bold text-muted-foreground">
-                       جدیدترین کاتالوگها و لیست های ساخته شده
-                    </p>
-
-                    <div className="space-y-3">
-                        <MarqueeRow
-                            label="آخرین کاتالوگ‌ها"
-                            icon={Store}
-                            duration={70}
-                            items={LATEST_CATALOGS.map((c) => (
-                                <CatalogPill key={c.name} {...c} />
-                            ))}
-                        />
-
-                        <MarqueeRow
-                            label="آخرین لیست‌های خرید"
-                            icon={ShoppingBasket}
-                            duration={55}
-                            reverse
-                            items={LATEST_LISTS.map((l) => (
-                                <ListPill key={l.name} {...l} />
-                            ))}
-                        />
-                    </div>
-                </div>
             </div>
         </section>
     );
 }
 
-/* ─── ۲) نوار اعتماد ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Core value
+ * ───────────────────────────────────────────────────────────── */
 
-function TrustStrip() {
+function CoreValue() {
     return (
-        <section className="border-b bg-white">
-            <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 px-4 py-6 sm:grid-cols-4">
-                {TRUST.map((t) => (
-                    <div
-                        key={t.title}
-                        className="flex items-center gap-2.5 rounded-xl border p-3"
-                    >
-            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent text-primary">
-              <t.icon className="size-4" />
-            </span>
-
-                        <div className="min-w-0">
-                            <p className="truncate text-xs font-extrabold">
-                                {t.title}
-                            </p>
-
-                            <p className="truncate text-[10px] text-muted-foreground">
-                                {t.sub}
-                            </p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </section>
-    );
-}
-
-/* ─── ۳) حریم قیمت ─── */
-
-function ViewerCard({
-                        label,
-                        note,
-                        price,
-                        hidden,
-                        special,
-                    }: {
-    label: string;
-    note: string;
-    price: number | null;
-    hidden: boolean;
-    special: boolean;
-}) {
-    return (
-        <div
-            className={`rounded-xl border p-3.5 ${
-                special
-                    ? "border-primary/30 bg-accent/50"
-                    : "bg-background"
-            }`}
-        >
-            <p className="text-[11px] font-bold text-muted-foreground">
-                {label}
-            </p>
-
-            {hidden ? (
-                <p className="mt-1.5 flex items-center gap-1.5 text-sm font-black text-muted-foreground">
-                    <Lock className="size-3.5" />
-                    قیمت مخفی
-                </p>
-            ) : (
-                <p
-                    className={`mt-1.5 text-base font-black ${
-                        special ? "text-primary" : "text-foreground"
-                    }`}
-                >
-                    {fa(price!)}{" "}
-                    <span className="text-[10px] font-normal text-muted-foreground">
-            ریال
-          </span>
-                </p>
-            )}
-
-            <p className="mt-1 text-[10px] leading-4 text-muted-foreground">
-                {note}
-            </p>
-        </div>
-    );
-}
-
-function PricePrivacy() {
-    return (
-        <section className="border-b">
-            <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
+        <section className="relative overflow-hidden bg-white">
+            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
                 <SectionHead
-                    eyebrow="حریم قیمت"
-                    title="قیمت را برای هر گروه مشتری اختصاصی کن"
-                    sub="در آی مچ می تونی به هر گروه مشتری قیمت خاص نشون بدی و یا قیمت رو پنهان کنی."
+                    eyebrow="شروع ساده، ارزش بیشتر"
+                    title="کاتالوگ و لیست خرید، فقط شروع کارند"
+                    sub="هر دو ابزار به یک نقطه می‌رسند: اطلاعات واقعی از کالا، قیمت، نیاز و تأمین. آی‌مچ از همین اطلاعات برای نزدیک‌کردن خریدار و تأمین‌کننده استفاده می‌کند."
                 />
 
-                <div className="mx-auto mt-8 max-w-3xl rounded-2xl border bg-white p-5 shadow-sm sm:p-6">
-                    <div className="flex items-center gap-3 border-b pb-4">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accent text-primary">
-              <Package className="size-5" />
-            </span>
+                <div className="relative mx-auto mt-12 max-w-5xl">
+                    <div
+                        aria-hidden
+                        className="absolute left-1/2 top-1/2 hidden h-px w-[62%] -translate-x-1/2 bg-gradient-to-r from-primary/10 via-primary/50 to-primary/10 lg:block"
+                    />
 
-                        <div>
-                            <p className="text-sm font-extrabold">
-                                روغن سرخ‌کردنی ۱۰ لیتری
-                            </p>
+                    <div className="grid gap-5 lg:grid-cols-[1fr_180px_1fr] lg:items-center">
+                        <div className="rounded-3xl border bg-white p-5 shadow-sm sm:p-6">
+                            <div className="flex items-start gap-4">
+                                <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-accent text-primary">
+                                    <ShoppingBasket className="size-5" />
+                                </span>
 
-                            <p className="text-[11px] text-muted-foreground">
-                                یک کالا — سه قیمت متفاوت
-                            </p>
+                                <div>
+                                    <p className="text-[11px] font-extrabold text-muted-foreground">
+                                        از طرف خریدار
+                                    </p>
+
+                                    <h3 className="mt-1 text-base font-black">
+                                        نیاز واقعی خرید
+                                    </h3>
+
+                                    <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                                        چه کالایی، چه مقدار، کجا و برای چه زمانی
+                                        نیاز داری؟
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="mt-5 flex flex-wrap gap-2">
+                                {["کالا", "حجم", "موقعیت", "زمان تأمین"].map(
+                                    (item) => (
+                                        <span
+                                            key={item}
+                                            className="rounded-full bg-muted px-3 py-1.5 text-[9px] font-bold text-muted-foreground"
+                                        >
+                                            {item}
+                                        </span>
+                                    )
+                                )}
+                            </div>
                         </div>
 
-                        <Badge
-                            variant="outline"
-                            className="ms-auto hidden border-primary/30 bg-white text-primary sm:inline-flex"
-                        >
-                            تنظیم قیمت‌ها
-                        </Badge>
-                    </div>
+                        <div className="relative z-10 mx-auto flex size-32 flex-col items-center justify-center rounded-full border-8 border-white bg-primary text-center text-white shadow-2xl shadow-primary/25">
+                            <Link2 className="size-7" />
 
-                    <div className="grid gap-3 pt-4 sm:grid-cols-3">
-                        {VIEWERS.map((v) => (
-                            <ViewerCard key={v.label} {...v} />
-                        ))}
-                    </div>
+                            <span className="mt-1 text-[10px] font-black">
+                                آی‌مچ
+                            </span>
 
-                    <p className="mt-4 rounded-xl bg-muted/60 px-3.5 py-2.5 text-[11px] leading-5 text-muted-foreground">
-            <span className="font-bold text-foreground">
-              مثلاً:
-            </span>{" "}
-                        قیمت عمده را فقط برای مشتری قدیمی نمایش بده و برای بقیه پنهان کن.
+                            <span className="mt-0.5 text-[8px] opacity-80">
+                                اتصال دقیق
+                            </span>
+                        </div>
+
+                        <div className="rounded-3xl border bg-white p-5 shadow-sm sm:p-6">
+                            <div className="flex items-start gap-4">
+                                <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-accent text-primary">
+                                    <Store className="size-5" />
+                                </span>
+
+                                <div>
+                                    <p className="text-[11px] font-extrabold text-muted-foreground">
+                                        از طرف تأمین‌کننده
+                                    </p>
+
+                                    <h3 className="mt-1 text-base font-black">
+                                        اطلاعات واقعی تأمین
+                                    </h3>
+
+                                    <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                                        چه کالایی داری، با چه قیمت و موجودی و
+                                        چه شرایطی می‌توانی تأمین کنی؟
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="mt-5 flex flex-wrap gap-2">
+                                {[
+                                    "کالا",
+                                    "قیمت",
+                                    "موجودی",
+                                    "شرایط تأمین",
+                                ].map((item) => (
+                                    <span
+                                        key={item}
+                                        className="rounded-full bg-muted px-3 py-1.5 text-[9px] font-bold text-muted-foreground"
+                                    >
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mx-auto mt-9 max-w-2xl rounded-2xl border border-primary/15 bg-accent/35 px-5 py-4 text-center">
+                    <p className="text-sm font-extrabold leading-7">
+                        نتیجه؟
+                        <span className="text-primary">
+                            {" "}
+                            خریدار به تأمین‌کننده‌ای نزدیک می‌شود که واقعاً
+                            همان کالا را دارد.
+                        </span>
+                    </p>
+
+                    <p className="mt-1 text-[11px] leading-6 text-muted-foreground">
+                        نه صرفاً یک لیست عمومی از فروشنده‌ها؛ بلکه تأمین‌کننده
+                        مرتبط با نیاز واقعی خریدار.
                     </p>
                 </div>
             </div>
@@ -962,84 +898,258 @@ function PricePrivacy() {
     );
 }
 
-/* ─── ۴) سه قدم شروع ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Baseline
+ * ───────────────────────────────────────────────────────────── */
+
+function Baseline() {
+    return (
+        <section className="border-y bg-muted/20">
+            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18 lg:px-8">
+                <SectionHead
+                    title="اگر فقط یک کاتالوگ می‌خواهی، همین حالا آماده است"
+                    sub="برای شروع لازم نیست کاری پیچیده انجام بدهی؛ یک کاتالوگ یا لیست خرید بساز و لینک آن را به هرکس می‌خواهی بده."
+                />
+
+                <div className="mx-auto mt-9 grid max-w-4xl gap-3 md:grid-cols-3">
+                    {BASELINE.map((item) => (
+                        <div
+                            key={item.title}
+                            className="rounded-2xl border bg-white p-5 transition-shadow hover:shadow-md"
+                        >
+                            <span className="grid size-10 place-items-center rounded-xl bg-accent text-primary">
+                                <item.icon className="size-4.5" />
+                            </span>
+
+                            <p className="mt-4 text-sm font-extrabold">
+                                {item.title}
+                            </p>
+
+                            <p className="mt-1.5 text-xs leading-6 text-muted-foreground">
+                                {item.sub}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * How it works
+ * ───────────────────────────────────────────────────────────── */
 
 function HowToStart() {
     return (
-        <section className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-            <SectionHead
-                eyebrow="شروع"
-                title="شروعش ساده است"
-                sub="سه قدم تا کاتالوگ یا دستیار خرید آماده."
-            />
-
-            <div className="relative mt-9 grid gap-4 sm:grid-cols-3 sm:gap-6">
-                <div
-                    aria-hidden
-                    className="absolute inset-x-20 top-8 hidden border-t-2 border-dashed border-primary/25 sm:block"
+        <section className="bg-white">
+            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+                <SectionHead
+                    eyebrow="شروع در چند دقیقه"
+                    title="کار با آی‌مچ سخت نیست"
+                    sub="از همان کاری شروع کن که همین امروز انجام می‌دهی."
                 />
 
-                {STEPS.map((s, i) => (
+                <div className="relative mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3 md:gap-6">
                     <div
-                        key={s.title}
-                        className="relative rounded-2xl border bg-white p-5 text-center shadow-sm"
-                    >
-            <span className="relative mx-auto grid size-16 place-items-center rounded-2xl bg-accent text-primary">
-              <s.icon className="size-6" />
+                        aria-hidden
+                        className="absolute inset-x-24 top-9 hidden border-t-2 border-dashed border-primary/20 md:block"
+                    />
 
-              <span className="absolute -end-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-background bg-primary text-[11px] font-black text-white">
-                {fa(i + 1)}
-              </span>
-            </span>
+                    {STEPS.map((step) => (
+                        <div
+                            key={step.number}
+                            className="relative rounded-3xl border bg-white p-6 text-center shadow-sm"
+                        >
+                            <div className="relative mx-auto grid size-18 place-items-center rounded-2xl bg-accent text-primary">
+                                <step.icon className="size-6" />
 
-                        <p className="mt-3.5 font-extrabold">{s.title}</p>
+                                <span className="absolute -end-2 -top-2 grid size-7 place-items-center rounded-full border-2 border-white bg-primary text-[10px] font-black text-white shadow-sm">
+                                    {step.number}
+                                </span>
+                            </div>
 
-                        <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-                            {s.desc}
-                        </p>
-                    </div>
-                ))}
+                            <h3 className="mt-4 text-base font-black">
+                                {step.title}
+                            </h3>
+
+                            <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                                {step.desc}
+                            </p>
+                        </div>
+                    ))}
+                </div>
             </div>
-
-            <p className="mx-auto mt-7 max-w-xl text-center text-sm leading-7 text-muted-foreground">
-                و کم‌کم، مشتری‌ها و تأمین‌کننده‌هایی که با آن‌ها کار می‌کنی
-                هم به شبکه‌ی تجاری خودت در آی‌مچ اضافه می‌شوند.
-            </p>
         </section>
     );
 }
 
-/* ─── ۵) پرسش‌های متداول ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Network section
+ * ───────────────────────────────────────────────────────────── */
+
+function NetworkSection() {
+    return (
+        <section className="overflow-hidden border-y bg-stone-950 text-white">
+            <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+                <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 opacity-30"
+                    style={{
+                        backgroundImage:
+                            "radial-gradient(circle, rgba(255,255,255,.16) 1px, transparent 1px)",
+                        backgroundSize: "22px 22px",
+                    }}
+                />
+
+                <div className="relative grid items-center gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+                    <div>
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-bold text-primary-foreground">
+                            <Users className="size-3.5" />
+                            شبکه‌ی واقعی خرید و فروش
+                        </div>
+
+                        <h2 className="text-2xl font-black leading-[1.6] sm:text-3xl">
+                            هرچه نیاز و تأمین واقعی بیشتری وارد شود،
+                            <span className="text-primary">
+                                {" "}
+                                اتصال‌ها دقیق‌تر می‌شوند.
+                            </span>
+                        </h2>
+
+                        <p className="mt-4 text-sm leading-8 text-stone-300">
+                            کاتالوگ‌ها اطلاعات سمت فروش را وارد می‌کنند و
+                            لیست‌های خرید، نیاز سمت خریدار را. آی‌مچ این دو
+                            جریان را در سطح کالای دقیق کنار هم قرار می‌دهد.
+                        </p>
+
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {[
+                                "کالای دقیق",
+                                "قیمت",
+                                "موجودی",
+                                "موقعیت",
+                                "شرایط تأمین",
+                            ].map((item) => (
+                                <span
+                                    key={item}
+                                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-bold text-stone-300"
+                                >
+                                    {item}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="relative mx-auto w-full max-w-xl">
+                        <div className="grid gap-3">
+                            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+                                <div className="flex items-center gap-3">
+                                    <span className="grid size-10 place-items-center rounded-xl bg-primary/15 text-primary">
+                                        <ShoppingBasket className="size-4" />
+                                    </span>
+
+                                    <div>
+                                        <p className="text-[10px] text-stone-400">
+                                            خریدار
+                                        </p>
+
+                                        <p className="text-sm font-black">
+                                            پیاز · ۱ تن · تبریز
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mx-auto flex size-11 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/20">
+                                <ArrowLeft className="size-5 ltr:rotate-180" />
+                            </div>
+
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                {[
+                                    {
+                                        name: "تأمین‌کننده اول",
+                                        detail: "قیمت + موجودی",
+                                    },
+                                    {
+                                        name: "تأمین‌کننده دوم",
+                                        detail: "قیمت + شرایط",
+                                    },
+                                    {
+                                        name: "تأمین‌کننده سوم",
+                                        detail: "موجودی + ارسال",
+                                    },
+                                ].map((item, index) => (
+                                    <div
+                                        key={item.name}
+                                        className={`rounded-2xl border p-4 ${
+    index === 0
+        ? "border-primary/40 bg-primary/10"
+        : "border-white/10 bg-white/5"
+}`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span className="grid size-8 place-items-center rounded-lg bg-white/10">
+                                                <Store className="size-3.5" />
+                                            </span>
+
+                                            <p className="text-[10px] font-extrabold">
+                                                {item.name}
+                                            </p>
+                                        </div>
+
+                                        <p className="mt-2 text-[9px] text-stone-400">
+                                            {item.detail}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * FAQ
+ * ───────────────────────────────────────────────────────────── */
 
 function FaqItem({
-                     q,
-                     a,
-                     open,
-                     onToggle,
-                 }: {
+    q,
+    a,
+    open,
+    onToggle,
+}: {
     q: string;
     a: string;
     open: boolean;
     onToggle: () => void;
 }) {
     return (
-        <div className="rounded-2xl border bg-white">
+        <div
+            className={`overflow-hidden rounded-2xl border bg-white transition-shadow ${
+    open ? "shadow-sm" : ""
+}`}
+        >
             <button
+                type="button"
                 onClick={onToggle}
                 aria-expanded={open}
-                className="flex w-full items-center justify-between gap-3 px-5 py-4 text-right"
+                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-right"
             >
                 <span className="text-sm font-bold">{q}</span>
 
                 <ChevronDown
                     className={`size-4 shrink-0 text-muted-foreground transition-transform duration-300 ${
-                        open ? "rotate-180" : ""
-                    }`}
+    open ? "rotate-180" : ""
+}`}
                 />
             </button>
 
             {open && (
-                <p className="animate-[fade-up_0.3s_ease_both] px-5 pb-4 text-sm leading-7 text-muted-foreground">
+                <p className="animate-[fade-up_0.25s_ease_both] px-5 pb-5 text-xs leading-7 text-muted-foreground sm:text-sm">
                     {a}
                 </p>
             )}
@@ -1051,21 +1161,23 @@ function Faq() {
     const [open, setOpen] = useState<number | null>(0);
 
     return (
-        <section className="border-y bg-muted/30">
-            <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+        <section className="border-b bg-muted/20">
+            <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
                 <SectionHead
-                    eyebrow="شاید بپرسی"
                     title="سؤال‌هایی که احتمالاً داری"
+                    sub="اگر هنوز برایت روشن نیست آی‌مچ دقیقاً چه کاری انجام می‌دهد، از اینجا شروع کن."
                 />
 
-                <div className="mt-7 grid gap-2.5">
-                    {FAQS.map((f, i) => (
+                <div className="mt-8 grid gap-2.5">
+                    {FAQS.map((faq, index) => (
                         <FaqItem
-                            key={i}
-                            {...f}
-                            open={open === i}
+                            key={faq.q}
+                            {...faq}
+                            open={open === index}
                             onToggle={() =>
-                                setOpen(open === i ? null : i)
+                                setOpen(
+                                    open === index ? null : index
+                                )
                             }
                         />
                     ))}
@@ -1075,91 +1187,120 @@ function Faq() {
     );
 }
 
-/* ─── ۶) CTA پایانی ─── */
+/* ─────────────────────────────────────────────────────────────
+ * Final CTA
+ * ───────────────────────────────────────────────────────────── */
 
 function FinalCta() {
     return (
-        <section className="mx-auto max-w-5xl px-4 pb-16 pt-12 sm:pt-16">
-            <div className="dot-grid relative overflow-hidden rounded-3xl border border-primary/25 bg-gradient-to-b from-accent/60 to-white p-8 text-center sm:p-12">
-        <span className="inline-block rounded-full border border-primary/20 bg-white px-3.5 py-1.5 text-[11px] font-bold text-primary shadow-sm">
-          رایگان شروع کن
-        </span>
+        <section className="mx-auto max-w-6xl px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8">
+            <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-gradient-to-br from-accent via-white to-accent/30 p-7 text-center shadow-sm sm:rounded-[2.5rem] sm:p-12">
+                <div
+                    aria-hidden
+                    className="pointer-events-none absolute -end-20 -top-20 size-64 rounded-full bg-primary/10 blur-3xl"
+                />
 
-                <h2 className="mt-4 text-2xl font-black sm:text-3xl">
-                    کاتالوگ یا دستیار خریدت را بساز
-                </h2>
+                <div
+                    aria-hidden
+                    className="pointer-events-none absolute -start-20 -bottom-24 size-64 rounded-full bg-primary/10 blur-3xl"
+                />
 
-                <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-muted-foreground">
-                    کاتالوگ فروشت یا دستیار خریدت را در چند دقیقه بساز،
-                    لینک را بفرست و استفاده از آی‌مچ را شروع کن.
-                </p>
+                <div className="relative">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-white px-3.5 py-1.5 text-[10px] font-bold text-primary shadow-sm">
+                        شروع رایگان
+                    </span>
 
-                <Link href="/start?mode=register" className="mt-6 inline-block">
-                    <Button
-                        size="lg"
-                        className="rounded-xl px-8 shadow-lg shadow-primary/25"
-                    >
-                        شروع کن — رایگان
-                        <ArrowLeft className="size-4 ltr:rotate-180" />
-                    </Button>
-                </Link>
+                    <h2 className="mx-auto mt-4 max-w-2xl text-2xl font-black leading-[1.6] sm:text-3xl">
+                        از یک کاتالوگ یا لیست خرید شروع کن
+                    </h2>
 
-                <p className="mt-4 text-[11px] text-muted-foreground">
-                    مشتری‌ها و تأمین‌کننده‌هایی که با آن‌ها کار می‌کنی،
-                    به مرور به شبکه‌ی تجاری تو در آی‌مچ اضافه می‌شوند.
-                </p>
+                    <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
+                        یک لینک بساز، نیازت را ثبت کن و اجازه بده اطلاعات واقعی
+                        خرید و فروش، مسیر رسیدن به تأمین‌کننده مناسب را کوتاه‌تر
+                        کند.
+                    </p>
+
+                    <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+                        <Link href="/start?mode=register">
+                            <Button
+                                size="lg"
+                                className="w-full rounded-xl px-8 shadow-lg shadow-primary/25 sm:w-auto"
+                            >
+                                ساخت کاتالوگ فروش
+                                <ArrowLeft className="size-4 ltr:rotate-180" />
+                            </Button>
+                        </Link>
+
+                        <Link href="/start?mode=register">
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="w-full rounded-xl bg-white px-8 sm:w-auto"
+                            >
+                                ثبت نیاز خرید
+                                <ArrowLeft className="size-4 ltr:rotate-180" />
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
             </div>
         </section>
     );
 }
 
+/* ─────────────────────────────────────────────────────────────
+ * Page
+ * ───────────────────────────────────────────────────────────── */
 
 export default function Home() {
     const router = useRouter();
     const status = useAuthStore((s) => s.status);
 
-    // کاربر واردشده خانه‌اش «صفحه‌ی خودش» است — صفحه اصلی فقط مال مهمان‌هاست.
     useEffect(() => {
-        if (status === "authed") router.replace(myArmHref());
+        if (status === "authed") {
+            router.replace(myArmHref());
+        }
     }, [status, router]);
 
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-screen flex-col bg-white">
             <style>{`
-        @keyframes fade-up {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        @keyframes marquee {
-          from {
-            transform: translateX(-50%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
+@keyframes marquee {
+    from {
+        transform: translateX(-50%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
 
-        @media (prefers-reduced-motion: reduce) {
-          .marquee-track {
-            animation: none !important;
-          }
-        }
-      `}</style>
+@media (prefers-reduced-motion: reduce) {
+.marquee-track {
+        animation: none !important;
+    }
+}
+`}</style>
 
             <AppHeader />
 
             <main className="grow">
-                <ProductTour />
-                <TrustStrip />
-                <PricePrivacy />
+                <Hero />
+                <LiveActivity />
+                <CoreValue />
+                <Baseline />
                 <HowToStart />
+                <NetworkSection />
                 <Faq />
                 <FinalCta />
             </main>
@@ -1169,3 +1310,4 @@ export default function Home() {
         </div>
     );
 }
+

@@ -57,18 +57,17 @@ export function useNavItems(arm: Arm): NavItem[] {
   const isSell = arm === "sell";
   return [
     isSell
-      ? { href: "/sell", label: "کاتالوگ", icon: Store }
-      : { href: "/buy", label: "میز خرید", icon: ShoppingBasket },
+        ? { href: "/sell", label: "کاتالوگ", icon: Store }
+        : { href: "/buy", label: "دستیار خرید", icon: ShoppingBasket },
     isSell
-      ? { href: "/sell/panel", label: "داشبورد", icon: LayoutDashboard }
-      : { href: "/buy/panel", label: "داشبورد", icon: LayoutDashboard },
-    // شبکه‌ی دوطرفه — جای دکمه‌ی «+» (خواسته‌ی کاربر)
+        ? { href: "/sell/panel", label: "داشبورد", icon: LayoutDashboard }
+        : { href: "/buy/panel", label: "داشبورد", icon: LayoutDashboard },
     isSell
-      ? { href: "/sell/customers", label: "مشتریان من", icon: Users }
-      : { href: "/buy/suppliers", label: "تامین من", icon: Handshake },
+        ? { href: "/sell/customers", label: "مشتریان من", icon: Users }
+        : { href: "/buy/suppliers", label: "تامین من", icon: Handshake },
     isSell
-      ? { href: "/market", label: "بازار خرید", icon: Compass }
-      : { href: "/market", label: "بازار فروش", icon: Compass },
+        ? { href: "/market", label: "خریدارها", icon: Compass }
+        : { href: "/market", label: "فروشنده‌ها", icon: Compass },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
 }
