@@ -119,9 +119,8 @@ export function SetPasswordButton({
           <p className="mt-1 text-[10px] text-muted-foreground">{countryName}</p>
         </div>
 
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-[11px] leading-5 text-amber-700">
-          اگر این شماره اشتباه است، اول از <a href="/profile" className="font-bold underline">پروفایل</a> عوضش کن،
-          بعد رمز عبور بگذار — چون بعد از ثبت رمز، این شماره قفل می‌شود.
+        <p className="text-[11px] leading-5 text-muted-foreground">
+          شماره را بررسی کن — بعد از ثبت رمز غیرقابل تغییر است.
         </p>
 
         {/* رمز فعلی فقط اگر کاربر از قبل پسورد دارد (که در این دکمه نیست، ولی برای تغییر) */}

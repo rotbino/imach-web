@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { NoBusinessState } from "@/app/components/no-business";
 import { ShareContent } from "@/app/components/share";
 import { fa, frequencyLabel, goodName, timeAgo, unitLabel } from "@/lib/format";
 import { useMyBusinesses, useMyFollowers, useRemoveFollower } from "@/lib/queries";
@@ -71,27 +72,7 @@ function CustomersBody() {
     );
   }
 
-  if (!active) {
-    return (
-      <div className="flex min-h-screen flex-col">
-        <AppHeader />
-        <main className="grow">
-          <div className="mx-auto max-w-xl px-4 py-16 text-center">
-            <p className="text-lg font-extrabold">اول کسب‌وکارتان را بسازید</p>
-            <p className="mt-2 text-sm text-muted-foreground">فقط نام و شهر — بقیه‌اش با ما.</p>
-            <button
-              onClick={() => (window.location.href = "/start?mode=register")}
-              className="mt-4 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm"
-            >
-              ساخت کسب‌وکار
-            </button>
-          </div>
-        </main>
-        <AppFooter />
-        <MobileTabBar />
-      </div>
-    );
-  }
+  if (!active) return <NoBusinessState variant="sell" />;
 
   return (
     <div className="flex min-h-screen flex-col">

@@ -122,19 +122,15 @@ function BuyersField({ authed }: { authed: boolean }) {
 
   if (allQ.isLoading || (authed && stateQ.isLoading)) return <FeedSpinner />;
 
-  // گیت ۰ — هنوز کسب‌وکاری ندارد؛ اول هویت، بعد بازار
+  // گیت ۰ — هنوز کسب‌وکاری ندارد
   if (authed && !active) {
     return (
       <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
-        <p className="text-sm font-bold">اول کسب‌وکارتان را بسازید</p>
-        <p className="mx-auto mt-2 max-w-sm text-xs leading-6 text-muted-foreground">
-          بازار خریدارها با کسب‌وکار شما تطبیق می‌خورد.
-        </p>
         <Link
-          href="/start?mode=register"
+          href="/start"
           className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm"
         >
-          ساخت کسب‌وکار
+          شروع
         </Link>
       </div>
     );
