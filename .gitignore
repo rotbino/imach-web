@@ -67,3 +67,6 @@ Caddyfile
 
 # sandbox artifacts
 tool-results/
+
+# فایل‌های تستی استوریج محلی بک‌اند — هرگز در ریپو
+uploads/
