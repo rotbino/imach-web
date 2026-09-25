@@ -75,52 +75,31 @@ function NewListingBody() {
 
   return (
     <div className="space-y-4">
-      {/* سوییچ سه مسیر — کوچک، بالای کارت، بدون سر و صدا */}
+      {/* سه مسیر — ثبت تکی، ثبت گروهی، از اکسل */}
       <div className="mx-auto grid w-fit grid-cols-3 gap-1 rounded-full border bg-white p-1 shadow-sm">
+        <ModeTab
+          active={mode === "form"}
+          onClick={() => setMode("form")}
+          icon={<Keyboard className="size-3.5" />}
+          label="ثبت تکی"
+        />
         <ModeTab
           active={mode === "picker"}
           onClick={() => setMode("picker")}
           icon={<Library className="size-3.5" />}
-          label={m.picker.tabLabel}
+          label="ثبت گروهی"
         />
         <ModeTab
           active={mode === "file"}
           onClick={() => setMode("file")}
           icon={<FileSpreadsheet className="size-3.5" />}
-          label={m.importSheet.tabLabel}
-        />
-        <ModeTab
-          active={mode === "form"}
-          onClick={() => setMode("form")}
-          icon={<Keyboard className="size-3.5" />}
-          label={m.entry.soloTab}
+          label="از اکسل"
         />
       </div>
 
-      {mode === "picker" ? (
-        <CatalogPicker
-          bizId={active.id}
-          currency={active.currency ?? "IRR"}
-          arm={arm}
-          onDone={(kind) => {
-            // سوییچ هوشمند بازو: فقط خرید → buy، فقط فروش → sell، هر دو → همان
-            smartSwitchArm(kind);
-            router.push(kind === "sell" ? "/sell" : "/buy");
-          }}
-          onSwitchToSolo={() => setMode("form")}
-        />
-      ) : mode === "file" ? (
-        <ImportSheet
-          bizId={active.id}
-          arm={arm}
-          onDone={(kind) => {
-            smartSwitchArm(kind);
-            router.push(kind === "sell" ? "/sell" : "/buy");
-          }}
-        />
-      ) : (
+      {mode === "form" ? (
         <>
-          {/* زیرسوییچ ثبت تکی — فرم دستی یا اسکنر، هر دو به همان کاتالوگ می‌روند */}
+          {/* زیرسوییچ ثبت تکی — فرم دستی یا اسکنر بارکد */}
           <div className="mx-auto flex w-fit gap-1 rounded-full border bg-white p-1 shadow-sm">
             <ModeTab
               active={soloWay === "manual"}
@@ -156,6 +135,26 @@ function NewListingBody() {
             />
           )}
         </>
+      ) : mode === "picker" ? (
+        <CatalogPicker
+          bizId={active.id}
+          currency={active.currency ?? "IRR"}
+          arm={arm}
+          onDone={(kind) => {
+            smartSwitchArm(kind);
+            router.push(kind === "sell" ? "/sell" : "/buy");
+          }}
+          onSwitchToSolo={() => setMode("form")}
+        />
+      ) : (
+        <ImportSheet
+          bizId={active.id}
+          arm={arm}
+          onDone={(kind) => {
+            smartSwitchArm(kind);
+            router.push(kind === "sell" ? "/sell" : "/buy");
+          }}
+        />
       )}
     </div>
   );

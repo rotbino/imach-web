@@ -25,11 +25,13 @@ import { Check, Loader2, MapPin, PencilLine, Plus, Store } from "lucide-react";
  * هنوز نام «کاتالوگ شما» دارد. در هدر `/sell` به‌جای نام، «عنوان کاتالوگ را
  * وارد کنید» نشان داده می‌شود و با کلیک، این مدال باز می‌شود.
  *
- * مدال همچنین «انتخاب شهر» را هم دارد — کاربر شهرش را انتخاب می‌کند، و یک
- * لوکیشن اختیاری هم می‌تواند بگذارد.
+ * variant="buy" → متن «عنوان دستیار خرید را وارد کنید» نشان می‌دهد (صفحه /buy).
+ * variant="sell" (پیش‌فرض) → متن «عنوان کاتالوگ را وارد کنید».
  */
-export function CatalogHeaderPrompt({ biz }: { biz: BusinessSummaryDto }) {
+export function CatalogHeaderPrompt({ biz, variant = "sell" }: { biz: BusinessSummaryDto; variant?: "sell" | "buy" }) {
   const [open, setOpen] = useState(false);
+
+  const placeholderText = variant === "buy" ? "عنوان دستیار خرید را وارد کنید" : "عنوان کاتالوگ را وارد کنید";
 
   // اگر نام کسب‌وکار از «کاتالوگ شما» عوض شده، دیگر این دکمه نشان داده نمی‌شود
   const isPlaceholder = biz.name === "کاتالوگ شما" || !biz.trade || !biz.city || biz.city === "—";
@@ -42,10 +44,10 @@ export function CatalogHeaderPrompt({ biz }: { biz: BusinessSummaryDto }) {
         <button
           type="button"
           className="group flex items-center gap-1.5 text-2xl font-black text-muted-foreground transition hover:text-primary"
-          aria-label="عنوان کاتالوگ را وارد کنید"
+          aria-label={placeholderText}
         >
           <span className="border-b-2 border-dashed border-muted-foreground/40 pb-1">
-            عنوان کاتالوگ را وارد کنید
+            {placeholderText}
           </span>
           <PencilLine className="size-4 transition group-hover:text-primary" />
         </button>

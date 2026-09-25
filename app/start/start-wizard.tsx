@@ -39,10 +39,13 @@ export default function StartWizard() {
   const { status: authStatus } = useAuthStore();
   const bizQ = useMyBusinesses();
   const hasBusiness = (bizQ.data?.length ?? 0) > 0;
+  // guard برای جلوگیری از تداخل redirect خودکار با redirect دستی در CreateBusinessStep
+  const redirecting = useRef(false);
 
   // redirect در useEffect — نه در render
   useEffect(() => {
-    if (authStatus === "authed" && hasBusiness && !bizQ.isLoading) {
+    if (authStatus === "authed" && hasBusiness && !bizQ.isLoading && !redirecting.current) {
+      redirecting.current = true;
       router.replace(myArmHref());
     }
   }, [authStatus, hasBusiness, bizQ.isLoading, router]);
@@ -105,12 +108,14 @@ function AuthRouter() {
 
 function CreateBusinessStep() {
   const { toast } = useToast();
+  const router = useRouter();
   const createBiz = useCreateBusiness();
   const user = useAuthStore((s) => s.user);
   const [name, setName] = useState("");
   const [trade, setTrade] = useState("");
   const [customTrade, setCustomTrade] = useState("");
   const [city, setCity] = useState("");
+  const [intent, setIntent] = useState<"sell" | "buy" | "both" | null>(null);
 
   const firstName = user?.firstName || (user?.name && !user.name.startsWith("کاربر ") ? user.name : "");
 
@@ -130,9 +135,25 @@ function CreateBusinessStep() {
       toast({ title: "صنف را انتخاب کن", variant: "destructive" });
       return;
     }
+    if (!intent) {
+      toast({ title: "خرید عمده داری یا فروش عمده؟", variant: "destructive" });
+      return;
+    }
     try {
       await createBiz.mutateAsync({ name: name.trim(), city, trade: finalTrade });
-      // useEffect در StartWizard تشخیص می‌دهد و redirect می‌کند
+      // intent را در arm ست کن و به arm درست برو
+      const { useArmStore } = await import("@/lib/active-biz");
+      if (intent === "buy") {
+        useArmStore.getState().setArm("buy");
+        router.replace("/buy");
+      } else if (intent === "sell") {
+        useArmStore.getState().setArm("sell");
+        router.replace("/sell");
+      } else {
+        // both — پیش‌فرض sell (کاربر بعداً می‌تواند سوییچ کند)
+        useArmStore.getState().setArm("sell");
+        router.replace("/sell");
+      }
     } catch (err) {
       toast({
         title: "خطا",
@@ -193,10 +214,48 @@ function CreateBusinessStep() {
             ariaLabel="شهر"
           />
         </Field>
+        {/* intent — خرید عمده / فروش عمده / هر دو */}
+        <Field label="چه کاری می‌کنی؟">
+          <div className="grid grid-cols-3 gap-1.5">
+            <button
+              type="button"
+              onClick={() => setIntent("sell")}
+              className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${
+                intent === "sell"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              فروش عمده
+            </button>
+            <button
+              type="button"
+              onClick={() => setIntent("buy")}
+              className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${
+                intent === "buy"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              خرید عمده
+            </button>
+            <button
+              type="button"
+              onClick={() => setIntent("both")}
+              className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${
+                intent === "both"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              هر دو
+            </button>
+          </div>
+        </Field>
       </div>
-      <Button className="mt-5 w-full" onClick={() => void create()} disabled={createBiz.isPending}>
+      <Button className="mt-5 w-full" onClick={() => void create()} disabled={createBiz.isPending || !intent}>
         {createBiz.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-        ساخت کاتالوگ
+        شروع
       </Button>
     </div>
   );
