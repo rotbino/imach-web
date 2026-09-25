@@ -529,15 +529,28 @@ function uploadWithProgress(opts: {
   onProgress?: (pct: number, phase: UploadPhase) => void;
   _retried?: boolean;
 }): Promise<FileDto> {
+  // همه‌ی پارامترهای معنادار در query string می‌روند — سمت سرور query بر
+  // فیلد فرم مقدم است و هر دو مسیر پشتیبانی می‌شود.
   const form = new FormData();
-  form.append("file", opts.file);
+  // فیلدها «قبل از» فایل append می‌شوند: بعضی سرورها فقط فیلدهای پیش از فایل
+  // را می‌خوانند؛ ترتیبِ امن، ارزان و بی‌هزینه است.
   if (opts.modelId) form.append("modelId", opts.modelId);
   if (opts.description) form.append("description", opts.description);
-  if (opts.replace === false) form.append("replace", "false");
+  if (opts.replace !== undefined) form.append("replace", String(opts.replace));
+  form.append("file", opts.file);
 
   return new Promise<FileDto>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", buildUrl("/files/upload", { model: opts.model, key: opts.key }));
+    xhr.open(
+      "POST",
+      buildUrl("/files/upload", {
+        model: opts.model,
+        key: opts.key,
+        ...(opts.modelId ? { modelId: opts.modelId } : {}),
+        ...(opts.description ? { description: opts.description } : {}),
+        ...(opts.replace !== undefined ? { replace: String(opts.replace) } : {}),
+      })
+    );
     xhr.withCredentials = true;
     xhr.responseType = "text";
     xhr.setRequestHeader("Accept-Language", readLocaleCookie());
@@ -719,11 +732,12 @@ export const productsApi = {
     /** قیمت‌های فایل تومان‌اند (پیش‌فرض) یا ریال — تبدیل در پیش‌نمایش */
     priceUnit?: "toman" | "rial";
   }) => {
+    // فیلدها قبل از فایل — پارس سمت سرور ترتیب‌مستقل شد، ولی ترتیبِ امن عادتِ خوبی است
     const form = new FormData();
-    form.append("file", input.file);
     form.append("businessId", input.businessId);
     form.append("mode", input.mode);
     form.append("priceUnit", input.priceUnit ?? "toman");
+    form.append("file", input.file);
     return api<ImportPreviewDto>("/products/importPreview", { method: "POST", form });
   },
 
