@@ -233,7 +233,7 @@ function ShowcaseHeader({
       <section className="mt-6">
         <h2 className="mb-3 flex items-center gap-1.5 px-1 text-sm font-extrabold text-muted-foreground">
           <ClipboardList className="size-4 text-stone-700" />
-          کالاهایی که نیاز دارید
+          لیست خرید عمده من
         </h2>
 
         {listings.length === 0 ? (

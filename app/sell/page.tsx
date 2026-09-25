@@ -211,10 +211,7 @@ function ShowcaseHeader({
 
       {/* آلبوم کالاها — هر کالا چرخ‌دنده‌ی تنظیمات خودش را دارد */}
       <section className="mt-6">
-        <h2 className="mb-3 flex items-center gap-1.5 px-1 text-sm font-extrabold text-muted-foreground">
-          <Package className="size-4 text-primary" />
-          کالاهای فروشی
-        </h2>
+
 
         {listings.length === 0 ? (
           <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
