@@ -224,6 +224,42 @@ export interface ProductRowDto {
 
 export type ProductPageDto = PageDto<ProductRowDto>;
 
+/** پیش‌نمایش ایمپورت — ردیف‌های طبقه‌بندی‌شده، بدون هیچ نوشتنی */
+export interface ImportPreviewDto {
+  summary: {
+    total: number;
+    matched: number;
+    goodLevel: number;
+    newGood: number;
+    willSkip: number;
+  };
+  rows: {
+    index: number;
+    name: string;
+    brand: string | null;
+    spec: string | null;
+    priceMinor: number | null;
+    stock: number | null;
+    minOrder: number | null;
+    volume: number | null;
+    matchType: "product" | "good" | "new";
+    goodId: string | null;
+    goodName: string | null;
+    goodUnit: string | null;
+    productId: string | null;
+    productLabel: string | null;
+    sellers: number;
+    mineMode: string | null;
+    warning: "noPrice" | "noName" | null;
+  }[];
+}
+
+export interface ImportCommitResultDto {
+  saved: number;
+  failed: number;
+  skipped: { index: number; reason: string }[];
+}
+
 export interface GoodItemDto {
   id: string;
   mode: string;
@@ -635,6 +671,8 @@ export const listingsApi = {
     businessId: string;
     goodId: string;
     mode: string;
+    /** ردیفِ در حال ویرایش — با آن، ذخیره همان ردیف را به‌روز می‌کند و عکس/تاریخچه می‌ماند */
+    listingId?: string;
     brandName?: string;
     /** SKU انتخاب‌شده از کاتالوگ مرجع (اختیاری — بدون آن هویت از برند/ویژگی ساخته می‌شود) */
     productId?: string;
@@ -664,13 +702,50 @@ export const listingsApi = {
 export const productsApi = {
   /** فید انتخابگر کاتالوگ مرجع — فیلتر دسته/جست‌وجو + نشان‌های «فروشنده» و «داریش» */
   getProducts: (params: {
-    businessId: string;
+    /** برای ادمین اختیاری — بدون آن نشان «داریش» محاسبه نمی‌شود */
+    businessId?: string;
     q?: string;
     categoryId?: string;
     goodId?: string;
     cursor?: string;
     limit?: number;
   }) => api<ProductPageDto>("/products/getProducts", { params }),
+
+  /** پیش‌نمایش ایمپورت اکسل/CSV — هیچ چیزی ثبت نمی‌شود */
+  importPreview: (input: {
+    file: File;
+    businessId: string;
+    mode: "SELL" | "BUY";
+    /** قیمت‌های فایل تومان‌اند (پیش‌فرض) یا ریال — تبدیل در پیش‌نمایش */
+    priceUnit?: "toman" | "rial";
+  }) => {
+    const form = new FormData();
+    form.append("file", input.file);
+    form.append("businessId", input.businessId);
+    form.append("mode", input.mode);
+    form.append("priceUnit", input.priceUnit ?? "toman");
+    return api<ImportPreviewDto>("/products/importPreview", { method: "POST", form });
+  },
+
+  /** ثبت ردیف‌های تأییدشده‌ی پیش‌نمایش */
+  importCommit: (body: {
+    businessId: string;
+    mode: "SELL" | "BUY";
+    rows: {
+      index: number;
+      name: string;
+      brand?: string;
+      spec?: string;
+      priceMinor?: number;
+      stock?: number;
+      minOrder?: number;
+      volume?: number;
+    }[];
+  }) => api<ImportCommitResultDto>("/products/importCommit", { method: "POST", body }),
+
+  /** ادغام ادمین — ردیف‌های شکسته در بازمانده جمع می‌شوند */
+  adminMerge: (body: { intoId: string; fromIds: string[] }) =>
+    api<{ merged: number; intoId: string }>("/products/adminMerge", { method: "PUT", body }),
 };
 
 export const marketApi = {

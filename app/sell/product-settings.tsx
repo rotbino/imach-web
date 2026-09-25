@@ -137,6 +137,7 @@ export function ProductSettingsDialog({
     try {
       await saveListing.mutateAsync({
         businessId: bizId,
+        listingId: listing.id, // همان ردیف به‌روز شود — عکس و تاریخچه حفظ بماند
         goodId: listing.good.id,
         mode: listing.mode,
         ...(brandName.trim() ? { brandName: brandName.trim() } : {}),

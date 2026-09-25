@@ -1,10 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ApiError, type GoodItemDto } from "@/lib/api";
+import Image from "next/image";
+import { ApiError, type FileDto, type GoodItemDto } from "@/lib/api";
 import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
+import { compressImage } from "@/lib/compress";
 import { useLocale } from "@/i18n/locale-context";
-import { useDeleteListing, useGoods, useSaveListing } from "@/lib/queries";
+import { useDeleteListing, useGoods, useRemoveFile, useSaveListing, useUploadFile } from "@/lib/queries";
+import { UploadRing } from "@/components/upload-ring";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,12 +25,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Settings2, ShoppingBasket, Trash2 } from "lucide-react";
+import { ImagePlus, Loader2, Save, Settings2, ShoppingBasket, Trash2, X } from "lucide-react";
 
 /*
  * فرم تنظیمات آیتم دستیار خرید — با چرخ‌دنده‌ی روی هر آیتم باز می‌شود:
  * ویرایش حجم و تناوب خرید + ویژگی‌های پیشرفته (برند، اتریبیوت‌های دسته) +
- * مشخصات فروش برای کالاهای دو‌حالته + حذف آیتم در همین فرم.
+ * مشخصات فروش برای کالاهای دو‌حالته + گالری عکس (خواسته‌ی کاربر: تصویر روی
+ * آیتم‌های لیست خرید هم دیده شود) + حذف آیتم در همین فرم.
  */
 
 type Frequency = "WEEKLY" | "MONTHLY" | "OCCASIONAL";
@@ -65,6 +69,53 @@ export function BuyItemSettingsDialog({
   const [minOrder, setMinOrder] = useState(() => (listing.minOrder ? String(listing.minOrder) : ""));
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  // گالری آیتم خرید — همان قرارداد دیالوگ فروش؛ آگهی از قبل وجود دارد و
+  // آپلود/حذف همان لحظه انجام می‌شود (عکس روی لیست خرید هم دیده می‌شود)
+  const uploadFile = useUploadFile();
+  const removeFile = useRemoveFile();
+  const [gallery, setGallery] = useState<FileDto[]>(listing.gallery ?? []);
+  const [galleryBusy, setGalleryBusy] = useState(false);
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
+  const [uploadPhase, setUploadPhase] = useState<"sending" | "processing">("sending");
+
+  const addGalleryImage = async (file: File) => {
+    if (gallery.length >= 6) {
+      toast({ title: "بیشتر از ۶ عکس نمی‌شود", variant: "destructive" });
+      return;
+    }
+    setGalleryBusy(true);
+    setUploadPct(0);
+    setUploadPhase("sending");
+    try {
+      const compressed = await compressImage(file);
+      const created = await uploadFile.mutateAsync({
+        file: compressed, model: "Listing", modelId: listing.id, key: "gallery", replace: false,
+        onProgress: (pct, phase) => {
+          setUploadPct(pct);
+          setUploadPhase(phase);
+        },
+      });
+      setGallery((list) => [...list, created]);
+    } catch (err) {
+      toast({ title: "آپلود عکس ناموفق بود", description: err instanceof ApiError ? err.message : undefined, variant: "destructive" });
+    } finally {
+      setGalleryBusy(false);
+      setUploadPct(null);
+    }
+  };
+
+  const removeGalleryImage = async (id: string) => {
+    setGalleryBusy(true);
+    try {
+      await removeFile.mutateAsync(id);
+      setGallery((list) => list.filter((f) => f.id !== id));
+    } catch {
+      toast({ title: "حذف عکس ناموفق بود", variant: "destructive" });
+    } finally {
+      setGalleryBusy(false);
+    }
+  };
+
   // اتریبیوت‌های دسته‌ی کالا — از تعریف کالای مرجع
   const goodsQ = useGoods(open ? { q: listing.good.nameFa, limit: 30 } : {});
   const goodDef = useMemo(
@@ -82,6 +133,7 @@ export function BuyItemSettingsDialog({
     try {
       await saveListing.mutateAsync({
         businessId: bizId,
+        listingId: listing.id, // همان ردیف به‌روز شود — عکس و تاریخچه حفظ بماند
         goodId: listing.good.id,
         mode: listing.mode,
         ...(brandName.trim() ? { brandName: brandName.trim() } : {}),
@@ -239,6 +291,60 @@ export function BuyItemSettingsDialog({
               </div>
             </div>
           )}
+
+          {/* گالری آیتم — تصویر روی لیست خرید (بازوی خرید و عمومی) نمایش داده می‌شود */}
+          <div className="rounded-xl border p-3">
+            <p className="flex items-center gap-1.5 text-xs font-bold">
+              <ImagePlus className="size-3.5 text-stone-700" />
+              تصاویر آیتم
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {gallery.map((f) => (
+                <div key={f.id} className="relative size-16 overflow-hidden rounded-lg border">
+                  {/* unoptimized — عکس آروان از قبل فشرده/تامبنیل است */}
+                  <Image src={f.thumbUrl ?? f.url} alt="" width={64} height={64} unoptimized className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    aria-label="حذف عکس"
+                    disabled={galleryBusy}
+                    className="absolute end-0.5 top-0.5 grid size-5 place-items-center rounded-full bg-black/60 text-white transition hover:bg-destructive"
+                    onClick={() => void removeGalleryImage(f.id)}
+                  >
+                    <X className="size-3" />
+                  </button>
+                </div>
+              ))}
+              {gallery.length < 6 && (
+                <label
+                  className={`grid size-16 place-items-center rounded-lg border border-dashed text-muted-foreground transition hover:border-primary/60 hover:bg-accent/40 hover:text-primary ${
+                    galleryBusy ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                  }`}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={galleryBusy}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = "";
+                      if (file) void addGalleryImage(file);
+                    }}
+                  />
+                  {uploadPct !== null ? (
+                    <UploadRing
+                      progress={uploadPct}
+                      phase={uploadPhase}
+                      size={52}
+                      processingLabel={locale === "en" ? "Processing" : "پردازش"}
+                    />
+                  ) : (
+                    <ImagePlus className="size-4" strokeWidth={1.75} />
+                  )}
+                </label>
+              )}
+            </div>
+          </div>
 
           <Button onClick={() => void save()} disabled={saveListing.isPending}>
             {saveListing.isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
