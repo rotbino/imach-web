@@ -28,9 +28,9 @@ import { Check, Loader2 } from "lucide-react";
  * مسیر شروع — چهار حالت با URL پارامتر mode:
  *   /start                  → ورود (پیش‌فرض)
  *   /start?mode=login       → ورود با رمز
- *   /start?mode=register    → ثبت‌نام سریع (فقط موبایل)
+ *   /start?mode=register    → ثبت‌نام (مرحله ۱: موبایل، مرحله ۲: intent+صنف+شهر)
  *   (authed + business)     → redirect به پنل
- *   (authed + no business)  → فرم ساخت کاتالوگ
+ *   (authed + no business)  → مرحله دوم ثبت‌نام (intent + صنف + شهر)
  *
  * دو فرم «ثبت‌نام» و «ورود» کاملاً از هم جدا هستند — سوییچر ندارند.
  */
@@ -39,10 +39,8 @@ export default function StartWizard() {
   const { status: authStatus } = useAuthStore();
   const bizQ = useMyBusinesses();
   const hasBusiness = (bizQ.data?.length ?? 0) > 0;
-  // guard برای جلوگیری از تداخل redirect خودکار با redirect دستی در CreateBusinessStep
   const redirecting = useRef(false);
 
-  // redirect در useEffect — نه در render
   useEffect(() => {
     if (authStatus === "authed" && hasBusiness && !bizQ.isLoading && !redirecting.current) {
       redirecting.current = true;
@@ -50,6 +48,7 @@ export default function StartWizard() {
     }
   }, [authStatus, hasBusiness, bizQ.isLoading, router]);
 
+  // booting یا authed + business دارد → loader
   if (authStatus === "booting" || (authStatus === "authed" && hasBusiness)) {
     return (
       <div className="grid place-items-center py-32">
@@ -58,8 +57,17 @@ export default function StartWizard() {
     );
   }
 
-  // authed ولی business ندارد → فرم ساخت کاتالوگ
-  if (authStatus === "authed" && !hasBusiness && !bizQ.isLoading) {
+  // authed ولی در حال load бизнесها → loader (جلوگیری از نمایش AuthRouter خالی)
+  if (authStatus === "authed" && bizQ.isLoading) {
+    return (
+      <div className="grid place-items-center py-32">
+        <Loader2 className="size-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // authed ولی business ندارد → مرحله دوم ثبت‌نام
+  if (authStatus === "authed" && !hasBusiness) {
     return (
       <>
         <AppHeader />
@@ -98,12 +106,11 @@ export default function StartWizard() {
 function AuthRouter() {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
-  // register → ثبت‌نام سریع، هر چیز دیگر → ورود
   return mode === "register" ? <RegisterForm /> : <LoginForm />;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// authed ولی business ندارد — فرم ساخت کاتالوگ
+// مرحله دوم ثبت‌نام — intent + صنف + شهر (بدون عنوان، عنوان خودکار)
 // ─────────────────────────────────────────────────────────────────────────────
 
 function CreateBusinessStep() {
@@ -111,21 +118,15 @@ function CreateBusinessStep() {
   const router = useRouter();
   const createBiz = useCreateBusiness();
   const user = useAuthStore((s) => s.user);
-  const [name, setName] = useState("");
   const [trade, setTrade] = useState("");
   const [customTrade, setCustomTrade] = useState("");
   const [city, setCity] = useState("");
   const [intent, setIntent] = useState<"sell" | "buy" | "both" | null>(null);
 
   const firstName = user?.firstName || (user?.name && !user.name.startsWith("کاربر ") ? user.name : "");
-
   const isOther = trade === "سایر";
 
   const create = async () => {
-    if (name.trim().length < 2) {
-      toast({ title: "عنوان کاتالوگ را بنویس", variant: "destructive" });
-      return;
-    }
     if (!city) {
       toast({ title: "شهر را انتخاب کن", variant: "destructive" });
       return;
@@ -140,17 +141,14 @@ function CreateBusinessStep() {
       return;
     }
     try {
-      await createBiz.mutateAsync({ name: name.trim(), city, trade: finalTrade });
-      // intent را در arm ست کن و به arm درست برو
+      // عنوان خودکار — بعداً از هدر قابل ویرایش
+      const name = firstName || `کاتالوگ ${city}`;
+      await createBiz.mutateAsync({ name, city, trade: finalTrade });
       const { useArmStore } = await import("@/lib/active-biz");
       if (intent === "buy") {
         useArmStore.getState().setArm("buy");
         router.replace("/buy");
-      } else if (intent === "sell") {
-        useArmStore.getState().setArm("sell");
-        router.replace("/sell");
       } else {
-        // both — پیش‌فرض sell (کاربر بعداً می‌تواند سوییچ کند)
         useArmStore.getState().setArm("sell");
         router.replace("/sell");
       }
@@ -167,13 +165,42 @@ function CreateBusinessStep() {
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <h1 className="text-lg font-extrabold">{firstName ? `${firstName} خوش اومدی` : "خوش اومدی"}</h1>
       <div className="mt-4 grid gap-3">
-        <Field label="عنوان کاتالوگ">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="مثلاً سوپرمارکت آریا"
-            autoFocus
-          />
+        <Field label="چه کاری می‌کنی؟">
+          <div className="grid grid-cols-3 gap-1.5">
+            <button
+              type="button"
+              onClick={() => setIntent("sell")}
+              className={`rounded-xl border p-3 text-center text-xs font-bold transition ${
+                intent === "sell"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              فروش عمده
+            </button>
+            <button
+              type="button"
+              onClick={() => setIntent("buy")}
+              className={`rounded-xl border p-3 text-center text-xs font-bold transition ${
+                intent === "buy"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              خرید عمده
+            </button>
+            <button
+              type="button"
+              onClick={() => setIntent("both")}
+              className={`rounded-xl border p-3 text-center text-xs font-bold transition ${
+                intent === "both"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              هر دو
+            </button>
+          </div>
         </Field>
         <Field label="صنف">
           <div className="flex flex-wrap gap-1.5">
@@ -214,44 +241,6 @@ function CreateBusinessStep() {
             ariaLabel="شهر"
           />
         </Field>
-        {/* intent — خرید عمده / فروش عمده / هر دو */}
-        <Field label="چه کاری می‌کنی؟">
-          <div className="grid grid-cols-3 gap-1.5">
-            <button
-              type="button"
-              onClick={() => setIntent("sell")}
-              className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${
-                intent === "sell"
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:border-primary/40"
-              }`}
-            >
-              فروش عمده
-            </button>
-            <button
-              type="button"
-              onClick={() => setIntent("buy")}
-              className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${
-                intent === "buy"
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:border-primary/40"
-              }`}
-            >
-              خرید عمده
-            </button>
-            <button
-              type="button"
-              onClick={() => setIntent("both")}
-              className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${
-                intent === "both"
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:border-primary/40"
-              }`}
-            >
-              هر دو
-            </button>
-          </div>
-        </Field>
       </div>
       <Button className="mt-5 w-full" onClick={() => void create()} disabled={createBiz.isPending || !intent}>
         {createBiz.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
@@ -262,7 +251,7 @@ function CreateBusinessStep() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// فرم ثبت‌نام سریع — فقط موبایل
+// فرم ثبت‌نام — مرحله ۱: فقط موبایل
 // ─────────────────────────────────────────────────────────────────────────────
 
 function RegisterForm() {
@@ -338,10 +327,9 @@ function RegisterForm() {
     try {
       await quickRegister(phoneIntl, country, refCode);
       clearReferralCode();
-      // redirect توسط useEffect در StartWizard
+      // redirect: authed + no business → CreateBusinessStep خودش نشان داده می‌شود
     } catch (err) {
       if (err instanceof ApiError && err.code === "PHONE_HAS_PASSWORD") {
-        // شماره قبلاً با رمز ثبت شده → هدایت به صفحه ورود
         router.replace("/start?mode=login");
       } else {
         toast({
@@ -463,7 +451,6 @@ function LoginForm() {
     setBusy(true);
     try {
       await login(phoneIntl, password, country);
-      // redirect توسط useEffect در StartWizard
     } catch (err) {
       toast({
         title: "احراز هویت ناموفق بود",
