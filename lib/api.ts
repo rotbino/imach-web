@@ -635,6 +635,8 @@ export const listingsApi = {
     businessId: string;
     goodId: string;
     mode: string;
+    /** ردیفِ در حال ویرایش — با آن، ذخیره همان ردیف را به‌روز می‌کند و عکس/تاریخچه می‌ماند */
+    listingId?: string;
     brandName?: string;
     /** SKU انتخاب‌شده از کاتالوگ مرجع (اختیاری — بدون آن هویت از برند/ویژگی ساخته می‌شود) */
     productId?: string;
