@@ -15,21 +15,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Lock, Phone, ShieldCheck, TriangleAlert } from "lucide-react";
+import { Loader2, Lock, Phone, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * دکمه‌ی چشمک‌زن «ثبت پسورد» — برای کاربرانی که ثبت‌نام سریع کرده‌اند و هنوز
- * پسورد ندارند (user.passwordSet === false).
+ * دکمه‌ی چشمک‌زن «ثبت رمز عبور» — برای کاربرانی که ثبت‌نام سریع کرده‌اند و هنوز
+ * رمز ندارند (passwordSet falsy است).
  *
  * شماره موبایل + کد کشور را به کاربر نشان می‌دهد تا مطمئن شود شماره‌اش درست
- * است؛ اگر اشتباه است، اول شماره را عوض می‌کند، بعد پسورد می‌گذارد.
+ * است. فیلد تکرار رمز هم هست تا کاربر اشتباه نکند.
  *
  * دو حالت نمایش:
  *   • هدر کاتالوگ: کوچک، کنار «کالای جدید»، چشمک ملایم orange
  *   • میز خرید / پروفایل: چشمک قرمز ملایم
  *
- * پس از ثبت پسورد، دکمه خودکار ناپدید می‌شود (passwordSet=true می‌شود).
+ * پس از ثبت رمز، دکمه خودکار ناپدید می‌شود (passwordSet=true می‌شود).
  */
 export function SetPasswordButton({
   variant = "header",
@@ -41,10 +41,12 @@ export function SetPasswordButton({
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
-  // اگر کاربر پسورد دارد، دکمه نمایش داده نمی‌شود
+  // اگر کاربر رمز دارد، دکمه نمایش داده نمی‌شود
+  // passwordSet ممکن است undefined باشد (کاربر قدیمی) → در این صورت هم دکمه نمایش داده نمی‌شود
   if (!user || user.passwordSet) return null;
 
   const dial = dialOf(user.country);
@@ -56,17 +58,22 @@ export function SetPasswordButton({
       toast({ title: "رمز عبور حداقل ۶ کاراکتر باشد", variant: "destructive" });
       return;
     }
+    if (newPassword !== confirmPassword) {
+      toast({ title: "رمز عبور و تکرار آن یکسان نیستند", variant: "destructive" });
+      return;
+    }
     setBusy(true);
     try {
       await authApi.setPassword({
-        // کاربر ثبت‌نام سریع کرده، پس currentPassword نمی‌خواهد (passwordSet=false)
-        ...(user.passwordSet === false ? {} : { currentPassword }),
+        // کاربر ثبت‌نام سریع کرده، پس currentPassword نمی‌خواهد (passwordSet falsy)
+        ...(user.passwordSet ? { currentPassword } : {}),
         newPassword,
       });
       markPasswordSet();
-      toast({ title: "رمز عبور ثبت شد", description: "از این به بعد می‌توانید با شماره و رمز وارد شوید." });
+      toast({ title: "رمز عبور ثبت شد" });
       setOpen(false);
       setNewPassword("");
+      setConfirmPassword("");
       setCurrentPassword("");
     } catch (err) {
       toast({
@@ -89,8 +96,7 @@ export function SetPasswordButton({
   const buttonClass = cn(
     "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition animate-pulse",
     variant === "header" && "bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100",
-    variant === "panel" && "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100",
-    variant === "profile" && "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
+    (variant === "panel" || variant === "profile") && "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
   );
 
   return (
@@ -109,9 +115,9 @@ export function SetPasswordButton({
           </DialogTitle>
         </DialogHeader>
 
-        {/* نمایش شماره موبایل + کد کشور — کاربر مطمئن شود */}
+        {/* نمایش شماره موبایل + کد کشور */}
         <div className="rounded-xl border bg-accent/40 p-3">
-          <p className="text-[11px] text-muted-foreground">شماره موبایل شما:</p>
+          <p className="text-[11px] text-muted-foreground">شماره موبایل:</p>
           <p dir="ltr" className="mt-1 flex items-center justify-start gap-2 text-sm font-bold">
             <Phone className="size-3.5 text-primary" />
             +{dial} {phoneDisplay}
@@ -123,7 +129,7 @@ export function SetPasswordButton({
           شماره را بررسی کن — بعد از ثبت رمز غیرقابل تغییر است.
         </p>
 
-        {/* رمز فعلی فقط اگر کاربر از قبل پسورد دارد (که در این دکمه نیست، ولی برای تغییر) */}
+        {/* رمز فعلی فقط اگر کاربر از قبل رمز دارد */}
         {user.passwordSet && (
           <div className="grid gap-1.5">
             <Label className="text-[11px] text-muted-foreground">رمز عبور فعلی</Label>
@@ -138,7 +144,7 @@ export function SetPasswordButton({
         )}
 
         <div className="grid gap-1.5">
-          <Label className="text-[11px] text-muted-foreground">رمز عبور جدید</Label>
+          <Label className="text-[11px] text-muted-foreground">رمز عبور</Label>
           <Input
             dir="ltr"
             type="password"
@@ -160,7 +166,23 @@ export function SetPasswordButton({
           )}
         </div>
 
-        <Button className="mt-1" onClick={() => void submit()} disabled={busy || newPassword.length < 6}>
+        <div className="grid gap-1.5">
+          <Label className="text-[11px] text-muted-foreground">تکرار رمز عبور</Label>
+          <Input
+            dir="ltr"
+            type="password"
+            placeholder="تکرار رمز عبور"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            autoComplete="new-password"
+          />
+        </div>
+
+        <Button
+          className="mt-1"
+          onClick={() => void submit()}
+          disabled={busy || newPassword.length < 6 || newPassword !== confirmPassword}
+        >
           {busy ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4" />}
           ثبت رمز عبور
         </Button>

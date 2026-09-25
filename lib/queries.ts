@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import {
+  authApi,
   businessesApi,
   contactsApi,
   filesApi,
@@ -257,6 +258,19 @@ export function useEditBusiness() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });
       void qc.invalidateQueries({ queryKey: ["business"] });
+    },
+  });
+}
+
+/** ویرایش پروفایل مالک (نام و نام خانوادگی) — در ویترین کاتالوگ نشان داده می‌شود */
+export function useEditProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: authApi.editProfile,
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["businesses"] });
+      void qc.invalidateQueries({ queryKey: ["business"] });
+      void qc.invalidateQueries({ queryKey: ["me"] });
     },
   });
 }

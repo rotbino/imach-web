@@ -42,6 +42,8 @@ interface AuthState {
   refresh: () => Promise<string | null>;
   /** به‌روزرسانی محلی فیلد passwordSet (بعد از setPassword بدون رفرش کامل) */
   markPasswordSet: () => void;
+  /** به‌روزرسانی محلی کاربر (بعد از editProfile بدون رفرش کامل) */
+  updateUser: (patch: Partial<UserDto>) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -84,6 +86,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   markPasswordSet: () => {
     set((s) => (s.user ? { user: { ...s.user, passwordSet: true } } : s));
+  },
+
+  updateUser: (patch) => {
+    set((s) => (s.user ? { user: { ...s.user, ...patch } } : s));
   },
 
   logout: async () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   DEFAULT_LOCALE,
@@ -44,13 +44,20 @@ export function LocaleProvider({
   const [locale, setLocaleState] = useState(initialLocale);
   const router = useRouter();
 
+  // همگام‌سازی dir در <html> با locale — در first mount و هر بار locale عوض می‌شود.
+  // این تضمین می‌کند که وقتی کاربر کشور را به ایران تغییر می‌دهد و setLocale("fa")
+  // صدا زده می‌شود، dir هم فوراً به rtl تغییر کند.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const el = document.documentElement;
+    el.lang = locale;
+    el.dir = getDir(locale);
+  }, [locale]);
+
   const setLocale = useCallback(
     (code: LocaleDef["code"]) => {
       persistLocale(code);
       setLocaleState(code);
-      const el = document.documentElement;
-      el.lang = code;
-      el.dir = getDir(code);
       // server components re-render with the new cookie value
       router.refresh();
     },
