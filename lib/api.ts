@@ -332,12 +332,20 @@ export interface BusinessProfileDto {
   isDemo: boolean;
   /** صاحب کاتالوگ — ویترین اعتماد: در عمده‌فروشی طرف می‌خواهد بداند با چه کسی طرف است */
   owner?: {
+    id: string;
     name: string;
     firstName: string | null;
     lastName: string | null;
+    /** عکس پروفایل مالک (avatar) — فقط برای مالک/ادمین قابل ویرایش است */
+    avatar?: { url: string; thumbUrl: string | null } | null;
   } | null;
   /** لوگوی کسب‌وکار — اسلات «logo» جدول فایل‌ها (null = کاشی حرفی) */
   logo?: { url: string; thumbUrl: string | null } | null;
+  /** لوکیشن دقیق — فقط مالک می‌بیند */
+  lat?: number | null;
+  lng?: number | null;
+  /** آدرس متنی — قابل ویرایش */
+  address?: string | null;
   listings: GoodItemDto[];
 }
 
@@ -689,6 +697,9 @@ export const authApi = {
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
   getMe: () => api<MeResponseDto>("/auth/getMe"),
+  /** ویرایش پروفایل — نام و نام خانوادگی مالک (در ویترین کاتالوگ نشان داده می‌شود) */
+  editProfile: (body: { firstName?: string; lastName?: string }) =>
+    api<{ user: UserDto }>("/auth/editProfile", { method: "POST", body }),
 };
 
 export const goodsApi = {

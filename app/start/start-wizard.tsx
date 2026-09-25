@@ -25,10 +25,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Check, Loader2 } from "lucide-react";
 
 /**
- * مسیر شروع — سه حالت:
- *   ۱) guest → فرم ورود/ثبت‌نام سریع (فقط موبایل)
- *   ۲) authed + business دارد → redirect به پنل
- *   ۳) authed + business ندارد → فرم ساخت کاتالوگ
+ * مسیر شروع — چهار حالت با URL پارامتر mode:
+ *   /start                  → ورود (پیش‌فرض)
+ *   /start?mode=login       → ورود با رمز
+ *   /start?mode=register    → ثبت‌نام سریع (فقط موبایل)
+ *   (authed + business)     → redirect به پنل
+ *   (authed + no business)  → فرم ساخت کاتالوگ
+ *
+ * دو فرم «ثبت‌نام» و «ورود» کاملاً از هم جدا هستند — سوییچر ندارند.
  */
 export default function StartWizard() {
   const router = useRouter();
@@ -36,14 +40,13 @@ export default function StartWizard() {
   const bizQ = useMyBusinesses();
   const hasBusiness = (bizQ.data?.length ?? 0) > 0;
 
-  // redirect در useEffect — نه در render (باگ setState-in-render)
+  // redirect در useEffect — نه در render
   useEffect(() => {
     if (authStatus === "authed" && hasBusiness && !bizQ.isLoading) {
       router.replace(myArmHref());
     }
   }, [authStatus, hasBusiness, bizQ.isLoading, router]);
 
-  // booting یا در حال redirect
   if (authStatus === "booting" || (authStatus === "authed" && hasBusiness)) {
     return (
       <div className="grid place-items-center py-32">
@@ -68,14 +71,14 @@ export default function StartWizard() {
     );
   }
 
-  // guest → فرم ورود
+  // guest → فرم ورود یا ثبت‌نام
   return (
     <>
       <AppHeader />
       <main className="grow">
         <div className="mx-auto max-w-md px-4 py-8">
           <Suspense fallback={<div className="grid place-items-center py-32"><Loader2 className="size-6 animate-spin text-primary" /></div>}>
-            <AuthStep />
+            <AuthRouter />
           </Suspense>
         </div>
       </main>
@@ -83,6 +86,17 @@ export default function StartWizard() {
       <MobileTabBar />
     </>
   );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// مسیریاب فرم — با پارامتر URL mode تصمیم می‌گیرد کدام فرم نشان داده شود
+// ─────────────────────────────────────────────────────────────────────────────
+
+function AuthRouter() {
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
+  // register → ثبت‌نام سریع، هر چیز دیگر → ورود
+  return mode === "register" ? <RegisterForm /> : <LoginForm />;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -95,9 +109,12 @@ function CreateBusinessStep() {
   const user = useAuthStore((s) => s.user);
   const [name, setName] = useState("");
   const [trade, setTrade] = useState("");
+  const [customTrade, setCustomTrade] = useState("");
   const [city, setCity] = useState("");
 
   const firstName = user?.firstName || (user?.name && !user.name.startsWith("کاربر ") ? user.name : "");
+
+  const isOther = trade === "سایر";
 
   const create = async () => {
     if (name.trim().length < 2) {
@@ -108,12 +125,13 @@ function CreateBusinessStep() {
       toast({ title: "شهر را انتخاب کن", variant: "destructive" });
       return;
     }
-    if (trade.trim().length < 2) {
-      toast({ title: "صنف را بنویس", variant: "destructive" });
+    const finalTrade = isOther ? customTrade.trim() : trade;
+    if (finalTrade.length < 2) {
+      toast({ title: "صنف را انتخاب کن", variant: "destructive" });
       return;
     }
     try {
-      await createBiz.mutateAsync({ name: name.trim(), city, trade: trade.trim() });
+      await createBiz.mutateAsync({ name: name.trim(), city, trade: finalTrade });
       // useEffect در StartWizard تشخیص می‌دهد و redirect می‌کند
     } catch (err) {
       toast({
@@ -137,14 +155,8 @@ function CreateBusinessStep() {
           />
         </Field>
         <Field label="صنف">
-          <Input
-            value={trade}
-            maxLength={60}
-            onChange={(e) => setTrade(e.target.value)}
-            placeholder="مثلاً سوپرمارکت"
-          />
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق"].map((t) => (
+          <div className="flex flex-wrap gap-1.5">
+            {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "سایر"].map((t) => (
               <button
                 key={t}
                 type="button"
@@ -159,6 +171,16 @@ function CreateBusinessStep() {
               </button>
             ))}
           </div>
+          {isOther && (
+            <Input
+              className="mt-2"
+              value={customTrade}
+              maxLength={60}
+              onChange={(e) => setCustomTrade(e.target.value)}
+              placeholder="صنف خود را بنویس…"
+              autoFocus
+            />
+          )}
         </Field>
         <Field label="شهر">
           <SearchSelect
@@ -181,13 +203,13 @@ function CreateBusinessStep() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// guest — ورود/ثبت‌نام سریع با موبایل
+// فرم ثبت‌نام سریع — فقط موبایل
 // ─────────────────────────────────────────────────────────────────────────────
 
-function AuthStep() {
+function RegisterForm() {
   const { toast } = useToast();
+  const router = useRouter();
   const quickRegister = useAuthStore((s) => s.quickRegister);
-  const login = useAuthStore((s) => s.login);
   const { locale, setLocale } = useLocale();
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref") ?? loadReferralCode();
@@ -197,17 +219,10 @@ function AuthStep() {
     if (r) saveReferralCode(r);
   }, [searchParams]);
 
-  const [mode, setMode] = useState<"quick" | "login">(() =>
-    searchParams.get("mode") === "login" ? "login" : "quick"
-  );
-
   const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
   const [country, setCountry] = useState("IR");
   const [showCountry, setShowCountry] = useState(false);
-
   const [busy, setBusy] = useState(false);
-  const [phoneTaken, setPhoneTaken] = useState(false);
   const guessed = useRef(false);
 
   const syncLangWithCountry = (code: string) => {
@@ -224,8 +239,6 @@ function AuthStep() {
     syncLangWithCountry(c);
     if (c !== "IR") setShowCountry(true);
   }, []);
-
-  useEffect(() => setPhoneTaken(false), [phone, country]);
 
   const phoneIntl = normalizeIntlPhone(phone, country);
 
@@ -257,8 +270,7 @@ function AuthStep() {
     </button>
   );
 
-  // ── ثبت‌نام سریع — redirect توسط useEffect در StartWizard انجام می‌شود
-  const submitQuick = async () => {
+  const submit = async () => {
     if (!phoneIntl) {
       toast({ title: "شماره موبایل معتبر نیست", variant: "destructive" });
       return;
@@ -270,8 +282,8 @@ function AuthStep() {
       // redirect توسط useEffect در StartWizard
     } catch (err) {
       if (err instanceof ApiError && err.code === "PHONE_HAS_PASSWORD") {
-        setPhoneTaken(true);
-        setMode("login");
+        // شماره قبلاً با رمز ثبت شده → هدایت به صفحه ورود
+        router.replace("/start?mode=login");
       } else {
         toast({
           title: "ثبت‌نام ناموفق بود",
@@ -284,7 +296,103 @@ function AuthStep() {
     }
   };
 
-  const submitLogin = async () => {
+  return (
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <h1 className="text-lg font-extrabold">ثبت‌نام</h1>
+      <div className="mt-4 grid gap-3">
+        {showCountry ? countrySelectField : countryLink}
+        <Field label="موبایل">
+          <PhoneField
+            value={phone}
+            onChange={setPhone}
+            countryCode={country}
+            ariaLabel="موبایل"
+            placeholder="912 345 6789"
+          />
+        </Field>
+      </div>
+      <Button className="mt-4 w-full" onClick={() => void submit()} disabled={busy || !phoneIntl}>
+        {busy && <Loader2 className="size-4 animate-spin" />}
+        ثبت‌نام
+      </Button>
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        حساب داری؟{" "}
+        <button
+          type="button"
+          onClick={() => router.push("/start?mode=login")}
+          className="font-extrabold text-primary hover:underline"
+        >
+          ورود
+        </button>
+      </p>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// فرم ورود — موبایل + رمز
+// ─────────────────────────────────────────────────────────────────────────────
+
+function LoginForm() {
+  const { toast } = useToast();
+  const router = useRouter();
+  const login = useAuthStore((s) => s.login);
+  const { locale, setLocale } = useLocale();
+  const searchParams = useSearchParams();
+
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [country, setCountry] = useState("IR");
+  const [showCountry, setShowCountry] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const guessed = useRef(false);
+
+  const syncLangWithCountry = (code: string) => {
+    const lang = langOfCountry(code);
+    const target = isLocale(lang) ? lang : "en";
+    if (target !== locale) setLocale(target);
+  };
+
+  useEffect(() => {
+    if (guessed.current) return;
+    guessed.current = true;
+    const c = guessCountryCode();
+    setCountry(c);
+    syncLangWithCountry(c);
+    if (c !== "IR") setShowCountry(true);
+  }, []);
+
+  const phoneIntl = normalizeIntlPhone(phone, country);
+
+  const countrySelectField = (
+    <Field label="کشور">
+      <SearchSelect
+        items={countrySelectItems}
+        value={country}
+        onChange={(code) => {
+          setCountry(code);
+          syncLangWithCountry(code);
+          if (code !== country) setPhone("");
+        }}
+        placeholder="کشور"
+        searchPlaceholder="جست‌وجوی کشور…"
+        emptyText="پیدا نشد"
+        ariaLabel="کشور"
+      />
+    </Field>
+  );
+
+  const countryLink = (
+    <button
+      type="button"
+      onClick={() => setShowCountry(true)}
+      className="self-start text-[11px] text-primary hover:underline"
+    >
+      تغییر کشور
+    </button>
+  );
+
+  const submit = async () => {
     if (!phoneIntl) {
       toast({ title: "شماره موبایل معتبر نیست", variant: "destructive" });
       return;
@@ -310,88 +418,43 @@ function AuthStep() {
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <div className="mx-auto mb-4 flex w-fit gap-1 rounded-full border bg-accent/30 p-1">
-        <button
-          type="button"
-          onClick={() => setMode("quick")}
-          className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-            mode === "quick" ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          ورود سریع
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("login")}
-          className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-            mode === "login" ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          ورود با رمز
-        </button>
+      <h1 className="text-lg font-extrabold">ورود</h1>
+      <div className="mt-4 grid gap-3">
+        {showCountry ? countrySelectField : countryLink}
+        <Field label="موبایل">
+          <PhoneField
+            value={phone}
+            onChange={setPhone}
+            countryCode={country}
+            ariaLabel="موبایل"
+            placeholder="912 345 6789"
+          />
+        </Field>
+        <Field label="رمز عبور">
+          <Input
+            dir="ltr"
+            type="password"
+            placeholder="رمز عبور"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+        </Field>
       </div>
-
-      {mode === "quick" ? (
-        <>
-          <h1 className="text-lg font-extrabold">ورود با موبایل</h1>
-          <div className="mt-4 grid gap-3">
-            {showCountry ? countrySelectField : countryLink}
-            <Field label="موبایل">
-              <PhoneField
-                value={phone}
-                onChange={setPhone}
-                countryCode={country}
-                ariaLabel="موبایل"
-                placeholder="912 345 6789"
-              />
-            </Field>
-          </div>
-          <Button className="mt-4 w-full" onClick={() => void submitQuick()} disabled={busy || !phoneIntl}>
-            {busy && <Loader2 className="size-4 animate-spin" />}
-            ورود
-          </Button>
-          <p className="mt-4 text-center text-xs text-muted-foreground">
-            <button type="button" onClick={() => setMode("login")} className="font-extrabold text-primary hover:underline">
-              ورود با رمز
-            </button>
-          </p>
-        </>
-      ) : (
-        <>
-          <h1 className="text-lg font-extrabold">ورود به iMach</h1>
-          <div className="mt-4 grid gap-3">
-            {showCountry ? countrySelectField : countryLink}
-            <Field label="موبایل">
-              <PhoneField
-                value={phone}
-                onChange={setPhone}
-                countryCode={country}
-                ariaLabel="موبایل"
-                placeholder="912 345 6789"
-              />
-            </Field>
-            <Field label="رمز عبور">
-              <Input
-                dir="ltr"
-                type="password"
-                placeholder="رمز عبور"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-              />
-            </Field>
-          </div>
-          <Button className="mt-4 w-full" onClick={() => void submitLogin()} disabled={busy || !phoneIntl || password.length === 0}>
-            {busy && <Loader2 className="size-4 animate-spin" />}
-            ورود
-          </Button>
-          <p className="mt-4 text-center text-xs text-muted-foreground">
-            <button type="button" onClick={() => setMode("quick")} className="font-extrabold text-primary hover:underline">
-              ورود سریع
-            </button>
-          </p>
-        </>
-      )}
+      <Button className="mt-4 w-full" onClick={() => void submit()} disabled={busy || !phoneIntl || password.length === 0}>
+        {busy && <Loader2 className="size-4 animate-spin" />}
+        ورود
+      </Button>
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        حساب نداری؟{" "}
+        <button
+          type="button"
+          onClick={() => router.push("/start?mode=register")}
+          className="font-extrabold text-primary hover:underline"
+        >
+          ثبت‌نام
+        </button>
+      </p>
     </div>
   );
 }

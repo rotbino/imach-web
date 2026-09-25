@@ -6,7 +6,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { useBusinessProfile, useFollowBuyerToggle, useFollowToggle, useMarketState } from "@/lib/queries";
+import { useBusinessProfile, useFollowBuyerToggle, useFollowToggle, useMarketState, useEditBusiness } from "@/lib/queries";
+import { ApiError } from "@/lib/api";
 import { ContactButton } from "@/app/components/contact-gate";
 import { ShareDialog } from "@/app/components/share";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -22,9 +23,22 @@ import {
   Loader2,
   MapPin,
   Package,
+  PencilLine,
   Share2,
   UserRound,
 } from "lucide-react";
+import { OwnerLineEditable } from "./owner-edit";
+import { LocationPicker, type GeoPoint } from "@/components/location-picker";
+import { iranCityItems } from "@/lib/iran-geo";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { SearchSelect } from "@/components/search-select";
 
 /*
  * نمای بازوها — یک بار تعریف، دو جا استفاده:
@@ -182,12 +196,12 @@ export function SellArmView({ slug }: { slug: string }) {
                 {activityTypeLabel(biz.activityType)}
               </Badge>
             )}
-            <span className="flex items-center gap-1">
-              <MapPin className="size-3.5" />
-              {biz.city}
-            </span>
+            <CityLocationLine
+              biz={biz}
+              isOwner={isOwner}
+            />
           </div>
-          <OwnerLine owner={biz.owner} tone="sell" />
+          <OwnerLineEditable owner={biz.owner ?? null} isOwner={isOwner} />
           <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار کاتالوگ">
             <div>
               <p className="text-lg font-black">{fa(sellListings.length)}</p>
@@ -370,12 +384,12 @@ export function BuyArmView({ slug }: { slug: string }) {
                 {activityTypeLabel(biz.activityType)}
               </Badge>
             )}
-            <span className="flex items-center gap-1">
-              <MapPin className="size-3.5" />
-              {biz.city}
-            </span>
+            <CityLocationLine
+              biz={biz}
+              isOwner={isOwner}
+            />
           </div>
-          <OwnerLine owner={biz.owner} tone="buy" />
+          <OwnerLineEditable owner={biz.owner ?? null} isOwner={isOwner} />
 
           {/* آمار — کلیک = لیست */}
           <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار لیست خرید">
@@ -472,5 +486,126 @@ export function BuyArmView({ slug }: { slug: string }) {
       </section>
 
     </>
+  );
+}
+
+// ─── خط شهر + مدال ویرایش شهر/لوکیشن/آدرس (فقط مالک) ─────────────────────────
+// بازدیدکننده فقط شهر را می‌بیند. مالک مداد می‌بیند که مدال باز می‌کند:
+// نقشه + شهر + آدرس. وقتی لوکیشن عوض می‌شود، آدرس از OSM می‌آید و کاربر
+// شهر را هم از دراپ‌داون انتخاب می‌کند.
+
+function CityLocationLine({
+  biz,
+  isOwner,
+}: {
+  biz: import("@/lib/api").BusinessProfileDto;
+  isOwner: boolean;
+}) {
+  const { toast } = useToast();
+  const edit = useEditBusiness();
+  const [open, setOpen] = useState(false);
+  const [city, setCity] = useState(biz.city ?? "");
+  const [loc, setLoc] = useState<GeoPoint | null>(
+    biz.lat != null && biz.lng != null ? { lat: biz.lat, lng: biz.lng } : null
+  );
+  const [address, setAddress] = useState(biz.address ?? "");
+
+  const save = async () => {
+    if (!city || city.trim().length < 2) {
+      toast({ title: "شهر را انتخاب کن", variant: "destructive" });
+      return;
+    }
+    try {
+      await edit.mutateAsync({
+        id: biz.id,
+        city,
+        lat: loc?.lat ?? null,
+        lng: loc?.lng ?? null,
+        address: address.trim() || null,
+      });
+      toast({ title: "ذخیره شد" });
+      setOpen(false);
+    } catch (err) {
+      toast({
+        title: "ذخیره ناموفق بود",
+        description: err instanceof ApiError ? err.message : "دوباره تلاش کن",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (!isOwner) {
+    return (
+      <span className="flex items-center gap-1">
+        <MapPin className="size-3.5" />
+        {biz.city}
+      </span>
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="group inline-flex items-center gap-1 text-xs text-muted-foreground transition hover:text-primary"
+        aria-label="ویرایش شهر و لوکیشن"
+      >
+        <MapPin className="size-3.5 text-primary" />
+        <span>{biz.city}</span>
+        <PencilLine className="size-3 opacity-0 transition group-hover:opacity-100" />
+      </button>
+      <DialogContent className="max-w-md gap-3 p-4">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-sm">
+            <MapPin className="size-4 text-primary" />
+            شهر و لوکیشن
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="grid gap-3">
+          <div className="grid gap-1.5">
+            <Label className="text-[11px] text-muted-foreground">لوکیشن روی نقشه</Label>
+            <LocationPicker
+              value={loc}
+              onChange={setLoc}
+              onPickAddress={(a) => setAddress(a)}
+            />
+          </div>
+
+          <div className="grid gap-1.5">
+            <Label className="text-[11px] text-muted-foreground">شهر</Label>
+            <SearchSelect
+              items={
+                city && !iranCityItems.some((i) => i.value === city)
+                  ? [...iranCityItems, { value: city, label: city }]
+                  : iranCityItems
+              }
+              value={city}
+              onChange={setCity}
+              placeholder="انتخاب شهر"
+              searchPlaceholder="جست‌وجوی شهر…"
+              emptyText="پیدا نشد"
+              ariaLabel="شهر"
+            />
+          </div>
+
+          <div className="grid gap-1.5">
+            <Label className="text-[11px] text-muted-foreground">آدرس</Label>
+            <Input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="آدرس"
+              maxLength={300}
+            />
+          </div>
+        </div>
+
+        <Button onClick={() => void save()} disabled={edit.isPending}>
+          {edit.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+          ذخیره
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 }

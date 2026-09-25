@@ -83,6 +83,9 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
   const [activityType, setActivityType] = useState(biz.activityType ?? "");
   // صنف — کلید «کپی از هم‌صنف‌ها»؛ هر وقت بخواهد از همین‌جا اصلاح می‌شود
   const [trade, setTrade] = useState(biz.trade ?? "");
+  const [customTrade, setCustomTrade] = useState(
+    biz.trade && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(biz.trade) ? (biz.trade ?? "") : ""
+  );
   const [loc, setLoc] = useState<GeoPoint | null>(
     biz.lat != null && biz.lng != null ? { lat: biz.lat, lng: biz.lng } : null
   );
@@ -204,15 +207,42 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
 
         <div className="grid gap-1.5">
           <Label className="text-[11px] text-muted-foreground">صنف کسب‌وکار</Label>
-          <Input
-            value={trade}
-            maxLength={60}
-            placeholder="مثلا سوپرمارکت، قنادی، پخش مواد غذایی"
-            onChange={(e) => setTrade(e.target.value)}
-          />
-          <p className="text-[11px] leading-5 text-muted-foreground">
-            با صنف، کاتالوگ‌های هم‌صنف برای کپی کردن کالا به شما نشان داده می‌شود.
-          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "سایر"].map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => {
+                  if (t === "سایر") {
+                    setTrade("");
+                    setCustomTrade(biz.trade ?? "");
+                  } else {
+                    setTrade(t);
+                    setCustomTrade("");
+                  }
+                }}
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                  trade === t || (t === "سایر" && trade !== "" && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade))
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          {(trade === "" || !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade)) && (
+            <Input
+              className="mt-2"
+              value={customTrade}
+              maxLength={60}
+              onChange={(e) => {
+                setCustomTrade(e.target.value);
+                setTrade(e.target.value);
+              }}
+              placeholder="صنف خود را بنویس…"
+            />
+          )}
         </div>
 
         <div className="grid gap-1.5">

@@ -12,6 +12,7 @@ import type { GoodItemDto } from "@/lib/api";
 import { ShareDialog } from "@/app/components/share";
 import { CatalogHeaderPrompt, CityLocationPrompt } from "@/app/components/catalog-header-prompt";
 import { SetPasswordButton } from "@/app/components/set-password-button";
+import { OwnerLineEditable } from "@/app/components/owner-edit";
 import { NoBusinessState } from "@/app/components/no-business";
 import { ProductSettingsDialog } from "./product-settings";
 import { Badge } from "@/components/ui/badge";
@@ -132,6 +133,7 @@ function ShowcaseHeader({
   biz: import("@/lib/api").BusinessSummaryDto;
 }) {
   const router = useRouter();
+  const user = useAuthStore((s) => s.user);
   const listingsQ = useMyListings(bizId);
   const [settingsFor, setSettingsFor] = useState<GoodItemDto | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
@@ -206,6 +208,18 @@ function ShowcaseHeader({
             {/* شهر — قابل کلیک برای تنظیم شهر و لوکیشن */}
             <CityLocationPrompt biz={biz} />
           </div>
+          {/* نام مالک زیر عنوان — با مداد برای ویرایش نام و عکس */}
+          {user && (
+            <OwnerLineEditable
+              owner={{
+                id: user.id,
+                name: user.name,
+                firstName: user.firstName,
+                lastName: user.lastName,
+              }}
+              isOwner={true}
+            />
+          )}
 
           <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار کاتالوگ">
             <div>

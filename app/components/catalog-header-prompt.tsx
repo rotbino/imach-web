@@ -171,21 +171,20 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
 
         <div className="grid gap-1.5">
           <Label className="text-[11px] text-muted-foreground">صنف کسب‌وکار *</Label>
-          <Input
-            value={trade}
-            maxLength={60}
-            onChange={(e) => setTrade(e.target.value)}
-            placeholder="مثلاً سوپرمارکت، قنادی، پخش مواد غذایی"
-          />
-          {/* چند پیشنهاد سریع */}
           <div className="flex flex-wrap gap-1.5">
-            {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "لوازم یدکی"].map((t) => (
+            {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "سایر"].map((t) => (
               <button
                 key={t}
                 type="button"
-                onClick={() => setTrade(t)}
+                onClick={() => {
+                  if (t === "سایر") {
+                    setTrade("");
+                  } else {
+                    setTrade(t);
+                  }
+                }}
                 className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
-                  trade === t
+                  trade === t || (t === "سایر" && trade !== "" && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade))
                     ? "border-primary bg-primary/10 text-primary"
                     : "text-muted-foreground hover:border-primary/40 hover:text-primary"
                 }`}
@@ -194,6 +193,16 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
               </button>
             ))}
           </div>
+          {(trade === "" || !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade)) && (
+            <Input
+              className="mt-2"
+              value={trade}
+              maxLength={60}
+              onChange={(e) => setTrade(e.target.value)}
+              placeholder="صنف خود را بنویس…"
+              autoFocus
+            />
+          )}
         </div>
 
         <div className="grid gap-1.5">
