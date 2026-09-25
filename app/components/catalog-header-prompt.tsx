@@ -6,6 +6,7 @@ import { useEditBusiness, useBusinessLogo, useUploadFile, useRemoveFile } from "
 import { iranCityItems, provinceOfCity } from "@/lib/iran-geo";
 import { ApiError, type BusinessSummaryDto } from "@/lib/api";
 import { FileUploader } from "@/components/FileUploader";
+import { LocationPicker, type GeoPoint } from "@/components/location-picker";
 import { SearchSelect } from "@/components/search-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,20 +19,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Check, Loader2, MapPin, PencilLine, Plus, Store } from "lucide-react";
+import { Check, Loader2, MapPin, PencilLine, Store } from "lucide-react";
 
 /**
- * مدال «عنوان / صنف / لوگو» — برای کاربرانی که ثبت‌نام سریع کرده‌اند و کسب‌وکارشان
- * هنوز نام «کاتالوگ شما» دارد. در هدر `/sell` به‌جای نام، «عنوان کاتالوگ را
- * وارد کنید» نشان داده می‌شود و با کلیک، این مدال باز می‌شود.
+ * مدال تنظیمات هدر — همه چیز یک‌جا:
+ * عنوان کسب‌وکار + صنف + لوگو + شهر + لوکیشن + آدرس.
  *
- * variant="buy" → متن «عنوان دستیار خرید را وارد کنید» نشان می‌دهد (صفحه /buy).
- * variant="sell" (پیش‌فرض) → متن «عنوان کاتالوگ را وارد کنید».
+ * در هدر `/sell` و `/buy` وقتی نام هنوز placeholder است، به‌جای نام یک متن
+ * چشمک‌زن با مداد نشان داده می‌شود. کلیک → این مدال باز می‌شود.
  */
 export function CatalogHeaderPrompt({ biz, variant = "sell" }: { biz: BusinessSummaryDto; variant?: "sell" | "buy" }) {
   const [open, setOpen] = useState(false);
 
-  const placeholderText = variant === "buy" ? "عنوان دستیار خرید را وارد کنید" : "عنوان کاتالوگ را وارد کنید";
+  const placeholderText = variant === "buy" ? "عنوان لیست خرید را وارد کنید" : "عنوان کاتالوگ را وارد کنید";
 
   // اگر نام کسب‌وکار از «کاتالوگ شما» عوض شده، دیگر این دکمه نشان داده نمی‌شود
   const isPlaceholder = biz.name === "کاتالوگ شما" || !biz.trade || !biz.city || biz.city === "—";
@@ -70,7 +70,17 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
 
   const [name, setName] = useState(biz.name === "کاتالوگ شما" ? "" : biz.name);
   const [trade, setTrade] = useState(biz.trade ?? "");
+  const [customTrade, setCustomTrade] = useState(
+    biz.trade && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(biz.trade) ? (biz.trade ?? "") : ""
+  );
   const [city, setCity] = useState(biz.city === "—" ? "" : biz.city);
+  const [loc, setLoc] = useState<GeoPoint | null>(
+    biz.lat != null && biz.lng != null ? { lat: biz.lat, lng: biz.lng } : null
+  );
+  const [address, setAddress] = useState(biz.address ?? "");
+  const [busy, setBusy] = useState(false);
+
+  const isOther = trade === "سایر";
 
   const uploadLogo = (file: File) => {
     setLogoPct(0);
@@ -104,33 +114,40 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
 
   const save = async () => {
     if (name.trim().length < 2) {
-      toast({ title: "عنوان کاتالوگ را بنویسید", variant: "destructive" });
+      toast({ title: "عنوان را بنویس", variant: "destructive" });
       return;
     }
-    if (trade.trim().length < 2) {
-      toast({ title: "صنف کسب‌وکار را بنویسید", variant: "destructive" });
+    const finalTrade = isOther ? customTrade.trim() : trade;
+    if (finalTrade.length < 2) {
+      toast({ title: "صنف را انتخاب کن", variant: "destructive" });
       return;
     }
     if (!city || city === "—" || city.trim().length < 2) {
-      toast({ title: "شهر را انتخاب کنید", variant: "destructive" });
+      toast({ title: "شهر را انتخاب کن", variant: "destructive" });
       return;
     }
+    setBusy(true);
     try {
       await edit.mutateAsync({
         id: biz.id,
         name: name.trim(),
         city,
-        trade: trade.trim(),
+        trade: finalTrade,
+        lat: loc?.lat ?? null,
+        lng: loc?.lng ?? null,
+        address: address.trim() || null,
       });
-      toast({ title: "ذخیره شد", description: "هدر کاتالوگ به‌روز شد." });
+      toast({ title: "ذخیره شد" });
       onDone();
       router.refresh();
     } catch (err) {
       toast({
         title: "ذخیره ناموفق بود",
-        description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
+        description: err instanceof ApiError ? err.message : "دوباره تلاش کن",
         variant: "destructive",
       });
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -139,10 +156,11 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2 text-base">
           <Store className="size-4 text-primary" />
-          تنظیمات کاتالوگ
+          تنظیمات کسب‌وکار
         </DialogTitle>
       </DialogHeader>
 
+      {/* لوگو */}
       <div className="flex items-center gap-3 border-b pb-4">
         <FileUploader
           shape="square"
@@ -161,8 +179,9 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
       </div>
 
       <div className="grid gap-3">
+        {/* عنوان */}
         <div className="grid gap-1.5">
-          <Label className="text-[11px] text-muted-foreground">عنوان کاتالوگ *</Label>
+          <Label className="text-[11px] text-muted-foreground">عنوان کسب‌وکار *</Label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -171,42 +190,43 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
           />
         </div>
 
+        {/* صنف */}
         <div className="grid gap-1.5">
-          <Label className="text-[11px] text-muted-foreground">صنف کسب‌وکار *</Label>
+          <Label className="text-[11px] text-muted-foreground">صنف *</Label>
           <div className="flex flex-wrap gap-1.5">
             {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "سایر"].map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => {
-                  if (t === "سایر") {
-                    setTrade("");
-                  } else {
-                    setTrade(t);
-                  }
+                  setTrade(t);
+                  if (t !== "سایر") setCustomTrade("");
                 }}
                 className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
                   trade === t || (t === "سایر" && trade !== "" && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade))
                     ? "border-primary bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:border-primary/40 hover:text-primary"
+                    : "text-muted-foreground hover:border-primary/40"
                 }`}
               >
                 {t}
               </button>
             ))}
           </div>
-          {(trade === "" || !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade)) && (
+          {(trade === "سایر" || (trade !== "" && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade))) && (
             <Input
               className="mt-2"
-              value={trade}
+              value={isOther ? customTrade : trade}
               maxLength={60}
-              onChange={(e) => setTrade(e.target.value)}
+              onChange={(e) => {
+                setCustomTrade(e.target.value);
+                setTrade(e.target.value);
+              }}
               placeholder="صنف خود را بنویس…"
-              autoFocus
             />
           )}
         </div>
 
+        {/* شهر */}
         <div className="grid gap-1.5">
           <Label className="text-[11px] text-muted-foreground">شهر *</Label>
           <SearchSelect
@@ -223,118 +243,28 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
             ariaLabel="شهر"
           />
         </div>
+
+        {/* لوکیشن + آدرس */}
+        <div className="grid gap-1.5">
+          <Label className="text-[11px] text-muted-foreground">لوکیشن و آدرس</Label>
+          <LocationPicker
+            value={loc}
+            onChange={setLoc}
+            onPickAddress={(a) => setAddress(a)}
+          />
+          <Input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="آدرس — بعد از انتخاب لوکیشن خودکار پر می‌شود"
+            maxLength={300}
+          />
+        </div>
       </div>
 
-      <Button onClick={() => void save()} disabled={edit.isPending}>
-        {edit.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+      <Button onClick={() => void save()} disabled={busy || edit.isPending}>
+        {busy || edit.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
         ذخیره
       </Button>
     </DialogContent>
-  );
-}
-
-/**
- * مدال «انتخاب شهر + لوکیشن» — کنار شهر در هدر، با آیکون MapPin و نوشته
- * «انتخاب شهر». وقتی باز می‌شود، کاربر شهرش را انتخاب می‌کند و لوکیشن
- * اختیاری هم می‌تواند بگذارد. اگر لوکیشن را عوض کند، شهر هم باید به‌روز شود.
- */
-export function CityLocationPrompt({ biz }: { biz: BusinessSummaryDto }) {
-  const { toast } = useToast();
-  const router = useRouter();
-  const edit = useEditBusiness();
-  const [open, setOpen] = useState(false);
-  const [city, setCity] = useState(biz.city === "—" ? "" : biz.city);
-  const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(
-    biz.lat != null && biz.lng != null ? { lat: biz.lat, lng: biz.lng } : null
-  );
-  const [address, setAddress] = useState(biz.address ?? "");
-
-  const save = async () => {
-    if (!city || city === "—" || city.trim().length < 2) {
-      toast({ title: "شهر را انتخاب کنید", variant: "destructive" });
-      return;
-    }
-    try {
-      await edit.mutateAsync({
-        id: biz.id,
-        city,
-        lat: loc?.lat ?? null,
-        lng: loc?.lng ?? null,
-        address: address.trim() || null,
-      });
-      toast({ title: "شهر ذخیره شد" });
-      setOpen(false);
-      router.refresh();
-    } catch (err) {
-      toast({
-        title: "ذخیره ناموفق بود",
-        description: err instanceof ApiError ? err.message : "دوباره تلاش کنید",
-        variant: "destructive",
-      });
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1 text-xs text-muted-foreground transition hover:text-primary"
-        >
-          <MapPin className="size-3.5" />
-          {biz.city && biz.city !== "—" ? biz.city : "انتخاب شهر"}
-        </button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md gap-3 p-4">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-sm">
-            <MapPin className="size-4 text-primary" />
-            انتخاب شهر و لوکیشن
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="grid gap-3">
-          <div className="grid gap-1.5">
-            <Label className="text-[11px] text-muted-foreground">شهر *</Label>
-            <SearchSelect
-              items={
-                city && !iranCityItems.some((i) => i.value === city)
-                  ? [...iranCityItems, { value: city, label: city }]
-                  : iranCityItems
-              }
-              value={city}
-              onChange={(c) => {
-                setCity(c);
-                // اگر لوکیشن قبلی داره و شهر عوض می‌شه، لوکیشن قدیمی رو پاک کن
-                if (loc && biz.city !== c) setLoc(null);
-              }}
-              placeholder="انتخاب شهر"
-              searchPlaceholder="جست‌وجوی شهر…"
-              emptyText="پیدا نشد"
-              ariaLabel="شهر"
-            />
-          </div>
-
-          <div className="grid gap-1.5">
-            <Label className="text-[11px] text-muted-foreground">آدرس</Label>
-            <Input
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="آدرس را بنویسید"
-              maxLength={300}
-            />
-          </div>
-
-          <p className="text-[11px] leading-5 text-muted-foreground">
-            لوکیشن دقیق اختیاری است؛ بعداً از تنظیمات کسب‌وکار می‌توانی آن را هم اضافه کنی.
-          </p>
-        </div>
-
-        <Button onClick={() => void save()} disabled={edit.isPending}>
-          {edit.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-          ذخیره
-        </Button>
-      </DialogContent>
-    </Dialog>
   );
 }

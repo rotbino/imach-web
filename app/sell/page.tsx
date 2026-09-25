@@ -10,10 +10,11 @@ import { fa, activityTypeLabel, categoryName, fmtMoney, goodName, unitLabel } fr
 import { useMyBusinesses, useMyListings } from "@/lib/queries";
 import type { GoodItemDto } from "@/lib/api";
 import { ShareDialog } from "@/app/components/share";
-import { CatalogHeaderPrompt, CityLocationPrompt } from "@/app/components/catalog-header-prompt";
+import { CatalogHeaderPrompt } from "@/app/components/catalog-header-prompt";
 import { SetPasswordButton } from "@/app/components/set-password-button";
 import { OwnerLineEditable } from "@/app/components/owner-edit";
 import { NoBusinessState } from "@/app/components/no-business";
+import { WelcomeModal } from "@/app/components/welcome-modal";
 import { ProductSettingsDialog } from "./product-settings";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,7 @@ function SellBody() {
   return (
     <div className="flex min-h-screen flex-col">
       <AppHeader />
+      <WelcomeModal />
       <main className="grow">
         <div className="mx-auto max-w-2xl px-4 py-6">
           <ShowcaseHeader
@@ -206,7 +208,7 @@ function ShowcaseHeader({
               </Badge>
             )}
             {/* شهر — قابل کلیک برای تنظیم شهر و لوکیشن */}
-            <CityLocationPrompt biz={biz} />
+            <CatalogHeaderPrompt biz={biz} />
           </div>
           {/* نام مالک زیر عنوان — با مداد برای ویرایش نام و عکس */}
           {user && (

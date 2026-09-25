@@ -27,16 +27,22 @@ import { Check, FileSpreadsheet, HelpCircle, Image as ImageIcon, Loader2, Triang
 type Step = "drop" | "preview" | "done";
 
 const AI_PROMPT = [
-  "من یک فایل اکسل از لیست کالاهای کسب‌وکارم دارم. آن را به قالب زیر تبدیل کن:",
+  "تو دستیار وارد کردن کالا برای پلتفرم عمده‌فروشی iMach هستی.",
+  "کاربر فایل کالاهایش را می‌دهد و تو باید آن را به قالب زیر تبدیل کنی.",
+  "",
   "ستون‌های خروجی (به همین ترتیب، با همین نام‌های فارسی):",
   "نام کالا | برند | بسته‌بندی | قیمت فروش (تومان) | موجودی | حداقل سفارش | حجم خرید | لینک عکس",
+  "",
   "قواعد:",
   "۱) نام کالا را کوتاه و استاندارد بنویس (مثل: شیر پاستوریزه، ماکارونی) و جزئیات مثل وزن یا اندازه را در ستون «بسته‌بندی» بگذار (مثل: ۷۰۰ گرمی).",
   "۲) برند را دقیقاً همان‌طور که هست بنویس؛ بدون برند، خالی بگذار.",
   "۳) فقط فروشنده‌ام؟ قیمت فروش را پر کن و حجم خرید را خالی بگذار. فقط خریدارم؟ برعکس. هر دو؟ هر دو را پر کن.",
   "۴) قیمت‌ها را عدد تومان بدون جداکننده بنویس.",
   "۵) اگر عکس کالا لینک مستقیم دارد، در ستون «لینک عکس» بگذار؛ وگرنه خالی.",
+  "۶) ترتیب ستون‌ها مهم نیست و ستون‌های اضافه نادیده گرفته می‌شوند — حتی اگر سرستون نداشته باشد، ستون‌ها را حدس بزن.",
+  "",
   "خروجی را به شکل جدول CSV با همان سرستون‌های فارسی بده، بدون توضیح اضافه.",
+  "اگر فایل کاربر فرمت عجیبی دارد (مثلاً PDF یا عکس از قفسه مغازه)، تلاش کن کالاها را استخراج کنی و در همین قالب بدهی.",
 ].join("\n");
 
 export function ImportSheet({
@@ -270,17 +276,29 @@ export function ImportSheet({
               </button>
             </div>
 
-            {/* میان‌بر هوش مصنوعی — پرامپت آماده، یک کلیک */}
+            {/* میان‌بر هوش مصنوعی — پرامپت آماده + لینک */}
             <div className="mt-4 rounded-xl border border-primary/20 bg-accent/30 p-3.5">
               <p className="flex items-center gap-1.5 text-xs font-extrabold text-primary">
                 <FileSpreadsheet className="size-3.5" />
                 {m.importSheet.aiTitle}
               </p>
               <p className="mt-1.5 text-[11px] leading-5 text-muted-foreground">{m.importSheet.aiHint}</p>
-              <Button type="button" variant="outline" size="sm" className="mt-2.5" onClick={() => void copyPrompt()}>
-                {promptCopied ? <Check className="size-3.5 text-emerald-600" /> : <FileSpreadsheet className="size-3.5" />}
-                {promptCopied ? m.importSheet.aiCopied : m.importSheet.aiCopy}
-              </Button>
+              <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => void copyPrompt()}>
+                  {promptCopied ? <Check className="size-3.5 text-emerald-600" /> : <FileSpreadsheet className="size-3.5" />}
+                  {promptCopied ? m.importSheet.aiCopied : m.importSheet.aiCopy}
+                </Button>
+                <span className="text-[11px] text-muted-foreground">{m.importSheet.aiLinksTitle}</span>
+                <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
+                  ChatGPT
+                </a>
+                <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
+                  Claude
+                </a>
+                <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
+                  Gemini
+                </a>
+              </div>
             </div>
           </>
         )}

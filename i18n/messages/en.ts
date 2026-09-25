@@ -317,9 +317,10 @@ export const en: Messages = {
       "<b>Column order doesn't matter</b> and extra columns are ignored — even without headers we guess the columns and show you in the preview.",
     ],
     aiTitle: "Shortcut: turn your file into this template with any AI",
-    aiHint: "Copy this prompt and hand it to any AI assistant along with your Excel — you'll get a thousand items back in this template within minutes.",
+    aiHint: "Copy this prompt and hand it to one of the AI assistants below along with your product file — you'll get a thousand items back in this template within minutes. Then upload the output file here.",
     aiCopy: "Copy the prompt",
     aiCopied: "Copied",
+    aiLinksTitle: "Go to AI:",
     copyFailed: "Couldn't copy — select the prompt manually",
   },
   admin: {

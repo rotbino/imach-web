@@ -7,11 +7,12 @@ import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { NoBusinessState } from "@/app/components/no-business";
+import { WelcomeModal } from "@/app/components/welcome-modal";
 import { ApiError, type GoodItemDto } from "@/lib/api";
 import { fa, activityTypeLabel, categoryName, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMyBusinesses, useMyListings, useQuoteRequest } from "@/lib/queries";
 import { ShareDialog } from "@/app/components/share";
-import { CatalogHeaderPrompt, CityLocationPrompt } from "@/app/components/catalog-header-prompt";
+import { CatalogHeaderPrompt } from "@/app/components/catalog-header-prompt";
 import { SetPasswordButton } from "@/app/components/set-password-button";
 import { OwnerLineEditable } from "@/app/components/owner-edit";
 import { BuyItemSettingsDialog } from "./item-settings";
@@ -83,6 +84,7 @@ function BuyBody() {
   return (
     <div className="flex min-h-screen flex-col">
       <AppHeader />
+      <WelcomeModal />
       <main className="grow">
         <div className="mx-auto max-w-2xl px-4 py-6">
           <ShowcaseHeader
@@ -219,7 +221,7 @@ function ShowcaseHeader({
                 {activityTypeLabel(activityType)}
               </Badge>
             )}
-            <CityLocationPrompt biz={biz} />
+            <CatalogHeaderPrompt biz={biz} variant="buy" />
           </div>
           {/* نام مالک زیر عنوان — با مداد برای ویرایش نام و عکس */}
           {user && (
