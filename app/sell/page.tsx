@@ -226,6 +226,7 @@ function ShowcaseHeader({
             {listings.map((l) => {
               // اولین عکس گالری — همان که در ویترین عمومی دیده می‌شود (WYSIWYG)
               const photo = l.gallery?.[0];
+              debugger
               return (
               <article
                 key={l.id}
