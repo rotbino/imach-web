@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
@@ -27,6 +28,28 @@ import {
   Store,
   Users,
 } from "lucide-react";
+
+/**
+ * Build stamp — فقط در client render می‌شود تا hydration mismatch نباشد.
+ * SSR آن را خالی رندر می‌کند (server و client هش متفاوتی از NEXT_PUBLIC_BUILD_ID
+ * می‌بینند چون next.config در dev چند بار اجرا می‌شود).
+ */
+function BuildStamp() {
+  const [id, setId] = useState<string>("");
+  useEffect(() => {
+    setId(BUILD_ID);
+  }, []);
+  if (!id) return null;
+  return (
+    <span
+      aria-label={`build ${id}`}
+      title={`build ${id}`}
+      className="-mt-1 select-none font-mono text-[8px] leading-none text-muted-foreground/50"
+    >
+      b{id}
+    </span>
+  );
+}
 
 /*
  * هدر پیج‌محور — دقیقا مثل اینستاگرام (خواسته‌ی کاربر):
@@ -145,14 +168,9 @@ export function AppHeader() {
                 className="pb-1"
             />
             {/* مُهر بیلد — هش گیتِ بیلدِ در حال اجرا؛ برای تشخیص فوری «بیلد کهنه»
-                (کلاس باگی که کاربر خودش یک بار تجربه کرد: بیلد نشده بود) */}
-            <span
-                aria-label={`build ${BUILD_ID}`}
-                title={`build ${BUILD_ID}`}
-                className="-mt-1 select-none font-mono text-[8px] leading-none text-muted-foreground/50"
-            >
-              b{BUILD_ID}
-            </span>
+                (کلاس باگی که کاربر خودش یک بار تجربه کرد: بیلد نشده بود).
+                فقط در client render می‌شود تا hydration mismatch نباشد. */}
+            <BuildStamp />
           </button>
 
           {status === "authed" && (
