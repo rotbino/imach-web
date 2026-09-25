@@ -245,8 +245,7 @@ function AuthStep() {
         <>
           <h1 className="text-lg font-extrabold">ورود با شماره موبایل</h1>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            فقط شماره موبایلت را وارد کن — کاتالوگ تو همین حالا ساخته می‌شود.
-            ادامه‌اش (نام، صنف، شهر، لوگو) را بعداً از داخل پنل با یک کلیک کامل می‌کنی.
+           ثبت نام در آی مچ
           </p>
 
           <div className="mt-4 grid gap-3">
