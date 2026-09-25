@@ -449,11 +449,8 @@ function TradePrompt({
     <>
       <div className="flex items-center gap-2">
         <Store className="size-5 shrink-0 text-primary" />
-        <h1 className="text-lg font-extrabold">صنف کسب‌وکارت را بنویس</h1>
+        <h1 className="text-lg font-extrabold">صنف کسب‌وکارت</h1>
       </div>
-      <p className="mt-2 text-xs leading-6 text-muted-foreground">
-        با صنف، کاتالوگ‌های هم‌صنف را پیدا می‌کنیم تا کالاهایت را به‌جای تایپ، از آن‌ها تیک بزنی و کپی کنی.
-      </p>
 
       <div className="mt-4">
         <Input
@@ -483,7 +480,7 @@ function TradePrompt({
 
       <Button className="mt-5 w-full" onClick={() => void save()} disabled={saving}>
         {saving ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-        ذخیره و مشاهده‌ی هم‌صنف‌ها
+        ادامه
       </Button>
 
       <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">

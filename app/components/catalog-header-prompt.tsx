@@ -154,7 +154,7 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
           onRemove={logo ? removeLogo : undefined}
         />
         <p className="text-[11px] leading-5 text-muted-foreground">
-          لوگوی کسب‌وکارت را آپلود کن — در کاتالوگ و لیست خرید شما نمایش داده می‌شود.
+          در کاتالوگ و لیست خرید نمایش داده می‌شود.
         </p>
       </div>
 

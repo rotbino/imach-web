@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness, smartSwitchArm } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { NoBusinessState } from "@/app/components/no-business";
 import { ListingForm } from "@/app/components/listing-form";
 import { CatalogPicker } from "@/app/new/catalog-picker";
 import { ImportSheet } from "@/app/new/import-sheet";
@@ -67,22 +68,8 @@ function NewListingBody() {
     );
   }
 
-  if (!active) {
-    return (
-      <div className="rounded-2xl border border-dashed bg-white/60 p-10 text-center">
-        <p className="text-lg font-extrabold">اول کسب‌وکارتان را بسازید</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          برای ثبت کالا به یک کسب‌وکار نیاز دارید — فقط نام و شهر می‌خواهد.
-        </p>
-        <button
-          onClick={() => router.push("/start?mode=register")}
-          className="mt-4 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm"
-        >
-          ساخت کسب‌وکار
-        </button>
-      </div>
-    );
-  }
+  if (!active) return <NoBusinessState variant="sell" />;
+
 
   const arm = params.get("tab") === "buy" ? "buy" : "sell";
 

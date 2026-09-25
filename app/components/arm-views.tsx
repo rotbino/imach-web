@@ -116,7 +116,7 @@ export function SellArmView({ slug }: { slug: string }) {
     }
     const mine = storeBizs[0];
     if (!mine) {
-      toast({ title: "اول کسب‌وکارتان را بسازید", description: "از پروفایل، کسب‌وکار بسازید و بعد دنبال کنید." });
+      toast({ title: "ابتدا وارد شوید" });
       return;
     }
     followToggle.mutate(
