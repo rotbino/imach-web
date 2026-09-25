@@ -7,13 +7,15 @@ import { useActiveBusiness, useArmStore } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { ListingForm } from "@/app/components/listing-form";
 import { CatalogPicker } from "@/app/new/catalog-picker";
+import { ImportSheet } from "@/app/new/import-sheet";
 import { useMessages } from "@/i18n/messages/use-messages";
-import { Library, Loader2, Search } from "lucide-react";
+import { FileSpreadsheet, Library, Loader2, Search } from "lucide-react";
 
 /*
- * کالای جدید — دو در، یک مقصد (خواسته‌ی کاربر: فروشنده‌ی پرقلم نباید قلم‌به‌قلم
- * تایپ کند؛ خرده‌فروشِ معمولی نباید از او پیچیده‌تر شود):
+ * کالای جدید — سه در، یک مقصد (خواسته‌ی کاربر: فروشنده‌ی پرقلم نباید قلم‌به‌قلم
+ * تایپ کند؛ خرده‌فروشِ معمولی نباید از او پیچیده‌تر شود؛ لیست بزرگ راهش فایل است):
  *   • «از کاتالوگ مرجع» (پیش‌فرض) — تیک بزن، قیمت بده، تمام.
+ *   • «از فایل اکسل» — لیست بزرگ‌ات را با پیش‌نمایش یک‌جا وارد کن.
  *   • «جست‌وجوی آزاد» — همان فرم دومرحله‌ای همیشگی؛ مسیر رشد کاتالوگ مرجع.
  * کدام بازو پر می‌شود؟ از ?tab=sell|buy (دکمه‌ی ویترین مربوطه) — انتخابگر هر
  * بار یک بازو را پر می‌کند؛ فرم آزاد همان‌جا نقش را می‌پرسد (فروش/خرید/هر دو).
@@ -47,7 +49,7 @@ function NewListingBody() {
   const m = useMessages();
   const { status } = useAuthStore();
   const active = useActiveBusiness();
-  const [mode, setMode] = useState<"picker" | "form">("picker");
+  const [mode, setMode] = useState<"picker" | "form" | "file">("picker");
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
@@ -82,13 +84,19 @@ function NewListingBody() {
 
   return (
     <div className="space-y-4">
-      {/* سوییچ دو مسیر — کوچک، بالای کارت، بدون سر و صدا */}
-      <div className="mx-auto grid w-fit grid-cols-2 gap-1 rounded-full border bg-white p-1 shadow-sm">
+      {/* سوییچ سه مسیر — کوچک، بالای کارت، بدون سر و صدا */}
+      <div className="mx-auto grid w-fit grid-cols-3 gap-1 rounded-full border bg-white p-1 shadow-sm">
         <ModeTab
           active={mode === "picker"}
           onClick={() => setMode("picker")}
           icon={<Library className="size-3.5" />}
           label={m.picker.tabLabel}
+        />
+        <ModeTab
+          active={mode === "file"}
+          onClick={() => setMode("file")}
+          icon={<FileSpreadsheet className="size-3.5" />}
+          label={m.importSheet.tabLabel}
         />
         <ModeTab
           active={mode === "form"}
@@ -108,6 +116,15 @@ function NewListingBody() {
             router.push(kind === "sell" ? "/sell" : "/buy");
           }}
           onSwitchToForm={() => setMode("form")}
+        />
+      ) : mode === "file" ? (
+        <ImportSheet
+          bizId={active.id}
+          arm={arm}
+          onDone={(kind) => {
+            useArmStore.getState().setArm(kind);
+            router.push(kind === "sell" ? "/sell" : "/buy");
+          }}
         />
       ) : (
         <ListingForm

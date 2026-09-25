@@ -126,7 +126,7 @@ export function CatalogPicker({
   const draftOf = (id: string): Draft => draft[id] ?? {};
   const setDraftOf = (id: string, patch: Draft) => setDraft((s) => ({ ...s, [id]: { ...draftOf(id), ...patch } }));
 
-  const submit = async () => {
+  const submit = async (keepGoing = false) => {
     if (arm === "sell") {
       const missing = picked.filter((p) => !((draftOf(p.id).price ?? 0) > 0));
       if (missing.length > 0) {
@@ -154,7 +154,15 @@ export function CatalogPicker({
         description: m.picker.successDesc,
       });
       if (res.failed > 0) toast({ title: m.picker.submitFailed.replace("{n}", fa(res.failed)), variant: "destructive" });
-      onDone(arm);
+      if (keepGoing) {
+        // حلقه‌ی افزودن سریع (خواسته‌ی کاربر: لیست خرید کم‌کم تشکیل می‌شود) —
+        // ثبت شد، سبد خالی می‌ماند و همان‌جا تیک‌زدن ادامه پیدا می‌کند
+        setPicked([]);
+        setDraft({});
+        setStep("pick");
+      } else {
+        onDone(arm);
+      }
     } catch (err) {
       toast({
         title: m.picker.submitFailed.replace("{n}", fa(picked.length)),
@@ -417,10 +425,17 @@ export function CatalogPicker({
               })}
             </div>
 
-            <Button className="mt-5 w-full" size="lg" onClick={() => void submit()} disabled={bulk.isPending}>
-              {bulk.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-              {m.picker.submit.replace("{n}", fa(picked.length))}
-            </Button>
+            {/* ثبت — یا خروج، یا ماندن در حلقه‌ی تیک‌زدن */}
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+              <Button variant="outline" className="sm:flex-1" onClick={() => void submit(true)} disabled={bulk.isPending}>
+                {bulk.isPending ? <Loader2 className="size-4 animate-spin" /> : <Plus className="size-4" />}
+                {m.picker.submitAndContinue}
+              </Button>
+              <Button className="sm:flex-1" onClick={() => void submit(false)} disabled={bulk.isPending}>
+                {bulk.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                {m.picker.submit.replace("{n}", fa(picked.length))}
+              </Button>
+            </div>
           </>
         )}
       </div>
