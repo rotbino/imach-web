@@ -2,16 +2,26 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { ApiError, type CatalogItemDto, type CatalogSummaryDto, type ProductRowDto } from "@/lib/api";
+import {
+  ApiError,
+  type AggregatedItemDto,
+  type CatalogSummaryDto,
+  type ProductRowDto,
+} from "@/lib/api";
 import { businessesApi, listingsApi, productsApi } from "@/lib/api";
-import { useBrands, useBulkSaveListings, useProducts } from "@/lib/queries";
+import { useBulkSaveListings } from "@/lib/queries";
 import { CURRENCIES, currencyLabel, fa, fmtMoney, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
+import { useAuthStore } from "@/lib/auth-store";
+import { useActiveBusiness } from "@/lib/active-biz";
+import { iranCityItems, provinceOfCity } from "@/lib/iran-geo";
 import { NumberInput } from "@/components/number-input";
+import { BrandStrip, CategoryStrip } from "@/app/components/brand-strip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   ArrowRight,
@@ -29,15 +39,16 @@ import {
 
 /**
  * ─── انتخابگر کاتالوگ‌ها ─────────────────────────────────────────────────────
- * دو منبع، یک صف (خواسته‌ی کاربر: «اولین سوپرمارکت که کالاهاشو وارد کرد بقیه
- * تیک بزنن و بیارن توی کاتالوگ خودشون»):
+ * دو منبع، یک صف:
  *
- *   ۱. «از هم‌صنف‌ها» (پیش‌فرض) — صنف کسب‌وکارت را جست‌وجو کن، کاتالوگ‌های
- *      زنده را باز کن، قلم‌هایش را با همه‌ی مشخصات و عکس‌ها تیک بزن؛ کپی به
- *      کاتالوگ تو می‌آید بی‌قیمت و قیمت‌گذاری با خودت.
- *   ۲. «از کاتالوگ مرجع» — جست‌وجو + فیلتر برند روی لیست مشترک SKUها؛
- *      ناوبری دسته‌ها حذف شد (خواسته‌ی کاربر: ۲۲ گروه وحشت‌آور بود؛
- *      «جستجو بهتره» + «فیلتر برند خیلی کاربردیه»).
+ *   ۱. «از هم‌صنف‌ها» (پیش‌فرض) — کاتالوگ تجمیعی هم‌صنف‌ها: صنف خودت را سرچ
+ *      کن، سیستم همه‌ی کاتالوگ‌های هم‌صنفِ همان شهر/استان/کشور را پیدا می‌کند،
+ *      کالاهایشان را fetch و یونیک می‌کند، با نوار برند و نوار دسته قابل
+ *      فیلتر نشان می‌دهد. تیک بزن → کپی به کاتالوگ خودت بیاید.
+ *
+ *      اگر صنف خودت را هنوز وارد نکرده‌ای، یک مدال کوچک باز می‌شود.
+ *
+ *   ۲. «از کاتالوگ مرجع» — جست‌وجو + فیلتر برند روی لیست مشترک SKUها.
  *
  * هیچ منبعی بن‌بست نیست — کالای غایب با ثبت تکی ساخته می‌شود و دفعه‌ی بعد
  * همین‌جا ظاهر می‌شود (رشد ارگانیک، همان قرارداد همیشگی).
@@ -72,7 +83,7 @@ export function CatalogPicker({
         </div>
 
         {source === "copy" ? (
-          <CopyFromCatalogs bizId={bizId} arm={arm} onDone={onDone} onSwitchToSolo={onSwitchToSolo} />
+          <CopyFromPeers bizId={bizId} arm={arm} onDone={onDone} onSwitchToSolo={onSwitchToSolo} />
         ) : (
           <ReferencePicker bizId={bizId} currency={currency} arm={arm} onDone={onDone} onSwitchToSolo={onSwitchToSolo} />
         )}
@@ -108,11 +119,12 @@ function SourceTab({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// منبع ۱ — کپی از کاتالوگ هم‌صنف‌ها
+// منبع ۱ — کاتالوگ تجمیعی هم‌صنف‌ها (Aggregated Catalog)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function CopyFromCatalogs({
+function CopyFromPeers({
   bizId,
+  arm,
   onDone,
   onSwitchToSolo,
 }: {
@@ -124,7 +136,24 @@ function CopyFromCatalogs({
   const { toast } = useToast();
   const m = useMessages();
   const { locale } = useLocale();
+  const active = useActiveBusiness();
 
+  // ── صنف و شهرِ خودم — مبنای جست‌وجوی تجمیعی
+  const myTrade = active?.trade ?? "";
+  const myCity = active?.city ?? "";
+  const myProvince = myCity ? (provinceOfCity(myCity) ?? undefined) : undefined;
+  const myCountry = active?.country ?? "IR";
+
+  // اگر صنف ندارم، یک مدال برای ورود صنف باز می‌کنیم
+  const [needTrade, setNeedTrade] = useState(!myTrade);
+  const [tradeInput, setTradeInput] = useState(myTrade);
+
+  useEffect(() => {
+    setNeedTrade(!myTrade);
+    setTradeInput(myTrade);
+  }, [myTrade]);
+
+  // ── جست‌وجو
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
   useEffect(() => {
@@ -132,89 +161,89 @@ function CopyFromCatalogs({
     return () => clearTimeout(t);
   }, [query]);
 
-  // ── گام ۱: کاتالوگ‌ها / گام ۲: قلم‌ها
-  const [source, setSource] = useState<CatalogSummaryDto | null>(null);
+  // ── فیلتر برند — چیپ افقی از برندهای موجود در همین لیست
+  const [brandId, setBrandId] = useState<string | null>(null);
+  const [categoryId, setCategoryId] = useState<string | null>(null);
 
-  // ── فید کاتالوگ‌ها (کلاینت‌ساید، صفحه‌ای)
-  const [catalogs, setCatalogs] = useState<CatalogSummaryDto[]>([]);
-  const [catNext, setCatNext] = useState<string | null>(null);
-  const [catBusy, setCatBusy] = useState(false);
-  const [catLoading, setCatLoading] = useState(true);
+  // ─ـ فید اولیه — یک صفحه از تجمیعی
+  const first = useAggregatedCatalog({
+    trade: myTrade,
+    city: myCity,
+    province: myProvince,
+    country: myCountry,
+    q: debounced || undefined,
+    brandId: brandId ?? undefined,
+    categoryId: categoryId ?? undefined,
+    mineId: bizId,
+    limit: 40,
+    enabled: !!myTrade,
+  });
 
-  const loadCatalogs = async (cursor?: string) => {
-    setCatBusy(true);
-    try {
-      const res = await businessesApi.searchCatalogs({
-        q: debounced || undefined,
-        cursor,
-        mineId: bizId,
-        limit: 20,
-      });
-      setCatalogs((s) => (cursor ? [...s, ...res.items] : res.items));
-      setCatNext(res.nextCursor);
-    } catch {
-      /* دوباره با همان جست‌وجو */
-    } finally {
-      setCatLoading(false);
-      setCatBusy(false);
-    }
-  };
+  // ─ـ صفحات «بیشتر»
+  const [more, setMore] = useState<{ items: AggregatedItemDto[]; next: string | null }>({ items: [], next: null });
+  const [loadingMore, setLoadingMore] = useState(false);
   useEffect(() => {
-    setCatLoading(true);
-    void loadCatalogs();
-     
-  }, [debounced]);
+    setMore({ items: [], next: null });
+  }, [debounced, brandId, categoryId, myTrade]);
 
-  // ── قلم‌های کاتالوگ انتخاب‌شده
-  const [items, setItems] = useState<CatalogItemDto[]>([]);
-  const [itemsNext, setItemsNext] = useState<string | null>(null);
-  const [itemsLoading, setItemsLoading] = useState(false);
-  const [picked, setPicked] = useState<CatalogItemDto[]>([]);
+  const rows = useMemo(() => [...(first.data?.items ?? []), ...more.items], [first.data, more]);
+  const nextCursor = more.items.length > 0 ? more.next : (first.data?.nextCursor ?? null);
+  const brands = first.data?.brands ?? [];
+  const categories = first.data?.categories ?? [];
+  const foundBusinesses = first.data?.foundBusinesses ?? 0;
+
+  const loadMore = async () => {
+    const cur = more.items.length > 0 ? more.next : first.data?.nextCursor;
+    if (!cur) return;
+    setLoadingMore(true);
+    try {
+      const res = await businessesApi.getAggregatedCatalog({
+        trade: myTrade,
+        city: myCity,
+        province: myProvince,
+        country: myCountry,
+        q: debounced || undefined,
+        brandId: brandId ?? undefined,
+        categoryId: categoryId ?? undefined,
+        cursor: cur,
+        limit: 40,
+        mineId: bizId,
+      });
+      setMore((s) => ({ items: [...s.items, ...res.items], next: res.nextCursor }));
+    } catch {
+      /* retry */
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // ─ـ سبد انتخاب (productId → listingId که از peer انتخاب شده برای کپی)
+  const [picked, setPicked] = useState<AggregatedItemDto[]>([]);
   const pickedIds = useMemo(() => new Set(picked.map((p) => p.id)), [picked]);
-
-  const openCatalog = async (c: CatalogSummaryDto) => {
-    setSource(c);
-    setItems([]);
-    setPicked([]);
-    setItemsLoading(true);
-    try {
-      const res = await businessesApi.getCatalogItems({ businessId: c.id, limit: 40 });
-      setItems(res.items);
-      setItemsNext(res.nextCursor);
-    } catch {
-      toast({ title: m.picker.copyItemsFailed, variant: "destructive" });
-    } finally {
-      setItemsLoading(false);
-    }
-  };
-
-  const loadMoreItems = async () => {
-    if (!source || !itemsNext) return;
-    setItemsLoading(true);
-    try {
-      const res = await businessesApi.getCatalogItems({ businessId: source.id, cursor: itemsNext, limit: 40 });
-      setItems((s) => [...s, ...res.items]);
-      setItemsNext(res.nextCursor);
-    } catch {
-      /* retry from the button */
-    } finally {
-      setItemsLoading(false);
-    }
-  };
-
-  const toggle = (it: CatalogItemDto) =>
+  const toggle = (it: AggregatedItemDto) => {
     setPicked((list) => (pickedIds.has(it.id) ? list.filter((x) => x.id !== it.id) : [...list, it]));
+  };
 
   const copy = async () => {
+    if (picked.length === 0) return;
+    // تمام قلم‌های انتخاب‌شده از هم‌صنف‌ها هستند → sourceListingIds همان id آنهاست
+    // و sourceBusinessId مالکشان. ولی اینجا چندتا کاتالوگ داریم.
+    // کپی به روش copyFrom نمی‌تواند چند کاتالوگ را یکجا کپی کند. ولی چون
+    // aggregatedItem.productId داریم، می‌توانیم با bulkSave مستقیم بسازیم.
     try {
-      const res = await listingsApi.copyFrom({
+      const res = await listingsApi.bulkSave({
         businessId: bizId,
-        sourceBusinessId: source!.id,
-        sourceListingIds: picked.map((p) => p.id),
+        mode: arm === "sell" ? "SELL" : "BUY",
+        items: picked
+          .filter((p) => p.productId) // فقط قلم‌هایی که productId دارند (که همه‌شان دارند)
+          .map((p) => ({
+            productId: p.productId!,
+            ...(arm === "sell" ? {} : { volume: undefined }),
+          })),
       });
       toast({
-        title: m.picker.copySuccess.replace("{n}", fa(res.copied)),
-        description: res.already > 0 ? m.picker.copyAlready.replace("{n}", fa(res.already)) : m.picker.copyPriceHint,
+        title: m.picker.copySuccess.replace("{n}", fa(res.saved)),
+        description: res.failed > 0 ? m.picker.copyFailed.replace("{n}", fa(res.failed)) : m.picker.copyPriceHint,
       });
       onDone("sell");
     } catch (err) {
@@ -226,122 +255,27 @@ function CopyFromCatalogs({
     }
   };
 
-  // ── گام ۲: قلم‌های کاتالوگ هم‌صنف
-  if (source) {
-    return (
-      <>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label={m.picker.back}
-            onClick={() => {
-              setSource(null);
-              setPicked([]);
-            }}
-            className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground"
-          >
-            <ArrowRight className="size-4 rtl:rotate-180" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-base font-extrabold">{source.name}</p>
-            <p className="truncate text-[11px] text-muted-foreground">
-              {source.trade ? `${source.trade} · ` : ""}
-              {source.city} · {m.picker.itemsCount.replace("{n}", fa(source.catalogCount))}
-            </p>
-          </div>
-          {source.isVerified && <BadgeCheck className="size-4 shrink-0 text-primary" />}
-        </div>
-
-        {itemsLoading && items.length === 0 ? (
-          <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" />
-          </p>
-        ) : items.length === 0 ? (
-          <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
-            <PackageSearch className="mx-auto size-6 text-primary/60" />
-            <p className="mt-2 text-sm font-bold">{m.picker.copyItemsEmpty}</p>
-          </div>
-        ) : (
-          <div className="mt-4 divide-y">
-            {items.map((it) => {
-              const isPicked = pickedIds.has(it.id);
-              return (
-                <button
-                  key={it.id}
-                  type="button"
-                  onClick={() => toggle(it)}
-                  className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${
-                    isPicked ? "bg-accent/40" : "hover:bg-accent/30"
-                  }`}
-                >
-                  <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
-                    {it.thumbUrl ? (
-                      <Image src={it.thumbUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
-                    ) : (
-                      <span className="grid size-full place-items-center text-base font-black text-primary/80">
-                        {it.good.nameFa.slice(0, 1)}
-                      </span>
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-extrabold">
-                      {goodName(it.good, locale)}
-                      {it.variantLabel ? ` · ${it.variantLabel}` : ""}
-                    </span>
-                    <span className="block truncate text-[11px] text-muted-foreground">
-                      {it.brandName ? `${it.brandName} · ` : ""}
-                      {it.priceMinor !== null
-                        ? m.picker.copyHasPrice.replace("{price}", fmtMoney(it.priceMinor, it.currency ?? "IRR"))
-                        : m.picker.copyNoPrice}
-                    </span>
-                  </span>
-                  <span
-                    className={`grid size-7 shrink-0 place-items-center rounded-full border transition ${
-                      isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {isPicked ? <Check className="size-4" /> : <Plus className="size-4" />}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {itemsNext && items.length > 0 && (
-          <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void loadMoreItems()} disabled={itemsLoading}>
-            {itemsLoading ? <Loader2 className="size-4 animate-spin" /> : null}
-            {m.picker.loadMore}
-          </Button>
-        )}
-
-        {picked.length > 0 && (
-          <div className="sticky bottom-4 mt-4 flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-2.5 shadow-lg backdrop-blur">
-            <span className="ps-2 text-sm font-extrabold">{m.picker.copyTray.replace("{n}", fa(picked.length))}</span>
-            <span className="flex items-center gap-1.5">
-              <Button size="sm" variant="ghost" onClick={() => setPicked([])}>
-                <X className="size-4" />
-              </Button>
-              <Button size="sm" onClick={() => void copy()} className="gap-1">
-                {m.picker.copySubmit.replace("{n}", fa(picked.length))}
-                <ArrowLeft className="size-4 rtl:rotate-180" />
-              </Button>
-            </span>
-          </div>
-        )}
-      </>
-    );
+  // ── مدال «صنف خود را وارد کن» — وقتی کاربر هنوز صنف ندارد
+  if (needTrade) {
+    return <TradePrompt bizId={bizId} initialTrade={tradeInput} onSaved={() => setNeedTrade(false)} onSwitchToSolo={onSwitchToSolo} />;
   }
 
-  // ── گام ۱: جست‌وجوی کاتالوگ‌ها
   return (
     <>
       <div className="flex items-center gap-2">
         <Copy className="size-5 shrink-0 text-primary" />
         <h1 className="text-lg font-extrabold">{m.picker.sourceCopy}</h1>
       </div>
-      <p className="mt-2 text-xs leading-6 text-muted-foreground">{m.picker.copyIntro}</p>
+      <p className="mt-2 text-xs leading-6 text-muted-foreground">
+        {m.picker.copyIntro}{" "}
+        {foundBusinesses > 0 && (
+          <span className="font-bold text-primary">
+            {foundBusinesses} کاتالوگ هم‌صنف پیدا شد
+          </span>
+        )}
+      </p>
 
+      {/* جست‌وجو */}
       <div className="relative mt-4">
         <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
@@ -354,48 +288,104 @@ function CopyFromCatalogs({
         />
       </div>
 
-      {catLoading ? (
-        <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-        </p>
-      ) : catalogs.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
-          <Store className="mx-auto size-6 text-primary/60" />
-          <p className="mt-2 text-sm font-bold">{m.picker.copyEmpty}</p>
-          <p className="mt-1 text-[11px] leading-5 text-muted-foreground">{m.picker.copyEmptyHint}</p>
-        </div>
-      ) : (
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          {catalogs.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => void openCatalog(c)}
-              className="flex items-center gap-3 rounded-xl border p-3 text-start transition hover:border-primary/50 hover:bg-accent/30"
-            >
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent/70 text-base font-black text-primary/80">
-                {c.name.slice(0, 1)}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-1">
-                  <span className="truncate text-sm font-extrabold">{c.name}</span>
-                  {c.isVerified && <BadgeCheck className="size-3.5 shrink-0 text-primary" />}
-                </span>
-                <span className="block truncate text-[11px] text-muted-foreground">
-                  {c.trade ? `${c.trade} · ` : ""}
-                  {c.city} · {m.picker.itemsCount.replace("{n}", fa(c.catalogCount))}
-                </span>
-              </span>
-            </button>
-          ))}
+      {/* نوار برند — از خود لیست استخراج شده */}
+      <div className="mt-2.5">
+        <BrandStrip brands={brands} activeBrandId={brandId} onPick={setBrandId} />
+      </div>
+
+      {/* نوار دسته — اختیاری، قابل toggle */}
+      {categories.length > 0 && (
+        <div className="mt-1.5">
+          <CategoryStrip categories={categories} activeCategoryId={categoryId} onPick={setCategoryId} locale={locale === "en" ? "en" : "fa"} />
         </div>
       )}
 
-      {catNext && catalogs.length > 0 && (
-        <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void loadCatalogs(catNext)} disabled={catBusy}>
-          {catBusy ? <Loader2 className="size-4 animate-spin" /> : null}
+      {/* لیست کالاها */}
+      {first.isLoading ? (
+        <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+        </p>
+      ) : rows.length === 0 ? (
+        <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
+          <Store className="mx-auto size-6 text-primary/60" />
+          <p className="mt-2 text-sm font-bold">{m.picker.copyEmpty}</p>
+          <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
+            صنف خود را عوض کن یا از کاتالوگ مرجع تیک بزن
+          </p>
+          <button
+            type="button"
+            onClick={() => setNeedTrade(true)}
+            className="mt-3 text-[11px] font-bold text-primary hover:underline"
+          >
+            عوض کردن صنف
+          </button>
+        </div>
+      ) : (
+        <div className="mt-4 divide-y">
+          {rows.map((it) => {
+            const isPicked = pickedIds.has(it.id);
+            return (
+              <button
+                key={it.id}
+                type="button"
+                onClick={() => toggle(it)}
+                className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${
+                  isPicked ? "bg-accent/40" : "hover:bg-accent/30"
+                }`}
+              >
+                <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
+                  {it.thumbUrl ? (
+                    <Image src={it.thumbUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
+                  ) : (
+                    <span className="grid size-full place-items-center text-base font-black text-primary/80">
+                      {it.good.nameFa.slice(0, 1)}
+                    </span>
+                  )}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-extrabold">
+                    {goodName(it.good, locale)}
+                    {it.variantLabel ? ` · ${it.variantLabel}` : ""}
+                  </span>
+                  <span className="block truncate text-[11px] text-muted-foreground">
+                    {it.brandName ? `${it.brandName} · ` : ""}
+                    {it.good.category.nameFa}
+                  </span>
+                </span>
+                <span
+                  className={`grid size-7 shrink-0 place-items-center rounded-full border transition ${
+                    isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"
+                  }`}
+                >
+                  {isPicked ? <Check className="size-4" /> : <Plus className="size-4" />}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {nextCursor && rows.length > 0 && (
+        <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void loadMore()} disabled={loadingMore}>
+          {loadingMore ? <Loader2 className="size-4 animate-spin" /> : null}
           {m.picker.loadMore}
         </Button>
+      )}
+
+      {/* سبد شناور */}
+      {picked.length > 0 && (
+        <div className="sticky bottom-4 mt-4 flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-2.5 shadow-lg backdrop-blur">
+          <span className="ps-2 text-sm font-extrabold">{m.picker.copyTray.replace("{n}", fa(picked.length))}</span>
+          <span className="flex items-center gap-1.5">
+            <Button size="sm" variant="ghost" onClick={() => setPicked([])}>
+              <X className="size-4" />
+            </Button>
+            <Button size="sm" onClick={() => void copy()} className="gap-1">
+              {m.picker.copySubmit.replace("{n}", fa(picked.length))}
+              <ArrowLeft className="size-4 rtl:rotate-180" />
+            </Button>
+          </span>
+        </div>
       )}
 
       <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
@@ -409,7 +399,105 @@ function CopyFromCatalogs({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// منبع ۲ — کاتالوگ مرجع (جست‌وجو + فیلتر برند، بدون ناوبری دسته‌ها)
+// مدال «صنف خود را وارد کن» — وقتی کاربر هنوز صنف ندارد
+// ─────────────────────────────────────────────────────────────────────────────
+
+function TradePrompt({
+  bizId,
+  initialTrade,
+  onSaved,
+  onSwitchToSolo,
+}: {
+  bizId: string;
+  initialTrade: string;
+  onSaved: () => void;
+  onSwitchToSolo: () => void;
+}) {
+  const { toast } = useToast();
+  const m = useMessages();
+  const [trade, setTrade] = useState(initialTrade);
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    if (trade.trim().length < 2) {
+      toast({ title: "صنف کسب‌وکار را بنویس", variant: "destructive" });
+      return;
+    }
+    setSaving(true);
+    try {
+      // استفاده از editBusiness که هم trade را ست می‌کند و هم خودش invalidate می‌کند
+      const { businessesApi } = await import("@/lib/api");
+      await businessesApi.editBusiness(bizId, { trade: trade.trim() });
+      // کش را invalidate کنیم
+      const { useQueryClient } = await import("@tanstack/react-query");
+      const qc = useQueryClient();
+      await qc.invalidateQueries({ queryKey: ["businesses"] });
+      toast({ title: "صنف ثبت شد", description: "کاتالوگ‌های هم‌صنف را برایت پیدا می‌کنیم…" });
+      onSaved();
+    } catch (err) {
+      toast({
+        title: "ذخیره ناموفق بود",
+        description: err instanceof ApiError ? err.message : "دوباره تلاش کن",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="flex items-center gap-2">
+        <Store className="size-5 shrink-0 text-primary" />
+        <h1 className="text-lg font-extrabold">صنف کسب‌وکارت را بنویس</h1>
+      </div>
+      <p className="mt-2 text-xs leading-6 text-muted-foreground">
+        با صنف، کاتالوگ‌های هم‌صنف را پیدا می‌کنیم تا کالاهایت را به‌جای تایپ، از آن‌ها تیک بزنی و کپی کنی.
+      </p>
+
+      <div className="mt-4">
+        <Input
+          value={trade}
+          maxLength={60}
+          onChange={(e) => setTrade(e.target.value)}
+          placeholder="مثلا سوپرمارکت، قنادی، پخش مواد غذایی"
+          className="h-11 text-base"
+          autoFocus
+        />
+        {/* چند پیشنهاد سریع */}
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "لوازم یدکی"].map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setTrade(t)}
+              className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                trade === t ? "border-primary bg-primary/10 text-primary" : "text-muted-foreground hover:border-primary/40 hover:text-primary"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Button className="mt-5 w-full" onClick={() => void save()} disabled={saving}>
+        {saving ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+        ذخیره و مشاهده‌ی هم‌صنف‌ها
+      </Button>
+
+      <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
+        {m.picker.notHere}{" "}
+        <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">
+          {m.picker.switchToForm}
+        </button>
+      </p>
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// منبع ۲ — کاتالوگ مرجع (جست‌وجو + نوار برند افقی)
 // ─────────────────────────────────────────────────────────────────────────────
 
 function ReferencePicker({
@@ -445,28 +533,28 @@ function ReferencePicker({
     return () => clearTimeout(t);
   }, [query]);
 
-  // ── فیلتر برند — راهِ سریعِ رسیدن به لیستِ مناسب (خواسته‌ی کاربر)
-  const [brandQuery, setBrandQuery] = useState("");
+  // ── فیلتر برند — نوار افقی از برندهای موجود در همین لیست (نه تکست‌باکس)
   const [brandId, setBrandId] = useState<string | null>(null);
-  const brandsQ = useBrands(brandQuery.trim().length >= 2 ? brandQuery.trim() : null);
-  const brandSuggestions = (brandsQ.data ?? []).filter((b) => b.id !== brandId);
-  const brandName = (brandsQ.data ?? []).find((b) => b.id === brandId)?.name ?? "";
+  const [categoryId, setCategoryId] = useState<string | null>(null);
 
   // ── فید محصولات (صفحه‌ی اول + صفحات «بیشتر»)
   const first = useProducts({
     businessId: bizId,
     q: debounced || undefined,
     brandId: brandId ?? undefined,
+    categoryId: categoryId ?? undefined,
     limit: 40,
   });
   const [more, setMore] = useState<{ items: ProductRowDto[]; next: string | null }>({ items: [], next: null });
   const [loadingMore, setLoadingMore] = useState(false);
   useEffect(() => {
     setMore({ items: [], next: null });
-  }, [debounced, brandId]);
+  }, [debounced, brandId, categoryId]);
 
   const rows = useMemo(() => [...(first.data?.items ?? []), ...more.items], [first.data, more]);
   const nextCursor = more.items.length > 0 ? more.next : (first.data?.nextCursor ?? null);
+  const brands = first.data?.brands ?? [];
+  const categories = first.data?.categories ?? [];
 
   const loadMore = async () => {
     const cur = more.items.length > 0 ? more.next : first.data?.nextCursor;
@@ -477,6 +565,7 @@ function ReferencePicker({
         businessId: bizId,
         q: debounced || undefined,
         brandId: brandId ?? undefined,
+        categoryId: categoryId ?? undefined,
         cursor: cur,
         limit: 40,
       });
@@ -569,47 +658,17 @@ function ReferencePicker({
             />
           </div>
 
-          {/* فیلتر برند — چیپ انتخابی + پیشنهادهای زنده */}
+          {/* نوار برند افقی — از خودِ لیست استخراج شده با شمارش */}
           <div className="mt-2.5">
-            {brandId ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary">
-                <Store className="size-3.5" />
-                {brandName || m.picker.brandChip}
-                <button type="button" aria-label={m.picker.brandClear} onClick={() => setBrandId(null)}>
-                  <X className="size-3.5" />
-                </button>
-              </span>
-            ) : (
-              <div className="relative">
-                <Input
-                  aria-label={m.picker.brandFilter}
-                  placeholder={m.picker.brandFilter}
-                  value={brandQuery}
-                  maxLength={40}
-                  onChange={(e) => setBrandQuery(e.target.value)}
-                  className="h-9 text-xs"
-                />
-                {brandQuery.trim().length >= 2 && brandSuggestions.length > 0 && (
-                  <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border bg-white shadow-lg">
-                    {brandSuggestions.slice(0, 5).map((b) => (
-                      <button
-                        key={b.id}
-                        type="button"
-                        onClick={() => {
-                          setBrandId(b.id);
-                          setBrandQuery(b.name);
-                        }}
-                        className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
-                      >
-                        <span className="font-bold">{b.name}</span>
-                        <Check className="size-3.5 text-primary" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+            <BrandStrip brands={brands} activeBrandId={brandId} onPick={setBrandId} />
           </div>
+
+          {/* نوار دسته‌بندی */}
+          {categories.length > 0 && (
+            <div className="mt-1.5">
+              <CategoryStrip categories={categories} activeCategoryId={categoryId} onPick={setCategoryId} locale={locale === "en" ? "en" : "fa"} />
+            </div>
+          )}
 
           {/* ───── ردیف‌های محصول ───── */}
           {first.isLoading ? (
@@ -812,4 +871,54 @@ function ReferencePicker({
       )}
     </>
   );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// hook های محلی — استفاده‌ی هم‌صنف‌ها + لیست محصولات
+// ─────────────────────────────────────────────────────────────────────────────
+
+function useProducts(params: {
+  businessId: string;
+  q?: string;
+  categoryId?: string;
+  brandId?: string;
+  cursor?: string;
+  limit?: number;
+  enabled?: boolean;
+}) {
+  return useQuery({
+    queryKey: ["products", params.businessId, params.q ?? "", params.categoryId ?? "", params.brandId ?? "", params.cursor ?? ""],
+    queryFn: () =>
+      productsApi.getProducts({
+        businessId: params.businessId,
+        q: params.q,
+        categoryId: params.categoryId,
+        brandId: params.brandId,
+        cursor: params.cursor,
+        limit: params.limit,
+      }),
+    enabled: params.enabled !== false && !!params.businessId,
+    staleTime: 30_000,
+  });
+}
+
+function useAggregatedCatalog(params: {
+  trade: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  q?: string;
+  brandId?: string;
+  categoryId?: string;
+  cursor?: string;
+  limit?: number;
+  mineId?: string;
+  enabled?: boolean;
+}) {
+  return useQuery({
+    queryKey: ["aggregated", params.trade, params.city ?? "", params.province ?? "", params.country ?? "", params.q ?? "", params.brandId ?? "", params.categoryId ?? "", params.cursor ?? ""],
+    queryFn: () => businessesApi.getAggregatedCatalog(params),
+    enabled: params.enabled !== false && !!params.trade,
+    staleTime: 30_000,
+  });
 }

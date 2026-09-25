@@ -76,3 +76,22 @@ export function setArmActive(arm: Arm): void {
 export function myArmHref(): string {
   return storedArm() === "buy" ? "/buy" : "/sell";
 }
+
+/**
+ * سوییچ هوشمند بازو بر اساس کالای ثبت‌شده (خواسته‌ی کاربر):
+ *   • کالای فقط خرید (kind=buy) و روی sell هستیم → سوییچ به buy
+ *   • کالای فقط فروش (kind=sell) و روی buy هستیم → سوییچ به sell
+ *   • کالای هر دو (kind=both) یا همسان با arm فعلی → تکون نخوره
+ *
+ * این منطق در هر ثبت کالا اعمال می‌شود (نه فقط اولین کالا) تا کاربر همیشه
+ * روی بازوی درست قرار بگیرد. یک helper برای استفاده در onSaved callbacks.
+ */
+export function smartSwitchArm(kind: "sell" | "buy"): void {
+  const current = storedArm();
+  if (kind === "buy" && current === "sell") {
+    useArmStore.getState().setArm("buy");
+  } else if (kind === "sell" && current === "buy") {
+    useArmStore.getState().setArm("sell");
+  }
+  // kind="both" یا همسان با current → هیچ کاری نکن
+}

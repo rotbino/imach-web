@@ -7,6 +7,7 @@ import { Loader2, Package } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { SetPasswordButton } from "@/app/components/set-password-button";
 import { BoardSection, EmptyBox, FollowCard, OffersSection, StatsStrip } from "@/app/components/sections";
 import { BizSettingsCard } from "@/app/components/biz-edit";
 import { useTabParam } from "@/app/components/url-tabs";
@@ -130,6 +131,8 @@ function BuyPanelTabs({ bizId, city }: { bizId: string; city: string }) {
 
       {/* برگه‌ی داشبورد — خبرها و گزارش‌های خرید */}
       <TabsContent value="dash" className="mt-5 space-y-8">
+        {/* باکس چشمک‌زن قرمز ملایم «ثبت رمز عبور» — فقط برای کاربران ثبت‌نام سریع */}
+        <SetPasswordPrompt />
         <PanelStats bizId={bizId} />
         <SuggestedSuppliers bizId={bizId} />
         <OffersSection bizId={bizId} myCity={city} />
@@ -146,6 +149,22 @@ function BuyPanelTabs({ bizId, city }: { bizId: string; city: string }) {
 }
 
 // ─── آمار — کل وضعیت خرید یک‌جا ───
+
+function SetPasswordPrompt() {
+  const user = useAuthStore((s) => s.user);
+  if (!user || user.passwordSet !== false) return null;
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-red-200 bg-red-50/50 px-4 py-3 animate-pulse">
+      <div>
+        <p className="text-sm font-bold text-red-700">رمز عبور هنوز ثبت نشده</p>
+        <p className="mt-0.5 text-[11px] leading-5 text-red-600/80">
+          برای ورود از دستگاه‌های دیگر، یک رمز عبور انتخاب کن.
+        </p>
+      </div>
+      <SetPasswordButton variant="panel" />
+    </div>
+  );
+}
 
 function PanelStats({ bizId }: { bizId: string }) {
   const listingsQ = useMyListings(bizId);

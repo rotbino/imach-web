@@ -7,6 +7,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { fmtPhone } from "@/lib/countries";
 import { useMyAvatar, useRemoveFile, useUploadFile } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
+import { SetPasswordButton } from "@/app/components/set-password-button";
 import { LanguageSelect } from "@/app/components/language-select";
 import { FileUploader } from "@/components/FileUploader";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,9 @@ import { LogOut, ShieldCheck } from "lucide-react";
  * مدلِ کاربر از قبل وجود دارد؛ آپلود جدید، قبلی را سمت سرور جایگزین می‌کند.
  * تنظیمات کسب‌وکار (نوع فعالیت و …) با مدادِ کنار هویت کسب‌وکار،
  * روی «کاتالوگ فروش من» ویرایش می‌شود.
+ *
+ * اگر کاربر ثبت‌نام سریع کرده و هنوز پسورد ندارد، یک باکس چشمک‌زن قرمز ملایم
+ * برای «ثبت رمز عبور» نشان داده می‌شود (خواسته‌ی کاربر).
  */
 export default function ProfilePage() {
   const router = useRouter();
@@ -104,6 +108,19 @@ export default function ProfilePage() {
                 <p className="mt-1 text-[11px] text-muted-foreground">برای تغییر عکس، روی آن بزنید</p>
               </div>
             </div>
+
+            {/* دکمه‌ی چشمک‌زن «ثبت رمز عبور» — فقط برای کاربران ثبت‌نام سریع */}
+            {user.passwordSet === false && (
+              <div className="mt-4 flex items-center justify-between rounded-xl border border-red-200 bg-red-50/50 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-red-700">رمز عبور هنوز ثبت نشده</p>
+                  <p className="mt-0.5 text-[11px] leading-5 text-red-600/80">
+                    برای امنیت حساب و ورود از دستگاه‌های دیگر، یک رمز عبور انتخاب کن.
+                  </p>
+                </div>
+                <SetPasswordButton variant="profile" />
+              </div>
+            )}
 
             <div className="mt-6 border-t pt-4">
               <Button

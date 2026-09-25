@@ -34,10 +34,14 @@ interface AuthState {
     language?: string,
     ref?: string
   ) => Promise<void>;
+  /** ثبت‌نام سریع — فقط موبایل. Business خودکار با نام «کاتالوگ شما» ساخته می‌شود. */
+  quickRegister: (phone: string, country?: string, ref?: string) => Promise<void>;
   logout: () => Promise<void>;
   setSession: (session: { accessToken: string; user: UserDto; businesses: BusinessSummaryDto[] }) => void;
   /** refresh ساکت برای api client — توکن جدید را برمی‌گرداند */
   refresh: () => Promise<string | null>;
+  /** به‌روزرسانی محلی فیلد passwordSet (بعد از setPassword بدون رفرش کامل) */
+  markPasswordSet: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -71,6 +75,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (firstName, lastName, phone, password, country, language, ref) => {
     const session = await authApi.registerUser({ firstName, lastName, phone, password, country, language, ref });
     get().setSession(session);
+  },
+
+  quickRegister: async (phone, country, ref) => {
+    const session = await authApi.quickRegister({ phone, country, ref });
+    get().setSession(session);
+  },
+
+  markPasswordSet: () => {
+    set((s) => (s.user ? { user: { ...s.user, passwordSet: true } } : s));
   },
 
   logout: async () => {
