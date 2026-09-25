@@ -25,6 +25,7 @@ import {
   Radio,
   Share2,
   Settings2,
+  TriangleAlert,
 } from "lucide-react";
 
 /*
@@ -145,11 +146,13 @@ function ShowcaseHeader({
   const [settingsFor, setSettingsFor] = useState<GoodItemDto | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
 
+  // دو طبقه در خرید هم (خواسته‌ی کاربر: «برای خرید هم همینطور») — کامل بالا،
+  // بی‌حجم پایین در سینی «نیاز به تکمیل مقدار» با نشان هشدار
   const listings = (listingsQ.data ?? []).filter(
-    // فیلتر «فقط با حجم» برداشته شد — لیست خرید کم‌کم تشکیل می‌شود (خواسته‌ی
-    // کاربر): آیتمِ تیک‌خورده از انتخابگر بدون مقدار هم می‌نشیند و با نشان
-    // «مقدار بعداً» صبر می‌کند تا خریدار عددش را بدهد.
-    (l) => l.mode === "BUY" || l.mode === "BOTH"
+    (l) => (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
+  );
+  const incomplete = (listingsQ.data ?? []).filter(
+    (l) => (l.mode === "BUY" || l.mode === "BOTH") && l.volume === null
   );
 
   const activateQuote = (l: GoodItemDto) => {
@@ -280,10 +283,7 @@ function ShowcaseHeader({
                   <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
                   <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                     <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
-                      {l.volume !== null
-                        ? `${fa(l.volume)} ${unitLabel(l.good.unit)}`
-                        : /* «لیست خرید کم‌کم تشکیل می‌شود» — مقدار بعداً */
-                          "مقدار بعداً"}
+                      {fa(l.volume ?? 0)} {unitLabel(l.good.unit)}
                     </Badge>
                     <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
                       {frequencyLabel(l.frequency ?? "MONTHLY")}
@@ -317,6 +317,46 @@ function ShowcaseHeader({
           </div>
         )}
       </section>
+
+      {/* سینی «نیاز به تکمیل مقدار» — آیتم‌های اسکن/تیک‌شده که هنوز حجم ندارند */}
+      {incomplete.length > 0 && (
+        <section className="mt-6">
+          <h2 className="mb-2 flex items-center gap-1.5 px-1 text-sm font-extrabold text-amber-700">
+            <TriangleAlert className="size-4" />
+            نیاز به تکمیل مقدار
+            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px]">{fa(incomplete.length)}</span>
+          </h2>
+          <p className="mb-3 px-1 text-[11px] leading-5 text-muted-foreground">
+            مقدار خرید این‌ها را بدهید تا در قیمت‌گیری و لیست اصلی بالا بیایند.
+          </p>
+          <div className="space-y-2">
+            {incomplete.map((l) => {
+              const photo = l.gallery?.[0];
+              return (
+                <button
+                  key={l.id}
+                  type="button"
+                  onClick={() => setSettingsFor(l)}
+                  className="flex w-full items-center gap-3 rounded-xl border bg-white p-3 text-start shadow-sm transition hover:border-amber-400/60 hover:bg-amber-50/40"
+                >
+                  {photo ? (
+                    <Image src={photo.thumbUrl ?? photo.url} alt="" width={44} height={44} unoptimized className="size-11 shrink-0 rounded-xl object-cover" />
+                  ) : (
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-stone-100 text-lg font-black text-stone-500">
+                      {goodName(l.good).slice(0, 1)}
+                    </span>
+                  )}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-extrabold">{goodName(l.good)}</span>
+                    <span className="block truncate text-[11px] text-muted-foreground">بدون مقدار — تکمیل کنید</span>
+                  </span>
+                  <TriangleAlert className="size-4 shrink-0 text-amber-500" />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {settingsFor && (
         <BuyItemSettingsDialog

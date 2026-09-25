@@ -111,17 +111,20 @@ export function useProducts(params: {
   businessId: string;
   q?: string;
   categoryId?: string;
+  /** فیلتر برند — راهِ سریعِ رسیدن به لیستِ مناسب کسب‌وکار */
+  brandId?: string;
   cursor?: string;
   limit?: number;
   enabled?: boolean;
 }): UseQueryResult<ProductPageDto> {
   return useQuery({
-    queryKey: ["products", params.businessId, params.q ?? "", params.categoryId ?? "", params.cursor ?? ""],
+    queryKey: ["products", params.businessId, params.q ?? "", params.categoryId ?? "", params.brandId ?? "", params.cursor ?? ""],
     queryFn: () =>
       productsApi.getProducts({
         businessId: params.businessId,
         q: params.q,
         categoryId: params.categoryId,
+        brandId: params.brandId,
         cursor: params.cursor,
         limit: params.limit,
       }),
@@ -243,6 +246,7 @@ export function useEditBusiness() {
       name?: string;
       city?: string;
       activityType?: string | null;
+      trade?: string | null;
       lat?: number | null;
       lng?: number | null;
       address?: string | null;

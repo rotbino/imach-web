@@ -459,6 +459,62 @@ export function ListingForm({
                   </div>
                 </div>
 
+                {/* ───── گالری کالا — بالاتر از مشخصات (خواسته‌ی کاربر) ───── */}
+                {arm && (
+                    <section className="mt-5">
+                      <p className="flex items-center gap-1.5 text-sm font-bold">
+                        <ImagePlus className="size-4 text-primary" />
+                        {m.files.galleryTitle}
+                      </p>
+                      <p className="mt-1 text-[11px] leading-5 text-muted-foreground">{m.files.galleryHint}</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {imageUrls.map((url, i) => (
+                            <div key={url} className="relative size-20 overflow-hidden rounded-xl border">
+                              { }
+                              <img src={url} alt="" className="h-full w-full object-cover" />
+                              {uploadingImages && uploadIndex === i && (
+                                  /* حلقه‌ی پیشرفت برند — بزرگ، درصد با رنگ برند وسط حلقه؛
+                                     در فاز پردازشِ سرور قوس چرخان + «در حال پردازش» تا درصدِ
+                                     ۹۹ دیگر الکی به‌نظر نرسد (خواسته‌ی کاربر) */
+                                  <div className="absolute inset-0 z-10 grid place-items-center bg-background/85 backdrop-blur-[1.5px]">
+                                    <UploadRing
+                                      progress={progress}
+                                      phase={uploadPhase}
+                                      size={72}
+                                      processingLabel={m.files.processing}
+                                    />
+                                  </div>
+                              )}
+                              <button
+                                  type="button"
+                                  aria-label="remove"
+                                  className="absolute end-0.5 top-0.5 grid size-5 place-items-center rounded-full bg-black/60 text-white transition hover:bg-destructive"
+                                  onClick={() => removeImage(i)}
+                              >
+                                <X className="size-3" />
+                              </button>
+                            </div>
+                        ))}
+                        {pendingImages.length < 6 && (
+                            <label className="grid size-20 cursor-pointer place-items-center rounded-xl border border-dashed text-muted-foreground transition hover:border-primary/60 hover:bg-accent/40 hover:text-primary">
+                              <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    e.target.value = "";
+                                    if (file) addImage(file);
+                                  }}
+                                  disabled={uploadingImages}
+                              />
+                              <ImagePlus className="size-5" strokeWidth={1.75} />
+                            </label>
+                        )}
+                      </div>
+                    </section>
+                )}
+
                 {/* ───── بخش فروش عمده ───── */}
                 {(arm === "sell" || arm === "both") && (
                     <section className="mt-5 rounded-xl border p-4">
@@ -622,62 +678,6 @@ export function ListingForm({
                             </div>
                           </div>
                       )}
-                    </section>
-                )}
-
-                {/* ───── گالری کالا ───── */}
-                {arm && (
-                    <section className="mt-4">
-                      <p className="flex items-center gap-1.5 text-sm font-bold">
-                        <ImagePlus className="size-4 text-primary" />
-                        {m.files.galleryTitle}
-                      </p>
-                      <p className="mt-1 text-[11px] leading-5 text-muted-foreground">{m.files.galleryHint}</p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {imageUrls.map((url, i) => (
-                            <div key={url} className="relative size-20 overflow-hidden rounded-xl border">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={url} alt="" className="h-full w-full object-cover" />
-                              {uploadingImages && uploadIndex === i && (
-                                  /* حلقه‌ی پیشرفت برند — بزرگ، درصد با رنگ برند وسط حلقه؛
-                                     در فاز پردازشِ سرور قوس چرخان + «در حال پردازش» تا درصدِ
-                                     ۹۹ دیگر الکی به‌نظر نرسد (خواسته‌ی کاربر) */
-                                  <div className="absolute inset-0 z-10 grid place-items-center bg-background/85 backdrop-blur-[1.5px]">
-                                    <UploadRing
-                                      progress={progress}
-                                      phase={uploadPhase}
-                                      size={72}
-                                      processingLabel={m.files.processing}
-                                    />
-                                  </div>
-                              )}
-                              <button
-                                  type="button"
-                                  aria-label="remove"
-                                  className="absolute end-0.5 top-0.5 grid size-5 place-items-center rounded-full bg-black/60 text-white transition hover:bg-destructive"
-                                  onClick={() => removeImage(i)}
-                              >
-                                <X className="size-3" />
-                              </button>
-                            </div>
-                        ))}
-                        {pendingImages.length < 6 && (
-                            <label className="grid size-20 cursor-pointer place-items-center rounded-xl border border-dashed text-muted-foreground transition hover:border-primary/60 hover:bg-accent/40 hover:text-primary">
-                              <input
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    e.target.value = "";
-                                    if (file) addImage(file);
-                                  }}
-                                  disabled={uploadingImages}
-                              />
-                              <ImagePlus className="size-5" strokeWidth={1.75} />
-                            </label>
-                        )}
-                      </div>
                     </section>
                 )}
 

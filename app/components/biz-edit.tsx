@@ -81,6 +81,8 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
   const [name, setName] = useState(biz.name);
   const [city, setCity] = useState(biz.city);
   const [activityType, setActivityType] = useState(biz.activityType ?? "");
+  // صنف — کلید «کپی از هم‌صنف‌ها»؛ هر وقت بخواهد از همین‌جا اصلاح می‌شود
+  const [trade, setTrade] = useState(biz.trade ?? "");
   const [loc, setLoc] = useState<GeoPoint | null>(
     biz.lat != null && biz.lng != null ? { lat: biz.lat, lng: biz.lng } : null
   );
@@ -99,6 +101,8 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
         name: name.trim(),
         city,
         activityType: activityType === "" ? null : activityType,
+        // صنف — خالی = پاک کردن (کپی از هم‌صنف‌ها بی‌صنف صنفِ بد نمی‌یابد)
+        trade: trade.trim() || null,
         // null صریح = پاک کردن لوکیشن؛ مقدار = ثبت/به‌روزرسانی
         lat: loc?.lat ?? null,
         lng: loc?.lng ?? null,
@@ -195,6 +199,19 @@ export function BizSettingsCard({ biz }: { biz: BusinessSummaryDto }) {
           />
           <p className="text-[11px] leading-5 text-muted-foreground">
              لوکیشن به مشتریان و تامین کنندگان کمک می کند راحتر شما را پیدا کنند. همچنین هوش مصنوعی آی مچ، مشتریان یا تامین کنندگان دقیقتری را به شما پیشنهاد می دهد
+          </p>
+        </div>
+
+        <div className="grid gap-1.5">
+          <Label className="text-[11px] text-muted-foreground">صنف کسب‌وکار</Label>
+          <Input
+            value={trade}
+            maxLength={60}
+            placeholder="مثلا سوپرمارکت، قنادی، پخش مواد غذایی"
+            onChange={(e) => setTrade(e.target.value)}
+          />
+          <p className="text-[11px] leading-5 text-muted-foreground">
+            با صنف، کاتالوگ‌های هم‌صنف برای کپی کردن کالا به شما نشان داده می‌شود.
           </p>
         </div>
 

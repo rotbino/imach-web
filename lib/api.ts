@@ -124,6 +124,8 @@ export interface BusinessSummaryDto {
   slug: string;
   name: string;
   activityType: string | null;
+  /** صنف — «سوپرمارکت»؛ کلید جست‌وجوی کپی از هم‌صنف‌ها */
+  trade?: string | null;
   city: string;
   country?: string;
   currency?: string;
@@ -232,6 +234,7 @@ export interface ImportPreviewDto {
     goodLevel: number;
     newGood: number;
     willSkip: number;
+    withImage: number;
   };
   rows: {
     index: number;
@@ -242,6 +245,9 @@ export interface ImportPreviewDto {
     stock: number | null;
     minOrder: number | null;
     volume: number | null;
+    hasImage: boolean;
+    /** هر ردیف از محتوایش بازو می‌گیرد — قیمت → فروش، حجم → خرید، هر دو → BOTH */
+    arms: ("SELL" | "BUY")[];
     matchType: "product" | "good" | "new";
     goodId: string | null;
     goodName: string | null;
@@ -250,7 +256,7 @@ export interface ImportPreviewDto {
     productLabel: string | null;
     sellers: number;
     mineMode: string | null;
-    warning: "noPrice" | "noName" | null;
+    warning: "noData" | "noName" | null;
   }[];
 }
 
@@ -665,9 +671,9 @@ export const goodsApi = {
 
 export const businessesApi = {
   getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),
-  createBusiness: (body: { name: string; city: string }) =>
+  createBusiness: (body: { name: string; city: string; trade?: string }) =>
     api<BusinessSummaryDto & { slug: string }>("/businesses/createBusiness", { method: "POST", body }),
-  editBusiness: (id: string, body: { name?: string; city?: string; activityType?: string | null }) =>
+  editBusiness: (id: string, body: { name?: string; city?: string; activityType?: string | null; trade?: string | null }) =>
     api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
   /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
@@ -675,7 +681,45 @@ export const businessesApi = {
   /** بازار — کشف عمومی؛ بدون عضویت هم کار می‌کند */
   getExplore: (params: { mode?: "SELL" | "BUY"; city?: string }) =>
     api<ExploreItemDto[]>("/businesses/getExplore", { params, auth: false }),
+  /** کپی از هم‌صنف‌ها — گام ۱: کاتالوگ‌های زنده بر اساس صنف/نام */
+  searchCatalogs: (params: { q?: string; cursor?: string; limit?: number; mineId?: string }) =>
+    api<PageDto<CatalogSummaryDto>>("/businesses/searchCatalogs", { params }),
+  /** کپی از هم‌صنف‌ها — گام ۲: قلم‌های فروش یک کاتالوگ، با تامبنیل */
+  getCatalogItems: (params: { businessId: string; cursor?: string; limit?: number }) =>
+    api<PageDto<CatalogItemDto>>("/businesses/getCatalogItems", { params }),
 };
+
+/** یک کاتالوگ زنده در جست‌وجوی هم‌صنف‌ها */
+export interface CatalogSummaryDto {
+  id: string;
+  slug: string;
+  name: string;
+  city: string;
+  trade: string | null;
+  isVerified: boolean;
+  isDemo: boolean;
+  catalogCount: number;
+}
+
+/** یک قلم فروش از کاتالوگ دیگری — برای تیک‌زدن و کپی به کاتالوگ من */
+export interface CatalogItemDto {
+  id: string;
+  mode: string;
+  priceMinor: number | null;
+  currency: string | null;
+  variantLabel: string | null;
+  attrs: Record<string, string> | null;
+  brandName: string | null;
+  productId: string | null;
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { nameFa: string; nameEn: string };
+  };
+  thumbUrl: string | null;
+}
 
 export const listingsApi = {
   getMyListings: (businessId: string) =>
@@ -693,10 +737,10 @@ export const listingsApi = {
     sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
   }) => api<GoodItemDto>("/listings/saveListing", { method: "PUT", body }),
-  /** ثبت گروهی از انتخابگر — یک تأیید، N آگهی؛ خرید با volume اختیاری */
+  /** ثبت گروهی از انتخابگر — یک تأیید، N آگهی؛ فروش/خرید می‌توانند بی‌قیمت/بی‌حجم بیایند (صف اسکنر)، BOTH یک ردیف دو-بازو */
   bulkSave: (body: {
     businessId: string;
-    mode: "SELL" | "BUY";
+    mode: "SELL" | "BUY" | "BOTH";
     items: {
       productId: string;
       priceMinor?: number;
@@ -709,17 +753,24 @@ export const listingsApi = {
     "/listings/bulkSave",
     { method: "PUT", body }
   ),
+  /** کپی از هم‌صنف‌ها — تیک‌های من به ردیف‌های بی‌قیمت در کاتالوگ من */
+  copyFrom: (body: { businessId: string; sourceBusinessId: string; sourceListingIds: string[] }) =>
+    api<{ copied: number; already: number; failed: number }>("/listings/copyFrom", { method: "PUT", body }),
   deleteListing: (id: string) => api<{ ok: boolean }>(`/listings/deleteListing/${id}`, { method: "DELETE" }),
 };
 
 export const productsApi = {
-  /** فید انتخابگر کاتالوگ مرجع — فیلتر دسته/جست‌وجو + نشان‌های «فروشنده» و «داریش» */
+  /** فید انتخابگر کاتالوگ مرجع — جست‌وجو + فیلتر برند + نشان‌های «فروشنده» و «داریش» */
   getProducts: (params: {
     /** برای ادمین اختیاری — بدون آن نشان «داریش» محاسبه نمی‌شود */
     businessId?: string;
     q?: string;
     categoryId?: string;
     goodId?: string;
+    /** فیلتر برند — راهِ سریعِ رسیدن به لیستِ مناسب کسب‌وکار */
+    brandId?: string;
+    /** مسیر سریع اسکنر — هیتِ ایندکسیِ بارکد، یک SKU */
+    barcode?: string;
     cursor?: string;
     limit?: number;
   }) => api<ProductPageDto>("/products/getProducts", { params }),
@@ -741,7 +792,7 @@ export const productsApi = {
     return api<ImportPreviewDto>("/products/importPreview", { method: "POST", form });
   },
 
-  /** ثبت ردیف‌های تأییدشده‌ی پیش‌نمایش */
+  /** ثبت ردیف‌های تأییدشده‌ی پیش‌نمایش — هر ردیف از محتوایش بازو می‌گیرد */
   importCommit: (body: {
     businessId: string;
     mode: "SELL" | "BUY";
@@ -754,6 +805,7 @@ export const productsApi = {
       stock?: number;
       minOrder?: number;
       volume?: number;
+      imageUrl?: string;
     }[];
   }) => api<ImportCommitResultDto>("/products/importCommit", { method: "POST", body }),
 

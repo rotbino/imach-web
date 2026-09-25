@@ -213,7 +213,7 @@ function AuthStep({
     setCountry(c);
     syncLangWithCountry(c); // زبان هم با کشورِ حدسی هماهنگ شود — نه فقط با انتخاب دستی
     if (c !== "IR") setShowCountry(true); // کاربر غیر ایران — سلیکت از اول باز
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- یک‌بار در mount؛ locale از رندر اول همین است
+     
   }, []);
 
   // تغییر شماره/کشور → خطای «شماره قبلاً ثبت شده» قدیمی معتبر نیست
@@ -556,10 +556,12 @@ function AuthStep({
 function BusinessStep({
   initialName,
   initialCity,
+  initialTrade,
   onCreated,
 }: {
   initialName?: string;
   initialCity?: string;
+  initialTrade?: string;
   onCreated: (biz: BusinessSummaryDto) => void;
 }) {
   const { toast } = useToast();
@@ -567,6 +569,7 @@ function BusinessStep({
   const user = useAuthStore((s) => s.user);
   const [name, setName] = useState(initialName ?? "");
   const [city, setCity] = useState(initialCity ?? "");
+  const [trade, setTrade] = useState(initialTrade ?? "");
   const country = user?.country ?? "IR";
 
   const create = async () => {
@@ -578,8 +581,12 @@ function BusinessStep({
       toast({ title: "شهر را انتخاب کنید", variant: "destructive" });
       return;
     }
+    if (trade.trim().length < 2) {
+      toast({ title: "صنف کسب‌وکار را بنویسید", variant: "destructive" });
+      return;
+    }
     try {
-      const created = await createMutation.mutateAsync({ name: name.trim(), city });
+      const created = await createMutation.mutateAsync({ name: name.trim(), city, trade: trade.trim() });
       toast({ title: "کسب‌وکار ساخته شد", description: created.name });
       onCreated(created);
     } catch (err) {
@@ -603,6 +610,37 @@ function BusinessStep({
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="biz-trade">صنف کسب‌وکار *</Label>
+          <Input
+            id="biz-trade"
+            placeholder="مثلا سوپرمارکت، قنادی، پخش مواد غذایی"
+            value={trade}
+            maxLength={60}
+            onChange={(e) => setTrade(e.target.value)}
+          />
+          <p className="text-[11px] leading-5 text-muted-foreground">
+            با صنف، کاتالوگ‌های هم‌صنف را به شما نشان می‌دهیم تا کالاهایتان را به‌جای تایپ، از آن‌ها تیک بزنید و کپی کنید.
+          </p>
+          {/* چند پیشنهاد سریع — صنف‌های پرتکرار، یک کلیک تا ثبت */}
+          <div className="flex flex-wrap gap-1.5">
+            {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "لوازم یدکی"].map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTrade(t)}
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                  trade === t
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:border-primary/40 hover:text-primary"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="grid gap-2">

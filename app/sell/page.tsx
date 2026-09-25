@@ -24,6 +24,7 @@ import {
   Plus,
   Share2,
   Settings2,
+  TriangleAlert,
 } from "lucide-react";
 
 /*
@@ -142,8 +143,13 @@ function ShowcaseHeader({
   const [settingsFor, setSettingsFor] = useState<GoodItemDto | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
 
+  // دو طبقه (خواسته‌ی کاربر: «قیمت‌دار و کامل بالا، بقیه پایین با نشان نیاز به تکمیل»):
+  // اسکنر و کپی از هم‌صنف‌ها ردیف بی‌قیمت می‌سازند؛ تا قیمت بگیرند در سینی پایین می‌مانند
   const listings = (listingsQ.data ?? []).filter(
     (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null
+  );
+  const incomplete = (listingsQ.data ?? []).filter(
+    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor === null
   );
 
   const toolBtn =
@@ -288,6 +294,50 @@ function ShowcaseHeader({
           </div>
         )}
       </section>
+
+      {/* سینی «نیاز به تکمیل قیمت» — ردیف‌های اسکن‌شده/کپی‌شده که هنوز قیمت ندارند */}
+      {incomplete.length > 0 && (
+        <section className="mt-6">
+          <h2 className="mb-2 flex items-center gap-1.5 px-1 text-sm font-extrabold text-amber-700">
+            <TriangleAlert className="size-4" />
+            نیاز به تکمیل قیمت
+            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px]">{fa(incomplete.length)}</span>
+          </h2>
+          <p className="mb-3 px-1 text-[11px] leading-5 text-muted-foreground">
+            این‌ها تا قیمت نگیرند در ویترین عمومی دیده نمی‌شوند — با یک ضربه قیمت و حداقل سفارش را بدهید.
+          </p>
+          <div className="grid gap-2">
+            {incomplete.map((l) => {
+              const photo = l.gallery?.[0];
+              return (
+                <button
+                  key={l.id}
+                  type="button"
+                  onClick={() => setSettingsFor(l)}
+                  className="flex w-full items-center gap-3 rounded-xl border bg-white p-2.5 text-start shadow-sm transition hover:border-amber-400/60 hover:bg-amber-50/40"
+                >
+                  <span className="size-11 shrink-0 overflow-hidden rounded-lg bg-accent/70">
+                    {photo ? (
+                      <Image src={photo.thumbUrl ?? photo.url} alt="" width={44} height={44} unoptimized className="size-full object-cover" />
+                    ) : (
+                      <span className="grid size-full place-items-center text-lg font-black text-primary/60">
+                        {goodName(l.good).slice(0, 1)}
+                      </span>
+                    )}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-extrabold">{goodName(l.good)}</span>
+                    <span className="block truncate text-[11px] text-muted-foreground">
+                      {l.variantLabel ? `${l.variantLabel} · ` : ""}بدون قیمت — تکمیل کنید
+                    </span>
+                  </span>
+                  <TriangleAlert className="size-4 shrink-0 text-amber-500" />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {settingsFor && (
         <ProductSettingsDialog

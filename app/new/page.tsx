@@ -8,17 +8,19 @@ import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { ListingForm } from "@/app/components/listing-form";
 import { CatalogPicker } from "@/app/new/catalog-picker";
 import { ImportSheet } from "@/app/new/import-sheet";
+import { ScanEntry } from "@/app/new/scan-entry";
 import { useMessages } from "@/i18n/messages/use-messages";
-import { FileSpreadsheet, Library, Loader2, Search } from "lucide-react";
+import { FileSpreadsheet, Library, Loader2, ScanLine, Keyboard } from "lucide-react";
 
 /*
  * کالای جدید — سه در، یک مقصد (خواسته‌ی کاربر: فروشنده‌ی پرقلم نباید قلم‌به‌قلم
  * تایپ کند؛ خرده‌فروشِ معمولی نباید از او پیچیده‌تر شود؛ لیست بزرگ راهش فایل است):
- *   • «از کاتالوگ مرجع» (پیش‌فرض) — تیک بزن، قیمت بده، تمام.
+ *   • «از کاتالوگ‌ها» (پیش‌فرض) — هم‌صنف‌ها را کپی کن یا از لیست مرجع تیک بزن.
  *   • «از فایل اکسل» — لیست بزرگ‌ات را با پیش‌نمایش یک‌جا وارد کن.
- *   • «جست‌وجوی آزاد» — همان فرم دومرحله‌ای همیشگی؛ مسیر رشد کاتالوگ مرجع.
+ *   • «ثبت تکی» — دونه‌دونه با فرم دستی، یا سریع با اسکنر (خواسته‌ی کاربر:
+ *     «دو جور ثبت در بخش ثبتی»).
  * کدام بازو پر می‌شود؟ از ?tab=sell|buy (دکمه‌ی ویترین مربوطه) — انتخابگر هر
- * بار یک بازو را پر می‌کند؛ فرم آزاد همان‌جا نقش را می‌پرسد (فروش/خرید/هر دو).
+ * بار یک بازو را پر می‌کند؛ فرم تکی همان‌جا نقش را می‌پرسد (فروش/خرید/هر دو).
  */
 export default function NewListingPage() {
   return (
@@ -50,6 +52,8 @@ function NewListingBody() {
   const { status } = useAuthStore();
   const active = useActiveBusiness();
   const [mode, setMode] = useState<"picker" | "form" | "file">("picker");
+  /** زیرحالت ثبت تکی — فرم دستی یا اسکنر (خواسته‌ی کاربر) */
+  const [soloWay, setSoloWay] = useState<"manual" | "scanner">("manual");
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
@@ -101,8 +105,8 @@ function NewListingBody() {
         <ModeTab
           active={mode === "form"}
           onClick={() => setMode("form")}
-          icon={<Search className="size-3.5" />}
-          label={m.picker.switchToForm}
+          icon={<Keyboard className="size-3.5" />}
+          label={m.entry.soloTab}
         />
       </div>
 
@@ -115,7 +119,7 @@ function NewListingBody() {
             useArmStore.getState().setArm(kind);
             router.push(kind === "sell" ? "/sell" : "/buy");
           }}
-          onSwitchToForm={() => setMode("form")}
+          onSwitchToSolo={() => setMode("form")}
         />
       ) : mode === "file" ? (
         <ImportSheet
@@ -127,14 +131,43 @@ function NewListingBody() {
           }}
         />
       ) : (
-        <ListingForm
-          bizId={active.id}
-          currency={active.currency}
-          onSaved={(k) => {
-            useArmStore.getState().setArm(k);
-            router.push(k === "sell" ? "/sell" : "/buy");
-          }}
-        />
+        <>
+          {/* زیرسوییچ ثبت تکی — فرم دستی یا اسکنر، هر دو به همان کاتالوگ می‌روند */}
+          <div className="mx-auto flex w-fit gap-1 rounded-full border bg-white p-1 shadow-sm">
+            <ModeTab
+              active={soloWay === "manual"}
+              onClick={() => setSoloWay("manual")}
+              icon={<Keyboard className="size-3.5" />}
+              label={m.entry.manualWay}
+            />
+            <ModeTab
+              active={soloWay === "scanner"}
+              onClick={() => setSoloWay("scanner")}
+              icon={<ScanLine className="size-3.5" />}
+              label={m.entry.scannerWay}
+            />
+          </div>
+          {soloWay === "scanner" ? (
+            <ScanEntry
+              bizId={active.id}
+              currency={active.currency}
+              onDone={(kind) => {
+                useArmStore.getState().setArm(kind);
+                router.push(kind === "sell" ? "/sell" : "/buy");
+              }}
+              onSwitchToForm={() => setSoloWay("manual")}
+            />
+          ) : (
+            <ListingForm
+              bizId={active.id}
+              currency={active.currency}
+              onSaved={(k) => {
+                useArmStore.getState().setArm(k);
+                router.push(k === "sell" ? "/sell" : "/buy");
+              }}
+            />
+          )}
+        </>
       )}
     </div>
   );
