@@ -692,8 +692,14 @@ function ReferencePicker({
                       isPicked ? "bg-accent/40" : "hover:bg-accent/30"
                     }`}
                   >
-                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent/70 text-base font-black text-primary/80">
-                      {p.good.nameFa.slice(0, 1)}
+                    <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
+                      {p.imageUrl ? (
+                        <Image src={p.imageUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
+                      ) : (
+                        <span className="grid size-full place-items-center text-base font-black text-primary/80">
+                          {p.good.nameFa.slice(0, 1)}
+                        </span>
+                      )}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-extrabold">{p.label}</span>

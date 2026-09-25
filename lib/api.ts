@@ -212,6 +212,8 @@ export interface ProductRowDto {
   id: string;
   label: string;
   barcode: string | null;
+  /** عکس مرجع محصول — اختیاری. در picker نشان داده می‌شود. */
+  imageUrl: string | null;
   status: string;
   goodId: string;
   good: {
