@@ -5,8 +5,8 @@
  *    داده‌ی زنده (/api/*) هرگز کش نمی‌شود.
  */
 
-const STATIC_CACHE = "imach-static-v1";
-const SHELL_CACHE = "imach-shell-v1";
+const STATIC_CACHE = "imach-static-v2";
+const SHELL_CACHE = "imach-shell-v2";
 
 const OFFLINE_HTML = `<!doctype html>
 <html lang="fa" dir="rtl"><head><meta charset="utf-8">
@@ -61,14 +61,17 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return; // تایل‌های نقشه و …
   if (url.pathname.startsWith("/api/")) return; // داده‌ی زنده — همیشه شبکه
 
-  // استاتیک‌های هش‌دار و آیکون‌ها: cache-first (محتوایشان تغییرناپذیر است)
+  // استاتیک‌های هش‌دار و آیکون‌ها: stale-while-revalidate — فوراً از کش، هم‌زمان
+  // به‌روزرسانی در پس‌زمینه (درس تلخ «بیلد کهنه»: cache-firstِ محض، در dev که
+  // نام چیپ‌ها هش پایدار ندارد و بعد از هر deploy ای که نام فایل عوض نشود،
+  // کدِ کهنه را تا ابد سرو می‌کرد — کشِ مرورگر که پاک می‌شد، کشِ SW پاک نمی‌شد).
   if (
     url.pathname.startsWith("/_next/static/") ||
     url.pathname.startsWith("/icons/") ||
     url.pathname === "/logo.svg" ||
     url.pathname === "/push-icon.png"
   ) {
-    event.respondWith(cacheFirst(req));
+    event.respondWith(staleWhileRevalidate(req));
     return;
   }
 
@@ -79,19 +82,17 @@ self.addEventListener("fetch", (event) => {
   // بقیه درخواست‌ها دست‌نخورده به مرورگر سپرده می‌شود.
 });
 
-async function cacheFirst(req) {
-  const hit = await caches.match(req);
-  if (hit) return hit;
-  try {
-    const res = await fetch(req);
-    if (res.ok) {
-      const cache = await caches.open(STATIC_CACHE);
-      cache.put(req, res.clone());
-    }
-    return res;
-  } catch {
-    return Response.error();
-  }
+/** stale-while-revalidate: کش فوری + به‌روزرسانی پس‌زمینه — هرگز کهنه نمی‌ماند. */
+async function staleWhileRevalidate(req) {
+  const cache = await caches.open(STATIC_CACHE);
+  const hit = await cache.match(req);
+  const refresh = fetch(req)
+    .then((res) => {
+      if (res.ok) cache.put(req, res.clone());
+      return res;
+    })
+    .catch(() => null);
+  return hit ?? (await refresh) ?? Response.error();
 }
 
 async function networkFirst(req) {

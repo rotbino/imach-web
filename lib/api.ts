@@ -200,6 +200,30 @@ export interface PageDto<T> {
   nextCursor: string | null;
 }
 
+/**
+ * یک ردیف انتخابگر کاتالوگ مرجع — SKU مشترک (برند×وزن) که همه‌ی هم‌فروشنده‌ها
+ * به آن وصل‌اند. sellers = اعتماد («۳ فروشنده»)، mineMode = «داریش».
+ */
+export interface ProductRowDto {
+  id: string;
+  label: string;
+  barcode: string | null;
+  status: string;
+  goodId: string;
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { id: string; slug: string; nameFa: string; nameEn: string };
+  };
+  brand: { name: string } | null;
+  sellers: number;
+  mineMode: string | null;
+}
+
+export type ProductPageDto = PageDto<ProductRowDto>;
+
 export interface GoodItemDto {
   id: string;
   mode: string;
@@ -612,11 +636,41 @@ export const listingsApi = {
     goodId: string;
     mode: string;
     brandName?: string;
+    /** SKU انتخاب‌شده از کاتالوگ مرجع (اختیاری — بدون آن هویت از برند/ویژگی ساخته می‌شود) */
+    productId?: string;
     attrs?: Record<string, string>;
     sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
   }) => api<GoodItemDto>("/listings/saveListing", { method: "PUT", body }),
+  /** ثبت گروهی از انتخابگر — یک تأیید، N آگهی؛ خرید با volume اختیاری */
+  bulkSave: (body: {
+    businessId: string;
+    mode: "SELL" | "BUY";
+    items: {
+      productId: string;
+      priceMinor?: number;
+      stock?: number;
+      minOrder?: number;
+      volume?: number;
+      frequency?: string;
+    }[];
+  }) => api<{ saved: number; failed: number }>(
+    "/listings/bulkSave",
+    { method: "PUT", body }
+  ),
   deleteListing: (id: string) => api<{ ok: boolean }>(`/listings/deleteListing/${id}`, { method: "DELETE" }),
+};
+
+export const productsApi = {
+  /** فید انتخابگر کاتالوگ مرجع — فیلتر دسته/جست‌وجو + نشان‌های «فروشنده» و «داریش» */
+  getProducts: (params: {
+    businessId: string;
+    q?: string;
+    categoryId?: string;
+    goodId?: string;
+    cursor?: string;
+    limit?: number;
+  }) => api<ProductPageDto>("/products/getProducts", { params }),
 };
 
 export const marketApi = {

@@ -1,17 +1,22 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness, useArmStore } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { ListingForm } from "@/app/components/listing-form";
-import { Loader2 } from "lucide-react";
+import { CatalogPicker } from "@/app/new/catalog-picker";
+import { useMessages } from "@/i18n/messages/use-messages";
+import { Library, Loader2, Search } from "lucide-react";
 
 /*
- * کالای جدید — فرم دومرحله‌ای: اول گروه محصول، بعد مشخصات فروش/خرید عمده.
- * بعد از ثبت، کاربر به بازویی می‌رود که ثبت در آن انجام شده:
- * فروش → کاتالوگ فروش من، خرید (یا هر دو) → کاتالوگ فروش (فروش اولویت دارد).
+ * کالای جدید — دو در، یک مقصد (خواسته‌ی کاربر: فروشنده‌ی پرقلم نباید قلم‌به‌قلم
+ * تایپ کند؛ خرده‌فروشِ معمولی نباید از او پیچیده‌تر شود):
+ *   • «از کاتالوگ مرجع» (پیش‌فرض) — تیک بزن، قیمت بده، تمام.
+ *   • «جست‌وجوی آزاد» — همان فرم دومرحله‌ای همیشگی؛ مسیر رشد کاتالوگ مرجع.
+ * کدام بازو پر می‌شود؟ از ?tab=sell|buy (دکمه‌ی ویترین مربوطه) — انتخابگر هر
+ * بار یک بازو را پر می‌کند؛ فرم آزاد همان‌جا نقش را می‌پرسد (فروش/خرید/هر دو).
  */
 export default function NewListingPage() {
   return (
@@ -38,8 +43,11 @@ export default function NewListingPage() {
 
 function NewListingBody() {
   const router = useRouter();
+  const params = useSearchParams();
+  const m = useMessages();
   const { status } = useAuthStore();
   const active = useActiveBusiness();
+  const [mode, setMode] = useState<"picker" | "form">("picker");
 
   useEffect(() => {
     if (status === "guest") router.replace("/start");
@@ -70,14 +78,73 @@ function NewListingBody() {
     );
   }
 
+  const arm = params.get("tab") === "buy" ? "buy" : "sell";
+
   return (
-    <ListingForm
-      bizId={active.id}
-      currency={active.currency}
-      onSaved={(k) => {
-        useArmStore.getState().setArm(k);
-        router.push(k === "sell" ? "/sell" : "/buy");
-      }}
-    />
+    <div className="space-y-4">
+      {/* سوییچ دو مسیر — کوچک، بالای کارت، بدون سر و صدا */}
+      <div className="mx-auto grid w-fit grid-cols-2 gap-1 rounded-full border bg-white p-1 shadow-sm">
+        <ModeTab
+          active={mode === "picker"}
+          onClick={() => setMode("picker")}
+          icon={<Library className="size-3.5" />}
+          label={m.picker.tabLabel}
+        />
+        <ModeTab
+          active={mode === "form"}
+          onClick={() => setMode("form")}
+          icon={<Search className="size-3.5" />}
+          label={m.picker.switchToForm}
+        />
+      </div>
+
+      {mode === "picker" ? (
+        <CatalogPicker
+          bizId={active.id}
+          currency={active.currency ?? "IRR"}
+          arm={arm}
+          onDone={(kind) => {
+            useArmStore.getState().setArm(kind);
+            router.push(kind === "sell" ? "/sell" : "/buy");
+          }}
+          onSwitchToForm={() => setMode("form")}
+        />
+      ) : (
+        <ListingForm
+          bizId={active.id}
+          currency={active.currency}
+          onSaved={(k) => {
+            useArmStore.getState().setArm(k);
+            router.push(k === "sell" ? "/sell" : "/buy");
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function ModeTab({
+  active,
+  onClick,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+        active ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }

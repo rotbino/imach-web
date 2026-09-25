@@ -305,7 +305,9 @@ export function BuyArmView({ slug }: { slug: string }) {
   };
 
   const buyListings = (biz?.listings ?? []).filter(
-    (l) => (l.mode === "BUY" || l.mode === "BOTH") && l.volume !== null
+    // آیتم‌های تازه‌تیک‌خورده از انتخابگر هنوز مقدار ندارند — همین‌جا هم دیده
+    // شوند تا تامین‌کننده نیاز واقعی را کامل ببیند (لیست خرید کم‌کم تشکیل می‌شود)
+    (l) => l.mode === "BUY" || l.mode === "BOTH"
   );
 
   useEffect(() => {
@@ -450,7 +452,7 @@ export function BuyArmView({ slug }: { slug: string }) {
                 </div>
                 <div className="shrink-0 text-end">
                   <Badge variant="outline" className="border-stone-300 bg-stone-50 text-stone-700">
-                    {fa(l.volume as number)} {unitLabel(l.good.unit)}
+                    {l.volume !== null ? `${fa(l.volume)} ${unitLabel(l.good.unit)}` : "مقدار بعداً"}
                   </Badge>
                   <p className="mt-1 text-[11px] text-muted-foreground">{frequencyLabel(l.frequency ?? "MONTHLY")}</p>
                 </div>
