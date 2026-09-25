@@ -723,46 +723,6 @@ function TestimonialCard({
 
 
 /* ─────────────────────────────────────────────────────────────
- * ShareSection
- * ───────────────────────────────────────────────────────────── */
-
-function ShareSection() {
-    return (
-        <section className="relative overflow-hidden border-b bg-gradient-to-b from-accent/30 via-white to-white">
-            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-                <SectionHead
-                    eyebrow="مهم‌ترین کار تو در آی‌مچ"
-                    title="لینک کاتالوگ یا لیست خریدت رو بفرست"
-                    sub="آی‌مچ وقتی کار می‌کند که اطلاعات واقعی خرید و فروش وارد شود. ساده‌ترین راه شروع، ساختن یک کاتالوگ یا لیست خرید و فرستادن لینک آن برای کسانی است که می‌شناسی."
-                />
-
-                <div className="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
-                    {SHARE_BENEFITS.map((item) => (
-                        <div key={item.title} className="rounded-2xl border bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
-                            <span className="grid size-11 place-items-center rounded-xl bg-accent text-primary">
-                                <item.icon className="size-5" />
-                            </span>
-                            <h3 className="mt-4 text-sm font-extrabold">{item.title}</h3>
-                            <p className="mt-2 text-xs leading-6 text-muted-foreground">{item.sub}</p>
-                        </div>
-                    ))}
-                </div>
-
-
-                <div className="mt-8 flex justify-center">
-                    <Link href="/start?mode=register">
-                        <Button size="lg" className="rounded-xl px-7 shadow-lg shadow-primary/25">
-                            کاتالوگ خودت رو بساز
-                            <ArrowLeft className="size-4 ltr:rotate-180" />
-                        </Button>
-                    </Link>
-                </div>
-            </div>
-        </section>
-    );
-}
-
-/* ─────────────────────────────────────────────────────────────
  * Brands
  * ───────────────────────────────────────────────────────────── */
 
@@ -1055,7 +1015,6 @@ export default function Home() {
                 <Hero />
                 <Testimonials />
                 <LiveActivity />
-                <ShareSection />
                 <Brands />
                 <CoreValue />
                 <NetworkSection />

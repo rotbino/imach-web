@@ -4,7 +4,7 @@
   "description": "iMach — B2B wholesale marketplace frontend (Next.js 16)",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "s": "next dev -p 3000",
     "lint": "eslint .",
     "build": "next build",
     "start": "next start"
