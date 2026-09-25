@@ -346,35 +346,48 @@ export function BuyItemSettingsDialog({
             </div>
           </div>
 
-          <Button onClick={() => void save()} disabled={saveListing.isPending}>
-            {saveListing.isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-            ذخیره
-          </Button>
-
-          {/* حذف آیتم — در همان فرم تنظیمات */}
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3">
+          {/* ذخیره و حذف — یک ردیف، هم‌دَر: ذخیره اصلیِ بزرگِ با بکگراند؛
+              حذف کوچک و بی‌رنگ، تأیید هم همان‌جا (هم‌خانواده‌ی فرم فروش) */}
+          <div className="flex items-center gap-2">
+            <Button
+              className="flex-1"
+              size="lg"
+              onClick={() => void save()}
+              disabled={saveListing.isPending}
+            >
+              {saveListing.isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+              ذخیره
+            </Button>
             {confirmDelete ? (
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-xs font-bold text-destructive">از لیست خرید حذف شود؟</p>
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <Button size="sm" variant="outline" onClick={() => setConfirmDelete(false)}>
-                    انصراف
-                  </Button>
-                  <Button size="sm" variant="destructive" onClick={() => void remove()} disabled={deleteListing.isPending}>
-                    {deleteListing.isPending && <Loader2 className="size-4 animate-spin" />}
-                    حذف قطعی
-                  </Button>
-                </div>
+              <div className="flex shrink-0 items-center gap-1">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  onClick={() => void remove()}
+                  disabled={deleteListing.isPending}
+                >
+                  {deleteListing.isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
+                  تأیید حذف
+                </Button>
+                <button
+                  type="button"
+                  aria-label="انصراف از حذف"
+                  onClick={() => setConfirmDelete(false)}
+                  className="grid size-6 place-items-center rounded-full text-muted-foreground transition hover:bg-accent hover:text-foreground"
+                >
+                  <X className="size-3.5" />
+                </button>
               </div>
             ) : (
               <Button
                 size="sm"
                 variant="ghost"
+                className="shrink-0 px-2 text-muted-foreground hover:bg-transparent hover:text-destructive"
                 onClick={() => setConfirmDelete(true)}
-                className="w-full text-destructive hover:text-destructive"
               >
-                <Trash2 className="size-4" />
-                حذف آیتم
+                <Trash2 className="size-3.5" />
+                حذف
               </Button>
             )}
           </div>
