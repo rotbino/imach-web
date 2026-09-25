@@ -117,6 +117,8 @@ export interface UserDto {
   role: string;
   country: string;
   language: string;
+  /** پسورد واقعی تنظیم شده؟ ثبت‌نام سریع false دارد؛ دکمه‌ی چشمک‌زن با این کنترل می‌شود */
+  passwordSet?: boolean;
 }
 
 export interface BusinessSummaryDto {
@@ -219,12 +221,37 @@ export interface ProductRowDto {
     unit: string;
     category: { id: string; slug: string; nameFa: string; nameEn: string };
   };
-  brand: { name: string } | null;
+  brand: { id: string; name: string } | null;
   sellers: number;
   mineMode: string | null;
 }
 
-export type ProductPageDto = PageDto<ProductRowDto>;
+/** یک چیپ برند در نوار برند افقی انتخابگر — نام + شمارش محصول‌های آن برند */
+export interface BrandChipDto {
+  id: string;
+  name: string;
+  count: number;
+}
+
+/** یک چیپ دسته در نوار دسته — نام + شمارش محصول‌های آن دسته */
+export interface CategoryChipDto {
+  id: string;
+  nameFa: string;
+  nameEn: string;
+  count: number;
+}
+
+/**
+ * صفحه‌ی انتخابگر — items + نوار برند + نوار دسته. برندها و دسته‌ها از همان
+ * scope فعلی (q + categoryId + goodId) استخراج می‌شوند، مگر بعد از انتخاب برند/
+ * دسته — تا نوار ثابت بماند و کاربر بتواند بین برندها/دسته‌ها جابجا شود.
+ */
+export interface ProductPageDto {
+  items: ProductRowDto[];
+  nextCursor: string | null;
+  brands: BrandChipDto[];
+  categories: CategoryChipDto[];
+}
 
 /** پیش‌نمایش ایمپورت — ردیف‌های طبقه‌بندی‌شده، بدون هیچ نوشتنی */
 export interface ImportPreviewDto {
@@ -650,6 +677,15 @@ export const authApi = {
     ref?: string;
   }) =>
     api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
+  /** ثبت‌نام سریع — فقط موبایل، بدون پسورد/نام. Business خودکار ساخته می‌شود. */
+  quickRegister: (body: { phone: string; country?: string; ref?: string }) =>
+    api<AuthResponseDto>("/auth/quickRegister", { method: "POST", body, auth: false }),
+  /** تنظیم پسورد — برای کاربران ثبت‌نام سریع یا تغییر پسورد */
+  setPassword: (body: { currentPassword?: string; newPassword: string }) =>
+    api<{ ok: boolean }>("/auth/setPassword", { method: "POST", body }),
+  /** تغییر شماره موبایل — برای کاربری که موقع ثبت‌نام سریع شماره‌اش را اشتباه زده */
+  changePhone: (body: { phone: string; country?: string }) =>
+    api<{ ok: boolean; phone: string }>("/auth/changePhone", { method: "POST", body }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
   getMe: () => api<MeResponseDto>("/auth/getMe"),
@@ -684,9 +720,22 @@ export const businessesApi = {
   /** کپی از هم‌صنف‌ها — گام ۱: کاتالوگ‌های زنده بر اساس صنف/نام */
   searchCatalogs: (params: { q?: string; cursor?: string; limit?: number; mineId?: string }) =>
     api<PageDto<CatalogSummaryDto>>("/businesses/searchCatalogs", { params }),
-  /** کپی از هم‌صنف‌ها — گام ۲: قلم‌های فروش یک کاتالوگ، با تامبنیل */
-  getCatalogItems: (params: { businessId: string; cursor?: string; limit?: number }) =>
-    api<PageDto<CatalogItemDto>>("/businesses/getCatalogItems", { params }),
+  /** کپی از هم‌صنف‌ها — گام ۲: قلم‌های فروش یک کاتالوگ، با تامبنیل + نوار برند */
+  getCatalogItems: (params: { businessId: string; cursor?: string; limit?: number; brandId?: string }) =>
+    api<CatalogItemsPageDto>("/businesses/getCatalogItems", { params }),
+  /** کاتالوگ تجمیعی هم‌صنف‌ها — هم‌صنف‌های هم‌جغرافیا، SKU یونیک، فیلتر برند/دسته */
+  getAggregatedCatalog: (params: {
+    trade: string;
+    city?: string;
+    province?: string;
+    country?: string;
+    q?: string;
+    brandId?: string;
+    categoryId?: string;
+    cursor?: string;
+    limit?: number;
+    mineId?: string;
+  }) => api<AggregatedCatalogPageDto>("/businesses/getAggregatedCatalog", { params }),
 };
 
 /** یک کاتالوگ زنده در جست‌وجوی هم‌صنف‌ها */
@@ -709,6 +758,8 @@ export interface CatalogItemDto {
   currency: string | null;
   variantLabel: string | null;
   attrs: Record<string, string> | null;
+  /** شناسه‌ی برند — برای فیلتر نوار افقی برند */
+  brandId?: string | null;
   brandName: string | null;
   productId: string | null;
   good: {
@@ -716,9 +767,42 @@ export interface CatalogItemDto {
     nameFa: string;
     nameEn: string | null;
     unit: string;
-    category: { nameFa: string; nameEn: string };
+    category: { id: string; nameFa: string; nameEn: string };
   };
   thumbUrl: string | null;
+}
+
+/** صفحه‌ی قلم‌های کاتالوگ — items + نوار برند (با شمارش) */
+export interface CatalogItemsPageDto {
+  items: CatalogItemDto[];
+  nextCursor: string | null;
+  brands: BrandChipDto[];
+}
+
+/** یک قلم از کاتالوگ تجمیعی هم‌صنف‌ها — SKU یونیک، فاقد قیمت (قیمت با خودت) */
+export interface AggregatedItemDto {
+  id: string;
+  productId: string | null;
+  brandId: string | null;
+  brandName: string | null;
+  variantLabel: string | null;
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { id: string; nameFa: string; nameEn: string };
+  };
+  thumbUrl: string | null;
+}
+
+/** صفحه‌ی کاتالوگ تجمیعی هم‌صنف‌ها — items + نوار برند + نوار دسته + تعداد کسب‌وکار یافت‌شده */
+export interface AggregatedCatalogPageDto {
+  items: AggregatedItemDto[];
+  nextCursor: string | null;
+  brands: BrandChipDto[];
+  categories: CategoryChipDto[];
+  foundBusinesses: number;
 }
 
 export const listingsApi = {

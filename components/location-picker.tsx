@@ -24,6 +24,86 @@ const MapView = dynamic(() => import("@/components/location/map-view"), {
 
 const DEFAULT_CENTER: GeoPoint = { lat: 35.6892, lng: 51.389 };
 
+/**
+ * نرمالایز آدرسِ برگشتی از OSM — معمولاً طولانی و تکراری است؛ این تابع آن را
+ * تمیز می‌کند:
+ *   • اگر `address` object آمده، از ترتیب معنادار (نام خاص، خیابان، محله، شهر،
+ *     استان) استفاده می‌کند، نه display_name خام.
+ *   • کد پستی و کشور حذف می‌شوند (اطلاعات اضافی برای کاربر ایرانی).
+ *   • تکرارها (مثلا «Tehran, تهران») حذف می‌شوند.
+ *   • خروجی به ۴-۵ مؤلفه محدود می‌شود تا طولانی نشود.
+ */
+function normalizeAddress(
+  display: string,
+  addr?: Record<string, string>
+): string {
+  if (!addr) {
+    // fallback: فقط اولین ۴ بخش از display_name را نگه دار
+    const parts = display.split(",").map((p) => p.trim()).filter(Boolean);
+    return parts.slice(0, 4).join("، ");
+  }
+
+  // ترتیب معنادار برای آدرس فارسی
+  // name / building → road / pedestrian → neighbourhood / suburb → city / town / village → county / state / province
+  const keys = [
+    "name",
+    "building",
+    "house_number",
+    "road",
+    "pedestrian",
+    "neighbourhood",
+    "suburb",
+    "quarter",
+    "city_district",
+    "city",
+    "town",
+    "village",
+    "county",
+    "state_district",
+    "state",
+    "province",
+  ];
+  // کلیدهایی که اضافی‌اند و نباید در آدرس نهایی باشند
+  const dropKeys = new Set([
+    "postcode",
+    "country",
+    "country_code",
+    "ISO3166-2-lvl4",
+    "ISO3166-2-lvl6",
+    "ISO3166-2-lvl5",
+    "ISO3166-2-lvl3",
+    "ISO3166-2-lvl8",
+  ]);
+
+  const parts: string[] = [];
+  const seen = new Set<string>();
+  for (const k of keys) {
+    const v = addr[k];
+    if (!v) continue;
+    const normalized = v.trim();
+    if (!normalized) continue;
+    // حذف تکرار (مثلا «Tehran» و «تهران» ممکن است هر دو بیایند)
+    const lower = normalized.toLowerCase();
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+    parts.push(normalized);
+  }
+
+  // اضافه‌کردن باقی فیلدهای معنادار که در ترتیب بالا نیستند (به جز dropKeys)
+  for (const [k, v] of Object.entries(addr)) {
+    if (dropKeys.has(k) || keys.includes(k)) continue;
+    const normalized = v.trim();
+    if (!normalized) continue;
+    const lower = normalized.toLowerCase();
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+    parts.push(normalized);
+  }
+
+  // محدود به ۵ مؤلفه — آدرس‌های ایرانی معمولاً همین اندازه کافی است
+  return parts.slice(0, 5).join("، ");
+}
+
 export function LocationPicker({
                                  value,
                                  onChange,
@@ -43,9 +123,16 @@ export function LocationPicker({
   const [draft, setDraft] = useState<GeoPoint | null>(null);
   const [locating, setLocating] = useState(false);
 
-  /** معکوس‌یابی نقطه → متن آدرس (Nominatim/OSM — همان منبع کاشی‌های نقشه؛
-   *  بدون کلید، با accept-language=fa). fire-and-forget بعد از بستن دیالوگ:
-   *  تکست‌باکسِ آدرس وقتی جواب رسید پر می‌شود؛ خطا ساکت رد می‌شود. */
+  /**
+   * معکوس‌یابی نقطه → متن آدرس (Nominatim/OSM — همان منبع کاشی‌های نقشه؛
+   * بدون کلید، با accept-language=fa). fire-and-forget بعد از بستن دیالوگ:
+   * تکست‌باکسِ آدرس وقتی جواب رسید پر می‌شود؛ خطا ساکت رد می‌شود.
+   *
+   * خروجی OSM معمولاً طولانی و تکراری است (مثلا «name, building, street,
+   * neighborhood, suburb, city, county, state, postcode, country»)؛ این
+   * تابع آن را نرمالایز می‌کند: حذف تکرارها، حذف کد پستی، حذف کشور، محدود
+   * به ۴-۵ مؤلفه اصلی (محله، خیابان، شهر، استان).
+   */
   const reverseGeocode = async (p: GeoPoint) => {
     if (!onPickAddress) return;
     try {
@@ -54,8 +141,8 @@ export function LocationPicker({
         `&lat=${p.lat}&lon=${p.lng}&zoom=18&accept-language=fa`;
       const r = await fetch(url, { headers: { Accept: "application/json" } });
       if (r.ok) {
-        const j = (await r.json()) as { display_name?: string };
-        const text = j.display_name?.trim();
+        const j = (await r.json()) as { display_name?: string; address?: Record<string, string> };
+        const text = normalizeAddress(j.display_name ?? "", j.address);
         if (text) onPickAddress(text);
       }
     } catch {

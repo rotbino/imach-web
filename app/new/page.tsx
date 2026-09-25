@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-import { useActiveBusiness, useArmStore } from "@/lib/active-biz";
+import { useActiveBusiness, smartSwitchArm } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { ListingForm } from "@/app/components/listing-form";
 import { CatalogPicker } from "@/app/new/catalog-picker";
@@ -116,7 +116,8 @@ function NewListingBody() {
           currency={active.currency ?? "IRR"}
           arm={arm}
           onDone={(kind) => {
-            useArmStore.getState().setArm(kind);
+            // سوییچ هوشمند بازو: فقط خرید → buy، فقط فروش → sell، هر دو → همان
+            smartSwitchArm(kind);
             router.push(kind === "sell" ? "/sell" : "/buy");
           }}
           onSwitchToSolo={() => setMode("form")}
@@ -126,7 +127,7 @@ function NewListingBody() {
           bizId={active.id}
           arm={arm}
           onDone={(kind) => {
-            useArmStore.getState().setArm(kind);
+            smartSwitchArm(kind);
             router.push(kind === "sell" ? "/sell" : "/buy");
           }}
         />
@@ -152,7 +153,7 @@ function NewListingBody() {
               bizId={active.id}
               currency={active.currency}
               onDone={(kind) => {
-                useArmStore.getState().setArm(kind);
+                smartSwitchArm(kind);
                 router.push(kind === "sell" ? "/sell" : "/buy");
               }}
               onSwitchToForm={() => setSoloWay("manual")}
@@ -162,7 +163,7 @@ function NewListingBody() {
               bizId={active.id}
               currency={active.currency}
               onSaved={(k) => {
-                useArmStore.getState().setArm(k);
+                smartSwitchArm(k);
                 router.push(k === "sell" ? "/sell" : "/buy");
               }}
             />

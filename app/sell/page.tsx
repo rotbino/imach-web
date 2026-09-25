@@ -10,6 +10,8 @@ import { fa, activityTypeLabel, categoryName, fmtMoney, goodName, unitLabel } fr
 import { useMyBusinesses, useMyListings } from "@/lib/queries";
 import type { GoodItemDto } from "@/lib/api";
 import { ShareDialog } from "@/app/components/share";
+import { CatalogHeaderPrompt, CityLocationPrompt } from "@/app/components/catalog-header-prompt";
+import { SetPasswordButton } from "@/app/components/set-password-button";
 import { ProductSettingsDialog } from "./product-settings";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,6 +35,10 @@ import {
  * • همه‌چیزِ مدیریتی مستقیم روی خود ویترین است:
  *   کالای جدید · اشتراک‌گذاری لینک · چرخ‌دنده‌ی هر کالا (تنظیمات + حذف)
  * • داشبورد و تنظیمات هدر → «داشبورد» (/sell/panel) با دکمه بازگشت.
+ *
+ * اگر کاربر ثبت‌نام سریع کرده و هنوز نام/صنف/شهر را کامل نکرده، هدر کاتالوگ به‌جای
+ * نام، «عنوان کاتالوگ را وارد کنید» نشان می‌دهد و دکمه‌ی چشمک‌زن «ثبت رمز عبور»
+ * کنار «کالای جدید» دیده می‌شود.
  */
 
 export default function SellPage() {
@@ -107,9 +113,11 @@ function SellBody() {
             slug={active.slug}
             name={active.name}
             city={active.city}
+            trade={active.trade ?? null}
             activityType={active.activityType}
             isVerified={active.isVerified}
             currency={active.currency ?? "IRR"}
+            biz={active}
           />
         </div>
       </main>
@@ -126,17 +134,21 @@ function ShowcaseHeader({
   slug,
   name,
   city,
+  trade,
   activityType,
   isVerified,
   currency,
+  biz,
 }: {
   bizId: string;
   slug: string;
   name: string;
   city: string;
+  trade: string | null;
   activityType: string | null;
   isVerified: boolean;
   currency: string;
+  biz: import("@/lib/api").BusinessSummaryDto;
 }) {
   const router = useRouter();
   const listingsQ = useMyListings(bizId);
@@ -144,7 +156,6 @@ function ShowcaseHeader({
   const [shareOpen, setShareOpen] = useState(false);
 
   // دو طبقه (خواسته‌ی کاربر: «قیمت‌دار و کامل بالا، بقیه پایین با نشان نیاز به تکمیل»):
-  // اسکنر و کپی از هم‌صنف‌ها ردیف بی‌قیمت می‌سازند؛ تا قیمت بگیرند در سینی پایین می‌مانند
   const listings = (listingsQ.data ?? []).filter(
     (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null
   );
@@ -155,14 +166,21 @@ function ShowcaseHeader({
   const toolBtn =
     "grid size-9 place-items-center rounded-xl text-muted-foreground transition hover:bg-accent hover:text-primary";
 
+  // آیا نام کسب‌وکار placeholder است؟ «کاتالوگ شما» یا خالی
+  const isPlaceholder = name === "کاتالوگ شما" || !trade || city === "—";
+
   return (
     <>
-      {/* نوار ابزار تخت — کالای جدید یک‌سر، داشبورد و اشتراک‌گذاری آن‌سر */}
-      <div className="mb-3 flex items-center justify-between rounded-2xl border bg-white p-1.5 shadow-sm">
-        <Button size="sm" onClick={() => router.push("/new?tab=sell")} className="gap-1">
-          <Plus className="size-4" />
-          کالای جدید
-        </Button>
+      {/* نوار ابزار تخت — کالای جدید + دکمه چشمک‌زن ثبت پسورد + داشبورد و اشتراک‌گذاری */}
+      <div className="mb-3 flex items-center justify-between gap-2 rounded-2xl border bg-white p-1.5 shadow-sm">
+        <div className="flex items-center gap-1.5">
+          <Button size="sm" onClick={() => router.push("/new?tab=sell")} className="gap-1">
+            <Plus className="size-4" />
+            کالای جدید
+          </Button>
+          {/* دکمه‌ی چشمک‌زن «ثبت رمز عبور» — فقط برای کاربران ثبت‌نام سریع */}
+          <SetPasswordButton variant="header" />
+        </div>
         <div className="flex items-center">
           <button
             type="button"
@@ -183,16 +201,20 @@ function ShowcaseHeader({
         </div>
       </div>
 
-      {/* هدر کاتالوگ — همان چیزی که مشتری می‌بیند */}
+      {/* هدر کاتالوگ — اگر placeholder، «عنوان کاتالوگ را وارد کنید» نشان بده */}
       <section className="rounded-3xl border bg-white p-5 text-center shadow-sm sm:p-7">
         <div className="flex flex-col items-center">
           <span className="grid size-20 place-items-center rounded-3xl bg-primary/10 text-4xl font-black text-primary shadow-inner">
-            {name.slice(0, 1)}
+            {name === "کاتالوگ شما" ? "?" : name.slice(0, 1)}
           </span>
-          <h1 className="mt-3 flex items-center gap-1.5 text-2xl font-black">
-            {name}
-            {isVerified && <BadgeCheck className="size-5 text-primary" aria-label="تاییدشده" />}
-          </h1>
+          {isPlaceholder ? (
+            <CatalogHeaderPrompt biz={biz} />
+          ) : (
+            <h1 className="mt-3 flex items-center gap-1.5 text-2xl font-black">
+              {name}
+              {isVerified && <BadgeCheck className="size-5 text-primary" aria-label="تاییدشده" />}
+            </h1>
+          )}
           <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
             {activityType && (
               <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
@@ -200,10 +222,8 @@ function ShowcaseHeader({
                 {activityTypeLabel(activityType)}
               </Badge>
             )}
-            <span className="flex items-center gap-1">
-              <MapPin className="size-3.5" />
-              {city}
-            </span>
+            {/* شهر — قابل کلیک برای تنظیم شهر و لوکیشن */}
+            <CityLocationPrompt biz={biz} />
           </div>
 
           <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار کاتالوگ">
@@ -218,7 +238,6 @@ function ShowcaseHeader({
       {/* آلبوم کالاها — هر کالا چرخ‌دنده‌ی تنظیمات خودش را دارد */}
       <section className="mt-6">
 
-
         {listings.length === 0 ? (
           <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
             <p className="text-sm text-muted-foreground">هنوز کالایی در کاتالوگتان نیست.</p>
@@ -230,9 +249,7 @@ function ShowcaseHeader({
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {listings.map((l) => {
-              // اولین عکس گالری — همان که در ویترین عمومی دیده می‌شود (WYSIWYG)
               const photo = l.gallery?.[0];
-              debugger
               return (
               <article
                 key={l.id}
@@ -240,8 +257,6 @@ function ShowcaseHeader({
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                   {photo ? (
-                    /* تامبنیل ابر آروان — unoptimized: عکس از قبل فشرده است و
-                       next/image نباید سرِ هاست‌کانفیگ کرش کند */
                     <Image
                       src={photo.thumbUrl ?? photo.url}
                       alt={goodName(l.good)}
@@ -251,14 +266,12 @@ function ShowcaseHeader({
                       className="object-cover"
                     />
                   ) : (
-                    /* بی‌عکس: کاشی حرفیِ تخت */
                     <div className="grid h-full w-full place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
                       <span className="text-5xl font-black text-primary/20" aria-hidden>
                         {goodName(l.good).slice(0, 1)}
                       </span>
                     </div>
                   )}
-                  {/* چرخ‌دنده — مستقیم روی خود کالا، مثل ویرایش همین‌جا */}
                   <button
                     type="button"
                     onClick={() => setSettingsFor(l)}
@@ -273,7 +286,6 @@ function ShowcaseHeader({
                     {goodName(l.good)}
                     {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
                   </p>
-                  {/* واریانت — همان کالای مرجع با مشخصات متفاوت («۵۰۰ گرمی · کارتن») */}
                   {l.variantLabel && (
                     <p className="mt-0.5 truncate text-[11px] font-bold text-primary/70">{l.variantLabel}</p>
                   )}
