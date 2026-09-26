@@ -286,6 +286,8 @@ export interface ImportPreviewDto {
     sellers: number;
     mineMode: string | null;
     warning: "noData" | "noName" | null;
+    category: string | null;
+    subcategory: string | null;
   }[];
 }
 
@@ -920,6 +922,8 @@ export const productsApi = {
       minOrder?: number;
       volume?: number;
       imageUrl?: string;
+      category?: string;
+      subcategory?: string;
     }[];
   }) => api<ImportCommitResultDto>("/products/importCommit", { method: "POST", body }),
 
