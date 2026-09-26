@@ -122,7 +122,7 @@ function SourceTab({
 // منبع ۱ — کاتالوگ تجمیعی هم‌صنف‌ها (Aggregated Catalog)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function CopyFromPeers({
+export function CopyFromPeers({
   bizId,
   arm,
   onDone,
@@ -497,7 +497,7 @@ function TradePrompt({
 // منبع ۲ — کاتالوگ مرجع (جست‌وجو + نوار برند افقی)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ReferencePicker({
+export function ReferencePicker({
   bizId,
   currency,
   arm,
@@ -631,19 +631,38 @@ function ReferencePicker({
     }
   };
 
+  // ── فیلتر عکس‌دار/بی‌عکس
+  const [hasImage, setHasImage] = useState<boolean | null>(null);
+
+  // ── مدال دسته‌بندی
+  const [catModalOpen, setCatModalOpen] = useState(false);
+  const [brandModalOpen, setBrandModalOpen] = useState(false);
+
+  // ── فیلتر برندها بر اساس دسته انتخاب‌شده
+  const filteredBrands = useMemo(() => {
+    if (!categoryId) return brands;
+    // وقتی دسته انتخاب شده، فقط برندهای همان دسته نمایش داده شوند
+    // brands از API بر اساس scope فعلی می‌آید — وقتی categoryId ست شده،
+    // API خودش برندهای آن دسته را برمی‌گرداند
+    return brands;
+  }, [brands, categoryId]);
+
+  // ─ـ نام دسته/برند انتخاب‌شده برای نمایش روی چیپ ──
+  const selectedCatName = categories.find((c) => c.id === categoryId)?.nameFa ?? null;
+  const selectedBrandName = filteredBrands.find((b) => b.id === brandId)?.name ?? null;
+
+  // ── فیلتر نهایی روی rows (برای hasImage) ──
+  const displayRows = useMemo(() => {
+    if (hasImage === null) return rows;
+    return rows.filter((r) => hasImage ? !!r.imageUrl : !r.imageUrl);
+  }, [rows, hasImage]);
+
   return (
     <>
       {step === "pick" ? (
         <>
-          <div className="flex items-center gap-2">
-            <Library className="size-5 shrink-0 text-primary" />
-            <h1 className="text-lg font-extrabold">{m.picker.sourceRef}</h1>
-            <span className="hidden rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary sm:inline">
-              {m.picker.tabHint}
-            </span>
-          </div>
-
-          <div className="relative mt-4">
+          {/* سرچ باکس */}
+          <div className="relative">
             <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               aria-label={m.picker.searchAria}
@@ -655,24 +674,89 @@ function ReferencePicker({
             />
           </div>
 
-          {/* نوار برند افقی — از خودِ لیست استخراج شده با شمارش */}
-          <div className="mt-2.5">
-            <BrandStrip brands={brands} activeBrandId={brandId} onPick={setBrandId} />
+          {/* ─── نوار فیلتر — سبک دیوار ─── */}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {/* چیپ دسته */}
+            <button
+              type="button"
+              onClick={() => setCatModalOpen(true)}
+              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                categoryId ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
+              }`}
+            >
+              {selectedCatName ?? "دسته"}
+              {categoryId && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => { e.stopPropagation(); setCategoryId(null); }}
+                  className="grid size-4 place-items-center rounded-full bg-primary/20 hover:bg-primary/30"
+                >
+                  <X className="size-2.5" />
+                </span>
+              )}
+            </button>
+
+            {/* چیپ برند */}
+            <button
+              type="button"
+              onClick={() => setBrandModalOpen(true)}
+              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                brandId ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
+              }`}
+            >
+              {selectedBrandName ?? "برند"}
+              {brandId && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => { e.stopPropagation(); setBrandId(null); }}
+                  className="grid size-4 place-items-center rounded-full bg-primary/20 hover:bg-primary/30"
+                >
+                  <X className="size-2.5" />
+                </span>
+              )}
+            </button>
+
+            {/* چیپ عکس‌دار */}
+            <button
+              type="button"
+              onClick={() => setHasImage(hasImage === true ? null : true)}
+              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                hasImage === true ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
+              }`}
+            >
+              عکس‌دار
+              {hasImage === true && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => { e.stopPropagation(); setHasImage(null); }}
+                  className="grid size-4 place-items-center rounded-full bg-primary/20 hover:bg-primary/30"
+                >
+                  <X className="size-2.5" />
+                </span>
+              )}
+            </button>
+
+            {/* پاک کردن همه فیلترها */}
+            {(categoryId || brandId || hasImage !== null) && (
+              <button
+                type="button"
+                onClick={() => { setCategoryId(null); setBrandId(null); setHasImage(null); }}
+                className="text-[11px] font-bold text-red-500 hover:text-red-600"
+              >
+                حذف همه فیلترها
+              </button>
+            )}
           </div>
 
-          {/* نوار دسته‌بندی */}
-          {categories.length > 0 && (
-            <div className="mt-1.5">
-              <CategoryStrip categories={categories} activeCategoryId={categoryId} onPick={setCategoryId} locale={locale === "en" ? "en" : "fa"} />
-            </div>
-          )}
-
-          {/* ───── ردیف‌های محصول ───── */}
+          {/* ─── ردیف‌های محصول ─── */}
           {first.isLoading ? (
             <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin" />
             </p>
-          ) : rows.length === 0 ? (
+          ) : displayRows.length === 0 ? (
             <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
               <PackageSearch className="mx-auto size-6 text-primary/60" />
               <p className="mt-2 text-sm font-bold">{m.picker.empty}</p>
@@ -680,7 +764,7 @@ function ReferencePicker({
             </div>
           ) : (
             <div className="mt-4 divide-y">
-              {rows.map((p) => {
+              {displayRows.map((p) => {
                 const isPicked = pickedIds.has(p.id);
                 const mine = p.mineMode !== null;
                 return (
@@ -741,7 +825,7 @@ function ReferencePicker({
             </Button>
           )}
 
-          {/* ───── درِ خروج به مسیر آزاد — لیست مرجع بن‌بست نیست ───── */}
+          {/* ─── درِ خروج به مسیر آزاد ─── */}
           <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
             {m.picker.notHere}{" "}
             <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">
@@ -749,7 +833,7 @@ function ReferencePicker({
             </button>
           </p>
 
-          {/* ───── سبد شناور ───── */}
+          {/* ─── سبد شناور ─── */}
           {picked.length > 0 && (
             <div className="sticky bottom-4 mt-4 flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-2.5 shadow-lg backdrop-blur">
               <span className="ps-2 text-sm font-extrabold">{m.picker.tray.replace("{n}", fa(picked.length))}</span>
@@ -762,6 +846,63 @@ function ReferencePicker({
                   <ArrowLeft className="size-4 rtl:rotate-180" />
                 </Button>
               </span>
+            </div>
+          )}
+
+          {/* ─── مدال دسته‌بندی ─── */}
+          {catModalOpen && (
+            <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={() => setCatModalOpen(false)}>
+              <div className="max-h-[70vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold">انتخاب دسته</h3>
+                  <button type="button" onClick={() => setCatModalOpen(false)} className="grid size-7 place-items-center rounded-lg text-muted-foreground hover:bg-accent"><X className="size-4" /></button>
+                </div>
+                <div className="space-y-1">
+                  {categories.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => { setCategoryId(categoryId === c.id ? null : c.id); setCatModalOpen(false); }}
+                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${
+                        categoryId === c.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"
+                      }`}
+                    >
+                      <span>{c.nameFa}</span>
+                      <span className="text-[10px] text-muted-foreground">{fa(c.count)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ─── مدال برند ─── */}
+          {brandModalOpen && (
+            <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={() => setBrandModalOpen(false)}>
+              <div className="max-h-[70vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold">انتخاب برند</h3>
+                  <button type="button" onClick={() => setBrandModalOpen(false)} className="grid size-7 place-items-center rounded-lg text-muted-foreground hover:bg-accent"><X className="size-4" /></button>
+                </div>
+                <div className="space-y-1">
+                  {filteredBrands.map((b) => (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => { setBrandId(brandId === b.id ? null : b.id); setBrandModalOpen(false); }}
+                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${
+                        brandId === b.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"
+                      }`}
+                    >
+                      <span>{b.name}</span>
+                      <span className="text-[10px] text-muted-foreground">{fa(b.count)}</span>
+                    </button>
+                  ))}
+                  {filteredBrands.length === 0 && (
+                    <p className="py-6 text-center text-xs text-muted-foreground">برندی پیدا نشد</p>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </>
