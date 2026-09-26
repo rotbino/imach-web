@@ -73,7 +73,7 @@ function getRowIssues(r: EditableRow, arm: "sell" | "buy"): string[] {
   } else {
     if (!r.volume || r.volume <= 0) issues.push("حجم ندارد");
   }
-  if (!r.productImage && !r.pendingImageUrl) issues.push("عکس ندارد");
+  // عکس اجباری نیست — کالا بدون عکس هم ثبت می‌شود، بعداً از کاتالوک اضافه می‌کند
   return issues;
 }
 
@@ -346,10 +346,17 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                       <Image src={imgUrl} alt="" fill unoptimized className="object-cover" sizes="32px" />
                     </div>
                   ) : (
-                    <label className="grid size-8 cursor-pointer place-items-center rounded border border-dashed border-stone-300 text-stone-300 transition hover:border-primary hover:text-primary" title="آدرس عکس">
-                      <input type="url" className="sr-only" placeholder="آدرس عکس" onBlur={(e) => { if (e.target.value) updateRow(r.index, { pendingImageUrl: e.target.value }); }} />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const url = window.prompt("آدرس عکس کالا را وارد کن:");
+                        if (url && url.trim()) updateRow(r.index, { pendingImageUrl: url.trim() });
+                      }}
+                      className="grid size-8 cursor-pointer place-items-center rounded border border-dashed border-stone-300 text-stone-300 transition hover:border-primary hover:text-primary"
+                      title="آدرس عکس را وارد کن"
+                    >
                       <ImagePlus className="size-3.5" />
-                    </label>
+                    </button>
                   )}
                 </div>
 
