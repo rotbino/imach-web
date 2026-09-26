@@ -199,13 +199,13 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
         if (res.saved > 0) {
           saved++; setSavedCount(saved);
           setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "saved" } : r));
-          // اگر فایل عکس دارد، آپلود کن
-          if (row.pendingImageFile) {
+          // اگر فایل عکس دارد، آپلود کن به listing ساخته‌شده
+          if (row.pendingImageFile && res.listingIds?.[0]) {
             try {
               await uploadFile.mutateAsync({
                 file: row.pendingImageFile,
                 model: "Listing",
-                modelId: bizId,
+                modelId: res.listingIds[0],
                 key: "gallery",
                 replace: false,
               });

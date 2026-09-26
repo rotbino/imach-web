@@ -295,6 +295,8 @@ export interface ImportCommitResultDto {
   saved: number;
   failed: number;
   skipped: { index: number; reason: string }[];
+  /** شناسه‌ی listingهای ساخته‌شده — برای آپلود عکس بعد از commit */
+  listingIds: string[];
 }
 
 export interface GoodItemDto {
