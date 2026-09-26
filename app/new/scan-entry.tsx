@@ -101,7 +101,20 @@ export function ScanEntry({
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [cam, setCam] = useState<"starting" | "on" | "off">("starting");
+  // ── نوع دستگاه: برای راهنمای مناسب
+  const [deviceType, setDeviceType] = useState<"mobile" | "laptop" | "desktop">("laptop");
+  // ── شمارنده تلاش مجدد — وقتی کاربر «تلاش دوباره» را می‌زند، افزایش می‌یابد
+  // و useEffect دوباره اجرا می‌شود
+  const [camRetry, setCamRetry] = useState(0);
   const lastCode = useRef<{ code: string; at: number }>({ code: "", at: 0 });
+
+  // ── تشخیص نوع دستگاه — برای راهنمای دوربین
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const ua = navigator.userAgent.toLowerCase();
+    const isMobile = /android|iphone|ipad|ipod|mobile|tablet/.test(ua);
+    setDeviceType(isMobile ? "mobile" : "laptop");
+  }, []);
 
   // ── صف + مدال نقش + کاندیدها
   const [queue, setQueue] = useState<QueueItem[]>([]);
@@ -153,6 +166,7 @@ export function ScanEntry({
   useEffect(() => {
     let stopped = false;
     let interval: ReturnType<typeof setInterval> | null = null;
+    setCam("starting");
 
     const start = async () => {
       try {
@@ -206,7 +220,7 @@ export function ScanEntry({
       streamRef.current?.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     };
-  }, [handleCode]);
+  }, [handleCode, camRetry]);
 
   // ── صف
   const pushToQueue = (product: ProductRowDto, arm: Arm) => {
@@ -370,21 +384,9 @@ export function ScanEntry({
         </div>
         <p className="mt-2 text-xs leading-6 text-muted-foreground">{m.scan.intro}</p>
 
-        {/* ───── دوربین / راهنمای دسکتاپ ───── */}
+        {/* ───── دوربین / راهنمای هوشمند ───── */}
         <div className="relative mt-4 aspect-[4/3] overflow-hidden rounded-2xl border bg-stone-900 sm:aspect-[16/9]">
           <video ref={videoRef} muted playsInline className={`size-full object-cover ${cam === "on" ? "" : "opacity-0"}`} />
-          {cam !== "on" && (
-            <div className="absolute inset-0 grid place-items-center p-6 text-center">
-              {cam === "starting" ? (
-                <p className="text-xs text-stone-300">{m.scan.camStarting}</p>
-              ) : (
-                <div className="max-w-xs">
-                  <CameraOff className="mx-auto size-6 text-stone-400" />
-                  <p className="mt-2 text-xs leading-5 text-stone-300">{m.scan.desktopHint}</p>
-                </div>
-              )}
-            </div>
-          )}
           {cam === "on" && (
             <>
               {/* خط راهنمای اسکن */}
@@ -395,7 +397,44 @@ export function ScanEntry({
               </span>
             </>
           )}
+          {cam === "starting" && (
+            <div className="absolute inset-0 grid place-items-center p-6 text-center">
+              <p className="text-xs text-stone-300">{m.scan.camStarting}</p>
+            </div>
+          )}
+          {cam === "off" && (
+            <div className="absolute inset-0 grid place-items-center p-6 text-center">
+              <div className="max-w-xs">
+                <CameraOff className="mx-auto size-6 text-stone-400" />
+                {/* راهنمای مناسب برای نوع دستگاه:
+                    • موبایل: دوربین باید کار کند — احتمالا دسترسی ندادی، دوباره تلاش کن
+                    • لپ‌تاپ: دوربین داره ولی بهتره از اسکنر استفاده کنی
+                    • دسکتاپ (بدون دوربین): اسکنر USB بزن یا از موبایل بیا */}
+                <p className="mt-2 text-xs leading-5 text-stone-300">
+                  {deviceType === "mobile"
+                    ? m.scan.camHintMobile
+                    : m.scan.camHintNoCamera}
+                </p>
+                {deviceType === "mobile" && (
+                  <button
+                    type="button"
+                    onClick={() => setCamRetry((c) => c + 1)}
+                    className="mt-3 rounded-lg border border-stone-500 px-3 py-1.5 text-xs font-bold text-stone-200 hover:bg-stone-800"
+                  >
+                    {m.scan.camTryAgain}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* راهنمای لپ‌تاپ — وقتی دوربین کار می‌کند ولی کاربر بهتره از اسکنر استفاده کند */}
+        {cam === "on" && deviceType !== "mobile" && (
+          <p className="mt-2 text-[11px] leading-5 text-muted-foreground">
+            {m.scan.camHintLaptop}
+          </p>
+        )}
 
         {/* ───── فیلد بارکد — اسکنر سخت‌افزاری و تایپ دستی ───── */}
         <div className="mt-3 flex items-center gap-2">
