@@ -98,7 +98,8 @@ export function ListingForm({
   const [newBrandMode, setNewBrandMode] = useState(false); // وقتی دکمه «جدید» زده شود
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
-  const [showAttrs, setShowAttrs] = useState(false);
+  // ── ویژگی‌ها به‌طور پیش‌فرض باز هستند — برای تطبیق مهم‌اند و نباید پنهان شوند
+  const [showAttrs, setShowAttrs] = useState(true);
 
   // ── گالری کالا — فایل‌ها همین‌جا نگه داشته می‌شوند و بلافاصله بعد از ثبتِ
   // آگهی آپلود می‌شوند (فایل قبل از ذخیره‌ی مدل آپلود نشود — خواسته‌ی کاربر)
@@ -199,7 +200,7 @@ export function ListingForm({
     setNewBrandMode(false);
     setBrandName("");
     setAttrs({});
-    setShowAttrs(false);
+    setShowAttrs(true);
     setPendingImages([]);
     setImageUrls([]);
     setQuery("");
@@ -224,7 +225,7 @@ export function ListingForm({
     setNewBrandMode(false);
     setBrandName("");
     setAttrs({});
-    setShowAttrs(false);
+    setShowAttrs(true);
     setStep(2);
   };
 
@@ -584,7 +585,7 @@ export function ListingForm({
                           onClick={skipSku}
                       >
                         <Plus className="size-4" />
-                        {m.listing.sku.createNew}
+                        {m.listing.sku.createNew.replace("{good}", goodName(selected, locale))}
                       </Button>
                     </div>
                 ) : (
@@ -618,13 +619,13 @@ export function ListingForm({
                 {/* لینک «ساختن محصول جدید» — همیشه در دسترس */}
                 {skuDisplayRows.length > 0 && (
                     <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
-                      {m.listing.sku.notHereQuestion}{" "}
+                      {m.listing.sku.notHereQuestion.replace("{good}", goodName(selected, locale))}{" "}
                       <button
                           type="button"
                           onClick={skipSku}
                           className="font-bold text-primary underline-offset-2 hover:underline"
                       >
-                        {m.listing.sku.createNew}
+                        {m.listing.sku.createNew.replace("{good}", goodName(selected, locale))}
                       </button>
                     </p>
                 )}
@@ -969,20 +970,24 @@ export function ListingForm({
                                 </div>
                             )}
 
-                            {/* اتریبیوت‌ها — اختیاری، قابل toggle */}
+                            {/* اتریبیوت‌ها — اختیاری ولی برای تطبیق مهم */}
                             {attrsOf.length > 0 && (
                                 <div className="mt-4 border-t pt-4">
                                   <button
                                       type="button"
                                       onClick={() => setShowAttrs((s) => !s)}
                                       aria-expanded={showAttrs}
-                                      className="flex w-full items-center gap-1.5 text-xs font-bold text-muted-foreground"
+                                      className="flex w-full items-center gap-1.5 text-xs font-bold text-primary"
                                   >
                                     <ChevronDown className={`size-3.5 transition ${showAttrs ? "rotate-180" : ""}`} />
                                     {m.listing.specs.optionalToggle}
                                   </button>
                                   {showAttrs && (
-                                      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                      <div className="mt-3">
+                                        <p className="mb-3 text-[11px] leading-5 text-muted-foreground">
+                                          {m.listing.specs.attrsHint}
+                                        </p>
+                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                         {attrsOf.map((a) => (
                                             <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
                                               {a.type === "enum" && a.options ? (
@@ -1009,6 +1014,7 @@ export function ListingForm({
                                               )}
                                             </Field>
                                         ))}
+                                        </div>
                                       </div>
                                   )}
                                 </div>
