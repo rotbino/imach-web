@@ -95,6 +95,7 @@ export function ListingForm({
   //   • اگر toggle روشن باشد: برند را انتخاب/جست‌وجو می‌کند → بک‌اند Product مرجع می‌سازد
   //   • اگر toggle خاموش باشد: کالای فله، مستقیم روی Good می‌نشیند (productId=null)
   const [hasBrand, setHasBrand] = useState(false);
+  const [newBrandMode, setNewBrandMode] = useState(false); // وقتی دکمه «جدید» زده شود
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
   const [showAttrs, setShowAttrs] = useState(false);
@@ -195,6 +196,7 @@ export function ListingForm({
     setVolume(null);
     setFrequency("MONTHLY");
     setHasBrand(false);
+    setNewBrandMode(false);
     setBrandName("");
     setAttrs({});
     setShowAttrs(false);
@@ -204,20 +206,22 @@ export function ListingForm({
     setDebounced("");
   };
 
-  // ── انتخاب SKU از لیست کالاهای مرجع — پرش به گام ۲ با(productId پر)
+  // ── انتخاب SKU از لیست محصولات — پرش به گام ۲ با(productId پر)
   const pickSku = (p: ProductRowDto) => {
     setSelectedProduct(p);
     // برند SKU را روی فرم set کن تا در گام ۲ نمایش داده شود
     setHasBrand(!!p.brand);
+    setNewBrandMode(false);
     setBrandName(p.brand?.name ?? "");
     setStep(2);
   };
 
-  // ─ـ skip کردن گام SKU و ساختن کالای مرجع جدید با ویژگی‌ها
+  // ── skip کردن گام SKU و ساختن محصول جدید با ویژگی‌ها
   // وقتی هیچ SKU ای وجود ندارد یا کاربر می‌خواهد کالای متفاوتی بسازد
   const skipSku = () => {
     setSelectedProduct(null);
     setHasBrand(false);
+    setNewBrandMode(false);
     setBrandName("");
     setAttrs({});
     setShowAttrs(false);
@@ -630,8 +634,8 @@ export function ListingForm({
           {/* ═══════════ گام ۲: مشخصات ═══════════ */}
           {step === 2 && selected && (
               <>
-                {/* هدر — اگر SKU انتخاب شده، عنوان SKU بالا و نوع کالا زیرش؛
-                    اگر SKU نمی‌سازد، نوع کالا بالا و «در حال ساختن کالای مرجع» زیرش */}
+                {/* هدر — اگر محصول انتخاب شده، عنوان محصول بالا و نوع کالا زیرش؛
+                    اگر محصول نمی‌سازد (فله)، نوع کالا بالا و «کالای فله» زیرش */}
                 <div className="flex items-center gap-3">
                   <button
                       type="button"
@@ -649,11 +653,20 @@ export function ListingForm({
                           {goodName(selected, locale)} · {pathOf(selected.category.id)}
                         </p>
                       </>
+                    ) : hasBrand && brandName.trim() ? (
+                      <>
+                        {/* دارد محصول می‌سازد: برند بالا، نوع کالا زیر */}
+                        <p className="truncate text-base font-extrabold">{brandName.trim()} · {goodName(selected, locale)}</p>
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {pathOf(selected.category.id)} · {unit} · در حال ساختن محصول
+                        </p>
+                      </>
                     ) : (
                       <>
+                        {/* فله — بدون محصول */}
                         <p className="truncate text-base font-extrabold">{goodName(selected, locale)}</p>
                         <p className="truncate text-[11px] text-muted-foreground">
-                          {pathOf(selected.category.id)} · {unit} · در حال ساختن کالای مرجع جدید
+                          {pathOf(selected.category.id)} · {unit} · کالای فله (بدون محصول)
                         </p>
                       </>
                     )}
@@ -869,6 +882,7 @@ export function ListingForm({
                                   aria-checked={hasBrand}
                                   onClick={() => {
                                     setHasBrand((v) => !v);
+                                    setNewBrandMode(false); // وقتی toggle می‌شود، حالت جدید را ریست کن
                                     if (hasBrand) setBrandName(""); // وقتی خاموش می‌شود، برند را پاک کن
                                   }}
                                   className={`relative h-6 w-11 shrink-0 rounded-full transition ${hasBrand ? "bg-primary" : "bg-muted-foreground/30"}`}
@@ -880,7 +894,7 @@ export function ListingForm({
                             {/* انتخابگر برند — فقط وقتی toggle روشن است */}
                             {hasBrand && (
                                 <div className="mt-4 space-y-3">
-                                  {/* چیپ‌های برندهای موجود برای این Good — از کالاهای مرجع استخراج شده */}
+                                  {/* چیپ‌های برندهای موجود برای این Good + دکمه جدید */}
                                   {goodBrands.length > 0 && (
                                       <div>
                                         <p className="mb-1.5 text-[11px] font-bold text-muted-foreground">
@@ -891,9 +905,9 @@ export function ListingForm({
                                               <button
                                                   key={b.id}
                                                   type="button"
-                                                  onClick={() => setBrandName(b.name)}
+                                                  onClick={() => { setBrandName(b.name); setNewBrandMode(false); }}
                                                   className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
-                                                    brandName.trim() === b.name
+                                                    brandName.trim() === b.name && !newBrandMode
                                                       ? "border-primary bg-primary/10 text-primary"
                                                       : "border-stone-200 bg-white text-stone-600 hover:border-primary/40"
                                                   }`}
@@ -901,41 +915,57 @@ export function ListingForm({
                                                 {b.name}
                                               </button>
                                           ))}
+                                          {/* دکمه جدید — فقط وقتی کلیک شود تکست باکس می‌آید */}
+                                          <button
+                                              type="button"
+                                              onClick={() => { setNewBrandMode(true); setBrandName(""); }}
+                                              className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                                                newBrandMode
+                                                  ? "border-primary bg-primary/10 text-primary"
+                                                  : "border-dashed border-primary/50 text-primary hover:border-primary"
+                                              }`}
+                                          >
+                                            <Plus className="ms-0.5 -mt-0.5 inline size-3" />
+                                            {m.listing.brand.newBrandButton}
+                                          </button>
                                         </div>
                                       </div>
                                   )}
 
-                                  {/* جست‌وجوی برند — همیشه وقتی toggle روشن است نشان داده می‌شود */}
-                                  <div className="relative">
-                                    <Field label={m.listing.brand.otherBrand}>
-                                      <Input
-                                          value={brandName}
-                                          onChange={(e) => setBrandName(e.target.value)}
-                                          placeholder={m.listing.brand.placeholder}
-                                          aria-label={m.listing.brand.label}
-                                      />
-                                    </Field>
-                                    {brandName.trim() && brandSuggestions.length > 0 && !goodBrands.some((b) => b.name === brandName.trim()) && (
-                                        <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border bg-white shadow-lg">
-                                          {brandSuggestions.slice(0, 5).map((b) => (
-                                              <button
-                                                  key={b.id}
-                                                  type="button"
-                                                  onClick={() => setBrandName(b.name)}
-                                                  className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
-                                              >
-                                                <span className="font-bold">{b.name}</span>
-                                                <Check className="size-3.5 text-primary" />
-                                              </button>
-                                          ))}
-                                        </div>
-                                    )}
-                                    {brandName.trim() && !goodBrands.some((b) => b.name === brandName.trim()) && (
-                                        <p className="mt-1 text-[10px] text-muted-foreground">
-                                          {m.listing.brand.newHint}
-                                        </p>
-                                    )}
-                                  </div>
+                                  {/* تکست باکس برند جدید — فقط وقتی دکمه جدید زده شد یا هیچ برند موجودی نیست */}
+                                  {(newBrandMode || goodBrands.length === 0) && (
+                                      <div className="relative">
+                                        <Field label={m.listing.brand.label}>
+                                          <Input
+                                              value={brandName}
+                                              onChange={(e) => setBrandName(e.target.value)}
+                                              placeholder={m.listing.brand.newBrandPlaceholder}
+                                              aria-label={m.listing.brand.label}
+                                              autoFocus
+                                          />
+                                        </Field>
+                                        {brandName.trim() && brandSuggestions.length > 0 && (
+                                            <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border bg-white shadow-lg">
+                                              {brandSuggestions.slice(0, 5).map((b) => (
+                                                  <button
+                                                      key={b.id}
+                                                      type="button"
+                                                      onClick={() => { setBrandName(b.name); setNewBrandMode(false); }}
+                                                      className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
+                                                  >
+                                                    <span className="font-bold">{b.name}</span>
+                                                    <Check className="size-3.5 text-primary" />
+                                                  </button>
+                                              ))}
+                                            </div>
+                                        )}
+                                        {brandName.trim() && (
+                                            <p className="mt-1 text-[10px] text-muted-foreground">
+                                              {m.listing.brand.newHint}
+                                            </p>
+                                        )}
+                                      </div>
+                                  )}
                                 </div>
                             )}
 
