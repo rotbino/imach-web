@@ -145,10 +145,10 @@ export const en: Messages = {
       volume: "Volume per period",
       frequency: "Frequency",
       unit: "Unit",
-      attrsTitle: "Attributes (optional)",
-      optionalToggle: "Product attributes (optional)",
+      attrsTitle: "Attributes",
+      optionalToggle: "Product attributes",
       attrsHint:
-          "Adding attributes helps buyers or suppliers looking for exactly this product find you faster.",
+          "Starred attributes are required — so the reference product is identifiable. The rest are optional.",
     },
     sections: {
       sell: "Wholesale selling",

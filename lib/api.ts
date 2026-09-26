@@ -166,6 +166,10 @@ export interface CategoryAttr {
   en: string;
   type: "enum" | "text";
   options?: CategoryAttrOption[];
+  /** اگر true باشد، کاربر در فرم ثبت دستی موظف است این ویژگی را پر کند.
+   *  کالاهای فله‌ای مثل سیب یا برنج ممکن است برند نداشته باشند ولی
+   *  نوع/رنگ/درجه باید حتماً مشخص شود تا کالای مرجع قابل شناسایی باشد. */
+  required?: boolean;
 }
 
 export interface CategoryNodeDto {

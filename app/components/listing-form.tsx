@@ -288,16 +288,23 @@ export function ListingForm({
   const save = async () => {
     if (!selected || !arm) return;
 
-    // ── اگر SKU انتخاب نشده، حداقل برند باید پر باشد تا کالای مرجع
-    // بی‌نام‌ونشان نسازیم. اگر Good دسته‌بندی‌اش ویژگی اجباری دارد، آن هم.
-    if (!selectedProduct && !brandName.trim()) {
-      toast({
-        title: "برند را وارد کن",
-        description: "چون کالای مرجع موجود نیست، حداقل برند را پر کن تا قابل شناسایی باشد.",
-        variant: "destructive",
-      });
-      setShowAttrs(true);
-      return;
+    // ── اگر SKU انتخاب نشده، ویژگی‌های اجباری دسته‌بندی باید پر شوند.
+    // برند فقط وقتی اجباری است که دسته‌بندی صریحاً آن را required کرده باشد
+    // (یا ویژگی با key="brand" اجباری باشد). کالاهای فله‌ای مثل سیب یا برنج
+    // ممکن است برند نداشته باشند ولی نوع/رنگ/درجه باید حتماً مشخص شود تا
+    // کالای مرجع قابل شناسایی باشد.
+    if (!selectedProduct) {
+      const requiredAttrs = attrsOf.filter((a) => a.required);
+      const missingAttrs = requiredAttrs.filter((a) => !(attrs[a.key] ?? "").trim());
+      if (missingAttrs.length > 0) {
+        toast({
+          title: "ویژگی‌های اجباری را پر کن",
+          description: missingAttrs.map((a) => (locale === "en" ? a.en : a.fa)).join("، "),
+          variant: "destructive",
+        });
+        setShowAttrs(true);
+        return;
+      }
     }
 
     const sellValid = (price ?? 0) > 0 && (stock ?? 0) > 0 && (minOrder ?? 0) > 0;
@@ -364,6 +371,13 @@ export function ListingForm({
   };
 
   const attrsOf = selected?.category.attrs ?? [];
+  // اگر SKU انتخاب نشده و دسته‌بندی ویژگی اجباری دارد، ویژگی‌ها را باز نشان بده
+  const hasRequiredAttrs = attrsOf.some((a) => a.required);
+  useEffect(() => {
+    if (step === 2 && !selectedProduct && hasRequiredAttrs) {
+      setShowAttrs(true);
+    }
+  }, [step, selectedProduct, hasRequiredAttrs]);
   const unit = selected ? unitLabel(selected.unit, locale) : "";
   const nothingFound = !!debounced && !searching && results.length === 0 && !selected;
   const pricePlaceholder =
@@ -828,9 +842,15 @@ export function ListingForm({
 
                             {showAttrs && (
                                 <div className="mt-3 rounded-xl border p-4">
-                                  <p className="mb-3 text-[11px] leading-5 text-muted-foreground">
-                                    {m.listing.specs.attrsHint}
-                                  </p>
+                                  {hasRequiredAttrs ? (
+                                      <p className="mb-3 text-[11px] leading-5 font-bold text-primary">
+                                        ستاره‌دارها اجباری است — تا کالای مرجع قابل شناسایی باشد.
+                                      </p>
+                                  ) : (
+                                      <p className="mb-3 text-[11px] leading-5 text-muted-foreground">
+                                        {m.listing.specs.attrsHint}
+                                      </p>
+                                  )}
                                   <div className="grid gap-3">
                                     {/* برند */}
                                     <div className="relative">
@@ -862,7 +882,7 @@ export function ListingForm({
                                     {attrsOf.length > 0 && (
                                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                           {attrsOf.map((a) => (
-                                              <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
+                                              <Field key={a.key} label={`${locale === "en" ? a.en : a.fa}${a.required ? " *" : ""}`}>
                                                 {a.type === "enum" && a.options ? (
                                                     <Select
                                                         value={attrs[a.key] ?? ""}
