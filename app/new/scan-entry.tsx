@@ -100,7 +100,7 @@ export function ScanEntry({
   // ── دوربین
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [cam, setCam] = useState<"starting" | "on" | "off">("starting");
+  const [cam, setCam] = useState<"starting" | "on" | "off" | "black">("starting");
   // ── نوع دستگاه: برای راهنمای مناسب
   const [deviceType, setDeviceType] = useState<"mobile" | "laptop" | "desktop">("laptop");
   // ── شمارنده تلاش مجدد — وقتی کاربر «تلاش دوباره» را می‌زند، افزایش می‌یابد
@@ -166,6 +166,7 @@ export function ScanEntry({
   useEffect(() => {
     let stopped = false;
     let interval: ReturnType<typeof setInterval> | null = null;
+    let blackTimer: ReturnType<typeof setTimeout> | null = null;
     setCam("starting");
 
     const start = async () => {
@@ -178,11 +179,33 @@ export function ScanEntry({
           stream.getTracks().forEach((t) => t.stop());
           return;
         }
+
+        // ── چک کن آیا استریم واقعاً ترک ویدئو دارد
+        const videoTracks = stream.getVideoTracks();
+        if (videoTracks.length === 0) {
+          if (!stopped) setCam("off");
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+
         streamRef.current = stream;
         const video = videoRef.current;
         if (!video) return;
         video.srcObject = stream;
         await video.play().catch(() => undefined);
+
+        // ── چک کن آیا ویدئو واقعاً پخش می‌شود — اگر بعد از ۳ ثانیه هنوز
+        // readyState < 2 بود یا videoWidth صفر بود، یعنی دوربین سیاه است
+        // (کاور بسته، در دسترس برنامه‌ی دیگه، یا درایور مشکل دارد)
+        blackTimer = setTimeout(() => {
+          if (stopped) return;
+          if (video.readyState < 2 || video.videoWidth === 0) {
+            setCam("black");
+            // دوربین را متوقف کن تا منابع آزاد شوند
+            stream.getTracks().forEach((t) => t.stop());
+            if (interval) clearInterval(interval);
+          }
+        }, 3000);
 
         const Ctor = (window as unknown as { BarcodeDetector?: BarcodeDetectorCtor }).BarcodeDetector;
         if (Ctor) {
@@ -217,6 +240,7 @@ export function ScanEntry({
     return () => {
       stopped = true;
       if (interval) clearInterval(interval);
+      if (blackTimer) clearTimeout(blackTimer);
       streamRef.current?.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     };
@@ -424,6 +448,26 @@ export function ScanEntry({
                     {m.scan.camTryAgain}
                   </button>
                 )}
+              </div>
+            </div>
+          )}
+          {cam === "black" && (
+            <div className="absolute inset-0 grid place-items-center p-6 text-center">
+              <div className="max-w-xs">
+                <CameraOff className="mx-auto size-6 text-amber-400" />
+                <p className="mt-2 text-xs font-bold leading-5 text-amber-200">
+                  {m.scan.camBlackTitle}
+                </p>
+                <p className="mt-1 text-[11px] leading-5 text-stone-300">
+                  {m.scan.camBlackHint}
+                </p>
+                <button
+                    type="button"
+                    onClick={() => setCamRetry((c) => c + 1)}
+                    className="mt-3 rounded-lg border border-stone-500 px-3 py-1.5 text-xs font-bold text-stone-200 hover:bg-stone-800"
+                >
+                  {m.scan.camTryAgain}
+                </button>
               </div>
             </div>
           )}

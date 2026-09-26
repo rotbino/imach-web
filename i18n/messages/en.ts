@@ -288,6 +288,8 @@ export const en: Messages = {
     camHintMobile: "Rear camera is active. Point at the barcode in the frame.",
     camHintNoCamera: "This device has no camera. If you have a USB scanner, plug it in and scan (it types like a keyboard). If not, open this page on your phone and use the phone's camera.",
     camTryAgain: "Try again",
+    camBlackTitle: "Camera shows black",
+    camBlackHint: "The camera is probably in use by another app (Zoom, Teams, etc.) or the cover is closed. Close all other apps that use the camera and try again. If it still doesn't work, use a USB scanner or your phone.",
     manualAria: "Type a barcode or use a scanner",
     manualPlaceholder: "Barcode… (scan or type, then Enter)",
     lookup: "Check",
