@@ -147,6 +147,11 @@ export const en: Messages = {
       newHint: "A new brand will be created",
       clear: "No brand",
     },
+    productLabel: {
+      label: "Product title",
+      placeholder: "e.g. Chips Ashi Mishi 250g onion flavor",
+      hint: "If left empty, it's auto-built from product type + brand + attributes. The title is only for display — matching is done from brand and attributes.",
+    },
     specs: {
       sellTitle: "Selling details for “{name}”",
       buyTitle: "Buying details for “{name}”",

@@ -100,6 +100,9 @@ export function ListingForm({
   const [attrs, setAttrs] = useState<Record<string, string>>({});
   // ── ویژگی‌ها به‌طور پیش‌فرض باز هستند — برای تطبیق مهم‌اند و نباید پنهان شوند
   const [showAttrs, setShowAttrs] = useState(true);
+  // ── عنوان نمایشی محصول — کاربر می‌تواند دلخواه وارد کند.
+  // اگر خالی باشد، بک‌اند از نوع کالا + برند + ویژگی‌ها می‌سازد.
+  const [productLabel, setProductLabel] = useState("");
 
   // ── گالری کالا — فایل‌ها همین‌جا نگه داشته می‌شوند و بلافاصله بعد از ثبتِ
   // آگهی آپلود می‌شوند (فایل قبل از ذخیره‌ی مدل آپلود نشود — خواسته‌ی کاربر)
@@ -199,6 +202,7 @@ export function ListingForm({
     setHasBrand(false);
     setNewBrandMode(false);
     setBrandName("");
+    setProductLabel("");
     setAttrs({});
     setShowAttrs(true);
     setPendingImages([]);
@@ -214,6 +218,8 @@ export function ListingForm({
     setHasBrand(!!p.brand);
     setNewBrandMode(false);
     setBrandName(p.brand?.name ?? "");
+    // عنوان SKU را هم set کن تا کاربر ببیند و در صورت نیاز ویرایش کند
+    setProductLabel(p.label);
     setStep(2);
   };
 
@@ -224,6 +230,7 @@ export function ListingForm({
     setHasBrand(false);
     setNewBrandMode(false);
     setBrandName("");
+    setProductLabel("");
     setAttrs({});
     setShowAttrs(true);
     setStep(2);
@@ -353,6 +360,9 @@ export function ListingForm({
         // ─ـ برند فقط وقتی فرستاده می‌شود که کاربر صراحتاً «برند دارد» را زده باشد
         // و SKU از قبل انتخاب نشده باشد (در غیر این صورت برند از SKU می‌آید)
         ...(!selectedProduct && hasBrand && brandName.trim() ? { brandName: brandName.trim() } : {}),
+        // ── عنوان نمایشی محصول — کاربر می‌تواند دلخواه وارد کند
+        // اگر خالی باشد، بک‌اند از نوع کالا + برند + ویژگی‌ها می‌سازد
+        ...(productLabel.trim() ? { productLabel: productLabel.trim() } : {}),
         ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
         ...(sellValid
             ? {
@@ -673,6 +683,26 @@ export function ListingForm({
                     )}
                   </div>
                 </div>
+
+                {/* ───── عنوان نمایشی محصول ───── */}
+                {/* فقط وقتی کاربر دارد محصول جدید می‌سازد (نه وقتی SKU انتخاب کرده).
+                    اگر کاربر خالی بگذارد، بک‌اند از نوع کالا + برند + ویژگی‌ها می‌سازد. */}
+                {!selectedProduct && (
+                    <div className="mt-5">
+                      <Field label={m.listing.productLabel.label}>
+                        <Input
+                            value={productLabel}
+                            onChange={(e) => setProductLabel(e.target.value)}
+                            placeholder={m.listing.productLabel.placeholder}
+                            maxLength={120}
+                            aria-label={m.listing.productLabel.label}
+                        />
+                      </Field>
+                      <p className="mt-1 text-[10px] leading-4 text-muted-foreground">
+                        {m.listing.productLabel.hint}
+                      </p>
+                    </div>
+                )}
 
                 {/* ───── سؤال نقش ───── */}
                 <div className="mt-6">

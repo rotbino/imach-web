@@ -856,6 +856,10 @@ export const listingsApi = {
     /** SKU انتخاب‌شده از کاتالوگ مرجع (اختیاری — بدون آن هویت از برند/ویژگی ساخته می‌شود) */
     productId?: string;
     attrs?: Record<string, string>;
+    /** عنوان نمایشی محصول — کاربر می‌تواند دلخواه وارد کند؛ اگر خالی باشد،
+     *  بک‌اند از نوع کالا + برند + ویژگی‌ها می‌سازد. searchText (هویت تطبیق)
+     *  همیشه از برند + ویژگی‌ها می‌آید، نه از این label. */
+    productLabel?: string;
     sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
   }) => api<GoodItemDto>("/listings/saveListing", { method: "PUT", body }),
