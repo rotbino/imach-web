@@ -21,6 +21,7 @@ import {
   ChevronDown,
   ImagePlus,
   Loader2,
+  Package,
   PackagePlus,
   Plus,
   Search,
@@ -94,7 +95,8 @@ export function ListingForm({
   // ── برند: کاربر صراحتاً می‌گوید کالایش برند دارد یا نه
   //   • اگر toggle روشن باشد: برند را انتخاب/جست‌وجو می‌کند → بک‌اند Product مرجع می‌سازد
   //   • اگر toggle خاموش باشد: کالای فله، مستقیم روی Good می‌نشیند (productId=null)
-  const [hasBrand, setHasBrand] = useState(false);
+  // null = هنوز انتخاب نکرده (اعتبارسنجی می‌شود)، true = برند دارد، false = فله
+  const [hasBrand, setHasBrand] = useState<boolean | null>(null);
   const [newBrandMode, setNewBrandMode] = useState(false); // وقتی دکمه «جدید» زده شود
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
@@ -199,7 +201,7 @@ export function ListingForm({
     setMinOrder(null);
     setVolume(null);
     setFrequency("MONTHLY");
-    setHasBrand(false);
+    setHasBrand(null);
     setNewBrandMode(false);
     setBrandName("");
     setProductLabel("");
@@ -227,7 +229,7 @@ export function ListingForm({
   // وقتی هیچ SKU ای وجود ندارد یا کاربر می‌خواهد کالای متفاوتی بسازد
   const skipSku = () => {
     setSelectedProduct(null);
-    setHasBrand(false);
+    setHasBrand(null);
     setNewBrandMode(false);
     setBrandName("");
     setProductLabel("");
@@ -310,15 +312,25 @@ export function ListingForm({
     // ── منطق برند → Product:
     // • اگر SKU انتخاب شده → productId از SKU می‌آید (همان مسیر)
     // • اگر کاربر گفت «کالا برند دارد» → باید برند را انتخاب/وارد کند
-    //   بک‌اند خودش Product مرجع find-or-create می‌کند
+    //   بک‌اند خودش Product find-or-create می‌کند
     // • اگر کاربر گفت «برند ندارد» → کالای فله، مستقیم روی Good می‌نشیند (productId=null)
-    if (!selectedProduct && hasBrand && !brandName.trim()) {
-      toast({
-        title: m.listing.errors.brandRequired,
-        description: m.listing.errors.brandRequiredDesc,
-        variant: "destructive",
-      });
-      return;
+    if (!selectedProduct) {
+      if (hasBrand === null) {
+        toast({
+          title: m.listing.errors.brandChoiceRequired,
+          description: m.listing.errors.brandChoiceRequiredDesc,
+          variant: "destructive",
+        });
+        return;
+      }
+      if (hasBrand === true && !brandName.trim()) {
+        toast({
+          title: m.listing.errors.brandRequired,
+          description: m.listing.errors.brandRequiredDesc,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     const sellValid = (price ?? 0) > 0 && (stock ?? 0) > 0 && (minOrder ?? 0) > 0;
@@ -359,7 +371,7 @@ export function ListingForm({
         ...(selectedProduct ? { productId: selectedProduct.id } : {}),
         // ─ـ برند فقط وقتی فرستاده می‌شود که کاربر صراحتاً «برند دارد» را زده باشد
         // و SKU از قبل انتخاب نشده باشد (در غیر این صورت برند از SKU می‌آید)
-        ...(!selectedProduct && hasBrand && brandName.trim() ? { brandName: brandName.trim() } : {}),
+        ...(!selectedProduct && hasBrand === true && brandName.trim() ? { brandName: brandName.trim() } : {}),
         // ── عنوان نمایشی محصول — کاربر می‌تواند دلخواه وارد کند
         // اگر خالی باشد، بک‌اند از نوع کالا + برند + ویژگی‌ها می‌سازد
         ...(productLabel.trim() ? { productLabel: productLabel.trim() } : {}),
@@ -664,7 +676,7 @@ export function ListingForm({
                           {goodName(selected, locale)} · {pathOf(selected.category.id)}
                         </p>
                       </>
-                    ) : hasBrand && brandName.trim() ? (
+                    ) : hasBrand === true && brandName.trim() ? (
                       <>
                         {/* دارد محصول می‌سازد: برند بالا، نوع کالا زیر */}
                         <p className="truncate text-base font-extrabold">{brandName.trim()} · {goodName(selected, locale)}</p>
@@ -899,31 +911,50 @@ export function ListingForm({
                           </div>
                       ) : (
                           <div className="rounded-xl border p-4">
-                            {/* سؤال برند — toggle صریح */}
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="text-sm font-bold">{m.listing.brand.hasBrandQuestion}</p>
-                                <p className="mt-0.5 text-[11px] leading-5 text-muted-foreground">
-                                  {hasBrand ? m.listing.brand.hasBrandHint : m.listing.brand.noBrandHint}
-                                </p>
-                              </div>
+                            {/* سؤال برند — دو رادیو باتن صریح.
+                                کاربر باید یکی را انتخاب کند تا بتواند ثبت کند. */}
+                            <p className="text-sm font-bold">{m.listing.brand.hasBrandQuestion}</p>
+                            <p className="mt-0.5 mb-3 text-[11px] leading-5 text-muted-foreground">
+                              {hasBrand === true ? m.listing.brand.hasBrandHint
+                                : hasBrand === false ? m.listing.brand.noBrandHint
+                                : m.listing.brand.choiceHint}
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
                               <button
                                   type="button"
-                                  role="switch"
-                                  aria-checked={hasBrand}
                                   onClick={() => {
-                                    setHasBrand((v) => !v);
-                                    setNewBrandMode(false); // وقتی toggle می‌شود، حالت جدید را ریست کن
-                                    if (hasBrand) setBrandName(""); // وقتی خاموش می‌شود، برند را پاک کن
+                                    setHasBrand(true);
+                                    setNewBrandMode(false);
                                   }}
-                                  className={`relative h-6 w-11 shrink-0 rounded-full transition ${hasBrand ? "bg-primary" : "bg-muted-foreground/30"}`}
+                                  className={`flex items-center justify-center gap-1.5 rounded-xl border p-3 text-xs font-bold transition ${
+                                    hasBrand === true
+                                      ? "border-primary bg-primary/10 text-primary"
+                                      : "border-stone-200 bg-white text-stone-600 hover:border-primary/40"
+                                  }`}
                               >
-                                <span className={`absolute top-0.5 size-5 rounded-full bg-white shadow transition ${hasBrand ? "start-0.5" : "start-5"}`} />
+                                <Store className="size-4" />
+                                {m.listing.brand.yesBrand}
+                              </button>
+                              <button
+                                  type="button"
+                                  onClick={() => {
+                                    setHasBrand(false);
+                                    setNewBrandMode(false);
+                                    setBrandName("");
+                                  }}
+                                  className={`flex items-center justify-center gap-1.5 rounded-xl border p-3 text-xs font-bold transition ${
+                                    hasBrand === false
+                                      ? "border-primary bg-primary/10 text-primary"
+                                      : "border-stone-200 bg-white text-stone-600 hover:border-primary/40"
+                                  }`}
+                              >
+                                <Package className="size-4" />
+                                {m.listing.brand.noBrand}
                               </button>
                             </div>
 
-                            {/* انتخابگر برند — فقط وقتی toggle روشن است */}
-                            {hasBrand && (
+                            {/* انتخابگر برند — فقط وقتی «برند دارد» انتخاب شده */}
+                            {hasBrand === true && (
                                 <div className="mt-4 space-y-3">
                                   {/* چیپ‌های برندهای موجود برای این Good + دکمه جدید */}
                                   {goodBrands.length > 0 && (
