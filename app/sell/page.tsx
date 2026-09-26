@@ -246,7 +246,7 @@ function ShowcaseHeader({
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {listings.map((l) => {
-              const photo = l.gallery?.[0];
+              const photo = l.gallery?.[0] ?? (l.product?.imageUrl ? { url: l.product.imageUrl, thumbUrl: l.product.imageUrl } : null);
               return (
               <article
                 key={l.id}

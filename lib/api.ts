@@ -328,6 +328,8 @@ export interface GoodItemDto {
     unit: string;
     category: { slug: string; nameFa: string; nameEn: string };
   };
+  /** عکس مرجع محصول — وقتی گالری آگهی خالی است، این عکس نشان داده می‌شود */
+  product?: { imageUrl: string | null } | null;
 }
 
 export interface BusinessProfileDto {
