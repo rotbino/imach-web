@@ -395,7 +395,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
             <button type="button" onClick={reset} className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground"><X className="size-4" /></button>
             <h1 className="text-lg font-extrabold">پیش‌نمایش {armLabel}</h1>
           </div>
-          <Button size="sm" onClick={() => void confirm()} disabled={busy || selectedCount === 0}>
+          <Button size="sm" onClick={() => void confirm()} disabled={busy}>
             {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
             ثبت {fa(selectedCount)} کالا
           </Button>
