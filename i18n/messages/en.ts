@@ -188,7 +188,7 @@ export const en: Messages = {
     empty: "Nothing found",
     loadMore: "More",
     sellers: "{n} sellers",
-    mine: "Yours",
+    mine: "Added",
     tray: "{n} products selected",
     continue: "Continue",
     specsTitle: "Details of selected products",

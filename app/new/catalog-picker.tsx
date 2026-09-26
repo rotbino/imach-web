@@ -13,6 +13,7 @@ import { useBulkSaveListings, useUploadFile } from "@/lib/queries";
 import { CURRENCIES, currencyLabel, fa, fmtMoney, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
+import type { LocaleDef } from "@/i18n/config";
 import { useAuthStore } from "@/lib/auth-store";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { iranCityItems, provinceOfCity } from "@/lib/iran-geo";
@@ -587,11 +588,15 @@ export function ReferencePicker({
   const draftOf = (id: string): Draft => draft[id] ?? {};
   const setDraftOf = (id: string, patch: Draft) => setDraft((s) => ({ ...s, [id]: { ...draftOf(id), ...patch } }));
 
-  // ── عکس‌های آپلودشده برای Product ها (productId → imageUrl)
-  // وقتی کاربر برای کالای مرجعی که عکس ندارد عکس آپلود می‌کند، آن عکس روی
-  // Product.imageUrl ست می‌شود تا از آن به بعد در لیست مرجع دیده شود.
+  // ── عکس‌های آپلودشده برای Product ها (productId → File object)
+  // عکس در مرحله‌ی قیمت‌گذاری فقط stage می‌شود (فایل در حالت pending)؛
+  // خودِ آپلود بعد از submit انجام می‌شود چونListing هنوز ساخته نشده و
+  // modelId لازم است تا عکس به گالری آگهی بچسبد. بعد از submit:
+  //   ۱. عکس به گالری Listing (modelId=listingId) آپلود می‌شود
+  //   ۲. اگر Product.imageUrl خالی است، همان URL روی Product ست می‌شود
+  //      تا برای همه‌ی کاربران آینده در لیست مرجع دیده شود.
+  const [pendingImages, setPendingImages] = useState<Record<string, File>>({});
   const [productImages, setProductImages] = useState<Record<string, string>>({});
-  const [uploadingImageFor, setUploadingImageFor] = useState<string | null>(null);
   const uploadFile = useUploadFile();
   const queryClient = useQueryClient();
 
@@ -602,29 +607,8 @@ export function ReferencePicker({
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-      setUploadingImageFor(productId);
-      try {
-        // آپلود استیج (بدون modelId) — فایل ذخیره می‌شود و URL برمی‌گردد
-        const uploaded = await uploadFile.mutateAsync({
-          file,
-          model: "Listing",
-          key: "gallery",
-        });
-        // ست کردن عکس روی Product.imageUrl — برای همه‌ی کاربران آینده
-        await productsApi.setProductImage({ productId, imageUrl: uploaded.url });
-        setProductImages((s) => ({ ...s, [productId]: uploaded.url }));
-        // invalidate تا picker تازه‌سازی شود
-        await queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast({ title: "عکس کالا ثبت شد" });
-      } catch (err) {
-        toast({
-          title: "آپلود عکس ناموفق بود",
-          description: err instanceof ApiError ? err.message : undefined,
-          variant: "destructive",
-        });
-      } finally {
-        setUploadingImageFor(null);
-      }
+      // stage: فقط فایل را در state نگه می‌داریم + preview با URL.createObjectURL
+      setPendingImages((s) => ({ ...s, [productId]: file }));
     };
     input.click();
   };
@@ -662,6 +646,56 @@ export function ReferencePicker({
             : { volume: draftOf(p.id).volume ?? undefined }),
         })),
       });
+
+      // ── آپلود عکس‌های stage شده به گالری Listing + ست کردن Product.imageUrl
+      // بعد از bulkSave، listingId ها در res.items برمی‌گردند. هر کالایی که
+      // عکس stage شده دارد، حالا به Listing آپلود می‌شود و اگر Product.imageUrl
+      // خالی است، همان URL روی Product هم ست می‌شود (برای همه‌ی کاربران آینده).
+      const items = (res as { items?: { productId: string; listingId: string }[] }).items ?? [];
+      const imageUploads: Promise<void>[] = [];
+      for (const item of items) {
+        const file = pendingImages[item.productId];
+        if (!file || !item.listingId) continue;
+        const pid = item.productId;
+        const lid = item.listingId;
+        const p = picked.find((x) => x.id === pid);
+        // اگر Product قبلاً imageUrl دارد، عکس فقط به گالری Listing می‌رود.
+        const productHasImage = !!(p?.imageUrl);
+        imageUploads.push(
+          (async () => {
+            try {
+              // ۱. آپلود به گالری Listing (با modelId)
+              const uploaded = await uploadFile.mutateAsync({
+                file,
+                model: "Listing",
+                modelId: lid,
+                key: "gallery",
+              });
+              // ۲. اگر Product.imageUrl خالی است، همان URL روی Product ست کن
+              if (!productHasImage) {
+                await productsApi.setProductImage({ productId: pid, imageUrl: uploaded.url });
+              }
+            } catch (err) {
+              // آپلود عکس شکست خورد — ولی Listing ساخته شده، فقط عکس نیامد
+              toast({
+                title: "آپلود عکس ناموفق بود",
+                description: err instanceof ApiError ? err.message : undefined,
+                variant: "destructive",
+              });
+            }
+          })()
+        );
+      }
+      // منتظر آپلود عکس‌ها می‌مانیم — ولی UI را بلاک نمی‌کنیم تا کاربر منتظر نماند
+      if (imageUploads.length > 0) {
+        // invalidate بعد از آپلود عکس‌ها تا کاتالوگ تازه‌سازی شود
+        Promise.all(imageUploads).finally(() => {
+          void queryClient.invalidateQueries({ queryKey: ["products"] });
+          void queryClient.invalidateQueries({ queryKey: ["listings"] });
+          void queryClient.invalidateQueries({ queryKey: ["business"] });
+        });
+      }
+
       toast({
         title: m.picker.successTitle.replace("{n}", fa(res.saved)),
         description: m.picker.successDesc,
@@ -671,6 +705,8 @@ export function ReferencePicker({
         // حلقه‌ی افزودن سریع — ثبت شد، سبد خالی می‌ماند و تیک‌زدن ادامه پیدا می‌کند
         setPicked([]);
         setDraft({});
+        setPendingImages({});
+        setProductImages({});
         setStep("pick");
       } else {
         onDone(arm);
@@ -855,9 +891,21 @@ export function ReferencePicker({
                 {displayRows.map((p) => {
                   const isPicked = pickedIds.has(p.id);
                   const mine = p.mineMode !== null;
+                  // اگر کاربر قبلاً این کالا را دارد، دیگر نمی‌تواند دوباره اضافه‌اش کند
+                  const disabled = mine;
                   return (
-                    <button key={p.id} type="button" onClick={() => toggle(p)}
-                      className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${isPicked ? "bg-accent/40" : "hover:bg-accent/30"}`}
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => !disabled && toggle(p)}
+                      disabled={disabled}
+                      className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${
+                        disabled
+                          ? "cursor-default opacity-70"
+                          : isPicked
+                            ? "bg-accent/40 hover:bg-accent/40"
+                            : "hover:bg-accent/30"
+                      }`}
                     >
                       <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
                         {p.imageUrl ? (
@@ -874,10 +922,17 @@ export function ReferencePicker({
                         {p.sellers > 0 && (
                           <span className="flex items-center gap-0.5 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-foreground/70"><Store className="size-3" />{m.picker.sellers.replace("{n}", fa(p.sellers))}</span>
                         )}
-                        {mine && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">{m.picker.mine}</span>}
-                        <span className={`grid size-7 place-items-center rounded-full border transition ${isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
-                          {isPicked ? <Check className="size-4" /> : <Plus className="size-4" />}
-                        </span>
+                        {disabled ? (
+                          // کالای اضافه‌شده — برچسب سبز با تیک
+                          <span className="flex items-center gap-0.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                            <Check className="size-3" />
+                            {m.picker.mine}
+                          </span>
+                        ) : (
+                          <span className={`grid size-7 place-items-center rounded-full border transition ${isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
+                            {isPicked ? <Check className="size-4" /> : <Plus className="size-4" />}
+                          </span>
+                        )}
                       </span>
                     </button>
                   );
@@ -980,108 +1035,24 @@ export function ReferencePicker({
           </p>
 
           <div className="mt-4 space-y-3">
-            {picked.map((p) => {
-              const unit = unitLabel(p.good.unit, locale);
-              const imgUrl = productImages[p.id] ?? p.imageUrl;
-              const isUploading = uploadingImageFor === p.id;
-              return (
-                <div key={p.id} className="animate-fade-up rounded-xl border p-3">
-                  {/* ── هدر: عکس + نام + حذف ── */}
-                  <div className="flex items-center gap-2.5">
-                    {/* عکس کالا — اگر دارد نشان بده، اگر ندارد دکمه‌ی آپلود */}
-                    <button
-                      type="button"
-                      onClick={() => !imgUrl && !isUploading && onPickProductImage(p.id)}
-                      disabled={!!imgUrl || isUploading}
-                      aria-label={imgUrl ? "" : m.picker.addImage}
-                      className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg transition ${
-                        imgUrl ? "bg-accent/70" : "border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-accent/40"
-                      }`}
-                    >
-                      {isUploading ? (
-                        <Loader2 className="size-4 animate-spin text-primary" />
-                      ) : imgUrl ? (
-                        <Image src={imgUrl} alt="" width={36} height={36} unoptimized className="size-full object-cover" />
-                      ) : (
-                        <ImagePlus className="size-4 text-primary/60" />
-                      )}
-                    </button>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-extrabold">{p.label}</p>
-                      <p className="truncate text-[11px] text-muted-foreground">
-                        {goodName(p.good, locale)} · هر {unit}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      aria-label="حذف"
-                      className="ms-auto grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
-                      onClick={() => toggle(p)}
-                    >
-                      <X className="size-4" />
-                    </button>
-                  </div>
-                  {arm === "sell" ? (
-                    /* ── سه فیلد در یک ردیف روی دسکتاپ ── */
-                    <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-                      <div>
-                        <label className="mb-1 block text-[11px] text-muted-foreground">
-                          {m.picker.price.replace("{unit}", unit)}
-                        </label>
-                        <NumberInput
-                          value={draftOf(p.id).price ?? null}
-                          onChange={(v) => setDraftOf(p.id, { price: v })}
-                          locale={numLocale}
-                          min={0}
-                          suffix={curName}
-                          aria-label={m.picker.price.replace("{unit}", unit)}
-                        />
-                      </div>
-                      <div>
-                        <label className="mb-1 block text-[11px] text-muted-foreground">
-                          {m.picker.stock}
-                        </label>
-                        <NumberInput
-                          value={draftOf(p.id).stock ?? null}
-                          onChange={(v) => setDraftOf(p.id, { stock: v })}
-                          locale={numLocale}
-                          min={0}
-                          suffix={unit}
-                          placeholder={m.picker.stock}
-                          aria-label={m.picker.stock}
-                        />
-                      </div>
-                      <div>
-                        <label className="mb-1 block text-[11px] text-muted-foreground">
-                          {m.picker.minOrder}
-                        </label>
-                        <NumberInput
-                          value={draftOf(p.id).minOrder ?? null}
-                          onChange={(v) => setDraftOf(p.id, { minOrder: v })}
-                          locale={numLocale}
-                          min={0}
-                          suffix={unit}
-                          placeholder={m.picker.minOrder}
-                          aria-label={m.picker.minOrder}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="mt-3">
-                      <NumberInput
-                        value={draftOf(p.id).volume ?? null}
-                        onChange={(v) => setDraftOf(p.id, { volume: v })}
-                        locale={numLocale}
-                        min={0}
-                        suffix={unit}
-                        placeholder={m.picker.volume}
-                        aria-label={m.picker.volume}
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {picked.map((p) => (
+              <SpecRow
+                key={p.id}
+                p={p}
+                arm={arm}
+                unit={unitLabel(p.good.unit, locale)}
+                curName={curName}
+                numLocale={numLocale}
+                draft={draftOf(p.id)}
+                setDraft={(patch) => setDraftOf(p.id, patch)}
+                pendingImage={pendingImages[p.id]}
+                productImage={productImages[p.id] ?? null}
+                onPickImage={() => onPickProductImage(p.id)}
+                onRemove={() => toggle(p)}
+                m={m}
+                locale={locale}
+              />
+            ))}
           </div>
 
           {/* ثبت — یا خروج، یا ماندن در حلقه‌ی تیک‌زدن */}
@@ -1149,4 +1120,163 @@ function useAggregatedCatalog(params: {
     enabled: params.enabled !== false && !!params.trade,
     staleTime: 30_000,
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SpecRow — یک ردیف از مرحله‌ی قیمت‌گذاری (عکس + نام + سه فیلد)
+// جداسازی شده تا URL.createObjectURL در useEffect مدیریت شود و leak نکند.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SpecRow({
+  p,
+  arm,
+  unit,
+  curName,
+  numLocale,
+  draft,
+  setDraft,
+  pendingImage,
+  productImage,
+  onPickImage,
+  onRemove,
+  m,
+  locale,
+}: {
+  p: ProductRowDto;
+  arm: "sell" | "buy";
+  unit: string;
+  curName: string;
+  numLocale: "fa" | "en";
+  draft: Draft;
+  setDraft: (patch: Draft) => void;
+  pendingImage?: File;
+  productImage: string | null;
+  onPickImage: () => void;
+  onRemove: () => void;
+  m: ReturnType<typeof useMessages>;
+  locale: LocaleDef["code"];
+}) {
+  // preview از فایل stage‌شده — useMemo تا فقط وقتی فایل عوض شد URL بسازد
+  const previewUrl = useMemo(
+    () => (pendingImage ? URL.createObjectURL(pendingImage) : null),
+    [pendingImage]
+  );
+  // revoke کردن URL وقتی فایل عوض می‌شود یا کامپوننت از mount خارج می‌شود
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const displayImg = productImage ?? previewUrl ?? p.imageUrl ?? null;
+
+  return (
+    <div className="animate-fade-up rounded-xl border p-3">
+      {/* ── هدر: عکس بزرگ + نام + حذف ── */}
+      <div className="flex items-center gap-2.5">
+        {/* عکس کالا — دکمه‌ی آپلود بزرگ با متن «افزودن عکس» */}
+        <button
+          type="button"
+          onClick={() => !displayImg && onPickImage()}
+          disabled={!!displayImg}
+          aria-label={m.picker.addImage}
+          className={`grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl transition ${
+            displayImg
+              ? "bg-accent/70"
+              : "border-2 border-dashed border-primary/40 hover:border-primary hover:bg-accent/40"
+          }`}
+        >
+          {displayImg ? (
+            <Image src={displayImg} alt="" width={56} height={56} unoptimized className="size-full object-cover" />
+          ) : (
+            <span className="flex flex-col items-center gap-0.5 text-primary/70">
+              <ImagePlus className="size-5" />
+              <span className="text-[9px] font-bold leading-none">عکس</span>
+            </span>
+          )}
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-extrabold">{p.label}</p>
+          <p className="truncate text-[11px] text-muted-foreground">
+            {goodName(p.good, locale)} · هر {unit}
+          </p>
+          {!displayImg && (
+            <button
+              type="button"
+              onClick={onPickImage}
+              className="mt-0.5 text-[11px] font-bold text-primary hover:underline"
+            >
+              {m.picker.addImage}
+            </button>
+          )}
+        </div>
+        <button
+          type="button"
+          aria-label="حذف"
+          className="ms-auto grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+          onClick={onRemove}
+        >
+          <X className="size-4" />
+        </button>
+      </div>
+      {arm === "sell" ? (
+        /* ── سه فیلد در یک ردیف روی دسکتاپ ── */
+        <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          <div>
+            <label className="mb-1 block text-[11px] text-muted-foreground">
+              {m.picker.price.replace("{unit}", unit)}
+            </label>
+            <NumberInput
+              value={draft.price ?? null}
+              onChange={(v) => setDraft({ price: v })}
+              locale={numLocale}
+              min={0}
+              suffix={curName}
+              aria-label={m.picker.price.replace("{unit}", unit)}
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-[11px] text-muted-foreground">
+              {m.picker.stock}
+            </label>
+            <NumberInput
+              value={draft.stock ?? null}
+              onChange={(v) => setDraft({ stock: v })}
+              locale={numLocale}
+              min={0}
+              suffix={unit}
+              placeholder={m.picker.stock}
+              aria-label={m.picker.stock}
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-[11px] text-muted-foreground">
+              {m.picker.minOrder}
+            </label>
+            <NumberInput
+              value={draft.minOrder ?? null}
+              onChange={(v) => setDraft({ minOrder: v })}
+              locale={numLocale}
+              min={0}
+              suffix={unit}
+              placeholder={m.picker.minOrder}
+              aria-label={m.picker.minOrder}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="mt-3">
+          <NumberInput
+            value={draft.volume ?? null}
+            onChange={(v) => setDraft({ volume: v })}
+            locale={numLocale}
+            min={0}
+            suffix={unit}
+            placeholder={m.picker.volume}
+            aria-label={m.picker.volume}
+          />
+        </div>
+      )}
+    </div>
+  );
 }

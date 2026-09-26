@@ -188,7 +188,7 @@ export const fa = {
     empty: "چیزی پیدا نشد",
     loadMore: "بیشتر",
     sellers: "{n} فروشنده",
-    mine: "داریش",
+    mine: "اضافه شده",
     tray: "{n} کالا انتخاب شد",
     continue: "ادامه",
     specsTitle: "مشخصات کالاهای انتخابی",
