@@ -660,213 +660,215 @@ export function ReferencePicker({
   return (
     <>
       {step === "pick" ? (
-        <>
-          {/* سرچ باکس */}
-          <div className="relative">
-            <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              aria-label={m.picker.searchAria}
-              placeholder={m.picker.searchPlaceholder}
-              value={query}
-              maxLength={40}
-              onChange={(e) => setQuery(e.target.value)}
-              className="h-11 pe-9 text-base"
-            />
-          </div>
+        <div className="flex gap-4">
+          {/* ─── سایدبار فیلتر — دسکتاپ ─── */}
+          <aside className="hidden w-56 shrink-0 sm:block">
+            <div className="sticky top-4 space-y-4 rounded-xl border bg-white p-4">
+              <h3 className="text-xs font-extrabold text-stone-500">فیلترها</h3>
 
-          {/* ─── نوار فیلتر — سبک دیوار ─── */}
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            {/* چیپ دسته */}
-            <button
-              type="button"
-              onClick={() => setCatModalOpen(true)}
-              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
-                categoryId ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
-              }`}
-            >
-              {selectedCatName ?? "دسته"}
-              {categoryId && (
-                <span
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => { e.stopPropagation(); setCategoryId(null); }}
-                  className="grid size-4 place-items-center rounded-full bg-primary/20 hover:bg-primary/30"
+              {/* دسته */}
+              <div>
+                <p className="mb-1.5 text-[11px] font-bold text-stone-600">دسته</p>
+                <div className="space-y-0.5">
+                  <button
+                    type="button"
+                    onClick={() => setCategoryId(null)}
+                    className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs transition ${!categoryId ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}
+                  >
+                    <span>همه</span>
+                  </button>
+                  {categories.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setCategoryId(categoryId === c.id ? null : c.id)}
+                      className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs transition ${categoryId === c.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}
+                    >
+                      <span>{c.nameFa}</span>
+                      <span className="text-[10px] text-muted-foreground">{fa(c.count)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <hr className="border-stone-100" />
+
+              {/* برند */}
+              <div>
+                <p className="mb-1.5 text-[11px] font-bold text-stone-600">برند</p>
+                <div className="max-h-48 space-y-0.5 overflow-y-auto">
+                  <button
+                    type="button"
+                    onClick={() => setBrandId(null)}
+                    className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs transition ${!brandId ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}
+                  >
+                    <span>همه</span>
+                  </button>
+                  {filteredBrands.map((b) => (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => setBrandId(brandId === b.id ? null : b.id)}
+                      className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs transition ${brandId === b.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}
+                    >
+                      <span className="truncate">{b.name}</span>
+                      <span className="shrink-0 text-[10px] text-muted-foreground">{fa(b.count)}</span>
+                    </button>
+                  ))}
+                  {filteredBrands.length === 0 && <p className="py-3 text-center text-[11px] text-muted-foreground">برندی نیست</p>}
+                </div>
+              </div>
+
+              <hr className="border-stone-100" />
+
+              {/* عکس‌دار */}
+              <div>
+                <p className="mb-1.5 text-[11px] font-bold text-stone-600">فقط عکس‌دار</p>
+                <button
+                  type="button"
+                  onClick={() => setHasImage(hasImage === true ? null : true)}
+                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs transition ${hasImage === true ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}
                 >
-                  <X className="size-2.5" />
-                </span>
-              )}
-            </button>
+                  <span>{hasImage === true ? "✓ فعال" : "غیرفعال"}</span>
+                </button>
+              </div>
 
-            {/* چیپ برند */}
-            <button
-              type="button"
-              onClick={() => setBrandModalOpen(true)}
-              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
-                brandId ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
-              }`}
-            >
-              {selectedBrandName ?? "برند"}
-              {brandId && (
-                <span
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => { e.stopPropagation(); setBrandId(null); }}
-                  className="grid size-4 place-items-center rounded-full bg-primary/20 hover:bg-primary/30"
-                >
-                  <X className="size-2.5" />
-                </span>
+              {(categoryId || brandId || hasImage !== null) && (
+                <button type="button" onClick={() => { setCategoryId(null); setBrandId(null); setHasImage(null); }} className="w-full text-[11px] font-bold text-red-500 hover:text-red-600">
+                  حذف همه فیلترها
+                </button>
               )}
-            </button>
+            </div>
+          </aside>
 
-            {/* چیپ عکس‌دار */}
-            <button
-              type="button"
-              onClick={() => setHasImage(hasImage === true ? null : true)}
-              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
-                hasImage === true ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
-              }`}
-            >
-              عکس‌دار
-              {hasImage === true && (
-                <span
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => { e.stopPropagation(); setHasImage(null); }}
-                  className="grid size-4 place-items-center rounded-full bg-primary/20 hover:bg-primary/30"
-                >
-                  <X className="size-2.5" />
-                </span>
-              )}
-            </button>
+          {/* ─── محتوای اصلی ─── */}
+          <div className="min-w-0 flex-1">
+            {/* سرچ باکس */}
+            <div className="relative">
+              <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                aria-label={m.picker.searchAria}
+                placeholder={m.picker.searchPlaceholder}
+                value={query}
+                maxLength={40}
+                onChange={(e) => setQuery(e.target.value)}
+                className="h-11 pe-9 text-base"
+              />
+            </div>
 
-            {/* پاک کردن همه فیلترها */}
-            {(categoryId || brandId || hasImage !== null) && (
+            {/* نوار چیپ فیلتر — موبایل */}
+            <div className="mt-3 flex flex-wrap items-center gap-2 sm:hidden">
               <button
                 type="button"
-                onClick={() => { setCategoryId(null); setBrandId(null); setHasImage(null); }}
-                className="text-[11px] font-bold text-red-500 hover:text-red-600"
+                onClick={() => setCatModalOpen(true)}
+                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${categoryId ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600"}`}
               >
-                حذف همه فیلترها
+                {selectedCatName ?? "دسته"}
+                {categoryId && <span role="button" tabIndex={0} onClick={(e) => { e.stopPropagation(); setCategoryId(null); }} className="grid size-4 place-items-center rounded-full bg-primary/20"><X className="size-2.5" /></span>}
               </button>
+              <button
+                type="button"
+                onClick={() => setBrandModalOpen(true)}
+                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${brandId ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600"}`}
+              >
+                {selectedBrandName ?? "برند"}
+                {brandId && <span role="button" tabIndex={0} onClick={(e) => { e.stopPropagation(); setBrandId(null); }} className="grid size-4 place-items-center rounded-full bg-primary/20"><X className="size-2.5" /></span>}
+              </button>
+              <button
+                type="button"
+                onClick={() => setHasImage(hasImage === true ? null : true)}
+                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition ${hasImage === true ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600"}`}
+              >
+                عکس‌دار
+                {hasImage === true && <span role="button" tabIndex={0} onClick={(e) => { e.stopPropagation(); setHasImage(null); }} className="grid size-4 place-items-center rounded-full bg-primary/20"><X className="size-2.5" /></span>}
+              </button>
+              {(categoryId || brandId || hasImage !== null) && (
+                <button type="button" onClick={() => { setCategoryId(null); setBrandId(null); setHasImage(null); }} className="text-[11px] font-bold text-red-500">حذف همه</button>
+              )}
+            </div>
+
+            {/* ردیف‌های محصول */}
+            {first.isLoading ? (
+              <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /></p>
+            ) : displayRows.length === 0 ? (
+              <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
+                <PackageSearch className="mx-auto size-6 text-primary/60" />
+                <p className="mt-2 text-sm font-bold">{m.picker.empty}</p>
+                <p className="mt-1 text-[11px] leading-5 text-muted-foreground">{m.picker.emptyHint}</p>
+              </div>
+            ) : (
+              <div className="mt-4 divide-y">
+                {displayRows.map((p) => {
+                  const isPicked = pickedIds.has(p.id);
+                  const mine = p.mineMode !== null;
+                  return (
+                    <button key={p.id} type="button" onClick={() => toggle(p)}
+                      className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${isPicked ? "bg-accent/40" : "hover:bg-accent/30"}`}
+                    >
+                      <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
+                        {p.imageUrl ? (
+                          <Image src={p.imageUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
+                        ) : (
+                          <span className="grid size-full place-items-center text-base font-black text-primary/80">{p.good.nameFa.slice(0, 1)}</span>
+                        )}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-extrabold">{p.label}</span>
+                        <span className="block truncate text-[11px] text-muted-foreground">{goodName(p.good, locale)}{p.brand ? ` · ${p.brand.name}` : ""}</span>
+                      </span>
+                      <span className="flex shrink-0 items-center gap-1.5">
+                        {p.sellers > 0 && (
+                          <span className="flex items-center gap-0.5 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-foreground/70"><Store className="size-3" />{m.picker.sellers.replace("{n}", fa(p.sellers))}</span>
+                        )}
+                        {mine && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">{m.picker.mine}</span>}
+                        <span className={`grid size-7 place-items-center rounded-full border transition ${isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
+                          {isPicked ? <Check className="size-4" /> : <Plus className="size-4" />}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {nextCursor && rows.length > 0 && (
+              <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void loadMore()} disabled={loadingMore}>
+                {loadingMore ? <Loader2 className="size-4 animate-spin" /> : null}
+                {m.picker.loadMore}
+              </Button>
+            )}
+
+            <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
+              {m.picker.notHere}{" "}
+              <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">{m.picker.switchToForm}</button>
+            </p>
+
+            {picked.length > 0 && (
+              <div className="sticky bottom-4 mt-4 flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-2.5 shadow-lg backdrop-blur">
+                <span className="ps-2 text-sm font-extrabold">{m.picker.tray.replace("{n}", fa(picked.length))}</span>
+                <span className="flex items-center gap-1.5">
+                  <Button size="sm" variant="ghost" onClick={() => setPicked([])}><X className="size-4" /></Button>
+                  <Button size="sm" onClick={() => setStep("specs")} className="gap-1">{m.picker.continue}<ArrowLeft className="size-4 rtl:rotate-180" /></Button>
+                </span>
+              </div>
             )}
           </div>
 
-          {/* ─── ردیف‌های محصول ─── */}
-          {first.isLoading ? (
-            <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" />
-            </p>
-          ) : displayRows.length === 0 ? (
-            <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
-              <PackageSearch className="mx-auto size-6 text-primary/60" />
-              <p className="mt-2 text-sm font-bold">{m.picker.empty}</p>
-              <p className="mt-1 text-[11px] leading-5 text-muted-foreground">{m.picker.emptyHint}</p>
-            </div>
-          ) : (
-            <div className="mt-4 divide-y">
-              {displayRows.map((p) => {
-                const isPicked = pickedIds.has(p.id);
-                const mine = p.mineMode !== null;
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => toggle(p)}
-                    className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${
-                      isPicked ? "bg-accent/40" : "hover:bg-accent/30"
-                    }`}
-                  >
-                    <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
-                      {p.imageUrl ? (
-                        <Image src={p.imageUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
-                      ) : (
-                        <span className="grid size-full place-items-center text-base font-black text-primary/80">
-                          {p.good.nameFa.slice(0, 1)}
-                        </span>
-                      )}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-extrabold">{p.label}</span>
-                      <span className="block truncate text-[11px] text-muted-foreground">
-                        {goodName(p.good, locale)}
-                        {p.brand ? ` · ${p.brand.name}` : ""}
-                      </span>
-                    </span>
-                    <span className="flex shrink-0 items-center gap-1.5">
-                      {p.sellers > 0 && (
-                        <span className="flex items-center gap-0.5 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-foreground/70">
-                          <Store className="size-3" />
-                          {m.picker.sellers.replace("{n}", fa(p.sellers))}
-                        </span>
-                      )}
-                      {mine && (
-                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                          {m.picker.mine}
-                        </span>
-                      )}
-                      <span
-                        className={`grid size-7 place-items-center rounded-full border transition ${
-                          isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"
-                        }`}
-                      >
-                        {isPicked ? <Check className="size-4" /> : <Plus className="size-4" />}
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {nextCursor && rows.length > 0 && (
-            <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void loadMore()} disabled={loadingMore}>
-              {loadingMore ? <Loader2 className="size-4 animate-spin" /> : null}
-              {m.picker.loadMore}
-            </Button>
-          )}
-
-          {/* ─── درِ خروج به مسیر آزاد ─── */}
-          <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
-            {m.picker.notHere}{" "}
-            <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">
-              {m.picker.switchToForm}
-            </button>
-          </p>
-
-          {/* ─── سبد شناور ─── */}
-          {picked.length > 0 && (
-            <div className="sticky bottom-4 mt-4 flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-2.5 shadow-lg backdrop-blur">
-              <span className="ps-2 text-sm font-extrabold">{m.picker.tray.replace("{n}", fa(picked.length))}</span>
-              <span className="flex items-center gap-1.5">
-                <Button size="sm" variant="ghost" onClick={() => setPicked([])}>
-                  <X className="size-4" />
-                </Button>
-                <Button size="sm" onClick={() => setStep("specs")} className="gap-1">
-                  {m.picker.continue}
-                  <ArrowLeft className="size-4 rtl:rotate-180" />
-                </Button>
-              </span>
-            </div>
-          )}
-
-          {/* ─── مدال دسته‌بندی ─── */}
+          {/* ─── bottom-sheet دسته — موبایل ─── */}
           {catModalOpen && (
-            <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={() => setCatModalOpen(false)}>
-              <div className="max-h-[70vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40 sm:hidden" onClick={() => setCatModalOpen(false)}>
+              <div className="max-h-[60vh] w-full overflow-y-auto rounded-t-2xl bg-white p-4 pb-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-stone-200" />
                 <div className="mb-3 flex items-center justify-between">
                   <h3 className="text-sm font-extrabold">انتخاب دسته</h3>
                   <button type="button" onClick={() => setCatModalOpen(false)} className="grid size-7 place-items-center rounded-lg text-muted-foreground hover:bg-accent"><X className="size-4" /></button>
                 </div>
                 <div className="space-y-1">
+                  <button type="button" onClick={() => { setCategoryId(null); setCatModalOpen(false); }} className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${!categoryId ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}>
+                    <span>همه</span>
+                  </button>
                   {categories.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => { setCategoryId(categoryId === c.id ? null : c.id); setCatModalOpen(false); }}
-                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${
-                        categoryId === c.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"
-                      }`}
-                    >
+                    <button key={c.id} type="button" onClick={() => { setCategoryId(categoryId === c.id ? null : c.id); setCatModalOpen(false); }} className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${categoryId === c.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}>
                       <span>{c.nameFa}</span>
                       <span className="text-[10px] text-muted-foreground">{fa(c.count)}</span>
                     </button>
@@ -876,36 +878,32 @@ export function ReferencePicker({
             </div>
           )}
 
-          {/* ─── مدال برند ─── */}
+          {/* ─── bottom-sheet برند — موبایل ─── */}
           {brandModalOpen && (
-            <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={() => setBrandModalOpen(false)}>
-              <div className="max-h-[70vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40 sm:hidden" onClick={() => setBrandModalOpen(false)}>
+              <div className="max-h-[60vh] w-full overflow-y-auto rounded-t-2xl bg-white p-4 pb-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-stone-200" />
                 <div className="mb-3 flex items-center justify-between">
                   <h3 className="text-sm font-extrabold">انتخاب برند</h3>
                   <button type="button" onClick={() => setBrandModalOpen(false)} className="grid size-7 place-items-center rounded-lg text-muted-foreground hover:bg-accent"><X className="size-4" /></button>
                 </div>
                 <div className="space-y-1">
+                  <button type="button" onClick={() => { setBrandId(null); setBrandModalOpen(false); }} className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${!brandId ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}>
+                    <span>همه</span>
+                  </button>
                   {filteredBrands.map((b) => (
-                    <button
-                      key={b.id}
-                      type="button"
-                      onClick={() => { setBrandId(brandId === b.id ? null : b.id); setBrandModalOpen(false); }}
-                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${
-                        brandId === b.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"
-                      }`}
-                    >
+                    <button key={b.id} type="button" onClick={() => { setBrandId(brandId === b.id ? null : b.id); setBrandModalOpen(false); }} className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start text-sm transition ${brandId === b.id ? "bg-primary/10 text-primary font-bold" : "hover:bg-accent"}`}>
                       <span>{b.name}</span>
                       <span className="text-[10px] text-muted-foreground">{fa(b.count)}</span>
                     </button>
                   ))}
-                  {filteredBrands.length === 0 && (
-                    <p className="py-6 text-center text-xs text-muted-foreground">برندی پیدا نشد</p>
-                  )}
+                  {filteredBrands.length === 0 && <p className="py-6 text-center text-xs text-muted-foreground">برندی نیست</p>}
                 </div>
               </div>
             </div>
           )}
-        </>
+        </div>
+
       ) : (
         <>
           {/* ───── گام ۲: قیمت‌گذاری فشرده ───── */}
