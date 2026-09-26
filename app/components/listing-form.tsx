@@ -617,21 +617,33 @@ export function ListingForm({
           {/* ═══════════ گام ۲: مشخصات ═══════════ */}
           {step === 2 && selected && (
               <>
-                {/* هدر */}
+                {/* هدر — اگر SKU انتخاب شده، عنوان SKU بالا و نوع کالا زیرش؛
+                    اگر SKU نمی‌سازد، نوع کالا بالا و «در حال ساختن کالای مرجع» زیرش */}
                 <div className="flex items-center gap-3">
                   <button
                       type="button"
-                      onClick={() => setStep(1)}
+                      onClick={() => setStep(selectedProduct ? 1.5 : 1)}
                       aria-label={m.listing.back}
                       className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground"
                   >
                     <ArrowLeft className="size-4 rtl:rotate-180" />
                   </button>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-base font-extrabold">{goodName(selected, locale)}</p>
-                    <p className="truncate text-[11px] text-muted-foreground">
-                      {pathOf(selected.category.id)} · {unit}
-                    </p>
+                    {selectedProduct ? (
+                      <>
+                        <p className="truncate text-base font-extrabold">{selectedProduct.label}</p>
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {goodName(selected, locale)} · {pathOf(selected.category.id)}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="truncate text-base font-extrabold">{goodName(selected, locale)}</p>
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {pathOf(selected.category.id)} · {unit} · در حال ساختن کالای مرجع جدید
+                        </p>
+                      </>
+                    )}
                   </div>
                 </div>
 

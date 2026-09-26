@@ -93,7 +93,7 @@ export const fa = {
     },
     search: {
       aria: "جست‌وجوی نوع کالا",
-      placeholder: "مثلا برنج، میلگرد، سیب",
+      placeholder: "جستجوی نوع کالا، مثلا سیب، شامپو، میلگرد",
       results: "انواع کالای مشابه",
       empty: "چیزی پیدا نشد",
       unitCommon: "واحد رایج",

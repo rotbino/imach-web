@@ -92,7 +92,7 @@ export const en: Messages = {
     },
     search: {
       aria: "Search product types",
-      placeholder: "e.g. rice, rebar, apple",
+      placeholder: "Search product type, e.g. apple, shampoo, rebar",
       results: "Similar product types",
       empty: "Nothing found",
       unitCommon: "Common unit",
