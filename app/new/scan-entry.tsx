@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { ApiError, type ProductRowDto } from "@/lib/api";
 import { productsApi } from "@/lib/api";
-import { useBulkSaveListings } from "@/lib/queries";
+import { useBulkSaveListings, useUploadFile } from "@/lib/queries";
 import { CURRENCIES, currencyLabel, fa, goodName } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
@@ -11,7 +12,8 @@ import { NumberInput } from "@/components/number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Camera, CameraOff, Check, Keyboard, Loader2, ScanLine, TriangleAlert, X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Camera, CameraOff, Check, ImagePlus, Keyboard, Loader2, ScanLine, TriangleAlert, X } from "lucide-react";
 
 /**
  * ─── ثبت سریع با اسکنر ───────────────────────────────────────────────────────
@@ -38,8 +40,11 @@ type GridRow = {
   volume: number | null;
 };
 
-const GRID_SELL = "28px 44px minmax(130px,1.5fr) minmax(70px,0.7fr) 110px 65px 65px 65px";
-const GRID_BUY  = "28px 44px minmax(130px,1.5fr) minmax(70px,0.7fr) 90px 90px";
+// ستون‌ها: # | حذف | عکس | محصول+برند | قیمت | موجودی | حداقل (sell)
+// ستون‌ها: # | حذف | عکس | محصول+برند | حجم | دوره (buy)
+// ورودی‌ها عریض‌تر شده‌اند تا عددها زیر قایم نشوند
+const GRID_SELL = "28px 32px 44px minmax(160px,1.5fr) minmax(110px,0.8fr) minmax(85px,0.6fr) minmax(85px,0.6fr)";
+const GRID_BUY  = "28px 32px 44px minmax(160px,1.5fr) minmax(110px,0.8fr) minmax(90px,0.6fr)";
 
 interface BarcodeDetectorLike {
   detect: (source: HTMLVideoElement) => Promise<{ rawValue: string }[]>;
@@ -99,7 +104,7 @@ export function ScanEntry({
   const curDef = CURRENCIES[currency ?? "IRR"] ?? CURRENCIES.IRR;
   const curName = currencyLabel(currency ?? "IRR", locale);
   const GRID_COLS = arm === "sell" ? GRID_SELL : GRID_BUY;
-  const inputCls = "h-7 rounded border-stone-200 bg-stone-50/50 px-1.5 text-xs hover:border-stone-300 focus:border-primary focus:bg-white";
+  const inputCls = "h-8 rounded border-stone-200 bg-stone-50/50 px-2 text-xs hover:border-stone-300 focus:border-primary focus:bg-white";
 
   // ── دوربین
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -123,6 +128,45 @@ export function ScanEntry({
   const [dupCount, setDupCount] = useState(0);
   const [savedCount, setSavedCount] = useState(0);
   const [failedCount, setFailedCount] = useState(0);
+  // ── عکس‌های آپلودشده برای Product ها (productId → imageUrl) — وقتی کاربر
+  // برای کالایی که عکس ندارد عکس آپلود می‌کند، آن عکس روی Product ست می‌شود
+  const [productImages, setProductImages] = useState<Record<string, string>>({});
+  const [uploadingImageFor, setUploadingImageFor] = useState<string | null>(null);
+  const uploadFile = useUploadFile();
+  const queryClient = useQueryClient();
+
+  // ── آپلود عکس برای محصول — عکس روی Product.imageUrl ست می‌شود تا همه ببینند
+  const onPickProductImage = (productId: string) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      setUploadingImageFor(productId);
+      try {
+        // آپلود استیج (بدون modelId) — URL برمی‌گردد
+        const uploaded = await uploadFile.mutateAsync({
+          file,
+          model: "Listing",
+          key: "gallery",
+        });
+        // ست کردن عکس روی Product.imageUrl
+        await productsApi.setProductImage({ productId, imageUrl: uploaded.url });
+        setProductImages((s) => ({ ...s, [productId]: uploaded.url }));
+        toast({ title: "عکس ثبت شد" });
+      } catch (err) {
+        toast({
+          title: "آپلود عکس ناموفق بود",
+          description: err instanceof ApiError ? err.message : undefined,
+          variant: "destructive",
+        });
+      } finally {
+        setUploadingImageFor(null);
+      }
+    };
+    input.click();
+  };
 
   const rowIds = useMemo(() => new Set(rows.map((r) => r.product.id)), [rows]);
   const incompleteCount = useMemo(() => {
@@ -443,8 +487,8 @@ export function ScanEntry({
               <div style={{ display: "grid", gridTemplateColumns: GRID_COLS, position: "sticky", top: 0, zIndex: 10 }} className="border-b bg-stone-100 text-[10px] font-bold text-stone-500">
                 <div className="px-1 py-2.5 text-center">#</div>
                 <div className="px-1 py-2.5" />
-                <div className="px-2 py-2.5">محصول</div>
-                <div className="px-2 py-2.5">نوع</div>
+                <div className="px-1 py-2.5 text-center">عکس</div>
+                <div className="px-2 py-2.5">محصول · برند</div>
                 {arm === "sell" ? (
                   <>
                     <div className="px-2 py-2.5 text-center">قیمت ({curName})</div>
@@ -465,6 +509,12 @@ export function ScanEntry({
                 const isComplete = arm === "sell"
                   ? !!(r.price && r.price > 0 && (r.stock ?? 0) >= 0 && r.minOrder && r.minOrder > 0)
                   : !!(r.volume && r.volume > 0);
+                const imgUrl = productImages[p.id] ?? p.imageUrl;
+                const isUploading = uploadingImageFor === p.id;
+                // عنوان نمایشی: اگر برند دارد → «نوع کالا · برند»؛ وگرنه فقط نوع کالا
+                const displayTitle = p.brand
+                  ? `${goodName(p.good, locale)} · ${p.brand.name}`
+                  : goodName(p.good, locale);
                 return (
                   <div
                     key={p.id}
@@ -482,11 +532,33 @@ export function ScanEntry({
                         <X className="size-3.5" />
                       </button>
                     </div>
-                    <div className="min-w-0 px-2 py-2">
-                      <p className="truncate text-xs font-bold">{p.label}</p>
-                      <p className="truncate text-[10px] text-muted-foreground">{goodName(p.good, locale)}</p>
+                    {/* عکس محصول — اگر دارد نشان بده، اگر ندارد دکمه آپلود */}
+                    <div className="grid place-items-center px-1 py-1.5">
+                      <button
+                        type="button"
+                        onClick={() => !imgUrl && !isUploading && onPickProductImage(p.id)}
+                        disabled={!!imgUrl || isUploading}
+                        aria-label={imgUrl ? "" : "افزودن عکس"}
+                        className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg transition ${
+                          imgUrl
+                            ? "bg-accent/70"
+                            : "border-2 border-dashed border-primary/40 hover:border-primary hover:bg-accent/40"
+                        }`}
+                      >
+                        {isUploading ? (
+                          <Loader2 className="size-3.5 animate-spin text-primary" />
+                        ) : imgUrl ? (
+                          <Image src={imgUrl} alt="" width={36} height={36} unoptimized className="size-full object-cover" />
+                        ) : (
+                          <ImagePlus className="size-3.5 text-primary/60" />
+                        )}
+                      </button>
                     </div>
-                    <div className="px-2 py-2 text-[10px] text-muted-foreground">{p.brand?.name ?? "—"}</div>
+                    {/* محصول · برند — عنوان ترکیبی */}
+                    <div className="min-w-0 px-2 py-2">
+                      <p className="truncate text-xs font-bold">{displayTitle}</p>
+                      <p className="truncate text-[10px] text-muted-foreground">{p.label}</p>
+                    </div>
                     {arm === "sell" ? (
                       <>
                         <div className="px-1 py-1.5">
