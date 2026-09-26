@@ -40,17 +40,38 @@ export function WelcomeModal({ forced = false }: { forced?: boolean }) {
   const [busy, setBusy] = useState(false);
   const shown = useRef(false);
 
-  // باز کردن خودکار فقط اگر firstName ندارد — فقط یک بار
+  // ── کلید localStorage مبتنی بر userId — وقتی کاربر مرحله‌ی خوش‌آمد را
+  // پشت سر گذاشت (یا آن را بست)، دیگر در رفرش‌های بعدی نشان داده نمی‌شود.
+  // این تنها سیگنال پایدار است که می‌گوییم «کاربر از خوش‌آمد رد شده».
+  const welcomeKey = user ? `imach_welcome_done_${user.id}` : null;
+
+  const markDone = () => {
+    if (welcomeKey && typeof window !== "undefined") {
+      try { localStorage.setItem(welcomeKey, "1"); } catch { /* ignore */ }
+    }
+  };
+
+  const isDone = () => {
+    if (!welcomeKey || typeof window === "undefined") return false;
+    try { return localStorage.getItem(welcomeKey) === "1"; } catch { return false; }
+  };
+
+  // باز کردن خودکار فقط اگر firstName ندارد و هنوز خوش‌آمد را ندیده — فقط یک بار
   useEffect(() => {
     if (!user) return;
     if (shown.current) return;
-    const needsWelcome = !user.firstName || user.name.startsWith("کاربر ");
+    // اگر کاربر قبلاً نام را پر کرده، دیگر خوش‌آمد نمی‌خواهد
+    const hasName = !!user.firstName && !user.name.startsWith("کاربر ");
+    // اگر قبلاً خوش‌آمد را دیده/بسته، دیگر نشان نده
+    const alreadyDone = isDone();
+    const needsWelcome = !hasName && !alreadyDone;
     if (needsWelcome || forced) {
       shown.current = true;
       setFirstName(user.firstName ?? "");
       setLastName(user.lastName ?? "");
       setOpen(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, forced]);
 
   if (!user) return null;
@@ -71,6 +92,7 @@ export function WelcomeModal({ forced = false }: { forced?: boolean }) {
         lastName: lastName.trim(),
       });
       updateUser(res.user);
+      markDone(); // ── خوش‌آمد تمام شد — دیگر نشان نده
       setOpen(false);
 
       // سوییچ arm بر اساس intent
@@ -94,7 +116,16 @@ export function WelcomeModal({ forced = false }: { forced?: boolean }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o && !forced) setOpen(false); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o && !forced) {
+          setOpen(false);
+          // کاربر مدال را بست → مرحله‌ی خوش‌آمد را پشت سر گذاشت
+          markDone();
+        }
+      }}
+    >
       <DialogContent className="max-w-md gap-4 p-5" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-lg font-extrabold">خوش اومدی!</DialogTitle>

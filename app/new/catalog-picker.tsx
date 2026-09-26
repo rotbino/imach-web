@@ -9,7 +9,7 @@ import {
   type ProductRowDto,
 } from "@/lib/api";
 import { businessesApi, listingsApi, productsApi } from "@/lib/api";
-import { useBulkSaveListings } from "@/lib/queries";
+import { useBulkSaveListings, useUploadFile } from "@/lib/queries";
 import { CURRENCIES, currencyLabel, fa, fmtMoney, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
@@ -21,13 +21,14 @@ import { BrandStrip, CategoryStrip } from "@/app/components/brand-strip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   ArrowRight,
   BadgeCheck,
   Check,
   Copy,
+  ImagePlus,
   Library,
   Loader2,
   PackageSearch,
@@ -586,11 +587,63 @@ export function ReferencePicker({
   const draftOf = (id: string): Draft => draft[id] ?? {};
   const setDraftOf = (id: string, patch: Draft) => setDraft((s) => ({ ...s, [id]: { ...draftOf(id), ...patch } }));
 
+  // ── عکس‌های آپلودشده برای Product ها (productId → imageUrl)
+  // وقتی کاربر برای کالای مرجعی که عکس ندارد عکس آپلود می‌کند، آن عکس روی
+  // Product.imageUrl ست می‌شود تا از آن به بعد در لیست مرجع دیده شود.
+  const [productImages, setProductImages] = useState<Record<string, string>>({});
+  const [uploadingImageFor, setUploadingImageFor] = useState<string | null>(null);
+  const uploadFile = useUploadFile();
+  const queryClient = useQueryClient();
+
+  const onPickProductImage = (productId: string) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      setUploadingImageFor(productId);
+      try {
+        // آپلود استیج (بدون modelId) — فایل ذخیره می‌شود و URL برمی‌گردد
+        const uploaded = await uploadFile.mutateAsync({
+          file,
+          model: "Listing",
+          key: "gallery",
+        });
+        // ست کردن عکس روی Product.imageUrl — برای همه‌ی کاربران آینده
+        await productsApi.setProductImage({ productId, imageUrl: uploaded.url });
+        setProductImages((s) => ({ ...s, [productId]: uploaded.url }));
+        // invalidate تا picker تازه‌سازی شود
+        await queryClient.invalidateQueries({ queryKey: ["products"] });
+        toast({ title: "عکس کالا ثبت شد" });
+      } catch (err) {
+        toast({
+          title: "آپلود عکس ناموفق بود",
+          description: err instanceof ApiError ? err.message : undefined,
+          variant: "destructive",
+        });
+      } finally {
+        setUploadingImageFor(null);
+      }
+    };
+    input.click();
+  };
+
   const submit = async (keepGoing = false) => {
     if (arm === "sell") {
-      const missing = picked.filter((p) => !((draftOf(p.id).price ?? 0) > 0));
-      if (missing.length > 0) {
+      const missingPrice = picked.filter((p) => !((draftOf(p.id).price ?? 0) > 0));
+      if (missingPrice.length > 0) {
         toast({ title: m.picker.needPrice, variant: "destructive" });
+        return;
+      }
+      const missingStock = picked.filter((p) => !((draftOf(p.id).stock ?? 0) > 0));
+      if (missingStock.length > 0) {
+        toast({ title: m.picker.needStock, variant: "destructive" });
+        return;
+      }
+      const missingMinOrder = picked.filter((p) => !((draftOf(p.id).minOrder ?? 0) > 0));
+      if (missingMinOrder.length > 0) {
+        toast({ title: m.picker.needMinOrder, variant: "destructive" });
         return;
       }
     }
@@ -929,13 +982,31 @@ export function ReferencePicker({
           <div className="mt-4 space-y-3">
             {picked.map((p) => {
               const unit = unitLabel(p.good.unit, locale);
+              const imgUrl = productImages[p.id] ?? p.imageUrl;
+              const isUploading = uploadingImageFor === p.id;
               return (
                 <div key={p.id} className="animate-fade-up rounded-xl border p-3">
+                  {/* ── هدر: عکس + نام + حذف ── */}
                   <div className="flex items-center gap-2.5">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent/70 text-sm font-black text-primary/80">
-                      {p.good.nameFa.slice(0, 1)}
-                    </span>
-                    <div className="min-w-0">
+                    {/* عکس کالا — اگر دارد نشان بده، اگر ندارد دکمه‌ی آپلود */}
+                    <button
+                      type="button"
+                      onClick={() => !imgUrl && !isUploading && onPickProductImage(p.id)}
+                      disabled={!!imgUrl || isUploading}
+                      aria-label={imgUrl ? "" : m.picker.addImage}
+                      className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg transition ${
+                        imgUrl ? "bg-accent/70" : "border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-accent/40"
+                      }`}
+                    >
+                      {isUploading ? (
+                        <Loader2 className="size-4 animate-spin text-primary" />
+                      ) : imgUrl ? (
+                        <Image src={imgUrl} alt="" width={36} height={36} unoptimized className="size-full object-cover" />
+                      ) : (
+                        <ImagePlus className="size-4 text-primary/60" />
+                      )}
+                    </button>
+                    <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-extrabold">{p.label}</p>
                       <p className="truncate text-[11px] text-muted-foreground">
                         {goodName(p.good, locale)} · هر {unit}
@@ -944,15 +1015,16 @@ export function ReferencePicker({
                     <button
                       type="button"
                       aria-label="حذف"
-                      className="ms-auto grid size-7 place-items-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+                      className="ms-auto grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
                       onClick={() => toggle(p)}
                     >
                       <X className="size-4" />
                     </button>
                   </div>
                   {arm === "sell" ? (
+                    /* ── سه فیلد در یک ردیف روی دسکتاپ ── */
                     <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-                      <div className="sm:col-span-3">
+                      <div>
                         <label className="mb-1 block text-[11px] text-muted-foreground">
                           {m.picker.price.replace("{unit}", unit)}
                         </label>
@@ -965,24 +1037,34 @@ export function ReferencePicker({
                           aria-label={m.picker.price.replace("{unit}", unit)}
                         />
                       </div>
-                      <NumberInput
-                        value={draftOf(p.id).stock ?? null}
-                        onChange={(v) => setDraftOf(p.id, { stock: v })}
-                        locale={numLocale}
-                        min={0}
-                        suffix={unit}
-                        placeholder={m.picker.stock}
-                        aria-label={m.picker.stock}
-                      />
-                      <NumberInput
-                        value={draftOf(p.id).minOrder ?? null}
-                        onChange={(v) => setDraftOf(p.id, { minOrder: v })}
-                        locale={numLocale}
-                        min={0}
-                        suffix={unit}
-                        placeholder={m.picker.minOrder}
-                        aria-label={m.picker.minOrder}
-                      />
+                      <div>
+                        <label className="mb-1 block text-[11px] text-muted-foreground">
+                          {m.picker.stock}
+                        </label>
+                        <NumberInput
+                          value={draftOf(p.id).stock ?? null}
+                          onChange={(v) => setDraftOf(p.id, { stock: v })}
+                          locale={numLocale}
+                          min={0}
+                          suffix={unit}
+                          placeholder={m.picker.stock}
+                          aria-label={m.picker.stock}
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] text-muted-foreground">
+                          {m.picker.minOrder}
+                        </label>
+                        <NumberInput
+                          value={draftOf(p.id).minOrder ?? null}
+                          onChange={(v) => setDraftOf(p.id, { minOrder: v })}
+                          locale={numLocale}
+                          min={0}
+                          suffix={unit}
+                          placeholder={m.picker.minOrder}
+                          aria-label={m.picker.minOrder}
+                        />
+                      </div>
                     </div>
                   ) : (
                     <div className="mt-3">
