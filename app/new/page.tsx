@@ -28,7 +28,7 @@ export default function NewListingPage() {
     <>
       <AppHeader />
       <main className="grow">
-        <div className="mx-auto max-w-2xl px-4 py-8">
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
           <Suspense
             fallback={
               <div className="grid place-items-center py-32">
