@@ -149,7 +149,7 @@ export const en: Messages = {
     },
     productLabel: {
       label: "Product title",
-      placeholder: "e.g. Chips Ashi Mishi 250g onion flavor",
+      placeholder: "Write the exact title of this product",
       hint: "If left empty, it's auto-built from product type + brand + attributes. The title is only for display — matching is done from brand and attributes.",
     },
     specs: {
