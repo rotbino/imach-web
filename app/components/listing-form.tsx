@@ -306,8 +306,8 @@ export function ListingForm({
     // • اگر کاربر گفت «برند ندارد» → کالای فله، مستقیم روی Good می‌نشیند (productId=null)
     if (!selectedProduct && hasBrand && !brandName.trim()) {
       toast({
-        title: "برند را انتخاب کن",
-        description: "گفتی این کالا برند دارد — برندش را انتخاب یا بنویس.",
+        title: m.listing.errors.brandRequired,
+        description: m.listing.errors.brandRequiredDesc,
         variant: "destructive",
       });
       return;
@@ -584,7 +584,7 @@ export function ListingForm({
                           onClick={skipSku}
                       >
                         <Plus className="size-4" />
-                        ساختن کالای مرجع جدید
+                        {m.listing.sku.createNew}
                       </Button>
                     </div>
                 ) : (
@@ -615,16 +615,16 @@ export function ListingForm({
                     </div>
                 )}
 
-                {/* لینک «ساختن کالای مرجع جدید» — همیشه در دسترس */}
+                {/* لینک «ساختن محصول جدید» — همیشه در دسترس */}
                 {skuDisplayRows.length > 0 && (
                     <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
-                      کالای موردنظرت نیست؟{" "}
+                      {m.listing.sku.notHereQuestion}{" "}
                       <button
                           type="button"
                           onClick={skipSku}
                           className="font-bold text-primary underline-offset-2 hover:underline"
                       >
-                        ساختن کالای مرجع جدید
+                        {m.listing.sku.createNew}
                       </button>
                     </p>
                 )}
@@ -658,7 +658,7 @@ export function ListingForm({
                         {/* دارد محصول می‌سازد: برند بالا، نوع کالا زیر */}
                         <p className="truncate text-base font-extrabold">{brandName.trim()} · {goodName(selected, locale)}</p>
                         <p className="truncate text-[11px] text-muted-foreground">
-                          {pathOf(selected.category.id)} · {unit} · در حال ساختن محصول
+                          {pathOf(selected.category.id)} · {unit} · {m.listing.sku.buildingHint}
                         </p>
                       </>
                     ) : (
@@ -666,7 +666,7 @@ export function ListingForm({
                         {/* فله — بدون محصول */}
                         <p className="truncate text-base font-extrabold">{goodName(selected, locale)}</p>
                         <p className="truncate text-[11px] text-muted-foreground">
-                          {pathOf(selected.category.id)} · {unit} · کالای فله (بدون محصول)
+                          {pathOf(selected.category.id)} · {unit} · {m.listing.sku.bulkHint}
                         </p>
                       </>
                     )}
@@ -852,11 +852,11 @@ export function ListingForm({
                           <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
                             <p className="mb-2 flex items-center gap-1.5 text-xs font-bold text-primary">
                               <Check className="size-3.5" />
-                              کالای مرجع انتخاب شد
+                              {m.listing.sku.pickedLabel}
                             </p>
                             <p className="text-sm font-extrabold">{selectedProduct.label}</p>
                             <p className="mt-0.5 text-[11px] text-muted-foreground">
-                              {selectedProduct.brand ? selectedProduct.brand.name : "بدون برند"} · {goodName(selected, locale)}
+                              {selectedProduct.brand ? selectedProduct.brand.name : m.listing.sku.otherBrand} · {goodName(selected, locale)}
                             </p>
                             <button
                                 type="button"
