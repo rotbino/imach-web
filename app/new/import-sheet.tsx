@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 import { ApiError, goodsApi, productsApi, type CatalogReferenceDto, type ImportPreviewDto } from "@/lib/api";
 import { useUploadFile } from "@/lib/queries";
 import { fa } from "@/lib/format";
@@ -21,9 +22,10 @@ type EditableRow = ImportPreviewDto["rows"][number] & {
   error?: string;
   productImage?: string | null;
   pendingImageUrl?: string;
-  /** فایل عکس انتخاب‌شده از دستگاه — در commit آپلود می‌شود */
   pendingImageFile?: File | null;
   frequency?: string | null;
+  /** درصد آپلود عکس ۰–۱۰۰ */
+  uploadPct?: number;
 };
 
 /** عرض ستون‌ها — فروش و خرید متفاوت */
@@ -100,6 +102,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
   const [aiLoading, setAiLoading] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
   const uploadFile = useUploadFile();
+  const queryClient = useQueryClient();
 
   const loadAiPrompt = async () => {
     if (aiPrompt) return;
@@ -208,8 +211,15 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                 modelId: res.listingIds[0],
                 key: "gallery",
                 replace: false,
+                onProgress: (pct) => {
+                  setRows((l) => l.map((r) => r.index === row.index ? { ...r, uploadPct: pct } : r));
+                },
               });
-            } catch { /* best-effort — کالا ثبت شد، عکس بعداً */ }
+              setRows((l) => l.map((r) => r.index === row.index ? { ...r, uploadPct: 100 } : r));
+            } catch (err) {
+              // عکس آپلود نشد ولی کالا ثبت شد — به کاربر اطلاع بده
+              toast({ title: `عکس ${row.name} آپلود نشد`, description: "کالا ثبت شد ولی عکس بعداً اضافه کن", variant: "destructive" });
+            }
           }
         }
         else if (res.skipped.some((s) => s.reason === "duplicate")) { dups++; setDupCount(dups); setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "duplicate" } : r)); }
@@ -221,6 +231,10 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
       }
     }
     setStep("done"); setSavedCount(saved); setFailedCount(failed); setDupCount(dups);
+    // کش را پاک کن تا کاتالوک/دستیار خرید کالاهای جدید را فوراً ببیند
+    void queryClient.invalidateQueries({ queryKey: ["listings"] });
+    void queryClient.invalidateQueries({ queryKey: ["business"] });
+    void queryClient.invalidateQueries({ queryKey: ["businesses"] });
   };
 
   const reset = () => { setRows([]); setStep("drop"); setSavedCount(0); setFailedCount(0); setDupCount(0); };
@@ -291,6 +305,10 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                r.status === "duplicate" ? <TriangleAlert className="size-3.5 shrink-0 text-amber-600" /> :
                <Loader2 className="size-3.5 shrink-0 animate-spin text-primary" />}
               <span className="min-w-0 flex-1 truncate">{r.name}</span>
+              {/* نوار پیشرفت آپلود عکس */}
+              {r.uploadPct !== undefined && r.uploadPct < 100 && (
+                <span className="shrink-0 text-[9px] font-bold text-primary">عکس {fa(r.uploadPct)}٪</span>
+              )}
               {r.brand && <span className="shrink-0 text-muted-foreground">{r.brand}</span>}
             </div>
           ))}
