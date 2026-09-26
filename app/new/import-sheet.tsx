@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ApiError, goodsApi, productsApi, type CatalogReferenceDto, type ImportPreviewDto } from "@/lib/api";
 import { fa } from "@/lib/format";
@@ -10,7 +10,7 @@ import { NumberInput } from "@/components/number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Check, ChevronDown, FileSpreadsheet, HelpCircle, ImagePlus, Loader2, Sparkles, TriangleAlert, Upload, X } from "lucide-react";
+import { Check, ChevronDown, FileSpreadsheet, ImagePlus, Loader2, Sparkles, Trash2, TriangleAlert, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Step = "drop" | "preview" | "progress" | "done";
@@ -18,12 +18,14 @@ type Step = "drop" | "preview" | "progress" | "done";
 type EditableRow = ImportPreviewDto["rows"][number] & {
   status?: "pending" | "saved" | "failed" | "duplicate";
   error?: string;
+  /** عکس از Product.imageUrl — از backend می‌آید */
   productImage?: string | null;
+  /** URL عکس که کاربر در preview وارد کرده */
   pendingImageUrl?: string;
 };
 
-/** grid template — inline style برای اطمینان از هم‌ترازی هدر و بدنه */
-const GRID_COLS = "36px minmax(120px,1.5fr) minmax(60px,0.8fr) minmax(60px,0.8fr) minmax(80px,100px) minmax(50px,60px) minmax(50px,60px) minmax(55px,70px) minmax(60px,0.8fr) minmax(60px,0.8fr)";
+/** عرض ستون‌ها — عرض ثابت پیکسلی برای هم‌ترازی تضمین‌شده هدر و بدنه */
+const GRID_COLS = "48px 28px minmax(130px,1.6fr) minmax(70px,0.8fr) minmax(70px,0.8fr) 110px 70px 70px 70px minmax(70px,0.7fr) minmax(70px,0.7fr)";
 
 function buildAiPrompt(ref: CatalogReferenceDto): string {
   return [
@@ -77,14 +79,12 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
       setAiPrompt(buildAiPrompt(ref));
     } catch {
       setAiPrompt(buildAiPrompt({ categories: [], brands: [], totalGoods: 0, totalBrands: 0 }));
-    } finally {
-      setAiLoading(false);
-    }
+    } finally { setAiLoading(false); }
   };
   useEffect(() => { if (aiOpen && !aiPrompt) void loadAiPrompt(); }, [aiOpen, aiPrompt]);
 
   const downloadTemplate = () => {
-    const rows = [
+    const data = [
       ["نام کالا", "برند", "بسته‌بندی", "قیمت فروش", "موجودی", "حداقل سفارش", "حجم خرید", "لینک عکس", "دسته", "زیردسته"],
       ["ماکارونی", "زر", "۷۰۰ گرمی", "55000", "24", "1", "", "", "مواد غذایی", "غلات"],
       ["شیر پاستوریزه", "میهن", "۱ لیتری", "28000", "30", "6", "", "https://example.com/milk.jpg", "مواد غذایی", "لبنیات"],
@@ -92,7 +92,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
       ["چای سیاه", "گلستان", "۵۰۰ گرمی", "98000", "12", "1", "25", "", "مواد غذایی", "نوشیدنی"],
     ];
     const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
-    const csv = "\uFEFF" + rows.map((r) => r.map(esc).join(",")).join("\r\n");
+    const csv = "\uFEFF" + data.map((r) => r.map(esc).join(",")).join("\r\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url; a.download = "imach-template.csv"; a.click();
@@ -101,18 +101,15 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
 
   const copyPrompt = async () => {
     if (!aiPrompt) return;
-    try {
-      await navigator.clipboard.writeText(aiPrompt);
-      setPromptCopied(true);
-      setTimeout(() => setPromptCopied(false), 2000);
-    } catch { toast({ title: "کپی نشد", variant: "destructive" }); }
+    try { await navigator.clipboard.writeText(aiPrompt); setPromptCopied(true); setTimeout(() => setPromptCopied(false), 2000); }
+    catch { toast({ title: "کپی نشد", variant: "destructive" }); }
   };
 
   const readFile = async (file: File) => {
     setBusy(true);
     try {
       const res = await productsApi.importPreview({ file, businessId: bizId, mode, priceUnit });
-      setRows(res.rows.map((r) => ({ ...r, status: "pending" as const, productImage: null, pendingImageUrl: "" })));
+      setRows(res.rows.map((r) => ({ ...r, status: "pending" as const, pendingImageUrl: "" })));
       setStep("preview");
     } catch (err) {
       toast({ title: "خواندن فایل ناموفق بود", description: err instanceof ApiError ? err.message : "فرمت فایل را بررسی کن", variant: "destructive" });
@@ -123,13 +120,21 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
     setRows((list) => list.map((r) => (r.index === index ? { ...r, ...patch } : r)));
   };
 
-  const totalCount = rows.length;
+  const deleteRow = (index: number) => {
+    setRows((list) => list.filter((r) => r.index !== index));
+  };
+
   const curDef = priceUnit === "toman" ? 10 : 1;
-  // عکس اجباری است — ردیف بدون عکس قابل ثبت نیست
-  const validRows = rows.filter((r) => r.arms.length > 0 && r.warning !== "noName" && (r.productImage || r.pendingImageUrl));
-  const invalidRows = rows.filter((r) => r.warning === "noName" || r.arms.length === 0 || (!r.productImage && !r.pendingImageUrl));
+  const totalCount = rows.length;
+  // ردیف معتبر = نام دارد + قیمت یا حجم دارد + عکس دارد + تکراری نیست
+  const isRowValid = (r: EditableRow) => r.name?.trim() && r.arms.length > 0 && (r.productImage || r.pendingImageUrl) && r.mineMode === null;
+  const isRowDuplicate = (r: EditableRow) => r.mineMode !== null && r.mineMode !== undefined;
+  const isRowIncomplete = (r: EditableRow) => !r.name?.trim() || r.arms.length === 0 || (!r.productImage && !r.pendingImageUrl);
+  const validRows = rows.filter(isRowValid);
   const validCount = validRows.length;
-  const invalidCount = invalidRows.length;
+  const dupRows = rows.filter(isRowDuplicate);
+  const incompleteRows = rows.filter(isRowIncomplete);
+  const invalidCount = dupRows.length + incompleteRows.length;
 
   const confirm = async () => {
     const toSave = validRows;
@@ -239,7 +244,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
     );
   }
 
-  // ═══ preview — جدول گرید حرفه‌ای مثل اکسل ═══
+  // ═══ preview — جدول حرفه‌ای ═══
   if (step === "preview" && rows.length > 0) {
     return (
       <div className="rounded-2xl border bg-white shadow-sm">
@@ -254,32 +259,30 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">{fa(validCount)} آماده ثبت</span>
             {invalidCount > 0 && <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">{fa(invalidCount)} نیاز به اصلاح</span>}
           </div>
-          {invalidCount > 0 && (
-            <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/50 p-2.5">
-              <p className="flex items-center gap-1.5 text-xs font-bold text-amber-700"><TriangleAlert className="size-3.5" />ردیف‌های ناقص ثبت نمی‌شوند — نام، قیمت/حجم یا عکس ندارد</p>
-            </div>
-          )}
         </div>
 
-        {/* جدول — یک container با overflow-auto برای اسکرول افقی+عمودی */}
-        <div className="overflow-auto" style={{ maxHeight: "450px" }}>
-          {/* سرستون — sticky top */}
+        {/* جدول — یک container با overflow-auto */}
+        <div className="overflow-auto" style={{ maxHeight: "500px" }}>
+          {/* سرستون — sticky */}
           <div style={{ display: "grid", gridTemplateColumns: GRID_COLS, position: "sticky", top: 0, zIndex: 10 }} className="border-b bg-stone-100 text-[10px] font-bold text-stone-500">
-            <div className="px-1 py-2 text-center">عکس</div>
-            <div className="px-2 py-2">نام کالا</div>
-            <div className="px-2 py-2">برند</div>
-            <div className="px-2 py-2">بسته‌بندی</div>
-            <div className="px-2 py-2 text-center">قیمت ({priceUnit === "toman" ? "ت" : "ر"})</div>
-            <div className="px-2 py-2 text-center">موجودی</div>
-            <div className="px-2 py-2 text-center">حداقل</div>
-            <div className="px-2 py-2 text-center">حجم</div>
-            <div className="px-2 py-2">دسته</div>
-            <div className="px-2 py-2">زیردسته</div>
+            <div className="flex items-center justify-center px-1 py-2.5">عکس</div>
+            <div className="px-1 py-2.5" />
+            <div className="px-2 py-2.5">نام کالا</div>
+            <div className="px-2 py-2.5">برند</div>
+            <div className="px-2 py-2.5">بسته‌بندی</div>
+            <div className="px-2 py-2.5 text-center">قیمت ({priceUnit === "toman" ? "ت" : "ر"})</div>
+            <div className="px-2 py-2.5 text-center">موجودی</div>
+            <div className="px-2 py-2.5 text-center">حداقل</div>
+            <div className="px-2 py-2.5 text-center">حجم</div>
+            <div className="px-2 py-2.5">دسته</div>
+            <div className="px-2 py-2.5">زیردسته</div>
           </div>
 
           {/* ردیف‌ها */}
           {rows.map((r, idx) => {
-            const isInvalid = r.warning === "noName" || r.arms.length === 0 || (!r.productImage && !r.pendingImageUrl);
+            const isDup = isRowDuplicate(r);
+            const isInc = isRowIncomplete(r);
+            const hasImage = !!(r.productImage || r.pendingImageUrl);
             const imgUrl = r.productImage || r.pendingImageUrl;
             return (
               <div
@@ -288,64 +291,78 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                 className={cn(
                   "border-b text-xs transition-colors",
                   idx % 2 === 1 ? "bg-stone-50/50" : "bg-white",
-                  isInvalid && "!bg-red-50/30",
+                  isInc && "!bg-red-50/30",
+                  isDup && "!bg-amber-50/30",
                   r.status === "saved" && "!bg-emerald-50/50",
                   r.status === "failed" && "!bg-red-50/50",
                   r.status === "duplicate" && "!bg-amber-50/50",
                 )}
               >
                 {/* عکس */}
-                <div className="flex items-center justify-center px-1 py-1">
+                <div className="flex items-center justify-center px-1 py-1.5">
                   {imgUrl ? (
-                    <div className="relative size-7 overflow-hidden rounded-sm border border-stone-200">
-                      <Image src={imgUrl} alt="" fill unoptimized className="object-cover" sizes="28px" />
+                    <div className="relative size-8 overflow-hidden rounded border border-stone-200">
+                      <Image src={imgUrl} alt="" fill unoptimized className="object-cover" sizes="32px" />
                     </div>
                   ) : (
-                    <label className="grid size-7 cursor-pointer place-items-center rounded-sm border border-dashed border-stone-300 text-stone-300 transition hover:border-primary hover:text-primary">
+                    <label className="grid size-8 cursor-pointer place-items-center rounded border border-dashed border-stone-300 text-stone-300 transition hover:border-primary hover:text-primary" title="آدرس عکس را وارد کن">
                       <input type="url" className="sr-only" placeholder="آدرس عکس" onBlur={(e) => { if (e.target.value) updateRow(r.index, { pendingImageUrl: e.target.value }); }} />
-                      <ImagePlus className="size-3" />
+                      <ImagePlus className="size-3.5" />
                     </label>
+                  )}
+                </div>
+
+                {/* وضعیت / حذف */}
+                <div className="flex items-center justify-center px-0.5">
+                  {isDup ? (
+                    <span className="rounded bg-amber-100 px-1 py-0.5 text-[8px] font-bold text-amber-700" title="تکراری — قبلاً در کاتالوک هست">تکراری</span>
+                  ) : isInc ? (
+                    <span className="rounded bg-red-100 px-1 py-0.5 text-[8px] font-bold text-red-600" title="ناقص">ناقص</span>
+                  ) : (
+                    <button type="button" onClick={() => deleteRow(r.index)} className="grid size-5 place-items-center rounded text-stone-300 transition hover:bg-red-50 hover:text-red-500" title="حذف ردیف">
+                      <Trash2 className="size-3" />
+                    </button>
                   )}
                 </div>
 
                 {/* نام کالا — قابل ویرایش */}
                 <div className="px-1 py-1">
-                  <Input value={r.name} onChange={(e) => updateRow(r.index, { name: e.target.value })} className="h-7 rounded-sm border-transparent bg-transparent px-1.5 text-xs font-bold hover:border-stone-200 focus:border-primary focus:bg-white" placeholder="نام" />
+                  <Input value={r.name} onChange={(e) => updateRow(r.index, { name: e.target.value })} className="h-7 border-transparent bg-transparent px-1.5 text-xs font-bold hover:border-stone-200 focus:border-primary focus:bg-white" placeholder="نام" />
                 </div>
 
                 {/* برند — قابل ویرایش */}
                 <div className="px-1 py-1">
-                  <Input value={r.brand ?? ""} onChange={(e) => updateRow(r.index, { brand: e.target.value })} className="h-7 rounded-sm border-transparent bg-transparent px-1.5 text-xs text-stone-600 hover:border-stone-200 focus:border-primary focus:bg-white" placeholder="—" />
+                  <Input value={r.brand ?? ""} onChange={(e) => updateRow(r.index, { brand: e.target.value })} className="h-7 border-transparent bg-transparent px-1.5 text-xs text-stone-600 hover:border-stone-200 focus:border-primary focus:bg-white" placeholder="—" />
                 </div>
 
                 {/* بسته‌بندی — فقط نمایش */}
-                <div className="truncate px-2 py-1.5 text-xs text-stone-500" title={r.spec ?? ""}>{r.spec || <span className="text-stone-300">—</span>}</div>
+                <div className="truncate px-2 py-2 text-xs text-stone-500" title={r.spec ?? ""}>{r.spec || <span className="text-stone-300">—</span>}</div>
 
-                {/* قیمت — NumberInput */}
+                {/* قیمت */}
                 <div className="px-1 py-1">
-                  <NumberInput value={r.priceMinor ? r.priceMinor / curDef : null} onChange={(v) => updateRow(r.index, { priceMinor: v ? v * curDef : null, arms: v ? (r.volume ? ["SELL","BUY"] : ["SELL"]) : r.arms })} locale={numLocale} min={0} className="h-7 rounded-sm border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                  <NumberInput value={r.priceMinor ? r.priceMinor / curDef : null} onChange={(v) => updateRow(r.index, { priceMinor: v ? v * curDef : null, arms: v ? (r.volume ? ["SELL","BUY"] : ["SELL"]) : r.arms })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
                 </div>
 
                 {/* موجودی */}
                 <div className="px-1 py-1">
-                  <NumberInput value={r.stock} onChange={(v) => updateRow(r.index, { stock: v })} locale={numLocale} min={0} className="h-7 rounded-sm border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                  <NumberInput value={r.stock} onChange={(v) => updateRow(r.index, { stock: v })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
                 </div>
 
                 {/* حداقل سفارش */}
                 <div className="px-1 py-1">
-                  <NumberInput value={r.minOrder} onChange={(v) => updateRow(r.index, { minOrder: v })} locale={numLocale} min={0} className="h-7 rounded-sm border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                  <NumberInput value={r.minOrder} onChange={(v) => updateRow(r.index, { minOrder: v })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
                 </div>
 
                 {/* حجم خرید */}
                 <div className="px-1 py-1">
-                  <NumberInput value={r.volume} onChange={(v) => updateRow(r.index, { volume: v, arms: v ? (r.priceMinor ? ["SELL","BUY"] : ["BUY"]) : r.arms })} locale={numLocale} min={0} className="h-7 rounded-sm border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                  <NumberInput value={r.volume} onChange={(v) => updateRow(r.index, { volume: v, arms: v ? (r.priceMinor ? ["SELL","BUY"] : ["BUY"]) : r.arms })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
                 </div>
 
                 {/* دسته — فقط نمایش */}
-                <div className="truncate px-2 py-1.5 text-xs text-stone-500" title={r.category ?? ""}>{r.category || <span className="text-stone-300">—</span>}</div>
+                <div className="truncate px-2 py-2 text-xs text-stone-500" title={r.category ?? ""}>{r.category || <span className="text-stone-300">—</span>}</div>
 
                 {/* زیردسته — فقط نمایش */}
-                <div className="truncate px-2 py-1.5 text-xs text-stone-500" title={r.subcategory ?? ""}>{r.subcategory || <span className="text-stone-300">—</span>}</div>
+                <div className="truncate px-2 py-2 text-xs text-stone-500" title={r.subcategory ?? ""}>{r.subcategory || <span className="text-stone-300">—</span>}</div>
               </div>
             );
           })}
