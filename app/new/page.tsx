@@ -106,6 +106,7 @@ function NewListingBody() {
         <ScanEntry
           bizId={active.id}
           currency={active.currency}
+          arm={arm}
           onDone={(kind) => { smartSwitchArm(kind); router.push(kind === "sell" ? "/sell" : "/buy"); }}
           onSwitchToForm={() => setMode("solo")}
         />

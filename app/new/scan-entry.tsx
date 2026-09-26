@@ -11,81 +11,83 @@ import { NumberInput } from "@/components/number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Camera, CameraOff, Check, Keyboard, ScanLine, TriangleAlert, X } from "lucide-react";
+import { Camera, CameraOff, Check, Keyboard, Loader2, ScanLine, TriangleAlert, X } from "lucide-react";
 
 /**
  * ─── ثبت سریع با اسکنر ───────────────────────────────────────────────────────
- * (خواسته‌ی کاربر: «ثبت با اسکنر از کالاهای بارکددار سرچ هوشمند می‌کند و
- * کاربر فقط قیمت و حداقل را می‌دهد — کالاهای کامل بالا، بقیه در «نیاز به
- * تکمیل قیمت» پایین؛ برای خرید هم همینطور»)
  *
- * سه مد ورودی، همه به یک صف:
- *   • دوربین موبایل — BarcodeDetector بومی (اندروید/کروم) و ZXing برای
- *     iOS/سافاری؛ بارکد GTIN همان کلیدِ دقیقِ لیست مرجع است (ایندکس‌هیت).
- *   • اسکنر سخت‌افزاری (USB/بلوتوث) — اسکنرهای کیبورد-ویج همه مدل‌ها فقط
- *     «تایپ + Enter» می‌کنند؛ فیلد بارکدِ همیشه‌روشن دقیقاً همان را می‌خواند
- *     (پاسخ به «اگر کدنویسیش برای همه مدل‌ها جواب می‌دهد بزن» — جواب می‌دهد).
- *   • تایپ دستی بارکد — همان فیلد.
+ * سه مد ورودی، همه به یک گرید:
+ *   • دوربین (موبایل/لپ‌تاپ) — BarcodeDetector بومی (اندروید/کروم) و ZXing برای iOS/سافاری
+ *   • اسکنر سخت‌افزاری (USB/بلوتوث) — مثل کیبورد تایپ + Enter می‌کنند
+ *   • تایپ دستی بارکد
  *
- * بعد از هر اسکن یک مدال ساده نقش کالا را می‌پرسد (خرید/فروش/هر دو)؛ انتخابِ
- * آخر به‌عنوان پیش‌فرض می‌ماند و با تیک «دیگر نپرس» اسکن‌های بعدی بی‌صدا
- * با همان نقش به صف می‌روند.
+ * بعد از هر اسکن موفق، صدای بوق می‌آید و کالا مستقیم به گرید اضافه می‌شود —
+ * بدون مدال نقش. نقش از URL می‌آید (?tab=sell یا ?tab=buy). اگر بارکد
+ * پیدا نشد، صدای خطا می‌آید و toast نشان می‌دهد.
+ *
+ * گرید مثل اکسل: ستون‌های قیمت/موجودی/حداقل سفارش (sell) یا حجم (buy).
+ * کاربر بعداً مقادیر را پر می‌کند و یک‌جا تأیید می‌زند.
  */
 
-type Arm = "sell" | "buy" | "both";
-type QueueItem = {
+type Arm = "sell" | "buy";
+type GridRow = {
   product: ProductRowDto;
-  arm: Arm;
   price: number | null;
   stock: number | null;
   minOrder: number | null;
   volume: number | null;
 };
 
-const PREF_KEY = "imach.scanArm";
-type ScanPref = { lastArm: Arm; ask: boolean };
-
-function loadPref(): ScanPref {
-  try {
-    const raw = localStorage.getItem(PREF_KEY);
-    if (!raw) return { lastArm: "sell", ask: true };
-    const p = JSON.parse(raw) as Partial<ScanPref>;
-    return { lastArm: p.lastArm === "buy" ? "buy" : p.lastArm === "both" ? "both" : "sell", ask: p.ask !== false };
-  } catch {
-    return { lastArm: "sell", ask: true };
-  }
-}
-
-function savePref(p: ScanPref): void {
-  try {
-    localStorage.setItem(PREF_KEY, JSON.stringify(p));
-  } catch {
-    /* private mode — the default just does not persist */
-  }
-}
-
-/** what makes a row «آماده‌ی ثبت» per arm — sell needs price+min order, buy needs volume */
-function isComplete(item: QueueItem): boolean {
-  if (item.arm === "buy") return (item.volume ?? 0) > 0;
-  if ((item.price ?? 0) <= 0 || (item.minOrder ?? 0) <= 0) return false;
-  return true;
-}
+const GRID_SELL = "28px 44px minmax(130px,1.5fr) minmax(70px,0.7fr) 110px 65px 65px 65px";
+const GRID_BUY  = "28px 44px minmax(130px,1.5fr) minmax(70px,0.7fr) 90px 90px";
 
 interface BarcodeDetectorLike {
   detect: (source: HTMLVideoElement) => Promise<{ rawValue: string }[]>;
 }
 type BarcodeDetectorCtor = new (opts?: { formats?: string[] }) => BarcodeDetectorLike;
 
+/** بوق کوتاه با Web Audio API — نیازی به فایل صوتی نیست */
+function beep(type: "success" | "error") {
+  try {
+    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    // موفقیت: دو نت صعودی (۸۸۰Hz → ۱۳۲۰Hz)؛ خطا: یک نت پایین (۴۴۰Hz)
+    if (type === "success") {
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1320, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+    } else {
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.setValueAtTime(330, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+    }
+    // پاک‌سازی بعد از پایان
+    setTimeout(() => ctx.close(), 500);
+  } catch {
+    /* مرورگر قدیمی یا autoplay policy — بی‌صدا رد شو */
+  }
+}
+
 export function ScanEntry({
   bizId,
   currency,
+  arm,
   onDone,
   onSwitchToForm,
 }: {
   bizId: string;
   currency?: string;
-  onDone: (kind: "sell" | "buy") => void;
-  /** بارکد ناشناس — به فرم دستی می‌رود تا کالا ساخته شود */
+  arm: Arm;
+  onDone: (kind: Arm) => void;
   onSwitchToForm: () => void;
 }) {
   const { toast } = useToast();
@@ -96,19 +98,17 @@ export function ScanEntry({
 
   const curDef = CURRENCIES[currency ?? "IRR"] ?? CURRENCIES.IRR;
   const curName = currencyLabel(currency ?? "IRR", locale);
+  const GRID_COLS = arm === "sell" ? GRID_SELL : GRID_BUY;
+  const inputCls = "h-7 rounded border-stone-200 bg-stone-50/50 px-1.5 text-xs hover:border-stone-300 focus:border-primary focus:bg-white";
 
   // ── دوربین
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [cam, setCam] = useState<"starting" | "on" | "off" | "black">("starting");
-  // ── نوع دستگاه: برای راهنمای مناسب
   const [deviceType, setDeviceType] = useState<"mobile" | "laptop" | "desktop">("laptop");
-  // ── شمارنده تلاش مجدد — وقتی کاربر «تلاش دوباره» را می‌زند، افزایش می‌یابد
-  // و useEffect دوباره اجرا می‌شود
   const [camRetry, setCamRetry] = useState(0);
   const lastCode = useRef<{ code: string; at: number }>({ code: "", at: 0 });
 
-  // ── تشخیص نوع دستگاه — برای راهنمای دوربین
   useEffect(() => {
     if (typeof window === "undefined") return;
     const ua = navigator.userAgent.toLowerCase();
@@ -116,14 +116,22 @@ export function ScanEntry({
     setDeviceType(isMobile ? "mobile" : "laptop");
   }, []);
 
-  // ── صف + مدال نقش + کاندیدها
-  const [queue, setQueue] = useState<QueueItem[]>([]);
-  const [armAsk, setArmAsk] = useState<ProductRowDto | null>(null);
-  const [candidates, setCandidates] = useState<ProductRowDto[] | null>(null);
+  // ── صف / گرید
+  const [rows, setRows] = useState<GridRow[]>([]);
   const [manual, setManual] = useState("");
   const [busy, setBusy] = useState(false);
-  const [remember, setRemember] = useState(false);
-  const prefRef = useRef<ScanPref>(loadPref());
+  const [dupCount, setDupCount] = useState(0);
+  const [savedCount, setSavedCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
+
+  const rowIds = useMemo(() => new Set(rows.map((r) => r.product.id)), [rows]);
+  const incompleteCount = useMemo(() => {
+    if (arm === "sell") {
+      return rows.filter((r) => !(r.price && r.price > 0 && (r.stock ?? 0) >= 0 && r.minOrder && r.minOrder > 0)).length;
+    }
+    return rows.filter((r) => !(r.volume && r.volume > 0)).length;
+  }, [rows, arm]);
+  const selectedCount = rows.length - incompleteCount;
 
   // ── جست‌وجوی بارکد: دقیق (ایندکس) → متنی → ناشناس
   const handleCode = useCallback(
@@ -138,18 +146,34 @@ export function ScanEntry({
       try {
         const exact = await productsApi.getProducts({ barcode: code, businessId: bizId, limit: 1 });
         if (exact.items.length > 0) {
-          setArmAsk(exact.items[0]);
+          const p = exact.items[0];
+          if (rowIds.has(p.id)) {
+            // تکراری — صدای خطا و هشدار کوتاه
+            beep("error");
+            toast({ title: "قبلاً اسکن شده", description: p.label, duration: 1500 });
+          } else {
+            beep("success");
+            setRows((r) => [...r, { product: p, price: null, stock: null, minOrder: null, volume: null }]);
+          }
           return;
         }
-        const fuzzy = await productsApi.getProducts({ q: code, businessId: bizId, limit: 8 });
+        const fuzzy = await productsApi.getProducts({ q: code, businessId: bizId, limit: 1 });
         if (fuzzy.items.length === 1) {
-          setArmAsk(fuzzy.items[0]);
-        } else if (fuzzy.items.length > 1) {
-          setCandidates(fuzzy.items);
-        } else {
-          toast({ title: m.scan.notFound, description: m.scan.notFoundHint, variant: "destructive" });
+          const p = fuzzy.items[0];
+          if (rowIds.has(p.id)) {
+            beep("error");
+            toast({ title: "قبلاً اسکن شده", description: p.label, duration: 1500 });
+          } else {
+            beep("success");
+            setRows((r) => [...r, { product: p, price: null, stock: null, minOrder: null, volume: null }]);
+          }
+          return;
         }
+        // پیدا نشد
+        beep("error");
+        toast({ title: m.scan.notFound, description: `${code} — ${m.scan.notFoundHint}`, variant: "destructive" });
       } catch (err) {
+        beep("error");
         toast({
           title: m.scan.lookupFailed,
           description: err instanceof ApiError ? err.message : undefined,
@@ -159,10 +183,10 @@ export function ScanEntry({
         setBusy(false);
       }
     },
-    [bizId, m, toast]
+    [bizId, m, toast, rowIds]
   );
 
-  // ── حلقه‌ی دوربین — بومی اگر بود، وگرنه ZXing (سافاری/iOS)
+  // ── حلقه‌ی دوربین
   useEffect(() => {
     let stopped = false;
     let interval: ReturnType<typeof setInterval> | null = null;
@@ -180,7 +204,6 @@ export function ScanEntry({
           return;
         }
 
-        // ── چک کن آیا استریم واقعاً ترک ویدئو دارد
         const videoTracks = stream.getVideoTracks();
         if (videoTracks.length === 0) {
           if (!stopped) setCam("off");
@@ -194,14 +217,10 @@ export function ScanEntry({
         video.srcObject = stream;
         await video.play().catch(() => undefined);
 
-        // ── چک کن آیا ویدئو واقعاً پخش می‌شود — اگر بعد از ۳ ثانیه هنوز
-        // readyState < 2 بود یا videoWidth صفر بود، یعنی دوربین سیاه است
-        // (کاور بسته، در دسترس برنامه‌ی دیگه، یا درایور مشکل دارد)
         blackTimer = setTimeout(() => {
           if (stopped) return;
           if (video.readyState < 2 || video.videoWidth === 0) {
             setCam("black");
-            // دوربین را متوقف کن تا منابع آزاد شوند
             stream.getTracks().forEach((t) => t.stop());
             if (interval) clearInterval(interval);
           }
@@ -223,7 +242,6 @@ export function ScanEntry({
           }, 350);
           setCam("on");
         } else {
-          // سافاری/iOS — ZXing روی همان استریم
           const { BrowserMultiFormatReader } = await import("@zxing/library");
           const reader = new BrowserMultiFormatReader();
           await reader.decodeFromStream(stream, video, (result) => {
@@ -246,67 +264,53 @@ export function ScanEntry({
     };
   }, [handleCode, camRetry]);
 
-  // ── صف
-  const pushToQueue = (product: ProductRowDto, arm: Arm) => {
-    setQueue((q) =>
-      q.some((i) => i.product.id === product.id)
-        ? q
-        : [...q, { product, arm, price: null, stock: null, minOrder: null, volume: null }]
-    );
+  // ── به‌روزرسانی ردیف
+  const updateRow = (id: string, patch: Partial<GridRow>) =>
+    setRows((r) => r.map((row) => (row.product.id === id ? { ...row, ...patch } : row)));
+
+  const removeRow = (id: string) => setRows((r) => r.filter((row) => row.product.id !== id));
+
+  const reset = () => {
+    setRows([]);
+    setDupCount(0);
+    setSavedCount(0);
+    setFailedCount(0);
+    lastCode.current = { code: "", at: 0 };
   };
 
-  const chooseArm = (arm: Arm) => {
-    if (!armAsk) return;
-    prefRef.current = { lastArm: arm, ask: remember ? false : prefRef.current.ask };
-    savePref(prefRef.current);
-    pushToQueue(armAsk, arm);
-    setArmAsk(null);
-    setRemember(false);
-  };
-
-  const patchItem = (id: string, patch: Partial<QueueItem>) =>
-    setQueue((q) => q.map((i) => (i.product.id === id ? { ...i, ...patch } : i)));
-
-  const removeItem = (id: string) => setQueue((q) => q.filter((i) => i.product.id !== id));
-
-  const complete = useMemo(() => queue.filter(isComplete), [queue]);
-  const pending = useMemo(() => queue.filter((i) => !isComplete(i)), [queue]);
-
-  const submit = async () => {
-    type BulkItem = { productId: string; priceMinor?: number; stock?: number; minOrder?: number; volume?: number };
-    const groups: { mode: "SELL" | "BUY" | "BOTH"; items: BulkItem[] }[] = [];
-    const byArm = (arm: Arm) => queue.filter((i) => i.arm === arm);
-    for (const arm of ["sell", "buy", "both"] as Arm[]) {
-      const group = byArm(arm);
-      if (group.length === 0) continue;
-      groups.push({
-        mode: arm === "sell" ? "SELL" : arm === "buy" ? "BUY" : "BOTH",
-        items: group.map((i) => ({
-          productId: i.product.id,
-          ...(arm !== "buy"
-            ? {
-                priceMinor: i.price ? Math.round(i.price * 10 ** curDef.exp) : undefined,
-                stock: i.stock ?? undefined,
-                minOrder: i.minOrder ?? undefined,
-              }
-            : {}),
-          ...(arm !== "sell" ? { volume: i.volume ?? undefined } : {}),
-        })),
-      });
-    }
+  // ── ثبت نهایی — مثل اکسل، همه‌ی ردیف‌های کامل را یک‌جا بفرست
+  const confirm = async () => {
+    if (rows.length === 0) return;
     setBusy(true);
     let saved = 0;
     let failed = 0;
     try {
-      for (const g of groups) {
-        const res = await bulk.mutateAsync({ businessId: bizId, mode: g.mode, items: g.items });
-        saved += res.saved;
-        failed += res.failed;
+      const items = rows.map((r) => ({
+        productId: r.product.id,
+        ...(arm === "sell"
+          ? {
+              priceMinor: r.price ? Math.round(r.price * 10 ** curDef.exp) : undefined,
+              stock: r.stock ?? undefined,
+              minOrder: r.minOrder ?? undefined,
+            }
+          : { volume: r.volume ?? undefined }),
+      }));
+      const res = await bulk.mutateAsync({
+        businessId: bizId,
+        mode: arm === "sell" ? "SELL" : "BUY",
+        items,
+      });
+      saved = res.saved;
+      failed = res.failed;
+      setSavedCount(saved);
+      setFailedCount(failed);
+      if (saved > 0) {
+        toast({ title: m.scan.saved.replace("{n}", fa(saved)) });
       }
-      if (saved > 0) toast({ title: m.scan.saved.replace("{n}", fa(saved)), description: m.scan.savedHint });
-      if (failed > 0) toast({ title: m.scan.failedSome.replace("{n}", fa(failed)), variant: "destructive" });
-      setQueue([]);
-      lastCode.current = { code: "", at: 0 };
+      if (failed > 0) {
+        toast({ title: m.scan.failedSome.replace("{n}", fa(failed)), variant: "destructive" });
+      }
+      setTimeout(() => onDone(arm), 1500);
     } catch (err) {
       toast({
         title: m.scan.lookupFailed,
@@ -318,84 +322,6 @@ export function ScanEntry({
     }
   };
 
-  const rowOf = (item: QueueItem) => {
-    const p = item.product;
-    return (
-      <div key={p.id} className="animate-fade-up rounded-xl border p-3">
-        <div className="flex items-center gap-2.5">
-          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent/70 text-sm font-black text-primary/80">
-            {p.good.nameFa.slice(0, 1)}
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-extrabold">{p.label}</p>
-            <p className="truncate text-[11px] text-muted-foreground">{goodName(p.good, locale)}</p>
-          </div>
-          <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-              item.arm === "buy" ? "bg-sky-100 text-sky-700" : item.arm === "both" ? "bg-violet-100 text-violet-700" : "bg-emerald-100 text-emerald-700"
-            }`}
-          >
-            {item.arm === "buy" ? m.scan.armBuy : item.arm === "both" ? m.scan.armBoth : m.scan.armSell}
-          </span>
-          {!isComplete(item) && <TriangleAlert className="size-4 shrink-0 text-amber-500" />}
-          <button
-            type="button"
-            aria-label="حذف"
-            className="grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
-            onClick={() => removeItem(p.id)}
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {item.arm !== "buy" && (
-            <div className="col-span-2 sm:col-span-1">
-              <NumberInput
-                value={item.price}
-                onChange={(v) => patchItem(p.id, { price: v })}
-                locale={numLocale}
-                min={0}
-                suffix={curName}
-                placeholder={m.picker.price.replace("{unit}", goodName(p.good, locale))}
-                aria-label={m.picker.price.replace("{unit}", goodName(p.good, locale))}
-              />
-            </div>
-          )}
-          {item.arm !== "buy" && (
-            <NumberInput
-              value={item.minOrder}
-              onChange={(v) => patchItem(p.id, { minOrder: v })}
-              locale={numLocale}
-              min={0}
-              placeholder={m.picker.minOrder}
-              aria-label={m.picker.minOrder}
-            />
-          )}
-          {item.arm !== "sell" && (
-            <NumberInput
-              value={item.volume}
-              onChange={(v) => patchItem(p.id, { volume: v })}
-              locale={numLocale}
-              min={0}
-              placeholder={m.picker.volume}
-              aria-label={m.picker.volume}
-            />
-          )}
-          {item.arm !== "buy" && (
-            <NumberInput
-              value={item.stock}
-              onChange={(v) => patchItem(p.id, { stock: v })}
-              locale={numLocale}
-              min={0}
-              placeholder={m.picker.stock}
-              aria-label={m.picker.stock}
-            />
-          )}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="rounded-2xl border bg-white shadow-sm">
       <div className="p-6">
@@ -403,17 +329,16 @@ export function ScanEntry({
           <ScanLine className="size-5 text-primary" />
           <h1 className="text-lg font-extrabold">{m.scan.title}</h1>
           <span className="hidden rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary sm:inline">
-            {m.scan.tabHint}
+            {arm === "sell" ? "کاتالوگ فروش" : "دستیار خرید"}
           </span>
         </div>
         <p className="mt-2 text-xs leading-6 text-muted-foreground">{m.scan.intro}</p>
 
-        {/* ───── دوربین / راهنمای هوشمند ───── */}
+        {/* ───── دوربین ───── */}
         <div className="relative mt-4 aspect-[4/3] overflow-hidden rounded-2xl border bg-stone-900 sm:aspect-[16/9]">
           <video ref={videoRef} muted playsInline className={`size-full object-cover ${cam === "on" ? "" : "opacity-0"}`} />
           {cam === "on" && (
             <>
-              {/* خط راهنمای اسکن */}
               <div className="pointer-events-none absolute inset-x-8 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-emerald-400/70" />
               <span className="absolute bottom-2 end-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white">
                 <Camera className="me-1 inline size-3" />
@@ -430,24 +355,16 @@ export function ScanEntry({
             <div className="absolute inset-0 grid place-items-center p-6 text-center">
               <div className="max-w-xs">
                 <CameraOff className="mx-auto size-6 text-stone-400" />
-                {/* راهنمای مناسب برای نوع دستگاه:
-                    • موبایل: دوربین باید کار کند — احتمالا دسترسی ندادی، دوباره تلاش کن
-                    • لپ‌تاپ: دوربین داره ولی بهتره از اسکنر استفاده کنی
-                    • دسکتاپ (بدون دوربین): اسکنر USB بزن یا از موبایل بیا */}
                 <p className="mt-2 text-xs leading-5 text-stone-300">
-                  {deviceType === "mobile"
-                    ? m.scan.camHintMobile
-                    : m.scan.camHintNoCamera}
+                  {deviceType === "mobile" ? m.scan.camHintMobile : m.scan.camHintNoCamera}
                 </p>
-                {deviceType === "mobile" && (
-                  <button
-                    type="button"
-                    onClick={() => setCamRetry((c) => c + 1)}
-                    className="mt-3 rounded-lg border border-stone-500 px-3 py-1.5 text-xs font-bold text-stone-200 hover:bg-stone-800"
-                  >
-                    {m.scan.camTryAgain}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => setCamRetry((c) => c + 1)}
+                  className="mt-3 rounded-lg border border-stone-500 px-3 py-1.5 text-xs font-bold text-stone-200 hover:bg-stone-800"
+                >
+                  {m.scan.camTryAgain}
+                </button>
               </div>
             </div>
           )}
@@ -455,16 +372,12 @@ export function ScanEntry({
             <div className="absolute inset-0 grid place-items-center p-6 text-center">
               <div className="max-w-xs">
                 <CameraOff className="mx-auto size-6 text-amber-400" />
-                <p className="mt-2 text-xs font-bold leading-5 text-amber-200">
-                  {m.scan.camBlackTitle}
-                </p>
-                <p className="mt-1 text-[11px] leading-5 text-stone-300">
-                  {m.scan.camBlackHint}
-                </p>
+                <p className="mt-2 text-xs font-bold leading-5 text-amber-200">{m.scan.camBlackTitle}</p>
+                <p className="mt-1 text-[11px] leading-5 text-stone-300">{m.scan.camBlackHint}</p>
                 <button
-                    type="button"
-                    onClick={() => setCamRetry((c) => c + 1)}
-                    className="mt-3 rounded-lg border border-stone-500 px-3 py-1.5 text-xs font-bold text-stone-200 hover:bg-stone-800"
+                  type="button"
+                  onClick={() => setCamRetry((c) => c + 1)}
+                  className="mt-3 rounded-lg border border-stone-500 px-3 py-1.5 text-xs font-bold text-stone-200 hover:bg-stone-800"
                 >
                   {m.scan.camTryAgain}
                 </button>
@@ -472,13 +385,6 @@ export function ScanEntry({
             </div>
           )}
         </div>
-
-        {/* راهنمای لپ‌تاپ — وقتی دوربین کار می‌کند ولی کاربر بهتره از اسکنر استفاده کند */}
-        {cam === "on" && deviceType !== "mobile" && (
-          <p className="mt-2 text-[11px] leading-5 text-muted-foreground">
-            {m.scan.camHintLaptop}
-          </p>
-        )}
 
         {/* ───── فیلد بارکد — اسکنر سخت‌افزاری و تایپ دستی ───── */}
         <div className="mt-3 flex items-center gap-2">
@@ -521,131 +427,149 @@ export function ScanEntry({
           </Button>
         </div>
 
-        {/* ───── کاندیدهای چندگانه ───── */}
-        {candidates && (
-          <div className="mt-4 rounded-xl border p-3">
-            <p className="text-xs font-bold">{m.scan.candidates}</p>
-            <div className="mt-2 max-h-56 space-y-1 overflow-y-auto">
-              {candidates.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => {
-                    setCandidates(null);
-                    setArmAsk(p);
-                  }}
-                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-start transition hover:bg-accent"
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-bold">{p.label}</span>
-                    <span className="block truncate text-[11px] text-muted-foreground">{goodName(p.good, locale)}</span>
-                  </span>
-                  <Check className="size-4 shrink-0 text-muted-foreground" />
-                </button>
-              ))}
+        {/* ───── گرید اسکن‌شده‌ها — مثل اکسل ───── */}
+        {rows.length > 0 && (
+          <>
+            {/* خلاصه */}
+            <div className="mt-5 flex flex-wrap items-center gap-2 border-b pb-2">
+              <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold">{fa(rows.length)} کالا</span>
+              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">{fa(selectedCount)} کامل</span>
+              {incompleteCount > 0 && <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">{fa(incompleteCount)} ناقص</span>}
             </div>
-            <button type="button" onClick={() => setCandidates(null)} className="mt-2 text-[11px] font-bold text-muted-foreground hover:text-foreground">
-              {m.scan.cancel}
-            </button>
-          </div>
-        )}
 
-        {/* ───── مدال نقش کالا — ساده، با پیش‌فرض ماندگار ───── */}
-        {armAsk && (
-          <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-sm" onClick={() => setArmAsk(null)}>
-            <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-extrabold">{armAsk.label}</p>
-                  <p className="truncate text-[11px] text-muted-foreground">{goodName(armAsk.good, locale)}</p>
-                </div>
-                <button
-                  type="button"
-                  aria-label="بستن"
-                  className="grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground"
-                  onClick={() => setArmAsk(null)}
-                >
-                  <X className="size-4" />
-                </button>
+            {/* جدول */}
+            <div className="mt-2 overflow-auto" style={{ maxHeight: "400px" }}>
+              {/* سرستون */}
+              <div style={{ display: "grid", gridTemplateColumns: GRID_COLS, position: "sticky", top: 0, zIndex: 10 }} className="border-b bg-stone-100 text-[10px] font-bold text-stone-500">
+                <div className="px-1 py-2.5 text-center">#</div>
+                <div className="px-1 py-2.5" />
+                <div className="px-2 py-2.5">محصول</div>
+                <div className="px-2 py-2.5">نوع</div>
+                {arm === "sell" ? (
+                  <>
+                    <div className="px-2 py-2.5 text-center">قیمت ({curName})</div>
+                    <div className="px-2 py-2.5 text-center">موجودی</div>
+                    <div className="px-2 py-2.5 text-center">حداقل</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="px-2 py-2.5 text-center">حجم خرید</div>
+                    <div className="px-2 py-2.5 text-center">دوره</div>
+                  </>
+                )}
               </div>
-              <p className="mt-3 text-sm font-bold">{m.scan.armModalTitle}</p>
-              <div className="mt-2 grid gap-1.5">
-                {(["sell", "buy", "both"] as Arm[]).map((arm) => (
-                  <button
-                    key={arm}
-                    type="button"
-                    onClick={() => chooseArm(arm)}
-                    className={`flex items-center justify-between rounded-xl border px-4 py-3 text-sm font-bold transition hover:border-primary hover:text-primary ${
-                      prefRef.current.lastArm === arm ? "border-primary/50 bg-accent/40" : ""
-                    }`}
+
+              {/* ردیف‌ها */}
+              {rows.map((r, i) => {
+                const p = r.product;
+                const isComplete = arm === "sell"
+                  ? !!(r.price && r.price > 0 && (r.stock ?? 0) >= 0 && r.minOrder && r.minOrder > 0)
+                  : !!(r.volume && r.volume > 0);
+                return (
+                  <div
+                    key={p.id}
+                    style={{ display: "grid", gridTemplateColumns: GRID_COLS }}
+                    className={`border-b text-xs transition ${isComplete ? "bg-emerald-50/30" : "bg-red-50/20"}`}
                   >
-                    {arm === "sell" ? m.scan.armSell : arm === "both" ? m.scan.armBoth : m.scan.armBuy}
-                    {prefRef.current.lastArm === arm && <span className="text-[10px] text-primary">{m.scan.defaultChip}</span>}
-                  </button>
-                ))}
-              </div>
-              <label className="mt-3 flex cursor-pointer items-center gap-2 text-[11px] text-muted-foreground">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  className="size-3.5 accent-[var(--primary)]"
-                />
-                {m.scan.remember}
-              </label>
+                    <div className="grid place-items-center px-1 py-2 text-[10px] font-bold text-stone-400">{fa(i + 1)}</div>
+                    <div className="grid place-items-center px-1 py-2">
+                      <button
+                        type="button"
+                        onClick={() => removeRow(p.id)}
+                        className="grid size-5 place-items-center rounded text-stone-400 hover:bg-red-100 hover:text-red-600"
+                        aria-label="حذف"
+                      >
+                        <X className="size-3.5" />
+                      </button>
+                    </div>
+                    <div className="min-w-0 px-2 py-2">
+                      <p className="truncate text-xs font-bold">{p.label}</p>
+                      <p className="truncate text-[10px] text-muted-foreground">{goodName(p.good, locale)}</p>
+                    </div>
+                    <div className="px-2 py-2 text-[10px] text-muted-foreground">{p.brand?.name ?? "—"}</div>
+                    {arm === "sell" ? (
+                      <>
+                        <div className="px-1 py-1.5">
+                          <NumberInput
+                            value={r.price}
+                            onChange={(v) => updateRow(p.id, { price: v })}
+                            locale={numLocale}
+                            min={0}
+                            suffix={curName}
+                            placeholder="—"
+                            className={inputCls}
+                            aria-label="قیمت"
+                          />
+                        </div>
+                        <div className="px-1 py-1.5">
+                          <NumberInput
+                            value={r.stock}
+                            onChange={(v) => updateRow(p.id, { stock: v })}
+                            locale={numLocale}
+                            min={0}
+                            placeholder="—"
+                            className={inputCls}
+                            aria-label="موجودی"
+                          />
+                        </div>
+                        <div className="px-1 py-1.5">
+                          <NumberInput
+                            value={r.minOrder}
+                            onChange={(v) => updateRow(p.id, { minOrder: v })}
+                            locale={numLocale}
+                            min={0}
+                            placeholder="—"
+                            className={inputCls}
+                            aria-label="حداقل سفارش"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="px-1 py-1.5">
+                          <NumberInput
+                            value={r.volume}
+                            onChange={(v) => updateRow(p.id, { volume: v })}
+                            locale={numLocale}
+                            min={0}
+                            placeholder="—"
+                            className={inputCls}
+                            aria-label="حجم خرید"
+                          />
+                        </div>
+                        <div className="grid place-items-center px-1 py-2 text-[10px] text-muted-foreground">ماهیانه</div>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          </div>
-        )}
 
-        {/* ───── صف اسکن — کامل بالا، نیازمندِ تکمیل پایین ───── */}
-        {queue.length > 0 && (
-          <div className="mt-5 space-y-3">
-            {complete.length > 0 && (
-              <div>
-                <p className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-emerald-700">
-                  <Check className="size-3.5" />
-                  {m.scan.readySection.replace("{n}", fa(complete.length))}
-                </p>
-                <div className="space-y-2">{complete.map(rowOf)}</div>
-              </div>
-            )}
-            {pending.length > 0 && (
-              <div>
-                <p className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-amber-700">
-                  <TriangleAlert className="size-3.5" />
-                  {m.scan.needPriceSection.replace("{n}", fa(pending.length))}
-                </p>
-                <p className="mb-2 text-[11px] leading-5 text-muted-foreground">{m.scan.needPriceHint}</p>
-                <div className="space-y-2">{pending.map(rowOf)}</div>
-              </div>
-            )}
-
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Button variant="outline" className="sm:flex-1" onClick={() => void submit()} disabled={busy || bulk.isPending || complete.length === 0}>
+            {/* دکمه‌های ثبت */}
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <Button
+                className="sm:flex-1"
+                onClick={() => void confirm()}
+                disabled={busy || bulk.isPending || selectedCount === 0}
+              >
                 {busy || bulk.isPending ? (
-                  <span className="size-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+                  <Loader2 className="size-4 animate-spin" />
                 ) : (
                   <Check className="size-4" />
                 )}
-                {m.scan.submit.replace("{n}", fa(complete.length))}
+                ثبت {fa(selectedCount)} کالا
               </Button>
-              <Button
-                variant="ghost"
-                className="sm:flex-1"
-                onClick={() =>
-                  onDone(
-                    queue.some((i) => i.arm !== "buy")
-                      ? "sell"
-                      : "buy"
-                  )
-                }
-                disabled={busy || bulk.isPending}
-              >
-                {m.scan.finish}
+              <Button variant="outline" onClick={reset} disabled={busy || bulk.isPending}>
+                <X className="size-4" />
+                پاک کردن همه
               </Button>
             </div>
-            {pending.length > 0 && <p className="text-center text-[11px] text-muted-foreground">{m.scan.submitNeedsComplete}</p>}
-          </div>
+            {incompleteCount > 0 && (
+              <p className="mt-2 text-center text-[11px] leading-5 text-muted-foreground">
+                {fa(incompleteCount)} کالا ناقص است — مقادیرشان را پر کن یا حذفشان کن
+              </p>
+            )}
+          </>
         )}
 
         {/* درِ خروج به فرم دستی — بارکد ناشناس بن‌بست نیست */}
