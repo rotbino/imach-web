@@ -161,7 +161,7 @@ export const en: Messages = {
       attrsTitle: "Attributes",
       optionalToggle: "Product attributes",
       attrsHint:
-          "Starred attributes are required — so the product is identifiable. The rest are optional.",
+          "The more complete your attributes, the more accurately buyers and suppliers will find your product. The matching engine uses these attributes to recommend you to customers.",
     },
     sections: {
       sell: "Wholesale selling",
