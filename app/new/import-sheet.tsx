@@ -73,7 +73,7 @@ function getRowIssues(r: EditableRow, arm: "sell" | "buy"): string[] {
   if (!r.name?.trim()) issues.push("نام ندارد");
   if (arm === "sell") {
     if (!r.priceMinor || r.priceMinor <= 0) issues.push("قیمت ندارد");
-    if (!r.stock || r.stock <= 0) issues.push("موجودی ندارد");
+    if (r.stock === null || r.stock === undefined) issues.push("موجودی ندارد");
     if (!r.minOrder || r.minOrder <= 0) issues.push("حداقل سفارش ندارد");
   } else {
     if (!r.volume || r.volume <= 0) issues.push("حجم ندارد");
@@ -229,7 +229,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
           setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "saved" } : r));
           if (row.pendingImageFile && res.listingIds?.[0]) {
             try {
-              await uploadFile.mutateAsync({
+              const fileRes = await uploadFile.mutateAsync({
                 file: row.pendingImageFile,
                 model: "Listing",
                 modelId: res.listingIds[0],
@@ -240,6 +240,16 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                 },
               });
               setRows((l) => l.map((r) => r.index === row.index ? { ...r, uploadPct: 100 } : r));
+              // عکس را روی Product.imageUrl هم ست کن تا در لیست مرجع دیده شود
+              if (fileRes.url) {
+                try {
+                  // productId از preview row می‌آید — اگر هست، Product را آپدیت کن
+                  const productId = row.productId;
+                  if (productId) {
+                    await productsApi.setProductImage({ productId, imageUrl: fileRes.url });
+                  }
+                } catch { /* best-effort */ }
+              }
             } catch (err) {
               toast({ title: `عکس ${row.name} آپلود نشد`, description: "کالا ثبت شد ولی عکس بعداً اضافه کن", variant: "destructive" });
             }

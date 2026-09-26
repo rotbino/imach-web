@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
@@ -38,12 +38,15 @@ export function WelcomeModal({ forced = false }: { forced?: boolean }) {
   const [lastName, setLastName] = useState("");
   const [intent, setIntent] = useState<"sell" | "buy" | "both" | null>(null);
   const [busy, setBusy] = useState(false);
+  const shown = useRef(false);
 
-  // باز کردن خودکار اگر firstName ندارد (placeholder name شروع می‌شود با «کاربر »)
+  // باز کردن خودکار فقط اگر firstName ندارد — فقط یک بار
   useEffect(() => {
     if (!user) return;
+    if (shown.current) return;
     const needsWelcome = !user.firstName || user.name.startsWith("کاربر ");
     if (needsWelcome || forced) {
+      shown.current = true;
       setFirstName(user.firstName ?? "");
       setLastName(user.lastName ?? "");
       setOpen(true);

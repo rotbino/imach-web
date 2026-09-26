@@ -715,7 +715,8 @@ export function ReferencePicker({
                       <span className="shrink-0 text-[10px] text-muted-foreground">{fa(b.count)}</span>
                     </button>
                   ))}
-                  {filteredBrands.length === 0 && <p className="py-3 text-center text-[11px] text-muted-foreground">برندی نیست</p>}
+                  {filteredBrands.length === 0 && !first.isLoading && !first.isFetching && <p className="py-3 text-center text-[11px] text-muted-foreground">برندی نیست</p>}
+                  {first.isLoading || first.isFetching ? <p className="py-3 text-center text-[11px] text-muted-foreground"><Loader2 className="mx-auto size-3 animate-spin" /></p> : null}
                 </div>
               </div>
 
@@ -788,8 +789,8 @@ export function ReferencePicker({
             </div>
 
             {/* ردیف‌های محصول */}
-            {first.isLoading ? (
-              <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /></p>
+            {first.isLoading || first.isFetching ? (
+              <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> در حال بارگیری…</p>
             ) : displayRows.length === 0 ? (
               <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
                 <PackageSearch className="mx-auto size-6 text-primary/60" />
@@ -838,10 +839,13 @@ export function ReferencePicker({
               </Button>
             )}
 
-            <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
-              {m.picker.notHere}{" "}
-              <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">{m.picker.switchToForm}</button>
-            </p>
+            {/* فقط وقتی لیست خالی است «ثبت تکی» را نشان بده */}
+            {displayRows.length === 0 && !first.isLoading && !first.isFetching && (
+              <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
+                {m.picker.notHere}{" "}
+                <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">{m.picker.switchToForm}</button>
+              </p>
+            )}
 
             {picked.length > 0 && (
               <div className="sticky bottom-4 mt-4 flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-2.5 shadow-lg backdrop-blur">

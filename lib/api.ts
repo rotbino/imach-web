@@ -933,6 +933,10 @@ export const productsApi = {
   /** ادغام ادمین — ردیف‌های شکسته در بازمانده جمع می‌شوند */
   adminMerge: (body: { intoId: string; fromIds: string[] }) =>
     api<{ merged: number; intoId: string }>("/products/adminMerge", { method: "PUT", body }),
+
+  /** ست کردن عکس مرجع Product — وقتی کاربر عکس آپلود می‌کند */
+  setProductImage: (body: { productId: string; imageUrl: string }) =>
+    api<{ ok: boolean }>("/products/setProductImage", { method: "POST", body }),
 };
 
 export const marketApi = {
