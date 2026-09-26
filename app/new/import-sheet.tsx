@@ -20,19 +20,22 @@ type EditableRow = ImportPreviewDto["rows"][number] & {
   error?: string;
   productImage?: string | null;
   pendingImageUrl?: string;
+  /** دوره خرید — هفتگی/ماهیانه/موردی */
+  frequency?: string | null;
 };
 
-/**
- * عرض ستون‌ها — بدون دسته/زیردسته، با ستون نوع (فروش/خرید)
- * عکس | وضعیت | نام | برند | بسته‌بندی | قیمت | موجودی | حداقل | حجم
- */
-const GRID_COLS = "48px 28px minmax(140px,1.6fr) minmax(70px,0.8fr) minmax(70px,0.8fr) 120px 70px 70px 80px";
+/** عرض ستون‌ها — فروش و خرید متفاوت */
+const GRID_SELL = "48px 28px minmax(140px,1.6fr) minmax(70px,0.7fr) minmax(70px,0.7fr) 120px 70px 70px 100px";
+const GRID_BUY  = "48px 28px minmax(140px,1.6fr) minmax(70px,0.7fr) minmax(70px,0.7fr) 90px 90px";
 
-/** پرامپت AI — بر اساس arm (فروش یا خرید) متفاوت */
+const FREQUENCIES = [
+  { v: "WEEKLY", label: "هفتگی" },
+  { v: "MONTHLY", label: "ماهیانه" },
+  { v: "OCCASIONAL", label: "موردی" },
+];
+
+/** پرامپت AI — بر اساس arm متفاوت */
 function buildAiPrompt(ref: CatalogReferenceDto, arm: "sell" | "buy"): string {
-  const armText = arm === "sell"
-    ? "کالاهایی که عمده می‌فروشد — قیمت فروش، موجودی و حداقل سفارش را پر کن"
-    : "کالاهایی که عمده می‌خرد — حجم خرید را پر کن";
   return [
     "تو دستیار وارد کردن کالا برای پلتفرم عمده‌فروشی iMach هستی.",
     `کاربر فایل ${arm === "sell" ? "کالاهای فروش" : "کالاهای خرید"} خود را می‌دهد و تو باید آن را به قالب زیر تبدیل کنی.`,
@@ -40,15 +43,17 @@ function buildAiPrompt(ref: CatalogReferenceDto, arm: "sell" | "buy"): string {
     "ستون‌های خروجی (با کاما جدا شوند):",
     arm === "sell"
       ? "نام کالا, برند, بسته‌بندی, قیمت فروش, موجودی, حداقل سفارش, لینک عکس"
-      : "نام کالا, برند, بسته‌بندی, حجم خرید, لینک عکس",
+      : "نام کالا, برند, بسته‌بندی, حجم خرید, دوره خرید, لینک عکس",
     "",
     "قواعد:",
     "۱) «نام کالا» را کوتاه و استاندارد بنویس.",
     "۲) «نام کالا» از لیست گودهای موجود انتخاب شود.",
     "۳) «برند» از لیست برندهای موجود. بدون برند خالی.",
-    `۴) این کالاهایی است که کاربر ${armText}.`,
-    "۵) قیمت عدد تومان بدون جداکننده.",
-    "۶) اگر عکس کالا لینک مستقیم دارد، در ستون «لینک عکس» بگذار.",
+    arm === "sell"
+      ? "۴) این کالاهایی است که کاربر عمده می‌فروشد — قیمت، موجودی و حداقل سفارش را پر کن."
+      : "۴) این کالاهایی است که کاربر عمده می‌خرد — حجم خرید و دوره خرید را پر کن.",
+    arm === "buy" ? "۵) «دوره خرید» یکی از این سه باشد: هفتگی، ماهیانه، موردی." : "۵) قیمت عدد تومان بدون جداکننده.",
+    "۶) اگر عکس کالا لینک مستقیم دارد، در «لینک عکس» بگذار.",
     "۷) اگر مقدار کاما دارد، داخل کوتیشن.",
     "",
     "خروجی CSV بدون توضیح.",
@@ -59,6 +64,19 @@ function buildAiPrompt(ref: CatalogReferenceDto, arm: "sell" | "buy"): string {
   ].join("\n");
 }
 
+/** محاسبه نقص‌های یک ردیف */
+function getRowIssues(r: EditableRow, arm: "sell" | "buy"): string[] {
+  const issues: string[] = [];
+  if (!r.name?.trim()) issues.push("نام ندارد");
+  if (arm === "sell") {
+    if (!r.priceMinor || r.priceMinor <= 0) issues.push("قیمت ندارد");
+  } else {
+    if (!r.volume || r.volume <= 0) issues.push("حجم ندارد");
+  }
+  if (!r.productImage && !r.pendingImageUrl) issues.push("عکس ندارد");
+  return issues;
+}
+
 export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell" | "buy"; onDone: (kind: "sell" | "buy") => void }) {
   const { toast } = useToast();
   const m = useMessages();
@@ -66,6 +84,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
   const numLocale: "fa" | "en" = locale === "en" ? "en" : "fa";
   const mode: "SELL" | "BUY" = arm === "sell" ? "SELL" : "BUY";
   const armLabel = arm === "sell" ? "فروش" : "خرید";
+  const GRID_COLS = arm === "sell" ? GRID_SELL : GRID_BUY;
 
   const [step, setStep] = useState<Step>("drop");
   const [priceUnit, setPriceUnit] = useState<"toman" | "rial">("toman");
@@ -99,10 +118,10 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
       ["چای سیاه", "گلستان", "۵۰۰ گرمی", "98000", "12", "1", ""],
     ];
     const buyRows = [
-      ["نام کالا", "برند", "بسته‌بندی", "حجم خرید", "لینک عکس"],
-      ["شکر", "", "کیسه ۵۰ کیلویی", "40", ""],
-      ["روغن مایع", "آفتاب", "۱.۸ لیتری", "25", ""],
-      ["برنج", "طارم", "۱۰ کیلویی", "30", ""],
+      ["نام کالا", "برند", "بسته‌بندی", "حجم خرید", "دوره خرید", "لینک عکس"],
+      ["شکر", "", "کیسه ۵۰ کیلویی", "40", "ماهیانه", ""],
+      ["روغن مایع", "آفتاب", "۱.۸ لیتری", "25", "هفتگی", ""],
+      ["برنج", "طارم", "۱۰ کیلویی", "30", "موردی", ""],
     ];
     const data = arm === "sell" ? sellRows : buyRows;
     const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
@@ -123,7 +142,13 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
     setBusy(true);
     try {
       const res = await productsApi.importPreview({ file, businessId: bizId, mode, priceUnit });
-      setRows(res.rows.map((r) => ({ ...r, status: "pending" as const, productImage: null, pendingImageUrl: "" })));
+      setRows(res.rows.map((r) => ({
+        ...r,
+        status: "pending" as const,
+        productImage: null,
+        pendingImageUrl: "",
+        frequency: r.volume ? "MONTHLY" : null,
+      })));
       setStep("preview");
     } catch (err) {
       toast({ title: "خواندن فایل ناموفق بود", description: err instanceof ApiError ? err.message : "فرمت فایل را بررسی کن", variant: "destructive" });
@@ -133,21 +158,20 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
   const updateRow = (index: number, patch: Partial<EditableRow>) => {
     setRows((list) => list.map((r) => (r.index === index ? { ...r, ...patch } : r)));
   };
-
-  const deleteRow = (index: number) => {
-    setRows((list) => list.filter((r) => r.index !== index));
-  };
+  const deleteRow = (index: number) => setRows((list) => list.filter((r) => r.index !== index));
 
   const curDef = priceUnit === "toman" ? 10 : 1;
   const totalCount = rows.length;
-  const isRowValid = (r: EditableRow) => r.name?.trim() && r.arms.length > 0 && (r.productImage || r.pendingImageUrl) && r.mineMode === null;
+
+  // اعتبارسنجی — نقص‌ها از getRowIssues محاسبه می‌شوند
+  const isRowValid = (r: EditableRow) => getRowIssues(r, arm).length === 0 && r.mineMode === null;
   const isRowDuplicate = (r: EditableRow) => r.mineMode !== null && r.mineMode !== undefined;
-  const isRowIncomplete = (r: EditableRow) => !r.name?.trim() || r.arms.length === 0 || (!r.productImage && !r.pendingImageUrl);
+  const isRowIncomplete = (r: EditableRow) => getRowIssues(r, arm).length > 0 && !isRowDuplicate(r);
   const validRows = rows.filter(isRowValid);
   const validCount = validRows.length;
-  const dupRows = rows.filter(isRowDuplicate);
-  const incompleteRows = rows.filter(isRowIncomplete);
-  const invalidCount = dupRows.length + incompleteRows.length;
+  const dupCount2 = rows.filter(isRowDuplicate).length;
+  const incompleteCount = rows.filter(isRowIncomplete).length;
+  const invalidCount = dupCount2 + incompleteCount;
 
   const confirm = async () => {
     const toSave = validRows;
@@ -256,7 +280,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
     );
   }
 
-  // ═══ preview — جدول گرید ═══
+  // ═══ preview ═══
   if (step === "preview" && rows.length > 0) {
     return (
       <div className="rounded-2xl border bg-white shadow-sm">
@@ -290,7 +314,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
             ) : (
               <>
                 <div className="px-2 py-2.5 text-center">حجم خرید</div>
-                <div className="px-2 py-2.5 text-center" style={{ gridColumn: "span 2" }} />
+                <div className="px-2 py-2.5 text-center">دوره</div>
               </>
             )}
           </div>
@@ -298,7 +322,8 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
           {/* ردیف‌ها */}
           {rows.map((r, idx) => {
             const isDup = isRowDuplicate(r);
-            const isInc = isRowIncomplete(r);
+            const issues = getRowIssues(r, arm);
+            const isInc = issues.length > 0 && !isDup;
             const imgUrl = r.productImage || r.pendingImageUrl;
             return (
               <div
@@ -333,7 +358,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                   {isDup ? (
                     <span className="rounded bg-amber-100 px-1 py-0.5 text-[8px] font-bold text-amber-700" title="تکراری">تکراری</span>
                   ) : isInc ? (
-                    <span className="rounded bg-red-100 px-1 py-0.5 text-[8px] font-bold text-red-600" title="ناقص">ناقص</span>
+                    <span className="rounded bg-red-100 px-1 py-0.5 text-[8px] font-bold text-red-600" title={issues.join("، ")}>ناقص</span>
                   ) : (
                     <button type="button" onClick={() => deleteRow(r.index)} className="grid size-5 place-items-center rounded text-stone-300 transition hover:bg-red-50 hover:text-red-500" title="حذف">
                       <Trash2 className="size-3" />
@@ -358,21 +383,31 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                 {arm === "sell" ? (
                   <>
                     <div className="px-1 py-1">
-                      <NumberInput value={r.priceMinor ? r.priceMinor / curDef : null} onChange={(v) => updateRow(r.index, { priceMinor: v ? v * curDef : null, arms: v ? ["SELL"] : r.arms })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                      <NumberInput value={r.priceMinor ? r.priceMinor / curDef : null} onChange={(v) => updateRow(r.index, { priceMinor: v ? v * curDef : null, arms: v ? ["SELL"] : r.arms })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent text-center hover:border-stone-200 focus:border-primary focus:bg-white" />
                     </div>
                     <div className="px-1 py-1">
-                      <NumberInput value={r.stock} onChange={(v) => updateRow(r.index, { stock: v })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                      <NumberInput value={r.stock} onChange={(v) => updateRow(r.index, { stock: v })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent text-center hover:border-stone-200 focus:border-primary focus:bg-white" />
                     </div>
                     <div className="px-1 py-1">
-                      <NumberInput value={r.minOrder} onChange={(v) => updateRow(r.index, { minOrder: v })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                      <NumberInput value={r.minOrder} onChange={(v) => updateRow(r.index, { minOrder: v })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent text-center hover:border-stone-200 focus:border-primary focus:bg-white" />
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="px-1 py-1">
-                      <NumberInput value={r.volume} onChange={(v) => updateRow(r.index, { volume: v, arms: v ? ["BUY"] : r.arms })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent hover:border-stone-200 focus:border-primary focus:bg-white" />
+                      <NumberInput value={r.volume} onChange={(v) => updateRow(r.index, { volume: v, arms: v ? ["BUY"] : r.arms })} locale={numLocale} min={0} className="h-7 border-transparent bg-transparent text-center hover:border-stone-200 focus:border-primary focus:bg-white" />
                     </div>
-                    <div className="px-2 py-2 text-center text-[10px] text-stone-300" style={{ gridColumn: "span 2" }}>—</div>
+                    <div className="px-1 py-1">
+                      <select
+                        value={r.frequency ?? "MONTHLY"}
+                        onChange={(e) => updateRow(r.index, { frequency: e.target.value })}
+                        className="h-7 w-full border-transparent bg-transparent px-1 text-xs text-stone-600 hover:border-stone-200 focus:border-primary focus:bg-white outline-none"
+                      >
+                        {FREQUENCIES.map((f) => (
+                          <option key={f.v} value={f.v}>{f.label}</option>
+                        ))}
+                      </select>
+                    </div>
                   </>
                 )}
               </div>
@@ -410,9 +445,9 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
           <p className="mt-1 text-[11px] text-muted-foreground">xlsx · xls · csv</p>
         </label>
 
-        {/* واحد قیمت فقط برای فروش */}
-        {arm === "sell" && (
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs">
+        {/* واحد قیمت فقط فروش + فایل نمونه */}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs">
+          {arm === "sell" ? (
             <div className="flex items-center gap-1.5 text-muted-foreground">
               {m.importSheet.priceUnit}
               <span className="inline-flex overflow-hidden rounded-full border">
@@ -421,14 +456,9 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                 ))}
               </span>
             </div>
-            <button type="button" onClick={downloadTemplate} className="font-bold text-primary underline-offset-2 hover:underline">فایل نمونه {armLabel}</button>
-          </div>
-        )}
-        {arm === "buy" && (
-          <div className="mt-4 text-end">
-            <button type="button" onClick={downloadTemplate} className="font-bold text-primary underline-offset-2 hover:underline">فایل نمونه {armLabel}</button>
-          </div>
-        )}
+          ) : <div />}
+          <button type="button" onClick={downloadTemplate} className="font-bold text-primary underline-offset-2 hover:underline">فایل نمونه {armLabel}</button>
+        </div>
 
         {/* AI */}
         <div className="mt-4 overflow-hidden rounded-xl border border-primary/20">
@@ -443,12 +473,9 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                 پرامپت زیر را کپی کن و به هوش مصنوعی همراه با فایل کالاهایت بده.
                 {arm === "sell" ? " اکسل فروش" : " اکسل خرید"} ساخته می‌شود. بعد فایل خروجی را همین‌جا آپلود کن.
               </p>
-              {aiLoading ? (
-                <div className="grid h-[400px] place-items-center rounded-lg border bg-muted/30"><Loader2 className="size-5 animate-spin text-primary" /><p className="mt-2 text-xs text-muted-foreground">در حال بارگیری…</p></div>
-              ) : (
-                <textarea readOnly value={aiPrompt} className="h-[400px] w-full resize-none rounded-lg border bg-muted/20 p-3 font-mono text-[11px] leading-5 text-foreground/80" dir="rtl" onFocus={(e) => e.target.select()} />
-              )}
-              <div className="flex flex-wrap items-center gap-2">
+
+              {/* نوار ابزار — بالای کادر متن */}
+              <div className="flex flex-wrap items-center gap-2 border-b pb-2">
                 <Button type="button" variant="outline" size="sm" onClick={() => void copyPrompt()} disabled={!aiPrompt}>
                   {promptCopied ? <Check className="size-3.5 text-emerald-600" /> : <FileSpreadsheet className="size-3.5" />}
                   {promptCopied ? "کپی شد" : "کپی پرامپت"}
@@ -458,6 +485,13 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                 <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">Claude</a>
                 <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">Gemini</a>
               </div>
+
+              {/* کادر متن */}
+              {aiLoading ? (
+                <div className="grid h-[400px] place-items-center rounded-lg border bg-muted/30"><Loader2 className="size-5 animate-spin text-primary" /><p className="mt-2 text-xs text-muted-foreground">در حال بارگیری…</p></div>
+              ) : (
+                <textarea readOnly value={aiPrompt} className="h-[400px] w-full resize-none rounded-lg border bg-muted/20 p-3 font-mono text-[11px] leading-5 text-foreground/80" dir="rtl" onFocus={(e) => e.target.select()} />
+              )}
             </div>
           )}
         </div>
