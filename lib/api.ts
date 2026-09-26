@@ -712,11 +712,28 @@ export const goodsApi = {
   getCategories: () => api<CategoryNodeDto[]>("/goods/getCategories", { auth: false }),
   /** پیشنهاد برند برای فرم ثبت کالا */
   getBrands: (q?: string) => api<BrandDto[]>("/goods/getBrands", { params: { q }, auth: false }),
+  /** JSON مرجع کاتالوگ برای پرامپت هوش مصنوعی — گودها + برندها + دسته‌ها */
+  getCatalogReference: () => api<CatalogReferenceDto>("/goods/getCatalogReference", { auth: false }),
   /** ثبت کالای مرجع جدید وقتی جستجو نتیجه‌ای نداشت */
   // categoryId اختیاری — وقتی ندهند بک‌اند خودکار در سبد «سایر › جدید» پارک می‌کند
   createGood: (body: { name: string; categoryId?: string; nameEn?: string; aliases?: string[]; unit?: string }) =>
     api<GoodDto>("/goods/createGood", { method: "POST", body }),
 };
+
+/** JSON مرجع کاتالوگ — برای دادن به هوش مصنوعی در ایمپورت */
+export interface CatalogReferenceDto {
+  categories: CatalogReferenceCategoryDto[];
+  brands: string[];
+  totalGoods: number;
+  totalBrands: number;
+}
+
+export interface CatalogReferenceCategoryDto {
+  name: string;
+  slug: string;
+  goods: { name: string; aliases: string[]; unit: string }[];
+  children: CatalogReferenceCategoryDto[];
+}
 
 export const businessesApi = {
   getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),

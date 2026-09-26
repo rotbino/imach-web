@@ -1,13 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { ApiError, type ImportPreviewDto } from "@/lib/api";
-import { productsApi } from "@/lib/api";
+import { useEffect, useRef, useState } from "react";
+import { ApiError, goodsApi, productsApi, type CatalogReferenceDto, type ImportPreviewDto } from "@/lib/api";
 import { fa, fmtMoney } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Check, FileSpreadsheet, HelpCircle, Image as ImageIcon, Loader2, TriangleAlert, Upload, X } from "lucide-react";
+import { Check, ChevronDown, FileSpreadsheet, HelpCircle, Image as ImageIcon, Loader2, Sparkles, TriangleAlert, Upload, X } from "lucide-react";
 
 /**
  * ─── وارد کردن گروهی از فایل ─────────────────────────────────────────────────
@@ -19,31 +18,47 @@ import { Check, FileSpreadsheet, HelpCircle, Image as ImageIcon, Loader2, Triang
  *  ۳. هیچ‌چیز بی‌اجازه نوشته نمی‌شود — پیش‌نمایش نشان می‌دهد هر ردیف دقیقاً
  *     با کدام SKU هم‌خوان است، چه چیزی ساخته می‌شود و چه چیزی رد می‌شود.
  *
- * میان‌بر هوش مصنوعی (خواسته‌ی کاربر): پرامپت فارسیِ آماده که کاربر همراه
- * فایلش به هر هوش مصنوعی بدهد و خروجی را در قالب ما بگیرد — «۱۰۰۰ کالا در
- * چند دقیقه». لینک عکس هم ستون رسمی است و در پس‌زمینه به گالری می‌پیوندد.
+ * میان‌بر هوش مصنوعی (خواسته‌ی کاربر): پرامپت فارسیِ آماده که شامل JSON مرجع
+ * کاتالوگ (گودها + برندها + دسته‌ها) هم هست. کاربر پرامپت را کپی می‌کند، به
+ * AI می‌دهد و خروجی را در قالب ما می‌گیرد — «۱۰۰۰ کالا در چند دقیقه».
  */
 
 type Step = "drop" | "preview" | "done";
 
-const AI_PROMPT = [
-  "تو دستیار وارد کردن کالا برای پلتفرم عمده‌فروشی iMach هستی.",
-  "کاربر فایل کالاهایش را می‌دهد و تو باید آن را به قالب زیر تبدیل کنی.",
-  "",
-  "ستون‌های خروجی (به همین ترتیب، با همین نام‌های فارسی):",
-  "نام کالا | برند | بسته‌بندی | قیمت فروش (تومان) | موجودی | حداقل سفارش | حجم خرید | لینک عکس",
-  "",
-  "قواعد:",
-  "۱) نام کالا را کوتاه و استاندارد بنویس (مثل: شیر پاستوریزه، ماکارونی) و جزئیات مثل وزن یا اندازه را در ستون «بسته‌بندی» بگذار (مثل: ۷۰۰ گرمی).",
-  "۲) برند را دقیقاً همان‌طور که هست بنویس؛ بدون برند، خالی بگذار.",
-  "۳) فقط فروشنده‌ام؟ قیمت فروش را پر کن و حجم خرید را خالی بگذار. فقط خریدارم؟ برعکس. هر دو؟ هر دو را پر کن.",
-  "۴) قیمت‌ها را عدد تومان بدون جداکننده بنویس.",
-  "۵) اگر عکس کالا لینک مستقیم دارد، در ستون «لینک عکس» بگذار؛ وگرنه خالی.",
-  "۶) ترتیب ستون‌ها مهم نیست و ستون‌های اضافه نادیده گرفته می‌شوند — حتی اگر سرستون نداشته باشد، ستون‌ها را حدس بزن.",
-  "",
-  "خروجی را به شکل جدول CSV با همان سرستون‌های فارسی بده، بدون توضیح اضافه.",
-  "اگر فایل کاربر فرمت عجیبی دارد (مثلاً PDF یا عکس از قفسه مغازه)، تلاش کن کالاها را استخراج کنی و در همین قالب بدهی.",
-].join("\n");
+/**
+ * ساخت پرامپت کامل هوش مصنوعی — شامل JSON مرجع کاتالوگ.
+ * پرامپت به AI می‌گوید: نام کالا را به نزدیک‌ترین گود موجود تطبیق بده.
+ * اگر گود نبود، نام استاندارد بنویس تا ادمین بعداً باغبانی کند.
+ */
+function buildAiPrompt(ref: CatalogReferenceDto): string {
+  const lines: string[] = [
+    "تو دستیار وارد کردن کالا برای پلتفرم عمده‌فروشی iMach هستی.",
+    "کاربر فایل کالاهایش را می‌دهد و تو باید آن را به قالب زیر تبدیل کنی.",
+    "",
+    "ستون‌های خروجی (به همین ترتیب، با همین نام‌های فارسی):",
+    "نام کالا | برند | بسته‌بندی | قیمت فروش (تومان) | موجودی | حداقل سفارش | حجم خرید | لینک عکس",
+    "",
+    "قواعد:",
+    "۱) «نام کالا» را کوتاه و استاندارد بنویس (مثل: شیر پاستوریزه، ماکارونی) و جزئیات مثل وزن یا اندازه را در ستون «بسته‌بندی» بگذار (مثل: ۷۰۰ گرمی).",
+    "۲) «نام کالا» حتماً از لیست گودهای موجود زیر انتخاب شود. اگر دقیقاً مطابق نیست، به نزدیک‌ترین گود تطبیق بده. اگر هیچ گود مناسبی نیست، نام استاندارد و کوتاه بنویس (سیستم خودکار آن را ثبت می‌کند).",
+    "۳) «برند» را از لیست برندهای موجود زیر انتخاب کن. اگر برند در لیست نیست، همان‌طور که هست بنویس؛ بدون برند، خالی بگذار.",
+    "۴) فقط فروشنده‌ای؟ «قیمت فروش» را پر کن و «حجم خرید» را خالی بگذار. فقط خریداری؟ برعکس. هر دو؟ هر دو را پر کن.",
+    "۵) قیمت‌ها را عدد تومان بدون جداکننده بنویس.",
+    "۶) اگر عکس کالا لینک مستقیم دارد، در ستون «لینک عکس» بگذار؛ وگرنه خالی.",
+    "۷) ترتیب ستون‌ها مهم نیست و ستون‌های اضافه نادیده گرفته می‌شوند — حتی اگر سرستون نداشته باشد، ستون‌ها را حدس بزن.",
+    "",
+    "خروجی را به شکل جدول CSV با همان سرستون‌های فارسی بده، بدون توضیح اضافه.",
+    "اگر فایل کاربر فرمت عجیبی دارد (مثلاً PDF یا عکس از قفسه مغازه)، تلاش کن کالاها را استخراج کنی و در همین قالب بدهی.",
+    "",
+    "═══ لیست گودها و دسته‌بندی‌های موجود (JSON) ═══",
+    "این لیست گودهای موجود در سیستم iMach است. «نام کالا» در خروجی باید به این گودها تطبیق بخورد:",
+    "",
+    JSON.stringify(ref, null, 2),
+    "",
+    "═══ پایان لیست ═══",
+  ];
+  return lines.join("\n");
+}
 
 export function ImportSheet({
   bizId,
@@ -64,8 +79,32 @@ export function ImportSheet({
   const [preview, setPreview] = useState<ImportPreviewDto | null>(null);
   const [savedCount, setSavedCount] = useState(0);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState<string>("");
+  const [aiLoading, setAiLoading] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // وقتی کاربر بخش AI را باز کرد، پرامپت را از سرور بگیر و بساز
+  const loadAiPrompt = async () => {
+    if (aiPrompt) return; // قبلاً ساخته شده
+    setAiLoading(true);
+    try {
+      const ref = await goodsApi.getCatalogReference();
+      setAiPrompt(buildAiPrompt(ref));
+    } catch {
+      // fallback: پرامپت بدون JSON
+      setAiPrompt(buildAiPrompt({ categories: [], brands: [], totalGoods: 0, totalBrands: 0 }));
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (aiOpen && !aiPrompt) {
+      void loadAiPrompt();
+    }
+  }, [aiOpen]);
 
   /** ردیف‌های ثبت‌شدنی — هر ردیف حداقل یک بازو داشته باشد */
   const willSave = preview ? preview.rows.filter((r) => r.arms.length > 0).length : 0;
@@ -89,8 +128,9 @@ export function ImportSheet({
   };
 
   const copyPrompt = async () => {
+    if (!aiPrompt) return;
     try {
-      await navigator.clipboard.writeText(AI_PROMPT);
+      await navigator.clipboard.writeText(aiPrompt);
       setPromptCopied(true);
       setTimeout(() => setPromptCopied(false), 2000);
     } catch {
@@ -225,7 +265,9 @@ export function ImportSheet({
                 <HelpCircle className="size-4" />
               </button>
             </div>
-            <p className="mt-3 text-xs leading-6 text-muted-foreground">{m.importSheet.intro}</p>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              فایل اکسل یا CSV کالاهایت را اینجا بگذار. فرمت‌های دیگر هم خوانده می‌شوند و ستون‌ها خودکار تشخیص داده می‌شوند. اول پیش‌نمایش می‌بینی، بعد با تأیید خودت ثبت می‌شود.
+            </p>
 
             <label
               className={`mt-4 grid cursor-pointer place-items-center rounded-2xl border-2 border-dashed border-primary/30 bg-accent/20 px-6 py-10 text-center transition hover:border-primary/60 hover:bg-accent/40 ${
@@ -276,29 +318,63 @@ export function ImportSheet({
               </button>
             </div>
 
-            {/* میان‌بر هوش مصنوعی — پرامپت آماده + لینک */}
-            <div className="mt-4 rounded-xl border border-primary/20 bg-accent/30 p-3.5">
-              <p className="flex items-center gap-1.5 text-xs font-extrabold text-primary">
-                <FileSpreadsheet className="size-3.5" />
-                {m.importSheet.aiTitle}
-              </p>
-              <p className="mt-1.5 text-[11px] leading-5 text-muted-foreground">{m.importSheet.aiHint}</p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => void copyPrompt()}>
-                  {promptCopied ? <Check className="size-3.5 text-emerald-600" /> : <FileSpreadsheet className="size-3.5" />}
-                  {promptCopied ? m.importSheet.aiCopied : m.importSheet.aiCopy}
-                </Button>
-                <span className="text-[11px] text-muted-foreground">{m.importSheet.aiLinksTitle}</span>
-                <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
-                  ChatGPT
-                </a>
-                <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
-                  Claude
-                </a>
-                <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
-                  Gemini
-                </a>
-              </div>
+            {/* ─── ساخت اکسل نمونه با هوش مصنوعی (collapsible) ─── */}
+            <div className="mt-4 overflow-hidden rounded-xl border border-primary/20">
+              {/* تایتل — همیشه دیده می‌شود */}
+              <button
+                type="button"
+                onClick={() => setAiOpen((v) => !v)}
+                className="flex w-full items-center gap-2 bg-accent/30 px-3.5 py-3 text-start transition hover:bg-accent/50"
+                aria-expanded={aiOpen}
+              >
+                <Sparkles className="size-4 shrink-0 text-primary" />
+                <span className="text-xs font-extrabold text-primary">ساخت اکسل نمونه با هوش مصنوعی</span>
+                <ChevronDown className={`ms-auto size-4 shrink-0 text-muted-foreground transition ${aiOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {/* محتوا — وقتی باز شد */}
+              {aiOpen && (
+                <div className="space-y-3 p-3.5">
+                  <p className="text-[11px] leading-6 text-muted-foreground">
+                    پرامپت زیر را کپی کن و به یکی از هوش‌های مصنوعی همراه با فایل کالاهایت بده. این پرامپت شامل لیست کامل گودها، برندها و دسته‌بندی‌های موجود در iMach است تا هوش مصنوعی اکسل بسیار دقیقی برایت بسازد.
+                    هزار کالا را در چند دقیقه در این قالب تحویل می‌گیری. بعد فایل خروجی را همین‌جا آپلود کن.
+                  </p>
+
+                  {/* پرامپت در یک کادر readonly با ارتفاع ۵۰۰px */}
+                  {aiLoading ? (
+                    <div className="grid h-[500px] place-items-center rounded-lg border bg-muted/30">
+                      <Loader2 className="size-5 animate-spin text-primary" />
+                      <p className="mt-2 text-xs text-muted-foreground">در حال بارگیری لیست گودها…</p>
+                    </div>
+                  ) : (
+                    <textarea
+                      readOnly
+                      value={aiPrompt}
+                      className="h-[500px] w-full resize-none rounded-lg border bg-muted/20 p-3 font-mono text-[11px] leading-5 text-foreground/80"
+                      dir="rtl"
+                      onFocus={(e) => e.target.select()}
+                    />
+                  )}
+
+                  {/* دکمه‌های کپی + لینک‌های AI */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button type="button" variant="outline" size="sm" onClick={() => void copyPrompt()} disabled={!aiPrompt}>
+                      {promptCopied ? <Check className="size-3.5 text-emerald-600" /> : <FileSpreadsheet className="size-3.5" />}
+                      {promptCopied ? m.importSheet.aiCopied : m.importSheet.aiCopy}
+                    </Button>
+                    <span className="text-[11px] text-muted-foreground">{m.importSheet.aiLinksTitle}</span>
+                    <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
+                      ChatGPT
+                    </a>
+                    <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
+                      Claude
+                    </a>
+                    <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" className="rounded-lg border bg-white px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-accent">
+                      Gemini
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}
