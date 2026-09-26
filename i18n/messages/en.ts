@@ -196,6 +196,8 @@ export const en: Messages = {
       brandRequiredDesc: "You said this product has a brand — pick or type it.",
       brandChoiceRequired: "Choose brand or no-brand",
       brandChoiceRequiredDesc: "Pick either 'Has brand' or 'No brand (bulk)'.",
+      imageRequired: "Add product image",
+      imageRequiredDesc: "Image is required for new products so all future users can see it.",
     },
     success: { saved: "Listing saved", savedFirst: "Your first listing is saved" },
     catalogLoading: "Loading the catalog…",

@@ -331,6 +331,15 @@ export function ListingForm({
         });
         return;
       }
+      // ── عکس برای محصول جدید اجباری است — تا همه‌ی کاربران آینده آن را ببینند
+      if (pendingImages.length === 0) {
+        toast({
+          title: m.listing.errors.imageRequired,
+          description: m.listing.errors.imageRequiredDesc,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     const sellValid = (price ?? 0) > 0 && (stock ?? 0) > 0 && (minOrder ?? 0) > 0;

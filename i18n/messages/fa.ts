@@ -196,6 +196,8 @@ export const fa = {
       brandRequiredDesc: "گفتی این کالا برند دارد — برندش را انتخاب یا بنویس.",
       brandChoiceRequired: "برند داشتن یا نداشتن را مشخص کن",
       brandChoiceRequiredDesc: "حتماً یکی از «برند دارد» یا «بدون برند (فله)» را انتخاب کن.",
+      imageRequired: "عکس محصول را اضافه کن",
+      imageRequiredDesc: "عکس محصول جدید اجباری است تا همه‌ی کاربران آینده آن را ببینند.",
     },
     success: { saved: "کالا ثبت شد", savedFirst: "اولین کالای شما ثبت شد" },
     catalogLoading: "در حال دریافت کاتالوگ…",
