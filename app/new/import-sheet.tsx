@@ -103,6 +103,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
   const [promptCopied, setPromptCopied] = useState(false);
   const uploadFile = useUploadFile();
   const queryClient = useQueryClient();
+  const [replacingDups, setReplacingDups] = useState(false);
 
   const loadAiPrompt = async () => {
     if (aiPrompt) return;
@@ -239,6 +240,52 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
 
   const reset = () => { setRows([]); setStep("drop"); setSavedCount(0); setFailedCount(0); setDupCount(0); };
 
+  // ═══ جایگزینی کالاهای تکراری ═══
+  const replaceDuplicates = async () => {
+    const dupRows = rows.filter((r) => r.status === "duplicate");
+    if (dupRows.length === 0) return;
+    setReplacingDups(true);
+    let replaced = 0;
+    for (const row of dupRows) {
+      try {
+        const res = await productsApi.importCommit({
+          businessId: bizId, mode,
+          rows: [{
+            index: row.index, name: row.name,
+            brand: row.brand ?? undefined, spec: row.spec ?? undefined,
+            priceMinor: row.priceMinor ?? undefined, stock: row.stock ?? undefined,
+            minOrder: row.minOrder ?? undefined, volume: row.volume ?? undefined,
+            imageUrl: row.pendingImageFile ? undefined : (row.pendingImageUrl || row.productImage || undefined),
+          }],
+          replaceDuplicates: true,
+        });
+        if (res.saved > 0) {
+          replaced++;
+          setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "saved" as const } : r));
+          if (row.pendingImageFile && res.listingIds?.[0]) {
+            try {
+              await uploadFile.mutateAsync({
+                file: row.pendingImageFile,
+                model: "Listing",
+                modelId: res.listingIds[0],
+                key: "gallery",
+                replace: false,
+              });
+            } catch { /* best-effort */ }
+          }
+        }
+      } catch (err) {
+        toast({ title: `خطا در جایگزینی ${row.name}`, variant: "destructive" });
+      }
+    }
+    setReplacingDups(false);
+    setSavedCount((c) => c + replaced);
+    setDupCount(0);
+    void queryClient.invalidateQueries({ queryKey: ["listings"] });
+    void queryClient.invalidateQueries({ queryKey: ["business"] });
+    if (replaced > 0) toast({ title: `${fa(replaced)} کالا جایگزین شد` });
+  };
+
   // ═══ done ═══
   if (step === "done") {
     const pct = totalCount > 0 ? Math.round((savedCount / totalCount) * 100) : 0;
@@ -260,9 +307,14 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
           </div>
           {dupCount > 0 && (
             <div className="mt-4 w-full max-w-sm rounded-xl border border-amber-200 bg-amber-50/50 p-3 text-start">
-              <p className="flex items-center gap-1.5 text-xs font-bold text-amber-700"><TriangleAlert className="size-3.5" />{fa(dupCount)} کالای تکراری</p>
+              <p className="flex items-center gap-1.5 text-xs font-bold text-amber-700"><TriangleAlert className="size-3.5" />{fa(dupCount)} کالای تکراری — قبلاً ثبت شده</p>
               <div className="mt-2 max-h-32 overflow-y-auto">{rows.filter((r) => r.status === "duplicate").map((r) => (<p key={r.index} className="text-[11px] text-amber-600">{r.name}{r.brand ? ` · ${r.brand}` : ""}</p>))}</div>
-              <p className="mt-2 text-[11px] text-amber-600/80">از کاتالوک خودتان ویرایش کنید.</p>
+              <div className="mt-3 flex gap-2">
+                <Button size="sm" variant="outline" className="flex-1" disabled={replacingDups} onClick={() => void replaceDuplicates()}>
+                  {replacingDups ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}
+                  جایگزین کن
+                </Button>
+              </div>
             </div>
           )}
           {failedCount > 0 && (

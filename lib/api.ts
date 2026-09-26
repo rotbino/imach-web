@@ -927,6 +927,7 @@ export const productsApi = {
       category?: string;
       subcategory?: string;
     }[];
+    replaceDuplicates?: boolean;
   }) => api<ImportCommitResultDto>("/products/importCommit", { method: "POST", body }),
 
   /** ادغام ادمین — ردیف‌های شکسته در بازمانده جمع می‌شوند */
