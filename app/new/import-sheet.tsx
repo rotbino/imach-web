@@ -193,7 +193,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
             brand: row.brand ?? undefined, spec: row.spec ?? undefined,
             priceMinor: row.priceMinor ?? undefined, stock: row.stock ?? undefined,
             minOrder: row.minOrder ?? undefined, volume: row.volume ?? undefined,
-            imageUrl: row.pendingImageUrl || row.productImage || undefined,
+            imageUrl: row.pendingImageFile ? undefined : (row.pendingImageUrl || row.productImage || undefined),
           }],
         });
         if (res.saved > 0) {
