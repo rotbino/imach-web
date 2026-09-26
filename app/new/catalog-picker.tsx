@@ -5,6 +5,7 @@ import Image from "next/image";
 import {
   ApiError,
   type AggregatedItemDto,
+  type CatalogItemDto,
   type CatalogSummaryDto,
   type ProductRowDto,
 } from "@/lib/api";
@@ -124,6 +125,22 @@ function SourceTab({
 // منبع ۱ — کاتالوگ تجمیعی هم‌صنف‌ها (Aggregated Catalog)
 // ─────────────────────────────────────────────────────────────────────────────
 
+type CatalogGridRow = {
+  productId: string;
+  label: string;
+  goodName: string;
+  brandName: string | null;
+  thumbUrl: string | null;
+  price: number | null;
+  stock: number | null;
+  minOrder: number | null;
+  volume: number | null;
+  sourceListingId?: string;
+};
+
+const CAT_GRID_SELL = "28px 32px 44px minmax(160px,1.5fr) minmax(110px,0.8fr) minmax(85px,0.6fr) minmax(85px,0.6fr)";
+const CAT_GRID_BUY  = "28px 32px 44px minmax(160px,1.5fr) minmax(110px,0.8fr) minmax(90px,0.6fr)";
+
 export function CopyFromPeers({
   bizId,
   arm,
@@ -139,23 +156,15 @@ export function CopyFromPeers({
   const m = useMessages();
   const { locale } = useLocale();
   const active = useActiveBusiness();
+  const bulk = useBulkSaveListings();
 
-  // ── صنف و شهرِ خودم — مبنای جست‌وجوی تجمیعی
-  const myTrade = active?.trade ?? "";
-  const myCity = active?.city ?? "";
-  const myProvince = myCity ? (provinceOfCity(myCity) ?? undefined) : undefined;
-  const myCountry = active?.country ?? "IR";
+  const curDef = CURRENCIES[active?.currency ?? "IRR"] ?? CURRENCIES.IRR;
+  const curName = currencyLabel(active?.currency ?? "IRR", locale);
+  const numLocale: "fa" | "en" = locale === "en" ? "en" : "fa";
+  const CAT_GRID_COLS = arm === "sell" ? CAT_GRID_SELL : CAT_GRID_BUY;
+  const inputCls = "h-8 rounded border-stone-200 bg-stone-50/50 px-2 text-xs hover:border-stone-300 focus:border-primary focus:bg-white";
 
-  // اگر صنف ندارم، یک مدال برای ورود صنف باز می‌کنیم
-  const [needTrade, setNeedTrade] = useState(!myTrade);
-  const [tradeInput, setTradeInput] = useState(myTrade);
-
-  useEffect(() => {
-    setNeedTrade(!myTrade);
-    setTradeInput(myTrade);
-  }, [myTrade]);
-
-  // ── جست‌وجو
+  // ── جست‌وجوی کاتالوگ‌ها — با نام کسب‌وکار یا صنف
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
   useEffect(() => {
@@ -163,202 +172,290 @@ export function CopyFromPeers({
     return () => clearTimeout(t);
   }, [query]);
 
-  // ── فیلتر برند — چیپ افقی از برندهای موجود در همین لیست
-  const [brandId, setBrandId] = useState<string | null>(null);
-  const [categoryId, setCategoryId] = useState<string | null>(null);
+  // ── پیش‌فرض: صنف خودم را جست‌وجو کن
+  const myTrade = active?.trade ?? "";
+  const effectiveQuery = debounced || myTrade;
 
-  // ─ـ فید اولیه — یک صفحه از تجمیعی
-  const first = useAggregatedCatalog({
-    trade: myTrade,
-    city: myCity,
-    province: myProvince,
-    country: myCountry,
-    q: debounced || undefined,
-    brandId: brandId ?? undefined,
-    categoryId: categoryId ?? undefined,
-    mineId: bizId,
-    limit: 40,
-    enabled: !!myTrade,
+  // ── لیست کاتالوگ‌ها — با searchCatalogs
+  const catalogsQ = useQuery({
+    queryKey: ["catalogs", effectiveQuery, bizId],
+    queryFn: () => businessesApi.searchCatalogs({ q: effectiveQuery || undefined, mineId: bizId, limit: 20 }),
+    staleTime: 30_000,
   });
 
-  // ─ـ صفحات «بیشتر»
-  const [more, setMore] = useState<{ items: AggregatedItemDto[]; next: string | null }>({ items: [], next: null });
-  const [loadingMore, setLoadingMore] = useState(false);
-  useEffect(() => {
-    setMore({ items: [], next: null });
-  }, [debounced, brandId, categoryId, myTrade]);
+  // ── کاتالوگ انتخاب‌شده — وقتی کاربر روی یکی کلیک می‌کند
+  const [selectedCatalog, setSelectedCatalog] = useState<CatalogSummaryDto | null>(null);
+  const [catalogItems, setCatalogItems] = useState<CatalogItemDto[]>([]);
+  const [loadingItems, setLoadingItems] = useState(false);
 
-  const rows = useMemo(() => [...(first.data?.items ?? []), ...more.items], [first.data, more]);
-  const nextCursor = more.items.length > 0 ? more.next : (first.data?.nextCursor ?? null);
-  const brands = first.data?.brands ?? [];
-  const categories = first.data?.categories ?? [];
-  const foundBusinesses = first.data?.foundBusinesses ?? 0;
+  // ── گرید تأیید — قلم‌های انتخاب‌شده از کاتالوگ‌ها
+  const [gridRows, setGridRows] = useState<CatalogGridRow[]>([]);
+  const gridProductIds = useMemo(() => new Set(gridRows.map((r) => r.productId)), [gridRows]);
 
-  const loadMore = async () => {
-    const cur = more.items.length > 0 ? more.next : first.data?.nextCursor;
-    if (!cur) return;
-    setLoadingMore(true);
+  const loadCatalogItems = async (biz: CatalogSummaryDto) => {
+    setSelectedCatalog(biz);
+    setLoadingItems(true);
+    setCatalogItems([]);
     try {
-      const res = await businessesApi.getAggregatedCatalog({
-        trade: myTrade,
-        city: myCity,
-        province: myProvince,
-        country: myCountry,
-        q: debounced || undefined,
-        brandId: brandId ?? undefined,
-        categoryId: categoryId ?? undefined,
-        cursor: cur,
-        limit: 40,
-        mineId: bizId,
+      let allItems: CatalogItemDto[] = [];
+      let cursor: string | undefined = undefined;
+      // لود همه‌ی قلم‌های کاتالوگ (صفحه‌بندی تا ۵ صفحه)
+      for (let i = 0; i < 5; i++) {
+        const res = await businessesApi.getCatalogItems({ businessId: biz.id, cursor, limit: 50 });
+        const mode = arm === "sell" ? "SELL" : "BUY";
+        const filtered = res.items.filter((it) => it.mode === mode || it.mode === "BOTH");
+        allItems = [...allItems, ...filtered];
+        if (!res.nextCursor) break;
+        cursor = res.nextCursor;
+      }
+      setCatalogItems(allItems);
+    } catch (err) {
+      toast({
+        title: "بارگیری کاتالوگ ناموفق بود",
+        description: err instanceof ApiError ? err.message : undefined,
+        variant: "destructive",
       });
-      setMore((s) => ({ items: [...s.items, ...res.items], next: res.nextCursor }));
-    } catch {
-      /* retry */
     } finally {
-      setLoadingMore(false);
+      setLoadingItems(false);
     }
   };
 
-  // ─ـ سبد انتخاب (productId → listingId که از peer انتخاب شده برای کپی)
-  const [picked, setPicked] = useState<AggregatedItemDto[]>([]);
-  const pickedIds = useMemo(() => new Set(picked.map((p) => p.id)), [picked]);
-  const toggle = (it: AggregatedItemDto) => {
-    setPicked((list) => (pickedIds.has(it.id) ? list.filter((x) => x.id !== it.id) : [...list, it]));
+  const toggleItem = (item: CatalogItemDto) => {
+    const productId = item.productId;
+    if (!productId) return;
+    if (gridProductIds.has(productId)) {
+      setGridRows((r) => r.filter((x) => x.productId !== productId));
+    } else {
+      setGridRows((r) => [...r, {
+        productId,
+        label: item.variantLabel ?? goodName(item.good, locale),
+        goodName: goodName(item.good, locale),
+        brandName: item.brandName,
+        thumbUrl: item.thumbUrl,
+        price: item.priceMinor ? Math.round(item.priceMinor / 10 ** curDef.exp) : null,
+        stock: null,
+        minOrder: null,
+        volume: null,
+        sourceListingId: item.id,
+      }]);
+    }
   };
 
-  const copy = async () => {
-    if (picked.length === 0) return;
-    // تمام قلم‌های انتخاب‌شده از هم‌صنف‌ها هستند → sourceListingIds همان id آنهاست
-    // و sourceBusinessId مالکشان. ولی اینجا چندتا کاتالوگ داریم.
-    // کپی به روش copyFrom نمی‌تواند چند کاتالوگ را یکجا کپی کند. ولی چون
-    // aggregatedItem.productId داریم، می‌توانیم با bulkSave مستقیم بسازیم.
+  const updateGridRow = (productId: string, patch: Partial<CatalogGridRow>) =>
+    setGridRows((r) => r.map((row) => (row.productId === productId ? { ...row, ...patch } : row)));
+
+  const removeGridRow = (productId: string) =>
+    setGridRows((r) => r.filter((row) => row.productId !== productId));
+
+  const incompleteCount = useMemo(() => {
+    if (arm === "sell") {
+      return gridRows.filter((r) => !(r.price && r.price > 0 && (r.stock ?? 0) >= 0 && r.minOrder && r.minOrder > 0)).length;
+    }
+    return gridRows.filter((r) => !(r.volume && r.volume > 0)).length;
+  }, [gridRows, arm]);
+  const selectedCount = gridRows.length - incompleteCount;
+
+  const confirm = async () => {
+    if (gridRows.length === 0) return;
     try {
-      const res = await listingsApi.bulkSave({
-        businessId: bizId,
-        mode: arm === "sell" ? "SELL" : "BUY",
-        items: picked
-          .filter((p) => p.productId) // فقط قلم‌هایی که productId دارند (که همه‌شان دارند)
-          .map((p) => ({
-            productId: p.productId!,
-            ...(arm === "sell" ? {} : { volume: undefined }),
-          })),
-      });
-      toast({
-        title: m.picker.copySuccess.replace("{n}", fa(res.saved)),
-        description: res.failed > 0 ? m.picker.copyFailed.replace("{n}", fa(res.failed)) : m.picker.copyPriceHint,
-      });
-      onDone("sell");
+      const items = gridRows.map((r) => ({
+        productId: r.productId,
+        ...(arm === "sell"
+          ? {
+              priceMinor: r.price ? Math.round(r.price * 10 ** curDef.exp) : undefined,
+              stock: r.stock ?? undefined,
+              minOrder: r.minOrder ?? undefined,
+            }
+          : { volume: r.volume ?? undefined }),
+      }));
+      const res = await bulk.mutateAsync({ businessId: bizId, mode: arm === "sell" ? "SELL" : "BUY", items });
+      toast({ title: m.picker.successTitle.replace("{n}", fa(res.saved)) });
+      if (res.failed > 0) toast({ title: m.picker.submitFailed.replace("{n}", fa(res.failed)), variant: "destructive" });
+      onDone(arm);
     } catch (err) {
       toast({
-        title: m.picker.copyFailed,
+        title: m.picker.submitFailed.replace("{n}", fa(gridRows.length)),
         description: err instanceof ApiError ? err.message : undefined,
         variant: "destructive",
       });
     }
   };
 
-  // ── مدال «صنف خود را وارد کن» — وقتی کاربر هنوز صنف ندارد
-  if (needTrade) {
-    return <TradePrompt bizId={bizId} initialTrade={tradeInput} onSaved={() => setNeedTrade(false)} onSwitchToSolo={onSwitchToSolo} />;
+  // اگر کاتالوگی انتخاب نشده، لیست کاتالوگ‌ها را نشان بده
+  if (!selectedCatalog) {
+    return (
+      <>
+        <div className="flex items-center gap-2">
+          <Copy className="size-5 shrink-0 text-primary" />
+          <h1 className="text-lg font-extrabold">{m.picker.sourceCopy}</h1>
+        </div>
+        <p className="mt-2 text-xs leading-6 text-muted-foreground">
+          {m.picker.copyIntro}
+        </p>
+
+        {/* جست‌وجو */}
+        <div className="relative mt-4">
+          <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            aria-label={m.picker.copySearchAria}
+            placeholder="نام کاتالوگ، کسب‌وکار یا صنف… مثلا سوپرمارکت"
+            value={query}
+            maxLength={40}
+            onChange={(e) => setQuery(e.target.value)}
+            className="h-11 pe-9 text-base"
+          />
+        </div>
+
+        {/* اگر جست‌وجو خالی است و صنف دارد، نشان بده که با صنف خودت جست‌وجو می‌کند */}
+        {!debounced && myTrade && (
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            پیش‌فرض: کاتالوگ‌های «{myTrade}» — برای جست‌وجوی دیگر، بنویس.
+          </p>
+        )}
+
+        {/* لیست کاتالوگ‌ها */}
+        {catalogsQ.isLoading || catalogsQ.isFetching ? (
+          <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
+            <Loader2 className="size-4 animate-spin" /> در حال بارگیری…
+          </p>
+        ) : (catalogsQ.data?.items ?? []).length === 0 ? (
+          <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
+            <Store className="mx-auto size-6 text-primary/60" />
+            <p className="mt-2 text-sm font-bold">کاتالوگی پیدا نشد</p>
+            <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
+              نام دیگری را امتحان کن یا صنف خودت را در پروفایل کامل کن.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-4 divide-y">
+            {(catalogsQ.data?.items ?? []).map((biz) => (
+              <button
+                key={biz.id}
+                type="button"
+                onClick={() => void loadCatalogItems(biz)}
+                className="flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition hover:bg-accent/30"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent/70 text-sm font-black text-primary/80">
+                  {biz.name.slice(0, 1)}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-extrabold">{biz.name}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">
+                    {biz.trade ?? "—"} · {biz.city} · {fa(biz.catalogCount)} کالا
+                  </span>
+                </span>
+                <ArrowLeft className="size-4 shrink-0 text-muted-foreground rtl:rotate-180" />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* گرید تأیید — وقتی قلم‌ای انتخاب شده */}
+        {gridRows.length > 0 && (
+          <div className="mt-6 rounded-xl border p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-xs font-bold">{fa(gridRows.length)} کالا انتخاب شد</p>
+              <Button size="sm" onClick={() => void confirm()} disabled={bulk.isPending || selectedCount === 0}>
+                {bulk.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                ثبت {fa(selectedCount)} کالا
+              </Button>
+            </div>
+            <div className="space-y-1">
+              {gridRows.map((r) => (
+                <div key={r.productId} className="flex items-center gap-2 rounded-lg bg-accent/30 px-2 py-1.5 text-xs">
+                  <span className="truncate font-bold">{r.goodName}</span>
+                  {r.brandName && <span className="text-muted-foreground">· {r.brandName}</span>}
+                  <button
+                    type="button"
+                    onClick={() => removeGridRow(r.productId)}
+                    className="ms-auto grid size-5 place-items-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            {incompleteCount > 0 && (
+              <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                {fa(incompleteCount)} کالا ناقص است — بعد از انتخاب کاتالوگ، مقادیر را پر کن
+              </p>
+            )}
+          </div>
+        )}
+
+        <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
+          {m.picker.notHere}{" "}
+          <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">
+            {m.picker.switchToForm}
+          </button>
+        </p>
+      </>
+    );
   }
 
+  // ── کاتالوگ انتخاب شده — لیست کالاهاش با تیک
   return (
     <>
-      <div className="flex items-center gap-2">
-        <Copy className="size-5 shrink-0 text-primary" />
-        <h1 className="text-lg font-extrabold">{m.picker.sourceCopy}</h1>
-      </div>
-      <p className="mt-2 text-xs leading-6 text-muted-foreground">
-        {m.picker.copyIntro}{" "}
-        {foundBusinesses > 0 && (
-          <span className="font-bold text-primary">
-            {foundBusinesses} کاتالوگ هم‌صنف پیدا شد
-          </span>
-        )}
-      </p>
-
-      {/* جست‌وجو */}
-      <div className="relative mt-4">
-        <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          aria-label={m.picker.copySearchAria}
-          placeholder={m.picker.copySearchPlaceholder}
-          value={query}
-          maxLength={40}
-          onChange={(e) => setQuery(e.target.value)}
-          className="h-11 pe-9 text-base"
-        />
-      </div>
-
-      {/* نوار برند — از خود لیست استخراج شده */}
-      <div className="mt-2.5">
-        <BrandStrip brands={brands} activeBrandId={brandId} onPick={setBrandId} />
-      </div>
-
-      {/* نوار دسته — اختیاری، قابل toggle */}
-      {categories.length > 0 && (
-        <div className="mt-1.5">
-          <CategoryStrip categories={categories} activeCategoryId={categoryId} onPick={setCategoryId} locale={locale === "en" ? "en" : "fa"} />
+      {/* هدر — بازگشت به لیست کاتالوگ‌ها */}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => { setSelectedCatalog(null); setCatalogItems([]); }}
+          aria-label={m.picker.back}
+          className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground"
+        >
+          <ArrowRight className="size-4 rtl:rotate-180" />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-base font-extrabold">{selectedCatalog.name}</p>
+          <p className="truncate text-[11px] text-muted-foreground">
+            {selectedCatalog.trade ?? "—"} · {selectedCatalog.city} · {fa(catalogItems.length)} کالا
+          </p>
         </div>
-      )}
+      </div>
 
-      {/* لیست کالاها */}
-      {first.isLoading ? (
+      {/* لیست کالاها — تیک بزن تا به گرید بیاید */}
+      {loadingItems ? (
         <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
+          <Loader2 className="size-4 animate-spin" /> در حال بارگیری کالاها…
         </p>
-      ) : rows.length === 0 ? (
+      ) : catalogItems.length === 0 ? (
         <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
           <Store className="mx-auto size-6 text-primary/60" />
-          <p className="mt-2 text-sm font-bold">{m.picker.copyEmpty}</p>
-          <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
-            صنف خود را عوض کن یا از کاتالوگ مرجع تیک بزن
-          </p>
-          <button
-            type="button"
-            onClick={() => setNeedTrade(true)}
-            className="mt-3 text-[11px] font-bold text-primary hover:underline"
-          >
-            عوض کردن صنف
-          </button>
+          <p className="mt-2 text-sm font-bold">کالایی در این کاتالوگ نیست</p>
         </div>
       ) : (
         <div className="mt-4 divide-y">
-          {rows.map((it) => {
-            const isPicked = pickedIds.has(it.id);
+          {catalogItems.map((item) => {
+            const isPicked = item.productId ? gridProductIds.has(item.productId) : false;
             return (
               <button
-                key={it.id}
+                key={item.id}
                 type="button"
-                onClick={() => toggle(it)}
-                className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${
-                  isPicked ? "bg-accent/40" : "hover:bg-accent/30"
-                }`}
+                onClick={() => toggleItem(item)}
+                className={`flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition ${isPicked ? "bg-accent/40" : "hover:bg-accent/30"}`}
               >
                 <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
-                  {it.thumbUrl ? (
-                    <Image src={it.thumbUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
+                  {item.thumbUrl ? (
+                    <Image src={item.thumbUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
                   ) : (
-                    <span className="grid size-full place-items-center text-base font-black text-primary/80">
-                      {it.good.nameFa.slice(0, 1)}
-                    </span>
+                    <span className="grid size-full place-items-center text-base font-black text-primary/80">{item.good.nameFa.slice(0, 1)}</span>
                   )}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-extrabold">
-                    {goodName(it.good, locale)}
-                    {it.variantLabel ? ` · ${it.variantLabel}` : ""}
+                    {item.variantLabel ?? goodName(item.good, locale)}
                   </span>
                   <span className="block truncate text-[11px] text-muted-foreground">
-                    {it.brandName ? `${it.brandName} · ` : ""}
-                    {it.good.category.nameFa}
+                    {goodName(item.good, locale)}{item.brandName ? ` · ${item.brandName}` : ""}
                   </span>
                 </span>
-                <span
-                  className={`grid size-7 shrink-0 place-items-center rounded-full border transition ${
-                    isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"
-                  }`}
-                >
+                {item.priceMinor && (
+                  <span className="shrink-0 text-[11px] font-bold text-primary">
+                    {fmtMoney(item.priceMinor, item.currency)}
+                  </span>
+                )}
+                <span className={`grid size-7 shrink-0 place-items-center rounded-full border transition ${isPicked ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
                   {isPicked ? <Check className="size-4" /> : <Plus className="size-4" />}
                 </span>
               </button>
@@ -367,35 +464,142 @@ export function CopyFromPeers({
         </div>
       )}
 
-      {nextCursor && rows.length > 0 && (
-        <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void loadMore()} disabled={loadingMore}>
-          {loadingMore ? <Loader2 className="size-4 animate-spin" /> : null}
-          {m.picker.loadMore}
-        </Button>
-      )}
-
-      {/* سبد شناور */}
-      {picked.length > 0 && (
-        <div className="sticky bottom-4 mt-4 flex items-center justify-between gap-3 rounded-2xl border bg-white/95 p-2.5 shadow-lg backdrop-blur">
-          <span className="ps-2 text-sm font-extrabold">{m.picker.copyTray.replace("{n}", fa(picked.length))}</span>
-          <span className="flex items-center gap-1.5">
-            <Button size="sm" variant="ghost" onClick={() => setPicked([])}>
-              <X className="size-4" />
-            </Button>
-            <Button size="sm" onClick={() => void copy()} className="gap-1">
-              {m.picker.copySubmit.replace("{n}", fa(picked.length))}
-              <ArrowLeft className="size-4 rtl:rotate-180" />
-            </Button>
-          </span>
+      {/* گرید تأیید — پایین صفحه */}
+      {gridRows.length > 0 && (
+        <div className="sticky bottom-4 mt-4 rounded-2xl border bg-white/95 p-3 shadow-lg backdrop-blur">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-sm font-extrabold">
+              {fa(gridRows.length)} کالا انتخاب شد
+              {incompleteCount > 0 && <span className="ms-2 text-[11px] font-bold text-amber-600">{fa(incompleteCount)} ناقص</span>}
+            </p>
+            <span className="flex items-center gap-1.5">
+              <Button size="sm" variant="ghost" onClick={() => setGridRows([])}>
+                <X className="size-4" />
+              </Button>
+              <Button size="sm" onClick={() => void confirm()} disabled={bulk.isPending || selectedCount === 0}>
+                {bulk.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                ثبت {fa(selectedCount)} کالا
+              </Button>
+            </span>
+          </div>
+          {/* گرید فشرده — برای ویرایش سریع قیمت/موجودی */}
+          <div className="max-h-60 overflow-auto">
+            <div style={{ display: "grid", gridTemplateColumns: CAT_GRID_COLS, position: "sticky", top: 0, zIndex: 10 }} className="border-b bg-stone-100 text-[10px] font-bold text-stone-500">
+              <div className="px-1 py-1.5 text-center">#</div>
+              <div className="px-1 py-1.5" />
+              <div className="px-1 py-1.5 text-center">عکس</div>
+              <div className="px-2 py-1.5">محصول</div>
+              {arm === "sell" ? (
+                <>
+                  <div className="px-2 py-1.5 text-center">قیمت</div>
+                  <div className="px-2 py-1.5 text-center">موجودی</div>
+                  <div className="px-2 py-1.5 text-center">حداقل</div>
+                </>
+              ) : (
+                <>
+                  <div className="px-2 py-1.5 text-center">حجم</div>
+                  <div className="px-2 py-1.5 text-center">دوره</div>
+                </>
+              )}
+            </div>
+            {gridRows.map((r, i) => {
+              const isComplete = arm === "sell"
+                ? !!(r.price && r.price > 0 && (r.stock ?? 0) >= 0 && r.minOrder && r.minOrder > 0)
+                : !!(r.volume && r.volume > 0);
+              return (
+                <div
+                  key={r.productId}
+                  style={{ display: "grid", gridTemplateColumns: CAT_GRID_COLS }}
+                  className={`border-b text-xs ${isComplete ? "bg-emerald-50/30" : "bg-red-50/20"}`}
+                >
+                  <div className="grid place-items-center px-1 py-1.5 text-[10px] font-bold text-stone-400">{fa(i + 1)}</div>
+                  <div className="grid place-items-center px-1 py-1.5">
+                    <button
+                      type="button"
+                      onClick={() => removeGridRow(r.productId)}
+                      className="grid size-5 place-items-center rounded text-stone-400 hover:bg-red-100 hover:text-red-600"
+                      aria-label="حذف"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  </div>
+                  <div className="grid place-items-center px-1 py-1">
+                    <span className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-accent/70 text-[10px] font-black text-primary/80">
+                      {r.thumbUrl ? (
+                        <Image src={r.thumbUrl} alt="" width={32} height={32} unoptimized className="size-full object-cover" />
+                      ) : (
+                        r.goodName.slice(0, 1)
+                      )}
+                    </span>
+                  </div>
+                  <div className="min-w-0 px-2 py-1.5">
+                    <p className="truncate text-xs font-bold">{r.goodName}</p>
+                    <p className="truncate text-[10px] text-muted-foreground">{r.brandName ?? "—"}</p>
+                  </div>
+                  {arm === "sell" ? (
+                    <>
+                      <div className="px-1 py-1">
+                        <NumberInput
+                          value={r.price}
+                          onChange={(v) => updateGridRow(r.productId, { price: v })}
+                          locale={numLocale}
+                          min={0}
+                          suffix={curName}
+                          placeholder="—"
+                          className={inputCls}
+                          aria-label="قیمت"
+                        />
+                      </div>
+                      <div className="px-1 py-1">
+                        <NumberInput
+                          value={r.stock}
+                          onChange={(v) => updateGridRow(r.productId, { stock: v })}
+                          locale={numLocale}
+                          min={0}
+                          placeholder="—"
+                          className={inputCls}
+                          aria-label="موجودی"
+                        />
+                      </div>
+                      <div className="px-1 py-1">
+                        <NumberInput
+                          value={r.minOrder}
+                          onChange={(v) => updateGridRow(r.productId, { minOrder: v })}
+                          locale={numLocale}
+                          min={0}
+                          placeholder="—"
+                          className={inputCls}
+                          aria-label="حداقل سفارش"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="px-1 py-1">
+                        <NumberInput
+                          value={r.volume}
+                          onChange={(v) => updateGridRow(r.productId, { volume: v })}
+                          locale={numLocale}
+                          min={0}
+                          placeholder="—"
+                          className={inputCls}
+                          aria-label="حجم خرید"
+                        />
+                      </div>
+                      <div className="grid place-items-center px-1 py-1.5 text-[10px] text-muted-foreground">ماهیانه</div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {incompleteCount > 0 && (
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              {fa(incompleteCount)} کالا ناقص است — مقادیرشان را پر کن
+            </p>
+          )}
         </div>
       )}
-
-      <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
-        {m.picker.notHere}{" "}
-        <button type="button" onClick={onSwitchToSolo} className="font-bold text-primary underline-offset-2 hover:underline">
-          {m.picker.switchToForm}
-        </button>
-      </p>
     </>
   );
 }
