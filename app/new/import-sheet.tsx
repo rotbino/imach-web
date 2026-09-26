@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ApiError, goodsApi, productsApi, type CatalogReferenceDto, type ImportPreviewDto } from "@/lib/api";
+import { useUploadFile } from "@/lib/queries";
 import { fa } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
@@ -20,7 +21,8 @@ type EditableRow = ImportPreviewDto["rows"][number] & {
   error?: string;
   productImage?: string | null;
   pendingImageUrl?: string;
-  /** دوره خرید — هفتگی/ماهیانه/موردی */
+  /** فایل عکس انتخاب‌شده از دستگاه — در commit آپلود می‌شود */
+  pendingImageFile?: File | null;
   frequency?: string | null;
 };
 
@@ -97,6 +99,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
   const [aiPrompt, setAiPrompt] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
+  const uploadFile = useUploadFile();
 
   const loadAiPrompt = async () => {
     if (aiPrompt) return;
@@ -147,6 +150,7 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
         status: "pending" as const,
         productImage: null,
         pendingImageUrl: "",
+        pendingImageFile: null,
         frequency: r.volume ? "MONTHLY" : null,
       })));
       setStep("preview");
@@ -192,7 +196,22 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
             imageUrl: row.pendingImageUrl || row.productImage || undefined,
           }],
         });
-        if (res.saved > 0) { saved++; setSavedCount(saved); setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "saved" } : r)); }
+        if (res.saved > 0) {
+          saved++; setSavedCount(saved);
+          setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "saved" } : r));
+          // اگر فایل عکس دارد، آپلود کن
+          if (row.pendingImageFile) {
+            try {
+              await uploadFile.mutateAsync({
+                file: row.pendingImageFile,
+                model: "Listing",
+                modelId: bizId,
+                key: "gallery",
+                replace: false,
+              });
+            } catch { /* best-effort — کالا ثبت شد، عکس بعداً */ }
+          }
+        }
         else if (res.skipped.some((s) => s.reason === "duplicate")) { dups++; setDupCount(dups); setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "duplicate" } : r)); }
         else { failed++; setFailedCount(failed); setRows((l) => l.map((r) => r.index === row.index ? { ...r, status: "failed", error: "ثبت ناموفق" } : r)); }
       } catch (err) {
@@ -339,24 +358,29 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
                   r.status === "duplicate" && "!bg-amber-50/50",
                 )}
               >
-                {/* عکس */}
+                {/* عکس — انتخاب از دستگاه */}
                 <div className="flex items-center justify-center px-1 py-1.5">
                   {imgUrl ? (
                     <div className="relative size-8 overflow-hidden rounded border border-stone-200">
                       <Image src={imgUrl} alt="" fill unoptimized className="object-cover" sizes="32px" />
                     </div>
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const url = window.prompt("آدرس عکس کالا را وارد کن:");
-                        if (url && url.trim()) updateRow(r.index, { pendingImageUrl: url.trim() });
-                      }}
-                      className="grid size-8 cursor-pointer place-items-center rounded border border-dashed border-stone-300 text-stone-300 transition hover:border-primary hover:text-primary"
-                      title="آدرس عکس را وارد کن"
-                    >
+                    <label className="grid size-8 cursor-pointer place-items-center rounded border border-dashed border-stone-300 text-stone-300 transition hover:border-primary hover:text-primary" title="عکس را از دستگاه انتخاب کن">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          e.target.value = "";
+                          if (f) {
+                            const objUrl = URL.createObjectURL(f);
+                            updateRow(r.index, { pendingImageFile: f, pendingImageUrl: objUrl });
+                          }
+                        }}
+                      />
                       <ImagePlus className="size-3.5" />
-                    </button>
+                    </label>
                   )}
                 </div>
 
