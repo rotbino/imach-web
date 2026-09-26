@@ -418,6 +418,12 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
           {(incompleteCount + dupCount2) > 0 && <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">{fa(incompleteCount + dupCount2)} ناقص</span>}
         </div>
 
+        {/* راهنما برند — کالای برند‌دار در کاتالوگ مرجع ثبت می‌شود */}
+        <div className="flex items-center gap-2 border-b bg-primary/5 px-4 py-2 text-[11px] leading-5 text-primary/90">
+          <span className="font-bold text-primary">✦</span>
+          <span>کالایی که برند دارد را حتماً در ستون «برند» وارد کن — کالای برند‌دار در کاتالوگ مرجع ثبت می‌شود تا همه پیداش کنند. کالای فله (بدون برند) فقط در کاتالوگ خودت می‌نشیند.</span>
+        </div>
+
         {/* جدول */}
         <div className="overflow-auto" style={{ maxHeight: "500px" }}>
           {/* سرستون */}
@@ -429,7 +435,9 @@ export function ImportSheet({ bizId, arm, onDone }: { bizId: string; arm: "sell"
             <div className="px-1 py-2.5 text-center">عکس</div>
             <div className="px-1 py-2.5" />
             <div className="px-2 py-2.5">نام کالا</div>
-            <div className="px-2 py-2.5">برند</div>
+            <div className="px-2 py-2.5">
+              برند <span className="text-[9px] font-bold text-primary">✦</span>
+            </div>
             <div className="px-2 py-2.5">بسته‌بندی</div>
             {arm === "sell" ? (
               <>

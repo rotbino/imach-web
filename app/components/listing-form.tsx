@@ -91,6 +91,10 @@ export function ListingForm({
   const [frequency, setFrequency] = useState<Frequency>("MONTHLY");
 
   // ── ویژگی‌های کالا (مشترک بین فروش و خرید)
+  // ── برند: کاربر صراحتاً می‌گوید کالایش برند دارد یا نه
+  //   • اگر toggle روشن باشد: برند را انتخاب/جست‌وجو می‌کند → بک‌اند Product مرجع می‌سازد
+  //   • اگر toggle خاموش باشد: کالای فله، مستقیم روی Good می‌نشیند (productId=null)
+  const [hasBrand, setHasBrand] = useState(false);
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
   const [showAttrs, setShowAttrs] = useState(false);
@@ -190,6 +194,7 @@ export function ListingForm({
     setMinOrder(null);
     setVolume(null);
     setFrequency("MONTHLY");
+    setHasBrand(false);
     setBrandName("");
     setAttrs({});
     setShowAttrs(false);
@@ -203,6 +208,7 @@ export function ListingForm({
   const pickSku = (p: ProductRowDto) => {
     setSelectedProduct(p);
     // برند SKU را روی فرم set کن تا در گام ۲ نمایش داده شود
+    setHasBrand(!!p.brand);
     setBrandName(p.brand?.name ?? "");
     setStep(2);
   };
@@ -211,9 +217,10 @@ export function ListingForm({
   // وقتی هیچ SKU ای وجود ندارد یا کاربر می‌خواهد کالای متفاوتی بسازد
   const skipSku = () => {
     setSelectedProduct(null);
+    setHasBrand(false);
     setBrandName("");
     setAttrs({});
-    setShowAttrs(true); // ── ویژگی‌ها را اجباری باز کن
+    setShowAttrs(false);
     setStep(2);
   };
 
@@ -288,23 +295,18 @@ export function ListingForm({
   const save = async () => {
     if (!selected || !arm) return;
 
-    // ── اگر SKU انتخاب نشده، ویژگی‌های اجباری دسته‌بندی باید پر شوند.
-    // برند فقط وقتی اجباری است که دسته‌بندی صریحاً آن را required کرده باشد
-    // (یا ویژگی با key="brand" اجباری باشد). کالاهای فله‌ای مثل سیب یا برنج
-    // ممکن است برند نداشته باشند ولی نوع/رنگ/درجه باید حتماً مشخص شود تا
-    // کالای مرجع قابل شناسایی باشد.
-    if (!selectedProduct) {
-      const requiredAttrs = attrsOf.filter((a) => a.required);
-      const missingAttrs = requiredAttrs.filter((a) => !(attrs[a.key] ?? "").trim());
-      if (missingAttrs.length > 0) {
-        toast({
-          title: "ویژگی‌های اجباری را پر کن",
-          description: missingAttrs.map((a) => (locale === "en" ? a.en : a.fa)).join("، "),
-          variant: "destructive",
-        });
-        setShowAttrs(true);
-        return;
-      }
+    // ── منطق برند → Product:
+    // • اگر SKU انتخاب شده → productId از SKU می‌آید (همان مسیر)
+    // • اگر کاربر گفت «کالا برند دارد» → باید برند را انتخاب/وارد کند
+    //   بک‌اند خودش Product مرجع find-or-create می‌کند
+    // • اگر کاربر گفت «برند ندارد» → کالای فله، مستقیم روی Good می‌نشیند (productId=null)
+    if (!selectedProduct && hasBrand && !brandName.trim()) {
+      toast({
+        title: "برند را انتخاب کن",
+        description: "گفتی این کالا برند دارد — برندش را انتخاب یا بنویس.",
+        variant: "destructive",
+      });
+      return;
     }
 
     const sellValid = (price ?? 0) > 0 && (stock ?? 0) > 0 && (minOrder ?? 0) > 0;
@@ -343,8 +345,9 @@ export function ListingForm({
         mode: arm === "both" ? "BOTH" : arm === "sell" ? "SELL" : "BUY",
         // ── اگر SKU انتخاب شده، productId را پاس بده تا Listing به همان Product وصل شود
         ...(selectedProduct ? { productId: selectedProduct.id } : {}),
-        // ── اگر SKU انتخاب شده، برند از خود SKU می‌آید؛ وگرنه از فرم
-        ...(!selectedProduct && brandName.trim() ? { brandName: brandName.trim() } : {}),
+        // ─ـ برند فقط وقتی فرستاده می‌شود که کاربر صراحتاً «برند دارد» را زده باشد
+        // و SKU از قبل انتخاب نشده باشد (در غیر این صورت برند از SKU می‌آید)
+        ...(!selectedProduct && hasBrand && brandName.trim() ? { brandName: brandName.trim() } : {}),
         ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
         ...(sellValid
             ? {
@@ -371,13 +374,23 @@ export function ListingForm({
   };
 
   const attrsOf = selected?.category.attrs ?? [];
-  // اگر SKU انتخاب نشده و دسته‌بندی ویژگی اجباری دارد، ویژگی‌ها را باز نشان بده
-  const hasRequiredAttrs = attrsOf.some((a) => a.required);
-  useEffect(() => {
-    if (step === 2 && !selectedProduct && hasRequiredAttrs) {
-      setShowAttrs(true);
+  // ── برندهایی که در کالاهای مرجع همین Good هستند — برای نمایش سریع به‌عنوان چیپ
+  // از skuQ (گام ۱.۵) می‌آیند، ولی اگر کاربر مستقیم از گام ۱ به ۲ پرید، آن‌ها را
+  // اینجا هم فراخوانی می‌کنیم (cache می‌شود پس نگران سرعت نیست).
+  const goodBrandsQ = useProducts({
+    businessId: bizId,
+    goodId: selected?.id,
+    limit: 50,
+    enabled: !!selected && step === 2 && !selectedProduct,
+  });
+  const goodBrands = useMemo(() => {
+    // استخراج برندهای یکتا از لیست Products این Good
+    const seen = new Map<string, string>(); // id → name
+    for (const p of (goodBrandsQ.data?.items ?? [])) {
+      if (p.brand) seen.set(p.brand.id, p.brand.name);
     }
-  }, [step, selectedProduct, hasRequiredAttrs]);
+    return [...seen.entries()].map(([id, name]) => ({ id, name }));
+  }, [goodBrandsQ.data]);
   const unit = selected ? unitLabel(selected.unit, locale) : "";
   const nothingFound = !!debounced && !searching && results.length === 0 && !selected;
   const pricePlaceholder =
@@ -818,7 +831,7 @@ export function ListingForm({
                     </section>
                 )}
 
-                {/* ───── ویژگی‌های کالا (مشترک، بیرون از دو کادر) ───── */}
+                {/* ───── برند و ویژگی‌های کالا ───── */}
                 {arm && (
                     <section className="mt-4">
                       {/* اگر SKU انتخاب شده، اطلاعاتش را فقط‌خواندنی نشان بده */}
@@ -841,90 +854,136 @@ export function ListingForm({
                             </button>
                           </div>
                       ) : (
-                          <>
-                            <button
-                                type="button"
-                                onClick={() => setShowAttrs((s) => !s)}
-                                aria-expanded={showAttrs}
-                                className="flex w-full items-center gap-1.5 text-xs font-bold text-primary"
-                            >
-                              <ChevronDown className={`size-3.5 transition ${showAttrs ? "rotate-180" : ""}`} />
-                              {m.listing.specs.optionalToggle}
-                            </button>
+                          <div className="rounded-xl border p-4">
+                            {/* سؤال برند — toggle صریح */}
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-bold">{m.listing.brand.hasBrandQuestion}</p>
+                                <p className="mt-0.5 text-[11px] leading-5 text-muted-foreground">
+                                  {hasBrand ? m.listing.brand.hasBrandHint : m.listing.brand.noBrandHint}
+                                </p>
+                              </div>
+                              <button
+                                  type="button"
+                                  role="switch"
+                                  aria-checked={hasBrand}
+                                  onClick={() => {
+                                    setHasBrand((v) => !v);
+                                    if (hasBrand) setBrandName(""); // وقتی خاموش می‌شود، برند را پاک کن
+                                  }}
+                                  className={`relative h-6 w-11 shrink-0 rounded-full transition ${hasBrand ? "bg-primary" : "bg-muted-foreground/30"}`}
+                              >
+                                <span className={`absolute top-0.5 size-5 rounded-full bg-white shadow transition ${hasBrand ? "start-0.5" : "start-5"}`} />
+                              </button>
+                            </div>
 
-                            {showAttrs && (
-                                <div className="mt-3 rounded-xl border p-4">
-                                  {hasRequiredAttrs ? (
-                                      <p className="mb-3 text-[11px] leading-5 font-bold text-primary">
-                                        ستاره‌دارها اجباری است — تا کالای مرجع قابل شناسایی باشد.
-                                      </p>
-                                  ) : (
-                                      <p className="mb-3 text-[11px] leading-5 text-muted-foreground">
-                                        {m.listing.specs.attrsHint}
-                                      </p>
-                                  )}
-                                  <div className="grid gap-3">
-                                    {/* برند */}
-                                    <div className="relative">
-                                      <Field label={m.listing.brand.label}>
-                                        <Input
-                                            value={brandName}
-                                            onChange={(e) => setBrandName(e.target.value)}
-                                            placeholder={m.listing.brand.placeholder}
-                                        />
-                                      </Field>
-                                      {brandName.trim() && brandSuggestions.length > 0 && (
-                                          <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border bg-white shadow-lg">
-                                            {brandSuggestions.slice(0, 5).map((b) => (
-                                                <button
-                                                    key={b.id}
-                                                    type="button"
-                                                    onClick={() => setBrandName(b.name)}
-                                                    className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
-                                                >
-                                                  <span className="font-bold">{b.name}</span>
-                                                  <Check className="size-3.5 text-primary" />
-                                                </button>
-                                            ))}
-                                          </div>
-                                      )}
-                                    </div>
-
-                                    {/* اتریبیوت‌ها */}
-                                    {attrsOf.length > 0 && (
-                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                          {attrsOf.map((a) => (
-                                              <Field key={a.key} label={`${locale === "en" ? a.en : a.fa}${a.required ? " *" : ""}`}>
-                                                {a.type === "enum" && a.options ? (
-                                                    <Select
-                                                        value={attrs[a.key] ?? ""}
-                                                        onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
-                                                    >
-                                                      <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
-                                                        <SelectValue placeholder="—" />
-                                                      </SelectTrigger>
-                                                      <SelectContent>
-                                                        {a.options.map((o) => (
-                                                            <SelectItem key={o.v} value={o.v}>
-                                                              {locale === "en" ? o.en : o.fa}
-                                                            </SelectItem>
-                                                        ))}
-                                                      </SelectContent>
-                                                    </Select>
-                                                ) : (
-                                                    <Input
-                                                        value={attrs[a.key] ?? ""}
-                                                        onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
-                                                    />
-                                                )}
-                                              </Field>
+                            {/* انتخابگر برند — فقط وقتی toggle روشن است */}
+                            {hasBrand && (
+                                <div className="mt-4 space-y-3">
+                                  {/* چیپ‌های برندهای موجود برای این Good — از کالاهای مرجع استخراج شده */}
+                                  {goodBrands.length > 0 && (
+                                      <div>
+                                        <p className="mb-1.5 text-[11px] font-bold text-muted-foreground">
+                                          {m.listing.brand.pickExisting}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                          {goodBrands.map((b) => (
+                                              <button
+                                                  key={b.id}
+                                                  type="button"
+                                                  onClick={() => setBrandName(b.name)}
+                                                  className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                                                    brandName.trim() === b.name
+                                                      ? "border-primary bg-primary/10 text-primary"
+                                                      : "border-stone-200 bg-white text-stone-600 hover:border-primary/40"
+                                                  }`}
+                                              >
+                                                {b.name}
+                                              </button>
                                           ))}
                                         </div>
+                                      </div>
+                                  )}
+
+                                  {/* جست‌وجوی برند — همیشه وقتی toggle روشن است نشان داده می‌شود */}
+                                  <div className="relative">
+                                    <Field label={m.listing.brand.otherBrand}>
+                                      <Input
+                                          value={brandName}
+                                          onChange={(e) => setBrandName(e.target.value)}
+                                          placeholder={m.listing.brand.placeholder}
+                                          aria-label={m.listing.brand.label}
+                                      />
+                                    </Field>
+                                    {brandName.trim() && brandSuggestions.length > 0 && !goodBrands.some((b) => b.name === brandName.trim()) && (
+                                        <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border bg-white shadow-lg">
+                                          {brandSuggestions.slice(0, 5).map((b) => (
+                                              <button
+                                                  key={b.id}
+                                                  type="button"
+                                                  onClick={() => setBrandName(b.name)}
+                                                  className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
+                                              >
+                                                <span className="font-bold">{b.name}</span>
+                                                <Check className="size-3.5 text-primary" />
+                                              </button>
+                                          ))}
+                                        </div>
+                                    )}
+                                    {brandName.trim() && !goodBrands.some((b) => b.name === brandName.trim()) && (
+                                        <p className="mt-1 text-[10px] text-muted-foreground">
+                                          {m.listing.brand.newHint}
+                                        </p>
                                     )}
                                   </div>
                                 </div>
                             )}
-                          </>
+
+                            {/* اتریبیوت‌ها — اختیاری، قابل toggle */}
+                            {attrsOf.length > 0 && (
+                                <div className="mt-4 border-t pt-4">
+                                  <button
+                                      type="button"
+                                      onClick={() => setShowAttrs((s) => !s)}
+                                      aria-expanded={showAttrs}
+                                      className="flex w-full items-center gap-1.5 text-xs font-bold text-muted-foreground"
+                                  >
+                                    <ChevronDown className={`size-3.5 transition ${showAttrs ? "rotate-180" : ""}`} />
+                                    {m.listing.specs.optionalToggle}
+                                  </button>
+                                  {showAttrs && (
+                                      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                        {attrsOf.map((a) => (
+                                            <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
+                                              {a.type === "enum" && a.options ? (
+                                                  <Select
+                                                      value={attrs[a.key] ?? ""}
+                                                      onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
+                                                  >
+                                                    <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
+                                                      <SelectValue placeholder="—" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                      {a.options.map((o) => (
+                                                          <SelectItem key={o.v} value={o.v}>
+                                                            {locale === "en" ? o.en : o.fa}
+                                                          </SelectItem>
+                                                      ))}
+                                                    </SelectContent>
+                                                  </Select>
+                                              ) : (
+                                                  <Input
+                                                      value={attrs[a.key] ?? ""}
+                                                      onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
+                                                  />
+                                              )}
+                                            </Field>
+                                        ))}
+                                      </div>
+                                  )}
+                                </div>
+                            )}
+                          </div>
                       )}
                     </section>
                 )}
