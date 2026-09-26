@@ -120,11 +120,11 @@ function ModeTab({ active, onClick, icon, label }: { active: boolean; onClick: (
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition ${
+      className={`flex flex-col items-center gap-0.5 rounded-full px-3 py-1.5 text-[10px] font-bold transition ${
         active ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
       }`}
     >
-      {icon}
+      <span className="[&>svg]:size-4">{icon}</span>
       {label}
     </button>
   );
