@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ApiError, type CategoryNodeDto, type GoodDto } from "@/lib/api";
-import { useBrands, useCategories, useCreateGood, useGoods, useSaveListing, useUploadFile } from "@/lib/queries";
+import Image from "next/image";
+import { ApiError, type CategoryNodeDto, type GoodDto, type ProductRowDto } from "@/lib/api";
+import { useBrands, useCategories, useCreateGood, useGoods, useProducts, useSaveListing, useUploadFile } from "@/lib/queries";
 import { compressImage } from "@/lib/compress";
 import { CURRENCIES, currencyLabel, fa, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -66,11 +67,16 @@ export function ListingForm({
   const saveMutation = useSaveListing();
   const createGoodMutation = useCreateGood();
 
-  // ── مرحله: ۱ انتخاب گروه محصول، ۲ مشخصات
-  const [step, setStep] = useState<1 | 2>(1);
+  // ── مرحله: ۱ انتخاب گروه محصول، ۱.۵ انتخاب SKU، ۲ مشخصات
+  const [step, setStep] = useState<1 | 1.5 | 2>(1);
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
   const [selected, setSelected] = useState<GoodDto | null>(null);
+
+  // ── SKU انتخاب‌شده از کالاهای مرجع (اگر کاربر یکی را برداشت)
+  const [selectedProduct, setSelectedProduct] = useState<ProductRowDto | null>(null);
+  // ── فیلتر برند برای لیست SKU ها
+  const [skuBrandId, setSkuBrandId] = useState<string | null>(null); // null = همه، "other" = بدون برند
 
   // ── نقش کاربر برای این کالا
   const [arm, setArm] = useState<Arm | null>(null);
@@ -153,9 +159,31 @@ export function ListingForm({
   const curDef = CURRENCIES[currency] ?? CURRENCIES.IRR;
   const curName = currencyLabel(currency, locale);
 
+  // ── لیست SKU های مرجع برای Good انتخاب‌شده (گام ۱.۵)
+  // وقتی کاربر نوع کالا را انتخاب کرد، همه‌ی Product های متصل به آن Good
+  // لود می‌شوند تا کاربر بگوید کدامشان منظورش است. برندها از خود لیست
+  // استخراج می‌شوند؛ اگر Productی برند ندارد، زیر «سایر» فیلتر می‌شود.
+  const skuQ = useProducts({
+    businessId: bizId,
+    goodId: selected?.id,
+    brandId: skuBrandId === "other" ? undefined : skuBrandId ?? undefined,
+    limit: 50,
+    enabled: step === 1.5 && !!selected,
+  });
+  const skuRows = skuQ.data?.items ?? [];
+  const skuBrands = skuQ.data?.brands ?? [];
+  // فیلتر نهایی روی rows — اگر "other" انتخاب شده، فقط بی‌برندها
+  const skuDisplayRows = useMemo(() => {
+    if (skuBrandId === "other") return skuRows.filter((p) => !p.brand);
+    if (skuBrandId) return skuRows.filter((p) => p.brand?.id === skuBrandId);
+    return skuRows;
+  }, [skuRows, skuBrandId]);
+
   const pickGood = (g: GoodDto) => {
     setSelected(g);
-    setStep(2);
+    setSelectedProduct(null);
+    setSkuBrandId(null);
+    setStep(1.5); // ── بعد از انتخاب نوع کالا، برو به گام انتخاب SKU
     setArm(null);
     setPrice(null);
     setStock(null);
@@ -169,6 +197,24 @@ export function ListingForm({
     setImageUrls([]);
     setQuery("");
     setDebounced("");
+  };
+
+  // ── انتخاب SKU از لیست کالاهای مرجع — پرش به گام ۲ با(productId پر)
+  const pickSku = (p: ProductRowDto) => {
+    setSelectedProduct(p);
+    // برند SKU را روی فرم set کن تا در گام ۲ نمایش داده شود
+    setBrandName(p.brand?.name ?? "");
+    setStep(2);
+  };
+
+  // ─ـ skip کردن گام SKU و ساختن کالای مرجع جدید با ویژگی‌ها
+  // وقتی هیچ SKU ای وجود ندارد یا کاربر می‌خواهد کالای متفاوتی بسازد
+  const skipSku = () => {
+    setSelectedProduct(null);
+    setBrandName("");
+    setAttrs({});
+    setShowAttrs(true); // ── ویژگی‌ها را اجباری باز کن
+    setStep(2);
   };
 
   const createNewGood = async () => {
@@ -242,6 +288,18 @@ export function ListingForm({
   const save = async () => {
     if (!selected || !arm) return;
 
+    // ── اگر SKU انتخاب نشده، حداقل برند باید پر باشد تا کالای مرجع
+    // بی‌نام‌ونشان نسازیم. اگر Good دسته‌بندی‌اش ویژگی اجباری دارد، آن هم.
+    if (!selectedProduct && !brandName.trim()) {
+      toast({
+        title: "برند را وارد کن",
+        description: "چون کالای مرجع موجود نیست، حداقل برند را پر کن تا قابل شناسایی باشد.",
+        variant: "destructive",
+      });
+      setShowAttrs(true);
+      return;
+    }
+
     const sellValid = (price ?? 0) > 0 && (stock ?? 0) > 0 && (minOrder ?? 0) > 0;
     const buyValid = (volume ?? 0) > 0;
 
@@ -276,7 +334,10 @@ export function ListingForm({
         businessId: bizId,
         goodId: selected.id,
         mode: arm === "both" ? "BOTH" : arm === "sell" ? "SELL" : "BUY",
-        ...(brandName.trim() ? { brandName: brandName.trim() } : {}),
+        // ── اگر SKU انتخاب شده، productId را پاس بده تا Listing به همان Product وصل شود
+        ...(selectedProduct ? { productId: selectedProduct.id } : {}),
+        // ── اگر SKU انتخاب شده، برند از خود SKU می‌آید؛ وگرنه از فرم
+        ...(!selectedProduct && brandName.trim() ? { brandName: brandName.trim() } : {}),
         ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
         ...(sellValid
             ? {
@@ -313,6 +374,7 @@ export function ListingForm({
         {/* نوار پیشرفت نازک */}
         <div className="flex h-1 gap-1 overflow-hidden rounded-t-2xl">
           <div className={`flex-1 ${step >= 1 ? "bg-primary" : "bg-muted"}`} />
+          <div className={`flex-1 ${step >= 1.5 ? "bg-primary" : "bg-muted"}`} />
           <div className={`flex-1 ${step >= 2 ? "bg-primary" : "bg-muted"}`} />
         </div>
 
@@ -330,7 +392,7 @@ export function ListingForm({
                       aria-label={m.listing.search.aria}
                       placeholder={m.listing.search.placeholder}
                       value={query}
-                      maxLength={40}
+                      maxLength={20}
                       onChange={(e) => setQuery(e.target.value)}
                       className="h-11 pe-9 text-base"
                       autoFocus
@@ -400,6 +462,140 @@ export function ListingForm({
                     >
                       {m.listing.firstGood.skip}
                     </Button>
+                )}
+              </>
+          )}
+
+          {/* ═══════════ گام ۱.۵: انتخاب SKU از کالاهای مرجع ═══════════ */}
+          {step === 1.5 && selected && (
+              <>
+                {/* هدر */}
+                <div className="flex items-center gap-3">
+                  <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      aria-label={m.listing.back}
+                      className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground"
+                  >
+                    <ArrowLeft className="size-4 rtl:rotate-180" />
+                  </button>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-base font-extrabold">
+                      {m.listing.sku.title.replace("{good}", goodName(selected, locale))}
+                    </p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      {pathOf(selected.category.id)} · {unit}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="mt-3 text-[11px] leading-5 text-muted-foreground">
+                  {m.listing.sku.hint}
+                </p>
+
+                {/* نوار برند — از خود لیست SKU استخراج شده */}
+                {skuBrands.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      <button
+                          type="button"
+                          onClick={() => setSkuBrandId(null)}
+                          className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                              skuBrandId === null ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-primary/40"
+                          }`}
+                      >
+                        {m.listing.sku.all}
+                      </button>
+                      {skuBrands.map((b) => (
+                          <button
+                              key={b.id}
+                              type="button"
+                              onClick={() => setSkuBrandId(b.id)}
+                              className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                                  skuBrandId === b.id ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-primary/40"
+                              }`}
+                          >
+                              {b.name}
+                              <span className="ms-1 text-[9px] text-muted-foreground">{fa(b.count)}</span>
+                          </button>
+                      ))}
+                      {/* «سایر» — کالاهای بدون برند */}
+                      {skuRows.some((p) => !p.brand) && (
+                          <button
+                              type="button"
+                              onClick={() => setSkuBrandId("other")}
+                              className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
+                                  skuBrandId === "other" ? "border-primary bg-primary/10 text-primary" : "border-stone-200 bg-white text-stone-600 hover:border-primary/40"
+                              }`}
+                          >
+                              {m.listing.sku.otherBrand}
+                          </button>
+                      )}
+                    </div>
+                )}
+
+                {/* لیست SKU ها */}
+                {skuQ.isLoading || skuQ.isFetching ? (
+                    <p className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
+                      <Loader2 className="size-4 animate-spin" />
+                      {m.listing.catalogLoading}
+                    </p>
+                ) : skuDisplayRows.length === 0 ? (
+                    <div className="mt-4 rounded-xl border border-dashed p-6 text-center">
+                      <PackagePlus className="mx-auto size-6 text-primary/60" />
+                      <p className="mt-2 text-sm font-bold">{m.listing.sku.empty}</p>
+                      <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
+                        {m.listing.sku.emptyHint}
+                      </p>
+                      <Button
+                          type="button"
+                          size="sm"
+                          className="mt-3"
+                          onClick={skipSku}
+                      >
+                        <Plus className="size-4" />
+                        ساختن کالای مرجع جدید
+                      </Button>
+                    </div>
+                ) : (
+                    <div className="mt-4 divide-y">
+                      {skuDisplayRows.map((p) => (
+                          <button
+                              key={p.id}
+                              type="button"
+                              onClick={() => pickSku(p)}
+                              className="flex w-full items-center gap-3 rounded-lg px-1 py-3 text-start transition hover:bg-accent/30"
+                          >
+                              <span className="size-10 shrink-0 overflow-hidden rounded-xl bg-accent/70">
+                                {p.imageUrl ? (
+                                    <Image src={p.imageUrl} alt="" width={40} height={40} unoptimized className="size-full object-cover" />
+                                ) : (
+                                    <span className="grid size-full place-items-center text-base font-black text-primary/80">{p.good.nameFa.slice(0, 1)}</span>
+                                )}
+                              </span>
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-sm font-extrabold">{p.label}</span>
+                                <span className="block truncate text-[11px] text-muted-foreground">
+                                  {p.brand ? p.brand.name : m.listing.sku.otherBrand}
+                                </span>
+                              </span>
+                              <Plus className="size-4 shrink-0 text-muted-foreground" />
+                          </button>
+                      ))}
+                    </div>
+                )}
+
+                {/* لینک «ساختن کالای مرجع جدید» — همیشه در دسترس */}
+                {skuDisplayRows.length > 0 && (
+                    <p className="mt-4 text-center text-[11px] leading-5 text-muted-foreground">
+                      کالای موردنظرت نیست؟{" "}
+                      <button
+                          type="button"
+                          onClick={skipSku}
+                          className="font-bold text-primary underline-offset-2 hover:underline"
+                      >
+                        ساختن کالای مرجع جدید
+                      </button>
+                    </p>
                 )}
               </>
           )}
@@ -522,30 +718,17 @@ export function ListingForm({
                         <Store className="size-4 text-primary" />
                         {m.listing.sections.sell}
                       </h3>
-                      {/* موبایل: هر فیلد یک ردیف کامل — عددهای بزرگ جا می‌شوند
-                          (خواسته‌ی کاربر: «توی موبایل بنداز زیر هم») */}
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <div className="sm:col-span-2">
-                          <Field label={m.listing.specs.price.replace("{unit}", unit)}>
-                            <NumberInput
-                                value={price}
-                                onChange={setPrice}
-                                locale={numLocale}
-                                min={0}
-                                suffix={curName}
-                                placeholder={pricePlaceholder}
-                                aria-label={m.listing.specs.price.replace("{unit}", unit)}
-                            />
-                          </Field>
-                        </div>
-                        <Field label={m.listing.specs.minOrder}>
+                      {/* دسکتاپ: هر سه فیلد در یک ردیف — موبایل: زیر هم */}
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <Field label={m.listing.specs.price.replace("{unit}", unit)}>
                           <NumberInput
-                              value={minOrder}
-                              onChange={setMinOrder}
+                              value={price}
+                              onChange={setPrice}
                               locale={numLocale}
                               min={0}
-                              suffix={unit}
-                              aria-label={m.listing.specs.minOrder}
+                              suffix={curName}
+                              placeholder={pricePlaceholder}
+                              aria-label={m.listing.specs.price.replace("{unit}", unit)}
                           />
                         </Field>
                         <Field label={m.listing.specs.stock}>
@@ -556,6 +739,16 @@ export function ListingForm({
                               min={0}
                               suffix={unit}
                               aria-label={m.listing.specs.stock}
+                          />
+                        </Field>
+                        <Field label={m.listing.specs.minOrder}>
+                          <NumberInput
+                              value={minOrder}
+                              onChange={setMinOrder}
+                              locale={numLocale}
+                              min={0}
+                              suffix={unit}
+                              aria-label={m.listing.specs.minOrder}
                           />
                         </Field>
                       </div>
@@ -602,81 +795,104 @@ export function ListingForm({
                 {/* ───── ویژگی‌های کالا (مشترک، بیرون از دو کادر) ───── */}
                 {arm && (
                     <section className="mt-4">
-                      <button
-                          type="button"
-                          onClick={() => setShowAttrs((s) => !s)}
-                          aria-expanded={showAttrs}
-                          className="flex w-full items-center gap-1.5 text-xs font-bold text-primary"
-                      >
-                        <ChevronDown className={`size-3.5 transition ${showAttrs ? "rotate-180" : ""}`} />
-                        {m.listing.specs.optionalToggle}
-                      </button>
-
-                      {showAttrs && (
-                          <div className="mt-3 rounded-xl border p-4">
-                            <p className="mb-3 text-[11px] leading-5 text-muted-foreground">
-                              {m.listing.specs.attrsHint}
+                      {/* اگر SKU انتخاب شده، اطلاعاتش را فقط‌خواندنی نشان بده */}
+                      {selectedProduct ? (
+                          <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                            <p className="mb-2 flex items-center gap-1.5 text-xs font-bold text-primary">
+                              <Check className="size-3.5" />
+                              کالای مرجع انتخاب شد
                             </p>
-                            <div className="grid gap-3">
-                              {/* برند */}
-                              <div className="relative">
-                                <Field label={m.listing.brand.label}>
-                                  <Input
-                                      value={brandName}
-                                      onChange={(e) => setBrandName(e.target.value)}
-                                      placeholder={m.listing.brand.placeholder}
-                                  />
-                                </Field>
-                                {brandName.trim() && brandSuggestions.length > 0 && (
-                                    <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border bg-white shadow-lg">
-                                      {brandSuggestions.slice(0, 5).map((b) => (
-                                          <button
-                                              key={b.id}
-                                              type="button"
-                                              onClick={() => setBrandName(b.name)}
-                                              className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
-                                          >
-                                            <span className="font-bold">{b.name}</span>
-                                            <Check className="size-3.5 text-primary" />
-                                          </button>
-                                      ))}
-                                    </div>
-                                )}
-                              </div>
-
-                              {/* اتریبیوت‌ها */}
-                              {attrsOf.length > 0 && (
-                                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                    {attrsOf.map((a) => (
-                                        <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
-                                          {a.type === "enum" && a.options ? (
-                                              <Select
-                                                  value={attrs[a.key] ?? ""}
-                                                  onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
-                                              >
-                                                <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
-                                                  <SelectValue placeholder="—" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                  {a.options.map((o) => (
-                                                      <SelectItem key={o.v} value={o.v}>
-                                                        {locale === "en" ? o.en : o.fa}
-                                                      </SelectItem>
-                                                  ))}
-                                                </SelectContent>
-                                              </Select>
-                                          ) : (
-                                              <Input
-                                                  value={attrs[a.key] ?? ""}
-                                                  onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
-                                              />
-                                          )}
-                                        </Field>
-                                    ))}
-                                  </div>
-                              )}
-                            </div>
+                            <p className="text-sm font-extrabold">{selectedProduct.label}</p>
+                            <p className="mt-0.5 text-[11px] text-muted-foreground">
+                              {selectedProduct.brand ? selectedProduct.brand.name : "بدون برند"} · {goodName(selected, locale)}
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => { setSelectedProduct(null); setStep(1.5); }}
+                                className="mt-2 text-[11px] font-bold text-primary hover:underline"
+                            >
+                              {m.listing.sku.backToGood}
+                            </button>
                           </div>
+                      ) : (
+                          <>
+                            <button
+                                type="button"
+                                onClick={() => setShowAttrs((s) => !s)}
+                                aria-expanded={showAttrs}
+                                className="flex w-full items-center gap-1.5 text-xs font-bold text-primary"
+                            >
+                              <ChevronDown className={`size-3.5 transition ${showAttrs ? "rotate-180" : ""}`} />
+                              {m.listing.specs.optionalToggle}
+                            </button>
+
+                            {showAttrs && (
+                                <div className="mt-3 rounded-xl border p-4">
+                                  <p className="mb-3 text-[11px] leading-5 text-muted-foreground">
+                                    {m.listing.specs.attrsHint}
+                                  </p>
+                                  <div className="grid gap-3">
+                                    {/* برند */}
+                                    <div className="relative">
+                                      <Field label={m.listing.brand.label}>
+                                        <Input
+                                            value={brandName}
+                                            onChange={(e) => setBrandName(e.target.value)}
+                                            placeholder={m.listing.brand.placeholder}
+                                        />
+                                      </Field>
+                                      {brandName.trim() && brandSuggestions.length > 0 && (
+                                          <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border bg-white shadow-lg">
+                                            {brandSuggestions.slice(0, 5).map((b) => (
+                                                <button
+                                                    key={b.id}
+                                                    type="button"
+                                                    onClick={() => setBrandName(b.name)}
+                                                    className="flex w-full items-center justify-between px-3 py-2 text-start text-sm transition hover:bg-accent"
+                                                >
+                                                  <span className="font-bold">{b.name}</span>
+                                                  <Check className="size-3.5 text-primary" />
+                                                </button>
+                                            ))}
+                                          </div>
+                                      )}
+                                    </div>
+
+                                    {/* اتریبیوت‌ها */}
+                                    {attrsOf.length > 0 && (
+                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                          {attrsOf.map((a) => (
+                                              <Field key={a.key} label={locale === "en" ? a.en : a.fa}>
+                                                {a.type === "enum" && a.options ? (
+                                                    <Select
+                                                        value={attrs[a.key] ?? ""}
+                                                        onValueChange={(v) => setAttrs((s) => ({ ...s, [a.key]: v }))}
+                                                    >
+                                                      <SelectTrigger aria-label={locale === "en" ? a.en : a.fa}>
+                                                        <SelectValue placeholder="—" />
+                                                      </SelectTrigger>
+                                                      <SelectContent>
+                                                        {a.options.map((o) => (
+                                                            <SelectItem key={o.v} value={o.v}>
+                                                              {locale === "en" ? o.en : o.fa}
+                                                            </SelectItem>
+                                                        ))}
+                                                      </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <Input
+                                                        value={attrs[a.key] ?? ""}
+                                                        onChange={(e) => setAttrs((s) => ({ ...s, [a.key]: e.target.value }))}
+                                                    />
+                                                )}
+                                              </Field>
+                                          ))}
+                                        </div>
+                                    )}
+                                  </div>
+                                </div>
+                            )}
+                          </>
                       )}
                     </section>
                 )}

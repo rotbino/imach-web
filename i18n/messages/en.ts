@@ -92,7 +92,7 @@ export const en: Messages = {
     },
     search: {
       aria: "Search product types",
-      placeholder: "Search product type… e.g. Hashemi rice or canned tuna",
+      placeholder: "e.g. rice, rebar, apple",
       results: "Similar product types",
       empty: "Nothing found",
       unitCommon: "Common unit",
@@ -102,6 +102,17 @@ export const en: Messages = {
           "A product type is not the exact product name; it's the shared class — e.g. “canned tuna”, not “Mackenzie tuna 240g”.",
       notFoundTitle: "The product you're looking for isn't in product types yet",
       searchHint: "Nothing found? Try a shorter or similar word — e.g. “tuna” instead of “canned”.",
+    },
+    // ── Step 1.5: pick SKU from existing reference products ──
+    sku: {
+      title: "Which {good}?",
+      hint: "Reference products already registered. Pick one to inherit its image and specs.",
+      empty: "No reference product for this type yet",
+      emptyHint: "To continue, fill at least the brand and one main attribute so the reference product is identifiable.",
+      other: "Other",
+      all: "All",
+      otherBrand: "No brand",
+      backToGood: "Change product type",
     },
     create: {
       title: "Add “{name}” as a reference product",

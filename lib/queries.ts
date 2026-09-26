@@ -115,6 +115,7 @@ export function useProducts(params: {
   businessId: string;
   q?: string;
   categoryId?: string;
+  goodId?: string;
   /** فیلتر برند — راهِ سریعِ رسیدن به لیستِ مناسب کسب‌وکار */
   brandId?: string;
   cursor?: string;
@@ -122,12 +123,13 @@ export function useProducts(params: {
   enabled?: boolean;
 }): UseQueryResult<ProductPageDto> {
   return useQuery({
-    queryKey: ["products", params.businessId, params.q ?? "", params.categoryId ?? "", params.brandId ?? "", params.cursor ?? ""],
+    queryKey: ["products", params.businessId, params.q ?? "", params.categoryId ?? "", params.goodId ?? "", params.brandId ?? "", params.cursor ?? ""],
     queryFn: () =>
       productsApi.getProducts({
         businessId: params.businessId,
         q: params.q,
         categoryId: params.categoryId,
+        goodId: params.goodId,
         brandId: params.brandId,
         cursor: params.cursor,
         limit: params.limit,
