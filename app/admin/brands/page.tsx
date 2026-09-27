@@ -3,17 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import {
   useAdminBrands,
   adminApi,
   type AdminBrandDto,
 } from "../api";
+import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SearchSelect } from "@/components/search-select";
-import { useMyBusinesses } from "@/lib/queries";
 import { fa } from "@/lib/format";
 import {
   Tag,
@@ -146,9 +146,22 @@ function BrandRow({
   const [name, setName] = useState(brand.name);
   const [ownerId, setOwnerId] = useState<string | null>(brand.ownerId);
   const [saving, setSaving] = useState(false);
+  const [bizSearch, setBizSearch] = useState("");
 
-  const bizQ = useMyBusinesses();
-  const businesses = (bizQ.data ?? []).map((b) => ({ value: b.id, label: b.name, hint: b.slug }));
+  // ── جست‌وجوی کسب‌وکار — ادمین می‌تواند همه‌ی کسب‌وکارها را ببیند
+  const bizQ = useQuery({
+    queryKey: ["admin", "search-biz", bizSearch],
+    queryFn: () => api<{ id: string; name: string; slug: string; trade: string | null; city: string }[]>(
+      `/admin/brands/search-businesses?q=${encodeURIComponent(bizSearch)}`,
+    ),
+    enabled: bizSearch.trim().length >= 1,
+    staleTime: 10_000,
+  });
+  const businesses = (bizQ.data ?? []).map((b) => ({
+    value: b.id,
+    label: b.name,
+    hint: `${b.city}${b.trade ? ` · ${b.trade}` : ""}`,
+  }));
 
   const hasChanges = name !== brand.name || ownerId !== brand.ownerId;
 
@@ -249,25 +262,53 @@ function BrandRow({
       {isEditing && (
         <div className="mt-3 border-t pt-3">
           <Label className="text-[10px] text-muted-foreground">کسب‌وکار مالک برند</Label>
-          <div className="mt-1 flex items-center gap-2">
-            <div className="flex-1">
-              <SearchSelect
-                items={businesses}
-                value={ownerId}
-                onChange={(v) => setOwnerId(v || null)}
-                placeholder="انتخاب کسب‌وکار…"
-                searchPlaceholder="جست‌وجوی کسب‌وکار…"
-                emptyText="پیدا نشد"
-                ariaLabel="مالک برند"
-              />
-            </div>
-            {ownerId && (
+          {brand.owner && !ownerId ? (
+            // وقتی مالک دارد ولی ownerId هنوز ست نشده (از state قبلی)
+            <p className="mt-1 text-xs font-bold text-amber-700">{brand.owner.name}</p>
+          ) : ownerId ? (
+            // مالک انتخاب شده — نمایش نام + دکمه حذف
+            <div className="mt-1 flex items-center gap-2">
+              <span className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700">
+                {brand.owner?.name ?? "مالک انتخاب‌شده"}
+              </span>
               <Button size="sm" variant="ghost" onClick={() => setOwnerId(null)}>
                 <X className="size-3.5" />
                 حذف مالک
               </Button>
-            )}
-          </div>
+            </div>
+          ) : (
+            // جست‌وجوی کسب‌وکار — تایپ کن + نتایج بیا
+            <div className="mt-1">
+              <Input
+                value={bizSearch}
+                onChange={(e) => setBizSearch(e.target.value)}
+                placeholder="نام کسب‌وکار، شهر یا صنف را بنویس…"
+                className="h-9 text-sm"
+                maxLength={40}
+              />
+              {bizSearch.trim().length >= 1 && (
+                <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border bg-white shadow-sm">
+                  {bizQ.isLoading ? (
+                    <p className="px-3 py-2 text-[11px] text-muted-foreground">در حال جست‌وجو…</p>
+                  ) : businesses.length === 0 ? (
+                    <p className="px-3 py-2 text-[11px] text-muted-foreground">کسب‌وکاری پیدا نشد</p>
+                  ) : (
+                    businesses.map((b) => (
+                      <button
+                        key={b.value}
+                        type="button"
+                        onClick={() => { setOwnerId(b.value); setBizSearch(""); }}
+                        className="flex w-full items-center justify-between px-3 py-2 text-start transition hover:bg-accent"
+                      >
+                        <span className="text-xs font-bold">{b.label}</span>
+                        <span className="text-[10px] text-muted-foreground">{b.hint}</span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          )}
           {hasChanges && (
             <Button size="sm" className="mt-2" onClick={() => void save()} disabled={saving}>
               {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}

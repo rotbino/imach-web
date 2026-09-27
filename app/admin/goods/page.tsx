@@ -122,8 +122,9 @@ function GoodsManager() {
     return () => obs.disconnect();
   }, [list.hasNextPage, list.isFetchingNextPage, list.fetchNextPage, items.length]);
 
-  const pill = (label: string, activeOn: boolean, onClick: () => void) => (
+  const pill = (label: string, activeOn: boolean, onClick: () => void, key?: string) => (
     <button
+      key={key}
       type="button"
       onClick={onClick}
       className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${
@@ -185,11 +186,12 @@ function GoodsManager() {
             pill(
               st === "ACTIVE" ? m.admin.filter.active : m.admin.filter.provisional,
               statusParam === st,
-              () => patchParam("status", statusParam === st ? null : st)
+              () => patchParam("status", statusParam === st ? null : st),
+              st
             )
           )}
           {CREATORS.map((c) =>
-            pill(creatorLabel(c), creatorParam === c, () => patchParam("creator", creatorParam === c ? null : c))
+            pill(creatorLabel(c), creatorParam === c, () => patchParam("creator", creatorParam === c ? null : c), c)
           )}
           {activeCat && (
             <button
