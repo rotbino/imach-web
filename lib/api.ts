@@ -802,6 +802,9 @@ export interface CatalogItemDto {
   brandId?: string | null;
   brandName: string | null;
   productId: string | null;
+  /** موجودی و حداقل سفارش — برای کپی عینا به کاتالوگ کاربر */
+  stock: number | null;
+  minOrder: number | null;
   good: {
     id: string;
     nameFa: string;

@@ -226,6 +226,8 @@ export function CopyFromPeers({
     if (gridProductIds.has(productId)) {
       setGridRows((r) => r.filter((x) => x.productId !== productId));
     } else {
+      // ── کپی عینا از کاتالوگ مبدا: قیمت، موجودی، حداقل سفارش، عکس
+      // کاربر می‌تواند بعداً ویرایش کند، ولی پیش‌فرض همان مقادیر مبدا است
       setGridRows((r) => [...r, {
         productId,
         label: item.variantLabel ?? goodName(item.good, locale),
@@ -233,8 +235,8 @@ export function CopyFromPeers({
         brandName: item.brandName,
         thumbUrl: item.thumbUrl,
         price: item.priceMinor ? Math.round(item.priceMinor / 10 ** curDef.exp) : null,
-        stock: null,
-        minOrder: null,
+        stock: item.stock,
+        minOrder: item.minOrder,
         volume: null,
         sourceListingId: item.id,
       }]);
