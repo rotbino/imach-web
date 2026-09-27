@@ -37,6 +37,7 @@ import {
   PackageSearch,
   Plus,
   Search,
+  ShoppingBasket,
   Store,
   X,
 } from "lucide-react";
@@ -163,7 +164,6 @@ export function CopyFromPeers({
   const curDef = CURRENCIES[active?.currency ?? "IRR"] ?? CURRENCIES.IRR;
   const curName = currencyLabel(active?.currency ?? "IRR", locale);
   const numLocale: "fa" | "en" = locale === "en" ? "en" : "fa";
-  const CAT_GRID_COLS = arm === "sell" ? CAT_GRID_SELL : CAT_GRID_BUY;
   const inputCls = "h-8 rounded border-stone-200 bg-stone-50/50 px-2 text-xs hover:border-stone-300 focus:border-primary focus:bg-white";
 
   // ── جست‌وجوی کاتالوگ‌ها — با نام کسب‌وکار یا صنف
@@ -173,6 +173,15 @@ export function CopyFromPeers({
     const t = setTimeout(() => setDebounced(query.trim()), 300);
     return () => clearTimeout(t);
   }, [query]);
+
+  // ── منبع کپی: از کاتالوگ فروش (SELL) یا از لیست خرید (BUY).
+  // مستقل از arm فعلی — کاربر می‌تواند در /sell از لیست خرید همکار کپی کند
+  // یا در /buy از کاتالوگ فروش همکار کپی کند.
+  const [sourceMode, setSourceMode] = useState<"sell" | "buy">(arm);
+  // وقتی arm عوض می‌شود (مثلا کاربر از /sell به /buy می‌رود)، sourceMode را هم ریست کن
+  useEffect(() => { setSourceMode(arm); }, [arm]);
+
+  const CAT_GRID_COLS = sourceMode === "sell" ? CAT_GRID_SELL : CAT_GRID_BUY;
 
   // ── پیش‌فرض: صنف خودم را جست‌وجو کن
   const myTrade = active?.trade ?? "";
@@ -194,6 +203,14 @@ export function CopyFromPeers({
   const [gridRows, setGridRows] = useState<CatalogGridRow[]>([]);
   const gridProductIds = useMemo(() => new Set(gridRows.map((r) => r.productId)), [gridRows]);
 
+  // وقتی sourceMode عوض می‌شود (کاتالوگ ↔ لیست خرید)، کاتالوگ انتخاب‌شده و گرید را پاک کن
+  // چون آیتم‌های SELL و BUY ساختار متفاوتی دارند (قیمت/موجودی vs حجم/دوره)
+  useEffect(() => {
+    setSelectedCatalog(null);
+    setCatalogItems([]);
+    setGridRows([]);
+  }, [sourceMode]);
+
   const loadCatalogItems = async (biz: CatalogSummaryDto) => {
     setSelectedCatalog(biz);
     setLoadingItems(true);
@@ -204,7 +221,7 @@ export function CopyFromPeers({
       // لود همه‌ی قلم‌های کاتالوگ (صفحه‌بندی تا ۵ صفحه)
       // mode را می‌فرستیم تا بک‌اند فقط SELL یا BUY برگرداند
       for (let i = 0; i < 5; i++) {
-        const res = await businessesApi.getCatalogItems({ businessId: biz.id, cursor, limit: 50, mode: arm === "sell" ? "SELL" : "BUY" });
+        const res = await businessesApi.getCatalogItems({ businessId: biz.id, cursor, limit: 50, mode: sourceMode === "sell" ? "SELL" : "BUY" });
         allItems = [...allItems, ...res.items];
         if (!res.nextCursor) break;
         cursor = res.nextCursor;
@@ -252,11 +269,11 @@ export function CopyFromPeers({
     setGridRows((r) => r.filter((row) => row.productId !== productId));
 
   const incompleteCount = useMemo(() => {
-    if (arm === "sell") {
+    if (sourceMode === "sell") {
       return gridRows.filter((r) => !(r.price && r.price > 0 && (r.stock ?? 0) >= 0 && r.minOrder && r.minOrder > 0)).length;
     }
     return gridRows.filter((r) => !(r.volume && r.volume > 0)).length;
-  }, [gridRows, arm]);
+  }, [gridRows, sourceMode]);
   const selectedCount = gridRows.length - incompleteCount;
 
   const confirm = async () => {
@@ -266,7 +283,7 @@ export function CopyFromPeers({
         productId: r.productId,
         // ── sourceListingId برای کپی عکس‌های گالری از آگهی مبدا
         ...(r.sourceListingId ? { sourceListingId: r.sourceListingId } : {}),
-        ...(arm === "sell"
+        ...(sourceMode === "sell"
           ? {
               priceMinor: r.price ? Math.round(r.price * 10 ** curDef.exp) : undefined,
               stock: r.stock ?? undefined,
@@ -274,10 +291,10 @@ export function CopyFromPeers({
             }
           : { volume: r.volume ?? undefined, frequency: r.frequency ?? undefined }),
       }));
-      const res = await bulk.mutateAsync({ businessId: bizId, mode: arm === "sell" ? "SELL" : "BUY", items });
+      const res = await bulk.mutateAsync({ businessId: bizId, mode: sourceMode === "sell" ? "SELL" : "BUY", items });
       toast({ title: m.picker.successTitle.replace("{n}", fa(res.saved)) });
       if (res.failed > 0) toast({ title: m.picker.submitFailed.replace("{n}", fa(res.failed)), variant: "destructive" });
-      onDone(arm);
+      onDone(sourceMode);
     } catch (err) {
       toast({
         title: m.picker.submitFailed.replace("{n}", fa(gridRows.length)),
@@ -298,6 +315,30 @@ export function CopyFromPeers({
         <p className="mt-2 text-xs leading-6 text-muted-foreground">
           {m.picker.copyIntro}
         </p>
+
+        {/* سویچر منبع: از کاتالوگ فروش یا از لیست خرید */}
+        <div className="mt-4 flex w-fit gap-1 rounded-full border bg-accent/30 p-1">
+          <button
+            type="button"
+            onClick={() => setSourceMode("sell")}
+            className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+              sourceMode === "sell" ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Store className="size-3.5" />
+            از کاتالوگ
+          </button>
+          <button
+            type="button"
+            onClick={() => setSourceMode("buy")}
+            className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+              sourceMode === "buy" ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <ShoppingBasket className="size-3.5" />
+            از لیست خرید
+          </button>
+        </div>
 
         {/* جست‌وجو */}
         <div className="relative mt-4">
@@ -495,7 +536,7 @@ export function CopyFromPeers({
               <div className="px-1 py-1.5" />
               <div className="px-1 py-1.5 text-center">عکس</div>
               <div className="px-2 py-1.5">محصول</div>
-              {arm === "sell" ? (
+              {sourceMode === "sell" ? (
                 <>
                   <div className="px-2 py-1.5 text-center">قیمت</div>
                   <div className="px-2 py-1.5 text-center">موجودی</div>
@@ -509,7 +550,7 @@ export function CopyFromPeers({
               )}
             </div>
             {gridRows.map((r, i) => {
-              const isComplete = arm === "sell"
+              const isComplete = sourceMode === "sell"
                 ? !!(r.price && r.price > 0 && (r.stock ?? 0) >= 0 && r.minOrder && r.minOrder > 0)
                 : !!(r.volume && r.volume > 0);
               return (
@@ -542,7 +583,7 @@ export function CopyFromPeers({
                     <p className="truncate text-xs font-bold">{r.goodName}</p>
                     <p className="truncate text-[10px] text-muted-foreground">{r.brandName ?? "—"}</p>
                   </div>
-                  {arm === "sell" ? (
+                  {sourceMode === "sell" ? (
                     <>
                       <div className="px-1 py-1">
                         <NumberInput
