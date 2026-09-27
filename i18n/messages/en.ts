@@ -379,6 +379,7 @@ export const en: Messages = {
       goods: "Product types",
       brands: "Brands",
       categories: "Categories",
+      units: "Units",
       files: "Files",
       products: "Reference products",
     },

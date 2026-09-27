@@ -379,6 +379,7 @@ export const fa = {
       goods: "انواع کالا",
       brands: "برندها",
       categories: "دسته‌بندی‌ها",
+      units: "واحدها",
       files: "فایل‌ها",
       products: "محصولات مرجع",
     },

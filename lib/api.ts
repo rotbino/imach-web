@@ -749,6 +749,46 @@ export interface CatalogReferenceCategoryDto {
   children: CatalogReferenceCategoryDto[];
 }
 
+// ─── Units — multilingual units with packaging hierarchy ──────────────────
+
+export interface UnitDto {
+  id: string;
+  key: string;
+  nameFa: string;
+  nameEn: string;
+  /** null = base unit (عدد، کیلو، متر) | non-null = packaging unit referencing a base unit */
+  baseUnitKey: string | null;
+  /** how many base units in this packaging? null = product-dependent */
+  containsQty: number | null;
+  /** true = count is fixed (SACK50 always = 50kg) | false = user can override */
+  qtyIsFixed: boolean;
+  scope: string | null;
+  isActive: boolean;
+}
+
+export const unitsApi = {
+  list: () => api<UnitDto[]>("/units/list", { auth: false }),
+  create: (body: {
+    key: string;
+    nameFa: string;
+    nameEn: string;
+    baseUnitKey?: string | null;
+    containsQty?: number | null;
+    qtyIsFixed?: boolean;
+    scope?: string | null;
+  }) => api<UnitDto>("/units/create", { method: "POST", body }),
+  update: (body: {
+    id: string;
+    nameFa?: string;
+    nameEn?: string;
+    baseUnitKey?: string | null;
+    containsQty?: number | null;
+    qtyIsFixed?: boolean;
+    scope?: string | null;
+    isActive?: boolean;
+  }) => api<UnitDto>("/units/update", { method: "POST", body }),
+};
+
 export const businessesApi = {
   getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),
   createBusiness: (body: { name: string; city: string; trade?: string }) =>

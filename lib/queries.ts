@@ -11,6 +11,7 @@ import {
   marketApi,
   notificationsApi,
   productsApi,
+  unitsApi,
   type BoardRowDto,
   type BusinessProfileDto,
   type BusinessSummaryDto,
@@ -79,6 +80,15 @@ export function useCategories(): UseQueryResult<CategoryNodeDto[]> {
   return useQuery({
     queryKey: qk.categories(),
     queryFn: () => goodsApi.getCategories(),
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** لیست واحدها — cache ۵ دقیقه، public */
+export function useUnits() {
+  return useQuery({
+    queryKey: ["units"],
+    queryFn: () => unitsApi.list(),
     staleTime: 5 * 60_000,
   });
 }

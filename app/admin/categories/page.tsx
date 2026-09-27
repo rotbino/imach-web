@@ -1,12 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { adminApi, useAdminCategories, type AdminCategoryNodeDto, type AdminCategoryAttr } from "../api";
+import { useUnits } from "@/lib/queries";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchSelect, type SearchSelectItem } from "@/components/search-select";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Loader2,
@@ -21,7 +24,6 @@ import {
   Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 /**
  * ─── مدیریت دسته‌بندی‌ها و ویژگی‌ها ──────────────────────────────────────────
@@ -167,9 +169,16 @@ function CategoryTree({
                 )}
               >
                 <span className="truncate">{node.nameFa}</span>
-                <span className="shrink-0 text-[9px] text-muted-foreground/50">
-                  {node.total > 0 && `${node.total}`}
-                </span>
+                {node.direct > 0 && (
+                  <Link
+                    href={`/admin/goods?categoryId=${node.id}`}
+                    className="shrink-0 rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold text-primary hover:bg-primary/20"
+                    onClick={(e) => e.stopPropagation()}
+                    title={`${node.direct} کالا`}
+                  >
+                    {node.direct}
+                  </Link>
+                )}
                 {isLeaf && (
                   <Tag className="size-3 shrink-0 text-muted-foreground/40" />
                 )}
@@ -195,6 +204,7 @@ function CategoryTree({
 function CategoryEditor({ cat }: { cat: AdminCategoryNodeDto }) {
   const { toast } = useToast();
   const qc = useQueryClient();
+  const unitsQ = useUnits();
 
   // ── فیلدهای دسته
   const [nameFa, setNameFa] = useState(cat.nameFa);
@@ -202,6 +212,13 @@ function CategoryEditor({ cat }: { cat: AdminCategoryNodeDto }) {
   const [gs1GpcCode, setGs1GpcCode] = useState(cat.gs1GpcCode ?? "");
   const [hsCode, setHsCode] = useState(cat.hsCode ?? "");
   const [unit, setUnit] = useState(cat.unit ?? "");
+
+  // ── آیتم‌های SearchSelect برای واحدها
+  const unitItems: SearchSelectItem[] = (unitsQ.data ?? []).map((u) => ({
+    value: u.key,
+    label: u.nameFa,
+    hint: u.key,
+  }));
 
   // ── ویژگی‌ها
   const [attrs, setAttrs] = useState<AdminCategoryAttr[]>(cat.attrs ?? []);
@@ -306,7 +323,15 @@ function CategoryEditor({ cat }: { cat: AdminCategoryNodeDto }) {
           </div>
           <div>
             <Label className="text-[11px] text-muted-foreground">واحد پیش‌فرض</Label>
-            <Input value={unit} onChange={(e) => setUnit(e.target.value)} className="mt-1 h-9 text-sm" dir="ltr" placeholder="KILOGRAM" />
+            <SearchSelect
+              items={unitItems}
+              value={unit || null}
+              onChange={(v) => setUnit(v)}
+              placeholder="انتخاب واحد"
+              searchPlaceholder="جست‌وجوی واحد…"
+              emptyText="پیدا نشد"
+              ariaLabel="واحد"
+            />
           </div>
         </div>
 
