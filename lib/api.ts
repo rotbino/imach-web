@@ -761,7 +761,7 @@ export const businessesApi = {
   searchCatalogs: (params: { q?: string; cursor?: string; limit?: number; mineId?: string }) =>
     api<PageDto<CatalogSummaryDto>>("/businesses/searchCatalogs", { params }),
   /** کپی از هم‌صنف‌ها — گام ۲: قلم‌های فروش یک کاتالوگ، با تامبنیل + نوار برند */
-  getCatalogItems: (params: { businessId: string; cursor?: string; limit?: number; brandId?: string }) =>
+  getCatalogItems: (params: { businessId: string; cursor?: string; limit?: number; brandId?: string; mode?: "SELL" | "BUY" }) =>
     api<CatalogItemsPageDto>("/businesses/getCatalogItems", { params }),
   /** کاتالوگ تجمیعی هم‌صنف‌ها — هم‌صنف‌های هم‌جغرافیا، SKU یونیک، فیلتر برند/دسته */
   getAggregatedCatalog: (params: {
@@ -802,9 +802,11 @@ export interface CatalogItemDto {
   brandId?: string | null;
   brandName: string | null;
   productId: string | null;
-  /** موجودی و حداقل سفارش — برای کپی عینا به کاتالوگ کاربر */
+  /** موجودی و حداقل سفارش (sell) و حجم و دوره (buy) — برای کپی عینا */
   stock: number | null;
   minOrder: number | null;
+  volume: number | null;
+  frequency: string | null;
   good: {
     id: string;
     nameFa: string;

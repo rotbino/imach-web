@@ -54,7 +54,7 @@ function NewListingBody() {
     { key: "solo", label: "دستی", icon: <Keyboard className="size-3.5" /> },
     { key: "excel", label: "اکسل", icon: <FileSpreadsheet className="size-3.5" /> },
     { key: "ref", label: "از مرجع", icon: <Library className="size-3.5" /> },
-    { key: "catalog", label: "از کاتالوگ", icon: <Copy className="size-3.5" /> },
+    { key: "catalog", label: "با کپی", icon: <Copy className="size-3.5" /> },
     { key: "scan", label: "با اسکنر", icon: <ScanLine className="size-3.5" /> },
   ];
 

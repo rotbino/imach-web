@@ -22,6 +22,7 @@ import { NumberInput } from "@/components/number-input";
 import { BrandStrip, CategoryStrip } from "@/app/components/brand-strip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -135,6 +136,7 @@ type CatalogGridRow = {
   stock: number | null;
   minOrder: number | null;
   volume: number | null;
+  frequency: string | null;
   sourceListingId?: string;
 };
 
@@ -200,11 +202,10 @@ export function CopyFromPeers({
       let allItems: CatalogItemDto[] = [];
       let cursor: string | undefined = undefined;
       // لود همه‌ی قلم‌های کاتالوگ (صفحه‌بندی تا ۵ صفحه)
+      // mode را می‌فرستیم تا بک‌اند فقط SELL یا BUY برگرداند
       for (let i = 0; i < 5; i++) {
-        const res = await businessesApi.getCatalogItems({ businessId: biz.id, cursor, limit: 50 });
-        const mode = arm === "sell" ? "SELL" : "BUY";
-        const filtered = res.items.filter((it) => it.mode === mode || it.mode === "BOTH");
-        allItems = [...allItems, ...filtered];
+        const res = await businessesApi.getCatalogItems({ businessId: biz.id, cursor, limit: 50, mode: arm === "sell" ? "SELL" : "BUY" });
+        allItems = [...allItems, ...res.items];
         if (!res.nextCursor) break;
         cursor = res.nextCursor;
       }
@@ -226,8 +227,8 @@ export function CopyFromPeers({
     if (gridProductIds.has(productId)) {
       setGridRows((r) => r.filter((x) => x.productId !== productId));
     } else {
-      // ── کپی عینا از کاتالوگ مبدا: قیمت، موجودی، حداقل سفارش، عکس
-      // کاربر می‌تواند بعداً ویرایش کند، ولی پیش‌فرض همان مقادیر مبدا است
+      // ── کپی عینا از کاتالوک مبدا: قیمت، موجودی، حداقل سفارش (sell) یا
+      // حجم و دوره (buy) و عکس. کاربر می‌تواند بعداً ویرایش کند.
       setGridRows((r) => [...r, {
         productId,
         label: item.variantLabel ?? goodName(item.good, locale),
@@ -237,7 +238,8 @@ export function CopyFromPeers({
         price: item.priceMinor ? Math.round(item.priceMinor / 10 ** curDef.exp) : null,
         stock: item.stock,
         minOrder: item.minOrder,
-        volume: null,
+        volume: item.volume,
+        frequency: item.frequency,
         sourceListingId: item.id,
       }]);
     }
@@ -270,7 +272,7 @@ export function CopyFromPeers({
               stock: r.stock ?? undefined,
               minOrder: r.minOrder ?? undefined,
             }
-          : { volume: r.volume ?? undefined }),
+          : { volume: r.volume ?? undefined, frequency: r.frequency ?? undefined }),
       }));
       const res = await bulk.mutateAsync({ businessId: bizId, mode: arm === "sell" ? "SELL" : "BUY", items });
       toast({ title: m.picker.successTitle.replace("{n}", fa(res.saved)) });
@@ -590,7 +592,21 @@ export function CopyFromPeers({
                           aria-label="حجم خرید"
                         />
                       </div>
-                      <div className="grid place-items-center px-1 py-1.5 text-[10px] text-muted-foreground">ماهیانه</div>
+                      <div className="px-1 py-1">
+                        <Select
+                          value={r.frequency ?? "MONTHLY"}
+                          onValueChange={(v) => updateGridRow(r.productId, { frequency: v })}
+                        >
+                          <SelectTrigger className="h-8 rounded border-stone-200 bg-stone-50/50 px-1 text-xs" aria-label="دوره خرید">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="WEEKLY">هفتگی</SelectItem>
+                            <SelectItem value="MONTHLY">ماهیانه</SelectItem>
+                            <SelectItem value="OCCASIONAL">موردی</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </>
                   )}
                 </div>
