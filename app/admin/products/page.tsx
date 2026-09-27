@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Check, Loader2, Merge, Plus, Search, X } from "lucide-react";
+import { Check, Loader2, Merge, Plus, Search, X, FileJson, Tag } from "lucide-react";
 
 /*
  * باغبانی محصولات مرجع — هویت‌های مشترک SKU (Good → Product → Listing).
@@ -35,6 +35,10 @@ export default function AdminProductsPage() {
   const [survivor, setSurvivor] = useState<string | null>(null);
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [merging, setMerging] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkJson, setBulkJson] = useState("");
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkResult, setBulkResult] = useState<{ saved: number; skipped: number; failed: number } | null>(null);
 
   useEffect(() => {
     document.title = `${m.admin.products.title} | iMach`;
@@ -113,6 +117,40 @@ export default function AdminProductsPage() {
     }
   };
 
+  const submitBulk = async () => {
+    try {
+      const parsed = JSON.parse(bulkJson);
+      if (!Array.isArray(parsed)) { toast({ title: "JSON باید آرایه باشد", variant: "destructive" }); return; }
+      // اگر brandId در URL هست، برای آیتم‌هایی که brandId ندارند ست کن
+      const items = parsed.map((item: Record<string, unknown>) => ({
+        ...item,
+        brandId: (item.brandId as string) || brandId || "",
+      }));
+      setBulkBusy(true);
+      setBulkResult(null);
+      const res = await productsApi.bulkCreate({ items: items as Parameters<typeof productsApi.bulkCreate>[0]["items"] });
+      setBulkResult({ saved: res.saved, skipped: res.skipped, failed: res.failed });
+      toast({ title: `${res.saved} کالا ثبت شد${res.skipped > 0 ? ` · ${res.skipped} تکراری` : ""}${res.failed > 0 ? ` · ${res.failed} خطا` : ""}` });
+      // refresh list
+      setDebounced(debounced + " ");
+    } catch (err) {
+      toast({ title: "خطا در JSON یا ثبت", description: String(err), variant: "destructive" });
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  const sampleJson = JSON.stringify([
+    {
+      brandId: "BRAND_ID_HERE",
+      goodName: "پفک",
+      label: "پفک اشی مشی ۲۰تایی",
+      barcode: "6260101530017",
+      imageUrl: "https://example.com/product.jpg",
+      attrs: { weight: "20pcs", flavor: "نمکی" }
+    }
+  ], null, 2);
+
   return (
     <div className="mx-auto max-w-3xl">
       <div className="rounded-2xl border bg-white p-5 shadow-sm">
@@ -127,6 +165,57 @@ export default function AdminProductsPage() {
         </h1>
         <p className="mt-1.5 text-xs leading-6 text-muted-foreground">{m.admin.products.desc}</p>
 
+        {/* دکمه ثبت گروهی JSON */}
+        <div className="mt-3 flex items-center gap-2">
+          <Button size="sm" variant="outline" onClick={() => setBulkOpen(!bulkOpen)}>
+            <FileJson className="size-3.5" />
+            ثبت گروهی (JSON)
+          </Button>
+          {brandId && (
+            <span className="flex items-center gap-1 text-[11px] font-bold text-primary">
+              <Tag className="size-3" />
+              brandId از URL استفاده می‌شود: {brandId.slice(-6)}
+            </span>
+          )}
+        </div>
+
+        {/* فرم ثبت گروهی */}
+        {bulkOpen && (
+          <div className="mt-3 rounded-xl border-2 border-primary/30 bg-white p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs font-extrabold">ثبت گروهی کالاهای مرجع</span>
+              <button type="button" onClick={() => setBulkOpen(false)} className="text-muted-foreground hover:text-foreground"><X className="size-4" /></button>
+            </div>
+            <p className="mb-2 text-[10px] leading-4 text-muted-foreground">
+              یک آرایه JSON از محصولات را اینجا بچسبان. هر آیتم باید شامل: brandId, goodName, label (الزامی) + barcode, imageUrl, attrs (اختیاری).
+              اگر brandId در URL مشخص شده، می‌توانید آن را در JSON خالی بگذارید.
+            </p>
+            <textarea
+              value={bulkJson}
+              onChange={(e) => setBulkJson(e.target.value)}
+              className="h-48 w-full rounded-lg border p-3 font-mono text-xs"
+              dir="ltr"
+              placeholder={sampleJson}
+            />
+            {bulkResult && (
+              <div className="mt-2 flex gap-3 text-xs font-bold">
+                <span className="text-emerald-600">✓ {bulkResult.saved} ثبت شد</span>
+                {bulkResult.skipped > 0 && <span className="text-amber-600">↩ {bulkResult.skipped} تکراری</span>}
+                {bulkResult.failed > 0 && <span className="text-red-600">✗ {bulkResult.failed} خطا</span>}
+              </div>
+            )}
+            <div className="mt-3 flex gap-2">
+              <Button size="sm" onClick={() => void submitBulk()} disabled={bulkBusy || !bulkJson.trim()}>
+                {bulkBusy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                ثبت
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => { setBulkJson(sampleJson); }}>نمونه</Button>
+              <Button size="sm" variant="ghost" onClick={() => { setBulkJson(""); setBulkResult(null); }}>پاک کردن</Button>
+            </div>
+          </div>
+        )}
+
+        {/* جست‌وجو */}
         <div className="relative mt-4">
           <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input

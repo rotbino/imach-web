@@ -998,6 +998,21 @@ export const productsApi = {
   /** ست کردن عکس مرجع Product — وقتی کاربر عکس آپلود می‌کند */
   setProductImage: (body: { productId: string; imageUrl: string }) =>
     api<{ ok: boolean }>("/products/setProductImage", { method: "POST", body }),
+
+  /** ثبت گروهی کالاهای مرجع — JSON array (admin only) */
+  bulkCreate: (body: {
+    items: {
+      brandId: string;
+      goodName: string;
+      label: string;
+      barcode?: string;
+      imageUrl?: string;
+      attrs?: Record<string, string>;
+    }[];
+  }) => api<{ saved: number; skipped: number; failed: number; items: { productId?: string; label: string; status: string; error?: string }[] }>(
+    "/products/bulkCreate",
+    { method: "POST", body }
+  ),
 };
 
 export const marketApi = {
