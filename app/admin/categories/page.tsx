@@ -9,10 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  ChevronDown,
   Loader2,
   Check,
   Plus,
+  Minus,
   X,
   GripVertical,
   Tag,
@@ -149,10 +149,10 @@ function CategoryTree({
                 <button
                   type="button"
                   onClick={() => toggle(node.id)}
-                  className="grid size-5 shrink-0 place-items-center rounded text-muted-foreground/60 hover:bg-stone-100"
+                  className="grid size-5 shrink-0 place-items-center rounded text-muted-foreground/60 hover:bg-stone-100 hover:text-primary"
                   aria-label={isOpen ? "بستن" : "باز کردن"}
                 >
-                  <ChevronDown className={cn("size-3.5 transition", isOpen ? "" : "-rotate-90")} />
+                  {isOpen ? <Minus className="size-3.5" /> : <Plus className="size-3.5" />}
                 </button>
               ) : (
                 <span className="size-5 shrink-0" />
