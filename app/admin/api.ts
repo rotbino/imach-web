@@ -56,9 +56,22 @@ export interface AdminCategoryNodeDto {
   slug: string;
   nameFa: string;
   nameEn: string;
+  gs1GpcCode?: string | null;
+  hsCode?: string | null;
+  unit?: string | null;
+  attrs?: AdminCategoryAttr[] | null;
   direct: number;
   total: number;
   children: AdminCategoryNodeDto[];
+}
+
+export interface AdminCategoryAttr {
+  key: string;
+  fa: string;
+  en: string;
+  type: "enum" | "text";
+  options?: { v: string; fa: string; en: string }[];
+  required?: boolean;
 }
 
 export interface PageDto<T> {
@@ -118,6 +131,21 @@ export const adminApi = {
     api<{ ok: boolean }>(`/admin/brands/delete/${id}`, { method: "DELETE" }),
 
   getCategoryTree: () => api<AdminCategoryNodeDto[]>("/admin/categories/tree"),
+
+  // ── ویرایش دسته‌بندی — از طریق goods controller (ادمین-only)
+  updateCategory: (body: {
+    categoryId: string;
+    nameFa?: string;
+    nameEn?: string;
+    gs1GpcCode?: string | null;
+    hsCode?: string | null;
+    unit?: string | null;
+  }) => api<AdminCategoryNodeDto>("/goods/updateCategory", { method: "PATCH", body }),
+
+  updateCategoryAttrs: (body: {
+    categoryId: string;
+    attrs: AdminCategoryAttr[];
+  }) => api<AdminCategoryNodeDto>("/goods/updateCategoryAttrs", { method: "PATCH", body }),
 };
 
 // ── هوک‌ها ───────────────────────────────────────────────────────────────────
