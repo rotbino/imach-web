@@ -25,6 +25,7 @@ import {
   Handshake,
   LayoutDashboard,
   ShoppingBasket,
+  ShieldCheck,
   Store,
   Users,
 } from "lucide-react";
@@ -79,7 +80,9 @@ export function armTitle(arm: Arm): string {
 // ─── آیتم‌های نویگیشن — محتوای هر آیتم با بازو عوض می‌شود ───
 export function useNavItems(arm: Arm): NavItem[] {
   const isSell = arm === "sell";
-  return [
+  const user = useAuthStore((s) => s.user);
+  const isAdmin = user?.role === "ADMIN";
+  const items: NavItem[] = [
     isSell
         ? { href: "/sell", label: "کاتالوگ", icon: Store }
         : { href: "/buy", label: "دستیار خرید", icon: ShoppingBasket },
@@ -94,6 +97,11 @@ export function useNavItems(arm: Arm): NavItem[] {
         : { href: "/market", label: "فروشنده‌ها", icon: Compass },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
+  // ── ادمین: لینک پنل ادمین — فقط برای ADMIN
+  if (isAdmin) {
+    items.push({ href: "/admin", label: "ادمین", icon: ShieldCheck });
+  }
+  return items;
 }
 
 /** بازوی جاری از روی مسیر — صفحات هر بازو خودشان مسیرشان گویاست؛ بقیه از آخرین بازو */
