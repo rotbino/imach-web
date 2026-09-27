@@ -92,11 +92,11 @@ export function SetPasswordButton({
   const pwBar = pwTier === 0 ? "" : pwTier === 1 ? "bg-red-500" : pwTier === 2 ? "bg-amber-500" : "bg-emerald-500";
   const pwLabel = pwTier === 0 ? "" : pwTier === 1 ? "ضعیف" : pwTier === 2 ? "متوسط" : "قوی";
 
-  // استایل دکمه بر اساس variant
+  // استایل دکمه — قرمز جیغ، چشمک سریع و آزاردهنده
+  // کاربر باید هرچه زودتر رمزش را عوض کند تا دکمه ناپدید شود
   const buttonClass = cn(
-    "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition animate-pulse",
-    variant === "header" && "bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100",
-    (variant === "panel" || variant === "profile") && "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
+    "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-extrabold text-white shadow-lg animate-alarm-blink",
+    "border-2 border-red-700"
   );
 
   return (
