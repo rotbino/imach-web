@@ -95,8 +95,36 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: async () => {
     try {
       await authApi.logoutUser();
+    } catch {
+      // حتی اگر سرور خطا داد، کلاینت را پاک کن — مهم‌تر از خطای سرور
     } finally {
+      // ── پاکسازی کامل سمت کلاینت — بدون نیاز به رفرش دستی
+      // ۱. state زاستند
       set({ status: "guest", accessToken: null, user: null, businesses: [] });
+      // ۲. تمام localStorage (شامل welcome flags, scan prefs, referral codes, و ...)
+      if (typeof window !== "undefined") {
+        try { window.localStorage.clear(); } catch { /* private mode */ }
+        // ۳. تمام sessionStorage
+        try { window.sessionStorage.clear(); } catch { /* ignore */ }
+        // ۴. کوکی‌های non-httpOnly (httpOnly ها را سرور پاک می‌کند)
+        try {
+          document.cookie.split(";").forEach((c) => {
+            const eq = c.indexOf("=");
+            const name = eq > -1 ? c.slice(0, eq).trim() : c.trim();
+            if (name) {
+              document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+              document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+            }
+          });
+        } catch { /* ignore */ }
+      }
+      // ۵. ریست zustand store (resume بعد از reload)
+      // توجه: این set() بالا state را guest می‌کند، ولی بعد از reload هم تمیز می‌آید
+      // چون localStorage و کوکی پاک شده‌اند → boot() توکنی پیدا نمی‌کند → guest می‌ماند
+      // ۶. هدایت به /start (بدون رفرش دستی — useRouter)
+      if (typeof window !== "undefined") {
+        window.location.href = "/start";
+      }
     }
   },
 

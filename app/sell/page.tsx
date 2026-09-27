@@ -200,16 +200,18 @@ function ShowcaseHeader({
               {isVerified && <BadgeCheck className="size-5 text-primary" aria-label="تاییدشده" />}
             </h1>
           )}
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-            {activityType && (
-              <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
-                <Briefcase className="size-3" />
-                {activityTypeLabel(activityType)}
-              </Badge>
-            )}
-            {/* شهر — قابل کلیک برای تنظیم شهر و لوکیشن */}
-            <CatalogHeaderPrompt biz={biz} />
-          </div>
+          {!isPlaceholder && (
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+              {activityType && (
+                <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
+                  <Briefcase className="size-3" />
+                  {activityTypeLabel(activityType)}
+                </Badge>
+              )}
+              {/* شهر — با مداد برای ویرایش شهر و لوکیشن */}
+              <CatalogHeaderPrompt biz={biz} variant="sell" />
+            </div>
+          )}
           {/* نام مالک زیر عنوان — با مداد برای ویرایش نام و عکس */}
           {user && (
             <OwnerLineEditable
@@ -223,11 +225,23 @@ function ShowcaseHeader({
             />
           )}
 
-          <div className="mt-4 flex items-center gap-8 text-center" aria-label="آمار کاتالوگ">
+          <div className="mt-4 flex items-center gap-6 text-center" aria-label="آمار کاتالوگ">
             <div>
               <p className="text-lg font-black">{fa(listings.length)}</p>
               <p className="text-[11px] text-muted-foreground">کالا</p>
             </div>
+            {biz.city && biz.city !== "—" && (
+              <div>
+                <p className="text-sm font-black">{biz.city}</p>
+                <p className="text-[11px] text-muted-foreground">شهر</p>
+              </div>
+            )}
+            {biz.trade && (
+              <div>
+                <p className="text-sm font-black">{biz.trade}</p>
+                <p className="text-[11px] text-muted-foreground">صنف</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

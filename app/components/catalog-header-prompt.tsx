@@ -36,8 +36,28 @@ export function CatalogHeaderPrompt({ biz, variant = "sell" }: { biz: BusinessSu
   // اگر نام کسب‌وکار از «کاتالوگ شما» عوض شده، دیگر این دکمه نشان داده نمی‌شود
   const isPlaceholder = biz.name === "کاتالوگ شما" || !biz.trade || !biz.city || biz.city === "—";
 
-  if (!isPlaceholder) return null;
+  // ── حالت تکمیل‌شده: دکمه‌ی مداد کوچک برای ویرایش شهر/صنف
+  if (!isPlaceholder) {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            className="flex items-center gap-1 rounded-full bg-accent px-2 py-1 text-[11px] font-bold text-muted-foreground transition hover:bg-accent/70 hover:text-primary"
+            aria-label="ویرایش شهر و صنف"
+          >
+            <MapPin className="size-3" />
+            {biz.city ?? "—"}
+            {biz.trade && <span className="text-muted-foreground/60">· {biz.trade}</span>}
+            <PencilLine className="size-3" />
+          </button>
+        </DialogTrigger>
+        <CatalogHeaderForm biz={biz} onDone={() => setOpen(false)} />
+      </Dialog>
+    );
+  }
 
+  // ── حالت placeholder: متن چشمک‌زن با مداد
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -188,22 +208,25 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
             placeholder="مثلاً سوپرمارکت آریا"
             autoFocus
           />
+          <p className="text-[10px] leading-4 text-muted-foreground">
+            اگر کسب‌وکارتان ثبت شده نیست، عنوان غیر رسمی وارد کنید. مثلاً مزرعه رضا
+          </p>
         </div>
 
         {/* صنف */}
         <div className="grid gap-1.5">
           <Label className="text-[11px] text-muted-foreground">صنف *</Label>
-          <div className="flex flex-wrap gap-1.5">
-            {["سوپرمارکت", "قنادی", "پخش مواد غذایی", "پوشاک", "ابزار و یراق", "سایر"].map((t) => (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {["سوپرمارکت", "پخش مواد غذایی", "رستوران", "قنادی"].map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => {
                   setTrade(t);
-                  if (t !== "سایر") setCustomTrade("");
+                  setCustomTrade("");
                 }}
                 className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${
-                  trade === t || (t === "سایر" && trade !== "" && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade))
+                  trade === t
                     ? "border-primary bg-primary/10 text-primary"
                     : "text-muted-foreground hover:border-primary/40"
                 }`}
@@ -211,8 +234,21 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
                 {t}
               </button>
             ))}
+            {/* «سایر» بزرگ‌تر و متمایز — فقط وقتی انتخاب نشده، خاکستری */}
+            <button
+              type="button"
+              onClick={() => setTrade("سایر")}
+              className={`rounded-full border-2 border-dashed px-3 py-1.5 text-xs font-extrabold transition ${
+                trade === "سایر" || (trade && !["سوپرمارکت","پخش مواد غذایی","رستوران","قنادی"].includes(trade))
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-primary/40 text-primary/70 hover:border-primary hover:bg-accent/40"
+              }`}
+            >
+              سایر…
+            </button>
           </div>
-          {(trade === "سایر" || (trade !== "" && !["سوپرمارکت","قنادی","پخش مواد غذایی","پوشاک","ابزار و یراق"].includes(trade))) && (
+          {/* ── وقتی «سایر» انتخاب شده یا صنف در لیست نیست، تکست باکس نشان بده */}
+          {(trade === "سایر" || (trade && !["سوپرمارکت","پخش مواد غذایی","رستوران","قنادی"].includes(trade))) && (
             <Input
               className="mt-2"
               value={isOther ? customTrade : trade}
@@ -244,20 +280,22 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
           />
         </div>
 
-        {/* لوکیشن + آدرس */}
+        {/* لوکیشن — آدرس فقط وقتی لوکیشن انتخاب شده نمایش داده می‌شود */}
         <div className="grid gap-1.5">
-          <Label className="text-[11px] text-muted-foreground">لوکیشن و آدرس</Label>
+          <Label className="text-[11px] text-muted-foreground">لوکیشن {loc ? "و آدرس" : ""}</Label>
           <LocationPicker
             value={loc}
             onChange={setLoc}
             onPickAddress={(a) => setAddress(a)}
           />
-          <Input
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="آدرس — بعد از انتخاب لوکیشن خودکار پر می‌شود"
-            maxLength={300}
-          />
+          {loc && (
+            <Input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="آدرس — می‌توانید ویرایش کنید"
+              maxLength={300}
+            />
+          )}
         </div>
       </div>
 
