@@ -879,8 +879,10 @@ export const listingsApi = {
       minOrder?: number;
       volume?: number;
       frequency?: string;
+      /** آگهی مبدا برای کپی گالری عکس‌ها (در CopyFromPeers) */
+      sourceListingId?: string;
     }[];
-  }) => api<{ saved: number; failed: number }>(
+  }) => api<{ saved: number; failed: number; items?: { productId: string; listingId: string }[] }>(
     "/listings/bulkSave",
     { method: "PUT", body }
   ),

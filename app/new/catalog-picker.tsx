@@ -262,6 +262,8 @@ export function CopyFromPeers({
     try {
       const items = gridRows.map((r) => ({
         productId: r.productId,
+        // ── sourceListingId برای کپی عکس‌های گالری از آگهی مبدا
+        ...(r.sourceListingId ? { sourceListingId: r.sourceListingId } : {}),
         ...(arm === "sell"
           ? {
               priceMinor: r.price ? Math.round(r.price * 10 ** curDef.exp) : undefined,
