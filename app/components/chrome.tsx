@@ -27,6 +27,7 @@ import {
   ShoppingBasket,
   ShieldCheck,
   Store,
+  Tag,
   Users,
 } from "lucide-react";
 
@@ -101,6 +102,9 @@ export function useNavItems(arm: Arm): NavItem[] {
   if (isAdmin) {
     items.push({ href: "/admin", label: "ادمین", icon: ShieldCheck });
   }
+  // ── صاحب برند: لینک پنل برند — اگر کسب‌وکارش برند دارد
+  // فعلاً برای همه نمایش می‌دهیم — اگر برند ندارد، پیام می‌بیند
+  items.push({ href: "/brand", label: "برندها", icon: Tag });
   return items;
 }
 
