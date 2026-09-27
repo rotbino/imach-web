@@ -177,6 +177,10 @@ export interface CategoryNodeDto {
   slug: string;
   nameFa: string;
   nameEn: string;
+  /** GS1 GPC Brick code — for global barcode matching */
+  gs1GpcCode?: string | null;
+  /** HS Code — for customs/tariffs in cross-border matching */
+  hsCode?: string | null;
   attrs?: CategoryAttr[] | null;
   /** default wholesale unit of the leaf (KILOGRAM | TON | …) — prefills new goods */
   unit?: string | null;
