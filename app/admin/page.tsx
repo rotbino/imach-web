@@ -15,6 +15,7 @@ import {
   ListOrdered,
   ListTree,
   AlertTriangle,
+  Boxes,
   ChevronLeft,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -38,6 +39,7 @@ export default function AdminOverviewPage() {
   }[] = [
     { key: "provisional", label: m.admin.stats.provisional, icon: AlertCircle, href: "/admin/goods?status=PROVISIONAL", alert: true },
     { key: "pendingBrands", label: m.admin.stats.pendingBrands, icon: AlertTriangle, href: "/admin/brands?status=PROVISIONAL", alert: true },
+    { key: "products", label: "کالاهای مرجع", icon: Boxes, href: "/admin/products" },
     { key: "goods", label: m.admin.stats.goods, icon: Package, href: "/admin/goods" },
     { key: "brands", label: m.admin.stats.brands, icon: Tag, href: "/admin/brands" },
     { key: "categories", label: m.admin.stats.categories, icon: ListTree, href: "/admin/categories" },

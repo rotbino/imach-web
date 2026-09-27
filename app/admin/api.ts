@@ -25,6 +25,7 @@ export interface AdminStatsDto {
   users: number;
   brands: number;
   categories: number;
+  products: number;
 }
 
 export interface AdminGoodDto {
