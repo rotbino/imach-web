@@ -9,13 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Check, Plus, X, Ruler, Package, Box } from "lucide-react";
+import { Loader2, Check, Plus, X, Ruler, Package, Box, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminUnitsPage() {
   const unitsQ = useUnits();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [search, setSearch] = useState("");
 
   if (unitsQ.isLoading) {
     return (
@@ -25,7 +26,16 @@ export default function AdminUnitsPage() {
     );
   }
 
-  const units = unitsQ.data ?? [];
+  const allUnits = unitsQ.data ?? [];
+  // ── فیلتر سمت کلاینت — جستجو در key, nameFa, nameEn
+  const q = search.trim().toLowerCase();
+  const units = q
+    ? allUnits.filter((u) =>
+        u.key.toLowerCase().includes(q) ||
+        u.nameFa.toLowerCase().includes(q) ||
+        u.nameEn.toLowerCase().includes(q)
+      )
+    : allUnits;
   const baseUnits = units.filter((u) => !u.baseUnitKey);
   const packagingUnits = units.filter((u) => !!u.baseUnitKey);
 
@@ -49,6 +59,18 @@ export default function AdminUnitsPage() {
         واحدهای پایه (عدد، کیلو، متر) و واحدهای بسته‌بندی (کارتن، کیسه، پالت) را مدیریت کن.
         «تعداد در واحد» برای تبدیل قیمت استفاده می‌شود — مثلاً کارتن ۲۴تایی یعنی هر کارتن ۲۴ عدد دارد.
       </p>
+
+      {/* جست‌وجو */}
+      <div className="relative mb-4">
+        <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="جست‌وجوی واحد… (نام فارسی، انگلیسی یا کلید)"
+          className="h-10 pe-9 text-sm"
+          maxLength={30}
+        />
+      </div>
 
       {creating && <UnitForm baseUnits={baseUnits} onDone={() => setCreating(false)} />}
 
