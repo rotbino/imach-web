@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { productsApi, type ProductRowDto } from "@/lib/api";
 import { categoryName, goodName } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
@@ -25,6 +25,8 @@ export default function AdminProductsPage() {
   const { status, user } = useAuthStore();
   const m = useMessages();
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const brandId = searchParams.get("brandId");
 
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -52,7 +54,7 @@ export default function AdminProductsPage() {
     let alive = true;
     setLoading(true);
     productsApi
-      .getProducts({ q: debounced || undefined, limit: 50 })
+      .getProducts({ q: debounced || undefined, brandId: brandId || undefined, limit: 50 })
       .then((res) => {
         if (!alive) return;
         setRows(res.items);
@@ -68,7 +70,7 @@ export default function AdminProductsPage() {
     return () => {
       alive = false;
     };
-  }, [debounced, status, user?.role]);
+  }, [debounced, status, user?.role, brandId]);
 
   if (status !== "authed" || user?.role !== "ADMIN") {
     return (
@@ -117,6 +119,11 @@ export default function AdminProductsPage() {
         <h1 className="flex items-center gap-1.5 text-lg font-extrabold">
           <Merge className="size-5 text-primary" />
           {m.admin.products.title}
+          {brandId && (
+            <a href="/admin/products" className="ms-2 rounded-full bg-accent px-3 py-1 text-[11px] font-bold text-primary hover:bg-accent/70">
+              فیلتر برند ✓ ×
+            </a>
+          )}
         </h1>
         <p className="mt-1.5 text-xs leading-6 text-muted-foreground">{m.admin.products.desc}</p>
 
