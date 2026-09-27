@@ -48,7 +48,9 @@ export interface AdminBrandDto {
   status: AdminStatus;
   creatorRole: AdminCreator | null;
   createdBy: { id: string; name: string } | null;
-  _count: { listings: number };
+  ownerId: string | null;
+  owner: { id: string; name: string; slug: string } | null;
+  _count: { listings: number; products: number };
 }
 
 export interface AdminCategoryNodeDto {
@@ -121,7 +123,7 @@ export const adminApi = {
   createBrand: (name: string) =>
     api<AdminBrandDto>("/admin/brands/create", { method: "POST", body: { name } }),
 
-  editBrand: (id: string, body: { status?: AdminStatus }) =>
+  editBrand: (id: string, body: { status?: AdminStatus; name?: string; ownerId?: string | null }) =>
     api<AdminBrandDto>(`/admin/brands/edit/${id}`, { method: "PATCH", body }),
 
   mergeBrand: (id: string, targetId: string) =>

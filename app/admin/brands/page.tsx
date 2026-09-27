@@ -1,431 +1,358 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   useAdminBrands,
-  useAdminMutation,
   adminApi,
   type AdminBrandDto,
-  type AdminCreator,
 } from "../api";
-import { useMessages } from "@/i18n/messages/use-messages";
-import { fa } from "@/lib/format";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { SearchSelect } from "@/components/search-select";
+import { useMyBusinesses } from "@/lib/queries";
+import { fa } from "@/lib/format";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Loader2, Merge, Search, Tag, Trash2, X, Plus, Check } from "lucide-react";
-
-/*
- * باغبانی برندها — برندها خودکار از فرم ثبت کالا ساخته می‌شوند و دوقلو زیاد
- * می‌دهند (قلم/قلم‌آور). برندِ ساخته‌ی کاربر عادی PROVISIONAL می‌ماند تا ادمین
- * تایید/ادغام/حذفش کند؛ از همین صفحه هم می‌شود برند اضافه کرد (ادمین ← فعال).
- */
-
-const STATUSES = ["ACTIVE", "PROVISIONAL"] as const;
-
-const creatorBadgeClass: Record<AdminCreator, string> = {
-  USER: "bg-sky-100 text-sky-700 hover:bg-sky-100",
-  ADMIN: "bg-primary/10 text-primary hover:bg-primary/10",
-  BRAND_OWNER: "bg-violet-100 text-violet-700 hover:bg-violet-100",
-};
-
-const creatorKey = (c: string) =>
-  (c === "BRAND_OWNER" ? "brandOwner" : c.toLowerCase()) as "user" | "admin" | "brandOwner";
+  Tag,
+  Plus,
+  Search,
+  Loader2,
+  Check,
+  X,
+  ShieldCheck,
+  Package,
+  Store,
+  ChevronLeft,
+} from "lucide-react";
 
 export default function AdminBrandsPage() {
-  const m = useMessages();
+  const params = useSearchParams();
   const { toast } = useToast();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const statusParam = searchParams.get("status") ?? "";
+  const [q, setQ] = useState(params.get("q") ?? "");
+  const [status, setStatus] = useState(params.get("status") ?? "");
+  const [creating, setCreating] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [mergeFor, setMergeFor] = useState<AdminBrandDto | null>(null);
+  const [mergeTarget, setMergeTarget] = useState("");
 
-  const [qInput, setQInput] = useState("");
-  const [q, setQ] = useState("");
-  const [mergeSrc, setMergeSrc] = useState<AdminBrandDto | null>(null);
-  const [mergeQ, setMergeQ] = useState("");
-  const [mergeTarget, setMergeTarget] = useState<AdminBrandDto | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<AdminBrandDto | null>(null);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [approving, setApproving] = useState<AdminBrandDto | null>(null);
-
-  useEffect(() => {
-    const t = setTimeout(() => setQ(qInput.trim()), 400);
-    return () => clearTimeout(t);
-  }, [qInput]);
-
-  const patchStatus = (value: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value) params.set("status", value);
-    else params.delete("status");
-    const qs = params.toString();
-    router.replace(`/admin/brands${qs ? `?${qs}` : ""}`, { scroll: false });
-  };
-
-  const list = useAdminBrands({ q, status: statusParam });
-  const items = list.data?.pages.flatMap((p) => p.items) ?? [];
-  const sentinel = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const el = sentinel.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && list.hasNextPage && !list.isFetchingNextPage) {
-          void list.fetchNextPage();
-        }
-      },
-      { rootMargin: "400px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [list.hasNextPage, list.isFetchingNextPage, list.fetchNextPage, items.length]);
-
-  const deleteMut = useAdminMutation(() => adminApi.deleteBrand(confirmDelete!.id), () => {
-    toast({ title: m.admin.deleted });
-    setConfirmDelete(null);
-  });
-
-  const approveMut = useAdminMutation(() => adminApi.editBrand(approving!.id, { status: "ACTIVE" }), () => {
-    toast({ title: m.admin.approved });
-    setApproving(null);
-  });
-
-  const createMut = useAdminMutation(() => adminApi.createBrand(newName.trim()), () => {
-    toast({ title: m.admin.brandCreated });
-    setCreateOpen(false);
-    setNewName("");
-  });
-
-  const { data: mergeResults, isFetching: mergeSearching } = useAdminBrands({ q: mergeQ });
-  const mergeItems = useMemo(
-    () => (mergeResults?.pages[0]?.items ?? []).filter((b) => b.id !== mergeSrc?.id).slice(0, 6),
-    [mergeResults, mergeSrc]
-  );
-
-  const mergeMut = useAdminMutation(
-    () => adminApi.mergeBrand(mergeSrc!.id, mergeTarget!.id),
-    () => {
-      toast({ title: m.admin.merged });
-      setMergeSrc(null);
-      setMergeTarget(null);
-      setMergeQ("");
-    }
-  );
-
-  const pill = (label: string, activeOn: boolean, onClick: () => void) => (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${
-        activeOn
-          ? "border-primary bg-primary/10 text-primary"
-          : "border-stone-200 bg-white text-muted-foreground hover:border-stone-300"
-      }`}
-    >
-      {label}
-    </button>
-  );
+  const brandsQ = useAdminBrands({ q: q || undefined, status: status || undefined });
+  const brands = brandsQ.data?.pages.flatMap((p) => p.items) ?? [];
 
   return (
     <div className="animate-fade-up">
-      {/* نوار کنترل — جستجو + دکمه افزودن */}
-      <div className="flex items-center gap-2">
-        <div className="relative grow">
-          <Search className="absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={qInput}
-            onChange={(e) => setQInput(e.target.value)}
-            placeholder={m.admin.brands.searchPlaceholder}
-            className="h-10 rounded-xl bg-white pe-9"
-          />
-          {qInput && (
-            <button
-              type="button"
-              aria-label={m.admin.clear}
-              onClick={() => setQInput("")}
-              className="absolute start-2.5 top-1/2 grid size-5 -translate-y-1/2 place-items-center rounded-full bg-stone-200 text-stone-600"
-            >
-              <X className="size-3" />
-            </button>
-          )}
+      {/* هدر */}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Tag className="size-5 text-primary" />
+          <h1 className="text-lg font-extrabold">برندها</h1>
+          <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+            {brands.length} برند
+          </span>
         </div>
-        <Button
-          onClick={() => {
-            setNewName("");
-            setCreateOpen(true);
-          }}
-          className="h-10 shrink-0 rounded-xl px-3 font-black"
-          aria-label={m.admin.newBrand}
-        >
-          <Plus className="size-4.5" />
-          <span className="hidden sm:inline">{m.admin.newBrand}</span>
+        <Button size="sm" onClick={() => setCreating(true)}>
+          <Plus className="size-4" />
+          برند جدید
         </Button>
       </div>
 
-      {/* فیلتر وضعیت */}
-      <div className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none]">
-        {pill(m.admin.filter.all, !statusParam, () => patchStatus(null))}
-        {STATUSES.map((st) =>
-          pill(
-            st === "ACTIVE" ? m.admin.filter.active : m.admin.filter.provisional,
-            statusParam === st,
-            () => patchStatus(statusParam === st ? null : st)
-          )
-        )}
+      {/* جست‌وجو + فیلتر */}
+      <div className="mb-4 flex flex-wrap gap-2">
+        <div className="relative grow" style={{ minWidth: 200 }}>
+          <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="جست‌وجوی برند…"
+            className="h-10 pe-9 text-sm"
+            maxLength={40}
+          />
+        </div>
+        <Button
+          variant={status === "PROVISIONAL" ? "default" : "outline"}
+          size="sm"
+          className="h-10"
+          onClick={() => setStatus(status === "PROVISIONAL" ? "" : "PROVISIONAL")}
+        >
+          در انتظار
+        </Button>
       </div>
 
-      <div className="mt-3 grid gap-2">
-        {list.isLoading &&
-          Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-14 animate-pulse rounded-2xl bg-white" />)}
+      {/* فرم ایجاد برند جدید */}
+      {creating && (
+        <CreateBrandForm onDone={() => setCreating(false)} />
+      )}
 
-        {!list.isLoading && items.length === 0 && (
-          <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
-            <Tag className="mx-auto size-8 text-muted-foreground/40" />
-            <p className="mt-2 text-sm font-bold text-muted-foreground">{m.admin.empty}</p>
-          </div>
-        )}
-
-        {items.map((b) => (
-          <div key={b.id} className="flex items-center gap-3 rounded-2xl border bg-white p-3 shadow-sm">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-stone-100 font-black text-stone-600">
-              {b.name.slice(0, 1)}
-            </span>
-            <div className="min-w-0 grow">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <p className="truncate text-sm font-extrabold">{b.name}</p>
-                {b.status === "PROVISIONAL" && (
-                  <Badge className="h-5 shrink-0 bg-amber-100 px-1.5 text-[10px] font-bold text-amber-700 hover:bg-amber-100">
-                    {m.admin.filter.provisional}
-                  </Badge>
-                )}
-                {b.creatorRole && (
-                  <Badge
-                    variant="secondary"
-                    className={`h-5 shrink-0 px-1.5 text-[10px] font-bold ${creatorBadgeClass[b.creatorRole]}`}
-                  >
-                    {m.admin.creator[creatorKey(b.creatorRole)]}
-                  </Badge>
-                )}
-              </div>
-              <p className="text-[11px] text-muted-foreground">
-                {m.admin.listingsCount.replace("{n}", String(b._count.listings))}
-                {b.createdBy ? ` · ${b.createdBy.name}` : ""}
-              </p>
-            </div>
-            {b.status === "PROVISIONAL" && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 shrink-0 rounded-lg border-primary/40 text-[11px] font-bold text-primary hover:bg-primary/10"
-                disabled={!!approving}
-                onClick={() => setApproving(b)}
-              >
-                <Check className="size-3.5" />
-                {m.admin.approve}
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 shrink-0 rounded-lg text-[11px] font-bold"
-              onClick={() => {
-                setMergeSrc(b);
-                setMergeTarget(null);
-                setMergeQ("");
-              }}
-            >
-              <Merge className="size-3.5" />
-              {m.admin.merge}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 shrink-0 rounded-lg text-[11px] font-bold text-destructive hover:bg-destructive/10 hover:text-destructive"
-              disabled={b._count.listings > 0}
-              onClick={() => {
-                if (b._count.listings > 0) {
-                  toast({ title: m.admin.brandInUse, variant: "destructive" });
-                  return;
-                }
-                setConfirmDelete(b);
-              }}
-            >
-              <Trash2 className="size-3.5" />
-            </Button>
-          </div>
-        ))}
-
-        {list.isFetchingNextPage && (
-          <div className="grid place-items-center py-4">
-            <Loader2 className="size-5 animate-spin text-primary" />
-          </div>
-        )}
-        <div ref={sentinel} />
-      </div>
-
-      {/* دیالوگ افزودن برند */}
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent className="mx-auto max-w-sm rounded-3xl p-0">
-          <DialogHeader className="border-b px-5 pb-3 pt-5">
-            <DialogTitle className="text-sm">{m.admin.brandCreateTitle}</DialogTitle>
-            <DialogDescription className="text-xs">{m.admin.brandCreateHint}</DialogDescription>
-          </DialogHeader>
-          <div className="px-5 py-4">
-            <Input
-              autoFocus
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder={m.admin.brandNamePlaceholder}
-              className="h-10 rounded-xl"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && newName.trim().length >= 1) createMut.mutate();
-              }}
+      {/* لیست برندها */}
+      {brandsQ.isLoading ? (
+        <div className="grid place-items-center py-20">
+          <Loader2 className="size-6 animate-spin text-primary" />
+        </div>
+      ) : brands.length === 0 ? (
+        <div className="rounded-2xl border border-dashed p-8 text-center">
+          <Tag className="mx-auto size-8 text-muted-foreground/40" />
+          <p className="mt-2 text-sm font-bold text-muted-foreground">برندی پیدا نشد</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {brands.map((brand) => (
+            <BrandRow
+              key={brand.id}
+              brand={brand}
+              isEditing={editingId === brand.id}
+              onEdit={() => setEditingId(editingId === brand.id ? null : brand.id)}
+              onMerge={() => setMergeFor(brand)}
             />
-          </div>
-          <DialogFooter className="gap-2 border-t px-5 py-4">
-            <Button variant="outline" className="h-9 rounded-xl text-xs" onClick={() => setCreateOpen(false)}>
-              {m.admin.cancel}
-            </Button>
-            <Button
-              className="h-9 rounded-xl text-xs font-black"
-              disabled={newName.trim().length < 1 || createMut.isPending}
-              onClick={() => createMut.mutate()}
-            >
-              {createMut.isPending ? <Loader2 className="size-4 animate-spin" /> : m.admin.save}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          ))}
+        </div>
+      )}
 
-      {/* دیالوگ ادغام برند */}
-      <Dialog open={mergeSrc !== null} onOpenChange={(v) => !v && setMergeSrc(null)}>
-        <DialogContent className="max-w-sm rounded-3xl p-0">
-          <DialogHeader className="border-b px-5 pb-3 pt-5">
-            <DialogTitle className="text-sm">{m.admin.mergeIntoBrand}</DialogTitle>
-            <DialogDescription className="text-xs">
-              {mergeSrc?.name}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-2.5 px-5 py-4">
-            <div className="relative">
-              <Search className="absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                autoFocus
-                value={mergeQ}
-                onChange={(e) => setMergeQ(e.target.value)}
-                placeholder={m.admin.brands.searchPlaceholder}
-                className="h-10 rounded-xl pe-9"
+      {/* مدال ادغام */}
+      {mergeFor && (
+        <MergeDialog
+          brand={mergeFor}
+          target={mergeTarget}
+          onTargetChange={setMergeTarget}
+          onClose={() => { setMergeFor(null); setMergeTarget(""); }}
+        />
+      )}
+
+      {/* بازگشت */}
+      <div className="mt-6 border-t pt-3">
+        <Link href="/admin" className="text-[11px] font-bold text-muted-foreground hover:text-foreground">
+          ← بازگشت به داشبورد
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─── ردیف برند ───────────────────────────────────────────────────────────────
+
+function BrandRow({
+  brand,
+  isEditing,
+  onEdit,
+  onMerge,
+}: {
+  brand: AdminBrandDto;
+  isEditing: boolean;
+  onEdit: () => void;
+  onMerge: () => void;
+}) {
+  const { toast } = useToast();
+  const [name, setName] = useState(brand.name);
+  const [ownerId, setOwnerId] = useState<string | null>(brand.ownerId);
+  const [saving, setSaving] = useState(false);
+
+  const bizQ = useMyBusinesses();
+  const businesses = (bizQ.data ?? []).map((b) => ({ value: b.id, label: b.name, hint: b.slug }));
+
+  const hasChanges = name !== brand.name || ownerId !== brand.ownerId;
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      await adminApi.editBrand(brand.id, {
+        name: name.trim(),
+        ownerId: ownerId ?? null,
+      });
+      toast({ title: "ذخیره شد" });
+      onEdit();
+    } catch (err) {
+      toast({ title: "خطا", description: String(err), variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const approve = async () => {
+    try {
+      await adminApi.editBrand(brand.id, { status: "ACTIVE" });
+      toast({ title: "تأیید شد" });
+    } catch (err) {
+      toast({ title: "خطا", description: String(err), variant: "destructive" });
+    }
+  };
+
+  return (
+    <div className="rounded-xl border bg-white p-3">
+      {/* نام + وضعیت + آمار */}
+      <div className="flex items-center gap-3">
+        {/* آیکون */}
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent/70 text-sm font-black text-primary/80">
+          {brand.name.slice(0, 1)}
+        </span>
+
+        {/* نام + اطلاعات */}
+        <div className="min-w-0 flex-1">
+          {isEditing ? (
+            <Input value={name} onChange={(e) => setName(e.target.value)} className="h-8 text-sm font-bold" maxLength={60} autoFocus />
+          ) : (
+            <p className="truncate text-sm font-extrabold">{brand.name}</p>
+          )}
+          <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+            {/* تعداد محصول */}
+            {brand._count.products > 0 && (
+              <Link
+                href={`/admin/products?brandId=${brand.id}`}
+                className="rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-bold text-blue-700 hover:bg-blue-100"
+                title={`${brand._count.products} محصول`}
+              >
+                <Package className="ms-0.5 -mt-0.5 inline size-2.5" />
+                {fa(brand._count.products)} محصول
+              </Link>
+            )}
+            {/* تعداد آگهی */}
+            {brand._count.listings > 0 && (
+              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
+                {fa(brand._count.listings)} آگهی
+              </span>
+            )}
+            {/* مالک */}
+            {brand.owner ? (
+              <Link
+                href={`/sell/${brand.owner.slug}`}
+                className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700 hover:bg-amber-100"
+              >
+                <Store className="ms-0.5 -mt-0.5 inline size-2.5" />
+                {brand.owner.name}
+              </Link>
+            ) : (
+              <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[9px] font-bold text-stone-500">
+                بدون مالک
+              </span>
+            )}
+            {/* وضعیت */}
+            {brand.status === "PROVISIONAL" && (
+              <button onClick={approve} className="rounded-full bg-red-50 px-2 py-0.5 text-[9px] font-bold text-red-600 hover:bg-red-100">
+                در انتظار → تأیید
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* دکمه‌ها */}
+        <div className="flex shrink-0 items-center gap-1">
+          <button onClick={onEdit} className="grid size-7 place-items-center rounded text-muted-foreground hover:bg-accent hover:text-primary">
+            <ShieldCheck className="size-3.5" />
+          </button>
+          <button onClick={onMerge} className="grid size-7 place-items-center rounded text-muted-foreground hover:bg-accent hover:text-primary" title="ادغام">
+            <ChevronLeft className="size-3.5 rtl:rotate-180" />
+          </button>
+        </div>
+      </div>
+
+      {/* ویرایش مالک */}
+      {isEditing && (
+        <div className="mt-3 border-t pt-3">
+          <Label className="text-[10px] text-muted-foreground">کسب‌وکار مالک برند</Label>
+          <div className="mt-1 flex items-center gap-2">
+            <div className="flex-1">
+              <SearchSelect
+                items={businesses}
+                value={ownerId}
+                onChange={(v) => setOwnerId(v || null)}
+                placeholder="انتخاب کسب‌وکار…"
+                searchPlaceholder="جست‌وجوی کسب‌وکار…"
+                emptyText="پیدا نشد"
+                ariaLabel="مالک برند"
               />
             </div>
-            <div className="grid max-h-44 gap-1 overflow-y-auto">
-              {mergeSearching && (
-                <div className="grid place-items-center py-3">
-                  <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                </div>
-              )}
-              {!mergeSearching &&
-                mergeItems.map((b) => (
-                  <button
-                    key={b.id}
-                    type="button"
-                    onClick={() => setMergeTarget(b)}
-                    className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-start text-xs transition-colors ${
-                      mergeTarget?.id === b.id ? "border-primary bg-primary/5" : "hover:bg-accent/50"
-                    }`}
-                  >
-                    <span className="truncate font-bold">{b.name}</span>
-                    <span className="shrink-0 text-muted-foreground">
-                      {fa(b._count.listings)}
-                    </span>
-                  </button>
-                ))}
-              {!mergeSearching && mergeQ.trim() && mergeItems.length === 0 && (
-                <p className="py-2 text-center text-xs text-muted-foreground">{m.admin.noResults}</p>
-              )}
-            </div>
+            {ownerId && (
+              <Button size="sm" variant="ghost" onClick={() => setOwnerId(null)}>
+                <X className="size-3.5" />
+                حذف مالک
+              </Button>
+            )}
           </div>
-          <DialogFooter className="gap-2 border-t px-5 py-4">
-            <Button variant="outline" className="h-9 rounded-xl text-xs" onClick={() => setMergeSrc(null)}>
-              {m.admin.cancel}
+          {hasChanges && (
+            <Button size="sm" className="mt-2" onClick={() => void save()} disabled={saving}>
+              {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}
+              ذخیره
             </Button>
-            <Button
-              className="h-9 rounded-xl text-xs font-black"
-              disabled={!mergeTarget || mergeMut.isPending}
-              onClick={() => mergeMut.mutate()}
-            >
-              {mergeMut.isPending ? <Loader2 className="size-4 animate-spin" /> : m.admin.mergeConfirm}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
-      {/* تایید برندِ در انتظار */}
-      <AlertDialog open={approving !== null} onOpenChange={(v) => !v && setApproving(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{m.admin.approveTitle}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {m.admin.approveDesc.replace("{name}", approving?.name ?? "")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{m.admin.cancel}</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault();
-                approveMut.mutate();
-              }}
-            >
-              {approveMut.isPending ? <Loader2 className="size-4 animate-spin" /> : m.admin.approve}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+// ─── فرم ایجاد برند جدید ─────────────────────────────────────────────────────
 
-      {/* تایید حذف برند */}
-      <AlertDialog open={confirmDelete !== null} onOpenChange={(v) => !v && setConfirmDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{m.admin.deleteTitle}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {m.admin.deleteDesc.replace("{name}", confirmDelete?.name ?? "")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{m.admin.cancel}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
-              onClick={(e) => {
-                e.preventDefault();
-                deleteMut.mutate();
-              }}
-            >
-              {deleteMut.isPending ? <Loader2 className="size-4 animate-spin" /> : m.admin.delete}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+function CreateBrandForm({ onDone }: { onDone: () => void }) {
+  const { toast } = useToast();
+  const [name, setName] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    if (!name.trim()) { toast({ title: "نام برند را بنویس", variant: "destructive" }); return; }
+    setSaving(true);
+    try {
+      await adminApi.createBrand(name.trim());
+      toast({ title: "برند ساخته شد" });
+      onDone();
+    } catch (err) {
+      toast({ title: "خطا", description: String(err), variant: "destructive" });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="mb-4 rounded-xl border-2 border-primary/30 bg-white p-4">
+      <div className="mb-2 flex items-center gap-2"><Plus className="size-4 text-primary" /><span className="text-xs font-extrabold">برند جدید</span></div>
+      <div className="flex items-center gap-2">
+        <Input value={name} onChange={(e) => setName(e.target.value)} className="h-9 text-sm" placeholder="نام برند…" maxLength={60} autoFocus />
+        <Button size="sm" onClick={() => void save()} disabled={saving}>{saving ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}ذخیره</Button>
+        <Button size="sm" variant="ghost" onClick={onDone}>انصراف</Button>
+      </div>
+    </div>
+  );
+}
+
+// ─── مدال ادغام ───────────────────────────────────────────────────────────────
+
+function MergeDialog({
+  brand,
+  target,
+  onTargetChange,
+  onClose,
+}: {
+  brand: AdminBrandDto;
+  target: string;
+  onTargetChange: (v: string) => void;
+  onClose: () => void;
+}) {
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+
+  const merge = async () => {
+    if (!target || target === brand.id) { toast({ title: "برند هدف را انتخاب کن", variant: "destructive" }); return; }
+    setSaving(true);
+    try {
+      await adminApi.mergeBrand(brand.id, target);
+      toast({ title: "ادغام شد" });
+      onClose();
+    } catch (err) {
+      toast({ title: "خطا", description: String(err), variant: "destructive" });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={onClose}>
+      <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-sm font-extrabold">ادغام «{brand.name}»</h3>
+        <p className="mt-1 text-[11px] text-muted-foreground">آگهی‌ها و محصولات این برند به برند هدف منتقل می‌شوند و این برند حذف می‌شود.</p>
+        <div className="mt-3">
+          <Label className="text-[11px] text-muted-foreground">آیدی برند هدف (۲۴ کاراکتر hex)</Label>
+          <Input value={target} onChange={(e) => onTargetChange(e.target.value)} className="mt-1 h-9 text-xs" dir="ltr" placeholder="6ab6c37826479218cc94aa1e" maxLength={24} />
+        </div>
+        <div className="mt-4 flex gap-2">
+          <Button size="sm" onClick={() => void merge()} disabled={saving}>{saving ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}ادغام</Button>
+          <Button size="sm" variant="ghost" onClick={onClose}>انصراف</Button>
+        </div>
+      </div>
     </div>
   );
 }
