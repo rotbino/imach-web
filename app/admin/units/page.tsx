@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Check, Plus, X, Ruler, Package, Box, Search } from "lucide-react";
+import { Loader2, Check, Plus, X, Ruler, Package, Box, Search, Layers } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function AdminUnitsPage() {
   const unitsQ = useUnits();
@@ -36,8 +37,10 @@ export default function AdminUnitsPage() {
         u.nameEn.toLowerCase().includes(q)
       )
     : allUnits;
-  const baseUnits = units.filter((u) => !u.baseUnitKey);
-  const packagingUnits = units.filter((u) => !!u.baseUnitKey);
+  // سه دسته: پایه / تک‌فروشی / عمده‌فروشی
+  const baseUnits = units.filter((u) => u.scope === "base");
+  const retailUnits = units.filter((u) => u.scope === "retail");
+  const wholesaleUnits = units.filter((u) => u.scope === "wholesale");
 
   return (
     <div className="animate-fade-up">
@@ -74,10 +77,12 @@ export default function AdminUnitsPage() {
 
       {creating && <UnitForm baseUnits={baseUnits} onDone={() => setCreating(false)} />}
 
+      {/* ── دسته ۱: واحدهای پایه ── */}
       <div className="mt-4">
         <h2 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-stone-700">
-          <Box className="size-4 text-primary" />
+          <Layers className="size-4 text-primary" />
           واحدهای پایه
+          <span className="text-[10px] font-normal text-muted-foreground">— واحدهای فیزیکی اندازه‌گیری</span>
         </h2>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {baseUnits.map((u) => (
@@ -86,13 +91,29 @@ export default function AdminUnitsPage() {
         </div>
       </div>
 
+      {/* ── دسته ۲: واحدهای تک‌فروشی / مصرف‌کننده ── */}
+      <div className="mt-6">
+        <h2 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-stone-700">
+          <Box className="size-4 text-primary" />
+          واحدهای تک‌فروشی
+          <span className="text-[10px] font-normal text-muted-foreground">— واحدی که مصرف‌کننده با آن خرید می‌کند</span>
+        </h2>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {retailUnits.map((u) => (
+            <UnitCard key={u.id} unit={u} isEditing={editingId === u.id} onEdit={() => setEditingId(editingId === u.id ? null : u.id)} />
+          ))}
+        </div>
+      </div>
+
+      {/* ── دسته ۳: واحدهای عمده‌فروشی ── */}
       <div className="mt-6">
         <h2 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-stone-700">
           <Package className="size-4 text-primary" />
-          واحدهای بسته‌بندی
+          واحدهای عمده‌فروشی
+          <span className="text-[10px] font-normal text-muted-foreground">— بسته‌بندی حاوی چند واحد تک‌فروشی</span>
         </h2>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {packagingUnits.map((u) => (
+          {wholesaleUnits.map((u) => (
             <UnitCard key={u.id} unit={u} isEditing={editingId === u.id} onEdit={() => setEditingId(editingId === u.id ? null : u.id)} />
           ))}
         </div>
@@ -146,7 +167,15 @@ function UnitCard({ unit, isEditing, onEdit }: { unit: UnitDto; isEditing: boole
             <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-bold text-blue-700">پایه: {unit.baseUnitKey}</span>
             {unit.containsQty && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">× {unit.containsQty}</span>}
             {unit.qtyIsFixed && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">ثابت</span>}
-            {unit.scope && <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[9px] font-bold text-stone-600">{unit.scope === "wholesale" ? "عمده" : "خرده"}</span>}
+            {unit.scope && (
+              <span className={cn("rounded-full px-2 py-0.5 text-[9px] font-bold",
+                unit.scope === "base" ? "bg-blue-50 text-blue-700" :
+                unit.scope === "retail" ? "bg-emerald-50 text-emerald-700" :
+                "bg-amber-50 text-amber-700"
+              )}>
+                {unit.scope === "base" ? "پایه" : unit.scope === "retail" ? "تک‌فروشی" : "عمده"}
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -180,6 +209,7 @@ function UnitForm({ baseUnits, onDone }: { baseUnits: UnitDto[]; onDone: () => v
   const [key, setKey] = useState("");
   const [nameFa, setNameFa] = useState("");
   const [nameEn, setNameEn] = useState("");
+  const [scope, setScope] = useState("retail");
   const [baseUnitKey, setBaseUnitKey] = useState("");
   const [containsQty, setContainsQty] = useState("");
   const [qtyIsFixed, setQtyIsFixed] = useState(false);
@@ -190,7 +220,7 @@ function UnitForm({ baseUnits, onDone }: { baseUnits: UnitDto[]; onDone: () => v
     if (!key.trim() || !nameFa.trim() || !nameEn.trim()) { toast({ title: "کلید، نام فارسی و انگلیسی الزامی است", variant: "destructive" }); return; }
     setSaving(true);
     try {
-      await unitsApi.create({ key: key.trim(), nameFa, nameEn, baseUnitKey: baseUnitKey || null, containsQty: isPackaging && containsQty ? parseInt(containsQty) : null, qtyIsFixed: isPackaging ? qtyIsFixed : false, scope: "wholesale" });
+      await unitsApi.create({ key: key.trim(), nameFa, nameEn, baseUnitKey: baseUnitKey || null, containsQty: isPackaging && containsQty ? parseInt(containsQty) : null, qtyIsFixed: isPackaging ? qtyIsFixed : false, scope });
       await qc.invalidateQueries({ queryKey: ["units"] });
       toast({ title: "واحد ساخته شد" });
       onDone();
@@ -207,9 +237,21 @@ function UnitForm({ baseUnits, onDone }: { baseUnits: UnitDto[]; onDone: () => v
         <div><Label className="text-[10px] text-muted-foreground">نام انگلیسی</Label><Input value={nameEn} onChange={(e) => setNameEn(e.target.value)} className="h-8 text-xs" dir="ltr" placeholder="Carton (24)" /></div>
       </div>
       <div className="mt-2 grid gap-2 sm:grid-cols-3">
+        {/* انتخاب دسته (scope) */}
         <div>
-          <Label className="text-[10px] text-muted-foreground">واحد پایه</Label>
-          <Select value={baseUnitKey} onValueChange={setBaseUnitKey}><SelectTrigger className="h-8 text-xs"><SelectValue placeholder="—" /></SelectTrigger><SelectContent><SelectItem value="">واحد پایه (بدون والد)</SelectItem>{baseUnits.map((u) => <SelectItem key={u.id} value={u.key}>{u.nameFa} ({u.key})</SelectItem>)}</SelectContent></Select>
+          <Label className="text-[10px] text-muted-foreground">دسته واحد</Label>
+          <Select value={scope} onValueChange={setScope}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="base">پایه (فیزیکی)</SelectItem>
+              <SelectItem value="retail">تک‌فروشی (مصرف‌کننده)</SelectItem>
+              <SelectItem value="wholesale">عمده‌فروشی (بسته‌بندی)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label className="text-[10px] text-muted-foreground">واحد پایه (تبدیل)</Label>
+          <Select value={baseUnitKey} onValueChange={setBaseUnitKey}><SelectTrigger className="h-8 text-xs"><SelectValue placeholder="—" /></SelectTrigger><SelectContent><SelectItem value="">بدون والد</SelectItem>{baseUnits.map((u) => <SelectItem key={u.id} value={u.key}>{u.nameFa} ({u.key})</SelectItem>)}</SelectContent></Select>
         </div>
         {isPackaging && (
           <>
