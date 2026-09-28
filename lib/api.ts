@@ -950,6 +950,10 @@ export const productsApi = {
     brandId?: string;
     /** مسیر سریع اسکنر — هیتِ ایندکسیِ بارکد، یک SKU */
     barcode?: string;
+    /** فیلتر وضعیت محصول — فقط ACTIVE یا PROVISIONAL */
+    status?: string;
+    /** فیلتر عکس — true = فقط با عکس، false = فقط بدون عکس */
+    hasImage?: boolean;
     cursor?: string;
     limit?: number;
   }) => api<ProductPageDto>("/products/getProducts", { params }),
