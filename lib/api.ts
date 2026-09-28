@@ -259,6 +259,7 @@ export interface CategoryChipDto {
 export interface ProductPageDto {
   items: ProductRowDto[];
   nextCursor: string | null;
+  total: number;
   brands: BrandChipDto[];
   categories: CategoryChipDto[];
 }

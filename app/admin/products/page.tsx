@@ -58,6 +58,7 @@ export default function AdminProductsPage() {
   // ── Data state
   const [query, setQuery] = useState(qParam);
   const [rows, setRows] = useState<ProductRowDto[]>([]);
+  const [total, setTotal] = useState(0);
   const [brands, setBrands] = useState<BrandChipDto[]>([]);
   const [categories, setCategories] = useState<CategoryChipDto[]>([]);
   const [loading, setLoading] = useState(false);
@@ -154,6 +155,7 @@ export default function AdminProductsPage() {
       .then((res) => {
         if (!alive) return;
         setRows(res.items);
+        setTotal(res.total ?? 0);
         setNextCursor(res.nextCursor ?? null);
         setBrands(res.brands || []);
         setCategories(res.categories || []);
@@ -447,8 +449,8 @@ export default function AdminProductsPage() {
         <div className="mt-3 flex items-center justify-between px-1">
           <p className="text-xs font-bold text-muted-foreground">
             {loading ? <span className="inline-flex items-center gap-1.5"><Loader2 className="size-3 animate-spin" /> در حال بارگذاری…</span>
-              : rows.length === 0 ? "بدون نتیجه"
-              : <span><span className="font-extrabold text-foreground">{fa(rows.length)}</span> محصول{nextCursor ? " · بیشتر…" : ""}</span>}
+              : total === 0 ? "بدون نتیجه"
+              : <span><span className="font-extrabold text-foreground">{fa(total)}</span> محصول{nextCursor ? ` · ${fa(rows.length)} نمایش داده شده` : ""}</span>}
           </p>
           {picked.size > 0 && <span className="text-xs font-bold text-primary">{fa(picked.size)} مورد برای ادغام</span>}
         </div>
@@ -489,7 +491,7 @@ export default function AdminProductsPage() {
           {rows.map((p) => <ProductCard key={p.id} p={p} />)}
           {loadingMore && <div className="grid place-items-center py-4"><Loader2 className="size-5 animate-spin text-primary" /></div>}
           <div ref={sentinel} />
-          {!nextCursor && rows.length > 0 && !loading && <p className="py-6 text-center text-xs font-bold text-muted-foreground">پایان لیست — {fa(rows.length)} محصول</p>}
+          {!nextCursor && rows.length > 0 && !loading && <p className="py-6 text-center text-xs font-bold text-muted-foreground">پایان لیست — {fa(total)} محصول</p>}
         </div>
 
         {/* Merge bar */}
