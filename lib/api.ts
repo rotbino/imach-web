@@ -282,7 +282,7 @@ export interface ImportPreviewDto {
     stock: number | null;
     minOrder: number | null;
     volume: number | null;
-    hasImage: boolean;
+    hasImage?: string;
     /** هر ردیف از محتوایش بازو می‌گیرد — قیمت → فروش، حجم → خرید، هر دو → BOTH */
     arms: ("SELL" | "BUY")[];
     matchType: "product" | "good" | "new";
@@ -953,7 +953,7 @@ export const productsApi = {
     /** فیلتر وضعیت محصول — فقط ACTIVE یا PROVISIONAL */
     status?: string;
     /** فیلتر عکس — true = فقط با عکس، false = فقط بدون عکس */
-    hasImage?: boolean;
+    hasImage?: string;
     cursor?: string;
     limit?: number;
   }) => api<ProductPageDto>("/products/getProducts", { params }),
