@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { productsApi, type ProductRowDto } from "@/lib/api";
 import { categoryName, goodName } from "@/lib/format";
@@ -39,6 +39,9 @@ export default function AdminProductsPage() {
   const [bulkJson, setBulkJson] = useState("");
   const [bulkBusy, setBulkBusy] = useState(false);
   const [bulkResult, setBulkResult] = useState<{ saved: number; skipped: number; failed: number } | null>(null);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const sentinel = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     document.title = `${m.admin.products.title} | iMach`;
@@ -53,20 +56,23 @@ export default function AdminProductsPage() {
     return () => clearTimeout(t);
   }, [query]);
 
+  // Initial / debounced-search fetch — resets rows
   useEffect(() => {
     if (status !== "authed") return;
     let alive = true;
     setLoading(true);
+    setNextCursor(null);
     productsApi
       .getProducts({ q: debounced || undefined, brandId: brandId || undefined, limit: 50 })
       .then((res) => {
         if (!alive) return;
         setRows(res.items);
+        setNextCursor(res.nextCursor ?? null);
         setSurvivor(null);
         setPicked(new Set());
       })
       .catch(() => {
-        if (alive) setRows([]);
+        if (alive) { setRows([]); setNextCursor(null); }
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -75,6 +81,42 @@ export default function AdminProductsPage() {
       alive = false;
     };
   }, [debounced, status, user?.role, brandId]);
+
+  // Infinite scroll — load next page when sentinel visible
+  const loadMore = useCallback(() => {
+    if (!nextCursor || loadingMore) return;
+    setLoadingMore(true);
+    productsApi
+      .getProducts({
+        q: debounced || undefined,
+        brandId: brandId || undefined,
+        cursor: nextCursor,
+        limit: 50,
+      })
+      .then((res) => {
+        setRows((prev) => [...prev, ...res.items]);
+        setNextCursor(res.nextCursor ?? null);
+      })
+      .catch(() => {
+        // silent — keep what we have
+      })
+      .finally(() => setLoadingMore(false));
+  }, [nextCursor, loadingMore, debounced, brandId]);
+
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && nextCursor && !loadingMore) {
+          loadMore();
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [nextCursor, loadingMore, loadMore]);
 
   if (status !== "authed" || user?.role !== "ADMIN") {
     return (
@@ -290,6 +332,16 @@ export default function AdminProductsPage() {
               );
             })}
           </div>
+        )}
+
+        {/* Infinite scroll — loader + sentinel */}
+        {nextCursor && (
+          <div ref={sentinel} className="grid place-items-center py-6">
+            {loadingMore && <Loader2 className="size-5 animate-spin text-primary" />}
+          </div>
+        )}
+        {!nextCursor && rows.length > 0 && (
+          <p className="py-6 text-center text-xs font-bold text-muted-foreground">پایان لیست</p>
         )}
 
         {picked.size > 0 && (

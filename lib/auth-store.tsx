@@ -61,12 +61,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }),
 
   boot: async () => {
-    try {
-      const session = await authApi.refreshSession();
-      get().setSession(session);
-    } catch {
-      set({ status: "guest", accessToken: null, user: null, businesses: [] });
+    // Single-flight: concurrent callers share ONE boot round-trip —
+    // boot calls refreshSession which rotates the refresh cookie,
+    // so two parallel boots would invalidate each other mid-flight.
+    if (!bootPromise) {
+      bootPromise = (async () => {
+        try {
+          const session = await authApi.refreshSession();
+          get().setSession(session);
+        } catch {
+          set({ status: "guest", accessToken: null, user: null, businesses: [] });
+        } finally {
+          bootPromise = null;
+        }
+      })();
     }
+    return bootPromise;
   },
 
   login: async (phone, password, country) => {
@@ -152,6 +162,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 }));
 
 let refreshPromise: Promise<string | null> | null = null;
+let bootPromise: Promise<void> | null = null;
 
 // اتصال store به کلاینت API (یک‌بار در ماژول لود)
 let bound = false;
