@@ -502,7 +502,7 @@ export default function AdminProductsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={m.admin.products.searchPlaceholder || "جستجو..."}
-              className="h-10 rounded-xl bg-white pe-9"
+              className="h-10 rounded-xl bg-white pe-9 ps-9"
             />
             {query && (
               <button
@@ -856,10 +856,10 @@ export default function AdminProductsPage() {
         </div>
       )}
 
-      {/* ── Product Detail Drawer (bottom sheet, max-w-3xl on desktop) */}
+      {/* ── Product Detail Drawer (bottom sheet, max-w-2xl centered on desktop) */}
       <Drawer open={detailOpen} onOpenChange={setDetailOpen}>
         <DrawerContent className="bg-transparent border-0 shadow-none">
-          <div className="mx-auto max-w-3xl rounded-t-2xl bg-background border-t shadow-lg">
+          <div className="mx-auto w-full max-w-2xl rounded-t-2xl bg-background border shadow-2xl">
             <DrawerHeader className="pb-2">
               <DrawerTitle className="text-base font-extrabold">
                 {activeProduct?.label}
@@ -936,10 +936,10 @@ export default function AdminProductsPage() {
         </DrawerContent>
       </Drawer>
 
-      {/* ── Edit Drawer (bottom sheet, max-w-3xl on desktop) */}
+      {/* ── Edit Drawer (bottom sheet, max-w-2xl centered on desktop) */}
       <Drawer open={editOpen} onOpenChange={setEditOpen}>
         <DrawerContent className="bg-transparent border-0 shadow-none max-h-[90vh]">
-          <div className="mx-auto max-w-3xl rounded-t-2xl bg-background border-t shadow-lg max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="mx-auto w-full max-w-2xl rounded-t-2xl bg-background border shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
             <DrawerHeader className="pb-2 shrink-0">
               <DrawerTitle className="flex items-center gap-1.5 text-base font-extrabold">
                 <Pencil className="size-4 text-primary" />
@@ -1144,7 +1144,7 @@ export default function AdminProductsPage() {
       {/* ── Brand Picker Drawer (filter mode uses local brands, edit mode uses adminApi) */}
       <Drawer open={brandPickerOpen} onOpenChange={setBrandPickerOpen}>
         <DrawerContent className="bg-transparent border-0 shadow-none max-h-[80vh]">
-          <div className="mx-auto max-w-3xl rounded-t-2xl bg-background border-t shadow-lg max-h-[80vh] overflow-hidden flex flex-col">
+          <div className="mx-auto w-full max-w-2xl rounded-t-2xl bg-background border shadow-2xl max-h-[80vh] overflow-hidden flex flex-col">
             <DrawerHeader className="pb-2 shrink-0">
               <DrawerTitle className="text-base font-extrabold">
                 {brandPickerMode === "edit" ? "انتخاب برند محصول" : "فیلتر بر اساس برند"}
@@ -1160,7 +1160,7 @@ export default function AdminProductsPage() {
                   value={brandSearch}
                   onChange={(e) => setBrandSearch(e.target.value)}
                   placeholder="جستجوی برند..."
-                  className="h-10 pe-9"
+                  className="h-10 pe-9 ps-9"
                   autoFocus
                 />
                 {brandSearch && (
@@ -1300,7 +1300,7 @@ export default function AdminProductsPage() {
       {/* ── Category Picker Drawer */}
       <Drawer open={categoryPickerOpen} onOpenChange={setCategoryPickerOpen}>
         <DrawerContent className="bg-transparent border-0 shadow-none max-h-[80vh]">
-          <div className="mx-auto max-w-3xl rounded-t-2xl bg-background border-t shadow-lg max-h-[80vh] overflow-hidden flex flex-col">
+          <div className="mx-auto w-full max-w-2xl rounded-t-2xl bg-background border shadow-2xl max-h-[80vh] overflow-hidden flex flex-col">
             <DrawerHeader className="pb-2 shrink-0">
               <DrawerTitle className="flex items-center gap-1.5 text-base font-extrabold">
                 <Layers className="size-4 text-primary" />
@@ -1317,7 +1317,7 @@ export default function AdminProductsPage() {
                   value={brandSearch}
                   onChange={(e) => setBrandSearch(e.target.value)}
                   placeholder="جستجوی دسته..."
-                  className="h-10 pe-9"
+                  className="h-10 pe-9 ps-9"
                   autoFocus
                 />
                 {brandSearch && (
@@ -1388,7 +1388,7 @@ export default function AdminProductsPage() {
       {/* ── Status Picker Drawer */}
       <Drawer open={statusPickerOpen} onOpenChange={setStatusPickerOpen}>
         <DrawerContent className="bg-transparent border-0 shadow-none">
-          <div className="mx-auto max-w-3xl rounded-t-2xl bg-background border-t shadow-lg">
+          <div className="mx-auto w-full max-w-2xl rounded-t-2xl bg-background border shadow-2xl">
             <DrawerHeader className="pb-2">
               <DrawerTitle className="flex items-center gap-1.5 text-base font-extrabold">
                 <CheckCircle2 className="size-4 text-primary" />
@@ -1441,7 +1441,7 @@ export default function AdminProductsPage() {
       {/* ── Image Picker Drawer */}
       <Drawer open={imagePickerOpen} onOpenChange={setImagePickerOpen}>
         <DrawerContent className="bg-transparent border-0 shadow-none">
-          <div className="mx-auto max-w-3xl rounded-t-2xl bg-background border-t shadow-lg">
+          <div className="mx-auto w-full max-w-2xl rounded-t-2xl bg-background border shadow-2xl">
             <DrawerHeader className="pb-2">
               <DrawerTitle className="flex items-center gap-1.5 text-base font-extrabold">
                 <ImageIcon className="size-4 text-primary" />
