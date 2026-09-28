@@ -995,6 +995,21 @@ export const productsApi = {
   adminMerge: (body: { intoId: string; fromIds: string[] }) =>
     api<{ merged: number; intoId: string }>("/products/adminMerge", { method: "PUT", body }),
 
+  /** ویرایش محصول مرجع — ادمین */
+  adminEdit: (id: string, body: {
+    label?: string;
+    brandId?: string | null;
+    goodId?: string;
+    barcode?: string | null;
+    imageUrl?: string | null;
+    status?: string;
+    attrs?: Record<string, string> | null;
+  }) => api<{ id: string; label: string; barcode: string | null; imageUrl: string | null; status: string; brandId: string | null; goodId: string; attrs: Record<string, string> | null }>(`/products/adminEdit/${id}`, { method: "PATCH", body }),
+
+  /** حذف محصول مرجع — ادمین */
+  adminDelete: (id: string) =>
+    api<{ ok: boolean }>(`/products/adminDelete/${id}`, { method: "DELETE" }),
+
   /** ست کردن عکس مرجع Product — وقتی کاربر عکس آپلود می‌کند */
   setProductImage: (body: { productId: string; imageUrl: string }) =>
     api<{ ok: boolean }>("/products/setProductImage", { method: "POST", body }),
