@@ -291,6 +291,51 @@ export default function AdminProductsPage() {
   // ── Sidebar filter panel (shared between desktop sidebar & mobile drawer)
   const FilterPanel = () => (
     <div className="space-y-5">
+      {/* Status (horizontal, compact) */}
+      <div>
+        <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground">
+          <CheckCircle2 className="size-3.5" /> وضعیت
+        </h3>
+        <div className="flex flex-wrap gap-1.5">
+          <FilterPill label="همه" active={!statusParam} onClick={() => patchParam("status", null)} />
+          {STATUSES.map((st) => (
+            <FilterPill key={st} label={STATUS_LABEL[st]} active={statusParam === st} onClick={() => patchParam("status", st)} />
+          ))}
+        </div>
+      </div>
+      {/* Image (toggle switch) */}
+      <div>
+        <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground">
+          <ImageIcon className="size-3.5" /> عکس محصول
+        </h3>
+        <label className="flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold transition-colors hover:bg-accent">
+          <input
+            type="checkbox"
+            checked={hasImageParam === "yes"}
+            onChange={(e) => patchParam("hasImage", e.target.checked ? "yes" : null)}
+            className="size-4 accent-primary"
+          />
+          فقط عکس‌دار
+        </label>
+      </div>
+      {/* Brand (searchable list) */}
+      <div>
+        <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground">
+          <Tag className="size-3.5" /> برند
+        </h3>
+        <div className="relative mb-2">
+          <Search className="absolute end-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input value={brandSearch} onChange={(e) => setBrandSearch(e.target.value)} placeholder="جستجوی برند..." className="h-8 pe-8 ps-8 text-xs" />
+        </div>
+        <ScrollArea className="h-64">
+          <div className="space-y-0.5 pe-1">
+            <FilterRadioItem label="همه" active={!brandIdParam} onClick={() => patchParam("brandId", null)} />
+            {filteredFilterBrands.slice(0, 100).map((b) => (
+              <FilterRadioItem key={b.id} label={`${b.name} (${fa(b.count)})`} active={brandIdParam === b.id} onClick={() => patchParam("brandId", b.id)} />
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
       {/* Category */}
       <div>
         <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground">
@@ -302,47 +347,6 @@ export default function AdminProductsPage() {
             <FilterRadioItem key={c.id} label={`${c.nameFa} (${fa(c.count)})`} active={categoryIdParam === c.id} onClick={() => patchParam("categoryId", c.id)} />
           ))}
         </div>
-      </div>
-      {/* Status */}
-      <div>
-        <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground">
-          <CheckCircle2 className="size-3.5" /> وضعیت
-        </h3>
-        <div className="space-y-0.5">
-          <FilterRadioItem label="همه" active={!statusParam} onClick={() => patchParam("status", null)} />
-          {STATUSES.map((st) => (
-            <FilterRadioItem key={st} label={STATUS_LABEL[st]} active={statusParam === st} onClick={() => patchParam("status", st)} />
-          ))}
-        </div>
-      </div>
-      {/* Image */}
-      <div>
-        <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground">
-          <ImageIcon className="size-3.5" /> عکس محصول
-        </h3>
-        <div className="space-y-0.5">
-          {IMAGE_OPTIONS.map((opt) => (
-            <FilterRadioItem key={opt.value || "all"} label={opt.label} active={hasImageParam === opt.value} onClick={() => patchParam("hasImage", opt.value || null)} />
-          ))}
-        </div>
-      </div>
-      {/* Brand (searchable list) */}
-      <div>
-        <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground">
-          <Tag className="size-3.5" /> برند
-        </h3>
-        <div className="relative mb-2">
-          <Search className="absolute end-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input value={brandSearch} onChange={(e) => setBrandSearch(e.target.value)} placeholder="جستجوی برند..." className="h-8 pe-8 ps-8 text-xs" />
-        </div>
-        <ScrollArea className="max-h-48">
-          <div className="space-y-0.5 pe-1">
-            <FilterRadioItem label="همه" active={!brandIdParam} onClick={() => patchParam("brandId", null)} />
-            {filteredFilterBrands.slice(0, 100).map((b) => (
-              <FilterRadioItem key={b.id} label={`${b.name} (${fa(b.count)})`} active={brandIdParam === b.id} onClick={() => patchParam("brandId", b.id)} />
-            ))}
-          </div>
-        </ScrollArea>
       </div>
       {/* Clear all */}
       {activeFilterCount > 0 && (
@@ -362,7 +366,7 @@ export default function AdminProductsPage() {
         key={p.id}
         type="button"
         onClick={() => openDetail(p)}
-        className={`flex w-full items-center gap-3 rounded-xl border bg-white p-3 text-start shadow-sm transition hover:shadow-md ${isSurvivor ? "ring-2 ring-emerald-500" : isMerged ? "opacity-60" : ""}`}
+        className={`flex w-full max-w-full items-center gap-3 overflow-hidden rounded-xl border bg-white p-3 text-start shadow-sm transition hover:shadow-md ${isSurvivor ? "ring-2 ring-emerald-500" : isMerged ? "opacity-60" : ""}`}
       >
         <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-lg bg-stone-100">
           {p.imageUrl ? <img src={p.imageUrl} alt="" className="h-full w-full object-cover" /> : <span className="text-base font-black text-stone-400">{p.good.nameFa.slice(0, 1)}</span>}
@@ -394,11 +398,11 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-6 overflow-hidden">
       {/* ── Desktop sidebar filters */}
       {!isMobile && (
-        <aside className="sticky top-16 w-64 shrink-0">
-          <div className="rounded-xl border bg-white p-4">
+        <aside className="sticky top-16 w-64 shrink-0 self-start">
+          <div className="rounded-xl border bg-white p-4 max-h-[calc(100vh-5rem)] overflow-y-auto">
             <h2 className="mb-4 flex items-center gap-1.5 text-sm font-extrabold">
               <SlidersHorizontal className="size-4 text-primary" /> فیلترها
             </h2>
@@ -408,7 +412,7 @@ export default function AdminProductsPage() {
       )}
 
       {/* ── Main content */}
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 overflow-hidden">
         {/* Search bar */}
         <div className="flex items-center gap-2">
           <div className="relative grow">
@@ -430,12 +434,12 @@ export default function AdminProductsPage() {
 
         {/* Mobile filter chips (inline, compact) */}
         {isMobile && activeFilterCount > 0 && (
-          <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none]">
-            {activeFilterCount > 0 && filterBtn(<X className="size-3" />, "همه", null, () => clearParams(["brandId", "categoryId", "status", "hasImage"]))}
+          <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] max-w-full">
+            {filterBtn(<X className="size-3" />, "همه", null, () => clearParams(["brandId", "categoryId", "status", "hasImage"]))}
             {filterBtn(<Layers className="size-3" />, "دسته", selectedCategory?.nameFa ?? null, () => setMobileFilterOpen(true))}
             {filterBtn(<Tag className="size-3" />, "برند", selectedBrand?.name ?? null, () => setMobileFilterOpen(true))}
             {filterBtn(<CheckCircle2 className="size-3" />, "وضعیت", selectedStatusLabel || null, () => setMobileFilterOpen(true))}
-            {filterBtn(<ImageIcon className="size-3" />, "عکس", selectedImageLabel || null, () => setMobileFilterOpen(true))}
+            {hasImageParam === "yes" && filterBtn(<ImageIcon className="size-3" />, "عکس", "فقط عکس‌دار", () => setMobileFilterOpen(true))}
           </div>
         )}
 
@@ -720,6 +724,19 @@ function FilterRadioItem({ label, active, onClick }: { label: string; active: bo
     <button type="button" onClick={onClick} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-start text-xs transition-colors hover:bg-accent ${active ? "font-bold text-primary" : "text-muted-foreground"}`}>
       {active ? <Check className="size-3.5 shrink-0" /> : <Circle className="size-3.5 shrink-0 text-muted-foreground/30" />}
       <span className="truncate">{label}</span>
+    </button>
+  );
+}
+
+// ── Compact horizontal filter pill
+function FilterPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${active ? "border-primary bg-primary/10 text-primary" : "border-stone-200 text-muted-foreground hover:border-stone-300"}`}
+    >
+      {label}
     </button>
   );
 }
