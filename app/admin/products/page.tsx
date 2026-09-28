@@ -22,6 +22,9 @@ import {
   Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription,
 } from "@/components/ui/drawer";
 import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Check, Loader2, Merge, Plus, Search, X, FileJson, Tag,
   Pencil, Trash2, Package, ChevronDown, Image as ImageIcon,
   Barcode as BarcodeIcon, CheckCircle2, Circle, Layers, SlidersHorizontal,
