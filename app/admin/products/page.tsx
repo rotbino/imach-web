@@ -8,7 +8,7 @@ import {
   type BrandChipDto,
   type CategoryChipDto,
 } from "@/lib/api";
-import { adminApi } from "../api";
+import { adminApi, type AdminBrandDto } from "../api";
 import { categoryName, goodName, unitLabel, fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
 import { useMessages } from "@/i18n/messages/use-messages";
