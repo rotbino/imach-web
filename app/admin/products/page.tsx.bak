@@ -191,24 +191,6 @@ export default function AdminProductsPage() {
 
   useEffect(() => { setQuery(qParam); }, [qParam]);
 
-  // ── Brand search in edit mode — fetch from backend (all brands, not just current page)
-  const brandSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    if (brandPickerMode !== "edit" || !brandPickerOpen) return;
-    if (brandSearchTimer.current) clearTimeout(brandSearchTimer.current);
-    brandSearchTimer.current = setTimeout(async () => {
-      setBrandSearchBusy(true);
-      try {
-        const res = await adminApi.getBrands({ q: brandSearch.trim() || undefined, limit: 100 });
-        setAdminBrands(res.items ?? []);
-      } catch {
-        setAdminBrands([]);
-      } finally {
-        setBrandSearchBusy(false);
-      }
-    }, 300);
-    return () => { if (brandSearchTimer.current) clearTimeout(brandSearchTimer.current); };
-  }, [brandSearch, brandPickerMode, brandPickerOpen]);
   if (status !== "authed" || user?.role !== "ADMIN") {
     return <div className="grid place-items-center py-24"><p className="text-sm font-bold text-muted-foreground">{m.admin.forbiddenTitle}</p></div>;
   }
