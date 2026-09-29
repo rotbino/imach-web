@@ -544,7 +544,7 @@ export default function AdminProductsPage() {
         <DrawerContent className="max-h-[85vh]">
           <DrawerHeader className="pb-2"><DrawerTitle className="text-base font-extrabold">{activeProduct?.label}</DrawerTitle></DrawerHeader>
           <ScrollArea className="px-4 pb-4" style={{ maxHeight: "65vh" }}>
-            {activeProduct && <DetailContent />}
+            {activeProduct && DetailContent()}
           </ScrollArea>
         </DrawerContent>
       </Drawer>
@@ -552,7 +552,7 @@ export default function AdminProductsPage() {
         <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle className="text-base font-extrabold">{activeProduct?.label}</DialogTitle></DialogHeader>
-            <DetailContent />
+            {DetailContent()}
           </DialogContent>
         </Dialog>
       )}
@@ -564,7 +564,7 @@ export default function AdminProductsPage() {
             <DrawerTitle className="flex items-center gap-1.5 text-base font-extrabold"><Pencil className="size-4 text-primary" /> ویرایش محصول</DrawerTitle>
           </DrawerHeader>
           <ScrollArea className="px-4 pb-6" style={{ maxHeight: "75vh" }}>
-            <EditContent />
+            {EditContent()}
           </ScrollArea>
         </DrawerContent>
       </Drawer>
@@ -573,7 +573,7 @@ export default function AdminProductsPage() {
           <DialogContent className="max-w-lg max-h-[85vh] overflow-hidden flex flex-col">
             <DialogHeader className="shrink-0"><DialogTitle className="flex items-center gap-1.5 text-base font-extrabold"><Pencil className="size-4 text-primary" /> ویرایش محصول</DialogTitle></DialogHeader>
             <ScrollArea className="grow" style={{ maxHeight: "65vh" }}>
-              <EditContent />
+              {EditContent()}
             </ScrollArea>
           </DialogContent>
         </Dialog>
@@ -585,14 +585,14 @@ export default function AdminProductsPage() {
           <DrawerHeader className="pb-2 shrink-0">
             <DrawerTitle className="text-base font-extrabold">{brandPickerMode === "edit" ? "انتخاب برند محصول" : "فیلتر بر اساس برند"}</DrawerTitle>
           </DrawerHeader>
-          <BrandPickerContent />
+          {BrandPickerContent()}
         </DrawerContent>
       </Drawer>
       {!isMobile && (
         <Dialog open={brandPickerOpen} onOpenChange={setBrandPickerOpen}>
           <DialogContent className="max-w-md max-h-[80vh] overflow-hidden flex flex-col">
             <DialogHeader className="shrink-0"><DialogTitle className="text-base font-extrabold">{brandPickerMode === "edit" ? "انتخاب برند محصول" : "فیلتر بر اساس برند"}</DialogTitle></DialogHeader>
-            <BrandPickerContent />
+            {BrandPickerContent()}
           </DialogContent>
         </Dialog>
       )}
