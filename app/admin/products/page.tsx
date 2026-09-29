@@ -194,7 +194,7 @@ export default function AdminProductsPage() {
   // ── Brand search in edit mode — fetch from backend (all brands, not just current page)
   const brandSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    if (brandPickerMode !== "edit" || !brandPickerOpen) return;
+    if (!brandPickerOpen) return;
     if (brandSearchTimer.current) clearTimeout(brandSearchTimer.current);
     brandSearchTimer.current = setTimeout(async () => {
       setBrandSearchBusy(true);
@@ -714,12 +714,21 @@ export default function AdminProductsPage() {
         )}
         <ScrollArea className="px-4 pb-4 grow" style={{ maxHeight: "50vh" }}>
           <div className="space-y-1">
-            {brandPickerMode === "filter" && filteredFilterBrands.map((b) => (
+            {brandPickerMode === "filter" && !brandSearch.trim() && filteredFilterBrands.map((b) => (
               <button key={b.id} type="button" onClick={() => { patchParam("brandId", brandIdParam === b.id ? null : b.id); setBrandPickerOpen(false); setBrandSearch(""); }} className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start hover:bg-accent">
                 <span className="flex items-center gap-2 text-sm font-bold">{brandIdParam === b.id && <Check className="size-4 text-primary" />}{b.name}</span>
                 <span className="text-xs text-muted-foreground">{fa(b.count)} محصول</span>
               </button>
             ))}
+            {brandPickerMode === "filter" && brandSearch.trim() && !brandSearchBusy && adminBrands.filter((b) => b.name.includes(brandSearch.trim())).map((b) => (
+              <button key={b.id} type="button" onClick={() => { patchParam("brandId", brandIdParam === b.id ? null : b.id); setBrandPickerOpen(false); setBrandSearch(""); }} className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start hover:bg-accent">
+                <span className="flex items-center gap-2 text-sm font-bold">{brandIdParam === b.id && <Check className="size-4 text-primary" />}{b.name}</span>
+                <span className="text-xs text-muted-foreground">{fa(b._count.products)} محصول</span>
+              </button>
+            ))}
+            {brandSearchBusy && brandSearch.trim() && (
+              <div className="flex items-center justify-center py-4"><Loader2 className="size-4 animate-spin text-muted-foreground" /></div>
+            )}
             {brandPickerMode === "edit" && !brandSearchBusy && adminBrands.filter((b) => !brandSearch.trim() || b.name.includes(brandSearch.trim())).map((b) => (
               <button key={b.id} type="button" onClick={() => { setEditBrandId(b.id); setEditBrandName(b.name); setBrandPickerOpen(false); setBrandSearch(""); }} className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-start hover:bg-accent">
                 <span className="flex items-center gap-2 text-sm font-bold">{editBrandId === b.id && <Check className="size-4 text-primary" />}{b.name}</span>
