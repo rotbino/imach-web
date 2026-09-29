@@ -350,8 +350,14 @@ export default function AdminProductsPage() {
         <ScrollArea className="h-64">
           <div className="space-y-0.5 pe-1">
             <FilterRadioItem label="همه" active={!brandIdParam} onClick={() => patchParam("brandId", null)} />
-            {filteredFilterBrands.slice(0, 100).map((b) => (
+            {!brandSearch.trim() && filteredFilterBrands.slice(0, 100).map((b) => (
               <FilterRadioItem key={b.id} label={`${b.name} (${fa(b.count)})`} active={brandIdParam === b.id} onClick={() => patchParam("brandId", b.id)} />
+            ))}
+            {brandSearch.trim() && brandSearchBusy && (
+              <div className="flex items-center justify-center py-4"><Loader2 className="size-4 animate-spin text-muted-foreground" /></div>
+            )}
+            {brandSearch.trim() && !brandSearchBusy && adminBrands.filter((b) => b.name.includes(brandSearch.trim())).map((b) => (
+              <FilterRadioItem key={b.id} label={`${b.name} (${fa(b._count.products)})`} active={brandIdParam === b.id} onClick={() => patchParam("brandId", b.id)} />
             ))}
           </div>
         </ScrollArea>
