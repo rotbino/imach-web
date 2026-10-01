@@ -4,7 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-import { useArm, useActiveBusiness, type Arm } from "@/lib/active-biz";
+import { useArm, useActiveBusiness, useArmStore, armEnabled, firstEnabledArm, type Arm } from "@/lib/active-biz";
 import { fmtPhone } from "@/lib/countries";
 import { fa, activityTypeLabel } from "@/lib/format";
 import {
@@ -18,6 +18,7 @@ import {
   useMyInquiries,
   useSuggestions,
   useSetNotifPrefs,
+  useSetArms,
   useBusinessLogo,
   useMyBusinesses,
 } from "@/lib/queries";
@@ -295,6 +296,9 @@ function ProfileBody({ arm, bizId }: { arm: Arm; bizId: string }) {
             </>
           )}
 
+          {/* ═══ دستیارهای فعال — فاز ۹ (شکاف ۶): سوییچ هر بازو؛ حداقل یکی روشن ═══ */}
+          <EnabledArmsCard biz={biz} />
+
           {/* ═══ تنظیمات فروشگاه/کسب‌وکار — ردیف‌ها → فرم کامل در مدال ═══ */}
           <SettingsSection biz={biz} />
 
@@ -479,6 +483,84 @@ function NotifPrefsCard({ bizId, prefs }: { bizId: string; prefs: NotifPrefsDto 
           </label>
         ))}
       </div>
+    </section>
+  );
+}
+
+/* ═══ دستیارهای فعال (فاز ۹ — طرح ۱۶/۱۴) — دو سوییچ + الرت «حداقل یکی» ═══ */
+
+function EnabledArmsCard({ biz }: { biz: ReturnType<typeof useActiveBusiness> }) {
+  const setArms = useSetArms();
+  const { toast } = useToast();
+  const router = useRouter();
+  const setArm = useArmStore((s) => s.setArm);
+  if (!biz) return null;
+
+  const sellOn = armEnabled(biz, "sell");
+  const buyOn = armEnabled(biz, "buy");
+
+  const toggle = (arm: Arm, next: boolean) => {
+    // الرت کاربر: هر دو همزمان خاموش نمی‌شود — «بالاخره باید از یکی استفاده کنی»
+    const other = arm === "sell" ? buyOn : sellOn;
+    if (!next && !other) {
+      toast({
+        title: "حداقل یکی از دستیارها باید فعال باشد",
+        description: "دستیاری که لازم ندارید را خاموش کنید، اما نه هر دو را — بالاخره باید از یکی استفاده کنید.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setArms.mutate(
+      { id: biz.id, [arm]: next },
+      {
+        onSuccess: () => {
+          toast({
+            title: next ? "دستیار روشن شد" : "دستیار خاموش شد",
+            description: next ? undefined : "از پروفایل هر وقت خواستید دوباره روشنش کنید.",
+          });
+          // اگر بازوی جاری خاموش شد → روی بازوی فعال می‌نشینیم و اگر لازم
+          // بود (صفحه‌ی فروش) به خانه‌ی بازوی فعال می‌رویم؛ گیتِ هدر هم هست.
+          if (!next) {
+            const remaining = firstEnabledArm({ enabledArms: { sell: arm === "sell" ? false : sellOn, buy: arm === "buy" ? false : buyOn } });
+            setArm(remaining);
+            const onDisabledArmPage =
+              typeof window !== "undefined" &&
+              (window.location.pathname.startsWith("/sell") || window.location.pathname.startsWith("/buy"));
+            if (onDisabledArmPage) router.replace(remaining === "buy" ? "/buy" : "/sell");
+          }
+        },
+        onError: (e) =>
+          toast({
+            title: "ذخیره ناموفق بود",
+            description: e instanceof Error ? e.message : undefined,
+            variant: "destructive",
+          }),
+      }
+    );
+  };
+
+  return (
+    <section className="mt-4">
+      <SectionTitle>دستیارهای فعال</SectionTitle>
+      <div className="rounded-2xl border bg-white px-3.5 shadow-sm">
+        <label className="flex cursor-pointer items-center gap-2.5 border-b border-stone-100 py-2.5 text-[12.5px] font-medium">
+          <Switch checked={sellOn} disabled={setArms.isPending} onCheckedChange={(next) => toggle("sell", next)} aria-label="دستیار فروش عمده" />
+          <span className="grow">
+            دستیار فروش عمده
+            <span className="mt-0.5 block text-[10.5px] font-normal text-muted-foreground">کاتالوک فروش و درخواست‌های قیمت خریداران</span>
+          </span>
+        </label>
+        <label className="flex cursor-pointer items-center gap-2.5 py-2.5 text-[12.5px] font-medium">
+          <Switch checked={buyOn} disabled={setArms.isPending} onCheckedChange={(next) => toggle("buy", next)} aria-label="دستیار خرید عمده" />
+          <span className="grow">
+            دستیار خرید عمده
+            <span className="mt-0.5 block text-[10.5px] font-normal text-muted-foreground">لیست خرید، تابلوی تأمین و پیشنهادها</span>
+          </span>
+        </label>
+      </div>
+      <p className="mt-1.5 px-1 text-[10.5px] leading-5 text-muted-foreground">
+        دستیاری که لازم ندارید را خاموش کنید (مثل تالار و هتل که فقط خرید می‌کنند) — اما حداقل یکی باید روشن بماند.
+      </p>
     </section>
   );
 }

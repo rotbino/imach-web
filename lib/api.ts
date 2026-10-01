@@ -148,6 +148,9 @@ export interface BusinessSummaryDto {
   address?: string | null;
   /** فاز ۸ (طرح ۱۴) — تنظیمات اعلان از پروفایل؛ null/غایب = همه روشن */
   notifPrefs?: NotifPrefsDto | null;
+  /** فاز ۹ (شکاف ۶) — دستیارهای فعال؛ null/غایب = هر دو روشن.
+ *  سوییچر شل برای بیزینسِ تک‌بازو غیب می‌شود (تالار/هتل). */
+  enabledArms?: EnabledArmsDto | null;
 }
 
 /** فاز ۸ (طرح ۱۴) — چهار toggle اعلان پروفایل خریدار.
@@ -161,6 +164,17 @@ export interface NotifPrefsDto {
   suggestions?: boolean;
   /** گیتِ پوشِ وب — ردیفِ درون‌برنامه‌ای همیشه می‌ماند */
   push?: boolean;
+}
+
+/** فاز ۹ (شکاف ۶ — د۹) — دستیارهای فعالِ کسب‌وکار.
+ *  غایب/نال/فیلد جاافتاده = روشن. حداقل یکی باید روشن بماند —
+ *  سرور هر-دو-خاموش را 400 (ARMS_REQUIRED) می‌دهد و فرانت هم قبل از
+ *  ارسال بهشت می‌دهد («بالاخره باید از یکی استفاده کنی»). */
+export interface EnabledArmsDto {
+  /** دستیار فروش عمده — کاتالوگ + درخواست‌های قیمت */
+  sell?: boolean;
+  /** دستیار خرید عمده — لیست خرید + تابلوی تأمین */
+  buy?: boolean;
 }
 
 export interface AuthResponseDto {
@@ -939,7 +953,7 @@ export const authApi = {
     api<AuthResponseDto>("/auth/loginUser", { method: "POST", body, auth: false }),
   /** گام ۱ ثبت‌نام — تک‌بررسیِ غیرهمگام که کلاینت از عهده‌اش برنمی‌آید */
   checkPhone: (body: { phone: string; country?: string }) =>
-    api<{ available: boolean }>("/auth/checkPhone", { method: "POST", body, auth: false }),
+    api<{ available: boolean; hasPassword: boolean }>("/auth/checkPhone", { method: "POST", body, auth: false }),
   registerUser: (body: {
     firstName: string;
     lastName: string;
@@ -1040,7 +1054,7 @@ export const unitsApi = {
 
 export const businessesApi = {
   getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),
-  createBusiness: (body: { name: string; city: string; trade?: string }) =>
+  createBusiness: (body: { name: string; city: string; trade?: string; intent?: "sell" | "buy" | "both" }) =>
     api<BusinessSummaryDto & { slug: string }>("/businesses/createBusiness", { method: "POST", body }),
   editBusiness: (id: string, body: { name?: string; city?: string; activityType?: string | null; trade?: string | null }) =>
     api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
@@ -1056,6 +1070,9 @@ export const businessesApi = {
    *  ارسال‌شده عوض می‌شوند. پاسخ = prefs کامل پس از ذخیره. */
   setNotifPrefs: (id: string, body: Partial<NotifPrefsDto>) =>
     api<NotifPrefsDto>(`/businesses/setNotifPrefs/${id}`, { method: "PUT", body }),
+  /** فاز ۹ (شکاف ۶) — خاموش/روشن کردن دستیارها از پروفایل؛ merge سمت سرور */
+  setArms: (id: string, body: Partial<EnabledArmsDto>) =>
+    api<EnabledArmsDto>(`/businesses/setArms/${id}`, { method: "PUT", body }),
   /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
   getContact: (slug: string) => api<{ phone: string | null; name: string }>(`/businesses/getContact/${slug}`),
   /** بازار — کشف عمومی؛ بدون عضویت هم کار می‌کند */

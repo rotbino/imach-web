@@ -85,7 +85,7 @@ export const UNIT_LABELS: Record<string, { fa: string; en: string }> = {
   BRANCH: { fa: "شاخه", en: "Branch" },
   METER: { fa: "متر", en: "Meter" },
   GRAM: { fa: "گرم", en: "Gram" },
-  SERVICE: { fa: "خدمت", en: "Service" },
+  SERVICE: { fa: "پرس", en: "Service" },
 };
 
 export const unitLabel = (u: string, locale?: string): string => {

@@ -36,6 +36,26 @@ export function useActiveBusiness(): BusinessSummaryDto | null {
 
 export type Arm = "sell" | "buy";
 
+// ─── فاز ۹ (شکاف ۶) — دستیارهای فعالِ کسب‌وکار فعال ───
+// null/فیلد غایب = روشن؛ فقط false صریح خاموش است. تالار/هتل‌ها بازوی
+// فروش را خاموش می‌کنند → سوییچر شل برایشان غیب می‌شود و همیشه روی
+// دستیار خرید می‌مانند.
+
+/** این بازو برای این کسب‌وکار فعال است؟ (null = هر دو فعال) */
+export function armEnabled(biz: Pick<BusinessSummaryDto, "enabledArms"> | null | undefined, arm: Arm): boolean {
+  return biz?.enabledArms?.[arm] !== false;
+}
+
+/** هر دو بازو فعال‌اند؟ (سوییچر فقط در این حالت معنا دارد) */
+export function bothArmsEnabled(biz: Pick<BusinessSummaryDto, "enabledArms"> | null | undefined): boolean {
+  return armEnabled(biz, "sell") && armEnabled(biz, "buy");
+}
+
+/** بازوی پیش‌فرضِ این کسب‌وکار — اولین بازوی فعال (فروش→خرید) */
+export function firstEnabledArm(biz: Pick<BusinessSummaryDto, "enabledArms"> | null | undefined): Arm {
+  return armEnabled(biz, "sell") ? "sell" : "buy";
+}
+
 const ARM_KEY = "imach.arm";
 
 export function storedArm(): Arm {
@@ -57,14 +77,18 @@ export const useArmStore = create<ArmState>((set) => ({
   },
 }));
 
-/** بازوی جاری — بعد از mount با localStorage همگام می‌شود (رفرش روی صفحات مشترک) */
+/** بازوی جاری — بعد از mount با localStorage همگام می‌شود (رفرش روی صفحات مشترک)
+ *  و اگر بازوی ذخیره‌شده برای کسب‌وکار فعال خاموش شده باشد (فاز ۹)،
+ *  خودکار به بازوی فعالِ دیگر می‌افتد. */
 export function useArm(): Arm {
   const arm = useArmStore((s) => s.arm);
+  const biz = useActiveBusiness();
   useEffect(() => {
     const stored = storedArm();
     if (stored !== useArmStore.getState().arm) useArmStore.setState({ arm: stored });
   }, []);
-  return arm;
+  const effective = armEnabled(biz, arm) ? arm : firstEnabledArm(biz);
+  return effective;
 }
 
 /** ثبت بازوی باز‌شده — صفحات هر بازو در mount صدا می‌زنند (خارج از رندر) */
@@ -72,7 +96,10 @@ export function setArmActive(arm: Arm): void {
   useArmStore.getState().setArm(arm);
 }
 
-/** مقصد ورود کاربر واردشده = بازوی خودش: کاتالوگ فروش یا دستیار خرید */
+/** مقصد ورود کاربر واردشده = بازوی خودش: کاتالوگ فروش یا دستیار خرید.
+ *  اگر بازوی ذخیره‌شده برای بیزینس تک‌بازو خاموش باشد، هدرِ شل (AppHeader)
+ *  بلافاصله به بازوی فعال ریدایرکت می‌کند — صفحات ورور هم مسیر را از
+ *  پاسخ login (enabledArms) هوشمندانه انتخاب می‌کنند. */
 export function myArmHref(): string {
   return storedArm() === "buy" ? "/buy" : "/sell";
 }

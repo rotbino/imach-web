@@ -19,6 +19,7 @@ import {
   type CategoryNodeDto,
   type ContactRowDto,
   type CustomerRowDto,
+  type EnabledArmsDto,
   type ExploreItemDto,
   type FileDto,
   type FollowDto,
@@ -364,6 +365,44 @@ export function useSetNotifPrefs() {
         qc.setQueryData(
           qk.myBusinesses(),
           cur.map((b) => (b.id === id ? { ...b, notifPrefs: prefs } : b))
+        );
+      }
+    },
+  });
+}
+
+/** فاز ۹ (شکاف ۶ — د۹) — خاموش/روشن کردن دستیارها از پروفایل.
+ *  optimistic مثل notifPrefs؛ اعتبارسنجی «حداقل یکی روشن» قبل از ارسال
+ *  در کامپوننت انجام می‌شود (سرور هم 400 می‌دهد — ARMS_REQUIRED). */
+export function useSetArms() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...body }: { id: string } & Partial<EnabledArmsDto>) =>
+      businessesApi.setArms(id, body),
+    onMutate: async ({ id, ...body }) => {
+      await qc.cancelQueries({ queryKey: qk.myBusinesses() });
+      const prev = qc.getQueryData<(BusinessSummaryDto & { _count: { listings: number } })[]>(qk.myBusinesses());
+      if (prev) {
+        qc.setQueryData(
+          qk.myBusinesses(),
+          prev.map((b) =>
+            b.id === id
+              ? { ...b, enabledArms: { ...(b.enabledArms ?? {}), ...body } }
+              : b
+          )
+        );
+      }
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(qk.myBusinesses(), ctx.prev);
+    },
+    onSuccess: (arms, { id }) => {
+      const cur = qc.getQueryData<(BusinessSummaryDto & { _count: { listings: number } })[]>(qk.myBusinesses());
+      if (cur) {
+        qc.setQueryData(
+          qk.myBusinesses(),
+          cur.map((b) => (b.id === id ? { ...b, enabledArms: arms } : b))
         );
       }
     },

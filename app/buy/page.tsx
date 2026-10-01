@@ -7,7 +7,6 @@ import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { NoBusinessState } from "@/app/components/no-business";
-import { WelcomeModal } from "@/app/components/welcome-modal";
 import { SetPasswordButton } from "@/app/components/set-password-button";
 import { fa, categoryName, fmtMoney, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMyInquiries, useMyListings, useWatchGood, useWatchedGoods } from "@/lib/queries";
@@ -87,7 +86,6 @@ function BuyBody() {
   return (
     <div className="flex min-h-screen flex-col">
       <AppHeader />
-      <WelcomeModal />
       <main className="grow">
         <div className="mx-auto max-w-4xl px-4 py-5 sm:px-6 sm:py-7">
           <MyBuyList biz={active} />

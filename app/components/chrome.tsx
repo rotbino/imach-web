@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { fa } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { myArmHref, useArm, useArmStore, useActiveBusiness, type Arm } from "@/lib/active-biz";
-import { useIncomingInquiries } from "@/lib/queries";
+import { myArmHref, useArm, useArmStore, useActiveBusiness, armEnabled, firstEnabledArm, type Arm } from "@/lib/active-biz";
+import { useIncomingInquiries, useMyBusinesses } from "@/lib/queries";
 import { NotificationsBell } from "@/app/components/notifications";
 import { Button } from "@/components/ui/button";
 import { LogIn, type LucideIcon } from "lucide-react";
@@ -100,9 +100,30 @@ export function armColor(arm: Arm): string {
 function useCurrentArm(): Arm {
   const stored = useArm();
   const pathname = usePathname();
-  if (pathname.startsWith("/buy")) return "buy";
-  if (pathname.startsWith("/sell")) return "sell";
+  if (pathname?.startsWith("/buy")) return "buy";
+  if (pathname?.startsWith("/sell")) return "sell";
   return stored;
+}
+
+/**
+ * فاز ۹ (شکاف ۶) — گیتِ مرکزیِ بازوهای غیرفعال. هر صفحه‌ی بازو
+ * (تمام مسیرهای /sell/* و /buy/*) AppHeader رندر می‌کند؛ اگر بازوی مسیر
+ * برای کسب‌وکار فعال خاموش باشد (تالار/هتل روی /sell)، همین‌جا به خانه‌ی
+ * بازوی فعال ریدایرکت می‌شود — یک نقطه‌ی مرکزی برای کل اپ.
+ */
+function useDisabledArmGuard(arm: Arm) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const biz = useActiveBusiness();
+  const bizQ = useMyBusinesses();
+  const authed = useAuthStore((s) => s.status) === "authed";
+  useEffect(() => {
+    if (!authed || bizQ.isLoading || !biz) return;
+    const onArmPage = pathname?.startsWith("/sell") || pathname?.startsWith("/buy");
+    if (!onArmPage) return;
+    if (armEnabled(biz, arm)) return;
+    router.replace(firstEnabledArm(biz) === "buy" ? "/buy" : "/sell");
+  }, [authed, biz, bizQ.isLoading, arm, pathname, router]);
 }
 
 function isActivePath(href: string, pathname: string): boolean {
@@ -231,6 +252,12 @@ export function AppHeader() {
   const arm = useCurrentArm();
   const items = useNavItems(arm);
   const switchArm = useArmSwitch();
+  const biz = useActiveBusiness();
+  // فاز ۹ — سوییچر فقط وقتی معنا دارد که هر دو دستیار فعال باشند؛
+  // بیزینسِ تک‌بازو (تالار/هتل) سوییچر نمی‌بیند — همیشه روی دستیار خریدش است.
+  const showSwitch = status === "authed" && armEnabled(biz, "sell") && armEnabled(biz, "buy");
+  // فاز ۹ — گیت مرکزی: مسیرِ بازویِ خاموش → خانه‌ی بازوی فعال
+  useDisabledArmGuard(arm);
 
   const goHome = () => {
     router.push(status === "authed" ? myArmHref() : "/");
@@ -261,7 +288,7 @@ export function AppHeader() {
               <BuildStamp />
             </button>
 
-            {status === "authed" && <ArmSwitch arm={arm} onSwitch={switchArm} variant="desktop" />}
+            {showSwitch && <ArmSwitch arm={arm} onSwitch={switchArm} variant="desktop" />}
           </div>
 
           {status === "authed" ? (
@@ -297,10 +324,10 @@ export function AppHeader() {
               <HeaderAvatar name={user?.name} />
               <span className="sr-only">{user?.name}</span>
             </div>
-          ) : pathname?.startsWith("/start") ? null : (
-            // مهمان در صفحه‌ی شروع — دکمه‌ی ورود/ثبت‌نام معنا ندارد (خواسته‌ی کاربر)
+          ) : pathname?.startsWith("/start") || pathname?.startsWith("/login") ? null : (
+            // مهمان — ورود به /login (فاز ۹ · طرح ۱۷) و ثبت‌نام به /start
             <div className="flex items-center gap-2">
-              <Button size="sm" variant="outline" onClick={() => router.push("/start")}>
+              <Button size="sm" variant="outline" onClick={() => router.push("/login")}>
                 ورود
               </Button>
               <Button size="sm" onClick={() => router.push("/start?mode=register")}>
@@ -312,8 +339,8 @@ export function AppHeader() {
         </div>
       </div>
 
-      {/* سوییچ موبایل — نوار دومِ همیشه‌نمایان زیر هدر (د۱) */}
-      {status === "authed" && (
+      {/* سوییچ موبایل — نوار دومِ همیشه‌نمایان زیر هدر (د۱)؛ فاز ۹: تک‌بازو غیب */}
+      {showSwitch && (
         <div className="px-4 pt-2.5 sm:hidden">
           <ArmSwitch arm={arm} onSwitch={switchArm} variant="mobile" />
         </div>

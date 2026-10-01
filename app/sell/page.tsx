@@ -14,7 +14,6 @@ import { ShareDialog } from "@/app/components/share";
 import { CatalogHeaderPrompt } from "@/app/components/catalog-header-prompt";
 import { SetPasswordButton } from "@/app/components/set-password-button";
 import { NoBusinessState } from "@/app/components/no-business";
-import { WelcomeModal } from "@/app/components/welcome-modal";
 import { ProductSettingsDialog } from "./product-settings";
 import { CategoryManagerDialog } from "./category-manager";
 import { Button } from "@/components/ui/button";
@@ -90,7 +89,6 @@ function SellBody() {
   return (
     <div className="flex min-h-screen flex-col">
       <AppHeader />
-      <WelcomeModal />
       <main className="grow">
         <div className="mx-auto max-w-4xl px-4 py-5 sm:px-6 sm:py-7">
           <MyCatalog biz={active} />
