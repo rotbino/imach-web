@@ -10,18 +10,12 @@
 
 import { useState } from "react";
 import type { CatalogCategoryDto } from "@/lib/api";
+import { fa } from "@/lib/format";
 import { useSetCatalogCategories } from "@/lib/queries";
 import { ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { TallDialog } from "@/app/components/tall-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Check, Loader2, Plus, Tag, Trash2 } from "lucide-react";
 
@@ -77,19 +71,28 @@ export function CategoryManagerDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-1.5">
-            <Tag className="size-4 text-primary" />
-            دسته‌های کاتالوگ من
-          </DialogTitle>
-          <DialogDescription>
-            دسته‌ها چیپ‌های بالای ویترین شما هستند — مشتری با یک ضربه کالاهای همان دسته را می‌بیند. حذف دسته کالاهایش را حذف نمی‌کند.
-          </DialogDescription>
-        </DialogHeader>
+    <TallDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      icon={<Tag className="size-4 shrink-0 text-primary" />}
+      title="دسته‌های کاتالوگ من"
+      subtitle={
+        rows.length > 0
+          ? `${fa(rows.length)} دسته — چیپ‌های بالای ویترین شما`
+          : "چیپ‌های بالای ویترین شما"
+      }
+      footer={
+        <Button onClick={() => void save()} disabled={!dirty || mutation.isPending} className="w-full">
+          {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+          ذخیره دسته‌ها
+        </Button>
+      }
+    >
+      <p className="mb-3 text-[11.5px] leading-6 text-muted-foreground">
+        دسته‌ها چیپ‌های بالای ویترین شما هستند — مشتری با یک ضربه کالاهای همان دسته را می‌بیند. حذف دسته کالاهایش را حذف نمی‌کند.
+      </p>
 
-        <div className="max-h-72 space-y-2 overflow-y-auto">
+      <div className="space-y-2">
           {rows.length === 0 && (
             <p className="rounded-xl border border-dashed bg-white/70 p-6 text-center text-xs leading-6 text-muted-foreground">
               هنوز دسته‌ای ندارید — مثلاً «هاشمی»، «فله» یا «تخفیفی» بسازید.
@@ -139,14 +142,6 @@ export function CategoryManagerDialog({
             </Button>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button onClick={() => void save()} disabled={!dirty || mutation.isPending} className="w-full">
-            {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-            ذخیره دسته‌ها
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    </TallDialog>
   );
 }

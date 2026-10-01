@@ -10,13 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { TallDialog } from "@/app/components/tall-dialog";
 import { Check, Loader2, PencilLine, UserRound } from "lucide-react";
 
 /**
@@ -129,26 +123,31 @@ function OwnerEditDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button
-          type="button"
-          className="group mt-1 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground transition hover:text-primary"
-          aria-label="ویرایش نام و عکس مالک"
-        >
-          <UserRound className="size-3.5 text-primary" />
-          <span>{displayName}</span>
-          <PencilLine className="size-3 opacity-0 transition group-hover:opacity-100" />
-        </button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md gap-4 p-5">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-sm">
-            <UserRound className="size-4 text-primary" />
-            ویرایش نام و عکس
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="group mt-1 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground transition hover:text-primary"
+        aria-label="ویرایش نام و عکس مالک"
+      >
+        <UserRound className="size-3.5 text-primary" />
+        <span>{displayName}</span>
+        <PencilLine className="size-3 opacity-0 transition group-hover:opacity-100" />
+      </button>
 
+      <TallDialog
+        open={open}
+        onOpenChange={setOpen}
+        icon={<UserRound className="size-4 shrink-0 text-primary" />}
+        title="ویرایش نام و عکس"
+        subtitle="در کاتالوگ و لیست خرید نمایش داده می‌شود."
+        footer={
+          <Button className="flex-1" onClick={() => void save()} disabled={editProfile.isPending}>
+            {editProfile.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+            ذخیره
+          </Button>
+        }
+      >
         <div className="flex items-center gap-3 border-b pb-4">
           <FileUploader
             shape="round"
@@ -166,7 +165,7 @@ function OwnerEditDialog({
           </p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="mt-4 grid gap-3">
           <div className="grid grid-cols-2 gap-2">
             <div className="grid gap-1.5">
               <Label className="text-[11px] text-muted-foreground">نام</Label>
@@ -187,12 +186,7 @@ function OwnerEditDialog({
             </div>
           </div>
         </div>
-
-        <Button onClick={() => void save()} disabled={editProfile.isPending}>
-          {editProfile.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-          ذخیره
-        </Button>
-      </DialogContent>
-    </Dialog>
+      </TallDialog>
+    </>
   );
 }

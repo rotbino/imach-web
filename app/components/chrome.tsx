@@ -73,13 +73,13 @@ export interface NavItem {
 // ─── آیتم‌های نویگیشن — ۳ تب فروش / ۴ تب خرید ───
 export function useNavItems(arm: Arm): NavItem[] {
   const biz = useActiveBusiness();
-  // نشانگر درخواست‌های نخوانده — فقط در بازوی فروش لازم است
+  // فاز ۴ (طرح ۰۵) — نشانگر «درخواست‌های قیمت» = شمار درخواست‌های فعالِ به‌من
   const inquiriesQ = useIncomingInquiries(arm === "sell" ? biz?.id ?? null : null);
-  const unread = inquiriesQ.data?.unreadCount ?? 0;
+  const activeInquiries = (inquiriesQ.data?.items ?? []).filter((q) => q.status !== "ARCHIVED").length;
   if (arm === "sell") {
     return [
       { href: "/sell", label: "کاتالوگ من", icon: Store },
-      { href: "/sell/requests", label: "درخواست‌های قیمت", icon: Inbox, badge: unread || undefined },
+      { href: "/sell/requests", label: "درخواست‌های قیمت", icon: Inbox, badge: activeInquiries || undefined },
       { href: "/profile", label: "پروفایل", icon: CircleUserRound },
     ];
   }

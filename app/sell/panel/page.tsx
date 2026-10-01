@@ -3,30 +3,22 @@
 import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Inbox, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { NoBusinessState } from "@/app/components/no-business";
-import { EmptyBox, InquiriesSection, StatsStrip } from "@/app/components/sections";
+import { EmptyBox, StatsStrip } from "@/app/components/sections";
 import { BizSettingsCard } from "@/app/components/biz-edit";
-import { ExploreBuyRow, FeedSpinner } from "@/app/components/feed-cards";
 import { useTabParam } from "@/app/components/url-tabs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  useBuyRequests,
-  useIncomingInquiries,
-  useMyBusinesses,
-  useMyListings,
-  useMyFollowers,
-} from "@/lib/queries";
+import { useIncomingInquiries, useMyBusinesses, useMyFollowers, useMyListings } from "@/lib/queries";
 
 /*
- * داشبورد کاتالوگ — محیط مدیریت دو‌برگه‌ای (خواسته‌ی کاربر):
- * ویترین دیگر بار مدیریتی ندارد؛ گزارش‌ها و تنظیمات این‌جاست:
- * • برگه‌ی «داشبورد»: آمار + استعلام‌های ورودی + تقاضای مرتبط
- * • برگه‌ی «تنظیمات»: ویرایش هدر (نام، شهر، نوع فعالیت)
- * • نویگیشن بالای صفحه خودش «کاتالوگ» را دارد — دکمه‌ی بازگشت دیگر لازم نیست.
+ * داشبورد کاتالوگ — محیط مدیریت دو‌برگه‌ای:
+ * • «داشبورد»: آمار + ورودی درخواست‌های قیمت (فاز ۴: پاسخ‌دهی به صفحه‌ی مستقل منتقل شد)
+ * • «تنظیمات»: ویرایش هدر (نام، شهر، نوع فعالیت)
+ * این صفحه در فاز ۱۰ (پاکسازی) حذف می‌شود — تا آن موقع پلِ گزارش‌هاست.
  */
 
 export default function SellPanelPage() {
@@ -77,7 +69,7 @@ function SellPanelBody() {
       <main className="grow">
         <div className="mx-auto max-w-2xl px-4 py-6">
           <Suspense fallback={<PanelTabsFallback />}>
-            <SellPanelTabs bizId={active.id} slug={active.slug} name={active.name} city={active.city} />
+            <SellPanelTabs bizId={active.id} slug={active.slug} name={active.name} />
           </Suspense>
         </div>
       </main>
@@ -95,15 +87,9 @@ function PanelTabsFallback() {
   );
 }
 
-function SellPanelTabs({ bizId, slug, name, city }: { bizId: string; slug: string; name: string; city: string }) {
+function SellPanelTabs({ bizId, slug, name }: { bizId: string; slug: string; name: string }) {
   // برگه‌ها با URL سینک‌اند: /sell/panel و /sell/panel?tab=settings
   const [tab, setTab] = useTabParam("dash", ["dash", "settings"]);
-  const listingsQ = useMyListings(bizId);
-
-  // استعلام‌ها برای «پیشنهاد خودکار قیمت» به کالاهای فروشی من نیاز دارند
-  const sellListings = (listingsQ.data ?? [])
-    .filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null)
-    .map((l) => ({ goodId: l.good.id, priceMinor: l.priceMinor, currency: l.currency }));
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="mt-4">
@@ -112,11 +98,10 @@ function SellPanelTabs({ bizId, slug, name, city }: { bizId: string; slug: strin
         <TabsTrigger value="settings">تنظیمات</TabsTrigger>
       </TabsList>
 
-      {/* برگه‌ی داشبورد — آمار و گزارش‌ها */}
+      {/* برگه‌ی داشبورد — آمار و ورودی‌ها */}
       <TabsContent value="dash" className="mt-5 space-y-8">
         <PanelStats bizId={bizId} />
-        <InquiriesSection bizId={bizId} myCity={city} sellListings={sellListings} />
-        <RelatedDemand bizId={bizId} />
+        <RequestsLinkCard bizId={bizId} />
         <PanelFooterHint slug={slug} name={name} />
       </TabsContent>
 
@@ -152,27 +137,34 @@ function PanelStats({ bizId }: { bizId: string }) {
   );
 }
 
-// ─── تقاضای مرتبط — موتور تطبیق، تقاضا را به من می‌آورد ───
+// ─── درخواست‌های قیمت — پاسخ‌دهی به صفحه‌ی مستقل منتقل شد (فاز ۴)؛ این‌جا فقط ورودی ───
 
-function RelatedDemand({ bizId }: { bizId: string }) {
-  const demandQ = useBuyRequests(bizId);
-  const demand = demandQ.data ?? [];
-
+function RequestsLinkCard({ bizId }: { bizId: string }) {
+  const inquiriesQ = useIncomingInquiries(bizId);
+  const mine = (inquiriesQ.data?.items ?? []).filter((q) => q.status !== "ARCHIVED");
+  const unread = mine.filter((q) => !q.isRead).length;
   return (
-    <section>
-      <h2 className="mb-3 text-base font-extrabold">تقاضای مرتبط با کالاهای من</h2>
-      {demandQ.isLoading ? (
-        <FeedSpinner />
-      ) : demand.length === 0 ? (
-        <EmptyBox text="فعلا درخواست خرید مرتبطی نیست. کاتالوگ کامل‌تر، تقاضای بیشتر می‌آورد." />
-      ) : (
-        <div className="space-y-3">
-          {demand.slice(0, 12).map((l) => (
-            <ExploreBuyRow key={l.id} item={l} />
-          ))}
-        </div>
-      )}
-    </section>
+    <Link
+      href="/sell/requests"
+      className="flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition hover:border-primary/40 hover:shadow-md"
+    >
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/10">
+        <Inbox className="size-5 text-primary" strokeWidth={1.75} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-bold">درخواست‌های قیمت</span>
+        <span className="mt-0.5 block text-[11.5px] text-muted-foreground">
+          {mine.length > 0
+            ? `${mine.length} درخواست فعال — پاسخ‌دهی و فرصت‌های بازار`
+            : "پاسخ‌دهی و فرصت‌های بازار این‌جاست"}
+        </span>
+      </span>
+      {unread > 0 ? (
+        <span className="grid h-5 min-w-[20px] shrink-0 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-white">
+          {unread > 9 ? "۹+" : unread}
+        </span>
+      ) : null}
+    </Link>
   );
 }
 

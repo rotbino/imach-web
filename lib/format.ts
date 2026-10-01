@@ -21,7 +21,7 @@ const num = (n: number | string, locale: string): string => (locale === "en" ? e
 // ── پول — مبلغ همیشه به کوچک‌ترین واحد ارز ذخیره شده (ریال/سنت…) ──
 // exp = تعداد رقم اعشار بین واحد اصلی و کوچک‌ترین واحد (IRR بدون اعشار)
 export const CURRENCIES: Record<string, { exp: number; fa: string; en: string }> = {
-  IRR: { exp: 0, fa: "ریال", en: "Rial" },
+  IRR: { exp: 1, fa: "تومان", en: "Toman" } /* نمایش/ورودی تومان — ذخیره ریال (طرح رفرنس همه‌جا تومان است) */,
   USD: { exp: 2, fa: "دلار", en: "US Dollar" },
   EUR: { exp: 2, fa: "یورو", en: "Euro" },
   GBP: { exp: 2, fa: "پوند", en: "Pound" },

@@ -12,13 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { TallDialog } from "@/app/components/tall-dialog";
 import { Check, Loader2, MapPin, PencilLine, Store } from "lucide-react";
 
 /**
@@ -39,45 +33,43 @@ export function CatalogHeaderPrompt({ biz, variant = "sell" }: { biz: BusinessSu
   // ── حالت تکمیل‌شده: دکمه‌ی مداد کوچک برای ویرایش شهر/صنف
   if (!isPlaceholder) {
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <button
-            type="button"
-            className="flex items-center gap-1 rounded-full bg-accent px-2 py-1 text-[11px] font-bold text-muted-foreground transition hover:bg-accent/70 hover:text-primary"
-            aria-label="ویرایش شهر و صنف"
-          >
-            <MapPin className="size-3" />
-            {biz.city ?? "—"}
-            {biz.trade && <span className="text-muted-foreground/60">· {biz.trade}</span>}
-            <PencilLine className="size-3" />
-          </button>
-        </DialogTrigger>
-        <CatalogHeaderForm biz={biz} onDone={() => setOpen(false)} />
-      </Dialog>
+      <>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="flex items-center gap-1 rounded-full bg-accent px-2 py-1 text-[11px] font-bold text-muted-foreground transition hover:bg-accent/70 hover:text-primary"
+          aria-label="ویرایش شهر و صنف"
+        >
+          <MapPin className="size-3" />
+          {biz.city ?? "—"}
+          {biz.trade && <span className="text-muted-foreground/60">· {biz.trade}</span>}
+          <PencilLine className="size-3" />
+        </button>
+        <CatalogHeaderForm biz={biz} open={open} onDone={() => setOpen(false)} />
+      </>
     );
   }
 
   // ── حالت placeholder: متن چشمک‌زن با مداد
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button
-          type="button"
-          className="group flex items-center gap-1.5 text-2xl font-black text-muted-foreground transition hover:text-primary"
-          aria-label={placeholderText}
-        >
-          <span className="border-b-2 border-dashed border-muted-foreground/40 pb-1">
-            {placeholderText}
-          </span>
-          <PencilLine className="size-4 transition group-hover:text-primary" />
-        </button>
-      </DialogTrigger>
-      <CatalogHeaderForm biz={biz} onDone={() => setOpen(false)} />
-    </Dialog>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="group flex items-center gap-1.5 text-2xl font-black text-muted-foreground transition hover:text-primary"
+        aria-label={placeholderText}
+      >
+        <span className="border-b-2 border-dashed border-muted-foreground/40 pb-1">
+          {placeholderText}
+        </span>
+        <PencilLine className="size-4 transition group-hover:text-primary" />
+      </button>
+      <CatalogHeaderForm biz={biz} open={open} onDone={() => setOpen(false)} />
+    </>
   );
 }
 
-function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: () => void }) {
+function CatalogHeaderForm({ biz, open, onDone }: { biz: BusinessSummaryDto; open: boolean; onDone: () => void }) {
   const { toast } = useToast();
   const router = useRouter();
   const edit = useEditBusiness();
@@ -172,14 +164,20 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
   };
 
   return (
-    <DialogContent className="max-w-md gap-4 p-5">
-      <DialogHeader>
-        <DialogTitle className="flex items-center gap-2 text-base">
-          <Store className="size-4 text-primary" />
-          تنظیمات کسب‌وکار
-        </DialogTitle>
-      </DialogHeader>
-
+    <TallDialog
+      open={open}
+      onOpenChange={(o) => !o && onDone()}
+      icon={<Store className="size-4 shrink-0 text-primary" />}
+      title="تنظیمات کسب‌وکار"
+      subtitle="عنوان، صنف، لوگو، شهر و لوکیشن"
+      bodyClassName="space-y-4"
+      footer={
+        <Button className="flex-1" onClick={() => void save()} disabled={busy || edit.isPending}>
+          {busy || edit.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+          ذخیره
+        </Button>
+      }
+    >
       {/* لوگو */}
       <div className="flex items-center gap-3 border-b pb-4">
         <FileUploader
@@ -299,10 +297,6 @@ function CatalogHeaderForm({ biz, onDone }: { biz: BusinessSummaryDto; onDone: (
         </div>
       </div>
 
-      <Button onClick={() => void save()} disabled={busy || edit.isPending}>
-        {busy || edit.isPending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-        ذخیره
-      </Button>
-    </DialogContent>
+    </TallDialog>
   );
 }

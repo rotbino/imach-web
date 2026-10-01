@@ -20,12 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { TallDialog } from "@/app/components/tall-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Check, ImagePlus, Loader2, Package, Plus, Save, Settings2, Trash2, X } from "lucide-react";
 
@@ -208,31 +203,60 @@ export function ProductSettingsDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-1.5">
-            <Settings2 className="size-4.5 text-primary" />
-            تنظیمات کالا
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="max-h-[70vh] space-y-5 overflow-y-auto pe-1">
-          {/* هویت کالا — کالای مرجع عوض نمی‌شود؛ فقط مشخصات */}
-          <div className="flex items-center gap-2.5 rounded-xl border bg-accent/40 px-3 py-2.5">
-            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-base font-black text-primary">
-              {goodName(listing.good).slice(0, 1)}
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-extrabold">{goodName(listing.good)}</p>
-              <p className="text-[11px] text-muted-foreground">
-                {listing.good.category.nameFa} · هر {unitLabel(listing.good.unit, locale)}
-              </p>
+    <TallDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      icon={<Settings2 className="size-4.5 shrink-0 text-primary" />}
+      title="تنظیمات کالا"
+      subtitle={`${goodName(listing.good)} · هر ${unit}`}
+      bodyClassName="space-y-5"
+      footer={
+        <>
+          <Button
+            className="flex-1"
+            size="lg"
+            onClick={() => void save()}
+            disabled={saveListing.isPending}
+          >
+            {saveListing.isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+            ذخیره
+          </Button>
+          {confirmDelete ? (
+            <div className="flex shrink-0 items-center gap-1">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => void remove()}
+                disabled={deleteListing.isPending}
+              >
+                {deleteListing.isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
+                تأیید حذف
+              </Button>
+              <button
+                type="button"
+                aria-label="انصراف از حذف"
+                onClick={() => setConfirmDelete(false)}
+                className="grid size-6 place-items-center rounded-full text-muted-foreground transition hover:bg-accent hover:text-foreground"
+              >
+                <X className="size-3.5" />
+              </button>
             </div>
-          </div>
-
-          {/* مشخصات فروش */}
-          <div className="grid gap-3">
+          ) : (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="shrink-0 px-2 text-muted-foreground hover:bg-transparent hover:text-destructive"
+              onClick={() => setConfirmDelete(true)}
+            >
+              <Trash2 className="size-3.5" />
+              حذف
+            </Button>
+          )}
+        </>
+      }
+    >
+      <div className="grid gap-3">
             <p className="flex items-center gap-1.5 text-sm font-extrabold">
               <Package className="size-4 text-primary" />
               مشخصات فروش
@@ -431,55 +455,7 @@ export function ProductSettingsDialog({
               )}
             </div>
           </div>
-
-          {/* ذخیره و حذف — یک ردیف، هم‌دَر (خواسته‌ی کاربر): ذخیره اصلیِ بزرگِ
-              با بکگراند؛ حذف کوچک و بی‌رنگ — تأیید هم همان‌جا و کم‌حجم */}
-          <div className="flex items-center gap-2">
-            <Button
-              className="flex-1"
-              size="lg"
-              onClick={() => void save()}
-              disabled={saveListing.isPending}
-            >
-              {saveListing.isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-              ذخیره
-            </Button>
-            {confirmDelete ? (
-              <div className="flex shrink-0 items-center gap-1">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  onClick={() => void remove()}
-                  disabled={deleteListing.isPending}
-                >
-                  {deleteListing.isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
-                  تأیید حذف
-                </Button>
-                <button
-                  type="button"
-                  aria-label="انصراف از حذف"
-                  onClick={() => setConfirmDelete(false)}
-                  className="grid size-6 place-items-center rounded-full text-muted-foreground transition hover:bg-accent hover:text-foreground"
-                >
-                  <X className="size-3.5" />
-                </button>
-              </div>
-            ) : (
-              <Button
-                size="sm"
-                variant="ghost"
-                className="shrink-0 px-2 text-muted-foreground hover:bg-transparent hover:text-destructive"
-                onClick={() => setConfirmDelete(true)}
-              >
-                <Trash2 className="size-3.5" />
-                حذف
-              </Button>
-            )}
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    </TallDialog>
   );
 }
 

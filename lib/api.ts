@@ -455,6 +455,10 @@ export interface InquiryDto {
   id: string;
   volume: number;
   note: string | null;
+  /** فاز ۴ — تناوب خرید خریدار (WEEKLY | MONTHLY | OCCASIONAL) */
+  frequency: string | null;
+  /** فاز ۴ — انتظار تحویل خریدار («این ماه»، …) */
+  delivery: string | null;
   status: string;
   isRead: boolean;
   createdAt: string;
@@ -462,6 +466,7 @@ export interface InquiryDto {
     id: string;
     priceMinor: number | null;
     currency: string | null;
+    variantLabel: string | null;
     good: {
       id: string;
       nameFa: string;
@@ -470,7 +475,14 @@ export interface InquiryDto {
       category: { slug: string; nameFa: string; nameEn: string };
     };
   };
-  buyer: SellerDto;
+  buyer: InquiryBuyerDto;
+}
+
+/** خریدارِ درخواست — تماس و صنف برای صفحه جزئیات (طرح ۰۶) */
+export interface InquiryBuyerDto extends SellerDto {
+  trade: string | null;
+  activityType: string | null;
+  phone: string | null;
 }
 
 export interface InquiryPageDto extends PageDto<InquiryDto> {
@@ -1085,6 +1097,8 @@ export const marketApi = {
     api<InquiryPageDto>("/market/getInquiries", { params: { businessId, limit: 50 } }),
   markInquiryRead: (id: string) =>
     api<{ ok: boolean }>(`/market/markInquiryRead/${id}`, { method: "POST" }),
+  archiveInquiry: (id: string) =>
+    api<{ ok: boolean }>(`/market/archiveInquiry/${id}`, { method: "POST" }),
   sendOffer: (body: { inquiryId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),

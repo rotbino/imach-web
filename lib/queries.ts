@@ -373,6 +373,17 @@ export function useMarkInquiryRead() {
   });
 }
 
+/** فاز ۴ (طرح ۰۶) — بایگانی درخواست از صندوق ورودی فروشنده */
+export function useArchiveInquiry() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => marketApi.archiveInquiry(id),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market", "inquiries"] });
+    },
+  });
+}
+
 export function useSendOffer() {
   const qc = useQueryClient();
   return useMutation({

@@ -9,13 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { TallDialog } from "@/app/components/tall-dialog";
 import { BadgeCheck, BookUser, Check, Loader2, MessageSquare, Send, UserPlus } from "lucide-react";
 
 /*
@@ -122,24 +116,24 @@ export function ContactsGate({
     if (c.member) {
       toast({ title: "در iMach برایش اطلاع دادیم", description: `${c.name} کاتالوگ شما را در اپ می‌بیند.` });
     } else {
-      window.location.href = `sms:+${c.phone}?body=${encodeURIComponent(inviteText)}`;
+      window.location.assign(`sms:+${c.phone}?body=${encodeURIComponent(inviteText)}`);
       toast({ title: "پیامک آماده شد", description: "لینک دعوت شما ضمیمه‌ی پیامک است." });
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>اشتراک با مخاطبین</DialogTitle>
-          <DialogDescription>
-            {isSell ? "کاتالوگتان را برای مخاطبینتان بفرستید" : "لیست خریدتان را برای مخاطبینتان بفرستید"} —
-            اعضای iMach با رنگ برند مشخص‌اند.
-          </DialogDescription>
-        </DialogHeader>
-
-        {/* ورود مخاطبین — از گوشی با اجازه، یا دستی */}
-        <div className="grid gap-2">
+    <TallDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      icon={<BookUser className="size-4 shrink-0 text-primary" />}
+      title="اشتراک با مخاطبین"
+      subtitle={
+        isSell ? "کاتالوگتان را برای مخاطبینتان بفرستید" : "لیست خریدتان را برای مخاطبینتان بفرستید"
+      }
+      bodyClassName="space-y-3"
+    >
+      {/* ورود مخاطبین — از گوشی با اجازه، یا دستی */}
+      <div className="grid gap-2">
           {pickerSupported && (
             <Button variant="outline" onClick={() => void addFromDevice()} disabled={sync.isPending} className="w-full">
               {sync.isPending ? <Loader2 className="size-4 animate-spin" /> : <BookUser className="size-4 text-primary" />}
@@ -165,7 +159,7 @@ export function ContactsGate({
         </div>
 
         {/* لیست مخاطبین — اعضا اول (مرتب‌سازی سمت سرور) */}
-        <div className="max-h-[46vh] overflow-y-auto rounded-xl border" role="list" aria-label="مخاطبین من">
+        <div className="rounded-xl border" role="list" aria-label="مخاطبین من">
           {contactsQ.isLoading ? (
             <p className="grid place-items-center gap-2 py-8 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin" />
@@ -231,10 +225,9 @@ export function ContactsGate({
           )}
         </div>
 
-        <p className="text-center text-[11px] leading-5 text-muted-foreground">
-          برای غریبه‌ها پیامک دعوت با لینک شما آماده می‌شود؛ هر ثبت‌نام از لینک، به شما منتسب است.
-        </p>
-      </DialogContent>
-    </Dialog>
+      <p className="mt-3 text-center text-[11px] leading-5 text-muted-foreground">
+        برای غریبه‌ها پیامک دعوت با لینک شما آماده می‌شود؛ هر ثبت‌نام از لینک، به شما منتسب است.
+      </p>
+    </TallDialog>
   );
 }
