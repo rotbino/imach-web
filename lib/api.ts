@@ -323,6 +323,12 @@ export interface GoodItemDto {
   volume: number | null;
   frequency: string | null;
   updatedAt?: string;
+  /** فاز ۲ — ردیف غیرفعال (نمایش در «غیرفعال‌ها» کاتالوگ) */
+  isActive?: boolean;
+  /** فاز ۲ — بازدید پنجره ۳۰ روزه (شاخص کارت + «عملکرد ۳۰ روز») */
+  viewCount30?: number;
+  /** فاز ۲ — بازدید کل از پیدایش آگهی */
+  viewCountTotal?: number;
   brand?: { id: string; name: string } | null;
   /** گالری آگهی — خوانده‌شده از سیستم فایل‌ها (خالی = بی‌عکس، کاشی حرفی) */
   gallery?: FileDto[];
@@ -896,8 +902,13 @@ export interface AggregatedCatalogPageDto {
 }
 
 export const listingsApi = {
-  getMyListings: (businessId: string) =>
-    api<GoodItemDto[]>("/listings/getMyListings", { params: { businessId } }),
+  getMyListings: (
+    businessId: string,
+    opts?: { includeInactive?: boolean }
+  ) =>
+    api<GoodItemDto[]>("/listings/getMyListings", {
+      params: { businessId, ...(opts?.includeInactive ? { includeInactive: "true" } : {}) },
+    }),
   saveListing: (body: {
     businessId: string;
     goodId: string;
@@ -937,6 +948,11 @@ export const listingsApi = {
   copyFrom: (body: { businessId: string; sourceBusinessId: string; sourceListingIds: string[] }) =>
     api<{ copied: number; already: number; failed: number }>("/listings/copyFrom", { method: "PUT", body }),
   deleteListing: (id: string) => api<{ ok: boolean }>(`/listings/deleteListing/${id}`, { method: "DELETE" }),
+  /** فاز ۲ — شمارش بازدید عمومی (بدون احراز؛ مهمان هم حساب می‌شود) */
+  viewListing: (id: string) => api<{ ok: boolean }>(`/listings/view/${id}`, { method: "POST" }),
+  /** فاز ۲ — فعال/غیرفعال کردن کالا (بدون حذف؛ «توقف نمایش») */
+  setListingActive: (id: string, active: boolean) =>
+    api<GoodItemDto>(`/listings/setActive/${id}`, { method: "PUT", body: { active } }),
 };
 
 export const productsApi = {

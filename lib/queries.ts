@@ -206,10 +206,15 @@ export function useMyBusinesses(): UseQueryResult<(BusinessSummaryDto & { _count
   });
 }
 
-export function useMyListings(businessId: string | null | undefined): UseQueryResult<GoodItemDto[]> {
+export function useMyListings(
+  businessId: string | null | undefined,
+  opts?: { includeInactive?: boolean }
+): UseQueryResult<GoodItemDto[]> {
   return useQuery({
-    queryKey: qk.myListings(businessId ?? ""),
-    queryFn: () => listingsApi.getMyListings(businessId as string),
+    // includeInactive=true: کلید جدا تا کشِ پیش‌فرض (فعال‌ها) با نسخه کامل قاطی نشود؛
+    // بی‌اعتبارسازیِ پیشوند ["listings"] هر دو را تازه می‌کند
+    queryKey: [...qk.myListings(businessId ?? ""), opts?.includeInactive ? "all" : "active"],
+    queryFn: () => listingsApi.getMyListings(businessId as string, opts),
     enabled: !!businessId,
     staleTime: 60_000,
   });
@@ -246,6 +251,29 @@ export function useDeleteListing() {
       void qc.invalidateQueries({ queryKey: ["listings"] });
       void qc.invalidateQueries({ queryKey: ["business"] });
       void qc.invalidateQueries({ queryKey: ["market"] });
+    },
+  });
+}
+
+/** فاز ۲ — شمارش بازدید عمومی کالا؛ fire-and-forget (شکست بی‌سروصدا) */
+export function useViewListing() {
+  return useMutation({
+    mutationFn: listingsApi.viewListing,
+    onSuccess: () => {
+      // شمارنده فقط مالک می‌بیند — کش خودش را بعد از بازگشت به کاتالوگ تازه می‌کند
+    },
+  });
+}
+
+/** فاز ۲ — فعال/غیرفعال کردن کالا (ردیف غیرفعال کاتالوگ + پنل مدیریت کالا) */
+export function useSetListingActive() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, active }: { id: string; active: boolean }) =>
+      listingsApi.setListingActive(id, active),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["listings"] });
+      void qc.invalidateQueries({ queryKey: ["business"] });
     },
   });
 }

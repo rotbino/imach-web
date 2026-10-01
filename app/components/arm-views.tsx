@@ -237,7 +237,12 @@ export function SellArmView({ slug }: { slug: string }) {
             {sellListings.map((l) => {
               const photo = l.gallery?.[0];
               return (
-              <article key={l.id} className="animate-fade-up overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
+              /* کارت = ورودی صفحه‌ی جزئیات کالا (فاز ۲ — طرح ۱۳→۰۲) */
+              <Link
+                key={l.id}
+                href={`/sell/${slug}/${l.id}`}
+                className="animate-fade-up block overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
+              >
                 {photo ? (
                   /* تامبنیل ابر — unoptimized: عکس از قبل فشرده است و next/image
                      نباید سرِ هاست‌کانفیگ کرش کند */
@@ -264,6 +269,9 @@ export function SellArmView({ slug }: { slug: string }) {
                     {goodName(l.good)}
                     {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
                   </p>
+                  {l.variantLabel && (
+                    <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{l.variantLabel}</p>
+                  )}
                   <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
                   <p className="mt-2 text-lg font-black text-primary">
                     {fmtMoney(l.priceMinor, l.currency)}
@@ -275,7 +283,7 @@ export function SellArmView({ slug }: { slug: string }) {
                     موجودی: {fa(l.stock ?? 0)}
                   </Badge>
                 </div>
-              </article>
+              </Link>
               );
             })}
           </div>

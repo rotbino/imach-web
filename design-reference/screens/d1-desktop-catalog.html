@@ -72,61 +72,97 @@
         <span style="margin-right:auto;font-size:11.5px;color:var(--muted-fg)">آخرین قیمت‌ها امروز به‌روزرسانی شده</span>
       </div>
 
-      <!-- جدول مدیریت — مزیت دسکتاپ: ویرایش درجا -->
-      <table class="dtable">
-        <thead>
-          <tr>
-            <th>کالا</th><th>قیمت (تومان)</th><th>موجودی</th><th>حداقل سفارش</th><th>بازدید ۳۰ روز</th><th>دنبال‌کننده</th><th>درخواست باز</th><th>وضعیت</th><th>عملیات</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>برنج هاشمی</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
-            <td><b>۲٬۸۵۰٬۰۰۰</b> <span class="trend down" style="font-size:10px">▼۲٪</span></td>
-            <td>۱۲۰ کیسه</td><td>۵ کیسه</td><td>۲۱</td><td>۴</td>
-            <td><span class="badge b-new">۲</span></td>
-            <td><span class="badge b-green">فعال</span></td>
-            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
-          </tr>
-          <tr style="background:#fffdf9">
-            <td><b>برنج طارم</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
-            <td><b>۲٬۷۵۰٬۰۰۰</b></td>
-            <td>۸۰ کیسه</td><td>۵ کیسه</td><td>۱۷</td><td>۲</td>
-            <td>—</td>
-            <td><span class="badge b-green">فعال</span></td>
-            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
-          </tr>
-          <tr>
-            <td><b>برنج هاشمی</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۱۰ کیلویی</span></td>
-            <td><b>۵۹۵٬۰۰۰</b></td>
-            <td>۹۵ کیسه</td><td>۱۰ کیسه</td><td>۹</td><td>۱</td>
-            <td>—</td>
-            <td><span class="badge b-green">فعال</span></td>
-            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
-          </tr>
-          <tr>
-            <td><b>برنج فجر</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
-            <td><b>۲٬۴۸۰٬۰۰۰</b></td>
-            <td><span class="badge b-amber">۱۲ کیسه</span></td><td>۵ کیسه</td><td>۱۴</td><td>۳</td>
-            <td>—</td>
-            <td><span class="badge b-green">فعال</span></td>
-            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
-          </tr>
-          <tr style="opacity:.6">
-            <td><b>برنج صدری</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
-            <td>—</td>
-            <td>۳۰ کیسه</td><td>۵ کیسه</td><td>۲</td><td>۰</td>
-            <td>—</td>
-            <td><span class="badge b-muted">غیرفعال</span></td>
-            <td style="color:var(--green);font-weight:700">فعال‌سازی</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- لیست کالاها — ردیف‌های کارتی (به‌جای جدول): هر کالا یک ردیف؛
+           همان زبان بصری موبایل، مزیت دسکتاپ = اطلاعات و عملیات درجا -->
+      <div class="rows" style="gap:8px">
+        <div class="row-card" style="padding:10px 14px;gap:12px">
+          <div class="thumb" style="width:54px;height:54px"><span class="glyph">۵۰کیلو</span></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:700">برنج هاشمی</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">کیسه ۵۰ کیلویی · حداقل ۵ کیسه</div>
+          </div>
+          <div style="text-align:left;min-width:120px">
+            <div class="price">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+            <span class="trend down" style="font-size:10px">▼۲٪</span>
+          </div>
+          <div class="mini-metrics" style="gap:14px">
+            <span class="m"><svg><use href="#i-eye"/></svg> ۲۱</span>
+            <span class="m"><svg><use href="#i-bookmark"/></svg> ۴</span>
+            <span class="m"><svg><use href="#i-inbox"/></svg> ۲</span>
+          </div>
+          <span class="badge b-green">موجود</span>
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer">ویرایش</span>
+        </div>
+        <div class="row-card" style="padding:10px 14px;gap:12px;background:#fffdf9">
+          <div class="thumb" style="width:54px;height:54px"><span class="glyph">۵۰کیلو</span></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:700">برنج طارم</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">کیسه ۵۰ کیلویی · حداقل ۵ کیسه</div>
+          </div>
+          <div style="text-align:left;min-width:120px">
+            <div class="price">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
+          </div>
+          <div class="mini-metrics" style="gap:14px">
+            <span class="m"><svg><use href="#i-eye"/></svg> ۱۷</span>
+            <span class="m"><svg><use href="#i-bookmark"/></svg> ۲</span>
+          </div>
+          <span class="badge b-green">موجود</span>
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer">ویرایش</span>
+        </div>
+        <div class="row-card" style="padding:10px 14px;gap:12px">
+          <div class="thumb" style="width:54px;height:54px"><span class="glyph">۱۰کیلو</span></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:700">برنج هاشمی</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">کیسه ۱۰ کیلویی · حداقل ۱۰ کیسه</div>
+          </div>
+          <div style="text-align:left;min-width:120px">
+            <div class="price">۵۹۵٬۰۰۰ <small>تومان</small></div>
+          </div>
+          <div class="mini-metrics" style="gap:14px">
+            <span class="m"><svg><use href="#i-eye"/></svg> ۹</span>
+            <span class="m"><svg><use href="#i-bookmark"/></svg> ۱</span>
+          </div>
+          <span class="badge b-green">موجود</span>
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer">ویرایش</span>
+        </div>
+        <div class="row-card" style="padding:10px 14px;gap:12px">
+          <div class="thumb" style="width:54px;height:54px"><span class="glyph">۵۰کیلو</span></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:700">برنج فجر</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">کیسه ۵۰ کیلویی · حداقل ۵ کیسه</div>
+          </div>
+          <div style="text-align:left;min-width:120px">
+            <div class="price">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
+          </div>
+          <div class="mini-metrics" style="gap:14px">
+            <span class="m"><svg><use href="#i-eye"/></svg> ۱۴</span>
+            <span class="m"><svg><use href="#i-bookmark"/></svg> ۳</span>
+          </div>
+          <span class="badge b-amber">موجودی کم · ۱۲ کیسه</span>
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer">ویرایش</span>
+        </div>
+        <div class="row-card" style="padding:10px 14px;gap:12px;opacity:.55">
+          <div class="thumb" style="width:54px;height:54px;filter:grayscale(1)"><span class="glyph">۵۰کیلو</span></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:700">برنج صدری</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">کیسه ۵۰ کیلویی · حداقل ۵ کیسه</div>
+          </div>
+          <div style="text-align:left;min-width:120px">
+            <div class="price" style="color:var(--muted-fg)">—</div>
+          </div>
+          <div class="mini-metrics" style="gap:14px">
+            <span class="m"><svg><use href="#i-eye"/></svg> ۲</span>
+            <span class="m"><svg><use href="#i-bookmark"/></svg> ۰</span>
+          </div>
+          <span class="badge b-muted">غیرفعال</span>
+          <span style="color:var(--green);font-weight:700;cursor:pointer">فعال‌سازی</span>
+        </div>
+      </div>
 
       <!-- راهنمای ادغام نما -->
       <div class="legend" style="max-width:640px">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>نمای عمومی همین کاتالوگ برای مشتری‌ها: <b style="color:var(--primary-strong);cursor:pointer">پیش‌نمایش عمومی</b> — همان صفحه، بدون ستون‌های مدیریت. آنچه می‌بینید، همان چیزی است که مشتری می‌بیند.</div>
+        <div>نمای عمومی همین کاتالوگ برای مشتری‌ها: <b style="color:var(--primary-strong);cursor:pointer">پیش‌نمایش عمومی</b> — همان صفحه، بدون شاخص‌های مدیریت. آنچه می‌بینید، همان چیزی است که مشتری می‌بیند.</div>
       </div>
 
     </main>

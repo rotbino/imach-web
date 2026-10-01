@@ -1,47 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { fa, activityTypeLabel, categoryName, fmtMoney, goodName, unitLabel } from "@/lib/format";
-import { useMyBusinesses, useMyListings } from "@/lib/queries";
-import type { GoodItemDto } from "@/lib/api";
+import { useMyBusinesses, useMyFollowers, useMyListings, useSetListingActive } from "@/lib/queries";
+import type { BusinessSummaryDto, GoodItemDto } from "@/lib/api";
 import { ShareDialog } from "@/app/components/share";
 import { CatalogHeaderPrompt } from "@/app/components/catalog-header-prompt";
 import { SetPasswordButton } from "@/app/components/set-password-button";
-import { OwnerLineEditable } from "@/app/components/owner-edit";
 import { NoBusinessState } from "@/app/components/no-business";
 import { WelcomeModal } from "@/app/components/welcome-modal";
 import { ProductSettingsDialog } from "./product-settings";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
   BadgeCheck,
-  Briefcase,
-  LayoutDashboard,
+  Eye,
   Loader2,
-  MapPin,
-  Package,
+  PackageOpen,
   Plus,
-  Share2,
+  Search,
   Settings2,
+  Share2,
   TriangleAlert,
 } from "lucide-react";
 
 /*
- * کاتالوگ فروش من — ویترین (خواسته‌ی کاربر: «اولین چیزی که می‌بینی ویترین است»):
- * مدیریت و نمایش یکی‌اند — WYSIWYG، مثل اینستاگرام:
- * • همه‌چیزِ مدیریتی مستقیم روی خود ویترین است:
- *   کالای جدید · اشتراک‌گذاری لینک · چرخ‌دنده‌ی هر کالا (تنظیمات + حذف)
- * • داشبورد و تنظیمات هدر → «داشبورد» (/sell/panel) با دکمه بازگشت.
- *
- * اگر کاربر ثبت‌نام سریع کرده و هنوز نام/صنف/شهر را کامل نکرده، هدر کاتالوگ به‌جای
- * نام، «عنوان کاتالوگ را وارد کنید» نشان می‌دهد و دکمه‌ی چشمک‌زن «ثبت رمز عبور»
- * کنار «کالای جدید» دیده می‌شود.
+ * کاتالوگ من — فاز ۲ (طرح ۰۱ + d1):
+ * • هدر تختِ ویترین (آواتار + نام + صنف·شهر + اشتراک) به‌جای کارت بزرگ
+ * • نوار آمار: کالا / بازدید ماه (شکاف ۳) / دنبال‌کننده
+ * • جست‌وجو + افزودن کالا + چیپ نوع کالا
+ * • کارت‌های عمومی + شاخص‌های کوچک مالک (👁 بازدید ۳۰ روز + وضعیت موجودی)
+ * • ردیف غیرفعال با «فعال‌سازی» (setActive) و سینی «نیاز به تکمیل قیمت»
+ * • دسکتاپ: همان کارت‌ها به‌صورت ردیف‌های افقی (بهبود d1 — نه جدول، نه گرید)
+ * مدیریت و نمایش یکی‌اند — WYSIWYG مثل اینستاگرام؛ کارت = ورودی صفحه‌ی کالا.
  */
 
 export default function SellPage() {
@@ -49,8 +46,11 @@ export default function SellPage() {
   const { status } = useAuthStore();
 
   useEffect(() => {
-    document.title = "کاتالوگ فروش من | iMach";
+    document.title = "کاتالوگ من | iMach";
     setArmActive("sell");
+  }, []);
+
+  useEffect(() => {
     if (status === "guest") router.replace("/start");
   }, [status, router]);
 
@@ -91,18 +91,8 @@ function SellBody() {
       <AppHeader />
       <WelcomeModal />
       <main className="grow">
-        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
-          <ShowcaseHeader
-            bizId={active.id}
-            slug={active.slug}
-            name={active.name}
-            city={active.city}
-            trade={active.trade ?? null}
-            activityType={active.activityType}
-            isVerified={active.isVerified}
-            currency={active.currency ?? "IRR"}
-            biz={active}
-          />
+        <div className="mx-auto max-w-4xl px-4 py-5 sm:px-6 sm:py-7">
+          <MyCatalog biz={active} />
         </div>
       </main>
       <AppFooter />
@@ -111,214 +101,222 @@ function SellBody() {
   );
 }
 
-// ─── ویترین — هدر کاتالوگ + آلبوم کالاها + ابزارهای مستقیم ───
+// ─── وضعیت موجودی — همان زبان بج‌های طرح ───
+function stockBadge(l: GoodItemDto): { label: string; cls: string } {
+  const stock = l.stock ?? 0;
+  const mo = l.minOrder ?? 0;
+  if (stock <= 0) return { label: "ناموجود", cls: "bg-stone-100 text-stone-500" };
+  if (mo > 0 && stock <= mo * 3) return { label: "موجودی کم", cls: "bg-amber-100/80 text-amber-700" };
+  return { label: "موجود", cls: "bg-green-100/70 text-green-700" };
+}
 
-function ShowcaseHeader({
-  bizId,
-  slug,
-  name,
-  city,
-  trade,
-  activityType,
-  isVerified,
-  currency,
-  biz,
-}: {
-  bizId: string;
-  slug: string;
-  name: string;
-  city: string;
-  trade: string | null;
-  activityType: string | null;
-  isVerified: boolean;
-  currency: string;
-  biz: import("@/lib/api").BusinessSummaryDto;
-}) {
+function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
   const router = useRouter();
-  const user = useAuthStore((s) => s.user);
-  const listingsQ = useMyListings(bizId);
+  const bizId = biz.id;
+  const slug = biz.slug;
+  const listingsQ = useMyListings(bizId, { includeInactive: true });
+  const followersQ = useMyFollowers(bizId);
+
   const [settingsFor, setSettingsFor] = useState<GoodItemDto | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const [goodFilter, setGoodFilter] = useState<string | null>(null);
 
-  // دو طبقه (خواسته‌ی کاربر: «قیمت‌دار و کامل بالا، بقیه پایین با نشان نیاز به تکمیل»):
-  const listings = (listingsQ.data ?? []).filter(
-    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null
+  const isPlaceholder = biz.name === "کاتالوگ شما" || !biz.trade || biz.city === "—";
+
+  // سه طبقه: فعالِ قیمت‌دار (ویترین) / فعالِ بی‌قیمت (سینی تکمیل) / غیرفعال
+  const rows = listingsQ.data ?? [];
+  const activeSell = rows.filter(
+    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.isActive !== false && l.priceMinor !== null
   );
-  const incomplete = (listingsQ.data ?? []).filter(
-    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor === null
+  const incomplete = rows.filter(
+    (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.isActive !== false && l.priceMinor === null
   );
+  const inactive = rows.filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.isActive === false);
 
-  const toolBtn =
-    "grid size-9 place-items-center rounded-xl text-muted-foreground transition hover:bg-accent hover:text-primary";
+  // جست‌وجوی محلی + فیلتر نوع کالا (چیپ‌ها)
+  const chips = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const l of activeSell) counts.set(l.good.id, (counts.get(l.good.id) ?? 0) + 1);
+    return [...counts.entries()]
+      .map(([id, count]) => ({
+        id,
+        name: goodName(activeSell.find((l) => l.good.id === id)!.good),
+        count,
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 12);
+  }, [activeSell]);
 
-  // آیا نام کسب‌وکار placeholder است؟ «کاتالوگ شما» یا خالی
-  const isPlaceholder = name === "کاتالوگ شما" || !trade || city === "—";
+  const filtered = activeSell.filter((l) => {
+    if (goodFilter && l.good.id !== goodFilter) return false;
+    if (!q.trim()) return true;
+    const needle = q.trim().toLowerCase();
+    return [goodName(l.good), l.brand?.name, l.variantLabel, categoryName(l.good.category)]
+      .filter(Boolean)
+      .some((s) => (s as string).toLowerCase().includes(needle));
+  });
+
+  const viewsMonth = activeSell.reduce((s, l) => s + (l.viewCount30 ?? 0), 0);
+  const followers = followersQ.data?.length ?? 0;
+
+  if (listingsQ.isLoading) {
+    return (
+      <div className="grid place-items-center py-24">
+        <Loader2 className="size-6 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <>
-      {/* نوار ابزار تخت — کالای جدید + دکمه چشمک‌زن ثبت پسورد + داشبورد و اشتراک‌گذاری */}
-      <div className="mb-3 flex items-center justify-between gap-2 rounded-2xl border bg-white p-1.5 shadow-sm">
-        <div className="flex items-center gap-1.5">
-          <Button size="sm" onClick={() => router.push("/new?tab=sell")} className="gap-1">
-            <Plus className="size-4" />
-            کالای جدید
-          </Button>
-          {/* دکمه‌ی چشمک‌زن «ثبت رمز عبور» — فقط برای کاربران ثبت‌نام سریع */}
-          <SetPasswordButton variant="header" />
-        </div>
-        <div className="flex items-center">
-          <button
-            type="button"
-            onClick={() => setShareOpen(true)}
-            aria-label="اشتراک‌گذاری کاتالوگ"
-            className={toolBtn}
-          >
-            <Share2 className="size-4.5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/sell/panel")}
-            aria-label="داشبورد و تنظیمات"
-            className={toolBtn}
-          >
-            <LayoutDashboard className="size-4.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* هدر کاتالوگ — اگر placeholder، «عنوان کاتالوگ را وارد کنید» نشان بده */}
-      <section className="rounded-3xl border bg-white p-5 text-center shadow-sm sm:p-7">
-        <div className="flex flex-col items-center">
-          <span className="grid size-20 place-items-center rounded-3xl bg-primary/10 text-4xl font-black text-primary shadow-inner">
-            {name === "کاتالوگ شما" ? "?" : name.slice(0, 1)}
-          </span>
+      {/* ═══ هدر ویترین — تخت: آواتار + نام + صنف·شهر + اشتراک ═══ */}
+      <header className="flex items-center gap-3 pb-1">
+        <span className="grid size-[54px] shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#c2703a] to-primary text-xl font-bold text-white shadow-inner">
+          {biz.name === "کاتالوگ شما" ? "?" : biz.name.slice(0, 1)}
+        </span>
+        <div className="min-w-0 flex-1">
           {isPlaceholder ? (
             <CatalogHeaderPrompt biz={biz} />
           ) : (
-            <h1 className="mt-3 flex items-center gap-1.5 text-2xl font-black">
-              {name}
-              {isVerified && <BadgeCheck className="size-5 text-primary" aria-label="تاییدشده" />}
+            <h1 className="flex items-center gap-1.5 truncate text-[16.5px] font-bold">
+              {biz.name}
+              {biz.isVerified && <BadgeCheck className="size-4 shrink-0 text-[#1d5fb8]" aria-label="تاییدشده" />}
             </h1>
           )}
-          {!isPlaceholder && (
-            <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-              {activityType && (
-                <Badge variant="outline" className="border-primary/25 bg-accent text-primary">
-                  <Briefcase className="size-3" />
-                  {activityTypeLabel(activityType)}
-                </Badge>
-              )}
-              {/* شهر — با مداد برای ویرایش شهر و لوکیشن */}
-              <CatalogHeaderPrompt biz={biz} variant="sell" />
-            </div>
-          )}
-          {/* نام مالک زیر عنوان — با مداد برای ویرایش نام و عکس */}
-          {user && (
-            <OwnerLineEditable
-              owner={{
-                id: user.id,
-                name: user.name,
-                firstName: user.firstName,
-                lastName: user.lastName,
-              }}
-              isOwner={true}
-            />
-          )}
-
-          <div className="mt-4 flex items-center gap-6 text-center" aria-label="آمار کاتالوگ">
-            <div>
-              <p className="text-lg font-black">{fa(listings.length)}</p>
-              <p className="text-[11px] text-muted-foreground">کالا</p>
-            </div>
-            {biz.city && biz.city !== "—" && (
-              <div>
-                <p className="text-sm font-black">{biz.city}</p>
-                <p className="text-[11px] text-muted-foreground">شهر</p>
-              </div>
-            )}
-            {biz.trade && (
-              <div>
-                <p className="text-sm font-black">{biz.trade}</p>
-                <p className="text-[11px] text-muted-foreground">صنف</p>
-              </div>
-            )}
-          </div>
+          <p className="mt-1 truncate text-[11.5px] text-muted-foreground">
+            {[biz.trade || activityTypeLabel(biz.activityType ?? ""), biz.city !== "—" ? biz.city : null]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
         </div>
-      </section>
+        <button
+          type="button"
+          onClick={() => setShareOpen(true)}
+          aria-label="اشتراک کاتالوگ"
+          className="grid size-9 shrink-0 place-items-center rounded-xl border bg-white text-stone-500 transition hover:bg-accent hover:text-primary"
+        >
+          <Share2 className="size-4.5" />
+        </button>
+      </header>
 
-      {/* آلبوم کالاها — هر کالا چرخ‌دنده‌ی تنظیمات خودش را دارد */}
-      <section className="mt-6">
+      {/* ═══ نوار آمار — کالا / بازدید ماه / دنبال‌کننده ═══ */}
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="rounded-xl border bg-white px-1.5 py-2 text-center">
+          <p className="text-[16px] font-bold">{fa(activeSell.length)}</p>
+          <p className="mt-0.5 text-[10px] text-muted-foreground">کالا</p>
+        </div>
+        <div className="rounded-xl border bg-white px-1.5 py-2 text-center">
+          <p className="text-[16px] font-bold">{fa(viewsMonth)}</p>
+          <p className="mt-0.5 text-[10px] text-muted-foreground">بازدید ماه</p>
+        </div>
+        <div className="rounded-xl border bg-white px-1.5 py-2 text-center">
+          <p className="text-[16px] font-bold text-primary-strong">{fa(followers)}</p>
+          <p className="mt-0.5 text-[10px] text-muted-foreground">دنبال‌کننده</p>
+        </div>
+      </div>
 
-        {listings.length === 0 ? (
-          <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
-            <p className="text-sm text-muted-foreground">هنوز کالایی در کاتالوگتان نیست.</p>
+      {/* ═══ جست‌وجو + افزودن کالا ═══ */}
+      <div className="mt-3 flex items-center gap-2">
+        <label className="flex h-11 flex-1 items-center gap-2.5 rounded-xl border border-stone-300 bg-white px-3.5">
+          <Search className="size-4.5 shrink-0 text-muted-foreground" />
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="جست‌وجو در کاتالوگ…"
+            className="h-full w-full bg-transparent text-[13px] outline-none placeholder:text-stone-400"
+          />
+        </label>
+        <Button className="h-11 gap-1 px-4" onClick={() => router.push("/new?tab=sell")}>
+          <Plus className="size-4" />
+          افزودن کالا
+        </Button>
+      </div>
+
+      {/* دکمه چشمک‌زن ثبت رمز — فقط کاربرانِ ثبت‌نام سریع */}
+      <SetPasswordButton variant="header" />
+
+      {/* ═══ چیپ نوع کالا ═══ */}
+      {chips.length > 1 && (
+        <div className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <button
+            type="button"
+            onClick={() => setGoodFilter(null)}
+            className={`shrink-0 rounded-full border px-3.5 py-1.5 text-[12.5px] transition ${
+              goodFilter === null
+                ? "border-transparent bg-accent font-bold text-primary"
+                : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
+            }`}
+          >
+            همه
+          </button>
+          {chips.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setGoodFilter(goodFilter === c.id ? null : c.id)}
+              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-[12.5px] transition ${
+                goodFilter === c.id
+                  ? "border-transparent bg-accent font-bold text-primary"
+                  : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
+              }`}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ═══ کارت‌های کالا — موبایل: گرید ۲ستونه / دسکتاپ: ردیف‌های افقی ═══ */}
+      <section className="mt-4">
+        {activeSell.length === 0 ? (
+          <div className="rounded-2xl border border-dashed bg-white/70 p-10 text-center">
+            <PackageOpen className="mx-auto size-8 text-stone-300" />
+            <p className="mt-2 text-sm font-bold">هنوز کالایی در کاتالوگتان نیست</p>
+            <p className="mt-1 text-xs leading-6 text-muted-foreground">
+              اولین کالا را ثبت کنید تا ویترین شما برای مشتری‌ها ساخته شود.
+            </p>
             <Button className="mt-4" onClick={() => router.push("/new?tab=sell")}>
               <Plus className="size-4" />
               ثبت اولین کالا
             </Button>
           </div>
+        ) : filtered.length === 0 ? (
+          <p className="rounded-2xl border border-dashed bg-white/70 p-8 text-center text-sm text-muted-foreground">
+            چیزی مطابق جست‌وجو پیدا نشد.
+          </p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {listings.map((l) => {
-              const photo = l.gallery?.[0] ?? (l.product?.imageUrl ? { url: l.product.imageUrl, thumbUrl: l.product.imageUrl } : null);
-              return (
-              <article
-                key={l.id}
-                className="animate-fade-up overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
-              >
-                <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  {photo ? (
-                    <Image
-                      src={photo.thumbUrl ?? photo.url}
-                      alt={goodName(l.good)}
-                      fill
-                      sizes="(min-width: 640px) 33vw, 50vw"
-                      unoptimized
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="grid h-full w-full place-items-center bg-gradient-to-br from-accent/70 via-accent/30 to-transparent">
-                      <span className="text-5xl font-black text-primary/20" aria-hidden>
-                        {goodName(l.good).slice(0, 1)}
-                      </span>
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setSettingsFor(l)}
-                    aria-label={`تنظیمات ${goodName(l.good)}`}
-                    className="absolute end-2 top-2 grid size-8 place-items-center rounded-xl border bg-white/95 text-muted-foreground shadow-sm transition hover:text-primary"
-                  >
-                    <Settings2 className="size-4" />
-                  </button>
-                </div>
-                <div className="p-3">
-                  <p className="truncate font-extrabold" title={goodName(l.good)}>
-                    {goodName(l.good)}
-                    {l.brand && <span className="ms-1.5 text-[11px] font-medium text-muted-foreground">{l.brand.name}</span>}
-                  </p>
-                  {l.variantLabel && (
-                    <p className="mt-0.5 truncate text-[11px] font-bold text-primary/70">{l.variantLabel}</p>
-                  )}
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">{categoryName(l.good.category)}</p>
-                  <p className="mt-2 text-lg font-black text-primary">
-                    {fmtMoney(l.priceMinor, l.currency)}
-                  </p>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">
-                    هر {unitLabel(l.good.unit)} · حداقل {fa(l.minOrder ?? 0)} {unitLabel(l.good.unit)}
-                  </p>
-                  <Badge variant="secondary" className="mt-2">
-                    موجودی: {fa(l.stock ?? 0)}
-                  </Badge>
-                </div>
-              </article>
-              );
-            })}
+          <div className="grid grid-cols-2 items-stretch gap-2.5 sm:flex sm:flex-col sm:gap-2">
+            {filtered.map((l) => (
+              <CatalogCard key={l.id} listing={l} slug={slug} onSettings={() => setSettingsFor(l)} />
+            ))}
           </div>
         )}
       </section>
 
-      {/* سینی «نیاز به تکمیل قیمت» — ردیف‌های اسکن‌شده/کپی‌شده که هنوز قیمت ندارند */}
+      {/* ═══ ردیف کالای غیرفعال — «فعال‌سازی» یک‌ضربه‌ای ═══ */}
+      {inactive.length > 0 && (
+        <section className="mt-3.5 space-y-1.5">
+          {inactive.map((l) => (
+            <div
+              key={l.id}
+              className="flex items-center gap-2 rounded-xl border bg-white/60 px-3 py-2.5 text-[11.5px] text-muted-foreground"
+            >
+              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[10.5px] font-bold text-stone-500">
+                غیرفعال
+              </span>
+              <span className="min-w-0 flex-1 truncate">
+                {goodName(l.good)}
+                {l.variantLabel ? ` — ${l.variantLabel}` : ""}
+              </span>
+              <ActivateButton listingId={l.id} />
+            </div>
+          ))}
+        </section>
+      )}
+
+      {/* ═══ سینی «نیاز به تکمیل قیمت» — اسکن/کپی‌شده‌های بی‌قیمت ═══ */}
       {incomplete.length > 0 && (
         <section className="mt-6">
           <h2 className="mb-2 flex items-center gap-1.5 px-1 text-sm font-extrabold text-amber-700">
@@ -330,34 +328,36 @@ function ShowcaseHeader({
             این‌ها تا قیمت نگیرند در ویترین عمومی دیده نمی‌شوند — با یک ضربه قیمت و حداقل سفارش را بدهید.
           </p>
           <div className="grid gap-2">
-            {incomplete.map((l) => {
-              const photo = l.gallery?.[0];
-              return (
-                <button
-                  key={l.id}
-                  type="button"
-                  onClick={() => setSettingsFor(l)}
-                  className="flex w-full items-center gap-3 rounded-xl border bg-white p-2.5 text-start shadow-sm transition hover:border-amber-400/60 hover:bg-amber-50/40"
-                >
-                  <span className="size-11 shrink-0 overflow-hidden rounded-lg bg-accent/70">
-                    {photo ? (
-                      <Image src={photo.thumbUrl ?? photo.url} alt="" width={44} height={44} unoptimized className="size-full object-cover" />
-                    ) : (
-                      <span className="grid size-full place-items-center text-lg font-black text-primary/60">
-                        {goodName(l.good).slice(0, 1)}
-                      </span>
-                    )}
+            {incomplete.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                onClick={() => setSettingsFor(l)}
+                className="flex w-full items-center gap-3 rounded-xl border bg-white p-2.5 text-start shadow-sm transition hover:border-amber-400/60 hover:bg-amber-50/40"
+              >
+                <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-lg bg-accent/70 text-lg font-black text-primary/60">
+                  {(l.gallery?.[0]?.thumbUrl ?? l.product?.imageUrl) ? (
+                    <Image
+                      src={(l.gallery?.[0]?.thumbUrl ?? l.product!.imageUrl)!}
+                      alt=""
+                      width={44}
+                      height={44}
+                      unoptimized
+                      className="size-full object-cover"
+                    />
+                  ) : (
+                    goodName(l.good).slice(0, 1)
+                  )}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-extrabold">{goodName(l.good)}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">
+                    {l.variantLabel ? `${l.variantLabel} · ` : ""}بدون قیمت — تکمیل کنید
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-extrabold">{goodName(l.good)}</span>
-                    <span className="block truncate text-[11px] text-muted-foreground">
-                      {l.variantLabel ? `${l.variantLabel} · ` : ""}بدون قیمت — تکمیل کنید
-                    </span>
-                  </span>
-                  <TriangleAlert className="size-4 shrink-0 text-amber-500" />
-                </button>
-              );
-            })}
+                </span>
+                <TriangleAlert className="size-4 shrink-0 text-amber-500" />
+              </button>
+            ))}
           </div>
         </section>
       )}
@@ -366,12 +366,120 @@ function ShowcaseHeader({
         <ProductSettingsDialog
           listing={settingsFor}
           bizId={bizId}
-          currency={currency}
+          currency={biz.currency ?? "IRR"}
           open
           onOpenChange={(o) => !o && setSettingsFor(null)}
         />
       )}
-      <ShareDialog kind="sell" slug={slug} bizName={name} open={shareOpen} onOpenChange={setShareOpen} />
+      <ShareDialog kind="sell" slug={slug} bizName={biz.name} open={shareOpen} onOpenChange={setShareOpen} />
     </>
+  );
+}
+
+// ─── فعال‌سازی یک‌ضربه‌ای از ردیف غیرفعال ───
+function ActivateButton({ listingId }: { listingId: string }) {
+  const { toast } = useToast();
+  const activate = useSetListingActive();
+  return (
+    <button
+      type="button"
+      disabled={activate.isPending}
+      onClick={() => {
+        activate.mutate(
+          { id: listingId, active: true },
+          {
+            onSuccess: () => toast({ title: "فعال شد", description: "به ویترین برگشت." }),
+            onError: (e) => toast({ title: e.message || "ناموفق بود", variant: "destructive" }),
+          }
+        );
+      }}
+      className="shrink-0 font-bold text-green-600 transition hover:underline disabled:opacity-50"
+    >
+      {activate.isPending ? "…" : "فعال‌سازی"}
+    </button>
+  );
+}
+
+// ─── کارت کالا — موبایل: عمودی / دسکتاپ: ردیف افقی (بهبود d1) ───
+function CatalogCard({
+  listing: l,
+  slug,
+  onSettings,
+}: {
+  listing: GoodItemDto;
+  slug: string;
+  onSettings: () => void;
+}) {
+  const photo = l.gallery?.[0] ?? (l.product?.imageUrl ? { url: l.product.imageUrl, thumbUrl: l.product.imageUrl } : null);
+  const name = goodName(l.good);
+  const unit = unitLabel(l.good.unit);
+  const badge = stockBadge(l);
+  const href = `/sell/${slug}/${l.id}`;
+
+  return (
+    <article className="group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md sm:flex sm:items-center sm:gap-3 sm:rounded-xl sm:px-3 sm:py-2.5">
+      <Link href={href} className="block sm:contents">
+        {/* تصویر / کاشی واریانت */}
+        <span className="relative block aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-[#f3f1ea] to-[#e9e5db] sm:grid sm:size-14 sm:shrink-0 sm:place-items-center sm:rounded-lg sm:aspect-auto">
+          {photo ? (
+            <Image
+              src={photo.thumbUrl ?? photo.url}
+              alt={name}
+              width={112}
+              height={84}
+              unoptimized
+              className="h-full w-full object-cover sm:size-14 sm:rounded-lg"
+            />
+          ) : (
+            <span className="absolute inset-0 grid place-items-center p-2 text-center text-[11px] font-bold text-stone-400 sm:static sm:line-clamp-3">
+              {l.variantLabel ?? unit}
+            </span>
+          )}
+        </span>
+
+        {/* اطلاعات — موبایل: ستون / دسکتاپ: ردیف با فاصله */}
+        <span className="block p-2.5 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:gap-4 sm:p-0">
+          <span className="block min-w-0 sm:flex-1">
+            <span className="block truncate text-[12.5px] font-bold leading-5" title={name}>
+              {name}
+              {l.brand && <span className="ms-1 text-[10px] font-medium text-muted-foreground">{l.brand.name}</span>}
+            </span>
+            <span className="mt-0.5 block truncate text-[10px] text-muted-foreground">
+              {l.variantLabel ?? categoryName(l.good.category)}
+            </span>
+          </span>
+
+          <span className="mt-1.5 block sm:mt-0 sm:text-end">
+            <span className="block text-[13px] font-bold sm:text-[15px]">
+              {fmtMoney(l.priceMinor, l.currency)}
+            </span>
+            <span className="mt-0.5 block text-[9.5px] font-normal text-muted-foreground">
+              هر {unit} · حداقل {fa(l.minOrder ?? 0)}
+            </span>
+          </span>
+
+          {/* شاخص‌های کوچک مالک — بازدید ۳۰ روز + وضعیت موجودی */}
+          <span className="mt-1.5 flex items-center gap-2.5 text-[10.5px] text-muted-foreground sm:mt-0 sm:shrink-0 sm:flex-col sm:items-end sm:gap-1">
+            <span className="inline-flex items-center gap-1">
+              <Eye className="size-3.5" />
+              {fa(l.viewCount30 ?? 0)}
+            </span>
+            <span className={`rounded-full px-2.5 py-0.5 text-[10.5px] font-bold ${badge.cls}`}>
+              {badge.label}
+            </span>
+          </span>
+        </span>
+      </Link>
+
+      {/* چرخ‌دنده تنظیمات کالا */}
+      <button
+        type="button"
+        onClick={onSettings}
+        aria-label={`تنظیمات ${name}`}
+        className="absolute end-1.5 top-1.5 grid size-7 place-items-center rounded-lg border-0 bg-white/95 text-stone-500 shadow-sm transition hover:text-primary sm:static sm:size-8 sm:shrink-0 sm:rounded-lg"
+      >
+        <Settings2 className="size-3.5 sm:size-4" />
+      </button>
+    </article>
   );
 }
