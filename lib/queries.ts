@@ -15,6 +15,7 @@ import {
   type BoardRowDto,
   type BusinessProfileDto,
   type BusinessSummaryDto,
+  type CatalogCategoryDto,
   type CategoryNodeDto,
   type ContactRowDto,
   type CustomerRowDto,
@@ -226,6 +227,22 @@ export function useCreateBusiness() {
     mutationFn: businessesApi.createBusiness,
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });
+    },
+  });
+}
+
+/** فاز ۳ (طرح ۰۱) — دسته‌های شخصی کاتالوگ: replace یکجای لیست.
+ *  کش بيزنس‌ها و کاتالوگ عمومی همان لحظه تازه می‌شود (چیپ‌ها). */
+export function useSetCatalogCategories() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, categories }: { id: string; categories: CatalogCategoryDto[] }) =>
+      businessesApi.setCatalogCategories(id, categories),
+    onSuccess: (biz) => {
+      void qc.invalidateQueries({ queryKey: ["businesses"] });
+      void qc.invalidateQueries({ queryKey: ["business", biz.slug] });
+      void qc.invalidateQueries({ queryKey: ["listings"] });
+      return biz;
     },
   });
 }

@@ -16,6 +16,7 @@ import { SetPasswordButton } from "@/app/components/set-password-button";
 import { NoBusinessState } from "@/app/components/no-business";
 import { WelcomeModal } from "@/app/components/welcome-modal";
 import { ProductSettingsDialog } from "./product-settings";
+import { CategoryManagerDialog } from "./category-manager";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -119,8 +120,10 @@ function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
 
   const [settingsFor, setSettingsFor] = useState<GoodItemDto | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [catsOpen, setCatsOpen] = useState(false);
   const [q, setQ] = useState("");
-  const [goodFilter, setGoodFilter] = useState<string | null>(null);
+  // فاز ۳ — فیلتر چیپ‌ها بر روی دسته‌ی شخصی کاتالوگ (از Business.customCategories)
+  const [catFilter, setCatFilter] = useState<string | null>(null);
 
   const isPlaceholder = biz.name === "کاتالوگ شما" || !biz.trade || biz.city === "—";
 
@@ -134,22 +137,20 @@ function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
   );
   const inactive = rows.filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.isActive === false);
 
-  // جست‌وجوی محلی + فیلتر نوع کالا (چیپ‌ها)
-  const chips = useMemo(() => {
+  // ── فاز ۳ — دسته‌های شخصی کاتالوگ + شمار آگهی‌های هر دسته ──
+  const cats = biz.customCategories ?? [];
+  const catCounts = useMemo(() => {
     const counts = new Map<string, number>();
-    for (const l of activeSell) counts.set(l.good.id, (counts.get(l.good.id) ?? 0) + 1);
-    return [...counts.entries()]
-      .map(([id, count]) => ({
-        id,
-        name: goodName(activeSell.find((l) => l.good.id === id)!.good),
-        count,
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 12);
+    for (const l of activeSell) {
+      if (l.catalogCategoryId) counts.set(l.catalogCategoryId, (counts.get(l.catalogCategoryId) ?? 0) + 1);
+    }
+    return counts;
   }, [activeSell]);
 
+  // جست‌وجوی محلی + فیلتر دسته‌ی شخصی (چیپ‌های ویترین — از دیتابیس، هاردکد نیست)
+
   const filtered = activeSell.filter((l) => {
-    if (goodFilter && l.good.id !== goodFilter) return false;
+    if (catFilter && l.catalogCategoryId !== catFilter) return false;
     if (!q.trim()) return true;
     const needle = q.trim().toLowerCase();
     return [goodName(l.good), l.brand?.name, l.variantLabel, categoryName(l.good.category)]
@@ -237,27 +238,28 @@ function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
       {/* دکمه چشمک‌زن ثبت رمز — فقط کاربرانِ ثبت‌نام سریع */}
       <SetPasswordButton variant="header" />
 
-      {/* ═══ چیپ نوع کالا ═══ */}
-      {chips.length > 1 && (
-        <div className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* ═══ چیپ دسته‌های شخصی کاتالوگ — از دیتابیس (فاز ۳ — طرح ۰۱) ═══ */}
+      {(cats.length > 0 || catFilter !== null) && (
+        <div className="mt-2.5 flex items-center gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
             type="button"
-            onClick={() => setGoodFilter(null)}
+            onClick={() => setCatFilter(null)}
             className={`shrink-0 rounded-full border px-3.5 py-1.5 text-[12.5px] transition ${
-              goodFilter === null
+              catFilter === null
                 ? "border-transparent bg-accent font-bold text-primary"
                 : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
             }`}
           >
             همه
           </button>
-          {chips.map((c) => (
+          {cats.map((c) => (
             <button
               key={c.id}
               type="button"
-              onClick={() => setGoodFilter(goodFilter === c.id ? null : c.id)}
+              onClick={() => setCatFilter(catFilter === c.id ? null : c.id)}
+              aria-pressed={catFilter === c.id}
               className={`shrink-0 rounded-full border px-3.5 py-1.5 text-[12.5px] transition ${
-                goodFilter === c.id
+                catFilter === c.id
                   ? "border-transparent bg-accent font-bold text-primary"
                   : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
               }`}
@@ -265,7 +267,28 @@ function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
               {c.name}
             </button>
           ))}
+          {/* مدیریت دسته‌ها — ایجاد/ویرایش/حذف (خواسته‌ی کاربر) */}
+          <button
+            type="button"
+            onClick={() => setCatsOpen(true)}
+            aria-label="مدیریت دسته‌های کاتالوگ"
+            className="grid size-[30px] shrink-0 place-items-center rounded-full border border-dashed border-stone-300 text-stone-400 transition hover:border-primary hover:text-primary"
+          >
+            <Settings2 className="size-3.5" />
+          </button>
         </div>
+      )}
+
+      {/* وقتی هیچ دسته‌ای نیست — راهنمای آرام ساخت اولین دسته */}
+      {cats.length === 0 && activeSell.length > 1 && (
+        <button
+          type="button"
+          onClick={() => setCatsOpen(true)}
+          className="mt-2 flex w-full items-center gap-2 rounded-xl border border-dashed bg-white/60 px-3 py-2.5 text-start text-[11.5px] text-muted-foreground transition hover:border-primary/50 hover:text-primary"
+        >
+          <Settings2 className="size-3.5 shrink-0" />
+          کاتالوگ را دسته‌بندی کنید — مثل «هاشمی / طارم / فله»؛ مشتری سریع‌تر پیدا می‌کند.
+        </button>
       )}
 
       {/* ═══ کارت‌های کالا — موبایل: گرید ۲ستونه / دسکتاپ: ردیف‌های افقی ═══ */}
@@ -367,10 +390,18 @@ function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
           listing={settingsFor}
           bizId={bizId}
           currency={biz.currency ?? "IRR"}
+          customCategories={cats}
           open
           onOpenChange={(o) => !o && setSettingsFor(null)}
         />
       )}
+      <CategoryManagerDialog
+        key={catsOpen ? "cats-open" : "cats-closed"}
+        bizId={bizId}
+        categories={cats}
+        open={catsOpen}
+        onOpenChange={setCatsOpen}
+      />
       <ShareDialog kind="sell" slug={slug} bizName={biz.name} open={shareOpen} onOpenChange={setShareOpen} />
     </>
   );
@@ -445,7 +476,10 @@ function CatalogCard({
               {l.brand && <span className="ms-1 text-[10px] font-medium text-muted-foreground">{l.brand.name}</span>}
             </span>
             <span className="mt-0.5 block truncate text-[10px] text-muted-foreground">
-              {l.variantLabel ?? categoryName(l.good.category)}
+              {/* طرح ۰۱ — کالای بی‌برند زیرنویسِ «فله» می‌گیرد («کیسه ۵۰ کیلویی · فله») */}
+              {l.variantLabel
+                ? `${l.variantLabel}${l.brand ? "" : " · فله"}`
+                : categoryName(l.good.category)}
             </span>
           </span>
 

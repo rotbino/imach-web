@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { ApiError, type CategoryNodeDto, type GoodDto, type ProductRowDto } from "@/lib/api";
-import { useBrands, useCategories, useCreateGood, useGoods, useProducts, useSaveListing, useUploadFile } from "@/lib/queries";
+import { ApiError, type CatalogCategoryDto, type CategoryNodeDto, type GoodDto, type ProductRowDto } from "@/lib/api";
+import { useBrands, useCategories, useCreateGood, useGoods, useProducts, useSaveListing, useSetCatalogCategories, useUploadFile } from "@/lib/queries";
 import { compressImage } from "@/lib/compress";
 import { CURRENCIES, currencyLabel, fa, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -51,6 +51,7 @@ export function ListingForm({
                               currency = "IRR",
                               firstGood = false,
                               submitLabel,
+                              customCategories: initialCategories = [],
                               onSaved,
                               onSkip,
                             }: {
@@ -58,6 +59,8 @@ export function ListingForm({
   currency?: string;
   firstGood?: boolean;
   submitLabel?: string;
+  /** فاز ۳ — دسته‌های شخصی کاتالوگ (چیپ‌های ویترین) برای انتخاب دسته‌ی این کالا */
+  customCategories?: CatalogCategoryDto[];
   onSaved: (kind: ListingKind) => void;
   onSkip?: () => void;
 }) {
@@ -67,6 +70,7 @@ export function ListingForm({
   const numLocale: "fa" | "en" = locale === "en" ? "en" : "fa";
   const saveMutation = useSaveListing();
   const createGoodMutation = useCreateGood();
+  const setCategoriesMutation = useSetCatalogCategories();
 
   // ── مرحله: ۱ انتخاب گروه محصول، ۱.۵ انتخاب SKU، ۲ مشخصات
   const [step, setStep] = useState<1 | 1.5 | 2>(1);
@@ -100,6 +104,18 @@ export function ListingForm({
   const [newBrandMode, setNewBrandMode] = useState(false); // وقتی دکمه «جدید» زده شود
   const [brandName, setBrandName] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
+  // ── فاز ۳ (طرح ۰۱) — دسته‌ی شخصی کاتالوگ: این کالا زیر کدام چیپ ویترین بنشیند.
+  // انتخاب اختیاری است؛ «+ دسته جدید» همان‌جا دسته می‌سازد (بدون خروج از فرم).
+  // دسته‌های محلی = دسته‌های بيزنس + ساخته‌های همین فرم (پس از invalidate کش
+  // والد خودش تازه می‌شود؛ dedup با id — بدون mirror-state و بدون effect)
+  const [catalogCategoryId, setCatalogCategoryId] = useState<string | null>(null);
+  const [newCatName, setNewCatName] = useState("");
+  const [catInputOpen, setCatInputOpen] = useState(false);
+  const [addedCats, setAddedCats] = useState<CatalogCategoryDto[]>([]);
+  const cats = useMemo(
+    () => [...initialCategories, ...addedCats.filter((a) => !initialCategories.some((i) => i.id === a.id))],
+    [initialCategories, addedCats]
+  );
   // ── ویژگی‌ها به‌طور پیش‌فرض باز هستند — برای تطبیق مهم‌اند و نباید پنهان شوند
   const [showAttrs, setShowAttrs] = useState(true);
   // ── عنوان نمایشی محصول — کاربر می‌تواند دلخواه وارد کند.
@@ -306,6 +322,31 @@ export function ListingForm({
     if (failed > 0) toast({ title: m.files.failed, description: m.files.galleryPending });
   };
 
+  // ── فاز ۳ — ساخت دسته‌ی شخصی از داخل فرم (بدون خروج) + انتخاب خودکار ──
+  const addCategory = async () => {
+    const name = newCatName.trim();
+    if (!name) return;
+    if (cats.some((c) => c.name === name)) {
+      toast({ title: "دسته‌ای با این نام هست", variant: "destructive" });
+      return;
+    }
+    const id = `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+    try {
+      await setCategoriesMutation.mutateAsync({ id: bizId, categories: [...cats, { id, name }] });
+      setAddedCats((s) => [...s, { id, name }]);
+      setCatalogCategoryId(id);
+      setNewCatName("");
+      setCatInputOpen(false);
+      toast({ title: `دسته «${name}» ساخته شد` });
+    } catch (err) {
+      toast({
+        title: "ساخت دسته ناموفق بود",
+        description: err instanceof ApiError ? err.message : undefined,
+        variant: "destructive",
+      });
+    }
+  };
+
   const save = async () => {
     if (!selected || !arm) return;
 
@@ -385,6 +426,8 @@ export function ListingForm({
         // اگر خالی باشد، بک‌اند از نوع کالا + برند + ویژگی‌ها می‌سازد
         ...(productLabel.trim() ? { productLabel: productLabel.trim() } : {}),
         ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
+        // فاز ۳ — دسته‌ی شخصی کاتالوگ (null = بدون دسته)
+        catalogCategoryId: catalogCategoryId ?? null,
         ...(sellValid
             ? {
               sell: {
@@ -759,6 +802,66 @@ export function ListingForm({
                   </div>
                 </div>
 
+                {/* ───── دسته در کاتالوگ من (فاز ۳ — طرح ۰۱/۰۴) ───── */}
+                {(arm === "sell" || arm === "both") && (
+                  <div className="mt-5">
+                    <label className="block text-[12.5px] font-bold">
+                      دسته در کاتالوگ من <span className="text-[10.5px] font-normal text-muted-foreground">— اختیاری</span>
+                    </label>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {cats.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => setCatalogCategoryId(catalogCategoryId === c.id ? null : c.id)}
+                          aria-pressed={catalogCategoryId === c.id}
+                          className={`rounded-[10px] border px-3.5 py-2 text-[12.5px] transition ${
+                            catalogCategoryId === c.id
+                              ? "border-primary bg-accent font-bold text-primary"
+                              : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
+                          }`}
+                        >
+                          {c.name}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => { setCatInputOpen((s) => !s); setNewCatName(""); }}
+                        aria-expanded={catInputOpen}
+                        className="inline-flex items-center gap-1 rounded-[10px] border border-dashed border-stone-300 px-3.5 py-2 text-[12.5px] text-muted-foreground transition hover:border-primary hover:text-primary"
+                      >
+                        <Plus className="size-3.5" />
+                        دسته جدید
+                      </button>
+                    </div>
+                    {catInputOpen && (
+                      <div className="mt-2 flex gap-2">
+                        <Input
+                          value={newCatName}
+                          onChange={(e) => setNewCatName(e.target.value)}
+                          placeholder="مثلاً: هاشمی، فله، تخفیفی…"
+                          maxLength={40}
+                          className="h-10 flex-1"
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void addCategory(); } }}
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="h-10 px-4"
+                          disabled={!newCatName.trim() || setCategoriesMutation.isPending}
+                          onClick={() => void addCategory()}
+                        >
+                          {setCategoriesMutation.isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}
+                          ساخت
+                        </Button>
+                      </div>
+                    )}
+                    <p className="mt-1.5 text-[10.5px] leading-[1.8] text-muted-foreground">
+                      دسته‌ها چیپ‌های بالای ویترین شما هستند — کالا زیر دسته‌ی انتخابی نشان داده می‌شود.
+                    </p>
+                  </div>
+                )}
+
                 {/* ───── گالری کالا — بالاتر از مشخصات (خواسته‌ی کاربر) ───── */}
                 {arm && (
                     <section className="mt-5">
@@ -1094,21 +1197,23 @@ export function ListingForm({
                     </section>
                 )}
 
-                {/* ───── ثبت ───── */}
+                {/* ───── ثبت — اکشن‌بار چسبانِ طرح ۰۴ ───── */}
                 {arm && (
-                    <Button
-                        className="mt-6 w-full"
-                        size="lg"
-                        onClick={() => void save()}
-                        disabled={saveMutation.isPending || createGoodMutation.isPending || uploadingImages}
-                    >
-                      {saveMutation.isPending || uploadingImages ? (
-                          <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                          <Check className="size-4" />
-                      )}
-                      {uploadingImages ? m.files.uploading : (submitLabel ?? m.listing.save)}
-                    </Button>
+                    <div className="sticky bottom-3 z-10 mt-6 rounded-xl bg-white/85 p-1 shadow-[0_10px_28px_rgba(42,39,35,.14)] backdrop-blur">
+                      <Button
+                          className="w-full"
+                          size="lg"
+                          onClick={() => void save()}
+                          disabled={saveMutation.isPending || createGoodMutation.isPending || uploadingImages}
+                      >
+                        {saveMutation.isPending || uploadingImages ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <Check className="size-4" />
+                        )}
+                        {uploadingImages ? m.files.uploading : (submitLabel ?? m.listing.save)}
+                      </Button>
+                    </div>
                 )}
               </>
           )}

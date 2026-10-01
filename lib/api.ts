@@ -121,6 +121,13 @@ export interface UserDto {
   passwordSet?: boolean;
 }
 
+/** دسته‌ی شخصی کاتالوگ (فاز ۳ — طرح ۰۱) — چیپ‌های ویترین: «هاشمی/طارم/...»
+ *  JSON روی خود Business؛ id را کلاینت می‌سازد، آگهی با catalogCategoryId اشاره می‌کند */
+export interface CatalogCategoryDto {
+  id: string;
+  name: string;
+}
+
 export interface BusinessSummaryDto {
   id: string;
   slug: string;
@@ -132,6 +139,8 @@ export interface BusinessSummaryDto {
   country?: string;
   currency?: string;
   isVerified: boolean;
+  /** فاز ۳ — دسته‌های شخصی ویترین (چیپ‌های بالای کاتالوگ) */
+  customCategories?: CatalogCategoryDto[] | null;
   /** لوکیشن دقیق اختیاری — فقط مبنای تطابق؛ علنی نمی‌شود */
   lat?: number | null;
   lng?: number | null;
@@ -329,6 +338,8 @@ export interface GoodItemDto {
   viewCount30?: number;
   /** فاز ۲ — بازدید کل از پیدایش آگهی */
   viewCountTotal?: number;
+  /** فاز ۳ — دسته‌ی شخصی کاتالوگ (id از Business.customCategories) */
+  catalogCategoryId?: string | null;
   brand?: { id: string; name: string } | null;
   /** گالری آگهی — خوانده‌شده از سیستم فایل‌ها (خالی = بی‌عکس، کاشی حرفی) */
   gallery?: FileDto[];
@@ -369,6 +380,8 @@ export interface BusinessProfileDto {
   lng?: number | null;
   /** آدرس متنی — قابل ویرایش */
   address?: string | null;
+  /** فاز ۳ — دسته‌های شخصی ویترین برای چیپ‌های کاتالوگ عمومی */
+  customCategories?: CatalogCategoryDto[] | null;
   listings: GoodItemDto[];
 }
 
@@ -803,6 +816,13 @@ export const businessesApi = {
   editBusiness: (id: string, body: { name?: string; city?: string; activityType?: string | null; trade?: string | null }) =>
     api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
+  /** فاز ۳ (طرح ۰۱) — دسته‌های شخصی کاتالوگ: کل لیست یکجا replace می‌شود
+   *  (ایجاد/تغییرنام/حذف/مرتب‌سازی idempotent)؛ حذف دسته آگهی‌هایش را بی‌دسته می‌کند */
+  setCatalogCategories: (id: string, categories: CatalogCategoryDto[]) =>
+    api<BusinessSummaryDto>(`/businesses/catalogCategories/${id}`, {
+      method: "PUT",
+      body: { categories },
+    }),
   /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
   getContact: (slug: string) => api<{ phone: string | null; name: string }>(`/businesses/getContact/${slug}`),
   /** بازار — کشف عمومی؛ بدون عضویت هم کار می‌کند */
@@ -925,6 +945,8 @@ export const listingsApi = {
     productLabel?: string;
     sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
+    /** فاز ۳ — دسته‌ی شخصی کاتالوگ؛ undefined = بدون تغییر، null = بی‌دسته */
+    catalogCategoryId?: string | null;
   }) => api<GoodItemDto>("/listings/saveListing", { method: "PUT", body }),
   /** ثبت گروهی از انتخابگر — یک تأیید، N آگهی؛ فروش/خرید می‌توانند بی‌قیمت/بی‌حجم بیایند (صف اسکنر)، BOTH یک ردیف دو-بازو */
   bulkSave: (body: {

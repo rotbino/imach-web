@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { ApiError, type GoodItemDto } from "@/lib/api";
+import { ApiError, type CatalogCategoryDto, type GoodItemDto } from "@/lib/api";
 import { CURRENCIES, currencyLabel, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { compressImage } from "@/lib/compress";
 import { useLocale } from "@/i18n/locale-context";
-import { useDeleteListing, useGoods, useRemoveFile, useSaveListing, useUploadFile } from "@/lib/queries";
+import { useDeleteListing, useGoods, useRemoveFile, useSaveListing, useSetCatalogCategories, useUploadFile } from "@/lib/queries";
 import type { FileDto } from "@/lib/api";
 import { NumberInput } from "@/components/number-input";
 import { UploadRing } from "@/components/upload-ring";
@@ -27,7 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { ImagePlus, Loader2, Package, Save, Settings2, Trash2, X } from "lucide-react";
+import { Check, ImagePlus, Loader2, Package, Plus, Save, Settings2, Trash2, X } from "lucide-react";
 
 /*
  * فرم تنظیمات کالا — با چرخ‌دنده‌ی روی هر کالای کاتالوگ باز می‌شود (خواسته‌ی کاربر):
@@ -42,12 +42,15 @@ export function ProductSettingsDialog({
   listing,
   bizId,
   currency,
+  customCategories: cats = [],
   open,
   onOpenChange,
 }: {
   listing: GoodItemDto;
   bizId: string;
   currency: string;
+  /** فاز ۳ — دسته‌های شخصی کاتالوگ برای انتساب کالا به دسته */
+  customCategories?: CatalogCategoryDto[];
   open: boolean;
   onOpenChange: (o: boolean) => void;
 }) {
@@ -68,6 +71,11 @@ export function ProductSettingsDialog({
   const [minOrder, setMinOrder] = useState<number | null>(() => listing.minOrder ?? null);
   const [brandName, setBrandName] = useState(listing.brand?.name ?? "");
   const [attrs, setAttrs] = useState<Record<string, string>>(listing.attrs ?? {});
+  // ── فاز ۳ — دسته‌ی شخصی کاتالوگ + ساخت دسته‌ی جدید از همین دیالوگ
+  const [catalogCategoryId, setCatalogCategoryId] = useState<string | null>(listing.catalogCategoryId ?? null);
+  const [newCatName, setNewCatName] = useState("");
+  const [catInputOpen, setCatInputOpen] = useState(false);
+  const setCategoriesMutation = useSetCatalogCategories();
   const [volume, setVolume] = useState<number | null>(() => listing.volume ?? null);
   const [frequency, setFrequency] = useState<Frequency>((listing.frequency as Frequency) ?? "MONTHLY");
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -128,6 +136,30 @@ export function ProductSettingsDialog({
   );
   const attrsOf = goodDef?.category.attrs ?? [];
 
+  // ── فاز ۳ — ساخت دسته‌ی جدید از داخل دیالوگ + انتخاب خودکار ──
+  const addCategory = async () => {
+    const name = newCatName.trim();
+    if (!name) return;
+    if (cats.some((c) => c.name === name)) {
+      toast({ title: "دسته‌ای با این نام هست", variant: "destructive" });
+      return;
+    }
+    const id = `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+    try {
+      await setCategoriesMutation.mutateAsync({ id: bizId, categories: [...cats, { id, name }] });
+      setCatalogCategoryId(id);
+      setNewCatName("");
+      setCatInputOpen(false);
+      toast({ title: `دسته «${name}» ساخته شد` });
+    } catch (err) {
+      toast({
+        title: "ساخت دسته ناموفق بود",
+        description: err instanceof ApiError ? err.message : undefined,
+        variant: "destructive",
+      });
+    }
+  };
+
   const save = async () => {
     if ((price ?? 0) <= 0 || (stock ?? 0) <= 0) {
       toast({ title: "قیمت و موجودی را درست بنویسید", variant: "destructive" });
@@ -142,6 +174,8 @@ export function ProductSettingsDialog({
         mode: listing.mode,
         ...(brandName.trim() ? { brandName: brandName.trim() } : {}),
         ...(Object.keys(filledAttrs).length > 0 ? { attrs: filledAttrs } : {}),
+        // فاز ۳ — دسته‌ی شخصی ویترین (null = بی‌دسته)
+        catalogCategoryId: catalogCategoryId ?? null,
         sell: {
           priceMinor: Math.round((price ?? 0) * 10 ** exp),
           stock: stock ?? 0,
@@ -226,6 +260,59 @@ export function ProductSettingsDialog({
               onChange={(e) => setBrandName(e.target.value)}
               placeholder="بدون برند"
             />
+          </div>
+
+          {/* فاز ۳ — دسته در کاتالوگ من (چیپ‌های ویترین) */}
+          <div>
+            <Label className="text-[11px] text-muted-foreground">دسته در کاتالوگ من</Label>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {cats.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setCatalogCategoryId(catalogCategoryId === c.id ? null : c.id)}
+                  aria-pressed={catalogCategoryId === c.id}
+                  className={`rounded-full border px-3 py-1.5 text-[12px] transition ${
+                    catalogCategoryId === c.id
+                      ? "border-transparent bg-accent font-bold text-primary"
+                      : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => { setCatInputOpen((s) => !s); setNewCatName(""); }}
+                aria-expanded={catInputOpen}
+                className="inline-flex items-center gap-1 rounded-full border border-dashed border-stone-300 px-3 py-1.5 text-[12px] text-muted-foreground transition hover:border-primary hover:text-primary"
+              >
+                <Plus className="size-3" />
+                دسته جدید
+              </button>
+            </div>
+            {catInputOpen && (
+              <div className="mt-2 flex gap-2">
+                <Input
+                  value={newCatName}
+                  onChange={(e) => setNewCatName(e.target.value)}
+                  placeholder="نام دسته…"
+                  maxLength={40}
+                  className="h-9 flex-1"
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void addCategory(); } }}
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-9 px-3"
+                  disabled={!newCatName.trim() || setCategoriesMutation.isPending}
+                  onClick={() => void addCategory()}
+                >
+                  {setCategoriesMutation.isPending ? <Loader2 className="size-3 animate-spin" /> : <Check className="size-3" />}
+                  ساخت
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* ویژگی‌های پیشرفته — اتریبیوت‌های دسته */}

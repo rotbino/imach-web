@@ -114,9 +114,16 @@ export function SellArmView({ slug }: { slug: string }) {
 
   const isOwner = isCatalogOwner(slug, storeBizs, user?.role);
 
+  // فاز ۳ (طرح ۰۱) — چيپ‌های دسته‌ی شخصی کاتالوگ برای بازدیدکننده هم کار می‌کند
+  const [catFilter, setCatFilter] = useState<string | null>(null);
+  const cats = biz?.customCategories ?? [];
+
   const sellListings = (biz?.listings ?? []).filter(
     (l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null
   );
+  const visibleListings = catFilter
+    ? sellListings.filter((l) => l.catalogCategoryId === catFilter)
+    : sellListings;
 
   useEffect(() => {
     if (biz) document.title = `${biz.name} — کاتالوگ فروش | iMach`;
@@ -228,13 +235,49 @@ export function SellArmView({ slug }: { slug: string }) {
           کالاهای فروشی
         </h2>
 
+        {/* فاز ۳ — چيپ‌های دسته‌ی شخصی ویترین (طرح ۰۱) برای بازدیدکننده */}
+        {cats.length > 0 && (
+          <div className="mb-3 flex items-center gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <button
+              type="button"
+              onClick={() => setCatFilter(null)}
+              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-[12.5px] transition ${
+                catFilter === null
+                  ? "border-transparent bg-accent font-bold text-primary"
+                  : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
+              }`}
+            >
+              همه
+            </button>
+            {cats.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setCatFilter(catFilter === c.id ? null : c.id)}
+                aria-pressed={catFilter === c.id}
+                className={`shrink-0 rounded-full border px-3.5 py-1.5 text-[12.5px] transition ${
+                  catFilter === c.id
+                    ? "border-transparent bg-accent font-bold text-primary"
+                    : "border-stone-300 bg-white text-stone-500 hover:bg-accent/50"
+                }`}
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
+        )}
+
         {sellListings.length === 0 ? (
           <div className="rounded-3xl border border-dashed bg-white/70 p-10 text-center">
             <p className="text-sm text-muted-foreground">هنوز کالایی در این کاتالوگ ثبت نشده است.</p>
           </div>
+        ) : visibleListings.length === 0 ? (
+          <p className="rounded-2xl border border-dashed bg-white/70 p-8 text-center text-sm text-muted-foreground">
+            کالایی در این دسته نیست.
+          </p>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {sellListings.map((l) => {
+            {visibleListings.map((l) => {
               const photo = l.gallery?.[0];
               return (
               /* کارت = ورودی صفحه‌ی جزئیات کالا (فاز ۲ — طرح ۱۳→۰۲) */
