@@ -97,10 +97,10 @@ export function NotificationsBell() {
     <Popover open={open} onOpenChange={handleOpen}>
       <PopoverTrigger asChild>
         <button
-          className="relative grid size-9 place-items-center rounded-xl transition hover:bg-accent"
+          className="relative grid size-9 place-items-center rounded-[10px] border bg-white transition hover:bg-accent"
           aria-label="اعلان‌ها"
         >
-          <Bell className="size-5 text-foreground" strokeWidth={1.75} />
+          <Bell className="size-5 text-stone-500" strokeWidth={1.75} />
           {unread > 0 && (
             <span
               className="absolute -top-0.5 -end-0.5 grid min-w-4.5 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold leading-4 text-white"

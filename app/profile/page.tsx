@@ -12,7 +12,7 @@ import { LanguageSelect } from "@/app/components/language-select";
 import { FileUploader } from "@/components/FileUploader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, ShieldCheck } from "lucide-react";
+import { LogOut, ShieldCheck, LayoutDashboard, Tag } from "lucide-react";
 
 /*
  * پروفایل — حساب کاربر (یکی، مشترک بین هر دو صفحه؛ مثل اینستاگرام):
@@ -150,6 +150,36 @@ export default function ProfilePage() {
               <span className="text-sm font-extrabold">پنل مدیریت</span>
             </Link>
           )}
+
+          {/* پل‌های انتقال — تا وقتی محتوای داشبوردها به صفحات جدید نقل شود (فازهای ۲ تا ۸)
+              مسیرشان فقط از این‌جاست؛ در پاکسازی نهایی (فاز ۱۰) حذف می‌شوند */}
+          <Link
+            href="/sell/panel"
+            className="mt-4 flex items-center gap-2.5 rounded-2xl border bg-white px-4 py-3 shadow-sm transition hover:shadow-md"
+          >
+            <span className="grid size-8 place-items-center rounded-lg bg-primary/10 text-primary">
+              <LayoutDashboard className="size-4.5" strokeWidth={1.75} />
+            </span>
+            <span className="text-sm font-extrabold">داشبورد فروش</span>
+          </Link>
+          <Link
+            href="/buy/panel"
+            className="mt-4 flex items-center gap-2.5 rounded-2xl border bg-white px-4 py-3 shadow-sm transition hover:shadow-md"
+          >
+            <span className="grid size-8 place-items-center rounded-lg bg-stone-100 text-stone-700">
+              <LayoutDashboard className="size-4.5" strokeWidth={1.75} />
+            </span>
+            <span className="text-sm font-extrabold">داشبورد خرید</span>
+          </Link>
+          <Link
+            href="/brand"
+            className="mt-4 flex items-center gap-2.5 rounded-2xl border bg-white px-4 py-3 shadow-sm transition hover:shadow-md"
+          >
+            <span className="grid size-8 place-items-center rounded-lg bg-stone-100 text-stone-700">
+              <Tag className="size-4.5" strokeWidth={1.75} />
+            </span>
+            <span className="text-sm font-extrabold">پنل برند</span>
+          </Link>
         </div>
       </main>
       <AppFooter />
