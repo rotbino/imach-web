@@ -45,7 +45,7 @@ const TYPE_VIEWS: Record<NotificationDto["type"], TypeView> = {
     icon: ClipboardList,
     iconClass: "bg-stone-800/10 text-stone-800",
     text: (n) => `درخواست قیمت برای «${n.good ?? "کالا"}»`,
-    href: "/sell/panel",
+    href: "/sell/requests",
   },
   CONTACT_JOINED: {
     icon: UserPlus,

@@ -289,7 +289,8 @@ function BuyRow({
   }
 
   const c = row.cheapest!;
-  const href = `/sell/${c.seller.slug}/${c.listingId}`;
+  // فاز ۶ — زدن ردیف → تابلوی تأمین همان کالا (طرح ۰۸→۰۹)
+  const href = `/buy/board/${row.goodId}`;
   // فقط‌یکی → «تنها قیمت»، چند فروشنده → «ارزان‌ترین» (زبان طرح ۰۸)
   const priceLabel = row.supplierCount === 1 ? "تنها قیمت" : "ارزان‌ترین";
 

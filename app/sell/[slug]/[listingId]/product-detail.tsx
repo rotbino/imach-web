@@ -7,12 +7,14 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import {
   useBusinessProfile,
+  useFollows,
   useFollowToggle,
   useGoods,
   useIncomingInquiries,
   useMyListings,
   useSaveListing,
   useSetListingActive,
+  useSupplyBoard,
   useViewListing,
   useWatchGood,
   useWatchedGoods,
@@ -536,6 +538,7 @@ function PublicView({
   authed: boolean;
   myBizId: string | null;
 }) {
+  const router = useRouter();
   const { toast } = useToast();
   const followToggle = useFollowToggle();
 
@@ -544,6 +547,14 @@ function PublicView({
   const watchM = useWatchGood();
   const isWatched =
     (watchedQ.data ?? []).some((r) => r.goodId === listing.good.id) ?? false;
+
+  // ── فاز ۶ (طرح ۰۲): تیزر تابلوی تأمین + دکمه‌ی فالوی فروشگاه در کارت ──
+  const followsQ = useFollows(authed ? myBizId : null);
+  const isFollowingSeller = (followsQ.data ?? []).some((f) => f.supplierId === biz.id) ?? false;
+  const boardQ = useSupplyBoard(authed ? myBizId : null, listing.good.id);
+  const otherSuppliers = (boardQ.data?.rows ?? [])
+    .filter((r) => r.seller.id !== biz.id)
+    .sort((a, b) => a.priceMinor - b.priceMinor);
 
   const watch = () => {
     if (!authed || !myBizId) {
@@ -607,13 +618,14 @@ function PublicView({
       });
       return;
     }
+    const next = !isFollowingSeller;
     followToggle.mutate(
-      { businessId: myBizId, supplierId: biz.id, follow: true },
+      { businessId: myBizId, supplierId: biz.id, follow: next },
       {
         onSuccess: () =>
           toast({
-            title: `${biz.name} دنبال شد`,
-            description: "قیمت‌هایش در دستیار خرید شما جمع می‌شود.",
+            title: next ? `${biz.name} دنبال شد` : "دنبال‌کردن برداشته شد",
+            description: next ? "قیمت‌هایش در دستیار خرید شما جمع می‌شود." : undefined,
           }),
         onError: (e) => toast({ title: e.message || "خطا", variant: "destructive" }),
       }
@@ -693,17 +705,59 @@ function PublicView({
                 .join(" · ")}
             </p>
           </div>
+          {/* فاز ۶ (طرح ۰۲): فالوی فروشگاه — دکمه کوچک داخل کارت فروشنده */}
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 shrink-0 border-stone-300 bg-white px-3 text-[11.5px] font-bold text-stone-700 hover:bg-stone-50"
+            onClick={follow}
+            disabled={followToggle.isPending}
+            aria-pressed={isFollowingSeller}
+          >
+            {followToggle.isPending ? "…" : isFollowingSeller ? "دنبال می‌کنید" : "دنبال کردن فروشگاه"}
+          </Button>
         </div>
 
-        {/* تیزر تابلوی تأمین همین کالا — فاز ۶ (getSupplyBoard) */}
+        {/* تیزر تابلوی تأمین همین کالا (فاز ۶ · طرح ۰۲) — فقط برای خریدارِ واردشده */}
+        {authed && otherSuppliers.length > 0 && (
+          <div className="mt-2.5 rounded-2xl border bg-white p-3.5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <p className="flex items-center gap-1.5 text-[13.5px] font-bold text-stone-800">
+                <Inbox className="size-[17px] text-stone-500" strokeWidth={1.75} />
+                سایر تأمین‌کنندگان این کالا
+              </p>
+              <span className="rounded-full bg-stone-100 px-[9px] py-[2px] text-[10.5px] font-bold text-stone-600">
+                {fa(otherSuppliers.length)} مورد
+              </span>
+            </div>
+            <div className="mt-2.5 flex flex-col gap-[7px]">
+              {otherSuppliers.slice(0, 2).map((r) => (
+                <div key={r.listingId} className="flex items-center justify-between text-[12px]">
+                  <span className="truncate text-stone-500">
+                    {r.seller.name} — {r.seller.city}
+                  </span>
+                  <b className="shrink-0 font-bold text-stone-800">{fmtMoney(r.priceMinor, r.currency)}</b>
+                </div>
+              ))}
+            </div>
+            <Button
+              size="sm"
+              className="mt-2.5 w-full gap-1 bg-stone-800 font-bold hover:bg-stone-900"
+              onClick={() => router.push(`/buy/board/${listing.good.id}`)}
+            >
+              مشاهده تابلوی تأمین
+              <ChevronRight className="size-4 rtl:rotate-180" />
+            </Button>
+          </div>
+        )}
 
         <p className="mt-4 rounded-2xl bg-stone-100/70 px-4 py-3 text-center text-[11px] leading-6 text-stone-600">
           قیمت‌ها با «تماس» شفاف می‌شوند — در iMach خرید انجام نمی‌شود؛ ارتباط مستقیم با فروشنده.
         </p>
       </div>
 
-      {/* اکشن‌های خریدار (طرح ۰۲): تماس + دنبال‌کردن فروشگاه + دنبال‌کردن قیمت
-          («درخواست قیمت» طبق فازبندی در فاز ۶ به این نوار می‌آید) */}
+      {/* اکشن‌های خریدار (فاز ۶ · طرح ۰۲): تماس + درخواست قیمت + دنبال‌کردن قیمت
+          (فالوی فروشگاه به کارت فروشنده بالا منتقل شد) */}
       <div className="sticky bottom-0 z-10 mt-auto flex gap-2.5 border-t bg-white/97 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
         <ContactButton
           slug={biz.slug}
@@ -716,11 +770,18 @@ function PublicView({
           size="lg"
           variant="outline"
           className="flex-1 gap-1.5 border-stone-300 bg-white font-bold hover:bg-stone-50"
-          onClick={follow}
-          disabled={followToggle.isPending}
+          onClick={() => {
+            if (!authed || !myBizId) {
+              toast({
+                title: "اول عضو iMach شوید",
+                description: "ثبت‌نام رایگان است؛ بعد از ورود، از تأمین‌کننده‌های این کالا استعلام بگیرید.",
+              });
+              return;
+            }
+            router.push(`/buy/board/${listing.good.id}/quote`);
+          }}
         >
-          {followToggle.isPending ? <span className="text-xs">…</span> : null}
-          دنبال کردن فروشگاه
+          درخواست قیمت
         </Button>
         <Button
           size="lg"

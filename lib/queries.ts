@@ -32,8 +32,9 @@ import {
   type OfferDto,
   type PageDto,
   type ProductPageDto,
-  type QuoteRequestResultDto,
+  type RequestQuoteBody,
   type SupplierSuggestionDto,
+  type SupplyBoardDto,
   type WatchedRowDto,
 } from "./api";
 import { useAuthStore } from "./auth-store";
@@ -59,6 +60,7 @@ export const qk = {
   inquiries: (bizId: string) => ["market", "inquiries", bizId] as const,
   watched: (bizId: string) => ["market", "watched", bizId] as const,
   myInquiries: (bizId: string) => ["market", "myInquiries", bizId] as const,
+  supplyBoard: (bizId: string, goodId: string) => ["market", "supplyBoard", bizId, goodId] as const,
   follows: (bizId: string) => ["market", "follows", bizId] as const,
   myFollowers: (bizId: string) => ["market", "myFollowers", bizId] as const,
   board: (bizId: string) => ["market", "board", bizId] as const,
@@ -338,13 +340,29 @@ export function useEditProfile() {
 
 // ── بازار: استعلام، پیشنهاد، دنبال کردن، تابلو ──
 
+// ═══ فاز ۶ — تابلوی تأمین + فرم درخواست قیمت (طرح ۰۹/۱۲) ═══
+
+/** تابلوی تأمین یک کالا — ردیف تأمین‌کننده‌ها + برچسب‌های رابطه (طرح ۰۹) */
+export function useSupplyBoard(
+  businessId: string | null | undefined,
+  goodId: string | null | undefined
+): UseQueryResult<SupplyBoardDto> {
+  return useQuery({
+    queryKey: qk.supplyBoard(businessId ?? "", goodId ?? ""),
+    queryFn: () => marketApi.getSupplyBoard(businessId as string, goodId as string),
+    enabled: !!businessId && !!goodId,
+    staleTime: 15_000,
+  });
+}
+
+/** ارسال فرم درخواست قیمت (طرح ۱۲) — پاسخ‌ها در «درخواست‌های من» می‌نشینند */
 export function useQuoteRequest() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ listingId, note }: { listingId: string; note?: string }) =>
-      marketApi.requestQuote(listingId, note),
+    mutationFn: (body: RequestQuoteBody) => marketApi.requestQuote(body),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
+      void qc.invalidateQueries({ queryKey: ["listings"] });
     },
   });
 }

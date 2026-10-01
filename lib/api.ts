@@ -611,9 +611,63 @@ export interface CustomerRowDto {
   } | null;
 }
 
-export interface QuoteRequestResultDto {
+// ═══ فاز ۶ — تابلوی تأمین + فرم درخواست قیمت (طرح ۰۹/۱۲) ═══
+
+/** ردیف تابلوی تأمین — یک آگهیِ فروشِ فعال از یک تأمین‌کننده */
+export interface BoardSupplierDto {
+  listingId: string;
+  priceMinor: number;
+  currency: string | null;
+  minOrder: number | null;
+  stock: number | null;
+  variantLabel: string | null;
+  updatedAt: string;
+  seller: SellerDto & { trade?: string | null };
+  /** قیمت قبل از آخرین تغییر — سوژه‌ی «▼ از ۲٬۹۰۰٬۰۰۰» (null = بدون تغییر) */
+  prevMinor: number | null;
+  /** درصد تغییر نسبت به قیمت قبلی — منفی یعنی ارزان‌تر */
+  trendPct: number | null;
+  /** «دنبال می‌کنم» — کاتالوگش را از میز خرید من فالو کرده‌ام */
+  followedByMe: boolean;
+  /** «از او خریده‌ام» — سابقه استعلام بین ما روی همین کالا */
+  boughtFrom: boolean;
+  /** «معرفی iMach» — فلگ آینده؛ فعلاً همیشه false (ساختار UI طرح ۰۹) */
+  sponsored: boolean;
+}
+
+/** تابلوی تأمین یک کالا + زمینه‌ی خریدار (پیش‌فرض‌های فرم ۱۲) */
+export interface SupplyBoardDto {
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { slug: string; nameFa: string; nameEn: string } | null;
+  } | null;
+  watched: boolean;
+  volume: number | null;
+  frequency: string | null;
+  variantLabel: string | null;
+  rows: BoardSupplierDto[];
+}
+
+/** بدنه‌ی POST /market/requestQuote — فرم طرح ۱۲ */
+export interface RequestQuoteBody {
+  businessId: string;
+  goodId: string;
+  volume: number;
+  frequency?: "WEEKLY" | "MONTHLY" | "OCCASIONAL";
+  delivery?: string;
+  note?: string;
+  supplierIds?: string[];
+  includeNetwork?: boolean;
+}
+
+export interface RequestQuoteResultDto {
   created: number;
-  offers: OfferDto[];
+  /** گیرنده‌هایی که از شبکه iMach اضافه شدند (نه انتخاب من) */
+  networkAdded: number;
+  inquiries: { id: string; sellerId: string; status: string }[];
 }
 
 /**
@@ -1141,11 +1195,8 @@ export const productsApi = {
 };
 
 export const marketApi = {
-  requestQuote: (listingId: string, note?: string) =>
-    api<QuoteRequestResultDto>(`/market/requestQuote/${listingId}`, {
-      method: "POST",
-      body: note ? { note } : {},
-    }),
+  requestQuote: (body: RequestQuoteBody) =>
+    api<RequestQuoteResultDto>("/market/requestQuote", { method: "POST", body }),
   getOffers: (businessId: string) =>
     api<PageDto<OfferDto>>("/market/getOffers", { params: { businessId, limit: 100 } }),
   getInquiries: (businessId: string) =>
@@ -1170,6 +1221,10 @@ export const marketApi = {
   /** «درخواست‌های من» — استعلام‌های فرستاده‌ی خریدار + پاسخ‌های دریافتی */
   getMyInquiries: (businessId: string) =>
     api<MyInquiriesDto>("/market/getMyInquiries", { params: { businessId } }),
+  // ═══ فاز ۶ — تابلوی تأمین + فرم درخواست قیمت (طرح ۰۹/۱۲) ═══
+  /** تابلوی تأمین یک کالا — ردیف‌های تأمین‌کننده + برچسب‌های رابطه */
+  getSupplyBoard: (businessId: string, goodId: string) =>
+    api<SupplyBoardDto>("/market/getSupplyBoard", { params: { businessId, goodId } }),
   sendOffer: (body: { inquiryId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),
