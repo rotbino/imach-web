@@ -12,7 +12,6 @@ import {
   notificationsApi,
   productsApi,
   unitsApi,
-  type BoardRowDto,
   type BusinessProfileDto,
   type BusinessSummaryDto,
   type CatalogCategoryDto,
@@ -20,7 +19,6 @@ import {
   type ContactRowDto,
   type CustomerRowDto,
   type EnabledArmsDto,
-  type ExploreItemDto,
   type FileDto,
   type FollowDto,
   type GoodDto,
@@ -31,11 +29,9 @@ import {
   type MyInquiriesDto,
   type NotifPrefsDto,
   type NotificationsPageDto,
-  type OfferDto,
   type PageDto,
   type ProductPageDto,
   type RequestQuoteBody,
-  type SupplierSuggestionDto,
   type SuppliersDirectoryDto,
   type SuggestionsDto,
   type SupplyBoardDto,
@@ -51,16 +47,14 @@ import { useAuthStore } from "./auth-store";
  */
 
 // ── کلیدها ──
-export const qk = {
+const qk = {
   goods: (params: { q?: string; categoryId?: string }) => ["goods", params] as const,
   categories: () => ["goods", "categories"] as const,
   brands: (q?: string) => ["goods", "brands", q ?? ""] as const,
   businessProfile: (slug: string) => ["business", slug] as const,
-  explore: (mode: string, city?: string) => ["explore", mode, city ?? ""] as const,
   buyRequests: (bizId: string) => ["market", "buyRequests", bizId] as const,
   myBusinesses: () => ["businesses", "mine"] as const,
   myListings: (bizId: string) => ["listings", bizId] as const,
-  offers: (bizId: string) => ["market", "offers", bizId] as const,
   inquiries: (bizId: string) => ["market", "inquiries", bizId] as const,
   watched: (bizId: string) => ["market", "watched", bizId] as const,
   myInquiries: (bizId: string) => ["market", "myInquiries", bizId] as const,
@@ -69,8 +63,6 @@ export const qk = {
   suppliersDirectory: (bizId: string) => ["market", "suppliersDirectory", bizId] as const,
   suggestions: (bizId: string) => ["market", "suggestions", bizId] as const,
   myFollowers: (bizId: string) => ["market", "myFollowers", bizId] as const,
-  board: (bizId: string) => ["market", "board", bizId] as const,
-  supplierSuggestions: (bizId: string) => ["market", "supplierSuggestions", bizId] as const,
   marketState: (bizId: string) => ["market", "state", bizId] as const,
   contacts: () => ["contacts"] as const,
   notifications: () => ["notifications"] as const,
@@ -182,18 +174,6 @@ export function useBusinessProfile(slug: string): UseQueryResult<BusinessProfile
     queryFn: () => businessesApi.getBusiness(slug),
     staleTime: 60_000,
     enabled: !!slug,
-  });
-}
-
-/**
- * اکسپلور — کالاهای خرید و فروش همه کسب‌وکارها.
- * چیدمان ساده v۰ (سمت بک‌اند): شهرِ من اول، بعد حجم/تازگی.
- */
-export function useExploreFeed(mode: "SELL" | "BUY", city?: string): UseQueryResult<ExploreItemDto[]> {
-  return useQuery({
-    queryKey: qk.explore(mode, city),
-    queryFn: () => businessesApi.getExplore({ mode, city }),
-    staleTime: 60_000,
   });
 }
 
@@ -451,15 +431,6 @@ export function useQuoteRequest() {
   });
 }
 
-export function useOffers(businessId: string | null | undefined): UseQueryResult<PageDto<OfferDto>> {
-  return useQuery({
-    queryKey: qk.offers(businessId ?? ""),
-    queryFn: () => marketApi.getOffers(businessId as string),
-    enabled: !!businessId,
-    staleTime: 15_000,
-  });
-}
-
 export function useIncomingInquiries(businessId: string | null | undefined): UseQueryResult<InquiryPageDto> {
   return useQuery({
     queryKey: qk.inquiries(businessId ?? ""),
@@ -567,25 +538,6 @@ export function useFollowToggle() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
     },
-  });
-}
-
-export function useBoard(businessId: string | null | undefined): UseQueryResult<BoardRowDto[]> {
-  return useQuery({
-    queryKey: qk.board(businessId ?? ""),
-    queryFn: () => marketApi.getPriceBoard(businessId as string),
-    enabled: !!businessId,
-    staleTime: 30_000,
-  });
-}
-
-/** تامین‌کننده‌های پیشنهادی برای نیازهای خرید من — موتور دنبال کردن سمت خرید */
-export function useSupplierSuggestions(businessId: string | null | undefined): UseQueryResult<SupplierSuggestionDto[]> {
-  return useQuery({
-    queryKey: qk.supplierSuggestions(businessId ?? ""),
-    queryFn: () => marketApi.getSupplierSuggestions(businessId as string),
-    enabled: !!businessId,
-    staleTime: 60_000,
   });
 }
 

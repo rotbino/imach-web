@@ -183,13 +183,6 @@ export interface AuthResponseDto {
   businesses: BusinessSummaryDto[];
 }
 
-/** پاسخ getMe — عکس پروفایل کاربر اگر آپلود کرده باشد */
-export interface MeResponseDto {
-  user: UserDto;
-  businesses: BusinessSummaryDto[];
-  avatar: { url: string; thumbUrl: string | null } | null;
-}
-
 // ─── کاتالوگ — درخت دسته + کالای مرجع + برند ───
 
 export interface CategoryAttrOption {
@@ -586,41 +579,6 @@ export interface FollowDto {
   supplier: SellerDto;
 }
 
-export interface BoardRowDto {
-  id: string;
-  priceMinor: number;
-  currency: string | null;
-  stock: number | null;
-  minOrder: number | null;
-  updatedAt: string;
-  good: {
-    id: string;
-    nameFa: string;
-    nameEn: string | null;
-    unit: string;
-    category: { slug: string; nameFa: string; nameEn: string };
-  };
-  business: SellerDto;
-  priceLogs: { oldMinor: number; newMinor: number; createdAt: string }[];
-}
-
-/** تامین‌کننده پیشنهادی برای نیازهای خرید من — موتور دنبال کردن سمت خرید */
-export interface SupplierSuggestionDto {
-  supplierId: string;
-  supplierName: string;
-  supplierSlug: string;
-  supplierCity: string;
-  supplierVerified: boolean;
-  listingId: string;
-  goodId: string;
-  goodName: string;
-  unit: string;
-  priceMinor: number;
-  currency: string | null;
-  minOrder: number;
-  score: number;
-}
-
 /** یک کسب‌وکار در لیست «مشتریان من» — غنی‌شده با آخرین درخواست خرید فعال */
 export interface CustomerRowDto {
   id: string;
@@ -941,9 +899,6 @@ export const filesApi = {
   /** خواندن عمومی یک اسلات — آخرین رکورد؛ ۴۰۴ = هنوز عکسی نیست */
   getUrl: (model: "User" | "Business" | "Listing", modelId: string, key: string) =>
     api<FileDto>("/files/getUrl", { params: { model, modelId, key }, auth: false }),
-  /** خواندن عمومی همه‌ی فایل‌های یک اسلات (گالری) یا همه‌ی اسلات‌ها */
-  getList: (model: "User" | "Business" | "Listing", modelId: string, key?: string) =>
-    api<{ items: FileDto[] }>("/files/getList", { params: { model, modelId, key }, auth: false }),
   /** حذف — از ابر و دیتابیس؛ فقط مالک یا مالک کسب‌وکار/آگهی */
   remove: (id: string) => api<{ ok: boolean }>(`/files/delete/${encodeURIComponent(id)}`, { method: "DELETE" }),
 };
@@ -970,12 +925,8 @@ export const authApi = {
   /** تنظیم پسورد — برای کاربران ثبت‌نام سریع یا تغییر پسورد */
   setPassword: (body: { currentPassword?: string; newPassword: string }) =>
     api<{ ok: boolean }>("/auth/setPassword", { method: "POST", body }),
-  /** تغییر شماره موبایل — برای کاربری که موقع ثبت‌نام سریع شماره‌اش را اشتباه زده */
-  changePhone: (body: { phone: string; country?: string }) =>
-    api<{ ok: boolean; phone: string }>("/auth/changePhone", { method: "POST", body }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
-  getMe: () => api<MeResponseDto>("/auth/getMe"),
   /** ویرایش پروفایل — نام و نام خانوادگی مالک (در ویترین کاتالوگ نشان داده می‌شود) */
   editProfile: (body: { firstName?: string; lastName?: string }) =>
     api<{ user: UserDto }>("/auth/editProfile", { method: "POST", body }),
@@ -1075,28 +1026,12 @@ export const businessesApi = {
     api<EnabledArmsDto>(`/businesses/setArms/${id}`, { method: "PUT", body }),
   /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
   getContact: (slug: string) => api<{ phone: string | null; name: string }>(`/businesses/getContact/${slug}`),
-  /** بازار — کشف عمومی؛ بدون عضویت هم کار می‌کند */
-  getExplore: (params: { mode?: "SELL" | "BUY"; city?: string }) =>
-    api<ExploreItemDto[]>("/businesses/getExplore", { params, auth: false }),
   /** کپی از هم‌صنف‌ها — گام ۱: کاتالوگ‌های زنده بر اساس صنف/نام */
   searchCatalogs: (params: { q?: string; cursor?: string; limit?: number; mineId?: string }) =>
     api<PageDto<CatalogSummaryDto>>("/businesses/searchCatalogs", { params }),
   /** کپی از هم‌صنف‌ها — گام ۲: قلم‌های فروش یک کاتالوگ، با تامبنیل + نوار برند */
   getCatalogItems: (params: { businessId: string; cursor?: string; limit?: number; brandId?: string; mode?: "SELL" | "BUY" }) =>
     api<CatalogItemsPageDto>("/businesses/getCatalogItems", { params }),
-  /** کاتالوگ تجمیعی هم‌صنف‌ها — هم‌صنف‌های هم‌جغرافیا، SKU یونیک، فیلتر برند/دسته */
-  getAggregatedCatalog: (params: {
-    trade: string;
-    city?: string;
-    province?: string;
-    country?: string;
-    q?: string;
-    brandId?: string;
-    categoryId?: string;
-    cursor?: string;
-    limit?: number;
-    mineId?: string;
-  }) => api<AggregatedCatalogPageDto>("/businesses/getAggregatedCatalog", { params }),
 };
 
 /** یک کاتالوگ زنده در جست‌وجوی هم‌صنف‌ها */
@@ -1145,32 +1080,6 @@ export interface CatalogItemsPageDto {
   brands: BrandChipDto[];
 }
 
-/** یک قلم از کاتالوگ تجمیعی هم‌صنف‌ها — SKU یونیک، فاقد قیمت (قیمت با خودت) */
-export interface AggregatedItemDto {
-  id: string;
-  productId: string | null;
-  brandId: string | null;
-  brandName: string | null;
-  variantLabel: string | null;
-  good: {
-    id: string;
-    nameFa: string;
-    nameEn: string | null;
-    unit: string;
-    category: { id: string; nameFa: string; nameEn: string };
-  };
-  thumbUrl: string | null;
-}
-
-/** صفحه‌ی کاتالوگ تجمیعی هم‌صنف‌ها — items + نوار برند + نوار دسته + تعداد کسب‌وکار یافت‌شده */
-export interface AggregatedCatalogPageDto {
-  items: AggregatedItemDto[];
-  nextCursor: string | null;
-  brands: BrandChipDto[];
-  categories: CategoryChipDto[];
-  foundBusinesses: number;
-}
-
 export const listingsApi = {
   getMyListings: (
     businessId: string,
@@ -1216,9 +1125,6 @@ export const listingsApi = {
     "/listings/bulkSave",
     { method: "PUT", body }
   ),
-  /** کپی از هم‌صنف‌ها — تیک‌های من به ردیف‌های بی‌قیمت در کاتالوگ من */
-  copyFrom: (body: { businessId: string; sourceBusinessId: string; sourceListingIds: string[] }) =>
-    api<{ copied: number; already: number; failed: number }>("/listings/copyFrom", { method: "PUT", body }),
   deleteListing: (id: string) => api<{ ok: boolean }>(`/listings/deleteListing/${id}`, { method: "DELETE" }),
   /** فاز ۲ — شمارش بازدید عمومی (بدون احراز؛ مهمان هم حساب می‌شود) */
   viewListing: (id: string) => api<{ ok: boolean }>(`/listings/view/${id}`, { method: "POST" }),
@@ -1326,8 +1232,6 @@ export const productsApi = {
 export const marketApi = {
   requestQuote: (body: RequestQuoteBody) =>
     api<RequestQuoteResultDto>("/market/requestQuote", { method: "POST", body }),
-  getOffers: (businessId: string) =>
-    api<PageDto<OfferDto>>("/market/getOffers", { params: { businessId, limit: 100 } }),
   getInquiries: (businessId: string) =>
     api<InquiryPageDto>("/market/getInquiries", { params: { businessId, limit: 50 } }),
   markInquiryRead: (id: string) =>
@@ -1371,10 +1275,6 @@ export const marketApi = {
       method: "POST",
       body: { businessId },
     }),
-  getPriceBoard: (businessId: string) => api<BoardRowDto[]>("/market/getPriceBoard", { params: { businessId } }),
-  /** تامین‌کننده‌های پیشنهادی برای نیازهای خرید من (سمت خرید) */
-  getSupplierSuggestions: (businessId: string) =>
-    api<SupplierSuggestionDto[]>("/market/getSupplierSuggestions", { params: { businessId } }),
   /** تقاضای مرتبط با کالاهای من (سمت فروش) */
   getBuyRequests: (businessId: string) =>
     api<MarketItemDto[]>("/market/getBuyRequests", { params: { businessId } }),
@@ -1469,11 +1369,5 @@ export const notificationsApi = {
     api<{ ok: boolean }>("/notifications/subscribePush", {
       method: "POST",
       body: JSON.stringify(sub),
-    }),
-  /** لغو اشتراک این مرورگر */
-  unsubscribePush: (endpoint: string) =>
-    api<{ ok: boolean }>("/notifications/unsubscribePush", {
-      method: "POST",
-      body: JSON.stringify({ endpoint }),
     }),
 };

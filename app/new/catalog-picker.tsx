@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   ApiError,
-  type AggregatedItemDto,
   type CatalogItemDto,
   type CatalogSummaryDto,
   type ProductRowDto,
@@ -32,7 +31,6 @@ import {
   Check,
   Copy,
   ImagePlus,
-  Library,
   Loader2,
   PackageSearch,
   Plus,
@@ -60,68 +58,6 @@ import {
  */
 
 type Draft = { price?: number | null; stock?: number | null; minOrder?: number | null; volume?: number | null };
-
-export function CatalogPicker({
-  bizId,
-  currency,
-  arm,
-  onDone,
-  onSwitchToSolo,
-}: {
-  bizId: string;
-  currency: string;
-  /** بازوی هدف این دفعه — انتخابگر هر بار یک بازو را پر می‌کند */
-  arm: "sell" | "buy";
-  onDone: (kind: "sell" | "buy") => void;
-  onSwitchToSolo: () => void;
-}) {
-  const m = useMessages();
-  const [source, setSource] = useState<"copy" | "ref">("copy");
-
-  return (
-    <div className="rounded-2xl border bg-white shadow-sm">
-      <div className="p-6">
-        {/* دو منبع — کوچک و بی‌سر و صدا، بالای کارت */}
-        <div className="mx-auto mb-4 flex w-fit gap-1 rounded-full border bg-accent/30 p-1">
-          <SourceTab active={source === "copy"} onClick={() => setSource("copy")} icon={<Copy className="size-3.5" />} label={m.picker.sourceCopy} />
-          <SourceTab active={source === "ref"} onClick={() => setSource("ref")} icon={<Library className="size-3.5" />} label={m.picker.sourceRef} />
-        </div>
-
-        {source === "copy" ? (
-          <CopyFromPeers bizId={bizId} arm={arm} onDone={onDone} onSwitchToSolo={onSwitchToSolo} />
-        ) : (
-          <ReferencePicker bizId={bizId} currency={currency} arm={arm} onDone={onDone} onSwitchToSolo={onSwitchToSolo} />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function SourceTab({
-  active,
-  onClick,
-  icon,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  icon: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-        active ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {icon}
-      {label}
-    </button>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // منبع ۱ — کاتالوگ تجمیعی هم‌صنف‌ها (Aggregated Catalog)
@@ -682,6 +618,7 @@ function TradePrompt({
 }) {
   const { toast } = useToast();
   const m = useMessages();
+  const qc = useQueryClient();
   const [trade, setTrade] = useState(initialTrade);
   const [saving, setSaving] = useState(false);
 
@@ -693,11 +630,8 @@ function TradePrompt({
     setSaving(true);
     try {
       // استفاده از editBusiness که هم trade را ست می‌کند و هم خودش invalidate می‌کند
-      const { businessesApi } = await import("@/lib/api");
       await businessesApi.editBusiness(bizId, { trade: trade.trim() });
-      // کش را invalidate کنیم
-      const { useQueryClient } = await import("@tanstack/react-query");
-      const qc = useQueryClient();
+      // کش کسب‌وکارها را تازه کن تا صنفِ تازه در جست‌وجوی هم‌صنف‌ها بیفتد
       await qc.invalidateQueries({ queryKey: ["businesses"] });
       toast({ title: "صنف ثبت شد", description: "کاتالوگ‌های هم‌صنف را برایت پیدا می‌کنیم…" });
       onSaved();
@@ -1362,27 +1296,6 @@ function useProducts(params: {
         limit: params.limit,
       }),
     enabled: params.enabled !== false && !!params.businessId,
-    staleTime: 30_000,
-  });
-}
-
-function useAggregatedCatalog(params: {
-  trade: string;
-  city?: string;
-  province?: string;
-  country?: string;
-  q?: string;
-  brandId?: string;
-  categoryId?: string;
-  cursor?: string;
-  limit?: number;
-  mineId?: string;
-  enabled?: boolean;
-}) {
-  return useQuery({
-    queryKey: ["aggregated", params.trade, params.city ?? "", params.province ?? "", params.country ?? "", params.q ?? "", params.brandId ?? "", params.categoryId ?? "", params.cursor ?? ""],
-    queryFn: () => businessesApi.getAggregatedCatalog(params),
-    enabled: params.enabled !== false && !!params.trade,
     staleTime: 30_000,
   });
 }

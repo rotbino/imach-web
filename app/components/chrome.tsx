@@ -131,16 +131,12 @@ function isActivePath(href: string, pathname: string): boolean {
   if (base === "/sell")
     return (
       pathname === "/sell" ||
-      (pathname.startsWith("/sell/") &&
-        !pathname.startsWith("/sell/panel") &&
-        !pathname.startsWith("/sell/customers") &&
-        !pathname.startsWith("/sell/requests"))
+      (pathname.startsWith("/sell/") && !pathname.startsWith("/sell/requests"))
     );
   if (base === "/buy")
     return (
       pathname === "/buy" ||
       (pathname.startsWith("/buy/") &&
-        !pathname.startsWith("/buy/panel") &&
         !pathname.startsWith("/buy/suppliers") &&
         !pathname.startsWith("/buy/suggestions"))
     );

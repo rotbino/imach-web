@@ -21,7 +21,6 @@ import {
   Briefcase,
   Check,
   ClipboardList,
-  LayoutDashboard,
   Loader2,
   MapPin,
   Package,
@@ -114,7 +113,6 @@ function WatchCardButton({ goodId, label }: { goodId: string; label: string }) {
 
 function OwnerBar({ kind, slug }: { kind: "sell" | "buy"; slug: string }) {
   const [shareOpen, setShareOpen] = useState(false);
-  const isSell = kind === "sell";
   const btn =
     "grid size-9 place-items-center rounded-xl text-muted-foreground transition hover:bg-accent hover:text-primary";
 
@@ -123,11 +121,11 @@ function OwnerBar({ kind, slug }: { kind: "sell" | "buy"; slug: string }) {
       {/* نوار ابزار تخت، هم‌عرض صفحه؛ ابزارها گوشه انتهایی ردیف */}
       <div className="mb-3 flex items-center justify-end rounded-2xl border bg-white p-1">
         <Link
-          href={isSell ? "/sell/panel" : "/buy/panel"}
-          aria-label="داشبورد و تنظیمات"
+          href="/profile"
+          aria-label="پروفایل و تنظیمات"
           className={btn}
         >
-          <LayoutDashboard className="size-4.5" />
+          <UserRound className="size-4.5" />
         </Link>
         <button type="button" onClick={() => setShareOpen(true)} aria-label="اشتراک‌گذاری" className={btn}>
           <Share2 className="size-4.5" />

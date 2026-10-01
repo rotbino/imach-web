@@ -27,7 +27,7 @@ const TYPE_VIEWS: Record<NotificationDto["type"], TypeView> = {
     icon: Users,
     iconClass: "bg-primary/10 text-primary",
     text: (n) => `${n.actorName ?? "کاربری"} کاتالوگ شما را فالو کرد`,
-    href: "/sell/customers",
+    href: "/profile",
   },
   FOLLOW_BUYER: {
     icon: Handshake,
@@ -39,7 +39,7 @@ const TYPE_VIEWS: Record<NotificationDto["type"], TypeView> = {
     icon: Tag,
     iconClass: "bg-primary/10 text-primary",
     text: (n) => `${n.actorName ?? "کاربری"} برای «${n.good ?? "کالا"}» پیشنهاد داد`,
-    href: "/buy/panel",
+    href: "/buy/requests",
   },
   QUOTE: {
     icon: ClipboardList,
@@ -51,7 +51,7 @@ const TYPE_VIEWS: Record<NotificationDto["type"], TypeView> = {
     icon: UserPlus,
     iconClass: "bg-primary/10 text-primary",
     text: (n) => `${n.actorName ?? "کسی"} عضو iMach شد`,
-    href: "/market",
+    href: "/profile",
   },
   PRICE_CHANGE: {
     icon: Bookmark,
@@ -96,7 +96,7 @@ export function NotificationsBell() {
 
   const go = (n: NotificationDto) => {
     handleOpen(false);
-    router.push(TYPE_VIEWS[n.type]?.href ?? "/market");
+    router.push(TYPE_VIEWS[n.type]?.href ?? "/profile");
   };
 
   return (
