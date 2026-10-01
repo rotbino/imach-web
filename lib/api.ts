@@ -146,6 +146,21 @@ export interface BusinessSummaryDto {
   lng?: number | null;
   /** آدرس متنی قابل ویرایش — این یکی علنی است */
   address?: string | null;
+  /** فاز ۸ (طرح ۱۴) — تنظیمات اعلان از پروفایل؛ null/غایب = همه روشن */
+  notifPrefs?: NotifPrefsDto | null;
+}
+
+/** فاز ۸ (طرح ۱۴) — چهار toggle اعلان پروفایل خریدار.
+ *  غایب/نال = روشن؛ فقط false صریح خاموش است. */
+export interface NotifPrefsDto {
+  /** PRICE_CHANGE — «تغییر قیمت در تابلوهای من» */
+  priceChange?: boolean;
+  /** QUOTE + OFFER — «پاسخ درخواست‌های قیمت» */
+  quoteReplies?: boolean;
+  /** FOLLOW_* + CONTACT_JOINED — «پیشنهادهای جدید iMach» */
+  suggestions?: boolean;
+  /** گیتِ پوشِ وب — ردیفِ درون‌برنامه‌ای همیشه می‌ماند */
+  push?: boolean;
 }
 
 export interface AuthResponseDto {
@@ -1037,6 +1052,10 @@ export const businessesApi = {
       method: "PUT",
       body: { categories },
     }),
+  /** فاز ۸ (طرح ۱۴) — تنظیمات اعلان از پروفایل؛ ذخیره‌ی ادغامی: فقط کلیدهای
+   *  ارسال‌شده عوض می‌شوند. پاسخ = prefs کامل پس از ذخیره. */
+  setNotifPrefs: (id: string, body: Partial<NotifPrefsDto>) =>
+    api<NotifPrefsDto>(`/businesses/setNotifPrefs/${id}`, { method: "PUT", body }),
   /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
   getContact: (slug: string) => api<{ phone: string | null; name: string }>(`/businesses/getContact/${slug}`),
   /** بازار — کشف عمومی؛ بدون عضویت هم کار می‌کند */

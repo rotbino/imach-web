@@ -28,6 +28,7 @@ import {
   type MarketItemDto,
   type MarketStateDto,
   type MyInquiriesDto,
+  type NotifPrefsDto,
   type NotificationsPageDto,
   type OfferDto,
   type PageDto,
@@ -325,6 +326,46 @@ export function useEditBusiness() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });
       void qc.invalidateQueries({ queryKey: ["business"] });
+    },
+  });
+}
+
+/**
+ * فاز ۸ (طرح ۱۴) — toggleهای تنظیمات اعلان از پروفایل. به‌روزرسانیِ
+ * optimistic روی myBusinesses: کلید همان لحظه جابه‌جا می‌شود و اگر
+ * ذخیره خطا خورد، فهرست از سرور برمی‌گردد (rollback بی‌سروصدا).
+ */
+export function useSetNotifPrefs() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...body }: { id: string } & Partial<NotifPrefsDto>) =>
+      businessesApi.setNotifPrefs(id, body),
+    onMutate: async ({ id, ...body }) => {
+      await qc.cancelQueries({ queryKey: qk.myBusinesses() });
+      const prev = qc.getQueryData<(BusinessSummaryDto & { _count: { listings: number } })[]>(qk.myBusinesses());
+      if (prev) {
+        qc.setQueryData(
+          qk.myBusinesses(),
+          prev.map((b) =>
+            b.id === id
+              ? { ...b, notifPrefs: { ...(b.notifPrefs ?? {}), ...body } }
+              : b
+          )
+        );
+      }
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(qk.myBusinesses(), ctx.prev);
+    },
+    onSuccess: (prefs, { id }) => {
+      const cur = qc.getQueryData<(BusinessSummaryDto & { _count: { listings: number } })[]>(qk.myBusinesses());
+      if (cur) {
+        qc.setQueryData(
+          qk.myBusinesses(),
+          cur.map((b) => (b.id === id ? { ...b, notifPrefs: prefs } : b))
+        );
+      }
     },
   });
 }
