@@ -670,6 +670,99 @@ export interface RequestQuoteResultDto {
   inquiries: { id: string; sellerId: string; status: string }[];
 }
 
+// ═══ فاز ۷ — دایرکتوری تأمین‌کنندگان (طرح ۱۰) + پیشنهادها (طرح ۱۱) ═══
+
+/** چیپ کالای مرتبط روی کارت تأمین‌کننده */
+export interface DirectoryGoodChipDto {
+  goodId: string;
+  nameFa: string;
+}
+
+/** ردیف تب «مرتبط با من» — پیشنهاد موتور، گروه‌بندی بر حسب فروشنده */
+export interface RelatedSupplierDto {
+  supplierId: string;
+  slug: string;
+  name: string;
+  city: string;
+  isVerified: boolean;
+  trade: string | null;
+  goods: DirectoryGoodChipDto[];
+  /** «N قیمت از این فروشنده در تابلوهای شماست» */
+  priceCount: number;
+  followedByMe: boolean;
+  /** «از او خریده‌ام» — استعلام پاسخ‌داده‌شده */
+  boughtFrom: boolean;
+}
+
+/** ردیف تب «دنبال‌شده» — شبکه‌ی فعلی من (mine + theirs) */
+export interface FollowedSupplierDto extends Omit<RelatedSupplierDto, "followedByMe"> {
+  /** mine → خودم فالو کرده‌ام · theirs → میز خریدم را فالو کرده («خودش آمد») */
+  origin: "mine" | "theirs";
+  viaRef: boolean;
+  createdAt: string;
+}
+
+export interface SuppliersDirectoryDto {
+  related: RelatedSupplierDto[];
+  followed: FollowedSupplierDto[];
+}
+
+/** کارت «قیمت بهتر» (طرح ۱۱) — ارزان‌تر از بهترین قیمتِ شبکه‌ی فعلی من */
+export interface BetterPriceDto {
+  goodId: string;
+  goodName: string;
+  unit: string;
+  listingId: string;
+  priceMinor: number;
+  currency: string | null;
+  minOrder: number | null;
+  stock: number | null;
+  variantLabel: string | null;
+  /** بهترین قیمتِ تأمین‌کننده‌های فعلی من برای همین کالا */
+  boardBestMinor: number;
+  /** درصد ارزان‌تر (مثبت) */
+  pct: number;
+  supplier: SellerDto & { trade?: string | null };
+}
+
+/** کارت «تأمین‌کننده جدید» (طرح ۱۱) — با حلقه‌ی امتیاز تطبیق */
+export interface NewSupplierDto {
+  supplier: SellerDto;
+  /** ۰-۹۸ — سوژه‌ی MatchRing */
+  score: number;
+  goodId: string;
+  goodName: string;
+  unit: string;
+  priceMinor: number;
+  currency: string | null;
+  minOrder: number;
+  myVolume: number | null;
+  proximity: "same-city" | "same-province" | "same-country" | "far";
+}
+
+/** کارت «جایگزین» (طرح ۱۱) — کالای هم‌دسته‌ی ارزان‌تر */
+export interface AlternativeGoodDto {
+  goodId: string;
+  goodName: string;
+  unit: string;
+  variantLabel: string | null;
+  listingId: string;
+  priceMinor: number;
+  currency: string | null;
+  minOrder: number | null;
+  supplier: SellerDto;
+  /** کالای لیست من که این جایگزینِ آن است («مشابه برنج هاشمی») */
+  watchedGoodId: string;
+  watchedGoodName: string;
+  proximity: "same-city" | "same-province" | "same-country" | "far";
+}
+
+export interface SuggestionsDto {
+  betterPrices: BetterPriceDto[];
+  newSuppliers: NewSupplierDto[];
+  alternatives: AlternativeGoodDto[];
+}
+
 /**
  * وضعیت گیت رشد برای بازار خریدارها (بازوی فروش) — یک فراخوان:
  * شمارنده معرف (گیت ۱۰تایی)، کالاهای فروشی (گیت کاتالوگ خالی)،
@@ -1225,6 +1318,13 @@ export const marketApi = {
   /** تابلوی تأمین یک کالا — ردیف‌های تأمین‌کننده + برچسب‌های رابطه */
   getSupplyBoard: (businessId: string, goodId: string) =>
     api<SupplyBoardDto>("/market/getSupplyBoard", { params: { businessId, goodId } }),
+  // ═══ فاز ۷ — دایرکتوری تأمین‌کنندگان (طرح ۱۰) + پیشنهادها (طرح ۱۱) ═══
+  /** دو تب: «مرتبط با من» (موتور تطبیق) + «دنبال‌شده» (شبکه‌ی فعلی) */
+  getSuppliersDirectory: (businessId: string) =>
+    api<SuppliersDirectoryDto>("/market/getSuppliersDirectory", { params: { businessId } }),
+  /** سه کارت: قیمت بهتر / تأمین‌کننده جدید / جایگزین */
+  getSuggestions: (businessId: string) =>
+    api<SuggestionsDto>("/market/getSuggestions", { params: { businessId } }),
   sendOffer: (body: { inquiryId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),

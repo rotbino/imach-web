@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
+import { useActiveBusiness } from "@/lib/active-biz";
 import { fmtPhone } from "@/lib/countries";
 import { useMyAvatar, useRemoveFile, useUploadFile } from "@/lib/queries";
 import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { SetPasswordButton } from "@/app/components/set-password-button";
 import { LanguageSelect } from "@/app/components/language-select";
+import { ShareContent } from "@/app/components/share";
 import { FileUploader } from "@/components/FileUploader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, ShieldCheck, LayoutDashboard, Tag } from "lucide-react";
+import { LogOut, ShieldCheck, LayoutDashboard, Tag, Link2 } from "lucide-react";
 
 /*
  * پروفایل — حساب کاربر (یکی، مشترک بین هر دو صفحه؛ مثل اینستاگرام):
@@ -28,6 +30,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { status, user, logout } = useAuthStore();
   const { toast } = useToast();
+  const activeBiz = useActiveBusiness();
   const avatarQ = useMyAvatar(status === "authed" ? user?.id : null);
   const uploadFile = useUploadFile();
   const removeFile = useRemoveFile();
@@ -138,6 +141,22 @@ export default function ProfilePage() {
             <p className="text-sm text-muted-foreground">زبان / Language</p>
             <LanguageSelect />
           </div>
+
+          {/* لینک دعوت دستیار خرید — از صفحه‌ی تأمین‌کنندگان به این‌جا آمد (فاز ۷ · طرح ۱۰)؛
+              فاز ۸ پروفایل دو-بازویی را ادغام می‌کند و این کارت همان‌جا می‌ماند */}
+          {activeBiz && (
+            <section className="mt-4 rounded-2xl border bg-white p-4 shadow-sm">
+              <p className="mb-3 flex items-center gap-1.5 text-sm font-extrabold">
+                <Link2 className="size-4 text-stone-800" />
+                لینک دعوت تامین‌کننده «{activeBiz.name}»
+              </p>
+              <ShareContent kind="buy" slug={activeBiz.slug} bizName={activeBiz.name} />
+              <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <Link2 className="size-3" />
+                هر ثبت‌نام از این لینک، خودکار تامین‌کننده‌ی شما می‌شود.
+              </p>
+            </section>
+          )}
 
           {user.role === "ADMIN" && (
             <Link

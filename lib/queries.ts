@@ -34,6 +34,8 @@ import {
   type ProductPageDto,
   type RequestQuoteBody,
   type SupplierSuggestionDto,
+  type SuppliersDirectoryDto,
+  type SuggestionsDto,
   type SupplyBoardDto,
   type WatchedRowDto,
 } from "./api";
@@ -62,6 +64,8 @@ export const qk = {
   myInquiries: (bizId: string) => ["market", "myInquiries", bizId] as const,
   supplyBoard: (bizId: string, goodId: string) => ["market", "supplyBoard", bizId, goodId] as const,
   follows: (bizId: string) => ["market", "follows", bizId] as const,
+  suppliersDirectory: (bizId: string) => ["market", "suppliersDirectory", bizId] as const,
+  suggestions: (bizId: string) => ["market", "suggestions", bizId] as const,
   myFollowers: (bizId: string) => ["market", "myFollowers", bizId] as const,
   board: (bizId: string) => ["market", "board", bizId] as const,
   supplierSuggestions: (bizId: string) => ["market", "supplierSuggestions", bizId] as const,
@@ -418,7 +422,8 @@ export function useWatchedGoods(businessId: string | null | undefined): UseQuery
   });
 }
 
-/** «دنبال کردن قیمت» از کاتالوگ عمومی / ردیف بی‌تابلو */
+/** «دنبال کردن قیمت» از کاتالوگ عمومی / ردیف بی‌تابلو — کالاهای من عوض می‌شود؛
+ *  دایرکتوری تأمین‌کنندگان و پیشنهادها هم سوختشان کالاهای من است. */
 export function useWatchGood() {
   const qc = useQueryClient();
   return useMutation({
@@ -426,6 +431,8 @@ export function useWatchGood() {
       marketApi.watchGood(businessId, goodId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market", "watched"] });
+      void qc.invalidateQueries({ queryKey: ["market", "suggestions"] });
+      void qc.invalidateQueries({ queryKey: ["market", "suppliersDirectory"] });
     },
   });
 }
@@ -437,6 +444,8 @@ export function useUnwatchGood() {
       marketApi.unwatchGood(businessId, goodId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market", "watched"] });
+      void qc.invalidateQueries({ queryKey: ["market", "suggestions"] });
+      void qc.invalidateQueries({ queryKey: ["market", "suppliersDirectory"] });
     },
   });
 }
@@ -495,6 +504,30 @@ export function useSupplierSuggestions(businessId: string | null | undefined): U
   return useQuery({
     queryKey: qk.supplierSuggestions(businessId ?? ""),
     queryFn: () => marketApi.getSupplierSuggestions(businessId as string),
+    enabled: !!businessId,
+    staleTime: 60_000,
+  });
+}
+
+// ═══ فاز ۷ — دایرکتوری تأمین‌کنندگان (طرح ۱۰) + پیشنهادها (طرح ۱۱) ═══
+
+/** تأمین‌کنندگان — دو تب: «مرتبط با من» (موتور) و «دنبال‌شده» (شبکه‌ی من) */
+export function useSuppliersDirectory(
+  businessId: string | null | undefined
+): UseQueryResult<SuppliersDirectoryDto> {
+  return useQuery({
+    queryKey: qk.suppliersDirectory(businessId ?? ""),
+    queryFn: () => marketApi.getSuppliersDirectory(businessId as string),
+    enabled: !!businessId,
+    staleTime: 60_000,
+  });
+}
+
+/** پیشنهادهای iMach — قیمت بهتر / تأمین‌کننده جدید / جایگزین */
+export function useSuggestions(businessId: string | null | undefined): UseQueryResult<SuggestionsDto> {
+  return useQuery({
+    queryKey: qk.suggestions(businessId ?? ""),
+    queryFn: () => marketApi.getSuggestions(businessId as string),
     enabled: !!businessId,
     staleTime: 60_000,
   });
