@@ -1,0 +1,181 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>D1 — کاتالوگ من · دسکتاپ</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.7-6.2a1.6 1.6 0 013 .3L10.5 8h3l.8-2.9a1.6 1.6 0 013-.3L19 11"/><path d="M4 11h16l-1.4 8.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.5-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.7 1.1z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0115 0"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18.5 21l-6.5-4.6L5.5 21V5.2A2.2 2.2 0 017.7 3h8.6a2.2 2.2 0 012.2 2.2z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9.5v5M14 9.5v5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></symbol>
+</svg>
+
+<div class="desktop" data-arm="sell" style="--arm:var(--primary);--arm-fg:#fff;--arm-tint:var(--accent)">
+
+  <!-- ═══ هدر دسکتاپ: لوگو + سوییچ + ناوبری + اکشن‌ها ═══ -->
+  <header class="desk-appbar">
+    <img src="../assets/logo3.svg" alt="iMach">
+    <div class="desk-arm-switch">
+      <button class="active"><svg><use href="#i-store"/></svg> دستیار فروش</button>
+      <button><svg><use href="#i-basket"/></svg> دستیار خرید</button>
+    </div>
+    <nav class="desk-nav">
+      <a class="active"><svg><use href="#i-store"/></svg>کاتالوگ من</a>
+      <a><svg><use href="#i-inbox"/></svg>درخواست‌های قیمت <span class="badge b-new" style="margin-top:2px">۳</span></a>
+      <a><svg><use href="#i-user"/></svg>پروفایل</a>
+    </nav>
+    <div style="margin-right:auto;display:flex;align-items:center;gap:10px">
+      <button class="icon-btn" aria-label="اعلان‌ها"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۳</span></button>
+      <div class="avatar" style="background:linear-gradient(135deg,#ea580c,#f97316)">ا</div>
+    </div>
+  </header>
+
+  <div class="desk-body">
+
+    <main class="desk-main">
+
+      <!-- هدر صفحه -->
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+        <div class="avatar-lg" style="width:48px;height:48px;font-size:18px;background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+        <div style="flex:1">
+          <div style="font-size:20px;font-weight:700">کاتالوگ من — پخش برنج پارس</div>
+          <div style="font-size:12px;color:var(--muted-fg);margin-top:3px">پخش مواد غذایی · رشت · ۵ کالا · ۱۲۰ بازدید ماه · ۳۸ دنبال‌کننده</div>
+        </div>
+        <button class="btn btn-outline btn-sm"><svg><use href="#i-share"/></svg> اشتراک کاتالوگ</button>
+        <button class="btn btn-primary"><svg><use href="#i-plus"/></svg> افزودن کالا</button>
+      </div>
+
+      <!-- نوار ابزار -->
+      <div style="display:flex;gap:10px;margin-bottom:14px;align-items:center">
+        <div class="searchbar" style="width:340px;height:40px">
+          <svg><use href="#i-search"/></svg>
+          <span>جستجو در کاتالوگ…</span>
+        </div>
+        <div class="chips" style="margin:0">
+          <button class="chip active">همه</button>
+          <button class="chip">هاشمی</button>
+          <button class="chip">طارم</button>
+          <button class="chip">فجر</button>
+          <button class="chip">غیرفعال (۱)</button>
+        </div>
+        <span style="margin-right:auto;font-size:11.5px;color:var(--muted-fg)">آخرین قیمت‌ها امروز به‌روزرسانی شده</span>
+      </div>
+
+      <!-- جدول مدیریت — مزیت دسکتاپ: ویرایش درجا -->
+      <table class="dtable">
+        <thead>
+          <tr>
+            <th>کالا</th><th>قیمت (تومان)</th><th>موجودی</th><th>حداقل سفارش</th><th>بازدید ۳۰ روز</th><th>دنبال‌کننده</th><th>درخواست باز</th><th>وضعیت</th><th>عملیات</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>برنج هاشمی</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
+            <td><b>۲٬۸۵۰٬۰۰۰</b> <span class="trend down" style="font-size:10px">▼۲٪</span></td>
+            <td>۱۲۰ کیسه</td><td>۵ کیسه</td><td>۲۱</td><td>۴</td>
+            <td><span class="badge b-new">۲</span></td>
+            <td><span class="badge b-green">فعال</span></td>
+            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
+          </tr>
+          <tr style="background:#fffdf9">
+            <td><b>برنج طارم</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
+            <td><b>۲٬۷۵۰٬۰۰۰</b></td>
+            <td>۸۰ کیسه</td><td>۵ کیسه</td><td>۱۷</td><td>۲</td>
+            <td>—</td>
+            <td><span class="badge b-green">فعال</span></td>
+            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
+          </tr>
+          <tr>
+            <td><b>برنج هاشمی</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۱۰ کیلویی</span></td>
+            <td><b>۵۹۵٬۰۰۰</b></td>
+            <td>۹۵ کیسه</td><td>۱۰ کیسه</td><td>۹</td><td>۱</td>
+            <td>—</td>
+            <td><span class="badge b-green">فعال</span></td>
+            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
+          </tr>
+          <tr>
+            <td><b>برنج فجر</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
+            <td><b>۲٬۴۸۰٬۰۰۰</b></td>
+            <td><span class="badge b-amber">۱۲ کیسه</span></td><td>۵ کیسه</td><td>۱۴</td><td>۳</td>
+            <td>—</td>
+            <td><span class="badge b-green">فعال</span></td>
+            <td style="color:var(--primary-strong);font-weight:700">ویرایش</td>
+          </tr>
+          <tr style="opacity:.6">
+            <td><b>برنج صدری</b> <span style="color:var(--muted-fg);font-size:11px">کیسه ۵۰ کیلویی</span></td>
+            <td>—</td>
+            <td>۳۰ کیسه</td><td>۵ کیسه</td><td>۲</td><td>۰</td>
+            <td>—</td>
+            <td><span class="badge b-muted">غیرفعال</span></td>
+            <td style="color:var(--green);font-weight:700">فعال‌سازی</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- راهنمای ادغام نما -->
+      <div class="legend" style="max-width:640px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>نمای عمومی همین کاتالوگ برای مشتری‌ها: <b style="color:var(--primary-strong);cursor:pointer">پیش‌نمایش عمومی</b> — همان صفحه، بدون ستون‌های مدیریت. آنچه می‌بینید، همان چیزی است که مشتری می‌بیند.</div>
+      </div>
+
+    </main>
+
+    <!-- ستون کنار: درخواست‌های تازه + خریداران علاقه‌مند -->
+    <aside class="desk-side">
+      <div class="sec-title" style="margin-top:0"><h2><svg><use href="#i-inbox"/></svg> درخواست‌های تازه</h2></div>
+      <div class="rows" style="gap:7px">
+        <div class="row-card" style="padding:9px 11px;border-color:#f9c48f;background:#fffdf9">
+          <div class="avatar-sm" style="background:#7c3aed">م</div>
+          <div class="body">
+            <div class="t" style="font-size:12.5px">رستوران مهر <span class="badge b-new">جدید</span></div>
+            <div class="s" style="font-size:11px">برنج هاشمی · ۲۰ کیسه · تهران</div>
+          </div>
+        </div>
+        <div class="row-card" style="padding:9px 11px">
+          <div class="avatar-sm" style="background:#0e7490">ن</div>
+          <div class="body">
+            <div class="t" style="font-size:12.5px">پخش نگین</div>
+            <div class="s" style="font-size:11px">برنج طارم · ۳۰ کیسه · قزوین</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title"><h2><svg><use href="#i-bookmark"/></svg> خریداران علاقه‌مند</h2></div>
+      <div class="rows" style="gap:7px">
+        <div class="row-card" style="padding:9px 11px">
+          <div class="avatar-sm" style="background:#0e7490">ن</div>
+          <div class="body">
+            <div class="t" style="font-size:12.5px">پخش نگین</div>
+            <div class="s" style="font-size:11px">قزوین · ۲ کالا را دنبال می‌کند</div>
+          </div>
+        </div>
+        <div class="row-card" style="padding:9px 11px">
+          <div class="avatar-sm" style="background:#7c3aed">م</div>
+          <div class="body">
+            <div class="t" style="font-size:12.5px">رستوران مهر</div>
+            <div class="s" style="font-size:11px">تهران · ۱ کالا · درخواست باز</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-share"/></svg>
+        <div>هر ثبت‌نام از لینک کاتالوگ شما، خودکار مشتری‌تان می‌شود. <b>لینک و QR</b></div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+</body>
+</html>
