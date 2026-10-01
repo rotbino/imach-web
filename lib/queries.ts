@@ -27,12 +27,14 @@ import {
   type InquiryPageDto,
   type MarketItemDto,
   type MarketStateDto,
+  type MyInquiriesDto,
   type NotificationsPageDto,
   type OfferDto,
   type PageDto,
   type ProductPageDto,
   type QuoteRequestResultDto,
   type SupplierSuggestionDto,
+  type WatchedRowDto,
 } from "./api";
 import { useAuthStore } from "./auth-store";
 
@@ -55,6 +57,8 @@ export const qk = {
   myListings: (bizId: string) => ["listings", bizId] as const,
   offers: (bizId: string) => ["market", "offers", bizId] as const,
   inquiries: (bizId: string) => ["market", "inquiries", bizId] as const,
+  watched: (bizId: string) => ["market", "watched", bizId] as const,
+  myInquiries: (bizId: string) => ["market", "myInquiries", bizId] as const,
   follows: (bizId: string) => ["market", "follows", bizId] as const,
   myFollowers: (bizId: string) => ["market", "myFollowers", bizId] as const,
   board: (bizId: string) => ["market", "board", bizId] as const,
@@ -381,6 +385,51 @@ export function useArchiveInquiry() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market", "inquiries"] });
     },
+  });
+}
+
+// ═══ فاز ۵ — دنبال‌کردن قیمت + لیست خرید (طرح ۰۸) ═══
+
+/** لیست خرید — ردیف‌های WatchedGood ∪ BUY listing با خلاصه‌ی تابلوی تأمین */
+export function useWatchedGoods(businessId: string | null | undefined): UseQueryResult<WatchedRowDto[]> {
+  return useQuery({
+    queryKey: qk.watched(businessId ?? ""),
+    queryFn: () => marketApi.getWatchedGoods(businessId as string),
+    enabled: !!businessId,
+    staleTime: 15_000,
+  });
+}
+
+/** «دنبال کردن قیمت» از کاتالوگ عمومی / ردیف بی‌تابلو */
+export function useWatchGood() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ businessId, goodId }: { businessId: string; goodId: string }) =>
+      marketApi.watchGood(businessId, goodId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market", "watched"] });
+    },
+  });
+}
+
+export function useUnwatchGood() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ businessId, goodId }: { businessId: string; goodId: string }) =>
+      marketApi.unwatchGood(businessId, goodId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market", "watched"] });
+    },
+  });
+}
+
+/** «درخواست‌های من» (سمت خریدار) — استعلام‌های فرستاده + پاسخ‌های دریافتی */
+export function useMyInquiries(businessId: string | null | undefined): UseQueryResult<MyInquiriesDto> {
+  return useQuery({
+    queryKey: qk.myInquiries(businessId ?? ""),
+    queryFn: () => marketApi.getMyInquiries(businessId as string),
+    enabled: !!businessId,
+    staleTime: 15_000,
   });
 }
 

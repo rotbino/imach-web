@@ -489,6 +489,61 @@ export interface InquiryPageDto extends PageDto<InquiryDto> {
   unreadCount: number;
 }
 
+// ═══ فاز ۵ — دنبال‌کردن قیمت + لیست خرید (طرح ۰۸) ═══
+
+/** فروشنده‌ی ارزان‌ترین ردیفِ تابلوی تأمین یک کالای دنبال‌شده */
+export interface CheapestSupplierDto {
+  listingId: string;
+  priceMinor: number;
+  currency: string | null;
+  minOrder: number | null;
+  variantLabel: string | null;
+  seller: SellerDto;
+}
+
+/** ردیف لیست خرید — WatchedGood ∪ BUY listing با خلاصه‌ی تابلوی تأمین */
+export interface WatchedRowDto {
+  goodId: string;
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category: { slug: string; nameFa: string; nameEn: string };
+  } | null;
+  buyListingId: string | null;
+  volume: number | null;
+  frequency: string | null;
+  variantLabel: string | null;
+  watched: boolean;
+  watchedAt: string | null;
+  lastNotifiedAt: string | null;
+  supplierCount: number;
+  cheapest: CheapestSupplierDto | null;
+  /** درصد تغییر ارزان‌ترین قیمت در ۷ روز — منفی یعنی ارزان‌تر */
+  trendPct: number | null;
+  /** آیا این هفته قیمتی در تابلوی همان کالا عوض شده؟ (چیپ «تغییر قیمت») */
+  priceChanged: boolean;
+}
+
+/** «درخواست‌های من» (سمت خریدار) + آخرین پیشنهادِ دریافتی */
+export interface MyInquiryDto extends InquiryDto {
+  seller: InquiryBuyerDto;
+  offer: {
+    id: string;
+    priceMinor: number;
+    currency: string;
+    minOrder: number;
+    note: string | null;
+    createdAt: string;
+  } | null;
+}
+
+export interface MyInquiriesDto {
+  rows: MyInquiryDto[];
+  answeredCount: number;
+}
+
 export interface FollowDto {
   supplierId: string;
   createdAt: string;
@@ -1099,6 +1154,22 @@ export const marketApi = {
     api<{ ok: boolean }>(`/market/markInquiryRead/${id}`, { method: "POST" }),
   archiveInquiry: (id: string) =>
     api<{ ok: boolean }>(`/market/archiveInquiry/${id}`, { method: "POST" }),
+  // ═══ فاز ۵ — دنبال‌کردن قیمت + لیست خرید (طرح ۰۸) ═══
+  getWatchedGoods: (businessId: string) =>
+    api<WatchedRowDto[]>("/market/getWatchedGoods", { params: { businessId } }),
+  watchGood: (businessId: string, goodId: string) =>
+    api<{ ok: boolean; watched: boolean }>("/market/watchGood", {
+      method: "POST",
+      body: { businessId, goodId },
+    }),
+  unwatchGood: (businessId: string, goodId: string) =>
+    api<{ ok: boolean; watched: boolean }>(`/market/unwatchGood/${goodId}`, {
+      method: "POST",
+      body: { businessId },
+    }),
+  /** «درخواست‌های من» — استعلام‌های فرستاده‌ی خریدار + پاسخ‌های دریافتی */
+  getMyInquiries: (businessId: string) =>
+    api<MyInquiriesDto>("/market/getMyInquiries", { params: { businessId } }),
   sendOffer: (body: { inquiryId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),
@@ -1175,7 +1246,8 @@ export type NotificationType =
   | "FOLLOW_BUYER" // تامین‌کننده‌ای لیست خرید مرا فالو کرد
   | "OFFER" // پیشنهاد تازه روی درخواست خرید من
   | "QUOTE" // استعلام موتور تطبیق به من رسید
-  | "CONTACT_JOINED"; // شماره‌ای از دفترچه‌ی من عضو شد
+  | "CONTACT_JOINED" // شماره‌ای از دفترچه‌ی من عضو شد
+  | "PRICE_CHANGE"; // فاز ۵ — کالای دنبال‌شده قیمتش عوض شد
 
 /** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد */
 export interface NotificationDto {

@@ -14,6 +14,8 @@ import {
   useSaveListing,
   useSetListingActive,
   useViewListing,
+  useWatchGood,
+  useWatchedGoods,
 } from "@/lib/queries";
 import type { GoodItemDto, InquiryDto } from "@/lib/api";
 import {
@@ -37,6 +39,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import {
   BadgeCheck,
+  Bookmark,
+  BookmarkCheck,
   Boxes,
   ChevronRight,
   CirclePause,
@@ -535,6 +539,33 @@ function PublicView({
   const { toast } = useToast();
   const followToggle = useFollowToggle();
 
+  // ── فاز ۵ (طرح ۰۲): دنبال‌کردن قیمت همین کالا — ردیف لیست خرید می‌سازد ──
+  const watchedQ = useWatchedGoods(authed ? myBizId : null);
+  const watchM = useWatchGood();
+  const isWatched =
+    (watchedQ.data ?? []).some((r) => r.goodId === listing.good.id) ?? false;
+
+  const watch = () => {
+    if (!authed || !myBizId) {
+      toast({
+        title: "اول عضو iMach شوید",
+        description: "ثبت‌نام رایگان است؛ بعد از ورود، قیمت این کالا در لیست خریدتان دنبال می‌شود.",
+      });
+      return;
+    }
+    watchM.mutate(
+      { businessId: myBizId, goodId: listing.good.id },
+      {
+        onSuccess: () =>
+          toast({
+            title: `قیمت ${goodName(listing.good)} دنبال شد`,
+            description: "در «لیست خرید» می‌نشیند؛ قیمتش که عوض شود خبرتان می‌کنیم.",
+          }),
+        onError: (e) => toast({ title: e.message || "خطا", variant: "destructive" }),
+      }
+    );
+  };
+
   // برچسب‌های فارسی ویژگی‌ها از تعریف دسته‌ی کالای مرجع
   const goodsQ = useGoods({ q: listing.good.nameFa, limit: 30 });
   const goodDef = useMemo(
@@ -671,7 +702,8 @@ function PublicView({
         </p>
       </div>
 
-      {/* اکشن‌های خریدار — تماس + دنبال کردن فروشگاه (دنبال‌کردنِ قیمت: فاز ۵) */}
+      {/* اکشن‌های خریدار (طرح ۰۲): تماس + دنبال‌کردن فروشگاه + دنبال‌کردن قیمت
+          («درخواست قیمت» طبق فازبندی در فاز ۶ به این نوار می‌آید) */}
       <div className="sticky bottom-0 z-10 mt-auto flex gap-2.5 border-t bg-white/97 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
         <ContactButton
           slug={biz.slug}
@@ -682,12 +714,32 @@ function PublicView({
         />
         <Button
           size="lg"
-          className="flex-[1.3] gap-1.5 bg-stone-800 hover:bg-stone-900"
+          variant="outline"
+          className="flex-1 gap-1.5 border-stone-300 bg-white font-bold hover:bg-stone-50"
           onClick={follow}
           disabled={followToggle.isPending}
         >
           {followToggle.isPending ? <span className="text-xs">…</span> : null}
           دنبال کردن فروشگاه
+        </Button>
+        <Button
+          size="lg"
+          className="flex-[1.3] gap-1.5 bg-stone-800 hover:bg-stone-900"
+          onClick={watch}
+          disabled={watchM.isPending || isWatched}
+          aria-pressed={isWatched}
+        >
+          {isWatched ? (
+            <>
+              <BookmarkCheck className="size-4.5" strokeWidth={1.9} />
+              دنبال می‌کنید
+            </>
+          ) : (
+            <>
+              <Bookmark className="size-4.5" strokeWidth={1.9} />
+              دنبال کردن قیمت
+            </>
+          )}
         </Button>
       </div>
     </>

@@ -7,7 +7,7 @@ import { fa } from "@/lib/format";
 import { usePushSetup } from "@/lib/push";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { NotificationDto } from "@/lib/api";
-import { Bell, ClipboardList, Handshake, Tag, UserPlus, Users } from "lucide-react";
+import { Bell, Bookmark, ClipboardList, Handshake, Tag, UserPlus, Users } from "lucide-react";
 
 /*
  * زنگ اعلان‌ها — هدر، همه‌ی صفحات.
@@ -52,6 +52,12 @@ const TYPE_VIEWS: Record<NotificationDto["type"], TypeView> = {
     iconClass: "bg-primary/10 text-primary",
     text: (n) => `${n.actorName ?? "کسی"} عضو iMach شد`,
     href: "/market",
+  },
+  PRICE_CHANGE: {
+    icon: Bookmark,
+    iconClass: "bg-stone-800/10 text-stone-800",
+    text: (n) => `قیمت «${n.good ?? "کالا"}» به‌روز شد${n.actorName ? ` — ${n.actorName}` : ""}`,
+    href: "/buy",
   },
 };
 

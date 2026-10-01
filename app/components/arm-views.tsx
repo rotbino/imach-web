@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { fa, categoryName, fmtMoney, goodName, unitLabel, frequencyLabel, activityTypeLabel } from "@/lib/format";
 import { useAuthStore } from "@/lib/auth-store";
-import { useBusinessProfile, useFollowBuyerToggle, useFollowToggle, useMarketState, useEditBusiness } from "@/lib/queries";
+import { useBusinessProfile, useFollowBuyerToggle, useFollowToggle, useMarketState, useEditBusiness, useWatchGood, useWatchedGoods } from "@/lib/queries";
 import { ApiError } from "@/lib/api";
 import { ContactButton } from "@/app/components/contact-gate";
 import { ShareDialog } from "@/app/components/share";
@@ -16,6 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   BadgeCheck,
+  Bookmark,
+  BookmarkCheck,
   Briefcase,
   Check,
   ClipboardList,
@@ -56,6 +58,58 @@ export function isCatalogOwner(
   role?: string
 ): boolean {
   return !!businesses.find((b) => b.slug === slug) || role === "ADMIN";
+}
+
+// ─── نشانک «دنبال کردن قیمت» روی کارت کاتالوگ عمومی (فاز ۵ — طرح ۱۳: .gear) ───
+function WatchCardButton({ goodId, label }: { goodId: string; label: string }) {
+  const { toast } = useToast();
+  const { status, businesses } = useAuthStore();
+  const myBizId = businesses[0]?.id ?? null;
+  const watchedQ = useWatchedGoods(status === "authed" ? myBizId : null);
+  const watchM = useWatchGood();
+  const watched = (watchedQ.data ?? []).some((r) => r.goodId === goodId);
+
+  const onClick = () => {
+    if (status !== "authed" || !myBizId) {
+      toast({
+        title: "اول عضو iMach شوید",
+        description: "ثبت‌نام رایگان است؛ بعد قیمت این کالا برایتان دنبال می‌شود.",
+      });
+      return;
+    }
+    watchM.mutate(
+      { businessId: myBizId, goodId },
+      {
+        onSuccess: () =>
+          toast({
+            title: `قیمت ${label} دنبال شد`,
+            description: "در «لیست خرید» شما می‌نشیند و تابلوی تأمینش ساخته می‌شود.",
+          }),
+        onError: (e) => toast({ title: e instanceof Error ? e.message : "خطا", variant: "destructive" }),
+      }
+    );
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={watchM.isPending || watched}
+      aria-label={watched ? `${label} دنبال می‌کنید` : `دنبال کردن قیمت ${label}`}
+      aria-pressed={watched}
+      className={`absolute end-[7px] top-[7px] grid size-[26px] place-items-center rounded-lg shadow-sm transition ${
+        watched
+          ? "bg-stone-800 text-white"
+          : "bg-white/95 text-stone-400 hover:text-stone-700"
+      }`}
+    >
+      {watched ? (
+        <BookmarkCheck className="size-3.5" strokeWidth={2} />
+      ) : (
+        <Bookmark className="size-3.5" strokeWidth={1.9} />
+      )}
+    </button>
+  );
 }
 
 function OwnerBar({ kind, slug }: { kind: "sell" | "buy"; slug: string }) {
@@ -280,12 +334,13 @@ export function SellArmView({ slug }: { slug: string }) {
             {visibleListings.map((l) => {
               const photo = l.gallery?.[0];
               return (
-              /* کارت = ورودی صفحه‌ی جزئیات کالا (فاز ۲ — طرح ۱۳→۰۲) */
-              <Link
+              /* کارت = ورودی صفحه‌ی جزئیات کالا (فاز ۲ — طرح ۱۳→۰۲)
+                 + نشانک «دنبال کردن قیمت» گوشه‌ی تصویر (فاز ۵ — طرح ۱۳) */
+              <article
                 key={l.id}
-                href={`/sell/${slug}/${l.id}`}
-                className="animate-fade-up block overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
+                className="animate-fade-up relative block overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
               >
+                <Link href={`/sell/${slug}/${l.id}`} className="block">
                 {photo ? (
                   /* تامبنیل ابر — unoptimized: عکس از قبل فشرده است و next/image
                      نباید سرِ هاست‌کانفیگ کرش کند */
@@ -326,7 +381,11 @@ export function SellArmView({ slug }: { slug: string }) {
                     موجودی: {fa(l.stock ?? 0)}
                   </Badge>
                 </div>
-              </Link>
+                </Link>
+                {!isOwner && (
+                  <WatchCardButton goodId={l.good.id} label={goodName(l.good)} />
+                )}
+              </article>
               );
             })}
           </div>
