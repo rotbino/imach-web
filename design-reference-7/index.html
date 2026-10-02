@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>iMach R7 — دستیارِ صبور + موتور رشد</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-st="s0" data-arm="sell">
+
+<div class="app">
+
+  <!-- ═══ هدر ═══ -->
+  <header class="hdr">
+    <div class="back" id="backBtn" onclick="goBack()" title="بازگشت">›</div>
+    <div class="ttl" id="pgttl">iMach<small>دستیارِ صبور</small></div>
+    <div class="profbtn" onclick="go('pg-profile')" title="پروفایل">👤</div>
+    <button class="swpill" id="swpill" onclick="openSheet('sh-switch')" title="جابه‌جایی بین دستیارها">دستیار خرید ›</button>
+  </header>
+
+  <main class="body">
+
+  <!-- ═══ ۱. آنبوردینگ ═══ -->
+  <section class="page on" id="pg-onboard" data-title="iMach" data-sub="دستیارِ صبور" data-root="1">
+    <div class="ob">
+      <img class="logo" src="assets/logo3.svg" alt="iMach">
+      <h1>دستیارِ خرید و فروش تو</h1>
+      <p class="prom">کالاها و نیازهایت را یک‌جا مرتب کن و مشتری‌ها و تأمین‌کننده‌هایت را با خودت بیاور — همه‌چیز سرِ جای خودش، بدون واتساپ‌های پراکنده.</p>
+      <div class="role">
+        <div class="rc on" id="role-sell" onclick="pickRole('sell')">
+          <span class="em">🏪</span><b>می‌فروشم</b><span>کالاهایتم را ثبت می‌کنم و با مشتری‌هایم به اشتراک می‌گذارم</span>
+        </div>
+        <div class="rc" id="role-buy" onclick="pickRole('buy')">
+          <span class="em">🛒</span><b>می‌خرم</b><span>دفتر خرید می‌سازم و تأمین‌کننده‌هایم را یک‌جا جمع می‌کنم</span>
+        </div>
+      </div>
+      <button class="btn primary blk" onclick="startApp()">شروع</button>
+    <p style="font-size:10.5px;color:var(--ink-faint);margin-top:14px">با هر مشتری یا تأمین‌کننده‌ای که بیاوری: درخواست‌هایش مستقیم به تو می‌رسد + ۱ اعتبار معرفی می‌گیری.</p>
+    </div>
+  </section>
+
+  <!-- ═══ ۲. خانهٔ فروش (دستیار) ═══ -->
+  <section class="page" id="pg-sell-home" data-title="دستیار فروش" data-sub="iMach" data-tab="t-home" data-root="1">
+    <div class="asst">
+      <div class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><circle cx="19" cy="17.5" r="1.2"/></svg></div>
+      <div>
+        <div class="hi">سلام، آقای رضایی</div>
+        <div class="st s0">بیا شروع کنیم — سه قدم تا اولین فروش</div>
+        <div class="st s1">برای ۲ کالای تو در حال گردشیم</div>
+        <div class="st s2">امروز ۲ خبر برایت داریم</div>
+        <div class="st s3">امروز ۲ خبر برایت داریم</div>
+      </div>
+    </div>
+
+    <!-- S0: روز اول -->
+    <div class="st s0">
+      <div class="steps">
+        <div class="step"><div class="n">۱</div><b>کالایت را ثبت کن</b><span>۳۰ ثانیه، فقط نام و قیمت</span></div>
+        <div class="step"><div class="n">۲</div><b>کاتالوکت آماده می‌شود</b><span>قیمت‌ها همیشه به‌روز</span></div>
+        <div class="step"><div class="n">۳</div><b>مشتری‌هایت را بیاور</b><span>درخواست‌ها یک‌جا می‌رسد</span></div>
+      </div>
+      <div class="hero">
+        <div class="k">شروع</div>
+        <div class="t">اولین کالای‌ات را ثبت کن</div>
+        <div class="s">کاتالوکِ تو همیشه جلوی چشم مشتری — بدون واتساپ‌های تکراری.</div>
+        <div class="row"><button class="btn primary" onclick="go('pg-add-good')">ثبت اولین کالا</button></div>
+      </div>
+      <div class="next" onclick="openInvite('cust')">
+        <div class="ic">👥</div>
+        <div class="tx"><b>مشتری‌های فعلی‌ات را بیاور</b><span>با یک پیام آماده — رایگان + ۱ اعتبار معرفی</span></div>
+        <div class="go">›</div>
+      </div>
+    </div>
+
+    <!-- S1: در حال رشد -->
+    <div class="st s1">
+      <div class="hero">
+        <div class="k">در حال گردش</div>
+        <div class="t">برای ۲ کالای تو دنبال خریدار می‌گردیم</div>
+        <div class="s">هرچه قیمت و موجودی کامل‌تر باشد، گردشِ ما دقیق‌تر می‌شود.</div>
+      </div>
+      <div class="gcard">
+        <div class="gi">↗</div>
+        <div class="gx">
+          <b>کاتالوکت آماده است — ۳ کالا</b>
+          <span class="ss">لینکش را برای مشتری‌هایت بفرست؛ بدون ثبت‌نام هم ویترین را می‌بینند.</span>
+          <div class="rwd">🎁 هر کس از لینک تو وارد iMach شود: درخواست‌هایش مستقیم به تو + ۱ اعتبار معرفی</div>
+        </div>
+        <div class="gact"><button class="btn primary sm" onclick="openShare('cat')">ارسال لینک</button></div>
+      </div>
+      <div class="next" onclick="go('pg-goods')">
+        <div class="ic">🏷️</div>
+        <div class="tx"><b>قیمتِ ۲ کالا را کامل کن</b><span>کالاهای بدون قیمت، دیرتر خریدار پیدا می‌کنند</span></div>
+        <div class="go">›</div>
+      </div>
+    </div>
+    </div>
+
+    <!-- S2: شبکهٔ روشن -->
+    <div class="st s2">
+      <div class="hero find">
+        <div class="k">پیدا کردیم</div>
+        <div class="t">۳ خریدار جدید برای کالاهایت</div>
+        <div class="s">۲ نفر همین الان دنبال «روغن آفتابگردان» هستند.</div>
+        <div class="row">
+          <button class="btn teal" onclick="go('pg-buyers','found')">مشاهدهٔ خریداران</button>
+        </div>
+      </div>
+      <div class="next" onclick="go('pg-sell-reqs')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>۲ درخواست قیمت در انتظار پاسخ</b><span>از فروشگاه نگین و پخش کریمی</span></div>
+        <div class="go">›</div>
+      </div>
+      <div class="gcard">
+        <div class="gi">👥</div>
+        <div class="gx">
+          <b>۲ مشتری از لینک و دعوتِ تو در iMach‌اند</b>
+          <span class="ss">درخواست‌هایشان مستقیم به تو می‌رسد — +۲ اعتبار معرفی گرفتی.</span>
+          <div class="rwd">🎁 دعوت بعدی هم: +۱ اعتبار برای هر کسب‌وکار جدید</div>
+        </div>
+        <div class="gact"><button class="btn ghost sm" onclick="openInvite('cust')">دعوت بیشتر</button></div>
+      </div>
+    </div>
+    <div class="st s3">
+      <div class="hero find">
+        <div class="k">پیدا کردیم</div>
+        <div class="t">۳ خریدار جدید برای کالاهایت</div>
+        <div class="s">۲ نفر همین الان دنبال «روغن آفتابگردان» هستند.</div>
+        <div class="row"><button class="btn teal" onclick="go('pg-buyers','found')">مشاهدهٔ خریداران</button></div>
+      </div>
+      <div class="next" onclick="go('pg-sell-reqs')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>۲ درخواست قیمت در انتظار پاسخ</b><span>از فروشگاه نگین و پخش کریمی</span></div>
+        <div class="go">›</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ۳. کالاهای من ═══ -->
+  <section class="page" id="pg-goods" data-title="کالاهای من" data-sub="۳ کالا" data-tab="t-goods">
+    <div class="st s0"><div class="btnrow">
+      <button class="btn primary sm" style="flex:1" onclick="go('pg-add-good')">＋ ثبت کالا</button>
+    </div></div>
+    <div class="st more"><div class="btnrow">
+      <button class="btn primary sm" style="flex:1" onclick="go('pg-add-good')">＋ ثبت کالا</button>
+      <button class="btn ghost sm" style="flex:1" onclick="openShare('cat')">↗ اشتراک کاتالوگ</button>
+    </div></div>
+
+    <div class="st s0">
+      <div class="empty">
+        <span class="em">📦</span>
+        <b>هنوز کالایی نداری</b>
+        <span>اولین کالا را ثبت کن تا کاتالوکت ساخته شود — بعد لینکش را برای مشتری‌هایت بفرست.<br>چند کالا داری؟ با اکسل یک‌جا اضافه کن — از همان فرم.</span>
+      </div>
+      <button class="btn primary blk" onclick="go('pg-add-good')">ثبت اولین کالا</button>
+    </div>
+
+    <div class="st s1">
+      <div class="stirp"><span class="pulse"></span><span>برای ۲ کالا در حال پیدا کردن خریدار هستیم…</span></div>
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🛢</div>
+        <div class="tx"><b>روغن آفتابگردان ۱ لتری</b><span>غنچه · ۲۲۰,۰۰۰ تومان</span></div>
+        <span class="badge warn">بدون قیمت</span>
+      </div>
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🧴</div>
+        <div class="tx"><b>شامپو بچه ۵۰۰ میلی‌لیتری</b><span>پریل · ۴۸,۰۰۰ تومان</span></div>
+      </div>
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🧺</div>
+        <div class="tx"><b>پودر لباس ۳ کیلویی</b><span>ریکا · قیمت قدیمی</span></div>
+        <span class="badge warn">۳ ماه پیش</span>
+      </div>
+    </div>
+
+    <div class="st s2">
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🛢</div>
+        <div class="tx"><b>روغن آفتابگردان ۱ لتری</b><span>غنچه · ۲۲۰,۰۰۰ تومان</span></div>
+        <span class="badge">۲ خریدار</span>
+      </div>
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🧴</div>
+        <div class="tx"><b>شامپو بچه ۵۰۰ میلی‌لیتری</b><span>پریل · ۴۸,۰۰۰ تومان</span></div>
+        <span class="badge">۱ خریدار</span>
+      </div>
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🧺</div>
+        <div class="tx"><b>پودر لباس ۳ کیلویی</b><span>ریکا · ۹۸,۰۰۰ تومان</span></div>
+        <span class="badge warn">قیمت قدیمی</span>
+      </div>
+      <div style="text-align:center;font-size:10.5px;color:var(--ink-faint)">کاتالوگ منتشرشدهٔ تو: imach.ir/rezai</div>
+    </div>
+    <div class="st s3">
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🛢</div>
+        <div class="tx"><b>روغن آفتابگردان ۱ لتری</b><span>غنچه · ۲۲۰,۰۰۰ تومان</span></div>
+        <span class="badge">۲ خریدار</span>
+      </div>
+      <div class="good" onclick="go('pg-good')">
+        <div class="thumb">🧴</div>
+        <div class="tx"><b>شامپو بچه ۵۰۰ میلی‌لیتری</b><span>پریل · ۴۸,۰۰۰ تومان</span></div>
+        <span class="badge">۱ خریدار</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ۴. افزودن کالا (فرم سه‌مسیره) ═══ -->
+  <section class="page" id="pg-add-good" data-title="ثبت کالا" data-sub="فقط نام و قیمت کافی است">
+    <form onsubmit="return addGoodSubmit(event)">
+      <div class="fast">
+        <button type="button" onclick="toggleSugg()"><b>جستجو در مرجع</b><span>سریع — تکمیل خودکار</span></button>
+        <button type="button" onclick="openSheet('sh-scan')"><b>اسکن بارکد</b><span>سریع‌تر</span></button>
+        <button type="button" onclick="openSheet('sh-excel')"><b>ورود با اکسل</b><span>انبوه</span></button>
+      </div>
+
+      <div class="field">
+        <label>نام کالا</label>
+        <input id="g-name" placeholder="مثلاً: روغن آفتابگردان ۱ لیتری" oninput="onNameType()">
+        <div class="hint">با انتخاب از مرجع، برند و واحد خودکار پر می‌شود</div>
+      </div>
+      <div class="sugg" id="sugg">
+        <div class="cap">از کاتالوگ مرجع</div>
+        <div class="it" onclick="pickSugg('روغن آفتابگردان ۱ لتری · غنچه')"><b>روغن آفتابگردان ۱ لتری</b><span>غنچه · خوراکی</span></div>
+        <div class="it" onclick="pickSugg('روغن آفتابگردان ۵ لیتری · غنچه')"><b>روغن آفتابگردان ۵ لیتری</b><span>غنچه · خوراکی</span></div>
+        <div class="it" onclick="pickSugg('روغن کلزا ۱ لتری · لادن')"><b>روغن کلزا ۱ لتری</b><span>لادن · خوراکی</span></div>
+        <div class="note">با انتخاب از مرجع، برند / واحد / دسته خودکار پر می‌شود ✓</div>
+      </div>
+
+      <div class="frow">
+        <div class="field">
+          <label>قیمت (تومان)</label>
+          <input inputmode="numeric" placeholder="۲۲۰,۰۰۰">
+        </div>
+        <div class="field">
+          <label>واحد</label>
+          <select><option>لیتر</option><option>عدد</option><option>کیلوگرم</option><option>کارتن</option></select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="field">
+          <label>برند <span style="font-weight:400">(اختیاری)</span></label>
+          <input placeholder="مثلاً: غنچه">
+        </div>
+        <div class="field">
+          <label>موجودی <span style="font-weight:400">(اختیاری)</span></label>
+          <input inputmode="numeric" placeholder="۳۵۰">
+        </div>
+      </div>
+      <button class="btn primary blk" type="submit">ثبت کالا</button>
+      <p style="font-size:10.5px;color:var(--ink-faint);text-align:center;margin-top:10px">فقط نام و قیمت کافی است — بقیه را بعداً کامل کن.</p>
+    </form>
+  </section>
+
+  <!-- ═══ ۵. جزئیات کالا + خریداران این کالا ═══ -->
+  <section class="page" id="pg-good" data-title="روغن آفتابگردان ۱ لتری" data-sub="جزئیات کالا">
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px">
+        <div class="thumb" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F4F6F8,#EDEFF3);display:flex;align-items:center;justify-content:center;font-size:24px">🛢</div>
+        <div style="flex:1"><b style="font-size:14.5px">روغن آفتابگردان ۱ لتری</b><div style="font-size:11px;color:var(--ink-soft)">غنچه · خوراکی و آشامیدنی › روغن</div></div>
+        <button class="btn ghost sm" onclick="toast('ویرایش کالا')">ویرایش</button>
+      </div>
+      <div class="kv"><span>قیمت فروش</span><b>۲۲۰,۰۰۰ تومان</b></div>
+      <div class="kv"><span>واحد</span><b>لیتر</b></div>
+      <div class="kv"><span>موجودی</span><b>۳۵۰</b></div>
+    </div>
+
+    <div class="st s1">
+      <div class="stirp"><span class="pulse"></span><span>دنبال خریدار برای این کالا هستیم — قیمت و موجودیِ کامل، شانس را بیشتر می‌کند</span></div>
+    </div>
+
+    <div class="st s2">
+      <div class="sect">خریداران این کالا</div>
+      <div class="found">
+        <div class="av t">ن</div>
+        <div class="tx"><b>فروشگاه زنجیره‌ای نگین</b><span>تهران · مواد غذایی · همین هفته درخواست ثبت کرده</span></div>
+        <span class="sig active">فعال</span>
+      </div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">ک</div>
+        <div class="tx"><b>پخش برادران کریمی</b><span>کرج · پخش خوراکی</span></div>
+        <span class="sig related">مرتبط</span>
+      </div>
+      <div class="found pot" onclick="openInvite('cust')">
+        <div class="av g">ز</div>
+        <div class="tx"><b>رستوران زیتون</b><span>مشهد · احتمالاً به این کالا نیاز دارد</span></div>
+        <span class="sig potential">بالقوه</span>
+      </div>
+      <div style="text-align:center;margin:2px 0 12px"><a style="font-size:11.5px;color:var(--teal-deep);font-weight:700;cursor:pointer" onclick="openSheet('sh-why')">؟ چرا این پیشنهادها؟</a></div>
+    </div>
+    <div class="st s3">
+      <div class="sect">خریداران این کالا</div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">ن</div>
+          <div class="tx"><b>سوپرمارکت آفتاب</b><span>تهران · از دعوت تو</span></div>
+        <span class="sig active">فعال</span>
+      </div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">ک</div>
+        <div class="tx"><b>پخش برادران کریمی</b><span>کرج · پخش خوراکی</span></div>
+        <span class="sig related">مرتبط</span>
+      </div>
+      <div style="text-align:center;margin:2px 0 12px"><a style="font-size:11.5px;color:var(--teal-deep);font-weight:700;cursor:pointer" onclick="openSheet('sh-why')">؟ چرا این پیشنهادها؟</a></div>
+    </div>
+
+    <button class="btn ghost blk" onclick="openShare('good')">↗ اشتراک‌گذاری این کالا</button>
+  </section>
+
+  <!-- ═══ ۶. درخواست‌های فروش ═══ -->
+  <section class="page" id="pg-sell-reqs" data-title="درخواست‌ها" data-sub="فروش" data-tab="t-reqs">
+    <div class="st s0">
+      <div class="empty">
+        <span class="em">📄</span>
+        <b>هنوز درخواستی نرسیده</b>
+        <span>کاتالوکت را برای مشتری‌هایت بفرست تا درخواست قیمت بدهند.</span>
+      </div>
+      <button class="btn primary blk" onclick="openShare('cat')">↗ اشتراک‌گذاری کاتالوگ</button>
+    </div>
+    <div class="st s1">
+      <div class="req" onclick="go('pg-sell-req')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>سوپرمارکت آفتاب — پودر لباس</b><span>۲۵ بسته · درخواست قیمت</span></div>
+        <div class="tm">۳ روز پیش</div>
+      </div>
+    </div>
+    <div class="st s2">
+      <div class="req" onclick="go('pg-sell-req')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>فروشگاه نگین — روغن آفتابگردان</b><span>۴۰ کارتن · درخواست قیمت</span></div>
+        <div class="tm">۲ ساعت پیش</div>
+      </div>
+      <div class="req" onclick="go('pg-sell-req')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>پخش کریمی — شامپو بچه</b><span>۱۲ کارتن · درخواست قیمت</span></div>
+        <div class="tm">۱ روز پیش</div>
+      </div>
+      <div class="req" onclick="go('pg-sell-req')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>سوپرمارکت آفتاب — پودر لباس</b><span>۲۵ بسته · درخواست قیمت</span></div>
+        <div class="tm">۳ روز پیش</div>
+      </div>
+    </div>
+    <div class="st s3">
+      <div class="req" onclick="go('pg-sell-req')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>فروشگاه نگین — روغن آفتابگردان</b><span>۴۰ کارتن · درخواست قیمت</span></div>
+        <div class="tm">۲ ساعت پیش</div>
+      </div>
+      <div class="req" onclick="go('pg-sell-req')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>پخش کریمی — شامپو بچه</b><span>۱۲ کارتن · درخواست قیمت</span></div>
+        <div class="tm">۱ روز پیش</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ۷. جزئیات درخواست فروش ═══ -->
+  <section class="page" id="pg-sell-req" data-title="درخواست قیمت" data-sub="از فروشگاه نگین">
+    <div class="card">
+      <div class="kv"><span>خریدار</span><b>فروشگاه زنجیره‌ای نگین</b></div>
+      <div class="kv"><span>شهر</span><b>تهران</b></div>
+      <div class="kv"><span>کالا</span><b>روغن آفتابگردان ۱ لتری</b></div>
+      <div class="kv"><span>مقدار</span><b>۴۰ کارتن</b></div>
+      <div style="background:var(--bg);border-radius:12px;padding:11px 14px;font-size:12px;color:var(--ink-soft);line-height:1.9;margin-top:10px">«برای هفتهٔ آینده تحویل می‌خواهیم؛ اگر قیمت مناسبی بدهید، سفارش ثابت ماهانه می‌شود.»</div>
+    </div>
+    <div class="sect">پاسخ سریع</div>
+    <div class="field"><label>قیمت پیشنهادی (تومان)</label><input inputmode="numeric" placeholder="۲۱۵,۰۰۰"></div>
+    <div class="field"><label>یادداشت <span style="font-weight:400">(اختیاری)</span></label><input placeholder="مثلاً: تحویل ۳ روزه"></div>
+    <button class="btn primary blk" onclick="toast('پاسخ ارسال شد ✓')">ارسال پاسخ</button>
+  </section>
+
+  <!-- ═══ ۸. خریداران ═══ -->
+  <section class="page" id="pg-buyers" data-title="خریداران" data-sub="مشتریان من و یافته‌های iMach" data-tab="t-people">
+    <div class="ptabs">
+      <button id="ptb-my" class="on" onclick="setPTab('my')">مشتریان من</button>
+      <button id="ptb-found" class="st s2" onclick="setPTab('found')">پیدا شده‌ها</button>
+    </div>
+
+    <div id="pc-my">
+      <div class="st s0">
+        <div class="empty">
+          <span class="em">👥</span>
+          <b>هنوز مشتری نداری</b>
+          <span>شمارهٔ مشتری‌های فعلی‌ات را وارد کن؛ با یک پیام آماده دعوتشان می‌کنیم.</span>
+        </div>
+        <button class="btn primary blk" onclick="openInvite('cust')">دعوت مشتری</button>
+      </div>
+      <div class="st s1">
+        <div class="good" onclick="toast('پروفایل مشتری')">
+          <div class="thumb">🏬</div>
+          <div class="tx"><b>سوپرمارکت آفتاب</b><span>تهران · مواد غذایی</span></div>
+          <span class="badge mine">مشتری من</span>
+        </div>
+        <div class="good" onclick="toast('پروفایل مشتری')">
+          <div class="thumb">🍽</div>
+          <div class="tx"><b>رستوران بهار</b><span>تهران · از دعوت تو</span></div>
+          <span class="badge mine">مشتری من</span>
+        </div>
+      </div>
+      <div class="st s2">
+        <div class="good" onclick="toast('پروفایل مشتری')">
+          <div class="thumb">🏬</div>
+          <div class="tx"><b>سوپرمارکت آفتاب</b><span>تهران · از دعوت تو · ۲ درخواست این ماه</span></div>
+          <span class="badge mine">مشتری من</span>
+        </div>
+        <div class="good" onclick="toast('پروفایل مشتری')">
+          <div class="thumb">🍽</div>
+          <div class="tx"><b>رستوران بهار</b><span>تهران · از دعوت تو · خرید منظم</span></div>
+          <span class="badge mine">مشتری من</span>
+        </div>
+      </div>
+      <div class="st s3">
+        <div class="good" onclick="toast('پروفایل مشتری')">
+          <div class="thumb">🏬</div>
+          <div class="tx"><b>سوپرمارکت آفتاب</b><span>تهران · از دعوت تو · ۲ درخواست این ماه</span></div>
+          <span class="badge mine">مشتری من</span>
+        </div>
+      </div>
+      <div class="st s1" style="margin-top:4px">
+        <div class="next" onclick="openInvite('cust')"><div class="ic">＋</div><div class="tx"><b>دعوت مشتری جدید</b><span>با شمارهٔ تلفن یا لینک</span></div><div class="go">›</div></div>
+      </div>
+    </div>
+
+    <div id="pc-found" style="display:none">
+      <div class="sect" style="margin-top:2px">الان دنبال کالاهای تو هستند</div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">ن</div>
+        <div class="tx"><b>فروشگاه زنجیره‌ای نگین</b><span>تهران · مواد غذایی · ۴۰ کارتن روغن می‌خواهد</span></div>
+        <span class="sig active">فعال</span>
+      </div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">ک</div>
+        <div class="tx"><b>پخش برادران کریمی</b><span>کرج · پخش خوراکی</span></div>
+        <span class="sig active">فعال</span>
+      </div>
+      <div class="sect">کسب‌وکارهای مرتبط</div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">س</div>
+        <div class="tx"><b>سوپرمارکت ستاره</b><span>قزوین · خرید عمدهٔ خوراکی</span></div>
+        <span class="sig related">مرتبط</span>
+      </div>
+      <div class="found pot" onclick="openInvite('cust')">
+        <div class="av g">م</div>
+        <div class="tx"><b>مغازهٔ مهدی</b><span>تهران · احتمالاً مشتری این کالاست</span></div>
+        <span class="sig potential">بالقوه</span>
+      </div>
+      <div class="card tight" style="text-align:center;font-size:10px;color:var(--ink-faint)">به هیچ‌کس به‌خاطر پول، در این فهرست جایی داده نمی‌شود.</div>
+    </div>
+  </section>
+
+  <!-- ═══ ۹. خانهٔ خرید (دستیار — آینه) ═══ -->
+  <section class="page" id="pg-buy-home" data-title="دستیار خرید" data-sub="iMach" data-tab="t-home2" data-root="1">
+    <div class="asst">
+      <div class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><circle cx="19" cy="17.5" r="1.2"/></svg></div>
+      <div>
+        <div class="hi">سلام، آقای رضایی</div>
+        <div class="st s0">بیا شروع کنیم — سه قدم تا خریدِ بهتر</div>
+        <div class="st s1">برای ۲ نیازِ تو در حال گردشیم</div>
+        <div class="st s2">امروز ۲ خبر برایت داریم</div>
+        <div class="st s3">امروز ۲ خبر برایت داریم</div>
+      </div>
+    </div>
+
+    <div class="st s0">
+      <div class="steps">
+        <div class="step"><div class="n">۱</div><b>نیازت را بنویس</b><span>چیزی که مرتب می‌خری</span></div>
+        <div class="step"><div class="n">۲</div><b>دفترت مرتب می‌شود</b><span>قیمت‌ها یک‌جا و مقایسه‌پذیر</span></div>
+        <div class="step"><div class="n">۳</div><b>تأمین‌کننده‌هایت را بیاور</b><span>استعلام با یک کلیک</span></div>
+      </div>
+      <div class="hero">
+        <div class="k">شروع</div>
+        <div class="t">اولین نیازت را ثبت کن</div>
+        <div class="s">قیمت‌ها و تأمین‌کننده‌هایت یک‌جا — استعلام، یک کلیک؛ مقایسه، یک نگاه.</div>
+        <div class="row"><button class="btn primary" onclick="go('pg-add-need')">ثبت اولین نیاز</button></div>
+      </div>
+      <div class="next" onclick="openInvite('sup')">
+        <div class="ic">🤝</div>
+        <div class="tx"><b>تأمین‌کنندهٔ فعلی‌ات را بیاور</b><span>استعلام‌هایت یک‌جا و مرتب جمع می‌شود</span></div>
+        <div class="go">›</div>
+      </div>
+    </div>
+
+    <div class="st s1">
+      <div class="hero">
+        <div class="k">در حال گردش</div>
+        <div class="t">برای ۲ نیازِ دفترت دنبال تأمین‌کنندهٔ مناسب می‌گردیم</div>
+        <div class="s">قیمت هدف بگذار تا گزینه‌ها را دقیق‌تر بسنجیم.</div>
+      </div>
+      <div class="next" onclick="go('pg-book')">
+        <div class="ic">🎯</div>
+        <div class="tx"><b>۱ قلم قیمت هدف ندارد</b><span>«شامپو بچه» — قیمت هدفش را کامل کن</span></div>
+        <div class="go">›</div>
+      </div>
+      <div class="gcard">
+        <div class="gi">🤝</div>
+        <div class="gx">
+          <b>تأمین‌کننده‌های فعلی‌ات را بیاور</b>
+          <span class="ss">استعلام‌هایت یک‌جا می‌رود و پاسخ‌ها مرتب برمی‌گردد — پیگیریِ واتساپی تمام.</span>
+          <div class="rwd">🎁 هر کس با دعوت تو بیاید: پاسخ‌هایش مستقیم به دفترت + ۱ اعتبار معرفی</div>
+        </div>
+        <div class="gact"><button class="btn primary sm" onclick="openInvite('sup')">ارسال دعوت</button></div>
+      </div>
+    </div>
+
+    <div class="st s2">
+      <div class="hero find">
+        <div class="k">پیدا کردیم</div>
+        <div class="t">۴ تأمین‌کنندهٔ مرتبط برای دفتر خریدت</div>
+        <div class="s">۱ کارخانه و ۳ پخشِ معتبر — از اصفهان تا رشت.</div>
+        <div class="row"><button class="btn teal" onclick="go('pg-suppliers','found')">مشاهدهٔ تأمین‌کنندگان</button></div>
+      </div>
+      <div class="next" onclick="go('pg-responses')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>۲ پاسخ استعلام رسید</b><span>روغن آفتابگردان — بهترین: ۲۱۵,۰۰۰</span></div>
+        <div class="go">›</div>
+      </div>
+      <div class="gcard">
+        <div class="gi">🤝</div>
+        <div class="gx">
+          <b>۲ تأمین‌کننده از دعوتِ تو در iMach‌اند</b>
+          <span class="ss">پاسخ‌هایشان مستقیم به دفترت می‌رسد — +۲ اعتبار معرفی گرفتی.</span>
+          <div class="rwd">🎁 دعوت بعدی هم: +۱ اعتبار برای هر کسب‌وکار جدید</div>
+        </div>
+        <div class="gact"><button class="btn ghost sm" onclick="openInvite('sup')">دعوت بیشتر</button></div>
+      </div>
+    </div>
+    <div class="st s3">
+      <div class="hero find">
+        <div class="k">پیدا کردیم</div>
+        <div class="t">۴ تأمین‌کنندهٔ مرتبط برای دفتر خریدت</div>
+        <div class="s">۱ کارخانه و ۳ پخشِ معتبر — از اصفهان تا رشت.</div>
+        <div class="row"><button class="btn teal" onclick="go('pg-suppliers','found')">مشاهدهٔ تأمین‌کنندگان</button></div>
+      </div>
+      <div class="next" onclick="go('pg-responses')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>۲ پاسخ استعلام رسید</b><span>روغن آفتابگردان — بهترین: ۲۱۵,۰۰۰</span></div>
+        <div class="go">›</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ۱۰. دفتر خرید ═══ -->
+  <section class="page" id="pg-book" data-title="دفتر خرید" data-sub="۳ قلم" data-tab="t-book">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn primary sm" style="flex:1" onclick="go('pg-add-need')">＋ افزودن نیاز</button>
+    </div>
+
+    <div class="st s0">
+      <div class="empty">
+        <span class="em">📒</span>
+        <b>دفتر خریدت خالی است</b>
+        <span>چیزی که مرتب می‌خری را بنویس؛ قیمت‌ها و پاسخ‌های استعلامت یک‌جا جمع می‌شود.</span>
+      </div>
+      <button class="btn primary blk" onclick="go('pg-add-need')">ثبت اولین نیاز</button>
+    </div>
+
+    <div class="st s1">
+      <div class="stirp"><span class="pulse"></span><span>برای ۲ قلم در حال پیدا کردن تأمین‌کننده هستیم…</span></div>
+      <div class="good" onclick="go('pg-book-item')">
+        <div class="thumb">🛢</div>
+        <div class="tx"><b>روغن آفتابگردان ۱ لتری</b><span>۵۰۰ لیتر / ماه · هدف ۲۱۸,۰۰۰</span></div>
+      </div>
+      <div class="good" onclick="go('pg-book-item')">
+        <div class="thumb">🧴</div>
+        <div class="tx"><b>شامپو بچه ۵۰۰ میلی‌لیتری</b><span>۱۲۰ عدد / ماه · بدون قیمت هدف</span></div>
+        <span class="badge warn">ناقص</span>
+      </div>
+    </div>
+
+    <div class="st s2">
+      <div class="good" onclick="go('pg-book-item')">
+        <div class="thumb">🛢</div>
+        <div class="tx"><b>روغن آفتابگردان ۱ لتری</b><span>۵۰۰ لیتر / ماه · هدف ۲۱۸,۰۰۰</span></div>
+        <span class="badge">۳ تأمین‌کننده</span>
+      </div>
+      <div class="good" onclick="go('pg-book-item')">
+        <div class="thumb">🧴</div>
+        <div class="tx"><b>شامپو بچه ۵۰۰ میلی‌لیتری</b><span>۱۲۰ عدد / ماه · هدف ۴۶,۰۰۰</span></div>
+        <span class="badge">۱ تأمین‌کننده</span>
+      </div>
+      <div class="good" onclick="go('pg-book-item')">
+        <div class="thumb">🧺</div>
+        <div class="tx"><b>پودر لباس ۳ کیلویی</b><span>۲۰۰ کیلو / ماه · هدف ۹۲,۰۰۰</span></div>
+        <span class="badge">۲ تأمین‌کننده</span>
+      </div>
+      <div class="stale"><b>قیمت «روغن» ۳ ماه قدیمی است</b><div class="act"><button class="btn sm ghost" onclick="go('pg-rfq')">استعلام تازه</button></div></div>
+    </div>
+    <div class="st s3">
+      <div class="good" onclick="go('pg-book-item')">
+        <div class="thumb">🛢</div>
+        <div class="tx"><b>روغن آفتابگردان ۱ لتری</b><span>۵۰۰ لیتر / ماه · هدف ۲۱۸,۰۰۰</span></div>
+        <span class="badge">۳ تأمین‌کننده</span>
+      </div>
+      <div class="good" onclick="go('pg-book-item')">
+        <div class="thumb">🧴</div>
+        <div class="tx"><b>شامپو بچه ۵۰۰ میلی‌لیتری</b><span>۱۲۰ عدد / ماه · هدف ۴۶,۰۰۰</span></div>
+        <span class="badge">۱ تأمین‌کننده</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ۱۱. افزودن نیاز ═══ -->
+  <section class="page" id="pg-add-need" data-title="افزودن نیاز" data-sub="چیزی که مرتب می‌خری">
+    <form onsubmit="return addNeedSubmit(event)">
+      <div class="fast">
+        <button type="button" onclick="toggleSugg2()"><b>جستجو در مرجع</b><span>سریع — تکمیل خودکار</span></button>
+        <button type="button" onclick="openSheet('sh-scan')"><b>اسکن بارکد</b><span>سریع‌تر</span></button>
+        <button type="button" onclick="openSheet('sh-excel')"><b>ورود با اکسل</b><span>انبوه</span></button>
+      </div>
+      <div class="field">
+        <label>چه چیزی می‌خری؟</label>
+        <input placeholder="مثلاً: روغن آفتابگردان ۱ لیتری">
+        <div class="hint">از کاتالوگ مرجع انتخاب کن تا واحد و دسته خودکار پر شود</div>
+      </div>
+      <div class="sugg" id="sugg2">
+        <div class="cap">از کاتالوگ مرجع</div>
+        <div class="it" onclick="pickSugg('روغن آفتابگردان ۱ لتری')"><b>روغن آفتابگردان ۱ لتری</b><span>غنچه · خوراکی</span></div>
+        <div class="it" onclick="pickSugg('روغن آفتابگردان ۵ لیتری')"><b>روغن آفتابگردان ۵ لیتری</b><span>غنچه · خوراکی</span></div>
+        <div class="note">دسته و واحد خودکار پر می‌شود ✓</div>
+      </div>
+      <div class="frow">
+        <div class="field">
+          <label>مقدار</label>
+          <input inputmode="numeric" placeholder="۵۰۰">
+        </div>
+        <div class="field">
+          <label>بازه</label>
+          <select><option>ماهانه</option><option>هفتگی</option><option>یک‌بار</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label>قیمت هدف <span style="font-weight:400">(اختیاری)</span></label>
+        <input inputmode="numeric" placeholder="۲۱۸,۰۰۰">
+        <div class="hint">با قیمت هدف، گزینه‌ها را دقیق‌تر می‌سنجیم</div>
+      </div>
+      <button class="btn primary blk" type="submit">ثبت نیاز</button>
+    </form>
+  </section>
+
+  <!-- ═══ ۱۲. قلم دفتر + تأمین‌کنندگان این خرید ═══ -->
+  <section class="page" id="pg-book-item" data-title="روغن آفتابگردان" data-sub="قلم دفتر خرید">
+    <div class="card">
+      <div class="kv"><span>مقدار ماهانه</span><b>۵۰۰ لیتر</b></div>
+      <div class="kv"><span>قیمت هدف</span><b>۲۱۸,۰۰۰ تومان</b></div>
+      <div class="kv"><span>آخرین خرید</span><b>۲۲۵,۰۰۰ · ۳ ماه پیش</b></div>
+    </div>
+
+    <div class="st s1">
+      <div class="stirp"><span class="pulse"></span><span>دنبال تأمین‌کنندهٔ مناسب برای این خرید هستیم</span></div>
+    </div>
+
+    <div class="st s2">
+      <div class="sect">تأمین‌کنندگان این خرید</div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">آ</div>
+        <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · همین حالا ظرفیت تولید دارد</span></div>
+        <span class="sig active">فعال</span>
+      </div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">ش</div>
+        <div class="tx"><b>پخش شمال</b><span>رشت · پخش خوراکی</span></div>
+        <span class="sig related">مرتبط</span>
+      </div>
+      <div class="found pot" onclick="openInvite('sup')">
+        <div class="av g">ز</div>
+        <div class="tx"><b>بازرگانی زعفران</b><span>تهران · احتمالاً این کالا را تأمین می‌کند</span></div>
+        <span class="sig potential">بالقوه</span>
+      </div>
+      <div style="text-align:center;margin:2px 0 12px"><a style="font-size:11.5px;color:var(--teal-deep);font-weight:700;cursor:pointer" onclick="openSheet('sh-why')">؟ چرا این پیشنهادها؟</a></div>
+    </div>
+    <div class="st s3">
+      <div class="sect">تأمین‌کنندگان این خرید</div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">آ</div>
+        <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · ظرفیت تولید دارد</span></div>
+        <span class="sig active">فعال</span>
+      </div>
+      <div style="text-align:center;margin:2px 0 12px"><a style="font-size:11.5px;color:var(--teal-deep);font-weight:700;cursor:pointer" onclick="openSheet('sh-why')">؟ چرا این پیشنهادها؟</a></div>
+    </div>
+
+    <button class="btn primary blk" onclick="go('pg-rfq')">استعلام بگیر</button>
+  </section>
+
+  <!-- ═══ ۱۳. استعلام‌های من ═══ -->
+  <section class="page" id="pg-buy-reqs" data-title="استعلام‌های من" data-sub="درخواست‌های خرید" data-tab="t-reqs2">
+    <div class="st s0">
+      <div class="empty">
+        <span class="em">📄</span>
+        <b>هنوز استعلامی نفرستادی</b>
+        <span>یک استعلام، هم‌زمان به چند تأمین‌کننده می‌رسد.</span>
+      </div>
+      <button class="btn primary blk" onclick="go('pg-rfq')">اولین استعلام</button>
+    </div>
+    <div class="st s1">
+      <div class="req" onclick="go('pg-responses')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>روغن آفتابگردان — ۵۰۰ لیتر</b><span>۳ گیرنده · در انتظار پاسخ</span></div>
+        <div class="tm">امروز</div>
+      </div>
+    </div>
+    <div class="st s2">
+      <div class="req" onclick="go('pg-responses')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>روغن آفتابگردان — ۵۰۰ لیتر</b><span>۵ گیرنده · ۲ پاسخ</span></div>
+        <div class="tm">۲ روز پیش</div>
+      </div>
+      <div class="req" onclick="go('pg-responses')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>شامپو بچه — ۱۲۰ عدد</b><span>۳ گیرنده · در انتظار پاسخ</span></div>
+        <div class="tm">امروز</div>
+      </div>
+    </div>
+    <div class="st s3">
+      <div class="req" onclick="go('pg-responses')">
+        <div class="ic">📄</div>
+        <div class="tx"><b>روغن آفتابگردان — ۵۰۰ لیتر</b><span>۵ گیرنده · ۲ پاسخ</span></div>
+        <div class="tm">۲ روز پیش</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ۱۴. استعلام (RFQ) — از خودم / از iMach ═══ -->
+  <section class="page" id="pg-rfq" data-title="استعلام قیمت" data-sub="روغن آفتابگردان — ۵۰۰ لیتر">
+    <div class="card">
+      <div class="kv"><span>کالا</span><b>روغن آفتابگردان ۱ لتری</b></div>
+      <div class="kv"><span>مقدار</span><b>۵۰۰ لیتر</b></div>
+      <div class="kv"><span>مهلت پاسخ</span><b>۳ روز</b></div>
+      <div class="field" style="margin:10px 0 0"><label>توضیحات <span style="font-weight:400">(اختیاری)</span></label><input placeholder="مثلاً: تحویل مرحله‌ای"></div>
+    </div>
+
+    <div class="pickgrp">از خودت</div>
+    <div class="pick sel" onclick="this.classList.toggle('sel')">
+      <div class="cb"></div>
+      <div class="tx"><b>پخش برادران کریمی</b><span>کرج · مشتری فعلی</span></div>
+    </div>
+    <div class="pick sel" onclick="this.classList.toggle('sel')">
+      <div class="cb"></div>
+      <div class="tx"><b>سوپرمارکت آفتاب</b><span>تهران · مشتری فعلی</span></div>
+    </div>
+    <button class="btn ghost sm blk" style="margin-top:4px" onclick="toast('از مشتریان انتخاب کن')">＋ افزودن از مشتریان</button>
+
+    <div class="st s0" style="margin-top:6px">
+      <div style="font-size:10.5px;color:var(--ink-faint);text-align:center;padding:10px 6px;line-height:2">همین حالا بفرست؛ ما هم پشت صحنه دنبال گزینهٔ بهتر می‌گردیم و خبر می‌آوریم.</div>
+    </div>
+    <div class="st s2">
+      <div class="pickgrp t">از iMach — پیشنهاد ما</div>
+      <div class="pick tealish sel" onclick="this.classList.toggle('sel')">
+        <div class="cb"></div>
+        <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · مرتبط با این خرید</span></div>
+      </div>
+      <div class="pick tealish" onclick="this.classList.toggle('sel')">
+        <div class="cb"></div>
+        <div class="tx"><b>پخش شمال</b><span>رشت · مرتبط با این خرید</span></div>
+      </div>
+      <div class="pick tealish" onclick="this.classList.toggle('sel')">
+        <div class="cb"></div>
+        <div class="tx"><b>بازرگانی زعفران</b><span>تهران · مرتبط با این خرید</span></div>
+      </div>
+      <div style="font-size:10.5px;color:var(--teal-deep);text-align:center;padding:8px">۳ تأمین‌کنندهٔ مرتبط با این خرید را پیشنهاد کردیم</div>
+    </div>
+    <div class="st s3">
+      <div class="pickgrp t">از iMach — پیشنهاد ما</div>
+      <div class="pick tealish sel" onclick="this.classList.toggle('sel')">
+        <div class="cb"></div>
+        <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · مرتبط با این خرید</span></div>
+      </div>
+      <div class="pick tealish sel" onclick="this.classList.toggle('sel')">
+        <div class="cb"></div>
+        <div class="tx"><b>پخش شمال</b><span>رشت · مرتبط با این خرید</span></div>
+      </div>
+    </div>
+
+    <button class="btn primary blk" onclick="sendRfq()" style="margin-top:8px">ارسال استعلام</button>
+  </section>
+
+  <!-- ═══ ۱۵. پاسخ‌ها و مقایسه ═══ -->
+  <section class="page" id="pg-responses" data-title="پاسخ‌ها و مقایسه" data-sub="روغن آفتابگردان — ۵۰۰ لیتر">
+    <div class="resp best">
+      <div class="hd">
+        <div class="av">آ</div>
+        <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · پیشنهاد iMach</span></div>
+        <span class="badge">بهترین</span>
+      </div>
+      <div class="pr">۲۱۵,۰۰۰ <small>تومان / لیتر</small></div>
+      <div style="font-size:11.5px;color:var(--ink-soft);margin:4px 0 12px">تحویل ۳ روزه · پرداخت ۳۰ روزه</div>
+      <button class="btn primary sm" onclick="toast('ادامهٔ گفتگو با کارخانه آفتاب')">انتخاب و ادامه</button>
+    </div>
+    <div class="resp">
+      <div class="hd"><div class="av">ک</div><div class="tx"><b>پخش برادران کریمی</b><span>کرج · از خودت</span></div></div>
+      <div class="pr" style="color:var(--ink)">۲۲۳,۰۰۰ <small>تومان / لیتر</small></div>
+      <div style="font-size:11.5px;color:var(--ink-soft)">تحویل امروز · پرداخت نقدی</div>
+    </div>
+    <div class="resp">
+      <div class="hd"><div class="av">ش</div><div class="tx"><b>پخش شمال</b><span>رشت · پیشنهاد iMach</span></div></div>
+      <div class="pr" style="color:var(--ink)">۲۲۹,۰۰۰ <small>تومان / لیتر</small></div>
+      <div style="font-size:11.5px;color:var(--ink-soft)">در انتظار تأیید</div>
+    </div>
+    <div style="text-align:center;font-size:10px;color:var(--ink-faint);padding:6px">پاسخ‌ها مستقیم از خودِ آن‌ها آمده — بدون واسطه</div>
+  </section>
+
+  <!-- ═══ ۱۶. تأمین‌کنندگان ═══ -->
+  <section class="page" id="pg-suppliers" data-title="تأمین‌کنندگان" data-sub="من و یافته‌های iMach" data-tab="t-people2">
+    <div class="ptabs">
+      <button id="ptb-sup-my" class="on" onclick="setPTab2('my')">تأمین‌کنندگان من</button>
+      <button id="ptb-sup-found" class="st s2" onclick="setPTab2('found')">پیدا شده‌ها</button>
+    </div>
+
+    <div id="pc-sup-my">
+      <div class="st s0">
+        <div class="empty">
+          <span class="em">🤝</span>
+          <b>هنوز تأمین‌کننده‌ای نداری</b>
+          <span>شمارهٔ تأمین‌کننده‌های فعلی‌ات را وارد کن؛ استعلام‌هایت را یک‌جا برایشان بفرست.</span>
+        </div>
+        <button class="btn primary blk" onclick="openInvite('sup')">دعوت تأمین‌کننده</button>
+      </div>
+      <div class="st s1">
+        <div class="good" onclick="toast('پروفایل تأمین‌کننده')">
+          <div class="thumb">🏭</div>
+          <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · از دعوت تو</span></div>
+          <span class="badge mine">من</span>
+        </div>
+      </div>
+      <div class="st s2">
+        <div class="good" onclick="toast('پروفایل تأمین‌کننده')">
+          <div class="thumb">🏭</div>
+          <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · از دعوت تو · ۲ پاسخ این ماه</span></div>
+          <span class="badge mine">من</span>
+        </div>
+        <div class="good" onclick="toast('پروفایل تأمین‌کننده')">
+          <div class="thumb">🚚</div>
+          <div class="tx"><b>پخش برادران کریمی</b><span>کرج · از دعوت تو · پاسخ سریع</span></div>
+          <span class="badge mine">من</span>
+        </div>
+      </div>
+      <div class="st s1" style="margin-top:4px">
+        <div class="next" onclick="openInvite('sup')"><div class="ic">＋</div><div class="tx"><b>دعوت تأمین‌کنندهٔ جدید</b><span>با شمارهٔ تلفن یا لینک</span></div><div class="go">›</div></div>
+      </div>
+    </div>
+
+    <div id="pc-sup-found" style="display:none">
+      <div class="sect" style="margin-top:2px">مرتبط با دفتر خریدت</div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">آ</div>
+        <div class="tx"><b>کارخانهٔ روغن نباتی آفتاب</b><span>اصفهان · ظرفیت تولید دارد · تولیدکننده</span></div>
+        <span class="sig active">فعال</span>
+      </div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">ش</div>
+        <div class="tx"><b>پخش شمال</b><span>رشت · پخش خوراکی</span></div>
+        <span class="sig related">مرتبط</span>
+      </div>
+      <div class="found" onclick="openGate()">
+        <div class="av t">د</div>
+        <div class="tx"><b>پخش دماوند</b><span>تهران · پخش خوراکی</span></div>
+        <span class="sig related">مرتبط</span>
+      </div>
+      <div class="found pot" onclick="openInvite('sup')">
+        <div class="av g">ز</div>
+        <div class="tx"><b>بازرگانی زعفران</b><span>تهران · احتمالاً تأمین می‌کند — دعوت رایگان</span></div>
+        <span class="sig potential">بالقوه</span>
+      </div>
+      <div class="card tight" style="text-align:center;font-size:10px;color:var(--ink-faint)">به هیچ‌کس به‌خاطر پول، در این فهرست جایی داده نمی‌شود.</div>
+    </div>
+  </section>
+
+  <!-- ═══ ۱۷. پروفایل ═══ -->
+  <section class="page" id="pg-profile" data-title="پروفایل" data-sub="کسب‌وکار من">
+    <div class="card">
+      <div style="display:flex;gap:13px;align-items:center;margin-bottom:10px">
+        <img src="assets/logo3.svg" style="width:48px;height:48px" alt="">
+        <div style="flex:1"><b style="font-size:15px">پخش رضایی</b><div style="font-size:11px;color:var(--ink-soft)">تهران · مواد غذایی</div></div>
+        <button class="btn ghost sm" onclick="toast('ویرایش پروفایل')">ویرایش</button>
+      </div>
+      <div class="kv"><span>دستهٔ فعالیت</span><b>مواد غذایی</b></div>
+      <div class="kv"><span>شهر</span><b>تهران</b></div>
+      <div class="kv"><span>شمارهٔ تماس</span><b>۰۹۱۲ ···· ۳۴۵</b></div>
+    </div>
+    <div class="next" onclick="go('pg-wallet')">
+      <div class="ic">💳</div>
+      <div class="tx"><b>کیف پول و اعتبار</b><span>۴ اعتبار — ۲ اعتبار از دعوت‌های تو</span></div>
+      <div class="go">›</div>
+    </div>
+    <div class="next" onclick="toast('تنظیمات')">
+      <div class="ic">⚙️</div>
+      <div class="tx"><b>تنظیمات</b><span>اعلان‌ها، حالت پیش‌فرض، زبان</span></div>
+      <div class="go">›</div>
+    </div>
+    <div class="next" onclick="toast('دربارهٔ iMach')">
+      <div class="ic">ℹ️</div>
+      <div class="tx"><b>دربارهٔ iMach</b><span>نسخهٔ ۶ · دستیارِ صبور</span></div>
+      <div class="go">›</div>
+    </div>
+  </section>
+
+  <!-- ═══ ۱۸. کیف پول (عمق پروفایل — قانون تشنگی) ═══ -->
+  <section class="page" id="pg-wallet" data-title="کیف پول" data-sub="اعتبار معرفی">
+    <div class="walbal">
+      <div class="k">اعتبار فعلی</div>
+      <div class="v">۴ <small>اعتبار</small></div>
+      <div class="note">۲ اعتبارش از دعوت‌های تو آمده — هر مشتری یا تأمین‌کننده‌ای که بیاوری، ۱ اعتبار معرفی می‌گیری. اعتبار فقط برای ارتباط با پیشنهادهای iMach خرج می‌شود.</div>
+    </div>
+    <div class="sect">بسته‌های اعتبار</div>
+    <div class="pkgs">
+      <div class="pkg"><b>۵</b><span>۹۹,۰۰۰ تومان</span></div>
+      <div class="pkg best"><i>پرفروش</i><b>۱۲</b><span>۱۹۹,۰۰۰ تومان</span></div>
+      <div class="pkg"><b>۳۰</b><span>۳۹۹,۰۰۰ تومان</span></div>
+    </div>
+    <div class="sect">تاریخچه</div>
+    <div class="card tight">
+      <div class="kv"><span>هدیهٔ خوش‌آمد</span><b style="color:var(--teal-deep)">+۳ اعتبار</b></div>
+      <div class="kv"><span>دعوت: سوپرمارکت آفتاب</span><b style="color:var(--teal-deep)">+۱ اعتبار</b></div>
+      <div class="kv"><span>دعوت: رستوران بهار</span><b style="color:var(--teal-deep)">+۱ اعتبار</b></div>
+      <div class="kv"><span>ارتباط با فروشگاه نگین</span><b>−۱ اعتبار</b></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:9.5px;color:var(--ink-faint);margin-top:6px">
+      <svg width="13" height="13" viewBox="0 0 24 24" style="stroke:var(--teal-deep);fill:none;stroke-width:2"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4z"/><path d="M9 12l2 2 4-4"/></svg>
+      تطبیق‌ها هرگز به پول وابسته نیست — پول فقط دسترسی می‌خرد، نه نتیجه را عوض می‌کند
+    </div>
+  </section>
+
+  <!-- ═══ ۱۹. دسکتاپ ═══ -->
+  <section class="page" id="pg-desktop" data-title="نمای دسکتاپ" data-sub="iMach D6">
+    <div class="desk">
+      <div class="side">
+        <div class="brand"><img src="assets/logo3.svg" alt=""><b>iMach</b></div>
+        <button class="shrow" style="margin-bottom:14px" onclick="openSheet('sh-switch')">
+          <span class="ico b">⇄</span>
+          <span class="tx"><b>جابه‌جایی بین دستیارها</b><span>هر دو روی حساب تو فعال‌اند</span></span>
+          <span class="chk">✓</span>
+        </button>
+        <div class="navi on">🏠 دستیار</div>
+        <div class="navi">📦 کالاها</div>
+        <div class="navi">📄 درخواست‌ها</div>
+        <div class="navi">👥 خریداران</div>
+        <div class="navi">👤 پروفایل</div>
+        <div class="navi t" style="margin-top:auto">💳 کیف پول · ۴ اعتبار</div>
+      </div>
+      <div class="main">
+        <div class="asst">
+          <div class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><circle cx="19" cy="17.5" r="1.2"/></svg></div>
+          <div><div class="hi">سلام، آقای رضایی</div><div class="st8">امروز ۲ خبر برایت داریم</div></div>
+        </div>
+        <div class="hero find">
+          <div class="k">پیدا کردیم</div>
+          <div class="t">۳ خریدار جدید برای کالاهایت</div>
+          <div class="s">۲ نفر همین الان دنبال «روغن آفتابگردان» هستند.</div>
+          <div class="row"><button class="btn teal sm">مشاهدهٔ خریداران</button></div>
+        </div>
+        <div class="next"><div class="ic">📄</div><div class="tx"><b>۲ درخواست قیمت در انتظار پاسخ</b><span>از فروشگاه نگین و پخش کریمی</span></div><div class="go">›</div></div>
+        <div class="next"><div class="ic">🏷️</div><div class="tx"><b>قیمت «پودر لباس» را به‌روز کن</b><span>آخرین به‌روزرسانی ۳ ماه پیش است</span></div><div class="go">›</div></div>
+      </div>
+      <div class="col3">
+        <div class="sect" style="margin-top:0">خریداران این کالا</div>
+        <div class="found" style="padding:10px 12px"><div class="av t" style="width:34px;height:34px;font-size:12px">ن</div><div class="tx"><b style="font-size:12px">فروشگاه نگین</b><span>تهران</span></div><span class="sig active">فعال</span></div>
+        <div class="found" style="padding:10px 12px"><div class="av t" style="width:34px;height:34px;font-size:12px">ک</div><div class="tx"><b style="font-size:12px">پخش کریمی</b><span>کرج</span></div><span class="sig related">مرتبط</span></div>
+        <div style="text-align:center;margin-top:8px"><a style="font-size:11px;color:var(--teal-deep);font-weight:700;cursor:pointer">؟ چرا این پیشنهادها؟</a></div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ═══ تب‌بار فروش ═══ -->
+  <nav class="tabbar" id="tb-sell">
+    <div class="tb" data-p="pg-sell-home" onclick="go('pg-sell-home')"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/></svg><span>دستیار</span></div>
+    <div class="tb" data-p="pg-goods" onclick="go('pg-goods')"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg><span>کالاها</span></div>
+    <div class="tb" data-p="pg-sell-reqs" onclick="go('pg-sell-reqs')"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg><span>درخواست‌ها</span></div>
+    <div class="tb" data-p="pg-buyers" onclick="go('pg-buyers')"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c.6-3.4 2.7-5.5 5.5-5.5s4.9 2.1 5.5 5.5"/><path d="M16 5.5a3 3 0 010 5.4M17.5 14.5c1.8.7 2.9 2.4 3 5"/></svg><span>خریداران</span></div>
+  </nav>
+
+  <!-- ═══ تب‌بار خرید ═══ -->
+  <nav class="tabbar" id="tb-buy">
+    <div class="tb" data-p="pg-buy-home" onclick="go('pg-buy-home')"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/></svg><span>دستیار</span></div>
+    <div class="tb" data-p="pg-book" onclick="go('pg-book')"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M9 4v5h5V4M9 20v-6h6v6"/></svg><span>دفتر خرید</span></div>
+    <div class="tb" data-p="pg-buy-reqs" onclick="go('pg-buy-reqs')"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg><span>درخواست‌ها</span></div>
+    <div class="tb" data-p="pg-suppliers" onclick="go('pg-suppliers')"><svg viewBox="0 0 24 24"><path d="M3 21V10l5-4 5 4v11"/><path d="M13 21V12h5l3 3v6M8 21v-5h2"/><path d="M8 3.5l5 3.5-5 3.5"/></svg><span>تأمین‌کنندگان</span></div>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- ═══ شیت: جابه‌جایی بین دستیارها ═══ -->
+<div class="sheet" id="sh-switch" onclick="if(event.target===this)closeSheet()">
+  <div class="box">
+    <div class="grab"></div>
+    <h3>جابه‌جایی بین دستیارها</h3>
+    <p class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب می‌کنی الان کدام را ببینی.</p>
+    <button class="shrow" id="swr-buy" onclick="switchArm('buy')">
+      <span class="ico g">🛒</span>
+      <span class="tx"><b>دستیار خرید</b><span>دفتر خرید · استعلام‌ها · تأمین‌کنندگان — ۲ پاسخ استعلام رسید</span></span>
+      <span class="chk">✓</span>
+    </button>
+    <button class="shrow" id="swr-sell" onclick="switchArm('sell')">
+      <span class="ico b">🏪</span>
+      <span class="tx"><b>دستیار فروش</b><span>کالاها · درخواست‌ها · خریداران — ۲ درخواست در انتظار پاسخ</span></span>
+      <span class="chk">✓</span>
+    </button>
+    <p class="sub" style="margin:6px 0 10px">نقش تو ثابت نیست — عمده‌فروشی می‌تواند هم‌زمان از هر دو استفاده کند.</p>
+    <button class="btn ghost blk sm" onclick="closeSheet()">بستن</button>
+  </div>
+</div>
+
+
+<!-- ═══ شیت: اشتراک کاتالوگ ═══ -->
+<div class="sheet" id="sh-share" onclick="if(event.target===this)closeSheet()">
+  <div class="box">
+    <div class="grab"></div>
+    <h3 id="share-ttl">کاتالوکت را به اشتراک بگذار</h3>
+    <p class="sub" id="share-sub">لینک را بفرست؛ مشتری بدون ثبت‌نام هم ویترین را می‌بیند — قیمت‌ها همیشه به‌روز.</p>
+    <div class="linkprev">
+      <img src="assets/logo3.svg" alt="iMach">
+      <div class="tx"><b id="share-prev-name">کاتالوک پخش رضایی</b><span id="share-prev-link">imach.ir/rezai · ۳ کالا</span></div>
+    </div>
+    <div class="shrow" onclick="toast('ارسال در واتساپ ✓')">
+      <span class="ico" style="background:#E8F7EE;color:#16A34A">💬</span>
+      <span class="tx"><b>واتساپ</b><span>ارسال برای مشتری‌ها — با یک پیام آماده</span></span>
+    </div>
+    <div class="shrow" onclick="toast('ارسال در تلگرام ✓')">
+      <span class="ico g">✈️</span>
+      <span class="tx"><b>تلگرام</b><span>برای گروه‌ها و کانال‌های تجاری</span></span>
+    </div>
+    <div class="shrow" onclick="toast('لینک کپی شد ✓')">
+      <span class="ico b">🔗</span>
+      <span class="tx"><b>کپی لینک</b><span id="share-copy-tx">imach.ir/rezai</span></span>
+    </div>
+    <div class="shrow" onclick="toggleQR()">
+      <span class="ico" style="background:#F1F3F5;color:var(--ink-soft)">▦</span>
+      <span class="tx"><b>نمایش QR کد</b><span>چسباندن روی سرداب یا بنر مغازه</span></span>
+    </div>
+    <div class="qrbox" id="qrBox">
+      <svg viewBox="0 0 21 21" shape-rendering="crispEdges">
+        <rect x="0" y="0" width="7" height="7" fill="#1F2937"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3" fill="#1F2937"/>
+        <rect x="14" y="0" width="7" height="7" fill="#1F2937"/><rect x="15" y="1" width="5" height="5" fill="#fff"/><rect x="16" y="2" width="3" height="3" fill="#1F2937"/>
+        <rect x="0" y="14" width="7" height="7" fill="#1F2937"/><rect x="1" y="15" width="5" height="5" fill="#fff"/><rect x="2" y="16" width="3" height="3" fill="#1F2937"/>
+        <g fill="#1F2937">
+          <rect x="8" y="0" width="1" height="1"/><rect x="10" y="0" width="1" height="1"/><rect x="12" y="0" width="1" height="1"/>
+          <rect x="9" y="1" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/>
+          <rect x="8" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/>
+          <rect x="10" y="3" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/>
+          <rect x="9" y="4" width="1" height="1"/><rect x="13" y="4" width="1" height="1"/>
+          <rect x="8" y="5" width="1" height="1"/><rect x="11" y="5" width="1" height="1"/>
+          <rect x="12" y="6" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/>
+          <rect x="8" y="7" width="1" height="1"/><rect x="10" y="7" width="1" height="1"/><rect x="13" y="7" width="1" height="1"/>
+          <rect x="8" y="8" width="2" height="2"/><rect x="12" y="8" width="1" height="1"/><rect x="14" y="8" width="1" height="1"/><rect x="17" y="8" width="1" height="1"/><rect x="19" y="8" width="1" height="1"/>
+          <rect x="9" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="18" y="9" width="1" height="1"/>
+          <rect x="8" y="10" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="13" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="19" y="10" width="1" height="1"/>
+          <rect x="9" y="11" width="1" height="1"/><rect x="12" y="11" width="2" height="1"/><rect x="15" y="11" width="1" height="1"/><rect x="17" y="11" width="1" height="1"/>
+          <rect x="8" y="12" width="1" height="1"/><rect x="11" y="12" width="1" height="1"/><rect x="14" y="12" width="1" height="1"/><rect x="18" y="12" width="1" height="1"/><rect x="20" y="12" width="1" height="1"/>
+          <rect x="8" y="14" width="1" height="1"/><rect x="10" y="14" width="1" height="1"/><rect x="12" y="14" width="1" height="1"/>
+          <rect x="9" y="15" width="1" height="1"/><rect x="11" y="15" width="1" height="1"/><rect x="13" y="15" width="1" height="1"/>
+          <rect x="8" y="16" width="1" height="1"/><rect x="12" y="16" width="1" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/>
+          <rect x="10" y="17" width="1" height="1"/><rect x="13" y="17" width="1" height="1"/><rect x="17" y="17" width="1" height="1"/>
+          <rect x="8" y="18" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="15" y="18" width="1" height="1"/><rect x="18" y="18" width="2" height="1"/>
+          <rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="16" y="19" width="1" height="1"/>
+          <rect x="10" y="20" width="1" height="1"/><rect x="14" y="20" width="1" height="1"/><rect x="17" y="20" width="1" height="1"/><rect x="20" y="20" width="1" height="1"/>
+        </g>
+      </svg>
+      <div class="hint">اسکن کن → کاتالوک عمومی تو</div>
+    </div>
+    <div class="rwd" style="margin:0">🎁 هر کس از این لینک وارد iMach شود: درخواست‌هایش مستقیم به تو می‌رسد + ۱ اعتبار معرفی</div>
+  </div>
+</div>
+
+<!-- ═══ شیت: دعوت ═══ -->
+<div class="sheet" id="sh-invite" onclick="if(event.target===this)closeSheet()">
+  <div class="box">
+    <div class="grab"></div>
+    <h3 id="inv-ttl">مشتری‌ات را دعوت کن</h3>
+    <p class="sub" id="inv-sub">در iMach، درخواست‌ها و قیمت‌های همکاری‌تان یک‌جا و مرتب می‌شود — پیگیریِ واتساپی تمام.</p>
+    <div class="field">
+      <label>پیام دعوت (قابل ویرایش)</label>
+      <textarea rows="3" style="width:100%;border:1.5px solid var(--line);border-radius:13px;padding:11px 14px;font-family:inherit;font-size:12.5px;line-height:2;resize:none">سلام آقای کریمی، از این به بعد درخواست‌ها را این‌جا می‌فرستم؛ پیگیری‌اش راحت‌تر از واتساپ می‌شود. — رضایی</textarea>
+    </div>
+    <div class="field"><label>شمارهٔ تلفن</label><input inputmode="tel" placeholder="۰۹۱۲ ···· ····"></div>
+    <button class="btn primary blk" onclick="toast('دعوت ارسال شد ✓')">ارسال دعوت</button>
+    <div class="rwd" style="margin:12px 0 0">🎁 هر دعوتی که بیاید: درخواست‌هایش مستقیم به تو + ۱ اعتبار معرفی</div>
+    <div style="text-align:center;font-size:10.5px;color:var(--teal-deep);font-weight:700;margin-top:10px">دعوت همیشه رایگان است — تا امروز ۲ نفر از دعوت‌هایت آمده‌اند</div>
+  </div>
+</div>
+
+<!-- ═══ شیت: چرا این پیشنهاد؟ ═══ -->
+<div class="sheet" id="sh-why" onclick="if(event.target===this)closeSheet()">
+  <div class="box">
+    <div class="grab"></div>
+    <h3>چرا این پیشنهاد؟</h3>
+    <p class="sub">به زبان آدمیزاد، نه اصطلاح فنی:</p>
+    <div class="card tight" style="margin-bottom:8px">
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.9"><span style="color:var(--teal-deep);font-weight:700">✓</span><span>«روغن آفتابگردان» می‌فروشی و این خریدار <b>همین هفته</b> برای همین دسته درخواست ثبت کرده.</span></div>
+    </div>
+    <div class="card tight" style="margin-bottom:8px">
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.9"><span style="color:var(--teal-deep);font-weight:700">✓</span><span>در <b>تهران</b> است — نزدیکِ بازار اصلی تو.</span></div>
+    </div>
+    <div class="card tight" style="margin-bottom:8px">
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.9"><span style="color:var(--teal-deep);font-weight:700">✓</span><span>سابقهٔ خرید عمده از دستهٔ <b>خوراکی</b> دارد.</span></div>
+    </div>
+    <div class="card tight" style="margin-bottom:8px">
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.9"><span style="color:var(--teal-deep);font-weight:700">✓</span><span>بیش از ۶ ماه در iMach فعال است.</span></div>
+    </div>
+    <div class="card tight" style="background:var(--teal-soft);border-color:var(--teal-line);text-align:center;font-size:11px;color:var(--teal-deep);font-weight:700">به هیچ‌کس به‌خاطر پول، در این فهرست جایی داده نمی‌شود.</div>
+  </div>
+</div>
+
+<!-- ═══ شیت: دروازهٔ پرداخت (S3 — لحظهٔ تشنگی) ═══ -->
+<div class="sheet" id="sh-gate" onclick="if(event.target===this)closeSheet()">
+  <div class="box gate">
+    <div class="grab"></div>
+    <h3>ارتباط با خریدار</h3>
+    <div class="prev">
+      <div class="av">ن</div>
+      <div class="tx"><b>فروشگاه زنجیره‌ای نگین</b><span>تهران · مواد غذایی</span></div>
+      <span class="sig active">فعال</span>
+    </div>
+    <div class="free"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><span>نام و شهر و دسته‌ فعالیت — رایگان دیدی</span></div>
+    <div class="lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span>شمارهٔ تماس و ارسال مستقیم درخواست — با اعتبار</span></div>
+    <div class="divider"></div>
+    <div class="credit">
+      <span style="font-size:20px">💳</span>
+      <div class="c">اعتبار تو: <b>۳</b> — این ارتباط <b>۱ اعتبار</b> مصرف می‌کند</div>
+    </div>
+    <button class="btn primary blk" onclick="toast('ارتباط برقرار شد ✓ — ۱ اعتبار مصرف شد')">تأیید و ارتباط</button>
+    <div class="pkgs" style="margin-top:14px">
+      <div class="pkg" onclick="toast('پرداخت ۹۹,۰۰۰ ✓')"><b>۵</b><span>۹۹,۰۰۰ تومان</span></div>
+      <div class="pkg best" onclick="toast('پرداخت ۱۹۹,۰۰۰ ✓')"><i>پرفروش</i><b>۱۲</b><span>۱۹۹,۰۰۰</span></div>
+      <div class="pkg" onclick="toast('پرداخت ۳۹۹,۰۰۰ ✓')"><b>۳۰</b><span>۳۹۹,۰۰۰</span></div>
+    </div>
+    <div class="freepath">راه رایگان همیشه هست: خودت دعوتش کن — با هر دعوت، ۱ اعتبار هم می‌گیری · <a onclick="closeSheet();openInvite('cust')">ارسال دعوت رایگان</a></div>
+    <div class="trust"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4z"/></svg>تطبیق‌ها هرگز به پول وابسته نیست</div>
+  </div>
+</div>
+
+<!-- ═══ شیت: اکسل ═══ -->
+<div class="sheet" id="sh-excel" onclick="if(event.target===this)closeSheet()">
+  <div class="box">
+    <div class="grab"></div>
+    <h3>ورود با اکسل</h3>
+    <p class="sub">کالاهایت را یک‌جا اضافه کن. قالب ساده است: نام، قیمت، برند، واحد.</p>
+    <div style="border:2px dashed #CBD5E1;border-radius:16px;padding:34px 16px;text-align:center;margin-bottom:12px;cursor:pointer" onclick="toast('انتخاب فایل')">
+      <div style="font-size:26px;margin-bottom:6px">📊</div>
+      <b style="font-size:12.5px">فایل اکسل را این‌جا رها کن</b>
+      <div style="font-size:10.5px;color:var(--ink-faint);margin-top:3px">یا برای انتخاب کلیک کن — xls و csv</div>
+    </div>
+    <button class="btn ghost blk sm" onclick="toast('قالب نمونه دانلود شد ✓')">دانلود قالب نمونه</button>
+    <div style="text-align:center;font-size:10px;color:var(--ink-faint);margin-top:10px">سطرهای تکراری خودکار تشخیص داده می‌شوند</div>
+  </div>
+</div>
+
+<!-- ═══ شیت: اسکن ═══ -->
+<div class="sheet" id="sh-scan" onclick="if(event.target===this)closeSheet()">
+  <div class="box">
+    <div class="grab"></div>
+    <h3>اسکن بارکد</h3>
+    <p class="sub">بارکدِ روی کالا را اسکن کن؛ نام، برند و واحد از کاتالوگ مرجع خودکار پر می‌شود.</p>
+    <div style="border:2px dashed #CBD5E1;border-radius:16px;padding:40px 16px;text-align:center;margin-bottom:12px">
+      <div style="font-size:26px;margin-bottom:6px">📷</div>
+      <b style="font-size:12.5px">دوربین آماده است…</b>
+      <div style="font-size:10.5px;color:var(--ink-faint);margin-top:3px">بارکد را داخل کادر نگه دار</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ناج: بعد از ثبت — دو ریتم ═══ -->
+<div class="nudge" id="nd-found" onclick="if(event.target===this)closeNudge()">
+  <div class="box">
+    <div class="ok teal">✓</div>
+    <h3 id="nd-found-ttl">ثبت شد — و پیدا هم کردیم</h3>
+    <p id="nd-found-sub">همین حالا برای این کالا دنبال خریدار گشتیم:</p>
+    <div class="foundbox">
+      <div class="av">ن</div>
+      <div style="flex:1"><b>فروشگاه زنجیره‌ای نگین</b><span>تهران · همین الان دنبال این کالاست</span></div>
+    </div>
+    <button class="btn teal blk" onclick="closeNudge();go('pg-good')">مشاهدهٔ خریدار</button>
+    <button class="btn ghost blk sm" id="ndf-share" style="margin-top:8px" onclick="closeNudge();nudgeShare()">↗ الان برای مشتری‌هایت بفرست</button>
+    <button class="btn ghost blk sm" style="margin-top:8px;border-style:dashed" onclick="closeNudge()">بعداً</button>
+  </div>
+</div>
+
+<div class="nudge" id="nd-search" onclick="if(event.target===this)closeNudge()">
+  <div class="box">
+    <div class="ok">✓</div>
+    <h3>ثبت شد</h3>
+    <p>داریم برایش خریدار مناسب می‌گردیم؛<br>همین‌جا و با پیام، خبر می‌آوریم.</p>
+    <button class="btn primary blk" onclick="closeNudge()">باشه</button>
+    <button class="btn ghost blk sm" id="nds-share" style="margin-top:8px" onclick="closeNudge();nudgeShare()">↗ الان برای مشتری‌هایت بفرست</button>
+    <div style="font-size:10px;color:var(--ink-faint);margin-top:12px">هرچه کالای بیشتری ثبت کنی، گردشِ ما دقیق‌تر می‌شود</div>
+  </div>
+</div>
+
+<div class="nudge" id="nd-sent" onclick="if(event.target===this)closeNudge()">
+  <div class="box">
+    <div class="ok">✓</div>
+    <h3>استعلام ارسال شد</h3>
+    <p>به ۵ گیرنده رسید — پاسخ‌ها را در «درخواست‌ها» دنبال کن؛<br>ما هم پشت صحنه دنبال گزینهٔ بهتر می‌گردیم.</p>
+    <button class="btn primary blk" onclick="closeNudge()">باشه</button>
+  </div>
+</div>
+
+<!-- ═══ سوییچ دمو (فقط ابزار توسعه) ═══ -->
+<div class="demosw">
+  <b>دمو</b>
+  <button id="dsw-s0" class="on" onclick="setST('s0')">S0</button>
+  <button id="dsw-s1" onclick="setST('s1')">S1</button>
+  <button id="dsw-s2" onclick="setST('s2')">S2</button>
+  <button id="dsw-s3" onclick="setST('s3')">S3</button>
+  <a href="overview.html" title="سند معماری">↗</a>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;border-radius:12px;padding:9px 18px;font-size:11.5px;font-weight:700;z-index:120;box-shadow:0 12px 30px rgba(2,6,23,.4)"></div>
+
+<script>
+/* ── ناوبری ── */
+var cur='pg-onboard', stack=[];
+function show(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  var pg=document.getElementById(id); if(!pg) return;
+  pg.classList.add('on'); cur=id;
+  var ttl=document.getElementById('pgttl');
+  ttl.innerHTML=(pg.dataset.title||'iMach')+'<small>'+(pg.dataset.sub||'')+'</small>';
+  document.getElementById('backBtn').style.visibility=pg.dataset.root?'hidden':'visible';
+  document.querySelectorAll('.tabbar .tb').forEach(function(t){t.classList.toggle('on',t.dataset.p===id)});
+  window.scrollTo(0,0);
+}
+function go(id,tab){ if(tab) pendingTab=tab; show(id); }
+function goBack(){ var p=stack.pop()||cur; show(p); }
+var pendingTab=null;
+var pushTo=function(){};
+
+/* ── باز و بسته کردن شیت‌ها ── */
+function openSheet(id){ document.getElementById(id).classList.add('open'); }
+function closeSheet(){ document.querySelectorAll('.sheet').forEach(function(s){s.classList.remove('open')}); }
+function openNudge(id){ document.getElementById(id).classList.add('open'); }
+function closeNudge(){ document.querySelectorAll('.nudge').forEach(function(n){n.classList.remove('open')}); }
+
+/* ── بازو ── */
+function syncArmUI(a){
+  var pill=document.getElementById('swpill');
+  if(pill) pill.textContent=(a==='sell'?'دستیار خرید':'دستیار فروش')+' ›';
+  var r1=document.getElementById('swr-buy'), r2=document.getElementById('swr-sell');
+  if(r1) r1.classList.toggle('on',a==='buy');
+  if(r2) r2.classList.toggle('on',a==='sell');
+}
+function setArm(a){
+  document.body.dataset.arm=a;
+  syncArmUI(a);
+  if(pill) pill.textContent=(a==='sell'?'دستیار خرید':'دستیار فروش')+' ›';
+  var r1=document.getElementById('swr-buy'), r2=document.getElementById('swr-sell');
+  if(r1) r1.classList.toggle('on',a==='buy');
+  if(r2) r2.classList.toggle('on',a==='sell');
+  show(a==='sell'?'pg-sell-home':'pg-buy-home');
+}
+function switchArm(a){ closeSheet(); setArm(a); }
+function nudgeShare(){
+  closeNudge();
+  if(document.body.dataset.arm==='buy'){ openInvite('sup'); } else { openShare('good'); }
+}
+function pickRole(r){
+  document.getElementById('role-sell').classList.toggle('on',r==='sell');
+  document.getElementById('role-buy').classList.toggle('on',r==='buy');
+  window._role=r;
+}
+function startApp(){ setArm(window._role||'sell'); }
+
+/* ── ماشین حالت ── */
+function setST(v){
+  document.body.dataset.st=v;
+  ['s0','s1','s2','s3'].forEach(function(s){document.getElementById('dsw-'+s).classList.toggle('on',s===v)});
+}
+
+/* ── تب‌های درون‌صفحه ── */
+function setPTab(t){
+  document.getElementById('ptb-my').classList.toggle('on',t==='my');
+  document.getElementById('ptb-found').classList.toggle('on',t==='found');
+  document.getElementById('pc-my').style.display=t==='my'?'block':'none';
+  document.getElementById('pc-found').style.display=t==='found'?'block':'none';
+}
+function setPTab2(t){
+  document.getElementById('ptb-sup-my').classList.toggle('on',t==='my');
+  document.getElementById('ptb-sup-found').classList.toggle('on',t==='found');
+  document.getElementById('pc-sup-my').style.display=t==='my'?'block':'none';
+  document.getElementById('pc-sup-found').style.display=t==='found'?'block':'none';
+}
+function afterShow(){ if(pendingTab){ if(cur==='pg-buyers')setPTab(pendingTab); if(cur==='pg-suppliers')setPTab2(pendingTab); pendingTab=null; } }
+var _origShow=show; show=function(id){ _origShow(id); afterShow(); }; go=function(id,tab){ if(tab)pendingTab=tab; show(id); };
+
+/* ── فرم‌ها ── */
+function toggleSugg(){ var s=document.getElementById('sugg'); s.style.display=s.style.display==='block'?'none':'block'; }
+function toggleSugg2(){ var s=document.getElementById('sugg2'); s.style.display=s.style.display==='block'?'none':'block'; }
+function onNameType(){ if(document.getElementById('g-name').value.length>2) document.getElementById('sugg').style.display='block'; }
+function pickSugg(t){ document.getElementById('g-name').value=t.split(' ·')[0]; document.getElementById('sugg').style.display='none'; toast('برند و واحد خودکار پر شد ✓'); }
+
+function addGoodSubmit(e){
+  e.preventDefault(); closeSheet();
+  var st=document.body.dataset.st;
+  var b1=document.getElementById('ndf-share'), b2=document.getElementById('nds-share');
+  if(b1) b1.innerHTML='↗ الان برای مشتری‌هایت بفرست';
+  if(b2) b2.innerHTML='↗ الان برای مشتری‌هایت بفرست';
+  if(st==='s2'||st==='s3'){ openNudge('nd-found'); } else { openNudge('nd-search'); }
+  return false;
+}
+function addNeedSubmit(e){
+  e.preventDefault(); closeSheet();
+  var st=document.body.dataset.st;
+  var b1=document.getElementById('ndf-share'), b2=document.getElementById('nds-share');
+  if(b1) b1.innerHTML='↗ تأمین‌کننده‌هایت را در جریان بگذار';
+  if(b2) b2.innerHTML='↗ تأمین‌کننده‌هایت را در جریان بگذار';
+  if(st==='s2'||st==='s3'){
+    document.getElementById('nd-found-ttl').innerHTML='ثبت شد — و پیدا هم کردیم';
+    document.getElementById('nd-found-sub').innerHTML='همین حالا برای این نیاز دنبال تأمین‌کنندهٔ مناسب گشتیم:';
+    openNudge('nd-found');
+  } else { openNudge('nd-search'); }
+  return false;
+}
+function sendRfq(){ openNudge('nd-sent'); }
+
+/* ── شیت‌های context-aware ── */
+function openInvite(ctx){
+  var ttl=document.getElementById('inv-ttl'), sub=document.getElementById('inv-sub');
+  if(ctx==='sup'){ ttl.textContent='تأمین‌کننده‌ات را دعوت کن'; sub.textContent='در iMach، استعلام‌ها و پاسخ‌های همکاری‌تان یک‌جا و مرتب می‌شود.'; }
+  else { ttl.textContent='مشتری‌ات را دعوت کن'; sub.textContent='در iMach، درخواست‌ها و قیمت‌های همکاری‌تان یک‌جا و مرتب می‌شود.'; }
+  openSheet('sh-invite');
+}
+function openShare(ctx){
+  var ttl=document.getElementById('share-ttl'), sub=document.getElementById('share-sub');
+  var pn=document.getElementById('share-prev-name'), pl=document.getElementById('share-prev-link'), pc=document.getElementById('share-copy-tx');
+  if(ctx==='good'){
+    ttl.textContent='این کالا را بفرست'; sub.textContent='خریدار بدون ثبت‌نام، کالا و قیمتِ روز را می‌بیند؛ با یک کلیک درخواست می‌دهد.';
+    if(pn) pn.textContent='روغن آفتابگردان ۱ لیتری'; if(pl) pl.textContent='imach.ir/rezai/roghan'; if(pc) pc.textContent='imach.ir/rezai/roghan';
+  } else {
+    ttl.textContent='کاتالوکت را به اشتراک بگذار'; sub.textContent='لینک را بفرست؛ هر کس باز کند، کالاهایت را با قیمت روز می‌بیند.';
+    if(pn) pn.textContent='کاتالوک پخش رضایی'; if(pl) pl.textContent='imach.ir/rezai · ۳ کالا'; if(pc) pc.textContent='imach.ir/rezai';
+  }
+  openSheet('sh-share');
+}
+function toggleQR(){ var q=document.getElementById('qrBox'); if(q) q.classList.toggle('open'); }
+function openGate(){ openSheet('sh-gate'); }
+
+/* ── توست ── */
+var toastTimer=null;
+function toast(t){
+  var el=document.getElementById('toast');
+  el.textContent=t; el.style.display='block';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ el.style.display='none'; },2200);
+}
+
+/* ── تاریخ‌گذاری لینک برای اسکرین‌شات ── */
+(function(){
+  syncArmUI(document.body.dataset.arm||'sell');
+  var q=new URLSearchParams(location.search);
+  var st=q.get('st'); if(st && st.match(/^s[0-3]$/)) setST(st);
+  var h=(location.hash||'').replace('#','');
+  if(h && document.getElementById(h)){
+    show(h);
+    var buyPages=['pg-buy-home','pg-book','pg-book-item','pg-add-need','pg-buy-reqs','pg-rfq','pg-responses','pg-suppliers'];
+    if(buyPages.indexOf(h)>-1){ document.body.dataset.arm='buy'; syncArmUI('buy'); }
+  }
+  var sh=q.get('sheet'); if(sh && document.getElementById('sh-'+sh)) setTimeout(function(){openSheet('sh-'+sh)},300);
+  var qr=q.get('qr'); if(qr==='1'){ setTimeout(function(){ openSheet('sh-share'); toggleQR(); },300); }
+  var nd=q.get('nudge'); if(nd && document.getElementById('nd-'+nd)) setTimeout(function(){openNudge('nd-'+nd)},300);
+  var tab=q.get('tab'); if(tab){ pendingTab=tab; afterShow(); }
+  var sg=q.get('sugg'); if(sg==='1'){ var el=document.getElementById('sugg')||document.getElementById('sugg2'); if(el) el.style.display='block'; }
+})();
+</script>
+</body>
+</html>
