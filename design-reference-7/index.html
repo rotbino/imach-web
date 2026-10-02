@@ -94,7 +94,6 @@
         <div class="go">›</div>
       </div>
     </div>
-    </div>
 
     <!-- S2: شبکهٔ روشن -->
     <div class="st s2">
@@ -1241,10 +1240,6 @@ function syncArmUI(a){
 function setArm(a){
   document.body.dataset.arm=a;
   syncArmUI(a);
-  if(pill) pill.textContent=(a==='sell'?'دستیار خرید':'دستیار فروش')+' ›';
-  var r1=document.getElementById('swr-buy'), r2=document.getElementById('swr-sell');
-  if(r1) r1.classList.toggle('on',a==='buy');
-  if(r2) r2.classList.toggle('on',a==='sell');
   show(a==='sell'?'pg-sell-home':'pg-buy-home');
 }
 function switchArm(a){ closeSheet(); setArm(a); }
