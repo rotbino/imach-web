@@ -1,0 +1,409 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iMatch — ریدیزاین ۳ · سند معماری UX</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body { background: var(--bg-deep); }
+  .ov { max-width: 860px; margin: 0 auto; padding: 34px 22px 60px; }
+  .ov-hero {
+    background: linear-gradient(150deg, #fff 30%, var(--orange-tint));
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    padding: 34px 34px 30px;
+    box-shadow: var(--shadow-2);
+  }
+  .ov-hero img { height: 52px; }
+  .ov-hero h1 { font-size: 27px; margin-top: 16px; line-height: 1.6; }
+  .ov-hero .sub { font-size: 13.5px; color: var(--fg-soft); margin-top: 10px; line-height: 2.1; }
+  .ov-hero .law {
+    margin-top: 18px;
+    background: var(--fg);
+    color: #fff;
+    border-radius: 16px;
+    padding: 15px 20px;
+    font-size: 13.5px;
+    line-height: 2.2;
+    font-weight: 700;
+  }
+  .ov-hero .law small { display: block; font-weight: 400; font-size: 11px; opacity: .72; margin-top: 4px; }
+  .ov-hero .cta-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .ov-sec { margin-top: 30px; }
+  .ov-sec > h2 {
+    font-size: 19px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 6px;
+  }
+  .ov-sec > h2 svg { color: var(--primary-strong); width: 22px; height: 22px; }
+  .ov-sec > .lead { font-size: 12.5px; color: var(--fg-soft); line-height: 2.2; margin-bottom: 14px; }
+  .ov-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px 22px; box-shadow: var(--shadow-1); }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 11px; }
+  .grid-2c { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  .layer-card { border-radius: 16px; padding: 16px; border: 1px solid var(--border); background: #fff; }
+  .layer-card .no { font-size: 10px; font-weight: 700; opacity: .6; letter-spacing: .08em; }
+  .layer-card h3 { font-size: 14.5px; margin: 6px 0 8px; display: flex; align-items: center; gap: 7px; }
+  .layer-card h3 svg { width: 16px; height: 16px; }
+  .layer-card p { font-size: 11px; color: var(--muted); line-height: 2; }
+  .layer-card ul { margin-top: 9px; padding-right: 16px; font-size: 10.5px; color: var(--fg-soft); line-height: 2.1; }
+  .lc-1 { border-color: #d8d2c3; }
+  .lc-1 h3 svg { color: var(--fg-soft); }
+  .lc-2 { border-color: var(--primary-soft); background: linear-gradient(160deg,#fff, var(--orange-tint)); }
+  .lc-2 h3 svg { color: var(--primary-strong); }
+  .lc-3 { border-color: #99e0d8; background: linear-gradient(160deg,#fff, var(--teal-tint)); }
+  .lc-3 h3 svg { color: var(--teal-strong); }
+  .flowbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px 15px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .flowbar .step { background: var(--muted-bg); border-radius: 9px; padding: 6px 11px; color: var(--fg-soft); }
+  .flowbar .step.hot { background: var(--teal-tint); color: var(--teal-tint-fg); }
+  .flowbar .step.gold { background: var(--orange-tint); color: var(--orange-tint-fg); }
+  .flowbar .ar { color: var(--border-strong); }
+  table.ov-tbl { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .ov-tbl th { text-align: right; padding: 10px 12px; font-size: 11px; border-bottom: 2px solid var(--border-strong); white-space: nowrap; }
+  .ov-tbl td { padding: 9px 12px; border-bottom: 1px solid var(--border); line-height: 1.9; vertical-align: top; }
+  .ov-tbl tr:last-child td { border-bottom: none; }
+  .ov-tbl code { background: var(--muted-bg); border-radius: 6px; padding: 1px 7px; font-family: inherit; font-size: 10px; color: var(--teal-tint-fg); direction: ltr; display: inline-block; }
+  .pill-keep { background: var(--emerald-tint); color: var(--emerald); border-radius: 7px; padding: 2px 8px; font-weight: 700; font-size: 10px; white-space: nowrap; }
+  .pill-move { background: var(--amber-tint); color: var(--amber); border-radius: 7px; padding: 2px 8px; font-weight: 700; font-size: 10px; white-space: nowrap; }
+  .pill-prog { background: var(--teal-tint); color: var(--teal-tint-fg); border-radius: 7px; padding: 2px 8px; font-weight: 700; font-size: 10px; white-space: nowrap; }
+  .pill-enh { background: var(--orange-tint); color: var(--orange-tint-fg); border-radius: 7px; padding: 2px 8px; font-weight: 700; font-size: 10px; white-space: nowrap; }
+  .pill-never { background: var(--red-tint); color: var(--red); border-radius: 7px; padding: 2px 8px; font-weight: 700; font-size: 10px; white-space: nowrap; }
+  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+  .gal a {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .gal a:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+  .gal .im { height: 150px; overflow: hidden; position: relative; display: block; border-bottom: 1px solid var(--border); }
+  .gal .im img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .gal .cap { padding: 10px 12px 11px; }
+  .gal .cap b { font-size: 11.5px; display: block; }
+  .gal .cap span { font-size: 9.5px; color: var(--muted); display: block; margin-top: 3px; line-height: 1.7; }
+  .scenario { border-right: 3px solid var(--teal-strong); }
+  .scenario.gold { border-right-color: var(--primary); }
+  .scenario h3 { font-size: 13.5px; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+  .scenario h3 .n { width: 24px; height: 24px; border-radius: 8px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 11px; flex-shrink: 0; }
+  .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .chk { display: flex; gap: 9px; align-items: flex-start; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 11px 13px; font-size: 11px; line-height: 1.9; }
+  .chk svg { width: 16px; height: 16px; color: var(--emerald); flex-shrink: 0; margin-top: 3px; }
+  .chk b { display: block; }
+  .foot-note { margin-top: 34px; text-align: center; font-size: 11px; color: var(--muted); line-height: 2.2; }
+  @media (max-width: 720px) {
+    .grid-3, .gal, .checklist { grid-template-columns: 1fr 1fr; }
+    .ov-hero { padding: 24px 20px; }
+    .ov-hero h1 { font-size: 21px; }
+  }
+  @media (max-width: 480px) {
+    .grid-3, .grid-2c, .gal, .checklist { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="ov">
+
+  <!-- ═══ هیرو ═══ -->
+  <div class="ov-hero">
+    <img src="assets/logo3.svg" alt="iMatch">
+    <h1>ریدیزاین ۳ — «ابزار روز اول، شبکهٔ تدریجی»</h1>
+    <div class="sub">
+      تکامل دیزاین ۲، نه بازنویسی آن. تغییر فلسفه: از «شبکه‌ای که باید عضوش شوی» به
+      «ابزاری که از همان روز اول برایت کار می‌کند» — و بعد، به‌تدریج و بدون اجبار، قدرت تطبیق iMatch را نشان می‌دهد.
+      <br>هیچ قابلیتی حذف یا تضعیف نشده؛ Matching و Supply Board و Discovery همچنان قلب محصول‌اند.
+    </div>
+    <div class="law">
+      Network is not the prerequisite for value — it is the multiplier.
+      <small>شبکه پیش‌نیاز ارزش نیست؛ مضربِ ارزش است. Matching هم هوشی است که این دو را به هم وصل می‌کند.</small>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="index.html#sc-onboard" style="text-decoration:none">باز کردن نمونهٔ تعاملی</a>
+      <a class="btn btn-outline btn-lg" href="#arch" style="text-decoration:none">معماری UX</a>
+    </div>
+  </div>
+
+  <!-- ═══ ۱ — مدل سه‌لایه ═══ -->
+  <div class="ov-sec" id="arch">
+    <h2><svg><use href="#i-box"/></svg> مدل ارزش سه‌لایه</h2>
+    <div class="lead">هر لایه مستقل ارزش دارد؛ لایهٔ بعدی روی دادهٔ لایهٔ قبل ساخته می‌شود. کاربر از لایهٔ ۱ و ۲ شروع می‌کند و لایهٔ ۳ را «کشف» می‌کند — هرگز از روز اول تحمیل نمی‌شود.</div>
+    <div class="grid-3">
+      <div class="layer-card lc-1">
+        <div class="no">LAYER 1</div>
+        <h3><svg><use href="#i-users"/></svg> روابط خود کاربر</h3>
+        <p>کسانی که خودش می‌شناسد یا دعوت کرده — با لیبل روشن «تأمین‌کنندگان من» / «مشتریان من».</p>
+        <ul>
+          <li>دعوت با شماره / لینک / واتساپ / تلگرام / QR</li>
+          <li>متن دعوت ساده و بی‌تشریف</li>
+          <li>رابطه بدون نیاز به شناختن کل شبکه</li>
+        </ul>
+      </div>
+      <div class="layer-card lc-2">
+        <div class="no">LAYER 2</div>
+        <h3><svg><use href="#i-gear"/></svg> ابزار عملیاتی iMatch</h3>
+        <p>همان چیزی که روز اول ارزش می‌سازد، حتی با صفر ارتباط.</p>
+        <ul>
+          <li>خریدار: لیست خرید · دفتر قیمت زنده · رصد · RFQ</li>
+          <li>فروشنده: کاتالوگ · قیمت · دعوت مشتری · پاسخ به درخواست</li>
+          <li>قیمت تازه = عادت = دادهٔ واقعی</li>
+        </ul>
+      </div>
+      <div class="layer-card lc-3">
+        <div class="no">LAYER 3</div>
+        <h3><svg><use href="#i-spark"/></svg> شبکه و کشف هوشمند</h3>
+        <p>از دلِ فعالیت کاربر: «برای تو پیدا کردیم» — با برچسب iMatch، جدا از روابط شخصی.</p>
+        <ul>
+          <li>تأمین‌کننده/خریدار جدید مرتبط</li>
+          <li>قیمت و فرصت بازار — هر کدام با دلیل</li>
+          <li>بدون fake matching: داده نیست؟ صادقانه می‌گوییم</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ۲ — حلقهٔ ارزش ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-refresh"/></svg> حلقهٔ ارزش (The Flywheel)</h2>
+    <div class="lead">این حلقه باید در UX قابل لمس باشد — هر چرخش، قدرت تطبیق را بیشتر می‌کند. دکمهٔ «لحظهٔ جادویی» در پنل دمو، دقیقاً نقطهٔ کشف این حلقه را نشان می‌دهد.</div>
+    <div class="ov-card">
+      <div class="flowbar">
+        <span class="step">کاربر</span><span class="ar">←</span>
+        <span class="step">کارِ خودش (قیمت/کالا)</span><span class="ar">←</span>
+        <span class="step gold">روابط خودش</span><span class="ar">←</span>
+        <span class="step">دادهٔ واقعی</span><span class="ar">←</span>
+        <span class="step hot">تطبیق</span><span class="ar">←</span>
+        <span class="step hot">روابط جدید</span><span class="ar">←</span>
+        <span class="step">ارزش بیشتر</span><span class="ar">←</span>
+        <span class="step">فعالیت بیشتر</span><span class="ar">←</span>
+        <span class="step hot">تطبیق بهتر ⟲</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ۳ — تحلیل نسخهٔ فعلی ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-list"/></svg> تحلیل نسخهٔ فعلی — چه چیزی با چه تصمیمی</h2>
+    <div class="lead">از دیزاین ۲ شروع کردیم، نه از صفر (Evolution, not destruction). هر قلم از قابلیت‌های موجود یکی از این پنج برچسب را خورده — هیچ‌کدام «حذف» نشده.</div>
+    <div class="ov-card" style="padding:8px 14px">
+      <table class="ov-tbl">
+        <tr><th style="width:95px">تصمیم</th><th>قلم</th><th>شرح</th></tr>
+        <tr>
+          <td><span class="pill-keep">KEEP</span></td>
+          <td>آنبوردینگ تک‌سؤالی · سیستم رنگ/فونت · تب‌بار خرید · کاتالوگ=ویترین+مدیریت ظریف · سه اکشن محصول · شیت‌های دنبال‌کردن/اشتراک/سوییچ · فرم RFQ کوتاه · الگوی افزودن (یک الگو، دو context) · تابلو از دلِ کالا · نمایش ویژهٔ شفاف</td>
+          <td>ستون‌های تجربی که در دمو و بازخورد کاربر جواب داده‌اند — دست نخوردند.</td>
+        </tr>
+        <tr>
+          <td><span class="pill-move">MOVE</span></td>
+          <td>«شاید مناسب باشن» → بخش «برای تو پیدا کردیم» با لیبل مستقل · قیمتِ تک‌عددی کالا → <b>دفتر قیمت چند-تأمین‌کننده</b> · «درخواست‌های من» → ردیف وضعیت خانهٔ عملیاتی</td>
+          <td>قابلیت حفظ شد؛ فقط context و جای نمایشش عوض شد تا «منشأ رابطه» شفاف شود.</td>
+        </tr>
+        <tr>
+          <td><span class="pill-prog">PROGRESSIVE</span></td>
+          <td>پیشنهادها/کشف → بعد از اولین فعالیت (رصد/افزودن/RFQ) · لحظهٔ «برای تو پیدا کردیم» → ناجِ متنی با دلیل · فرصت‌های بازار فروشنده → بعد از شکل‌گیری کاتالوگ · گزارش تقاضای بازار → آیندهٔ پولی، بدون مزاحمت</td>
+          <td>Surprise &amp; Delight: کشف ارزش جدید، نه notification spam — هر پیشنهاد دلیل کوتاه دارد.</td>
+        </tr>
+        <tr>
+          <td><span class="pill-enh">ENHANCE</span></td>
+          <td>خانهٔ خرید/فروش → <b>خانهٔ عملیاتی</b> (سلام 👋 + وضعیت + CTA) · صفحهٔ کالا → دفتر قیمت زنده با برچسب منشأ · تابلو → ۳ لایه + دلیل تطبیق · تأمین‌کنندگان → جستجوی دو-نیت + افزودن · حالت خالی → دو-مسیره · کپی‌رایتینگ → «مدیریت خرید و فروش عمده»</td>
+          <td>همان صفحه، عمق بیشتر — بدون افزودن تب یا شلوغی لایهٔ اول.</td>
+        </tr>
+        <tr>
+          <td><span class="pill-never">DO NOT REMOVE</span></td>
+          <td>Matching · Supply Board · Supplier Discovery · Buyer Discovery · Catalog · Shopping List · Price Following · RFQ · Sharing · نمایش ویژه (شفاف) · هر دو دستیار خرید/فروش</td>
+          <td>قلب iMatch — تحت هیچ شرایطی.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ ۴ — ناوبری ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-store"/></svg> ناوبری — مفهوم «من» پررنگ‌تر شد</h2>
+    <div class="lead">فروشنده از ۳ تب به ۴ تب رسید: «مشتریان» جای خودش را در لایهٔ اول گرفت، چون لایهٔ ۱ (روابط خود کاربر) حالا ستون ارزش است. خریدار همان ۴ تب ماند.</div>
+    <div class="grid-2c">
+      <div class="layer-card">
+        <div class="no">دستیار خرید</div>
+        <h3><svg><use href="#i-basket"/></svg> ۴ تب</h3>
+        <ul>
+          <li><b>لیست خرید</b> — خانهٔ عملیاتی + دفتر قیمت زنده</li>
+          <li><b>تأمین‌کنندگان</b> — «من» + «برای تو پیدا کردیم»</li>
+          <li><b>پیشنهادها</b> — رفتارمحور با دلیل</li>
+          <li><b>پروفایل</b></li>
+        </ul>
+        <p style="margin-top:8px">تابلوی تأمین همچنان از ناوبری بیرون است — از دلِ کالا باز می‌شود.</p>
+      </div>
+      <div class="layer-card lc-2">
+        <div class="no">دستیار فروش</div>
+        <h3><svg><use href="#i-box"/></svg> ۴ تب</h3>
+        <ul>
+          <li><b>کاتالوگ من</b> — خانهٔ عملیاتی فروش</li>
+          <li><b>درخواست‌ها</b> — «به من» + «فرصت‌های بازار»</li>
+          <li><b>مشتریان</b> — جدید در ناوبری اصلی</li>
+          <li><b>پروفایل</b></li>
+        </ul>
+        <p style="margin-top:8px">سوییچ دستیار همان pill کم‌رنگ هدر: <code>خرید ▾</code></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ۵ — سناریوهای تست ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-checkc"/></svg> پنج سناریوی حیاتی — همه در دمو قابل اجرا</h2>
+    <div class="lead">این همان سناریوهای بریف‌اند (بخش‌های ۳۱–۳۴) به‌علاوهٔ سناریوی صداقت. هر کدام را در نمونهٔ تعاملی می‌توانی قدم‌به‌قدم بروی.</div>
+    <div class="grid-2c" style="gap:11px">
+      <div class="ov-card scenario">
+        <h3><span class="n">۱</span> فروشنده بدون شبکه</h3>
+        <div class="flowbar" style="padding:11px 13px">
+          <span class="step">کاتالوگ می‌سازد</span><span class="ar">←</span>
+          <span class="step">لینک را می‌فرستد</span><span class="ar">←</span>
+          <span class="step gold">مشتری وارد می‌شود</span><span class="ar">←</span>
+          <span class="step">می‌بیند و دنبال می‌کند</span><span class="ar">←</span>
+          <span class="step gold">قیمت عوض می‌شود</span><span class="ar">←</span>
+          <span class="step">خبر می‌شود</span><span class="ar">←</span>
+          <span class="step hot">درخواست می‌فرستد</span>
+        </div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:2;margin-top:10px">بدون هیچ connection دیگر کامل کار می‌کند — مسیر: <a href="index.html#sc-sell-home" style="color:var(--primary-strong)">خانهٔ فروش</a> → شیت اشتراک → محصول دید مشتری → دنبال کردن.</p>
+      </div>
+      <div class="ov-card scenario">
+        <h3><span class="n">۲</span> خریدار بدون marketplace</h3>
+        <div class="flowbar" style="padding:11px 13px">
+          <span class="step">لیست خرید می‌سازد</span><span class="ar">←</span>
+          <span class="step gold">تأمین‌کننده‌اش را دعوت می‌کند</span><span class="ar">←</span>
+          <span class="step">کاتالوگ وصل می‌شود</span><span class="ar">←</span>
+          <span class="step">قیمت‌ها را می‌بیند</span><span class="ar">←</span>
+          <span class="step gold">دنبال می‌کند</span><span class="ar">←</span>
+          <span class="step hot">درخواست تأمین</span>
+        </div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:2;margin-top:10px">مسیر: <a href="index.html#sc-buy-home" style="color:var(--teal-deep)">خانهٔ خرید</a> → «افزودن تأمین‌کننده» (در حالت خرید) → دفتر قیمت زنده.</p>
+      </div>
+      <div class="ov-card scenario gold">
+        <h3><span class="n">۳</span> جادوی iMatch — لحظهٔ کشف</h3>
+        <div class="flowbar" style="padding:11px 13px">
+          <span class="step">چند فعالیت (رصد/افزودن)</span><span class="ar">←</span>
+          <span class="step hot">ناج: «۳ تأمین‌کنندهٔ جدید پیدا کردیم»</span><span class="ar">←</span>
+          <span class="step gold">«اینها را خودم نداشتم!»</span>
+        </div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:2;margin-top:10px">در دمو: دنبال کردن قیمت یا افزودن کالا → بعد از ~۲ ثانیه ناج می‌آید. یا دکمهٔ «لحظهٔ جادویی را نشانم بده» در پنل چپ.</p>
+      </div>
+      <div class="ov-card scenario gold">
+        <h3><span class="n">۴</span> کشف خریدار برای فروشنده</h3>
+        <div class="flowbar" style="padding:11px 13px">
+          <span class="step gold">کاتالوگ + مشتریان + قیمت</span><span class="ar">←</span>
+          <span class="step hot">«فرصت‌های بازار: تقاضای منطبق»</span><span class="ar">←</span>
+          <span class="step">گزارش تقاضا (آیندهٔ پولی)</span>
+        </div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:2;margin-top:10px">مسیر: <a href="index.html#sc-sell-requests" style="color:var(--primary-strong)">درخواست‌ها</a> → تب «فرصت‌های بازار» — کارت خریداران جدید با لیبل iMatch.</p>
+      </div>
+      <div class="ov-card scenario" style="grid-column:1/-1">
+        <h3><span class="n">۵</span> صداقت بدون داده — نه fake matching</h3>
+        <div class="flowbar" style="padding:11px 13px">
+          <span class="step">عدس در لیست، بدون تأمین‌کننده</span><span class="ar">←</span>
+          <span class="step">«هنوز کسی پیدا نکردیم»</span><span class="ar">←</span>
+          <span class="step hot">«وقتی پیدا شد خبرم کن»</span><span class="ar">←</span>
+          <span class="step gold">رصد فعال — کاربر منتظر می‌ماند</span>
+        </div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:2;margin-top:10px">عدد ساختگی «۶ تأمین‌کننده» هرگز ساخته نمی‌شود. مسیر: <a href="index.html#sc-empty" style="color:var(--teal-deep)">حالت‌های خالی</a> → تب «بدون داده».</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ۶ — گالری صفحات ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-eye"/></svg> گالری ۱۷ صفحه — با لینک زنده</h2>
+    <div class="lead">روی هر کارت بزنی، همان صفحه در نمونهٔ تعاملی باز می‌شود (پنل ناوبری دمو در دسکتاپ کنارش می‌نشیند).</div>
+    <div class="gal">
+      <a href="index.html#sc-onboard"><span class="im"><img src="png/00-onboard.png" alt="آنبوردینگ"></span><span class="cap"><b>۰۱ · آنبوردینگ</b><span>ابزار-اول: «خرید و فروش عمده‌ات را اینجا مدیریت کن»</span></span></a>
+      <a href="index.html#sc-buy-home"><span class="im"><img src="png/01-buy-home.png" alt="خانهٔ خرید"></span><span class="cap"><b>۰۲ · خانهٔ خرید</b><span>سلام 👋 + وضعیت + لیست زنده</span></span></a>
+      <a href="index.html#sc-buy-item"><span class="im"><img src="png/02-buy-item.png" alt="دفتر قیمت زنده"></span><span class="cap"><b>۰۳ · دفتر قیمت زنده</b><span>چند تأمین‌کننده، برچسب منشأ</span></span></a>
+      <a href="index.html#sc-board"><span class="im"><img src="png/03-supply-board.png" alt="تابلوی تأمین"></span><span class="cap"><b>۰۴ · تابلوی تأمین</b><span>من · iMatch · نمایش ویژه + دلیل</span></span></a>
+      <a href="index.html#sc-suppliers"><span class="im"><img src="png/04-suppliers.png" alt="تأمین‌کنندگان"></span><span class="cap"><b>۰۵ · تأمین‌کنندگان من</b><span>دو-نیت جستجو + افزودن</span></span></a>
+      <a href="index.html#sc-discover"><span class="im"><img src="png/05-discover.png" alt="پیشنهادها"></span><span class="cap"><b>۰۶ · پیشنهادها</b><span>رفتارمحور + «چرا این را می‌بینی؟»</span></span></a>
+      <a href="index.html#sc-sell-home"><span class="im"><img src="png/07-sell-home.png" alt="خانهٔ فروش"></span><span class="cap"><b>۰۸ · خانهٔ فروش</b><span>کاتالوگ + مشتریان + قیمت معوق</span></span></a>
+      <a href="index.html#sc-customers"><span class="im"><img src="png/10-customers.png" alt="مشتریان من"></span><span class="cap"><b>۱۱ · مشتریان من</b><span>تجاری، نه CRM + جریان دعوت</span></span></a>
+      <a href="index.html#sc-empty"><span class="im"><img src="png/15-empty.png" alt="حالت‌های خالی"></span><span class="cap"><b>۱۶ · حالت‌های خالی</b><span>دو-مسیره + صداقت بدون داده</span></span></a>
+    </div>
+  </div>
+
+  <!-- ═══ ۷ — نگاشت بریف به صفحات ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-list"/></svg> نگاشت قواعد کلیدی بریف به صفحات</h2>
+    <div class="ov-card" style="padding:8px 14px">
+      <table class="ov-tbl">
+        <tr><th>قاعدهٔ بریف</th><th>محل تحقق در دمو</th></tr>
+        <tr><td>ارزش روز اول بدون شبکه (§۱، §۶، §۴۲)</td><td><code>sc-buy-home</code> / <code>sc-sell-home</code> — خانهٔ عملیاتی با سلام و وضعیت</td></tr>
+        <tr><td>سه لایهٔ ارزش (§۳، §۲۷)</td><td>مدل سه‌لایهٔ همین سند + <code>sc-suppliers</code> (تفکیک بصری)</td></tr>
+        <tr><td>تفکیک رابطهٔ شخصی / تطبیق هوشمند (§۴، §۵)</td><td><code>layer-mine</code> / <code>layer-im</code> + بج‌های <code>src-mine</code> / <code>src-im</code> در همه‌جا</td></tr>
+        <tr><td>دو مسیر cold start (§۶)</td><td><code>sc-empty</code> → تب «شبکهٔ صفر» — دو path-card</td></tr>
+        <tr><td>نه CRM (§۲، §۱۰، §۲۸)</td><td><code>sc-customers</code> — فقط خرید/درخواست/قیمت/تعامل تجاری</td></tr>
+        <tr><td>دعوت مشتری/تأمین‌کننده (§۱۱، §۱۴)</td><td><code>sheet-invite</code> — شماره/لینک/واتساپ/تلگرام/QR + متن ساده</td></tr>
+        <tr><td>دفتر زندهٔ قیمت (§۱۵)</td><td><code>sc-buy-item</code> — pb-row ها با قیمت و تازگی</td></tr>
+        <tr><td>تابلو: ۳ لایه + ترتیب (§۱۶، §۱۷)</td><td><code>sc-board</code> — من → iMatch → نمایش ویژه</td></tr>
+        <tr><td>دلیل تطبیق بدون score (§۱۸)</td><td><code>why-match</code> در کارت‌های پیشنهادی تابلو</td></tr>
+        <tr><td>تطبیق قبل از شبکه (§۱۹، §۷)</td><td>ردیف «۳ مورد جدید iMatch» در لیست خرید، جدا از «تأمین‌کنندهٔ من»</td></tr>
+        <tr><td>Surprise &amp; Delight بدون spam (§۲۰، §۲۱)</td><td>ناجِ <code>nudge</code> — بعد از فعالیت، با دلیل</td></tr>
+        <tr><td>پیشنهادهای دلیل‌دار (§۲۲)</td><td><code>sc-discover</code> — «چون برنج هاشمی را دنبال می‌کنی»</td></tr>
+        <tr><td>نه CRM pipeline، نه marketplace-اول (§۲۵)</td><td>بازار عمومی در هیچ ناوبری نیست؛ فقط از context کالا</td></tr>
+        <tr><td>دو intent جستجو (§۲۶)</td><td><code>seg-search</code> در sc-suppliers</td></tr>
+        <tr><td>نه ادعای ERP (§۳۰)</td><td>کپی: «خرید و فروش عمده‌ات را منظم‌تر و هوشمندتر مدیریت کن»</td></tr>
+        <tr><td>سناریوهای ۱–۴ بدون شبکه (§۳۱–۳۴)</td><td>بخش سناریوهای همین سند — همه قابل اجرا در دمو</td></tr>
+        <tr><td>Monetization بدون paywall تطبیق (§۳۵، §۳۶)</td><td>کارت «گزارش تقاضای بازار» در فرصت‌ها — آیندهٔ پولی، شفاف</td></tr>
+        <tr><td>Paid ≠ Relevance (§۳۷)</td><td>نمایش ویژه: لایهٔ آخر + sponsor-note استقلال رتبه</td></tr>
+        <tr><td>Evolution نه destruction (§۴۰)</td><td>جدول KEEP/MOVE — توکن‌ها و زبان بصری R2 دست‌نخورده</td></tr>
+        <tr><td>Simple surface, deep product (§۳۹)</td><td>۱۷ صفحه؛ لایهٔ اول فقط خرید/فروش، لایهٔ ۲ فرم‌ها</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ ۸ — معیارهای موفقیت ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-shield"/></svg> هشت معیار موفقیت (§۴۳) — وضعیت در این طرح</h2>
+    <div class="checklist">
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>کار بدون شبکه؟</b>بله — خانهٔ عملیاتی و ابزار لایهٔ ۲ از روز اول کار می‌کنند (۰ connection)</span></div>
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>ورود روابط خودش؟</b>بله — sheet-invite با ۵ روش + متن دعوت آماده</span></div>
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>خرید/فروش بدون marketplace؟</b>بله — هیچ مسیر اصلی از بازار عمومی نمی‌گذرد</span></div>
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>Matching از روز اول؟</b>بله — «۳ مورد جدید iMatch» کنار دادهٔ خود کاربر، نه بعد از network</span></div>
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>تفکیک من/پیشنهاد؟</b>بله — دو زبان بصری مستقل + بج منشأ در همه‌جا</span></div>
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>کشف بدون cognitive load؟</b>بله — لایهٔ ۳ فقط بعد از فعالیت و با دلیل ظاهر می‌شود</span></div>
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>تجربهٔ «کشف ارزش»؟</b>بله — ناجِ لحظهٔ جادویی: «اینها را خودت نداشتی»</span></div>
+      <div class="chk"><svg><use href="#i-check"/></svg><span><b>بدون شبکه مفید، با شبکه قوی‌تر؟</b>بله — دفتر قیمت با ۱ تأمین‌کننده هم کار می‌کند؛ با ۵ و کشف iMatch قدرتمندتر</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ ۹ — تفاوت با CRM ═══ -->
+  <div class="ov-sec">
+    <h2><svg><use href="#i-info"/></svg> مرز iMatch با CRM — رعایت شد</h2>
+    <div class="grid-2c">
+      <div class="ov-card" style="border-right:3px solid var(--teal-strong)">
+        <h3 style="font-size:13.5px;margin-bottom:9px">CRM می‌پرسد</h3>
+        <p style="font-size:11.5px;color:var(--muted);line-height:2.2">«مشتری من کیست و در چه مرحلهٔ فروش است؟»<br>Pipeline، مرحله، task، campaign — چیزی که ما <b>نمی‌سازیم</b>.</p>
+      </div>
+      <div class="ov-card" style="border-right:3px solid var(--primary)">
+        <h3 style="font-size:13.5px;margin-bottom:9px">iMatch می‌پرسد</h3>
+        <p style="font-size:11.5px;color:var(--fg-soft);line-height:2.2"><b>«چه می‌فروشم؟ چه می‌خرم؟ چه کسی الان می‌تواند این را تأمین کند یا از من بخرد؟ با چه قیمتی و چه شرایطی؟»</b><br>محصول + قیمت + تأمین + تقاضا + تطبیق.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot-note">
+    iMatch Redesign 3 · تکامل دیزاین ۲ (هیچ فایلی از ریدیزاین ۲ تغییر نکرد) · ۲ اکتبر ۲۰۲۶<br>
+    «ساده برای شروع، مستقل در ارزش، قدرتمند در عمق، هوشمند در کشف.»
+  </div>
+</div>
+</body>
+</html>
