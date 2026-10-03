@@ -135,7 +135,10 @@
       <button class="nav-item" data-nav="sc-settings"><span class="n">۲۷</span><span>تنظیمات<span class="d">اعلان‌ها به‌ازای نوع، زبان، فروشگاه</span></span></button>
       <button class="nav-item" data-nav="sc-edit-biz"><span class="n">۲۸</span><span>ویرایش کسب‌وکار<span class="d">فرم با دیتای پیش‌فرض</span></span></button>
       <div class="nav-g">شیت‌های کلیدی</div>
-      <button class="nav-item" data-goto="sc-sell-product-owner" data-sheet="sheet-promote"><span class="n">⚡</span><span>شیت: صف اول — تومانی<span class="d">۱٬۰۰۰ ت/مشاهده + ۵٬۰۰۰ ت/دنبال‌کردن · بودجه‌محور</span></span></button>
+      <button class="nav-item" data-goto="sc-sell-product-owner" data-sheet="sheet-promote"><span class="n">⚡</span><span>شیت: صف اول — نرخِ پله‌ای<span class="d">نرخِ این کالا + انتخاب جایگاه + «چرا این نرخ؟»</span></span></button>
+      <button class="nav-item" data-goto="sc-sell-product-owner" data-sheet="sheet-rates"><span class="n">⚖</span><span>شیت: نرخ‌ها چطور؟<span class="d">۴ طبقهٔ ارزش — کوچک تا خیلی بزرگ</span></span></button>
+      <button class="nav-item" data-goto="sc-campaign"><span class="n">◼</span><span>توقف کمپین + راه‌اندازی دوباره<span class="d">برگشتِ بودجه به کیف + ردیف تاریخچه</span></span></button>
+      <button class="nav-item" onclick="openEditItem('sell')"><span class="n">✎</span><span>ویرایش محصول — حالت ویرایش<span class="d">پیش‌پر + ذخیرهٔ تغییرات + آرشیو</span></span></button>
       <button class="nav-item" data-goto="sc-sell-product-owner" data-sheet="sheet-followers"><span class="n">🔖</span><span>شیت: دنبال‌کنندگان قیمت<span class="d">چه کسانی + از چه راهی رسیدند</span></span></button>
       <button class="nav-item" data-goto="sc-sell-catalog" data-sheet="sheet-savers"><span class="n">💾</span><span>شیت: ذخیره‌کنندگان کاتالوگ<span class="d">۳۸ نفر — جدای دنبال‌کنندگان قیمت</span></span></button>
       <button class="nav-item" data-goto="sc-buy-list" data-sheet="sheet-notif"><span class="n">🔔</span><span>شیت: اعلان‌ها<span class="d">گروه‌بندی: قیمت / نیاز / دنبال‌کننده / سیستم</span></span></button>
@@ -148,7 +151,8 @@
     <div class="foot">
       اصل این طرح: <b>قیمتِ زنده، هر دو طرف را نگه می‌دارد</b> —<br>
       خریدار دنبال می‌کند، فروشنده دیده می‌شود. رتبهٔ تطبیق هرگز پولی نیست.<br>
-      <b>v2:</b> تومان به‌ازای نتیجه · ذخیره‌کنندگان · گوش‌به‌زنگ · گزارش کمپین
+      <b>v2:</b> تومان به‌ازای نتیجه · ذخیره‌کنندگان · گوش‌به‌زنگ · گزارش کمپین<br>
+      <b>v3:</b> نرخِ پله‌ای به ارزشِ کالا · انتخاب جایگاه · توقف کمپین · ویرایش
     </div>
   </aside>
 
@@ -279,7 +283,7 @@
           <div class="pagehead">
             <button class="back" onclick="go('sc-buy-list')"><svg class="ic"><use href="#i-back"/></svg></button>
             <div class="tt"><b>برنج هاشمی</b><span>در لیست خرید · رصد فعال</span></div>
-            <button class="act" onclick="go('sc-add-item')"><svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش</button>
+            <button class="act" onclick="openEditItem('buy')"><svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش</button>
           </div>
           <div class="screen-body">
             <div class="thumb lg rice"><svg><use href="#a-rice"/></svg></div>
@@ -863,7 +867,7 @@
           <div class="pagehead">
             <button class="back" onclick="go('sc-sell-catalog')"><svg class="ic"><use href="#i-back"/></svg></button>
             <div class="tt"><b>برنج هاشمی درجه یک</b><span>در کاتالوگ من · فعال</span></div>
-            <button class="act" onclick="go('sc-add-item')"><svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش</button>
+            <button class="act" onclick="openEditItem('sell')"><svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش</button>
           </div>
           <div class="screen-body">
             <div class="thumb lg rice"><svg><use href="#a-rice"/></svg></div>
@@ -899,11 +903,11 @@
                 <span class="badge b-amber" id="promoteState">فعال</span>
               </div>
               <div class="pc-progress"><i id="promoteBar" style="width:62%"></i></div>
-              <div class="rep-formula" style="margin-top:10px">۴۷ × ۱٬۰۰۰ + ۳ × ۵٬۰۰۰ = <b>۶۲٬۰۰۰ تومان</b> · بودجهٔ مانده: <b>۳۸٬۰۰۰</b></div>
-              <div class="pc-note">این کالا <b>بالای تابلوی خریدارانِ «برنج هاشمی»</b> می‌نشیند — فقط برای کسانی که هنوز قیمت تو را دنبال نمی‌کنند. رتبهٔ تطبیق هرگز پولی نیست.</div>
+              <div class="rep-formula" style="margin-top:10px" id="pcFormula">۴۷ × ۱٬۰۰۰ + ۳ × ۵٬۰۰۰ = <b>۶۲٬۰۰۰ تومان</b> · بودجهٔ مانده: <b>۳۸٬۰۰۰</b></div>
+              <div class="pc-note">این کالا <b>بالای تابلوی تأمین و در پیشنهادهای دفترِ خریدارانِ «برنج هاشمی»</b> می‌نشیند — فقط برای کسانی که هنوز قیمت تو را دنبال نمی‌کنند. رتبهٔ تطبیق هرگز پولی نیست.</div>
               <div class="btn-row">
                 <button class="btn btn-primary btn-sm" style="flex:1" onclick="go('sc-campaign')"><svg class="ic-sm"><use href="#i-chart"/></svg> گزارش کمپین — عددی</button>
-                <button class="btn btn-outline btn-sm" style="flex:0 0 auto" onclick="openSheet('sheet-promote')"><svg class="ic-sm"><use href="#i-bolt"/></svg> بودجهٔ بیشتر</button>
+                <button class="btn btn-outline btn-sm" id="pcMoreBtn" style="flex:0 0 auto" onclick="openSheet('sheet-promote')"><svg class="ic-sm"><use href="#i-bolt"/></svg> بودجهٔ بیشتر</button>
               </div>
               <div class="pc-free">
                 <svg class="ic-sm"><use href="#i-share"/></svg>
@@ -945,7 +949,7 @@
             </div>
 
             <div class="btn-row" style="margin-top:14px">
-              <button class="btn btn-primary" onclick="go('sc-add-item')"><svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش محصول</button>
+              <button class="btn btn-primary" onclick="openEditItem('sell')"><svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش محصول</button>
               <button class="btn btn-outline" onclick="openSheet('sheet-share-product')"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
             </div>
 
@@ -1428,7 +1432,13 @@
             <div class="tt"><b id="addTitle">افزودن کالا به لیست خرید</b><span id="addSub">هر چه بخری، برایت تابلوی تأمین می‌سازیم و قیمتش را دنبال می‌کنیم</span></div>
           </div>
           <div class="screen-body">
-            <div class="card">
+            <!-- v3: در حالت ویرایش، کالا ثابت است و جست‌وجو مخفی می‌شود -->
+            <div class="edit-good-row" id="editGoodRow" style="display:none">
+              <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
+              <span class="eg-tx"><b>برنج هاشمی</b><span>کالای این ردیف — در ویرایش ثابت است</span></span>
+              <svg style="margin-right:auto;width:17px;height:17px;color:var(--teal-deep)"><use href="#i-check"/></svg>
+            </div>
+            <div class="card" id="pickCard">
               <div class="field" style="margin-bottom:9px">
                 <label>کالا را پیدا کن یا بساز</label>
                 <input id="addSearch" class="inp" style="display:flex;align-items:center;gap:9px" placeholder="مثلاً: برنج هاشمی…" oninput="addSearchCheck(this)">
@@ -1482,9 +1492,20 @@
                   <button class="chip">ماهانه</button>
                 </div>
               </div>
-              <button class="btn btn-primary btn-lg btn-block" style="margin-top:14px" onclick="addItemSubmit()">
+              <button class="btn btn-primary btn-lg btn-block" id="buyCta" style="margin-top:14px" onclick="buySubmit()">
                 <svg class="ic-sm"><use href="#i-plus"/></svg> افزودن به لیست خرید
               </button>
+              <div id="editDangerBuy" style="display:none">
+                <button class="danger-quiet" onclick="askRemoveItem()"><svg><use href="#i-trash"/></svg> حذف از لیست خرید</button>
+                <div class="stop-confirm" id="removeConfirm" style="display:none">
+                  <svg><use href="#i-info"/></svg>
+                  <span>رصد و تابلوی این کالا هم می‌پوشد.</span>
+                  <span class="sc-btns">
+                    <button class="sc-no" onclick="cancelRemoveItem()">انصراف</button>
+                    <button class="sc-yes" onclick="removeItem()">بله، حذف کن</button>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div id="addFieldSell" style="display:none">
@@ -1502,13 +1523,28 @@
                   <label>حداقل سفارش</label>
                   <div class="inp">۱۰۰ کیلوگرم</div>
                 </div>
+                <div class="field" style="margin-bottom:4px">
+                  <label>بسته‌بندی</label>
+                  <div class="inp">کیسهٔ ۱۰ کیلویی</div>
+                </div>
               </div>
-              <button class="btn btn-primary btn-lg btn-block" style="margin-top:14px" onclick="toast('محصول به کاتالوگ اضافه شد')">
+              <button class="btn btn-primary btn-lg btn-block" id="sellCta" style="margin-top:14px" onclick="sellSubmit()">
                 <svg class="ic-sm"><use href="#i-plus"/></svg> ثبت در کاتالوگ
               </button>
+              <div id="editDanger" style="display:none">
+                <button class="danger-quiet" onclick="askArchive()"><svg><use href="#i-trash"/></svg> آرشیو از کاتالوگ</button>
+                <div class="stop-confirm" id="archConfirm" style="display:none">
+                  <svg><use href="#i-info"/></svg>
+                  <span>۱۲ دنبال‌کننده خبردار می‌شوند.</span>
+                  <span class="sc-btns">
+                    <button class="sc-no" onclick="cancelArchive()">انصراف</button>
+                    <button class="sc-yes" onclick="archiveItem()">بله، آرشیو کن</button>
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div class="hint">
+            <div class="hint" id="addHint">
               <svg><use href="#i-info"/></svg>
               <span>یک الگو برای دو دستیار: انتخاب کالا از <b>کاتالوگ مرجع</b> (۳۷۰+ کالای استاندارد) مشترک است؛ فقط فیلدهای مرحلهٔ بعد بر اساس خرید یا فروش عوض می‌شوند. راه‌های دیگر (بارکد، مرجع، اکسل) آرام زیر فرم می‌مانند — و دقیقاً وقتی جست‌وجو نتیجه نداد، پررنگ می‌شوند.</span>
             </div>
@@ -1715,8 +1751,8 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="go('sc-sell-product-owner')"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>گزارش کمپین</b><span>برنج هاشمی درجه یک · «صف اول» تابلوی خریداران</span></div>
-            <span class="badge b-amber" style="align-self:center">فعال</span>
+            <div class="tt"><b>گزارش کمپین</b><span>برنج هاشمی درجه یک · «صف اول»</span></div>
+            <span class="badge b-amber" id="repState" style="align-self:center">فعال</span>
           </div>
           <div class="screen-body">
             <div class="stat-row">
@@ -1724,7 +1760,8 @@
               <div class="stat"><span class="v" style="color:var(--teal-deep)">۳</span><span class="k">دنبال‌کردن تازه</span></div>
               <div class="stat"><span class="v" style="color:var(--primary-strong)">۶۲٬۰۰۰</span><span class="k">تومان خرج شد</span></div>
             </div>
-            <div class="rep-formula">۴۷ × ۱٬۰۰۰ <span class="op">+</span> ۳ × ۵٬۰۰۰ <span class="op">=</span> <b>۶۲٬۰۰۰ تومان</b> · بودجهٔ مانده: <b>۳۸٬۰۰۰ تومان</b></div>
+            <div class="rep-formula" id="repFormula">۴۷ × ۱٬۰۰۰ <span class="op">+</span> ۳ × ۵٬۰۰۰ <span class="op">=</span> <b>۶۲٬۰۰۰ تومان</b> · بودجهٔ مانده: <b>۳۸٬۰۰۰ تومان</b></div>
+            <div class="slot-note" style="margin-top:6px"><svg><use href="#i-list"/></svg> <span id="repSlots">جایگاه‌ها: تابلوی تأمینِ کالا + پیشنهادهای دفترِ خریدار</span></div>
 
             <div class="sec-title"><h2>چه کسانی دیدند؟</h2><span class="more">۴۷ نفر — ۵ نمونه</span></div>
             <div class="card" style="padding:6px 14px">
@@ -1766,8 +1803,19 @@
             </div>
 
             <div class="btn-row" style="margin-top:12px">
-              <button class="btn btn-primary" style="flex:1" onclick="openSheet('sheet-promote')"><svg class="ic-sm"><use href="#i-bolt"/></svg> ادامهٔ کمپین — بودجهٔ بیشتر</button>
+              <button class="btn btn-primary" id="repResumeBtn" style="flex:1" onclick="openSheet('sheet-promote')"><svg class="ic-sm"><use href="#i-bolt"/></svg> ادامهٔ کمپین — بودجهٔ بیشتر</button>
               <button class="btn btn-outline" style="flex:0 0 auto" onclick="go('sc-charge')"><svg class="ic-sm"><use href="#i-wallet"/></svg> شارژ</button>
+            </div>
+
+            <!-- v3: توقف کمپین — تأیید درجا -->
+            <button class="link-danger" id="stopBtn" onclick="askStop()">توقف کمپین — ۳۸٬۰۰۰ تومانِ باقی‌مانده برمی‌گردد به کیف</button>
+            <div class="stop-confirm" id="stopConfirm" style="display:none">
+              <svg><use href="#i-info"/></svg>
+              <span>کمپین می‌ایستد؛ آمارش برای همیشه می‌ماند.</span>
+              <span class="sc-btns">
+                <button class="sc-no" onclick="cancelStop()">انصراف</button>
+                <button class="sc-yes" onclick="stopCampaign()">بله، متوقف کن</button>
+              </span>
             </div>
           </div>
         </section>
@@ -2438,7 +2486,7 @@
 <!-- ═══════════ شیت: صف اول (مدل تومانی — به‌ازای نتیجه) ═══════════ -->
 <div class="sheet" id="sheet-promote">
   <div class="grab"></div>
-  <h3>«صف اول» تابلوی خریداران</h3>
+  <h3>«صف اول»</h3>
   <div class="sub">برنج هاشمی درجه یک — فقط به خریدارانی نشان داده می‌شود که هنوز قیمت تو را دنبال نمی‌کنند</div>
 
   <!-- پیش‌نمایش تابلوی خریداران -->
@@ -2458,25 +2506,49 @@
     </div>
   </div>
 
+  <!-- v3: انتخاب جایگاه -->
+  <div class="ng-title">کجا دیده شوی؟</div>
+  <div class="slot-grid">
+    <div class="slot-card on" id="slotBoard" onclick="toggleSlot(this,'board')">
+      <span class="sl-chk"><svg><use href="#i-check"/></svg></span>
+      <span class="sl-ico"><svg><use href="#i-list"/></svg></span>
+      <span class="sl-t">تابلوی تأمینِ کالا</span>
+      <span class="sl-d">لحظهٔ مقایسه — خریدار قیمت‌ها را کنار هم می‌بیند</span>
+    </div>
+    <div class="slot-card on" id="slotFeed" onclick="toggleSlot(this,'feed')">
+      <span class="sl-chk"><svg><use href="#i-check"/></svg></span>
+      <span class="sl-ico"><svg><use href="#i-basket"/></svg></span>
+      <span class="sl-t">پیشنهادهای دفترِ خریدار</span>
+      <span class="sl-d">لحظهٔ رصد — کنار کالاهایی که دنبال می‌کند</span>
+    </div>
+  </div>
+  <div class="slot-note"><svg><use href="#i-info"/></svg> نرخِ هر دو جایگاه یکسان است — فقط جای دیده‌شدن را انتخاب می‌کنی.</div>
+
+  <!-- v3: نرخ پله‌ای این کالا -->
   <div class="rate-card">
     <div class="rate-row">
       <span class="r-ico"><svg><use href="#i-eye"/></svg></span>
       <span class="tx">هر مشاهدهٔ کامل<small>فقط خریدارِ هدفمندِ غیردنبال‌کننده</small></span>
-      <span class="pr">۱٬۰۰۰ ت</span>
+      <span class="pr" id="rateView">۱٬۰۰۰ ت</span>
     </div>
     <div class="rate-row">
       <span class="r-ico"><svg><use href="#i-bm"/></svg></span>
       <span class="tx">هر دنبال‌کردن<small>وقتی همان خریدار قیمت را دنبال کند</small></span>
-      <span class="pr">+۵٬۰۰۰ ت</span>
+      <span class="pr" id="rateFollow">+۵٬۰۰۰ ت</span>
+    </div>
+    <div class="rate-src">
+      <svg><use href="#i-info"/></svg>
+      <span id="rateTierLine">نرخِ این کالا: متوسط — بر اساس ارزشِ معمولِ معاملهٔ برنج (≈ ۹ میلیون تومان)</span>
+      <u onclick="openSheetRates()">چرا این نرخ؟</u>
     </div>
     <div class="budget-note"><b>~۲۸ خریدارِ فعالِ برنج هاشمی در منطقه‌ات هنوز دنبالت نمی‌کنند</b> — دنبال‌کنندگان فعلی پرومو نمی‌بینند؛ بودجه که تمام شود نمایش می‌ایستد.</div>
   </div>
 
   <div class="ng-title">بودجهٔ کمپین</div>
   <div class="pkgs">
-    <div class="pkg" onclick="pickBudget(this,50000)"><b>۵۰ هزار</b><span>≈ ۵۰ مشاهده</span></div>
-    <div class="pkg best" onclick="pickBudget(this,100000)"><i>پیشنهادی</i><b>۱۰۰ هزار</b><span>≈ ۱۰۰ مشاهده</span></div>
-    <div class="pkg" onclick="pickBudget(this,200000)"><b>۲۰۰ هزار</b><span>≈ ۲۰۰ مشاهده</span></div>
+    <div class="pkg" onclick="pickBudget(this,50000)"><b>۵۰ هزار</b><span id="est50">≈ ۵۰ مشاهده</span></div>
+    <div class="pkg best" onclick="pickBudget(this,100000)"><i>پیشنهادی</i><b>۱۰۰ هزار</b><span id="est100">≈ ۱۰۰ مشاهده</span></div>
+    <div class="pkg" onclick="pickBudget(this,200000)"><b>۲۰۰ هزار</b><span id="est200">≈ ۲۰۰ مشاهده</span></div>
   </div>
 
   <div class="credit-line">
@@ -2496,6 +2568,46 @@
   <div class="trust">
     <svg><use href="#i-shield"/></svg>
     <span>رتبهٔ تطبیق هرگز پولی نیست — «صف اول» فقط جایگاهِ دیده‌شدن می‌خرد و برچسبش شفاف است؛ ارزان‌ترینِ تابلو همان ارزان‌ترین می‌ماند. نتیجهٔ کمپین، عدد‌به‌عدد در «گزارش کمپین» می‌آید.</span>
+  </div>
+</div>
+
+<!-- ═══════════ شیت: نرخ‌ها چطور حساب می‌شود؟ (v3) ═══════════ -->
+<div class="sheet" id="sheet-rates">
+  <div class="grab"></div>
+  <h3>نرخِ «صف اول» چطور حساب می‌شود؟</h3>
+  <div class="sub">یک اصل ساده: دنبال‌کننده‌ای که کالای گران‌تر دنبال می‌کند، برای فروشنده‌اش ارزش بیشتری دارد</div>
+
+  <div class="tier-table">
+    <div class="tier-row">
+      <span class="tr-t">کوچک<small>روغن ۱۶ کیلویی · حبوبات خرد</small></span>
+      <span class="tr-v">تا ۵ میلیون تومان معامله</span>
+      <span class="tr-p">۲٬۰۰۰ ت<small>هر دنبال‌کردن</small></span>
+    </div>
+    <div class="tier-row me">
+      <span class="tr-t">متوسط<small>برنج · شکر · آرد بسته‌بندی</small></span>
+      <span class="tr-v">۵ تا ۵۰ میلیون تومان</span>
+      <span class="tr-p">۵٬۰۰۰ ت<small>هر دنبال‌کردن</small></span>
+    </div>
+    <div class="tier-row">
+      <span class="tr-t">بزرگ<small>آرد صنعتی ماهانه · شکر کارتنی</small></span>
+      <span class="tr-v">۵۰ تا ۵۰۰ میلیون تومان</span>
+      <span class="tr-p">۱۵٬۰۰۰ ت<small>هر دنبال‌کردن</small></span>
+    </div>
+    <div class="tier-row">
+      <span class="tr-t">خیلی بزرگ<small>فولاد · کانتینر · دستگاه</small></span>
+      <span class="tr-v">بیش از ۵۰۰ میلیون تومان</span>
+      <span class="tr-p">۴۰٬۰۰۰ ت<small>هر دنبال‌کردن</small></span>
+    </div>
+  </div>
+
+  <div class="hint" style="margin-top:11px">
+    <svg><use href="#i-info"/></svg>
+    <span>ارزشِ معمولِ معامله را خودِ iMach از قیمت‌ها و درخواست‌های واقعیِ همان کالا حساب می‌کند — <b>تو چیزی وارد نمی‌کنی</b>؛ نرخِ کالای خودت را همین جای دیگر می‌بینی.</span>
+  </div>
+
+  <div class="hint" style="margin-top:8px">
+    <svg><use href="#i-shield"/></svg>
+    <span><b>منصفانه است:</b> بزرگ‌ترها مطلقاً بیشتر می‌پردازند ولی به نسبتِ کمتر — درصد با بزرگ‌شدن معامله پله‌ای کم می‌شود. نرخ برای <b>همهٔ فروشندگانِ یک کالا یکسان</b> است و <b>رتبهٔ تطبیق هرگز پولی نیست</b>. هر دنبال‌کردن = ۵ مشاهده.</span>
   </div>
 </div>
 
@@ -2773,10 +2885,22 @@ const state = {
   pasteAdded: false,
   selectedGood: null,
   balance: 298000,        // کیف پول — تومان
-  campaign: { views: 47, follows: 3, spent: 62000, budget: 100000 },
+  campaign: { views: 47, follows: 3, spent: 62000, budget: 100000, active: true },
   budgetSel: 100000,      // بودجهٔ انتخاب‌شده در شیت پرومو
+  slots: { board: true, feed: true },   // v3: جایگاه‌های نمایش
+  editMode: null,         // v3: null | 'sell' | 'buy'
+  _pendingEdit: null,
   suRole: 'buy'
 };
+
+/* ── v3: نرخ پله‌ایِ «صف اول» — نرخ به کالا وابسته است، نه به شخص ── */
+const TIERS = {
+  small: { label: 'کوچک',      view: 400,  follow: 2000,  deal: 'تا ۵ میلیون تومان' },
+  mid:   { label: 'متوسط',     view: 1000, follow: 5000,  deal: '۵ تا ۵۰ میلیون تومان' },
+  big:   { label: 'بزرگ',      view: 3000, follow: 15000, deal: '۵۰ تا ۵۰۰ میلیون تومان' },
+  huge:  { label: 'خیلی بزرگ', view: 8000, follow: 40000, deal: 'بیش از ۵۰۰ میلیون تومان' }
+};
+const GOOD_RATE = { name: 'برنج هاشمی', tier: 'mid', dealV: '≈ ۹ میلیون تومان' };
 const HOME = { buy: 'sc-buy-list', sell: 'sc-sell-catalog' };
 
 /* ── نوار وضعیت iOS ── */
@@ -2958,12 +3082,47 @@ function toggleBuyArm() {
 }
 
 function syncAddMode() {
-  const sell = state.mode === 'sell';
-  $('#addTitle').textContent = sell ? 'افزودن محصول به کاتالوگ' : 'افزودن کالا به لیست خرید';
-  $('#addSub').textContent   = sell ? 'قیمت و موجودی بگذار — خریدارها دنبالش می‌کنند' : 'هر چه بخری، برایش تابلوی تأمین می‌سازیم و قیمتش را دنبال می‌کنیم';
+  if (state._pendingEdit) { state.editMode = state._pendingEdit; state._pendingEdit = null; }
+  else state.editMode = null;
+  const edit = state.editMode;                                  /* null | 'sell' | 'buy' */
+  const sell = edit === 'sell' || (!edit && state.mode === 'sell');
+  $('#addTitle').textContent = edit === 'sell' ? 'ویرایش: برنج هاشمی درجه یک'
+                            : edit === 'buy'  ? 'ویرایش: برنج هاشمی'
+                            : sell ? 'افزودن محصول به کاتالوگ' : 'افزودن کالا به لیست خرید';
+  $('#addSub').textContent   = edit === 'sell' ? 'تغییرات همان لحظه برای ۱۲ دنبال‌کننده و تابلوها می‌نشیند'
+                            : edit === 'buy'  ? 'نیاز و دورهٔ خریدت را به‌روز کن'
+                            : sell ? 'قیمت و موجودی بگذار — خریدارها دنبالش می‌کنند' : 'هر چه بخری، برایت تابلوی تأمین می‌سازیم و قیمتش را دنبال می‌کنیم';
+  $('#pickCard').style.display    = edit ? 'none' : '';
+  $('#editGoodRow').style.display = edit ? '' : 'none';
   $('#addFieldBuy').style.display  = sell ? 'none' : '';
   $('#addFieldSell').style.display = sell ? '' : 'none';
+  $('#editDanger').style.display     = edit === 'sell' ? '' : 'none';
+  $('#editDangerBuy').style.display = edit === 'buy'  ? '' : 'none';
+  $('#addHint').style.display = edit ? 'none' : '';
+  $('#archConfirm').style.display   = 'none';
+  $('#removeConfirm').style.display = 'none';
+  $('#buyCta').innerHTML  = edit === 'buy'
+    ? '<svg class="ic-sm"><use href="#i-check"/></svg> ذخیرهٔ تغییرات'
+    : '<svg class="ic-sm"><use href="#i-plus"/></svg> افزودن به لیست خرید';
+  $('#sellCta').innerHTML = edit === 'sell'
+    ? '<svg class="ic-sm"><use href="#i-check"/></svg> ذخیرهٔ تغییرات'
+    : '<svg class="ic-sm"><use href="#i-plus"/></svg> ثبت در کاتالوگ';
 }
+function openEditItem(side) { state._pendingEdit = side; go('sc-add-item'); }
+function buySubmit() {
+  if (state.editMode === 'buy') { go('sc-buy-item'); toast('تغییرات ذخیره شد — تابلوی تأمین همان‌جا به‌روز است'); }
+  else addItemSubmit();
+}
+function sellSubmit() {
+  if (state.editMode === 'sell') { go('sc-sell-product-owner'); toast('ذخیره شد — ۱۲ دنبال‌کننده قیمتِ تازه را می‌بینند'); }
+  else toast('محصول به کاتالوگ اضافه شد');
+}
+function askArchive()     { $('#archConfirm').style.display = ''; }
+function cancelArchive()  { $('#archConfirm').style.display = 'none'; }
+function archiveItem()    { go('sc-sell-catalog'); toast('برنج هاشمی آرشیو شد — ۱۲ دنبال‌کننده خبردار شدند'); }
+function askRemoveItem()    { $('#removeConfirm').style.display = ''; }
+function cancelRemoveItem() { $('#removeConfirm').style.display = 'none'; }
+function removeItem()       { go('sc-buy-list'); toast('برنج هاشمی از لیست حذف شد — رصدش هم بستیم'); }
 
 /* ── بیزینس‌مدل: تومان و کمپین (۱٬۰۰۰ ت/مشاهده + ۵٬۰۰۰ ت/دنبال‌کردن) ── */
 const fa = n => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'].reduce((s,d,i)=>s.replaceAll(String(i),d), String(n));
@@ -2976,12 +3135,101 @@ function syncMoneyUI() {
   set('#walletBadgeNum', b + ' ت');
   set('#sheetBalNum', b);
   set('#sheetAfterBal', faMoney(Math.max(0, state.balance - state.budgetSel)));
-  const c = state.campaign;
-  set('#promoteTitle', 'کمپینِ «صف اول» — ' + (c.budget - c.spent > 0 ? 'فعال' : 'بودجه تمام شد'));
-  set('#promoteSub', fa(c.views) + ' مشاهدهٔ هدفمند · ' + fa(c.follows) + ' دنبال‌کردن تازه');
-  set('#histPromote', 'فعال · ' + fa(c.views) + ' مشاهده · ' + fa(c.follows) + ' دنبال‌کردن — گزارش');
-  const bar = $('#promoteBar'); if (bar) bar.style.width = Math.min(100, Math.round(c.spent / c.budget * 100)) + '%';
+
+  /* v3: نرخِ پله‌ایِ این کالا + تخمینِ بسته‌های بودجه از نرخ */
+  const t = TIERS[GOOD_RATE.tier];
+  set('#rateView', faMoney(t.view) + ' ت');
+  set('#rateFollow', '+' + faMoney(t.follow) + ' ت');
+  set('#rateTierLine', 'نرخِ این کالا: ' + t.label + ' — بر اساس ارزشِ معمولِ معاملهٔ برنج (' + GOOD_RATE.dealV + ')');
+  [50, 100, 200].forEach(k => set('#est' + k, '≈ ' + fa(Math.floor(k * 1000 / t.view)) + ' مشاهده'));
+
+  renderCampaign();
 }
+/* ── v3: رندر واحدِ وضعیت کمپین (کارت محصول + گزارش + کیف) ── */
+function renderCampaign() {
+  const c = state.campaign;
+  const t = TIERS[GOOD_RATE.tier];
+  const stopped = c.active === false;
+  const remaining = Math.max(0, c.budget - c.spent);
+  const stateTxt = stopped ? 'متوقف' : (remaining > 0 ? 'فعال' : 'بودجه تمام شد');
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const badge = (id, cls) => { const el = $(id); if (el) { el.textContent = stateTxt; el.className = 'badge ' + cls; } };
+
+  /* کارتِ کمپین روی صفحهٔ محصول مالک */
+  set('#promoteTitle', 'کمپینِ «صف اول» — ' + stateTxt);
+  set('#promoteSub', fa(c.views) + ' مشاهدهٔ هدفمند · ' + fa(c.follows) + ' دنبال‌کردن تازه');
+  badge('#promoteState', stopped || remaining === 0 ? 'b-stone' : 'b-amber');
+  const f1 = $('#pcFormula'); if (f1) f1.innerHTML =
+    fa(c.views) + ' × ' + faMoney(t.view) + ' + ' + fa(c.follows) + ' × ' + faMoney(t.follow) +
+    ' = <b>' + faMoney(c.spent) + ' تومان</b> · بودجهٔ مانده: <b>' + faMoney(remaining) + '</b>';
+  const bar = $('#promoteBar'); if (bar) bar.style.width = Math.min(100, c.budget ? Math.round(c.spent / c.budget * 100) : 100) + '%';
+  const more = $('#pcMoreBtn'); if (more) more.innerHTML =
+    (stopped ? '<svg class="ic-sm"><use href="#i-bolt"/></svg> راه‌اندازی دوباره' : '<svg class="ic-sm"><use href="#i-bolt"/></svg> بودجهٔ بیشتر');
+
+  /* صفحهٔ گزارش کمپین */
+  badge('#repState', stopped || remaining === 0 ? 'b-stone' : 'b-amber');
+  const f2 = $('#repFormula'); if (f2) f2.innerHTML =
+    fa(c.views) + ' × ' + faMoney(t.view) + ' <span class="op">+</span> ' + fa(c.follows) + ' × ' + faMoney(t.follow) +
+    ' <span class="op">=</span> <b>' + faMoney(c.spent) + ' تومان</b> · بودجهٔ مانده: <b>' + faMoney(remaining) + ' تومان</b>';
+  const rb = $('#repResumeBtn'); if (rb) rb.innerHTML = stopped
+    ? '<svg class="ic-sm"><use href="#i-bolt"/></svg> راه‌اندازی دوباره'
+    : '<svg class="ic-sm"><use href="#i-bolt"/></svg> ادامهٔ کمپین — بودجهٔ بیشتر';
+  const sb = $('#stopBtn'); if (sb) {
+    sb.style.display = stopped ? 'none' : '';
+    sb.textContent = 'توقف کمپین — ' + faMoney(remaining) + ' تومانِ باقی‌مانده برمی‌گردد به کیف';
+  }
+  const sc = $('#stopConfirm'); if (sc && stopped) sc.style.display = 'none';
+  set('#repSlots', state.slots.board && state.slots.feed
+    ? 'جایگاه‌ها: تابلوی تأمینِ کالا + پیشنهادهای دفترِ خریدار'
+    : state.slots.board ? 'جایگاه: تابلوی تأمینِ کالا' : 'جایگاه: پیشنهادهای دفترِ خریدار');
+
+  /* تاریخچهٔ کیف */
+  set('#histPromote', (stopped ? 'متوقف' : stateTxt.toLowerCase()) + ' · ' + fa(c.views) + ' مشاهده · ' + fa(c.follows) + ' دنبال‌کردن — گزارش');
+}
+function askStop() {
+  if (state.campaign.active === false) { toast('کمپین همین حالا متوقف است'); return; }
+  $('#stopConfirm').style.display = '';
+}
+function cancelStop() { $('#stopConfirm').style.display = 'none'; }
+function stopCampaign() {
+  const c = state.campaign;
+  if (c.active === false) return;
+  const remaining = Math.max(0, c.budget - c.spent);
+  c.active = false;
+  if (remaining > 0) {
+    c.budget = c.spent;
+    state.balance += remaining;
+    const hist = $('#walletHist');
+    if (hist) hist.insertAdjacentHTML('afterbegin',
+      '<div class="hist-row refund" onclick="go(&quot;sc-campaign&quot;)" style="cursor:pointer">' +
+      '<span class="h-ico plus"><svg><use href="#i-checkc"/></svg></span>' +
+      '<span class="tx"><b>+' + faMoney(remaining) + ' تومان — برگشتِ بودجهٔ کمپین</b>' +
+      '<span>توقفِ «برنج هاشمی درجه یک» · باقی‌مانده به کیف برگشت</span></span>' +
+      '<span class="amt pos">+' + faMoney(remaining) + '</span></div>');
+  }
+  renderCampaign();
+  syncMoneyUI();
+  toast('کمپین متوقف شد — ' + faMoney(remaining) + ' تومان به کیف برگشت');
+}
+function toggleSlot(el, which) {
+  const other = which === 'board' ? $('#slotFeed') : $('#slotBoard');
+  if (el.classList.contains('on')) {
+    if (other.classList.contains('on')) {
+      el.classList.remove('on');
+      state.slots[which] = false;
+      toast(which === 'board' ? 'فقط پیشنهادهای دفتر خریدار — تابلو حذف شد' : 'فقط تابلوی تأمین — پیشنهادها حذف شد');
+    } else toast('حداقل یک جایگاه لازم است');
+  } else {
+    el.classList.add('on');
+    state.slots[which] = true;
+  }
+  renderCampaign();
+}
+function openSheetRates() {
+  closeSheet();
+  setTimeout(() => openSheet('sheet-rates'), 180);
+}
+
 function pickBudget(el, amt) {
   state.budgetSel = amt;
   $$('#sheet-promote .pkg').forEach(p => p.classList.remove('best'));
@@ -2990,11 +3238,17 @@ function pickBudget(el, amt) {
 }
 function confirmPromote() {
   if (state.balance < state.budgetSel) { toast('موجودی کیف کافی نیست — شارژ کن یا از دعوت بگیر'); return; }
+  const wasStopped = state.campaign.active === false;
   state.balance -= state.budgetSel;
   state.campaign.budget += state.budgetSel;
+  state.campaign.active = true;
+  renderCampaign();
   syncMoneyUI();
   closeSheet();
-  toast('کمپین راه افتاد — ' + faMoney(state.budgetSel) + ' تومان از کیف · هر مشاهده ۱٬۰۰۰ تومان');
+  const t = TIERS[GOOD_RATE.tier];
+  toast(wasStopped
+    ? 'کمپین دوباره راه افتاد — ' + faMoney(state.budgetSel) + ' تومان از کیف'
+    : 'کمپین راه افتاد — ' + faMoney(state.budgetSel) + ' تومان از کیف · هر مشاهده ' + faMoney(t.view) + ' تومان');
   setTimeout(() => go('sc-campaign'), 500);
 }
 function pickPkg(el, amt) {
@@ -3168,7 +3422,8 @@ document.addEventListener('click', e => {
 window.addEventListener('hashchange', () => {
   if (suppressHash) { suppressHash = false; return; }
   const id = location.hash.replace('#', '');
-  if (document.getElementById(id)) show(id, false);
+  /* v3: هشِ تکراریِ صفحهٔ فعلی را نادیده بگیر — show() دوباره state فرم‌ها را ریست می‌کند */
+  if (document.getElementById(id) && id !== state.current) show(id, false);
 });
 
 (function boot() {

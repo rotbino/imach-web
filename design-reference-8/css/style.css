@@ -1525,3 +1525,89 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .f-err { display: flex; }
 .insight-strip b { font-weight: 800; }
 .src-sum { padding: 7px 11px; background: var(--muted-bg); border-radius: 10px; }
+
+/* ═══════════ v3 — نرخ پله‌ای، جایگاه، توقف کمپین، ویرایش ═══════════ */
+
+/* ── انتخاب جایگاه نمایش (I-5) ── */
+.slot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
+.slot-card {
+  position: relative; border: 1.5px solid var(--border); border-radius: 14px;
+  background: #fff; padding: 10px 11px 9px; cursor: pointer; transition: all .15s;
+  display: flex; flex-direction: column; gap: 3px; text-align: right;
+}
+.slot-card:active { transform: scale(.97); }
+.slot-card .sl-ico {
+  width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+  background: var(--muted-bg); color: var(--muted); margin-bottom: 2px;
+}
+.slot-card .sl-ico svg { width: 17px; height: 17px; }
+.slot-card .sl-t { font-size: 11.5px; font-weight: 800; color: var(--fg); }
+.slot-card .sl-d { font-size: 9.5px; color: var(--muted); line-height: 1.75; }
+.slot-card .sl-chk {
+  position: absolute; top: 9px; left: 9px; width: 17px; height: 17px; border-radius: 50%;
+  background: var(--primary-strong); color: #fff; display: none; place-items: center;
+}
+.slot-card .sl-chk svg { width: 10px; height: 10px; }
+.slot-card.on { border-color: var(--primary); background: linear-gradient(165deg, #fff 55%, var(--orange-tint)); }
+.slot-card.on .sl-ico { background: var(--orange-tint); color: var(--primary-strong); }
+.slot-card.on .sl-chk { display: grid; }
+.slot-note { font-size: 9.5px; color: var(--muted); margin-top: 7px; display: flex; align-items: center; gap: 5px; }
+.slot-note svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* ── خط نرخ کالا + لینک «چرا این نرخ؟» (I-3) ── */
+.rate-src {
+  display: flex; align-items: center; gap: 6px; margin-top: 9px;
+  font-size: 10px; color: var(--fg-soft); background: var(--muted-bg);
+  border-radius: 9px; padding: 7px 10px;
+}
+.rate-src svg { width: 12px; height: 12px; flex-shrink: 0; color: var(--muted); }
+.rate-src u { color: var(--primary-strong); font-weight: 700; cursor: pointer; margin-right: auto; white-space: nowrap; }
+
+/* ── شیت نرخ‌ها: جدول طبقات (I-2) ── */
+.tier-table { border: 1px solid var(--border); border-radius: 13px; overflow: hidden; margin-top: 10px; }
+.tier-row { display: grid; grid-template-columns: 1.15fr 1.35fr .8fr; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--border); background: #fff; }
+.tier-row:last-child { border-bottom: none; }
+.tier-row .tr-t { font-size: 11px; font-weight: 800; }
+.tier-row .tr-t small { display: block; font-weight: 400; font-size: 8.5px; color: var(--muted); margin-top: 2px; }
+.tier-row .tr-v { font-size: 9px; color: var(--fg-soft); line-height: 1.7; }
+.tier-row .tr-p { font-size: 12.5px; font-weight: 800; color: var(--primary-strong); text-align: left; }
+.tier-row .tr-p small { display: block; font-size: 8.5px; font-weight: 500; color: var(--muted); }
+.tier-row.me { background: linear-gradient(160deg, #fff 30%, var(--orange-tint)); }
+.tier-row.me .tr-t::after {
+  content: 'کالای تو'; font-size: 8px; font-weight: 700; color: var(--primary-strong);
+  background: #fff; border: 1px solid var(--primary-soft); border-radius: 7px; padding: 2px 6px; margin-right: 5px; vertical-align: 1px;
+}
+
+/* ── توقف کمپین (I-6) ── */
+.link-danger {
+  display: block; width: 100%; text-align: center; margin-top: 12px;
+  font-size: 10.5px; font-weight: 700; color: var(--red);
+  background: transparent; border: none; cursor: pointer; padding: 8px;
+}
+.stop-confirm {
+  display: flex; align-items: center; gap: 8px; margin-top: 11px;
+  background: var(--red-tint); border: 1px solid #f2c6bf; border-radius: 12px; padding: 9px 11px;
+  font-size: 10.5px; color: var(--red); font-weight: 600;
+}
+.stop-confirm .sc-btns { margin-right: auto; display: flex; gap: 6px; }
+.stop-confirm .sc-yes { background: var(--red); color: #fff; border: none; border-radius: 8px; font-family: inherit; font-size: 10px; font-weight: 700; padding: 7px 11px; cursor: pointer; }
+.stop-confirm .sc-no { background: #fff; color: var(--fg-soft); border: 1px solid var(--border-strong); border-radius: 8px; font-family: inherit; font-size: 10px; font-weight: 700; padding: 7px 11px; cursor: pointer; }
+
+/* ── ردیف برگشت بودجه در تاریخچهٔ کیف ── */
+.hist-row.refund .h-ico { background: var(--teal-tint); color: var(--teal-deep); }
+.hist-row.refund .amt { color: var(--teal-deep); }
+
+/* ── حالت ویرایش محصول (I-7) ── */
+.edit-good-row {
+  display: flex; align-items: center; gap: 9px; padding: 10px;
+  background: var(--teal-tint); border: 1.5px solid var(--teal-strong); border-radius: 13px;
+}
+.edit-good-row .eg-tx b { font-size: 12px; display: block; }
+.edit-good-row .eg-tx span { font-size: 9.5px; color: var(--teal-tint-fg); }
+.edit-good-row svg { width: 18px; height: 18px; color: var(--teal-deep); flex-shrink: 0; }
+.danger-quiet {
+  display: flex; align-items: center; gap: 8px; margin-top: 12px;
+  font-size: 10.5px; font-weight: 700; color: var(--red); cursor: pointer;
+  background: transparent; border: none; padding: 8px 4px; font-family: inherit;
+}
+.danger-quiet svg { width: 14px; height: 14px; flex-shrink: 0; }
