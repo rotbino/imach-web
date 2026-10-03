@@ -1619,3 +1619,162 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   background: transparent; border: none; padding: 8px 4px; font-family: inherit;
 }
 .danger-quiet svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ═══════════════ v5 — استعلام گروهی، تماس/پیام، بسته‌بندی، عکس، آرشیو ═══════════════ */
+
+/* ── هیروی استعلام قیمت گروهی (لیست خرید) ── */
+.hero-quote {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(120deg, var(--teal), var(--teal-deep, #0f766e));
+  border-radius: 16px; padding: 14px 16px; margin-top: 13px;
+  box-shadow: 0 8px 22px rgba(13, 148, 136, .25);
+  cursor: pointer;
+}
+.hero-quote:active { transform: scale(.98); }
+.hq-ico { width: 38px; height: 38px; border-radius: 12px; background: rgba(255,255,255,.18); color: #fff; display: grid; place-items: center; flex-shrink: 0; }
+.hq-tx { flex: 1; min-width: 0; }
+.hq-tx b { color: #fff; font-size: 14.5px; display: block; }
+.hq-tx span { color: rgba(255,255,255,.82); font-size: 10px; display: block; margin-top: 4px; line-height: 1.7; }
+.hq-ch { width: 18px; height: 18px; color: rgba(255,255,255,.75); flex-shrink: 0; }
+
+/* ── جستجوی داخل کاتالوک (از طرح ۱) ── */
+.searchbar {
+  flex: 1; display: flex; align-items: center; gap: 9px;
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 13px; padding: 0 13px; height: 46px;
+  color: var(--muted); font-size: 12px; min-width: 0;
+}
+.searchbar svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── یادداشت واحد در تابلوی تأمین ── */
+.unit-note {
+  font-size: 9.5px; color: var(--muted); text-align: center;
+  background: var(--fg-soft); border-radius: 9px; padding: 6px 10px; margin-top: 9px;
+}
+
+/* ── قیمت هر بسته — زیر خط قیمت تابلو ── */
+.pack-line {
+  font-size: 10px; color: var(--muted); margin-top: 3px; padding-right: 2px;
+}
+.pack-line b { color: var(--fg); font-weight: 700; }
+
+/* ── انتخاب بسته‌بندی (چیپ‌های کوچک) ── */
+.pack-pick { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 9px; }
+.chip.mini { font-size: 10px; padding: 6px 11px; border-radius: 9px; }
+.chip.mini.dashed { border-style: dashed; color: var(--muted); }
+.pack-note { font-size: 9.5px; color: var(--muted); margin-top: 7px; line-height: 1.8; }
+
+/* ── قیمت کارت با واحد + چیپ‌های بسته ── */
+.p-card .pk { font-size: 13.5px; font-weight: 700; margin-top: 3px; }
+.p-card .pk span { font-size: 9.5px; color: var(--muted); font-weight: 400; }
+.pk-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+.pk-chips span {
+  font-size: 8.5px; color: var(--muted); background: var(--fg-soft);
+  border-radius: 6px; padding: 2.5px 7px; font-weight: 600;
+}
+
+/* ── دکمهٔ تنظیمات سریع روی کارت کاتالوگ (از طرح ۱) ── */
+.gear-btn {
+  position: absolute; top: 8px; left: 8px;
+  width: 28px; height: 28px; border-radius: 9px;
+  background: rgba(255,255,255,.92); color: var(--fg-soft);
+  display: grid; place-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1); border: none;
+}
+.gear-btn:active { transform: scale(.92); }
+
+/* ── ردیف کالای آرشیو‌شدهٔ فروشنده (از طرح ۱) ── */
+.archived-line {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 11px; font-size: 11px; color: var(--muted);
+  background: var(--fg-soft); border-radius: 12px; padding: 10px 13px;
+}
+.al-act { margin-right: auto; color: var(--primary-strong); font-weight: 700; font-size: 10.5px; background: none; border: none; cursor: pointer; }
+
+/* ── گالری عکس در فرم (از طرح ۱) ── */
+.gallery-add { display: flex; gap: 9px; }
+.gslot {
+  width: 74px; height: 74px; border-radius: 14px;
+  border: 1.5px dashed var(--border-strong, #d6d0c4);
+  display: grid; place-items: center; color: var(--muted);
+  position: relative; background: var(--card); padding: 0; cursor: pointer;
+}
+.gslot svg { width: 26px; height: 26px; }
+.gslot.filled { border-style: solid; border-color: transparent; }
+.gslot.filled svg { width: 34px; height: 34px; }
+.gslot.filled span, .gslot.add span {
+  position: absolute; bottom: 4px; left: 0; right: 0;
+  font-size: 7.5px; color: var(--muted); font-weight: 700; text-align: center;
+}
+.opt-i { font-size: 9.5px; color: var(--muted); font-weight: 400; font-style: normal; }
+
+/* ── هشدار «تا قیمت نگذاری دیده نمی‌شوی» (از طرح ۱) ── */
+.warn-note {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10px; color: var(--amber);
+  background: var(--amber-tint); border-radius: 10px;
+  padding: 8px 11px; margin-top: 10px; line-height: 1.8;
+}
+.warn-note svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+/* ── پنل مدیریت ۲×۲ روی صفحهٔ محصول مالک (از طرح ۱) ── */
+.qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 11px; }
+
+/* ── گالری عکس روی صفحهٔ کالا ── */
+.photo-strip { display: flex; align-items: center; gap: 7px; margin-top: -8px; padding: 0 2px 6px; }
+.photo-strip .ps {
+  width: 46px; height: 46px; border-radius: 12px;
+  border: 1.5px dashed var(--border-strong, #d6d0c4);
+  background: var(--card); color: var(--muted);
+  display: grid; place-items: center; padding: 0; cursor: pointer; flex-shrink: 0;
+}
+.photo-strip .ps svg { width: 18px; height: 18px; }
+.photo-strip .ps-fill { border-style: solid; border-color: transparent; }
+.photo-strip .ps-fill svg { width: 24px; height: 24px; }
+.photo-strip .ps-fill.active { box-shadow: 0 0 0 2px var(--teal); }
+.ps-cap { font-size: 8.5px; color: var(--muted); line-height: 1.7; min-width: 0; }
+
+/* ── ردیف تماس/پیام ── */
+.contact-row { display: flex; gap: 8px; margin-top: 9px; }
+
+/* ── ردیف آرشیو در دفتر خریدار ── */
+.follow-row.archived-row { opacity: .62; }
+.follow-row.archived-row .tx b { color: var(--muted); }
+
+/* ── چت (v5) ── */
+.chat-sheet { max-height: 92vh; padding-bottom: 14px; }
+.chat-head { display: flex; align-items: center; gap: 10px; padding: 2px 0 10px; border-bottom: 1px solid var(--border); }
+.chat-head .back { background: none; border: none; padding: 4px; color: var(--muted); }
+.chat-head .cht b { font-size: 13px; display: block; }
+.chat-head .cht span { font-size: 9.5px; color: var(--muted); display: block; margin-top: 2px; }
+.chat-body { padding: 12px 2px 4px; display: flex; flex-direction: column; gap: 9px; }
+.chat-day { text-align: center; font-size: 9px; color: var(--muted); background: var(--fg-soft); border-radius: 8px; padding: 4px; align-self: center; }
+.msg { display: flex; flex-direction: column; max-width: 78%; }
+.msg.in { align-self: flex-start; }
+.msg.out { align-self: flex-end; }
+.msg .bub {
+  font-size: 11.5px; line-height: 1.8; padding: 9px 12px;
+  border-radius: 15px; border-top-right-radius: 5px;
+}
+.msg.in .bub { background: var(--fg-soft); color: var(--fg); border-top-right-radius: 15px; border-top-left-radius: 5px; }
+.msg.out .bub { background: var(--teal); color: #fff; }
+.msg .tm { font-size: 8px; color: var(--muted); margin-top: 3px; }
+.msg.out .tm { text-align: left; }
+.photo-bub { display: flex; align-items: center; gap: 9px; background: var(--fg-soft) !important; color: var(--fg) !important; }
+.photo-bub .cap { font-size: 9.5px; color: var(--muted); line-height: 1.7; }
+.quick-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.quick-chips .chip { font-size: 9.5px; padding: 6px 10px; }
+.composer { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.composer .inp { flex: 1; height: 42px; border-radius: 13px; }
+.c-ico {
+  width: 38px; height: 38px; border-radius: 12px; flex-shrink: 0;
+  background: var(--fg-soft); color: var(--muted);
+  display: grid; place-items: center; border: none;
+}
+.c-ico svg { width: 17px; height: 17px; }
+.c-send {
+  width: 42px; height: 42px; border-radius: 13px; flex-shrink: 0;
+  background: var(--teal); color: #fff;
+  display: grid; place-items: center; border: none;
+}
+.c-send svg { width: 17px; height: 17px; }
