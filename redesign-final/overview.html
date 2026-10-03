@@ -1,0 +1,184 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iMach — ریدیزاین فاینال · قیمتِ زنده — سند معماری</title>
+<style>
+:root{
+  --orange:#f97316; --orange-d:#ea580c; --teal:#14b8a6; --teal-d:#0f766e;
+  --amber:#b45309; --amber-t:#fdf0da; --emerald:#059669;
+  --bg:#faf8f3; --bg2:#f1eee6; --card:#fff; --fg:#29241d; --fg2:#5b564b;
+  --muted:#8f887a; --line:#eae5da; --line2:#d8d2c3;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IRANSans',Tahoma,Arial,sans-serif;background:var(--bg2);color:var(--fg);direction:rtl;line-height:1.9}
+.wrap{max-width:880px;margin:0 auto;padding:34px 20px 60px}
+h1{font-size:26px}
+h2{font-size:18px;margin:34px 0 12px;display:flex;align-items:center;gap:8px}
+h2 .n{width:26px;height:26px;border-radius:9px;background:var(--fg);color:#fff;font-size:13px;display:grid;place-items:center}
+h3{font-size:14px;margin:18px 0 8px}
+p{font-size:13px;color:var(--fg2);margin-bottom:10px}
+p b,li b{color:var(--fg)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin-bottom:14px;box-shadow:0 1px 2px rgba(41,36,29,.04)}
+.head{background:linear-gradient(150deg,#fff 55%,var(--amber-t));border-radius:24px;padding:26px 28px;margin-bottom:8px}
+.head .k{font-size:11px;font-weight:700;color:var(--amber);letter-spacing:.08em}
+.head p{margin-top:10px;font-size:13.5px}
+.pill{display:inline-block;font-size:11px;font-weight:700;border-radius:99px;padding:4px 12px;margin:0 4px 4px 0}
+.p-o{background:#ffeeda;color:#9a3d06}.p-t{background:#e2f4f1;color:#0d5d54}.p-a{background:var(--amber-t);color:var(--amber)}
+.loop{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:16px 10px;background:#fff;border:1px dashed var(--line2);border-radius:16px;margin:10px 0}
+.loop .node{font-size:11.5px;font-weight:700;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 13px}
+.loop .node.hot{background:#ffeeda;border-color:#f3c9a0;color:#9a3d06}
+.loop .node.cool{background:#e2f4f1;border-color:#a8ded7;color:#0d5d54}
+.loop .arr{color:var(--muted);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+th{background:var(--bg);text-align:right;font-size:11px;color:var(--fg2);padding:9px 12px;border-bottom:2px solid var(--line2)}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td b{font-size:12px}
+.ok{color:var(--emerald);font-weight:700}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.gal a{display:block;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:var(--fg2);transition:.15s}
+.gal a:hover{border-color:var(--orange);transform:translateY(-2px)}
+.gal img{width:100%;display:block;aspect-ratio:390/844;object-fit:cover;object-position:top}
+.gal span{display:block;font-size:10px;font-weight:700;padding:8px 10px;text-align:center}
+.note{font-size:11px;color:var(--muted);background:#fff;border:1px dashed var(--line2);border-radius:12px;padding:10px 14px;margin-top:12px}
+ul{margin:6px 18px 10px 0;font-size:12.5px;color:var(--fg2)}
+li{margin-bottom:6px}
+code{background:var(--bg);border-radius:6px;padding:2px 7px;font-size:11px;direction:ltr;display:inline-block}
+a{color:var(--teal-d)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="head">
+  <div class="k">iMACH · DESIGN REFERENCE 8</div>
+  <h1>ریدیزاین فاینال — «قیمتِ زنده»</h1>
+  <p>بیزینس‌مدل طرح ۱ — <b>دنبال‌کردنِ قیمت تأمین‌کنندگان مختلف توسط یک خریدار</b> — در قالب و زیبایی طرح ۲. همان دو جملهٔ سالِ ۱۴۰۵: خریدار قیمت را زنده دنبال می‌کند؛ فروشنده برای دیده‌شدن، کاتالوکش را شیر می‌کند یا کالایش را به «صف اول» می‌برد.</p>
+  <div style="margin-top:8px">
+    <span class="pill p-o">قالب بصری: طرح ۲</span>
+    <span class="pill p-t">مفاهیم و بیزینس‌مدل: طرح ۱</span>
+    <span class="pill p-a">درآمد: صف اول + اعتبار</span>
+  </div>
+  <p style="margin-top:14px"><a href="index.html"><b>← دموی تعاملی (همهٔ دکمه‌ها واقعی)</b></a> · ۱۷ صفحه + ۵ شیت · فونت IRANSans واقعی</p>
+</div>
+
+<h2><span class="n">۱</span> بیزینس‌مدل در یک نگاه</h2>
+<div class="card">
+  <div class="loop">
+    <span class="node cool">خریدار کالا را به لیستش می‌دهد</span><span class="arr">←</span>
+    <span class="node cool">تابلوی تأمین می‌سازد — چند فروشنده، یک کالا</span><span class="arr">←</span>
+    <span class="node cool">قیمت هر کدام را دنبال می‌کند</span><span class="arr">←</span>
+    <span class="node">فروشنده در دفترِ خریدار می‌نشیند</span><span class="arr">←</span>
+    <span class="node hot">درخواست/خرید از همان‌جا می‌آید</span>
+  </div>
+  <p><b>انگیزهٔ فروشنده برای اشتراک کاتالوگ:</b> هر چه بیشتر شیر کند، بیشتر دنبال می‌شود — مسیر رایگان. <b>مسیر پولی:</b> «صف اول» — کالایش را با ۱ اعتبار (۷ روز) به بالای تابلوی و پیشنهادهای خریدارانِ آن دسته می‌برد. موتور تطبیق، خریدارانِ مرتبطِ هر کالا را هم به او معرفی می‌کند (پیشنهادها).</p>
+  <p style="font-size:12px;background:var(--amber-t);border-radius:10px;padding:9px 13px;color:#7a4310"><b>چرا این مدل خوب است؟</b> هر دو طرف سود می‌برند: خریدار دفتر قیمت زنده و همیشه‌به‌روز دارد؛ فروشنده در لحظهٔ خریدِ خریدار، جلوی چشم است. پول دقیقاً در لحظهٔ تشنگِ «دیده‌شدن» خرج می‌شود — نه روز اول، نه از جیبِ تازه‌وارد.</p>
+</div>
+
+<h2><span class="n">۲</span> مفاهیم کلیدی و واژه‌نامه</h2>
+<div class="card">
+<table>
+  <tr><th>مفهوم</th><th>یعنی چه</th><th>کجا</th></tr>
+  <tr><td><b>تابلوی تأمین</b></td><td>قیمت‌های زندهٔ چند تأمین‌کننده برای <b>یک کالا</b> — مقایسهٔ دائمی؛ از دلِ کالا باز می‌شود، نه از ناوبری</td><td>صفحه ۰۴</td></tr>
+  <tr><td><b>دنبال‌کردن قیمت</b></td><td>رصد بدون تعهد — قیمتِ آن فروشنده برای آن کالا، همیشه در دفتر خریدار می‌ماند؛ <span class="ok">رایگان</span></td><td>شیت دنبال‌کردن</td></tr>
+  <tr><td><b>قیمت‌های دنبال‌شدهٔ من</b></td><td>روی هر کالا: کدام فروشنده‌ها را دنبال می‌کنم و کدام‌ها نه — دفترِ چندتأمین‌کننده‌ایِ طرح ۱</td><td>صفحه ۰۳</td></tr>
+  <tr><td><b>صف اول</b></td><td>جایگاه تبلیغاتیِ شفاف در تابلو و پیشنهادها — ۱ اعتبار = ۷ روز؛ <b>رتبهٔ تطبیق هرگز پولی نیست</b></td><td>شیت پروموت</td></tr>
+  <tr><td><b>اعتبار</b></td><td>ارزِ دیده‌شدن: از دعوت (هر مشتری/تأمین‌کننده +۱) یا خرید بسته؛ خرجش فقط صف اول</td><td>صفحه ۱۳</td></tr>
+  <tr><td><b>دنبال‌کنندگان قیمت</b></td><td>دید فروشنده: چه کسانی الان قیمتِ این کالای من را زنده می‌بینند — پاداشِ به‌روز بودن</td><td>شیت دنبال‌کنندگان</td></tr>
+  <tr><td><b>اشتراک کاتالوگ</b></td><td>مسیر رایگانِ دیده‌شدن: لینک/QR — مشتری بدون ثبت‌نام می‌بیند؛ هر دنبال‌کنندهٔ تازه +۱ اعتبار</td><td>شیت اشتراک</td></tr>
+</table>
+</div>
+
+<h2><span class="n">۳</span> میراث: چه‌چیز از کدام طرح آمد</h2>
+<div class="card">
+<table>
+  <tr><th>از طرح ۱ (مفاهیم)</th><th>از طرح ۲ (قالب و فرم)</th></tr>
+  <tr><td>
+    <ul>
+      <li><b>تابلوی تأمینِ</b> چندتأمین‌کننده‌ای (صفحه ۰۹/۱۱ طرح ۱)</li>
+      <li><b>دنبال‌کردن قیمت</b> از روی کاتالوک — هستهٔ بیزینس‌مدل</li>
+      <li><b>معرفی/جایگاه پولی</b> — حالا «صف اول» با برچسب شفاف</li>
+      <li>پیشنهادهای تطبیقی (قیمت بهتر/تأمین‌کنندهٔ جدید/جایگزین)</li>
+      <li>قواعد شفافیت: جدا از رتبهٔ طبیعی، با یادداشتِ روی صفحه</li>
+    </ul>
+  </td><td>
+    <ul>
+      <li>پالت گرم + نارنجی=فروش / فیروزه‌ای=خرید</li>
+      <li>دو دستیار جدا با <b>پیل + شیتِ</b> سوییچ (نه سوییچرِ کنارِهمِ طرح ۱)</li>
+      <li>کارت‌های ردیفی با آواتار/قیمت/شرایط + spec-grid</li>
+      <li>آرتِ تخت محصولات + استاتوس‌بار + قاب گوشی</li>
+      <li>زبان «برای تو پیدا کردیم» + hint های آموزشی پایین هر صفحه</li>
+      <li>فرم‌های یک‌الگوی خرید/فروش + حالت‌های خالی صادق</li>
+    </ul>
+  </td></tr>
+</table>
+<p style="margin-top:8px"><b>چیزهایی که از نسل‌های بعد آمد و نگه داشتیم:</b> کیف پول/اعتبار و لحظهٔ تشنگی (R6/R7)، دعوت با پاداش اعتبار (R3/R7)، فونت IRANSans واقعی (درس R6)، QA کلیک‌محور + کروم اپ (درس R7).</p>
+</div>
+
+<h2><span class="n">۴</span> حلقهٔ اقتصادی و جای پول</h2>
+<div class="card">
+  <div class="loop">
+    <span class="node">فروشنده کالا ثبت می‌کند</span><span class="arr">←</span>
+    <span class="node">کاتالوک شیر می‌شود (لینک/QR)</span><span class="arr">←</span>
+    <span class="node cool">خریدار می‌آید و قیمت را دنبال می‌کند (+۱ اعتبار برای فروشنده)</span><span class="arr">←</span>
+    <span class="node hot">فروشنده اعتبار را خرجِ صف اول می‌کند</span><span class="arr">←</span>
+    <span class="node cool">خریدارانِ بیشتری او را می‌بینند و دنبال می‌کنند</span>
+  </div>
+  <ul>
+    <li><b>درگاه درآمد:</b> فقط «صف اول» — بسته‌های اعتبار (۵/۱۲/۳۰) دقیقاً در لحظهٔ خرج، نه جایی دیگر</li>
+    <li><b>موتور رشدِ رایگان:</b> دعوت — هر مشتری/تأمین‌کننده‌ای که بیاید هم دنبال‌کننده است هم +۱ اعتبار</li>
+    <li><b>همیشه رایگان:</b> تطبیق، رتبه‌بندی، دنبال‌کردن، درخواست قیمت، دعوت، تابلو</li>
+  </ul>
+  <div class="note">قاعدهٔ صداقت: ارزان‌ترینِ تابلو همان ارزان‌ترین می‌ماند — «صف اول» برچسب خودش را دارد و جایگاهِ طبیعی را نمی‌خرد، فقط دیده‌شدن را.</div>
+</div>
+
+<h2><span class="n">۵</span> ماتریس صفحات (۱۷ صفحه + ۵ شیت)</h2>
+<div class="card">
+<table>
+  <tr><th>#</th><th>صفحه</th><th>نقش در بیزینس‌مدل</th></tr>
+  <tr><td>۰۱</td><td><b>آنبوردینگ</b></td><td>یک انتخاب — خریدار (دنبال می‌کنم) یا فروشنده (دیده می‌شوم)</td></tr>
+  <tr><td>۰۲</td><td><b>لیست خرید</b></td><td>دفتر قیمت‌های زنده + نشان «۳ قیمت دنبال‌شده» روی هر کالا</td></tr>
+  <tr><td>۰۳</td><td><b>کالا در لیست</b></td><td>قیمت‌های دنبال‌شدهٔ من + تنظیم رصد + ورود به تابلو</td></tr>
+  <tr><td>۰۴</td><td><b>تابلوی تأمین</b></td><td>قلب مدل — چند فروشنده، یک کالا؛ جایگاه صف اول شفاف</td></tr>
+  <tr><td>۰۵</td><td><b>تأمین‌کنندگان</b></td><td>شبکهٔ مرتبط با کالاهای من</td></tr>
+  <tr><td>۰۶</td><td><b>پیشنهادها</b></td><td>«برای تو پیدا کردیم» + کارت صف اولِ شفاف</td></tr>
+  <tr><td>۰۷</td><td><b>پروفایل خرید</b></td><td>قابلیت‌ها — فعال‌سازی بازوی فروش</td></tr>
+  <tr><td>۰۸</td><td><b>کاتالوگ من</b></td><td>ویترین + آمار دنبال‌کنندهٔ هر کالا + برچسب صف اول</td></tr>
+  <tr><td>۰۹</td><td><b>محصول — دید مالک</b></td><td>۱۲ دنبال‌کنندهٔ قیمت + کارت صف اول (تمدید/خرج اعتبار)</td></tr>
+  <tr><td>۱۰</td><td><b>محصول — دید مشتری</b></td><td>سه اکشن: دنبال‌کردن / لیست / درخواست</td></tr>
+  <tr><td>۱۱</td><td><b>درخواست‌های قیمت</b></td><td>«به من» (دنبال‌کنندگان) + «فرصت‌های بازار» (تطبیق)</td></tr>
+  <tr><td>۱۲</td><td><b>پروفایل فروش</b></td><td>آمار + اشتراک + کیف پول</td></tr>
+  <tr><td>۱۳</td><td><b>کیف پول اعتبار</b></td><td>موجودی + منابع (دعوت/بسته) + تاریخچهٔ خرج</td></tr>
+  <tr><td>۱۴–۱۷</td><td><b>درخواست تأمین / افزودن / خالی / دسکتاپ</b></td><td>فرم‌ها و لایهٔ ۲ — الگوی طرح ۲</td></tr>
+  <tr><td>شیت‌ها</td><td><b>سوییچ / اشتراک+QR / دنبال‌کردن / دنبال‌کنندگان / صف اول</b></td><td>دو تای آخر، قلب درآمد مدل</td></tr>
+</table>
+<div class="note">ناوبری دمو: در دسکتاپ پنل کنار اپ؛ در موبایل واقعی، اپ تمام‌صفحه. هر صفحه با هش مستقیم هم باز می‌شود: <code>index.html#sc-board</code></div>
+</div>
+
+<h2><span class="n">۶</span> گالری — ۳۱ نما</h2>
+<div class="card">
+<div class="gal" id="gal"></div>
+</div>
+
+<div class="note">پایان سند — ریدیزاین فاینال آمادهٔ بازبینی مالک است. پس از تأیید، مبنای مهاجرت Next.js (به‌علاوهٔ الگوریتم‌های موجود در imach-back: getBuyRequests / followBuyer / marketState).</div>
+</div>
+
+<script>
+const shots = [
+["00-onboard","آنبوردینگ"],["01-buy-list","لیست خرید"],["02-buy-item","کالا + دنبال‌شده‌ها"],
+["03-board","تابلوی تأمین"],["04-suppliers","تأمین‌کنندگان"],["05-discover","پیشنهادها"],
+["06-buy-profile","پروفایل خرید"],["07-sell-catalog","کاتالوگ من"],["08-sell-product-owner","محصول مالک + صف اول"],
+["09-sell-product-public","محصول مشتری"],["10-sell-requests","درخواست‌ها"],["11-sell-requests-market","فرصت‌های بازار"],
+["12-sell-profile","پروفایل فروش"],["13-wallet","کیف پول"],["14-rfq","درخواست تأمین"],
+["15-rfq-success","ارسال موفق"],["16-add-item-buy","افزودن — خرید"],["17-add-item-sell","افزودن — فروش"],
+["18-empty-list","خالی: لیست"],["19-empty-catalog","خالی: کاتالوگ"],["20-empty-board","خالی: تابلو"],
+["21-desktop","دسکتاپ"],["22-sheet-switch","شیت سوییچ"],["23-sheet-share","شیت اشتراک"],
+["24-sheet-share-qr","شیت + QR"],["25-sheet-follow","شیت دنبال‌کردن"],["26-sheet-followers","شیت دنبال‌کنندگان"],
+["27-sheet-promote","شیت صف اول ⚡"],["28-promote-after","بعد از پروموت"],["29-wallet-after","کیف بعد از خرج"],["30-watch-cold","رصد سرد"]
+];
+document.getElementById('gal').innerHTML = shots.map(s =>
+  `<a href="png/${s[0]}.png" target="_blank"><img src="png/${s[0]}.png" alt="${s[1]}" loading="lazy"><span>${s[0]} · ${s[1]}</span></a>`).join('');
+</script>
+</body>
+</html>

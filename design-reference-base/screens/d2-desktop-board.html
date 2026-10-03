@@ -1,0 +1,197 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>D2 — لیست خرید + تابلوی تأمین · دسکتاپ</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.7-6.2a1.6 1.6 0 013 .3L10.5 8h3l.8-2.9a1.6 1.6 0 013-.3L19 11"/><path d="M4 11h16l-1.4 8.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/></symbol>
+  <symbol id="i-verified" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 6-8 11.5-8 11.5s-8-5.5-8-11.5a8 8 0 1116 0z"/><circle cx="12" cy="10.5" r="2.7"/></symbol>
+  <symbol id="i-store2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/><path d="M19 4.5l.7 2 .2.3M19 17.5l-.7-2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0115 0"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 108.5-8.5A8.4 8.4 0 006 6"/><path d="M3.5 3.5V6h2.8"/><path d="M12 8v4.2l3 1.8"/></symbol>
+</svg>
+
+<div class="desktop" style="--arm:var(--stone);--arm-fg:#fff;--arm-tint:var(--stone-tint)">
+
+  <header class="desk-appbar">
+    <img src="../assets/logo3.svg" alt="iMach">
+    <div class="desk-arm-switch">
+      <button><svg><use href="#i-store"/></svg> دستیار فروش</button>
+      <button class="active"><svg><use href="#i-basket"/></svg> دستیار خرید</button>
+    </div>
+    <nav class="desk-nav">
+      <a class="active"><svg><use href="#i-list"/></svg>لیست خرید</a>
+      <a><svg><use href="#i-building"/></svg>تأمین‌کنندگان</a>
+      <a><svg><use href="#i-sparkles"/></svg>پیشنهادها</a>
+      <a><svg><use href="#i-user"/></svg>پروفایل</a>
+    </nav>
+    <div style="margin-right:auto;display:flex;align-items:center;gap:10px">
+      <button class="icon-btn" aria-label="اعلان‌ها"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۲</span></button>
+      <div class="avatar" style="background:#0e7490">ن</div>
+    </div>
+  </header>
+
+  <div class="desk-body">
+
+    <!-- ═══ پنل راست: لیست خرید (master) ═══ -->
+    <aside class="desk-side" style="border-right:none;border-left:1px solid var(--border)">
+      <div class="sec-title" style="margin-top:0">
+        <h2><svg><use href="#i-list"/></svg> لیست خرید من</h2>
+        <span class="badge b-new" style="align-self:center">۲ درخواست</span>
+      </div>
+
+      <div class="searchbar" style="height:40px;margin-bottom:10px">
+        <svg><use href="#i-plus" style="width:16px;height:16px"/></svg>
+        <span>افزودن کالا به لیست…</span>
+      </div>
+
+      <div class="rows">
+        <div class="row-card" style="border-color:var(--stone);background:var(--stone-tint)">
+          <div class="thumb" style="width:42px;height:42px"><span class="glyph" style="font-size:9px">۵۰ کیلو</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج هاشمی</div>
+            <div class="s" style="font-size:10.5px">
+              <span class="badge b-stone">۳ تأمین‌کننده</span>
+              <span class="trend down">▼ ۲٪</span>
+            </div>
+          </div>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:42px;height:42px"><span class="glyph" style="font-size:9px">۱۰ لیتر</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">روغن سرخ‌کردنی</div>
+            <div class="s" style="font-size:10.5px">
+              <span class="badge b-stone">۲ تأمین‌کننده</span>
+              <span class="trend up">▲ ۵٪</span>
+            </div>
+          </div>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:42px;height:42px"><span class="glyph" style="font-size:9px">۵۰۰ گرم</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رب گوجه‌فرنگی</div>
+            <div class="s" style="font-size:10.5px">
+              <span class="badge b-stone">۱ تأمین‌کننده</span>
+              <span class="trend flat">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="row-card" style="border-style:dashed">
+          <div class="thumb" style="width:42px;height:42px"><span class="glyph" style="font-size:9px">۹۰۰ گرم</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">قند</div>
+            <div class="s" style="font-size:10.5px">هنوز تابلویی ندارد</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend" style="margin-top:14px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>با «دنبال کردن قیمت» در کاتالوگ فروشنده‌ها، کالا این‌جا می‌نشیند و تابلوی تأمینش ساخته می‌شود.</div>
+      </div>
+    </aside>
+
+    <!-- ═══ پنل اصلی: تابلوی تأمین کالای انتخابی (detail) ═══ -->
+    <main class="desk-main">
+
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div>
+          <div style="font-size:20px;font-weight:700">تابلوی تأمین — برنج هاشمی</div>
+          <div style="font-size:12px;color:var(--muted-fg);margin-top:3px">۳ تأمین‌کننده · آخرین تغییر ۳ روز پیش · ماهانه ۲۰ کیسه</div>
+        </div>
+        <div style="margin-right:auto;display:flex;gap:8px">
+          <div class="chips" style="margin:0">
+            <button class="chip active">ارزان‌ترین</button>
+            <button class="chip">تازه‌ترین</button>
+            <button class="chip">آشنا</button>
+          </div>
+          <button class="btn btn-stone"><svg><use href="#i-spark"/></svg> درخواست قیمت از ۳ نفر</button>
+        </div>
+      </div>
+
+      <table class="dtable">
+        <thead>
+          <tr><th></th><th>تأمین‌کننده</th><th>شهر</th><th>قیمت (تومان)</th><th>روند</th><th>شرایط</th><th>وضعیت رابطه</th><th>عملیات</th></tr>
+        </thead>
+        <tbody>
+          <tr style="background:#f7fcf8">
+            <td><span class="badge b-green">ارزان‌ترین</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div><b>پخش برنج پارس</b></div></td>
+            <td>رشت</td>
+            <td><b>۲٬۸۵۰٬۰۰۰</b></td>
+            <td><span class="trend down">▼ از ۲٬۹۰۰٬۰۰۰</span></td>
+            <td style="font-size:11.5px;color:var(--muted-fg)">کیسه ۵۰ کیلو · حداقل ۵</td>
+            <td><span class="cond" style="background:var(--green-bg);color:var(--green)"><svg style="width:11px;height:11px"><use href="#i-history"/></svg> خریده‌ام از او</span></td>
+            <td style="display:flex;gap:6px;padding-top:9px;padding-bottom:9px">
+              <button class="btn btn-stone btn-sm">درخواست قیمت</button>
+              <button class="btn btn-outline btn-sm">کاتالوگ</button>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="sponsor-tag" style="position:static"><svg><use href="#i-spark"/></svg> معرفی iMach</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar-sm" style="background:#7c3aed">آ</div><b>آریو غلات</b></div></td>
+            <td>اصفهان</td>
+            <td><b>۲٬۹۲۰٬۰۰۰</b></td>
+            <td><span class="trend flat">—</span></td>
+            <td style="font-size:11.5px;color:var(--muted-fg)">کیسه ۵۰ کیلو · حداقل ۱۰ · ارسال سراسری</td>
+            <td><span class="badge b-muted">جدید</span></td>
+            <td style="display:flex;gap:6px;padding-top:9px;padding-bottom:9px">
+              <button class="btn btn-stone btn-sm">درخواست قیمت</button>
+              <button class="btn btn-outline btn-sm">کاتالوگ</button>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar-sm" style="background:#0e7490">ک</div><b>کیان غلات</b></div></td>
+            <td>قزوین</td>
+            <td><b>۳٬۰۰۰٬۰۰۰</b></td>
+            <td><span class="trend flat">— ۱۱ روز پیش</span></td>
+            <td style="font-size:11.5px;color:var(--muted-fg)">کیسه ۵۰ کیلو · حداقل ۲۰</td>
+            <td><span class="badge b-muted">خودش آمد</span></td>
+            <td style="display:flex;gap:6px;padding-top:9px;padding-bottom:9px">
+              <button class="btn btn-stone btn-sm">درخواست قیمت</button>
+              <button class="btn btn-outline btn-sm">کاتالوگ</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- نمود روند قیمت + شفافیت -->
+      <div style="display:flex;gap:16px;margin-top:16px;align-items:stretch">
+        <div class="card" style="flex:1;padding:14px 16px">
+          <div style="font-size:12.5px;font-weight:700;margin-bottom:10px">روند قیمت ارزان‌ترین — ۶ ماه اخیر</div>
+          <svg viewBox="0 0 420 80" style="width:100%;height:80px" preserveAspectRatio="none">
+            <polyline points="0,30 60,26 120,34 180,44 240,38 300,52 360,48 420,56" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="420" cy="56" r="4" fill="#16a34a"/>
+            <text x="8" y="14" font-size="10" fill="#7d786e" direction="rtl">۲٬۹۰۰</text>
+            <text x="388" y="74" font-size="10" fill="#7d786e">۲٬۸۵۰</text>
+          </svg>
+        </div>
+        <div class="card" style="width:340px;padding:14px 16px;background:#fdfcf9">
+          <div style="font-size:12.5px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <svg style="width:14px;height:14px;color:var(--primary)"><use href="#i-spark"/></svg>
+            درباره «معرفی iMach»
+          </div>
+          <div style="font-size:11px;color:var(--stone-soft);line-height:2">
+            معرفی‌های پولی در آینده فقط در این قالبِ جدا و برچسب‌دار ظاهر می‌شوند — رتبه تطبیق طبیعی شما را تغییر نمی‌دهند و هرگز به‌عنوان «بهترین نتیجه» جا زده نمی‌شوند.
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
