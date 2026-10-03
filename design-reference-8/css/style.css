@@ -1778,3 +1778,97 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   display: grid; place-items: center; border: none;
 }
 .c-send svg { width: 17px; height: 17px; }
+
+/* ═══════════════════════════════════════════
+   v6 — گویایی فرم‌ها (الگوهای طرح ۱، استایل طرح ۸)
+   ═══════════════════════════════════════════ */
+
+/* suffix واحد داخل کادر ورودی (طرح ۱) */
+.inp-flex {
+  display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1.5px solid var(--border-strong);
+  border-radius: 12px; padding: 0 14px;
+}
+.inp-flex input {
+  flex: 1; min-width: 0; border: none; outline: none; background: none;
+  font: inherit; font-weight: 700; font-size: 15px; color: var(--fg);
+  padding: 12px 0; direction: ltr; text-align: right;
+}
+.inp-flex .sfx { font-size: 10.5px; color: var(--muted); font-weight: 600; flex-shrink: 0; }
+.inp-flex.err { border-color: var(--red); background: #fffafa; }
+.inp-flex:focus-within { border-color: var(--arm); }
+.inp-flex.inp-lg input { font-size: 16.5px; }
+.sfx-note { font-size: 9.5px; color: var(--muted); margin-top: 5px; line-height: 1.8; }
+
+/* جفت‌فیلد (طرح ۱): دو فیلد هم‌عرض در یک ردیف */
+.f-pair { display: flex; gap: 9px; }
+.f-pair .field { flex: 1; }
+
+/* pillchoice صفتی (طرح ۱) */
+.pillc { display: flex; gap: 7px; }
+.pillc .pill {
+  flex: 1; padding: 9px 4px; border: 1px solid var(--border-strong);
+  border-radius: 11px; background: #fff; text-align: center;
+  font-size: 11px; font-weight: 600; color: var(--fg-soft);
+  transition: border-color .12s, background .12s;
+}
+.pillc .pill.active {
+  background: var(--arm-tint); border-color: var(--arm);
+  color: var(--arm-tint-fg); font-weight: 700;
+}
+
+/* ردیف گیرندهٔ تیک‌شدنی — checkrow طرح ۱ */
+.pick-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: #fff;
+  border: 1px solid var(--border); border-radius: 13px;
+  cursor: pointer; margin-bottom: 8px;
+  transition: border-color .12s, background .12s;
+}
+.pick-row:last-child { margin-bottom: 0; }
+.pick-row .pk-tx { flex: 1; min-width: 0; }
+.pick-row .pk-tx b { font-size: 12.5px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.pick-row .pk-tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+.pick-row .ckb {
+  width: 21px; height: 21px; border-radius: 7px; flex-shrink: 0;
+  border: 1.5px solid var(--border-strong); color: #fff;
+  display: grid; place-items: center; background: #fff;
+  transition: background .12s, border-color .12s;
+}
+.pick-row .ckb svg { width: 12px; height: 12px; display: none; }
+.pick-row.on .ckb { background: var(--arm); border-color: var(--arm); }
+.pick-row.on .ckb svg { display: block; }
+.pick-row.on { border-color: color-mix(in srgb, var(--arm) 45%, transparent); }
+.pick-row.promo { background: var(--amber-tint); border-color: #f2dfba; }
+.pick-row.promo.on { border-color: var(--amber); }
+.pick-row.promo .ckb { border-color: #e5c98f; }
+.pick-row.promo.on .ckb { background: var(--amber); border-color: var(--amber); }
+.pick-more {
+  width: 100%; text-align: center; font-size: 10.5px; font-weight: 700;
+  color: var(--muted); background: transparent; border: 1.5px dashed var(--border-strong);
+  border-radius: 13px; padding: 10px; cursor: pointer; margin-top: 2px;
+}
+
+/* گروه‌سرِ کوچک فهرست گیرندگان */
+.pk-group { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .2px; margin: 12px 0 7px; display: flex; align-items: center; gap: 5px; }
+.pk-group svg { width: 12px; height: 12px; }
+
+/* اکشن‌بار چسبان فرم (طرح ۱) */
+.form-cta {
+  position: absolute; bottom: 16px; left: 0; right: 0; padding: 12px 16px 4px; z-index: 6;
+  background: linear-gradient(180deg, rgba(250,248,243,0) 0%, var(--bg) 30%, #fff 100%);
+}
+.form-cta .gate-note { margin-top: 6px; }
+
+/* ردیف اکشن بالای کاتالوگ عمومی (T-1) */
+.top-act { display: flex; gap: 8px; margin-top: 11px; }
+.top-act .btn-main { flex: 1; }
+.viral-row { text-align: center; font-size: 10px; color: var(--muted); margin-top: 14px; }
+.viral-row b { color: var(--teal-deep); }
+
+/* مسیر کالا (طرح ۱): زیر ردیف انتخاب کالا */
+.path-hint { font-size: 9px; color: var(--muted); margin-top: 3px; direction: rtl; }
+.path-hint i { font-style: normal; color: var(--border-strong); margin: 0 2px; }
+
+/* v6 patch: مقدار ایستا در inp-flex (فرم افزودن/ویرایش) */
+.inp-flex .val { flex: 1; min-width: 0; font-weight: 700; font-size: 15px; color: var(--fg); padding: 12px 0; direction: ltr; text-align: right; }

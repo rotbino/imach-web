@@ -210,15 +210,9 @@
               <span>۲ کالا این هفته قیمت تازه دارند — قیمت‌ها را دنبال می‌کنیم</span>
             </div>
 
-            <div class="hero-quote tap" onclick="go('sc-rfq')">
-              <span class="hq-ico"><svg class="ic-sm"><use href="#i-send"/></svg></span>
-              <span class="hq-tx"><b>استعلام قیمت گروهی</b><span>یک بار بپرس — همهٔ تأمین‌کننده‌های لیستت قیمت و شرایط می‌فرستند · ۶ نفر</span></span>
-              <svg class="hq-ch"><use href="#i-chev"/></svg>
-            </div>
-
+            <!-- v6: هیروی استعلام حذف شد (حکم مالک — دکمهٔ جزئیات کالا کافی است) · دکمهٔ اشتراک تکراری حذف شد (نوار اشتراک بالا مانده) -->
             <div class="btn-row" style="margin:10px 0 4px">
               <button class="btn btn-primary" style="flex:1" onclick="go('sc-add-item')"><svg class="ic-sm"><use href="#i-plus"/></svg> افزودن کالا</button>
-              <button class="btn btn-outline" onclick="openSheet('sheet-share-list')" style="flex:0 0 auto" title="اشتراک لیست خرید" aria-label="اشتراک لیست خرید"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
             </div>
 
             <div class="share-strip" style="background:linear-gradient(120deg, var(--teal-tint), #fff 65%)">
@@ -340,6 +334,12 @@
               </div>
             </div>
             <div style="font-size:9.5px;color:var(--muted);text-align:center;margin-top:7px;line-height:1.9">قیمتِ دنبال‌شده همیشه به‌روز می‌ماند — هر نوسانِ معنادار، خبرت می‌کنیم · «صف اول» جایگاهِ تبلیغاتی است؛ رتبهٔ تطبیق مستقل از پرداخت</div>
+            <div class="hero-quote tap" onclick="go('sc-rfq')">
+              <span class="hq-ico"><svg class="ic-sm"><use href="#i-send"/></svg></span>
+              <span class="hq-tx"><b>استعلام قیمت گروهی</b><span>یک بار بپرس — دنبال‌شده‌ها، مرتبط‌ها و «صف اول» قیمت و شرایطشان را می‌فرستند</span></span>
+              <svg class="hq-ch"><use href="#i-chev"/></svg>
+            </div>
+
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-basket"/></svg> نیاز من</h2></div>
             <div class="card">
               <div class="qty-stepper">
@@ -379,13 +379,12 @@
             </div>
 
             <div class="btn-row" style="margin-top:14px">
-              <button class="btn btn-primary btn-lg" onclick="go('sc-board')">
+              <button class="btn btn-outline btn-lg" onclick="go('sc-board')">
                 <svg class="ic-sm"><use href="#i-arrf"/></svg> تأمین‌کنندگان دیگرِ این کالا — ۶ نفر
               </button>
             </div>
             <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:7px">تابلوی تأمین — مقایسهٔ زندهٔ قیمت و شرایط</div>
             <div class="btn-row" style="margin-top:9px">
-              <button class="btn btn-outline" onclick="go('sc-rfq')"><svg class="ic-sm"><use href="#i-send"/></svg> استعلام قیمت</button>
               <button class="btn btn-ghost" onclick="openSheet('sheet-share')"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
             </div>
             <div style="text-align:center;margin-top:12px">
@@ -429,7 +428,7 @@
                   <div class="spec"><span class="k">شرایط</span><span class="v">عندالتحویل</span></div>
                 </div>
                 <div class="acts">
-                  <button class="btn btn-primary btn-sm" style="flex:1.5" onclick="go('sc-rfq')">استعلام قیمت</button>
+                  <button class="btn btn-primary btn-sm" style="flex:1.5" onclick="go('sc-rfq')">استعلام قیمت گروهی</button>
                   <button class="btn btn-outline btn-sm" style="flex:1" onclick="go('sc-catalog-public')">کاتالوگ</button>
                   <button class="icon-follow on" title="لغو دنبال‌کردن" onclick="toast('دیگر دنبال نمی‌کنی — از دفترت برداشته شد')"><svg class="ic-sm"><use href="#i-bmf"/></svg></button>
                 </div>
@@ -451,7 +450,7 @@
                   <div class="spec"><span class="k">شرایط</span><span class="v">چک ۳۰ روزه</span></div>
                 </div>
                 <div class="acts">
-                  <button class="btn btn-primary btn-sm" style="flex:1.5" onclick="go('sc-rfq')">استعلام قیمت</button>
+                  <button class="btn btn-primary btn-sm" style="flex:1.5" onclick="go('sc-rfq')">استعلام قیمت گروهی</button>
                   <button class="btn btn-outline btn-sm" style="flex:1" onclick="go('sc-catalog-public')">کاتالوگ</button>
                   <button class="icon-follow on" onclick="toast('دیگر دنبال نمی‌کنی')"><svg class="ic-sm"><use href="#i-bmf"/></svg></button>
                 </div>
@@ -495,7 +494,7 @@
                   <div class="spec"><span class="k">شرایط</span><span class="v">پیش‌پرداخت</span></div>
                 </div>
                 <div class="acts">
-                  <button class="btn btn-primary btn-sm" style="flex:1.5" onclick="go('sc-rfq')">استعلام قیمت</button>
+                  <button class="btn btn-primary btn-sm" style="flex:1.5" onclick="go('sc-rfq')">استعلام قیمت گروهی</button>
                   <button class="btn btn-outline btn-sm" style="flex:1" onclick="go('sc-catalog-public')">کاتالوگ</button>
                   <button class="icon-follow" onclick="openSheet('sheet-follow')"><svg class="ic-sm"><use href="#i-bm"/></svg></button>
                 </div>
@@ -546,7 +545,7 @@
               </div>
               <div class="acts" style="display:flex;gap:8px;margin-top:11px">
                 <button class="btn btn-soft btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-store"/></svg> کاتالوگ</button>
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت</button>
+                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت گروهی</button>
               </div>
             </div>
 
@@ -564,7 +563,7 @@
               </div>
               <div class="acts" style="display:flex;gap:8px;margin-top:11px">
                 <button class="btn btn-soft btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-store"/></svg> کاتالوگ</button>
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت</button>
+                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت گروهی</button>
               </div>
             </div>
 
@@ -582,7 +581,7 @@
               </div>
               <div class="acts" style="display:flex;gap:8px;margin-top:11px">
                 <button class="btn btn-soft btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-store"/></svg> کاتالوگ</button>
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت</button>
+                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت گروهی</button>
               </div>
             </div>
 
@@ -601,7 +600,7 @@
               </div>
               <div class="acts" style="display:flex;gap:8px;margin-top:11px">
                 <button class="btn btn-soft btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-store"/></svg> کاتالوگ</button>
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت</button>
+                <button class="btn btn-outline btn-sm" style="flex:1" onclick="event.stopPropagation();go('sc-rfq')">استعلام قیمت گروهی</button>
               </div>
             </div>
 
@@ -1080,22 +1079,22 @@
 
             <div class="tri-actions" style="margin-top:16px">
               <button class="btn btn-primary btn-lg btn-block" onclick="go('sc-rfq')">
-                <svg class="ic-sm"><use href="#i-send"/></svg> استعلام قیمت — قیمت و شرایط بگیر
+                <svg class="ic-sm"><use href="#i-send"/></svg> استعلام قیمت گروهی — قیمت و شرایط بگیر
               </button>
               <div class="duo-actions">
                 <button class="btn btn-soft" onclick="openSheet('sheet-follow')"><svg class="ic-sm"><use href="#i-bm"/></svg> دنبال کردن قیمت</button>
                 <button class="btn btn-soft" onclick="addToList()"><svg class="ic-sm"><use href="#i-plus"/></svg> افزودن به لیست خرید</button>
               </div>
-              <div class="action-desc">«استعلام» رسمی و چندجانبه · «تماس» بی‌واسطه · «دنبال کردن» رصد رایگان</div>
+              <div class="action-desc">«استعلام گروهی» رسمی و چندجانبه · «تماس» بی‌واسطه · «دنبال کردن» رصد رایگان</div>
             </div>
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>چهار مسیر، چهار قصد: <b>تماس مستقیم</b> (همان راه همیشگی — شماره روی کاتالوگ)، <b>پیام</b> (عکس و جزئیات، با سابقه)، <b>استعلام قیمت</b> (رسمی — چند تأمین‌کننده کنار هم)، <b>دنبال کردن/افزودن</b> (رصد بدون تعهد).</span>
+              <span>چهار مسیر، چهار قصد: <b>تماس مستقیم</b> (همان راه همیشگی — شماره روی کاتالوگ)، <b>پیام</b> (عکس و جزئیات، با سابقه)، <b>استعلام قیمت گروهی</b> (رسمی — چند تأمین‌کننده کنار هم)، <b>دنبال کردن/افزودن</b> (رصد بدون تعهد).</span>
             </div>
           </div>
           <div class="sticky-cta">
-            <button class="btn btn-primary btn-lg btn-main" onclick="go('sc-rfq')"><svg class="ic-sm"><use href="#i-send"/></svg> استعلام قیمت</button>
+            <button class="btn btn-primary btn-lg btn-main" onclick="go('sc-rfq')"><svg class="ic-sm"><use href="#i-send"/></svg> استعلام قیمت گروهی</button>
             <button class="btn btn-soft btn-lg btn-sec" onclick="openSheet('sheet-follow')"><svg class="ic-sm"><use href="#i-bm"/></svg> دنبال کردن قیمت</button>
           </div>
         </section>
@@ -1445,11 +1444,39 @@
             <div class="tt"><b>استعلام قیمت گروهی</b><span>یک بار بپرس — همهٔ تأمین‌کننده‌ها قیمت و شرایط می‌فرستند</span></div>
           </div>
           <div class="screen-body">
-            <div id="rfqForm">
+            <div id="rfqForm" style="padding-bottom:92px">
               <div class="card" style="display:flex;gap:10px;align-items:center;background:var(--teal-tint);border-color:transparent">
                 <svg class="ic" style="color:var(--teal-deep)"><use href="#i-bell"/></svg>
-                <div style="flex:1;font-size:11.5px;line-height:1.9;color:var(--teal-tint-fg)">۶ تأمین‌کنندهٔ مرتبطِ برنج هاشمی خبردار می‌شوند — از این‌مندان <b>۲ نفر «گوش‌به‌زنگِ»</b> این کالای تو‌اند و اول از همه جواب می‌دهند.</div>
+                <div style="flex:1;font-size:11.5px;line-height:1.9;color:var(--teal-tint-fg)">فقط همان‌هایی که تیک می‌زنی خبردار می‌شوند — <b>دنبال‌شده‌های تو</b> که این کالا را «گوش‌به‌زنگ» دارند اول از همه جواب می‌دهند.</div>
               </div>
+
+              <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-users"/></svg> به چه کسانی بفرستم؟</h2><span class="more" id="rfqPickCount">۳ نفر</span></div>
+              <div id="rfqPicks">
+                <div class="pk-group"><svg><use href="#i-bmf"/></svg> دنبال‌شده‌های تو</div>
+                <div class="pick-row on" onclick="rfqPick(this)">
+                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px">ک</div>
+                  <span class="pk-tx"><b>برنج هاشمی کارون <span class="badge b-teal"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span></b><span>۸۹٬۵۰۰ تومان · همدان · پاسخ در ۲ ساعت</span></span>
+                  <span class="ckb"><svg><use href="#i-check"/></svg></span>
+                </div>
+                <div class="pick-row on" onclick="rfqPick(this)">
+                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--emerald)">س</div>
+                  <span class="pk-tx"><b>سبزدانه همدان <span class="badge b-green">ارزان‌ترین</span> <span class="badge b-teal"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span></b><span>۸۴٬۵۰۰ تومان · همدان · چک ۳۰ روزه</span></span>
+                  <span class="ckb"><svg><use href="#i-check"/></svg></span>
+                </div>
+                <div class="pk-group"><svg><use href="#i-box"/></svg> تأمین‌کنندگان مرتبط</div>
+                <div class="pick-row" onclick="rfqPick(this)">
+                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--muted)">ش</div>
+                  <span class="pk-tx"><b>شالیکشی سپیدان</b><span>۹۵٬۰۰۰ تومان · فارس · پیش‌پرداخت</span></span>
+                  <span class="ckb"><svg><use href="#i-check"/></svg></span>
+                </div>
+                <div class="pick-row promo on" onclick="rfqPick(this)">
+                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--fg-soft)">پ</div>
+                  <span class="pk-tx"><b>پخش برنج پارس <span class="badge-sponsor"><svg><use href="#i-star"/></svg> صف اول</span></b><span>۹۱٬۲۰۰ تومان · همدان · موجودی ۵ تن · نقدی</span></span>
+                  <span class="ckb"><svg><use href="#i-check"/></svg></span>
+                </div>
+                <button class="pick-more" onclick="toast('۳ تأمین‌کنندهٔ دیگر از تابلوی تأمین — در نسخهٔ اصلی لود می‌شود')">+ ۳ تأمین‌کنندهٔ دیگر از تابلوی تأمین</button>
+              </div>
+              <div class="sfx-note" style="text-align:center">آرشیوشده‌ها (مثل پخش قصر دان) در استعلام نمی‌آیند — آرشیو یعنی خروج از تأمینِ فعال</div>
 
               <div class="sec-title"><h2>چه می‌خری؟</h2></div>
               <div class="card">
@@ -1457,13 +1484,19 @@
                   <label>کالا</label>
                   <div style="display:flex;gap:8px;align-items:center;background:#fff;border:1.5px solid var(--teal-strong);border-radius:12px;padding:11px 14px">
                     <span class="thumb rice" style="width:34px;height:34px;border-radius:10px"><svg style="width:22px;height:22px"><use href="#a-rice"/></svg></span>
-                    <span style="flex:1;font-size:13.5px;font-weight:700">برنج هاشمی</span>
+                    <span style="flex:1;min-width:0">
+                      <span style="display:block;font-size:13.5px;font-weight:700">برنج هاشمی</span>
+                      <span class="path-hint">غلات و حبوبات <i>‹</i> برنج <i>‹</i> هاشمی · واحد پایه: کیلوگرم</span>
+                    </span>
                     <svg class="ic-sm" style="color:var(--muted)"><use href="#i-x"/></svg>
                   </div>
                 </div>
                 <div class="field">
-                  <label>مقدار <i>— کیلوگرم</i></label>
-                  <input id="rfqQty" class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" value="۵۰۰" oninput="rfqQtyCheck()">
+                  <label>مقدار</label>
+                  <div class="inp-flex inp-lg" id="rfqQtyWrap">
+                    <input id="rfqQty" inputmode="numeric" value="۵۰۰" oninput="rfqQtyCheck()">
+                    <span class="sfx">کیلوگرم</span>
+                  </div>
                   <div class="f-err" id="rfqQtyErr" style="display:none"><svg><use href="#i-info"/></svg> مقدار را وارد کن تا تأمین‌کننده‌ها بدانند برای چقدر قیمت بدهند</div>
                 </div>
                 <div class="field">
@@ -1494,14 +1527,16 @@
                 <textarea class="inp" placeholder="مثلاً: تحویل پنج‌شنبه، درِ انبار، فاکتور رسمی…"></textarea>
               </div>
 
-              <button class="btn btn-primary btn-lg btn-block" style="margin-top:16px" id="rfqSubmitBtn" onclick="submitRfq()">
-                <svg class="ic-sm"><use href="#i-send"/></svg> ارسال استعلام به ۶ تأمین‌کننده
-              </button>
-              <div class="gate-note">اگر شرطی را ننوشته باشی، ارسال فعال نمی‌شود</div>
-
               <div class="hint">
                 <svg><use href="#i-info"/></svg>
-                <span><b>فرقش با «دنبال کردن قیمت»؟</b> اینجا اعلام می‌کنی الان قصد خرید داری — همین کار «اعلام نیاز» است؛ تأمین‌کننده‌ها قیمت و شرایط رسمی می‌فرستند و در «استعلام‌های من» پیگیری می‌شود. دنبال‌کردن همیشه رایگان است — این استعلام هم پول نمی‌خواهد.</span>
+                <span><b>فرقش با «دنبال کردن قیمت»؟</b> اینجا اعلام می‌کنی الان قصد خرید داری — همین کار «اعلام نیاز» است؛ تأمین‌کننده‌های انتخابی قیمت و شرایط رسمی می‌فرستند و در «استعلام‌های من» پیگیری می‌شود. دنبال‌کردن همیشه رایگان است — این استعلام هم پول نمی‌خواهد.</span>
+              </div>
+
+              <div class="form-cta">
+                <button class="btn btn-primary btn-lg btn-block" id="rfqSubmitBtn" onclick="submitRfq()">
+                  <svg class="ic-sm"><use href="#i-send"/></svg> <span id="rfqSubmitTxt">ارسال استعلام به ۳ تأمین‌کننده</span>
+                </button>
+                <div class="gate-note" id="rfqGate" style="display:none">حداقل یک تأمین‌کننده را انتخاب کن</div>
               </div>
             </div>
 
@@ -1509,7 +1544,7 @@
               <div class="empty-state">
                 <span class="art" style="background:var(--emerald-tint);color:var(--emerald)"><svg><use href="#i-checkc"/></svg></span>
                 <h3>نیازت اعلام شد</h3>
-                <p>۶ تأمین‌کنندهٔ مرتبط + ۲ تأمین‌کنندهٔ گوش‌به‌زنگ خبردار شدند. پاسخ‌ها در «استعلام‌های من» و اعلان‌ها می‌آیند.</p>
+                <p id="rfqSuccessTx">۳ تأمین‌کنندهٔ انتخابی خبردار شدند — ۲ نفرشان «گوش‌به‌زنگِ» این کالای تو‌اند. پاسخ‌ها در «استعلام‌های من» و اعلان‌ها می‌آیند.</p>
                 <button class="btn btn-primary" onclick="rfqDone()">پیگیری در استعلام‌های من</button>
               </div>
             </div>
@@ -1523,11 +1558,11 @@
             <button class="back" onclick="goBack()"><svg class="ic"><use href="#i-back"/></svg></button>
             <div class="tt"><b id="addTitle">افزودن کالا به لیست خرید</b><span id="addSub">هر چه بخری، برایت تابلوی تأمین می‌سازیم و قیمتش را دنبال می‌کنیم</span></div>
           </div>
-          <div class="screen-body">
+          <div class="screen-body" style="padding-bottom:96px">
             <!-- v3: در حالت ویرایش، کالا ثابت است و جست‌وجو مخفی می‌شود -->
             <div class="edit-good-row" id="editGoodRow" style="display:none">
               <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
-              <span class="eg-tx"><b>برنج هاشمی</b><span>کالای این ردیف — در ویرایش ثابت است</span></span>
+              <span class="eg-tx"><b>برنج هاشمی</b><span>غلات و حبوبات <i>‹</i> برنج <i>‹</i> هاشمی — در ویرایش ثابت است · واحد پایه: کیلوگرم</span></span>
               <svg style="margin-right:auto;width:17px;height:17px;color:var(--teal-deep)"><use href="#i-check"/></svg>
             </div>
             <div class="card" id="pickCard">
@@ -1539,16 +1574,16 @@
               <div style="margin-top:2px" id="goodRows">
                 <button class="row-card" style="width:100%;margin-bottom:8px" onclick="pickGood(this)">
                   <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
-                  <span class="body"><span class="t" style="font-size:12.5px">برنج هاشمی</span><span class="s">۴۵ تأمین‌کنندهٔ فعال در iMach</span></span>
+                  <span class="body"><span class="t" style="font-size:12.5px">برنج هاشمی</span><span class="s">غلات و حبوبات ‹ برنج ‹ هاشمی · ۴۵ تأمین‌کنندهٔ فعال</span></span>
                   <span class="badge b-teal">پرطرفدار</span>
                 </button>
                 <button class="row-card" style="width:100%;margin-bottom:8px" onclick="pickGood(this)">
                   <span class="thumb sugar" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-sugar"/></svg></span>
-                  <span class="body"><span class="t" style="font-size:12.5px">رب گوجه‌فرنگی</span><span class="s">۱۸ تأمین‌کنندهٔ فعال</span></span>
+                  <span class="body"><span class="t" style="font-size:12.5px">رب گوجه‌فرنگی</span><span class="s">کنسروساز ‹ رب گوجه‌فرنگی · ۱۸ تأمین‌کنندهٔ فعال</span></span>
                 </button>
                 <button class="row-card" style="width:100%" onclick="pickGood(this)">
                   <span class="thumb lentil" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-lentil"/></svg></span>
-                  <span class="body"><span class="t" style="font-size:12.5px">عدس</span><span class="s">۷ تأمین‌کنندهٔ فعال</span></span>
+                  <span class="body"><span class="t" style="font-size:12.5px">عدس</span><span class="s">حبوبات ‹ عدس · ۷ تأمین‌کنندهٔ فعال</span></span>
                 </button>
               </div>
               <button class="row-card dashed" style="width:100%;margin-top:9px" onclick="toast('کالای جدید بساز — اسم و واحد')">
@@ -1584,9 +1619,6 @@
                   <button class="chip">ماهانه</button>
                 </div>
               </div>
-              <button class="btn btn-primary btn-lg btn-block" id="buyCta" style="margin-top:14px" onclick="buySubmit()">
-                <svg class="ic-sm"><use href="#i-plus"/></svg> افزودن به لیست خرید
-              </button>
               <div id="editDangerBuy" style="display:none">
                 <button class="danger-quiet" onclick="askRemoveItem()"><svg><use href="#i-trash"/></svg> حذف از لیست خرید</button>
                 <div class="stop-confirm" id="removeConfirm" style="display:none">
@@ -1611,16 +1643,18 @@
               <div class="sec-title"><h2>قیمت و موجودی</h2></div>
               <div class="card">
                 <div class="field">
-                  <label>قیمت هر کیلوگرم <i>— تومان · قیمت پایه</i></label>
-                  <div class="inp inp-lg" style="direction:ltr;text-align:right">۸۹٬۵۰۰</div>
+                  <label>قیمت پایه — هر کیلوگرم</label>
+                  <div class="inp-flex inp-lg"><span class="val">۸۹٬۵۰۰</span><span class="sfx">تومان</span></div>
                 </div>
-                <div class="field">
-                  <label>موجودی</label>
-                  <div class="inp">۲.۴ تن</div>
-                </div>
-                <div class="field" style="margin-bottom:4px">
-                  <label>حداقل سفارش</label>
-                  <div class="inp">۱۰۰ کیلوگرم</div>
+                <div class="f-pair">
+                  <div class="field">
+                    <label>موجودی</label>
+                    <div class="inp-flex"><span class="val">۲.۴</span><span class="sfx">تن</span></div>
+                  </div>
+                  <div class="field">
+                    <label>حداقل سفارش</label>
+                    <div class="inp-flex"><span class="val">۱۰۰</span><span class="sfx">کیلوگرم</span></div>
+                  </div>
                 </div>
                 <div class="field" style="margin-bottom:6px">
                   <label>بسته‌بندی‌ها <i>— هر بسته، قیمت و موجودیِ خودش را دارد</i></label>
@@ -1632,10 +1666,27 @@
                   <div class="pack-note">قیمت هر بسته از قیمت پایه حساب می‌شود — اگر جدا می‌فروشی، همان‌جا عوضش کن</div>
                 </div>
               </div>
+
+              <div class="sec-title"><h2>مشخصات کالا</h2></div>
+              <div class="card">
+                <div class="field">
+                  <label>این کالا برند دارد؟</label>
+                  <div class="pillc">
+                    <button class="pill" onclick="pillPick(this,'برند — از فهرست برندهای مرجع انتخاب می‌کنی')">برند دارد</button>
+                    <button class="pill active" onclick="pillPick(this,'فله — بدون برند')">فله (بدون برند)</button>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                  <label>بوجار</label>
+                  <div class="pillc">
+                    <button class="pill active" onclick="pillPick(this,'درجه یک')">درجه یک</button>
+                    <button class="pill" onclick="pillPick(this,'درجه دو')">درجه دو</button>
+                    <button class="pill" onclick="pillPick(this,'سوپر')">سوپر</button>
+                  </div>
+                </div>
+              </div>
+
               <div class="warn-note"><svg><use href="#i-info"/></svg> تا قیمت نگذاری، کالا در نمای عمومی دیده نمی‌شود</div>
-              <button class="btn btn-primary btn-lg btn-block" id="sellCta" style="margin-top:14px" onclick="sellSubmit()">
-                <svg class="ic-sm"><use href="#i-plus"/></svg> ثبت در کاتالوگ
-              </button>
               <div id="editDanger" style="display:none">
                 <button class="danger-quiet" onclick="askArchive()"><svg><use href="#i-trash"/></svg> آرشیو از کاتالوگ</button>
                 <div class="stop-confirm" id="archConfirm" style="display:none">
@@ -1652,6 +1703,15 @@
             <div class="hint" id="addHint">
               <svg><use href="#i-info"/></svg>
               <span>یک الگو برای دو دستیار: انتخاب کالا از <b>کاتالوگ مرجع</b> (۳۷۰+ کالای استاندارد) مشترک است؛ فقط فیلدهای مرحلهٔ بعد بر اساس خرید یا فروش عوض می‌شوند. راه‌های دیگر (بارکد، مرجع، اکسل) آرام زیر فرم می‌مانند — و دقیقاً وقتی جست‌وجو نتیجه نداد، پررنگ می‌شوند.</span>
+            </div>
+
+            <div class="form-cta">
+              <button class="btn btn-primary btn-lg btn-block" id="buyCta" onclick="buySubmit()">
+                <svg class="ic-sm"><use href="#i-plus"/></svg> افزودن به لیست خرید
+              </button>
+              <button class="btn btn-primary btn-lg btn-block" id="sellCta" style="display:none" onclick="sellSubmit()">
+                <svg class="ic-sm"><use href="#i-plus"/></svg> ثبت در کاتالوگ
+              </button>
             </div>
           </div>
         </section>
@@ -2027,7 +2087,10 @@
               <div class="card">
                 <div class="field">
                   <label>قیمت پیشنهادی <i>— تومان / کیلوگرم</i></label>
-                  <input id="quotePrice" class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" value="۸۸٬۵۰۰" oninput="quoteCheck()">
+                  <div class="inp-flex inp-lg" id="quotePriceWrap">
+                    <input id="quotePrice" inputmode="numeric" value="۸۸٬۵۰۰" oninput="quoteCheck()">
+                    <span class="sfx">تومان</span>
+                  </div>
                   <div class="f-err" id="quotePriceErr" style="display:none"><svg><use href="#i-info"/></svg> قیمت را وارد کن — بدون قیمت، پیشنهاد ارسال نمی‌شود</div>
                 </div>
                 <div class="field">
@@ -2087,6 +2150,17 @@
               <span style="font-size:10px;color:var(--emerald);background:var(--emerald-tint);border-radius:8px;padding:4px 8px;font-weight:700">۹۸٪ پاسخگویی</span>
             </div>
 
+            <div id="catalogSaveBtn">
+              <div class="top-act">
+                <button class="btn btn-primary btn-lg btn-main" onclick="saveCatalog()"><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیرهٔ کاتالوگ</button>
+                <button class="btn btn-outline btn-lg" style="flex:0 0 auto" onclick="openSheet('sheet-share-product')" title="اشتراک کاتالوگ" aria-label="اشتراک کاتالوگ"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
+              </div>
+              <div class="sfx-note" style="text-align:center">«ذخیره» یعنی این ویترین همیشه در دسترست بماند و کالای جدیدش را ببینی · <b>دنبال‌کردنِ قیمتِ هر کالا، داخل خود کالاست</b></div>
+            </div>
+            <div id="catalogSavedFlag" style="display:none;margin-top:11px">
+              <div class="saved-flag" style="padding:12px 14px;width:100%;justify-content:center"><svg><use href="#i-checkc"/></svg> ذخیره کردی — کالاهای جدید کارون را اول تو می‌بینی</div>
+            </div>
+
             <div class="contact-row">
               <button class="btn btn-outline" style="flex:1" onclick="toast('تماس مستقیم — ۰۹۱۲ ۳۴۵ ۶۷۸۹ · پخش برنج پارس')"><svg class="ic-sm"><use href="#i-tel"/></svg> تماس مستقیم</button>
               <button class="btn btn-soft" style="flex:1" onclick="openChat()"><svg class="ic-sm"><use href="#i-msg"/></svg> پیام</button>
@@ -2096,6 +2170,18 @@
               <span><svg><use href="#i-bm"/></svg> <b>۳۸</b> ذخیره‌کنندهٔ کاتالوگ</span>
               <i class="sep"></i>
               <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید هفته</span>
+            </div>
+
+            <div class="searchbar" style="margin-top:11px" onclick="toast('جستجو در این کاتالوگ…')">
+              <svg><use href="#i-search"/></svg>
+              <span>جستجو در این کاتالوگ…</span>
+            </div>
+            <div class="chips" style="margin-top:9px">
+              <button class="chip active">همه</button>
+              <button class="chip">درجه یک</button>
+              <button class="chip">درجه دو</button>
+              <button class="chip">ارگانیک</button>
+              <button class="chip">فله</button>
             </div>
 
             <div class="grid-2" style="margin-top:11px">
@@ -2140,21 +2226,11 @@
               </div>
             </div>
 
-            <div id="catalogSaveBtn">
-              <div class="btn-row" style="margin-top:13px">
-                <button class="btn btn-primary btn-lg" style="flex:1" onclick="saveCatalog()"><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیرهٔ کاتالوگ</button>
-                <button class="btn btn-outline btn-lg" style="flex:0 0 auto" onclick="openSheet('sheet-share-product')"><svg class="ic-sm"><use href="#i-share"/></svg></button>
-              </div>
-              <div style="font-size:9.5px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.9">«ذخیره» یعنی این ویترین همیشه در دسترست بماند و کالای جدیدش را ببینی · <b>دنبال‌کردنِ قیمتِ هر کالا، داخل خود کالاست</b></div>
-            </div>
-            <div id="catalogSavedFlag" style="display:none;margin-top:13px">
-              <div class="saved-flag" style="padding:12px 14px"><svg><use href="#i-checkc"/></svg> ذخیره کردی — کالاهای جدید کارون را اول تو می‌بینی</div>
-            </div>
-
             <div class="public-gate" style="margin-top:12px">
               <svg><use href="#i-info"/></svg>
               <span>این صفحه برای همه باز است — برای <b>دنبال‌کردن قیمت و اعلام نیاز</b>، حساب رایگان بساز (دو دقیقه).</span>
             </div>
+            <div class="viral-row">ساخته‌شده با <b>iMach</b> — کاتالوگ رایگان برای کسب‌وکار شما</div>
           </div>
         </section>
 
@@ -2177,6 +2253,11 @@
             <div class="contact-row">
               <button class="btn btn-outline" style="flex:1" onclick="toast('شمارهٔ خریدار برای اعضا — حساب رایگان دو دقیقه')"><svg class="ic-sm"><use href="#i-tel"/></svg> تماس با خریدار</button>
               <button class="btn btn-soft" style="flex:1" onclick="toast('پیام به خریدار — بعد از ورود، با سابقهٔ گفتگو')"><svg class="ic-sm"><use href="#i-msg"/></svg> پیام</button>
+            </div>
+
+            <div class="top-act">
+              <button class="btn btn-soft btn-lg btn-main" onclick="toast('لیست ذخیره شد — اعلام نیازهای رستوران مهر را اول خبر می‌شوی')"><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیرهٔ لیست</button>
+              <button class="btn btn-outline btn-lg" style="flex:0 0 auto" onclick="openSheet('sheet-share-list')" title="اشتراک لیست" aria-label="اشتراک لیست"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
             </div>
 
             <div class="public-gate" style="margin-top:11px">
@@ -2208,10 +2289,6 @@
               </div>
             </div>
 
-            <div class="btn-row" style="margin-top:13px">
-              <button class="btn btn-soft btn-lg" style="flex:1" onclick="toast('لیست ذخیره شد — اعلام نیازهای رستوران مهر را اول خبر می‌شوی')"><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیرهٔ لیست</button>
-              <button class="btn btn-outline btn-lg" style="flex:0 0 auto" onclick="openSheet('sheet-share-list')"><svg class="ic-sm"><use href="#i-share"/></svg></button>
-            </div>
             <div class="hint">
               <svg><use href="#i-eye"/></svg>
               <span>قرینهٔ کامل مسیر رشد فروشنده: خریدار لیستش را شیر می‌کند، تأمین‌کننده می‌آید و <b>گوش‌به‌زنگ</b> می‌شود — بدون اینکه کسی شمارهٔ کسی را داشته باشد. اعلام نیاز بعدیِ خریدار، پیشنهادهایش را کنار هم می‌آورد.</span>
@@ -2562,7 +2639,7 @@
   <button class="btn btn-primary btn-lg btn-block" onclick="confirmFollow()">
     <svg class="ic-sm"><use href="#i-bm"/></svg> دنبال کردن قیمت — رایگان
   </button>
-  <div class="sub" style="margin:10px 0 0">«استعلام قیمت» فرق دارد: آنجا الان قصد خرید داری و قیمت رسمی می‌گیری. دنبال‌کردن برای خریدار و فروشنده، هر دو رایگان است.</div>
+  <div class="sub" style="margin:10px 0 0">«استعلام قیمت گروهی» فرق دارد: آنجا الان قصد خرید داری و قیمت رسمی می‌گیری. دنبال‌کردن برای خریدار و فروشنده، هر دو رایگان است.</div>
 </div>
 
 <!-- ═══════════ شیت: دنبال‌کنندگان قیمت (با منبع رسیدن) ═══════════ -->
@@ -3248,6 +3325,9 @@ function pickGood(el) {
 function submitRfq() {
   rfqQtyCheck();
   if ($('#rfqSubmitBtn').disabled) return;
+  const n = rfqPickCount();
+  const tx = $('#rfqSuccessTx');
+  if (tx) tx.textContent = fa(n) + ' تأمین‌کنندهٔ انتخابی خبردار شدند — ۲ نفرشان «گوش‌به‌زنگِ» این کالای تو‌اند. پاسخ‌ها در «استعلام‌های من» و اعلان‌ها می‌آیند.';
   $('#rfqForm').style.display = 'none';
   $('#rfqSuccess').style.display = '';
   const b = $('#sc-rfq .screen-body'); if (b) b.scrollTop = 0;
@@ -3256,7 +3336,7 @@ function rfqDone() {
   state.rfq = 2;
   $('#rfqCountBadge').textContent = '۲';
   go('sc-my-rfqs');
-  toast('درخواست ثبت شد — ۶ تأمین‌کننده + ۲ گوش‌به‌زنگ خبردار شدند');
+  toast('استعلام ثبت شد — تأمین‌کننده‌های انتخابی + ۲ گوش‌به‌زنگ خبردار شدند');
 }
 
 function rfqTab(el, which) {
@@ -3305,6 +3385,8 @@ function syncAddMode() {
   $('#editGoodRow').style.display = edit ? '' : 'none';
   $('#addFieldBuy').style.display  = sell ? 'none' : '';
   $('#addFieldSell').style.display = sell ? '' : 'none';
+  $('#buyCta').style.display  = sell ? 'none' : '';
+  $('#sellCta').style.display = sell ? '' : 'none';
   $('#editDanger').style.display     = edit === 'sell' ? '' : 'none';
   $('#editDangerBuy').style.display = edit === 'buy'  ? '' : 'none';
   $('#addHint').style.display = edit ? 'none' : '';
@@ -3564,8 +3646,31 @@ function rfqQtyCheck() {
   const v = $('#rfqQty').value.replace(/[^۰-۹0-9]/g, '');
   const ok = v.length > 0;
   $('#rfqQtyErr').style.display = ok ? 'none' : 'flex';
-  $('#rfqQty').classList.toggle('err', !ok);
-  $('#rfqSubmitBtn').disabled = !ok;
+  const w = $('#rfqQtyWrap'); if (w) w.classList.toggle('err', !ok);
+  syncRfqState();
+}
+/* v6: گیرنده‌های تیک‌شدنی — دنبال‌شده‌ها + مرتبط‌ها + درحال‌پرومو */
+function rfqPick(row) { row.classList.toggle('on'); syncRfqState(); }
+function rfqPickCount() { return $$('#rfqPicks .pick-row.on').length; }
+function syncRfqState() {
+  const n = rfqPickCount();
+  const qtyOk = ($('#rfqQty').value || '').replace(/[^۰-۹0-9]/g, '').length > 0;
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  set('#rfqPickCount', fa(n) + ' نفر');
+  set('#rfqSubmitTxt', 'ارسال استعلام به ' + fa(n) + ' تأمین‌کننده');
+  const btn = $('#rfqSubmitBtn');
+  const gate = $('#rfqGate');
+  if (btn) btn.disabled = !qtyOk || n === 0;
+  if (gate) {
+    gate.style.display = (!qtyOk || n === 0) ? '' : 'none';
+    gate.textContent = !qtyOk ? 'مقدار را وارد کن تا ارسال فعال شود' : 'حداقل یک تأمین‌کننده را انتخاب کن';
+  }
+}
+/* v6: pillchoice صفتی (برند/بوجار — الگوی فرم طرح ۱) */
+function pillPick(el, msg) {
+  el.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  if (msg) toast(msg);
 }
 function openRfqDetail() {
   $('#rfqListView').style.display = 'none';
@@ -3580,7 +3685,7 @@ function quoteCheck() {
   const v = $('#quotePrice').value.replace(/[^۰-۹0-9]/g, '');
   const ok = v.length > 0;
   $('#quotePriceErr').style.display = ok ? 'none' : 'flex';
-  $('#quotePrice').classList.toggle('err', !ok);
+  const w = $('#quotePriceWrap'); if (w) w.classList.toggle('err', !ok);
 }
 function submitQuote() {
   quoteCheck();
@@ -3638,6 +3743,7 @@ window.addEventListener('hashchange', () => {
 (function boot() {
   syncMoneyUI();
   try { suPhoneCheck(); } catch (e) {}
+  try { syncRfqState(); } catch (e) {}
   const id = location.hash.replace('#', '');
   const start = document.getElementById(id) ? id : 'sc-onboard';
   show(start, false);
