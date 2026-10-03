@@ -9,8 +9,9 @@ import { AppFooter, AppHeader, MobileTabBar } from "@/app/components/chrome";
 import { NoBusinessState } from "@/app/components/no-business";
 import { SetPasswordButton } from "@/app/components/set-password-button";
 import { fa, categoryName, fmtMoney, frequencyLabel, goodName, unitLabel } from "@/lib/format";
-import { useMyInquiries, useMyListings, useWatchGood, useWatchedGoods } from "@/lib/queries";
+import { useMyInquiries, useMyListings, usePriceBoard, useWatchGood, useWatchedGoods, useFollowToggle } from "@/lib/queries";
 import type { BusinessSummaryDto, GoodItemDto, WatchedRowDto } from "@/lib/api";
+import { ShareDialog } from "@/app/components/share";
 import { BuyItemSettingsDialog } from "./item-settings";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -23,17 +24,21 @@ import {
   Plus,
   Search,
   Settings2,
+  Share2,
+  Star,
 } from "lucide-react";
 
 /*
- * لیست خرید — دستیار خرید (فاز ۵ · طرح ۰۸)
+ * لیست خرید — دستیار خرید (فاز ۵ · طرح ۰۸ + طرح ۸)
  * هر کالا یک تابلوی تأمین کوچک است:
  *   • ردیف‌ها = WatchedGoodها + BUY listingهای موجود (ادغام بر حسب کالا)
  *   • شاخص‌های هر ردیف: تعداد تامین‌کننده / ارزان‌ترین + فروشنده‌اش / روند هفتگی
  *   • کالای بی‌تابلو: ردیف خط‌چین + CTA «دنبال کردن»
  *   • چیپ‌ها: همه / تغییر قیمت / هفتگی / ماهانه — از داده‌ی واقعی
- * هدر: «درخواست‌های من» با بج شمار پاسخ‌های دریافتی (getMyInquiries).
- * هیچ چیزی هاردکد نیست — همه‌ی ردیف‌ها از getWatchedGoods (دیتابیس) می‌آیند.
+ * طرح ۸:
+ *   • نوار اشتراک لیست (U62) — لیست خرید دعوت‌نامهٔ تأمین‌کننده‌هاست
+ *   • ردیف‌های «صف اول» (U01/U05) — پروموی کالاهای لیست من از فروشنده‌های
+ *     ذخیره‌نشده، با دکمهٔ پر «دنبال کن ⭐» (U06 — فقط غیرذخیره‌کنندگان)
  */
 
 export default function BuyPage() {
@@ -107,6 +112,9 @@ function MyBuyList({ biz }: { biz: BusinessSummaryDto }) {
   const myInqQ = useMyInquiries(bizId);
   // BUY listing کامل برای دیالوگ تنظیمات (حجم/دوره/حذف) — از getMyListings
   const listingsQ = useMyListings(bizId, { includeInactive: true });
+  // طرح ۸ — تابلوی قیمت با پرومو (U05)
+  const boardQ = usePriceBoard(bizId);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const [q, setQ] = useState("");
   const [chip, setChip] = useState<ChipFilter>("ALL");
@@ -114,6 +122,8 @@ function MyBuyList({ biz }: { biz: BusinessSummaryDto }) {
 
   const rows = rowsQ.data ?? [];
   const answered = myInqQ.data?.answeredCount ?? 0;
+  // پروموهای قابل نمایش — هر کدام برای کالایی از لیست خرید من
+  const promos = (boardQ.data?.rows ?? []).map((r) => r.promo).filter((p): p is NonNullable<typeof p> => !!p);
 
   const changedCount = rows.filter((r) => r.priceChanged).length;
   const weeklyCount = rows.filter((r) => r.frequency === "WEEKLY").length;
@@ -159,6 +169,26 @@ function MyBuyList({ biz }: { biz: BusinessSummaryDto }) {
         </Link>
       </div>
 
+      {/* ═══ نوار اشتراک لیست خرید (طرح ۸ — U62) ═══ */}
+      {rows.length > 0 && (
+        <div className="mb-2.5 flex items-center gap-2.5 rounded-2xl border border-[#bfe5e0] bg-[#f5fdfb] px-3 py-2.5">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#0d9488] text-white">
+            <Share2 className="size-4" />
+          </span>
+          <p className="min-w-0 grow text-[11.5px] leading-5 text-muted-foreground">
+            <b className="text-[12.5px] text-foreground">لیست خریدتان، دعوت‌نامهٔ تأمین‌کننده‌هاست</b>
+            <br />
+            هر تأمین‌کننده‌ای این لیست را ببیند و «گوش به زنگ» شما شود، نیاز بعدی‌تان را اول خبر می‌شود.
+          </p>
+          <Button
+            className="h-9 shrink-0 bg-[#0d9488] px-3 text-[12px] hover:bg-[#0f766e]"
+            onClick={() => setShareOpen(true)}
+          >
+            اشتراک‌گذاری
+          </Button>
+        </div>
+      )}
+
       {/* ═══ جست‌وجو + افزودن کالا (طرح ۰۸: searchbar + btn-stone) ═══ */}
       <div className="flex items-center gap-2">
         <label className="flex h-11 flex-1 items-center gap-2.5 rounded-xl border border-stone-300 bg-white px-3.5">
@@ -172,7 +202,7 @@ function MyBuyList({ biz }: { biz: BusinessSummaryDto }) {
           />
         </label>
         <Button
-          className="h-11 gap-1 bg-stone-800 px-4 hover:bg-stone-900"
+          className="h-11 gap-1 bg-[#0d9488] px-4 hover:bg-[#0f766e]"
           onClick={() => router.push("/new?tab=buy")}
         >
           <Plus className="size-4" />
@@ -197,6 +227,22 @@ function MyBuyList({ biz }: { biz: BusinessSummaryDto }) {
           ماهانه
         </ChipBtn>
       </div>
+
+      {/* ═══ ردیف‌های «صف اول» — پروموی کالاهای لیست من (طرح ۸ — U01/U05/U06) ═══ */}
+      {promos.length > 0 && (
+        <section className="mt-2.5">
+          <div className="mb-2 flex items-center gap-1.5 px-1">
+            <Star className="size-3.5 fill-[#b45309] text-[#b45309]" />
+            <h3 className="text-[12.5px] font-extrabold text-[#b45309]">صف اول</h3>
+            <span className="text-[10.5px] text-muted-foreground">— پیشنهاد پولیِ شفاف برای کالاهای لیست شما</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            {promos.map((p) => (
+              <PromoRow key={p.promoId} promo={p} bizId={bizId} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ═══ ردیف‌ها — هر کالا یک تابلوی تأمین (طرح ۰۸: row-card) ═══ */}
       <section className="mt-2.5 flex flex-col gap-2">
@@ -243,7 +289,86 @@ function MyBuyList({ biz }: { biz: BusinessSummaryDto }) {
           onOpenChange={(o) => !o && setSettingsFor(null)}
         />
       )}
+
+      <ShareDialog
+        kind="buy"
+        slug={biz.slug}
+        bizName={biz.name}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+      />
     </>
+  );
+}
+
+// ─── ردیف پروموی «صف اول» (طرح ۸ — U01): دکمهٔ پر نارنجی + ⭐ ───
+function PromoRow({
+  promo,
+  bizId,
+}: {
+  promo: {
+    promoId: string;
+    listingId: string;
+    supplier: { id: string; slug: string; name: string; city: string | null; isVerified: boolean };
+    priceMinor: number | null;
+    currency: string | null;
+    variantLabel: string | null;
+    goodName: string | null;
+  };
+  bizId: string;
+}) {
+  const { toast } = useToast();
+  const follow = useFollowToggle();
+
+  const doFollow = () => {
+    follow.mutate(
+      { businessId: bizId, supplierId: promo.supplier.id, follow: true, source: "PROMO", promoId: promo.promoId },
+      {
+        onSuccess: () =>
+          toast({
+            title: `کاتالوگ ${promo.supplier.name} ذخیره شد`,
+            description: "قیمتش از این به بعد در تابلوی شما زنده است.",
+          }),
+        onError: (e) => toast({ title: e.message || "ناموفق بود", variant: "destructive" }),
+      }
+    );
+  };
+
+  return (
+    <article
+      className="flex items-center gap-[11px] rounded-[14px] border border-[#e8cf9f] bg-[#fffaf0] px-3 py-2.5 shadow-[0_2px_10px_rgba(180,83,9,0.06)]"
+      style={{ boxShadow: "inset 0 0 0 1.5px rgba(180,83,9,0.08)" }}
+    >
+      <Link href={`/sell/${promo.supplier.slug}/${promo.listingId}`} className="flex min-w-0 flex-1 items-center gap-[11px]">
+        <span className="grid size-[46px] shrink-0 place-items-center rounded-[8px] bg-gradient-to-br from-[#fdf0da] to-[#f9e3bd] p-1 text-center">
+          <Star className="size-5 fill-[#b45309] text-[#b45309]" />
+        </span>
+        <span className="min-w-0 grow">
+          <span className="flex flex-wrap items-center gap-1.5 text-[14px] font-bold text-foreground">
+            {promo.goodName ?? "کالا"}
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#fdf0da] px-[9px] py-[2px] text-[10.5px] font-bold text-[#b45309]">
+              <Star className="size-3 fill-[#b45309]" />
+              پرومو
+            </span>
+          </span>
+          <span className="mt-[3px] flex flex-wrap items-center gap-2 text-[11.5px] text-muted-foreground">
+            {promo.priceMinor != null && <b className="font-bold text-foreground">{fmtMoney(promo.priceMinor, promo.currency)}</b>}
+            · {promo.supplier.name}
+            {promo.supplier.city ? ` · ${promo.supplier.city}` : ""}
+          </span>
+        </span>
+      </Link>
+      {/* U01 — دکمهٔ پر (نارنجی + ⭐): دنبال‌کردن از پرومو */}
+      <button
+        type="button"
+        onClick={doFollow}
+        disabled={follow.isPending}
+        className="flex shrink-0 items-center gap-1 rounded-[10px] bg-primary px-3.5 py-2 text-[12.5px] font-bold text-white shadow-[0_4px_12px_rgba(249,115,22,0.35)] transition hover:bg-[#ea580c] disabled:opacity-50"
+      >
+        <Star className="size-3.5 fill-white" />
+        {follow.isPending ? "…" : "دنبال کن"}
+      </button>
+    </article>
   );
 }
 
@@ -258,7 +383,7 @@ function EmptyList() {
         کاتالوگ فروشنده‌ها را بگردید و «دنبال کردن قیمت» بزنید؛ یا نیاز خریدتان را ثبت کنید تا
         تامین‌کننده‌ها پیدا شوند.
       </p>
-      <Button className="mt-4 gap-1 bg-stone-800 hover:bg-stone-900" onClick={() => router.push("/new?tab=buy")}>
+      <Button className="mt-4 gap-1 bg-[#0d9488] hover:bg-[#0f766e]" onClick={() => router.push("/new?tab=buy")}>
         <Plus className="size-4" />
         افزودن کالا
       </Button>

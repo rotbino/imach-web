@@ -10,16 +10,46 @@ import { BadgeCheck, Link2, Loader2, MapPin, Share2, ShoppingCart, Users, X } fr
 import { ShareContent } from "@/app/components/share";
 
 /*
- * مشتریان من — شبکه‌ی سمت فروش، مشترک بین دو خانه (فاز ۸ · طرح ۰۷):
- * • صفحه‌ی مستقل /sell/customers (deep-linkهای اعلان FOLLOW_SUPPLIER)
- * • آکاردئون «مشتریان من» در پروفایل فروشنده — همان ردیف‌ها، همان رفتار.
- * • مشتری = خریداری که کاتالوگ من را دنبال کرده، یا با لینک دعوت/کاتالوگ من
- *   عضو شده (فالوی خودکار ثبت‌نامی — قابل حذف از همین لیست).
- * • مشتریِ درخواست‌دار بالا می‌آید: آخرین درخواست خرید فعالِ هر مشتری
- *   با یک کلیک باز می‌شود.
+ * ذخیره‌کنندگان کاتالوگ (طرح ۸ — U60/U61):
+ * • «دنبال‌کنندهٔ کاتالوگ» برای همیشه کنار است — خریدار کاتالوگ را ذخیره
+ *   می‌کند و این‌جا ذخیره‌کننده می‌نشیند.
+ * • برچسب منبعِ رسیدن روی هر ردیف: با لینک (نارنجی) / تابلو (فیروزه‌ای) /
+ *   پرومو (کهربایی) + خط خلاصهٔ عددی بالای فهرست.
+ * • مشتری = همان ذخیره‌کننده؛ ردیفِ درخواست‌دار بالا می‌آید.
  */
 
-/** سرِ فهرست + ابزار رشد (لینک کاتالوگ با کد رفرال) + ردیف‌های مشتری */
+/** برچسب منبعِ رسیدن — زبان رنگ طرح ۸ (U60) */
+export function SourceBadge({ source }: { source: string | undefined }) {
+  const s = source ?? "ORGANIC";
+  if (s === "SHARED")
+    return (
+      <Badge
+        variant="outline"
+        className="border-transparent bg-[#ffeeda] px-1.5 text-[10px] font-bold text-[#9a3d06]"
+      >
+        با لینک
+      </Badge>
+    );
+  if (s === "PROMO")
+    return (
+      <Badge
+        variant="outline"
+        className="border-transparent bg-[#fdf0da] px-1.5 text-[10px] font-bold text-[#b45309]"
+      >
+        پرومو
+      </Badge>
+    );
+  return (
+    <Badge
+      variant="outline"
+      className="border-transparent bg-[#e2f4f1] px-1.5 text-[10px] font-bold text-[#0d5d54]"
+    >
+      تابلو
+    </Badge>
+  );
+}
+
+/** سرِ فهرست + ابزار رشد (لینک کاتالوگ با کد رفرال) + ردیف‌های ذخیره‌کننده */
 export function CustomersSection({
   bizId,
   slug,
@@ -36,8 +66,9 @@ export function CustomersSection({
   compact?: boolean;
 }) {
   const customersQ = useMyFollowers(bizId);
-  const customers = customersQ.data ?? [];
+  const customers = customersQ.data?.rows ?? [];
   const withRequest = customers.filter((c) => c.latestRequest).length;
+  const summary = customersQ.data?.summary;
 
   return (
     <>
@@ -47,15 +78,40 @@ export function CustomersSection({
             <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
               <Users className="size-4.5" />
             </span>
-            مشتریان من
+            ذخیره‌کنندگان کاتالوگ
           </h1>
           {!customersQ.isLoading && (
             <p className="text-xs text-muted-foreground">
-              {fa(customers.length)} مشتری
+              {fa(customers.length)} ذخیره‌کننده
               {withRequest > 0 && <span className="text-primary"> · {fa(withRequest)} درخواست فعال</span>}
             </p>
           )}
         </div>
+      )}
+
+      {/* طرح ۸ (U60) — خط خلاصهٔ منبع: «۶ از لینک · ۴ از تابلو · ۲ از پرومو» */}
+      {summary && summary.total > 0 && (summary.shared > 0 || summary.promo > 0) && (
+        <p className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border bg-white px-3 py-2 text-[11.5px] text-muted-foreground">
+          <span className="font-bold text-foreground">از کجا آمدند؟</span>
+          {summary.shared > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <span className="inline-block size-2 rounded-full bg-[#f97316]" />
+              {fa(summary.shared)} از لینک
+            </span>
+          )}
+          {summary.organic > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <span className="inline-block size-2 rounded-full bg-[#14b8a6]" />
+              {fa(summary.organic)} از تابلو
+            </span>
+          )}
+          {summary.promo > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <span className="inline-block size-2 rounded-full bg-[#b45309]" />
+              {fa(summary.promo)} از پرومو
+            </span>
+          )}
+        </p>
       )}
 
       {!compact && (
@@ -67,7 +123,7 @@ export function CustomersSection({
           <ShareContent kind="sell" slug={slug} bizName={name} />
           <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <Link2 className="size-3" />
-            هر ثبت‌نام از این لینک، خودکار مشتری شما می‌شود.
+            هر ذخیرهٔ تازه از این لینک: +۵٬۰۰۰ تومان پاداش دعوت برای شما.
           </p>
         </section>
       )}
@@ -79,9 +135,9 @@ export function CustomersSection({
           </div>
         ) : customers.length === 0 ? (
           <div className="rounded-2xl border border-dashed bg-white/70 p-6 text-center">
-            <p className="text-sm font-bold">هنوز مشتری‌ای در لیستتان نیست.</p>
+            <p className="text-sm font-bold">هنوز کسی کاتالوگ شما را ذخیره نکرده.</p>
             <p className="mx-auto mt-2 max-w-sm text-xs leading-6 text-muted-foreground">
-              لینک کاتالوگ را برای مشتری‌های فعلی‌تان بفرستید؛ عضویت هرکدام از لینک شما، این‌جا سبز می‌شود.
+              لینک کاتالوگ را برای مشتری‌های فعلی‌تان بفرستید؛ هر ذخیرهٔ تازه این‌جا سبز می‌شود و +۵٬۰۰۰ تومان پاداش دارد.
             </p>
           </div>
         ) : (
@@ -119,15 +175,12 @@ export function CustomerRow({ c, bizId }: { c: CustomerRowDto; bizId: string }) 
           <p className="flex items-center gap-1 truncate text-sm font-bold">
             {c.name}
             {c.isVerified && <BadgeCheck className="size-4 shrink-0 text-primary" aria-label="تاییدشده" />}
-            {c.viaRef && (
-              <Badge variant="outline" className="border-primary/30 bg-accent px-1.5 text-[10px] text-primary">
-                با لینک
-              </Badge>
-            )}
+            {/* طرح ۸ — برچسب منبع به‌جای «با لینک» قدیمی */}
+            <SourceBadge source={c.source} />
           </p>
           <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
             <MapPin className="size-3" />
-            {c.city} · مشتری از {timeAgo(c.followedAt)}
+            {c.city} · ذخیره از {timeAgo(c.followedAt)}
           </p>
         </div>
         <button

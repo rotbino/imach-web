@@ -22,12 +22,15 @@ import {
   BadgeCheck,
   Eye,
   Loader2,
+  Megaphone,
   PackageOpen,
   Plus,
   Search,
   Settings2,
   Share2,
   TriangleAlert,
+  Wallet,
+  ChevronLeft,
 } from "lucide-react";
 
 /*
@@ -157,7 +160,7 @@ function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
   });
 
   const viewsMonth = activeSell.reduce((s, l) => s + (l.viewCount30 ?? 0), 0);
-  const followers = followersQ.data?.length ?? 0;
+  const savers = followersQ.data?.rows.length ?? 0;
 
   if (listingsQ.isLoading) {
     return (
@@ -197,23 +200,56 @@ function MyCatalog({ biz }: { biz: BusinessSummaryDto }) {
         >
           <Share2 className="size-4.5" />
         </button>
+        {/* طرح ۸ — کیف پول: فقط در لحظهٔ مصرف (قانون تشنگی)؛ این‌جا چون خریدارِ دیده‌شده است */}
+        <button
+          type="button"
+          onClick={() => router.push("/sell/wallet")}
+          aria-label="کیف پول"
+          title="کیف پول — کمپین‌های صف اول"
+          className="grid size-9 shrink-0 place-items-center rounded-xl border bg-white text-[#b45309] transition hover:border-[#b45309]/40 hover:bg-[#fffaf0]"
+        >
+          <Wallet className="size-4.5" />
+        </button>
       </header>
 
-      {/* ═══ نوار آمار — کالا / بازدید ماه / دنبال‌کننده ═══ */}
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <div className="rounded-xl border bg-white px-1.5 py-2 text-center">
+      {/* ═══ طرح ۸ (U05) — کارت «صف اول»: ورود یک‌ضربه‌ای به کمپین‌ها ═══ */}
+      <button
+        type="button"
+        onClick={() => router.push("/sell/promos")}
+        className="mt-3 flex w-full items-center gap-2.5 rounded-2xl border border-[#e8cf9f] bg-[#fffaf0] px-3.5 py-2.5 text-start transition hover:border-[#b45309]/50"
+      >
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#fdf0da] text-[#b45309]">
+          <Megaphone className="size-4" />
+        </span>
+        <span className="min-w-0 grow">
+          <span className="block text-[12.5px] font-bold text-[#b45309]">صف اول — دیده‌شوی خریدارها</span>
+          <span className="mt-0.5 block text-[10.5px] leading-4 text-muted-foreground">
+            ۱٬۰۰۰ تومان هر نمایش هدفمند + ۵٬۰۰۰ تومان هر دنبال‌کردن — فقط کسانی که هنوز ذخیره‌تان نکرده‌اند.
+          </span>
+        </span>
+        <ChevronLeft className="size-4 shrink-0 text-stone-300" />
+      </button>
+
+      {/* ═══ نوار آمار — کالا / بازدید ماه / ذخیره‌کننده (طرح ۸) ═══ */}
+      <button
+        type="button"
+        onClick={() => router.push("/sell/customers")}
+        className="mt-3 grid w-full grid-cols-3 gap-2 rounded-2xl border bg-white p-1 text-center transition hover:border-primary/40"
+        aria-label="ذخیره‌کنندگان کاتالوگ"
+      >
+        <div className="rounded-xl px-1.5 py-2">
           <p className="text-[16px] font-bold">{fa(activeSell.length)}</p>
           <p className="mt-0.5 text-[10px] text-muted-foreground">کالا</p>
         </div>
-        <div className="rounded-xl border bg-white px-1.5 py-2 text-center">
+        <div className="rounded-xl px-1.5 py-2">
           <p className="text-[16px] font-bold">{fa(viewsMonth)}</p>
           <p className="mt-0.5 text-[10px] text-muted-foreground">بازدید ماه</p>
         </div>
-        <div className="rounded-xl border bg-white px-1.5 py-2 text-center">
-          <p className="text-[16px] font-bold text-primary-strong">{fa(followers)}</p>
-          <p className="mt-0.5 text-[10px] text-muted-foreground">دنبال‌کننده</p>
+        <div className="rounded-xl bg-accent/60 px-1.5 py-2">
+          <p className="text-[16px] font-bold text-primary">{fa(savers)}</p>
+          <p className="mt-0.5 text-[10px] text-muted-foreground">ذخیره‌کننده</p>
         </div>
-      </div>
+      </button>
 
       {/* ═══ جست‌وجو + افزودن کالا ═══ */}
       <div className="mt-3 flex items-center gap-2">

@@ -60,7 +60,7 @@ function BuildStamp() {
  *    داشبوردها/مشتریان من/بازار/برندها/ادمین از ناوبری خارج شدند؛
  *    مسیرشان (فعلاً) از پروفایل قابل دسترسی است (پل‌های انتقال).
  *
- * زبان رنگ: فروش = نارنجی برند (primary)، خرید = سنگی تیره #292524 (stone-800).
+ * زبان رنگ (طرح ۸): فروش = نارنجی #f97316 · خرید = فیروزه‌ای #0d9488.
  */
 
 export interface NavItem {
@@ -93,7 +93,7 @@ export function useNavItems(arm: Arm): NavItem[] {
 
 /** رنگ بازوی فعال — نارنجی فروش / سنگی خرید */
 export function armColor(arm: Arm): string {
-  return arm === "sell" ? "text-primary" : "text-stone-800";
+  return arm === "sell" ? "text-primary" : "text-[#0d9488]";
 }
 
 /** بازوی جاری از روی مسیر — صفحات هر بازو خودشان مسیرشان گویاست؛ بقیه از آخرین بازو */
@@ -186,7 +186,7 @@ function ArmSwitch({
       : "bg-transparent text-muted-foreground";
   const stateClsBuy = (on: boolean) =>
     on
-      ? "bg-stone-800 text-white shadow-[0_2px_8px_rgba(42,39,35,0.18)]"
+      ? "bg-[#0d9488] text-white shadow-[0_2px_8px_rgba(13,148,136,0.35)]"
       : "bg-transparent text-muted-foreground";
   return (
     <div role="tablist" aria-label="تعویض دستیار" className={wrapCls}>

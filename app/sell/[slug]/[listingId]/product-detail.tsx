@@ -18,6 +18,7 @@ import {
   useViewListing,
   useWatchGood,
   useWatchedGoods,
+  useSaverAnalysis,
 } from "@/lib/queries";
 import type { GoodItemDto, InquiryDto } from "@/lib/api";
 import {
@@ -33,6 +34,7 @@ import {
 import { useLocale } from "@/i18n/locale-context";
 import { ContactButton } from "@/app/components/contact-gate";
 import { ShareDialog } from "@/app/components/share";
+import { SourceBadge } from "@/app/components/customers";
 import { ProductSettingsDialog } from "@/app/sell/product-settings";
 import { NumberInput } from "@/components/number-input";
 import { Button } from "@/components/ui/button";
@@ -52,6 +54,7 @@ import {
   PlayCircle,
   Share2,
   Tag,
+  Users,  ChevronLeft,
 } from "lucide-react";
 
 /*
@@ -335,6 +338,87 @@ function Gallery({ photos, glyph, hot }: { photos: { url: string; thumbUrl: stri
 }
 
 // ═══ دید مالک — طرح ۰۳ ═══
+// ─── نوار + شیت ذخیره‌کنندگان قیمت این کالا (طرح ۸ — U60/U61) ───
+function SaversStrip({ bizId, goodId }: { bizId: string; goodId: string }) {
+  const analysisQ = useSaverAnalysis(bizId);
+  const [open, setOpen] = useState(false);
+  const item = (analysisQ.data?.items ?? []).find((i) => i.goodId === goodId);
+  const count = item?.saverCount ?? 0;
+  const sum = item?.summary;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mt-3.5 flex w-full items-center gap-2.5 rounded-2xl border border-[#bfe5e0] bg-[#f5fdfb] px-3.5 py-2.5 text-start transition hover:border-[#0d9488]/50"
+      >
+        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#e2f4f1] text-[#0d5d54]">
+          <Users className="size-4" />
+        </span>
+        <span className="min-w-0 grow">
+          <span className="block text-[12.5px] font-bold">
+            <b className="text-[#0d5d54]">{fa(count)}</b> دنبال‌کنندهٔ قیمت این کالا
+          </span>
+          {sum && count > 0 && (sum.shared > 0 || sum.promo > 0) && (
+            <span className="mt-0.5 block text-[10.5px] text-muted-foreground">
+              {sum.shared > 0 ? `${fa(sum.shared)} از لینک · ` : ""}
+              {sum.organic > 0 ? `${fa(sum.organic)} از تابلو` : ""}
+              {sum.promo > 0 ? ` · ${fa(sum.promo)} از پرومو` : ""}
+            </span>
+          )}
+        </span>
+        <ChevronLeft className="size-4 shrink-0 text-stone-300" />
+      </button>
+
+      {open && item && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center" role="dialog" aria-modal="true">
+          <div className="max-h-[80dvh] w-full max-w-md overflow-y-auto rounded-t-3xl border bg-white p-5 shadow-lg sm:rounded-3xl">
+            <p className="text-base font-extrabold">چه کسانی قیمت این کالا را دنبال می‌کنند؟</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              ذخیره‌کنندگان از لیست خریدشان یا استعلام — مشتق از دادهٔ واقعی.
+            </p>
+            <div className="mt-3.5 flex flex-col gap-2">
+              {item.savers.length === 0 && (
+                <p className="rounded-xl border border-dashed p-4 text-center text-xs text-muted-foreground">
+                  هنوز کسی این کالا را دنبال نمی‌کند.
+                </p>
+              )}
+              {item.savers.map((r) => (
+                <Link
+                  key={r.business.id}
+                  href={`/buy/${r.business.slug}`}
+                  className="flex items-center gap-2.5 rounded-xl border bg-white px-3 py-2.5 transition hover:border-primary/40"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent text-sm font-black text-primary">
+                    {r.business.name.trim().charAt(0)}
+                  </span>
+                  <span className="min-w-0 grow">
+                    <span className="flex flex-wrap items-center gap-1.5 text-[13px] font-bold">
+                      {r.business.name}
+                      <SourceBadge source={r.source} />
+                    </span>
+                    <span className="mt-0.5 block text-[10.5px] text-muted-foreground">
+                      {r.need?.volume != null ? `نیاز: ${fa(r.need.volume)} ${item.unit ?? ""}` : "در لیست خریدش دارد"}
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="mt-4 w-full rounded-xl border py-2.5 text-[13px] font-bold text-muted-foreground transition hover:bg-muted"
+            >
+              بستن
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function OwnerView({
   listing,
   bizId,
@@ -397,6 +481,9 @@ function OwnerView({
             </p>
           </div>
         </div>
+
+        {/* ═══ نوار ذخیره‌کنندگان این کالا (طرح ۸ — U60) ═══ */}
+        <SaversStrip bizId={bizId} goodId={listing.good.id} />
 
         {/* ═══ پنل مدیریت — قلب ادغام نما ═══ */}
         <div className="mt-3.5 rounded-2xl border bg-white p-3.5 shadow-sm">

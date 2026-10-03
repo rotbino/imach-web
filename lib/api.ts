@@ -386,6 +386,8 @@ export interface BusinessProfileDto {
   currency?: string;
   isVerified: boolean;
   isDemo: boolean;
+  /** طرح ۸ (U61) — شمار ذخیره‌کنندگان کاتالوگ (عمومی و بی‌خطر) */
+  saverCount?: number;
   /** صاحب کاتالوگ — ویترین اعتماد: در عمده‌فروشی طرف می‌خواهد بداند با چه کسی طرف است */
   owner?: {
     id: string;
@@ -589,6 +591,8 @@ export interface CustomerRowDto {
   followedAt: string;
   /** از طریق لینک دعوت/کاتالوگ صاحب لیست ثبت‌نام کرده */
   viaRef: boolean;
+  /** طرح ۸ (U60) — منبعِ رسیدن: ORGANIC | SHARED | PROMO */
+  source?: "ORGANIC" | "SHARED" | "PROMO";
   /** آخرین درخواست خرید فعال (لیستینگ BUY/BOTH با حجم) — null یعنی درخواست فعالی ندارد */
   latestRequest: {
     volume: number;
@@ -1268,8 +1272,15 @@ export const marketApi = {
   sendOffer: (body: { inquiryId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),
-  followSupplier: (businessId: string, supplierId: string) =>
-    api<{ ok: boolean }>("/market/followSupplier", { method: "POST", body: { businessId, supplierId } }),
+  followSupplier: (
+    businessId: string,
+    supplierId: string,
+    opts?: { source?: "ORGANIC" | "SHARED" | "PROMO"; promoId?: string }
+  ) =>
+    api<{ ok: boolean }>("/market/followSupplier", {
+      method: "POST",
+      body: { businessId, supplierId, ...opts },
+    }),
   unfollowSupplier: (businessId: string, supplierId: string) =>
     api<{ ok: boolean }>(`/market/unfollowSupplier/${supplierId}`, {
       method: "POST",
@@ -1280,7 +1291,7 @@ export const marketApi = {
     api<MarketItemDto[]>("/market/getBuyRequests", { params: { businessId } }),
   /** مشتریان من — خریدارهایی که کاتالوگ من را دنبال می‌کنند (غنی + مرتب‌شده) */
   getMyFollowers: (businessId: string) =>
-    api<CustomerRowDto[]>("/market/getFollowers", { params: { businessId } }),
+    api<FollowersPageDto>("/market/getFollowers", { params: { businessId } }),
   /** حذف یک فالوور از لیست مشتریان من */
   removeFollower: (businessId: string, followerBusinessId: string) =>
     api<{ ok: boolean; removed: number }>("/market/removeFollower", {
@@ -1291,10 +1302,10 @@ export const marketApi = {
   getMarketState: (businessId: string) =>
     api<MarketStateDto>("/market/getMarketState", { params: { businessId } }),
   /** فالو کردن خریدار از بازار — پشت گیت ۱۰ معرف */
-  followBuyer: (businessId: string, buyerBusinessId: string) =>
+  followBuyer: (businessId: string, buyerBusinessId: string, source?: "ORGANIC" | "SHARED") =>
     api<{ ok: boolean }>("/market/followBuyer", {
       method: "POST",
-      body: { businessId, buyerBusinessId },
+      body: { businessId, buyerBusinessId, source },
     }),
   /** برداشتن فالوی خریدار — همیشه آزاد */
   unfollowBuyer: (businessId: string, buyerBusinessId: string) =>
@@ -1305,6 +1316,183 @@ export const marketApi = {
   /** پیشنهاد قیمت مستقیم روی درخواست خرید — پشت گیت ۱۰ معرف */
   offerBuyRequest: (body: { businessId: string; buyListingId: string; priceMinor: number; note?: string }) =>
     api<OfferDto>("/market/offerBuyRequest", { method: "POST", body }),
+
+  // ═══ طرح ۸ — تحلیل ذخیره‌کنندگان / گوش‌به‌زنگ / تابلوی قیمت ═══
+
+  /** تحلیل کالا × ذخیره‌کننده (U60/U61) — چه کسی قیمت کدام کالای من را دنبال می‌کند */
+  getSaverAnalysis: (businessId: string) =>
+    api<SaverAnalysisDto>("/market/getSaverAnalysis", { params: { businessId } }),
+  /** نیازهای خریدارهای گوش‌به‌زنگ من (U63) — تب سوم درخواست‌های قیمت */
+  getWatchedBuyerNeeds: (businessId: string) =>
+    api<WatchedBuyerNeedsDto>("/market/getWatchedBuyerNeeds", { params: { businessId } }),
+  /** تابلوهای ذخیره‌شده + تزریق پرومو (U05/U06) — خوراک قیمتِ زنده */
+  getPriceBoard: (businessId: string) =>
+    api<PriceBoardDto>("/market/getPriceBoard", { params: { businessId } }),
+};
+
+// ─── طرح ۸ — انواع مشترک تحلیل / کیف / کمپین ───
+
+/** خروجی getFollowers — ردیف‌ها + خط خلاصهٔ عددی منبع‌ها (U60) */
+export interface FollowersPageDto {
+  rows: CustomerRowDto[];
+  summary: { total: number; organic: number; shared: number; promo: number };
+}
+
+/** یک ذخیره‌کننده در تحلیل کالا */
+export interface SaverRowDto {
+  business: { id: string; slug: string; name: string; city: string | null; isVerified: boolean };
+  source: "ORGANIC" | "SHARED" | "PROMO";
+  since: string;
+  need: { volume: number | null; frequency: string | null } | null;
+}
+
+/** تحلیل کالا × ذخیره‌کننده — هر کالای فروش من */
+export interface SaverAnalysisDto {
+  items: {
+    listingId: string;
+    goodId: string;
+    goodName: string | null;
+    unit: string | null;
+    priceMinor: number | null;
+    currency: string | null;
+    variantLabel: string | null;
+    saverCount: number;
+    summary: { total: number; organic: number; shared: number; promo: number };
+    savers: SaverRowDto[];
+  }[];
+}
+
+/** نیاز یک خریدار گوش‌به‌زنگ */
+export interface WatchedNeedDto {
+  id: string;
+  volume: number | null;
+  frequency: string | null;
+  updatedAt: string;
+  buyer: { id: string; slug: string; name: string; city: string | null; isVerified: boolean };
+  good: { id: string; nameFa: string; nameEn: string | null; unit: string };
+  sellsSameGood: boolean | null;
+}
+
+export interface WatchedBuyerNeedsDto {
+  buyers: number;
+  needs: WatchedNeedDto[];
+}
+
+/** ردیف تابلوی قیمت — یک کالا از لیست خرید من */
+export interface PriceBoardRowDto {
+  goodId: string;
+  goodName: string | null;
+  unit: string | null;
+  suppliers: {
+    listingId: string;
+    business: { id: string; slug: string; name: string; city: string | null; isVerified: boolean };
+    priceMinor: number | null;
+    currency: string | null;
+    stock: number | null;
+    minOrder: number | null;
+    variantLabel: string | null;
+    updatedAt: string;
+    deltaMinor: number;
+  }[];
+  bestMinor: number | null;
+  promo: {
+    promoId: string;
+    listingId: string;
+    supplier: { id: string; slug: string; name: string; city: string | null; isVerified: boolean };
+    priceMinor: number | null;
+    currency: string | null;
+    variantLabel: string | null;
+    goodName: string | null;
+  } | null;
+}
+
+export interface PriceBoardDto {
+  rows: PriceBoardRowDto[];
+}
+
+// ─── طرح ۸ — کیف پول تومانی (U08/U12) ───
+
+export interface WalletTxnDto {
+  id: string;
+  type: "CHARGE" | "PROMO_SPEND" | "REFERRAL_REWARD" | "REFUND";
+  amountMinor: number;
+  ref: string | null;
+  description: string | null;
+  createdAt: string;
+}
+
+export interface WalletDto {
+  balanceMinor: number;
+  txns: WalletTxnDto[];
+}
+
+export const walletApi = {
+  getWallet: (businessId: string) =>
+    api<WalletDto>("/wallet/get", { params: { businessId } }),
+  /** مبلغ به تومان — سرور به ریال تبدیل می‌کند */
+  charge: (businessId: string, amountToman: number) =>
+    api<{ ok: boolean; balanceMinor: number; receipt: string }>("/wallet/charge", {
+      method: "POST",
+      body: { businessId, amountToman },
+    }),
+};
+
+// ─── طرح ۸ — کمپین «صف اول» (U05..U09) ───
+
+export interface PromoMineDto {
+  id: string;
+  listingId: string;
+  goodName: string | null;
+  priceMinor: number | null;
+  budgetMinor: number;
+  spentMinor: number;
+  remainingMinor: number;
+  isActive: boolean;
+  eventCount: number;
+  createdAt: string;
+  stoppedAt: string | null;
+}
+
+export interface PromoReportDto {
+  promo: {
+    id: string;
+    listingId: string;
+    goodName: string | null;
+    priceMinor: number | null;
+    currency: string | null;
+    budgetMinor: number;
+    spentMinor: number;
+    remainingMinor: number;
+    isActive: boolean;
+    stoppedAt: string | null;
+    createdAt: string;
+  };
+  stats: {
+    views: number;
+    follows: number;
+    spentMinor: number;
+    viewRateMinor: number;
+    followRateMinor: number;
+    costPerFollowMinor: number | null;
+  };
+  viewers: { id: string; slug: string; name: string; city: string | null; isVerified: boolean }[];
+  converted: { id: string; slug: string; name: string; city: string | null; isVerified: boolean }[];
+}
+
+export const promosApi = {
+  create: (businessId: string, listingId: string, budgetToman: number) =>
+    api<{ id: string; budgetMinor: number }>("/promos/create", {
+      method: "POST",
+      body: { businessId, listingId, budgetToman },
+    }),
+  stop: (businessId: string, promoId: string) =>
+    api<{ id: string; isActive: boolean }>(`/promos/stop/${promoId}`, {
+      method: "POST",
+      body: { businessId },
+    }),
+  report: (businessId: string, promoId: string) =>
+    api<PromoReportDto>("/promos/report", { params: { businessId, promoId } }),
+  mine: (businessId: string) => api<PromoMineDto[]>("/promos/mine", { params: { businessId } }),
 };
 
 // ─── گیت اشتراک مخاطبین — دفترچه‌ی تلفن کاربر با اجازه‌ی خودش ───
@@ -1338,7 +1526,8 @@ export type NotificationType =
   | "OFFER" // پیشنهاد تازه روی درخواست خرید من
   | "QUOTE" // استعلام موتور تطبیق به من رسید
   | "CONTACT_JOINED" // شماره‌ای از دفترچه‌ی من عضو شد
-  | "PRICE_CHANGE"; // فاز ۵ — کالای دنبال‌شده قیمتش عوض شد
+  | "PRICE_CHANGE" // فاز ۵ — کالای دنبال‌شده قیمتش عوض شد
+  | "BUYER_NEED"; // طرح ۸ — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد
 
 /** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد */
 export interface NotificationDto {

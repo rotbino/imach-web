@@ -7,7 +7,7 @@ import { fa } from "@/lib/format";
 import { usePushSetup } from "@/lib/push";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { NotificationDto } from "@/lib/api";
-import { Bell, Bookmark, ClipboardList, Handshake, Tag, UserPlus, Users } from "lucide-react";
+import { Bell, BellRing, Bookmark, ClipboardList, Handshake, Tag, UserPlus, Users } from "lucide-react";
 
 /*
  * زنگ اعلان‌ها — هدر، همه‌ی صفحات.
@@ -26,13 +26,13 @@ const TYPE_VIEWS: Record<NotificationDto["type"], TypeView> = {
   FOLLOW_SUPPLIER: {
     icon: Users,
     iconClass: "bg-primary/10 text-primary",
-    text: (n) => `${n.actorName ?? "کاربری"} کاتالوگ شما را فالو کرد`,
+    text: (n) => `${n.actorName ?? "کاربری"} کاتالوگ شما را ذخیره کرد`,
     href: "/profile",
   },
   FOLLOW_BUYER: {
     icon: Handshake,
-    iconClass: "bg-stone-800/10 text-stone-800",
-    text: (n) => `${n.actorName ?? "کاربری"} لیست خرید شما را فالو کرد`,
+    iconClass: "bg-teal-600/10 text-teal-700",
+    text: (n) => `${n.actorName ?? "تأمین‌کننده‌ای"} گوش‌به‌زنگ شما شد`,
     href: "/buy/suppliers",
   },
   OFFER: {
@@ -58,6 +58,13 @@ const TYPE_VIEWS: Record<NotificationDto["type"], TypeView> = {
     iconClass: "bg-stone-800/10 text-stone-800",
     text: (n) => `قیمت «${n.good ?? "کالا"}» به‌روز شد${n.actorName ? ` — ${n.actorName}` : ""}`,
     href: "/buy",
+  },
+  // طرح ۸ (U63) — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد → تب گوش‌به‌زنگ
+  BUYER_NEED: {
+    icon: BellRing,
+    iconClass: "bg-teal-600/10 text-teal-700",
+    text: (n) => `${n.actorName ?? "خریداری"} اعلام نیاز کرد: «${n.good ?? "کالا"}»`,
+    href: "/sell/requests?tab=watch",
   },
 };
 

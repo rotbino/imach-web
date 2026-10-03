@@ -36,6 +36,15 @@ import {
   type SuggestionsDto,
   type SupplyBoardDto,
   type WatchedRowDto,
+  type FollowersPageDto,
+  type PriceBoardDto,
+  type PromoMineDto,
+  type PromoReportDto,
+  type SaverAnalysisDto,
+  type WalletDto,
+  type WatchedBuyerNeedsDto,
+  promosApi,
+  walletApi,
 } from "./api";
 import { useAuthStore } from "./auth-store";
 
@@ -66,6 +75,13 @@ const qk = {
   marketState: (bizId: string) => ["market", "state", bizId] as const,
   contacts: () => ["contacts"] as const,
   notifications: () => ["notifications"] as const,
+  // طرح ۸
+  saverAnalysis: (bizId: string) => ["market", "saverAnalysis", bizId] as const,
+  watchedNeeds: (bizId: string) => ["market", "watchedNeeds", bizId] as const,
+  priceBoard: (bizId: string) => ["market", "priceBoard", bizId] as const,
+  wallet: (bizId: string) => ["wallet", bizId] as const,
+  promos: (bizId: string) => ["promos", bizId] as const,
+  promoReport: (bizId: string, promoId: string) => ["promos", "report", bizId, promoId] as const,
 };
 
 // ── پابلیک ──
@@ -533,10 +549,26 @@ export function useFollows(businessId: string | null | undefined): UseQueryResul
 export function useFollowToggle() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ businessId, supplierId, follow }: { businessId: string; supplierId: string; follow: boolean }) =>
-      follow ? marketApi.followSupplier(businessId, supplierId) : marketApi.unfollowSupplier(businessId, supplierId),
+    mutationFn: ({
+      businessId,
+      supplierId,
+      follow,
+      source,
+      promoId,
+    }: {
+      businessId: string;
+      supplierId: string;
+      follow: boolean;
+      source?: "ORGANIC" | "SHARED" | "PROMO";
+      promoId?: string;
+    }) =>
+      follow
+        ? marketApi.followSupplier(businessId, supplierId, { source, promoId })
+        : marketApi.unfollowSupplier(businessId, supplierId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
+      void qc.invalidateQueries({ queryKey: ["wallet"] });
+      void qc.invalidateQueries({ queryKey: ["promos"] });
     },
   });
 }
@@ -565,8 +597,8 @@ export function useSuggestions(businessId: string | null | undefined): UseQueryR
   });
 }
 
-/** مشتریان من — خریدارهایی که کاتالوگ من را دنبال می‌کنند (غنی + مرتب‌شده) */
-export function useMyFollowers(businessId: string | null | undefined): UseQueryResult<CustomerRowDto[]> {
+/** مشتریان من — ذخیره‌کنندگان کاتالوگ + خط خلاصهٔ منبع (طرح ۸) */
+export function useMyFollowers(businessId: string | null | undefined): UseQueryResult<FollowersPageDto> {
   return useQuery({
     queryKey: qk.myFollowers(businessId ?? ""),
     queryFn: () => marketApi.getMyFollowers(businessId as string),
@@ -758,4 +790,106 @@ export function useMyAvatar(userId: string | null | undefined) {
 export function useBusinessLogo(bizId: string | null | undefined) {
   const q = useFileSlot("Business", bizId, "logo");
   return { ...q, data: q.error ? null : (q.data ?? null) };
+}
+
+
+// ═══ طرح ۸ — تحلیل ذخیره‌کنندگان / گوش‌به‌زنگ / تابلو / کیف / کمپین ═══
+
+/** تحلیل کالا × ذخیره‌کننده (U60/U61) — چه کسی قیمت کدام کالای من را دنبال می‌کند */
+export function useSaverAnalysis(businessId: string | null | undefined): UseQueryResult<SaverAnalysisDto> {
+  return useQuery({
+    queryKey: qk.saverAnalysis(businessId ?? ""),
+    queryFn: () => marketApi.getSaverAnalysis(businessId as string),
+    enabled: !!businessId,
+    staleTime: 60_000,
+  });
+}
+
+/** نیازهای خریدارهای گوش‌به‌زنگ من (U63) — تب سوم درخواست‌های قیمت */
+export function useWatchedBuyerNeeds(businessId: string | null | undefined): UseQueryResult<WatchedBuyerNeedsDto> {
+  return useQuery({
+    queryKey: qk.watchedNeeds(businessId ?? ""),
+    queryFn: () => marketApi.getWatchedBuyerNeeds(businessId as string),
+    enabled: !!businessId,
+    staleTime: 30_000,
+  });
+}
+
+/** تابلوهای ذخیره‌شده + پرومو (U05/U06) — خوراک قیمتِ زنده */
+export function usePriceBoard(businessId: string | null | undefined): UseQueryResult<PriceBoardDto> {
+  return useQuery({
+    queryKey: qk.priceBoard(businessId ?? ""),
+    queryFn: () => marketApi.getPriceBoard(businessId as string),
+    enabled: !!businessId,
+    staleTime: 30_000,
+  });
+}
+
+/** کیف پول تومانی (U08) — موجودی + تاریخچه */
+export function useWallet(businessId: string | null | undefined): UseQueryResult<WalletDto> {
+  return useQuery({
+    queryKey: qk.wallet(businessId ?? ""),
+    queryFn: () => walletApi.getWallet(businessId as string),
+    enabled: !!businessId,
+    staleTime: 15_000,
+  });
+}
+
+/** شارژ کیف — پس از موفقیت، کیف و کمپین‌ها تازه می‌شوند */
+export function useWalletCharge() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ businessId, amountToman }: { businessId: string; amountToman: number }) =>
+      walletApi.charge(businessId, amountToman),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["wallet"] });
+    },
+  });
+}
+
+/** کمپین‌های من (U09) */
+export function useMyPromos(businessId: string | null | undefined): UseQueryResult<PromoMineDto[]> {
+  return useQuery({
+    queryKey: qk.promos(businessId ?? ""),
+    queryFn: () => promosApi.mine(businessId as string),
+    enabled: !!businessId,
+    staleTime: 30_000,
+  });
+}
+
+/** گزارش عددی یک کمپین (U64) */
+export function usePromoReport(businessId: string | null | undefined, promoId: string | null): UseQueryResult<PromoReportDto> {
+  return useQuery({
+    queryKey: qk.promoReport(businessId ?? "", promoId ?? ""),
+    queryFn: () => promosApi.report(businessId as string, promoId as string),
+    enabled: !!businessId && !!promoId,
+    staleTime: 30_000,
+  });
+}
+
+/** ساخت کمپین «صف اول» — بودجه از کیف قفل می‌شود */
+export function useCreatePromo() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ businessId, listingId, budgetToman }: { businessId: string; listingId: string; budgetToman: number }) =>
+      promosApi.create(businessId, listingId, budgetToman),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["promos"] });
+      void qc.invalidateQueries({ queryKey: ["wallet"] });
+      void qc.invalidateQueries({ queryKey: ["market"] });
+    },
+  });
+}
+
+/** توقف کمپین — باقیمانده به کیف برمی‌گردد */
+export function useStopPromo() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ businessId, promoId }: { businessId: string; promoId: string }) =>
+      promosApi.stop(businessId, promoId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["promos"] });
+      void qc.invalidateQueries({ queryKey: ["wallet"] });
+    },
+  });
 }

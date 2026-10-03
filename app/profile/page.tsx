@@ -50,6 +50,7 @@ import {
   Tag,
   User,
   Users,
+  Wallet,  Megaphone,
 } from "lucide-react";
 
 /*
@@ -145,8 +146,8 @@ function ProfileBody({ arm, bizId }: { arm: Arm; bizId: string }) {
     (l) => l.isActive !== false && (l.mode === "SELL" || l.mode === "BOTH")
   );
   const viewsMonth = activeSell.reduce((s, l) => s + (l.viewCount30 ?? 0), 0);
-  const followers = followersQ.data?.length ?? 0;
-  const withRequest = (followersQ.data ?? []).filter((c) => c.latestRequest).length;
+  const followers = followersQ.data?.rows.length ?? 0;
+  const withRequest = (followersQ.data?.rows ?? []).filter((c) => c.latestRequest).length;
 
   const watched = watchedQ.data ?? [];
   const priceChangedWeek = watched.filter((w) => w.priceChanged).length;
@@ -226,7 +227,7 @@ function ProfileBody({ arm, bizId }: { arm: Arm; bizId: string }) {
               <>
                 <Stat v={fa(activeSell.length)} k="کالا" />
                 <Stat v={fa(viewsMonth)} k="بازدید ماه" />
-                <Stat v={fa(followers)} k="مشتری" hot={hotCls} />
+                <Stat v={fa(followers)} k="ذخیره‌کننده" hot={hotCls} />
               </>
             ) : (
               <>
@@ -247,11 +248,45 @@ function ProfileBody({ arm, bizId }: { arm: Arm; bizId: string }) {
                 bizId={biz.id}
               />
 
+              {/* ═══ طرح ۸ — کیف پول و کمپین «صف اول» (قانون تشنگی: عمق پروفایل) ═══ */}
+              <div className="mt-2.5 grid gap-2">
+                <Link
+                  href="/sell/wallet"
+                  className="flex items-center gap-2.5 rounded-2xl border bg-white p-3 text-start shadow-sm transition hover:shadow-md"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-[#fdf0da] text-[#b45309]">
+                    <Wallet className="size-4.5" />
+                  </span>
+                  <span className="min-w-0 grow">
+                    <span className="block text-[13px] font-bold">کیف پول — تومان</span>
+                    <span className="mt-0.5 block truncate text-[10.5px] text-muted-foreground">
+                      شارژ، تراکنش‌ها و پاداش دعوت‌ها
+                    </span>
+                  </span>
+                  <ChevronLeft className="size-3.5 shrink-0 text-stone-400" />
+                </Link>
+                <Link
+                  href="/sell/promos"
+                  className="flex items-center gap-2.5 rounded-2xl border border-[#e8cf9f] bg-[#fffaf0] p-3 text-start shadow-sm transition hover:shadow-md"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-[#fdf0da] text-[#b45309]">
+                    <Megaphone className="size-4.5" />
+                  </span>
+                  <span className="min-w-0 grow">
+                    <span className="block text-[13px] font-bold text-[#b45309]">کمپین‌های «صف اول»</span>
+                    <span className="mt-0.5 block truncate text-[10.5px] text-muted-foreground">
+                      ۱٬۰۰۰ ت هر نمایش + ۵٬۰۰۰ ت هر دنبال‌کردن — گزارش عددی
+                    </span>
+                  </span>
+                  <ChevronLeft className="size-3.5 shrink-0 text-stone-400" />
+                </Link>
+              </div>
+
               {/* ═══ ابزار رشد کاتالوگ (طرح ۰۷) ═══ */}
               <GrowthCard
                 arm="sell"
                 title="ابزار رشد کاتالوگ"
-                desc="لینک کاتالوگتان را برای مشتری‌ها بفرستید — هر ثبت‌نام از لینک شما، خودکار مشتری شما می‌شود."
+                desc="لینک کاتالوگتان را برای مشتری‌ها بفرستید — هر ذخیرهٔ تازه از لینک شما +۵٬۰۰۰ تومان پاداش دارد."
                 slug={biz.slug}
                 bizName={biz.name}
               />

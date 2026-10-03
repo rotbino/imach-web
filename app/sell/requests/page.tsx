@@ -2,25 +2,26 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BadgeCheck, ChevronLeft, Inbox, Loader2, MapPin, Sparkles } from "lucide-react";
+import { BellRing, BadgeCheck, ChevronLeft, Inbox, Loader2, MapPin, Sparkles } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { setArmActive, useActiveBusiness } from "@/lib/active-biz";
 import { AppFooter, AppHeader, MobileTabBar, SectionTitle } from "@/app/components/chrome";
 import { fa, frequencyLabel, goodName, proximity, proximityLabel, timeAgo, unitLabel, CURRENCIES, currencyLabel, fmtMoney } from "@/lib/format";
-import { useBuyRequests, useIncomingInquiries, useMarketState, useOfferBuyRequest, useMyListings } from "@/lib/queries";
+import { useBuyRequests, useIncomingInquiries, useMarketState, useOfferBuyRequest, useMyListings, useWatchedBuyerNeeds } from "@/lib/queries";
 import { NumberInput } from "@/components/number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ApiError, type InquiryDto, type MarketItemDto } from "@/lib/api";
+import { ApiError, type InquiryDto, type MarketItemDto, type WatchedNeedDto } from "@/lib/api";
 import { useTabParam } from "@/app/components/url-tabs";
 
 /*
- * درخواست‌های قیمت — دستیار فروش (فاز ۴ · طرح ۰۵)
- * دو حالت با تب داخلی:
+ * درخواست‌های قیمت — دستیار فروش (فاز ۴ · طرح ۰۵ + طرح ۸)
+ * سه حالت با تب داخلی:
  *   «به من»           → Inquiry های مستقیم (getInquiries)
  *   «فرصت‌های بازار»  → BUY لیستینگ‌های هم‌گود از موتور تطبیق (getBuyRequests)
- * پایین صفحه راهنمای تمایز (دقیقاً متن طرح ۰۵).
+ *   «گوش به زنگ»      → طرح ۸ (U63) — نیازهای خریدارهایی که دنبالشان می‌کنم؛
+ *                       پیشنهاد از گیت معرف عبور می‌کند (نیاز خودش دعوت است)
  */
 
 // پالت آواتار — رنگ پایدار از روی نام خریدار (سیستم ۶رنگی طرح)
@@ -132,6 +133,59 @@ function OpportunityRow({ item, myCity, offered, onOpen }: { item: MarketItemDto
   );
 }
 
+// ─── سطر نیاز خریدارِ گوش‌به‌زنگ (طرح ۸ — U63) ───
+function WatchedNeedRow({
+  need,
+  myCity,
+  onOffer,
+}: {
+  need: WatchedNeedDto;
+  myCity: string;
+  onOffer: () => void;
+}) {
+  const unit = unitLabel(need.good.unit);
+  return (
+    <div className="flex w-full items-center gap-[11px] rounded-[12px] border border-[#bfe5e0] bg-[#f7fdfc] px-3 py-2.5 text-start transition hover:shadow-sm">
+      <span
+        className="grid size-[30px] shrink-0 place-items-center rounded-full text-xs font-bold text-white"
+        style={{ background: "#0d9488" }}
+      >
+        {need.buyer.name.trim().charAt(0)}
+      </span>
+      <span className="min-w-0 grow">
+        <span className="flex flex-wrap items-center gap-1.5 text-[13.5px] font-bold">
+          {need.buyer.name}
+          {need.buyer.isVerified && <BadgeCheck className="size-3.5 shrink-0 text-[#1d5fb8]" aria-label="تاییدشده" />}
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#e2f4f1] px-[9px] py-[2.5px] text-[10.5px] font-bold text-[#0d5d54]">
+            <BellRing className="size-3" />
+            گوش‌به‌زنگ
+          </span>
+        </span>
+        <span className="mt-1 flex flex-wrap items-center gap-2 text-[11.5px] text-muted-foreground">
+          <span className="flex items-center gap-[3px]">
+            <MapPin className="size-[11px]" strokeWidth={1.75} />
+            {need.buyer.city ?? "—"} · {proximityLabel(proximity(need.buyer.city ?? "", myCity))}
+          </span>
+          <span className="text-[10px]">{timeAgo(need.updatedAt)}</span>
+        </span>
+        <span className="mt-[7px] block rounded-[9px] bg-[#e2f4f1] px-2.5 py-[7px] text-[12.5px] leading-5 text-[#0d5d54]">
+          <b>
+            {goodName(need.good as never)} · {fa(need.volume ?? 0)} {unit}
+          </b>
+          {need.frequency ? ` — ${frequencyLabel(need.frequency)}` : ""}
+        </span>
+      </span>
+      <button
+        type="button"
+        onClick={onOffer}
+        className="shrink-0 rounded-[10px] bg-[#0d9488] px-3 py-2 text-[11.5px] font-bold text-white transition hover:bg-[#0f766e]"
+      >
+        پیشنهاد قیمت
+      </button>
+    </div>
+  );
+}
+
 export default function RequestsPage() {
   return (
     <Suspense fallback={<div className="grid min-h-[100dvh] place-items-center"><Loader2 className="size-6 animate-spin text-primary" /></div>}>
@@ -180,11 +234,12 @@ function RequestsBody() {
 
 function RequestsTabs({ bizId, myCity, currency, mySlug, myName }: { bizId: string; myCity: string; currency: string; mySlug: string; myName: string }) {
   const router = useRouter();
-  // تب با URL سینک: ?tab=mine | market
-  const [tab, setTab] = useTabParam("mine", ["mine", "market"]);
+  // تب با URL سینک: ?tab=mine | market | watch (گوش‌به‌زنگ — طرح ۸)
+  const [tab, setTab] = useTabParam("mine", ["mine", "market", "watch"]);
   const inquiriesQ = useIncomingInquiries(bizId);
   const demandQ = useBuyRequests(bizId);
   const stateQ = useMarketState(bizId);
+  const watchedQ = useWatchedBuyerNeeds(bizId);
   const [offerFor, setOfferFor] = useState<MarketItemDto | null>(null);
   const offeredBuyerIds = useMemo(() => new Set(stateQ.data?.offeredBuyerIds ?? []), [stateQ.data]);
 
@@ -193,6 +248,8 @@ function RequestsTabs({ bizId, myCity, currency, mySlug, myName }: { bizId: stri
   const thisMonthKey = monthKeyOf(new Date().toISOString());
   const monthCount = all.filter((q) => monthKeyOf(q.createdAt) === thisMonthKey).length;
   const demand = demandQ.data ?? [];
+  const needs = watchedQ.data?.needs ?? [];
+  const watchedBuyers = watchedQ.data?.buyers ?? 0;
 
   return (
     <>
@@ -206,7 +263,7 @@ function RequestsTabs({ bizId, myCity, currency, mySlug, myName }: { bizId: stri
         }
       />
 
-      {/* ═══ تب داخلی (طرح ۰۵: inner-tabs) ═══ */}
+      {/* ═══ تب داخلی (طرح ۰۵ + طرح ۸: inner-tabs سه‌تایی) ═══ */}
       <div className="mb-3 flex gap-1 rounded-[11px] bg-[#f1efe9] p-1">
         <button
           type="button"
@@ -226,7 +283,21 @@ function RequestsTabs({ bizId, myCity, currency, mySlug, myName }: { bizId: stri
             tab === "market" ? "bg-white text-foreground shadow-[0_1px_3px_rgba(42,39,35,0.12)]" : "bg-transparent text-muted-foreground"
           }`}
         >
-          فرصت‌های بازار <span className="ms-1 text-[10.5px] font-normal opacity-75">({fa(demand.length)})</span>
+          بازار <span className="ms-1 text-[10.5px] font-normal opacity-75">({fa(demand.length)})</span>
+        </button>
+        {/* طرح ۸ (U63) — تب سوم: گوش‌به‌زنگ */}
+        <button
+          type="button"
+          onClick={() => setTab("watch")}
+          aria-pressed={tab === "watch"}
+          className={`flex h-[34px] flex-1 items-center justify-center gap-1 rounded-[8px] border-0 text-[12.5px] font-bold transition ${
+            tab === "watch"
+              ? "bg-[#0d9488] text-white shadow-[0_1px_4px_rgba(13,148,136,0.4)]"
+              : "bg-transparent text-muted-foreground"
+          }`}
+        >
+          <BellRing className="size-3.5" />
+          گوش‌به‌زنگ <span className="text-[10.5px] font-normal opacity-75">({fa(needs.length)})</span>
         </button>
       </div>
 
@@ -248,6 +319,46 @@ function RequestsTabs({ bizId, myCity, currency, mySlug, myName }: { bizId: stri
             ))}
           </div>
         )
+      ) : tab === "watch" ? (
+        // ═══ طرح ۸ (U63) — گوش‌به‌زنگ: نیازهای خریدارهایی که دنبالشان می‌کنم ═══
+        watchedQ.isLoading ? (
+          <div className="grid place-items-center py-16">
+            <Loader2 className="size-6 animate-spin text-primary" />
+          </div>
+        ) : needs.length === 0 ? (
+          <div className="rounded-2xl border-[1.5px] border-dashed border-[#a7d8d1] bg-[#fafffe] px-4 py-6 text-center text-[12.5px] leading-9 text-muted-foreground">
+            {watchedBuyers > 0
+              ? `شما ${fa(watchedBuyers)} خریدار را گوش‌به‌زنگ کرده‌اید — هنوز نیاز جدیدی ثبت نکرده‌اند.`
+              : "هنوز خریداری را گوش‌به‌زنگ نکرده‌اید."}
+            <br />
+            از لیست خرید عمومی یا بازار، روی «گوش به زنگ» بزنید؛ هر نیاز جدید همان‌جا می‌نشیند.
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {needs.map((n) => (
+              <WatchedNeedRow
+                key={n.id}
+                need={n}
+                myCity={myCity}
+                onOffer={() =>
+                  setOfferFor({
+                    id: n.id,
+                    volume: n.volume,
+                    frequency: n.frequency,
+                    updatedAt: n.updatedAt,
+                    business: n.buyer,
+                    good: n.good,
+                    mode: "BUY",
+                    priceMinor: null,
+                    currency: null,
+                    stock: null,
+                    minOrder: null,
+                  } as unknown as MarketItemDto)
+                }
+              />
+            ))}
+          </div>
+        )
       ) : demandQ.isLoading ? (
         <div className="grid place-items-center py-16">
           <Loader2 className="size-6 animate-spin text-primary" />
@@ -266,7 +377,7 @@ function RequestsTabs({ bizId, myCity, currency, mySlug, myName }: { bizId: stri
         </div>
       )}
 
-      {/* ═══ راهنمای تمایز — متن دقیق طرح ۰۵ ═══ */}
+      {/* ═══ راهنمای تمایز — متن طرح ۰۵ + طرح ۸ ═══ */}
       <div className="mt-3 flex gap-1.5 rounded-[12px] bg-muted px-3 py-[9px] text-[10.5px] leading-[1.9] text-muted-foreground">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="mt-1 size-[13px] shrink-0 text-primary">
           <circle cx="12" cy="12" r="9" />
@@ -275,7 +386,9 @@ function RequestsTabs({ bizId, myCity, currency, mySlug, myName }: { bizId: stri
         <p>
           «به من» = درخواست‌هایی که مستقیم برای کالاهای شما پیام شده.
           <br />
-          «فرصت‌های بازار» = نیازی که iMach شبیه کاتالوگ شما دیده و می‌توانید پیشنهاد بدهید.
+          «بازار» = نیازی که iMach شبیه کاتالوگ شما دیده و می‌توانید پیشنهاد بدهید.
+          <br />
+          «گوش‌به‌زنگ» = نیاز خریدارهایی که خودتان دنبالشان می‌کنید — بدون گیت معرف.
         </p>
       </div>
 

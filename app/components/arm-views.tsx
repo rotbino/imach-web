@@ -27,6 +27,7 @@ import {
   PencilLine,
   Share2,
   UserRound,
+  BellRing,
 } from "lucide-react";
 import { OwnerLineEditable } from "./owner-edit";
 import { LocationPicker, type GeoPoint } from "@/components/location-picker";
@@ -193,8 +194,14 @@ export function SellArmView({ slug }: { slug: string }) {
       return;
     }
     followToggle.mutate(
-      { businessId: mine.id, supplierId: biz!.id, follow: true },
-      { onSuccess: () => toast({ title: `${biz!.name} دنبال شد`, description: "قیمت‌هایش در «تابلوهای دنبال‌شده» دستیار خرید شما جمع می‌شود." }) }
+      { businessId: mine.id, supplierId: biz!.id, follow: true, source: "ORGANIC" },
+      {
+        onSuccess: () =>
+          toast({
+            title: `کاتالوگ ${biz!.name} ذخیره شد`,
+            description: "قیمت‌هایش در «تابلوهای ذخیره‌شده» دستیار خرید شما جمع می‌شود.",
+          }),
+      }
     );
   };
 
@@ -266,14 +273,27 @@ export function SellArmView({ slug }: { slug: string }) {
               <p className="text-lg font-black">{fa(sellListings.length)}</p>
               <p className="text-[11px] text-muted-foreground">کالا</p>
             </div>
+            {/* طرح ۸ (U61) — شمار ذخیره‌کنندگان کاتالوگ (عمومی و بی‌خطر) */}
+            {biz.saverCount != null && (
+              <div>
+                <p className="text-lg font-black text-primary">{fa(biz.saverCount)}</p>
+                <p className="text-[11px] text-muted-foreground">ذخیره‌کننده</p>
+              </div>
+            )}
           </div>
 
-          {/* دکمه‌های تماس و دنبال کردن */}
+          {/* دکمه‌های تماس و ذخیرهٔ کاتالوگ (واژگان طرح ۸ — نه «دنبال کردن») */}
           <div className="mt-5 flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
             <ContactButton slug={slug} bizName={biz.name} label={`تماس با ${isOwner ? "فروشنده" : biz.name}`} className="sm:min-w-44" />
             {!isOwner && (
-              <Button variant="outline" onClick={follow} disabled={followToggle.isPending} className="sm:min-w-36">
-                دنبال کردن
+              <Button
+                variant="outline"
+                onClick={follow}
+                disabled={followToggle.isPending}
+                className="gap-1.5 border-primary/40 text-primary hover:bg-accent sm:min-w-36"
+              >
+                <Bookmark className="size-4" />
+                ذخیره کاتالوگ
               </Button>
             )}
           </div>
@@ -418,8 +438,11 @@ export function BuyArmView({ slug }: { slug: string }) {
         onSuccess: () =>
           toast(
             deskFollowed
-              ? { title: "فالو برداشته شد" }
-              : { title: "فالو شد", description: "به عنوان تامین‌کننده در «تامین من» او ظاهر می‌شوید." }
+              ? { title: "گوش‌به‌زنگ برداشته شد" }
+              : {
+                  title: "گوش به زنگ شدید",
+                  description: "هر نیاز جدیدی که ثبت کند، در تب «گوش‌به‌زنگ» درخواست‌های قیمت شما می‌نشیند.",
+                }
           ),
         onError: (e) => toast({ title: e.message || "خطا", variant: "destructive" }),
       }
@@ -520,14 +543,20 @@ export function BuyArmView({ slug }: { slug: string }) {
                 variant="outline"
                 onClick={followDesk}
                 disabled={followBuyerToggle.isPending}
-                className={`sm:min-w-36 ${deskFollowed ? "border-stone-300 bg-stone-100 text-stone-700" : ""}`}
+                className={`sm:min-w-36 ${
+                  deskFollowed
+                    ? "border-[#bfe5e0] bg-[#e2f4f1] text-[#0d5d54]"
+                    : "border-[#0d9488]/40 text-[#0d9488] hover:bg-[#e2f4f1]"
+                }`}
               >
                 {followBuyerToggle.isPending ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : deskFollowed ? (
                   <Check className="size-4" />
-                ) : null}
-                {deskFollowed ? "فالو شد" : "دنبال کردن"}
+                ) : (
+                  <BellRing className="size-4" />
+                )}
+                {deskFollowed ? "گوش‌به‌زنگ هستید" : "گوش به زنگ"}
               </Button>
             )}
           </div>

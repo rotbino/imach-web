@@ -44,43 +44,57 @@
 }
 
 /*
- * iMach — یک نارنجیِ روشن و پرجان روی خنثیِ نزدیک به سفید
- * (vivid orange over soft near-white neutral)
- * Light theme only for now; tokens are LTR/RTL-neutral (logical utilities only).
+ * iMach — طرح مرجع ۸ (design-reference-8):
+ * پالت گرمِ «کرمِ روشن + نارنجی فروش + فیروزه‌ای خرید» — same tokens,
+ * design-8 values (hex). Light theme only; tokens are LTR/RTL-neutral.
  */
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.987 0.0025 75);
-  --foreground: oklch(0.245 0.012 60);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.245 0.012 60);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.245 0.012 60);
-  --primary: oklch(0.705 0.19 45);
-  --primary-foreground: oklch(0.995 0.002 85);
-  --secondary: oklch(0.955 0.005 75);
-  --secondary-foreground: oklch(0.3 0.012 60);
-  --muted: oklch(0.955 0.004 75);
-  --muted-foreground: oklch(0.5 0.012 60);
-  --accent: oklch(0.945 0.035 55);
-  --accent-foreground: oklch(0.4 0.09 45);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.905 0.005 75);
-  --input: oklch(0.905 0.005 75);
-  --ring: oklch(0.705 0.19 45);
-  --chart-1: oklch(0.705 0.19 45);
-  --chart-2: oklch(0.62 0.12 55);
-  --chart-3: oklch(0.45 0.06 60);
-  --chart-4: oklch(0.8 0.13 60);
-  --chart-5: oklch(0.75 0.16 50);
-  --sidebar: oklch(0.99 0.002 75);
-  --sidebar-foreground: oklch(0.245 0.012 60);
-  --sidebar-primary: oklch(0.705 0.19 45);
-  --sidebar-primary-foreground: oklch(0.995 0.002 85);
-  --sidebar-accent: oklch(0.955 0.005 75);
-  --sidebar-accent-foreground: oklch(0.3 0.012 60);
-  --sidebar-border: oklch(0.905 0.005 75);
-  --sidebar-ring: oklch(0.705 0.19 45);
+  --radius: 1.125rem; /* ۱۸px — طرح ۸ */
+  --background: #faf8f3;   /* کرمِ گرم — خنثیِ طرح ۸ */
+  --foreground: #29241d;
+  --card: #ffffff;
+  --card-foreground: #29241d;
+  --popover: #ffffff;
+  --popover-foreground: #29241d;
+  --primary: #f97316;       /* نارنجی — بازوی فروش */
+  --primary-foreground: #ffffff;
+  --secondary: #f1eee6;     /* bg-deep */
+  --secondary-foreground: #29241d;
+  --muted: #f3f0e9;
+  --muted-foreground: #8f887a;
+  --accent: #ffeeda;        /* تینت نارنجی — همان زبان طرح ۸ */
+  --accent-foreground: #9a3d06;
+  --destructive: #c0392b;
+  --border: #eae5da;
+  --input: #eae5da;
+  --ring: #f97316;
+  --chart-1: #f97316;   /* نارنجی فروش */
+  --chart-2: #14b8a6;   /* فیروزه‌ای خرید */
+  --chart-3: #059669;   /* زمردی رشد */
+  --chart-4: #b45309;   /* کهربایی پرومو */
+  --chart-5: #0d9488;   /* فیروزه‌ای تیره */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #29241d;
+  --sidebar-primary: #f97316;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f0e9;
+  --sidebar-accent-foreground: #29241d;
+  --sidebar-border: #eae5da;
+  --sidebar-ring: #f97316;
+  /* طرح ۸ — رنگ‌های بازو و تینت‌ها (برای کامپوننت‌های بازویی) */
+  --arm-sell: #f97316;
+  --arm-sell-strong: #ea580c;
+  --arm-buy: #0d9488;
+  --arm-buy-strong: #0f766e;
+  --teal: #14b8a6;
+  --teal-tint: #e2f4f1;
+  --teal-tint-fg: #0d5d54;
+  --orange-tint: #ffeeda;
+  --orange-tint-fg: #9a3d06;
+  --amber: #b45309;
+  --amber-tint: #fdf0da;
+  --emerald: #059669;
+  --emerald-tint: #d9f2e6;
 }
 
 .dark {
@@ -127,7 +141,7 @@
   }
 }
 
-/* ── اسکرول‌بار سفارشی ── */
+/* ── اسکرول‌بار سفارشی (طرح ۸) ── */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -136,22 +150,24 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.86 0.006 75);
+  background: #d8d2c3;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.76 0.03 55);
+  background: #b45309;
 }
 
-/* ── الگوی نقطه‌ای ملایم برای هیرو ── */
+/* ── الگوی نقطه‌ای ملایم برای هیرو (طرح ۸ — نارنجی روی کرم) ── */
 .dot-grid {
-  background-image: radial-gradient(oklch(0.705 0.19 45 / 9%) 1px, transparent 1px);
+  background-image: radial-gradient(#f97316 1px, transparent 1px);
   background-size: 18px 18px;
+  opacity: 0.12;
 }
 
 /* ── انتخاب متن ── */
 ::selection {
-  background: oklch(0.705 0.19 45 / 18%);
+  background: #ffeeda;
+  color: #9a3d06;
 }
 
 /* ── انیمیشن‌ها ── */
