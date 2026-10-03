@@ -1441,6 +1441,14 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 }
 .sup-card.sponsored { border-color: #f0d9a4; box-shadow: 0 5px 18px rgba(180, 83, 9, .09); }
 
+/* ── ردیفِ پرومو در فهرست دنبال‌شده‌ها — کهربایی = کمپین، هم‌زبانِ badge-sponsor (U01 در فهرست) ── */
+.follow-row.promo-row {
+  background: var(--amber-tint);
+  border-radius: 10px;
+  margin: 7px -6px 3px;
+  padding: 11px 10px;
+}
+
 /* ── CTA چسبان صفحهٔ کالای عمومی (U52) ── */
 .sticky-cta {
   position: absolute; bottom: 22px; left: 0; right: 0; padding: 12px 16px 6px;
