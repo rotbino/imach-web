@@ -2098,6 +2098,70 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .price-entry .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
 .price-entry .st { font-size: 9px; font-weight: 800; color: var(--emerald); background: var(--emerald-tint); padding: 4px 8px; border-radius: 8px; flex-shrink: 0; }
 
+/* ── v11: قیمت‌گذاری شرطی — تب‌بندی + راهنما + نشان اختصاصی ── */
+.pr-tabs {
+  position: sticky; top: -14px; z-index: 6;
+  display: flex; gap: 5px;
+  margin: 12px -16px 10px; padding: 8px 16px 9px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 12px -10px rgba(0,0,0,.12);
+}
+.ptab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+  background: #fff; border: 1.5px solid var(--border); border-radius: 11px;
+  padding: 9px 2px; font-family: inherit; font-size: 10.5px; font-weight: 800;
+  color: var(--muted); cursor: pointer; transition: background .15s, color .15s, border-color .15s;
+}
+.ptab svg { width: 13px; height: 13px; }
+.ptab.active { background: var(--arm-tint); border-color: var(--arm); color: var(--arm-tint-fg); }
+.pr-panel { display: none; }
+.pr-panel.on { display: block; }
+
+/* دکمهٔ راهنمای تابلو در هدر صفحه */
+.icon-btn.help-loud {
+  background: var(--arm-tint); color: var(--arm-tint-fg); border-color: transparent;
+  animation: helpPulse 2.6s ease-in-out infinite;
+}
+@keyframes helpPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(234,88,12,.30); }
+  55% { box-shadow: 0 0 0 7px rgba(234,88,12,0); }
+}
+
+/* نشان درصد اختصاصی (گروه مشتری / گروه کالا) */
+.grp-row .ov-badge {
+  font-size: 9px; font-weight: 800; border-radius: 8px; padding: 4px 8px; flex-shrink: 0;
+  background: var(--amber-tint); color: var(--amber);
+}
+.grp-row .ov-badge.gg { background: var(--teal-tint); color: var(--teal-deep); }
+
+/* نشان «اختیاری» به‌جای «فعال» در ورودی کاتالوگ */
+.price-entry .st.opt { color: var(--fg-soft); background: var(--muted-bg); }
+
+/* ── شیت راهنمای قیمت‌گذاری شرطی ── */
+.hp-hero { display: flex; align-items: flex-start; gap: 11px; }
+.hp-hero .ico { width: 42px; height: 42px; border-radius: 13px; background: var(--arm-tint); color: var(--arm-tint-fg); display: grid; place-items: center; flex-shrink: 0; }
+.hp-hero .ico svg { width: 21px; height: 21px; }
+.hp-hero .tx { flex: 1; font-size: 11px; line-height: 2; color: var(--fg-soft); }
+.hp-hero .tx b { color: var(--fg); }
+.hp-lvl {
+  display: flex; gap: 10px; background: #fff; border: 1px solid var(--border);
+  border-radius: 13px; padding: 10px 12px; margin-top: 7px; align-items: flex-start;
+}
+.hp-lvl .n { width: 25px; height: 25px; border-radius: 9px; display: grid; place-items: center; font-size: 11.5px; font-weight: 800; background: var(--muted-bg); color: var(--muted); flex-shrink: 0; }
+.hp-lvl .tx { flex: 1; }
+.hp-lvl .tx b { font-size: 12px; display: block; }
+.hp-lvl .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 3px; line-height: 1.9; }
+.hp-lvl.p4 { border-color: color-mix(in srgb, var(--emerald) 40%, var(--border)); background: var(--emerald-tint); }
+.hp-lvl.p4 .n { background: var(--emerald); color: #fff; }
+.hp-prio {
+  display: flex; align-items: center; gap: 8px; font-size: 10.5px; line-height: 1.9;
+  background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 12px;
+  padding: 9px 12px; margin-top: 9px; color: var(--fg-soft);
+}
+.hp-prio svg { width: 14px; height: 14px; color: var(--arm-tint-fg); flex-shrink: 0; }
+.hp-prio b { color: var(--fg); }
+
 /* ── چیپ‌های انتخاب سطح در شیت گروه ── */
 .lvl-chips { display: flex; gap: 5px; }
 .lvl-chips .chip { flex: 1; justify-content: center; flex-direction: column; padding: 7px 2px; line-height: 1.6; }
