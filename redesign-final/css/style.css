@@ -2223,3 +2223,210 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .dref-strip .dr-tx b { font-size: 11.5px; display: block; }
 .dref-strip .dr-tx span { font-size: 10.5px; color: var(--muted); display: block; margin-top: 3px; line-height: 1.8; }
 .ph.lentil { background: linear-gradient(150deg, #f6efe7, #e8dcc8); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   v14 — Responsive Desktop · همان دیزاین‌سیستم، composition متناسب صفحهٔ بزرگ
+   موبایل (≤767px) دست‌نخورده · تبلت 768–919 ستونِ آرام ·
+   دسکتاپ ≥920: شل دوستونهٔ RTL (دسک‌بار راست + محتوا) · split فقط با ارزش UX
+   ═══════════════════════════════════════════════════════════════ */
+
+/* دسک‌بار در موبایل: مخفی */
+.deskbar { display: none; }
+.desk-title { display: none; }
+
+/* ── ۱) تبلت 768–919: ستون مرکزی آرام ── */
+@media (min-width: 768px) and (max-width: 919px) {
+  .screen-body { padding: 18px 26px 30px; }
+  .screen-body > * { max-width: 640px; margin-inline: auto; width: 100%; }
+  .tbar { margin: 12px 0 0; }
+  .btn-row { max-width: 620px; }
+  .sheet { max-width: 640px; margin-inline: auto; border-radius: 22px 22px 0 0; }
+}
+
+/* ── ۲) دسکتاپ ≥920: شل اپ ── */
+@media (min-width: 920px) {
+  :root { --deskbar-w: 216px; --content-w: 860px; }
+
+  .workspace { display: block; padding: 0; max-width: none; }
+  .nav-panel { display: none; }
+  .phone-wrap { position: static; display: block; }
+
+  .phone {
+    width: 100%; height: 100dvh; border-radius: 0; padding: 0;
+    box-shadow: none; overflow: visible;
+    display: grid; grid-template-columns: var(--deskbar-w) minmax(0, 1fr);
+  }
+  .phone .notch, .statusbar, .tabbar, .home-indicator { display: none; }
+  .screen-stack { border-radius: 0; }
+
+  /* ── دسک‌بار: ستون راست ── */
+  .deskbar {
+    display: flex; flex-direction: column;
+    background: var(--card);
+    border-inline-end: 1px solid var(--border);
+    padding: 18px 14px 14px;
+    overflow-y: auto; scrollbar-width: none;
+  }
+  .db-head { display: flex; align-items: center; gap: 10px; padding: 2px 8px 13px; }
+  .db-head img { height: 30px; display: block; }
+  .db-biz { min-width: 0; }
+  .db-biz b { font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .db-biz span { font-size: 9.5px; color: var(--muted); display: block; margin-top: 2px; }
+  .db-arm { display: flex; gap: 4px; background: var(--muted-bg); border-radius: 13px; padding: 4px; margin: 0 4px 14px; }
+  .db-arm .da { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; border-radius: 10px; font-size: 11.5px; font-weight: 800; color: var(--muted); transition: background .15s, color .15s; }
+  .db-arm .da svg { width: 14px; height: 14px; }
+  .db-arm .da.buy.on { background: #fff; color: var(--teal-tint-fg); box-shadow: var(--shadow-1); }
+  .db-arm .da.sell.on { background: #fff; color: var(--orange-tint-fg); box-shadow: var(--shadow-1); }
+  .db-nav { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .db-item { display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 12px; border-radius: 12px; font-size: 12.5px; font-weight: 700; color: var(--fg-soft); position: relative; text-align: right; transition: background .15s, color .15s; }
+  .db-item svg { width: 17px; height: 17px; color: var(--muted); flex-shrink: 0; }
+  .db-item:hover { background: var(--muted-bg); color: var(--fg); }
+  .db-item.active { background: var(--arm-tint); color: var(--arm-tint-fg); }
+  .db-item.active svg { color: var(--arm-tint-fg); }
+  .db-item.active::before { content: ''; position: absolute; inset-inline-start: -14px; top: 9px; bottom: 9px; width: 3.5px; border-radius: 3px; background: var(--arm); }
+  .db-dot { position: absolute; top: 7px; inset-inline-end: 10px; min-width: 16px; height: 16px; padding: 0 3px; background: var(--primary); color: #fff; border-radius: 9px; font-size: 9px; font-weight: 800; display: grid; place-items: center; }
+  .db-foot { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 8px; }
+  .db-side { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 11px; border: 1px solid var(--border); border-radius: 13px; background: var(--bg); text-align: right; transition: border-color .15s; }
+  .db-side:hover { border-color: var(--border-strong); }
+  .db-side .ico { width: 34px; height: 34px; border-radius: 11px; background: var(--arm-tint); color: var(--arm-tint-fg); display: grid; place-items: center; flex-shrink: 0; }
+  .db-side .ico svg { width: 16px; height: 16px; }
+  .db-side .tx { flex: 1; min-width: 0; }
+  .db-side .tx b { font-size: 12px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .db-side .tx span { font-size: 9px; color: var(--muted); display: block; margin-top: 2px; }
+  .db-side .chev { width: 14px; height: 14px; color: var(--border-strong); flex-shrink: 0; }
+  .db-doc { font-size: 9px; color: var(--muted); text-align: center; line-height: 2; margin-top: 12px; padding: 0 6px; }
+
+  /* ── اپ‌بار → نوار بالای صفحه ── */
+  .appbar { min-height: 60px; padding: 10px 28px 10px 20px; }
+  .appbar .brand { display: none; }
+  .desk-title { display: block; font-size: 15px; font-weight: 800; color: var(--fg); }
+
+  /* ── ستون محتوا ── */
+  .screen-body { padding: 24px 32px 44px; }
+  .screen-body > * { max-width: var(--content-w); margin-inline: auto; width: 100%; }
+  .tbar { margin: 14px 0 0; }
+  .btn-row { max-width: 620px; }
+
+  /* ── شیت → دیالوگ وسط‌چین ── */
+  .backdrop { position: fixed; inset: 0; border-radius: 0; background: rgba(30, 25, 18, .42); }
+  .sheet {
+    position: fixed; bottom: auto; top: 50%; left: 50%; right: auto;
+    width: min(560px, 92vw); max-height: min(86vh, 880px);
+    border-radius: 22px; padding: 16px 22px 26px;
+    transform: translate(-50%, -46%) scale(.97);
+    box-shadow: var(--shadow-pop);
+  }
+  .sheet.on { transform: translate(-50%, -50%) scale(1); }
+  .sheet .grab { margin: 0 auto 10px; }
+  .toast { position: fixed; top: 24px; }
+
+  /* ── اسکرول‌بار ظریف + هاور + فوکوس کیبورد ── */
+  .screen-body { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+  .screen-body::-webkit-scrollbar { width: 9px; }
+  .screen-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+  .screen-body::-webkit-scrollbar-track { background: transparent; }
+  .card.tap, .row-card, .sheet-row { transition: transform .14s, box-shadow .14s, border-color .14s; }
+  .card.tap:hover, .row-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); border-color: var(--border-strong); }
+  .sheet-row:hover { border-color: var(--border-strong); box-shadow: var(--shadow-1); }
+  .btn { transition: filter .15s; }
+  .btn:hover { filter: brightness(.96); }
+  .btn-primary:hover { filter: brightness(1.04); }
+  button:focus-visible, .db-item:focus-visible, .chip:focus-visible { outline: 2px solid var(--arm); outline-offset: 2px; }
+
+  /* ── گرید کارت‌ها ── */
+  .grid-2 { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .g2 > .card, .g2 > .row-card { margin-top: 0 !important; }
+  .g2 > .hint { grid-column: 1 / -1; }
+  .hero-specs { grid-template-columns: repeat(4, 1fr); }
+
+  /* ذخیره‌شده‌ها: کارت‌ها از خودِ بدنهٔ صفحه دوستونه */
+  #sc-suppliers .screen-body { display: grid; grid-template-columns: repeat(2, minmax(280px, 520px)); justify-content: center; gap: 12px; align-items: start; }
+  #sc-suppliers .screen-body > * { max-width: none; margin-inline: 0; width: auto; grid-column: 1 / -1; }
+  #sc-suppliers .screen-body > .card { grid-column: auto; margin-top: 0; }
+  #sc-suppliers .screen-body > .card + .card { margin-top: 0; }
+
+  /* صفحات محصول/جزئیات: ستون باریک‌تر */
+  #sc-buy-item .screen-body > *, #sc-sell-product-owner .screen-body > *,
+  #sc-sell-product-public .screen-body > *, #sc-desktop .screen-body > * { max-width: 880px; }
+
+  /* فرم‌ها و صفحات حساس: ستون فرم */
+  #sc-rfq .screen-body > *, #sc-quote .screen-body > *, #sc-signup .screen-body > *,
+  #sc-login .screen-body > *, #sc-edit-biz .screen-body > *, #sc-charge .screen-body > *,
+  #sc-wallet .screen-body > *, #sc-empty .screen-body > * { max-width: 620px; }
+  #sc-add-item .screen-body > * { max-width: 680px; }
+  #sc-settings .screen-body > *, #sc-list-public .screen-body > * { max-width: 760px; }
+  #sc-search .screen-body > * { max-width: 720px; }
+
+  /* CTAهای شناور: هم‌عرض ستونِ همان صفحه */
+  .sticky-cta { left: max(24px, calc((100% - 880px) / 2)); right: max(24px, calc((100% - 880px) / 2)); }
+  .form-cta { left: max(24px, calc((100% - 680px) / 2)); right: max(24px, calc((100% - 680px) / 2)); }
+
+  /* آنبوردینگ: هیروی وسط */
+  #sc-onboard .onboard { max-width: 660px; margin-inline: auto; width: 100%; padding: 36px 30px 44px; }
+  #sc-onboard .mid { min-height: 250px; }
+}
+
+/* ── ۳) دسکتاپ ≥1024: اسپلیت‌ها + bump تایپوگرافی ── */
+@media (min-width: 1024px) {
+  :root { --deskbar-w: 248px; --content-w: 1000px; }
+
+  .greet b { font-size: 19px; }
+  .greet span { font-size: 12.5px; }
+  .pagehead .tt b { font-size: 16px; }
+  .pagehead .tt span { font-size: 11.5px; }
+  .sec-title h2 { font-size: 15.5px; }
+  .card { padding: 17px 20px; }
+  .row-card { padding: 14px 18px; }
+  .hint { font-size: 11.5px; max-width: 780px; margin-inline: auto; }
+  .appbar { padding: 12px 32px 12px 24px; }
+  .screen-body { padding: 26px 36px 48px; }
+  .tbar { margin: 14px 0 0; padding: 0 4px; }
+  .sheet h3 { font-size: 16.5px; }
+  .sheet .sub { font-size: 11.5px; }
+
+  /* آنبوردینگ: دو انتخاب کنار هم */
+  #sc-onboard .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  #sc-onboard .choice-grid .choice-card + .choice-card { margin-top: 0; }
+
+  /* اسپلیت ۱ — پیشنهادها: لیست راست، جزئیات چپ (بدون رفت‌وبرگشت) */
+  #sc-offers .screen-body { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 660px); justify-content: center; gap: 0 22px; align-items: start; }
+  #sc-offers .screen-body > * { max-width: none; margin-inline: 0; width: auto; }
+  #sc-offers .search-strip, #sc-offers .greet { grid-column: 1 / -1; width: 100%; }
+  #rfqListView { grid-column: 1; grid-row: 2; }
+  #rfqDetailView { grid-column: 2; grid-row: 2; }
+  #rfqListView .rfq-card.sel { border-color: var(--arm); box-shadow: var(--shadow-2); }
+  #rfqListView .rfq-card { margin-bottom: 0; }
+  #rfqListView > .hint { margin-top: 12px; }
+
+  /* اسپلیت ۲ — تخفیف‌ها: فرم راست، پیش‌نمایشِ زندهٔ چپ (sticky) */
+  #sc-discount .screen-body > * { max-width: 1024px; }
+  #dsTabs .tb:nth-child(3) { display: none; }
+  #dsPanels { display: grid; grid-template-columns: minmax(0, 620px) minmax(320px, 380px); justify-content: center; gap: 0 24px; align-items: start; }
+  #dsPanels .tbpanel { grid-column: 1; }
+  #dsPanels .tbpanel:nth-child(3) { grid-column: 2; position: sticky; top: 6px; display: block; padding-top: 0; }
+
+  .g2 { gap: 14px; }
+}
+
+/* ── ۴) ≥1280: پهن‌تر ── */
+@media (min-width: 1280px) {
+  :root { --content-w: 1080px; }
+  .grid-2 { grid-template-columns: repeat(4, 1fr); }
+  #dsPanels { grid-template-columns: minmax(0, 700px) minmax(320px, 400px); }
+}
+
+/* ── ۵) ≥1440: تابلوی سه‌ستونه ── */
+@media (min-width: 1440px) {
+  :root { --content-w: 1140px; }
+  .g2 { grid-template-columns: 1fr 1fr 1fr; }
+  #sc-buy-list .g2, #sc-sell-requests .g2 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* ── ۶) ≥1600: فضای خالیِ عمدی ── */
+@media (min-width: 1600px) {
+  :root { --content-w: 1220px; }
+  .screen-body { padding: 30px 44px 56px; }
+  #dsPanels { grid-template-columns: minmax(0, 760px) minmax(320px, 440px); }
+}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>iMach — ریدیزاین فاینال · v9</title>
+<title>iMach — ریدیزاین فاینال · v14</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -173,6 +173,22 @@
   <div class="phone-wrap">
     <div class="phone" data-arm="buy" id="phone">
       <div class="notch"></div>
+
+      <!-- v14: دسک‌بار — ناوبری دسکتاپ (≥920px)؛ آینهٔ تب‌بار موبایل، در موبایل مخفی -->
+      <nav class="deskbar" id="deskbar" aria-label="ناوبری اصلی">
+        <div class="db-head">
+          <img src="assets/logo3.svg" alt="iMatch">
+          <div class="db-biz"><b id="deskBizName">رستوران مهر</b><span id="deskBizRole">دستیار خرید عمده</span></div>
+        </div>
+        <div class="db-arm" aria-label="جابه‌جایی دستیار">
+          <button class="da buy" id="da-buy" onclick="setMode('buy')"><svg><use href="#i-basket"/></svg> خرید</button>
+          <button class="da sell" id="da-sell" onclick="setMode('sell')"><svg><use href="#i-box"/></svg> فروش</button>
+        </div>
+        <div class="db-nav" id="deskNav"></div>
+        <div class="db-foot" id="deskFoot"></div>
+        <div class="db-doc">قیمتِ زنده، هر دو طرف را نگه می‌دارد<br>رتبهٔ تطبیق هرگز پولی نیست</div>
+      </nav>
+
       <div class="screen-stack" id="stack">
 
         <!-- ═══════════════ ۰۱ — آنبوردینگ ═══════════════ -->
@@ -188,6 +204,7 @@
               <div class="q">در بازار عمده نقش اصلی شما چیست؟</div>
               <div class="qsub">فقط برای شروع می‌پرسیم — هر دو دستیار بعداً در اختیارت است.</div>
             </div>
+            <div class="choice-grid">
             <button class="choice-card buy" onclick="choose('buy')">
               <span class="ico"><svg><use href="#i-basket"/></svg></span>
               <span class="tx"><b>خریدار عمده هستم</b><span>لیست خریدم را می‌سازم و قیمتِ چند تأمین‌کننده را کنارِ هم، زنده دنبال می‌کنم</span></span>
@@ -198,6 +215,7 @@
               <span class="tx"><b>فروشنده عمده هستم</b><span>کاتالوگم را می‌سازم — خریدارانِ عمده قیمتش را دنبال می‌کنند</span></span>
               <svg class="ar"><use href="#i-back"/></svg>
             </button>
+            </div>
             <div class="footnote">اگر هر دو نقش رو داری نگران نباش، بعد از ثبت نام امکان سویچ بین <b>دستیار خرید</b> و <b>دستیار فروش</b> وجود دارد.</div>
             <div class="login-link">قبلاً حساب ساختی؟ <u onclick="go('sc-login')" style="cursor:pointer">وارد شو</u> · <u onclick="go('sc-signup')" style="cursor:pointer">ساخت حساب</u></div>
 
@@ -313,7 +331,7 @@
               <svg class="chev"><use href="#i-chev"/></svg>
             </button>
 
-            <div id="listRows">
+            <div id="listRows" class="g2">
               <div class="row-card" data-go="sc-buy-item">
                 <span class="thumb rice"><svg><use href="#a-rice"/></svg></span>
                 <div class="body">
@@ -505,7 +523,7 @@
 
             <div class="unit-note">مقایسه بر پایهٔ <b>کیلوگرم</b> — قیمت هر بسته جدا نوشته می‌شود</div>
 
-            <div style="margin-top:12px">
+            <div id="boardGrid" class="g2" style="margin-top:12px">
               <div class="card sup-card tap" data-go="sc-sell-product-public">
                 <div class="head">
                   <div class="avatar">ک</div>
@@ -730,7 +748,7 @@
             </div>
 
             <div id="rfqListView">
-              <div class="card rfq-card tap" onclick="openRfqDetail()">
+              <div class="card rfq-card tap" onclick="openOffersDetail()">
                 <div class="hd">
                   <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
                   <div style="flex:1">
@@ -1333,7 +1351,7 @@
               <button class="chip" onclick="rfqTab(this,'alert')"><svg class="ic-sm" style="width:11px;height:11px"><use href="#i-bell"/></svg> گوش به زنگ (۳)</button>
             </div>
 
-            <div id="rfq-toMe" style="margin-top:12px">
+            <div id="rfq-toMe" class="g2" style="margin-top:12px">
               <div class="card rfq-card">
                 <div class="hd">
                   <div class="avatar" style="background:var(--teal-strong)">م</div>
@@ -1393,7 +1411,7 @@
               </div>
             </div>
 
-            <div id="rfq-market" style="margin-top:12px;display:none">
+            <div id="rfq-market" class="g2" style="margin-top:12px;display:none">
               <div class="card rfq-card">
                 <div class="hd">
                   <div class="avatar" style="background:var(--muted)">ب</div>
@@ -1430,7 +1448,7 @@
               </div>
             </div>
 
-            <div id="rfq-alert" style="margin-top:12px;display:none">
+            <div id="rfq-alert" class="g2" style="margin-top:12px;display:none">
               <div class="announce-strip" style="margin-bottom:10px">
                 <span class="a-ico"><svg><use href="#i-bell"/></svg></span>
                 <span class="tx"><b>گوش به زنگ</b><span>کالاهایی که از لیست خرید خریدارها رصد می‌کنی — هر وقت اعلام نیاز کنند، اول اینجا می‌آید</span></span>
@@ -4023,7 +4041,12 @@ function show(id, push = true) {
   if (arm && arm !== 'keep') { $('#phone').dataset.arm = arm; document.body.dataset.arm = arm; }
   if (id === 'sc-add-item') syncAddMode();
 
-  $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
+  $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === (DESK_PARENT[id] || id)));
+  try { deskSync(id); deskTitle(sc); } catch (e) {}
+  if (id === 'sc-offers' && window.matchMedia('(min-width: 1024px)').matches) {
+    const dv = $('#rfqDetailView');
+    if (dv && dv.style.display === 'none') openOffersDetail();
+  }
   if (window.location.hash !== '#' + id) {
     suppressHash = true;
     window.location.hash = id;
@@ -4269,6 +4292,7 @@ function syncMoneyUI() {
   set('#walletStripNum', b);
   set('#walletBadgeNum', b + ' ت');
   set('#sheetBalNum', b);
+  set('#deskBal', b + ' تومان');
   set('#sheetAfterBal', faMoney(Math.max(0, state.balance - state.budgetSel)));
 
   /* v3: نرخِ پله‌ایِ این کالا + تخمینِ بسته‌های بودجه از نرخ */
@@ -4516,14 +4540,31 @@ function pillPick(el, msg) {
   el.classList.add('active');
   if (msg) toast(msg);
 }
-function openRfqDetail() {
-  $('#rfqListView').style.display = 'none';
-  $('#rfqDetailView').style.display = '';
+/* v14: جزئیات پیشنهادها — در دسکتاپ (≥1024) لیست و جزئیات کنار هم می‌مانند */
+function openOffersDetail() {
+  const lv = $('#rfqListView'), dv = $('#rfqDetailView');
+  if (!lv || !dv) return;
+  if (window.matchMedia('(min-width: 1024px)').matches) {
+    lv.style.display = '';
+    dv.style.display = '';
+    const card = lv.querySelector('.rfq-card');
+    if (card) card.classList.add('sel');
+    return;
+  }
+  lv.style.display = 'none';
+  dv.style.display = '';
   const b = $('#sc-offers .screen-body'); if (b) b.scrollTop = 0;
 }
 function closeRfqDetail() {
-  $('#rfqDetailView').style.display = 'none';
-  $('#rfqListView').style.display = '';
+  const lv = $('#rfqListView'), dv = $('#rfqDetailView');
+  if (!lv || !dv) return;
+  dv.style.display = 'none';
+  if (window.matchMedia('(min-width: 1024px)').matches) {
+    const card = lv.querySelector('.rfq-card');
+    if (card) card.classList.remove('sel');
+    return;
+  }
+  lv.style.display = '';
 }
 
 /* ── v9 (D8-10): مدیریت پیشنهادها — وضعیت، تماس، فیلتر، مرتب‌سازی ── */
@@ -5115,6 +5156,76 @@ function saversMore(btn) {
   btn.style.opacity = '.55';
   btn.onclick = null;
 }
+
+/* ═══════════ v14: دسک‌بار — رندر و همگام‌سازی ناوبری دسکتاپ ═══════════ */
+const DESK_NAV = {
+  buy: [
+    { nav:'sc-buy-list',    ico:'#i-list',  t:'لیست خرید' },
+    { nav:'sc-suppliers',   ico:'#i-bm',    t:'ذخیره‌شده‌ها' },
+    { nav:'sc-offers',      ico:'#i-spark', t:'پیشنهادها', dot:'۳' },
+    { sheet:'sheet-msgs',   ico:'#i-msg',   t:'چت', dot:'۱' },
+    { nav:'sc-buy-profile', ico:'#i-user',  t:'پروفایل' }
+  ],
+  sell: [
+    { nav:'sc-sell-catalog',   ico:'#i-store', t:'کاتالوک من' },
+    { nav:'sc-sell-requests',  ico:'#i-inbox', t:'درخواست‌های قیمت', dot:'۲' },
+    { sheet:'sheet-msgs',      ico:'#i-msg',   t:'چت', dot:'۱' },
+    { nav:'sc-sell-profile',   ico:'#i-user',  t:'پروفایل' }
+  ]
+};
+const DESK_PARENT = {
+  'sc-buy-item':'sc-buy-list', 'sc-board':'sc-buy-list', 'sc-rfq':'sc-buy-list', 'sc-search':'sc-buy-list', 'sc-add-item':'sc-buy-list',
+  'sc-sell-product-owner':'sc-sell-catalog', 'sc-sell-product-public':'sc-sell-catalog',
+  'sc-discount':'sc-sell-catalog', 'sc-campaign':'sc-sell-catalog',
+  'sc-quote':'sc-sell-requests', 'sc-wallet':'sc-sell-profile', 'sc-charge':'sc-sell-profile',
+  'sc-settings':'sc-sell-profile', 'sc-edit-biz':'sc-sell-profile'
+};
+const DESK_BIZ = {
+  buy:  ['رستوران مهر',   'دستیار خرید عمده'],
+  sell: ['پخش برنج پارس', 'دستیار فروش عمده']
+};
+const deskState = { arm: null };
+function deskRender(arm) {
+  const nav = $('#deskNav'), foot = $('#deskFoot');
+  if (!nav) return;
+  nav.innerHTML = (DESK_NAV[arm] || DESK_NAV.buy).map(it => {
+    const dot = it.dot ? '<span class="db-dot">' + it.dot + '</span>' : '';
+    const attr = it.sheet ? 'data-sheet="' + it.sheet + '"' : 'data-nav="' + it.nav + '"';
+    return '<button class="db-item" ' + attr + '><svg><use href="' + it.ico + '"/></svg>' + it.t + dot + '</button>';
+  }).join('');
+  if (foot) foot.innerHTML = arm === 'sell'
+    ? '<button class="db-side" onclick="go(\'sc-wallet\')"><span class="ico"><svg><use href="#i-wallet"/></svg></span><span class="tx"><b id="deskBal">' + faMoney(state.balance) + ' تومان</b><span>کیف پول — شارژ و کمپین</span></span><svg class="chev"><use href="#i-chev"/></svg></button>'
+    : '<button class="db-side" onclick="go(\'sc-suppliers\')"><span class="ico"><svg><use href="#i-bm"/></svg></span><span class="tx"><b>۳ کاتالوگ ذخیره‌شده</b><span>کالای جدیدشان را می‌بینی</span></span><svg class="chev"><use href="#i-chev"/></svg></button>';
+  const biz = DESK_BIZ[arm] || DESK_BIZ.buy;
+  const nm = $('#deskBizName'), rl = $('#deskBizRole');
+  if (nm) nm.textContent = biz[0];
+  if (rl) rl.textContent = biz[1];
+}
+function deskSync(id) {
+  const arm = ($('#phone') && $('#phone').dataset.arm) || 'buy';
+  if (deskState.arm !== arm) { deskState.arm = arm; deskRender(arm); }
+  const daB = $('#da-buy'), daS = $('#da-sell');
+  if (daB && daS) { daB.classList.toggle('on', arm === 'buy'); daS.classList.toggle('on', arm === 'sell'); }
+  const key = DESK_PARENT[id] || id;
+  $$('.deskbar .db-item').forEach(n => n.classList.toggle('active', n.dataset.nav === key));
+}
+let _deskTitleEl = null;
+function deskTitle(sc) {
+  const bar = sc.querySelector('.appbar');
+  if (!bar) { if (_deskTitleEl) _deskTitleEl.remove(); return; }
+  if (!_deskTitleEl) { _deskTitleEl = document.createElement('b'); _deskTitleEl.className = 'desk-title'; }
+  const src = sc.querySelector('.greet b') || sc.querySelector('.pagehead .tt b');
+  _deskTitleEl.textContent = src ? src.textContent.trim() : 'iMach';
+  if (!bar.contains(_deskTitleEl)) bar.prepend(_deskTitleEl);
+}
+/* v14: در ورود به دسکتاپ، اگر تب پیش‌نمایشِ تخفیف‌ها فعال بود → برگرد به تب فرم */
+window.matchMedia('(min-width: 1024px)').addEventListener('change', e => {
+  if (!e.matches) return;
+  try {
+    const tb = $('#dsTabs .tb.on');
+    if (tb && [...tb.parentElement.children].indexOf(tb) === 2) tabPick($('#dsTabs .tb'));
+  } catch (err) {}
+});
 
 (function boot() {
   syncMoneyUI();
