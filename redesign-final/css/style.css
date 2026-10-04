@@ -2106,6 +2106,9 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 /* ── v10: معرفی آیمچ در صفحهٔ شروع (زیر ثبت‌نام) ── */
 .onboard { overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
 .onboard .mid { min-height: 312px; }
+/* v10.1: هیچ فرزندی از آنبوردینگ فشرده نمی‌شود — دکمه‌ها ارتفاع کامل می‌گیرند و صفحه اسکرول می‌کند */
+.onboard > * { flex-shrink: 0; }
+.choice-card .tx b { line-height: 1.7; }
 .intro-wrap { position: relative; margin-top: 24px; }
 .intro-sep { display: flex; align-items: center; gap: 10px; }
 .intro-sep i { flex: 1; height: 1px; background: var(--border-strong); opacity: .55; }
