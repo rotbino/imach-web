@@ -140,7 +140,7 @@ RD_SCRIPT = '''<!-- v15: موتور دموی سریع — ناوبری زنده 
   var rc = document.getElementById('rdCount');
   if (rc) rc.innerHTML = '<b>' + fa(nSc) + '</b> صفحه · <b>' + fa(nSh) + '</b> شیت — همیشه همگام با index.html';
   var rf = document.getElementById('rdFoot');
-  if (rf) rf.innerHTML = 'دموی سریع v15 — از index.html تولید می‌شود: <code>python3 tools/make-rapid-demo.py</code><br>فلش چپ/راست کیبورد = صفحهٔ بعدی/قبلی · آدرس هر صفحه در hash مرورگر';
+  if (rf) rf.innerHTML = 'دموی سریع v17 — از index.html تولید می‌شود: <code>python3 tools/make-rapid-demo.py</code><br>فلش چپ/راست کیبورد = صفحهٔ بعدی/قبلی · آدرس هر صفحه در hash مرورگر';
 
   /* همگام‌سازی اولیهٔ آیتم فعال (boot قبل از این اسکریپت اجرا شده) */
   $$('.nav-item').forEach(function (n) {
