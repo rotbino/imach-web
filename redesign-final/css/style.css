@@ -1938,59 +1938,9 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .grp-row .lv-badge.l1 { background: var(--emerald-tint); color: var(--emerald); }
 .grp-row .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
 
-/* ── سطر قانون سطح (۱..۵) ── */
-.lvl-row {
-  display: flex; align-items: center; gap: 9px; background: #fff;
-  border: 1px solid var(--border); border-radius: 13px; padding: 9px 12px; margin-bottom: 7px;
-  cursor: pointer;
-}
-.lvl-row:active { transform: scale(.985); }
-.lvl-num {
-  width: 27px; height: 27px; border-radius: 9px; display: grid; place-items: center;
-  font-weight: 800; font-size: 12px; background: var(--muted-bg); color: var(--muted); flex-shrink: 0;
-}
-.lvl-row.on .lvl-num { background: var(--emerald-tint); color: var(--emerald); }
-.lvl-row .tx { flex: 1; min-width: 0; }
-.lvl-row .tx b { font-size: 12.5px; display: block; }
-.lvl-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
-.lvl-val {
-  font-size: 11px; font-weight: 800; border-radius: 9px; padding: 5px 10px; flex-shrink: 0;
-  background: var(--arm-tint); color: var(--arm-tint-fg); text-align: center;
-}
-.lvl-val small { display: block; font-size: 8.5px; font-weight: 600; opacity: .75; margin-top: 1px; }
-.lvl-row.unset .lvl-val { background: var(--muted-bg); color: var(--muted); font-weight: 600; }
-.lvl-row.sel { border-color: var(--arm); box-shadow: 0 0 0 3px var(--arm-tint); }
-
 /* ── ویرایشگر خطی سطح/پله (درصد کمتر یا قیمت مشخص) ── */
 .lvl-edit { display: none; background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 13px; padding: 10px 12px; margin: -3px 0 9px; }
 .lvl-edit.open { display: block; }
-.seg-mini { display: flex; background: var(--muted-bg); border-radius: 10px; padding: 3px; gap: 3px; }
-.seg-mini button {
-  flex: 1; font-size: 10.5px; font-weight: 700; padding: 6px 4px; border-radius: 8px;
-  color: var(--muted); border: none; background: transparent; cursor: pointer; font-family: inherit;
-}
-.seg-mini button.active { background: #fff; color: var(--fg); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
-.inp-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.inp-row .inp { flex: 1; margin: 0; }
-.inp-row .u-chip { font-size: 10px; font-weight: 700; color: var(--muted); background: var(--muted-bg); border-radius: 8px; padding: 8px 10px; flex-shrink: 0; }
-
-/* ── سطر پلهٔ حجمی ── */
-.vol-row {
-  display: flex; align-items: center; gap: 9px; background: #fff;
-  border: 1px solid var(--border); border-radius: 13px; padding: 9px 12px; margin-bottom: 7px;
-  cursor: pointer;
-}
-.vol-row:active { transform: scale(.985); }
-.vol-from {
-  font-size: 10.5px; font-weight: 800; border-radius: 9px; padding: 6px 9px; flex-shrink: 0;
-  background: var(--teal-tint); color: var(--teal-tint-fg);
-}
-.vol-row .tx { flex: 1; min-width: 0; }
-.vol-row .tx b { font-size: 12.5px; display: block; }
-.vol-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
-.vol-row .lvl-val { background: var(--teal-tint); color: var(--teal-tint-fg); }
-.vol-row.sel { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-tint); }
-
 /* ── پیش‌نمایش قیمت (قابل توضیح) ── */
 .pr-preview { background: #fff; border: 1px solid var(--border); border-radius: 15px; padding: 13px 14px; margin-top: 10px; }
 .pp-res {
@@ -2026,7 +1976,7 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .mix-row .tx b { font-size: 12px; display: block; }
 .mix-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; line-height: 1.8; }
 
-/* ── حالت‌های شیت تنظیم قیمت کالا ── */
+/* ── حالت‌های شیت تخفیف کالا ── */
 .mode-row {
   display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: right;
   padding: 11px 13px; border-radius: 13px; border: 1px solid var(--border); background: #fff;
@@ -2098,26 +2048,6 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .price-entry .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
 .price-entry .st { font-size: 9px; font-weight: 800; color: var(--emerald); background: var(--emerald-tint); padding: 4px 8px; border-radius: 8px; flex-shrink: 0; }
 
-/* ── v11: قیمت‌گذاری شرطی — تب‌بندی + راهنما + نشان اختصاصی ── */
-.pr-tabs {
-  position: sticky; top: -14px; z-index: 6;
-  display: flex; gap: 5px;
-  margin: 12px -16px 10px; padding: 8px 16px 9px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 8px 12px -10px rgba(0,0,0,.12);
-}
-.ptab {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
-  background: #fff; border: 1.5px solid var(--border); border-radius: 11px;
-  padding: 9px 2px; font-family: inherit; font-size: 10.5px; font-weight: 800;
-  color: var(--muted); cursor: pointer; transition: background .15s, color .15s, border-color .15s;
-}
-.ptab svg { width: 13px; height: 13px; }
-.ptab.active { background: var(--arm-tint); border-color: var(--arm); color: var(--arm-tint-fg); }
-.pr-panel { display: none; }
-.pr-panel.on { display: block; }
-
 /* دکمهٔ راهنمای تابلو در هدر صفحه */
 .icon-btn.help-loud {
   background: var(--arm-tint); color: var(--arm-tint-fg); border-color: transparent;
@@ -2138,7 +2068,7 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 /* نشان «اختیاری» به‌جای «فعال» در ورودی کاتالوگ */
 .price-entry .st.opt { color: var(--fg-soft); background: var(--muted-bg); }
 
-/* ── شیت راهنمای قیمت‌گذاری شرطی ── */
+/* ── شیت راهنمای تخفیف‌ها ── */
 .hp-hero { display: flex; align-items: flex-start; gap: 11px; }
 .hp-hero .ico { width: 42px; height: 42px; border-radius: 13px; background: var(--arm-tint); color: var(--arm-tint-fg); display: grid; place-items: center; flex-shrink: 0; }
 .hp-hero .ico svg { width: 21px; height: 21px; }
@@ -2152,8 +2082,6 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .hp-lvl .tx { flex: 1; }
 .hp-lvl .tx b { font-size: 12px; display: block; }
 .hp-lvl .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 3px; line-height: 1.9; }
-.hp-lvl.p4 { border-color: color-mix(in srgb, var(--emerald) 40%, var(--border)); background: var(--emerald-tint); }
-.hp-lvl.p4 .n { background: var(--emerald); color: #fff; }
 .hp-prio {
   display: flex; align-items: center; gap: 8px; font-size: 10.5px; line-height: 1.9;
   background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 12px;
@@ -2161,11 +2089,6 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 }
 .hp-prio svg { width: 14px; height: 14px; color: var(--arm-tint-fg); flex-shrink: 0; }
 .hp-prio b { color: var(--fg); }
-
-/* ── چیپ‌های انتخاب سطح در شیت گروه ── */
-.lvl-chips { display: flex; gap: 5px; }
-.lvl-chips .chip { flex: 1; justify-content: center; flex-direction: column; padding: 7px 2px; line-height: 1.6; }
-.lvl-chips .chip small { font-size: 8px; font-weight: 400; opacity: .8; display: block; }
 
 /* ── v10: معرفی آیمچ در صفحهٔ شروع (زیر ثبت‌نام) ── */
 .onboard { overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
@@ -2203,3 +2126,86 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .ben .b-tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 3px; line-height: 2; }
 .ben-foot { font-size: 10px; color: var(--muted); text-align: center; margin: 13px 0 6px; line-height: 2.1; }
 .ben-foot b { color: var(--fg-soft); }
+
+/* ═══ v12: تخفیف‌ها — تب‌بار واقعی، بلوک‌های سطح، سطرهای تخفیف، سه‌ورودی هم‌بسته ═══ */
+
+/* ── تب‌بار زیرخط‌دار (در صفحه: چسبان به بالای اسکرول) ── */
+.tbar {
+  display: flex; align-items: stretch;
+  position: sticky; top: 0; z-index: 6;
+  margin: 12px -16px 0; padding: 0 12px;
+  background: var(--bg);
+  border-bottom: 1.5px solid var(--border-strong);
+}
+.tbar.in-sheet { position: static; margin: 2px 0 4px; padding: 0; background: none; }
+.tbar .tb {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 10px 2px 9px; font-size: 11px; font-weight: 700; color: var(--muted);
+  background: none; border: none; cursor: pointer; font-family: inherit; position: relative;
+}
+.tbar .tb svg { width: 13px; height: 13px; flex-shrink: 0; }
+.tbar .tb::after {
+  content: ''; position: absolute; inset-inline: 12%; bottom: -1.5px; height: 2.5px;
+  border-radius: 3px 3px 0 0; background: transparent;
+}
+.tbar .tb.on { color: var(--arm-tint-fg); }
+.tbar .tb.on::after { background: var(--arm); }
+.tbar .tb:active { opacity: .7; }
+.tbpanel { display: none; padding-top: 13px; }
+.tbpanel.on { display: block; }
+
+/* ── بلوک سطح (کاتالوک / گروه کالا / کالای مشخص) ── */
+.lvl-blk { margin-top: 15px; }
+.lvl-head { display: flex; align-items: center; gap: 9px; margin: 0 2px 8px; }
+.lvl-head .lh-ico { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--orange-tint); color: var(--primary-strong); flex-shrink: 0; }
+.lvl-head .lh-ico svg { width: 15px; height: 15px; }
+.lvl-head .lh-ico.teal { background: var(--teal-tint); color: var(--teal-deep); }
+.lvl-head .lh-ico.amber { background: var(--amber-tint); color: var(--amber); }
+.lvl-head .lh-tx { flex: 1; min-width: 0; }
+.lvl-head .lh-tx b { font-size: 12.5px; display: block; }
+.lvl-head .lh-tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; line-height: 1.7; }
+.lvl-head .more { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; color: var(--arm-tint-fg); background: var(--arm-tint); border-radius: 9px; padding: 5px 9px; flex-shrink: 0; cursor: pointer; }
+.lvl-note { font-size: 9.5px; color: var(--muted); line-height: 1.9; margin: 7px 2px 0; }
+.grp-row.sel { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-tint); }
+.ds-link { margin-top: 8px; }
+
+/* ── سطر تخفیف مشتری: نام + درصد + «می‌شود» ── */
+.ds-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+.ds-row:last-child { border-bottom: none; }
+.ds-row .ds-who { flex: 1; min-width: 0; }
+.ds-row .ds-who b { font-size: 12px; display: block; }
+.ds-row .ds-who span { font-size: 9.5px; color: var(--muted); display: block; margin-top: 2px; line-height: 1.6; }
+.ds-inp { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.ds-inp .inp { width: 52px; margin: 0; text-align: center; direction: ltr; padding: 8px 4px; }
+.ds-inp i { font-style: normal; font-size: 11px; font-weight: 800; color: var(--muted); }
+.ds-eq { flex-shrink: 0; font-size: 10px; font-weight: 700; color: var(--teal-tint-fg); background: var(--teal-tint); border-radius: 8px; padding: 6px 9px; max-width: 122px; }
+.ds-eq.off { background: var(--muted-bg); color: var(--muted); }
+
+/* ── سطر پلهٔ حجمی ── */
+.ds-tier { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--border); }
+.ds-tier:last-child { border-bottom: none; }
+.ds-tier .t-rng { flex: 1; min-width: 0; font-size: 12px; font-weight: 700; }
+.ds-tier.base .t-rng { color: var(--fg-soft); }
+.ds-tier .t-rng .t-in { width: 46px; margin: 0 2px; text-align: center; direction: ltr; padding: 6px 3px; display: inline-block; }
+.ds-tier .t-tag { font-size: 9.5px; color: var(--muted); flex: 1; }
+.ds-add {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px;
+  margin-top: 8px; padding: 9px; font-size: 11px; font-weight: 700; color: var(--teal-deep);
+  background: var(--teal-tint); border: 1px dashed var(--teal); border-radius: 12px; cursor: pointer; font-family: inherit;
+}
+.ds-add svg { width: 13px; height: 13px; }
+
+/* ── سه‌ورودی هم‌بسته (شیت تخفیف کالا) ── */
+.tri-row { padding: 10px 0 12px; border-bottom: 1px dashed var(--border); }
+.tri-row:last-child { border-bottom: none; }
+.tri-row .tri-who { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.tri-row .tri-who b { font-size: 12.5px; }
+.tri-row .tri-who em { font-style: normal; font-size: 9.5px; color: var(--muted); }
+.tri-grid { display: flex; gap: 6px; }
+.tri-f { flex: 1; min-width: 0; }
+.tri-f label { font-size: 8.5px; color: var(--muted); display: block; text-align: center; margin-bottom: 4px; }
+.tri-f .inp { width: 100%; margin: 0; text-align: center; direction: ltr; padding: 8px 2px; font-size: 11.5px; }
+
+/* ── مثال یک‌خطی در شیت راهنمای تخفیف‌ها ── */
+.hp-ex { background: #fff; border: 1px solid var(--border); border-right: 3.5px solid var(--emerald); border-radius: 13px; padding: 11px 13px; margin-top: 10px; font-size: 11px; line-height: 2.1; color: var(--fg-soft); }
+.hp-ex b { color: var(--emerald); }
