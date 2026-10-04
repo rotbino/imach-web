@@ -51,6 +51,8 @@
   <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/><path d="M10 11v5M14 11v5"/></symbol>
   <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></symbol>
   <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v1"/><rect x="4" y="8" width="16" height="11" rx="2.5"/><circle cx="16.5" cy="13.5" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M19 5L5 19"/><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="16.5" cy="16.5" r="2.6"/></symbol>
+  <symbol id="i-steps" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h5v-5h5v-5h5V5h-4"/></symbol>
 </svg>
 
 <!-- ═══════════ آرت محصولات (flat illustration) ═══════════ -->
@@ -115,6 +117,7 @@
       <button class="nav-item" data-nav="sc-sell-product-owner"><span class="n">۰۹</span><span>محصول — دید مالک<span class="d">دنبال‌کنندگان قیمت + کارتِ کمپین ویژه</span></span></button>
       <button class="nav-item" data-nav="sc-sell-product-public"><span class="n">۱۰</span><span>محصول — دید مشتری<span class="d">سه اکشن روشن: دنبال‌کردن / لیست / درخواست</span></span></button>
       <button class="nav-item" data-nav="sc-sell-requests"><span class="n">۱۱</span><span>درخواست‌های قیمت<span class="d">«به من» + «فرصت‌های بازار»</span></span></button>
+      <button class="nav-item" data-nav="sc-pricing"><span class="n">۱۱٫۵</span><span>تنظیمات قیمت <b style="color:var(--emerald)">v10</b><span class="d">گروه مشتری + سطح ۱–۵ + پله حجم + پیش‌نمایش</span></span></button>
       <button class="nav-item" data-nav="sc-sell-profile"><span class="n">۱۲</span><span>پروفایل فروش<span class="d">آمار + اشتراک‌گذاری + کیف پول</span></span></button>
       <button class="nav-item" data-nav="sc-wallet"><span class="n">۱۳</span><span>کیف پول — تومان<span class="d">پول به‌ازای نتیجهٔ هدفمند</span></span></button>
       <div class="nav-g">فرم‌ها و لایهٔ ۲</div>
@@ -150,6 +153,9 @@
       <button class="nav-item" data-goto="sc-offers" data-sheet="sheet-offer-status"><span class="n">⚑</span><span>شیت: وضعیت پیشنهاد<span class="d">علاقه‌دارم · تماس گرفتم · بررسی شد — خصوصی</span></span></button>
       <button class="nav-item" data-goto="sc-offers" data-sheet="sheet-call"><span class="n">☎</span><span>شیت: تماس با تأمین‌کننده<span class="d">شماره + کپی + ساعت پاسخ — از کارت آفر</span></span></button>
       <button class="nav-item" data-goto="sc-sell-product-owner" data-sheet="sheet-quickprice"><span class="n">✎</span><span>شیت: به‌روزرسانی سریع قیمت<span class="d">قیمت/موجودی → «۱۲ دنبال‌کننده خبردار شدند»</span></span></button>
+      <button class="nav-item" data-goto="sc-sell-product-owner" data-sheet="sheet-item-pricing"><span class="n">%</span><span>شیت: تنظیم قیمت کالا <b style="color:var(--emerald)">v10</b><span class="d">۳ حالت: کاتالوگ / اختصاصی / دستی + بازگشت</span></span></button>
+      <button class="nav-item" data-goto="sc-pricing" data-sheet="sheet-group"><span class="n">👥</span><span>شیت: گروه مشتری <b style="color:var(--emerald)">v10</b><span class="d">نام دلخواه + سطح ۱–۵ — مثل گروه کالا</span></span></button>
+      <button class="nav-item" data-goto="sc-pricing" data-sheet="sheet-bulk"><span class="n">▦</span><span>شیت: عملیات گروهی قیمت <b style="color:var(--emerald)">v10</b><span class="d">چند کالا با هم — پیشرفته</span></span></button>
       <button class="nav-item" data-goto="sc-board" data-sheet="sheet-filter"><span class="n">≡</span><span>شیت: فیلتر تابلو<span class="d">شهر · حداقل موجودی · شرایط پرداخت</span></span></button>
     </div>
     <div class="foot">
@@ -158,6 +164,7 @@
       <b>v7:</b> فروشنده ویژه · چت در فوتر · لحن عمده · اشتراک بومی · کاتالوگ‌های ذخیره‌شده<br>
       <b>v8:</b> پیشنهادها = قیمت‌های پیشنهادیِ تأمین‌کنندگان روی استعلام‌ها · اشتراک درخواست قیمت · جایگاه دوم کمپین = قیمت‌های دنبال‌شده
       <br><b>v9:</b> مدیریت پیشنهادها — تماس · چت · علامت‌گذاری خصوصی (علاقه‌دارم/تماس گرفتم/بررسی شد) · فیلتر نشان‌دار · مرتب‌سازی
+      <br><b>v10:</b> تنظیمات قیمت — قیمت پایه مبنا · گروه مشتری با سطح ۱–۵ · پله‌های حجمی (٪/قیمت مشخص) · ۳ حالت هر کالا · «قیمت شما» دید خریدار · پیش‌نمایش قابل‌توضیح · معرفی آیمچ + مزایای دوطرفه در صفحهٔ شروع
     </div>
   </aside>
 
@@ -191,6 +198,80 @@
             </button>
             <div class="footnote">انتخاب امروزت نقش همیشگی‌ات نیست؛<br>هر وقت خواستی، از بالای صفحه بین <b>دستیار خرید عمده</b> و <b>دستیار فروش عمده</b> جابه‌جا شو.</div>
             <div class="login-link">قبلاً حساب ساختی؟ <u onclick="go('sc-login')" style="cursor:pointer">وارد شو</u> · <u onclick="go('sc-signup')" style="cursor:pointer">ساخت حساب</u></div>
+
+            <!-- ═══ v10: معرفی آیمچ — چیست و چه فیضی دارد (زیر ثبت‌نام) ═══ -->
+            <div class="intro-wrap">
+              <div class="intro-sep"><i></i><span>آیمچ چیست؟</span><i></i></div>
+
+              <div class="intro-card">
+                <div class="match-viz">
+                  <span class="mv mv-buy"><svg><use href="#i-basket"/></svg></span>
+                  <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
+                  <span class="mv mv-sell"><svg><use href="#i-box"/></svg></span>
+                </div>
+                <h3>ای‌مچ؛ پلتفرم تطابق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
+                <p>آیمچ با موتور تطابق خودش، درخواست‌های خریدِ خریداران عمده را به محصولاتِ تأمین‌کنندگان مچ می‌کند و بازارِ اختصاصی خرید و فروش عمده — متناسب با کالاها و حجمِ خرید/فروش — می‌سازد.</p>
+              </div>
+
+              <div class="intro-tabs">
+                <button class="itab sell active" onclick="introTab(this,'sell')"><svg><use href="#i-box"/></svg> برای تأمین‌کننده و فروشنده</button>
+                <button class="itab buy" onclick="introTab(this,'buy')"><svg><use href="#i-basket"/></svg> برای خریدار عمده</button>
+              </div>
+
+              <div id="introSell" class="ben-list sell-side">
+                <div class="ben-title">مزایای آیمچ برای تأمین‌کنندگان و فروشندگان عمده</div>
+                <div class="ben">
+                  <span class="b-n">۱</span>
+                  <span class="b-tx"><b>خریدارانِ کاملاً مرتبط</b><span>معرفی محصولات به خریداران کاملاً مرتبط با ترتیب اولویت شهر خودت، استان خودت، کشور خودت — از نیازِ یک سوپرمارکت با یک کارتن تا حجم‌های بزرگ صادرات</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۲</span>
+                  <span class="b-tx"><b>کاتالوگ هوشمندِ اختصاصی</b><span>کاتالوگ هوشمند اختصاصی با لینک قابل ارسال برای خریداران — همیشه قیمت به‌روز</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۳</span>
+                  <span class="b-tx"><b>قیمت اختصاصی هر گروه خرید</b><span>قیمت اختصاصی برای هر گروه خریداری در حجم‌های مختلف، فقط با چند فرمول ساده — خریدار همان قیمت را روی کاتالوگ می‌بیند</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۴</span>
+                  <span class="b-tx"><b>حضور در لیست تأمینِ خریداران</b><span>گیرندگان کاتالوگ می‌توانند قیمت هر کالا را جداگانه دنبال کنند؛ فروشنده در لیست تأمین این خریداران قرار می‌گیرد و قیمتش همیشه جلوی چشم اوست</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۵</span>
+                  <span class="b-tx"><b>خریداران جدیدِ مرتبط (پیشنهاد آیمچ)</b><span>پیدا کردن خریداران جدید کاملاً مرتبط با کالاها و حجم فروش، علاوه بر مشتریان خودت</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۶</span>
+                  <span class="b-tx"><b>ابزارهای همیشه رایگان + پروموتِ کم‌هزینه</b><span>پروموت کردن هر محصول با کمترین مبلغ — کالا جلوی چشمِ خریدارِ دقیقاً همان کالا با همان حجم — و کسرِ مبلغ کمی از اعتبار فقط در صورت مشاهده یا فالوی قیمت</span></span>
+                </div>
+              </div>
+
+              <div id="introBuy" class="ben-list buy-side" style="display:none">
+                <div class="ben-title">مزایای آیمچ برای خریدار عمده</div>
+                <div class="ben">
+                  <span class="b-n">۱</span>
+                  <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>ساخت دفتر خرید و اشتراک‌گذاری با تأمین‌کنندگان آشنا — همیشه گوش به زنگِ اعلام نیاز، در لحظه دریافت بهترین قیمت‌ها و شرایط</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۲</span>
+                  <span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>ذخیرهٔ کاتالوگ‌های تأمین‌کنندگان مختلفِ کالاهای مورد نیاز — کاتالوگ‌هایی با قیمت‌های زنده</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۳</span>
+                  <span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>دنبال کردن قیمت یک کالا (مثلاً برنج هاشمی) از کاتالوگ‌های چند فروشنده و ساخت «تابلوی تأمین» برای هر کالا</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۴</span>
+                  <span class="b-tx"><b>مقایسهٔ قیمتِ زنده، کنارِ هم</b><span>با تابلوی قیمت هر کالا، مقایسهٔ قیمت زندهٔ یک کالا از چند تأمین‌کننده کنارِ هم</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۵</span>
+                  <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>ساخت استعلام قیمت برای تابلوی تأمین هر کالا و درخواست قیمت و شرایطِ رقابتی از تأمین‌کنندگان دلخواه</span></span>
+                </div>
+              </div>
+
+              <div class="ben-foot">همهٔ این‌ها رایگان شروع می‌شود — <b>ثبت‌نام فقط با شمارهٔ موبایل</b><br>بالا را انتخاب کن تا همین حالا وارد شوی</div>
+            </div>
           </div>
         </section>
 
@@ -873,6 +954,14 @@
               <button class="btn btn-primary btn-sm" onclick="openSheet('sheet-share')">اشتراک‌گذاری</button>
             </div>
 
+            <!-- v10: ورودی تنظیمات قیمت — یک ردیف آرام، بدون شلوغی -->
+            <div class="price-entry" onclick="go('sc-pricing')">
+              <svg><use href="#i-percent"/></svg>
+              <span class="tx">تنظیمات قیمت<small>گروه‌های مشتری (سطح ۱–۵) · پله‌های حجمی — یک بار تنظیم، همهٔ کاتالوگ</small></span>
+              <span class="st">فعال</span>
+              <svg class="chev"><use href="#i-chev"/></svg>
+            </div>
+
             <div style="display:flex;gap:8px;margin-top:11px">
               <div class="searchbar" onclick="toast('جستجو در کاتالوگ…')">
                 <svg><use href="#i-search"/></svg>
@@ -1030,6 +1119,15 @@
             </div>
             <div class="pack-note">قیمت پایه برای مقایسه: ۸۹٬۵۰۰ تومان / کیلو — هر بسته قیمت و موجودیِ خودش را دارد</div>
 
+            <!-- v10: وضعیت قیمت‌گذاری این کالا — سلسله‌مراتب همیشه جلوی چشم -->
+            <div class="pricing-state" onclick="openSheet('sheet-item-pricing')">
+              <span class="ps-ico"><svg><use href="#i-percent"/></svg></span>
+              <span class="tx">
+                <b>قیمت‌گذاری: از تنظیمات کاتالوگ</b>
+                <span>سطح ۱ ٪۱۰ کمتر + پله‌های حجم — خریدارِ ثابت از ۱۰۰ کیلو: <b style="color:var(--emerald)">۷۶٬۵۰۰</b> می‌بیند</span>
+              </span>
+              <svg class="chev"><use href="#i-chev"/></svg>
+            </div>
             <!-- ═══ کارت کمپینِ فروشنده ویژه — بودجه به تومان ═══ -->
             <div class="card promote-card" id="promoteCard">
               <div class="pc-head">
@@ -1054,8 +1152,8 @@
             </div>
 
             <div class="qa-grid">
-              <button class="btn btn-outline btn-sm" onclick="openSheet('sheet-quickprice')"><svg class="ic-sm"><use href="#i-bolt"/></svg> تغییر قیمت</button>
-              <button class="btn btn-outline btn-sm" onclick="openSheet('sheet-quickprice')"><svg class="ic-sm"><use href="#i-box"/></svg> تغییر موجودی</button>
+              <button class="btn btn-outline btn-sm" onclick="openSheet('sheet-quickprice')"><svg class="ic-sm"><use href="#i-bolt"/></svg> قیمت پایه</button>
+              <button class="btn btn-outline btn-sm" style="border-color:var(--arm);color:var(--arm-tint-fg)" onclick="openSheet('sheet-item-pricing')"><svg class="ic-sm"><use href="#i-percent"/></svg> تنظیم قیمت</button>
               <button class="btn btn-outline btn-sm" onclick="openEditItem('sell')"><svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش کامل</button>
               <button class="btn btn-outline btn-sm" style="color:var(--red)" onclick="askArchive()"><svg class="ic-sm"><use href="#i-trash"/></svg> آرشیو کردن</button>
             </div>
@@ -1096,7 +1194,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>همان صفحهٔ <b>دید مشتری</b> است + نوار بینش و کارتِ کمپین که فقط تو می‌بینی. قیمت و موجودی‌ات را به‌روز نگه دار — <b>۱۲ نفر همین حالا زنده دنبالش می‌کنند</b> و اولین چیزِ نابه‌روز، اعتماد است.</span>
+              <span>همان صفحهٔ <b>دید مشتری</b> است + نوار بینش و کارتِ کمپین که فقط تو می‌بینی. <b>قیمت پایه</b> مبنای همهٔ قیمت‌هاست — «تنظیم قیمت» برای همین کلاست؛ قیمت و موجودی‌ات را به‌روز نگه دار، <b>۱۲ نفر همین حالا زنده دنبالش می‌کنند</b> و اولین چیزِ نابه‌روز، اعتماد است.</span>
             </div>
           </div>
         </section>
@@ -1133,16 +1231,32 @@
             </div>
 
             <div class="hero-specs" style="margin-top:11px">
-              <div class="sp"><span class="k">قیمت</span><span class="v">۸۹٬۵۰۰ <small>تومان/کیلو</small></span></div>
+              <div class="sp"><span class="k">قیمت شما</span><span class="v" style="color:var(--emerald)">۷۶٬۵۰۰ <small>تومان/کیلو · از ۱۰۰ کیلو</small></span></div>
               <div class="sp"><span class="k">موجودی</span><span class="v">۲.۴ <small>تن</small></span></div>
               <div class="sp"><span class="k">حداقل سفارش</span><span class="v">۱۰۰ <small>کیلو</small></span></div>
               <div class="sp"><span class="k">بسته‌بندی</span><span class="v">۱۰ و ۵۰ کیلویی</span></div>
             </div>
-            <div class="pack-pick">
-              <button class="chip mini active" onclick="packPick(this,'قیمت هر کیسهٔ ۱۰ کیلویی: ۸۹۵٬۰۰۰ تومان')">کیسهٔ ۱۰ کیلویی · ۸۹۵٬۰۰۰</button>
-              <button class="chip mini" onclick="packPick(this,'قیمت هر کیسهٔ ۵۰ کیلویی: ۴٬۴۷۵٬۰۰۰ تومان')">کیسهٔ ۵۰ کیلویی · ۴٬۴۷۵٬۰۰۰</button>
+
+            <!-- v10: قیمت شما — دید خریدار: فقط عدد نهایی، بدون فرمول و سطح و نام گروه -->
+            <div class="price-you">
+              <span class="py-ico"><svg><use href="#i-users"/></svg></span>
+              <span class="tx">
+                <span class="lbl"><b>قیمت شما</b> — مشتری ثابتِ کارون</span>
+                <span class="val"><b>۷۶٬۵۰۰ <small>تومان / کیلو</small></b><span class="was">۸۹٬۵۰۰</span></span>
+              </span>
             </div>
-            <div class="pack-note">قیمت پایه برای مقایسه: ۸۹٬۵۰۰ تومان / کیلو — دو بسته‌بندی، یک قیمت پایه</div>
+            <div class="vol-ladder">
+              <div class="vl-row"><span class="from">تا ۱۰۰ کیلو</span><span class="pr">۸۰٬۵۵۰ <small>تومان/کیلو</small></span><span class="save">قیمت سطح شما</span></div>
+              <div class="vl-row"><span class="from">از ۱۰۰ کیلو</span><span class="pr">۷۶٬۵۰۰ <small>تومان/کیلو</small></span><span class="save">قیمت شما</span></div>
+              <div class="vl-row"><span class="from">از ۵۰۰ کیلو</span><span class="pr">۷۴٬۱۰۰ <small>تومان/کیلو</small></span><span class="save">٪۸ حجمی</span></div>
+              <div class="vl-row"><span class="from">از ۱ تن</span><span class="pr">۷۳٬۰۰۰ <small>تومان/کیلو</small></span><span class="save">قیمت ویژه</span></div>
+            </div>
+
+            <div class="pack-pick">
+              <button class="chip mini active" onclick="packPick(this,'قیمت شما برای هر کیسهٔ ۱۰ کیلویی: ۸۰۵٬۵۰۰ تومان')">کیسهٔ ۱۰ کیلویی · ۸۰۵٬۵۰۰</button>
+              <button class="chip mini" onclick="packPick(this,'قیمت شما برای هر کیسهٔ ۵۰ کیلویی: ۴٬۰۲۷٬۵۰۰ تومان')">کیسهٔ ۵۰ کیلویی · ۴٬۰۲۷٬۵۰۰</button>
+            </div>
+            <div class="pack-note">قیمت‌های این صفحه مخصوصِ شما حساب شده — قیمت پایهٔ عمومی: ۸۹٬۵۰۰ تومان / کیلو</div>
 
             <div class="tri-actions" style="margin-top:16px">
               <button class="btn btn-primary btn-lg btn-block" onclick="go('sc-rfq')">
@@ -1353,6 +1467,275 @@
             <button class="tab" onclick="event.stopPropagation();openSheet('sheet-msgs')" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
             <button class="tab" data-go="sc-sell-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
+        </section>
+
+        <!-- ═══════════════ ۱۱٫۵ — تنظیمات قیمت (v10) ═══════════════ -->
+        <section class="screen" id="sc-pricing" data-arm="sell">
+          <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
+          <div class="pagehead">
+            <button class="back" onclick="go('sc-sell-catalog')"><svg class="ic"><use href="#i-back"/></svg></button>
+            <div class="tt"><b>تنظیمات قیمت</b><span>قیمت پایه مبناست — بقیه خودکار حساب می‌شود</span></div>
+          </div>
+          <div class="screen-body">
+
+            <!-- جریان فرمول: پایه → سطح → حجم → نهایی -->
+            <div class="card">
+              <div class="ng-title"><svg class="ic-sm" style="width:13px;height:13px"><use href="#i-percent"/></svg> قیمت چطور ساخته می‌شود؟</div>
+              <div class="formula-flow">
+                <div class="ff-node"><span class="k">قیمت پایه</span><span class="v">۸۹٬۵۰۰</span></div>
+                <span class="ff-op">−</span>
+                <div class="ff-node"><span class="k">سطح مشتری</span><span class="v">٪۰ تا ۱۰</span></div>
+                <span class="ff-op">−</span>
+                <div class="ff-node"><span class="k">پلهٔ حجم</span><span class="v">٪۰ تا ۸</span></div>
+                <span class="ff-op">=</span>
+                <div class="ff-node res"><span class="k">قیمت نهایی</span><span class="v">۷۳٬۰۰۰<small>+</small></span></div>
+              </div>
+              <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-shield"/></svg> <span>پیش‌فرض <b>پله‌ای و محافظه‌کارانه</b> است: اول قیمت مشتری حساب می‌شود، بعد تخفیف حجم روی همان — <b>نه جمعِ دو تخفیف روی قیمت پایه</b>. قیمتِ هر خریدار همیشه یک خطِ قابل توضیح دارد.</span></div>
+            </div>
+
+            <!-- گروه‌های مشتری -->
+            <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-users"/></svg> گروه‌های مشتری</h2><span class="more" onclick="openSheet('sheet-group')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-plus"/></svg> گروه جدید</span></div>
+            <div style="font-size:10.5px;color:var(--muted);line-height:1.9;margin:-2px 2px 9px">نام گروه‌ها کاملاً دلخواهِ خودت است؛ <b>سطح (۱ تا ۵)</b> تعیین می‌کند هر گروه چه قیمتی ببیند — سطح ۱ همیشه بهترین قیمت است.</div>
+            <div class="grp-row" onclick="openSheet('sheet-group')">
+              <span class="g-ico"><svg><use href="#i-users"/></svg></span>
+              <span class="tx"><b>مشتریان ثابت همدان</b><span>۴ عضو · گروه فعالِ رستوران مهر</span></span>
+              <span class="lv-badge l1">سطح ۱</span>
+              <svg class="chev"><use href="#i-chev"/></svg>
+            </div>
+            <div class="grp-row" onclick="openSheet('sheet-group')">
+              <span class="g-ico"><svg><use href="#i-users"/></svg></span>
+              <span class="tx"><b>رستوران‌های زنجیره‌ای</b><span>۶ عضو</span></span>
+              <span class="lv-badge">سطح ۲</span>
+              <svg class="chev"><use href="#i-chev"/></svg>
+            </div>
+            <div class="grp-row" onclick="openSheet('sheet-group')">
+              <span class="g-ico"><svg><use href="#i-users"/></svg></span>
+              <span class="tx"><b>پخش‌های استان</b><span>۳ عضو</span></span>
+              <span class="lv-badge">سطح ۲</span>
+              <svg class="chev"><use href="#i-chev"/></svg>
+            </div>
+            <div class="grp-row" onclick="openSheet('sheet-group')">
+              <span class="g-ico"><svg><use href="#i-users"/></svg></span>
+              <span class="tx"><b>خریداران تازه</b><span>۹ عضو · هر مشتری فقط در یک گروه می‌نشیند</span></span>
+              <span class="lv-badge">سطح ۳</span>
+              <svg class="chev"><use href="#i-chev"/></svg>
+            </div>
+
+            <!-- قانون هر سطح -->
+            <div class="sec-title" style="margin-top:14px"><h2><svg class="ic-sm"><use href="#i-percent"/></svg> قیمت هر سطح</h2><span class="more">۴ گروه فعال</span></div>
+            <div style="font-size:10.5px;color:var(--muted);line-height:1.9;margin:-2px 2px 9px">درصدِ کمتر از قیمت پایه — لازم نیست هر ۵ سطح را تنظیم کنی؛ سطحِ تنظیم‌نشده همان قیمت پایه را می‌بیند.</div>
+            <div id="lvlRows">
+              <div class="lvl-row on" onclick="lvlToggle(this)">
+                <span class="lvl-num">۱</span>
+                <span class="tx"><b>سطح ۱ — بهترین قیمت</b><span>مشتریان ثابت همدان</span></span>
+                <span class="lvl-val">٪۱۰ کمتر<small>می‌شود ۸۰٬۵۵۰</small></span>
+              </div>
+              <div class="lvl-edit" id="lvlEdit1">
+                <div class="seg-mini">
+                  <button class="active" onclick="segPick(this)">٪ کمتر از پایه</button>
+                  <button onclick="segPick(this)">بدون تخفیف</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۱۰">
+                  <span class="u-chip">٪</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+              <div class="lvl-row on" onclick="lvlToggle(this)">
+                <span class="lvl-num">۲</span>
+                <span class="tx"><b>سطح ۲</b><span>رستوران‌های زنجیره‌ای · پخش‌های استان</span></span>
+                <span class="lvl-val">٪۵ کمتر<small>می‌شود ۸۵٬۰۲۵</small></span>
+              </div>
+              <div class="lvl-edit" id="lvlEdit2">
+                <div class="seg-mini">
+                  <button class="active" onclick="segPick(this)">٪ کمتر از پایه</button>
+                  <button onclick="segPick(this)">بدون تخفیف</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۵">
+                  <span class="u-chip">٪</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+              <div class="lvl-row" onclick="lvlToggle(this)">
+                <span class="lvl-num">۳</span>
+                <span class="tx"><b>سطح ۳</b><span>خریداران تازه</span></span>
+                <span class="lvl-val unset">بدون تخفیف<small>همان قیمت پایه</small></span>
+              </div>
+              <div class="lvl-edit" id="lvlEdit3">
+                <div class="seg-mini">
+                  <button class="active" onclick="segPick(this)">٪ کمتر از پایه</button>
+                  <button onclick="segPick(this)">بدون تخفیف</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۳">
+                  <span class="u-chip">٪</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+              <div class="lvl-row unset" onclick="lvlToggle(this)">
+                <span class="lvl-num">۴</span>
+                <span class="tx"><b>سطح ۴</b><span>هیچ گروهی این سطح را ندارد</span></span>
+                <span class="lvl-val">تنظیم نشده</span>
+              </div>
+              <div class="lvl-edit" id="lvlEdit4">
+                <div class="seg-mini">
+                  <button class="active" onclick="segPick(this)">٪ کمتر از پایه</button>
+                  <button onclick="segPick(this)">بدون تخفیف</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" placeholder="مثلاً ۵">
+                  <span class="u-chip">٪</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+              <div class="lvl-row unset" onclick="lvlToggle(this)">
+                <span class="lvl-num">۵</span>
+                <span class="tx"><b>سطح ۵</b><span>برای زمانی که خواستی</span></span>
+                <span class="lvl-val">تنظیم نشده</span>
+              </div>
+              <div class="lvl-edit" id="lvlEdit5">
+                <div class="seg-mini">
+                  <button class="active" onclick="segPick(this)">٪ کمتر از پایه</button>
+                  <button onclick="segPick(this)">بدون تخفیف</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" placeholder="مثلاً ۳">
+                  <span class="u-chip">%</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+            </div>
+            <div class="hint" style="margin-top:2px">
+              <svg><use href="#i-shield"/></svg>
+              <span>اگر سطح بالاتر ناخواسته ارزان‌تر از سطح ۱ شود، قبل از ذخیره <b>زرد هشدار می‌دهیم</b> — سطح ۱ همیشه بهترین قیمت می‌ماند، مگر خودت عمداً عوضش کنی.</span>
+            </div>
+
+            <!-- پله‌های حجمی -->
+            <div class="sec-title" style="margin-top:14px"><h2><svg class="ic-sm"><use href="#i-steps"/></svg> قیمت بر اساس حجم</h2><span class="more" onclick="volAdd()"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-plus"/></svg> پلهٔ جدید</span></div>
+            <div style="font-size:10.5px;color:var(--muted);line-height:1.9;margin:-2px 2px 9px">آستانهٔ حجم یعنی «از چند تا به بالا، قیمت بهتر شود» — <b>جدا از حداقل سفارش و جدا از قیمت پایه</b>.</div>
+            <div id="volRows">
+              <div class="vol-row" onclick="volToggle(this)">
+                <span class="vol-from">از ۱۰۰ کیلو</span>
+                <span class="tx"><b>٪۵ کمتر</b><span>همهٔ گروه‌ها — روی قیمتِ بعد از سطح</span></span>
+                <span class="lvl-val">۷۶٬۵۰۰<small>سطح ۱ + این پله</small></span>
+              </div>
+              <div class="lvl-edit" id="volEdit0">
+                <div class="seg-mini">
+                  <button class="active" onclick="segPick(this)">٪ کمتر</button>
+                  <button onclick="segPick(this)">قیمت مشخص</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۵">
+                  <span class="u-chip">٪</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+              <div class="vol-row" onclick="volToggle(this)">
+                <span class="vol-from">از ۵۰۰ کیلو</span>
+                <span class="tx"><b>٪۸ کمتر</b><span>خریدهای بزرگ‌تر — سفارشِ رستوران‌ها</span></span>
+                <span class="lvl-val">۷۴٬۱۰۰<small>سطح ۱ + این پله</small></span>
+              </div>
+              <div class="lvl-edit" id="volEdit1">
+                <div class="seg-mini">
+                  <button class="active" onclick="segPick(this)">٪ کمتر</button>
+                  <button onclick="segPick(this)">قیمت مشخص</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۸">
+                  <span class="u-chip">٪</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+              <div class="vol-row" onclick="volToggle(this)">
+                <span class="vol-from">از ۱ تن</span>
+                <span class="tx"><b>قیمت مشخص</b><span>قیمتِ مطلق — بدون ترکیب با تخفیف سطح</span></span>
+                <span class="lvl-val">۷۳٬۰۰۰<small>قیمت نهایی این حجم</small></span>
+              </div>
+              <div class="lvl-edit" id="volEdit2">
+                <div class="seg-mini">
+                  <button onclick="segPick(this)">٪ کمتر</button>
+                  <button class="active" onclick="segPick(this)">قیمت مشخص</button>
+                </div>
+                <div class="inp-row">
+                  <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۷۳٬۰۰۰">
+                  <span class="u-chip">تومان</span>
+                  <button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button>
+                </div>
+              </div>
+            </div>
+            <div class="hint" style="margin-top:2px">
+              <svg><use href="#i-info"/></svg>
+              <span>پلهٔ گران‌تر از پلهٔ قبلِ خودش <b>هشدار زرد</b> می‌گیرد و آستانه‌های همپوشان هم همین‌طور — قیمتِ حجمِ بیشتر، هرگز تصادفی گران‌تر نمی‌شود. این پله‌ها <b>همهٔ خریداران</b> می‌بینند، هر گروه با قیمتِ خودش.</span>
+            </div>
+
+            <!-- پیش‌نمایش -->
+            <div class="sec-title" style="margin-top:14px"><h2><svg class="ic-sm"><use href="#i-eye"/></svg> پیش‌نمایش قیمت</h2><span class="more">فقط خودت می‌بینی</span></div>
+            <div class="chips" style="margin-bottom:7px" id="pvGroup">
+              <button class="chip active" onclick="pvPick(this,'g')">سطح ۱ — ثابت</button>
+              <button class="chip" onclick="pvPick(this,'g')">سطح ۲</button>
+              <button class="chip" onclick="pvPick(this,'g')">سطح ۳ — تازه</button>
+              <button class="chip" onclick="pvPick(this,'g')">میهمان</button>
+            </div>
+            <div class="chips" id="pvVol">
+              <button class="chip active" onclick="pvPick(this,'v')">کمتر از ۱۰۰ کیلو</button>
+              <button class="chip" onclick="pvPick(this,'v')">۱۰۰+ کیلو</button>
+              <button class="chip" onclick="pvPick(this,'v')">۵۰۰+ کیلو</button>
+              <button class="chip" onclick="pvPick(this,'v')">۱+ تن</button>
+            </div>
+            <div class="pr-preview">
+              <div class="pp-res">
+                <span class="who" id="pvWho">مشتری سطح ۱ · حجم ۱۰۰ کیلو</span>
+                <span class="big" id="pvPrice">۷۶٬۵۰۰</span>
+                <span class="u">تومان / کیلو</span>
+              </div>
+              <div class="pp-brk" id="pvBrk">
+                <div class="r"><span>قیمت پایه</span><b>۸۹٬۵۰۰</b></div>
+                <div class="r"><span>سطح ۱ (٪۱۰ کمتر)</span><b class="minus">−۸٬۹۵۰</b></div>
+                <div class="r"><span>پلهٔ حجم ۱۰۰+ (٪۵ کمتر)</span><b class="minus">−۴٬۰۲۵</b></div>
+                <div class="r"><span>قیمت نهایی خریدار</span><b>۷۶٬۵۰۰</b></div>
+              </div>
+              <div class="unit-calc" style="margin-top:9px"><svg><use href="#i-info"/></svg> <span>این دقیقاً همان چیزی است که خریدار در جای خودش می‌بیند — <b>فقط عدد نهایی</b>، بدون فرمول و سطح و نام گروه. تو اینجا دلِ محاسبه را می‌بینی تا مطمئن شوی قیمتت منطقی است.</span></div>
+            </div>
+
+            <!-- پیشرفته -->
+            <div class="sec-title" style="margin-top:14px"><h2><svg class="ic-sm"><use href="#i-gear"/></svg> پیشرفته</h2><span class="more">بی‌نیاز از تغییر</span></div>
+            <div class="adv-fold" id="advFold">
+              <button class="head" onclick="this.parentElement.classList.toggle('open')">
+                <svg class="ic-sm" style="width:14px;height:14px;color:var(--muted)"><use href="#i-gear"/></svg>
+                روش ترکیب تخفیف‌ها · عملیات گروهی · شرایط پرداخت
+                <svg class="chev"><use href="#i-chev"/></svg>
+              </button>
+              <div class="body">
+                <div style="font-size:10.5px;color:var(--muted);line-height:1.9;margin-bottom:6px">روش پیش‌فرض برای همه‌ی فروشندگان <b>پله‌ای</b> است — این‌جا فقط برای تغییرِ آگاهانه است.</div>
+                <div class="mix-row sel" onclick="mixPick(this)">
+                  <span class="rd"></span>
+                  <span class="tx"><b>پله‌ای (پیش‌فرض)</b><span>اول تخفیف سطح مشتری، بعد تخفیف حجم روی قیمتِ بعدِ آن — قیمتِ کمتر، منطقِ روشن</span></span>
+                </div>
+                <div class="mix-row" onclick="mixPick(this)">
+                  <span class="rd"></span>
+                  <span class="tx"><b>جمعِ درصدها</b><span>سطح + حجم یک‌جا از قیمت پایه کم می‌شوند — قیمت می‌شود خیلی پایین؛ آگاهانه انتخاب کن</span></span>
+                </div>
+                <div class="hint" style="margin-top:8px">
+                  <svg><use href="#i-shield"/></svg>
+                  <span>مهم: هر خریدار فقط <b>عددِ نهایی</b> را می‌بیند؛ روش ترکیب هیچ‌وقت برای او نمایش داده نمی‌شود. پله‌ای را توصیه می‌کنیم چون همیشه قابل توضیح است.</span>
+                </div>
+                <div class="link-row" style="border-radius:12px;border:1px solid var(--border);padding:10px 12px" onclick="openSheet('sheet-bulk')">
+                  <svg><use href="#i-box"/></svg> عملیات گروهی روی چند کالا
+                  <svg class="lv"><use href="#i-chev"/></svg>
+                </div>
+                <div class="link-row" style="border-radius:12px;border:1px solid var(--border);padding:10px 12px;margin-top:7px;opacity:.55" onclick="toast('شرایط پرداخت — به‌زودی: نسیه، پیش‌پرداخت، چک')">
+                  <svg><use href="#i-wallet"/></svg> شرایط پرداخت (نسیه / پیش‌پرداخت) — به‌زودی
+                  <span class="badge b-stone" style="margin-right:auto">به‌زودی</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint" style="margin-top:11px">
+              <svg><use href="#i-info"/></svg>
+              <span>این تنظیمات <b>روی کل کاتالوگ</b> اعمال می‌شود — هر کالا که خواست جداگانه قیمت بگیرد، در صفحهٔ خودش «تنظیم قیمت» را دارد. اولویت همیشه روشن است: <b>قیمت دستیِ کالا › قانون اختصاصی کالا › همین تنظیمات › قیمت پایه</b>.</span>
+            </div>
+          </div>
         </section>
 
         <!-- ═══════════════ ۱۲ — پروفایل فروش ═══════════════ -->
@@ -2154,6 +2537,12 @@
               <span><svg><use href="#i-bm"/></svg> <b>۳۸</b> ذخیره‌کنندهٔ کاتالوگ</span>
               <i class="sep"></i>
               <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید هفته</span>
+            </div>
+
+            <!-- v10: قیمت شما در کاتالوگ — سطح مشتری، بی‌صدا روی همهٔ قیمت‌ها -->
+            <div class="py-strip">
+              <svg><use href="#i-users"/></svg>
+              <span class="tx">این کاتالوگ برای <b>تو</b> قیمت دارد — سطحِ «مشتری ثابت» اعمال شده؛ قیمتِ هر کالا را در صفحهٔ خودش ببین</span>
             </div>
 
             <div class="searchbar" style="margin-top:11px" onclick="toast('جستجو در این کاتالوگ…')">
@@ -3078,9 +3467,136 @@
   <button class="btn btn-primary btn-lg btn-block" onclick="quickSave()">
     <svg class="ic-sm"><use href="#i-bolt"/></svg> ذخیره — خبر بده
   </button>
-  <div class="sub" style="margin:10px 0 0">۱۲ دنبال‌کنندهٔ قیمت، در صورت تغییر معنادار، اعلان می‌گیرند</div>
+  <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-percent"/></svg> <span>این <b>قیمت پایه</b> است — قیمت‌های سطح مشتری و پله‌های حجمیِ وابسته، <b>خودکار بازمحاسبه</b> می‌شوند؛ قیمت دستیِ کالا (اگر داشته باشد) دست‌نخورده می‌ماند.</span></div>
+  <div class="sub" style="margin:9px 0 0">۱۲ دنبال‌کنندهٔ قیمت، در صورت تغییر معنادار، اعلان می‌گیرند</div>
 </div>
 
+<!-- ═══════════ شیت: تنظیم قیمت کالا (v10) ═══════════ -->
+<div class="sheet" id="sheet-item-pricing">
+  <div class="grab"></div>
+  <h3>تنظیم قیمت — برنج هاشمی درجه یک</h3>
+  <div class="sub">قیمت پایه: <b style="color:var(--fg)">۸۹٬۵۰۰ تومان / کیلو</b> — مبنای همهٔ محاسبات</div>
+
+  <button class="mode-row sel" id="pm1" onclick="pricingMode(1)">
+    <span class="rd"></span>
+    <span class="tx"><b>استفاده از تنظیمات کاتالوگ</b><span>سطح مشتری + پله‌های حجمِ کاتالوگ روی همین کالا — پیش‌فرضِ همهٔ کالاها</span></span>
+    <span class="badge b-green" style="flex-shrink:0">فعال</span>
+  </button>
+  <div class="pm-panel on" id="pm1b">
+    <div class="card" style="box-shadow:none">
+      <div class="ng-title" style="margin:0 0 7px">چه چیزی اعمال می‌شود؟</div>
+      <div class="pp-brk" style="margin:0">
+        <div class="r"><span>سطح ۱ — مشتریان ثابت</span><b class="minus">٪۱۰ کمتر · ۸۰٬۵۵۰</b></div>
+        <div class="r"><span>سطح ۲ — زنجیره‌ای‌ها</span><b class="minus">٪۵ کمتر · ۸۵٬۰۲۵</b></div>
+        <div class="r"><span>پلهٔ حجم ۱۰۰+ کیلو (همه)</span><b class="minus">٪۵ کمتر</b></div>
+        <div class="r"><span>پلهٔ حجم ۱+ تن (همه)</span><b>قیمت مشخص ۷۳٬۰۰۰</b></div>
+      </div>
+      <div class="unit-calc"><svg><use href="#i-bolt"/></svg> <span>قیمت پایه‌ات عوض شود، <b>همهٔ این‌ها خودکار تازه می‌شوند</b> — این کالا هیچ ورودی قیمتیِ جداگانه‌ای ندارد.</span></div>
+    </div>
+  </div>
+
+  <button class="mode-row" id="pm2" onclick="pricingMode(2)">
+    <span class="rd"></span>
+    <span class="tx"><b>قانون اختصاصی همین کالا</b><span>فقط این کالا جداگانه قیمت بگیرد — بقیهٔ کاتالوگ از تنظیمات مشترک</span></span>
+  </button>
+  <div class="pm-panel" id="pm2b">
+    <div class="card" style="box-shadow:none">
+      <div class="field" style="margin-bottom:9px">
+        <label>سطح ۱ (مشتریان ثابت) <i>— ٪ کمتر از پایه</i></label>
+        <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۱۲">
+      </div>
+      <div class="field" style="margin-bottom:9px">
+        <label>پلهٔ حجم — از ۵۰۰ کیلو <i>— ٪ کمتر بعد از سطح</i></label>
+        <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۱۰">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>پلهٔ حجم — از ۱ تن <i>— یا قیمت مشخص</i></label>
+        <input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" value="۷۰٬۰۰۰">
+      </div>
+      <div class="unit-calc"><svg><use href="#i-info"/></svg> <span>فقط همین چند عدد — <b>همین کالا، همین سطوح</b>؛ با تغییر قیمت پایه بازمحاسبه می‌شود.</span></div>
+    </div>
+  </div>
+
+  <button class="mode-row" id="pm3" onclick="pricingMode(3)">
+    <span class="rd"></span>
+    <span class="tx"><b>قیمت نهایی دستی</b><span>عدد نهایی را خودم می‌نویسم — همهٔ فرمول‌ها کنار می‌روند</span></span>
+  </button>
+  <div class="pm-panel" id="pm3b">
+    <div class="card" style="box-shadow:none">
+      <div class="field" style="margin-bottom:0">
+        <label>قیمت نهایی برای همهٔ خریداران <i>— تومان / کیلو</i></label>
+        <input class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" value="۸۲٬۰۰۰">
+      </div>
+      <div class="unit-calc" style="background:var(--amber-tint)"><svg><use href="#i-shield"/></svg> <span><b>مستقل است:</b> با تغییر قیمت پایه <b>خودکار عوض نمی‌شود</b> و پله‌های حجم هم رویش اثر ندارند — خریدار همه‌جا همین عدد را می‌بیند.</span></div>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:12px">
+    <button class="btn btn-primary btn-lg" style="flex:1.5" onclick="itemPricingSave()"><svg class="ic-sm"><use href="#i-check"/></svg> ذخیره</button>
+    <button class="btn btn-outline btn-lg" style="flex:1" onclick="resetToCatalog()"><svg class="ic-sm"><use href="#i-back"/></svg> بازگشت به کاتالوگ</button>
+  </div>
+  <div class="sub" style="margin:10px 0 0">ترتیبِ همیشه روشن: <b>قیمت دستی › قانون اختصاصی کالا › تنظیمات کاتالوگ › قیمت پایه</b></div>
+</div>
+
+<!-- ═══════════ شیت: گروه مشتری (v10) ═══════════ -->
+<div class="sheet" id="sheet-group">
+  <div class="grab"></div>
+  <h3>گروه مشتری</h3>
+  <div class="sub">نامش کاملاً دلخواهِ خودت است — سطح تعیین می‌کند چه قیمتی ببیند</div>
+  <div class="card" style="box-shadow:none">
+    <div class="field" style="margin-bottom:11px">
+      <label>نام گروه</label>
+      <input class="inp" value="مشتریان ثابت همدان">
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>سطح این گروه <i>— ۱ بهترین قیمت</i></label>
+      <div class="lvl-chips">
+        <button class="chip active"><b>۱</b><small>بهترین قیمت</small></button>
+        <button class="chip"><b>۲</b><small>٪۵ کمتر</small></button>
+        <button class="chip"><b>۳</b><small>بدون تخفیف</small></button>
+        <button class="chip"><b>۴</b><small>تنظیم نشده</small></button>
+        <button class="chip"><b>۵</b><small>تنظیم نشده</small></button>
+      </div>
+      <div class="unit-calc"><svg><use href="#i-users"/></svg> <span>۴ عضو دارد: رستوران مهر، تالار یاس، سوپرمارکت حسن، آشپزخانهٔ مادل — <b>هر مشتری فقط در یک گروه</b> می‌نشیند و قیمتِ همان گروه را می‌بیند.</span></div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:12px">
+    <button class="btn btn-primary btn-lg" style="flex:1.5" onclick="groupSave()"><svg class="ic-sm"><use href="#i-check"/></svg> ذخیره گروه</button>
+    <button class="btn btn-ghost btn-lg" style="flex:1;color:var(--red)" onclick="closeSheet();toast('گروه حذف شد — اعضا به «خریداران تازه» رفتند')">حذف</button>
+  </div>
+  <div class="sub" style="margin:9px 0 0">قیمتِ سطح در «تنظیمات قیمت» تعیین می‌شود — گروه فقط اسم و سطح دارد</div>
+</div>
+
+<!-- ═══════════ شیت: عملیات گروهی قیمت (v10) ═══════════ -->
+<div class="sheet" id="sheet-bulk">
+  <div class="grab"></div>
+  <h3>عملیات گروهی قیمت</h3>
+  <div class="sub">یک قانون را یک‌جا روی چند کالا اعمال کن — جزو مسیر پیشرفته، نه روزمره</div>
+  <div class="card" style="box-shadow:none">
+    <div class="ng-title" style="margin:0 0 8px">۱ — کالاها را انتخاب کن</div>
+    <div class="chips" style="flex-wrap:wrap;overflow:visible">
+      <button class="chip active" onclick="bulkChip(this)">برنج هاشمی یک</button>
+      <button class="chip active" onclick="bulkChip(this)">برنج درجه دو</button>
+      <button class="chip" onclick="bulkChip(this)">برنج فجر</button>
+      <button class="chip" onclick="bulkChip(this)">روغن ۱۶ کیلویی</button>
+      <button class="chip" onclick="bulkChip(this)">ارگانیک</button>
+    </div>
+    <div class="ng-title" style="margin:12px 0 8px">۲ — چه کاری؟</div>
+    <div class="mix-row sel" onclick="mixPick(this)">
+      <span class="rd"></span>
+      <span class="tx"><b>بازگشت همه به تنظیمات کاتالوگ</b><span>قیمت‌های اختصاصی و دستیِ این کالاها پاک شود</span></span>
+    </div>
+    <div class="mix-row" onclick="mixPick(this)">
+      <span class="rd"></span>
+      <span class="tx"><b>قیمت دستیِ یکسان</b><span>یک عدد نهایی برای همهٔ انتخاب‌شده‌ها</span></span>
+    </div>
+  </div>
+  <button class="btn btn-primary btn-lg btn-block" onclick="bulkApply()"><svg class="ic-sm"><use href="#i-check"/></svg> اعمال روی ۲ کالا</button>
+  <div class="hint" style="margin-top:10px">
+    <svg><use href="#i-shield"/></svg>
+    <span>قبل از اعمال، <b>خلاصهٔ اثر</b> را نشان می‌دهیم (چند قیمت تغییر می‌کند، چند دنبال‌کننده خبردار می‌شود) — تغییر گروهی بدون پیش‌نمایش اعمال نمی‌شود.</span>
+  </div>
+</div>
 
 <!-- ═══════════ شیت: پیام‌ها (فهرست گفتگوها) ═══════════ -->
 <div class="sheet" id="sheet-msgs">
@@ -3853,6 +4369,173 @@ function submitQuote() {
   const b = $('#sc-quote .screen-body'); if (b) b.scrollTop = 0;
 }
 function quoteDone() { go('sc-sell-requests'); }
+
+/* ── v10 (D8-11): تنظیمات قیمت — سطح‌ها، پله‌های حجم، پیش‌نمایش، حالت‌های کالا ── */
+const PR_BASE = 89500;
+const PR_LEVELS = [
+  { name: 'سطح ۱ — مشتری ثابت', pct: 10 },
+  { name: 'سطح ۲', pct: 5 },
+  { name: 'سطح ۳ — تازه', pct: 0 },
+  { name: 'میهمان', pct: 0 }
+];
+const PR_VOLS = [
+  { name: 'کمتر از ۱۰۰ کیلو', pct: 0 },
+  { name: '۱۰۰+ کیلو', pct: 5 },
+  { name: '۵۰۰+ کیلو', pct: 8 },
+  { name: '۱+ تن', fixed: 73000 }
+];
+const faDig = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[+d]);
+const faNum = n => faDig(Math.round(n).toLocaleString('en-US')).replace(/,/g, '٬');
+const enDig = s => String(s).replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[,٬\s]/g, '');
+function prPrice(gi, vi) {
+  const v = PR_VOLS[vi];
+  if (v.fixed) return v.fixed;
+  return PR_BASE * (1 - PR_LEVELS[gi].pct / 100) * (1 - v.pct / 100);
+}
+/* سطر سطح/پله: باز/بسته کردن ویرایشگر خطی */
+function lvlToggle(row) {
+  const idx = [...$$('#lvlRows .lvl-row')].indexOf(row);
+  lvlEditToggle(row, $('#lvlEdit' + (idx + 1)));
+}
+function volToggle(row) {
+  const idx = [...$$('#volRows .vol-row')].indexOf(row);
+  lvlEditToggle(row, $('#volEdit' + idx));
+}
+function lvlEditToggle(row, ed) {
+  if (!ed) return;
+  const wasOpen = ed.classList.contains('open');
+  $$('.lvl-edit.open').forEach(e => e.classList.remove('open'));
+  $$('.lvl-row.sel, .vol-row.sel').forEach(r => r.classList.remove('sel'));
+  if (!wasOpen) { ed.classList.add('open'); row.classList.add('sel'); }
+}
+/* سگمنت کوچک: درصد کمتر / بدون تخفیف / قیمت مشخص */
+function segPick(btn) {
+  [...btn.parentElement.children].forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+/* ذخیرهٔ ویرایشگر سطح/پله — هم برای سطر سطح، هم پلهٔ حجم */
+function lvlSave(btn) {
+  const ed = btn.closest('.lvl-edit');
+  const row = ed.previousElementSibling;
+  const inp = ed.querySelector('.inp');
+  const raw = enDig(inp.value || '۰');
+  const num = +raw;
+  const isPct = !ed.querySelector('.seg-mini button.active').textContent.includes('قیمت مشخص');
+  if (isPct && (!num || num < 0 || num > 90)) {
+    toast('درصد معتبر نیست — چیزی بین ۰ تا ۹۰ بنویس؛ قیمت منفی و تخفیف غیرواقعی را همان‌جا می‌گیریم');
+    return;
+  }
+  const val = row.querySelector('.lvl-val');
+  if (row.classList.contains('vol-row')) {
+    if (isPct) val.innerHTML = '٪' + faDig(num) + ' کمتر<small>سطح ۱ + این پله: ' + faNum(prPrice(0, 2)) + '</small>';
+    else val.innerHTML = faNum(num) + '<small>قیمت نهایی این حجم</small>';
+    row.querySelector('.tx b').textContent = (isPct ? '٪' + faDig(num) + ' کمتر' : 'قیمت مشخص');
+  } else {
+    if (isPct && num > 0) {
+      val.innerHTML = '٪' + faDig(num) + ' کمتر<small>می‌شود ' + faNum(PR_BASE * (1 - num / 100)) + '</small>';
+      row.classList.add('on'); row.classList.remove('unset');
+    } else {
+      val.innerHTML = 'بدون تخفیف<small>همان قیمت پایه</small>';
+      row.classList.remove('on'); row.classList.add('unset');
+    }
+  }
+  lvlEditClose(row, ed);
+  toast('ذخیره شد — قیمتِ همهٔ خریدارانِ این سطح، همان لحظه بازمحاسبه شد');
+}
+function lvlEditClose(row, ed) {
+  ed.classList.remove('open'); row.classList.remove('sel');
+}
+/* پلهٔ حجم جدید */
+let volSeq = 3;
+function volAdd() {
+  const row = document.createElement('div');
+  row.className = 'vol-row';
+  row.setAttribute('onclick', 'volToggle(this)');
+  row.innerHTML =
+    '<span class="vol-from">از — کیلو</span>' +
+    '<span class="tx"><b>٪ کمتر</b><span>آستانه و درصد را همین‌جا بنویس — همهٔ گروه‌ها می‌بینند</span></span>' +
+    '<span class="lvl-val" style="background:var(--muted-bg);color:var(--muted);font-weight:600">پلهٔ جدید</span>';
+  const ed = document.createElement('div');
+  ed.className = 'lvl-edit';
+  ed.id = 'volEdit' + volSeq;
+  ed.innerHTML =
+    '<div class="seg-mini">' +
+    '<button class="active" onclick="segPick(this)">٪ کمتر</button>' +
+    '<button onclick="segPick(this)">قیمت مشخص</button></div>' +
+    '<div class="inp-row">' +
+    '<input class="inp" style="direction:ltr;text-align:center" inputmode="numeric" placeholder="مثلاً ۳">' +
+    '<span class="u-chip">٪</span>' +
+    '<button class="btn btn-primary btn-sm" onclick="lvlSave(this)">ذخیره</button></div>';
+  const host = $('#volRows');
+  host.appendChild(row); host.appendChild(ed);
+  row.classList.add('sel'); ed.classList.add('open');
+  const b = $('#sc-pricing .screen-body'); if (b) b.scrollTop = b.scrollHeight;
+}
+/* پیش‌نمایش قیمت: چیپ گروه × چیپ حجم → عدد نهایی + دلِ محاسبه */
+let pvG = 0, pvV = 1;
+function pvPick(chip, kind) {
+  const chips = chip.parentElement.children;
+  const idx = [...chips].indexOf(chip);
+  if (kind === 'g') pvG = idx; else pvV = idx;
+  $$('#pvGroup .chip').forEach((c, i) => c.classList.toggle('active', i === pvG));
+  $$('#pvVol .chip').forEach((c, i) => c.classList.toggle('active', i === pvV));
+  const lv = PR_LEVELS[pvG], v = PR_VOLS[pvV];
+  $('#pvWho').textContent = lv.name + ' · حجم ' + v.name;
+  $('#pvPrice').textContent = faNum(prPrice(pvG, pvV));
+  let rows = '<div class="r"><span>قیمت پایه</span><b>' + faNum(PR_BASE) + '</b></div>';
+  if (lv.pct > 0) rows += '<div class="r"><span>' + lv.name + ' (٪' + faDig(lv.pct) + ' کمتر)</span><b class="minus">−' + faNum(PR_BASE * lv.pct / 100) + '</b></div>';
+  if (v.fixed) rows += '<div class="r"><span>پلهٔ حجم ' + v.name + ' (قیمت مشخص)</span><b>' + faNum(v.fixed) + '</b></div>';
+  else if (v.pct > 0) {
+    const after = PR_BASE * (1 - lv.pct / 100);
+    rows += '<div class="r"><span>پلهٔ حجم ' + v.name + ' (٪' + faDig(v.pct) + ' کمتر)</span><b class="minus">−' + faNum(after * v.pct / 100) + '</b></div>';
+  }
+  rows += '<div class="r"><span>قیمت نهایی خریدار</span><b>' + faNum(prPrice(pvG, pvV)) + '</b></div>';
+  $('#pvBrk').innerHTML = rows;
+}
+/* رادیو روش ترکیب (پیشرفته) و رادیوهای شیت عملیات گروهی */
+function mixPick(row) {
+  [...row.parentElement.querySelectorAll(':scope > .mix-row')].forEach(r => r.classList.remove('sel'));
+  row.classList.add('sel');
+}
+/* شیت تنظیم قیمت کالا: ۳ حالت — کاتالوگ / اختصاصی / دستی */
+function pricingMode(n) {
+  [1, 2, 3].forEach(i => {
+    $('#pm' + i).classList.toggle('sel', i === n);
+    $('#pm' + i + 'b').classList.toggle('on', i === n);
+  });
+}
+function itemPricingSave() {
+  closeSheet();
+  toast('قیمت‌گذاری این کالا ذخیره شد — خریداران از همین لحظه قیمتِ تازه را می‌بینند');
+}
+function resetToCatalog() {
+  pricingMode(1);
+  toast('برگشت به تنظیمات کاتالوگ — قانون اختصاصی این کالا پاک شد؛ قیمت پایه مبنای همه‌چیز است');
+}
+/* شیت گروه مشتری */
+function groupSave() {
+  closeSheet();
+  toast('گروه ذخیره شد — سطحِ گروه، همان لحظه روی قیمتِ اعضایش اثر می‌کند');
+}
+/* شیت عملیات گروهی */
+function bulkChip(chip) {
+  chip.classList.toggle('active');
+  const n = $$('#sheet-bulk .chips .chip.active').length;
+  const btn = document.querySelector('#sheet-bulk .btn-primary');
+  btn.innerHTML = '<svg class="ic-sm"><use href="#i-check"/></svg> اعمال روی ' + faDig(n) + ' کالا';
+}
+function bulkApply() {
+  const n = $$('#sheet-bulk .chips .chip.active').length;
+  closeSheet();
+  toast('خلاصهٔ اثر گروهی: ' + faDig(n * 2) + ' قیمت تغییر می‌کند و ' + faDig(n * 9) + ' دنبال‌کننده خبردار می‌شوند — پیش‌نمایش کامل قبل از اعمال');
+}
+/* صفحهٔ شروع: تب مزایا (فروشنده/خریدار) */
+function introTab(btn, side) {
+  $$('.intro-tabs .itab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  $('#introSell').style.display = side === 'sell' ? '' : 'none';
+  $('#introBuy').style.display = side === 'buy' ? '' : 'none';
+}
 
 /* ── افزودن کالا: جست‌وجو و روش‌های جایگزین ── */
 function addSearchCheck(inp) {

@@ -1900,3 +1900,239 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 /* تب‌بار ۵-تایی خرید: فشرده‌تر */
 .tabbar .tab { font-size: 9.5px; }
 .tabbar .tab svg { width: 19px; height: 19px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   v10 — تنظیمات قیمت‌گذاری (Simple by default, Powerful when needed)
+   سه لایه: قیمت پایه → سطح مشتری → پلهٔ حجم · قیمت همیشه قابل توضیح
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── جریان فرمول: پایه → سطح → حجم → نهایی ── */
+.formula-flow { display: flex; align-items: stretch; gap: 4px; margin-top: 4px; }
+.ff-node {
+  flex: 1; background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  padding: 8px 3px 7px; text-align: center; min-width: 0;
+}
+.ff-node .k { font-size: 8.5px; color: var(--muted); display: block; line-height: 1.5; }
+.ff-node .v { font-size: 11.5px; font-weight: 800; display: block; margin-top: 3px; }
+.ff-node .v small { font-size: 8px; font-weight: 400; color: var(--muted); }
+.ff-node.res { background: var(--emerald-tint); border-color: color-mix(in srgb, var(--emerald) 28%, var(--border)); }
+.ff-node.res .v { color: var(--emerald); }
+.ff-op { align-self: center; color: var(--muted); font-weight: 800; font-size: 11px; flex-shrink: 0; }
+
+/* ── سطر گروه مشتری ── */
+.grp-row {
+  display: flex; align-items: center; gap: 10px; background: #fff;
+  border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px;
+  cursor: pointer;
+}
+.grp-row:active { transform: scale(.985); }
+.grp-row .g-ico { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; background: var(--arm-tint); color: var(--arm-tint-fg); }
+.grp-row .g-ico svg { width: 19px; height: 19px; }
+.grp-row .tx { flex: 1; min-width: 0; }
+.grp-row .tx b { font-size: 13px; display: block; }
+.grp-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2.5px; line-height: 1.7; }
+.grp-row .lv-badge {
+  font-size: 9.5px; font-weight: 800; border-radius: 8px; padding: 4px 8px; flex-shrink: 0;
+  background: var(--arm-tint); color: var(--arm-tint-fg);
+}
+.grp-row .lv-badge.l1 { background: var(--emerald-tint); color: var(--emerald); }
+.grp-row .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
+
+/* ── سطر قانون سطح (۱..۵) ── */
+.lvl-row {
+  display: flex; align-items: center; gap: 9px; background: #fff;
+  border: 1px solid var(--border); border-radius: 13px; padding: 9px 12px; margin-bottom: 7px;
+  cursor: pointer;
+}
+.lvl-row:active { transform: scale(.985); }
+.lvl-num {
+  width: 27px; height: 27px; border-radius: 9px; display: grid; place-items: center;
+  font-weight: 800; font-size: 12px; background: var(--muted-bg); color: var(--muted); flex-shrink: 0;
+}
+.lvl-row.on .lvl-num { background: var(--emerald-tint); color: var(--emerald); }
+.lvl-row .tx { flex: 1; min-width: 0; }
+.lvl-row .tx b { font-size: 12.5px; display: block; }
+.lvl-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+.lvl-val {
+  font-size: 11px; font-weight: 800; border-radius: 9px; padding: 5px 10px; flex-shrink: 0;
+  background: var(--arm-tint); color: var(--arm-tint-fg); text-align: center;
+}
+.lvl-val small { display: block; font-size: 8.5px; font-weight: 600; opacity: .75; margin-top: 1px; }
+.lvl-row.unset .lvl-val { background: var(--muted-bg); color: var(--muted); font-weight: 600; }
+.lvl-row.sel { border-color: var(--arm); box-shadow: 0 0 0 3px var(--arm-tint); }
+
+/* ── ویرایشگر خطی سطح/پله (درصد کمتر یا قیمت مشخص) ── */
+.lvl-edit { display: none; background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 13px; padding: 10px 12px; margin: -3px 0 9px; }
+.lvl-edit.open { display: block; }
+.seg-mini { display: flex; background: var(--muted-bg); border-radius: 10px; padding: 3px; gap: 3px; }
+.seg-mini button {
+  flex: 1; font-size: 10.5px; font-weight: 700; padding: 6px 4px; border-radius: 8px;
+  color: var(--muted); border: none; background: transparent; cursor: pointer; font-family: inherit;
+}
+.seg-mini button.active { background: #fff; color: var(--fg); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+.inp-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.inp-row .inp { flex: 1; margin: 0; }
+.inp-row .u-chip { font-size: 10px; font-weight: 700; color: var(--muted); background: var(--muted-bg); border-radius: 8px; padding: 8px 10px; flex-shrink: 0; }
+
+/* ── سطر پلهٔ حجمی ── */
+.vol-row {
+  display: flex; align-items: center; gap: 9px; background: #fff;
+  border: 1px solid var(--border); border-radius: 13px; padding: 9px 12px; margin-bottom: 7px;
+  cursor: pointer;
+}
+.vol-row:active { transform: scale(.985); }
+.vol-from {
+  font-size: 10.5px; font-weight: 800; border-radius: 9px; padding: 6px 9px; flex-shrink: 0;
+  background: var(--teal-tint); color: var(--teal-tint-fg);
+}
+.vol-row .tx { flex: 1; min-width: 0; }
+.vol-row .tx b { font-size: 12.5px; display: block; }
+.vol-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+.vol-row .lvl-val { background: var(--teal-tint); color: var(--teal-tint-fg); }
+.vol-row.sel { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-tint); }
+
+/* ── پیش‌نمایش قیمت (قابل توضیح) ── */
+.pr-preview { background: #fff; border: 1px solid var(--border); border-radius: 15px; padding: 13px 14px; margin-top: 10px; }
+.pp-res {
+  background: var(--emerald-tint); border-radius: 12px; padding: 11px; text-align: center;
+  display: flex; align-items: baseline; justify-content: center; gap: 7px; flex-wrap: wrap;
+}
+.pp-res .who { font-size: 10px; color: var(--fg-soft); }
+.pp-res .big { font-size: 21px; font-weight: 800; color: var(--emerald); }
+.pp-res .u { font-size: 9.5px; color: var(--muted); }
+.pp-brk { margin-top: 10px; }
+.pp-brk .r { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--fg-soft); padding: 6px 2px; border-bottom: 1px dashed var(--border); }
+.pp-brk .r:last-child { border-bottom: none; }
+.pp-brk .r b { font-size: 11.5px; }
+.pp-brk .r .minus { color: var(--teal-strong); font-weight: 800; }
+
+/* ── بخش پیشرفته (تا شدگی) ── */
+.adv-fold { border: 1px solid var(--border); border-radius: 14px; background: #fff; overflow: hidden; margin-top: 9px; }
+.adv-fold > .head {
+  width: 100%; display: flex; align-items: center; gap: 8px; padding: 11px 13px;
+  background: none; border: none; font-size: 12.5px; font-weight: 700; color: var(--fg); cursor: pointer; font-family: inherit;
+}
+.adv-fold > .head .chev { margin-right: auto; width: 15px; height: 15px; color: var(--border-strong); transition: transform .25s; flex-shrink: 0; }
+.adv-fold.open > .head .chev { transform: rotate(-90deg); }
+.adv-fold .body { display: none; padding: 0 13px 12px; }
+.adv-fold.open .body { display: block; }
+
+/* ── رادیو روش ترکیب ── */
+.mix-row { display: flex; align-items: flex-start; gap: 9px; padding: 10px 2px; border-bottom: 1px dashed var(--border); cursor: pointer; }
+.mix-row:last-child { border-bottom: none; }
+.mix-row .rd { width: 17px; height: 17px; border-radius: 50%; border: 2px solid var(--border-strong); flex-shrink: 0; margin-top: 2px; }
+.mix-row.sel .rd { border-color: var(--arm); background: radial-gradient(circle, var(--arm) 45%, transparent 52%); }
+.mix-row .tx { flex: 1; }
+.mix-row .tx b { font-size: 12px; display: block; }
+.mix-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; line-height: 1.8; }
+
+/* ── حالت‌های شیت تنظیم قیمت کالا ── */
+.mode-row {
+  display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: right;
+  padding: 11px 13px; border-radius: 13px; border: 1px solid var(--border); background: #fff;
+  cursor: pointer; font-family: inherit; margin-bottom: 8px;
+}
+.mode-row .rd { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border-strong); flex-shrink: 0; margin-top: 1px; }
+.mode-row.sel { border-color: var(--arm); background: color-mix(in srgb, var(--arm-tint) 45%, #fff); }
+.mode-row.sel .rd { border-color: var(--arm); background: radial-gradient(circle, var(--arm) 45%, transparent 52%); }
+.mode-row .tx { flex: 1; min-width: 0; }
+.mode-row .tx b { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.mode-row .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 3px; line-height: 1.8; }
+.pm-panel { display: none; }
+.pm-panel.on { display: block; }
+
+/* ── قیمت شما — دید خریدار ── */
+.price-you {
+  display: flex; align-items: center; gap: 11px; background: #fff;
+  border: 1px solid var(--border); border-right: 3.5px solid var(--emerald);
+  border-radius: 15px; padding: 12px 14px; margin-top: 11px;
+}
+.price-you .py-ico { width: 42px; height: 42px; border-radius: 13px; background: var(--emerald-tint); color: var(--emerald); display: grid; place-items: center; flex-shrink: 0; }
+.price-you .py-ico svg { width: 21px; height: 21px; }
+.price-you .tx { flex: 1; min-width: 0; }
+.price-you .tx .lbl { font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.price-you .tx .lbl b { color: var(--emerald); font-size: 10px; }
+.price-you .tx .val { display: flex; align-items: baseline; gap: 7px; margin-top: 3px; flex-wrap: wrap; }
+.price-you .tx .val b { font-size: 19px; font-weight: 800; color: var(--fg); }
+.price-you .tx .val b small { font-size: 9.5px; font-weight: 400; color: var(--muted); }
+.price-you .tx .val .was { font-size: 11px; color: var(--muted); text-decoration: line-through; }
+
+/* ── نردبان قیمت حجمی خریدار ── */
+.vol-ladder { background: #fff; border: 1px solid var(--border); border-radius: 15px; padding: 4px 14px; margin-top: 9px; }
+.vol-ladder .vl-row { display: flex; align-items: center; gap: 9px; padding: 10px 2px; border-bottom: 1px dashed var(--border); }
+.vol-ladder .vl-row:last-child { border-bottom: none; }
+.vol-ladder .vl-row .from { font-size: 10.5px; font-weight: 800; color: var(--teal-tint-fg); background: var(--teal-tint); border-radius: 8px; padding: 5px 9px; flex-shrink: 0; }
+.vol-ladder .vl-row .pr { font-size: 14px; font-weight: 800; }
+.vol-ladder .vl-row .pr small { font-size: 8.5px; font-weight: 400; color: var(--muted); }
+.vol-ladder .vl-row .save { margin-right: auto; font-size: 9.5px; font-weight: 700; color: var(--emerald); background: var(--emerald-tint); border-radius: 8px; padding: 4px 8px; flex-shrink: 0; }
+
+/* ── نوار «قیمت شما» در کاتالوگ عمومی ── */
+.py-strip {
+  display: flex; align-items: center; gap: 10px; background: var(--emerald-tint);
+  border: 1px solid color-mix(in srgb, var(--emerald) 22%, transparent);
+  border-radius: 14px; padding: 10px 13px; margin-top: 11px;
+}
+.py-strip svg { width: 19px; height: 19px; color: var(--emerald); flex-shrink: 0; }
+.py-strip .tx { flex: 1; font-size: 11.5px; line-height: 1.8; color: var(--fg-soft); }
+.py-strip .txt b { color: var(--fg); }
+
+/* ── نوار وضعیت قیمت‌گذاری در صفحهٔ محصولِ مالک ── */
+.pricing-state {
+  display: flex; align-items: center; gap: 10px; background: #fff;
+  border: 1px solid var(--border); border-radius: 14px; padding: 10px 13px; margin-top: 10px; cursor: pointer;
+}
+.pricing-state:active { transform: scale(.99); }
+.pricing-state .ps-ico { width: 38px; height: 38px; border-radius: 12px; background: var(--arm-tint); color: var(--arm-tint-fg); display: grid; place-items: center; flex-shrink: 0; }
+.pricing-state .ps-ico svg { width: 19px; height: 19px; }
+.pricing-state .tx { flex: 1; min-width: 0; }
+.pricing-state .tx b { font-size: 12.5px; display: block; }
+.pricing-state .tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 2.5px; line-height: 1.7; }
+.pricing-state .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
+
+/* ── ردیف ورود صفحهٔ تنظیمات قیمت در کاتالوگ ── */
+.price-entry { display: flex; align-items: center; gap: 9px; background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 10px 13px; margin-top: 9px; cursor: pointer; }
+.price-entry:active { transform: scale(.99); }
+.price-entry svg { width: 17px; height: 17px; color: var(--arm-tint-fg); flex-shrink: 0; }
+.price-entry .tx { flex: 1; font-size: 12px; font-weight: 700; }
+.price-entry .tx small { display: block; font-size: 9.5px; font-weight: 400; color: var(--muted); margin-top: 2px; line-height: 1.7; }
+.price-entry .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
+.price-entry .st { font-size: 9px; font-weight: 800; color: var(--emerald); background: var(--emerald-tint); padding: 4px 8px; border-radius: 8px; flex-shrink: 0; }
+
+/* ── چیپ‌های انتخاب سطح در شیت گروه ── */
+.lvl-chips { display: flex; gap: 5px; }
+.lvl-chips .chip { flex: 1; justify-content: center; flex-direction: column; padding: 7px 2px; line-height: 1.6; }
+.lvl-chips .chip small { font-size: 8px; font-weight: 400; opacity: .8; display: block; }
+
+/* ── v10: معرفی آیمچ در صفحهٔ شروع (زیر ثبت‌نام) ── */
+.onboard { overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+.onboard .mid { min-height: 312px; }
+.intro-wrap { position: relative; margin-top: 24px; }
+.intro-sep { display: flex; align-items: center; gap: 10px; }
+.intro-sep i { flex: 1; height: 1px; background: var(--border-strong); opacity: .55; }
+.intro-sep span { font-size: 10.5px; font-weight: 800; color: var(--fg-soft); background: #fff; border: 1px solid var(--border); border-radius: 999px; padding: 5px 13px; }
+.intro-card { background: #fff; border: 1.5px solid var(--border); border-radius: 20px; padding: 15px 15px 13px; box-shadow: var(--shadow-2); margin-top: 13px; }
+.match-viz { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 11px; }
+.mv { width: 47px; height: 47px; border-radius: 15px; display: grid; place-items: center; }
+.mv svg { width: 24px; height: 24px; }
+.mv-buy { background: var(--teal-tint); color: var(--teal-deep); }
+.mv-sell { background: var(--orange-tint); color: var(--primary-strong); }
+.mv-link { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.mv-link svg { width: 17px; height: 17px; color: var(--emerald); }
+.mv-link small { font-size: 8.5px; font-weight: 800; color: var(--muted); }
+.intro-card h3 { font-size: 14px; font-weight: 800; line-height: 2; text-align: center; }
+.intro-card p { font-size: 10.5px; color: var(--muted); line-height: 2.1; text-align: center; margin-top: 6px; }
+.intro-tabs { display: flex; gap: 5px; margin-top: 12px; background: #fff; border: 1.5px solid var(--border); border-radius: 14px; padding: 4px; }
+.itab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; background: transparent; border-radius: 10px; padding: 9px 2px; font-family: inherit; font-size: 10.5px; font-weight: 800; color: var(--muted); cursor: pointer; transition: background .15s, color .15s; }
+.itab svg { width: 14px; height: 14px; }
+.itab.sell.active { background: var(--orange-tint); color: var(--primary-strong); }
+.itab.buy.active { background: var(--teal-tint); color: var(--teal-deep); }
+.ben-title { font-size: 11.5px; font-weight: 800; color: var(--fg-soft); margin: 13px 2px 2px; }
+.ben { display: flex; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 11px 12px; margin-top: 7px; }
+.ben .b-n { width: 24px; height: 24px; border-radius: 9px; display: grid; place-items: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+.sell-side .b-n { background: var(--orange-tint); color: var(--primary-strong); }
+.buy-side .b-n { background: var(--teal-tint); color: var(--teal-deep); }
+.ben .b-tx { flex: 1; min-width: 0; }
+.ben .b-tx b { font-size: 12px; display: block; }
+.ben .b-tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 3px; line-height: 2; }
+.ben-foot { font-size: 10px; color: var(--muted); text-align: center; margin: 13px 0 6px; line-height: 2.1; }
+.ben-foot b { color: var(--fg-soft); }
