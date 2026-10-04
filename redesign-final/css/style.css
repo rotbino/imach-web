@@ -2209,3 +2209,17 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 /* ── مثال یک‌خطی در شیت راهنمای تخفیف‌ها ── */
 .hp-ex { background: #fff; border: 1px solid var(--border); border-right: 3.5px solid var(--emerald); border-radius: 13px; padding: 11px 13px; margin-top: 10px; font-size: 11px; line-height: 2.1; color: var(--fg-soft); }
 .hp-ex b { color: var(--emerald); }
+
+/* ═══════════ v13: نوع مشتری (چیپ‌های تعیین نوع) + نوار قیمت دفتر ═══════════ */
+.ct-chips { width: 100%; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.ct-chips .ct-lbl { font-size: 10px; font-weight: 800; color: var(--muted); flex-shrink: 0; }
+.ct-chips .chip.mini { padding: 4px 9px; border-radius: 7px; }
+.ct-chips .chip.mini.on { border-color: var(--arm); background: var(--arm-tint); color: var(--arm-tint-fg); font-weight: 800; }
+.ct-chips .ct-eff { font-size: 9.5px; color: var(--muted); margin-right: auto; }
+.dref-strip { display: flex; align-items: center; gap: 10px; }
+.dref-strip .dr-ico { width: 36px; height: 36px; border-radius: 12px; background: var(--teal-tint); color: var(--teal-deep); display: grid; place-items: center; flex-shrink: 0; }
+.dref-strip .dr-ico svg { width: 17px; height: 17px; }
+.dref-strip .dr-tx { flex: 1; min-width: 0; }
+.dref-strip .dr-tx b { font-size: 11.5px; display: block; }
+.dref-strip .dr-tx span { font-size: 10.5px; color: var(--muted); display: block; margin-top: 3px; line-height: 1.8; }
+.ph.lentil { background: linear-gradient(150deg, #f6efe7, #e8dcc8); }
