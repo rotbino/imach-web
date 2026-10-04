@@ -1741,6 +1741,15 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .photo-bub .cap { font-size: 9.5px; color: var(--muted); line-height: 1.7; }
 .quick-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .quick-chips .chip { font-size: 9.5px; padding: 6px 10px; }
+
+/* ═══════════ v9 (D8-10) — مدیریت پیشنهادها: تماس · چت · نشان ═══════════ */
+.offer-ctl { display: flex; align-items: center; gap: 6px; margin: 10px 0 2px; flex-wrap: wrap; }
+.offer-ctl .chip { cursor: pointer; }
+.mark-btn { cursor: pointer; }
+.mark-btn.on { background: var(--muted-bg); border-color: color-mix(in srgb, var(--fg-soft) 25%, transparent); }
+.mark-btn svg { width: 17px; height: 17px; }
+.st-badge { flex-shrink: 0; }
+.call-num { direction: ltr; text-align: center; font-weight: 800; font-size: 17px; letter-spacing: 1px; }
 .composer { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
 .composer .inp { flex: 1; height: 42px; border-radius: 13px; }
 .c-ico {
