@@ -260,8 +260,21 @@ body[data-arm="buy"]  { --arm: var(--teal-strong); --arm-strong: var(--teal-deep
   border-bottom: 1px solid var(--border);
   z-index: 20;
 }
-.appbar .brand { display: flex; align-items: center; gap: 8px; }
+.appbar .brand { display: flex; align-items: center; gap: 8px; background: none; border: none; padding: 0; cursor: pointer; }
 .appbar .brand img { height: 28px; display: block; }
+.appbar .brand:active img { transform: scale(.93); }
+.appbar .brand:focus-visible { outline: 2px solid var(--arm); outline-offset: 3px; border-radius: 9px; }
+/* v15: لینک «دمو» در صفحهٔ اصلی — ابزارِ مرور سریع، نه محصول */
+.demo-link {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 11px; border-radius: 11px;
+  border: 1px dashed var(--border-strong);
+  background: #fff; color: var(--muted);
+  font-size: 11px; font-weight: 800; text-decoration: none;
+  transition: color .15s, border-color .15s;
+}
+.demo-link:hover { color: var(--fg-soft); border-color: var(--fg-soft); }
+.demo-link svg { width: 13px; height: 13px; }
 .appbar .side { display: flex; align-items: center; gap: 8px; }
 
 /* ── سوییچ دستیار: pill فشرده — نه سوییچ بزرگ ── */
@@ -574,11 +587,12 @@ body[data-arm="buy"]  { --arm: var(--teal-strong); --arm-strong: var(--teal-deep
 .thumb svg { width: 34px; height: 34px; }
 .thumb.lg { width: 100%; height: 150px; border-radius: var(--radius); margin-bottom: 13px; }
 .thumb.lg svg { width: 96px; height: 96px; }
-.thumb.rice { background: linear-gradient(150deg, #fff4e3, #ffe0bd); }
-.thumb.oil { background: linear-gradient(150deg, #fffbe0, #ffef9e); }
-.thumb.sugar { background: linear-gradient(150deg, #f2fafd, #dcf0f8); }
-.thumb.lentil { background: linear-gradient(150deg, #f6efe7, #e8dcc8); }
-.thumb.salt { background: linear-gradient(150deg, #f4f6f9, #e4e9f0); }
+/* v15: خنثی — بوم خاکستریِ خیلی روشن برای تصویر کالا؛ رنگ فقط از خودِ تصویر می‌آید */
+.thumb, .thumb.rice, .thumb.oil, .thumb.sugar, .thumb.lentil, .thumb.salt,
+.ph.rice, .ph.oil, .ph.sugar, .ph.lentil, .ph.salt,
+.gslot.filled, .photo-strip .ps-fill {
+  background: linear-gradient(150deg, #faf9f3, #edeade);
+}
 
 /* ── گرید کاتالوگ ── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
@@ -615,7 +629,8 @@ body[data-arm="buy"]  { --arm: var(--teal-strong); --arm-strong: var(--teal-deep
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(120deg, var(--arm-tint), #fff 65%);
+  /* v15: خنثی — بوم سفید + آیکون رنگی به‌عنوان تنها تأکید */
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 11px 13px;
@@ -637,16 +652,20 @@ body[data-arm="buy"]  { --arm: var(--teal-strong); --arm-strong: var(--teal-deep
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--arm-tint);
-  color: var(--arm-tint-fg);
+  background: var(--muted-bg);
+  color: var(--fg-soft);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 9px 13px;
+  padding: 8px 12px;
   font-size: 11px;
   font-weight: 700;
   overflow-x: auto;
   scrollbar-width: none;
 }
-.insight-strip .sep { width: 1px; height: 14px; background: color-mix(in srgb, var(--arm-tint-fg) 22%, transparent); flex-shrink: 0; }
+/* v15: خنثی — متن و خط جداکننده بی‌رنگ؛ فقط آیکون‌ها رگهٔ رنگ بازو را نگه می‌دارند */
+.insight-strip b { color: var(--fg); }
+.insight-strip svg { color: var(--arm); opacity: .7; }
+.insight-strip .sep { width: 1px; height: 14px; background: color-mix(in srgb, var(--fg-soft) 18%, transparent); flex-shrink: 0; }
 .insight-strip span { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .insight-strip svg { width: 13px; height: 13px; }
 
@@ -1089,8 +1108,9 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   display: flex;
   align-items: center;
   gap: 11px;
-  background: linear-gradient(120deg, var(--amber-tint), #fff 70%);
-  border: 1px solid #ecd9ae;
+  /* v15: خنثی — بوم سفید؛ مکعب کهرباییِ آیکون تنها تأکید است */
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 11px 13px;
   margin: 12px 0 2px;
@@ -1719,13 +1739,26 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .follow-row.archived-row .tx b { color: var(--muted); }
 
 /* ── چت (v5) ── */
-.chat-sheet { max-height: 94%; padding-bottom: 14px; }
 .chat-head { display: flex; align-items: center; gap: 10px; padding: 2px 0 10px; border-bottom: 1px solid var(--border); }
 .chat-head .back { background: none; border: none; padding: 4px; color: var(--muted); }
 .chat-head .cht b { font-size: 13px; display: block; }
 .chat-head .cht span { font-size: 9.5px; color: var(--muted); display: block; margin-top: 2px; }
 .chat-body { padding: 12px 2px 4px; display: flex; flex-direction: column; gap: 9px; }
 .chat-day { text-align: center; font-size: 9px; color: var(--muted); background: var(--fg-soft); border-radius: 8px; padding: 4px; align-self: center; }
+
+/* ═══ v15: چت — صفحهٔ مستقل (نه شیت) ═══ */
+#sc-chat .chat-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px 11px; border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, .94); flex-shrink: 0;
+}
+#sc-chat .chat-head .back { background: none; border: none; padding: 4px; color: var(--fg-soft); cursor: pointer; }
+#sc-chat .chat-head .cht { flex: 1; min-width: 0; }
+#sc-chat .chat-head .cht b { font-size: 14px; display: block; }
+#sc-chat .chat-head .cht span { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+#sc-chat .chat-scroll { flex: 1; overflow-y: auto; padding: 14px 14px 16px; }
+#sc-chat .chat-foot { flex-shrink: 0; border-top: 1px solid var(--border); background: rgba(255, 255, 255, .96); padding: 10px 14px 14px; }
+#sc-chat .chat-note { font-size: 9.5px; color: var(--muted); text-align: center; margin-top: 8px; }
 .msg { display: flex; flex-direction: column; max-width: 78%; }
 .msg.in { align-self: flex-start; }
 .msg.out { align-self: flex-end; }
@@ -2018,8 +2051,9 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 
 /* ── نوار «قیمت شما» در کاتالوگ عمومی ── */
 .py-strip {
-  display: flex; align-items: center; gap: 10px; background: var(--emerald-tint);
-  border: 1px solid color-mix(in srgb, var(--emerald) 22%, transparent);
+  /* v15: خنثی — آیکون سبز تنها تأکید رنگی */
+  display: flex; align-items: center; gap: 10px; background: var(--muted-bg);
+  border: 1px solid var(--border);
   border-radius: 14px; padding: 10px 13px; margin-top: 11px;
 }
 .py-strip svg { width: 19px; height: 19px; color: var(--emerald); flex-shrink: 0; }
@@ -2270,6 +2304,9 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   }
   .db-head { display: flex; align-items: center; gap: 10px; padding: 2px 8px 13px; }
   .db-head img { height: 30px; display: block; }
+  .db-logo { background: none; border: none; padding: 0; cursor: pointer; display: flex; }
+  .db-logo:active { transform: scale(.94); }
+  .db-logo:focus-visible { outline: 2px solid var(--arm); outline-offset: 3px; border-radius: 8px; }
   .db-biz { min-width: 0; }
   .db-biz b { font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .db-biz span { font-size: 9.5px; color: var(--muted); display: block; margin-top: 2px; }
@@ -2358,6 +2395,8 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   #sc-add-item .screen-body > * { max-width: 680px; }
   #sc-settings .screen-body > *, #sc-list-public .screen-body > * { max-width: 760px; }
   #sc-search .screen-body > * { max-width: 720px; }
+  #sc-msgs .screen-body > * { max-width: 620px; }
+  #sc-chat .chat-body, #sc-chat .chat-foot .quick-chips, #sc-chat .chat-foot .composer { max-width: 720px; margin-inline: auto; }
 
   /* CTAهای شناور: هم‌عرض ستونِ همان صفحه */
   .sticky-cta { left: max(24px, calc((100% - 880px) / 2)); right: max(24px, calc((100% - 880px) / 2)); }
@@ -2430,3 +2469,99 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   .screen-body { padding: 30px 44px 56px; }
   #dsPanels { grid-template-columns: minmax(0, 760px) minmax(320px, 440px); }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   v15 — دموی سریع (rapid-demo.html فقط؛ body.rd)
+   سایدبارِ فهرستِ همهٔ صفحه‌ها و شیت‌ها + پیش‌نمایش موبایل/دسکتاپ
+   ═══════════════════════════════════════════════════════════════ */
+body.rd .nav-panel { display: none; }
+body.rd .rd-fab {
+  position: fixed; bottom: 18px; inset-inline-end: 18px; z-index: 400;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--fg); color: #fff; border: none; border-radius: 14px;
+  padding: 12px 16px; font-family: inherit; font-size: 12px; font-weight: 800;
+  cursor: pointer; box-shadow: var(--shadow-pop);
+}
+body.rd .rd-fab svg { width: 15px; height: 15px; }
+body.rd.rd-open::after { content: ''; position: fixed; inset: 0; background: rgba(30, 25, 18, .42); z-index: 390; }
+body.rd.rd-open .nav-panel {
+  display: block; position: fixed; top: 0; bottom: 0; inset-inline-end: 0;
+  width: min(348px, 88vw); z-index: 395; border-radius: 0; border: none;
+  overflow-y: auto; box-shadow: var(--shadow-pop);
+}
+body.rd.rd-open .nav-groups { max-height: none; }
+body.rd .rd-count { font-size: 10.5px; font-weight: 800; color: var(--muted); margin: 10px 16px 2px; }
+body.rd .rd-count b { color: var(--fg-soft); }
+body.rd .rd-tools { display: flex; gap: 6px; margin: 10px 14px 14px; }
+body.rd .rd-tools button, body.rd .rd-tools a {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  border: 1px solid var(--border); background: #fff; color: var(--fg-soft);
+  border-radius: 11px; padding: 9px 6px; font-family: inherit; font-size: 10.5px; font-weight: 800;
+  cursor: pointer; text-decoration: none;
+}
+body.rd .rd-tools .on { background: var(--fg); color: #fff; border-color: var(--fg); }
+body.rd .rd-tools svg { width: 13px; height: 13px; }
+
+/* ≥1240: سایدبار پین‌شده سمت چپ، اپ سمت راست — دقیقاً همان رفتار رسپانسیو */
+@media (min-width: 1240px) {
+  body.rd .rd-fab { display: none; }
+  body.rd .workspace {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 318px;
+    gap: 0; max-width: none !important; padding: 0 !important;
+    min-height: 100vh; align-items: stretch;
+  }
+  body.rd .phone-wrap { grid-column: 1; grid-row: 1; position: static; }
+  body.rd .nav-panel { grid-column: 2; grid-row: 1; display: block; position: sticky; top: 0; height: 100vh; border-radius: 0; border: none; box-shadow: none; }
+  body.rd .nav-groups { max-height: calc(100vh - 250px); }
+}
+
+/* پیش‌نمایش موبایل — قاب گوشی در هر عرض پنجره */
+body.rd.rd-mob .workspace { display: flex !important; justify-content: center; align-items: flex-start; gap: 0; max-width: none !important; padding: 20px 14px !important; }
+body.rd.rd-mob .phone-wrap { position: static; display: flex; justify-content: center; }
+body.rd.rd-mob .nav-panel { display: none !important; }
+body.rd.rd-mob .rd-fab { display: inline-flex !important; }
+body.rd.rd-mob .phone {
+  width: 392px !important; height: 812px !important; flex: 0 0 auto;
+  border-radius: 44px !important; padding: 10px !important;
+  box-shadow: var(--shadow-phone), inset 0 0 0 2px #1d1913, inset 0 0 0 5px #35302a !important;
+  overflow: hidden !important; display: block !important;
+}
+body.rd.rd-mob .phone .notch { display: block !important; }
+body.rd.rd-mob .statusbar { display: flex !important; }
+body.rd.rd-mob .tabbar { display: flex !important; }
+body.rd.rd-mob .home-indicator { display: block !important; }
+body.rd.rd-mob .deskbar { display: none !important; }
+body.rd.rd-mob .screen-stack { border-radius: 34px !important; }
+body.rd.rd-mob .appbar .brand { display: flex !important; }
+body.rd.rd-mob .appbar .desk-title { display: none !important; }
+body.rd.rd-mob .toast { position: absolute !important; top: 26px !important; }
+/* شیت و بک‌دراپ: برمی‌گردند به قاعدهٔ موبایل (چسبیده به قاب گوشی) */
+body.rd.rd-mob .backdrop { position: absolute !important; inset: 0 !important; border-radius: 0 !important; }
+body.rd.rd-mob .sheet {
+  position: absolute !important; bottom: 0 !important; top: auto !important;
+  left: 0 !important; right: 0 !important; width: auto !important; max-width: 100% !important;
+  max-height: 88% !important; border-radius: 24px 24px 0 0 !important; padding: 10px 18px 22px !important;
+  transform: translateY(105%) scale(.97) !important;
+}
+body.rd.rd-mob .sheet.on { transform: translateY(0) scale(1) !important; }
+body.rd.rd-mob .sticky-cta, body.rd.rd-mob .form-cta { left: 0 !important; right: 0 !important; }
+/* چیدمان تک‌ستونهٔ موبایل در قاب ۳۹۲px */
+body.rd.rd-mob .grid-2 { grid-template-columns: 1fr 1fr !important; }
+body.rd.rd-mob .g2 { grid-template-columns: 1fr !important; }
+body.rd.rd-mob .hero-specs { grid-template-columns: 1fr 1fr !important; }
+body.rd.rd-mob #sc-onboard .choice-grid { grid-template-columns: 1fr !important; }
+body.rd.rd-mob #sc-suppliers .screen-body { display: block !important; }
+body.rd.rd-mob #sc-suppliers .screen-body > * { max-width: none !important; margin-inline: 0 !important; width: auto !important; }
+body.rd.rd-mob #sc-suppliers .screen-body > .card + .card { margin-top: 12px !important; }
+body.rd.rd-mob #sc-offers .screen-body { display: block !important; }
+body.rd.rd-mob #sc-offers .screen-body > * { max-width: none !important; margin-inline: 0 !important; width: auto !important; }
+body.rd.rd-mob #rfqListView, body.rd.rd-mob #rfqDetailView { grid-column: auto !important; grid-row: auto !important; }
+body.rd.rd-mob #dsPanels { display: block !important; }
+body.rd.rd-mob #dsPanels .tbpanel { grid-column: auto !important; }
+body.rd.rd-mob #dsPanels .tbpanel:nth-child(3) { grid-column: auto !important; position: static !important; display: none !important; padding-top: 10px !important; }
+body.rd.rd-mob #dsPanels .tbpanel.on { display: block !important; }
+body.rd.rd-mob #dsTabs .tb:nth-child(3) { display: inline-flex !important; }
+body.rd.rd-mob .screen-body > * { max-width: none !important; margin-inline: 0 !important; width: 100% !important; }
+body.rd.rd-mob .btn-row { max-width: none !important; }
