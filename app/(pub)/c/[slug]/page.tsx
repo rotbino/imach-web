@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { BusinessProfileDto } from "@/lib/api";
 import { fetchPublicBusiness } from "@/lib/imach/server-api";
+import { activeLocale, pageTitle, catalogDescription } from "@/lib/imach/metadata";
 import { CatalogPublicView } from "./catalog-public-view";
 
 /**
@@ -14,16 +15,18 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const biz = await fetchPublicBusiness<BusinessProfileDto>(slug);
+  const [biz, locale] = await Promise.all([fetchPublicBusiness<BusinessProfileDto>(slug), activeLocale()]);
   if (!biz) return { title: "iMach", robots: { index: false } };
   const n = (biz.listings ?? []).filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null).length;
-  const desc = `کاتالوگ عمومی ${biz.name}${biz.activityType ? ` — ${biz.activityType}` : ""} در ${biz.city} · ${n} کالا با قیمت زنده · تماس مستقیم، پیام و استعلام قیمت گروهی در آی‌مچ`;
+  const catalogTitle =
+    locale === "en" ? `${biz.name} — Public catalog` : locale === "ar" ? `${biz.name} — كتالوج عام` : `${biz.name} — کاتالوک عمومی`;
+  const desc = catalogDescription(biz.name, biz.activityType, biz.city, n, locale);
   return {
-    title: `${biz.name} — کاتالوک عمومی | آی‌مچ`,
+    title: pageTitle(catalogTitle, locale),
     description: desc,
     alternates: { canonical: `/c/${biz.slug}` },
     openGraph: {
-      title: `${biz.name} — کاتالوک عمومی`,
+      title: pageTitle(catalogTitle, locale),
       description: desc,
       type: "profile",
     },

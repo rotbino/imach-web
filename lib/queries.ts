@@ -56,8 +56,10 @@ import {
   type ThreadDetailDto,
   type ChatMessageDto,
   type UserPrefsDto,
+  type CurrencyConfigDto,
   chatApi,
   prefsApi,
+  settingsApi,
 } from "./api";
 import { useAuthStore } from "./auth-store";
 
@@ -1097,6 +1099,16 @@ export function useSendMessage() {
 export function useSetPrefs() {
   return useMutation({
     mutationFn: (body: Parameters<typeof prefsApi.setPrefs>[0]) => prefsApi.setPrefs(body),
+  });
+}
+
+/** فاز ۸ — پیکربندی عمومی (نرخ‌ها + سوییچ پرداخت) — تازه ۵ دقیقه */
+export function useCurrencyConfig(): UseQueryResult<CurrencyConfigDto> {
+  return useQuery({
+    queryKey: ["settings", "config"],
+    queryFn: () => settingsApi.getConfig(),
+    staleTime: 5 * 60_000,
+    retry: 1,
   });
 }
 

@@ -41,6 +41,7 @@ import { Icon, type IconName } from "@/components/imach/icon";
 import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
 import { Spinner } from "@/components/imach/spinner";
+import { useMoney } from "@/components/imach/currency-context";
 import { useToast } from "@/hooks/use-toast";
 
 /** نگاشت دستهٔ کالا → آیکون هنری Prototype (فاقد نقش هنری → آیکون جعبه) */
@@ -59,13 +60,14 @@ function avatarBg(seed: string): string {
   return AVATAR_BG[h % AVATAR_BG.length];
 }
 
-/** قیمت تومان (priceMinor → تومان) با جداکنندهٔ هزارگان فارسی */
-const toman = (minor: number): string => fa(Math.round(minor / 10));
-
 export function ItemView({ goodId }: { goodId: string }) {
   const m = useMessages();
   const t = m.app.item;
   const { locale } = useLocale();
+  // فاز ۸ — قیمت‌ها در ارز نمایش (نرخ تقریبی)
+  const money = useMoney();
+  /** قیمت در ارز نمایش با جداکنندهٔ هزارگان */
+  const toman = (minor: number, currency?: string | null): string => money.parts(minor, currency).amount;
   const { toast } = useToast();
   const router = useRouter();
   const biz = useActiveBusiness();
@@ -132,7 +134,9 @@ export function ItemView({ goodId }: { goodId: string }) {
     (acc, r) => (!acc || r.priceMinor < acc.priceMinor ? r : acc),
     null
   );
-  const hero = watchedRow?.cheapest ?? (cheapestRow ? { priceMinor: cheapestRow.priceMinor } : null);
+  const hero =
+    watchedRow?.cheapest ??
+    (cheapestRow ? { priceMinor: cheapestRow.priceMinor, currency: cheapestRow.currency } : null);
   const prices = rows.map((r) => r.priceMinor).filter((p) => p > 0);
   const pcts = watchedRow?.trendPct ?? null;
   const suggestRows = otherRows.slice(0, 3);
@@ -206,7 +210,7 @@ export function ItemView({ goodId }: { goodId: string }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontSize: 16.5, fontWeight: 700 }}>
-                  {toman(hero.priceMinor)}{" "}
+                  {toman(hero.priceMinor, hero.currency)}{" "}
                   <small style={{ fontSize: 11, color: "var(--muted)", fontWeight: 400 }}>
                     {t.tomanUnit.replace("{unit}", unit)}
                   </small>
@@ -281,7 +285,7 @@ export function ItemView({ goodId }: { goodId: string }) {
                       ) : null}
                     </b>
                     <span>
-                      {toman(r.priceMinor)} · {timeAgo(r.updatedAt)}
+                      {toman(r.priceMinor, r.currency)} · {timeAgo(r.updatedAt)}
                       {r.stock != null ? ` · ${t.stockN.replace("{n}", fa(r.stock))}` : ""}
                     </span>
                   </span>
@@ -302,7 +306,7 @@ export function ItemView({ goodId }: { goodId: string }) {
                       <span className="tx">
                         <b>{r.seller.name}</b>
                         <span>
-                          {toman(r.priceMinor)}
+                          {toman(r.priceMinor, r.currency)}
                           {r.stock != null ? ` · ${t.stockN.replace("{n}", fa(r.stock))}` : ""}
                         </span>
                       </span>

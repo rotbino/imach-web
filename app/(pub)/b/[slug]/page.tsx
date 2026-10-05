@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { BusinessProfileDto } from "@/lib/api";
 import { fetchPublicBusiness } from "@/lib/imach/server-api";
+import { activeLocale, pageTitle, listDescription } from "@/lib/imach/metadata";
 import { ListPublicView } from "./list-public-view";
 
 /**
@@ -14,15 +15,17 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const biz = await fetchPublicBusiness<BusinessProfileDto>(slug);
+  const [biz, locale] = await Promise.all([fetchPublicBusiness<BusinessProfileDto>(slug), activeLocale()]);
   if (!biz) return { title: "iMach", robots: { index: false } };
   const n = (biz.listings ?? []).filter((l) => l.mode === "BUY" || l.mode === "BOTH").length;
-  const desc = `لیست خرید عمومی ${biz.name}${biz.activityType ? ` — ${biz.activityType}` : ""} در ${biz.city} · ${n} کالا با نیاز منظم · تأمین‌کننده‌ها گوش‌به‌زنگ نیازها می‌شوند`;
+  const listTitle =
+    locale === "en" ? `${biz.name} — Public buying list` : locale === "ar" ? `${biz.name} — قائمة شراء عامة` : `${biz.name} — لیست خرید عمومی`;
+  const desc = listDescription(biz.name, biz.activityType, biz.city, n, locale);
   return {
-    title: `${biz.name} — لیست خرید عمومی | آی‌مچ`,
+    title: pageTitle(listTitle, locale),
     description: desc,
     alternates: { canonical: `/b/${biz.slug}` },
-    openGraph: { title: `${biz.name} — لیست خرید عمومی`, description: desc, type: "profile" },
+    openGraph: { title: pageTitle(listTitle, locale), description: desc, type: "profile" },
     robots: { index: true, follow: true },
   };
 }

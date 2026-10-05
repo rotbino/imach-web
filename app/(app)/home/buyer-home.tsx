@@ -28,6 +28,7 @@ import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
 import { Spinner } from "@/components/imach/spinner";
 import { useToast } from "@/hooks/use-toast";
+import { useMoney } from "@/components/imach/currency-context";
 
 /** نگاشت دستهٔ کالا → آیکون هنری Prototype (فاقد نقش هنری → آیکون جعبه) */
 const ART_BY_CATEGORY: Record<string, IconName> = {
@@ -47,6 +48,8 @@ export function BuyerHome() {
   const t = m.app.home;
   const { locale } = useLocale();
   const { toast } = useToast();
+  // فاز ۸ — قیمت‌ها در ارز نمایش کاربر (نرخ تقریبی؛ معامله در ارز فروشنده)
+  const money = useMoney();
   const biz = useActiveBusiness();
   const businesses = useMyBusinesses();
   const bizId = biz?.id ?? null;
@@ -282,8 +285,8 @@ export function BuyerHome() {
                     </div>
                     {cheapest ? (
                       <div className="pl">
-                        <b>{fa(cheapest.priceMinor / 10)}</b>
-                        <span className="u">{`تومان / ${row.good ? unitLabel(row.good.unit, locale) : ""}`}</span>
+                        <b>{money.parts(cheapest.priceMinor, cheapest.currency).amount}</b>
+                        <span className="u">{`${money.parts(cheapest.priceMinor, cheapest.currency).label} / ${row.good ? unitLabel(row.good.unit, locale) : ""}`}</span>
                         {pct !== null && pct !== undefined && pct !== 0 ? (
                           <span className={`trend ${pct < 0 ? "down" : "up"}`}>
                             <Icon
@@ -346,8 +349,8 @@ export function BuyerHome() {
                     </span>
                   </div>
                   <div className="pl">
-                    <b>{fa((r.promo!.priceMinor ?? 0) / 10)}</b>
-                    <span className="u">{`تومان / ${unitLabel(r.unit ?? "KG", locale)}`}</span>
+                    <b>{money.parts(r.promo!.priceMinor ?? 0, r.promo!.currency).amount}</b>
+                    <span className="u">{`${money.parts(r.promo!.priceMinor ?? 0, r.promo!.currency).label} / ${unitLabel(r.unit ?? "KG", locale)}`}</span>
                   </div>
                   <div className="s">
                     {r.promo!.supplier.name}

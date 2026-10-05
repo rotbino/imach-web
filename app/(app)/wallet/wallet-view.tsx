@@ -24,6 +24,7 @@ import { useMessages } from "@/i18n/messages/use-messages";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useWallet, useMyPromos, usePromoReport } from "@/lib/queries";
 import { fa, fmtMoney } from "@/lib/format";
+import { useMoney } from "@/components/imach/currency-context";
 import { faPlain } from "../sell/_shared/num";
 import { useToast } from "@/hooks/use-toast";
 import type { WalletTxnDto, PromoMineDto } from "@/lib/api";
@@ -53,6 +54,8 @@ function txnVisual(type: string): { icon: "i-wallet" | "i-users" | "i-bm" | "i-s
 }
 
 export function WalletView() {
+  // فاز ۸ — حسابداری کیف همیشه ارز مرجع؛ نمایش تبدیلی فقط hint
+  const money = useMoney();
   const m = useMessages();
   const t = m.app.wallet;
   const { toast } = useToast();
@@ -115,6 +118,11 @@ export function WalletView() {
             <div className="bal">
               <span>{faPlain((walletQ.data?.balanceMinor ?? 0) / 10)}</span>
               <small>{t.balance}</small>
+              {money.display !== "IRR" ? (
+                <small style={{ display: "block", marginTop: 2, fontWeight: 600 }}>
+                  {m.app.intl.convertedHint.replace("{amount}", money.fmt(walletQ.data?.balanceMinor ?? 0, "IRR"))}
+                </small>
+              ) : null}
             </div>
             {activePromos.length > 0 ? (
               <span className="badge b-amber">{t.activeN.replace("{n}", fa(activePromos.length))}</span>

@@ -190,8 +190,18 @@ scripts/           اسکریپت‌های تولید (port-prototype-css.mjs, e
 - **بک‌اند فاز ۷:** `GET /businesses/publicCatalogs` (عمومی، کش ۱۵m — خوراک sitemap) + LISTING_SELECT عمومی += updatedAt/viewCount30/viewCountTotal
 - **تطبیق‌های آگاهانه:** «قیمت شما»/vol-ladder/pack-pick پروتوتایپ → قیمت پایه (اندپوینت قیمت مؤثرِ دید خریدار نیست؛ /pricing/preview مالک‌محور است) · بج «٪ پاسخگویی» حذف (آمار عمومی نیست) · insight «بازدید این هفته» = مجموع viewCount30 آگهی‌ها · alert هر ردیف = watchGood (بدون API جدید)
 
-### فاز ۸ — بین‌المللی‌سازی کامل + ارز
-- تکمیل دیکشنری‌های fa/en/ar (همه صفحه‌ها)، سیستم ارز (ارز مرجع + انتخاب کاربر + تبدیل)، انتخاب کشور → زبان/ارز/جهت، واحدها/گروه‌ها/شهرهای چندزبانه، تنظیمات ادمین برای روشن/خاموش کردن پرداخت
+### فاز ۸ — بین‌المللی‌سازی کامل + ارز ✅ (2026-10-06)
+**هدف:** سیستم ارز (مرجع + انتخاب کاربر + تبدیل) + سوییچ پرداخت ادمین + چندزبانهٔ کامل (واحدها/Metadata/دیکشنری‌ها).
+
+- [x] **سیستم ارز (الزام مالک):** ارز مرجع = IRR (حسابداری کیف/کمپین همیشه در آن) · **AppSetting** در Atlas (key/value · whitelist) · **نرخ‌ها = baseMinorPerMajor** (IRR ≡ ۱۰ لنگر · seed تقریبی · قابل‌ویرایش ادمین) · **تبدیل فقط لایهٔ نمایش**: `lib/imach/currency.ts` (convertMinor/fmtMoneyIn/moneyPartsIn) + `CurrencyProvider` در شل (کوکی imach_currency از SSR بدون فلش + sync کراس-دستگاهی با User.prefs.currency — همان الگوی تم) + `useMoney()` (fmt/parts/setDisplay) در همهٔ صفحات (app)
+- [x] **اعمال تبدیل:** خانهٔ خریدار (رفت «تومان» هاردکد) · تابلو · کالا · پیشنهادها · کاتالوک فروش · کالای مالک (spec/pack/کمپین) · کیف (حسابداری بومی + hint «≈ X» تبدیلی) — ورودی فرم‌ها عمداً بومی می‌ماند (معامله در ارز فروشنده)
+- [x] **انتخاب ارز در تنظیمات:** چیپ‌های ۲۵ ارز با برچسب سه‌زبانه — نوشتن کوکی + prefs + refresh
+- [x] **سوییچ پرداخت ادمین (الزام مالک):** `GET /admin/settings` + `PUT /admin/settings/:key` (AdminGuard) · پنل ادمین `/admin/settings` (سوییچ + ویرایشگر نرخ‌ها · طراحی legacy داخل پنل) · `GET /settings/config` عمومی (کش ۵m) · wallet/charge با payments.enabled=false → **403** · صفحهٔ شارژ → حالت «دعوت از همکاران» (اعتبار رایگان — همان مسیر REFERRAL_REWARD موجود)
+- [x] **چندزبانهٔ ریشه‌ای:** دیکشنری‌های en/ar حالا **fallback ساخت‌یافته** دارند (`...fa.app` spread — هر namespace ترجمه‌نشده به فارسی برمی‌گردد، نه undefined) · برچسب عربی ۲۵ ارز + واحدها + تناوب · `goodName/categoryName` با nameAr · **Unit.nameAr + Category.nameAr** در Atlas (پاس‌ترو از /units/list · KILOGRAM/SACK نمونه) · UNIT_DB_NAMES از DB در شل بار می‌شود
+- [x] **Metadata چندزبانه:** `lib/imach/metadata.ts` — generateMetadata لندینگ + هر سه صفحهٔ عمومی از کوکی زبان (ربات بدون کوکی → فارسی) · عنوان/توصیف/OG سه‌زبانه
+- [x] setPrefs += currency (ISO validation) · عربی: اعداد محاسباتی با رقم فارسی (تطبیق آگاهانه)
+- **E2E:** USD روی خانه/تابلو/کیف (۵۹۵٬۰۰۰ تومان → ۷٫۰۸۳ دلار ✓ · کیف ≈ ۱٫۱۹ دلار hint ✓) · سوییچ پرداخت خاموش → پنل/شارژ/API 403 → روشن ✓ · Metadata en/ar/fa ✓ · nameAr پاس‌ترو ✓ · پنل ادمین toggle زنده ✓
+- **تطبیق‌های آگاهانه:** تبدیل نمایشی است نه ورودی (معامله در ارز فروشنده) · صفحات عمومی میهمان ارز بومی آگهی می‌بینند (ارزش صادق؛ ارز نمایشِ کاربر مفهوم میهمان ندارد) · نرخ‌ها دستی/تقریبی (بدون API خارجی) · شهرها رشتهٔ آزاد کاربر (دیتاست شهر چندزبانه مرحلهٔ دادهٔ آینده) · پنل ادمین فارسی‌رو
 
 ### فاز ۹ — سخت‌افاری و پاکسازی نهایی
 - حذف کد مرده/کامپوننت بلااستفاده/واردات بلااستفاده (فرانت+بک)، بررسی بودجه Performance (bundle/LCP/CLS)، ممیزی Security نهایی، تست‌ها (unit: pricing/matching/validation · integration: auth/APIها · E2E: فلوهای بحرانی)، build پروداکشن، مقایسه بصری نهایی همه صفحه‌ها با Prototype، گزارش پایانی
@@ -209,7 +219,8 @@ scripts/           اسکریپت‌های تولید (port-prototype-css.mjs, e
 | ۵ | ✅ انجام شد | 2026-10-06 | هستهٔ فروشنده v18 E2E (کاتالوگ/کالا/تخفیف‌ها) · ماژول pricing بک‌اند · DiscountRule در Atlas · QA قطعی: ۰ اختلاف computed-style · پوش دو ریپو |
 | ۶ | ✅ انجام شد | 2026-10-06 | اشتراکی‌ها و رشد E2E (پروفایل/تنظیمات+تم/کیف+شارژ/اعلان‌ها/چت/کمپین) · ChatModule + Thread/Message در Atlas · setPrefs کراس-دستگاهی · +~۲۹۰ کلید × ۳ زبان · پوش دو ریپو |
 | ۷ | ✅ انجام شد | 2026-10-06 | صفحات عمومی v18 SSR + SEO (Metadata/JSON-LD/sitemap/robots) · publicCatalogs بک‌اند · ریدایرکت legacy · PWA/Push تأیید · E2E میهمان · پوش دو ریپو |
-| ۸–۹ | ⏳ | — | — |
+| ۸ | ✅ انجام شد | 2026-10-06 | سیستم ارز (مرجع IRR + انتخاب کاربر + نرخ ادمین + تبدیل نمایشی) · AppSetting + سوییچ پرداخت + پنل ادمین · en/ar fallback ساخت‌یافته + nameAr واحد/دسته · Metadata سه‌زبانه · E2E کامل · پوش دو ریپو |
+| ۹ | ⏳ | — | — |
 
 ## ۴. قرارداد گزارش فاز (§۶۵)
 هر فاز در پایان با قالب: Completed / Changed / Backend / Database / Frontend / Prototype deviations / Bugs fixed / Performance / Security / Tests / Remaining / Demo گزارش می‌شود؛ گزارش فاز در chat + خلاصه در همین فایل + ورک‌لاگ `worklog.md`.

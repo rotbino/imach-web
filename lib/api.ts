@@ -1086,6 +1086,8 @@ export interface UnitDto {
   key: string;
   nameFa: string;
   nameEn: string;
+  /** فاز ۸ — نام عربی (null = fallback انگلیسی) */
+  nameAr?: string | null;
   /** null = base unit (عدد، کیلو، متر) | non-null = packaging unit referencing a base unit */
   baseUnitKey: string | null;
   /** how many base units in this packaging? null = product-dependent */
@@ -1860,6 +1862,8 @@ export interface UserPrefsDto {
   theme: "light" | "dark";
   armBuyColor: string | null;
   armSellColor: string | null;
+  /** فاز ۸ — ارز نمایش (ISO 4217 · null = ارز مرجع IRR) */
+  currency: string | null;
 }
 
 export const prefsApi = {
@@ -1869,5 +1873,22 @@ export const prefsApi = {
     armBuyColor?: string | null;
     armSellColor?: string | null;
     lang?: string;
+    /** فاز ۸ — ارز نمایش (null = ارز مرجع) */
+    currency?: string | null;
   }) => api<UserPrefsDto & { lang?: string }>("/auth/setPrefs", { method: "POST", body }),
+};
+
+// ─── فاز ۸ مهاجرت — پیکربندی عمومی سیستم (ارز + سوییچ پرداخت) ───
+
+export interface CurrencyConfigDto {
+  paymentsEnabled: boolean;
+  base: string;
+  /** نرخ‌ها: baseMinorPerMajor (IRR ≡ ۱۰) */
+  rates: Record<string, number>;
+  currencies: string[];
+}
+
+export const settingsApi = {
+  /** پیکربندی عمومی — بدون احرار؛ کش سرور ۵m + client staleTime ۵m */
+  getConfig: () => api<CurrencyConfigDto>("/settings/config", { auth: false }),
 };

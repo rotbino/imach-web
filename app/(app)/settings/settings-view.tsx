@@ -30,7 +30,9 @@ import { useLocale } from "@/i18n/locale-context";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useAuthStore } from "@/lib/auth-store";
 import { useSetNotifPrefs, useEditBusiness, useSetPrefs } from "@/lib/queries";
-import { CITIES } from "@/lib/format";
+import { CITIES, currencyLabel } from "@/lib/format";
+import { useMoney } from "@/components/imach/currency-context";
+import { SELECTABLE_CURRENCIES } from "@/lib/imach/currency";
 import { useToast } from "@/hooks/use-toast";
 
 /** پالت‌های منتخب arm — هگزِ ثابتِ هماهنگ با توکن‌های v18 (روشن/تاریک سازگار) */
@@ -65,6 +67,8 @@ export function SettingsView() {
   const t = m.app.settings;
   const { locale, setLocale } = useLocale();
   const { theme, setTheme, armColor, armColors, setArmColor } = useShell();
+  // فاز ۸ — ارز نمایش (selector + تبدیل)
+  const money = useMoney();
   const { toast } = useToast();
   const biz = useActiveBusiness();
   const bizId = biz?.id ?? null;
@@ -284,6 +288,39 @@ export function SettingsView() {
               >
                 {t.themeDark}
               </button>
+            </div>
+          </div>
+
+          {/* فاز ۸ — ارز نمایش: قیمت‌ها در ارز انتخابی (نرخ تقریبی مدیریت) */}
+          <div className="field" style={{ margin: "0 0 10px" }}>
+            <label>{m.app.intl.currencyLabel}</label>
+            <div
+              className="unit-chips"
+              style={{ flexWrap: "wrap" }}
+              role="group"
+              aria-label={m.app.intl.currencyLabel}
+            >
+              <button
+                type="button"
+                className={money.display === "IRR" ? "chip active" : "chip"}
+                onClick={() => money.setDisplay(null)}
+              >
+                {m.app.intl.currencyDefault}
+              </button>
+              {SELECTABLE_CURRENCIES.filter((k) => k !== "IRR").map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  className={money.display === k ? "chip active" : "chip"}
+                  onClick={() => money.setDisplay(k)}
+                >
+                  {currencyLabel(k, locale)}
+                </button>
+              ))}
+            </div>
+            <div className="hint" style={{ marginTop: 8 }}>
+              <Icon name="i-info" />
+              <span>{m.app.intl.currencySub}</span>
             </div>
           </div>
 

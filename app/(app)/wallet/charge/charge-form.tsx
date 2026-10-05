@@ -23,6 +23,7 @@ import { useWalletCharge, useWallet } from "@/lib/queries";
 import { fa, fmtMoney } from "@/lib/format";
 import { faPlain } from "../../sell/_shared/num";
 import { useToast } from "@/hooks/use-toast";
+import { useMoney } from "@/components/imach/currency-context";
 
 const PKGS = [100_000, 300_000, 500_000];
 
@@ -54,6 +55,9 @@ export function ChargeForm() {
   const bizId = biz?.id ?? null;
   const walletQ = useWallet(bizId);
   const chargeMut = useWalletCharge();
+  // فاز ۸ — سوییچ ادمین: پرداخت خاموش = فقط مسیر دعوت (اعتبار رایگان)
+  const money = useMoney();
+  const paymentsOff = money.paymentsEnabled === false;
 
   const [picked, setPicked] = useState<number | null>(null);
   const [amount, setAmount] = useState("");
@@ -112,6 +116,47 @@ export function ChargeForm() {
                 router.push("/wallet");
               }}
             >
+              {t.back}
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // فاز ۸ — درگاه خاموش: صفحهٔ شارژ به «مسیر دعوت» تبدیل می‌شود (Prototype-compatible)
+  if (paymentsOff) {
+    return (
+      <section className="screen" data-screen="charge">
+        <Appbar deskTitle={t.title} />
+        <div className="screen-body">
+          <div className="empty-state">
+            <span className="art" style={{ background: "var(--amber-tint)", color: "var(--amber)" }}>
+              <Icon name="i-users" />
+            </span>
+            <h3>{m.app.intl.paymentsOff}</h3>
+            <p>{m.app.intl.paymentsOffSub}</p>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                const url = `${window.location.origin}/b/${biz?.slug ?? ""}`;
+                void (async () => {
+                  try {
+                    if (navigator.share) {
+                      await navigator.share({ title: biz?.name ?? "iMach", url });
+                      return;
+                    }
+                    throw new Error("no-web-share");
+                  } catch {
+                    await navigator.clipboard.writeText(url).catch(() => undefined);
+                    toast({ title: m.app.home.linkCopied });
+                  }
+                })();
+              }}
+            >
+              <Icon className="ic-sm" name="i-share" /> {m.app.intl.inviteOnlyCta}
+            </button>
+            <button className="btn btn-soft" onClick={() => router.push("/wallet")}>
               {t.back}
             </button>
           </div>

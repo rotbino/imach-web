@@ -22,8 +22,9 @@ import { Sheet } from "./sheet";
 import { Deskbar } from "./deskbar";
 import { useAuthStore } from "@/lib/auth-store";
 import { useMessages } from "@/i18n/messages/use-messages";
-import { useMeOnce, useSetPrefs } from "@/lib/queries";
+import { useMeOnce, useSetPrefs, useUnits } from "@/lib/queries";
 import { NotifSheet } from "./notif-sheet";
+import { CurrencyProvider } from "./currency-context";
 
 export type Arm = "buy" | "sell";
 export type Theme = "light" | "dark";
@@ -79,12 +80,15 @@ export function AppShell({
   initialArm = "buy",
   initialTheme = "light",
   initialArmColors,
+  initialCurrency,
   children,
 }: {
   initialArm?: Arm;
   initialTheme?: Theme;
   /** از کوکی سرور خوانده شده — SSR بدون فلش رنگ */
   initialArmColors?: { buy: string | null; sell: string | null };
+  /** فاز ۸ — ارز نمایش از کوکی سرور (SSR بدون فلش ارز) */
+  initialCurrency?: string | null;
   children: ReactNode;
 }) {
   const [manualArm, setManualArm] = useState<Arm | null>(null);
@@ -100,17 +104,36 @@ export function AppShell({
   const me = useMeOnce();
   const setPrefs = useSetPrefs();
   const hasToken = useAuthStore((s) => !!s.accessToken);
+  // فاز ۸ — نام‌های چندزبانهٔ واحد از DB (یک‌بار در نشست → unitLabel)
+  const unitsQ = useUnits();
+  useEffect(() => {
+    const rows = unitsQ.data;
+    if (!rows) return;
+    import("@/lib/format").then(({ UNIT_DB_NAMES }) => {
+      for (const u of rows) {
+        UNIT_DB_NAMES[u.key] = { fa: u.nameFa, en: u.nameEn, ar: u.nameAr ?? undefined };
+      }
+    });
+  }, [unitsQ.data]);
 
   // ── فاز ۶: sync کراس-دستگاهی prefs (یک‌بار در نشست — الگوی تنظیم حین رندر) ──
   // کوکی رندر اولیهٔ SSR را می‌گذارد؛ اینجا اگر روی دستگاه دیگری عوض شده باشد،
   // همان انتخاب اعمال می‌شود (تم/رنگ). فقط یک‌بار — بعد از آن انتخاب محلی مقدم است.
   const [prefsSynced, setPrefsSynced] = useState(false);
   const remotePrefs = me.data?.prefs;
+  const [currency, setCurrencyState] = useState<string | null>(initialCurrency ?? null);
   if (!prefsSynced && remotePrefs) {
     setPrefsSynced(true);
     if (remotePrefs.theme !== initialTheme) setThemeState(remotePrefs.theme);
     if (remotePrefs.armBuyColor || remotePrefs.armSellColor) {
       setArmColors({ buy: remotePrefs.armBuyColor, sell: remotePrefs.armSellColor });
+    }
+    // فاز ۸ — ارز نمایش از دستگاه دیگر (کوکی محلی هنوز ننشسته باشد)
+    if (remotePrefs.currency && remotePrefs.currency !== (initialCurrency ?? null)) {
+      setCurrencyState(remotePrefs.currency);
+      import("@/lib/imach/currency").then(({ writeCurrencyCookie }) => {
+        writeCurrencyCookie(remotePrefs.currency!);
+      });
     }
   }
 
@@ -176,6 +199,7 @@ export function AppShell({
 
   return (
     <ShellContext.Provider value={{ arm, theme, setTheme, armColor: armColors[arm], armColors, setArmColor, setArm, openSwitch, openNotif }}>
+      <CurrencyProvider initialCurrency={currency}>
       <div className="ia app" data-arm={arm} data-theme={theme} style={armStyle}>
         <IconSprite />
         <Deskbar />
@@ -237,6 +261,7 @@ export function AppShell({
           </button>
         </Sheet>
       </div>
+      </CurrencyProvider>
     </ShellContext.Provider>
   );
 }

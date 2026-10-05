@@ -30,6 +30,7 @@ import { Icon } from "@/components/imach/icon";
 import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
 import { Spinner } from "@/components/imach/spinner";
+import { useMoney } from "@/components/imach/currency-context";
 
 type SortKey = "RELEVANT" | "CHEAPEST" | "NEAREST" | "FRESH";
 
@@ -41,13 +42,15 @@ function avatarBg(seed: string): string {
   return AVATAR_BG[h % AVATAR_BG.length];
 }
 
-const toman = (minor: number): string => fa(Math.round(minor / 10));
 const COLLAPSED = 6;
 
 export function SupplyBoardPage({ goodId }: { goodId: string }) {
   const m = useMessages();
   const t = m.app.board;
   const { locale } = useLocale();
+  // فاز ۸ — قیمت‌های تابلو در ارز نمایش (نرخ تقریبی)
+  const money = useMoney();
+  const toman = (minor: number, currency?: string | null): string => money.parts(minor, currency).amount;
   const biz = useActiveBusiness();
   const bizId = biz?.id ?? null;
 
@@ -200,7 +203,7 @@ export function SupplyBoardPage({ goodId }: { goodId: string }) {
                 </div>
 
                 <div className="price-line">
-                  <span className="p">{toman(r.priceMinor)}</span>
+                  <span className="p">{toman(r.priceMinor, r.currency)}</span>
                   <span className="u">{m.app.item.tomanUnit.replace("{unit}", unit)}</span>
                   {r.followedByMe ? (
                     <span className="badge b-teal" style={{ marginInlineStart: "auto" }}>
@@ -211,7 +214,7 @@ export function SupplyBoardPage({ goodId }: { goodId: string }) {
 
                 {r.prevMinor != null ? (
                   <div className="pack-line">
-                    {t.wasPrice.replace("{p}", toman(r.prevMinor))}
+                    {t.wasPrice.replace("{p}", toman(r.prevMinor ?? 0, r.currency))}
                     {r.trendPct != null && r.trendPct !== 0 ? (
                       <span className={`trend ${r.trendPct < 0 ? "down" : "up"}`} style={{ marginInlineStart: 6 }}>
                         <Icon className="ic-sm ic-12" name={r.trendPct < 0 ? "i-tdn" : "i-tup"} /> {fa(Math.abs(r.trendPct))}٪

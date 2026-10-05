@@ -28,7 +28,8 @@ import {
   useSaverAnalysis,
   useSetListingActive,
 } from "@/lib/queries";
-import { fa, fmtMoney, timeAgo, unitLabel } from "@/lib/format";
+import { fa, timeAgo, unitLabel } from "@/lib/format";
+import { useMoney } from "@/components/imach/currency-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon } from "@/components/imach/icon";
@@ -46,6 +47,8 @@ import { faPlain, faPct } from "../../_shared/num";
 type Pack = { label: string; qty?: number; priceMinor?: number; stock?: number };
 
 export function ProductView({ listingId }: { listingId: string }) {
+  // فاز ۸ — قیمت‌های نمایش در ارز انتخابی (ورودی شیت‌ها بومی می‌ماند)
+  const money = useMoney();
   const m = useMessages();
   const t = m.app.sellProduct as unknown as Record<string, string>;
   const { locale } = useLocale();
@@ -256,7 +259,7 @@ export function ProductView({ listingId }: { listingId: string }) {
 
         {/* مشخصات اصلی */}
         <div className="hero-specs" style={{ marginTop: 11 }}>
-          <div className="sp"><span className="k">{t.specPrice as string}</span><span className="v">{fmtMoney(listing.priceMinor, listing.currency, locale)}</span></div>
+          <div className="sp"><span className="k">{t.specPrice as string}</span><span className="v">{money.fmt(listing.priceMinor, listing.currency)}</span></div>
           <div className="sp"><span className="k">{t.specStock as string}</span><span className="v">{listing.stock != null ? fa(listing.stock) : "—"} <small>{unit}</small></span></div>
           <div className="sp"><span className="k">{t.specMinOrder as string}</span><span className="v">{listing.minOrder != null ? fa(listing.minOrder) : "—"} <small>{unit}</small></span></div>
           <div className="sp"><span className="k">{t.specPack as string}</span><span className="v">{packs.length ? packs.map((p) => p.label).join(" و ") : (listing.variantLabel ?? "—")}</span></div>
@@ -283,9 +286,9 @@ export function ProductView({ listingId }: { listingId: string }) {
               {pack != null && packs[pack]
                 ? (t.packNoteSel as string)
                     .replace("{label}", packs[pack].label)
-                    .replace("{price}", fmtMoney(packs[pack].priceMinor ?? (listing.priceMinor != null && packs[pack].qty ? listing.priceMinor * packs[pack].qty : null), listing.currency, locale))
+                    .replace("{price}", money.fmt(packs[pack].priceMinor ?? (listing.priceMinor != null && packs[pack].qty ? listing.priceMinor * packs[pack].qty : null), listing.currency))
                     .replace("{stock}", packs[pack].stock != null ? ` — ${t.packStock as string}: ${fa(packs[pack].stock as number)}` : "")
-                : (t.packNote as string).replace("{base}", fmtMoney(listing.priceMinor, listing.currency, locale))}
+                : (t.packNote as string).replace("{base}", money.fmt(listing.priceMinor, listing.currency))}
             </div>
           </>
         ) : null}
@@ -331,8 +334,8 @@ export function ProductView({ listingId }: { listingId: string }) {
               {(t.promoFormula as string)
                 .replace("{v}", fa(reportQ.data?.stats.views ?? 0))
                 .replace("{f}", fa(reportQ.data?.stats.follows ?? 0))
-                .replace("{spent}", fmtMoney(promo.spentMinor, null, locale))
-                .replace("{left}", fmtMoney(promo.remainingMinor, null, locale))}
+                .replace("{spent}", money.fmt(promo.spentMinor, null))
+                .replace("{left}", money.fmt(promo.remainingMinor, null))}
             </div>
             <div className="pc-note">{t.promoNote as string}</div>
             <div className="btn-row">

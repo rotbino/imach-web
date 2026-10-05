@@ -92,6 +92,27 @@ export interface AdminGoodInput {
 
 // ── فراخوانی‌ها ──────────────────────────────────────────────────────────────
 
+// ── فاز ۸ مهاجرت — تنظیمات سیستمی (سوییچ پرداخت + نرخ ارز) ───────────────────
+
+export interface AdminSettingsDto {
+  settings: Record<string, unknown>;
+  writable: string[];
+  currencies: string[];
+}
+
+export const adminSettingsApi = {
+  list: () => api<AdminSettingsDto>("/admin/settings"),
+  write: (key: string, value: unknown) =>
+    api<{ key: string; value: unknown }>(`/admin/settings/${key}`, { method: "PUT", body: { value } }),
+};
+
+export function useAdminSettings() {
+  return useQuery({
+    queryKey: ["admin-settings"],
+    queryFn: () => adminSettingsApi.list(),
+  });
+}
+
 export const adminApi = {
   getStats: () => api<AdminStatsDto>("/admin/overview/getStats"),
 

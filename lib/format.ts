@@ -16,42 +16,42 @@ const en = (n: number | string): string => {
   return Number.isNaN(n as number) ? String(n) : (n as number).toLocaleString("en-US");
 };
 
-const num = (n: number | string, locale: string): string => (locale === "en" ? en(n) : fa(n));
+export const num = (n: number | string, locale: string): string => (locale === "en" ? en(n) : fa(n));
 
 // ── پول — مبلغ همیشه به کوچک‌ترین واحد ارز ذخیره شده (ریال/سنت…) ──
 // exp = تعداد رقم اعشار بین واحد اصلی و کوچک‌ترین واحد (IRR بدون اعشار)
-export const CURRENCIES: Record<string, { exp: number; fa: string; en: string }> = {
-  IRR: { exp: 1, fa: "تومان", en: "Toman" } /* نمایش/ورودی تومان — ذخیره ریال (طرح رفرنس همه‌جا تومان است) */,
-  USD: { exp: 2, fa: "دلار", en: "US Dollar" },
-  EUR: { exp: 2, fa: "یورو", en: "Euro" },
-  GBP: { exp: 2, fa: "پوند", en: "Pound" },
-  AED: { exp: 2, fa: "درهم", en: "Dirham" },
-  TRY: { exp: 2, fa: "لیر", en: "Lira" },
-  CNY: { exp: 2, fa: "یوان", en: "Yuan" },
-  INR: { exp: 2, fa: "روپیه", en: "Rupee" },
-  PKR: { exp: 2, fa: "روپیه پاکستان", en: "Pakistani Rupee" },
-  AFN: { exp: 2, fa: "افغانی", en: "Afghani" },
-  IQD: { exp: 3, fa: "دینار عراق", en: "Iraqi Dinar" },
-  RUB: { exp: 2, fa: "روبل", en: "Ruble" },
-  SAR: { exp: 2, fa: "ریال سعودی", en: "Saudi Riyal" },
-  QAR: { exp: 2, fa: "ریال قطر", en: "Qatari Riyal" },
-  KWD: { exp: 3, fa: "دینار کویت", en: "Kuwaiti Dinar" },
-  BHD: { exp: 3, fa: "دینار بحرین", en: "Bahraini Dinar" },
-  OMR: { exp: 3, fa: "ریال عمان", en: "Omani Rial" },
-  SYP: { exp: 2, fa: "پوند سوریه", en: "Syrian Pound" },
-  LBP: { exp: 2, fa: "پوند لبنان", en: "Lebanese Pound" },
-  JOD: { exp: 3, fa: "دینار اردن", en: "Jordanian Dinar" },
-  EGP: { exp: 2, fa: "پوند مصر", en: "Egyptian Pound" },
-  YER: { exp: 2, fa: "ریال یمن", en: "Yemeni Rial" },
-  TMT: { exp: 2, fa: "منات ترکمنستان", en: "Turkmen Manat" },
-  AZN: { exp: 2, fa: "منات آذربایجان", en: "Azerbaijani Manat" },
-  AMD: { exp: 2, fa: "درام ارمنستان", en: "Armenian Dram" },
+export const CURRENCIES: Record<string, { exp: number; fa: string; en: string; ar: string }> = {
+  IRR: { exp: 1, fa: "تومان", en: "Toman", ar: "تومان" } /* نمایش/ورودی تومان — ذخیره ریال (طرح رفرنس همه‌جا تومان است) */,
+  USD: { exp: 2, fa: "دلار", en: "US Dollar", ar: "دولار أمريكي" },
+  EUR: { exp: 2, fa: "یورو", en: "Euro", ar: "يورو" },
+  GBP: { exp: 2, fa: "پوند", en: "Pound", ar: "جنيه إسترليني" },
+  AED: { exp: 2, fa: "درهم", en: "Dirham", ar: "درهم إماراتي" },
+  TRY: { exp: 2, fa: "لیر", en: "Lira", ar: "ليرة تركية" },
+  CNY: { exp: 2, fa: "یوان", en: "Yuan", ar: "يوان صيني" },
+  INR: { exp: 2, fa: "روپیه", en: "Rupee", ar: "روبية هندية" },
+  PKR: { exp: 2, fa: "روپیه پاکستان", en: "Pakistani Rupee", ar: "روبية باكستانية" },
+  AFN: { exp: 2, fa: "افغانی", en: "Afghani", ar: "أفغاني" },
+  IQD: { exp: 3, fa: "دینار عراق", en: "Iraqi Dinar", ar: "دينار عراقي" },
+  RUB: { exp: 2, fa: "روبل", en: "Ruble", ar: "روبل روسي" },
+  SAR: { exp: 2, fa: "ریال سعودی", en: "Saudi Riyal", ar: "ريال سعودي" },
+  QAR: { exp: 2, fa: "ریال قطر", en: "Qatari Riyal", ar: "ريال قطري" },
+  KWD: { exp: 3, fa: "دینار کویت", en: "Kuwaiti Dinar", ar: "دينار كويتي" },
+  BHD: { exp: 3, fa: "دینار بحرین", en: "Bahraini Dinar", ar: "دينار بحريني" },
+  OMR: { exp: 3, fa: "ریال عمان", en: "Omani Rial", ar: "ريال عماني" },
+  SYP: { exp: 2, fa: "پوند سوریه", en: "Syrian Pound", ar: "ليرة سورية" },
+  LBP: { exp: 2, fa: "پوند لبنان", en: "Lebanese Pound", ar: "ليرة لبنانية" },
+  JOD: { exp: 3, fa: "دینار اردن", en: "Jordanian Dinar", ar: "دينار أردني" },
+  EGP: { exp: 2, fa: "پوند مصر", en: "Egyptian Pound", ar: "جنيه مصري" },
+  YER: { exp: 2, fa: "ریال یمن", en: "Yemeni Rial", ar: "ريال يمني" },
+  TMT: { exp: 2, fa: "منات ترکمنستان", en: "Turkmen Manat", ar: "منات تركمانستاني" },
+  AZN: { exp: 2, fa: "منات آذربایجان", en: "Azerbaijani Manat", ar: "منات أذربيجاني" },
+  AMD: { exp: 2, fa: "درام ارمنستان", en: "Armenian Dram", ar: "درام أرميني" },
 };
 
 export const currencyLabel = (currency: string | null | undefined, locale?: string): string => {
   const loc = locale ?? readLocaleCookie();
-  const c = CURRENCIES[currency ?? "IRR"] ?? { exp: 0, fa: currency ?? "", en: currency ?? "" };
-  return loc === "en" ? c.en : c.fa;
+  const c = CURRENCIES[currency ?? "IRR"] ?? { exp: 0, fa: currency ?? "", en: currency ?? "", ar: currency ?? "" };
+  return loc === "en" ? c.en : loc === "ar" ? (c.ar || c.en) : c.fa;
 };
 
 /** قیمت ذخیره‌شده (کوچک‌ترین واحد) → رشته نمایشی «۷۲۰٬۰۰۰ ریال» */
@@ -62,50 +62,62 @@ export const fmtMoney = (
 ): string => {
   if (minor === null || minor === undefined) return "";
   const loc = locale ?? readLocaleCookie();
-  const c = CURRENCIES[currency ?? "IRR"] ?? { exp: 0, fa: currency ?? "", en: currency ?? "" };
-  return `${num(minor / 10 ** c.exp, loc)} ${loc === "en" ? c.en : c.fa}`;
+  const c = CURRENCIES[currency ?? "IRR"] ?? { exp: 0, fa: currency ?? "", en: currency ?? "", ar: currency ?? "" };
+  const label = loc === "en" ? c.en : loc === "ar" ? (c.ar || c.en) : c.fa;
+  return `${num(minor / 10 ** c.exp, loc)} ${label}`;
 };
 
 // ── نام چندزبانه کالا/دسته — نمایش با زبان فعال، fallback فارسی ──
-type BiName = { nameFa: string; nameEn?: string | null };
+type BiName = { nameFa: string; nameEn?: string | null; nameAr?: string | null };
 export const goodName = (g: BiName, locale?: string): string => {
   const loc = locale ?? readLocaleCookie();
-  return loc === "en" && g.nameEn ? g.nameEn : g.nameFa;
+  if (loc === "en" && g.nameEn) return g.nameEn;
+  if (loc === "ar") return g.nameAr || g.nameEn || g.nameFa;
+  return g.nameFa;
 };
 export const categoryName = goodName;
 
 // ── برچسب enum های سرور ──
-export const UNIT_LABELS: Record<string, { fa: string; en: string }> = {
-  KILOGRAM: { fa: "کیلوگرم", en: "kg" },
-  TON: { fa: "تن", en: "Ton" },
-  CARTON: { fa: "کارتن", en: "Carton" },
-  SACK: { fa: "کیسه", en: "Sack" },
-  PIECE: { fa: "عدد", en: "Piece" },
-  LITER: { fa: "لیتر", en: "Liter" },
-  BRANCH: { fa: "شاخه", en: "Branch" },
-  METER: { fa: "متر", en: "Meter" },
-  GRAM: { fa: "گرم", en: "Gram" },
-  SERVICE: { fa: "پرس", en: "Service" },
+export const UNIT_LABELS: Record<string, { fa: string; en: string; ar?: string }> = {
+  KILOGRAM: { fa: "کیلوگرم", en: "kg", ar: "كيلوغرام" },
+  TON: { fa: "تن", en: "Ton", ar: "طن" },
+  CARTON: { fa: "کارتن", en: "Carton", ar: "كرتون" },
+  SACK: { fa: "کیسه", en: "Sack", ar: "كيس" },
+  PIECE: { fa: "عدد", en: "Piece", ar: "قطعة" },
+  LITER: { fa: "لیتر", en: "Liter", ar: "لتر" },
+  BRANCH: { fa: "شاخه", en: "Branch", ar: "فرع" },
+  METER: { fa: "متر", en: "Meter", ar: "متر" },
+  GRAM: { fa: "گرم", en: "Gram", ar: "غرام" },
+  SERVICE: { fa: "پرس", en: "Service", ar: "طبق" },
 };
+
+/** فاز ۸ — نام‌های چندزبانهٔ واحد از DB (سرور /units/list) — بر‌اساس کلید */
+export const UNIT_DB_NAMES: Record<string, { fa?: string; en?: string; ar?: string }> = {};
 
 export const unitLabel = (u: string, locale?: string): string => {
   const loc = locale ?? readLocaleCookie();
+  const db = UNIT_DB_NAMES[u];
+  if (db) {
+    if (loc === "en" && db.en) return db.en;
+    if (loc === "ar" && (db.ar || db.en)) return (db.ar || db.en) as string;
+    if (loc !== "en" && loc !== "ar" && db.fa) return db.fa;
+  }
   const def = UNIT_LABELS[u];
   if (!def) return u;
-  return loc === "en" ? def.en : def.fa;
+  return loc === "en" ? def.en : loc === "ar" ? (def.ar || def.en) : def.fa;
 };
 
-export const FREQUENCY_LABELS: Record<string, { fa: string; en: string }> = {
-  WEEKLY: { fa: "هفتگی", en: "Weekly" },
-  MONTHLY: { fa: "ماهانه", en: "Monthly" },
-  OCCASIONAL: { fa: "موردی", en: "Occasional" },
+export const FREQUENCY_LABELS: Record<string, { fa: string; en: string; ar?: string }> = {
+  WEEKLY: { fa: "هفتگی", en: "Weekly", ar: "أسبوعيًا" },
+  MONTHLY: { fa: "ماهانه", en: "Monthly", ar: "شهريًا" },
+  OCCASIONAL: { fa: "موردی", en: "Occasional", ar: "عند الحاجة" },
 };
 
 export const frequencyLabel = (f: string, locale?: string): string => {
   const loc = locale ?? readLocaleCookie();
   const def = FREQUENCY_LABELS[f];
   if (!def) return f;
-  return loc === "en" ? def.en : def.fa;
+  return loc === "en" ? def.en : loc === "ar" ? (def.ar || def.en) : def.fa;
 };
 
 // ── کشورها و زبان‌ها به lib/countries.ts منتقل شدند — منبع یگانه‌ی داده ──

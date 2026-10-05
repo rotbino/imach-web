@@ -27,7 +27,8 @@ import { useRouter } from "next/navigation";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useMyRfqs, useSetOfferStatus, useStartThread } from "@/lib/queries";
 import type { RfqGroupDto, RfqOfferDto } from "@/lib/api";
-import { fa, fmtMoney, goodName, timeAgo, unitLabel } from "@/lib/format";
+import { fa, goodName, timeAgo, unitLabel } from "@/lib/format";
+import { useMoney } from "@/components/imach/currency-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon, type IconName } from "@/components/imach/icon";
@@ -143,6 +144,8 @@ function OfferCard({
 }) {
   const st = (offer.status as Status | null) ?? null;
   const meta = st ? STATUS_META[st] : null;
+  // فاز ۸ — قیمت پیشنهاد در ارز نمایش
+  const money = useMoney();
   return (
     <div className="card sup-card">
       <div className="head">
@@ -167,9 +170,9 @@ function OfferCard({
       </div>
 
       <div className="price-line">
-        <span className="p">{fmtMoney(offer.priceMinor, offer.currency, locale)}</span>
+        <span className="p">{money.parts(offer.priceMinor, offer.currency).amount}</span>
         <span className="u">
-          {currencyWord(offer.currency, locale)} / {unit}
+          {money.parts(offer.priceMinor, offer.currency).label || currencyWord(offer.currency, locale)} / {unit}
         </span>
       </div>
 
@@ -220,6 +223,8 @@ export function OffersView() {
   const { locale } = useLocale();
   const router = useRouter();
   const { toast } = useToast();
+  // فاز ۸ — حداقل قیمت/شیت در ارز نمایش
+  const money = useMoney();
   const biz = useActiveBusiness();
   const bizId = biz?.id ?? null;
 
@@ -429,7 +434,7 @@ export function OffersView() {
             <div className="insight-strip" style={{ marginTop: 2, cursor: "default" }}>
               <span>
                 <Icon name="i-chart" />
-                {t.minPrice as string}: <b>{fmtMoney(active.minPriceMinor ?? 0, active.offers[0]?.currency)}</b>
+                {t.minPrice as string}: <b>{money.fmt(active.minPriceMinor ?? 0, active.offers[0]?.currency)}</b>
               </span>
               <i className="sep" />
               <span>
@@ -490,7 +495,7 @@ export function OffersView() {
         <div className="sub">
           {(t.stSheetSub as string)
             .replace("{name}", sheetOffer?.seller.name ?? "")
-            .replace("{price}", fmtMoney(sheetOffer?.priceMinor ?? 0, sheetOffer?.currency))
+            .replace("{price}", money.fmt(sheetOffer?.priceMinor ?? 0, sheetOffer?.currency))
             .replace("{unit}", "")}
         </div>
         {(

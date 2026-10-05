@@ -1,4 +1,4 @@
-import type { Messages } from "./fa";
+import { fa, type Messages } from "./fa";
 
 /** English — LTR. */
 export const en: Messages = {
@@ -375,6 +375,7 @@ export const en: Messages = {
     backToSite: "Back to site",
     nav: {
       overview: "Overview",
+      settings: "System settings",
       basicData: "Basic Data",
       goods: "Product types",
       brands: "Brands",
@@ -509,6 +510,7 @@ export const en: Messages = {
 
   /* ── (app) v18 shell — migration phase 1: buyer home + nav + arm-switch sheet ── */
   app: {
+    ...fa.app, // فاز ۸ — fallback ساخت‌یافته (ادغام کم‌عمق)
     login: {
       title: "Sign in",
       sub: "With your mobile number — fast and secure",
@@ -1653,6 +1655,20 @@ export const en: Messages = {
       emptyCatalog: "This catalog has no items yet",
       emptyList: "This list has no items yet",
       demoTag: "Demo",
+    },
+
+    /* Phase 8: internationalization + currency */
+    intl: {
+      currencyLabel: "Display currency",
+      currencySub: "Prices are shown in this currency — rates are approximate and admin-adjustable",
+      currencyDefault: "Toman (default)",
+      currencySaved: "Display currency changed",
+      ratesNote: "Conversion is approximate; deals always close in the seller's currency",
+      convertedHint: "≈ {amount} — approximate rate",
+      paymentsOff: "Gateway payment is currently off",
+      paymentsOffSub: "Get ad credit for free: each colleague who joins via your link and makes their first save adds 5,000 toman to your wallet",
+      inviteOnlyCta: "Invite colleagues",
+      chargeUnavailable: "Card top-up unavailable",
     },
   },
 };

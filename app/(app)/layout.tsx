@@ -19,6 +19,7 @@ import { AuthGate } from "@/components/imach/auth-gate";
 
 const THEME_COOKIE = "imach_theme";
 const HEX = /^#[0-9a-fA-F]{6}$/;
+const ISO_CURRENCY = /^[A-Z]{3}$/;
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -30,10 +31,18 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     buy: buy && HEX.test(buy) ? buy : null,
     sell: sell && HEX.test(sell) ? sell : null,
   };
+  // فاز ۸ — ارز نمایش از کوکی (SSR بدون فلش ارز)
+  const cur = cookieStore.get("imach_currency")?.value;
+  const initialCurrency = cur && ISO_CURRENCY.test(cur) ? cur : null;
 
   return (
     <AuthGate>
-      <AppShell initialArm={initialArm} initialTheme={theme} initialArmColors={initialArmColors}>
+      <AppShell
+        initialArm={initialArm}
+        initialTheme={theme}
+        initialArmColors={initialArmColors}
+        initialCurrency={initialCurrency}
+      >
         {children}
       </AppShell>
     </AuthGate>

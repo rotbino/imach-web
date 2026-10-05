@@ -27,7 +27,8 @@ import {
   useSaverAnalysis,
 } from "@/lib/queries";
 import type { GoodItemDto } from "@/lib/api";
-import { activityTypeLabel, fa, fmtMoney, timeAgo } from "@/lib/format";
+import { activityTypeLabel, fa, timeAgo } from "@/lib/format";
+import { useMoney } from "@/components/imach/currency-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon } from "@/components/imach/icon";
@@ -48,6 +49,8 @@ const packLabels = (l: GoodItemDto): string[] => {
 };
 
 export function CatalogView() {
+  // فاز ۸ — قیمت کارت‌های کاتالوگ در ارز نمایش
+  const money = useMoney();
   const m = useMessages();
   const t = m.app.sellCatalog as unknown as Record<string, string>;
   const { locale } = useLocale();
@@ -347,7 +350,8 @@ export function CatalogView() {
                 <div className="pd">
                   <div className="nm">{l.variantLabel ? `${l.good.nameFa} — ${l.variantLabel}` : l.good.nameFa}</div>
                   <div className="pk">
-                    {fmtMoney(l.priceMinor, l.currency, locale)} <span>{`/ ${l.good.unit ? l.good.unit : ""}`}</span>
+                    {money.parts(l.priceMinor, l.currency).amount}{" "}
+                    <span>{`${money.parts(l.priceMinor, l.currency).label} / ${l.good.unit ? l.good.unit : ""}`}</span>
                   </div>
                   {packs.length > 0 ? (
                     <div className="pk-chips">{packs.map((p) => <span key={p}>{p}</span>)}</div>
