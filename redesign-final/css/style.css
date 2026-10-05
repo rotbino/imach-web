@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   iMatch — Redesign Final · Flat Professional v17 (فلتِ کنتراست‌دار)
+   iMatch — Redesign Final · Reference Prototype v18 (فلتِ کنتراست‌دار + کف خوانایی ۱۱px)
    اصل: Reduce cognitive load, NOT product capability.
    زبان: فلت — سطح سفید + حاشیهٔ ۱px؛ سایه فقط برای لایه‌های شناور (شیت/توست/قاب)
    پالت معنایی ثابت: نارنجی #F97316 (فروش) · فیروزه‌ای (خرید) · زمردی (مثبت)
@@ -2241,6 +2241,153 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .dref-strip .dr-tx span { font-size: 10.5px; color: var(--muted); display: block; margin-top: 3px; line-height: 1.8; }
 
 
+
+/* ═══════════════════════════════════════════════════════════════
+   v18 — Reference Prototype · کف خوانایی + a11y پایه
+   قاعده: متنِ تصمیم‌ساز ≥۱۱px (قیمت/واحد/وضعیت/روند/خطا/برچسب فرم/مبنای مقایسه)
+   متن پشتیبان ≥۱۰.۵px · زیر آن فقط metadata واقعی (ساعت/شناسه/URL/ابزار دمو/ماکاپ)
+   این بخش فقط «کف» را تعیین می‌کند؛ bumpهای دسکتاپ v14 (بعد از این) برنده می‌مانند.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── ۱۱px — واحد قیمت، روند، خطا، وضعیت، مبنای تابلو، بسته‌بندی ── */
+.pagehead .tt span,
+.trend,
+.badge,
+.price-line .u,
+.row-card .pl .u,
+.p-card .pr span,
+.p-card .pk span,
+.hero-specs .sp .v small,
+.price-you .tx .val b small,
+.vol-ladder .vl-row .pr small,
+.pp-res .u,
+.f-err,
+.rfq-card .when,
+.sup-card .mt,
+.follow-row .tx span,
+.unit-note,
+.pack-line,
+.chip.mini,
+.qty-stepper .unit,
+.inp-flex .sfx,
+.sug-card .bd .m { font-size: 11px; }
+
+/* ── ۱۰.۵px — ناوبری تب (قید جاگیریِ تک‌کلمه‌ای) + بج شفافیت + فلگ تطبیق ── */
+.tab, .tabbar .tab { font-size: 10.5px; white-space: nowrap; }
+.badge-sponsor { font-size: 10.5px; }
+.match-flag { font-size: 10.5px; }
+
+/* ── ۱۰.۵px — متن پشتیبان/توضیح کوتاه ── */
+.sheet-row .tx span,
+.cap-row .tx span,
+.announce-strip .tx span,
+.earn-row .tx span,
+.hist-row .tx span,
+.pc-head .pc-tx span,
+.pricing-state .tx span,
+.saved-strip .txt span,
+.wallet-strip .w-tx span,
+.pick-row .pk-tx span,
+.mix-row .tx span,
+.mode-row .tx span,
+.grp-row .tx span,
+.lvl-head .lh-tx span,
+.ds-row .ds-who span,
+.tri-row .tri-who em,
+.hp-lvl .tx span,
+.ben .b-tx span,
+.ben-foot,
+.viral-row,
+.freepath,
+.trust,
+.warn-note,
+.unit-calc,
+.sfx-note,
+.lvl-note,
+.budget-note,
+.rate-row .tx small,
+.rate-src,
+.slot-note,
+.slot-card .sl-d,
+.pack-note,
+.ct-row .tx span,
+.alt-m,
+.n-row .tx span,
+.gate-note,
+.action-desc,
+.sug-card .why,
+.chat-note,
+.quick-chips .chip,
+.photo-bub .cap,
+.promo-suggest,
+.pk-group,
+.price-you .tx .lbl,
+.price-you .tx .lbl b,
+.vol-ladder .vl-row .save,
+.ds-eq,
+.ds-tier .t-tag,
+.ct-chips .ct-lbl,
+.ct-chips .ct-eff,
+.price-entry .tx small,
+.hq-tx span,
+.tri-f label,
+.field label i,
+.src-sum { font-size: 10.5px; }
+
+/* ── ۱۰/۹.۵px — برچسب‌های کپشن و metadata نزدیک ── */
+.spec .k, .stat .k, .hero-specs .sp .k { font-size: 10.5px; }
+.price-entry .st { font-size: 10px; }
+.pkg span { font-size: 10.5px; }
+.pkg.best i { font-size: 9.5px; }
+.ff-node .k { font-size: 10.5px; }
+.ff-node .v small { font-size: 9.5px; }
+.tier-row .tr-v { font-size: 10.5px; }
+.tier-row .tr-t small, .tier-row .tr-p small { font-size: 9.5px; }
+.edit-good-row .eg-tx span { font-size: 10.5px; }
+.path-hint { font-size: 10px; }
+.gslot.filled span, .gslot.add span { font-size: 9px; }
+.ps-cap { font-size: 9.5px; }
+.mb-badge { font-size: 9.5px; }
+.mb-rank { font-size: 9.5px; }
+.pk-chips span { font-size: 10px; }
+.mgr-strip { font-size: 10px; }
+.src-b { font-size: 9.5px; }
+.n-row .tm { font-size: 9.5px; }
+.msg .tm { font-size: 9px; }
+.chat-day { font-size: 9.5px; }
+.chat-head .cht span, #sc-chat .chat-head .cht span { font-size: 10.5px; }
+.ph-badge { font-size: 9px; }
+.tab .tdot, .icon-btn .dot { font-size: 9.5px; }
+
+/* ── a11y پایه (پروتوتایپ): فوکوس کیبورد در همهٔ عرض‌ها ── */
+button:focus-visible, .chip:focus-visible, .tab:focus-visible,
+.switch:focus-visible, .pill:focus-visible, .tbar .tb:focus-visible {
+  outline: 2px solid var(--arm); outline-offset: 2px;
+}
+
+/* ── هیت‌اریا ≥۴۴px بدون بزرگ‌شدنِ ظاهر (لایهٔ نامرئی ::after) ── */
+.icon-btn, .icon-follow, .alert-btn { position: relative; }
+.icon-btn::after, .icon-follow::after, .alert-btn::after, .gear-btn::after {
+  content: ''; position: absolute; inset: -5px; border-radius: inherit;
+}
+.gear-btn::after { inset: -8px; }
+.qty-stepper button { position: relative; }
+.qty-stepper button::after { content: ''; position: absolute; inset: -6px; }
+
+/* ── کلاس‌های کمکی v18 (کاهش inline-style برای مهاجرت) ── */
+.price-entry.tasks svg { color: var(--amber); }
+.price-entry.tasks .tx small { font-size: 10.5px; }
+.av-sm { width: 34px; height: 34px; border-radius: 10px; font-size: 13px; }
+.th-sm { width: 38px; height: 38px; border-radius: 11px; }
+.th-40 { width: 40px; height: 40px; border-radius: 12px; }
+.th-md { width: 44px; height: 44px; border-radius: 13px; }
+.ic-12 { width: 12px; height: 12px; }
+.mt-i { display: inline-flex; align-items: center; gap: 3px; }
+.note-c { font-size: 10.5px; color: var(--muted); text-align: center; margin-top: 7px; line-height: 1.9; }
+.note-l { font-size: 10.5px; color: var(--muted); margin-top: 9px; line-height: 1.9; }
+.av-38 { width: 38px; height: 38px; border-radius: 11px; }
+.th-svg { width: 24px; height: 24px; }
+
 /* ═══════════════════════════════════════════════════════════════
    v14 — Responsive Desktop · همان دیزاین‌سیستم، composition متناسب صفحهٔ بزرگ
    موبایل (≤767px) دست‌نخورده · تبلت 768–919 ستونِ آرام ·
@@ -2547,3 +2694,19 @@ body.rd.rd-mob #dsPanels .tbpanel.on { display: block !important; }
 body.rd.rd-mob #dsTabs .tb:nth-child(3) { display: inline-flex !important; }
 body.rd.rd-mob .screen-body > * { max-width: none !important; margin-inline: 0 !important; width: 100% !important; }
 body.rd.rd-mob .btn-row { max-width: none !important; }
+
+
+/* ═══ v18 — یادداشت دسک‌بار (قواعد داخل media از v14؛ کف جدید در پایان فایل) ═══ */
+.deskbar .db-biz span { font-size: 10px; }
+.deskbar .db-side .tx span { font-size: 10px; }
+.deskbar .db-doc { font-size: 9.5px; }
+.deskbar .db-dot { font-size: 9.5px; }
+
+/* ═══ v18 — احترام به prefers-reduced-motion ═══ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

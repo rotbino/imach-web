@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>iMach — ریدیزاین فاینال · v17</title>
+<title>iMach — ریدیزاین فاینال · v18 (Reference Prototype)</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="rd">
@@ -42,7 +42,8 @@
   <symbol id="i-tup" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 14.5h12L12 7z"/></symbol>
   <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5h13v11h-13zM14.5 9.5h4.5l3 3.5v3.5h-7.5z"/><circle cx="6" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4.5"/></symbol>
-    <symbol id="i-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 15.5l-4.5-4.5-7.5 7.5"/></symbol>\n  <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9.5" cy="7" r="2" fill="#fff"/><circle cx="15" cy="12" r="2" fill="#fff"/><circle cx="8" cy="17" r="2" fill="#fff"/></symbol>
+    <symbol id="i-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 15.5l-4.5-4.5-7.5 7.5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9.5" cy="7" r="2" fill="#fff"/><circle cx="15" cy="12" r="2" fill="#fff"/><circle cx="8" cy="17" r="2" fill="#fff"/></symbol>
   <symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 4H6a2 2 0 00-2 2v12a2 2 0 002 2h3.5"/><path d="M16 8l4 4-4 4M20 12H9"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-7-7-4z"/></symbol>
@@ -139,28 +140,28 @@
             <div class="blobs"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
             <div class="mid">
               <img class="logo-h" src="assets/logo3.svg" alt="iMatch">
-              <div class="tagline">پیشنهاد تأمین‌کنندگان مناسب برای خرید در بازار عمده</div>
-              <div class="q">در بازار عمده نقش اصلی شما چیست؟</div>
-              <div class="qsub">فقط برای شروع می‌پرسیم — هر دو دستیار بعداً در اختیارت است.</div>
+              <div class="tagline">تأمین‌کنندهٔ مناسب را برای خرید عمده پیدا کن</div>
+              <div class="q">شما در بازار عمده چه نقشی دارید؟</div>
+              <div class="qsub">فقط برای شروع می‌پرسیم — بعداً می‌توانید بین دو دستیار جابه‌جا شوید</div>
             </div>
             <div class="choice-grid">
             <button class="choice-card buy" onclick="choose('buy')">
               <span class="ico"><svg><use href="#i-basket"/></svg></span>
-              <span class="tx"><b>خریدار عمده هستم</b><span>لیست خریدم را می‌سازم و قیمتِ چند تأمین‌کننده را کنارِ هم، زنده دنبال می‌کنم</span></span>
+              <span class="tx"><b>خریدار عمده هستم</b><span>لیست خریدم را می‌سازم و قیمتِ چند تأمین‌کننده را زنده و کنارِ هم دنبال می‌کنم</span></span>
               <svg class="ar"><use href="#i-back"/></svg>
             </button>
             <button class="choice-card sell" onclick="choose('sell')">
               <span class="ico"><svg><use href="#i-box"/></svg></span>
-              <span class="tx"><b>فروشنده عمده هستم</b><span>کاتالوگم را می‌سازم — خریدارانِ عمده قیمتش را دنبال می‌کنند</span></span>
+              <span class="tx"><b>فروشندهٔ عمده هستم</b><span>کاتالوگم را می‌سازم — خریدارهای عمده قیمتش را زنده دنبال می‌کنند</span></span>
               <svg class="ar"><use href="#i-back"/></svg>
             </button>
             </div>
-            <div class="footnote">اگر هر دو نقش رو داری نگران نباش، بعد از ثبت نام امکان سویچ بین <b>دستیار خرید</b> و <b>دستیار فروش</b> وجود دارد.</div>
-            <div class="login-link">قبلاً حساب ساختی؟ <u onclick="go('sc-login')" style="cursor:pointer">وارد شو</u> · <u onclick="go('sc-signup')" style="cursor:pointer">ساخت حساب</u></div>
+            <div class="footnote">اگر هر دو نقش را دارید نگران نباشید؛ بعد از ثبت‌نام می‌توانید بین <b>دستیار خرید</b> و <b>دستیار فروش</b> جابه‌جا شوید.</div>
+            <div class="login-link">قبلاً حساب ساخته‌اید؟ <u onclick="go('sc-login')" style="cursor:pointer">وارد شوید</u> · <u onclick="go('sc-signup')" style="cursor:pointer">ساخت حساب</u></div>
 
-            <!-- ═══ v10: معرفی آیمچ — چیست و چه فیضی دارد (زیر ثبت‌نام) ═══ -->
+            <!-- ═══ v10: معرفی آی‌مچ — چیست و چه فایده‌ای دارد (زیر ثبت‌نام) ═══ -->
             <div class="intro-wrap">
-              <div class="intro-sep"><i></i><span>آیمچ چیست؟</span><i></i></div>
+              <div class="intro-sep"><i></i><span>آی‌مچ چیست؟</span><i></i></div>
 
               <div class="intro-card">
                 <div class="match-viz">
@@ -168,8 +169,8 @@
                   <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
                   <span class="mv mv-sell"><svg><use href="#i-box"/></svg></span>
                 </div>
-                <h3>ای‌مچ؛ پلتفرم تطابق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
-                <p>آیمچ با موتور تطابق خودش، درخواست‌های خریدِ خریداران عمده را به محصولاتِ تأمین‌کنندگان مچ می‌کند و بازارِ اختصاصی خرید و فروش عمده — متناسب با کالاها و حجمِ خرید/فروش — می‌سازد.</p>
+                <h3>آی‌مچ؛ پلتفرم تطبیق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
+                <p>آی‌مچ با موتور تطبیق اختصاصی خود، درخواست‌های خریدِ خریداران عمده را با محصولات تأمین‌کنندگان مچ می‌کند و برای هر کالا و هر حجم خرید یا فروش، یک بازارِ عمدهٔ اختصاصی می‌سازد.</p>
               </div>
 
               <div class="intro-tabs">
@@ -178,58 +179,58 @@
               </div>
 
               <div id="introSell" class="ben-list sell-side">
-                <div class="ben-title">مزایای آیمچ برای تأمین‌کنندگان و فروشندگان عمده</div>
+                <div class="ben-title">مزایای آی‌مچ برای تأمین‌کنندگان و فروشندگان عمده</div>
                 <div class="ben">
                   <span class="b-n">۱</span>
-                  <span class="b-tx"><b>خریدارانِ کاملاً مرتبط</b><span>معرفی محصولات به خریداران کاملاً مرتبط با ترتیب اولویت شهر خودت، استان خودت، کشور خودت — از نیازِ یک سوپرمارکت با یک کارتن تا حجم‌های بزرگ صادرات</span></span>
+                  <span class="b-tx"><b>خریدارانِ دقیقاً مرتبط</b><span>محصولت را به خریدارهایی معرفی می‌کنیم که دقیقاً دنبال همان کالا هستند — اول شهر خودت، بعد استان، بعد کل کشور. از سفارش یک کارتنیِ سوپرمارکت تا حجم‌های بزرگ صادراتی</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۲</span>
-                  <span class="b-tx"><b>کاتالوگ هوشمندِ اختصاصی</b><span>کاتالوگ هوشمند اختصاصی با لینک قابل ارسال برای خریداران — همیشه قیمت به‌روز</span></span>
+                  <span class="b-tx"><b>کاتالوگ هوشمند اختصاصی</b><span>کاتالوگ اختصاصی خودت را با لینک قابل ارسال برای خریداران بساز — قیمت‌ها همیشه به‌روز</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۳</span>
-                  <span class="b-tx"><b>تخفیف به‌سایزِ مشتری و حجم خرید</b><span>تخفیفِ همکار و قراردادی روی کل کاتالوگ، پله‌های حجمی خرید، و تخفیف اختصاصی هر کالا — فقط چند درصد ساده؛ خریدار همان قیمتِ نهایی را روی کاتالوگ می‌بیند</span></span>
+                  <span class="b-tx"><b>تخفیف به اندازهٔ مشتری و حجم خرید</b><span>تخفیف همکار و قراردادی روی کل کاتالوگ، تخفیف پله‌ای بر اساس حجم خرید، و تخفیف اختصاصی برای هر کالا — فقط چند درصد ساده؛ خریدار همان قیمت نهایی را روی کاتالوگ می‌بیند</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۴</span>
-                  <span class="b-tx"><b>حضور در لیست تأمینِ خریداران</b><span>گیرندگان کاتالوگ می‌توانند قیمت هر کالا را جداگانه دنبال کنند؛ فروشنده در لیست تأمین این خریداران قرار می‌گیرد و قیمتش همیشه جلوی چشم اوست</span></span>
+                  <span class="b-tx"><b>حضور در لیست تأمین خریداران</b><span>خریدارانی که کاتالوگت را می‌گیرند، می‌توانند قیمت هر کالا را جداگانه دنبال کنند؛ این‌طور در لیست تأمین آن‌ها قرار می‌گیری و قیمتت همیشه جلوی چشمشان می‌ماند</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۵</span>
-                  <span class="b-tx"><b>خریداران جدیدِ مرتبط (پیشنهاد آیمچ)</b><span>پیدا کردن خریداران جدید کاملاً مرتبط با کالاها و حجم فروش، علاوه بر مشتریان خودت</span></span>
+                  <span class="b-tx"><b>خریداران جدیدِ مرتبط</b><span>علاوه بر مشتریان فعلی خودت، خریداران جدیدی را پیدا کن که دقیقاً با کالاها و حجم فروشت هم‌خوانی دارند — پیشنهاد خودِ آی‌مچ</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۶</span>
-                  <span class="b-tx"><b>ابزارهای همیشه رایگان + پروموتِ کم‌هزینه</b><span>پروموت کردن هر محصول با کمترین مبلغ — کالا جلوی چشمِ خریدارِ دقیقاً همان کالا با همان حجم — و کسرِ مبلغ کمی از اعتبار فقط در صورت مشاهده یا فالوی قیمت</span></span>
+                  <span class="b-tx"><b>ابزارهای همیشه رایگان + تبلیغ کم‌هزینه</b><span>محصولت را با کمترین هزینه تبلیغ کن — کالا را دقیقاً جلوی چشم خریدارِ همان کالا با همان حجم می‌گذاریم و فقط در صورت مشاهده یا دنبال‌کردنِ قیمت، مبلغ کمی از اعتبارت کم می‌شود</span></span>
                 </div>
               </div>
 
               <div id="introBuy" class="ben-list buy-side" style="display:none">
-                <div class="ben-title">مزایای آیمچ برای خریدار عمده</div>
+                <div class="ben-title">مزایای آی‌مچ برای خریدار عمده</div>
                 <div class="ben">
                   <span class="b-n">۱</span>
-                  <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>ساخت دفتر خرید و اشتراک‌گذاری با تأمین‌کنندگان آشنا — همیشه گوش به زنگِ اعلام نیاز، در لحظه دریافت بهترین قیمت‌ها و شرایط</span></span>
+                  <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۲</span>
-                  <span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>ذخیرهٔ کاتالوگ‌های تأمین‌کنندگان مختلفِ کالاهای مورد نیاز — کاتالوگ‌هایی با قیمت‌های زنده</span></span>
+                  <span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۳</span>
-                  <span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>دنبال کردن قیمت یک کالا (مثلاً برنج هاشمی) از کاتالوگ‌های چند فروشنده و ساخت «تابلوی تأمین» برای هر کالا</span></span>
+                  <span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>قیمت یک کالا (مثلاً برنج هاشمی) را از کاتالوگ چند فروشنده دنبال کن و برای هر کالا یک «تابلوی تأمین» بساز</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۴</span>
-                  <span class="b-tx"><b>مقایسهٔ قیمتِ زنده، کنارِ هم</b><span>با تابلوی قیمت هر کالا، مقایسهٔ قیمت زندهٔ یک کالا از چند تأمین‌کننده کنارِ هم</span></span>
+                  <span class="b-tx"><b>مقایسهٔ قیمت زنده و کنارِ هم</b><span>با تابلوی قیمت هر کالا، قیمت زندهٔ یک کالا را از چند تأمین‌کننده، کنار هم مقایسه کن</span></span>
                 </div>
                 <div class="ben">
                   <span class="b-n">۵</span>
-                  <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>ساخت استعلام قیمت برای تابلوی تأمین هر کالا و درخواست قیمت و شرایطِ رقابتی از تأمین‌کنندگان دلخواه</span></span>
+                  <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
                 </div>
               </div>
 
-              <div class="ben-foot">همهٔ این‌ها رایگان شروع می‌شود — <b>ثبت‌نام فقط با شمارهٔ موبایل</b><br>بالا را انتخاب کن تا همین حالا وارد شوی</div>
+              <div class="ben-foot">همهٔ این‌ها رایگان شروع می‌شود — <b>ثبت‌نام فقط با شمارهٔ موبایل</b><br>گزینهٔ بالا را انتخاب کنید تا همین حالا وارد شوید<br><a href="help.html" style="display:inline-block;margin-top:8px;color:var(--arm-tint-fg);font-weight:700;text-decoration:none;border-bottom:1px dashed currentColor">راهنمای کامل آی‌مچ را بخوانید →</a></div>
             </div>
           </div>
         </section>
@@ -250,7 +251,7 @@
           <div class="screen-body">
             <div class="greet">
               <b>سلام، رستوران مهر</b>
-              <span>۲ کالا این هفته قیمت تازه دارند — قیمت‌ها را دنبال می‌کنیم</span>
+              <span>۲ کالا این هفته قیمت تازه دارند — قیمت‌ها را برایت دنبال می‌کنیم</span>
             </div>
 
             <!-- v6: هیروی استعلام حذف شد (حکم مالک — دکمهٔ جزئیات کالا کافی است) · دکمهٔ اشتراک تکراری حذف شد (نوار اشتراک بالا مانده) -->
@@ -267,7 +268,7 @@
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-list"/></svg> لیست خرید من</h2><span class="more" onclick="go('sc-offers')"><span class="badge b-teal" id="rfqCountBadge">۳</span> پیشنهادها</span></div>
             <button class="saved-strip" onclick="go('sc-suppliers')">
               <span class="ico"><svg><use href="#i-bm"/></svg></span>
-              <span class="txt"><b>کاتالوگ‌های ذخیره‌شده</b><span>۳ کاتالوگ تأمین‌کننده · کالای جدیدشان را می‌بینی</span></span>
+              <span class="txt"><b>کاتالوگ‌های ذخیره‌شده</b><span>۳ کاتالوگ تأمین‌کننده · کالاهای جدیدشان را می‌بینی</span></span>
               <svg class="chev"><use href="#i-chev"/></svg>
             </button>
 
@@ -276,8 +277,8 @@
                 <span class="thumb rice"><svg><use href="#a-rice"/></svg></span>
                 <div class="body">
                   <div class="t">برنج هاشمی <span class="pulse-dot" title="رصد فعال"></span><span class="badge b-teal"><svg><use href="#i-bm"/></svg> ۳ دنبال‌شده</span></div>
-                  <div class="pl"><b>۸۴٬۵۰۰</b><span class="u">تومان / کیلوگرم</span><span class="trend down"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-tdn"/></svg> ۲٪</span></div>
-                  <div class="s">ارزان‌ترین: <b>سبزدانه همدان</b> · <b>۶ تأمین‌کننده</b> در تابلو · به‌روز: ۲ ساعت پیش</div>
+                  <div class="pl"><b>۸۴٬۵۰۰</b><span class="u">تومان / کیلوگرم</span><span class="trend down"><svg class="ic-sm ic-12"><use href="#i-tdn"/></svg> ۲٪</span></div>
+                  <div class="s">ارزان‌ترین: <b>سبزدانه همدان</b> · <b>۶ تأمین‌کننده</b> در تابلو · آخرین به‌روزرسانی: ۲ ساعت پیش</div>
                 </div>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </div>
@@ -287,7 +288,7 @@
                 <div class="body">
                   <div class="t">روغن سرخ‌کردنی ۱۶ کیلویی <span class="pulse-dot"></span><span class="badge b-teal"><svg><use href="#i-bm"/></svg> ۲ دنبال‌شده</span></div>
                   <div class="pl"><b>۱٬۸۵۰٬۰۰۰</b><span class="u">تومان / بستهٔ ۱۶ کیلویی</span><span class="badge b-orange">قیمت تازه</span></div>
-                  <div class="s">نیاز: <b>۲۰ بسته / ماه</b> · <b>۴ تأمین‌کننده</b> در تابلو · به‌روز: امروز</div>
+                  <div class="s">نیاز: <b>۲۰ بسته در ماه</b> · <b>۴ تأمین‌کننده</b> در تابلو · آخرین به‌روزرسانی: امروز</div>
                 </div>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </div>
@@ -307,7 +308,7 @@
                 <span class="thumb lentil"><svg><use href="#a-lentil"/></svg></span>
                 <div class="body">
                   <div class="t">عدس</div>
-                  <div class="s">هنوز تأمین‌کننده‌ای پیدا نشده — رصد را روشن کن تا خبر بدهیم</div>
+                  <div class="s">هنوز تأمین‌کننده‌ای پیدا نشده — رصد را روشن کن تا خبرت کنیم</div>
                 </div>
                 <button class="btn btn-soft btn-sm" onclick="event.stopPropagation();watchCold()">فعال‌سازی رصد</button>
               </div>
@@ -315,7 +316,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>هر کالا در لیست، یک <b>تابلوی تأمین</b> دارد — روی کالا بزن تا قیمت‌های زندهٔ چند تأمین‌کننده و شرایطشان را ببینی؛ هر کدام را خواستی <b>دنبال کن</b> تا همیشه در دفترت بماند. تابلو از ناوبری اصلی بیرون است؛ همیشه از دلِ کالا باز می‌شود.</span>
+              <span>هر کالا در لیست، یک <b>تابلوی تأمین</b> دارد — روی کالا بزن تا قیمت‌های زندهٔ چند تأمین‌کننده و شرایطشان را ببینی؛ هر کدام را که خواستی <b>دنبال کن</b> تا همیشه در دفترت بماند. تابلو از ناوبری اصلی بیرون است؛ همیشه از دلِ کالا باز می‌شود.</span>
             </div>
           </div>
           <nav class="tabbar" id="nav-buy">
@@ -341,9 +342,9 @@
             <div class="card">
               <div class="row" style="display:flex;align-items:center;justify-content:space-between">
                 <div>
-                  <div style="font-size:16.5px;font-weight:700">۸۴٬۵۰۰ <small style="font-size:10.5px;color:var(--muted);font-weight:400">تومان / کیلوگرم</small></div>
-                  <div style="font-size:10.5px;color:var(--muted);margin-top:4px;display:flex;gap:8px;align-items:center">
-                    <span class="trend down"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-tdn"/></svg> ۲٪ این هفته</span>
+                  <div style="font-size:16.5px;font-weight:700">۸۴٬۵۰۰ <small style="font-size:11px;color:var(--muted);font-weight:400">تومان / کیلوگرم</small></div>
+                  <div style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:8px;align-items:center">
+                    <span class="trend down"><svg class="ic-sm ic-12"><use href="#i-tdn"/></svg> ۲٪ کاهش این هفته</span>
                     <span>بازهٔ بازار: ۸۴ تا ۹۵ هزار</span>
                   </div>
                 </div>
@@ -359,44 +360,44 @@
               </div>
             </div>
 
-            <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-bm"/></svg> قیمت‌های دنبال‌شده برای برنج هاشمی</h2><span class="more">۳ از ۶</span></div>
+            <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-bm"/></svg> قیمت‌های دنبال‌شدهٔ برنج هاشمی</h2><span class="more">۳ از ۶</span></div>
             <div class="card" style="padding:4px 14px">
               <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px">ک</div>
+                <div class="avatar av-sm">ک</div>
                 <span class="tx"><b>برنج هاشمی کارون</b><span>قیمت شما: <b style="color:var(--teal-deep)">۸۲٬۳۴۰</b> <small style="color:var(--muted)">همکار ٪۵ + حجم ٪۳</small> · ۲ ساعت پیش</span></span>
                 <span class="badge b-teal"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span>
               </div>
               <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--emerald)">س</div>
+                <div class="avatar av-sm" style="background:var(--emerald)">س</div>
                 <span class="tx"><b>سبزدانه همدان</b><span>۸۴٬۵۰۰ تومان · ارزان‌ترین</span></span>
                 <span class="badge b-teal"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span>
               </div>
               <div class="promo-suggest">پیشنهاد برای دنبال کردن قیمت</div>
               <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--fg-soft)">پ</div>
+                <div class="avatar av-sm" style="background:var(--fg-soft)">پ</div>
                 <span class="tx"><b>پخش برنج پارس</b><span>۹۱٬۲۰۰ تومان · موجودی ۵ تن</span></span>
-                <button class="btn btn-primary btn-sm btn-follow-hot" onclick="openSheet('sheet-follow')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-bm"/></svg> دنبال کن</button>
+                <button class="btn btn-primary btn-sm btn-follow-hot" onclick="openSheet('sheet-follow')"><svg class="ic-sm ic-12"><use href="#i-bm"/></svg> دنبال کن</button>
               </div>
               <div class="follow-row archived-row">
-                <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--muted)">ق</div>
+                <div class="avatar av-sm" style="background:var(--muted)">ق</div>
                 <span class="tx"><b>پخش قصر دان <span class="badge b-stone" style="margin-right:2px">آرشیو</span></b><span>آرشیو شد — آخرین قیمت: ۸۶٬۰۰۰ · ۳ روز پیش</span></span>
-                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="toast('از دفترت حذف شد — رصد بقیه سرجاست')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-trash"/></svg> حذف</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="toast('از دفترت حذف شد — رصد بقیه سرجایش است')"><svg class="ic-sm ic-12"><use href="#i-trash"/></svg> حذف</button>
               </div>
             </div>
             <!-- v7: حکم مالک — متن پشت‌صحنه از UI حذف شد؛ برای پیاده‌سازی واقعی:
      «ردیف پیشنهادی = جایگاهِ تبلیغاتیِ فروشنده ویژه؛ فقط به کاربری نشان داده می‌شود که هنوز قیمتش را دنبال نمی‌کند؛ رتبهٔ تطبیق مستقل از پرداخت محاسبه می‌شود.» -->
-<div style="font-size:9.5px;color:var(--muted);text-align:center;margin-top:7px;line-height:1.9">قیمتِ دنبال‌شده همیشه به‌روز می‌ماند — هر نوسانِ معنادار، خبرت می‌کنیم</div>
+<div class="note-c">قیمتِ دنبال‌شده همیشه به‌روز می‌ماند — هر نوسان معناداری را بهت خبر می‌دهیم</div>
             <div class="hero-quote tap" onclick="go('sc-rfq')">
               <span class="hq-ico"><svg class="ic-sm"><use href="#i-send"/></svg></span>
-              <span class="hq-tx"><b>درخواست برای قیمت بهتر</b><span>همین کالا — دنبال‌شده‌هایت از قبل تیک‌خورده‌اند؛ یک استعلام، چند قیمت رسمی کنارِ هم</span></span>
+              <span class="hq-tx"><b>درخواست قیمت بهتر</b><span>برای همین کالا — دنبال‌شده‌هایت از قبل تیک خورده‌اند؛ یک استعلام، چند قیمت رسمی کنارِ هم</span></span>
               <svg class="hq-ch"><use href="#i-chev"/></svg>
             </div>
             <div class="btn-row" style="margin-top:10px">
               <button class="btn btn-outline btn-lg" onclick="go('sc-board')">
-                <svg class="ic-sm"><use href="#i-arrf"/></svg> تأمین‌کنندگان دیگرِ این کالا — ۶ نفر
+                <svg class="ic-sm"><use href="#i-arrf"/></svg> تأمین‌کنندگان دیگر این کالا — ۶ نفر
               </button>
             </div>
-            <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:7px">تابلوی تأمین — مقایسهٔ زندهٔ قیمت و شرایطِ فروشنده‌ها</div>
+            <div class="note-c">تابلوی تأمین — مقایسهٔ زندهٔ قیمت و شرایط فروشنده‌ها</div>
 
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-basket"/></svg> نیاز من</h2></div>
             <div class="card">
@@ -431,7 +432,7 @@
               </div>
               <div class="follow-row">
                 <svg class="ic" style="color:var(--muted)"><use href="#i-users"/></svg>
-                <span class="tx"><b>تأمین‌کنندهٔ جدید</b><span>وقتی فروشندهٔ تازهٔ مرتبط وارد شود</span></span>
+                <span class="tx"><b>تأمین‌کنندهٔ جدید</b><span>وقتی فروشندهٔ تازه و مرتبطی وارد شود</span></span>
                 <span class="switch on arm" onclick="this.classList.toggle('on')"></span>
               </div>
             </div>
@@ -450,7 +451,7 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="go('sc-buy-item')"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>تأمین‌کنندگان برنج هاشمی</b><span>۶ نفر — از منطبق‌ترین · نیاز تو: ۵۰۰ کیلو</span></div>
+            <div class="tt"><b>تأمین‌کنندگان برنج هاشمی</b><span>۶ نفر — از مرتبط‌ترین · نیاز شما: ۵۰۰ کیلو</span></div>
             <button class="icon-btn" onclick="openSheet('sheet-filter')"><svg class="ic-sm"><use href="#i-sort"/></svg></button>
           </div>
           <div class="screen-body">
@@ -461,7 +462,7 @@
               <button class="chip">به‌روزترین</button>
             </div>
 
-            <div class="unit-note">مقایسه بر پایهٔ <b>کیلوگرم</b> — قیمت هر بسته جدا نوشته می‌شود</div>
+            <div class="unit-note">مقایسه بر پایهٔ <b>کیلوگرم</b> — قیمت هر بسته هم جدا نوشته می‌شود</div>
 
             <div id="boardGrid" class="g2" style="margin-top:12px">
               <div class="card sup-card tap" data-go="sc-sell-product-public">
@@ -469,7 +470,7 @@
                   <div class="avatar">ک</div>
                   <div style="flex:1;min-width:0">
                     <div class="nm">برنج هاشمی کارون <svg class="ic-sm" style="color:var(--teal-strong)"><use href="#i-shield"/></svg></div>
-                    <div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> همدان</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> ۲ ساعت پیش</span></div>
+                    <div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> همدان</span><span class="mt-i"><svg><use href="#i-clock"/></svg> ۲ ساعت پیش</span></div>
                   </div>
                 </div>
                 <div class="price-line"><span class="p">۸۹٬۵۰۰</span><span class="u">تومان / کیلوگرم</span><span class="badge b-teal" style="margin-right:auto"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span></div>
@@ -490,7 +491,7 @@
                   <div class="avatar" style="background:var(--emerald)">س</div>
                   <div style="flex:1;min-width:0">
                     <div class="nm">سبزدانه همدان <span class="badge b-green">ارزان‌ترین</span></div>
-                    <div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> همدان</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> ۲ روز پیش</span></div>
+                    <div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> همدان</span><span class="mt-i"><svg><use href="#i-clock"/></svg> ۲ روز پیش</span></div>
                   </div>
                 </div>
                 <div class="price-line"><span class="p">۸۴٬۵۰۰</span><span class="u">تومان / کیلوگرم</span><span class="badge b-teal" style="margin-right:auto"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span></div>
@@ -511,7 +512,7 @@
                   <div class="avatar" style="background:var(--fg-soft)">پ</div>
                   <div style="flex:1;min-width:0">
                     <div class="nm">پخش برنج پارس <span class="badge-sponsor"><svg><use href="#i-star"/></svg> فروشنده ویژه</span></div>
-                    <div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> همدان</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> امروز ۸:۳۰</span></div>
+                    <div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> همدان</span><span class="mt-i"><svg><use href="#i-clock"/></svg> امروز ۸:۳۰</span></div>
                   </div>
                 </div>
                 <div class="price-line"><span class="p">۹۱٬۲۰۰</span><span class="u">تومان / کیلوگرم</span></div>
@@ -534,7 +535,7 @@
                   <div class="avatar" style="background:var(--muted)">ش</div>
                   <div style="flex:1;min-width:0">
                     <div class="nm">شالیکشی سپیدان</div>
-                    <div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> فارس</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> دیروز</span></div>
+                    <div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> فارس</span><span class="mt-i"><svg><use href="#i-clock"/></svg> دیروز</span></div>
                   </div>
                 </div>
                 <div class="price-line"><span class="p">۹۵٬۰۰۰</span><span class="u">تومان / کیلوگرم</span></div>
@@ -559,7 +560,7 @@
                  «فروشنده ویژه فقط دیده‌شدن می‌خرد، نه رتبه؛ تطبیق مستقل از پرداخت؛ فقط به غیردنبال‌کننده‌ها نمایش؛ با اتمام بودجه نمایش می‌ایستد.» -->
             <div class="hint">
               <svg><use href="#i-bm"/></svg>
-              <span>هر تأمین‌کننده‌ای را که <b>دنبال کنی</b>، قیمتش برای همیشه در دفترت می‌ماند — هر چه بیشتر دنبال کنی، <b>مقایسهٔ زندهٔ</b> کامل‌تری جلوی چشمت است.</span>
+              <span>هر تأمین‌کننده‌ای را که <b>دنبال کنی</b>، قیمتش برای همیشه در دفترت می‌ماند — هر چه بیشتر دنبال کنی، <b>مقایسهٔ زندهٔ</b> کامل‌تری جلوی چشمت داری.</span>
             </div>
           </div>
         </section>
@@ -577,7 +578,7 @@
           <div class="screen-body">
             <div class="greet">
               <b>کاتالوگ‌های ذخیره‌شده</b>
-              <span>ویترین تأمین‌کننده‌هایی که ذخیره کرده‌ای — کالای جدیدشان را می‌بینی</span>
+              <span>ویترین تأمین‌کنندگانی که ذخیره کرده‌ای — کالاهای جدیدشان را می‌بینی</span>
             </div>
 
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیره‌شده‌های تو</h2><span class="more">۳ کاتالوگ</span></div>
@@ -587,9 +588,9 @@
                 <div class="avatar">ک</div>
                 <div style="flex:1;min-width:0">
                   <div class="nm">برنج هاشمی کارون <svg class="ic-sm" style="color:var(--teal-strong)"><use href="#i-shield"/></svg></div>
-                  <div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> همدان</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> ذخیره از ۱۲ روز پیش</span></div>
+                  <div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> همدان</span><span class="mt-i"><svg><use href="#i-clock"/></svg> ذخیره از ۱۲ روز پیش</span></div>
                 </div>
-                <span class="badge b-teal"><svg><use href="#i-bm"/></svg> ذخیره شد</span>
+                <span class="badge b-teal"><svg><use href="#i-bm"/></svg> ذخیره شده</span>
               </div>
               <div class="insight-strip" style="margin-top:10px;cursor:default">
                 <span><svg><use href="#i-box"/></svg> <b>۱۲</b> کالا</span>
@@ -599,8 +600,8 @@
                 <span><svg><use href="#i-eye"/></svg> <b>۱۴۰</b> بازدید</span>
               </div>
               <div class="acts">
-                <button class="btn btn-soft btn-sm" style="flex:1.5" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-store"/></svg> باز کردن کاتالوگ</button>
-                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="event.stopPropagation();toast('از ذخیره‌شده‌ها حذف شد — هر وقت خواستی دوباره ذخیره کن')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-trash"/></svg> حذف</button>
+                <button class="btn btn-soft btn-sm" style="flex:1.5" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm ic-12"><use href="#i-store"/></svg> باز کردن کاتالوگ</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="event.stopPropagation();toast('از ذخیره‌شده‌ها حذف شد — هر وقت خواستی دوباره ذخیره کن')"><svg class="ic-sm ic-12"><use href="#i-trash"/></svg> حذف</button>
               </div>
             </div>
 
@@ -609,9 +610,9 @@
                 <div class="avatar" style="background:var(--fg-soft)">پ</div>
                 <div style="flex:1;min-width:0">
                   <div class="nm">پخش برنج پارس <span class="badge-sponsor"><svg><use href="#i-star"/></svg> فروشنده ویژه</span></div>
-                  <div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> همدان</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> ذخیره از ۵ روز پیش</span></div>
+                  <div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> همدان</span><span class="mt-i"><svg><use href="#i-clock"/></svg> ذخیره از ۵ روز پیش</span></div>
                 </div>
-                <span class="badge b-teal"><svg><use href="#i-bm"/></svg> ذخیره شد</span>
+                <span class="badge b-teal"><svg><use href="#i-bm"/></svg> ذخیره شده</span>
               </div>
               <div class="insight-strip" style="margin-top:10px;cursor:default">
                 <span><svg><use href="#i-box"/></svg> <b>۸</b> کالا</span>
@@ -621,8 +622,8 @@
                 <span><svg><use href="#i-eye"/></svg> <b>۹۵</b> بازدید</span>
               </div>
               <div class="acts">
-                <button class="btn btn-soft btn-sm" style="flex:1.5" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-store"/></svg> باز کردن کاتالوگ</button>
-                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="event.stopPropagation();toast('از ذخیره‌شده‌ها حذف شد')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-trash"/></svg> حذف</button>
+                <button class="btn btn-soft btn-sm" style="flex:1.5" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm ic-12"><use href="#i-store"/></svg> باز کردن کاتالوگ</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="event.stopPropagation();toast('از ذخیره‌شده‌ها حذف شد')"><svg class="ic-sm ic-12"><use href="#i-trash"/></svg> حذف</button>
               </div>
             </div>
 
@@ -631,9 +632,9 @@
                 <div class="avatar" style="background:var(--amber)">ب</div>
                 <div style="flex:1;min-width:0">
                   <div class="nm">صنایع روغن بهار</div>
-                  <div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> همدان</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> ذخیره از دیروز</span></div>
+                  <div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> همدان</span><span class="mt-i"><svg><use href="#i-clock"/></svg> ذخیره از دیروز</span></div>
                 </div>
-                <span class="badge b-teal"><svg><use href="#i-bm"/></svg> ذخیره شد</span>
+                <span class="badge b-teal"><svg><use href="#i-bm"/></svg> ذخیره شده</span>
               </div>
               <div class="insight-strip" style="margin-top:10px;cursor:default">
                 <span><svg><use href="#i-box"/></svg> <b>۶</b> کالا</span>
@@ -643,18 +644,18 @@
                 <span><svg><use href="#i-eye"/></svg> <b>۶۰</b> بازدید</span>
               </div>
               <div class="acts">
-                <button class="btn btn-soft btn-sm" style="flex:1.5" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-store"/></svg> باز کردن کاتالوگ</button>
-                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="event.stopPropagation();toast('از ذخیره‌شده‌ها حذف شد')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-trash"/></svg> حذف</button>
+                <button class="btn btn-soft btn-sm" style="flex:1.5" onclick="event.stopPropagation();go('sc-catalog-public')"><svg class="ic-sm ic-12"><use href="#i-store"/></svg> باز کردن کاتالوگ</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="event.stopPropagation();toast('از ذخیره‌شده‌ها حذف شد')"><svg class="ic-sm ic-12"><use href="#i-trash"/></svg> حذف</button>
               </div>
             </div>
 
-            <button class="card dashed tap" style="width:100%;text-align:center;font-size:11.5px;font-weight:700;color:var(--muted);padding:12px" onclick="toast('کاتالوگ جدید ذخیره کن — دکمهٔ «ذخیرهٔ کاتالوگ» بالای هر کاتالوگ عمومی است')">
-              + کاتالوگ جدید ذخیره کن — از دکمهٔ «ذخیره» بالای هر کاتالوگ عمومی
+            <button class="card dashed tap" style="width:100%;text-align:center;font-size:11.5px;font-weight:700;color:var(--muted);padding:12px" onclick="toast('برای ذخیرهٔ کاتالوگ جدید، از بالای هر کاتالوگ عمومی دکمهٔ «ذخیرهٔ کاتالوگ» را بزن')">
+              + ذخیرهٔ کاتالوگ جدید — از دکمهٔ «ذخیره» بالای هر کاتالوگ عمومی
             </button>
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>«ذخیرهٔ کاتالوگ» یعنی ویترین این تأمین‌کننده همیشه در دسترس توست و کالای جدیدش را اول می‌بینی — <b>دنبال‌کردنِ قیمتِ کالای مشخص، داخل خودِ کالاست</b>.</span>
+              <span>«ذخیرهٔ کاتالوگ» یعنی ویترین این تأمین‌کننده همیشه در دسترس توست و کالای جدیدش را اول از همه می‌بینی — <b>دنبال‌کردنِ قیمتِ یک کالای مشخص، داخل صفحهٔ خود کالا انجام می‌شود</b>.</span>
             </div>
           </div>
           <nav class="tabbar">
@@ -684,13 +685,13 @@
 
             <div class="greet" style="margin-top:11px">
               <b>پیشنهادها</b>
-              <span>قیمت‌ها و شرایطی که تأمین‌کنندگان برای درخواست‌های تو فرستاده‌اند — ۳ پیشنهاد جدید</span>
+              <span>قیمت‌ها و شرایطی که تأمین‌کنندگان برای درخواست‌هایت فرستاده‌اند — ۳ پیشنهاد جدید</span>
             </div>
 
             <div id="rfqListView">
               <div class="card rfq-card tap" onclick="openOffersDetail()">
                 <div class="hd">
-                  <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
+                  <span class="thumb rice th-sm"><svg class="th-svg"><use href="#a-rice"/></svg></span>
                   <div style="flex:1">
                     <div class="who">برنج هاشمی — ۵۰۰ کیلو</div>
                     <div class="when">امروز ۱۰:۱۵ · تحویل همدان · زمان: فوری</div>
@@ -703,17 +704,22 @@
               </div>
               <div class="card rfq-card tap" style="opacity:.72">
                 <div class="hd">
-                  <span class="thumb oil" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-oil"/></svg></span>
+                  <span class="thumb oil th-sm"><svg class="th-svg"><use href="#a-oil"/></svg></span>
                   <div style="flex:1">
                     <div class="who">روغن سرخ‌کردنی — ۲۰ عدد</div>
                     <div class="when">۴ روز پیش · در انتظار پاسخ بیشتر</div>
                   </div>
                   <span class="badge b-stone">۱ پیشنهاد</span>
                 </div>
+                <div class="btn-row" style="margin-top:11px">
+                  <!-- v18 · C1-3: دوباره درخواست — خریدِ تکراری با یک اقدام -->
+                  <button class="btn btn-soft btn-sm" style="flex:0 0 auto" onclick="event.stopPropagation();reRfq()"><svg class="ic-sm"><use href="#i-send"/></svg> دوباره درخواست بده</button>
+                  <span style="font-size:10.5px;color:var(--muted);align-self:center">همان نیاز — تأمین‌کننده‌های تازه هم خبردار می‌شوند</span>
+                </div>
               </div>
               <div class="hint">
                 <svg><use href="#i-info"/></svg>
-                <span>اینجا پیگیری می‌کنی، نه پیام‌بازی: هر درخواست قیمت، پیشنهادهایش را کنار هم می‌آورد تا مقایسه کنی — قیمت، شرایط و زمان تحویل، همه در یک نگاه. جدید که برسد، اعلان می‌گیری.</span>
+                <span>اینجا جای پیگیری است، نه پیام‌بازی: هر درخواست قیمت، پیشنهادهایش را کنار هم می‌آورد تا راحت مقایسه کنی — قیمت، شرایط و زمان تحویل، همه در یک نگاه. پیشنهاد جدید که برسد، بهت اطلاع می‌دهیم.</span>
               </div>
             </div>
             <div id="rfqDetailView" style="display:none">
@@ -795,17 +801,17 @@
               </div>
               <div class="hint">
                 <svg><use href="#i-bell"/></svg>
-                <span>هر پیشنهاد را برای خودت علامت بزن — علاقه‌دارم، تماس گرفتم، بررسی شد. هماهنگی و معامله بیرون از iMach پیش می‌رود؛ اینجا بهترین قیمت‌ها کنار هم می‌آیند تا سریع‌تر به مناسب‌ترین تأمین‌کننده برسی. پیشنهادها تا ۳ روز باز می‌مانند؛ جدید که برسد، اعلان می‌گیری.</span>
+                <span>هر پیشنهاد را برای خودت علامت بزن — علاقه‌دارم، تماس گرفتم، بررسی شد. هماهنگی و معامله بیرون از آی‌مچ پیش می‌رود؛ اینجا بهترین قیمت‌ها کنار هم جمع می‌شوند تا سریع‌تر به مناسب‌ترین تأمین‌کننده برسی. پیشنهادها تا ۳ روز باز می‌مانند؛ پیشنهاد جدید که برسد، بهت اطلاع می‌دهیم.</span>
               </div>
 
               <!-- v8: بعد از پیشنهادها — اشتراک درخواست (اصلی) + اشتراک لیست (فرعی) -->
               <div class="share-strip" style="margin-top:12px">
                 <span class="ico" style="width:40px;height:40px;border-radius:13px;background:var(--teal);color:#fff;display:grid;place-items:center;flex-shrink:0"><svg class="ic-sm" style="width:19px;height:19px"><use href="#i-send"/></svg></span>
-                <span class="txt"><b>اشتراک‌گذاری این درخواست</b><span>تأمین‌کننده‌های بیشتری قیمت بفرستند · imatch.ir/r/mehr1</span></span>
+                <span class="txt"><b>این درخواست را به اشتراک بگذار</b><span>تا تأمین‌کنندگان بیشتری قیمت بفرستند · imatch.ir/r/mehr1</span></span>
                 <button class="btn btn-soft btn-sm" onclick="openSheet('sheet-share-rfq')">ارسال</button>
               </div>
               <div style="text-align:center;margin-top:9px">
-                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="openSheet('sheet-share-list')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-share"/></svg> اشتراک‌گذاری لیست خرید</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="openSheet('sheet-share-list')"><svg class="ic-sm ic-12"><use href="#i-share"/></svg> اشتراک‌گذاری لیست خرید</button>
               </div>
             </div>
           </div>
@@ -848,7 +854,7 @@
             <div class="card">
               <div class="cap-row">
                 <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-basket"/></svg></span>
-                <span class="tx"><b>دستیار خرید عمده</b><span>لیست خرید، تابلوها، پیشنهادها</span></span>
+                <span class="tx"><b>دستیار خرید عمده</b><span>لیست خرید، تابلوهای تأمین، پیشنهادها</span></span>
                 <span class="switch on arm"></span>
               </div>
               <div class="cap-row">
@@ -856,7 +862,7 @@
                 <span class="tx"><b>دستیار فروش عمده</b><span id="sellArmDesc">کاتالوگ فروش هم داشته باش — برای عمده‌فروش‌ها</span></span>
                 <span class="switch arm" id="sellArmSwitch" onclick="toggleSellArm()"></span>
               </div>
-              <div style="font-size:9.5px;color:var(--muted);margin-top:9px;line-height:1.9">هر دو می‌توانند روشن باشند؛ حداقل یکی باید روشن بماند.</div>
+              <div class="note-l">هر دو دستیار می‌توانند همزمان فعال باشند؛ حداقل یکی باید روشن بماند.</div>
             </div>
 
             <div class="sec-title"><h2>حساب</h2></div>
@@ -869,7 +875,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>یک کسب‌وکار می‌تواند <b>هم‌زمان خریدار و فروشنده</b> باشد — مثلاً عمده‌فروشی که از شالیکش می‌خرد و به رستوران‌ها می‌فروشد. سوییچ بالای صفحه هر وقت بخواهی بین دو نگاه جابه‌جات می‌کند.</span>
+              <span>یک کسب‌وکار می‌تواند <b>همزمان خریدار و فروشنده</b> باشد — مثلاً عمده‌فروشی که از شالیکش می‌خرد و به رستوران‌ها می‌فروشد. سوییچ بالای صفحه، هر وقت خواستی، بین دو نگاه جابه‌جایت می‌کند.</span>
             </div>
           </div>
           <nav class="tabbar">
@@ -897,28 +903,36 @@
               <div class="avatar" style="width:52px;height:52px;border-radius:17px;font-size:19px">ک</div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:6px">برنج هاشمی کارون <svg class="ic-sm" style="color:var(--teal-strong)"><use href="#i-shield"/></svg></div>
-                <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.8">تأمین‌کنندهٔ برنج · همدان · ۱۲ کالا<br>به‌روزرسانی: ۲ ساعت پیش</div>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.8">تأمین‌کنندهٔ برنج · همدان · ۱۲ کالا<br>آخرین به‌روزرسانی: ۲ ساعت پیش</div>
               </div>
               <button class="icon-btn" onclick="go('sc-wallet')" title="کیف پول — تومان"><svg class="ic"><use href="#i-wallet"/></svg></button>
+            </div>
+
+            <!-- v18 · C1-5: کارهای امروز — نخستین نوارِ خانهٔ فروشنده؛ پنل مدیریت به to-do ساده -->
+            <div class="price-entry tasks" onclick="go('sc-sell-requests')" style="margin-top:11px">
+              <svg><use href="#i-bell"/></svg>
+              <span class="tx">کارهای امروز<small>۲ درخواست قیمت بی‌پاسخ · ۱ پیشنهاد در انتظار جواب خریدار</small></span>
+              <span class="badge b-amber">۲ نو</span>
+              <svg class="chev"><use href="#i-chev"/></svg>
             </div>
 
             <div class="insight-strip" onclick="openSheet('sheet-savers')" style="margin-top:11px;cursor:pointer">
               <span><svg><use href="#i-bm"/></svg> <b>۳۸</b> ذخیره‌کنندهٔ کاتالوگ</span>
               <i class="sep"></i>
-              <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید هفته</span>
+              <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید این هفته</span>
               <svg class="ic-sm" style="opacity:.5;margin-right:auto"><use href="#i-chev"/></svg>
             </div>
 
             <div class="share-strip">
               <span class="ico" style="width:40px;height:40px;border-radius:13px;background:var(--arm);color:#fff;display:grid;place-items:center;flex-shrink:0"><svg class="ic-sm" style="width:19px;height:19px"><use href="#i-share"/></svg></span>
-              <span class="txt"><b>کاتالوگت، ویترین توست — به اشتراکش بگذار</b><span>هر کس بیاید و دنبال کند: قیمتش را همیشه جلوی چشمش نگه می‌داری · +۵٬۰۰۰ تومان برای تو · imatch.ir/k/karon</span></span>
+              <span class="txt"><b>کاتالوگت ویترین توست — به اشتراکش بگذار</b><span>هر کس بیاید و دنبال کند: قیمتش را همیشه جلوی چشمش نگه می‌داری · ۵٬۰۰۰ تومان برای تو · imatch.ir/k/karon</span></span>
               <button class="btn btn-primary btn-sm" onclick="openSheet('sheet-share')">اشتراک‌گذاری</button>
             </div>
 
             <!-- v12: ورودی تخفیف‌ها — یک ردیف آرام، بدون شلوغی -->
             <div class="price-entry" onclick="go('sc-discount')">
               <svg><use href="#i-percent"/></svg>
-              <span class="tx">تخفیف‌های حجمی و مشتری<small>گذری · همکار · قراردادی + پله‌های خرید — یک‌بار تنظیم، روی کل کاتالوگ</small></span>
+              <span class="tx">تخفیف‌های حجمی و مشتری<small>گذری · همکار · قراردادی + پله‌های خرید — یک بار تنظیم، روی کل کاتالوگ</small></span>
               <span class="st opt">اختیاری</span>
               <svg class="chev"><use href="#i-chev"/></svg>
             </div>
@@ -1056,7 +1070,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>کاتالوگ = <b>ویترین + مدیریت در یک صفحه</b>: چیپ‌های بالای فهرست، گروه‌بندی خودکار از روی کالاست؛ چرخ‌دندهٔ هر کارت = تنظیم سریع قیمت و موجودی. برچسب <b>«ویژه»</b> روی کالای کمپین‌دار توست. «ذخیره‌کنندهٔ کاتالوگ» یعنی ویترینت را ذخیره کرده — دنبال‌کنندهٔ قیمت کالای مشخص است.</span>
+              <span>کاتالوگ = <b>ویترین و مدیریت، در یک صفحه</b>: چیپ‌های بالای فهرست، به‌طور خودکار از روی کالاها گروه‌بندی می‌شوند؛ چرخ‌دندهٔ هر کارت هم برای تنظیم سریع قیمت و موجودی است. برچسب <b>«ویژه»</b> روی کالایی است که کمپین فعال دارد. «ذخیره‌کنندهٔ کاتالوگ» یعنی کسی ویترینت را ذخیره کرده — این با «دنبال‌کنندهٔ قیمت» که مخصوص یک کالای مشخص است فرق دارد.</span>
             </div>
           </div>
           <nav class="tabbar">
@@ -1080,8 +1094,8 @@
             <div class="photo-strip">
               <button class="ps ps-fill active" onclick="toast('عکس ۱ از ۳ — بستهٔ ۱۰ کیلویی')"><svg><use href="#a-rice"/></svg></button>
               <button class="ps ps-fill" onclick="toast('عکس ۲ از ۳ — جزئیات بسته')"><svg><use href="#a-rice"/></svg></button>
-              <button class="ps" onclick="toast('عکس ۳ از ۳ — عکس فروشگاه/انبار')"><svg><use href="#i-plus"/></svg></button>
-              <span class="ps-cap">۳ عکس — بی‌عکس هم دیده می‌شود، با عکس اعتماد بیشتر</span>
+              <button class="ps" onclick="toast('عکس ۳ از ۳ — عکس فروشگاه یا انبار')"><svg><use href="#i-plus"/></svg></button>
+              <span class="ps-cap">۳ عکس — بدون عکس هم دیده می‌شود، ولی با عکس اعتماد بیشتری جلب می‌کنی</span>
             </div>
 
             <div class="insight-strip" onclick="openSheet('sheet-followers')" style="cursor:pointer">
@@ -1089,12 +1103,12 @@
               <i class="sep"></i>
               <span><svg><use href="#i-inbox"/></svg> ۳ درخواست فعال</span>
               <i class="sep"></i>
-              <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید هفته</span>
+              <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید این هفته</span>
               <svg class="ic-sm" style="opacity:.5;margin-right:auto"><use href="#i-chev"/></svg>
             </div>
             <div class="src-sum" style="margin:8px 2px 0">
-              <svg class="ic-sm" style="width:12px;height:12px"><use href="#i-info"/></svg>
-              <b>۶</b> از لینک · <b>۴</b> از تابلو/جست‌وجو · <b>۲</b> از کمپین ویژه
+              <svg class="ic-sm ic-12"><use href="#i-info"/></svg>
+              <b>۶</b> از لینک · <b>۴</b> از تابلو یا جست‌وجو · <b>۲</b> از کمپین ویژه
             </div>
 
             <div class="hero-specs" style="margin-top:11px">
@@ -1107,14 +1121,14 @@
               <button class="chip mini active" onclick="packPick(this,'قیمت هر کیسهٔ ۱۰ کیلویی: ۸۹۵٬۰۰۰ تومان')">کیسهٔ ۱۰ کیلویی · ۸۹۵٬۰۰۰</button>
               <button class="chip mini" onclick="packPick(this,'قیمت هر کیسهٔ ۵۰ کیلویی: ۴٬۴۷۵٬۰۰۰ تومان — موجودی: ۴۰ کیسه')">کیسهٔ ۵۰ کیلویی · ۴٬۴۷۵٬۰۰۰</button>
             </div>
-            <div class="pack-note">قیمت پایه برای مقایسه: ۸۹٬۵۰۰ تومان / کیلو — هر بسته قیمت و موجودیِ خودش را دارد</div>
+            <div class="pack-note">قیمت پایه برای مقایسه: ۸۹٬۵۰۰ تومان / کیلو — هر بسته هم قیمت و موجودی خودش را دارد</div>
 
             <!-- v12: وضعیت تخفیف این کالا — سلسله‌مراتب همیشه جلوی چشم -->
             <div class="pricing-state" onclick="openItemDiscount('برنج هاشمی درجه یک', 89500)">
               <span class="ps-ico"><svg><use href="#i-percent"/></svg></span>
               <span class="tx">
                 <b>تخفیف: از تنظیمات کاتالوگ</b>
-                <span>همکار ٪۵ + حجم ۲۰۰–۳۰۰ ٪۲ — همکارِ ۲۵۰ کیلویی: <b style="color:var(--emerald)">۸۳٬۲۳۵</b> می‌بیند</span>
+                <span>همکار ٪۵ + حجم ۲۰۰–۳۰۰ ٪۲ — مشتری همکارِ ۲۵۰ کیلویی: <b style="color:var(--emerald)">۸۳٬۲۳۵</b> می‌بیند</span>
               </span>
               <svg class="chev"><use href="#i-chev"/></svg>
             </div>
@@ -1123,21 +1137,21 @@
               <div class="pc-head">
                 <span class="pc-ico"><svg><use href="#i-star"/></svg></span>
                 <div class="pc-tx">
-                  <b id="promoteTitle">کمپینِ «فروشنده ویژه» — فعال</b>
+                  <b id="promoteTitle">کمپین «فروشنده ویژه» — فعال</b>
                   <span id="promoteSub">۴۷ مشاهدهٔ هدفمند · ۳ دنبال‌کردن تازه</span>
                 </div>
                 <span class="badge b-amber" id="promoteState">فعال</span>
               </div>
               <div class="pc-progress"><i id="promoteBar" style="width:62%"></i></div>
               <div class="rep-formula" style="margin-top:10px" id="pcFormula">۴۷ × ۱٬۰۰۰ + ۳ × ۵٬۰۰۰ = <b>۶۲٬۰۰۰ تومان</b> · بودجهٔ مانده: <b>۳۸٬۰۰۰</b></div>
-              <div class="pc-note">این کالا <b>بالای تابلوی تأمین و در قیمت‌های دنبال‌شدهٔ خریدارانِ «برنج هاشمی»</b> می‌نشیند — فقط برای کسانی که هنوز قیمت تو را دنبال نمی‌کنند. رتبهٔ تطبیق هرگز پولی نیست.</div>
+              <div class="pc-note">این کالا <b>بالای تابلوی تأمین و در قیمت‌های دنبال‌شدهٔ خریدارانِ «برنج هاشمی»</b> می‌نشیند — فقط برای خریدارانی که هنوز قیمت تو را دنبال نمی‌کنند. رتبهٔ تطبیق هرگز پولی نیست.</div>
               <div class="btn-row">
                 <button class="btn btn-primary btn-sm" style="flex:1" onclick="go('sc-campaign')"><svg class="ic-sm"><use href="#i-chart"/></svg> گزارش کمپین — عددی</button>
                 <button class="btn btn-outline btn-sm" id="pcMoreBtn" style="flex:0 0 auto" onclick="openSheet('sheet-promote')"><svg class="ic-sm"><use href="#i-bolt"/></svg> بودجهٔ بیشتر</button>
               </div>
               <div class="pc-free">
                 <svg class="ic-sm"><use href="#i-share"/></svg>
-                <span>راه رایگانِ دیده‌شدن: <u onclick="openShareFromPromote()">کاتالوگ را برای مشتری‌هایت بفرست</u> — هر مشتری که بیاید و دنبال کند، <b>۵٬۰۰۰ تومان</b> هم می‌گیری.</span>
+                <span>راه رایگان دیده‌شدن: <u onclick="openShareFromPromote()">کاتالوگ را برای مشتری‌هایت بفرست</u> — هر مشتری که بیاید و دنبال کند، <b>۵٬۰۰۰ تومان</b> هم می‌گیری.</span>
               </div>
             </div>
 
@@ -1163,7 +1177,7 @@
                   <div class="who">رستوران مهر <span class="badge b-stone">رستوران</span></div>
                   <div class="when">برنج هاشمی · ۵۰۰ کیلو · تحویل همدان</div>
                 </div>
-                <span class="badge b-amber">۳ روز باقی</span>
+                <span class="badge b-amber">۳ روز باقی‌مانده</span>
               </div>
             </div>
             <div class="card rfq-card tap" onclick="go('sc-sell-requests')">
@@ -1173,7 +1187,7 @@
                   <div class="who">تالار پذیرایی یاس <span class="badge b-stone">تالار</span></div>
                   <div class="when">برنج هاشمی · ۱ تن · تحویل همدان</div>
                 </div>
-                <span class="badge b-amber">۱ روز باقی</span>
+                <span class="badge b-amber">۱ روز باقی‌مانده</span>
               </div>
             </div>
 
@@ -1184,7 +1198,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>همان صفحهٔ <b>دید مشتری</b> است + نوار بینش و کارتِ کمپین که فقط تو می‌بینی. <b>قیمت پایه</b> مبنای همهٔ قیمت‌هاست — «تنظیم قیمت» برای همین کلاست؛ قیمت و موجودی‌ات را به‌روز نگه دار، <b>۱۲ نفر همین حالا زنده دنبالش می‌کنند</b> و اولین چیزِ نابه‌روز، اعتماد است.</span>
+              <span>این همان صفحهٔ <b>دید مشتری</b> است، به‌علاوهٔ نوار بینش و کارت کمپین که فقط خودت می‌بینی. <b>قیمت پایه</b> مبنای همهٔ قیمت‌هاست — «تنظیم قیمت» برای همین است؛ قیمت و موجودی‌ات را به‌روز نگه دار، <b>۱۲ نفر همین حالا زنده دنبالش می‌کنند</b> و اولین چیزی که اعتماد را از بین می‌برد، اطلاعات به‌روز نشده است.</span>
             </div>
           </div>
         </section>
@@ -1202,7 +1216,7 @@
             <div class="photo-strip">
               <button class="ps ps-fill active" onclick="toast('عکس ۱ از ۳ — بستهٔ ۱۰ کیلویی')"><svg><use href="#a-rice"/></svg></button>
               <button class="ps ps-fill" onclick="toast('عکس ۲ از ۳ — جزئیات بسته')"><svg><use href="#a-rice"/></svg></button>
-              <button class="ps" onclick="toast('عکس ۳ — عکس انبار/بارگیری')"><svg><use href="#i-plus"/></svg></button>
+              <button class="ps" onclick="toast('عکس ۳ — عکس انبار یا بارگیری')"><svg><use href="#i-plus"/></svg></button>
               <span class="ps-cap">عکس واقعی کالا — همان اعتمادی که در بازار هست</span>
             </div>
 
@@ -1210,9 +1224,9 @@
               <div class="avatar" style="border-radius:13px">ک</div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:5px">برنج هاشمی کارون <svg class="ic-sm" style="color:var(--teal-strong)"><use href="#i-shield"/></svg></div>
-                <div style="font-size:10.5px;color:var(--muted);margin-top:3px">تأمین‌کنندهٔ برنج · همدان · ۲ سال در iMatch</div>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:3px">تأمین‌کنندهٔ برنج · همدان · ۲ سال در آی‌مچ</div>
               </div>
-              <span style="font-size:10px;color:var(--emerald);background:var(--emerald-tint);border-radius:8px;padding:4px 8px;font-weight:700">۹۸٪ پاسخگویی</span>
+              <span style="font-size:11px;color:var(--emerald);background:var(--emerald-tint);border-radius:8px;padding:4px 8px;font-weight:700">۹۸٪ پاسخگویی</span>
             </div>
 
             <div class="contact-row">
@@ -1246,7 +1260,7 @@
               <button class="chip mini active" onclick="packPick(this,'قیمت شما برای هر کیسهٔ ۱۰ کیلویی: ۸۴۱٬۳۰۰ تومان')">کیسهٔ ۱۰ کیلویی · ۸۴۱٬۳۰۰</button>
               <button class="chip mini" onclick="packPick(this,'قیمت شما برای هر کیسهٔ ۵۰ کیلویی: ۴٬۲۰۶٬۵۰۰ تومان')">کیسهٔ ۵۰ کیلویی · ۴٬۲۰۶٬۵۰۰</button>
             </div>
-            <div class="pack-note">قیمت‌های این صفحه با تخفیفِ همکاری‌ات (٪۵) حساب شده — قیمت پایهٔ عمومی: ۸۹٬۵۰۰ تومان / کیلو · «همکار» را کارون در دفترش تعیین کرده؛ اگر عوضش کند، قیمتِ تو هم همان لحظه عوض می‌شود</div>
+            <div class="pack-note">قیمت‌های این صفحه با تخفیف همکاری‌ات (٪۵) حساب شده — قیمت پایهٔ عمومی: ۸۹٬۵۰۰ تومان / کیلو · «همکار» را کارون در دفترش تعیین کرده؛ اگر عوضش کند، قیمتِ تو هم همان لحظه عوض می‌شود</div>
 
             <div class="tri-actions" style="margin-top:16px">
               <button class="btn btn-primary btn-lg btn-block" onclick="go('sc-rfq')">
@@ -1261,7 +1275,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>چهار مسیر، چهار قصد: <b>تماس مستقیم</b> (همان راه همیشگی — شماره روی کاتالوگ)، <b>پیام</b> (عکس و جزئیات، با سابقه)، <b>استعلام قیمت گروهی</b> (رسمی — چند تأمین‌کننده کنار هم)، <b>دنبال کردن/افزودن</b> (رصد بدون تعهد).</span>
+              <span>چهار مسیر، چهار هدف: <b>تماس مستقیم</b> (همان راه همیشگی — شماره روی کاتالوگ)، <b>پیام</b> (عکس و جزئیات، با سابقهٔ گفتگو)، <b>استعلام قیمت گروهی</b> (رسمی — چند تأمین‌کننده کنار هم)، <b>دنبال کردن یا افزودن</b> (رصد بدون تعهد).</span>
             </div>
           </div>
           <div class="sticky-cta">
@@ -1283,7 +1297,7 @@
           <div class="screen-body">
             <div class="greet">
               <b>درخواست‌های قیمت</b>
-              <span>کسانی که از تو قیمت خواستند — و فرصت‌هایی که موتور تطبیق پیدا کرده</span>
+              <span>خریدارانی که از تو قیمت خواستند — و فرصت‌هایی که موتور تطبیق پیدا کرده</span>
             </div>
 
             <div class="chips" style="margin-top:12px">
@@ -1298,9 +1312,9 @@
                   <div class="avatar" style="background:var(--teal-strong)">م</div>
                   <div style="flex:1">
                     <div class="who">رستوران مهر <span class="badge b-stone">رستوران</span></div>
-                    <div class="when">۴ ساعت پیش · قیمت تو را دنبال می‌کند</div>
+                    <div class="when">۴ ساعت پیش · قیمتت را دنبال می‌کند</div>
                   </div>
-                  <span class="badge b-amber">۳ روز باقی</span>
+                  <span class="badge b-amber">۳ روز باقی‌مانده</span>
                 </div>
                 <div class="needs">
                   <span class="badge b-orange"><svg><use href="#a-rice"/></svg> برنج هاشمی</span>
@@ -1321,7 +1335,7 @@
                     <div class="who">تالار پذیرایی یاس <span class="badge b-stone">تالار</span></div>
                     <div class="when">دیروز · جدید</div>
                   </div>
-                  <span class="badge b-amber">۱ روز باقی</span>
+                  <span class="badge b-amber">۱ روز باقی‌مانده</span>
                 </div>
                 <div class="needs">
                   <span class="badge b-orange"><svg><use href="#a-rice"/></svg> برنج هاشمی</span>
@@ -1340,7 +1354,7 @@
                   <div class="avatar" style="background:var(--muted)">د</div>
                   <div style="flex:1">
                     <div class="who">آشپزخانهٔ مادل <span class="badge b-stone">رستوران</span></div>
-                    <div class="when">۳ روز پیش · از دعوت تو آمد (+۵٬۰۰۰ تومان)</div>
+                    <div class="when">۳ روز پیش · از دعوت تو آمد (۵٬۰۰۰ تومان به کیف)</div>
                   </div>
                   <span class="badge b-green"><svg><use href="#i-check"/></svg> پاسخ دادی</span>
                 </div>
@@ -1392,7 +1406,7 @@
             <div id="rfq-alert" class="g2" style="margin-top:12px;display:none">
               <div class="announce-strip" style="margin-bottom:10px">
                 <span class="a-ico"><svg><use href="#i-bell"/></svg></span>
-                <span class="tx"><b>گوش به زنگ</b><span>کالاهایی که از لیست خرید خریدارها رصد می‌کنی — هر وقت اعلام نیاز کنند، اول اینجا می‌آید</span></span>
+                <span class="tx"><b>گوش به زنگ</b><span>کالاهایی از لیست خرید خریدارها که رصد می‌کنی — هر وقت اعلام نیاز کنند، اول از همه اینجا می‌بینی</span></span>
               </div>
               <div class="card rfq-card">
                 <div class="hd">
@@ -1448,7 +1462,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>سه تب، سه منبع: <b>«به من»</b> = مستقیم از تو خواستند (خیلی‌شان دنبال‌کنندهٔ قیمتت‌اند)؛ <b>«فرصت‌های بازار»</b> = موتور تطبیق مرتبط تشخیص داده؛ <b>«گوش به زنگ»</b> = خریدارهایی که کالایشان را رصد می‌کنی و الان <b>اعلام نیاز</b> کرده‌اند — لیست خریدشان را باز کن و زنگ بگیر تا دفعهٔ بعد اول خبر شوی.</span>
+              <span>سه تب، سه منبع: <b>«به من»</b> = کسانی که مستقیم از خودت قیمت خواستند (اغلبشان قیمتت را دنبال می‌کنند)؛ <b>«فرصت‌های بازار»</b> = موتور تطبیق، مرتبط تشخیص داده؛ <b>«گوش به زنگ»</b> = خریدارانی که کالایشان را رصد می‌کنی و الان <b>اعلام نیاز</b> کرده‌اند — لیست خریدشان را باز کن و زنگ بزن تا دفعهٔ بعد اول از همه خبر شوی.</span>
             </div>
           </div>
           <nav class="tabbar">
@@ -1464,7 +1478,7 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="go('sc-sell-catalog')"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>تخفیف‌ها</b><span>اختیاری — قیمت پایه ثابت است؛ تخفیف‌ها روی آن می‌نشینند</span></div>
+            <div class="tt"><b>تخفیف‌ها</b><span>اختیاری — قیمت پایه ثابت است؛ تخفیف‌ها روی آن می‌نشیند</span></div>
             <button class="icon-btn help-loud" onclick="openSheet('sheet-help-discount')" aria-label="راهنمای تخفیف‌ها" title="تخفیف‌ها چیستند؟"><svg class="ic"><use href="#i-info"/></svg></button>
           </div>
           <div class="screen-body">
@@ -1481,7 +1495,7 @@
                 <span class="ff-op">=</span>
                 <div class="ff-node res"><span class="k">قیمت نهایی</span><span class="v">۸۳٬۲۳۵<small>همکار · ۲۵۰ کیلو</small></span></div>
               </div>
-              <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-shield"/></svg> <span>فقط یک قاعده و ساده: <b>تخفیف مشتری و تخفیف حجمی جمع می‌شوند</b> — همکار ٪۵ + خرید ۲۵۰ کیلو ٪۲ = ٪۷. اولویت اعمال: <b>کالا › گروه کالا › کاتالوگ</b> — خاص‌تر همیشه برنده است.</span></div>
+              <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-shield"/></svg> <span>یک قاعدهٔ ساده: <b>تخفیف مشتری و تخفیف حجمی با هم جمع می‌شوند</b> — مثلاً همکار ٪۵ + خرید ۲۵۰ کیلو ٪۲ = ٪۷. اولویت اعمال: <b>کالا › گروه کالا › کاتالوگ</b> — همیشه خاص‌تر، برنده است.</span></div>
             </div>
 
             <!-- v12: تب‌بار واقعی — زیرخط‌دار و چسبان به بالای صفحه -->
@@ -1499,26 +1513,26 @@
                 <div class="lvl-blk">
                   <div class="lvl-head">
                     <span class="lh-ico"><svg><use href="#i-store"/></svg></span>
-                    <span class="lh-tx"><b>کل کاتالوگ</b><span>پیش‌فرض — روی همهٔ کالاها اعمال می‌شود، مگر خاص‌ترش</span></span>
+                    <span class="lh-tx"><b>کل کاتالوگ</b><span>پیش‌فرض — روی همهٔ کالاها اعمال می‌شود، مگر اینکه کالا یا گروهش تخفیف اختصاصی داشته باشد</span></span>
                   </div>
                   <div class="card" style="box-shadow:none;padding:2px 13px">
                     <div class="ds-row">
-                      <span class="ds-who"><b>مشتری گذری</b><span>هر خریدارِ ناشناس — قیمتِ خودِ کاتالوگ</span></span>
+                      <span class="ds-who"><b>مشتری گذری</b><span>هر خریدار ناشناس — قیمتِ خودِ کاتالوگ</span></span>
                       <span class="ds-inp"><input class="inp" inputmode="numeric" value="۰" oninput="dsCalc(this,'p')"><i>٪</i></span>
                       <span class="ds-eq off" id="eqP">بدون تخفیف</span>
                     </div>
                     <div class="ds-row">
-                      <span class="ds-who"><b>مشتری همکار</b><span>هم‌حرفه‌ها و خریدارانِ ثابت</span></span>
+                      <span class="ds-who"><b>مشتری همکار</b><span>هم‌حرفه‌ها و خریداران ثابت</span></span>
                       <span class="ds-inp"><input class="inp" inputmode="numeric" value="۵" oninput="dsCalc(this,'h')"><i>٪</i></span>
                       <span class="ds-eq" id="eqH">می‌شود ۸۵٬۰۲۵</span>
                     </div>
                     <div class="ds-row">
-                      <span class="ds-who"><b>مشتری قراردادی</b><span>خریدِ منظمِ توافق‌شده — بهترین قیمت</span></span>
+                      <span class="ds-who"><b>مشتری قراردادی</b><span>خرید منظم و توافق‌شده — بهترین قیمت</span></span>
                       <span class="ds-inp"><input class="inp" inputmode="numeric" value="۷" oninput="dsCalc(this,'q')"><i>٪</i></span>
                       <span class="ds-eq" id="eqQ">می‌شود ۸۳٬۲۳۵</span>
                     </div>
                   </div>
-                  <div class="lvl-note">هر خریدار که بشناسیش، از دفترش «همکار» یا «قراردادی»‌اش می‌کنی — درصدِ همین‌جا را می‌بیند. «می‌شود» بر اساس قیمت پایهٔ ۸۹٬۵۰۰ است.</div>
+                  <div class="lvl-note">هر خریداری را که بشناسی، از دفترت «همکار» یا «قراردادی» می‌کنی — درصد همین‌جا را می‌بیند. «می‌شود» بر اساس قیمت پایهٔ ۸۹٬۵۰۰ است.</div>
                 </div>
 
                 <!-- سطح ۲: گروه کالا -->
@@ -1526,7 +1540,7 @@
                   <div class="lvl-head">
                     <span class="lh-ico teal"><svg><use href="#i-box"/></svg></span>
                     <span class="lh-tx"><b>گروه کالا</b><span>اختیاری — یک دسته کالا، جدا از بقیهٔ کاتالوگ</span></span>
-                    <span class="more" onclick="openSheet('sheet-new-group')"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-plus"/></svg> گروه جدید</span>
+                    <span class="more" onclick="openSheet('sheet-new-group')"><svg class="ic-sm ic-12"><use href="#i-plus"/></svg> گروه جدید</span>
                   </div>
                   <div class="grp-row" onclick="geToggle(this)">
                     <span class="g-ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-box"/></svg></span>
@@ -1546,7 +1560,7 @@
                       <span class="ds-eq" id="geqQ">عدسی: ۷۵٬۶۶۰</span>
                     </div>
                   </div>
-                  <div class="lvl-note">گذریِ این گروه همان کاتالوگ می‌ماند — فقط همکار و قراردادی جدا می‌شوند. مثال: حبوبات حاشیهٔ کمتری دارد؛ عددِ کوچک‌تر از کاتالوگ هم منطقی است.</div>
+                  <div class="lvl-note">گذریِ این گروه همان کاتالوگ می‌ماند — فقط همکار و قراردادی جدا می‌شوند. مثلاً حبوبات حاشیهٔ کمتری دارد؛ عدد کوچک‌تر از کاتالوگ هم منطقی است.</div>
                 </div>
 
                 <!-- سطح ۳: کالای مشخص -->
@@ -1602,7 +1616,7 @@
                     </div>
                   </div>
                   <button class="ds-add" onclick="tierAdd()"><svg class="ic-sm"><use href="#i-plus"/></svg> پلهٔ جدید</button>
-                  <div class="lvl-note">مبنا، حجمِ <b>همان کالا</b> در سفارش است — کالاهای دیگرِ سبد هرکدام پلهٔ خودشان را می‌گیرند (برنج ۳۰۰ کیلو + عدس ۱۰۰ کیلو = پلهٔ برنج ۳۰۰کیلویی، پلهٔ عدس ۱۰۰کیلویی). حداقلِ هر سفارش (تا ۱۰۰ کیلو) تخفیف ندارد.</div>
+                  <div class="lvl-note">مبنا، حجمِ <b>همان کالا</b> در سفارش است — کالاهای دیگرِ سبد، هر کدام پلهٔ خودشان را می‌گیرند (برنج ۳۰۰ کیلو + عدس ۱۰۰ کیلو = پلهٔ برنج ۳۰۰کیلویی، پلهٔ عدس ۱۰۰کیلویی). حداقلِ هر سفارش (تا ۱۰۰ کیلو) تخفیف ندارد.</div>
                 </div>
 
                 <!-- سطح ۲: گروه کالا -->
@@ -1693,7 +1707,7 @@
 
             <div class="hint" style="margin-top:11px">
               <svg><use href="#i-info"/></svg>
-              <span>همین تنظیمات روی <b>کل کاتالوگ</b> اعمال می‌شود — برای کالای مشخص، همان الگو در صفحهٔ خود کالا هست. تخفیف‌های تازه (مثل مناسبت‌ها) بعداً هرکدام <b>تبِ جدا</b> کنار همین‌ها می‌آیند.</span>
+              <span>همین تنظیمات روی <b>کل کاتالوگ</b> اعمال می‌شود — برای یک کالای مشخص، همان الگو در صفحهٔ خود کالا هست. تخفیف‌های تازه (مثل مناسبت‌ها) بعداً هرکدام <b>تبِ جدا</b> کنار همین‌ها می‌آیند.</span>
             </div>
           </div>
         </section>
@@ -1726,13 +1740,13 @@
 
             <div class="wallet-strip" onclick="go('sc-wallet')">
               <span class="w-ico"><svg><use href="#i-wallet"/></svg></span>
-              <span class="w-tx"><b>کیف پول — <span id="walletStripNum">۲۹۸٬۰۰۰</span> تومان</b><span>ویژه به‌ازای نتیجه: ۱٬۰۰۰ تومان هر مشاهده · ۵٬۰۰۰ تومان هر دنبال‌کردن</span></span>
+              <span class="w-tx"><b>کیف پول — <span id="walletStripNum">۲۹۸٬۰۰۰</span> تومان</b><span>تبلیغ بر اساس نتیجه: ۱٬۰۰۰ تومان هر مشاهده · ۵٬۰۰۰ تومان هر دنبال‌کردن</span></span>
               <svg class="ic-sm" style="color:var(--muted)"><use href="#i-chev"/></svg>
             </div>
 
             <div class="share-strip">
               <span class="ico" style="width:40px;height:40px;border-radius:13px;background:var(--arm);color:#fff;display:grid;place-items:center;flex-shrink:0"><svg class="ic-sm" style="width:19px;height:19px"><use href="#i-share"/></svg></span>
-              <span class="txt"><b>لینک و QR کاتالوگ</b><span>imatch.ir/k/karon — هر مشتری که بیاید و دنبال کند +۵٬۰۰۰ تومان</span></span>
+              <span class="txt"><b>لینک و QR کاتالوگ</b><span>imatch.ir/k/karon — هر مشتری که بیاید و دنبال کند، ۵٬۰۰۰ تومان به کیف پولت اضافه می‌شود</span></span>
               <button class="btn btn-primary btn-sm" onclick="openSheet('sheet-share')">ارسال</button>
             </div>
 
@@ -1745,10 +1759,10 @@
               </div>
               <div class="cap-row">
                 <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-basket"/></svg></span>
-                <span class="tx"><b>دستیار خرید عمده</b><span>خرید هم داری؟ لیست خرید فعال کن</span></span>
+                <span class="tx"><b>دستیار خرید عمده</b><span>خرید هم داری؟ دستیار خرید را روشن کن</span></span>
                 <span class="switch arm" id="buyArmSwitch" onclick="toggleBuyArm()"></span>
               </div>
-              <div style="font-size:9.5px;color:var(--muted);margin-top:9px;line-height:1.9">هر دو می‌توانند روشن باشند؛ حداقل یکی باید روشن بماند.</div>
+              <div class="note-l">هر دو دستیار می‌توانند همزمان فعال باشند؛ حداقل یکی باید روشن بماند.</div>
             </div>
 
             <div class="sec-title"><h2>فروشگاه</h2></div>
@@ -1759,12 +1773,12 @@
               <button class="link-row" onclick="go('sc-wallet')"><svg><use href="#i-wallet"/></svg> کیف پول <span class="lv-b" id="walletBadgeNum">۲۹۸٬۰۰۰ ت</span> <svg class="lv"><use href="#i-chev"/></svg></button>
               <button class="link-row" onclick="go('sc-settings')"><svg><use href="#i-gear"/></svg> تنظیمات فروشگاه و اعلان‌ها <svg class="lv"><use href="#i-chev"/></svg></button>
             <button class="link-row" onclick="go('sc-desktop')"><svg><use href="#i-globe"/></svg> نمای دسکتاپ <span class="lv-b">همان زبان — گسترده‌تر</span> <svg class="lv"><use href="#i-chev"/></svg></button>
-            <button class="link-row" onclick="go('sc-empty')"><svg><use href="#i-box"/></svg> حالت‌های خالی و شروعِ سرد <span class="lv-b">۳ نمونه</span> <svg class="lv"><use href="#i-chev"/></svg></button>
+            <button class="link-row" onclick="go('sc-empty')"><svg><use href="#i-box"/></svg> حالت‌های خالی و شروع سرد <span class="lv-b">۳ نمونه</span> <svg class="lv"><use href="#i-chev"/></svg></button>
             </div>
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>اشتراک‌گذاری، موتور رشد توست: لینک کاتالوگ را برای مشتری‌ها بفرست — هر کانالی که خودت انتخاب می‌کنی. مشتری بدون ثبت‌نام هم کاتالوگ را می‌بیند؛ هر کس دنبال کند، قیمتش را برایش زنده نگه می‌داری و <b>۵٬۰۰۰ تومان</b> هم می‌گیری.</span>
+              <span>اشتراک‌گذاری، موتور رشد توست: لینک کاتالوگ را برای مشتری‌ها بفرست — از هر کانالی که خودت انتخاب می‌کنی. مشتری بدون ثبت‌نام هم کاتالوگ را می‌بیند؛ هر کس دنبال کند، قیمتش را برایش زنده نگه می‌داری و <b>۵٬۰۰۰ تومان</b> هم به کیف پولت اضافه می‌شود.</span>
             </div>
           </div>
           <nav class="tabbar">
@@ -1781,7 +1795,7 @@
           <div class="pagehead">
             <button class="back" onclick="go('sc-sell-profile')"><svg class="ic"><use href="#i-back"/></svg></button>
             <div class="tt"><b>کیف پول</b><span>پول فقط به‌ازای نتیجهٔ هدفمند کم می‌شود — نه رتبه، نه تطبیق</span></div>
-            <button class="icon-btn" onclick="toast('نرخ: ۱٬۰۰۰ تومان هر مشاهدهٔ کامل · ۵٬۰۰۰ تومان هر دنبال‌کردن')"><svg class="ic-sm"><use href="#i-info"/></svg></button>
+            <button class="icon-btn" onclick="toast('نرخ‌ها: ۱٬۰۰۰ تومان هر مشاهدهٔ کامل · ۵٬۰۰۰ تومان هر دنبال‌کردن')"><svg class="ic-sm"><use href="#i-info"/></svg></button>
           </div>
           <div class="screen-body">
 
@@ -1791,9 +1805,9 @@
                 <div class="bal"><span id="balNum">۲۹۸٬۰۰۰</span><small>تومان</small></div>
                 <span class="badge b-amber" id="balActive">۱ کمپین فعال</span>
               </div>
-              <div class="bal-note">نرخ ثابت و شفاف: <b>۱٬۰۰۰ تومان</b> هر مشاهدهٔ کامل · <b>۵٬۰۰۰ تومان</b> هر دنبال‌کردن — بودجه که تمام شود، نمایش می‌ایستد.</div>
+              <div class="bal-note">نرخ ثابت و شفاف: <b>۱٬۰۰۰ تومان</b> هر مشاهدهٔ کامل · <b>۵٬۰۰۰ تومان</b> هر دنبال‌کردن — بودجه که تمام شود، نمایش خودکار می‌ایستد.</div>
               <div class="btn-row" style="margin-top:12px">
-                <button class="btn btn-primary" style="flex:1" onclick="go('sc-charge')"><svg class="ic-sm"><use href="#i-plus"/></svg> افزایش کیف پول</button>
+                <button class="btn btn-primary" style="flex:1" onclick="go('sc-charge')"><svg class="ic-sm"><use href="#i-plus"/></svg> افزایش موجودی</button>
                 <button class="btn btn-outline" style="flex:0 0 auto" onclick="go('sc-campaign')"><svg class="ic-sm"><use href="#i-chart"/></svg> گزارش کمپین</button>
               </div>
             </div>
@@ -1802,12 +1816,12 @@
             <div class="card" style="padding:12px 14px">
               <div class="earn-row" onclick="openSheet('sheet-share')" style="cursor:pointer">
                 <span class="e-ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-share"/></svg></span>
-                <span class="tx"><b>دعوت مشتری و تأمین‌کننده — رایگان</b><span>هر کس با لینک تو بیاید و دنبال کند: <b class="pos">+۵٬۰۰۰ تومان</b> + درخواست‌هایش مستقیم به تو</span></span>
+                <span class="tx"><b>دعوت مشتری و تأمین‌کننده — رایگان</b><span>هر کس با لینک تو بیاید و دنبال کند: <b class="pos">+۵٬۰۰۰ تومان</b> و درخواست‌هایش مستقیم به خودت می‌رسد</span></span>
                 <svg class="ic-sm" style="color:var(--muted)"><use href="#i-chev"/></svg>
               </div>
               <div class="earn-row" onclick="go('sc-charge')" style="cursor:pointer">
                 <span class="e-ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-wallet"/></svg></span>
-                <span class="tx"><b>شارژ مستقیم — وقتی لازم شد</b><span>پرداخت با درگاه · مبلغ دلخواه یا بستهٔ آماده</span></span>
+                <span class="tx"><b>شارژ مستقیم — هر وقت لازم شد</b><span>پرداخت با درگاه · مبلغ دلخواه یا بستهٔ آماده</span></span>
                 <svg class="ic-sm" style="color:var(--muted)"><use href="#i-chev"/></svg>
               </div>
             </div>
@@ -1816,7 +1830,7 @@
             <div class="card" style="padding:6px 14px" id="walletHist">
               <div class="hist-row">
                 <span class="h-ico plus"><svg><use href="#i-checkc"/></svg></span>
-                <span class="tx"><b>+۵۰٬۰۰۰ تومان هدیهٔ خوش‌آمدگویی</b><span>شروع کار در iMach — برای امتحانِ ویژه</span></span>
+                <span class="tx"><b>+۵۰٬۰۰۰ تومان هدیهٔ خوش‌آمدگویی</b><span>شروع کار در آی‌مچ — برای امتحان امکانات ویژه</span></span>
                 <span class="amt pos">+۵۰٬۰۰۰</span>
               </div>
               <div class="hist-row">
@@ -1826,7 +1840,7 @@
               </div>
               <div class="hist-row">
                 <span class="h-ico plus"><svg><use href="#i-users"/></svg></span>
-                <span class="tx"><b>+۵٬۰۰۰ تومان — رستوران مهر دنبال کرد</b><span>از لینک کاتالوگ تو؛ الان قیمت‌هایت را دنبال می‌کند</span></span>
+                <span class="tx"><b>+۵٬۰۰۰ تومان — رستوران مهر دنبال کرد</b><span>از لینک کاتالوگ تو؛ الان قیمت‌هایت را زنده دنبال می‌کند</span></span>
                 <span class="amt pos">+۵٬۰۰۰</span>
               </div>
               <div class="hist-row">
@@ -1843,7 +1857,7 @@
 
             <div class="hint">
               <svg><use href="#i-shield"/></svg>
-              <span>پول فقط <b>«دیده‌شدنِ هدفمند»</b> می‌خرد: جایگاه شفاف فروشنده ویژه، فقط برای غیردنبال‌کنندگان. <b>تطبیق، رتبه‌بندی، درخواست‌ها و دعوت‌ها همیشه رایگان‌اند</b> — این قولِ معماری iMach است.</span>
+              <span>پول فقط <b>«دیده‌شدن هدفمند»</b> می‌خرد: جایگاه شفاف فروشنده ویژه، فقط برای خریدارانی که هنوز قیمتت را دنبال نمی‌کنند. <b>تطبیق، رتبه‌بندی، درخواست‌ها و دعوت‌ها همیشه رایگان‌اند</b> — این تعهد معماری آی‌مچ است.</span>
             </div>
           </div>
         </section>
@@ -1853,42 +1867,42 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="go('sc-board')"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>استعلام قیمت گروهی</b><span>یک بار بپرس — همهٔ تأمین‌کننده‌ها قیمت و شرایط می‌فرستند</span></div>
+            <div class="tt"><b>استعلام قیمت گروهی</b><span>یک بار بپرس — همهٔ تأمین‌کننده‌های انتخابی، قیمت و شرایط می‌فرستند</span></div>
           </div>
           <div class="screen-body">
             <div id="rfqForm" style="padding-bottom:92px">
               <div class="card" style="display:flex;gap:10px;align-items:center;background:var(--teal-tint);border-color:transparent">
                 <svg class="ic" style="color:var(--teal-deep)"><use href="#i-bell"/></svg>
-                <div style="flex:1;font-size:11.5px;line-height:1.9;color:var(--teal-tint-fg)">فقط همان‌هایی که تیک می‌زنی خبردار می‌شوند — <b>دنبال‌شده‌های تو</b> که این کالا را «گوش‌به‌زنگ» دارند اول از همه جواب می‌دهند.</div>
+                <div style="flex:1;font-size:11.5px;line-height:1.9;color:var(--teal-tint-fg)">فقط همان‌هایی که تیک می‌زنی خبردار می‌شوند — <b>دنبال‌شده‌های تو</b> که این کالا را «گوش‌به‌زنگ» دارند، اول از همه جواب می‌دهند.</div>
               </div>
 
               <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-users"/></svg> به چه کسانی بفرستم؟</h2><span class="more" id="rfqPickCount">۳ نفر</span></div>
               <div id="rfqPicks">
                 <div class="pk-group"><svg><use href="#i-bmf"/></svg> دنبال‌شده‌های تو</div>
                 <div class="pick-row on" onclick="rfqPick(this)">
-                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px">ک</div>
+                  <div class="avatar av-sm">ک</div>
                   <span class="pk-tx"><b>برنج هاشمی کارون <span class="badge b-teal"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span></b><span>۸۹٬۵۰۰ تومان · همدان · پاسخ در ۲ ساعت</span></span>
                   <span class="ckb"><svg><use href="#i-check"/></svg></span>
                 </div>
                 <div class="pick-row on" onclick="rfqPick(this)">
-                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--emerald)">س</div>
+                  <div class="avatar av-sm" style="background:var(--emerald)">س</div>
                   <span class="pk-tx"><b>سبزدانه همدان <span class="badge b-green">ارزان‌ترین</span> <span class="badge b-teal"><svg><use href="#i-bmf"/></svg> دنبال می‌کنی</span></b><span>۸۴٬۵۰۰ تومان · همدان · چک ۳۰ روزه</span></span>
                   <span class="ckb"><svg><use href="#i-check"/></svg></span>
                 </div>
                 <div class="pk-group"><svg><use href="#i-box"/></svg> تأمین‌کنندگان مرتبط</div>
                 <div class="pick-row" onclick="rfqPick(this)">
-                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--muted)">ش</div>
+                  <div class="avatar av-sm" style="background:var(--muted)">ش</div>
                   <span class="pk-tx"><b>شالیکشی سپیدان</b><span>۹۵٬۰۰۰ تومان · فارس · پیش‌پرداخت</span></span>
                   <span class="ckb"><svg><use href="#i-check"/></svg></span>
                 </div>
                 <div class="pick-row promo on" onclick="rfqPick(this)">
-                  <div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--fg-soft)">پ</div>
+                  <div class="avatar av-sm" style="background:var(--fg-soft)">پ</div>
                   <span class="pk-tx"><b>پخش برنج پارس <span class="badge-sponsor"><svg><use href="#i-star"/></svg> فروشنده ویژه</span></b><span>۹۱٬۲۰۰ تومان · همدان · موجودی ۵ تن · نقدی</span></span>
                   <span class="ckb"><svg><use href="#i-check"/></svg></span>
                 </div>
                 <button class="pick-more" onclick="rfqMore(this)">+ ۳ تأمین‌کنندهٔ دیگر از تابلوی تأمین</button>
               </div>
-              <div class="sfx-note" style="text-align:center">آرشیوشده‌ها (مثل پخش قصر دان) در استعلام نمی‌آیند — آرشیو یعنی خروج از تأمینِ فعال</div>
+              <div class="sfx-note" style="text-align:center">آرشیوشده‌ها (مثل پخش قصر دان) در استعلام نمی‌آیند — آرشیو یعنی خروج از فهرست تأمین فعال</div>
 
               <div class="sec-title"><h2>چه می‌خری؟</h2></div>
               <div class="card">
@@ -1909,7 +1923,7 @@
                     <input id="rfqQty" inputmode="numeric" value="۵۰۰" oninput="rfqQtyCheck()">
                     <span class="sfx">کیلوگرم</span>
                   </div>
-                  <div class="f-err" id="rfqQtyErr" style="display:none"><svg><use href="#i-info"/></svg> مقدار را وارد کن تا تأمین‌کننده‌ها بدانند برای چقدر قیمت بدهند</div>
+                  <div class="f-err" id="rfqQtyErr" style="display:none"><svg><use href="#i-info"/></svg> مقدار را وارد کن تا تأمین‌کننده‌ها بدانند برای چه حجمی قیمت بدهند</div>
                 </div>
                 <div class="field">
                   <label>محل تحویل</label>
@@ -1934,14 +1948,14 @@
                 </div>
               </div>
 
-              <div class="sec-title"><h2>توضیح <i style="font-weight:400;font-size:10px;color:var(--muted)">— اختیاری</i></h2></div>
+              <div class="sec-title"><h2>توضیح <i style="font-weight:400;font-size:10.5px;color:var(--muted)">— اختیاری</i></h2></div>
               <div class="card">
                 <textarea class="inp" placeholder="مثلاً: تحویل پنج‌شنبه، درِ انبار، فاکتور رسمی…"></textarea>
               </div>
 
               <div class="hint">
                 <svg><use href="#i-info"/></svg>
-                <span><b>فرقش با «دنبال کردن قیمت»؟</b> اینجا اعلام می‌کنی الان قصد خرید داری — همین کار «اعلام نیاز» است؛ تأمین‌کننده‌های انتخابی قیمت و شرایط رسمی می‌فرستند و در صفحهٔ «پیشنهادها» پیگیری می‌شود. دنبال‌کردن همیشه رایگان است — این استعلام هم پول نمی‌خواهد.</span>
+                <span><b>فرقش با «دنبال کردن قیمت» چیست؟</b> اینجا اعلام می‌کنی که الان قصد خرید داری — همین کار یعنی «اعلام نیاز»؛ تأمین‌کننده‌های انتخابی، قیمت و شرایط رسمی می‌فرستند و در صفحهٔ «پیشنهادها» پیگیری می‌کنی. دنبال‌کردن همیشه رایگان است — استعلام هم پولی ندارد.</span>
               </div>
 
               <div class="form-cta">
@@ -1974,8 +1988,8 @@
           <div class="screen-body" style="padding-bottom:96px">
             <!-- v3: در حالت ویرایش، کالا ثابت است و جست‌وجو مخفی می‌شود -->
             <div class="edit-good-row" id="editGoodRow" style="display:none">
-              <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
-              <span class="eg-tx"><b>برنج هاشمی</b><span>غلات و حبوبات <i>‹</i> برنج <i>‹</i> هاشمی — در ویرایش ثابت است · واحد پایه: کیلوگرم</span></span>
+              <span class="thumb rice th-sm"><svg class="th-svg"><use href="#a-rice"/></svg></span>
+              <span class="eg-tx"><b>برنج هاشمی</b><span>غلات و حبوبات <i>‹</i> برنج <i>‹</i> هاشمی — در حالت ویرایش ثابت است · واحد پایه: کیلوگرم</span></span>
               <svg style="margin-right:auto;width:17px;height:17px;color:var(--teal-deep)"><use href="#i-check"/></svg>
             </div>
             <div class="card" id="pickCard">
@@ -1986,22 +2000,22 @@
               <div id="noResult" style="display:none;font-size:11px;color:var(--red);background:var(--red-tint);border-radius:10px;padding:9px 12px;margin-bottom:8px">چیزی با این نام پیدا نشد — کالای جدید بساز یا از راه‌های زیر بیاور</div>
               <div style="margin-top:2px" id="goodRows">
                 <button class="row-card" style="width:100%;margin-bottom:8px" onclick="pickGood(this)">
-                  <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
-                  <span class="body"><span class="t" style="font-size:12.5px">برنج هاشمی</span><span class="s">غلات و حبوبات ‹ برنج ‹ هاشمی · ۴۵ تأمین‌کنندهٔ فعال</span></span>
+                  <span class="thumb rice th-sm"><svg class="th-svg"><use href="#a-rice"/></svg></span>
+                  <span class="body"><span class="t">برنج هاشمی</span><span class="s">غلات و حبوبات ‹ برنج ‹ هاشمی · ۴۵ تأمین‌کنندهٔ فعال</span></span>
                   <span class="badge b-teal">پرطرفدار</span>
                 </button>
                 <button class="row-card" style="width:100%;margin-bottom:8px" onclick="pickGood(this)">
-                  <span class="thumb sugar" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-sugar"/></svg></span>
-                  <span class="body"><span class="t" style="font-size:12.5px">رب گوجه‌فرنگی</span><span class="s">کنسروساز ‹ رب گوجه‌فرنگی · ۱۸ تأمین‌کنندهٔ فعال</span></span>
+                  <span class="thumb sugar th-sm"><svg class="th-svg"><use href="#a-sugar"/></svg></span>
+                  <span class="body"><span class="t">رب گوجه‌فرنگی</span><span class="s">کنسروسازی ‹ رب گوجه‌فرنگی · ۱۸ تأمین‌کنندهٔ فعال</span></span>
                 </button>
                 <button class="row-card" style="width:100%" onclick="pickGood(this)">
-                  <span class="thumb lentil" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-lentil"/></svg></span>
-                  <span class="body"><span class="t" style="font-size:12.5px">عدس</span><span class="s">حبوبات ‹ عدس · ۷ تأمین‌کنندهٔ فعال</span></span>
+                  <span class="thumb lentil th-sm"><svg class="th-svg"><use href="#a-lentil"/></svg></span>
+                  <span class="body"><span class="t">عدس</span><span class="s">حبوبات ‹ عدس · ۷ تأمین‌کنندهٔ فعال</span></span>
                 </button>
               </div>
               <button class="row-card dashed" style="width:100%;margin-top:9px" onclick="openSheet('sheet-new-good')">
                 <svg class="ic" style="color:var(--muted)"><use href="#i-plus"/></svg>
-                <span class="body"><span class="t" style="font-size:12.5px">کالای جدید بساز</span><span class="s">اگر در فهرست نبود، خودت تعریفش کن</span></span>
+                <span class="body"><span class="t">کالای جدید بساز</span><span class="s">اگر در فهرست نبود، خودت تعریفش کن</span></span>
               </button>
               <div class="alt-methods" id="altMethods">
                 <button class="alt-m" onclick="openImport(1)">
@@ -2036,7 +2050,7 @@
                 <button class="danger-quiet" onclick="askRemoveItem()"><svg><use href="#i-trash"/></svg> حذف از لیست خرید</button>
                 <div class="stop-confirm" id="removeConfirm" style="display:none">
                   <svg><use href="#i-info"/></svg>
-                  <span>رصد و تابلوی این کالا هم می‌پوشد.</span>
+                  <span>رصد و تابلوی این کالا هم بسته می‌شود.</span>
                   <span class="sc-btns">
                     <button class="sc-no" onclick="cancelRemoveItem()">انصراف</button>
                     <button class="sc-yes" onclick="removeItem()">بله، حذف کن</button>
@@ -2048,9 +2062,9 @@
             <div id="addFieldSell" style="display:none">
               <div class="sec-title"><h2>عکس کالا <i class="opt-i">— اختیاری · حداکثر ۳ تصویر</i></h2></div>
               <div class="gallery-add">
-                <div class="gslot filled"><svg><use href="#a-rice"/></svg><span>بسته ۱۰کیلو</span></div>
+                <div class="gslot filled"><svg><use href="#a-rice"/></svg><span>بستهٔ ۱۰ کیلویی</span></div>
                 <div class="gslot filled"><svg><use href="#a-rice"/></svg><span>جزئیات</span></div>
-                <button class="gslot add" onclick="toast('گالری/دوربین — عکس کالا')"><svg><use href="#i-plus"/></svg></button>
+                <button class="gslot add" onclick="toast('گالری یا دوربین — عکس کالا')"><svg><use href="#i-plus"/></svg></button>
               </div>
 
               <div class="sec-title"><h2>قیمت و موجودی</h2></div>
@@ -2062,7 +2076,7 @@
                 <div class="field">
                   <label>قیمت — هر کیسهٔ ۵۰ کیلویی <i>— اختیاری</i></label>
                   <div class="inp-flex"><span class="val">۴٬۴۷۵٬۰۰۰</span><span class="sfx">تومان</span></div>
-                  <div class="unit-calc"><svg><use href="#i-info"/></svg> <span>یکی را عوض کن، دیگری خودش حساب می‌شود — <b>مقایسهٔ خریدارها همیشه روی «هر کیلوگرم»</b> انجام می‌شود</span></div>
+                  <div class="unit-calc"><svg><use href="#i-info"/></svg> <span>یکی را عوض کن، دیگری خودکار حساب می‌شود — <b>مقایسهٔ خریدارها همیشه روی «هر کیلوگرم»</b> انجام می‌شود</span></div>
                 </div>
                 <div class="f-pair">
                   <div class="field">
@@ -2076,11 +2090,11 @@
                 </div>
                 <div class="unit-calc" style="margin-top:8px"><svg><use href="#i-steps"/></svg> <span>حداقل سفارش = پلهٔ اولِ تخفیف حجمی («تا ۱۰۰ کیلو») — هر دو یک عددند؛ در صفحهٔ «تخفیف‌ها» هم قابل تنظیم است.</span></div>
                 <div class="field" style="margin-bottom:6px">
-                  <label>بسته‌بندی‌ها <i>— هر بسته، قیمت و موجودیِ خودش را دارد</i></label>
+                  <label>بسته‌بندی‌ها <i>— هر بسته، قیمت و موجودی خودش را دارد</i></label>
                   <div class="pack-pick">
                     <button class="chip mini active" onclick="packPick(this,'قیمت هر کیسهٔ ۱۰ کیلویی: ۸۹۵٬۰۰۰ — از قیمت پایه حساب شد')">کیسهٔ ۱۰ کیلویی · ۸۹۵٬۰۰۰</button>
                     <button class="chip mini" onclick="packPick(this,'قیمت هر کیسهٔ ۵۰ کیلویی: ۴٬۴۷۵٬۰۰۰ — از قیمت پایه حساب شد')">کیسهٔ ۵۰ کیلویی · ۴٬۴۷۵٬۰۰۰</button>
-                    <button class="chip mini dashed" onclick="toast('بسته‌بندی جدید — مثلاً کارتن ۲۰ کیلویی؛ قیمتش از قیمت پایه حساب می‌شود')"><svg class="ic-sm" style="width:10px;height:10px"><use href="#i-plus"/></svg> بستهٔ دیگر</button>
+                    <button class="chip mini dashed" onclick="toast('بستهٔ جدید — مثلاً کارتن ۲۰ کیلویی؛ قیمتش از قیمت پایه حساب می‌شود')"><svg class="ic-sm" style="width:10px;height:10px"><use href="#i-plus"/></svg> بستهٔ دیگر</button>
                   </div>
                   <div class="pack-note">قیمت هر بسته از قیمت پایه حساب می‌شود — اگر جدا می‌فروشی، همان‌جا عوضش کن</div>
                 </div>
@@ -2121,7 +2135,7 @@
 
             <div class="hint" id="addHint">
               <svg><use href="#i-info"/></svg>
-              <span>یک الگو برای دو دستیار: انتخاب کالا از <b>کاتالوگ مرجع</b> (۳۷۰+ کالای استاندارد) مشترک است؛ فقط فیلدهای مرحلهٔ بعد بر اساس خرید یا فروش عوض می‌شوند. راه‌های دیگر (بارکد، مرجع، اکسل) آرام زیر فرم می‌مانند — و دقیقاً وقتی جست‌وجو نتیجه نداد، پررنگ می‌شوند.</span>
+              <span>یک الگو، برای دو دستیار: انتخاب کالا از <b>کاتالوگ مرجع</b> (۳۷۰+ کالای استاندارد) بین هر دو مشترک است؛ فقط فیلدهای مرحلهٔ بعد بر اساس خرید یا فروش تغییر می‌کند. راه‌های دیگر (بارکد، کاتالوگ مرجع، اکسل) بی‌سروصدا زیر فرم می‌مانند — و دقیقاً وقتی جست‌وجو نتیجه نداد، پررنگ می‌شوند.</span>
             </div>
 
             <div class="form-cta">
@@ -2161,8 +2175,8 @@
             <div class="card" id="empty-catalog" style="margin-top:14px;display:none">
               <div class="empty-state">
                 <span class="art" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-store"/></svg></span>
-                <h3><b>کاتالوگت محصولی ندارد</b></h3>
-                <p>اولین محصولت را اضافه کن — کاتالوگ ویترین توست؛ خریدارها از همین‌جا پیدایت می‌کنند و قیمت‌هایت را دنبال می‌کنند.</p>
+                <h3><b>کاتالوگت هنوز محصولی ندارد</b></h3>
+                <p>اولین محصولت را اضافه کن — کاتالوگ، ویترین توست؛ خریدارها از همین‌جا پیدایت می‌کنند و قیمت‌هایت را دنبال می‌کنند.</p>
                 <button class="btn btn-primary" onclick="go('sc-add-item')"><svg class="ic-sm"><use href="#i-plus"/></svg> افزودن اولین محصول</button>
               </div>
             </div>
@@ -2178,7 +2192,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>در شبکهٔ تازه‌کار، خالی بودن <b>طبیعی</b> است. Empty state هرگز نمی‌گوید «چیزی نیست»؛ همیشه می‌گوید <b>«قدم بعدی این است»</b> — و Cold start (کالای بدون تأمین‌کننده) هم با وعدهٔ اطلاع، کاربر را نگه می‌دارد.</span>
+              <span>در شبکهٔ تازه‌کار، خالی بودن <b>طبیعی</b> است. صفحهٔ خالی هرگز نمی‌گوید «چیزی نیست»؛ همیشه می‌گوید <b>«قدم بعدی این است»</b> — و شروع سرد (کالای بدون تأمین‌کننده) هم با وعدهٔ اطلاع‌رسانی، کاربر را نگه می‌دارد.</span>
             </div>
           </div>
         </section>
@@ -2194,25 +2208,25 @@
 
             <div id="suStep1">
               <div class="steps">
-                <div class="step done"><span class="n"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-check"/></svg></span> شماره</div>
+                <div class="step done"><span class="n"><svg class="ic-sm ic-12"><use href="#i-check"/></svg></span> شماره</div>
                 <div class="bar"></div>
                 <div class="step active"><span class="n">۲</span> کسب‌وکار</div>
               </div>
               <div class="card">
                 <div class="field">
-                  <label>شماره موبایل</label>
+                  <label>شمارهٔ موبایل</label>
                   <input id="suPhone" class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" placeholder="۰۹۱۲ ··· ···" oninput="suPhoneCheck()">
-                  <div class="f-err" id="suPhoneErr" style="display:none"><svg><use href="#i-info"/></svg> شماره با ۰۹ شروع می‌شود و ۱۱ رقم است</div>
+                  <div class="f-err" id="suPhoneErr" style="display:none"><svg><use href="#i-info"/></svg> شماره با ۰۹ شروع می‌شود و ۱۱ رقم دارد</div>
                 </div>
                 <button class="btn btn-primary btn-lg btn-block" id="suCodeBtn" onclick="suSendCode()" disabled>دریافت کد تأیید</button>
               </div>
-              <div class="gate-note">با ساخت حساب، قوانین iMach را می‌پذیری</div>
+              <div class="gate-note">با ساخت حساب، قوانین آی‌مچ را می‌پذیری</div>
             </div>
 
             <div id="suStep2" style="display:none">
               <div class="phone-verified"><svg><use href="#i-checkc"/></svg><span dir="ltr">۰۹۱۲ ۱۲۳ ۴۵۶۷</span> شماره تأیید شد</div>
               <div class="steps">
-                <div class="step done"><span class="n"><svg class="ic-sm" style="width:12px;height:12px"><use href="#i-check"/></svg></span> شماره</div>
+                <div class="step done"><span class="n"><svg class="ic-sm ic-12"><use href="#i-check"/></svg></span> شماره</div>
                 <div class="bar"></div>
                 <div class="step active"><span class="n">۲</span> کسب‌وکار</div>
               </div>
@@ -2249,13 +2263,13 @@
                     <button class="chip" id="suRoleSell" onclick="suRole('sell')">می‌فروشم</button>
                     <button class="chip" id="suRoleBoth" onclick="suRole('both')">هر دو</button>
                   </div>
-                  <div style="font-size:9.5px;color:var(--muted);margin-top:8px;line-height:1.9">فقط پیش‌فرضِ شروع است — دستیاری که لازم نداری، از تنظیمات خاموش می‌کنی.</div>
+                  <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.9">فقط پیش‌فرضِ شروع است — دستیاری که لازم نداری، از تنظیمات خاموش می‌کنی.</div>
                 </div>
               </div>
               <button class="btn btn-primary btn-lg btn-block" onclick="suFinish()">ساخت حساب و ورود</button>
               <div class="hint">
                 <svg><use href="#i-shield"/></svg>
-                <span>رستوران‌ها و عمده‌فروشی‌ها می‌توانند <b>هر دو دستیار</b> را داشته باشند — عمده‌فروشی که از شالیکش می‌خرد و به رستوران‌ها می‌فروشد. بعداً هم عوض می‌شود.</span>
+                <span>رستوران‌ها و عمده‌فروشی‌ها می‌توانند <b>هر دو دستیار</b> را داشته باشند — مثلاً عمده‌فروشی که از شالیکش می‌خرد و به رستوران‌ها می‌فروشد. بعداً هم قابل تغییر است.</span>
               </div>
             </div>
           </div>
@@ -2271,7 +2285,7 @@
           <div class="screen-body">
             <div class="card">
               <div class="field">
-                <label>شماره موبایل</label>
+                <label>شمارهٔ موبایل</label>
                 <input class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" value="۰۹۱۲ ۱۲۳ ۴۵۶۷">
               </div>
               <div class="ng-title" style="margin:2px 2px 8px">کد پیامک‌شده</div>
@@ -2283,14 +2297,14 @@
                 <div class="otp cursor"></div>
               </div>
               <div class="otp-timer"><svg class="ic-sm" style="width:13px;height:13px"><use href="#i-clock"/></svg> ارسال مجدد کد تا <b>۱:۲۴</b></div>
-              <button class="btn btn-primary btn-lg btn-block" style="margin-top:14px" onclick="loginDone()">ورود به iMach</button>
+              <button class="btn btn-primary btn-lg btn-block" style="margin-top:14px" onclick="loginDone()">ورود به آی‌مچ</button>
             </div>
             <div class="card" style="padding:5px 16px">
               <button class="link-row" onclick="toast('فرم ورود با رمز عبور')"><svg><use href="#i-shield"/></svg> ورود با رمز عبور <svg class="lv"><use href="#i-chev"/></svg></button>
             </div>
             <div class="hint">
               <svg><use href="#i-shield"/></svg>
-              <span>کد یک‌بارمصرف فقط با شمارهٔ تو کار می‌کند و بعد از استفاده بی‌اعتبار می‌شود. حساب نداری؟ <b>ساخت حساب</b> فقط دو دقیقه است.</span>
+              <span>کد یک‌بارمصرف فقط با شمارهٔ خودت کار می‌کند و بعد از استفاده باطل می‌شود. حساب نداری؟ <b>ساخت حساب</b> فقط دو دقیقه است.</span>
             </div>
           </div>
         </section>
@@ -2300,7 +2314,7 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="go('sc-wallet')"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>افزایش کیف پول</b><span>پرداخت امن از درگاه — پول فقط برای ویژه</span></div>
+            <div class="tt"><b>افزایش کیف پول</b><span>پرداخت امن از درگاه — پول فقط برای فروشنده ویژه</span></div>
           </div>
           <div class="screen-body">
             <div id="chargeForm">
@@ -2316,14 +2330,14 @@
                   <input class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" placeholder="مثلاً ۲۵۰٬۰۰۰">
                 </div>
               </div>
-              <div class="budget-note">۳۰۰٬۰۰۰ تومان ≈ <b>۳۰۰ مشاهدهٔ هدفمند</b> یا ترکیبی — هر دنبال‌کردن ۵٬۰۰۰ تومان اضافه دارد. بودجه که تمام شود نمایش می‌ایستد؛ دوباره شارژ می‌کنی، همان‌جا ادامه می‌دهد.</div>
+              <div class="budget-note">۳۰۰٬۰۰۰ تومان ≈ <b>۳۰۰ مشاهدهٔ هدفمند</b> یا ترکیبی — هر دنبال‌کردن هم ۵٬۰۰۰ تومان اضافه دارد. بودجه که تمام شود نمایش خودکار می‌ایستد؛ دوباره شارژ می‌کنی، همان‌جا ادامه می‌دهد.</div>
               <button class="btn btn-primary btn-lg btn-block" style="margin-top:14px" onclick="chargeGo()"><svg class="ic-sm"><use href="#i-shield"/></svg> پرداخت از درگاه — زرین‌پال</button>
             </div>
             <div id="chargeSuccess" style="display:none">
               <div class="empty-state">
                 <span class="art" style="background:var(--emerald-tint);color:var(--emerald)"><svg><use href="#i-checkc"/></svg></span>
                 <h3>پرداخت موفق بود</h3>
-                <p>۳۰۰٬۰۰۰ تومان به کیف پول اضافه شد · رسید ۸۴۲۱<br>از «تاریخچهٔ کیف» قابل مشاهده است.</p>
+                <p>۳۰۰٬۰۰۰ تومان به کیف پول اضافه شد · رسید ۸۴۲۱<br>در «تاریخچهٔ کیف پول» قابل مشاهده است.</p>
                 <button class="btn btn-primary" onclick="chargeDone()">بازگشت به کیف پول</button>
               </div>
             </div>
@@ -2345,7 +2359,7 @@
               <div class="stat"><span class="v" style="color:var(--primary-strong)">۶۲٬۰۰۰</span><span class="k">تومان خرج شد</span></div>
             </div>
             <div class="rep-formula" id="repFormula">۴۷ × ۱٬۰۰۰ <span class="op">+</span> ۳ × ۵٬۰۰۰ <span class="op">=</span> <b>۶۲٬۰۰۰ تومان</b> · بودجهٔ مانده: <b>۳۸٬۰۰۰ تومان</b></div>
-            <div class="slot-note" style="margin-top:6px"><svg><use href="#i-list"/></svg> <span id="repSlots">جایگاه‌ها: تابلوی تأمینِ کالا + قیمت‌های دنبال‌شدهٔ خریدار</span></div>
+            <div class="slot-note" style="margin-top:6px"><svg><use href="#i-list"/></svg> <span id="repSlots">جایگاه‌ها: تابلوی تأمین کالا + قیمت‌های دنبال‌شدهٔ خریدار</span></div>
 
             <div class="sec-title"><h2>چه کسانی دیدند؟</h2><span class="more">۴۷ نفر — ۵ نمونه</span></div>
             <div class="card" style="padding:6px 14px">
@@ -2361,7 +2375,7 @@
               </div>
               <div class="sheet-row" style="cursor:default;border:none;background:transparent;padding:9px 0;margin:0;border-bottom:1px dashed var(--border);border-radius:0">
                 <div class="avatar" style="background:var(--muted-bg);color:var(--fg-soft)">ن</div>
-                <span class="tx"><b>نگین‌فروشی نعمتی <span class="badge b-stone" style="margin-right:4px">خرده‌فروش</span></b><span>همدان · دیروز · فقط دید</span></span>
+                <span class="tx"><b>نگین‌فروشی نعمتی <span class="badge b-stone" style="margin-right:4px">خرده‌فروش</span></b><span>همدان · دیروز · فقط مشاهده</span></span>
                 <span class="src-b src-promo"><svg><use href="#i-star"/></svg> ویژه</span>
               </div>
               <div class="sheet-row" style="cursor:default;border:none;background:transparent;padding:9px 0;margin:0;border-radius:0">
@@ -2370,12 +2384,12 @@
                 <span class="src-b src-promo"><svg><use href="#i-star"/></svg> ویژه</span>
               </div>
             </div>
-            <button class="card dashed tap" style="width:100%;text-align:center;font-size:11.5px;font-weight:700;color:var(--muted);padding:10px" onclick="toast('۴۳ بینندهٔ دیگر — هر کدام با نام و زمانِ دقیق؛ ردّ کاملِ خرج در نسخهٔ اصلی')">
-              + ۴۳ بینندهٔ دیگر — ردّ کاملِ خرج
+            <button class="card dashed tap" style="width:100%;text-align:center;font-size:11.5px;font-weight:700;color:var(--muted);padding:10px" onclick="toast('۴۳ بینندهٔ دیگر — هر کدام با نام و زمان دقیق؛ ردّ کامل هزینه در نسخهٔ اصلی')">
+              + ۴۳ بینندهٔ دیگر — ردّ کامل هزینه
             </button>
             <div class="hint" style="margin-top:9px">
               <svg><use href="#i-shield"/></svg>
-              <span>هر مشاهده — چه به دنبال‌کردن برسد چه نرسد — با <b>شناسهٔ خریدار و زمانِ دقیق</b> ثبت و نگه داشته می‌شود؛ کلِ ۴۷ ردیف همیشه قابل مرور است. هر تومانِ کیف‌ات دقیقاً قابل ردّ کردن است.</span>
+              <span>هر مشاهده — چه به دنبال‌کردن برسد چه نرسد — با <b>شناسهٔ خریدار و زمان دقیق</b> ثبت و نگه داشته می‌شود؛ کل ۴۷ ردیف همیشه قابل مرور است. هر تومانِ کیف پولت دقیقاً قابل ردگیری است.</span>
             </div>
 
             <div class="card" style="margin-top:12px">
@@ -2387,7 +2401,7 @@
 
             <div class="hint">
               <svg><use href="#i-star"/></svg>
-              <span>کمپین <b>فقط به خریدارانی نشان داده شده که قیمت تو را دنبال نمی‌کردند</b> — دنبال‌کنندگان فعلی، کمپین را نمی‌بینند، چون کالا را از قبل زنده می‌بینند. رتبهٔ تطبیق و ارزان‌ترینِ تابلو مستقل از پرداخت می‌ماند.</span>
+              <span>کمپین <b>فقط به خریدارانی نشان داده شده که قیمتت را دنبال نمی‌کردند</b> — دنبال‌کنندگان فعلی، کمپین را نمی‌بینند چون کالا را از قبل زنده می‌بینند. رتبهٔ تطبیق و «ارزان‌ترینِ تابلو» مستقل از پرداخت می‌ماند.</span>
             </div>
 
             <div class="btn-row" style="margin-top:12px">
@@ -2396,7 +2410,7 @@
             </div>
 
             <!-- v3: توقف کمپین — تأیید درجا -->
-            <button class="link-danger" id="stopBtn" onclick="askStop()">توقف کمپین — ۳۸٬۰۰۰ تومانِ باقی‌مانده برمی‌گردد به کیف</button>
+            <button class="link-danger" id="stopBtn" onclick="askStop()">توقف کمپین — ۳۸٬۰۰۰ تومانِ باقی‌مانده به کیف برمی‌گردد</button>
             <div class="stop-confirm" id="stopConfirm" style="display:none">
               <svg><use href="#i-info"/></svg>
               <span>کمپین می‌ایستد؛ آمارش برای همیشه می‌ماند.</span>
@@ -2426,7 +2440,7 @@
                   </span>
                   <button class="btn btn-primary btn-sm" style="flex:0 0 auto" onclick="useDiscountPrice()">همین را بگذار</button>
                 </div>
-                <div class="unit-calc" style="margin-top:9px"><svg><use href="#i-users"/></svg> <span>این خریدار در دفتر تو «<b id="drefTypeLbl">همکار</b>» است — <u onclick="openCustTypePick()">تغییر نوع مشتری</u>، قیمتِ همین نوار و قیمتِ کاتالوک را برای او عوض می‌کند.</span></div>
+                <div class="unit-calc" style="margin-top:9px"><svg><use href="#i-users"/></svg> <span>این خریدار در دفتر تو «<b id="drefTypeLbl">همکار</b>» است — <u onclick="openCustTypePick()">تغییر نوع مشتری</u>، قیمتِ همین نوار و قیمتِ کاتالوگ را برای او عوض می‌کند.</span></div>
               </div>
               <div class="card">
                 <div class="field">
@@ -2435,7 +2449,7 @@
                     <input id="quotePrice" inputmode="numeric" value="۸۸٬۵۰۰" oninput="quoteCheck()">
                     <span class="sfx">تومان</span>
                   </div>
-                  <div class="unit-calc"><svg><use href="#i-info"/></svg> <span>هر کیسهٔ ۵۰ کیلویی: <b>۴٬۴۲۵٬۰۰۰ تومان</b> · جمعِ ۵۰۰ کیلوی درخواستی: <b>۴۴٬۲۵۰٬۰۰۰ تومان</b> — خودکار حساب می‌شود</span></div>
+                  <div class="unit-calc"><svg><use href="#i-info"/></svg> <span>هر کیسهٔ ۵۰ کیلویی: <b>۴٬۴۲۵٬۰۰۰ تومان</b> · جمع ۵۰۰ کیلوی درخواستی: <b>۴۴٬۲۵۰٬۰۰۰ تومان</b> — خودکار حساب می‌شود</span></div>
                   <div class="f-err" id="quotePriceErr" style="display:none"><svg><use href="#i-info"/></svg> قیمت را وارد کن — بدون قیمت، پیشنهاد ارسال نمی‌شود</div>
                 </div>
                 <div class="field">
@@ -2464,14 +2478,14 @@
               </button>
               <div class="hint">
                 <svg><use href="#i-eye"/></svg>
-                <span>رستوران مهر قیمت تو را دنبال می‌کند — پیشنهادت کنار پیشنهاد بقیه در صفحهٔ «پیشنهادها»ی او می‌نشیند؛ شفاف و قابل مقایسه. اگر قیمتت با قیمت زندهٔ کاتالوگت فرق کند، یادت می‌گذاریم هم‌زمان به‌روزش کنی.</span>
+                <span>رستوران مهر قیمتت را دنبال می‌کند — پیشنهادت کنار پیشنهاد بقیه در صفحهٔ «پیشنهادها»ی او می‌نشیند؛ شفاف و قابل مقایسه. اگر قیمتت با قیمت زندهٔ کاتالوگت فرق کند، یادت می‌اندازیم همزمان به‌روزش کنی.</span>
               </div>
             </div>
             <div id="quoteSuccess" style="display:none">
               <div class="empty-state">
                 <span class="art" style="background:var(--emerald-tint);color:var(--emerald)"><svg><use href="#i-checkc"/></svg></span>
                 <h3>پیشنهادت رفت</h3>
-                <p>رستوران مهر پیشنهادها را کنار هم می‌بیند — نتیجه را از اعلان‌ها خبر می‌شوی.</p>
+                <p>رستوران مهر پیشنهادها را کنار هم می‌بیند — نتیجه را از اعلان‌ها باخبر می‌شوی.</p>
                 <button class="btn btn-primary" onclick="quoteDone()">بازگشت به درخواست‌ها</button>
               </div>
             </div>
@@ -2490,9 +2504,9 @@
               <div class="avatar" style="width:52px;height:52px;border-radius:17px;font-size:19px">ک</div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:6px">برنج هاشمی کارون <svg class="ic-sm" style="color:var(--teal-strong)"><use href="#i-shield"/></svg></div>
-                <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.8">تأمین‌کنندهٔ برنج · همدان · ۱۲ کالا<br>به‌روزرسانی: ۲ ساعت پیش</div>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.8">تأمین‌کنندهٔ برنج · همدان · ۱۲ کالا<br>آخرین به‌روزرسانی: ۲ ساعت پیش</div>
               </div>
-              <span style="font-size:10px;color:var(--emerald);background:var(--emerald-tint);border-radius:8px;padding:4px 8px;font-weight:700">۹۸٪ پاسخگویی</span>
+              <span style="font-size:11px;color:var(--emerald);background:var(--emerald-tint);border-radius:8px;padding:4px 8px;font-weight:700">۹۸٪ پاسخگویی</span>
             </div>
 
             <div id="catalogSaveBtn">
@@ -2500,7 +2514,7 @@
                 <button class="btn btn-primary btn-lg btn-main" onclick="saveCatalog()"><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیرهٔ کاتالوگ</button>
                 <button class="btn btn-outline btn-lg" style="flex:0 0 auto" onclick="openSheet('sheet-share-product')" title="اشتراک کاتالوگ" aria-label="اشتراک کاتالوگ"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
               </div>
-              <div class="sfx-note" style="text-align:center">«ذخیره» یعنی این ویترین همیشه در دسترست بماند و کالای جدیدش را ببینی · <b>دنبال‌کردنِ قیمتِ هر کالا، داخل خود کالاست</b></div>
+              <div class="sfx-note" style="text-align:center">«ذخیره» یعنی این ویترین همیشه در دسترست بماند و کالاهای جدیدش را ببینی · <b>دنبال‌کردنِ قیمتِ هر کالا، داخل خود کالاست</b></div>
             </div>
             <div id="catalogSavedFlag" style="display:none;margin-top:11px">
               <div class="saved-flag" style="padding:12px 14px;width:100%;justify-content:center"><svg><use href="#i-checkc"/></svg> ذخیره کردی — کالاهای جدید کارون را اول تو می‌بینی</div>
@@ -2514,13 +2528,13 @@
             <div class="insight-strip" style="margin-top:11px;cursor:default">
               <span><svg><use href="#i-bm"/></svg> <b>۳۸</b> ذخیره‌کنندهٔ کاتالوگ</span>
               <i class="sep"></i>
-              <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید هفته</span>
+              <span><svg><use href="#i-eye"/></svg> ۱۴۰ بازدید این هفته</span>
             </div>
 
             <!-- v12: قیمت شما در کاتالوگ — تخفیف همکاری، بی‌صدا روی همهٔ قیمت‌ها -->
             <div class="py-strip">
               <svg><use href="#i-users"/></svg>
-              <span class="tx">این کاتالوگ برای <b>تو</b> تخفیف دارد — «همکارِ» کارون هستی؛ قیمتِ هر کالا را پس از تخفیف، در صفحهٔ خودش ببین</span>
+              <span class="tx">این کاتالوگ برای <b>تو</b> تخفیف دارد — «همکارِ» کارون هستی؛ قیمت پس از تخفیف هر کالا را در صفحهٔ خودش ببین</span>
             </div>
 
             <div class="searchbar" style="margin-top:11px" onclick="toast('جستجو در این کاتالوگ…')">
@@ -2581,7 +2595,7 @@
               <svg><use href="#i-info"/></svg>
               <span>این صفحه برای همه باز است — برای <b>دنبال‌کردن قیمت و اعلام نیاز</b>، حساب رایگان بساز (دو دقیقه).</span>
             </div>
-            <div class="viral-row">ساخته‌شده با <b>iMach</b> — کاتالوگ رایگان برای کسب‌وکار شما</div>
+            <div class="viral-row">ساخته‌شده با <b>آی‌مچ</b> — کاتالوگ رایگان برای کسب‌وکار شما</div>
           </div>
         </section>
 
@@ -2590,7 +2604,7 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="goBack()"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>لیست خرید عمومی</b><span>imatch.ir/b/mehr — از لینک/QR رسیده‌ای</span></div>
+            <div class="tt"><b>لیست خرید عمومی</b><span>imatch.ir/b/mehr — از لینک یا QR رسیده‌ای</span></div>
           </div>
           <div class="screen-body">
             <div class="card" style="display:flex;align-items:center;gap:13px">
@@ -2614,42 +2628,42 @@
             </div>
 
             <div class="top-act">
-              <button class="btn btn-soft btn-lg btn-main" onclick="toast('لیست ذخیره شد — اعلام نیازهای رستوران مهر را اول خبر می‌شوی')"><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیرهٔ لیست</button>
+              <button class="btn btn-soft btn-lg btn-main" onclick="toast('لیست ذخیره شد — اعلام نیازهای رستوران مهر را اول از همه باخبر می‌شوی')"><svg class="ic-sm"><use href="#i-bm"/></svg> ذخیرهٔ لیست</button>
               <button class="btn btn-outline btn-lg" style="flex:0 0 auto" onclick="openSheet('sheet-share-list')" title="اشتراک لیست" aria-label="اشتراک لیست"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
             </div>
 
             <div class="public-gate" style="margin-top:11px">
               <svg><use href="#i-bell"/></svg>
-              <span>روی هر کالا <b>گوش به زنگ</b> بزن — هر وقت رستوران مهر اعلام نیاز کرد، اول تو خبر می‌شوی و قیمت می‌دهی.</span>
+              <span>روی هر کالا <b>گوش به زنگ</b> بزن — هر وقت رستوران مهر اعلام نیاز کرد، اول از همه باخبر می‌شوی و قیمت می‌دهی.</span>
             </div>
 
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-list"/></svg> کالاهای این لیست</h2></div>
             <div class="card" style="padding:6px 14px">
               <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <span class="thumb rice" style="width:40px;height:40px;border-radius:12px"><svg style="width:25px;height:25px"><use href="#a-rice"/></svg></span>
-                <span class="tx"><b>برنج هاشمی</b><span>نیاز: ۵۰۰ کیلو / هفته · تحویل همدان</span></span>
+                <span class="thumb rice th-40"><svg style="width:25px;height:25px"><use href="#a-rice"/></svg></span>
+                <span class="tx"><b>برنج هاشمی</b><span>نیاز: ۵۰۰ کیلو در هفته · تحویل همدان</span></span>
                 <button class="alert-btn on" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
               <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <span class="thumb oil" style="width:40px;height:40px;border-radius:12px"><svg style="width:25px;height:25px"><use href="#a-oil"/></svg></span>
-                <span class="tx"><b>روغن سرخ‌کردنی ۱۶ کیلویی</b><span>نیاز: ۲۰ عدد / ماه</span></span>
+                <span class="thumb oil th-40"><svg style="width:25px;height:25px"><use href="#a-oil"/></svg></span>
+                <span class="tx"><b>روغن سرخ‌کردنی ۱۶ کیلویی</b><span>نیاز: ۲۰ عدد در ماه</span></span>
                 <button class="alert-btn" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
               <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <span class="thumb sugar" style="width:40px;height:40px;border-radius:12px"><svg style="width:25px;height:25px"><use href="#a-sugar"/></svg></span>
-                <span class="tx"><b>شکر</b><span>نیاز: ۱۰۰ کیلو / ماه</span></span>
+                <span class="thumb sugar th-40"><svg style="width:25px;height:25px"><use href="#a-sugar"/></svg></span>
+                <span class="tx"><b>شکر</b><span>نیاز: ۱۰۰ کیلو در ماه</span></span>
                 <button class="alert-btn" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
               <div class="follow-row">
-                <span class="thumb lentil" style="width:40px;height:40px;border-radius:12px"><svg style="width:25px;height:25px"><use href="#a-lentil"/></svg></span>
-                <span class="tx"><b>عدس</b><span>نیاز: ۵۰ کیلو / ماه · هنوز تأمین‌کننده ندارد</span></span>
+                <span class="thumb lentil th-40"><svg style="width:25px;height:25px"><use href="#a-lentil"/></svg></span>
+                <span class="tx"><b>عدس</b><span>نیاز: ۵۰ کیلو در ماه · هنوز تأمین‌کننده ندارد</span></span>
                 <button class="alert-btn" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
             </div>
 
             <div class="hint">
               <svg><use href="#i-eye"/></svg>
-              <span>قرینهٔ کامل مسیر رشد فروشنده: خریدار لیستش را شیر می‌کند، تأمین‌کننده می‌آید و <b>گوش‌به‌زنگ</b> می‌شود — بدون اینکه کسی شمارهٔ کسی را داشته باشد. اعلام نیاز بعدیِ خریدار، پیشنهادهایش را کنار هم می‌آورد.</span>
+              <span>قرینهٔ کامل مسیر رشد فروشنده: خریدار لیستش را به اشتراک می‌گذارد، تأمین‌کننده می‌آید و <b>گوش‌به‌زنگ</b> می‌شود — بدون اینکه کسی شمارهٔ کسی را داشته باشد. اعلام نیاز بعدی خریدار، پیشنهادهایش را کنار هم می‌آورد.</span>
             </div>
           </div>
         </section>
@@ -2659,7 +2673,7 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="goBack()"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>جست‌وجو</b><span>کالا و تأمین‌کننده — در کل iMach</span></div>
+            <div class="tt"><b>جست‌وجو</b><span>کالا و تأمین‌کننده — در کل آی‌مچ</span></div>
           </div>
           <div class="screen-body">
             <div class="search-strip typing" style="margin-bottom:11px">
@@ -2675,23 +2689,23 @@
             <div class="sec-title"><h2>نتایج</h2><span class="more">۸ مورد</span></div>
             <div class="card" style="padding:6px 14px">
               <button class="row-card" style="width:100%;border:none;box-shadow:none;padding:9px 0;margin:0" onclick="go('sc-board')">
-                <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
-                <span class="body"><span class="t" style="font-size:12.5px">برنج هاشمی</span><span class="s">۴۵ تأمین‌کننده · ارزان‌ترین ۸۴٬۵۰۰</span></span>
+                <span class="thumb rice th-sm"><svg class="th-svg"><use href="#a-rice"/></svg></span>
+                <span class="body"><span class="t">برنج هاشمی</span><span class="s">۴۵ تأمین‌کننده · ارزان‌ترین ۸۴٬۵۰۰</span></span>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </button>
               <button class="row-card" style="width:100%;border:none;box-shadow:none;padding:9px 0;margin:0" onclick="go('sc-board')">
-                <span class="thumb rice" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-rice"/></svg></span>
-                <span class="body"><span class="t" style="font-size:12.5px">برنج سفید</span><span class="s">۳۱ تأمین‌کننده</span></span>
+                <span class="thumb rice th-sm"><svg class="th-svg"><use href="#a-rice"/></svg></span>
+                <span class="body"><span class="t">برنج سفید</span><span class="s">۳۱ تأمین‌کننده</span></span>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </button>
               <button class="row-card" style="width:100%;border:none;box-shadow:none;padding:9px 0;margin:0" onclick="go('sc-catalog-public')">
-                <div class="avatar" style="width:38px;height:38px;border-radius:11px">ک</div>
-                <span class="body"><span class="t" style="font-size:12.5px">برنج هاشمی کارون <span class="badge b-stone" style="margin-right:4px">تأمین‌کننده</span></span><span class="s">همدان · ۱۲ کالا · ۳۸ ذخیره‌کننده</span></span>
+                <div class="avatar av-38">ک</div>
+                <span class="body"><span class="t">برنج هاشمی کارون <span class="badge b-stone" style="margin-right:4px">تأمین‌کننده</span></span><span class="s">همدان · ۱۲ کالا · ۳۸ ذخیره‌کننده</span></span>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </button>
               <button class="row-card" style="width:100%;border:none;box-shadow:none;padding:9px 0;margin:0" onclick="go('sc-catalog-public')">
-                <div class="avatar" style="width:38px;height:38px;border-radius:11px;background:var(--emerald)">س</div>
-                <span class="body"><span class="t" style="font-size:12.5px">سبزدانه همدان <span class="badge b-stone" style="margin-right:4px">تأمین‌کننده</span></span><span class="s">همدان · برنج و حبوبات</span></span>
+                <div class="avatar av-38" style="background:var(--emerald)">س</div>
+                <span class="body"><span class="t">سبزدانه همدان <span class="badge b-stone" style="margin-right:4px">تأمین‌کننده</span></span><span class="s">همدان · برنج و حبوبات</span></span>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </button>
             </div>
@@ -2702,7 +2716,7 @@
             </div>
             <div class="hint">
               <svg><use href="#i-search"/></svg>
-              <span>جست‌وجو با <b>کاتالوگ مرجع</b> هم‌خانواده است — «برنج هاشمی» در همه‌جا یک چیز است؛ نتیجه: تابلوی تأمین و تأمین‌کننده‌های همان کالا، بدون کپی‌برداری از نام‌های مشابه.</span>
+              <span>جست‌وجو با <b>کاتالوگ مرجع</b> هم‌خانواده است — «برنج هاشمی» در همه‌جا یک کالای واحد است؛ نتیجه: تابلوی تأمین و تأمین‌کننده‌های همان کالا، بدون کپی‌برداری از نام‌های مشابه.</span>
             </div>
           </div>
         </section>
@@ -2712,7 +2726,7 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="goBack()"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>تنظیمات</b><span>اعلان‌ها، زبان و فروشگاه</span></div>
+            <div class="tt"><b>تنظیمات</b><span>اعلان‌ها، زبان و تنظیمات فروشگاه</span></div>
           </div>
           <div class="screen-body">
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-bell"/></svg> اعلان‌ها</h2></div>
@@ -2734,7 +2748,7 @@
               </div>
               <div class="cap-row">
                 <span class="ico" style="background:var(--muted-bg);color:var(--fg-soft)"><svg><use href="#i-info"/></svg></span>
-                <span class="tx"><b>سیستم و اخبار iMach</b><span>به‌روزرسانی‌ها — کم و مفید</span></span>
+                <span class="tx"><b>سیستم و اخبار آی‌مچ</b><span>به‌روزرسانی‌ها — کم و مفید</span></span>
                 <span class="switch arm" onclick="this.classList.toggle('on')"></span>
               </div>
             </div>
@@ -2776,7 +2790,7 @@
             </div>
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>اعلان‌ها به‌ازای نوع قابل خاموش‌کردن‌اند — پیش‌فرض‌ها طوری‌اند که کم‌کار و مفید باشند. زبان فقط متن رابط کاربری را عوض می‌کند؛ قیمت‌ها همیشه به تومان است.</span>
+              <span>اعلان‌ها به تفکیک نوع قابل خاموش‌کردن هستند — پیش‌فرض‌ها طوری تنظیم شده‌اند که کم‌کار و مفید باشند. زبان فقط متن رابط کاربری را عوض می‌کند؛ قیمت‌ها همیشه به تومان است.</span>
             </div>
           </div>
         </section>
@@ -2817,7 +2831,7 @@
             <button class="btn btn-primary btn-lg btn-block" style="margin-top:14px" onclick="toast('ذخیره شد — مشخصات به‌روز شد');goBack()">ذخیره</button>
             <div class="hint">
               <svg><use href="#i-shield"/></svg>
-              <span>صنف و شهر تو در موتور تطبیق استفاده می‌شود — هرچه دقیق‌تر، پیشنهادها مرتبط‌تر. شمارهٔ تماس روی کاتالوگت دیده می‌شود — خریدار مستقیم زنگ می‌زند؛ عکس و جزئیات، داخل پیام‌ها ردوبدل می‌شود.</span>
+              <span>صنف و شهر تو در موتور تطبیق استفاده می‌شوند — هرچه دقیق‌تر باشند، پیشنهادها مرتبط‌تر می‌شوند. شمارهٔ تماس روی کاتالوگت دیده می‌شود — خریدار مستقیم زنگ می‌زند؛ عکس و جزئیات، داخل پیام‌ها ردوبدل می‌شود.</span>
             </div>
           </div>
         </section>
@@ -2830,7 +2844,7 @@
             <div class="tt"><b>نمای دسکتاپ</b><span>همان زبان طراحی — فقط گسترده‌تر</span></div>
           </div>
           <div class="screen-body">
-            <div class="unit-calc" style="margin-bottom:11px"><svg><use href="#i-globe"/></svg> <span>کارت‌ها کلیک‌پذیرند — همان صفحاتِ موبایل را باز می‌کنند؛ چیدمان فقط گسترده می‌شود.</span></div>
+            <div class="unit-calc" style="margin-bottom:11px"><svg><use href="#i-globe"/></svg> <span>کارت‌ها کلیک‌پذیرند — همان صفحات موبایل را باز می‌کنند؛ فقط چیدمان گسترده‌تر می‌شود.</span></div>
             <div class="desk-mock">
               <div class="bar">
                 <span class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></span>
@@ -2841,7 +2855,7 @@
                 <div class="avatar" style="width:38px;height:38px;border-radius:12px;font-size:14px">ک</div>
                 <div style="flex:1">
                   <div style="font-size:11.5px;font-weight:700">برنج هاشمی کارون <svg class="ic-sm" style="color:var(--teal-strong);width:10px;height:10px"><use href="#i-shield"/></svg></div>
-                  <div style="font-size:8.5px;color:var(--muted)">تأمین‌کنندهٔ برنج · همدان · ۱۲ کالا</div>
+                  <div style="font-size:10.5px;color:var(--muted)">تأمین‌کنندهٔ برنج · همدان · ۱۲ کالا</div>
                 </div>
                 <span class="badge b-orange badge-save">ذخیرهٔ کاتالوگ</span>
               </div>
@@ -2868,7 +2882,7 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>در دسکتاپ همان سیستم طراحی ادامه پیدا می‌کند: کارت‌ها، توکن‌ها، «فروشنده ویژه» شفاف و سه اکشن محصول. چیدمان فقط گسترده می‌شود — نه سایدبار سنگین، نه حس ERP.</span>
+              <span>در دسکتاپ هم همان سیستم طراحی ادامه پیدا می‌کند: کارت‌ها، رنگ‌های معنادار، «فروشنده ویژه» شفاف و سه اکشن محصول. چیدمان فقط گسترده‌تر می‌شود — نه سایدبار سنگین، نه حس اپ‌های سازمانی.</span>
             </div>
           </div>
         </section>
@@ -2884,7 +2898,7 @@
             <div class="card" style="padding:5px 14px">
               <button class="sheet-row" style="width:100%;text-align:right" onclick="openChat('p')">
                 <div class="avatar" style="background:var(--fg-soft)">پ</div>
-                <span class="tx"><b>پخش برنج پارس <span class="badge b-stone" style="margin-right:4px">تأمین‌کننده</span></b><span>عالی — ۵۰ کیسه رزرو کنید · ۲ بی‌پاسخ</span></span>
+                <span class="tx"><b>پخش برنج پارس <span class="badge b-stone" style="margin-right:4px">تأمین‌کننده</span></b><span>عالی — ۵۰ کیسه رزرو کنید · ۲ پیام بی‌پاسخ</span></span>
                 <span class="lv-b">۱</span>
                 <svg class="lv"><use href="#i-chev"/></svg>
               </button>
@@ -2901,7 +2915,7 @@
             </div>
             <div class="hint">
               <svg><use href="#i-tel"/></svg>
-              <span>تماسِ سریع برای همان همیشه هست — پیام برای فرستادنِ عکس و ماندگاری جزئیات. گفتگو داخل iMach می‌ماند؛ سابقهٔ معامله‌است.</span>
+              <span>تماس سریع، برای همان راه همیشگی است — پیام برای فرستادن عکس و ماندگاری جزئیات. گفتگو داخل آی‌مچ می‌ماند؛ این سابقهٔ معاملهٔ توست.</span>
             </div>
           </div>
           <nav class="tabbar">
@@ -2939,11 +2953,11 @@
               <button class="chip" onclick="toast('فرستاده شد')">تحویل چه روزی؟</button>
             </div>
             <div class="composer">
-              <button class="c-ico" onclick="toast('گالری/دوربین — عکس کالا، فاکتور، بارنامه')"><svg><use href="#i-img"/></svg></button>
+              <button class="c-ico" onclick="toast('گالری یا دوربین — عکس کالا، فاکتور، بارنامه')"><svg><use href="#i-img"/></svg></button>
               <input class="inp" style="flex:1" placeholder="پیام…">
               <button class="c-send" onclick="toast('فرستاده شد')"><svg><use href="#i-send"/></svg></button>
             </div>
-            <div class="chat-note">گفتگو داخل iMach می‌ماند — عکس و قیمتِ گفته‌شده، سابقهٔ معامله‌است</div>
+            <div class="chat-note">گفتگو داخل آی‌مچ می‌ماند — عکس و قیمتِ گفته‌شده، سابقهٔ معاملهٔ توست</div>
           </div>
         </section>
       </div>
@@ -2953,10 +2967,10 @@
 <div class="sheet" id="sheet-switch">
   <div class="grab"></div>
   <h3>جابه‌جایی بین دستیارها</h3>
-  <div class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب می‌کنی الان کدام را ببینی</div>
+  <div class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب کن الان کدام را ببینی</div>
   <button class="sheet-row" onclick="setMode('buy');closeSheet()">
     <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-basket"/></svg></span>
-    <span class="tx"><b>دستیار خرید عمده</b><span>لیست خرید · تابلوها · پیشنهادها</span></span>
+    <span class="tx"><b>دستیار خرید عمده</b><span>لیست خرید · تابلوهای تأمین · پیشنهادها</span></span>
     <svg class="check" id="chk-buy"><use href="#i-check"/></svg>
   </button>
   <button class="sheet-row" onclick="setMode('sell');closeSheet()">
@@ -2964,7 +2978,7 @@
     <span class="tx"><b>دستیار فروش عمده</b><span>کاتالوگ من · درخواست‌های قیمت · دنبال‌کنندگان</span></span>
     <svg class="check" id="chk-sell" style="display:none"><use href="#i-check"/></svg>
   </button>
-  <div class="sub" style="margin-bottom:8px">نقش تو ثابت نیست — عمده‌فروشی می‌تواند هم‌زمان از این‌ها هر دو را استفاده کند.</div>
+  <div class="sub" style="margin-bottom:8px">نقش تو ثابت نیست — عمده‌فروش می‌تواند همزمان از هر دو دستیار استفاده کند.</div>
   <button class="btn btn-outline btn-block" onclick="closeSheet()">بستن</button>
 </div>
 
@@ -2975,10 +2989,10 @@
   <div class="sub">لینک کاتالوگ عمده‌ات را بفرست — مشتری بدون ثبت‌نام ویترین را می‌بیند</div>
   <button class="sheet-row" onclick="openContacts()">
     <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-users"/></svg></span>
-    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای iMach هایلایت</span></span>
+    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای آی‌مچ هایلایت می‌شوند</span></span>
     <svg class="check" style="color:var(--muted)"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاریِ گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
+  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاری گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
     <span class="ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-share"/></svg></span>
     <span class="tx"><b>اشتراک‌گذاری</b><span>منوی اشتراک‌گذاری گوشی خودت باز می‌شود — خودت تصمیم می‌گیری</span></span>
   </button>
@@ -2990,7 +3004,7 @@
     <span class="ico" style="background:var(--muted-bg);color:var(--fg-soft)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 15v5M16 20h3"/></svg>
     </span>
-    <span class="tx"><b>نمایش QR کد</b><span>برای چسباندن روی سرداب، بنر یا کارت</span></span>
+    <span class="tx"><b>نمایش QR کد</b><span>برای چسباندن روی سردر مغازه، بنر یا کارت ویزیت</span></span>
   </button>
   <div class="qr-box" id="qrBox" style="display:none">
     <svg viewBox="0 0 21 21" shape-rendering="crispEdges">
@@ -3036,7 +3050,7 @@
   <h3>دنبال کردن قیمت</h3>
   <div class="sub">بدون تعهد — قیمتش همیشه در دفترت می‌ماند</div>
   <div class="link-preview">
-    <span class="thumb rice" style="width:44px;height:44px;border-radius:13px"><svg style="width:28px;height:28px"><use href="#a-rice"/></svg></span>
+    <span class="thumb rice th-md"><svg style="width:28px;height:28px"><use href="#a-rice"/></svg></span>
     <div class="tx"><b>برنج هاشمی — پخش برنج پارس</b><span>۹۱٬۲۰۰ تومان / کیلوگرم · — بدون تغییر</span></div>
   </div>
   <div class="card" style="box-shadow:none;margin-bottom:12px">
@@ -3049,24 +3063,24 @@
       <span class="switch on arm" onclick="this.classList.toggle('on')"></span>
     </div>
     <div class="follow-row">
-      <span class="tx"><b>تأمین‌کنندهٔ جدید</b><span>فروشندهٔ مرتبط تازه وارد شود</span></span>
+      <span class="tx"><b>تأمین‌کنندهٔ جدید</b><span>فروشندهٔ مرتبط تازه‌ای وارد شود</span></span>
       <span class="switch on arm" onclick="this.classList.toggle('on')"></span>
     </div>
   </div>
   <button class="btn btn-primary btn-lg btn-block" onclick="confirmFollow()">
     <svg class="ic-sm"><use href="#i-bm"/></svg> دنبال کردن قیمت — رایگان
   </button>
-  <div class="sub" style="margin:10px 0 0">«استعلام قیمت گروهی» فرق دارد: آنجا الان قصد خرید داری و قیمت رسمی می‌گیری. دنبال‌کردن برای خریدار و فروشنده، هر دو رایگان است.</div>
+  <div class="sub" style="margin:10px 0 0">«استعلام قیمت گروهی» فرق دارد: آنجا الان قصد خرید داری و قیمت رسمی می‌گیری. دنبال‌کردن، برای خریدار و فروشنده هر دو رایگان است.</div>
 </div>
 
 <!-- ═══════════ شیت: دنبال‌کنندگان قیمت (با منبع رسیدن) ═══════════ -->
 <div class="sheet" id="sheet-followers">
   <div class="grab"></div>
   <h3>دنبال‌کنندگانِ قیمت این کالا</h3>
-  <div class="sub">۱۲ خریدار — هر نوسانِ قیمت و موجودیِ تو را زنده می‌بینند</div>
+  <div class="sub">۱۲ خریدار — هر تغییر قیمت و موجودی تو را زنده می‌بینند</div>
   <div class="src-sum">
-    <svg class="ic-sm" style="width:12px;height:12px"><use href="#i-info"/></svg>
-    <b>۶</b> از لینک · <b>۴</b> از تابلو/جست‌وجو · <b>۲</b> از کمپین ویژه
+    <svg class="ic-sm ic-12"><use href="#i-info"/></svg>
+    <b>۶</b> از لینک · <b>۴</b> از تابلو یا جست‌وجو · <b>۲</b> از کمپین ویژه
   </div>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-users"/></svg>
@@ -3074,7 +3088,7 @@
   </div>
   <div class="sheet-row" style="cursor:default;flex-wrap:wrap">
     <div class="avatar" style="background:var(--teal-strong)">م</div>
-    <span class="tx"><b>رستوران مهر <span class="badge b-stone" style="margin-right:4px">رستوران</span></b><span>همدان · دنبال از ۱۲ روز پیش · نیاز ۵۰۰ کیلو/هفته</span></span>
+    <span class="tx"><b>رستوران مهر <span class="badge b-stone" style="margin-right:4px">رستوران</span></b><span>همدان · دنبال از ۱۲ روز پیش · نیاز ۵۰۰ کیلو در هفته</span></span>
     <span class="src-b src-link"><svg><use href="#i-share"/></svg> لینک</span>
     <div class="ct-chips">
       <span class="ct-lbl">نوع مشتری:</span>
@@ -3085,7 +3099,7 @@
   </div>
   <div class="sheet-row" style="cursor:default;flex-wrap:wrap">
     <div class="avatar" style="background:var(--emerald)">ی</div>
-    <span class="tx"><b>تالار پذیرایی یاس <span class="badge b-stone" style="margin-right:4px">تالار</span></b><span>همدان · دنبال از ۵ روز پیش · نیاز ۱ تن/ماه</span></span>
+    <span class="tx"><b>تالار پذیرایی یاس <span class="badge b-stone" style="margin-right:4px">تالار</span></b><span>همدان · دنبال از ۵ روز پیش · نیاز ۱ تن در ماه</span></span>
     <span class="src-b src-organic"><svg><use href="#i-eye"/></svg> تابلو</span>
     <div class="ct-chips">
       <span class="ct-lbl">نوع مشتری:</span>
@@ -3111,7 +3125,7 @@
   </button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-info"/></svg>
-    <span>این‌ها قیمتِ به‌روز می‌خواهند، نه تعارف — هرچه دقیق‌تر و تازه‌تر، بیشتر در تابلویشان می‌مانی. نشانِ منبع می‌گوید هر کدام از کدام مسیر آمدند.</span>
+    <span>این‌ها قیمتِ به‌روز می‌خواهند، نه تعارف — هرچه دقیق‌تر و تازه‌تر باشی، بیشتر در تابلویشان می‌مانی. نشان منبع هم می‌گوید هر کدام از کدام مسیر آمدند.</span>
   </div>
   <button class="btn btn-primary btn-lg btn-block" onclick="openShareFromPromote()">
     <svg class="ic-sm"><use href="#i-share"/></svg> دعوت خریداران بیشتر — اشتراک کاتالوگ
@@ -3119,12 +3133,12 @@
   <div class="card" style="box-shadow:none;padding:4px 14px;margin-top:10px">
     <div class="earn-row" onclick="openShareFromPromote()" style="cursor:pointer">
       <span class="e-ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-share"/></svg></span>
-      <span class="tx"><b>دعوت با لینک — پاداش</b><span>هر کس با لینکِ تو بیاید و دنبال کند: <b class="pos">+۵٬۰۰۰ تومان به کیفِ تو</b></span></span>
+      <span class="tx"><b>دعوت با لینک — پاداش</b><span>هر کس با لینکِ تو بیاید و دنبال کند: <b class="pos">+۵٬۰۰۰ تومان به کیف پولت</b></span></span>
       <svg class="ic-sm" style="color:var(--muted)"><use href="#i-chev"/></svg>
     </div>
     <div class="earn-row" onclick="closeSheet();setTimeout(()=>openSheet('sheet-promote'),160)" style="cursor:pointer">
       <span class="e-ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-star"/></svg></span>
-      <span class="tx"><b>کمپین ویژه — هزینه</b><span>نمایش به خریدارانِ جدیدِ همان کالا: از کیف کم می‌شود — <b>جدای پاداشِ دعوت</b></span></span>
+      <span class="tx"><b>کمپین ویژه — هزینه</b><span>نمایش به خریدارانِ جدید همان کالا: از کیف پول کم می‌شود — <b>جدا از پاداش دعوت</b></span></span>
       <svg class="ic-sm" style="color:var(--muted)"><use href="#i-chev"/></svg>
     </div>
   </div>
@@ -3138,7 +3152,7 @@
 
   <!-- پیش‌نمایش تابلوی خریداران -->
   <div class="mb-wrap">
-    <div class="mb-title">الان — تابلویِ خریدارانِ «برنج هاشمی»</div>
+    <div class="mb-title">اکنون — تابلوی خریدارانِ «برنج هاشمی»</div>
     <div class="mb-board">
       <div class="mb-row"><span class="mb-nm">پخش برنج پارس</span><span class="mb-pr">۹۱٬۲۰۰</span></div>
       <div class="mb-row me"><span class="mb-nm">برنج هاشمی کارون <small>(تو)</small></span><span class="mb-pr">۸۹٬۵۰۰</span><i class="mb-rank">۲</i></div>
@@ -3159,7 +3173,7 @@
     <div class="slot-card on" id="slotBoard" onclick="toggleSlot(this,'board')">
       <span class="sl-chk"><svg><use href="#i-check"/></svg></span>
       <span class="sl-ico"><svg><use href="#i-list"/></svg></span>
-      <span class="sl-t">تابلوی تأمینِ کالا</span>
+      <span class="sl-t">تابلوی تأمین کالا</span>
       <span class="sl-d">لحظهٔ مقایسه — خریدار قیمت‌ها را کنار هم می‌بیند</span>
     </div>
     <div class="slot-card on" id="slotFeed" onclick="toggleSlot(this,'feed')">
@@ -3185,10 +3199,10 @@
     </div>
     <div class="rate-src">
       <svg><use href="#i-info"/></svg>
-      <span id="rateTierLine">نرخِ این کالا: متوسط — بر اساس ارزشِ معمولِ معاملهٔ برنج (≈ ۹ میلیون تومان) در بازار — نه حجمِ فروشِ تو</span>
+      <span id="rateTierLine">نرخ این کالا: متوسط — بر اساس ارزش معمول معاملهٔ برنج (≈ ۹ میلیون تومان) در بازار — نه حجم فروش تو</span>
       <u onclick="openSheetRates()">چرا این نرخ؟</u>
     </div>
-    <div class="budget-note"><b>~۲۸ خریدارِ فعالِ برنج هاشمی در منطقه‌ات هنوز دنبالت نمی‌کنند</b> — دنبال‌کنندگان فعلی، کمپین را نمی‌بینند؛ بودجه که تمام شود نمایش می‌ایستد.</div>
+    <div class="budget-note"><b>~۲۸ خریدار فعالِ برنج هاشمی در منطقه‌ات هنوز دنبالت نمی‌کنند</b> — دنبال‌کنندگان فعلی، کمپین را نمی‌بینند؛ بودجه که تمام شود، نمایش خودکار می‌ایستد.</div>
   </div>
 
   <div class="ng-title">بودجهٔ کمپین</div>
@@ -3214,7 +3228,7 @@
 
   <div class="trust">
     <svg><use href="#i-shield"/></svg>
-    <span>رتبهٔ تطبیق هرگز پولی نیست — «فروشنده ویژه» فقط جایگاهِ دیده‌شدن می‌خرد و برچسبش شفاف است؛ ارزان‌ترینِ تابلو همان ارزان‌ترین می‌ماند. نتیجهٔ کمپین، عدد‌به‌عدد در «گزارش کمپین» می‌آید.</span>
+    <span>رتبهٔ تطبیق هرگز پولی نیست — «فروشنده ویژه» فقط جایگاهِ دیده‌شدن می‌خرد و برچسبش شفاف است؛ «ارزان‌ترینِ تابلو» همان ارزان‌ترین می‌ماند. نتیجهٔ کمپین، عدد به عدد در «گزارش کمپین» می‌آید.</span>
   </div>
 </div>
 
@@ -3222,7 +3236,7 @@
 <div class="sheet" id="sheet-rates">
   <div class="grab"></div>
   <h3>نرخِ «فروشنده ویژه» چطور حساب می‌شود؟</h3>
-  <div class="sub">یک اصل ساده: دنبال‌کننده‌ای که کالای گران‌تر دنبال می‌کند، برای فروشنده‌اش ارزش بیشتری دارد</div>
+  <div class="sub">یک اصل ساده: کسی که کالای گران‌تری را دنبال می‌کند، برای فروشنده‌اش ارزش بیشتری دارد</div>
 
   <div class="tier-table">
     <div class="tier-row">
@@ -3249,21 +3263,21 @@
 
   <div class="hint" style="margin-top:11px">
     <svg><use href="#i-info"/></svg>
-    <span>ارزشِ معمولِ معامله را خودِ iMach از قیمت‌ها و درخواست‌های واقعیِ همان کالا حساب می‌کند — <b>تو چیزی وارد نمی‌کنی</b>؛ نرخِ کالای خودت را همین جای دیگر می‌بینی.</span>
+    <span>ارزش معمول معامله را خودِ آی‌مچ از قیمت‌ها و درخواست‌های واقعی همان کالا حساب می‌کند — <b>تو چیزی وارد نمی‌کنی</b>؛ نرخ کالای خودت را همین‌جا می‌بینی.</span>
   </div>
   <div class="hint" style="margin-top:8px">
     <svg><use href="#i-percent"/></svg>
-    <span><b>مبنا، بازارِ همان کالاست — نه فروشگاهِ تو:</b> نرخ از «ارزشِ معمولِ معاملهٔ این کالا در کل بازار» می‌آید؛ چه ۲۰۰ کیلو بفروشی چه ۲ تن، نرخِ این کالا برای تو یکسان است. مخاطبی که دنبالِ کالای پُرارزش می‌گردد، برای هر فروشنده‌ای ارزشمند است.</span>
+    <span><b>مبنا، بازارِ همان کالاست — نه فروشگاه تو:</b> نرخ از «ارزش معمول معاملهٔ این کالا در کل بازار» می‌آید؛ چه ۲۰۰ کیلو بفروشی چه ۲ تن، نرخ این کالا برای تو یکسان است. مخاطبی که دنبال کالای پرارزش می‌گردد، برای هر فروشنده‌ای ارزشمند است.</span>
   </div>
 
   <div class="hint" style="margin-top:8px">
     <svg><use href="#i-shield"/></svg>
-    <span><b>منصفانه است:</b> بزرگ‌ترها مطلقاً بیشتر می‌پردازند ولی به نسبتِ کمتر — درصد با بزرگ‌شدن معامله پله‌ای کم می‌شود. نرخ برای <b>همهٔ فروشندگانِ یک کالا یکسان</b> است و <b>رتبهٔ تطبیق هرگز پولی نیست</b>. هر دنبال‌کردن = ۵ مشاهده — <b>برآوردِ اولیه</b> است و با نخستین داده‌های واقعیِ کمپین‌ها بازبینی می‌شود؛ عددِ نهایی را رفتارِ واقعیِ خریداران تعیین می‌کند.</span>
+    <span><b>منصفانه است:</b> بزرگ‌ترها مطلقاً بیشتر می‌پردازند ولی به نسبتِ کمتر — درصد با بزرگ‌شدن معامله پله‌ای کم می‌شود. نرخ برای <b>همهٔ فروشندگان یک کالا یکسان</b> است و <b>رتبهٔ تطبیق هرگز پولی نیست</b>. هر دنبال‌کردن = ۵ مشاهده — <b>برآورد اولیه</b> است و با نخستین داده‌های واقعی کمپین‌ها بازبینی می‌شود؛ عدد نهایی را رفتار واقعی خریداران تعیین می‌کند.</span>
   </div>
 
   <div class="hint" style="margin-top:8px">
     <svg><use href="#i-eye"/></svg>
-    <span><b>«مشاهدهٔ کامل»</b> یعنی خریدار صفحهٔ کالای تو را باز کرده و تا قیمت و موجودی — پایینِ صفحه — رسیده است. باز شدنِ گذری یا خروجِ سریع، حساب نمی‌شود و پولی نمی‌گیری. هر مشاهدهٔ کامل با شناسهٔ خریدار و زمانِ دقیق ثبت می‌شود — تومان‌به‌تومان قابل ردّ.</span>
+    <span><b>«مشاهدهٔ کامل»</b> یعنی خریدار صفحهٔ کالای تو را باز کرده و تا قیمت و موجودی — پایینِ صفحه — رسیده است. باز شدن گذری یا خروج سریع، حساب نمی‌شود و پولی نمی‌گیری. هر مشاهدهٔ کامل با شناسهٔ خریدار و زمان دقیق ثبت می‌شود — تومان به تومان قابل ردگیری.</span>
   </div>
 </div>
 
@@ -3271,12 +3285,12 @@
 <div class="sheet" id="sheet-notif">
   <div class="grab"></div>
   <h3>اعلان‌ها</h3>
-  <div class="sub">۲ خوانده‌نشده — گروه‌بندی‌شده تا پیدا کردنش آسان باشد</div>
+  <div class="sub">۲ خوانده‌نشده — گروه‌بندی‌شده تا پیدا کردنشان راحت باشد</div>
 
   <div class="ng-title">قیمت</div>
   <div class="n-row" onclick="go('sc-buy-item');closeSheet()">
     <span class="n-ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-tdn"/></svg></span>
-    <span class="tx"><b>سبزدانه همدان: ۸۴٬۵۰۰ ← ۸۲٬۹۰۰</b><span>برنج هاشمی دنبال‌شده — ۲٪ پایین آمد</span></span>
+    <span class="tx"><b>سبزدانه همدان: ۸۴٬۵۰۰ ← ۸۲٬۹۰۰</b><span>برنج هاشمی دنبال‌شده — ۲٪ کاهش</span></span>
     <span class="udot"></span><span class="tm">۲س</span>
   </div>
   <div class="n-row" onclick="go('sc-buy-item');closeSheet()">
@@ -3287,7 +3301,7 @@
   <div class="n-row" onclick="go('sc-buy-item');closeSheet()">
     <span class="n-ico" style="background:var(--fg-soft);color:var(--muted)"><svg><use href="#i-box"/></svg></span>
     <span class="tx"><b>پخش قصر دان آرشیو شد</b><span>از دفترت نمی‌رود — آخرین قیمتش ۸۶٬۰۰۰ ماند</span></span>
-    <span class="tm">۱روز</span>
+    <span class="tm">۱ روز</span>
   </div>
 
   <div class="ng-title">اعلام نیاز و درخواست‌ها</div>
@@ -3305,15 +3319,15 @@
   <div class="ng-title">دنبال‌کننده و ذخیره‌کننده</div>
   <div class="n-row" onclick="openSheetFollowers()">
     <span class="n-ico" style="background:var(--emerald-tint);color:var(--emerald)"><svg><use href="#i-users"/></svg></span>
-    <span class="tx"><b>آشپزخانهٔ مادل قیمت تو را دنبال کرد</b><span>از کمپین ویژه · +۵٬۰۰۰ تومان به کیف</span></span>
-    <span class="tm">۱روز</span>
+    <span class="tx"><b>آشپزخانهٔ مادل قیمتت را دنبال کرد</b><span>از کمپین ویژه · +۵٬۰۰۰ تومان به کیف</span></span>
+    <span class="tm">۱ روز</span>
   </div>
 
   <div class="ng-title">سیستم</div>
   <div class="n-row" onclick="closeSheet()">
     <span class="n-ico" style="background:var(--muted-bg);color:var(--fg-soft)"><svg><use href="#i-info"/></svg></span>
     <span class="tx"><b>قیمت‌هایت را به‌روز نگه دار</b><span>۱۲ نفر قیمت «برنج درجه یک» را زنده دنبال می‌کنند</span></span>
-    <span class="tm">۲روز</span>
+    <span class="tm">۲ روز</span>
   </div>
 
   <button class="btn btn-outline btn-block" style="margin-top:12px" onclick="markAllRead()">همه را خواندم</button>
@@ -3323,7 +3337,7 @@
 <div class="sheet" id="sheet-savers">
   <div class="grab"></div>
   <h3>ذخیره‌کنندگانِ کاتالوگ</h3>
-  <div class="sub">۳۸ کسب‌وکار کاتالوگ تو را ذخیره کرده‌اند — کالای جدیدت را می‌بینند</div>
+  <div class="sub">۳۸ کسب‌وکار کاتالوگت را ذخیره کرده‌اند — کالاهای جدیدت را می‌بینند</div>
   <div class="sheet-row" style="cursor:default;flex-wrap:wrap">
     <div class="avatar" style="background:var(--teal-strong)">م</div>
     <span class="tx"><b>رستوران مهر <span class="badge b-stone" style="margin-right:4px">رستوران</span></b><span>همدان · ذخیره از ۱۲ روز پیش</span></span>
@@ -3350,10 +3364,10 @@
   </button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-info"/></svg>
-    <span>«ذخیرهٔ کاتالوگ» یعنی دسترسی دائمی به ویترین و دیدن کالای جدید — <b>جدای «دنبال‌کردنِ قیمت» است</b> که کالای مشخص را نوسان‌سنجی می‌کند. ذخیره‌کننده هم همان مشتری است — نوعش را همین‌جا تعیین کن تا تخفیفش روشن باشد.</span>
+    <span>«ذخیرهٔ کاتالوگ» یعنی دسترسی دائمی به ویترین و دیدن کالاهای جدید — <b>جدا از «دنبال‌کردنِ قیمت» است</b> که نوسان یک کالای مشخص را رصد می‌کند. ذخیره‌کننده هم همان مشتری است — نوعش را همین‌جا تعیین کن تا تخفیفش روشن باشد.</span>
   </div>
   <button class="btn btn-primary btn-lg btn-block" onclick="openShareFromPromote()">
-    <svg class="ic-sm"><use href="#i-share"/></svg> بیشتر ذخیره کنند — اشتراک کاتالوگ
+    <svg class="ic-sm"><use href="#i-share"/></svg> دعوت برای ذخیرهٔ بیشتر — اشتراک کاتالوگ
   </button>
 </div>
 
@@ -3364,10 +3378,10 @@
   <div class="sub">لینک لیست خریدت را بفرست — تأمین‌کننده بدون ثبت‌نام لیست را می‌بیند</div>
   <button class="sheet-row" onclick="openContacts()">
     <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-users"/></svg></span>
-    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای iMach هایلایت</span></span>
+    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای آی‌مچ هایلایت می‌شوند</span></span>
     <svg class="check" style="color:var(--muted)"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاریِ گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
+  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاری گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
     <span class="ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-share"/></svg></span>
     <span class="tx"><b>اشتراک‌گذاری</b><span>منوی اشتراک‌گذاری گوشی خودت باز می‌شود — خودت تصمیم می‌گیری</span></span>
   </button>
@@ -3379,7 +3393,7 @@
     <span class="ico" style="background:var(--muted-bg);color:var(--fg-soft)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 15v5M16 20h3"/></svg>
     </span>
-    <span class="tx"><b>نمایش QR کد</b><span>برای چسباندن روی سرداب، بنر یا کارت</span></span>
+    <span class="tx"><b>نمایش QR کد</b><span>برای چسباندن روی سردر مغازه، بنر یا کارت ویزیت</span></span>
   </button>
   <div class="qr-box" id="qrBox2" style="display:none">
     <svg viewBox="0 0 21 21" shape-rendering="crispEdges">
@@ -3425,10 +3439,10 @@
   <div class="sub">لینک کالا را بفرست — قیمت زنده و شرایط بدون ثبت‌نام دیده می‌شود</div>
 <button class="sheet-row" onclick="openContacts()">
     <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-users"/></svg></span>
-    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای iMach هایلایت</span></span>
+    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای آی‌مچ هایلایت می‌شوند</span></span>
     <svg class="check" style="color:var(--muted)"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاریِ گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
+  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاری گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
     <span class="ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-share"/></svg></span>
     <span class="tx"><b>اشتراک‌گذاری</b><span>منوی اشتراک‌گذاری گوشی خودت باز می‌شود — خودت تصمیم می‌گیری</span></span>
   </button>
@@ -3447,10 +3461,10 @@
   <div class="sub">درخواست «برنج هاشمی — ۵۰۰ کیلو» را بفرست — تأمین‌کننده‌های بیشتری قیمت و شرایطشان را می‌فرستند</div>
   <button class="sheet-row" onclick="openContacts()">
     <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-users"/></svg></span>
-    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای iMach هایلایت</span></span>
+    <span class="tx"><b>مخاطبین گوشی</b><span>انتخاب مستقیم از دفترچهٔ گوشی — اعضای آی‌مچ هایلایت می‌شوند</span></span>
     <svg class="check" style="color:var(--muted)"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاریِ گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
+  <button class="sheet-row" onclick="toast('منوی اشتراک‌گذاری گوشی‌ات باز می‌شود — هر جا خواستی بفرست')">
     <span class="ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-share"/></svg></span>
     <span class="tx"><b>اشتراک‌گذاری</b><span>منوی اشتراک‌گذاری گوشی خودت باز می‌شود — خودت تصمیم می‌گیری</span></span>
   </button>
@@ -3460,7 +3474,7 @@
   </button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-bell"/></svg>
-    <span><b>فایده‌اش برای تو چیست؟</b> هر تأمین‌کننده‌ای که درخواستت را ببیند، قیمتش کنار بقیه در «پیشنهادها» می‌نشیند — مقایسهٔ کامل‌تر، بدون تماس تلفنی و بدون اینکه کسی شمارهٔ تو را داشته باشد.</span>
+    <span><b>فایده‌اش برای تو چیست؟</b> هر تأمین‌کننده‌ای که درخواستت را ببیند، قیمتش کنار بقیه در «پیشنهادها» می‌نشیند — مقایسهٔ کامل‌تر، بدون تماس تلفنی و بدون اینکه کسی شماره‌ات را داشته باشد.</span>
   </div>
   <button class="btn btn-outline btn-block" onclick="closeSheet()" style="margin-top:4px">بستن</button>
 </div>
@@ -3500,15 +3514,15 @@
   <div class="sub" id="callSub">سبزدانه همدان · معمولاً سریع جواب می‌دهد</div>
   <div class="card" style="text-align:center;padding:16px 14px">
     <div class="call-num" id="callNum">۰۹۱۲ ۳۴۵ ۶۷۸۹</div>
-    <div class="sub" style="margin:6px 0 0">شنبه تا پنجشنبه · ۹ تا ۱۸</div>
+    <div class="sub" style="margin:6px 0 0">شنبه تا پنج‌شنبه · ۹ تا ۱۸</div>
   </div>
   <div class="btn-row" style="margin-top:12px">
-    <button class="btn btn-primary btn-lg" style="flex:1.6" onclick="toast('در حال تماس… — برگشتی، وضعیتش را «تماس گرفتم» بزن')"><svg class="ic-sm"><use href="#i-tel"/></svg> تماس بگیر</button>
+    <button class="btn btn-primary btn-lg" style="flex:1.6" onclick="toast('در حال تماس… — بعد از تماس، وضعیتش را «تماس گرفتم» بزن')"><svg class="ic-sm"><use href="#i-tel"/></svg> تماس بگیر</button>
     <button class="btn btn-ghost btn-lg" style="flex:1;color:var(--muted)" onclick="toast('شماره کپی شد')"><svg class="ic-sm"><use href="#i-list"/></svg> کپی</button>
   </div>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-shield"/></svg>
-    <span>تماس مستقیم، سریع‌ترین راه بستن معامله است — iMach مسیر را باز می‌کند، معامله با خودِ تو. بعد از تماس، وضعیت پیشنهاد را علامت بزن تا گم نشود.</span>
+    <span>تماس مستقیم، سریع‌ترین راه بستن معامله است — آی‌مچ مسیر را باز می‌کند، معامله با خودت. بعد از تماس، وضعیت پیشنهاد را علامت بزن تا گم نشود.</span>
   </div>
 </div>
 
@@ -3516,26 +3530,26 @@
 <div class="sheet" id="sheet-contacts">
   <div class="grab"></div>
   <h3>مخاطبین گوشی</h3>
-  <div class="sub">چندتایی را انتخاب کن — اعضای iMach با لینک می‌آیند، بقیه با پیامک دعوت</div>
+  <div class="sub">هر تعداد که خواستی انتخاب کن — اعضای آی‌مچ با لینک می‌آیند، بقیه با پیامک دعوت</div>
   <div class="card" style="padding:6px 14px">
     <div class="ct-row member" onclick="ctToggle(this)">
       <span class="ava">م</span>
-      <span class="tx"><b>مهدی — رستوران مهر</b><span>عضو iMach · دنبال‌کنندهٔ قیمتت</span></span>
+      <span class="tx"><b>مهدی — رستوران مهر</b><span>عضو آی‌مچ · دنبال‌کنندهٔ قیمتت</span></span>
       <span class="ct-chk"><svg><use href="#i-check"/></svg></span>
     </div>
     <div class="ct-row member" onclick="ctToggle(this)">
       <span class="ava" style="background:var(--orange-tint);color:var(--primary-strong)">ی</span>
-      <span class="tx"><b>یاسر — تالار یاس</b><span>عضو iMach</span></span>
+      <span class="tx"><b>یاسر — تالار یاس</b><span>عضو آی‌مچ</span></span>
       <span class="ct-chk"><svg><use href="#i-check"/></svg></span>
     </div>
     <div class="ct-row member" onclick="ctToggle(this)">
       <span class="ava" style="background:var(--emerald-tint);color:var(--emerald)">د</span>
-      <span class="tx"><b>داوود — آشپزخانهٔ مادل</b><span>عضو iMach · از دعوت قبلی</span></span>
+      <span class="tx"><b>داوود — آشپزخانهٔ مادل</b><span>عضو آی‌مچ · از دعوت قبلی</span></span>
       <span class="ct-chk"><svg><use href="#i-check"/></svg></span>
     </div>
     <div class="ct-row" onclick="ctToggle(this)">
       <span class="ava" style="background:var(--muted-bg);color:var(--fg-soft)">ح</span>
-      <span class="tx"><b>حسن آقا — سوپرمارکت حسن</b><span>دعوت با پیامک · +۵٬۰۰۰ تومان بعد از اولین دنبال‌کردن</span></span>
+      <span class="tx"><b>حسن آقا — سوپرمارکت حسن</b><span>دعوت با پیامک · ۵٬۰۰۰ تومان بعد از اولین دنبال‌کردن</span></span>
       <span class="ct-chk"><svg><use href="#i-check"/></svg></span>
     </div>
     <div class="ct-row" onclick="ctToggle(this)">
@@ -3547,7 +3561,7 @@
   <button class="btn btn-primary btn-lg btn-block" style="margin-top:12px" id="ctSendBtn" onclick="ctSend()" disabled>
     <svg class="ic-sm"><use href="#i-send"/></svg> ارسال برای مخاطب
   </button>
-  <div class="sub" style="margin:9px 0 0">هر کس با پیامک بیاید و اولین قیمت را دنبال کند: <b>+۵٬۰۰۰ تومان</b> به کیف تو — دعوت‌ها برای خریداران و فروشندگانِ عمده</div>
+  <div class="sub" style="margin:9px 0 0">هر کس با پیامک بیاید و اولین قیمت را دنبال کند: <b>+۵٬۰۰۰ تومان</b> به کیف پولت — دعوت‌ها برای خریداران و فروشندگان عمده</div>
 </div>
 
 <!-- ═══════════ شیت: به‌روزرسانی سریع قیمت ═══════════ -->
@@ -3569,7 +3583,7 @@
   <button class="btn btn-primary btn-lg btn-block" onclick="quickSave()">
     <svg class="ic-sm"><use href="#i-bolt"/></svg> ذخیره — خبر بده
   </button>
-  <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-percent"/></svg> <span>این <b>قیمت پایه</b> است — تخفیف‌های مشتری و حجمیِ وابسته به آن، <b>خودکار بازمحاسبه</b> می‌شوند و خریدار قیمتِ پس از تخفیف را می‌بیند.</span></div>
+  <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-percent"/></svg> <span>این <b>قیمت پایه</b> است — تخفیف‌های مشتری و حجمی وابسته به آن، <b>خودکار بازمحاسبه</b> می‌شوند و خریدار قیمت پس از تخفیف را می‌بیند.</span></div>
   <div class="sub" style="margin:9px 0 0">۱۲ دنبال‌کنندهٔ قیمت، در صورت تغییر معنادار، اعلان می‌گیرند</div>
 </div>
 
@@ -3581,7 +3595,7 @@
 
   <button class="mode-row sel" id="pm1" onclick="pricingMode(1)">
     <span class="rd"></span>
-    <span class="tx"><b>همان تنظیمات کاتالوگ</b><span>پیش‌فرض — تخفیف مشتری و پله‌های حجمِ کاتالوک روی همین کالا؛ بدون هیچ عددِ جداگانه</span></span>
+    <span class="tx"><b>همان تنظیمات کاتالوگ</b><span>پیش‌فرض — تخفیف مشتری و پله‌های حجمیِ کاتالوگ روی همین کالا؛ بدون هیچ عدد جداگانه</span></span>
     <span class="badge b-green" style="flex-shrink:0">فعال</span>
   </button>
   <div class="pm-panel on" id="pm1b">
@@ -3635,7 +3649,7 @@
             </div>
           </div>
         </div>
-        <div class="unit-calc" style="margin-top:8px"><svg><use href="#i-info"/></svg> <span>در هر سطر، هر کدام از سه خانه را که پر کنی <b>دو تای دیگر خودکار حساب می‌شوند</b> — مثلاً «۸» درصد، یا مبلغِ توافقی، یا قیمتِ نهایی که سرِ قیمت چانه زدی. خالی بماند، همان کاتالوک.</span></div>
+        <div class="unit-calc" style="margin-top:8px"><svg><use href="#i-info"/></svg> <span>در هر سطر، هر کدام از سه خانه را که پر کنی <b>دو تای دیگر خودکار حساب می‌شوند</b> — مثلاً «۸» درصد، یا مبلغِ توافقی، یا قیمتِ نهایی که سرِ قیمت چانه زدی. خالی بماند، همان کاتالوگ.</span></div>
       </div>
       <div class="tbpanel">
         <div class="card" style="box-shadow:none;padding:2px 13px" id="ipTiers">
@@ -3655,7 +3669,7 @@
             <span class="ds-eq">همکار ٪۵ + ٪۳ → ۸۲٬۳۴۰</span>
           </div>
         </div>
-        <div class="unit-calc" style="margin-top:8px"><svg><use href="#i-steps"/></svg> <span>پلهٔ این‌جا جای پلهٔ کاتالوک می‌نشیند و فقط روی همین کالا است؛ خالی بماند، پله‌های کاتالوک ملاک‌اند.</span></div>
+        <div class="unit-calc" style="margin-top:8px"><svg><use href="#i-steps"/></svg> <span>پلهٔ اینجا جای پلهٔ کاتالوگ می‌نشیند و فقط روی همین کالا اعمال می‌شود؛ خالی بماند، پله‌های کاتالوگ ملاک است.</span></div>
       </div>
     </div>
   </div>
@@ -3664,14 +3678,14 @@
     <button class="btn btn-primary btn-lg" style="flex:1.5" onclick="itemPricingSave()"><svg class="ic-sm"><use href="#i-check"/></svg> ذخیره</button>
     <button class="btn btn-outline btn-lg" style="flex:1" onclick="resetToCatalog()"><svg class="ic-sm"><use href="#i-back"/></svg> بازگشت به کاتالوگ</button>
   </div>
-  <div class="sub" style="margin:10px 0 0">ترتیبِ همیشه روشن: <b>خودِ کالا › گروه کالا › کاتالوگ</b> — قیمت پایه مبنا · راهنمای کامل در صفحهٔ «تخفیف‌ها»</div>
+  <div class="sub" style="margin:10px 0 0">ترتیب همیشه روشن است: <b>خودِ کالا › گروه کالا › کاتالوگ</b> — قیمت پایه مبنا · راهنمای کامل در صفحهٔ «تخفیف‌ها»</div>
 </div>
 
 <!-- ═══════════ شیت: تخفیف گروهی چند کالا (v12) ═══════════ -->
 <div class="sheet" id="sheet-bulk">
   <div class="grab"></div>
   <h3>تخفیف گروهی چند کالا</h3>
-  <div class="sub">یک‌بار برای چند کالا — مسیر پیشرفته، نه روزمره</div>
+  <div class="sub">یک بار برای چند کالا — مسیر پیشرفته، نه روزمره</div>
   <div class="card" style="box-shadow:none">
     <div class="ng-title" style="margin:0 0 8px">۱ — کالاها را انتخاب کن</div>
     <div class="chips" style="flex-wrap:wrap;overflow:visible">
@@ -3684,17 +3698,17 @@
     <div class="ng-title" style="margin:12px 0 8px">۲ — چه کاری؟</div>
     <div class="mix-row sel" onclick="mixPick(this)">
       <span class="rd"></span>
-      <span class="tx"><b>همان تنظیمات کاتالوگ</b><span>تخفیف‌های اختصاصیِ این کالاها پاک شود و از کاتالوک بگیرند</span></span>
+      <span class="tx"><b>همان تنظیمات کاتالوگ</b><span>تخفیف‌های اختصاصی این کالاها پاک شود و از کاتالوگ بگیرند</span></span>
     </div>
     <div class="mix-row" onclick="mixPick(this)">
       <span class="rd"></span>
-      <span class="tx"><b>تخفیف یکسان برای همه</b><span>مثل سطح کاتالوک، فقط برای همین چند کالا — درصد به تفکیکِ نوع مشتری</span></span>
+      <span class="tx"><b>تخفیف یکسان برای همه</b><span>مثل سطح کاتالوگ، فقط برای همین چند کالا — درصد به تفکیک نوع مشتری</span></span>
     </div>
   </div>
   <button class="btn btn-primary btn-lg btn-block" onclick="bulkApply()"><svg class="ic-sm"><use href="#i-check"/></svg> اعمال روی ۲ کالا</button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-shield"/></svg>
-    <span>قبل از اعمال، <b>خلاصهٔ اثر</b> را نشان می‌دهیم (چند قیمت تغییر می‌کند، چند دنبال‌کننده خبردار می‌شود) — تغییر گروهی بدون پیش‌نمایش اعمال نمی‌شود.</span>
+    <span>قبل از اعمال، <b>خلاصهٔ اثر</b> را نشان می‌دهیم (چند قیمت تغییر می‌کند، چند دنبال‌کننده باخبر می‌شود) — تغییر گروهی بدون پیش‌نمایش اعمال نمی‌شود.</span>
   </div>
 </div>
 
@@ -3703,25 +3717,25 @@
 <div class="sheet" id="sheet-cust-type">
   <div class="grab"></div>
   <h3>نوع مشتریِ رستوران مهر</h3>
-  <div class="sub">همین انتخاب، قیمتِ کاتالوگ و نوارِ «قیمتِ دفترِ تخفیف‌ها» را برای او عوض می‌کند</div>
+  <div class="sub">همین انتخاب، قیمتِ کاتالوگ و نوارِ «قیمت دفتر تخفیف‌ها» را برای او عوض می‌کند</div>
   <button class="mode-row" id="ctP" onclick="custTypePick('p')">
     <span class="rd"></span>
-    <span class="tx"><b>مشتری گذری</b><span>خریدار تازه — قیمتِ خودِ کاتالوک، بدون تخفیف مشتری</span></span>
+    <span class="tx"><b>مشتری گذری</b><span>خریدار تازه — قیمتِ خودِ کاتالوگ، بدون تخفیف مشتری</span></span>
     <span class="ds-eq">٪۰</span>
   </button>
   <button class="mode-row sel" id="ctH" onclick="custTypePick('h')">
     <span class="rd"></span>
-    <span class="tx"><b>مشتری همکار</b><span>هم‌حرفه و خریدارِ ثابت — پیش‌فرضِ کاتالوک ٪۵</span></span>
+    <span class="tx"><b>مشتری همکار</b><span>هم‌حرفه و خریدار ثابت — پیش‌فرض کاتالوگ ٪۵</span></span>
     <span class="ds-eq">٪۵</span>
   </button>
   <button class="mode-row" id="ctQ" onclick="custTypePick('q')">
     <span class="rd"></span>
-    <span class="tx"><b>مشتری قراردادی</b><span>توافقِ منظم — بهترین قیمت، ٪۷</span></span>
+    <span class="tx"><b>مشتری قراردادی</b><span>توافق منظم — بهترین قیمت، ٪۷</span></span>
     <span class="ds-eq">٪۷</span>
   </button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-users"/></svg>
-    <span>نوع مشتری را <b>فروشنده</b> تعیین می‌کند، نه خریدار — مثلِ بازار. خریدار فقط قیمتِ نهایی‌اش را می‌بیند؛ درصدِها کارِ توست.</span>
+    <span>نوع مشتری را <b>فروشنده</b> تعیین می‌کند، نه خریدار — مثل بازار. خریدار فقط قیمت نهایی خودش را می‌بیند؛ درصدها کار توست.</span>
   </div>
 </div>
 
@@ -3735,7 +3749,7 @@
       <div class="avatar" id="rdAva" style="background:var(--teal-strong)">م</div>
       <div style="flex:1;min-width:0">
         <b style="font-size:13px" id="rdWho">رستوران مهر</b>
-        <div style="font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.8" id="rdMeta">رستوران · همدان · ۲ سال در iMach</div>
+        <div style="font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.8" id="rdMeta">رستوران · همدان · ۲ سال در آی‌مچ</div>
       </div>
       <span class="badge b-teal" id="rdType">همکار تو</span>
     </div>
@@ -3756,7 +3770,7 @@
   </button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-shield"/></svg>
-    <span>درخواست‌ها مقایسه‌ای‌اند: خریدار پیشنهادها را کنار هم می‌بیند. قیمتِ موتور فقط «پیشنهادِ شروع» است — اگر شرایط خاص داری، در یادداشتِ پاسخ دلیلش را بنویس؛ شفافیت، اعتماد می‌سازد.</span>
+    <span>درخواست‌ها مقایسه‌ای‌اند: خریدار پیشنهادها را کنار هم می‌بیند. قیمتِ موتور فقط «پیشنهاد شروع» است — اگر شرایط خاص داری، در یادداشتِ پاسخ دلیلش را بنویس؛ شفافیت، اعتماد می‌سازد.</span>
   </div>
 </div>
 
@@ -3764,7 +3778,7 @@
 <div class="sheet" id="sheet-new-group">
   <div class="grab"></div>
   <h3>گروه کالای جدید</h3>
-  <div class="sub">سطح ۲ زنجیره — تخفیفِ جدا برای چند کالا؛ همه‌جا جایِ کاتالوک می‌نشیند</div>
+  <div class="sub">سطح دوم زنجیره — تخفیفِ جدا برای چند کالا؛ همه‌جا جای کاتالوگ می‌نشیند</div>
   <div class="field" style="margin:12px 0 4px">
     <label>نام گروه</label>
     <input class="inp" id="ngName" placeholder="مثلاً: حبوبات یا برنج‌های خاص">
@@ -3781,18 +3795,18 @@
   <div class="ng-title" style="margin-top:12px">تخفیف مشتریِ این گروه</div>
   <div class="card" style="box-shadow:none;padding:2px 13px">
     <div class="ds-row">
-      <span class="ds-who"><b>همکارِ این گروه</b><span>جای ٪۵ِ کاتالوک می‌نشیند</span></span>
+      <span class="ds-who"><b>همکارِ این گروه</b><span>جای ٪۵ِ کاتالوگ می‌نشیند</span></span>
       <span class="ds-inp"><input class="inp" inputmode="numeric" placeholder="٪"><i>٪</i></span>
     </div>
     <div class="ds-row">
-      <span class="ds-who"><b>قراردادیِ این گروه</b><span>جای ٪۷ِ کاتالوک می‌نشیند</span></span>
+      <span class="ds-who"><b>قراردادیِ این گروه</b><span>جای ٪۷ِ کاتالوگ می‌نشیند</span></span>
       <span class="ds-inp"><input class="inp" inputmode="numeric" placeholder="٪"><i>٪</i></span>
     </div>
   </div>
   <button class="btn btn-primary btn-lg btn-block" style="margin-top:12px" onclick="groupCreate()"><svg class="ic-sm"><use href="#i-check"/></svg> ساخت گروه</button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-box"/></svg>
-    <span>گذری همان کاتالوک می‌ماند — گروه فقط همکار و قراردادی را جدا می‌کند. پله‌های حجمیِ گروه هم بعد از ساخت، در تب «تخفیف حجمی» تنظیم می‌شود.</span>
+    <span>گذری همان کاتالوگ می‌ماند — گروه فقط همکار و قراردادی را جدا می‌کند. پله‌های حجمیِ گروه هم بعد از ساخت، در تب «تخفیف حجمی» تنظیم می‌شود.</span>
   </div>
 </div>
 
@@ -3840,7 +3854,7 @@
     <svg class="ic" style="color:var(--muted)"><use href="#i-list"/></svg>
   </button>
   <div class="pm-panel" id="imp2">
-    <div class="card" style="box-shadow:none;padding:11px 14px;font-size:11px;line-height:2.1;color:var(--fg-soft)">فهرستِ استاندارد iMach — کالای تو همان تعریفِ رسمی را می‌گیرد؛ <b>مقایسهٔ قیمت‌ها بین فروشنده‌ها دقیق‌تر می‌شود</b> و در گروهِ درست دیده می‌شوی.</div>
+    <div class="card" style="box-shadow:none;padding:11px 14px;font-size:11px;line-height:2.1;color:var(--fg-soft)">فهرستِ استاندارد آی‌مچ — کالای تو همان تعریف رسمی را می‌گیرد؛ <b>مقایسهٔ قیمت‌ها بین فروشنده‌ها دقیق‌تر می‌شود</b> و در گروه درست دیده می‌شوی.</div>
   </div>
   <button class="mode-row" id="impRow3" onclick="impMode(3)">
     <span class="rd"></span>
@@ -3848,12 +3862,12 @@
     <svg class="ic" style="color:var(--muted)"><use href="#i-eye"/></svg>
   </button>
   <div class="pm-panel" id="imp3">
-    <div class="card" style="box-shadow:none;padding:11px 14px;font-size:11px;line-height:2.1;color:var(--fg-soft)">فایل اکسل را بارگذاری کن → ستون‌های نام/قیمت/موجودی شناسایی می‌شوند → پیش‌نمایش و ویرایش → افزودنِ همگی. <b>۲۰ کالا در یک‌بار.</b></div>
+    <div class="card" style="box-shadow:none;padding:11px 14px;font-size:11px;line-height:2.1;color:var(--fg-soft)">فایل اکسل را بارگذاری کن → ستون‌های نام/قیمت/موجودی شناسایی می‌شوند → پیش‌نمایش و ویرایش → افزودن همگی. <b>۲۰ کالا در یک بار.</b></div>
   </div>
   <button class="btn btn-primary btn-lg btn-block" style="margin-top:12px" onclick="impGo()"><svg class="ic-sm"><use href="#i-bolt"/></svg> شروع</button>
   <div class="hint" style="margin-top:10px">
     <svg><use href="#i-check"/></svg>
-    <span>هر سه راه به قیفِ واحد می‌رسند: <b>کالا → قیمت پایه → (اختیاری) تخفیف‌ها</b> — هیچ مسیرِ موازی و شکسته‌ای ندارد؛ از هر دری وارد شوی، خروجی یکسان است.</span>
+    <span>هر سه راه به قیف واحد می‌رسند: <b>کالا → قیمت پایه → (اختیاری) تخفیف‌ها</b> — هیچ مسیر موازی و شکسته‌ای وجود ندارد؛ از هر دری وارد شوی، خروجی یکسان است.</span>
   </div>
 </div>
 
@@ -3861,22 +3875,22 @@
 <div class="sheet" id="sheet-help-discount">
   <div class="grab"></div>
   <h3>تخفیف‌ها چیستند؟</h3>
-  <div class="sub">دقیق اما کوتاه — دو دقیقه بخوان؛ قیمتِ هر خریدار یک خطِ قابل توضیح دارد</div>
+  <div class="sub">دقیق اما کوتاه — دو دقیقه بخوان؛ قیمت هر خریدار یک خط قابل توضیح دارد</div>
 
   <div class="card hp-hero">
     <span class="ico"><svg><use href="#i-percent"/></svg></span>
     <span class="tx"><b>قیمت پایهٔ کالاها ثابت است؛ تخفیف بر اساس «کی می‌خرد» و «چقدر می‌خرد» روی آن می‌نشیند.</b>
-    همان‌طور که در بازار، همکارِ قدیمی قیمتِ بهتری می‌گیرد و خریدِ بیشتر درصدِ بهتر — اینجا هم همین است، فقط خودکار و بدون فراموشی. نتیجه، همان قیمت نهایی‌ای است که خریدار در کاتالوگ می‌بیند.</span>
+    همان‌طور که در بازار، همکار قدیمی قیمت بهتر می‌گیرد و خرید بیشتر، درصد بهتر — اینجا هم همین است، فقط خودکار و بدون فراموشی. نتیجه، همان قیمت نهایی است که خریدار در کاتالوگ می‌بیند.</span>
   </div>
 
   <div class="ng-title" style="margin-top:13px">در سه سطح اعمال می‌شود — از عام به خاص</div>
   <div class="hp-lvl">
     <span class="n">۱</span>
-    <span class="tx"><b>کاتالوگ</b><span>یک‌بار برای همهٔ کالاها — پیش‌فرضِ کل فروشگاه؛ مثلاً همکار ٪۵، قراردادی ٪۷</span></span>
+    <span class="tx"><b>کاتالوگ</b><span>یک بار برای همهٔ کالاها — پیش‌فرض کل فروشگاه؛ مثلاً همکار ٪۵، قراردادی ٪۷</span></span>
   </div>
   <div class="hp-lvl">
     <span class="n">۲</span>
-    <span class="tx"><b>گروه کالا</b><span>یک دسته کالا جدا — مثلاً حبوبات: همکار ٪۲، قراردادی ٪۳</span></span>
+    <span class="tx"><b>گروه کالا</b><span>یک دستهٔ کالا جدا — مثلاً حبوبات: همکار ٪۲، قراردادی ٪۳</span></span>
   </div>
   <div class="hp-lvl">
     <span class="n">۳</span>
@@ -3885,29 +3899,29 @@
 
   <div class="hp-prio">
     <svg><use href="#i-bolt"/></svg>
-    <span>اولویت: <b>کالا › گروه کالا › کاتالوگ</b> — تخفیفِ کاتالوگ روی همه هست، <b>مگر آن‌که گروهِ کالا یا خودش درصدِ خودش را داشته باشد</b>؛ خاص‌تر همیشه برنده است.</span>
+    <span>اولویت: <b>کالا › گروه کالا › کاتالوگ</b> — تخفیف کاتالوگ روی همه هست، <b>مگر آنکه گروه کالا یا خودش درصد اختصاصی داشته باشد</b>؛ همیشه خاص‌تر برنده است.</span>
   </div>
 
   <div class="hp-ex">
-    <div class="ng-title" style="margin:0 0 7px">قاعدهٔ سبدِ چندکالایی</div>
-    پلهٔ حجمی با <b>حجمِ همان کالا</b> در سبد حساب می‌شود، نه جمعِ کیلوهای کالاهای مختلف — مثلاً ۳۰۰ کیلو برنج + ۱۰۰ کیلو عدس: برنج پلهٔ «۲۰۰ تا ۳۰۰» می‌گیرد و عدس پلهٔ «۱۰۰ تا ۲۰۰». ساده و قابل پیش‌بینی — خریدار هم همین را در صفحهٔ کالا می‌بیند.
+    <div class="ng-title" style="margin:0 0 7px">قاعده سبدِ چندکالایی</div>
+    پلهٔ حجمی با <b>حجمِ همان کالا</b> در سبد حساب می‌شود، نه جمع کیلوهای کالاهای مختلف — مثلاً ۳۰۰ کیلو برنج + ۱۰۰ کیلو عدس: برنج پلهٔ «۲۰۰ تا ۳۰۰» می‌گیرد و عدس پلهٔ «۱۰۰ تا ۲۰۰». ساده و قابل پیش‌بینی — خریدار هم همین را در صفحهٔ کالا می‌بیند.
   </div>
 
   <div class="ng-title" style="margin-top:13px">دو نوع تخفیف — که با هم جمع می‌شوند</div>
   <div class="hp-lvl">
     <span class="n"><svg style="width:13px;height:13px"><use href="#i-users"/></svg></span>
-    <span class="tx"><b>تخفیف مشتری</b><span>گذری (۰) · همکار · قراردادی — نوعِ هر مشتری را خودت از دفترش تعیین می‌کنی</span></span>
+    <span class="tx"><b>تخفیف مشتری</b><span>گذری (۰) · همکار · قراردادی — نوع هر مشتری را خودت از دفترش تعیین می‌کنی</span></span>
   </div>
   <div class="hp-lvl">
     <span class="n"><svg style="width:13px;height:13px"><use href="#i-steps"/></svg></span>
     <span class="tx"><b>تخفیف حجمی</b><span>پله‌های خرید — مثلاً ۱۰۰ تا ۲۰۰ کیلو ٪۱، ۲۰۰ تا ۳۰۰ کیلو ٪۲</span></span>
   </div>
   <div class="hp-ex">
-    <div class="ng-title" style="margin:0 0 7px">مثالِ یک‌خطی</div>
+    <div class="ng-title" style="margin:0 0 7px">مثال یک‌خطی</div>
     برنج هاشمی، قیمت پایه ۸۹٬۵۰۰ ← خریدارِ <b>همکار</b> که <b>۲۵۰ کیلو</b> می‌خرد: ٪۵ + ٪۲ = <b>٪۷</b> ← <b>۸۳٬۲۳۵ تومان / کیلو</b>
   </div>
 
-  <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-info"/></svg> <span>در سطحِ کالا لازم نیست روی درصد بمانی — <b>مبلغ تخفیف یا قیمت نهایی</b> را هم می‌توانی بنویسی؛ دو عدد دیگر خودکار حساب می‌شوند. تخفیف‌های تازه (مناسبت‌ها و…) بعداً هرکدام تبِ جدا می‌شوند.</span></div>
+  <div class="unit-calc" style="margin-top:10px"><svg><use href="#i-info"/></svg> <span>در سطحِ کالا لازم نیست روی درصد بمانی — <b>مبلغ تخفیف یا قیمت نهایی</b> را هم می‌توانی بنویسی؛ دو عدد دیگر خودکار حساب می‌شوند. تخفیف‌های تازه (مناسبت‌ها و…) بعداً هرکدام تب جدا می‌شوند.</span></div>
 
   <button class="btn btn-primary btn-lg btn-block" style="margin-top:12px" onclick="closeSheet()"><svg class="ic-sm"><use href="#i-check"/></svg> باشه، فهمیدم</button>
 </div>
@@ -4034,7 +4048,7 @@ function setMode(m) {
 }
 function choose(m) {
   setMode(m);
-  toast(m === 'buy' ? 'به دستیار خرید عمده خوش اومدی — دفتر قیمت‌های زندهٔ تو اینجاست' : 'به دستیار فروش عمده خوش اومدی — کاتالوگت آماده است');
+  toast(m === 'buy' ? 'به دستیار خرید عمده خوش آمدی — دفتر قیمت‌های زندهٔ تو اینجاست' : 'به دستیار فروش عمده خوش آمدی — کاتالوگت آماده است');
 }
 function syncSwitchChecks() {
   $('#chk-buy').style.display  = state.mode === 'buy'  ? '' : 'none';
@@ -4104,7 +4118,7 @@ function toast(msg) {
 /* ── جریان‌های stateful ── */
 function confirmFollow() {
   closeSheet();
-  toast('قیمتش به دفترت اضافه شد — هر نوسان را خبر می‌کنیم');
+  toast('قیمتش به دفترت اضافه شد — هر نوسان را بهت خبر می‌دهیم');
 }
 function addToList() { confirmFollow(); }
 
@@ -4120,9 +4134,9 @@ function watchCold() {
       const btn = row.querySelector('button.btn');
       if (btn) btn.outerHTML = '<span class="badge b-teal" style="flex-shrink:0">رصد فعال</span>';
     }
-    toast('رصد عدس فعال شد — اولین تأمین‌کننده را خبر می‌کنیم');
+    toast('رصد عدس فعال شد — اولین تأمین‌کننده که وارد شود خبرت می‌کنیم');
   } else {
-    toast('رصد عدس فعال است');
+    toast('رصد عدس همین حالا فعال است');
   }
 }
 
@@ -4165,7 +4179,7 @@ function rfqDone() {
   state.rfq = 2;
   $('#rfqCountBadge').textContent = '۳';
   go('sc-offers');
-  toast('استعلام ثبت شد — تأمین‌کننده‌های انتخابی + ۲ گوش‌به‌زنگ خبردار شدند');
+  toast('استعلام ثبت شد — تأمین‌کننده‌های انتخابی و ۲ گوش‌به‌زنگ خبردار شدند');
 }
 
 function rfqTab(el, which) {
@@ -4207,7 +4221,7 @@ function syncAddMode() {
   $('#addTitle').textContent = edit === 'sell' ? 'ویرایش: برنج هاشمی درجه یک'
                             : edit === 'buy'  ? 'ویرایش: برنج هاشمی'
                             : sell ? 'افزودن محصول به کاتالوگ' : 'افزودن کالا به لیست خرید';
-  $('#addSub').textContent   = edit === 'sell' ? 'تغییرات همان لحظه برای ۱۲ دنبال‌کننده و تابلوها می‌نشیند'
+  $('#addSub').textContent   = edit === 'sell' ? 'تغییرات همان لحظه برای ۱۲ دنبال‌کننده و تابلوها اعمال می‌شود'
                             : edit === 'buy'  ? 'نیاز و دورهٔ خریدت را به‌روز کن'
                             : sell ? 'قیمت و موجودی بگذار — خریدارها دنبالش می‌کنند' : 'هر چه بخری، برایت تابلوی تأمین می‌سازیم و قیمتش را دنبال می‌کنیم';
   $('#pickCard').style.display    = edit ? 'none' : '';
@@ -4234,7 +4248,7 @@ function buySubmit() {
   else addItemSubmit();
 }
 function sellSubmit() {
-  if (state.editMode === 'sell') { go('sc-sell-product-owner'); toast('ذخیره شد — ۱۲ دنبال‌کننده قیمتِ تازه را می‌بینند'); }
+  if (state.editMode === 'sell') { go('sc-sell-product-owner'); toast('ذخیره شد — ۱۲ دنبال‌کننده قیمت تازه را می‌بینند'); }
   else toast('محصول به کاتالوگ اضافه شد');
 }
 function askArchive()     { $('#archConfirm').style.display = ''; }
@@ -4257,11 +4271,11 @@ function syncMoneyUI() {
   set('#deskBal', b + ' تومان');
   set('#sheetAfterBal', faMoney(Math.max(0, state.balance - state.budgetSel)));
 
-  /* v3: نرخِ پله‌ایِ این کالا + تخمینِ بسته‌های بودجه از نرخ */
+  /* v3: نرخ پله‌ای این کالا + تخمین بسته‌های بودجه از نرخ */
   const t = TIERS[GOOD_RATE.tier];
   set('#rateView', faMoney(t.view) + ' ت');
   set('#rateFollow', '+' + faMoney(t.follow) + ' ت');
-  set('#rateTierLine', 'نرخِ این کالا: ' + t.label + ' — بر اساس ارزشِ معمولِ معاملهٔ برنج (' + GOOD_RATE.dealV + ') در بازار — نه حجمِ فروشِ تو');
+  set('#rateTierLine', 'نرخ این کالا: ' + t.label + ' — بر اساس ارزش معمول معاملهٔ برنج (' + GOOD_RATE.dealV + ') در بازار — نه حجم فروش تو');
   [50, 100, 200].forEach(k => set('#est' + k, '≈ ' + fa(Math.floor(k * 1000 / t.view)) + ' مشاهده'));
 
   renderCampaign();
@@ -4276,8 +4290,8 @@ function renderCampaign() {
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
   const badge = (id, cls) => { const el = $(id); if (el) { el.textContent = stateTxt; el.className = 'badge ' + cls; } };
 
-  /* کارتِ کمپین روی صفحهٔ محصول مالک */
-  set('#promoteTitle', 'کمپینِ «فروشنده ویژه» — ' + stateTxt);
+  /* کارت کمپین روی صفحهٔ محصول مالک */
+  set('#promoteTitle', 'کمپین «فروشنده ویژه» — ' + stateTxt);
   set('#promoteSub', fa(c.views) + ' مشاهدهٔ هدفمند · ' + fa(c.follows) + ' دنبال‌کردن تازه');
   badge('#promoteState', stopped || remaining === 0 ? 'b-stone' : 'b-amber');
   const f1 = $('#pcFormula'); if (f1) f1.innerHTML =
@@ -4297,15 +4311,15 @@ function renderCampaign() {
     : '<svg class="ic-sm"><use href="#i-bolt"/></svg> ادامهٔ کمپین — بودجهٔ بیشتر';
   const sb = $('#stopBtn'); if (sb) {
     sb.style.display = stopped ? 'none' : '';
-    sb.textContent = 'توقف کمپین — ' + faMoney(remaining) + ' تومانِ باقی‌مانده برمی‌گردد به کیف';
+    sb.textContent = 'توقف کمپین — ' + faMoney(remaining) + ' تومان باقی‌مانده به کیف برمی‌گردد';
   }
   const sc = $('#stopConfirm'); if (sc && stopped) sc.style.display = 'none';
   set('#repSlots', state.slots.board && state.slots.feed
-    ? 'جایگاه‌ها: تابلوی تأمینِ کالا + قیمت‌های دنبال‌شدهٔ خریدار'
-    : state.slots.board ? 'جایگاه: تابلوی تأمینِ کالا' : 'جایگاه: قیمت‌های دنبال‌شدهٔ خریدار');
+    ? 'جایگاه‌ها: تابلوی تأمین کالا + قیمت‌های دنبال‌شدهٔ خریدار'
+    : state.slots.board ? 'جایگاه: تابلوی تأمین کالا' : 'جایگاه: قیمت‌های دنبال‌شدهٔ خریدار');
 
   /* تاریخچهٔ کیف */
-  set('#histPromote', (stopped ? 'متوقف' : stateTxt.toLowerCase()) + ' · ' + fa(c.views) + ' مشاهده · ' + fa(c.follows) + ' دنبال‌کردن — گزارش');
+  set('#histPromote', (stopped ? 'متوقف' : stateTxt) + ' · ' + fa(c.views) + ' مشاهده · ' + fa(c.follows) + ' دنبال‌کردن — گزارش');
 }
 function askStop() {
   if (state.campaign.active === false) { toast('کمپین همین حالا متوقف است'); return; }
@@ -4324,8 +4338,8 @@ function stopCampaign() {
     if (hist) hist.insertAdjacentHTML('afterbegin',
       '<div class="hist-row refund" onclick="go(&quot;sc-campaign&quot;)" style="cursor:pointer">' +
       '<span class="h-ico plus"><svg><use href="#i-checkc"/></svg></span>' +
-      '<span class="tx"><b>+' + faMoney(remaining) + ' تومان — برگشتِ بودجهٔ کمپین</b>' +
-      '<span>توقفِ «برنج هاشمی درجه یک» · باقی‌مانده به کیف برگشت</span></span>' +
+      '<span class="tx"><b>+' + faMoney(remaining) + ' تومان — برگشت بودجهٔ کمپین</b>' +
+      '<span>توقف «برنج هاشمی درجه یک» · باقی‌مانده به کیف برگشت</span></span>' +
       '<span class="amt pos">+' + faMoney(remaining) + '</span></div>');
   }
   renderCampaign();
@@ -4358,7 +4372,7 @@ function pickBudget(el, amt) {
   syncMoneyUI();
 }
 function confirmPromote() {
-  if (state.balance < state.budgetSel) { toast('موجودی کیف کافی نیست — شارژ کن یا از دعوت بگیر'); return; }
+  if (state.balance < state.budgetSel) { toast('موجودی کیف پول کافی نیست — شارژ کن یا از دعوت بگیر'); return; }
   const wasStopped = state.campaign.active === false;
   state.balance -= state.budgetSel;
   state.campaign.budget += state.budgetSel;
@@ -4418,7 +4432,7 @@ function ctToggle(row) {
 function ctSend() {
   const n = $$('#sheet-contacts .ct-row.sel').length;
   closeSheet();
-  toast('برای ' + fa(n) + ' مخاطب فرستاد شد — دعوتی‌ها با پیامک');
+  toast('برای ' + fa(n) + ' مخاطب فرستاده شد — دعوت‌ها با پیامک');
 }
 function openSheetFollowers() {
   closeSheet();
@@ -4464,7 +4478,7 @@ function suRole(r) {
 }
 function suFinish() {
   setMode(state.suRole === 'sell' ? 'sell' : 'buy');
-  toast('حساب ساخته شد — به iMach خوش آمدی');
+  toast('حساب ساخته شد — به آی‌مچ خوش آمدی');
 }
 function loginDone() {
   setMode('buy');
@@ -4655,6 +4669,11 @@ function submitQuote() {
 }
 function quoteDone() { go('sc-sell-requests'); }
 
+/* v18 · C1-3: دوباره درخواست — خریدِ تکراری از تاریخچه با یک اقدام */
+function reRfq() {
+  toast('همان درخواست دوباره فرستاده شد — تأمین‌کننده‌های تازه هم خبردار می‌شوند');
+}
+
 /* ── v12: تخفیف‌ها — ۳ نوع مشتری (گذری/همکار/قراردادی) × ۳ سطح (کالا › گروه کالا › کاتالوگ) ── */
 const faDig = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 const faNum = n => faDig(Math.round(n).toLocaleString('en-US')).replace(/,/g, '٬');
@@ -4662,8 +4681,8 @@ const faPct = n => faDig((Math.round(n * 10) / 10).toLocaleString('en-US')).repl
 const enDig = s => String(s).replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[,٬\s]/g, '');
 const DS = {
   base: 89500,
-  cust: { p: 0, h: 5, q: 7 },                                  /* تخفیف مشتری — سطح کاتالوک */
-  tiers: [                                                      /* پله‌های حجم — سطح کاتالوک */
+  cust: { p: 0, h: 5, q: 7 },                                  /* تخفیف مشتری — سطح کاتالوگ */
+  tiers: [                                                      /* پله‌های حجم — سطح کاتالوگ */
     { from: 100, to: 200, pct: 1 },
     { from: 200, to: 300, pct: 2 },
     { from: 300, to: null, pct: 3 }
@@ -4684,13 +4703,13 @@ function tabPick(btn) {
   $$(bar.dataset.panels).forEach((p, i) => p.classList.toggle('on', i === idx));
 }
 
-/* ── درصد مشتری (کاتالوک) — زنده بازمحاسبه ── */
+/* ── درصد مشتری (کاتالوگ) — زنده بازمحاسبه ── */
 function dsCalc(inp, key) {
   const v = +enDig(inp.value || '۰');
   if (!isNaN(v)) DS.cust[key] = clampPct(v);
   dsSync();
 }
-/* ── درصد پلهٔ حجم (کاتالوک) ── */
+/* ── درصد پلهٔ حجم (کاتالوگ) ── */
 function tierCalc(inp, i) {
   const v = +enDig(inp.value || '۰');
   if (!isNaN(v)) DS.tiers[i].pct = clampPct(v);
@@ -4718,7 +4737,7 @@ function gTierSync() {
     el.textContent = 'همکارِ گروه: ٪' + faDig(pct) + ' → ' + faNum(DS.grp.base * (1 - pct / 100));
   });
 }
-/* ── همگام‌سازی کل صفحه: «می‌شود»ها + مثالِ پله‌ها + پیش‌نمایش ── */
+/* ── همگام‌سازی کل صفحه: «می‌شود»ها + مثال پله‌ها + پیش‌نمایش ── */
 function dsSync() {
   ['p', 'h', 'q'].forEach(k => {
     const el = $('#eq' + k.toUpperCase()); if (!el) return;
@@ -4742,7 +4761,7 @@ function geToggle(row) {
   $$('#sc-discount .grp-row.sel').forEach(r => r.classList.remove('sel'));
   if (!wasOpen) { ed.classList.add('open'); row.classList.add('sel'); }
 }
-/* ── پلهٔ جدید (کاتالوک) — داینامیک ── */
+/* ── پله جدید (کاتالوگ) — داینامیک ── */
 function tierAdd() {
   const host = $('#dsTiers'); if (!host) return;
   const row = document.createElement('div');
@@ -4752,7 +4771,7 @@ function tierAdd() {
     '<span class="ds-inp"><input class="inp" inputmode="numeric" placeholder="٪" oninput="tierNewCalc(this)"><i>٪</i></span>' +
     '<span class="ds-eq off">درصد را بنویس</span>';
   host.appendChild(row);
-  toast('پلهٔ جدید — آستانه و درصدش را بنویس؛ ذخیره که شود برای همهٔ خریداران فعال می‌شود');
+  toast('پله جدید — آستانه و درصدش را بنویس؛ بعد از ذخیره برای همهٔ خریداران فعال می‌شود');
 }
 function tierNewCalc(inp) {
   const row = inp.closest('.ds-tier');
@@ -4856,7 +4875,7 @@ function openItemDiscount(name, base) {
   });
   openSheet('sheet-item-discount');
 }
-/* ── شیت کالا: ۲ حالت — کاتالوک / اختصاصی ── */
+/* ── شیت کالا: ۲ حالت — کاتالوگ / اختصاصی ── */
 function pricingMode(n) {
   [1, 2].forEach(i => {
     $('#pm' + i).classList.toggle('sel', i === n);
@@ -4865,11 +4884,11 @@ function pricingMode(n) {
 }
 function itemPricingSave() {
   closeSheet();
-  toast('ذخیره شد — تخفیف‌های این کالا از همین لحظه روی قیمتِ خریدارانش می‌نشیند');
+  toast('ذخیره شد — تخفیف‌های این کالا از همین لحظه روی قیمت خریدارانش می‌نشیند');
 }
 function resetToCatalog() {
   pricingMode(1);
-  toast('برگشت به تنظیمات کاتالوک — تخفیف اختصاصی این کالا پاک شد؛ قیمت پایه مبنای همه‌چیز است');
+  toast('برگشت به تنظیمات کاتالوگ — تخفیف اختصاصی این کالا پاک شد؛ قیمت پایه مبنای همه‌چیز است');
 }
 /* ── شیت تخفیف گروهی چند کالا ── */
 function mixPick(row) {
@@ -4885,7 +4904,7 @@ function bulkChip(chip) {
 function bulkApply() {
   const n = $$('#sheet-bulk .chips .chip.active').length;
   closeSheet();
-  toast('خلاصهٔ اثر گروهی: ' + faDig(n * 2) + ' قیمت تغییر می‌کند و ' + faDig(n * 9) + ' دنبال‌کننده خبردار می‌شوند — پیش‌نمایش کامل قبل از اعمال');
+  toast('خلاصهٔ اثر گروهی: ' + faDig(n * 2) + ' قیمت تغییر می‌کند و ' + faDig(n * 9) + ' دنبال‌کننده باخبر می‌شوند — پیش‌نمایش کامل قبل از اعمال');
 }
 
 /* صفحهٔ شروع: تب مزایا (فروشنده/خریدار) */
@@ -4961,20 +4980,20 @@ function custTypePick(t) {
   const line = $('#drefLine'); if (line) line.innerHTML = c.line + '<b id="drefPrice">' + c.price + '</b> تومان / کیلو';
   const lbl = $('#drefTypeLbl'); if (lbl) lbl.textContent = c.label;
   closeSheet();
-  toast('رستوران مهر «' + c.label + '» تو شد — قیمتِ دفترِ تخفیف‌ها برای او ' + c.price + ' تومان شد');
+  toast('رستوران مهر «' + c.label + '» تو شد — قیمت دفتر تخفیف‌ها برای او ' + c.price + ' تومان شد');
 }
 function useDiscountPrice() {
   const p = $('#drefPrice');
   if (!p) return;
   $('#quotePrice').value = p.textContent;
   quoteCheck();
-  toast('قیمتِ دفترِ تخفیف‌ها گذاشته شد — ' + p.textContent + ' تومان / کیلو');
+  toast('قیمت دفتر تخفیف‌ها گذاشته شد — ' + p.textContent + ' تومان / کیلو');
 }
 
 /* ═══════════ v13: جزئیات درخواست — دادهٔ دو درخواست ═══════════ */
 const RFQS = {
-  m: { ava: 'م', bg: 'var(--teal-strong)', who: 'رستوران مهر', meta: 'رستوران · همدان · ۲ سال در iMach · خریدِ منظم هفتگی', type: 'همکار تو', good: 'برنج هاشمی · درجه یک', qty: '۵۰۰ کیلوگرم · هفتگی', dead: '۳ روز — بعدش به تأمین‌کنندهٔ بعدی می‌رسد', note: '«برنج تازهٔ آبان — اگر هست، تحویل پنج‌شنبه»', price: 'همکار ٪۵ + پلهٔ ۵۰۰ کیلو ٪۳ → ۸۲٬۳۴۰ تومان / کیلو' },
-  y: { ava: 'ی', bg: 'var(--emerald)', who: 'تالار پذیرایی یاس', meta: 'تالار · همدان · ۱ سال در iMach · مهمانی‌های آخرِ هفته', type: 'قراردادی تو', good: 'برنج هاشمی · درجه یک', qty: '۱ تن · ماهانه', dead: '۱ روز — درخواستِ فوری', note: '«برای ۲۰ مهر — بستهٔ ۱۰ کیلویی بهتر است»', price: 'قراردادی ٪۷ + پلهٔ ۱ تن ٪۳ → ۸۰٬۵۵۰ تومان / کیلو' }
+  m: { ava: 'م', bg: 'var(--teal-strong)', who: 'رستوران مهر', meta: 'رستوران · همدان · ۲ سال در آی‌مچ · خرید منظم هفتگی', type: 'همکار تو', good: 'برنج هاشمی · درجه یک', qty: '۵۰۰ کیلوگرم · هفتگی', dead: '۳ روز — بعدش به تأمین‌کنندهٔ بعدی می‌رسد', note: '«برنج تازهٔ آبان — اگر هست، تحویل پنج‌شنبه»', price: 'همکار ٪۵ + پلهٔ ۵۰۰ کیلو ٪۳ → ۸۲٬۳۴۰ تومان / کیلو' },
+  y: { ava: 'ی', bg: 'var(--emerald)', who: 'تالار پذیرایی یاس', meta: 'تالار · همدان · ۱ سال در آی‌مچ · مهمانی‌های آخرِ هفته', type: 'قراردادی تو', good: 'برنج هاشمی · درجه یک', qty: '۱ تن · ماهانه', dead: '۱ روز — درخواست فوری', note: '«برای ۲۰ مهر — بستهٔ ۱۰ کیلویی بهتر است»', price: 'قراردادی ٪۷ + پلهٔ ۱ تن ٪۳ → ۸۰٬۵۵۰ تومان / کیلو' }
 };
 function openRfqDetail(who) {
   const r = RFQS[who]; if (!r) return;
@@ -4993,7 +5012,7 @@ function groupCreate() {
   const n = ($('#ngName').value || '').trim();
   const k = $$('#sheet-new-group .chips .chip.active').length;
   closeSheet();
-  toast('گروه «' + (n || 'گروه تازه') + '» با ' + fa(k) + ' کالا ساخته شد — تخفیف‌هایش جای کاتالوک می‌نشیند');
+  toast('گروه «' + (n || 'گروه تازه') + '» با ' + fa(k) + ' کالا ساخته شد — تخفیف‌هایش جای کاتالوگ می‌نشیند');
 }
 function unitChipPick(btn) {
   const wrap = btn.parentElement;
@@ -5009,8 +5028,8 @@ function newGoodCreate() {
     const rows = $('#goodRows');
     if (rows) rows.insertAdjacentHTML('afterbegin',
       '<button class="row-card" style="width:100%;margin-bottom:8px" onclick="pickGood(this)">' +
-      '<span class="thumb lentil" style="width:38px;height:38px;border-radius:11px"><svg style="width:24px;height:24px"><use href="#a-lentil"/></svg></span>' +
-      '<span class="body"><span class="t" style="font-size:12.5px">' + n + ' <span class="badge b-amber">در انتظار تأیید</span></span>' +
+      '<span class="thumb lentil th-sm"><svg class="th-svg"><use href="#a-lentil"/></svg></span>' +
+      '<span class="body"><span class="t">' + n + ' <span class="badge b-amber">در انتظار تأیید</span></span>' +
       '<span class="s">واحد پایه: ' + unit + ' · بعد از تأیید ادمین برای همه ظاهر می‌شود</span></span></button>');
   }
   toast(n ? ('کالای «' + n + '» ساخته شد — در انتظار تأیید ادمین') : 'نام کالا را بنویس تا ساخته شود');
@@ -5028,8 +5047,8 @@ function impGo() {
   const m = [1, 2, 3].find(i => { const r = $('#impRow' + i); return r && r.classList.contains('sel'); });
   closeSheet();
   toast(m === 1 ? 'دوربین باز می‌شود — بارکد جعبه را نگه دار'
-    : m === 2 ? 'کاتالوک مرجع باز می‌شود — ۳۷۰+ کالای استاندارد'
-    : 'فایل اکسل را انتخاب کن — ستون‌ها خودشان شناسایی می‌شوند');
+    : m === 2 ? 'کاتالوگ مرجع باز می‌شود — ۳۷۰+ کالای استاندارد'
+    : 'فایل اکسل را انتخاب کن — ستون‌ها خودکار شناسایی می‌شوند');
 }
 
 /* ═══════════ v13: دسکتاپ + reveal ها ═══════════ */
@@ -5041,15 +5060,15 @@ function chatCall() {
 function rfqMore(btn) {
   btn.insertAdjacentHTML('beforebegin',
     '<div class="pick-row" onclick="rfqPick(this)">' +
-    '<div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--teal-strong)">ط</div>' +
+    '<div class="avatar av-sm" style="background:var(--teal-strong)">ط</div>' +
     '<span class="pk-tx"><b>برنج طبیعت غرب</b><span>۹۰٬۱۰۰ تومان · کرمانشاه · نقدی</span></span>' +
     '<span class="ckb"><svg><use href="#i-check"/></svg></span></div>' +
     '<div class="pick-row" onclick="rfqPick(this)">' +
-    '<div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--amber)">ک</div>' +
+    '<div class="avatar av-sm" style="background:var(--amber)">ک</div>' +
     '<span class="pk-tx"><b>شالی کوثر</b><span>۸۷٬۴۰۰ تومان · همدان · عندالتحویل</span></span>' +
     '<span class="ckb"><svg><use href="#i-check"/></svg></span></div>' +
     '<div class="pick-row" onclick="rfqPick(this)">' +
-    '<div class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;background:var(--fg-soft)">گ</div>' +
+    '<div class="avatar av-sm" style="background:var(--fg-soft)">گ</div>' +
     '<span class="pk-tx"><b>پخش طلایی همدان</b><span>۹۲٬۰۰۰ تومان · همدان · چک ۳۰ روزه</span></span>' +
     '<span class="ckb"><svg><use href="#i-check"/></svg></span></div>');
   btn.textContent = 'همهٔ ۶ تأمین‌کنندهٔ مرتبط نمایش داده شد';
@@ -5061,7 +5080,7 @@ function boardMore(btn) {
     '<div class="card sup-card tap" data-go="sc-sell-product-public">' +
     '<div class="head"><div class="avatar" style="background:' + bg + '">' + ava + '</div>' +
     '<div style="flex:1;min-width:0"><div class="nm">' + name + ' <span class="badge b-stone">' + city + '</span></div>' +
-    '<div class="mt"><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-pin"/></svg> ' + city + '</span><span style="display:inline-flex;align-items:center;gap:3px"><svg><use href="#i-clock"/></svg> امروز ۹:۲۰</span></div></div></div>' +
+    '<div class="mt"><span class="mt-i"><svg><use href="#i-pin"/></svg> ' + city + '</span><span class="mt-i"><svg><use href="#i-clock"/></svg> امروز ۹:۲۰</span></div></div></div>' +
     '<div class="price-line"><span class="p">' + price + '</span><span class="u">تومان / کیلوگرم</span></div>' +
     '<div class="pack-line">هر کیسهٔ ۱۰ کیلویی — <b>' + pack + '</b> تومان</div>' +
     '<div class="spec-grid">' +
@@ -5079,14 +5098,14 @@ function boardMore(btn) {
   btn.onclick = null;
 }
 const MORE_FOLLOWERS = [
-  ['س', 'سوپرمارکت آفتاب', 'سوپرمارکت', 'همدان · دنبال از ۸ روز پیش · نیاز ۲۰۰ کیلو/هفته', 'src-organic', 'eye', 'تابلو'],
-  ['ب', 'رستوران بهار', 'رستوران', 'کرج · دنبال از ۶ روز پیش · نیاز ۳۰۰ کیلو/هفته', 'src-link', 'share', 'لینک'],
+  ['س', 'سوپرمارکت آفتاب', 'سوپرمارکت', 'همدان · دنبال از ۸ روز پیش · نیاز ۲۰۰ کیلو در هفته', 'src-organic', 'eye', 'تابلو'],
+  ['ب', 'رستوران بهار', 'رستوران', 'کرج · دنبال از ۶ روز پیش · نیاز ۳۰۰ کیلو در هفته', 'src-link', 'share', 'لینک'],
   ['ن', 'نگین‌فروشی نعمتی', 'خرده‌فروش', 'همدان · دنبال از ۵ روز پیش', 'src-organic', 'eye', 'جست‌وجو'],
-  ['ک', 'کترینگ بانو', 'کترینگ', 'همدان · دنبال از ۴ روز پیش · نیاز ۱۵۰ کیلو/هفته', 'src-promo', 'star', 'ویژه'],
+  ['ک', 'کترینگ بانو', 'کترینگ', 'همدان · دنبال از ۴ روز پیش · نیاز ۱۵۰ کیلو در هفته', 'src-promo', 'star', 'ویژه'],
   ['ر', 'رستوران آرمان', 'رستوران', 'همدان · دنبال از ۳ روز پیش', 'src-link', 'share', 'لینک'],
-  ['ه', 'هتل ارک', 'هتل/تالار', 'همدان · دنبال از ۳ روز پیش · نیاز ۸۰ کیلو/هفته', 'src-organic', 'eye', 'تابلو'],
+  ['ه', 'هتل ارک', 'هتل/تالار', 'همدان · دنبال از ۳ روز پیش · نیاز ۸۰ کیلو در هفته', 'src-organic', 'eye', 'تابلو'],
   ['م', 'مغازهٔ مهرگان', 'خرده‌فروش', 'همدان · دنبال از ۲ روز پیش', 'src-link', 'share', 'لینک'],
-  ['ی', 'پذیرایی یلدا', 'تالار', 'اسدآباد · دنبال از دیروز · نیاز ۲۰۰ کیلو/ماه', 'src-organic', 'eye', 'تابلو'],
+  ['ی', 'پذیرایی یلدا', 'تالار', 'اسدآباد · دنبال از دیروز · نیاز ۲۰۰ کیلو در ماه', 'src-organic', 'eye', 'تابلو'],
   ['ف', 'فروشگاه افق', 'سوپرمارکت', 'همدان · دنبال از امروز', 'src-promo', 'star', 'ویژه']
 ];
 function followersMore(btn) {
@@ -5114,7 +5133,7 @@ function saversMore(btn) {
     '<div class="avatar" style="background:' + bgs[i % bgs.length] + '">' + f[0] + '</div>' +
     '<span class="tx"><b>' + f[1] + ' <span class="badge b-stone" style="margin-right:4px">' + f[2] + '</span></b><span>' + f[3] + '</span></span>' +
     '<span class="src-b ' + f[4] + '"><svg><use href="#i-eye"/></svg> ذخیره</span></div>').join(''));
-  btn.textContent = '۳۳ ذخیره‌کنندهٔ دیگر — در نسخهٔ اصلی با جست‌وجو و فیلترِ صنف/شهر';
+  btn.textContent = '۳۳ ذخیره‌کنندهٔ دیگر — در نسخهٔ اصلی با جست‌وجو و فیلتر صنف و شهر';
   btn.style.opacity = '.55';
   btn.onclick = null;
 }
@@ -5129,7 +5148,7 @@ const DESK_NAV = {
     { nav:'sc-buy-profile', ico:'#i-user',  t:'پروفایل' }
   ],
   sell: [
-    { nav:'sc-sell-catalog',   ico:'#i-store', t:'کاتالوک من' },
+    { nav:'sc-sell-catalog',   ico:'#i-store', t:'کاتالوگ من' },
     { nav:'sc-sell-requests',  ico:'#i-inbox', t:'درخواست‌های قیمت', dot:'۲' },
     { nav:'sc-msgs',      ico:'#i-msg',   t:'چت', dot:'۱' },
     { nav:'sc-sell-profile',   ico:'#i-user',  t:'پروفایل' }
@@ -5157,7 +5176,7 @@ function deskRender(arm) {
   }).join('');
   if (foot) foot.innerHTML = arm === 'sell'
     ? '<button class="db-side" onclick="go(\'sc-wallet\')"><span class="ico"><svg><use href="#i-wallet"/></svg></span><span class="tx"><b id="deskBal">' + faMoney(state.balance) + ' تومان</b><span>کیف پول — شارژ و کمپین</span></span><svg class="chev"><use href="#i-chev"/></svg></button>'
-    : '<button class="db-side" onclick="go(\'sc-suppliers\')"><span class="ico"><svg><use href="#i-bm"/></svg></span><span class="tx"><b>۳ کاتالوگ ذخیره‌شده</b><span>کالای جدیدشان را می‌بینی</span></span><svg class="chev"><use href="#i-chev"/></svg></button>';
+    : '<button class="db-side" onclick="go(\'sc-suppliers\')"><span class="ico"><svg><use href="#i-bm"/></svg></span><span class="tx"><b>۳ کاتالوگ ذخیره‌شده</b><span>کالاهای جدیدشان را می‌بینی</span></span><svg class="chev"><use href="#i-chev"/></svg></button>';
   const biz = DESK_BIZ[arm] || DESK_BIZ.buy;
   const nm = $('#deskBizName'), rl = $('#deskBizRole');
   if (nm) nm.textContent = biz[0];
@@ -5180,7 +5199,7 @@ function deskTitle(sc) {
   _deskTitleEl.textContent = src ? src.textContent.trim() : 'iMach';
   if (!bar.contains(_deskTitleEl)) bar.prepend(_deskTitleEl);
 }
-/* v14: در ورود به دسکتاپ، اگر تب پیش‌نمایشِ تخفیف‌ها فعال بود → برگرد به تب فرم */
+/* v14: در ورود به دسکتاپ، اگر تب پیش‌نمایش تخفیف‌ها فعال بود → برگرد به تب فرم */
 window.matchMedia('(min-width: 1024px)').addEventListener('change', e => {
   if (!e.matches) return;
   try {
