@@ -151,6 +151,12 @@ export interface BusinessSummaryDto {
   /** فاز ۹ (شکاف ۶) — دستیارهای فعال؛ null/غایب = هر دو روشن.
  *  سوییچر شل برای بیزینسِ تک‌بازو غیب می‌شود (تالار/هتل). */
   enabledArms?: EnabledArmsDto | null;
+  /** فاز ۶ مهاجرت — شمارهٔ تماس (sc-edit-biz) */
+  phone?: string | null;
+  /** فاز ۶ مهاجرت — ساعت پاسخگویی (sc-settings) */
+  hours?: string | null;
+  /** فاز ۶ مهاجرت — شرایط پرداخت پیش‌فرض (sc-settings) */
+  defaultPayTerm?: string | null;
 }
 
 /** فاز ۸ (طرح ۱۴) — چهار toggle اعلان پروفایل خریدار.
@@ -1034,6 +1040,9 @@ export const authApi = {
     api<{ ok: boolean }>("/auth/setPassword", { method: "POST", body }),
   refreshSession: () => api<AuthResponseDto>("/auth/refreshSession", { method: "POST", auth: false }),
   logoutUser: () => api<{ ok: boolean }>("/auth/logoutUser", { method: "POST" }),
+  /** فاز ۶ — من: کسب‌وکارها + ترجیحات نمایش (sync کراس-دستگاهی تم/رنگ) */
+  getMe: () =>
+    api<{ user: UserDto; businesses: BusinessSummaryDto[]; avatar: { url: string; thumbUrl: string | null } | null; prefs: UserPrefsDto }>("/auth/getMe"),
   /** ویرایش پروفایل — نام و نام خانوادگی مالک (در ویترین کاتالوگ نشان داده می‌شود) */
   editProfile: (body: { firstName?: string; lastName?: string }) =>
     api<{ user: UserDto }>("/auth/editProfile", { method: "POST", body }),
@@ -1114,8 +1123,15 @@ export const businessesApi = {
   getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),
   createBusiness: (body: { name: string; city: string; trade?: string; intent?: "sell" | "buy" | "both" }) =>
     api<BusinessSummaryDto & { slug: string }>("/businesses/createBusiness", { method: "POST", body }),
-  editBusiness: (id: string, body: { name?: string; city?: string; activityType?: string | null; trade?: string | null }) =>
-    api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
+  editBusiness: (id: string, body: {
+    name?: string;
+    city?: string;
+    activityType?: string | null;
+    trade?: string | null;
+    phone?: string | null;
+    hours?: string | null;
+    defaultPayTerm?: string | null;
+  }) => api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
   /** فاز ۳ (طرح ۰۱) — دسته‌های شخصی کاتالوگ: کل لیست یکجا replace می‌شود
    *  (ایجاد/تغییرنام/حذف/مرتب‌سازی idempotent)؛ حذف دسته آگهی‌هایش را بی‌دسته می‌کند */
@@ -1599,6 +1615,8 @@ export interface PromoReportDto {
   };
   viewers: { id: string; slug: string; name: string; city: string | null; isVerified: boolean }[];
   converted: { id: string; slug: string; name: string; city: string | null; isVerified: boolean }[];
+  /** فاز ۶ — رویدادهای خام با زمان: هر بیننده کِی دید و همان جلسه دنبال کرد یا نه */
+  viewerEvents: { viewerId: string; type: "VIEW" | "FOLLOW"; at: string }[];
 }
 
 export const promosApi = {
@@ -1777,4 +1795,79 @@ export const pricingApi = {
   /** تغییر نوع مشتری — روی یال فالو، توسط فروشنده */
   setCustType: (body: { businessId: string; buyerId: string; type: "PASSING" | "PARTNER" | "CONTRACT" }) =>
     api<{ ok: boolean }>("/pricing/custType", { method: "POST", body }),
+};
+
+// ─── فاز ۶ مهاجرت — چت کاری (ChatModule · sc-msgs / sc-chat) ───
+
+/** طرف مقابل گفتگو — پروجکت‌شدهٔ امن کسب‌وکار */
+export interface ChatOtherDto {
+  id: string;
+  slug: string;
+  name: string;
+  trade: string | null;
+  city: string;
+  isVerified: boolean;
+  catalogCount: number;
+  phone: string | null;
+}
+
+export interface ThreadRowDto {
+  id: string;
+  side: "a" | "b";
+  other: ChatOtherDto;
+  lastText: string | null;
+  lastAt: string;
+  unread: number;
+}
+
+export interface ChatMessageDto {
+  id: string;
+  mine: boolean;
+  text: string;
+  file: { id: string; url: string; thumbUrl: string | null; name: string } | null;
+  createdAt: string;
+}
+
+export interface ThreadDetailDto {
+  id: string;
+  other: ChatOtherDto;
+  messages: ChatMessageDto[];
+}
+
+export const chatApi = {
+  /** فهرست گفتگوهای من + جمع نخوانده (بج تب چت) */
+  getThreads: () =>
+    api<{ items: ThreadRowDto[]; unreadTotal: number }>("/chat/getThreads"),
+  /** شروع/یافتن گفتگو با یک کسب‌وکار */
+  startThread: (businessId: string, withBusinessId: string) =>
+    api<{ id: string; other: ChatOtherDto; created: boolean }>("/chat/startThread", {
+      method: "POST",
+      body: { businessId, withBusinessId },
+    }),
+  /** جزئیات + ۱۰۰ پیام آخر — باز کردن = خواندن */
+  getThread: (id: string) => api<ThreadDetailDto>(`/chat/getThread/${id}`),
+  /** ارسال پیام — متن (≤۲۰۰۰) + پیوست اختیاری عکس */
+  sendMessage: (threadId: string, text: string, fileId?: string) =>
+    api<ChatMessageDto>("/chat/sendMessage", {
+      method: "POST",
+      body: { threadId, text, fileId },
+    }),
+};
+
+// ─── فاز ۶ مهاجرت — ترجیحات نمایش کاربر (تم/رنگ arm/زبان) ───
+
+export interface UserPrefsDto {
+  theme: "light" | "dark";
+  armBuyColor: string | null;
+  armSellColor: string | null;
+}
+
+export const prefsApi = {
+  /** ذخیرهٔ ادغایی ترجیحات — همان مقادیر برمی‌گردد */
+  setPrefs: (body: {
+    theme?: "light" | "dark";
+    armBuyColor?: string | null;
+    armSellColor?: string | null;
+    lang?: string;
+  }) => api<UserPrefsDto & { lang?: string }>("/auth/setPrefs", { method: "POST", body }),
 };

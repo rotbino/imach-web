@@ -17,6 +17,7 @@ import {
   useWatchedBuyerNeeds,
   useFollows,
   useWallet,
+  useThreads,
 } from "@/lib/queries";
 
 export function useShellData() {
@@ -28,6 +29,7 @@ export function useShellData() {
   const needs = useWatchedBuyerNeeds(bizId);
   const follows = useFollows(bizId);
   const wallet = useWallet(bizId);
+  const threads = useThreads();
 
   return {
     biz,
@@ -37,5 +39,7 @@ export function useShellData() {
     requestsCount: needs.data?.buyers ?? 0,
     followsCount: follows.data?.length ?? 0,
     walletBalanceMinor: wallet.data?.balanceMinor ?? null,
+    // فاز ۶ — بج چت: جمع نخواندهٔ واقعی گفتگوها
+    chatUnread: threads.data?.unreadTotal ?? 0,
   };
 }

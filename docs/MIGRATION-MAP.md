@@ -57,25 +57,25 @@ app/
 | ۶ | sc-board | (app)/board/[goodId] | ۳ ✅ | BoardPage(SortChips, SupCard, FollowToggle) | GET /market/getSupplyBoard · followSupplier | market | Listing, Follow |
 | ۷ | sc-suppliers | (app)/saved | ۳ ✅ | SavedCatalogs(SavedCard) | GET /market/getFollows · unfollowSupplier | market | Follow |
 | ۸ | sc-offers | (app)/offers | ۴ ✅ | OffersView(RfqCard, DetailPane, FilterChips, StatusSheet) | GET /market/getMyRfqs · POST /market/setOfferStatus/:id | market | Inquiry(+rfqGroupId/targetPrice/deliveryCity), Offer(+status) |
-| ۹ | sc-buy-profile | (app)/profile | ۶ | BizCard, ArmSwitch, ThemeSwitch | GET /businesses/me, PATCH /businesses/me | businesses | Business |
+| ۹ | sc-buy-profile | (app)/profile | ۶ ✅ | ProfileView(BizCard+StatsRow زنده: کالا/استعلام/دنبال‌شده، ArmsSection, AccountRows: پیام‌ها/اعلان‌ها/زبان/خروج) | getWatchedGoods · getMyRfqs · getFollows · setArms · logout | market, auth | WatchedGood, Inquiry, Follow |
 | ۱۰ | sc-sell-requests | (app)/sell/requests | ۴ ✅ | RequestsView(ToMeTab, MarketTab, NeedAlertsTab, DeadlineBadge) | GET /market/getInquiries · getBuyRequests · getWatchedBuyerNeeds · POST markInquiryRead | market, matching | Inquiry, Listing, Follow |
 | ۱۱ | sc-sell-catalog | (app)/sell/catalog | ۵ ✅ | CatalogView(BizCard, TasksRow, InsightStrip, ShareStrip, ChipsGrid, PCard, QuickPriceSheet, FollowersSheet) | GET /market/getMyListings · getMyFollowers · getInquiries · getSaverAnalysis · getMyPromos · PUT /listings/saveListing | market, listings | Listing, Business, Follow, WatchedGood |
 | ۱۲ | sc-sell-product-owner | (app)/sell/product/[id] | ۵ ✅ | ProductView(InsightBar+SourceBreakdown, PricePanel, DiscountStrip زنده, RatesSheet, ItemDiscountSheet, FollowersSheet+custType, ArchiveAsk) | GET /market/getMyListings · getSaverAnalysis · getInquiries · getMyPromos · getPromoReport · GET /pricing/state · preview · POST /listings/setListingActive | market, pricing | Listing, DiscountRule, Follow(+custType) |
 | ۱۳ | sc-sell-product-public | (pub)/p/[slug] | ۷ | PublicProduct, PriceHistoryChart, SellerCard | GET /pages/slug, GET /listings/:id/public | pages, listings | Page, Listing |
 | ۱۴ | sc-discount | (app)/sell/discounts | ۵ ✅ | DiscountsView(FormulaFlow زنده, TabCust/TabVolume/TabPreview, CatalogRows+«می‌شود X», GroupLvlEdit, TierRows, PreviewBreakdown با منبع) | GET /pricing/state · preview · PUT /pricing/catalog · group/:refId · item/:listingId · bulk · POST custType · PUT /businesses/catalogCategories | pricing(جدید), businesses | DiscountRule(جدید), Business.customCategories |
-| ۱۵ | sc-sell-profile | (app)/profile (arm=sell) | ۶ | StorefrontProfile, StatsCard | GET /businesses/me | businesses | Business, Page |
+| ۱۵ | sc-sell-profile | (app)/profile (arm=sell) | ۶ ✅ | همان ProfileView — داده/آمار per-arm (کاتالوک/استعلام‌ها/دنبال‌کننده‌ها از getMyListings·getInquiries·getMyFollowers) | market | Listing, Follow |
 | ۱۶ | sc-rfq | (app)/rfq/[goodId] | ۴ ✅ | RfqWizard(SupplierPicker, VolumeFreq, TimingChips, TargetPrice, Note) | GET /market/getSupplyBoard · getMyRfqs · POST /market/requestQuote | market, matching | Inquiry(+rfqGroupId) — گروه‌بندی با rfqGroupId، نه مدل RfqDetail جداست |
 | ۱۷ | sc-quote | (app)/sell/quote/[id] | ۴ ✅ | QuoteForm(PriceComposer, PayTermChips, DelivTermChips, PackPrice, Deadline) | GET /market/getQuoteContext · POST /market/sendOffer · offerBuyRequest | market, offers | Offer(+payTerm/delivTerm) |
-| ۱۸ | sc-campaign | (app)/sell/campaign | ۶ | CampaignForm, BudgetBar, PromoPreview | POST /promos, GET /promos/me | promos | Promo, PromoEvent, Wallet, WalletTxn |
-| ۱۹ | sc-wallet | (app)/wallet | ۶ | BalanceCard, TxnList, InviteCreditCard | GET /wallet, GET /wallet/txns | wallet | Wallet, WalletTxn |
-| ۲۰ | sc-charge | (app)/wallet/charge | ۶ | ChargeForm, GatewayPanel | POST /wallet/charge | wallet | WalletTxn |
+| ۱۸ | sc-campaign | (app)/sell/campaign | ۶ ✅ | CampaignView(StatCards: مشاهده/دنبال‌کردن/هزینه، FormulaLine, ViewerEvents «چه کسانی دیدند؟» با زمان دقیق, Stop/Continue/Charge) | GET /promos/report(+viewerEvents) · mine · POST /promos/stop | promos | Promo, PromoEvent, Wallet, WalletTxn |
+| ۱۹ | sc-wallet | (app)/wallet | ۶ ✅ | WalletView(BalanceCard, RateNote شفاف, TxnList واقعی, InviteCreditCard «پول از کجا می‌آید؟», CampaignLink) | GET /wallet/get · /promos/mine · /promos/report | wallet, promos | Wallet, WalletTxn |
+| ۲۰ | sc-charge | (app)/wallet/charge | ۶ ✅ | ChargeForm(QuickAmounts, CustomAmount با هزارگان فارسی, EstimateNote, زرین‌پال شبیه‌سازی + SuccessPanel با رسید) | POST /wallet/charge | wallet | WalletTxn |
 | ۲۱ | sc-search | (app)/search | ۳ | SearchBar, GoodResult, RecentChips | GET /goods?q (جستجوی موجود) | goods | Good, Brand |
 | ۲۲ | sc-add-item | (app)/add | ۳ | AddFlow(NewGood/Import/QuickSearch), FreqPicker | GET /goods?q, POST /watched-goods | watchedGoods | WatchedGood, GoodCreation(جدید) |
-| ۲۳ | sc-msgs | (app)/msgs | ۶ | ThreadList, UnreadBadge | ➕ GET /threads (جدید) | chat(جدید) | Thread/Message (جدید) |
-| ۲۴ | sc-chat | (app)/msgs/[id] | ۶ | ChatView, Composer, AttachTray | ➕ GET/POST /threads/:id/messages | chat(جدید) | Message (جدید) |
-| ۲۵ | sc-notifications (شیت sheet-notif هم) | (app)/notifications + sheet | ۶ | NotifList, NotifRow | GET /notifications, POST /notifications/read | notifications | Notification |
-| ۲۶ | sc-settings | (app)/settings | ۶ | SettingsList, ThemeSection(روشن/تاریک/رنگ arm), LangSection(fa/en/ar), CurrencySection | GET/PATCH /users/me/prefs | users | User(prefs) |
-| ۲۷ | sc-edit-biz | (app)/settings/business | ۶ | BizEditForm, LocationPicker, LogoUpload | PATCH /businesses/me, POST /files | businesses, files | Business, File |
+| ۲۳ | sc-msgs | (app)/msgs | ۶ ✅ | MsgsView(ThreadList با شهر/نقش, UnreadBadge, poll ۲۰s) | ➕ GET /chat/getThreads (ChatModule جدید) | chat(جدید) | Thread/Message (جدید در Atlas) |
+| ۲۴ | sc-chat | (app)/msgs/[id] | ۶ ✅ | ChatView(QuickChips چهار جملهٔ Prototype, Composer, AttachTray پیوست عکس, poll ۵s, readAt خودکار) | ➕ POST /chat/startThread · GET /chat/getThread/:id · POST /chat/sendMessage · /files/upload | chat, files | Message(+fileId), File |
+| ۲۵ | sc-notifications (شیت sheet-notif هم) | (app) شیت سراسری روی زنگ appbar | ۶ ✅ | NotifSheet(گروه‌بندی نوع, MarkAllRead, بج unread در appbar) | GET /notifications · POST /notifications/readAll | notifications | Notification |
+| ۲۶ | sc-settings | (app)/settings | ۶ ✅ | SettingsView(NotifToggles زندهٔ NotifPrefs + Push, LangSegmented fa/en/ar, CitySelect, بخش «نما»: ThemeSegmented روشن/تاریک + ArmColorPicker ۴پالت, ساعات پاسخگویی/شرایط پرداخت) | POST /auth/setPrefs (User.prefs) · setNotifPrefs · PATCH /businesses/editBusiness (+phone/hours/defaultPayTerm) | auth, market, businesses | User(+prefs), Business(+hours/defaultPayTerm), NotifPrefs |
+| ۲۷ | sc-edit-biz | (app)/settings/business | ۶ ✅ | EditBizForm(BizName, ActivityType, CitySelect, PhoneField روی کاتالوگ) | PATCH /businesses/editBusiness (+phone/hours/defaultPayTerm) | businesses | Business |
 | ۲۸ | sc-catalog-public | (pub)/c/[slug] | ۷ | PublicCatalog, ProductGrid, FollowBar | GET /pages/slug, POST /follows | pages, follows | Page, Listing, Follow |
 | ۲۹ | sc-list-public | (pub)/b/[slug] | ۷ | PublicList, RfqCta | GET /pages/slug (type=LIST) | pages | Page |
 | ۳۰ | sc-desktop / sc-empty | رفتار ریسپانسیو / الگوی خالی | ۱ | AppShell ≥۹۲۰px · EmptyState | — | — | — |
@@ -156,3 +156,17 @@ app/
 Good=2479 · Product=40417 · Brand=3769 · Category=207 · Unit=62 · Business=35 · User=6 · Listing=38 · Page=68 · Follow=35 · WatchedGood=16 · Inquiry=9 · Offer=2 · PriceLog=9 · Notification=13 · Wallet=1 · PromoEvent=8 · RefreshToken=438 · File=2 — (بک‌آپ کامل: `imach-back/backups/migration/2026-10-05/manifest.json`)
 
 **پایان فاز ۵ (2026-10-06)**: Business=38 · User=9 · Listing=41 · Page=75 · Follow=38 · WatchedGood=17 · Inquiry=13 · Offer=6 · PriceLog=14 · Notification=27 · Wallet=5 · RefreshToken=573 · DiscountRule=3 — رشد همه فقط از دیتای تست E2E (ثبت‌نام فاز۳/۴ + لیستینگ‌ها و قواعد قیمت فاز۵)؛ مرجع‌ها دست‌نخورده: Good=2479 · Product=40417 · Brand=3769 · Category=207 · Unit=62 ✓
+
+**پایان فاز ۶ (2026-10-06)**: Thread=2 · Message=5 (E2E چت) · Promo=2 (+۱ کمپین جدید برنج صدری) · PromoEvent=9 (+۱ VIEW) · WalletTxn=4 (+۲: شارژ ۱۰۰هزار خریدار + قفل بودجهٔ کمپین) · WatchedGood=18 (+۱) · Business=38 · User=9 (۲ کاربر prefs دارند: تم/رنگ) · Business با hours/defaultPayTerm پر شده — مرجع‌ها دست‌نخورده: Good=2479 · Product=40417 · Brand=3769 · Category=207 · Unit=62 ✓
+
+**تطبیق‌های آگاهانهٔ جدید فاز ۶:**
+| موضوع | در Prototype | در پیاده‌سازی | دلیل |
+|---|---|---|---|
+| شیت اعلان‌ها | صفحهٔ مستقل + شیت | فقط شیت سراسری روی زنگ (بدون صفحهٔ مستقل) | Prototype هم شیت را میزبان اصلی می‌داند؛ صفحهٔ جدا تکرار مرده بود |
+| ردیف ویژهٔ خانهٔ خریدار | کارت sup-card کامل (tab تابلو) | row-card فشرده با badge-sponsor → لینک به /board | خانه = خلاصه است در Prototype (کارت کامل متعلق به تابلو است)؛ دادهٔ promo در getPriceBoard هست |
+| sc-campaign چند-کمپین | تک-گزارش | گزارش فعال‌ترین کمپین + ورودی راه‌اندازی از شیت promote | الگوی ذهنی «یک کمپین فعال به‌ازای کالا»؛ بودجه‌بندی جدید از همان شیت |
+| OTP-مانند ورود چت | دمو | چت با احراز هویت همان session | منطق موجود |
+| پیوست عکس چت | آپلود مستقیم | /files/upload موجود + fileId روی Message | همان مسیر امن فایل موجود (از اپ قدیم) |
+| تم sc-settings | سوییچ درون صفحهٔ تنظیمات | همان + sync کراس-دستگاهی (User.prefs) | الزام مالک: «سوییچ تم از پروفایل» + بین دستگاه‌ها |
+| پرداخت شارژ | درگاه زرین‌پال | شبیه‌سازی موفق + رسید (زیرساخت آماده) | اتصال واقعی به درگاه فقط برای ایران در فاز ۸ + سوییچ ادمین |
+| CurrencySection در sc-settings | انتخاب ارز | فاز ۸ | الزام ارز بعد از تکمیل i18n برنامه‌ریزی شده؛ فاز ۶ فقط زیرساخت ذخیره prefs را گذاشت |

@@ -25,7 +25,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActiveBusiness } from "@/lib/active-biz";
-import { useMyRfqs, useSetOfferStatus } from "@/lib/queries";
+import { useMyRfqs, useSetOfferStatus, useStartThread } from "@/lib/queries";
 import type { RfqGroupDto, RfqOfferDto } from "@/lib/api";
 import { fa, fmtMoney, goodName, timeAgo, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -92,6 +92,38 @@ const currencyWord = (currency: string, locale: string): string =>
   currency === "IRR" ? (locale === "en" ? "Toman" : "تومان") : currency;
 
 /** کارت پیشنهاد (sup-card) — تماس/وضعیت + قیمت + شرایط */
+/** فاز ۶ — دکمهٔ چت روی کارت پیشنهاد (همان sc-offers Prototype): شروع گفتگو با تأمین‌کنندهٔ این پیشنهاد */
+function ChatButton({ sellerId }: { sellerId: string }) {
+  const m = useMessages();
+  const router = useRouter();
+  const biz = useActiveBusiness();
+  const startThread = useStartThread();
+  const [busy, setBusy] = useState(false);
+
+  const open = async () => {
+    if (!biz || busy) return;
+    setBusy(true);
+    try {
+      const res = await startThread.mutateAsync({ businessId: biz.id, withBusinessId: sellerId });
+      router.push(`/msgs/${res.id}`);
+    } catch {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <button
+      className="btn btn-soft btn-sm"
+      onClick={() => void open()}
+      disabled={busy || !biz}
+      aria-label={`${m.app.tabs.chat} — ${sellerId}`}
+    >
+      <Icon className="ic-sm" name="i-msg" />
+      {m.app.tabs.chat}
+    </button>
+  );
+}
+
 function OfferCard({
   offer,
   unit,
@@ -153,6 +185,7 @@ function OfferCard({
       </div>
 
       <div className="acts">
+        <ChatButton sellerId={offer.sellerId} />
         {offer.seller.phone ? (
           <a
             className="btn btn-soft btn-sm"

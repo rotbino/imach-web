@@ -37,6 +37,7 @@ import { Spinner } from "@/components/imach/spinner";
 import { useToast } from "@/hooks/use-toast";
 import { QuickPriceSheet } from "../_shared/quickprice-sheet";
 import { FollowersSheet } from "../_shared/followers-sheet";
+import { PromoteSheet } from "../_shared/promote-sheet";
 
 type Pack = { label: string; qty?: number; priceMinor?: number; stock?: number };
 
@@ -61,6 +62,7 @@ export function CatalogView() {
   const promosQ = useMyPromos(bizId);
 
   const [q, setQ] = useState("");
+  const [promoteOpen, setPromoteOpen] = useState(false);
   const [cat, setCat] = useState<string | null>(null);
   const [quickListing, setQuickListing] = useState<GoodItemDto | null>(null);
   const [followersOpen, setFollowersOpen] = useState(false);
@@ -74,6 +76,7 @@ export function CatalogView() {
   const views30 = active.reduce((s, l) => s + (l.viewCount30 ?? 0), 0);
   const saverCount = (listingId: string): number =>
     (saversQ.data?.items ?? []).find((x) => x.listingId === listingId)?.saverCount ?? 0;
+  const activePromos = (promosQ.data ?? []).filter((p) => p.isActive);
   const promoOf = (listingId: string): boolean =>
     (promosQ.data ?? []).some((p) => p.listingId === listingId && p.isActive);
 
@@ -131,7 +134,10 @@ export function CatalogView() {
             <span style={{ fontSize: 12.5, fontWeight: 700 }}>{t.loading as string}</span>
           </div>
         </div>
-        <Tabbar active="catalog" />
+        {/* فاز ۶ — شیت فروشندهٔ ویژه */}
+      <PromoteSheet open={promoteOpen} onClose={() => setPromoteOpen(false)} />
+
+      <Tabbar active="catalog" />
       </section>
     );
   }
@@ -167,7 +173,10 @@ export function CatalogView() {
             </Link>
           </div>
         </div>
-        <Tabbar active="catalog" />
+        {/* فاز ۶ — شیت فروشندهٔ ویژه */}
+      <PromoteSheet open={promoteOpen} onClose={() => setPromoteOpen(false)} />
+
+      <Tabbar active="catalog" />
       </section>
     );
   }
@@ -194,7 +203,7 @@ export function CatalogView() {
               {(t.lastUpdate as string).replace("{ago}", lastUpdate ? timeAgo(lastUpdate) : "—")}
             </div>
           </div>
-          <Link className="icon-btn" href="/sell/wallet" title={t.walletAria as string} aria-label={t.walletAria as string}>
+          <Link className="icon-btn" href="/wallet" title={t.walletAria as string} aria-label={t.walletAria as string}>
             <Icon className="ic" name="i-wallet" />
           </Link>
         </div>
@@ -251,6 +260,21 @@ export function CatalogView() {
           <span className="st opt">{t.optionalTag as string}</span>
           <Icon className="chev" name="i-chev" />
         </Link>
+
+        {/* فاز ۶ — ورودی کمپین «فروشندهٔ ویژه» (میزبان sheet-promote طبق نقشه) */}
+        <button className="price-entry" style={{ width: "100%", textAlign: "right" }} onClick={() => setPromoteOpen(true)}>
+          <Icon name="i-bolt" />
+          <span className="tx">
+            {m.app.promote.entryT}
+            <small>{m.app.promote.entryS}</small>
+          </span>
+          {activePromos.length > 0 ? (
+            <span className="badge b-amber">{m.app.profile.active}</span>
+          ) : (
+            <span className="st opt">{m.app.sellCatalog.optionalTag as string}</span>
+          )}
+          <Icon className="chev" name="i-chev" />
+        </button>
 
         {/* جستجو + افزودن */}
         <div style={{ display: "flex", gap: 8, marginTop: 11 }}>
@@ -356,6 +380,9 @@ export function CatalogView() {
           <span>{t.hint as string}</span>
         </div>
       </div>
+
+      {/* فاز ۶ — شیت فروشندهٔ ویژه */}
+      <PromoteSheet open={promoteOpen} onClose={() => setPromoteOpen(false)} />
 
       <Tabbar active="catalog" />
 

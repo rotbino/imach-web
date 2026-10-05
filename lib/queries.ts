@@ -52,6 +52,12 @@ import {
   type PricingTier,
   type PricingStateDto,
   type PricingPreviewDto,
+  type ThreadRowDto,
+  type ThreadDetailDto,
+  type ChatMessageDto,
+  type UserPrefsDto,
+  chatApi,
+  prefsApi,
 } from "./api";
 import { useAuthStore } from "./auth-store";
 
@@ -331,6 +337,9 @@ export function useEditBusiness() {
       lat?: number | null;
       lng?: number | null;
       address?: string | null;
+      phone?: string | null;
+      hours?: string | null;
+      defaultPayTerm?: string | null;
     }) => businessesApi.editBusiness(id, body),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });
@@ -1031,5 +1040,75 @@ export function useSetCustType() {
       void qc.invalidateQueries({ queryKey: ["market", "myFollowers", vars.businessId] });
       void qc.invalidateQueries({ queryKey: ["market", "saverAnalysis", vars.businessId] });
     },
+  });
+}
+
+// ─── فاز ۶ مهاجرت — چت کاری + ترجیحات نمایش ───
+
+const chatKey = ["chat"] as const;
+
+/** فهرست گفتگوها — poll سبک برای بج زندهٔ چت (۲۰s) */
+export function useThreads(): UseQueryResult<{ items: ThreadRowDto[]; unreadTotal: number }> {
+  return useQuery({
+    queryKey: [...chatKey, "threads"],
+    queryFn: () => chatApi.getThreads(),
+    refetchInterval: 20_000,
+    staleTime: 15_000,
+  });
+}
+
+/** جزئیات گفتگو + پیام‌ها — poll برای دریافت پاسخ‌های تازه (۵s روی صفحهٔ چت) */
+export function useThread(id: string | null): UseQueryResult<ThreadDetailDto> {
+  return useQuery({
+    queryKey: [...chatKey, "thread", id],
+    queryFn: () => chatApi.getThread(id as string),
+    enabled: !!id,
+    refetchInterval: 5_000,
+    staleTime: 3_000,
+  });
+}
+
+/** شروع گفتگو — اینوالیدیشن فهرست */
+export function useStartThread() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (v: { businessId: string; withBusinessId: string }) =>
+      chatApi.startThread(v.businessId, v.withBusinessId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: [...chatKey, "threads"] });
+    },
+  });
+}
+
+/** ارسال پیام — append optimistic نداریم؛ اینوالیدیشن thread (پاسخ سرور معتبر) */
+export function useSendMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (v: { threadId: string; text: string; fileId?: string }) =>
+      chatApi.sendMessage(v.threadId, v.text, v.fileId),
+    onSuccess: (_res, vars) => {
+      void qc.invalidateQueries({ queryKey: [...chatKey, "thread", vars.threadId] });
+      void qc.invalidateQueries({ queryKey: [...chatKey, "threads"] });
+    },
+  });
+}
+
+/** ترجیحات نمایش — تم/رنگ arm (فاز ۶ · الزام مالک) */
+export function useSetPrefs() {
+  return useMutation({
+    mutationFn: (body: Parameters<typeof prefsApi.setPrefs>[0]) => prefsApi.setPrefs(body),
+  });
+}
+
+/** من — برای sync کراس-دستگاهی prefs (یک‌بار در هر نشست) */
+export function useMeOnce(): UseQueryResult<{
+  user: { id: string; name: string };
+  prefs: UserPrefsDto;
+}> {
+  return useQuery({
+    queryKey: ["me", "prefs"],
+    queryFn: () => authApi.getMe(),
+    staleTime: Infinity,
+    retry: false,
   });
 }

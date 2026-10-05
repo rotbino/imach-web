@@ -62,6 +62,14 @@ export function BuyerHome() {
   const offersCount = rfqs.data?.recentOfferCount ?? 0;
   const followsCount = follows.data?.length ?? 0;
 
+  /** فاز ۶ — ردیف‌های «فروشندهٔ ویژه»: پروموهای تزریق‌شدهٔ تابلو (U05/U06).
+   *  هدف‌گیری سمت سرور انجام شده (فقط کالاهای لیست من، از فروشنده‌ای که
+   *  کاتالوکش را ذخیره نکرده‌ام) — اینجا فقط نمایش با برچسب شفاف ویژه. */
+  const promoRows = useMemo(
+    () => (board.data?.rows ?? []).filter((r) => r.promo !== null),
+    [board.data]
+  );
+
   /** جدیدترین به‌روزرسانیِ تابلوی هر کالا (خوراک getPriceBoard) */
   const lastUpdateByGood = useMemo(() => {
     const map = new Map<string, string>();
@@ -314,6 +322,43 @@ export function BuyerHome() {
             })}
           </div>
         )}
+
+        {/* فاز ۶ — ردیف‌های «فروشندهٔ ویژه» (جایگاه قیمت‌های دنبال‌شدهٔ خریدار).
+            هدف‌گیری سمت سرور (U06): فقط کالاهایی که رصد می‌کنم و کاتالوک فروشنده‌اش
+            را ذخیره نکرده‌ام — شفاف با برچسب ویژه؛ رتبهٔ تطبیق مستقل می‌ماند. */}
+        {promoRows.length > 0 ? (
+          <div className="g2" style={{ marginTop: 10 }}>
+            {promoRows.map((r) => (
+              <Link
+                key={`promo-${r.promo!.promoId}`}
+                className="row-card"
+                href={`/board/${r.goodId}`}
+                style={{ borderColor: "color-mix(in srgb, var(--amber) 42%, transparent)" }}
+              >
+                <span className="thumb">
+                  <Icon name="i-star" />
+                </span>
+                <div className="body">
+                  <div className="t">
+                    {r.goodName}{" "}
+                    <span className="badge-sponsor">
+                      <Icon name="i-star" /> {m.app.board.sponsor}
+                    </span>
+                  </div>
+                  <div className="pl">
+                    <b>{fa((r.promo!.priceMinor ?? 0) / 10)}</b>
+                    <span className="u">{`تومان / ${unitLabel(r.unit ?? "KG", locale)}`}</span>
+                  </div>
+                  <div className="s">
+                    {r.promo!.supplier.name}
+                    {r.promo!.supplier.city ? ` · ${r.promo!.supplier.city}` : ""}
+                  </div>
+                </div>
+                <Icon className="chev" name="i-chev" />
+              </Link>
+            ))}
+          </div>
+        ) : null}
 
         <div className="hint">
           <Icon name="i-info" />

@@ -16,7 +16,7 @@ import { useMessages } from "@/i18n/messages/use-messages";
 
 export function Deskbar() {
   const { arm, setArm } = useShell();
-  const { biz, offersCount, requestsCount, followsCount, walletBalanceMinor } = useShellData();
+  const { biz, offersCount, requestsCount, followsCount, walletBalanceMinor, chatUnread } = useShellData();
   const m = useMessages();
   const pathname = usePathname();
 
@@ -31,7 +31,12 @@ export function Deskbar() {
             href: "/offers",
             dot: offersCount > 0 ? fa(offersCount) : undefined,
           },
-          { icon: "i-msg", label: m.app.tabs.chat, href: "#" },
+          {
+            icon: "i-msg",
+            label: m.app.tabs.chat,
+            href: "/msgs",
+            dot: chatUnread > 0 ? fa(chatUnread) : undefined,
+          },
           { icon: "i-user", label: m.app.tabs.profile, href: "/profile" },
         ]
       : [
@@ -42,7 +47,12 @@ export function Deskbar() {
             href: "/sell/requests",
             dot: requestsCount > 0 ? fa(requestsCount) : undefined,
           },
-          { icon: "i-msg", label: m.app.tabs.chat, href: "#" },
+          {
+            icon: "i-msg",
+            label: m.app.tabs.chat,
+            href: "/msgs",
+            dot: chatUnread > 0 ? fa(chatUnread) : undefined,
+          },
           { icon: "i-user", label: m.app.tabs.profile, href: "/profile" },
         ];
 
@@ -106,7 +116,7 @@ export function Deskbar() {
             <Icon name="i-chev" className="chev" />
           </Link>
         ) : (
-          <Link className="db-side" href="/sell/wallet">
+          <Link className="db-side" href="/wallet">
             <span className="ico">
               <Icon name="i-wallet" />
             </span>

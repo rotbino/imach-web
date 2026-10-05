@@ -39,6 +39,7 @@ import { ProductSettingsDialog } from "@/app/sell/product-settings";
 import { QuickPriceSheet } from "../../_shared/quickprice-sheet";
 import { ItemDiscountSheet } from "../../_shared/item-discount-sheet";
 import { RatesSheet } from "../../_shared/rates-sheet";
+import { PromoteSheet } from "../../_shared/promote-sheet";
 import { FollowersSheet, type FollowerRowLite } from "../../_shared/followers-sheet";
 import { faPlain, faPct } from "../../_shared/num";
 
@@ -89,6 +90,7 @@ export function ProductView({ listingId }: { listingId: string }) {
   const [quickOpen, setQuickOpen] = useState(false);
   const [discOpen, setDiscOpen] = useState(false);
   const [ratesOpen, setRatesOpen] = useState(false);
+  const [promoteOpen, setPromoteOpen] = useState(false);
   const [follOpen, setFollOpen] = useState(false);
   const [archiveAsk, setArchiveAsk] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -334,11 +336,11 @@ export function ProductView({ listingId }: { listingId: string }) {
             </div>
             <div className="pc-note">{t.promoNote as string}</div>
             <div className="btn-row">
-              <Link className="btn btn-primary btn-sm" style={{ flex: 1 }} href="/sell/promos">
+              <Link className="btn btn-primary btn-sm" style={{ flex: 1 }} href="/sell/campaign">
                 <Icon className="ic-sm" name="i-chart" /> {t.promoReportCta as string}
               </Link>
-              <button className="btn btn-outline btn-sm" style={{ flex: "0 0 auto" }} onClick={() => setRatesOpen(true)}>
-                <Icon className="ic-sm" name="i-bolt" /> {t.ratesCta as string}
+              <button className="btn btn-outline btn-sm" style={{ flex: "0 0 auto" }} onClick={() => setPromoteOpen(true)}>
+                <Icon className="ic-sm" name="i-bolt" /> {m.app.promote.moreBudget}
               </button>
             </div>
           </div>
@@ -438,6 +440,7 @@ export function ProductView({ listingId }: { listingId: string }) {
         listingId={listing.id}
       />
       <RatesSheet open={ratesOpen} onClose={() => setRatesOpen(false)} />
+      <PromoteSheet open={promoteOpen} onClose={() => setPromoteOpen(false)} fixedListingId={listing?.id ?? null} />
       <FollowersSheet
         open={follOpen}
         onClose={() => setFollOpen(false)}

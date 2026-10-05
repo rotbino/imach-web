@@ -14,7 +14,7 @@ import { fa } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 
 export function Appbar({ deskTitle }: { deskTitle: string }) {
-  const { arm, openSwitch } = useShell();
+  const { arm, openSwitch, openNotif } = useShell();
   const { notifUnread } = useShellData();
   const m = useMessages();
 
@@ -30,8 +30,7 @@ export function Appbar({ deskTitle }: { deskTitle: string }) {
           {arm === "buy" ? m.app.shell.armBuy : m.app.shell.armSell}
           <Icon name="i-chev" className="caret" />
         </button>
-        <button className="icon-btn" aria-label={m.app.shell.notifAria}>
-          {/* TODO(phase-6): مرکز اعلان‌ها — sheet-notif با دادهٔ real */}
+        <button className="icon-btn" aria-label={m.app.shell.notifAria} onClick={openNotif}>
           <Icon className="ic" name="i-bell" />
           {notifUnread > 0 ? <span className="dot">{fa(notifUnread)}</span> : null}
         </button>

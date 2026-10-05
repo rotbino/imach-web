@@ -19,7 +19,7 @@ export type TabKey = "list" | "saved" | "offers" | "chat" | "profile" | "catalog
 
 export function Tabbar({ active }: { active?: TabKey }) {
   const { arm } = useShell();
-  const { offersCount, requestsCount } = useShellData();
+  const { offersCount, requestsCount, chatUnread } = useShellData();
   const m = useMessages();
   const pathname = usePathname();
 
@@ -41,7 +41,13 @@ export function Tabbar({ active }: { active?: TabKey }) {
             href: "/offers",
             dot: offersCount > 0 ? fa(offersCount) : undefined,
           },
-          { key: "chat", icon: "i-msg", label: m.app.tabs.chat },
+          {
+            key: "chat",
+            icon: "i-msg",
+            label: m.app.tabs.chat,
+            href: "/msgs",
+            dot: chatUnread > 0 ? fa(chatUnread) : undefined,
+          },
           { key: "profile", icon: "i-user", label: m.app.tabs.profile, href: "/profile" },
         ]
       : [
@@ -53,7 +59,13 @@ export function Tabbar({ active }: { active?: TabKey }) {
             href: "/sell/requests",
             dot: requestsCount > 0 ? fa(requestsCount) : undefined,
           },
-          { key: "chat", icon: "i-msg", label: m.app.tabs.chat },
+          {
+            key: "chat",
+            icon: "i-msg",
+            label: m.app.tabs.chat,
+            href: "/msgs",
+            dot: chatUnread > 0 ? fa(chatUnread) : undefined,
+          },
           { key: "profile", icon: "i-user", label: m.app.tabs.profile, href: "/profile" },
         ];
 
