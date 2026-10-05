@@ -258,12 +258,12 @@ export function BuyerHome() {
 
               return (
                 <div className={isCold ? "row-card dashed" : "row-card"} key={`${row.goodId}-${row.buyListingId ?? "w"}`}>
-                  <Link className="thumb" href={`/buy/board/${row.goodId}`} aria-label={name}>
+                  <Link className="thumb" href={`/item/${row.goodId}`} aria-label={name}>
                     <Icon name={artOf(row)} />
                   </Link>
                   <div className="body">
                     <div className="t">
-                      <Link href={`/buy/board/${row.goodId}`}>{name}</Link>
+                      <Link href={`/item/${row.goodId}`}>{name}</Link>
                       {row.watched ? <span className="pulse-dot" title="رصد فعال" /> : null}
                       {row.variantLabel ? <span className="badge b-stone">{row.variantLabel}</span> : null}
                       {row.supplierCount > 0 ? (

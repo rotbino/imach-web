@@ -122,3 +122,16 @@ export function smartSwitchArm(kind: "sell" | "buy"): void {
   }
   // kind="both" یا همسان با current → هیچ کاری نکن
 }
+
+/** مسیر پس از احراز هویت (فاز ۲ مهاجرت — از start-wizard به اینجا منتقل شد، فاز ۳).
+ *  با در نظر گرفتن بیزینس placeholder (onboard ناتمام → /start) و بازوهای فعال:
+ *  خرید → شل جدید /home · فروش → /sell (legacy تا فاز ۵). */
+export function routeAfterAuth(
+  businesses: { city: string; name: string; enabledArms?: { sell?: boolean; buy?: boolean } | null }[]
+): string {
+  const biz = businesses[0];
+  if (!biz || biz.city === "—" || biz.name === "کاتالوگ شما") return "/start";
+  const stored = useArmStore.getState().arm;
+  const arm: Arm = armEnabled(biz, stored) ? stored : firstEnabledArm(biz);
+  return arm === "buy" ? "/home" : "/sell";
+}

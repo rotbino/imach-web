@@ -119,8 +119,13 @@ function useDisabledArmGuard(arm: Arm) {
   const authed = useAuthStore((s) => s.status) === "authed";
   useEffect(() => {
     if (!authed || bizQ.isLoading || !biz) return;
-    const onArmPage = pathname?.startsWith("/sell") || pathname?.startsWith("/buy");
-    if (!onArmPage) return;
+    // فاز ۳ — صفحات عمومی (کاتالوگ فروش / لیست خرید دیگران) بازویِ کاربر
+    // نیستند؛ گارد نباید خریدارِ تک‌بازو را از کاتالوگ عمومی تأمین‌کننده بیرون
+    // براند. فقط مسیرهای پنل خودِ کاربر گارد می‌شوند:
+    const OWN_SELL = /^\/sell(\/(wallet|panel|promos|customers|requests|product-settings|category-manager)(\/.+)?\/?$)?$/;
+    const OWN_BUY = /^\/buy(\/(board|suggestions|panel|requests|suppliers)(\/.+)?\/?$)?$/;
+    const ownPage = OWN_SELL.test(pathname ?? "") || OWN_BUY.test(pathname ?? "");
+    if (!ownPage) return;
     if (armEnabled(biz, arm)) return;
     router.replace(firstEnabledArm(biz) === "buy" ? "/buy" : "/sell");
   }, [authed, biz, bizQ.isLoading, arm, pathname, router]);

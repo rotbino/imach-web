@@ -36,7 +36,7 @@ interface AuthState {
   ) => Promise<void>;
   /** ثبت‌نام سریع — فقط موبایل. Business خودکار با نام «کاتالوگ شما» ساخته می‌شود. */
   quickRegister: (phone: string, country?: string, ref?: string) => Promise<void>;
-  logout: () => Promise<void>;
+  logout: (dest?: string) => Promise<void>;
   setSession: (session: { accessToken: string; user: UserDto; businesses: BusinessSummaryDto[] }) => void;
   /** refresh ساکت برای api client — توکن جدید را برمی‌گرداند */
   refresh: () => Promise<string | null>;
@@ -102,7 +102,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set((s) => (s.user ? { user: { ...s.user, ...patch } } : s));
   },
 
-  logout: async () => {
+  logout: async (dest?: string) => {
     try {
       await authApi.logoutUser();
     } catch {
@@ -131,9 +131,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       // ۵. ریست zustand store (resume بعد از reload)
       // توجه: این set() بالا state را guest می‌کند، ولی بعد از reload هم تمیز می‌آید
       // چون localStorage و کوکی پاک شده‌اند → boot() توکنی پیدا نمی‌کند → guest می‌ماند
-      // ۶. هدایت به /start (بدون رفرش دستی — useRouter)
+      // ۶. هدایت (بدون رفرش دستی — window.location) · پیش‌فرض /start (legacy)؛
+      //    فاز ۳: شل v18 پس از خروج به صفحهٔ اول می‌رود (dest="/")
       if (typeof window !== "undefined") {
-        window.location.href = "/start";
+        window.location.href = dest ?? "/start";
       }
     }
   },

@@ -21,14 +21,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ApiError, authApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { routeAfterAuth } from "@/app/start/start-wizard";
+import { routeAfterAuth } from "@/lib/active-biz";
 import {
   guessCountryCode,
   langOfCountry,
   normalizeIntlPhone,
   fmtPhone,
 } from "@/lib/countries";
-import { isLocale } from "@/i18n/config";
+import { isLocale, hasExplicitLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/locale-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { Icon } from "@/components/imach/icon";
@@ -81,7 +81,8 @@ export function LoginForm() {
     guessed.current = true;
     const c = guessCountryCode();
     setCountry(c);
-    syncLangWithCountry(c);
+    // همگام‌سازی زبان با کشورِ حدسی فقط بدون انتخاب صریح (فاز ۳: کوکی زبان مقدم است)
+    if (!hasExplicitLocale()) syncLangWithCountry(c);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (c !== "IR") setShowCountry(true);
   }, []);

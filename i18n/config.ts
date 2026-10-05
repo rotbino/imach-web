@@ -94,3 +94,16 @@ export function readLocaleCookie(): string {
     .find((c) => c.startsWith(`${LOCALE_COOKIE}=`));
   return getLocale(hit?.slice(LOCALE_COOKIE.length + 1));
 }
+
+/**
+ * Has the visitor explicitly picked a language (cookie present)?
+ * فاز ۳: انتخاب صریح زبان (سوییچ صفحهٔ اول) مقدم بر حدسِ خودکار کشور است —
+ * همگام‌سازی زبان با کشور فقط وقتی معنا دارد که انتخاب صریحی ثبت نشده باشد.
+ */
+export function hasExplicitLocale(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.cookie
+    .split(";")
+    .map((c) => c.trim())
+    .some((c) => c.startsWith(`${LOCALE_COOKIE}=`));
+}

@@ -33,7 +33,7 @@ export function Tabbar({ active }: { active?: TabKey }) {
     arm === "buy"
       ? [
           { key: "list", icon: "i-list", label: m.app.tabs.list, href: "/home" },
-          { key: "saved", icon: "i-bm", label: m.app.tabs.saved, href: "/buy/suppliers" },
+          { key: "saved", icon: "i-bm", label: m.app.tabs.saved, href: "/saved" },
           {
             key: "offers",
             icon: "i-spark",

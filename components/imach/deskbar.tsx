@@ -24,7 +24,7 @@ export function Deskbar() {
     arm === "buy"
       ? [
           { icon: "i-list", label: m.app.tabs.list, href: "/home" },
-          { icon: "i-bm", label: m.app.tabs.saved, href: "/buy/suppliers" },
+          { icon: "i-bm", label: m.app.tabs.saved, href: "/saved" },
           {
             icon: "i-spark",
             label: m.app.tabs.offers,

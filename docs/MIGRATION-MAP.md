@@ -49,13 +49,13 @@ app/
 
 | # | صفحه Prototype | مسیر هدف | فاز | کامپوننت‌های اصلی | API بک‌اند موجود | سرویس | DB |
 |---|---|---|---|---|---|---|---|
-| ۱ | sc-onboard | /start (بازطراحی) | ۲ | RoleChoice, ChoiceGrid | POST /auth/register flow | auth | User, Business |
-| ۲ | sc-login | /login (بازطراحی) | ۲ | LoginForm, OtpForm | POST /auth/otp-request, /auth/verify | auth | User, RefreshToken |
-| ۳ | sc-signup | /login (تب/مرحله ثبت‌نام) | ۲ | SignupForm, BizForm | POST /auth/register, /businesses | auth, businesses | User, Business |
+| ۱ | sc-onboard | / (صفحهٔ اول) | ۳ ✅ | Onboard, ChoiceGrid, LangSwitch, IntroTabs, BenList | — (عمومی/معرفی) | — | — |
+| ۲ | sc-login | /login (بازطراحی) | ۲ ✅ | LoginForm | POST /auth/checkPhone · /auth/loginUser | auth | User, RefreshToken |
+| ۳ | sc-signup | /start (بازطراحی) | ۳ ✅ | SignupWizard(Steps, BizForm, RoleChips) | POST /auth/quickRegister · /businesses · setArms | auth, businesses | User, Business |
 | ۴ | sc-buy-list | (app)/home | ۱→۳ | AppShell, Greet, ShareStrip, SavedStrip, GoodRow | GET /watched-goods, GET /savers, GET /listings?mine | watchedGoods, listings | WatchedGood, Listing, PriceLog |
-| ۵ | sc-buy-item | (app)/item/[goodId] | ۳ | ItemHeader, PriceLine, FollowToggle, SupplierMini | GET /goods/:id, GET /listings?goodId, POST /follows | goods, listings, follows | Good, Listing, Follow |
-| ۶ | sc-board | (app)/board/[goodId] | ۳ | BoardTable, SortBar, UnitNote, PackLine, RfqBar | GET /listings?goodId&sort, GET /goods/:id/units | listings, goods | Listing, PriceLog, Good |
-| ۷ | sc-suppliers | (app)/saved | ۳ | SavedCatalogCard, NewGoodBadge | GET /follows?type=CATALOG | follows | Follow(source=CATALOG) |
+| ۵ | sc-buy-item | (app)/item/[goodId] | ۳ ✅ | ItemView(PriceHero, FollowRow, NeedCard, WatchSwitches) | GET /market/getSupplyBoard · getWatchedGoods · POST followSupplier · watchGood · setNotifPrefs | market | Listing, Follow, WatchedGood, Business |
+| ۶ | sc-board | (app)/board/[goodId] | ۳ ✅ | BoardPage(SortChips, SupCard, FollowToggle) | GET /market/getSupplyBoard · followSupplier | market | Listing, Follow |
+| ۷ | sc-suppliers | (app)/saved | ۳ ✅ | SavedCatalogs(SavedCard) | GET /market/getFollows · unfollowSupplier | market | Follow |
 | ۸ | sc-offers | (app)/offers | ۴ | OfferCard, CompareSheet, OfferStatusPill | GET /inquiries/mine, GET /offers?inquiryId | inquiries, offers | Inquiry, Offer |
 | ۹ | sc-buy-profile | (app)/profile | ۶ | BizCard, ArmSwitch, ThemeSwitch | GET /businesses/me, PATCH /businesses/me | businesses | Business |
 | ۱۰ | sc-sell-requests | (app)/sell/requests | ۴→۵ | RequestCard, TasksBar(قیمت‌های امروز), ReRfqBtn | GET /inquiries?forSeller, GET /listings/stale | inquiries, listings, matching | Inquiry, Listing |
@@ -131,6 +131,14 @@ app/
 | .phone/.screen-stack | کانتینر فریم | `.app` + مسیر per-screen | Next.js هر مسیر یک صفحه دارد؛ رفتار ≥۹۲۰px عیناً از قواعد دسک‌بار Prototype |
 | فونت | @font-face نسبتی | next/font/local + var(--font-iran) | preload/swAP/CLS طبق §۱۴ — خروجی بصری یکسان |
 | ردیف OTP در sc-login | کد پیامک‌شده ۵خانه‌ای | فرم رمز عبور واقعی + بنر phone-verified (از sc-signup) | بک‌اند فعلاً OTP ندارد — UI بدون بک‌اند = mock ممنوع (§۶۳)؛ با فعال‌سازی پیامک، همین‌جا جایگزین می‌شود |
+| «دریافت کد تأیید» در sc-signup | دکمهٔ دریافت کد پیامکی | «ادامه» → quickRegister واقعی | همان قاعدهٔ بالا — بدون OTP بک‌اند |
+| لینک راهنما در sc-onboard | help.html | حذف تا فاز عمومی‌ها | صفحهٔ راهنمای واقعی هنوز مسیر ندارد (فاز ۷) |
+| چارت spark در sc-buy-item | ۷میلهٔ تاریخچه | حذف | API تاریخچهٔ قیمت هر کالا موجود نیست (PriceLog عمومی نیست) |
+| سوییچ «تغییر موجودی» در sc-buy-item | toggle موجودی | حذف (فقط قیمت/تأمین‌کنندهٔ جدید) | NotifPrefs بک‌اند کلید stockChange ندارد |
+| pack-line در sc-board | «هر کیسهٔ ۵۰ کیلویی — N تومان» | «پیش‌تر: {قیمت}» از prevMinor | API پکیج‌بندی ندارد (شکاف فاز ۵: Listing.packaging) |
+| spec سوم «شرایط» در sc-board | عندالتحویل/چک/نقدی | «سابقهٔ استعلام» از boughtFrom | فیلد شرایط پرداخت در API نیست |
+| insight-strip در sc-suppliers | N کالا · N ذخیره · N بازدید | حذف | FollowDto آمار کاتالوگ ندارد (آمار عمومی فاز ۷) |
+| qty-stepper تعاملی در sc-buy-item | ± فعال | فقط‌خواندنی (کم‌رنگ) | ویرایش نیاز = به‌روزرسانی BUY listing؛ با شیت ویرایش آیتم می‌آید |
 | بج «N دنبال‌شده» در sc-buy-list | شمارش دنبال‌کردن کالا | pulse-dot (watched) + بج b-stone «N تأمین‌کننده» | دادهٔ صادقانهٔ موجود (supplierCount)؛ شمارش savers خریداری در API خریدار وجود ندارد |
 | دموی ثابت شمارش‌ها (۲ اعلان/۳ پیشنهاد/۱ چت) | اعداد hardcoded دمو | بج‌های واقعی (unread/answeredCount/watchedNeeds) و حذف بج چت | دادهٔ واقعی؛ چت بک‌اند ندارد (فاز ۶) |
 | JS ناوبری stack | go()/back() داخل یک HTML | Next.js router | — |

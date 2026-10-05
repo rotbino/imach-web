@@ -2076,6 +2076,20 @@ flex: 1; height: 3px; border-radius: 99px; background: var(--muted-bg); min-widt
 background: var(--arm-tint);
 }
 
+.ia .phone-verified {
+display: flex; align-items: center; gap: 9px; background: var(--emerald-tint);
+  color: #065f46; border-radius: 13px; padding: 11px 13px; font-size: 11.5px; font-weight: 700;
+  margin-bottom: 13px;
+}
+
+.ia .phone-verified svg {
+width: 17px; height: 17px; flex-shrink: 0;
+}
+
+.ia .phone-verified span {
+direction: ltr; flex: 1;
+}
+
 
 /* ── خطا و گیت فرم (E) ── */
 .ia .inp.err {
@@ -2829,37 +2843,37 @@ text-align: center; font-size: 9px; color: var(--fg-soft); background: var(--mut
 
 
 /* ═══ v15: چت — صفحهٔ مستقل (نه شیت) ═══ */
-.ia [data-screen-="chat"] .chat-head {
+.ia [data-screen="chat"] .chat-head {
 display: flex; align-items: center; gap: 10px;
   padding: 10px 14px 11px; border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, .96); flex-shrink: 0;
 }
 
-.ia [data-screen-="chat"] .chat-head .back {
+.ia [data-screen="chat"] .chat-head .back {
 background: none; border: none; padding: 4px; color: var(--fg-soft); cursor: pointer;
 }
 
-.ia [data-screen-="chat"] .chat-head .cht {
+.ia [data-screen="chat"] .chat-head .cht {
 flex: 1; min-width: 0;
 }
 
-.ia [data-screen-="chat"] .chat-head .cht b {
+.ia [data-screen="chat"] .chat-head .cht b {
 font-size: 14px; display: block;
 }
 
-.ia [data-screen-="chat"] .chat-head .cht span {
+.ia [data-screen="chat"] .chat-head .cht span {
 font-size: 10px; color: var(--muted); display: block; margin-top: 2px;
 }
 
-.ia [data-screen-="chat"] .chat-scroll {
+.ia [data-screen="chat"] .chat-scroll {
 flex: 1; overflow-y: auto; padding: 14px 14px 16px;
 }
 
-.ia [data-screen-="chat"] .chat-foot {
+.ia [data-screen="chat"] .chat-foot {
 flex-shrink: 0; border-top: 1px solid var(--border); background: rgba(255, 255, 255, .96); padding: 10px 14px 14px;
 }
 
-.ia [data-screen-="chat"] .chat-note {
+.ia [data-screen="chat"] .chat-note {
 font-size: 9.5px; color: var(--muted); text-align: center; margin-top: 8px;
 }
 
@@ -4344,7 +4358,7 @@ font-size: 9.5px;
 }
 
 .ia .chat-head .cht span,
-.ia [data-screen-="chat"] .chat-head .cht span {
+.ia [data-screen="chat"] .chat-head .cht span {
 font-size: 10.5px;
 }
 
@@ -4770,64 +4784,64 @@ grid-template-columns: repeat(4, 1fr);
 
 
   /* ذخیره‌شده‌ها: کارت‌ها از خودِ بدنهٔ صفحه دوستونه */
-  .ia [data-screen-="suppliers"] .screen-body {
+  .ia [data-screen="suppliers"] .screen-body {
 display: grid; grid-template-columns: repeat(2, minmax(280px, 520px)); justify-content: center; gap: 12px; align-items: start;
 }
 
-  .ia [data-screen-="suppliers"] .screen-body > * {
+  .ia [data-screen="suppliers"] .screen-body > * {
 max-width: none; margin-inline: 0; width: auto; grid-column: 1 / -1;
 }
 
-  .ia [data-screen-="suppliers"] .screen-body > .card {
+  .ia [data-screen="suppliers"] .screen-body > .card {
 grid-column: auto; margin-top: 0;
 }
 
-  .ia [data-screen-="suppliers"] .screen-body > .card + .card {
+  .ia [data-screen="suppliers"] .screen-body > .card + .card {
 margin-top: 0;
 }
 
 
   /* صفحات محصول/جزئیات: ستون باریک‌تر */
-  .ia [data-screen-="buy-item"] .screen-body > *,
-.ia [data-screen-="sell-product-owner"] .screen-body > *,
-.ia [data-screen-="sell-product-public"] .screen-body > *,
-.ia [data-screen-="desktop"] .screen-body > * {
+  .ia [data-screen="buy-item"] .screen-body > *,
+.ia [data-screen="sell-product-owner"] .screen-body > *,
+.ia [data-screen="sell-product-public"] .screen-body > *,
+.ia [data-screen="desktop"] .screen-body > * {
 max-width: 880px;
 }
 
 
   /* فرم‌ها و صفحات حساس: ستون فرم */
-  .ia [data-screen-="rfq"] .screen-body > *,
-.ia [data-screen-="quote"] .screen-body > *,
-.ia [data-screen-="signup"] .screen-body > *,
-.ia [data-screen-="login"] .screen-body > *,
-.ia [data-screen-="edit-biz"] .screen-body > *,
-.ia [data-screen-="charge"] .screen-body > *,
-.ia [data-screen-="wallet"] .screen-body > *,
-.ia [data-screen-="empty"] .screen-body > * {
+  .ia [data-screen="rfq"] .screen-body > *,
+.ia [data-screen="quote"] .screen-body > *,
+.ia [data-screen="signup"] .screen-body > *,
+.ia [data-screen="login"] .screen-body > *,
+.ia [data-screen="edit-biz"] .screen-body > *,
+.ia [data-screen="charge"] .screen-body > *,
+.ia [data-screen="wallet"] .screen-body > *,
+.ia [data-screen="empty"] .screen-body > * {
 max-width: 620px;
 }
 
-  .ia [data-screen-="add-item"] .screen-body > * {
+  .ia [data-screen="add-item"] .screen-body > * {
 max-width: 680px;
 }
 
-  .ia [data-screen-="settings"] .screen-body > *,
-.ia [data-screen-="list-public"] .screen-body > * {
+  .ia [data-screen="settings"] .screen-body > *,
+.ia [data-screen="list-public"] .screen-body > * {
 max-width: 760px;
 }
 
-  .ia [data-screen-="search"] .screen-body > * {
+  .ia [data-screen="search"] .screen-body > * {
 max-width: 720px;
 }
 
-  .ia [data-screen-="msgs"] .screen-body > * {
+  .ia [data-screen="msgs"] .screen-body > * {
 max-width: 620px;
 }
 
-  .ia [data-screen-="chat"] .chat-body,
-.ia [data-screen-="chat"] .chat-foot .quick-chips,
-.ia [data-screen-="chat"] .chat-foot .composer {
+  .ia [data-screen="chat"] .chat-body,
+.ia [data-screen="chat"] .chat-foot .quick-chips,
+.ia [data-screen="chat"] .chat-foot .composer {
 max-width: 720px; margin-inline: auto;
 }
 
@@ -4843,11 +4857,11 @@ left: max(24px, calc((100% - 680px) / 2)); right: max(24px, calc((100% - 680px) 
 
 
   /* آنبوردینگ: هیروی وسط */
-  .ia [data-screen-="onboard"] .onboard {
+  .ia [data-screen="onboard"] .onboard {
 max-width: 660px; margin-inline: auto; width: 100%; padding: 36px 30px 44px;
 }
 
-  .ia [data-screen-="onboard"] .mid {
+  .ia [data-screen="onboard"] .mid {
 min-height: 250px;
 }
 
@@ -4912,26 +4926,26 @@ font-size: 11.5px;
 
 
   /* آنبوردینگ: دو انتخاب کنار هم */
-  .ia [data-screen-="onboard"] .choice-grid {
+  .ia [data-screen="onboard"] .choice-grid {
 display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
 }
 
-  .ia [data-screen-="onboard"] .choice-grid .choice-card + .choice-card {
+  .ia [data-screen="onboard"] .choice-grid .choice-card + .choice-card {
 margin-top: 0;
 }
 
 
   /* اسپلیت ۱ — پیشنهادها: لیست راست، جزئیات چپ (بدون رفت‌وبرگشت) */
-  .ia [data-screen-="offers"] .screen-body {
+  .ia [data-screen="offers"] .screen-body {
 display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 660px); justify-content: center; gap: 0 22px; align-items: start;
 }
 
-  .ia [data-screen-="offers"] .screen-body > * {
+  .ia [data-screen="offers"] .screen-body > * {
 max-width: none; margin-inline: 0; width: auto;
 }
 
-  .ia [data-screen-="offers"] .search-strip,
-.ia [data-screen-="offers"] .greet {
+  .ia [data-screen="offers"] .search-strip,
+.ia [data-screen="offers"] .greet {
 grid-column: 1 / -1; width: 100%;
 }
 
@@ -4957,7 +4971,7 @@ margin-top: 12px;
 
 
   /* اسپلیت ۲ — تخفیف‌ها: فرم راست، پیش‌نمایشِ زندهٔ چپ (sticky) */
-  .ia [data-screen-="discount"] .screen-body > * {
+  .ia [data-screen="discount"] .screen-body > * {
 max-width: 1024px;
 }
 
@@ -5006,8 +5020,8 @@ grid-template-columns: minmax(0, 700px) minmax(320px, 400px);
 grid-template-columns: 1fr 1fr 1fr;
 }
 
-  .ia [data-screen-="buy-list"] .g2,
-.ia [data-screen-="sell-requests"] .g2 {
+  .ia [data-screen="buy-list"] .g2,
+.ia [data-screen="sell-requests"] .g2 {
 grid-template-columns: 1fr 1fr 1fr;
 }
 

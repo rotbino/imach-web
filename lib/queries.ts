@@ -498,6 +498,7 @@ export function useWatchGood() {
       marketApi.watchGood(businessId, goodId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market", "watched"] });
+      void qc.invalidateQueries({ queryKey: ["market", "supplyBoard"] });
       void qc.invalidateQueries({ queryKey: ["market", "suggestions"] });
       void qc.invalidateQueries({ queryKey: ["market", "suppliersDirectory"] });
     },
@@ -511,6 +512,7 @@ export function useUnwatchGood() {
       marketApi.unwatchGood(businessId, goodId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market", "watched"] });
+      void qc.invalidateQueries({ queryKey: ["market", "supplyBoard"] });
       void qc.invalidateQueries({ queryKey: ["market", "suggestions"] });
       void qc.invalidateQueries({ queryKey: ["market", "suppliersDirectory"] });
     },

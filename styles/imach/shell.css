@@ -50,3 +50,78 @@
     scrollbar-color: var(--border-strong) transparent;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   فریم auth — صفحات احراز هویت (login و آیندهٔ onboard/signup)
+   همان ساختار Prototype: pagehead + screen-body، بدون appbar/tabbar.
+   ═══════════════════════════════════════════════════════════════ */
+.ia.auth {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ia.auth .screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+/* تبلت/دسکتاپ: ستون مرکزی آرام (همندام ~۷۶۸ قاعدهٔ Prototype) */
+@media (min-width: 768px) {
+  .ia.auth .screen-body > * {
+    max-width: 560px;
+    margin-inline: auto;
+    width: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   فریم landing — صفحهٔ اول سایت (sc-onboard · فاز ۳).
+   عرض محتوا با خودِ .onboard مدیریت می‌شود؛ اینجا فقط ریلِ عمودی.
+   دسکتاپ: ستون معرفی محدود نمی‌شود — صفحهٔ معرفی تمام‌عرض عین Prototype.
+   ═══════════════════════════════════════════════════════════════ */
+.ia.landing {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ia.landing .screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+@media (min-width: 768px) {
+  .ia.landing .onboard {
+    padding-inline: clamp(26px, 6vw, 72px);
+  }
+  .ia.landing .choice-grid,
+  .ia.landing .intro-wrap {
+    max-width: 720px;
+    margin-inline: auto;
+    width: 100%;
+  }
+}
+
+/* ── اسپینر سیستمی (حالت loading — افزودهٔ production، نه Prototype) ── */
+.ia .ia-spin {
+  display: inline-block;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-top-color: currentColor;
+  animation: ia-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes ia-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

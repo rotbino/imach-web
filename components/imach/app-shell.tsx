@@ -6,18 +6,20 @@
  *  · `.ia.app` + data-arm(buy|sell) + data-theme(light|dark)
  *  · ArmContext: کامپوننت‌های شل (Appbar/Tabbar/Deskbar) بدون prop-drilling
  *  · شیت «جابه‌جایی دستیار» (sheet-switch) — همان Prototype، زنده
+ *  · فاز ۳: ردیف خروج از حساب پایین شیت (تست مالک: بازگشت به صفحهٔ اول)؛
+ *    sc-settings پروتوتایپ خروج را در تنظیمات دارد — آنجا فاز ۶ کامل می‌شود
  *  · children از Server Components می‌آید (صفحات RSC سالم می‌مانند)
- *
- * دادهٔ واقعی (نام کسب‌وکار/شمارش‌ها) در فاز ۲/۳ از API می‌آید؛
- * فعلاً همان دیتای دموی Prototype از lib/imach/fixtures.ts.
  */
 
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { IconSprite } from "./icon-sprite";
 import { Icon } from "./icon";
 import { Sheet } from "./sheet";
 import { Deskbar } from "./deskbar";
+import { useAuthStore } from "@/lib/auth-store";
 import { useMessages } from "@/i18n/messages/use-messages";
+import { useToast } from "@/hooks/use-toast";
 
 export type Arm = "buy" | "sell";
 export type Theme = "light" | "dark";
@@ -50,12 +52,30 @@ export function AppShell({
   const [arm, setArmState] = useState<Arm>(initialArm);
   const [theme] = useState<Theme>(initialTheme);
   const [switchOpen, setSwitchOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const m = useMessages();
+  const router = useRouter();
+  const { toast } = useToast();
+  const logout = useAuthStore((s) => s.logout);
 
   const setArm = useCallback((next: Arm) => {
     setArmState(next);
   }, []);
-  const openSwitch = useCallback(() => setSwitchOpen(true), []);
+  const openSwitch = useCallback(() => {
+    setConfirmLogout(false);
+    setSwitchOpen(true);
+  }, []);
+
+  const doLogout = async () => {
+    setSwitchOpen(false);
+    toast({ title: m.app.logout.done });
+    try {
+      // خروج به صفحهٔ اول — ناوبری داخل خود logout (window.location) انجام می‌شود
+      await logout("/");
+    } catch {
+      router.replace("/");
+    }
+  };
 
   return (
     <ShellContext.Provider value={{ arm, theme, setArm, openSwitch }}>
@@ -112,7 +132,42 @@ export function AppShell({
           <div className="sub" style={{ marginBottom: 8 }}>
             {m.app.switch.note}
           </div>
-          <button className="btn btn-outline btn-block" onClick={() => setSwitchOpen(false)}>
+
+          {confirmLogout ? (
+            <>
+              <div className="sub" style={{ fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>
+                {m.app.logout.confirmTitle}
+              </div>
+              <div className="sub" style={{ marginBottom: 10 }}>{m.app.logout.confirmBody}</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  className="btn btn-primary"
+                  style={{ flex: 1, color: "#fff", background: "var(--red)" }}
+                  onClick={() => void doLogout()}
+                >
+                  {m.app.logout.confirm}
+                </button>
+                <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setConfirmLogout(false)}>
+                  {m.app.logout.cancel}
+                </button>
+              </div>
+            </>
+          ) : (
+            <button
+              className="sheet-row"
+              style={{ color: "var(--red)" }}
+              onClick={() => setConfirmLogout(true)}
+            >
+              <span className="ico" style={{ background: "color-mix(in srgb, var(--red) 12%, transparent)", color: "var(--red)" }}>
+                <Icon name="i-out" />
+              </span>
+              <span className="tx">
+                <b style={{ color: "inherit" }}>{m.app.logout.label}</b>
+              </span>
+            </button>
+          )}
+
+          <button className="btn btn-outline btn-block" style={{ marginTop: 8 }} onClick={() => setSwitchOpen(false)}>
             {m.app.switch.close}
           </button>
         </Sheet>
