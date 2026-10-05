@@ -61,7 +61,7 @@ app/
 | ۱۰ | sc-sell-requests | (app)/sell/requests | ۴ ✅ | RequestsView(ToMeTab, MarketTab, NeedAlertsTab, DeadlineBadge) | GET /market/getInquiries · getBuyRequests · getWatchedBuyerNeeds · POST markInquiryRead | market, matching | Inquiry, Listing, Follow |
 | ۱۱ | sc-sell-catalog | (app)/sell/catalog | ۵ ✅ | CatalogView(BizCard, TasksRow, InsightStrip, ShareStrip, ChipsGrid, PCard, QuickPriceSheet, FollowersSheet) | GET /market/getMyListings · getMyFollowers · getInquiries · getSaverAnalysis · getMyPromos · PUT /listings/saveListing | market, listings | Listing, Business, Follow, WatchedGood |
 | ۱۲ | sc-sell-product-owner | (app)/sell/product/[id] | ۵ ✅ | ProductView(InsightBar+SourceBreakdown, PricePanel, DiscountStrip زنده, RatesSheet, ItemDiscountSheet, FollowersSheet+custType, ArchiveAsk) | GET /market/getMyListings · getSaverAnalysis · getInquiries · getMyPromos · getPromoReport · GET /pricing/state · preview · POST /listings/setListingActive | market, pricing | Listing, DiscountRule, Follow(+custType) |
-| ۱۳ | sc-sell-product-public | (pub)/p/[slug] | ۷ | PublicProduct, PriceHistoryChart, SellerCard | GET /pages/slug, GET /listings/:id/public | pages, listings | Page, Listing |
+| ۱۳ | sc-sell-product-public | (pub)/p/[slug]/[listingId] | ۷ ✅ | ProductPublicView(gallery واقعی, hero-specs, contact-row, tri-actions+sticky-cta) | getBusiness عمومی (SSR) · getContact · startThread · watchGood | businesses, market, chat | Listing(+viewCount30), Thread |
 | ۱۴ | sc-discount | (app)/sell/discounts | ۵ ✅ | DiscountsView(FormulaFlow زنده, TabCust/TabVolume/TabPreview, CatalogRows+«می‌شود X», GroupLvlEdit, TierRows, PreviewBreakdown با منبع) | GET /pricing/state · preview · PUT /pricing/catalog · group/:refId · item/:listingId · bulk · POST custType · PUT /businesses/catalogCategories | pricing(جدید), businesses | DiscountRule(جدید), Business.customCategories |
 | ۱۵ | sc-sell-profile | (app)/profile (arm=sell) | ۶ ✅ | همان ProfileView — داده/آمار per-arm (کاتالوک/استعلام‌ها/دنبال‌کننده‌ها از getMyListings·getInquiries·getMyFollowers) | market | Listing, Follow |
 | ۱۶ | sc-rfq | (app)/rfq/[goodId] | ۴ ✅ | RfqWizard(SupplierPicker, VolumeFreq, TimingChips, TargetPrice, Note) | GET /market/getSupplyBoard · getMyRfqs · POST /market/requestQuote | market, matching | Inquiry(+rfqGroupId) — گروه‌بندی با rfqGroupId، نه مدل RfqDetail جداست |
@@ -76,8 +76,8 @@ app/
 | ۲۵ | sc-notifications (شیت sheet-notif هم) | (app) شیت سراسری روی زنگ appbar | ۶ ✅ | NotifSheet(گروه‌بندی نوع, MarkAllRead, بج unread در appbar) | GET /notifications · POST /notifications/readAll | notifications | Notification |
 | ۲۶ | sc-settings | (app)/settings | ۶ ✅ | SettingsView(NotifToggles زندهٔ NotifPrefs + Push, LangSegmented fa/en/ar, CitySelect, بخش «نما»: ThemeSegmented روشن/تاریک + ArmColorPicker ۴پالت, ساعات پاسخگویی/شرایط پرداخت) | POST /auth/setPrefs (User.prefs) · setNotifPrefs · PATCH /businesses/editBusiness (+phone/hours/defaultPayTerm) | auth, market, businesses | User(+prefs), Business(+hours/defaultPayTerm), NotifPrefs |
 | ۲۷ | sc-edit-biz | (app)/settings/business | ۶ ✅ | EditBizForm(BizName, ActivityType, CitySelect, PhoneField روی کاتالوگ) | PATCH /businesses/editBusiness (+phone/hours/defaultPayTerm) | businesses | Business |
-| ۲۸ | sc-catalog-public | (pub)/c/[slug] | ۷ | PublicCatalog, ProductGrid, FollowBar | GET /pages/slug, POST /follows | pages, follows | Page, Listing, Follow |
-| ۲۹ | sc-list-public | (pub)/b/[slug] | ۷ | PublicList, RfqCta | GET /pages/slug (type=LIST) | pages | Page |
+| ۲۸ | sc-catalog-public | (pub)/c/[slug] | ۷ ✅ | CatalogPublicView(biz-card, save/save-flag, contact-row, insight, searchbar, chips دسته‌های شخصی, p-card grid, gate+viral) | getBusiness عمومی (SSR·کش۶۰s) · followSupplier(SHARED) · getContact · startThread · publicCatalogs(sitemap) | businesses, market, chat | Listing, Follow |
+| ۲۹ | sc-list-public | (pub)/b/[slug] | ۷ ✅ | ListPublicView(biz-card, contact-row, insight, save/share, gate گوش‌به‌زنگ, follow-rowهای نیاز با alert-btn, hint) | getBusiness عمومی (SSR) · followSupplier(SHARED) · watchGood · getContact · startThread | businesses, market, chat | Listing(BUY), WatchedGood |
 | ۳۰ | sc-desktop / sc-empty | رفتار ریسپانسیو / الگوی خالی | ۱ | AppShell ≥۹۲۰px · EmptyState | — | — | — |
 
 ## ۲. شیت‌ها (۲۴) — همه به کامپوننت `<Sheet>` یکپارچه
@@ -170,3 +170,16 @@ Good=2479 · Product=40417 · Brand=3769 · Category=207 · Unit=62 · Business=
 | تم sc-settings | سوییچ درون صفحهٔ تنظیمات | همان + sync کراس-دستگاهی (User.prefs) | الزام مالک: «سوییچ تم از پروفایل» + بین دستگاه‌ها |
 | پرداخت شارژ | درگاه زرین‌پال | شبیه‌سازی موفق + رسید (زیرساخت آماده) | اتصال واقعی به درگاه فقط برای ایران در فاز ۸ + سوییچ ادمین |
 | CurrencySection در sc-settings | انتخاب ارز | فاز ۸ | الزام ارز بعد از تکمیل i18n برنامه‌ریزی شده؛ فاز ۶ فقط زیرساخت ذخیره prefs را گذاشت |
+
+**پایان فاز ۷ (2026-10-06)**: بدون مدل/کالکشن جدید — Listing(1 BUY جدید برای E2E لیست عمومی) · رشد فقط دیتای تست. مسیرهای عمومی زنده: /c/[slug] · /b/[slug] · /p/[slug]/[listingId] (SSR + JSON-LD + Metadata) · sitemap.xml (۳ ایستا + کاتالوگ‌های زنده) · robots.txt (app/robots.ts) · ریدایرکت ۳۰۷: /sell/[slug]→/c/[slug] و /sell/[slug]/[listingId]→/p/[slug]/[listingId].
+
+**تطبیق‌های آگاهانهٔ جدید فاز ۷:**
+| موضوع | در Prototype | در پیاده‌سازی | دلیل |
+|---|---|---|---|
+| «قیمت شما» + vol-ladder + pack-pick در sc-sell-product-public | قیمت مؤثر خریدار با تخفیف و پله‌ها | قیمت پایهٔ عمومی | اندپوینت قیمت مؤثرِ دید خریدار وجود ندارد (/pricing/preview مالک‌محور) — با ساخته شدنش همین‌جا جایگزین می‌شود |
+| بج «٪۹۸ پاسخگویی» | روی کارت بیزینس | حذف | آمار عمومی پاسخ‌گویی در API نیست |
+| photo-strip | ۳ اسلات دموی SVG | گالری واقعی آگهی (نظام فایل‌ها) | دادهٔ صادقانه |
+| «۱۴۰ بازدید این هفته» insight | عدد دمو | مجموع viewCount30 آگهی‌ها | شمارش بازدید کاتالوگِ مجزا وجود ندارد |
+| alert-btn هر ردیف لیست عمومی | toggle درجا (دمو) | watchGood روی همان کالا (عضو) / ورود (میهمان) | همان موتور گوش‌به‌زنگ بدون API جدید |
+| ذخیرهٔ لیست خرید عمومی | دموی toast | followSupplier(source=SHARED) — یال واقعی رشد | همان یال فالو؛ منبع SHARED در تحلیل ذخیره‌کنندگان دیده می‌شود |
+| لینک راهنما/دمو در appbar عمومی | help.html | حذف | ابزار دموی Prototype است نه محصول |

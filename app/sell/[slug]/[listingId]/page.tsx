@@ -1,10 +1,11 @@
-import ProductDetail from "./product-detail";
+import { redirect } from "next/navigation";
 
-export default async function ListingPage({
+/** /sell/[slug]/[listingId] → /p/[slug]/[listingId] — کالای عمومی v18 (فاز ۷). */
+export default async function LegacyListingRedirect({
   params,
 }: {
   params: Promise<{ slug: string; listingId: string }>;
 }) {
   const { slug, listingId } = await params;
-  return <ProductDetail slug={slug} listingId={listingId} />;
+  redirect(`/p/${slug}/${listingId}`);
 }

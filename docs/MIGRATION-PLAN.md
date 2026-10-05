@@ -176,10 +176,19 @@ scripts/           اسکریپت‌های تولید (port-prototype-css.mjs, e
 - **باگ واقعی که تکمیل این فاز گرفت و رفع شد**: تعریف `promoRows` در خانهٔ خریدار ناقص مانده بود (رفع: مشتق از getPriceBoard با فیلتر promo) — دقیقاً همان نقطه‌ای که اجرای جلسهٔ قبل متوقف شده بود
 - **تطبیق‌های آگاهانه:** عنوان‌های Metadata استاتیک فارسی (الگوی فازهای ۱–۵؛ generateMetadata چندزبانه → فاز ۸) · sc-campaign تک-گزارش است و گزارش فعال‌ترین کمپین را نشان می‌دهد · درگاه پرداخت شبیه‌سازی (Zarinpal سندباکس ندارد؛ اتصال واقعی ایران-محور فاز ۸ با سوییچ ادمین)
 
-### فاز ۷ — عمومی‌ها + SEO + PWA/Push
-- `(pub)`: لندینگ جدید، کاتالوگ عمومی `/c/[slug]`، لیست عمومی `/b/[slug]`، صفحه محصول عمومی — Metadata/sitemap/robots/JSON-LD
-- سرویس‌ورکر + شل آفلاین + جریان Push کامل (subscription/permission/click/unsubscribe)
-- لندینگ legacy → archive/حذف
+### فاز ۷ — عمومی‌ها + SEO + PWA/Push ✅ (2026-10-06)
+**هدف:** صفحات عمومی ایندکس‌پذیر با v18 + SEO کامل + پایداری PWA/Push.
+
+- [x] **گروه مسیر `(pub)`** (layout: .ia.pub + تم کوکی + بدون appbar/tabbar — arm خنثی عین data-arm="keep")
+- [x] **`/c/[slug]` کاتالوگ عمومی** (پورت sc-catalog-public): SSR با دادهٔ واقعی (getBusiness عمومی · کش سروری ۶۰s) + کارت بیزینس/لوگو + ذخیرهٔ کاتالوگ (فالو SHARED — میهمان → ورود) + اشتراک Web Share + تماس/پیام (گیت عضویت getContact · پیام = چت فاز ۶) + insight (ذخیره‌کننده/بازدید) + جست‌وجو + چیپ دسته‌های شخصی واقعی + شبکهٔ p-card → /p
+- [x] **`/b/[slug]` لیست خرید عمومی** (پورت sc-list-public): دید تأمین‌کننده — نیازهای BUY (حجم/تناوب) + گوش‌به‌زنگ (watchGood — میهمان → ورود) + ذخیرهٔ لیست + تماس/پیام
+- [x] **`/p/[slug]/[listingId]` کالای عمومی** (پورت sc-sell-product-public): گالری واقعی + hero-specs (قیمت/موجودی/حداقل/بسته/برند) + چهار مسیر (تماس/پیام/استعلام گروهی → /rfq/دنبال‌کردن) + sticky-cta
+- [x] **SEO:** generateMetadata هر سه صفحه (عنوان/توصیف/OG/canonical از دادهٔ واقعی) · **JSON-LD**: Store+OfferCatalog (کاتالوگ) · Product+Offer (کالا) · Organization (لیست) · `app/sitemap.ts` (ایستا + کاتالوگ‌های زنده از `publicCatalogs` جدید · کش ۱۵m) · `app/robots.ts` (عمومی‌ها allow · شل/چت/کیف disallow · sitemap)
+- [x] **PWA/Push:** زیرساخت موجود تأیید و حفظ شد (sw.js: کش استاتیک+شل آفلاین+Push · ثبت سراسری در providers · manifest · VAPID بک‌اند · سوییچ Push در تنظیمات فاز ۶ · بنر نصب زنده) — بدون کپی جدید
+- [x] **ریدایرکت legacy:** /sell/[slug]→/c/[slug] · /sell/[slug]/[listingId]→/p/[slug]/[listingId] (۳۰۷) · sell-public/product-detail قدیمی حذف شد · robots.txt استاتیک → app/robots.ts
+- [x] i18n سه‌زبانهٔ کامل (+~۶۵ کلید × fa/en/ar) · E2E میهمان (کوکی‌پاک‌شده): کاتالوگ/کالا/لیست + گیت‌های عضویت → /login · لینت/تایپ/بیلد سبز
+- **بک‌اند فاز ۷:** `GET /businesses/publicCatalogs` (عمومی، کش ۱۵m — خوراک sitemap) + LISTING_SELECT عمومی += updatedAt/viewCount30/viewCountTotal
+- **تطبیق‌های آگاهانه:** «قیمت شما»/vol-ladder/pack-pick پروتوتایپ → قیمت پایه (اندپوینت قیمت مؤثرِ دید خریدار نیست؛ /pricing/preview مالک‌محور است) · بج «٪ پاسخگویی» حذف (آمار عمومی نیست) · insight «بازدید این هفته» = مجموع viewCount30 آگهی‌ها · alert هر ردیف = watchGood (بدون API جدید)
 
 ### فاز ۸ — بین‌المللی‌سازی کامل + ارز
 - تکمیل دیکشنری‌های fa/en/ar (همه صفحه‌ها)، سیستم ارز (ارز مرجع + انتخاب کاربر + تبدیل)، انتخاب کشور → زبان/ارز/جهت، واحدها/گروه‌ها/شهرهای چندزبانه، تنظیمات ادمین برای روشن/خاموش کردن پرداخت
@@ -199,7 +208,8 @@ scripts/           اسکریپت‌های تولید (port-prototype-css.mjs, e
 | ۴ | ✅ انجام شد | 2026-10-05 | حلقهٔ RFQ کامل E2E (ویزارد → پیشنهاد → مقایسه/وضعیت) · ۴ اندپوینت جدید بک‌اند · پوش دو ریپو |
 | ۵ | ✅ انجام شد | 2026-10-06 | هستهٔ فروشنده v18 E2E (کاتالوگ/کالا/تخفیف‌ها) · ماژول pricing بک‌اند · DiscountRule در Atlas · QA قطعی: ۰ اختلاف computed-style · پوش دو ریپو |
 | ۶ | ✅ انجام شد | 2026-10-06 | اشتراکی‌ها و رشد E2E (پروفایل/تنظیمات+تم/کیف+شارژ/اعلان‌ها/چت/کمپین) · ChatModule + Thread/Message در Atlas · setPrefs کراس-دستگاهی · +~۲۹۰ کلید × ۳ زبان · پوش دو ریپو |
-| ۷–۹ | ⏳ | — | — |
+| ۷ | ✅ انجام شد | 2026-10-06 | صفحات عمومی v18 SSR + SEO (Metadata/JSON-LD/sitemap/robots) · publicCatalogs بک‌اند · ریدایرکت legacy · PWA/Push تأیید · E2E میهمان · پوش دو ریپو |
+| ۸–۹ | ⏳ | — | — |
 
 ## ۴. قرارداد گزارش فاز (§۶۵)
 هر فاز در پایان با قالب: Completed / Changed / Backend / Database / Frontend / Prototype deviations / Bugs fixed / Performance / Security / Tests / Remaining / Demo گزارش می‌شود؛ گزارش فاز در chat + خلاصه در همین فایل + ورک‌لاگ `worklog.md`.
