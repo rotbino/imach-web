@@ -1,0 +1,19 @@
+/* ═══════════════════════════════════════════════════════════════
+   iMach — Base (scoped reset · از Prototype v18)
+   همه‌چیز زیر .ia تا صفحات legacy (لندینگ/ادمین) بی‌تأثیر بمانند.
+   فونت: متغیر next/font (--font-iran روی <html>) — preload/swap/CLS ✓
+   جهت (rtl/ltr) از <html dir> می‌آید — هیچ‌جا hardcode نیست (i18n rail).
+   ═══════════════════════════════════════════════════════════════ */
+
+.ia {
+  -webkit-text-size-adjust: 100%;
+  font-family: var(--font-iran), Tahoma, Arial, sans-serif;
+  /* ریست ارتفاع خط — Tailwind روی html مقدار 1.5 می‌گذارد؛
+     Prototype بدون line-height صریح (normal) طراحی شده و همین باید حفظ شود.
+     کامپوننت‌هایی که line-height صریح دارند (hint/sub/…) خودشان override می‌کنند. */
+  line-height: normal;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+.ia * { margin: 0; padding: 0; box-sizing: border-box; }

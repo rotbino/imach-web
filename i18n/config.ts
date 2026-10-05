@@ -27,6 +27,7 @@ export interface LocaleDef {
 export const LOCALES: readonly LocaleDef[] = [
   { code: "fa", label: "فارسی", dir: "rtl", available: true },
   { code: "en", label: "English", dir: "ltr", available: true },
+  { code: "ar", label: "العربية", dir: "rtl", available: true },
 ] as const;
 
 export const DEFAULT_LOCALE = "fa";

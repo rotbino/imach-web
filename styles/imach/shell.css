@@ -1,0 +1,52 @@
+/* ═══════════════════════════════════════════════════════════════
+   iMach — Production App Shell (نگاشت رفتار Prototype به Next.js)
+   ─────────────────────────────────────────────────────────────
+   Prototype                    →  Production
+   .phone (قاب دموی گوشی)       →  .ia.app (ریشهٔ شل؛ full-bleed)
+   .screen-stack + go()/back()  →  Next.js Router (هر مسیر یک صفحه)
+   .screen { absolute/opacity } →  .screen { ستون flex صفحهٔ جاری }
+   شیت‌ها/بک‌دراپ داخل .phone    →  داخل .ia.app (absolute موبایل /
+                                    fixed دسکتاپ — همان قواعد پورت‌شده)
+   دسک‌بار ≥۹۲۰px                →  ستون گرید اول .ia.app (عین Prototype)
+   ─────────────────────────────────────────────────────────────
+   این فایل بعد از components.css لود می‌شود تا قواعد فریم
+   production بر قواعد منتقل‌شده اولویت بگیرند.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── موبایل/پایه: شل تک‌ستونهٔ تمام‌صفحه ── */
+.ia.app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* هر مسیر Next.js یک .screen رندر می‌کند (appbar + screen-body + tabbar) */
+.ia .screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+}
+
+/* ── دسکتاپ ≥۹۲۰: شل دوستونه (دسک‌بار + محتوا) — همان گرید Prototype ── */
+@media (min-width: 920px) {
+  .ia.app {
+    display: grid;
+    grid-template-columns: var(--deskbar-w) minmax(0, 1fr);
+    height: 100dvh;
+  }
+}
+
+/* اسکرول‌بار ظریف برای کل شل در دسکتاپ (screen-body خودش این را دارد؛
+   برای هر کانتینر اسکرولی دیگری هم فعال می‌ماند) */
+@media (min-width: 920px) {
+  .ia .screen-body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+}

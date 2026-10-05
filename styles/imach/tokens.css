@@ -1,0 +1,120 @@
+/* ═══════════════════════════════════════════════════════════════
+   iMach — Design Tokens (v18 Reference Prototype)
+   مرجع: redesign-final/css/style.css — پورت verbatim + ریل تم
+
+   معماری Theming (الزام مالک):
+   ۱) همهٔ رنگ‌ها متغیرند — تغییر تم = override همین توکن‌ها
+   ۲) [data-arm="buy|sell"]  → تم بازوی فعال (فیروزه‌ای/نارنجی) —
+      همان مکانیزم Prototype؛ روی ریشهٔ .ia
+   ۳) [data-theme="dark"]    → تم تاریک (پیش‌نویس فاز ۱؛ پالایش فاز ۶/۸)
+   ۴) تم سفارشی کاربر (رنگ دلخواه هر بازو) = override متغیر --arm*
+      روی همان ریشه — بدون هیچ تغییری در کامپوننت‌ها
+
+   توجه: همهٔ توکن‌ها روی .ia تعریف می‌شوند (نه :root) تا با
+   توکن‌های shadcn در globals.css (--border/--muted/--radius/…)
+   هیچ تداخلی پیش نیاید و صفحات legacy دست‌نخورده بمانند.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ia {
+  /* ── برند ── */
+  --primary: #f97316;         /* نارنجی — بازوی فروش */
+  --primary-strong: #ea580c;
+  --primary-soft: #fdba74;
+  --teal: #14b8a6;            /* فیروزه‌ای — بازوی خرید */
+  --teal-strong: #0d9488;
+  --teal-deep: #0f766e;
+  --emerald: #059669;         /* زمردی — رشد / مثبت */
+  --emerald-tint: #d9f2e6;
+
+  /* ── خنثی گرم ── */
+  --bg: #f3f1e9;
+  --bg-deep: #e9e6da;
+  --card: #ffffff;
+  --surface: #ffffff;         /* سطح‌های سفیدِ هاردکدِ Prototype (--appbar/--tabbar/…) */
+  --fg: #29241d;
+  --fg-soft: #514c40;
+  --muted: #847c6b;
+  --muted-bg: #f6f4ed;
+  --border: #e3ded1;
+  --border-strong: #cfc9b9;
+
+  /* ── تینت‌ها ── */
+  --orange-tint: #ffeeda;
+  --orange-tint-fg: #9a3d06;
+  --teal-tint: #e2f4f1;
+  --teal-tint-fg: #0d5d54;
+  --amber: #b45309;
+  --amber-tint: #fdf0da;
+  --red: #c0392b;
+  --red-tint: #fdebe8;
+
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 9px;
+
+  --shadow-1: 0 1px 2px rgba(41, 36, 29, .05);
+  --shadow-2: 0 1px 3px rgba(41, 36, 29, .08);
+  --shadow-pop: 0 10px 28px rgba(41, 36, 29, .14);
+  --shadow-phone: 0 30px 80px rgba(31, 26, 19, .28);
+
+  /* ── پیش‌فرض arm = خرید (همان Prototype) ── */
+  --arm: var(--teal-strong);
+  --arm-strong: var(--teal-deep);
+  --arm-tint: var(--teal-tint);
+  --arm-tint-fg: var(--teal-tint-fg);
+
+  /* ── عرض‌های شل دسکتاپ (override در mediaهای پایین) ── */
+  --deskbar-w: 216px;
+  --content-w: 860px;
+}
+
+/* ── رنگ بازوی فعال — کل شل از این متغیرها تغذیه می‌کند (عین Prototype) ── */
+.ia[data-arm="sell"] {
+  --arm: var(--primary);
+  --arm-strong: var(--primary-strong);
+  --arm-tint: var(--orange-tint);
+  --arm-tint-fg: var(--orange-tint-fg);
+}
+.ia[data-arm="buy"] {
+  --arm: var(--teal-strong);
+  --arm-strong: var(--teal-deep);
+  --arm-tint: var(--teal-tint);
+  --arm-tint-fg: var(--teal-tint-fg);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   تم تاریک — پیش‌نویس فاز ۱ (ریل کامل؛ پالایش رنگی در فاز ۶/۸)
+   همان هویت گرمِ کنتراست‌دار، روی زمینهٔ تیره؛ رنگ‌های برند دست‌نخورده.
+   ═══════════════════════════════════════════════════════════════ */
+.ia[data-theme="dark"] {
+  --bg: #191611;
+  --bg-deep: #110f0b;
+  --card: #211d16;
+  --surface: #28231a;
+  --fg: #ece7db;
+  --fg-soft: #c9c1af;
+  --muted: #978e7b;
+  --muted-bg: #2a251c;
+  --border: #362f23;
+  --border-strong: #4c4433;
+
+  --orange-tint: #3a2410;
+  --orange-tint-fg: #fdba74;
+  --teal-tint: #10312c;
+  --teal-tint-fg: #7ce8d8;
+  --emerald-tint: #143528;
+  --amber-tint: #342711;
+  --red-tint: #3b1a14;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .45);
+  --shadow-2: 0 1px 3px rgba(0, 0, 0, .55);
+  --shadow-pop: 0 10px 28px rgba(0, 0, 0, .6);
+  --shadow-phone: 0 30px 80px rgba(0, 0, 0, .7);
+}
+
+/* ═══ عرض‌های ریسپانسیو شل (رفتار ≥۹۲۰ Prototype؛ ارث برداری به .ia) ═══ */
+@media (min-width: 920px)  { .ia { --deskbar-w: 216px; --content-w: 860px; } }
+@media (min-width: 1024px) { .ia { --deskbar-w: 248px; --content-w: 1000px; } }
+@media (min-width: 1280px) { .ia { --content-w: 1080px; } }
+@media (min-width: 1440px) { .ia { --content-w: 1140px; } }
+@media (min-width: 1600px) { .ia { --content-w: 1220px; } }

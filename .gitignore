@@ -50,7 +50,11 @@ server.log
 
 # ── sandbox / workspace artifacts (NOT part of imach-web) ──
 /skills/
-/scripts/
+/scripts/*
+# ── مهاجرت v18: ابزارهای تولید دیزاین‌سیستم — بخشی از زنجیرهٔ حقیقت پروژه‌اند ──
+!/scripts/port-prototype-css.mjs
+!/scripts/extract-icons.mjs
+!/scripts/qa-style-diff.mjs
 /download/
 /examples/
 /tests/
