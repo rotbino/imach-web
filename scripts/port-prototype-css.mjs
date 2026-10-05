@@ -59,7 +59,7 @@ const DROP_RE = [
   /\[data-arm=/,
   /^\.screen$/, // production page semantics owned by shell.css
   /^\.screen\.on$/,
-  /^\.phone\b/, // base context: the demo phone frame (≥920 handled before drop)
+  /^\.phone$/, // فقط سلکتورِ دقیق قاب دمو (word-boundary با phone-verified می‌گرفت!)
 ];
 
 const mediaDrop = [
@@ -123,7 +123,7 @@ function mapSelector(sel, inDesktop) {
   s = s.replace(/#sc-([a-z0-9-]+)/g, '[_data_screen_="$1"]');
   if (inDesktop && /^\.phone$/.test(s)) return ".ia.app";
   if (s === ".phone") return null; // demo frame
-  if (/^\.phone\b/.test(s)) {
+  if (/^\.phone\s/.test(s)) {
     warnings.push(`unhandled .phone descendant selector: ${sel}`);
     return null;
   }

@@ -130,6 +130,9 @@ app/
 | nav-panel دسکتاپ (پنل توضیح دمو) | scaffold دمو | حذف | ابزار دموی Prototype است نه محصول |
 | .phone/.screen-stack | کانتینر فریم | `.app` + مسیر per-screen | Next.js هر مسیر یک صفحه دارد؛ رفتار ≥۹۲۰px عیناً از قواعد دسک‌بار Prototype |
 | فونت | @font-face نسبتی | next/font/local + var(--font-iran) | preload/swAP/CLS طبق §۱۴ — خروجی بصری یکسان |
+| ردیف OTP در sc-login | کد پیامک‌شده ۵خانه‌ای | فرم رمز عبور واقعی + بنر phone-verified (از sc-signup) | بک‌اند فعلاً OTP ندارد — UI بدون بک‌اند = mock ممنوع (§۶۳)؛ با فعال‌سازی پیامک، همین‌جا جایگزین می‌شود |
+| بج «N دنبال‌شده» در sc-buy-list | شمارش دنبال‌کردن کالا | pulse-dot (watched) + بج b-stone «N تأمین‌کننده» | دادهٔ صادقانهٔ موجود (supplierCount)؛ شمارش savers خریداری در API خریدار وجود ندارد |
+| دموی ثابت شمارش‌ها (۲ اعلان/۳ پیشنهاد/۱ چت) | اعداد hardcoded دمو | بج‌های واقعی (unread/answeredCount/watchedNeeds) و حذف بج چت | دادهٔ واقعی؛ چت بک‌اند ندارد (فاز ۶) |
 | JS ناوبری stack | go()/back() داخل یک HTML | Next.js router | — |
 
 ## ۵. خط پایه دیتا (برای integrity check هر فاز — §۴۷)

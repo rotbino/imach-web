@@ -508,5 +508,5 @@ export function routeAfterAuth(businesses: { city: string; name: string; enabled
   if (!biz || (biz.city === "—" || biz.name === "کاتالوگ شما")) return "/start";
   const stored = useArmStore.getState().arm;
   const arm = armEnabled(biz, stored) ? stored : firstEnabledArm(biz);
-  return arm === "buy" ? "/buy" : "/sell";
+  return arm === "buy" ? "/home" : "/sell";
 }

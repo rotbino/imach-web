@@ -44,10 +44,28 @@ const spriteBody = symbols
   .map((s) => `  <symbol id="${s.id}" ${s.attrs}>${s.body}</symbol>`)
   .join("\n");
 
-/** parse symbol attributes (viewBox/fill/stroke/…) into a real object */
+/** SVG attribute names → React camelCase (avoids invalid-DOM-property warnings) */
+const SVG_ATTR_CAMEL = {
+  "stroke-width": "strokeWidth",
+  "stroke-linecap": "strokeLinecap",
+  "stroke-linejoin": "strokeLinejoin",
+  "stroke-dasharray": "strokeDasharray",
+  "stroke-dashoffset": "strokeDashoffset",
+  "stroke-opacity": "strokeOpacity",
+  "fill-rule": "fillRule",
+  "clip-rule": "clipRule",
+  "fill-opacity": "fillOpacity",
+  "stop-color": "stopColor",
+  "stop-opacity": "stopOpacity",
+};
+
+/** parse symbol attributes (viewBox/fill/stroke/…) into a React-safe object */
 function parseAttrs(raw) {
   const attrs = {};
-  for (const m of raw.matchAll(/([a-zA-Z:-]+)="([^"]*)"/g)) attrs[m[1]] = m[2];
+  for (const m of raw.matchAll(/([a-zA-Z:-]+)="([^"]*)"/g)) {
+    const key = SVG_ATTR_CAMEL[m[1]] ?? m[1];
+    attrs[key] = m[2];
+  }
   return attrs;
 }
 

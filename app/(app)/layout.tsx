@@ -5,15 +5,15 @@ import "@/styles/imach/base.css";
 import "@/styles/imach/components.css";
 import "@/styles/imach/shell.css";
 import { AppShell, type Arm, type Theme } from "@/components/imach/app-shell";
+import { AuthGate } from "@/components/imach/auth-gate";
 
 /**
- * (app) — شل احراز‌شدهٔ iMach (معماری فاز ۱ مهاجرت).
+ * (app) — شل احراز‌شدهٔ iMach (معماری فاز ۱ مهاجرت · فاز ۲: گارد auth).
  *
- *  · layout فقط این گروه را می‌پوشاند — لندینگ/ادمین/legacy دست‌نخورده‌اند
- *  · CSS سیستم طراحی v18 اینجا import می‌شود (scope شده زیر .ia —
- *    توکن‌های shadcn صفحات دیگر را تحت تأثیر قرار نمی‌دهد)
- *  · data-arm پیش‌فرض از نوع مسیر می‌آید (فعلاً buy — فازهای بعد per-route)
- *  · data-theme از cookie خوانده می‌شود (ریل تم؛ سوییچ UI در فاز ۶)
+ *  · AuthGate: میهمان → /login (الگوی صفحات موجود، متمرکز در layout)
+ *  · CSS سیستم طراحی v18 اینجا import می‌شود (scope زیر .ia)
+ *  · data-arm پیش‌فرض buy — در فازهای بعد per-route/ذخیره‌شده
+ *  · data-theme از cookie (ریل تم؛ سوییچ UI در فاز ۶)
  */
 
 const THEME_COOKIE = "imach_theme";
@@ -24,8 +24,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const initialArm: Arm = "buy";
 
   return (
-    <AppShell initialArm={initialArm} initialTheme={theme}>
-      {children}
-    </AppShell>
+    <AuthGate>
+      <AppShell initialArm={initialArm} initialTheme={theme}>
+        {children}
+      </AppShell>
+    </AuthGate>
   );
 }
