@@ -1,24 +1,12 @@
-import { Suspense } from "react";
-import { QuoteForm } from "./quote-form";
+import { redirect } from "next/navigation";
 
-export default async function QuotePage({
+/* مسیر legacy فرم استعلام — فاز ۴ مهاجرت: جایگزین v18 = ویزارد استعلام
+ * گروهی /rfq/[goodId]. لینک‌های قدیمی (تابلو/محصول عمومی) این‌جا می‌رسند. */
+export default async function LegacyQuoteRedirectPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ goodId: string }>;
-  searchParams: Promise<{ pre?: string }>;
 }) {
   const { goodId } = await params;
-  const { pre } = await searchParams;
-  return (
-    <Suspense
-      fallback={
-        <div className="grid min-h-[100dvh] place-items-center bg-background">
-          <span className="size-6 animate-spin rounded-full border-2 border-stone-300 border-t-stone-700" />
-        </div>
-      }
-    >
-      <QuoteForm goodId={goodId} pre={pre ?? null} />
-    </Suspense>
-  );
+  redirect(`/rfq/${goodId}`);
 }

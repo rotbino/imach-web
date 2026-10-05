@@ -324,8 +324,8 @@ export function ItemView({ goodId }: { goodId: string }) {
 
         <div className="note-c">{t.noteFollowed}</div>
 
-        {/* ═══ درخواست قیمت بهتر — فرم واقعی موجود ═══ */}
-        <Link className="hero-quote tap" href={`/buy/board/${goodId}/quote`}>
+        {/* ═══ درخواست قیمت بهتر — ویزارد استعلام گروهی v18 (فاز ۴) ═══ */}
+        <Link className="hero-quote tap" href={`/rfq/${goodId}`}>
           <span className="hq-ico">
             <Icon className="ic-sm" name="i-send" />
           </span>

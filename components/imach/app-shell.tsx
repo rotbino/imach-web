@@ -11,8 +11,8 @@
  *  · children از Server Components می‌آید (صفحات RSC سالم می‌مانند)
  */
 
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { IconSprite } from "./icon-sprite";
 import { Icon } from "./icon";
 import { Sheet } from "./sheet";
@@ -23,6 +23,12 @@ import { useToast } from "@/hooks/use-toast";
 
 export type Arm = "buy" | "sell";
 export type Theme = "light" | "dark";
+
+/** پیشوندهای مسیر بازوی خرید — این صفحات arm شل را buy می‌کنند (فاز ۴) */
+const BUY_ROUTE_PREFIXES = ["/home", "/item", "/board", "/saved", "/offers", "/rfq", "/add", "/buy"];
+
+/** خانهٔ هر بازو — تعویض بازو (شیت/دسک‌بار) به خانهٔ آن می‌رود (رفتار setMode Prototype) */
+const HOME_OF: Record<Arm, string> = { buy: "/home", sell: "/sell/requests" };
 
 interface ShellContextValue {
   arm: Arm;
@@ -49,18 +55,34 @@ export function AppShell({
   initialTheme?: Theme;
   children: ReactNode;
 }) {
-  const [arm, setArmState] = useState<Arm>(initialArm);
+  const [manualArm, setManualArm] = useState<Arm | null>(null);
   const [theme] = useState<Theme>(initialTheme);
   const [switchOpen, setSwitchOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
   const m = useMessages();
   const router = useRouter();
+  const pathname = usePathname();
   const { toast } = useToast();
   const logout = useAuthStore((s) => s.logout);
 
-  const setArm = useCallback((next: Arm) => {
-    setArmState(next);
-  }, []);
+  // فاز ۴ — بازوی شل از مسیر مشتق می‌شود (همان data-arm per-screen پروتوتایپ):
+  // صفحات فروش → sell · صفحات خرید → buy · مشترک‌ها → آخرین انتخاب صریح
+  const routeArm = useMemo<Arm | null>(() => {
+    if (!pathname) return null;
+    if (pathname === "/sell" || pathname.startsWith("/sell/")) return "sell";
+    if (BUY_ROUTE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return "buy";
+    return null;
+  }, [pathname]);
+  const arm: Arm = routeArm ?? manualArm ?? initialArm;
+
+  // تعویض بازو = انتخاب + ناوبری به خانهٔ همان بازو (رفتار setMode Prototype)
+  const setArm = useCallback(
+    (next: Arm) => {
+      setManualArm(next);
+      router.push(HOME_OF[next]);
+    },
+    [router]
+  );
   const openSwitch = useCallback(() => {
     setConfirmLogout(false);
     setSwitchOpen(true);

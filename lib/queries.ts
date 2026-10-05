@@ -27,6 +27,8 @@ import {
   type MarketItemDto,
   type MarketStateDto,
   type MyInquiriesDto,
+  type MyRfqsDto,
+  type QuoteContextDto,
   type NotifPrefsDto,
   type NotificationsPageDto,
   type PageDto,
@@ -67,6 +69,8 @@ const qk = {
   inquiries: (bizId: string) => ["market", "inquiries", bizId] as const,
   watched: (bizId: string) => ["market", "watched", bizId] as const,
   myInquiries: (bizId: string) => ["market", "myInquiries", bizId] as const,
+  myRfqs: (bizId: string) => ["market", "myRfqs", bizId] as const,
+  quoteContext: (bizId: string, id: string) => ["market", "quoteContext", bizId, id] as const,
   supplyBoard: (bizId: string, goodId: string) => ["market", "supplyBoard", bizId, goodId] as const,
   follows: (bizId: string) => ["market", "follows", bizId] as const,
   suppliersDirectory: (bizId: string) => ["market", "suppliersDirectory", bizId] as const,
@@ -536,6 +540,41 @@ export function useSendOffer() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market"] });
     },
+  });
+}
+
+// ═══ فاز ۴ مهاجرت — حلقهٔ RFQ ═══
+
+/** استعلام‌های گروهی خریدار + پیشنهادهای رسیده (sc-offers) */
+export function useMyRfqs(businessId: string | null | undefined): UseQueryResult<MyRfqsDto> {
+  return useQuery({
+    queryKey: qk.myRfqs(businessId ?? ""),
+    queryFn: () => marketApi.getMyRfqs(businessId as string),
+    enabled: !!businessId,
+    staleTime: 15_000,
+  });
+}
+
+/** نشان خصوصی خریدار روی پیشنهاد (sheet-offer-status) */
+export function useSetOfferStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: "INTERESTED" | "CONTACTED" | "REVIEWED" | "NONE" }) =>
+      marketApi.setOfferStatus(id, status),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market", "myRfqs"] });
+    },
+  });
+}
+
+/** زمینهٔ فرم «پاسخ با قیمت» (sc-quote) */
+export function useQuoteContext(businessId: string | null | undefined, id: string | null): UseQueryResult<QuoteContextDto> {
+  return useQuery({
+    queryKey: qk.quoteContext(businessId ?? "", id ?? ""),
+    queryFn: () => marketApi.getQuoteContext(businessId as string, id as string),
+    enabled: !!businessId && !!id,
+    staleTime: 10_000,
+    retry: false,
   });
 }
 

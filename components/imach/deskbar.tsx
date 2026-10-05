@@ -28,7 +28,7 @@ export function Deskbar() {
           {
             icon: "i-spark",
             label: m.app.tabs.offers,
-            href: "/buy/requests",
+            href: "/offers",
             dot: offersCount > 0 ? fa(offersCount) : undefined,
           },
           { icon: "i-msg", label: m.app.tabs.chat, href: "#" },
@@ -95,7 +95,7 @@ export function Deskbar() {
 
       <div className="db-foot">
         {arm === "buy" ? (
-          <Link className="db-side" href="/buy/suppliers">
+          <Link className="db-side" href="/saved">
             <span className="ico">
               <Icon name="i-bm" />
             </span>

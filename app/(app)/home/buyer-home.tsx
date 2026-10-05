@@ -18,7 +18,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { useActiveBusiness } from "@/lib/active-biz";
-import { useMyBusinesses, useWatchedGoods, useMyInquiries, useFollows, usePriceBoard, useWatchGood } from "@/lib/queries";
+import { useMyBusinesses, useWatchedGoods, useMyRfqs, useFollows, usePriceBoard, useWatchGood } from "@/lib/queries";
 import type { WatchedRowDto } from "@/lib/api";
 import { fa, fmtMoney, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -52,14 +52,14 @@ export function BuyerHome() {
   const bizId = biz?.id ?? null;
 
   const watched = useWatchedGoods(bizId);
-  const inquiries = useMyInquiries(bizId);
+  const rfqs = useMyRfqs(bizId);
   const follows = useFollows(bizId);
   const board = usePriceBoard(bizId);
   const watchMut = useWatchGood();
 
   const rows = useMemo(() => watched.data ?? [], [watched.data]);
   const freshCount = useMemo(() => rows.filter((r) => r.priceChanged).length, [rows]);
-  const offersCount = inquiries.data?.answeredCount ?? 0;
+  const offersCount = rfqs.data?.recentOfferCount ?? 0;
   const followsCount = follows.data?.length ?? 0;
 
   /** جدیدترین به‌روزرسانیِ تابلوی هر کالا (خوراک getPriceBoard) */
@@ -197,12 +197,12 @@ export function BuyerHome() {
           <h2>
             <Icon className="ic-sm" name="i-list" /> {t.secList}
           </h2>
-          <Link className="more" href="/buy/requests">
+          <Link className="more" href="/offers">
             {offersCount > 0 ? <span className="badge b-teal">{fa(offersCount)}</span> : null} {t.offersLink}
           </Link>
         </div>
 
-        <Link className="saved-strip" href="/buy/suppliers">
+        <Link className="saved-strip" href="/saved">
           <span className="ico">
             <Icon name="i-bm" />
           </span>

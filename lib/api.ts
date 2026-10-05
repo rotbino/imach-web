@@ -458,6 +458,11 @@ export interface OfferDto {
   score: number;
   isSpecial: boolean;
   note: string | null;
+  /** فاز ۴ مهاجرت (sc-quote) — شرایط پرداخت + زمان تحویل از چیپ‌های فرم */
+  payTerm?: string | null;
+  delivTerm?: string | null;
+  /** فاز ۴ مهاجرت (sheet-offer-status) — نشان خصوصی خریدار: INTERESTED | CONTACTED | REVIEWED | null */
+  status?: string | null;
   createdAt: string;
   listing: {
     id: string;
@@ -483,6 +488,10 @@ export interface InquiryDto {
   frequency: string | null;
   /** فاز ۴ — انتظار تحویل خریدار («این ماه»، …) */
   delivery: string | null;
+  /** فاز ۴ مهاجرت — محل تحویل + قیمت هدف + کلید گروه استعلام */
+  deliveryCity?: string | null;
+  targetPriceMinor?: number | null;
+  rfqGroupId?: string | null;
   status: string;
   isRead: boolean;
   createdAt: string;
@@ -649,6 +658,10 @@ export interface RequestQuoteBody {
   volume: number;
   frequency?: "WEEKLY" | "MONTHLY" | "OCCASIONAL";
   delivery?: string;
+  /** فاز ۴ مهاجرت (sc-rfq) — محل تحویل (پیش‌فرض شهر خریدار) */
+  deliveryCity?: string;
+  /** فاز ۴ مهاجرت (sc-rfq) — قیمت هدف اختیاری (ریال/Minor) */
+  targetPriceMinor?: number;
   note?: string;
   supplierIds?: string[];
   includeNetwork?: boolean;
@@ -659,6 +672,94 @@ export interface RequestQuoteResultDto {
   /** گیرنده‌هایی که از شبکه iMach اضافه شدند (نه انتخاب من) */
   networkAdded: number;
   inquiries: { id: string; sellerId: string; status: string }[];
+}
+
+// ═══ فاز ۴ مهاجرت — حلقهٔ RFQ: پیشنهادهای گروهی + وضعیت + زمینهٔ فرم پاسخ ═══
+
+/** پیشنهادِ داخل یک گروه استعلام (sc-offers) */
+export interface RfqOfferDto {
+  id: string;
+  sellerId: string;
+  listingId: string;
+  seller: SellerDto & { phone?: string | null };
+  priceMinor: number;
+  currency: string;
+  minOrder: number;
+  payTerm: string | null;
+  delivTerm: string | null;
+  note: string | null;
+  /** نشان خصوصی خریدار: INTERESTED | CONTACTED | REVIEWED | null */
+  status: string | null;
+  createdAt: string;
+}
+
+/** یک استعلام گروهی (کارت «پیشنهادها») — چند Inquiry با rfqGroupId مشترک */
+export interface RfqGroupDto {
+  /** rfqGroupId · legacy: inquiry.id · پیشنهاد سرد: c+offerId */
+  id: string;
+  kind: "RFQ" | "COLD";
+  createdAt: string;
+  volume: number | null;
+  frequency: string | null;
+  delivery: string | null;
+  deliveryCity: string | null;
+  targetPriceMinor: number | null;
+  note: string | null;
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category?: { slug: string; nameFa: string } | null;
+  } | null;
+  recipients: Array<{
+    inquiryId: string;
+    sellerId: string;
+    status: string;
+    seller: SellerDto;
+  }>;
+  offers: RfqOfferDto[];
+  offerCount: number;
+  markedCount: number;
+  minPriceMinor: number | null;
+}
+
+export interface MyRfqsDto {
+  groups: RfqGroupDto[];
+  /** پیشنهادهای ۷۲ ساعت گذشته — بج/سلام صفحهٔ پیشنهادها */
+  recentOfferCount: number;
+}
+
+/** زمینهٔ فرم «پاسخ با قیمت» (sc-quote) */
+export interface QuoteContextDto {
+  kind: "INQUIRY" | "BUY_LISTING";
+  inquiryId: string | null;
+  buyListingId: string | null;
+  buyer: SellerDto & {
+    trade: string | null;
+    memberSince: string;
+  };
+  good: { id: string; nameFa: string; nameEn: string | null; unit: string };
+  volume: number;
+  frequency: string | null;
+  delivery: string | null;
+  deliveryCity: string | null;
+  targetPriceMinor: number | null;
+  note: string | null;
+  deadlineAt: string | null;
+  /** INQUIRY: قبلاً پاسخ داده‌ای؟ · BUY_LISTING: null */
+  answered: boolean | null;
+  /** BUY_LISTING: من خریدار را گوش‌به‌زنگ دارم؟ (گیت معرف) · INQUIRY: null */
+  watching: boolean | null;
+  /** قیمت زندهٔ کاتالوگ خودم در همین کالا — null یعنی کالا در کاتالوگم نیست */
+  myListing: {
+    id: string;
+    priceMinor: number | null;
+    currency: string | null;
+    variantLabel: string | null;
+    minOrder: number | null;
+    updatedAt: string;
+  } | null;
 }
 
 // ═══ فاز ۷ — دایرکتوری تأمین‌کنندگان (طرح ۱۰) + پیشنهادها (طرح ۱۱) ═══
@@ -1269,7 +1370,7 @@ export const marketApi = {
   /** سه کارت: قیمت بهتر / تأمین‌کننده جدید / جایگزین */
   getSuggestions: (businessId: string) =>
     api<SuggestionsDto>("/market/getSuggestions", { params: { businessId } }),
-  sendOffer: (body: { inquiryId: string; priceMinor: number; note?: string }) =>
+  sendOffer: (body: { inquiryId: string; priceMinor: number; payTerm?: string; delivTerm?: string; note?: string }) =>
     api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   getFollows: (businessId: string) => api<FollowDto[]>("/market/getFollows", { params: { businessId } }),
   followSupplier: (
@@ -1314,8 +1415,23 @@ export const marketApi = {
       body: { businessId },
     }),
   /** پیشنهاد قیمت مستقیم روی درخواست خرید — پشت گیت ۱۰ معرف */
-  offerBuyRequest: (body: { businessId: string; buyListingId: string; priceMinor: number; note?: string }) =>
+  offerBuyRequest: (body: { businessId: string; buyListingId: string; priceMinor: number; payTerm?: string; delivTerm?: string; note?: string }) =>
     api<OfferDto>("/market/offerBuyRequest", { method: "POST", body }),
+
+  // ═══ فاز ۴ مهاجرت — حلقهٔ RFQ ═══
+
+  /** استعلام‌های گروهی خریدار + پیشنهادهای رسیده (sc-offers) */
+  getMyRfqs: (businessId: string) =>
+    api<MyRfqsDto>("/market/getMyRfqs", { params: { businessId } }),
+  /** نشان خصوصی خریدار روی پیشنهاد (sheet-offer-status) */
+  setOfferStatus: (id: string, status: "INTERESTED" | "CONTACTED" | "REVIEWED" | "NONE") =>
+    api<{ ok: boolean; status: string | null }>(`/market/setOfferStatus/${id}`, {
+      method: "POST",
+      body: { status },
+    }),
+  /** زمینهٔ فرم «پاسخ با قیمت» — id = Inquiry id یا b+BUY listing id */
+  getQuoteContext: (businessId: string, id: string) =>
+    api<QuoteContextDto>("/market/getQuoteContext", { params: { businessId, id } }),
 
   // ═══ طرح ۸ — تحلیل ذخیره‌کنندگان / گوش‌به‌زنگ / تابلوی قیمت ═══
 
@@ -1371,6 +1487,10 @@ export interface WatchedNeedDto {
   buyer: { id: string; slug: string; name: string; city: string | null; isVerified: boolean };
   good: { id: string; nameFa: string; nameEn: string | null; unit: string };
   sellsSameGood: boolean | null;
+  /** فاز ۴ مهاجرت — آگهی فروشِ من در همین کالا (null = این کالا در کاتالوگم نیست) */
+  myListingId?: string | null;
+  /** فاز ۴ مهاجرت — قبلاً به این خریدار در همین کالا پیشنهاد داده‌ام (بج «پاسخ دادی») */
+  answeredByMe?: boolean;
 }
 
 export interface WatchedBuyerNeedsDto {

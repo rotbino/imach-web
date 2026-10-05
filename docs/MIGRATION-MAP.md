@@ -56,16 +56,16 @@ app/
 | ۵ | sc-buy-item | (app)/item/[goodId] | ۳ ✅ | ItemView(PriceHero, FollowRow, NeedCard, WatchSwitches) | GET /market/getSupplyBoard · getWatchedGoods · POST followSupplier · watchGood · setNotifPrefs | market | Listing, Follow, WatchedGood, Business |
 | ۶ | sc-board | (app)/board/[goodId] | ۳ ✅ | BoardPage(SortChips, SupCard, FollowToggle) | GET /market/getSupplyBoard · followSupplier | market | Listing, Follow |
 | ۷ | sc-suppliers | (app)/saved | ۳ ✅ | SavedCatalogs(SavedCard) | GET /market/getFollows · unfollowSupplier | market | Follow |
-| ۸ | sc-offers | (app)/offers | ۴ | OfferCard, CompareSheet, OfferStatusPill | GET /inquiries/mine, GET /offers?inquiryId | inquiries, offers | Inquiry, Offer |
+| ۸ | sc-offers | (app)/offers | ۴ ✅ | OffersView(RfqCard, DetailPane, FilterChips, StatusSheet) | GET /market/getMyRfqs · POST /market/setOfferStatus/:id | market | Inquiry(+rfqGroupId/targetPrice/deliveryCity), Offer(+status) |
 | ۹ | sc-buy-profile | (app)/profile | ۶ | BizCard, ArmSwitch, ThemeSwitch | GET /businesses/me, PATCH /businesses/me | businesses | Business |
-| ۱۰ | sc-sell-requests | (app)/sell/requests | ۴→۵ | RequestCard, TasksBar(قیمت‌های امروز), ReRfqBtn | GET /inquiries?forSeller, GET /listings/stale | inquiries, listings, matching | Inquiry, Listing |
+| ۱۰ | sc-sell-requests | (app)/sell/requests | ۴ ✅ | RequestsView(ToMeTab, MarketTab, NeedAlertsTab, DeadlineBadge) | GET /market/getInquiries · getBuyRequests · getWatchedBuyerNeeds · POST markInquiryRead | market, matching | Inquiry, Listing, Follow |
 | ۱۱ | sc-sell-catalog | (app)/sell/catalog | ۵ | CatalogList, ProductRow, PriceEntry | GET /listings?mine, PATCH /listings/:id/price | listings | Listing, PriceLog |
 | ۱۲ | sc-sell-product-owner | (app)/sell/product/[id] | ۵ | ProductView, RateTiers, Packaging, VisibilityCtrl | GET /listings/:id, PATCH /listings/:id | listings | Listing |
 | ۱۳ | sc-sell-product-public | (pub)/p/[slug] | ۷ | PublicProduct, PriceHistoryChart, SellerCard | GET /pages/slug, GET /listings/:id/public | pages, listings | Page, Listing |
 | ۱۴ | sc-discount | (app)/sell/discounts | ۵ | DiscountRuleList, CustTypeTabs, TierEditor | ➕ DiscountRule CRUD (جدید) | discounts(جدید) | CustomerType, DiscountRule (جدید) |
 | ۱۵ | sc-sell-profile | (app)/profile (arm=sell) | ۶ | StorefrontProfile, StatsCard | GET /businesses/me | businesses | Business, Page |
-| ۱۶ | sc-rfq | (app)/rfq/[inquiryId] | ۴ | RfqWizard(triCalc), TargetPicker | POST /inquiries, POST /inquiries/:id/send | inquiries, matching | Inquiry (+RfqDetail جدید) |
-| ۱۷ | sc-quote | (app)/sell/quote/[id] | ۴ | QuoteForm, PriceComposer, ExpiryCtrl | POST /offers | offers | Offer |
+| ۱۶ | sc-rfq | (app)/rfq/[goodId] | ۴ ✅ | RfqWizard(SupplierPicker, VolumeFreq, TimingChips, TargetPrice, Note) | GET /market/getSupplyBoard · getMyRfqs · POST /market/requestQuote | market, matching | Inquiry(+rfqGroupId) — گروه‌بندی با rfqGroupId، نه مدل RfqDetail جداست |
+| ۱۷ | sc-quote | (app)/sell/quote/[id] | ۴ ✅ | QuoteForm(PriceComposer, PayTermChips, DelivTermChips, PackPrice, Deadline) | GET /market/getQuoteContext · POST /market/sendOffer · offerBuyRequest | market, offers | Offer(+payTerm/delivTerm) |
 | ۱۸ | sc-campaign | (app)/sell/campaign | ۶ | CampaignForm, BudgetBar, PromoPreview | POST /promos, GET /promos/me | promos | Promo, PromoEvent, Wallet, WalletTxn |
 | ۱۹ | sc-wallet | (app)/wallet | ۶ | BalanceCard, TxnList, InviteCreditCard | GET /wallet, GET /wallet/txns | wallet | Wallet, WalletTxn |
 | ۲۰ | sc-charge | (app)/wallet/charge | ۶ | ChargeForm, GatewayPanel | POST /wallet/charge | wallet | WalletTxn |
@@ -142,6 +142,10 @@ app/
 | بج «N دنبال‌شده» در sc-buy-list | شمارش دنبال‌کردن کالا | pulse-dot (watched) + بج b-stone «N تأمین‌کننده» | دادهٔ صادقانهٔ موجود (supplierCount)؛ شمارش savers خریداری در API خریدار وجود ندارد |
 | دموی ثابت شمارش‌ها (۲ اعلان/۳ پیشنهاد/۱ چت) | اعداد hardcoded دمو | بج‌های واقعی (unread/answeredCount/watchedNeeds) و حذف بج چت | دادهٔ واقعی؛ چت بک‌اند ندارد (فاز ۶) |
 | JS ناوبری stack | go()/back() داخل یک HTML | Next.js router | — |
+| search-strip در sc-offers | نوار جست‌وجو → sc-search | حذف تا ساخت /search | مسیر جست‌وجوی جهانی هنوز ساخته نشده (ردیف ۲۱)؛ نوار مرده نقض UX است |
+| مدل RfqDetail جدا (نقشهٔ اولیه) | جدای Inquiry | گروه‌بندی با Inquiry.rfqGroupId + randomUUID | بدون مدل جدید؛ ردیف‌های legacy بدون کلید = گروه تک‌نفره — همان رفتار بصری با پیچیدگی دادهٔ کمتر |
+| تایمر شمارش معکوس مهلت ۳روزه | عدد ثابت دمو | «N روز باز» از createdAt+۳day | همان منطق؛ بدون تایمر زنده (به‌روزرسانی در رندر) |
+| پیشنهاد سرد در sc-offers (offerBuyRequest) | کارت فرصت بازار در تب فروشنده | گروه kind=COLD در فهرست خریدار با حجم BUY listing خودش | پیشنهاد بدون استعلام هم باید در «پیشنهادها» دیده شود؛ گیت معرف (۱۰ عضو) عیناً حفظ شد — منطق کسب‌وکار موجود |
 
 ## ۵. خط پایه دیتا (برای integrity check هر فاز — §۴۷)
 

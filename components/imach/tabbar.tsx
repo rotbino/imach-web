@@ -38,7 +38,7 @@ export function Tabbar({ active }: { active?: TabKey }) {
             key: "offers",
             icon: "i-spark",
             label: m.app.tabs.offers,
-            href: "/buy/requests",
+            href: "/offers",
             dot: offersCount > 0 ? fa(offersCount) : undefined,
           },
           { key: "chat", icon: "i-msg", label: m.app.tabs.chat },

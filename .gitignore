@@ -75,3 +75,6 @@ tool-results/
 # فایل‌های تستی استوریج محلی بک‌اند — هرگز در ریپو
 uploads/
 .secrets/
+
+# بستهٔ زیپ پروتوتایپ — artifact محلی؛ طبق سنت ریپو track نمی‌شود
+redesign-final/*.zip
