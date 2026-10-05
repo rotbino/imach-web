@@ -45,7 +45,7 @@ export function Tabbar({ active }: { active?: TabKey }) {
           { key: "profile", icon: "i-user", label: m.app.tabs.profile, href: "/profile" },
         ]
       : [
-          { key: "catalog", icon: "i-store", label: m.app.tabs.catalog, href: "/sell" },
+          { key: "catalog", icon: "i-store", label: m.app.tabs.catalog, href: "/sell/catalog" },
           {
             key: "requests",
             icon: "i-inbox",

@@ -602,6 +602,8 @@ export interface CustomerRowDto {
   viaRef: boolean;
   /** طرح ۸ (U60) — منبعِ رسیدن: ORGANIC | SHARED | PROMO */
   source?: "ORGANIC" | "SHARED" | "PROMO";
+  /** فاز ۵ مهاجرت — نوع مشتری از دید فروشنده: PASSING | PARTNER | CONTRACT */
+  custType?: "PASSING" | "PARTNER" | "CONTRACT";
   /** آخرین درخواست خرید فعال (لیستینگ BUY/BOTH با حجم) — null یعنی درخواست فعالی ندارد */
   latestRequest: {
     volume: number;
@@ -1679,4 +1681,100 @@ export const notificationsApi = {
       method: "POST",
       body: JSON.stringify(sub),
     }),
+};
+
+// ─── فاز ۵ مهاجرت — قیمت‌گذاری و تخفیف‌ها (PricingModule) ───
+
+/** درصد تخفیف مشتری به تفکیک نوع — کلید غایب = سطح بالاتر */
+export type PricingCustPct = Partial<Record<"p" | "h" | "q", number>>;
+
+/** پلهٔ حجمی — بر حجمِ «همان کالا» در سفارش */
+export interface PricingTier {
+  from: number;
+  to: number | null;
+  pct: number;
+}
+
+/** ورودی سه‌گانهٔ سطح کالا — kind amt/fin به تومان */
+export interface PricingTriInput {
+  kind: "pct" | "amt" | "fin";
+  valueToman: number;
+}
+export type PricingItemTri = Partial<Record<"p" | "h" | "q", PricingTriInput>>;
+
+export interface PricingItemRule {
+  custPct: PricingCustPct;
+  tiers: PricingTier[];
+  itemTri: PricingItemTri | null;
+}
+
+/** خروجی /pricing/state — همهٔ داده‌های صفحهٔ sc-discount */
+export interface PricingStateDto {
+  catalog: { custPct: PricingCustPct; tiers: PricingTier[] } | null;
+  groups: {
+    refId: string;
+    name: string;
+    itemCount: number;
+    custPct: PricingCustPct | null;
+    tiers: PricingTier[] | null;
+  }[];
+  items: {
+    listingId: string;
+    name: string;
+    priceMinor: number | null;
+    unit: string;
+    minOrder: number | null;
+    catalogCategoryId: string | null;
+    rule: PricingItemRule | null;
+  }[];
+}
+
+/** خروجی /pricing/preview — قیمت مؤثر + شکست منشأ */
+export interface PricingPreviewDto {
+  listingId: string;
+  goodName: string;
+  unit: string;
+  baseMinor: number;
+  custType: "p" | "h" | "q";
+  custPct: number;
+  custFrom: "ITEM" | "GROUP" | "CATALOG" | "NONE";
+  tierPct: number;
+  tierLabel: string | null;
+  tierFrom: "ITEM" | "GROUP" | "CATALOG" | null;
+  totalPct: number;
+  finalMinor: number;
+  orderTotalMinor: number;
+  hasItemRule: boolean;
+}
+
+export const pricingApi = {
+  state: (businessId: string) => api<PricingStateDto>("/pricing/state", { params: { businessId } }),
+  saveCatalog: (body: { businessId: string; custPct: PricingCustPct; tiers: PricingTier[] }) =>
+    api<PricingStateDto>("/pricing/catalog", { method: "PUT", body }),
+  saveGroup: (refId: string, body: { businessId: string; custPct: PricingCustPct; tiers: PricingTier[] }) =>
+    api<PricingStateDto>(`/pricing/group/${refId}`, { method: "PUT", body }),
+  /** mode=CATALOG → ریست قاعدهٔ اختصاصی؛ mode=CUSTOM → tri + tiers */
+  saveItem: (
+    listingId: string,
+    body: {
+      businessId: string;
+      mode: "CATALOG" | "CUSTOM";
+      tri?: PricingItemTri;
+      tiers?: PricingTier[];
+    }
+  ) => api<{ ok: boolean; reset?: boolean; custPct?: PricingCustPct }>(`/pricing/item/${listingId}`, {
+    method: "PUT",
+    body,
+  }),
+  bulk: (body: {
+    businessId: string;
+    listingIds: string[];
+    action: "RESET" | "SAME";
+    custPct?: PricingCustPct;
+  }) => api<{ affected: number; action: string }>("/pricing/bulk", { method: "PUT", body }),
+  preview: (params: { businessId: string; listingId: string; custType: "p" | "h" | "q"; qty: number }) =>
+    api<PricingPreviewDto>("/pricing/preview", { params }),
+  /** تغییر نوع مشتری — روی یال فالو، توسط فروشنده */
+  setCustType: (body: { businessId: string; buyerId: string; type: "PASSING" | "PARTNER" | "CONTRACT" }) =>
+    api<{ ok: boolean }>("/pricing/custType", { method: "POST", body }),
 };

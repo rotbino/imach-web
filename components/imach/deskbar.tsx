@@ -35,7 +35,7 @@ export function Deskbar() {
           { icon: "i-user", label: m.app.tabs.profile, href: "/profile" },
         ]
       : [
-          { icon: "i-store", label: m.app.tabs.catalog, href: "/sell" },
+          { icon: "i-store", label: m.app.tabs.catalog, href: "/sell/catalog" },
           {
             icon: "i-inbox",
             label: m.app.tabs.requests,

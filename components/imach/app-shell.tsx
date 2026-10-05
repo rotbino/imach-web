@@ -28,7 +28,7 @@ export type Theme = "light" | "dark";
 const BUY_ROUTE_PREFIXES = ["/home", "/item", "/board", "/saved", "/offers", "/rfq", "/add", "/buy"];
 
 /** خانهٔ هر بازو — تعویض بازو (شیت/دسک‌بار) به خانهٔ آن می‌رود (رفتار setMode Prototype) */
-const HOME_OF: Record<Arm, string> = { buy: "/home", sell: "/sell/requests" };
+const HOME_OF: Record<Arm, string> = { buy: "/home", sell: "/sell/catalog" };
 
 interface ShellContextValue {
   arm: Arm;
@@ -69,7 +69,7 @@ export function AppShell({
   // صفحات فروش → sell · صفحات خرید → buy · مشترک‌ها → آخرین انتخاب صریح
   const routeArm = useMemo<Arm | null>(() => {
     if (!pathname) return null;
-    if (pathname === "/sell" || pathname.startsWith("/sell/")) return "sell";
+    if (pathname === "/sell" || pathname.startsWith("/sell/")) return "sell"; // /sell → ریدایرکت /sell/catalog (فاز ۵)
     if (BUY_ROUTE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return "buy";
     return null;
   }, [pathname]);

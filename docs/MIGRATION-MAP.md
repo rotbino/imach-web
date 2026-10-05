@@ -59,10 +59,10 @@ app/
 | ۸ | sc-offers | (app)/offers | ۴ ✅ | OffersView(RfqCard, DetailPane, FilterChips, StatusSheet) | GET /market/getMyRfqs · POST /market/setOfferStatus/:id | market | Inquiry(+rfqGroupId/targetPrice/deliveryCity), Offer(+status) |
 | ۹ | sc-buy-profile | (app)/profile | ۶ | BizCard, ArmSwitch, ThemeSwitch | GET /businesses/me, PATCH /businesses/me | businesses | Business |
 | ۱۰ | sc-sell-requests | (app)/sell/requests | ۴ ✅ | RequestsView(ToMeTab, MarketTab, NeedAlertsTab, DeadlineBadge) | GET /market/getInquiries · getBuyRequests · getWatchedBuyerNeeds · POST markInquiryRead | market, matching | Inquiry, Listing, Follow |
-| ۱۱ | sc-sell-catalog | (app)/sell/catalog | ۵ | CatalogList, ProductRow, PriceEntry | GET /listings?mine, PATCH /listings/:id/price | listings | Listing, PriceLog |
-| ۱۲ | sc-sell-product-owner | (app)/sell/product/[id] | ۵ | ProductView, RateTiers, Packaging, VisibilityCtrl | GET /listings/:id, PATCH /listings/:id | listings | Listing |
+| ۱۱ | sc-sell-catalog | (app)/sell/catalog | ۵ ✅ | CatalogView(BizCard, TasksRow, InsightStrip, ShareStrip, ChipsGrid, PCard, QuickPriceSheet, FollowersSheet) | GET /market/getMyListings · getMyFollowers · getInquiries · getSaverAnalysis · getMyPromos · PUT /listings/saveListing | market, listings | Listing, Business, Follow, WatchedGood |
+| ۱۲ | sc-sell-product-owner | (app)/sell/product/[id] | ۵ ✅ | ProductView(InsightBar+SourceBreakdown, PricePanel, DiscountStrip زنده, RatesSheet, ItemDiscountSheet, FollowersSheet+custType, ArchiveAsk) | GET /market/getMyListings · getSaverAnalysis · getInquiries · getMyPromos · getPromoReport · GET /pricing/state · preview · POST /listings/setListingActive | market, pricing | Listing, DiscountRule, Follow(+custType) |
 | ۱۳ | sc-sell-product-public | (pub)/p/[slug] | ۷ | PublicProduct, PriceHistoryChart, SellerCard | GET /pages/slug, GET /listings/:id/public | pages, listings | Page, Listing |
-| ۱۴ | sc-discount | (app)/sell/discounts | ۵ | DiscountRuleList, CustTypeTabs, TierEditor | ➕ DiscountRule CRUD (جدید) | discounts(جدید) | CustomerType, DiscountRule (جدید) |
+| ۱۴ | sc-discount | (app)/sell/discounts | ۵ ✅ | DiscountsView(FormulaFlow زنده, TabCust/TabVolume/TabPreview, CatalogRows+«می‌شود X», GroupLvlEdit, TierRows, PreviewBreakdown با منبع) | GET /pricing/state · preview · PUT /pricing/catalog · group/:refId · item/:listingId · bulk · POST custType · PUT /businesses/catalogCategories | pricing(جدید), businesses | DiscountRule(جدید), Business.customCategories |
 | ۱۵ | sc-sell-profile | (app)/profile (arm=sell) | ۶ | StorefrontProfile, StatsCard | GET /businesses/me | businesses | Business, Page |
 | ۱۶ | sc-rfq | (app)/rfq/[goodId] | ۴ ✅ | RfqWizard(SupplierPicker, VolumeFreq, TimingChips, TargetPrice, Note) | GET /market/getSupplyBoard · getMyRfqs · POST /market/requestQuote | market, matching | Inquiry(+rfqGroupId) — گروه‌بندی با rfqGroupId، نه مدل RfqDetail جداست |
 | ۱۷ | sc-quote | (app)/sell/quote/[id] | ۴ ✅ | QuoteForm(PriceComposer, PayTermChips, DelivTermChips, PackPrice, Deadline) | GET /market/getQuoteContext · POST /market/sendOffer · offerBuyRequest | market, offers | Offer(+payTerm/delivTerm) |
@@ -91,8 +91,8 @@ app/
 | sheet-filter | /board/[goodId] | ۳ | query params |
 | sheet-follow | /item/[goodId] | ۳ | POST /follows |
 | sheet-rates | /sell/product/[id] | ۵ | GET/PUT /listings/:id/rates (GoodRateTier جدید) |
-| sheet-item-discount | /sell/discounts | ۵ | CRUD DiscountRule |
-| sheet-cust-type | /sell/discounts | ۵ | GET /customers/types |
+| sheet-item-discount | /sell/product/[id] + شیت | ۵ ✅ | PUT /pricing/item/:listingId (سه‌ورودی هم‌بسته pct/amt/fin + پله‌ها + CATALOG-reset) |
+| sheet-cust-type | شیت دنبال‌کنندگان (کاتالوگ+کالا) | ۵ ✅ | POST /pricing/custType — در نبود یال فالو، یال ساخته می‌شود (تطبیق آگاهانه: دیده‌بان تابلو هم نوع می‌گیرد) |
 | sheet-help-discount | /sell/discounts | ۵ | - (static) |
 | sheet-quickprice | /sell/catalog | ۵ | PATCH /listings/:id/price |
 | sheet-bulk | /sell/catalog | ۵ | PATCH /listings/bulk |
@@ -146,7 +146,13 @@ app/
 | مدل RfqDetail جدا (نقشهٔ اولیه) | جدای Inquiry | گروه‌بندی با Inquiry.rfqGroupId + randomUUID | بدون مدل جدید؛ ردیف‌های legacy بدون کلید = گروه تک‌نفره — همان رفتار بصری با پیچیدگی دادهٔ کمتر |
 | تایمر شمارش معکوس مهلت ۳روزه | عدد ثابت دمو | «N روز باز» از createdAt+۳day | همان منطق؛ بدون تایمر زنده (به‌روزرسانی در رندر) |
 | پیشنهاد سرد در sc-offers (offerBuyRequest) | کارت فرصت بازار در تب فروشنده | گروه kind=COLD در فهرست خریدار با حجم BUY listing خودش | پیشنهاد بدون استعلام هم باید در «پیشنهادها» دیده شود؛ گیت معرف (۱۰ عضو) عیناً حفظ شد — منطق کسب‌وکار موجود |
+| کارهای امروز در sc-sell-catalog (C1-5) | ۵ کار ثابت دمو | فقط «N درخواست بی‌پاسخ» واقعی (getInquiries) | اندپوینت «پیشنهادهای ارسالی در انتظار پاسخ خریدار» هنوز نیست؛ بقیهٔ کارها با فاز چت/کمپین می‌آید |
+| بینش ذخیره‌کنندگان sc-sell-catalog | «این هفته» | پنجرهٔ ۳۰روزهٔ واقعی (viewCount30) | پنجرهٔ بک‌اند ۳۰روزه است؛ برچسب صادقانهٔ همین پنجره |
+| شیت دنبال‌کنندگان — نوع مشتری برای دیده‌بان تابلو | چیپ‌ها برای همهٔ ۱۲ نفر | setCustType در نبود یال فالو، یال می‌سازد (source=ORGANIC) | Prototype جریان را برای همهٔ منابع می‌خواهد؛ custType روی یال Follow زندگی می‌کند — یالِ رابطه ساخته می‌شود تا موتور قیمت کار کند (اعلانی رد و بدل نمی‌شود) |
+| درصد نوع مشتری در شیت کالا | ٪۵/٪۷ ثابت دمو | درصد مؤثر همان کالا (قاعدهٔ کالا › گروه › کاتالوگ) | عدد زندهٔ واقعی از /pricing/state — همان چیزی که خریدار عملاً می‌بیند |
 
 ## ۵. خط پایه دیتا (برای integrity check هر فاز — §۴۷)
 
 Good=2479 · Product=40417 · Brand=3769 · Category=207 · Unit=62 · Business=35 · User=6 · Listing=38 · Page=68 · Follow=35 · WatchedGood=16 · Inquiry=9 · Offer=2 · PriceLog=9 · Notification=13 · Wallet=1 · PromoEvent=8 · RefreshToken=438 · File=2 — (بک‌آپ کامل: `imach-back/backups/migration/2026-10-05/manifest.json`)
+
+**پایان فاز ۵ (2026-10-06)**: Business=38 · User=9 · Listing=41 · Page=75 · Follow=38 · WatchedGood=17 · Inquiry=13 · Offer=6 · PriceLog=14 · Notification=27 · Wallet=5 · RefreshToken=573 · DiscountRule=3 — رشد همه فقط از دیتای تست E2E (ثبت‌نام فاز۳/۴ + لیستینگ‌ها و قواعد قیمت فاز۵)؛ مرجع‌ها دست‌نخورده: Good=2479 · Product=40417 · Brand=3769 · Category=207 · Unit=62 ✓

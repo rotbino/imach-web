@@ -47,6 +47,11 @@ import {
   type WatchedBuyerNeedsDto,
   promosApi,
   walletApi,
+  pricingApi,
+  type PricingCustPct,
+  type PricingTier,
+  type PricingStateDto,
+  type PricingPreviewDto,
 } from "./api";
 import { useAuthStore } from "./auth-store";
 
@@ -83,6 +88,9 @@ const qk = {
   saverAnalysis: (bizId: string) => ["market", "saverAnalysis", bizId] as const,
   watchedNeeds: (bizId: string) => ["market", "watchedNeeds", bizId] as const,
   priceBoard: (bizId: string) => ["market", "priceBoard", bizId] as const,
+  pricingState: (bizId: string) => ["pricing", "state", bizId] as const,
+  pricingPreview: (bizId: string, listingId: string, custType: string, qty: number) =>
+    ["pricing", "preview", bizId, listingId, custType, qty] as const,
   wallet: (bizId: string) => ["wallet", bizId] as const,
   promos: (bizId: string) => ["promos", bizId] as const,
   promoReport: (bizId: string, promoId: string) => ["promos", "report", bizId, promoId] as const,
@@ -931,6 +939,97 @@ export function useStopPromo() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["promos"] });
       void qc.invalidateQueries({ queryKey: ["wallet"] });
+    },
+  });
+}
+
+// ─── فاز ۵ مهاجرت — قیمت‌گذاری و تخفیف‌ها ───
+
+
+/** وضعیت کامل موتور تخفیف‌ها — کاتالوگ + گروه‌ها + کالاها */
+export function usePricingState(businessId: string | null | undefined): UseQueryResult<PricingStateDto> {
+  return useQuery({
+    queryKey: qk.pricingState(businessId ?? ""),
+    queryFn: () => pricingApi.state(businessId as string),
+    enabled: !!businessId,
+    staleTime: 30_000,
+  });
+}
+
+/** ذخیرهٔ قاعدهٔ کاتالوگ — پاسخ = state تازه */
+export function useSavePricingCatalog() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { businessId: string; custPct: PricingCustPct; tiers: PricingTier[] }) =>
+      pricingApi.saveCatalog(body),
+    onSuccess: (state, vars) => {
+      qc.setQueryData(qk.pricingState(vars.businessId), state);
+      void qc.invalidateQueries({ queryKey: ["pricing", "preview"] });
+    },
+  });
+}
+
+/** ذخیرهٔ قاعدهٔ گروه کالا */
+export function useSavePricingGroup() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ refId, ...body }: { refId: string; businessId: string; custPct: PricingCustPct; tiers: PricingTier[] }) =>
+      pricingApi.saveGroup(refId, body),
+    onSuccess: (state, vars) => {
+      qc.setQueryData(qk.pricingState(vars.businessId), state);
+      void qc.invalidateQueries({ queryKey: ["pricing", "preview"] });
+    },
+  });
+}
+
+/** قاعدهٔ کالای مشخص — CATALOG (ریست) یا CUSTOM (سه‌ورودی + پله‌ها) */
+export function useSavePricingItem() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ listingId, ...body }: Parameters<typeof pricingApi.saveItem>[1] & { listingId: string }) =>
+      pricingApi.saveItem(listingId, body),
+    onSuccess: (_res, vars) => {
+      void qc.invalidateQueries({ queryKey: ["pricing", "state", vars.businessId] });
+      void qc.invalidateQueries({ queryKey: ["pricing", "preview"] });
+    },
+  });
+}
+
+/** عملیات گروهی چند کالا — ریست یا تخفیف یکسان */
+export function usePricingBulk() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: Parameters<typeof pricingApi.bulk>[0]) => pricingApi.bulk(body),
+    onSuccess: (_res, vars) => {
+      void qc.invalidateQueries({ queryKey: ["pricing", "state", vars.businessId] });
+      void qc.invalidateQueries({ queryKey: ["pricing", "preview"] });
+    },
+  });
+}
+
+/** پیش‌نمایش قیمت مؤثر — همان عددی که خریدار می‌بیند */
+export function usePricingPreview(
+  businessId: string | null | undefined,
+  listingId: string | null,
+  custType: "p" | "h" | "q",
+  qty: number
+): UseQueryResult<PricingPreviewDto> {
+  return useQuery({
+    queryKey: qk.pricingPreview(businessId ?? "", listingId ?? "", custType, qty),
+    queryFn: () => pricingApi.preview({ businessId: businessId as string, listingId: listingId as string, custType, qty }),
+    enabled: !!businessId && !!listingId,
+    staleTime: 10_000,
+  });
+}
+
+/** تغییر نوع مشتری (گذری/همکار/قراردادی) — شیت دنبال‌کنندگان */
+export function useSetCustType() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: Parameters<typeof pricingApi.setCustType>[0]) => pricingApi.setCustType(body),
+    onSuccess: (_res, vars) => {
+      void qc.invalidateQueries({ queryKey: ["market", "myFollowers", vars.businessId] });
+      void qc.invalidateQueries({ queryKey: ["market", "saverAnalysis", vars.businessId] });
     },
   });
 }
