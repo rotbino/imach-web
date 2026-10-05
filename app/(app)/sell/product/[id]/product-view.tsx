@@ -16,6 +16,7 @@
  */
 
 import { useMemo, useState } from "react";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useActiveBusiness } from "@/lib/active-biz";
@@ -97,6 +98,13 @@ export function ProductView({ listingId }: { listingId: string }) {
   const [follOpen, setFollOpen] = useState(false);
   const [archiveAsk, setArchiveAsk] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=rates|discount|followers|promote|quick|edit
+  useSheetParam("rates", () => setRatesOpen(true));
+  useSheetParam("discount", () => setDiscOpen(true));
+  useSheetParam("followers", () => setFollOpen(true));
+  useSheetParam("promote", () => setPromoteOpen(true));
+  useSheetParam("quick", () => setQuickOpen(true));
+  useSheetParam("edit", () => setEditOpen(true));
   const [pack, setPack] = useState<number | null>(null);
   const setActiveMut = useSetListingActive();
 

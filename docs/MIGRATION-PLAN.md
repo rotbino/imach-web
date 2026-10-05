@@ -203,8 +203,21 @@ scripts/           اسکریپت‌های تولید (port-prototype-css.mjs, e
 - **E2E:** USD روی خانه/تابلو/کیف (۵۹۵٬۰۰۰ تومان → ۷٫۰۸۳ دلار ✓ · کیف ≈ ۱٫۱۹ دلار hint ✓) · سوییچ پرداخت خاموش → پنل/شارژ/API 403 → روشن ✓ · Metadata en/ar/fa ✓ · nameAr پاس‌ترو ✓ · پنل ادمین toggle زنده ✓
 - **تطبیق‌های آگاهانه:** تبدیل نمایشی است نه ورودی (معامله در ارز فروشنده) · صفحات عمومی میهمان ارز بومی آگهی می‌بینند (ارزش صادق؛ ارز نمایشِ کاربر مفهوم میهمان ندارد) · نرخ‌ها دستی/تقریبی (بدون API خارجی) · شهرها رشتهٔ آزاد کاربر (دیتاست شهر چندزبانه مرحلهٔ دادهٔ آینده) · پنل ادمین فارسی‌رو
 
-### فاز ۹ — سخت‌افاری و پاکسازی نهایی
-- حذف کد مرده/کامپوننت بلااستفاده/واردات بلااستفاده (فرانت+بک)، بررسی بودجه Performance (bundle/LCP/CLS)، ممیزی Security نهایی، تست‌ها (unit: pricing/matching/validation · integration: auth/APIها · E2E: فلوهای بحرانی)، build پروداکشن، مقایسه بصری نهایی همه صفحه‌ها با Prototype، گزارش پایانی
+### فاز ۹ — سخت‌افاری و پاکسازی نهایی ✅ (2026-10-06)
+**هدف:** کد مرده صفر + تکمیل خواسته‌های مالک (اشتراک با مخاطبین گوشی، PWA/Push، آیکون‌های بیش‌اندازه، لوگو→ریشه، Demo Hub) + build پروداکشن.
+
+- [x] **بک‌آپ phase9-pre** (۳۰ کالکشن · ۴۷٬۹۲۴ سند) → `imach-back/backups/migration/2026-10-06/phase9-pre/` — فقط لوکال
+- [x] **شیت اشتراک کامل v18** (`components/imach/share-sheet.tsx` — پورت sheet-share/list/product/rfq Prototype): مخاطبین گوشی · اشتراک سیستمی (Web Share + کلیپ‌بورد fallback) · کپی لینک · **QR واقعی** (qrcode.react) · پاداش دعوت — سیم‌کشی در ۷ نقطه (خانهٔ خریدار · کاتالوک فروش · کیف · کاتالوک/لیست/کالای عمومی)
+- [x] **شیت مخاطبین گوشی v18** (پورت sheet-contacts): **Contact Picker API** (`navigator.contacts.select` — کروم/اندروید) · ورود دستی بقیهٔ مرورگرها · sync بچ‌ای با ContactsModule موجود بک‌اند · اعضای iMach هایلایت با کسب‌وکار + بج · غریبه‌ها = دعوت پیامک با لینک ref دار · invite ممیزی (lastInvitedAt) · میهمان = کارت ورود — E2E کامل: افزودن دستی → ذخیره در Atlas → انتخاب → ارسال → toast + SMS
+- [x] **Demo Hub `/demo`** (معادل کارکردی rapid-demo.html روی اپ واقعی): سایدبار ۴۶ مقصد (صفحات + شیت‌ها/مدال‌ها جدا) · iframe same-origin · قاب موبایل ۳۹۲ toggle · جست‌وجوی زنده · بازآوری/تب جدید · کشو+FAB زیر ۱۲۴۰ · noindex — **بازکردن خودکار شیت‌ها با `?sheet=`** (useSheetParam — window.location خوانده می‌شود تا رندر استاتیک سالم بماند): switch/notif (شل) · share/contacts (۷ میزبان) · quick/followers/promote (کاتالوک) · rates/discount/followers (کالا) · offer (پیشنهادها) · call (گفتگو)
+- [x] **رفع آیکون‌های بیش‌اندازه (باگ خود Prototype):** ① چرخ‌دنده و برچسب اسپانسر داخل قاب عکس کارت محصول — `.p-card .ph svg` (58px برای آیکون هنری) با specificity از `.ic-sm`/`.badge-sponsor svg` جلو می‌زد → قواعد هدفمند 15px/10px ② chevron کلاس `lv` خارج `.link-row` (ردیف‌های پیام‌ها) بدون قاعده → `.ia svg.lv` 15px ③ تور ایمن `:where(.ia) svg:not([class])` (specificity صفر — svg یتیم 20px، هر قاعدهٔ ظرفی غالب می‌ماند)
+- [x] **لوگو → صفحهٔ روت** (دستور مالک): برند اپ‌بار + دسک‌بار از /home به /
+- [x] **PWA/Push ممیزی نهایی:** sw.js (کش SWR + شل آفلاین + push RTL + کلیک→ناوبری) · manifest کامل · VAPID بک‌اند زنده · سوییچ Push تنظیمات · بنر نصب زنده (E2E دید)
+- [x] **کد مرده فرانت حذف شد (۶۹ فایل):** درخت legacy کامل app/buy · app/brand · app/market · app/sell/panel · app/sell/customers · category-manager · ۹ کامپوننت مرده app/components (share/contacts-gate/customers/arm-views/…) · FileUploader · location-picker+map-view · design-reference-base (۸.۱MB طرح مرجع قدیمی — تاریخچه در گیت) · اسنپ‌شات‌های scripts/backups بک‌اند از گیت خارج شد (قانون امنیتی) — ریدایرکت‌های legacy نگه داشته شدند (بوکمارک) · /new زنده ماند (فرم افزودن کالا — بقیهٔ مسیر v18 ندارد)
+- [x] **کد مرده بک‌اند:** ۱۶ فایل اسکریپت یک‌بارمصرف قدیمی حذف · ایمپورت‌ها/تایپ‌های بلااستفاده پاک (ListingDtoT · ensurePage · cursorBefore/decodeCursor · NotificationsService · IsObject · Page/ImportRow · HttpStatus…) · oidOr404/bool امضا ساده شد
+- [x] **ناوبری‌های زنده به legacy اصلاح شد:** /new → خانه‌های v18 (/home · /sell/catalog) · followers-sheet → /sell/campaign مستقیم · myArmHref/chrome → v18
+- [x] **QA:** next build سبز (مسیرهای legacy از جدول خارج · /demo اضافه) · tsc سبز · eslint فایل‌های دست‌خورده سبز (الگوی رسمی «تنظیم state حین رندر» به‌جای افکت) · nest build سبز · ۱۵+ شات shots/phase9/ · E2E مرورگر: ورود → شیت اشتراک → QR → مخاطبین (ذخیره/انتخاب/ارسال در Atlas تأیید) → لوگو→/ → Demo Hub iframe + شیت‌ها (switch/notif/quick/rates/followers/offer/call) → میهمان gate ورود
+- [x] **تطبیق‌های آگاهانهٔ جدید:** ثبت در MIGRATION-MAP (ردیف‌های share/contacts/demo) · تب «۳۰ صفحه/۲۴ شیت» پروتوتایپ → در اپ واقعی همهٔ شیت‌های زنده پوشش داده شدند؛ sc-search و sc-add-item همچنان با مسیرهای جایگزین (جست‌وجوی موجود در /item · فرم /new) — در نقشه ثبت شده
 
 ---
 
@@ -220,6 +233,7 @@ scripts/           اسکریپت‌های تولید (port-prototype-css.mjs, e
 | ۶ | ✅ انجام شد | 2026-10-06 | اشتراکی‌ها و رشد E2E (پروفایل/تنظیمات+تم/کیف+شارژ/اعلان‌ها/چت/کمپین) · ChatModule + Thread/Message در Atlas · setPrefs کراس-دستگاهی · +~۲۹۰ کلید × ۳ زبان · پوش دو ریپو |
 | ۷ | ✅ انجام شد | 2026-10-06 | صفحات عمومی v18 SSR + SEO (Metadata/JSON-LD/sitemap/robots) · publicCatalogs بک‌اند · ریدایرکت legacy · PWA/Push تأیید · E2E میهمان · پوش دو ریپو |
 | ۸ | ✅ انجام شد | 2026-10-06 | سیستم ارز (مرجع IRR + انتخاب کاربر + نرخ ادمین + تبدیل نمایشی) · AppSetting + سوییچ پرداخت + پنل ادمین · en/ar fallback ساخت‌یافته + nameAr واحد/دسته · Metadata سه‌زبانه · E2E کامل · پوش دو ریپو |
+| ۹ | ✅ انجام شد | 2026-10-06 | شیت اشتراک+مخاطبین گوشی (Contact Picker + SMS دعوت‌دار + QR) · Demo Hub /demo با ۴۶ مقصد و بازکردن شیت با ?sheet= · رفع آیکون‌های بیش‌اندازه (باگ Prototype) · لوگو→ریشه · ۶۹ فایل کد مرده فرانت + پاکسازی بک‌اند حذف · build/tsc/lint سبز · E2E کامل |
 | ۹ | ⏳ | — | — |
 
 ## ۴. قرارداد گزارش فاز (§۶۵)

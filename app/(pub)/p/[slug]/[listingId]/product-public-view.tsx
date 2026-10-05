@@ -24,6 +24,8 @@ import { fmtMoney, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon } from "@/components/imach/icon";
+import { ShareSheet } from "@/components/imach/share-sheet";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 import { useToast } from "@/hooks/use-toast";
 
 export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; listing: GoodItemDto }) {
@@ -38,6 +40,11 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
   const startThread = useStartThread();
 
   const [busyThread, setBusyThread] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareContacts, setShareContacts] = useState(false);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=share | ?sheet=contacts
+  useSheetParam("share", () => { setShareContacts(false); setShareOpen(true); });
+  useSheetParam("contacts", () => { setShareContacts(true); setShareOpen(true); });
   const [watched, setWatched] = useState(false);
   const [photo, setPhoto] = useState(0);
 
@@ -121,23 +128,8 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
       .catch(() => toast({ title: t.loginForAction, variant: "destructive" }));
   };
 
-  const shareProduct = async () => {
-    const url = `${window.location.origin}${dest}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: name, url });
-        return;
-      }
-      throw new Error("no-web-share");
-    } catch {
-      try {
-        await navigator.clipboard.writeText(url);
-        toast({ title: m.app.home.linkCopied });
-      } catch {
-        toast({ title: m.app.home.copyFailed, variant: "destructive" });
-      }
-    }
-  };
+  // فاز ۹ — شیت اشتراک کامل کالا (مخاطبین گوشی + اشتراک سیستمی + کپی + QR)
+  const shareProduct = () => setShareOpen(true);
 
   return (
     <section className="screen" data-screen="product-public">
@@ -149,7 +141,7 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
           <b>{name}</b>
           <span>{t.productFrom.replace("{name}", biz.name)}</span>
         </div>
-        <button className="icon-btn" onClick={() => void shareProduct()} aria-label={t.shareAria}>
+        <button className="icon-btn" onClick={shareProduct} aria-label={t.shareAria}>
           <Icon className="ic-sm" name="i-share" />
         </button>
       </div>
@@ -245,6 +237,17 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
           <Icon className="ic-sm" name="i-bm" /> {t.followPrice}
         </button>
       </div>
+
+      {/* فاز ۹ — شیت اشتراک کامل کالای عمومی (sheet-share-product) */}
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        kind="product"
+        path={`p/${biz.slug}/${listing.id}`}
+        entity={name}
+        autoContacts={shareContacts}
+        loginPath={`/login?mode=login&dest=${encodeURIComponent(dest)}`}
+      />
     </section>
   );
 }

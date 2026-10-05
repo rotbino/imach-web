@@ -62,7 +62,7 @@ export function Deskbar() {
   return (
     <nav className="deskbar" aria-label="ناوبری اصلی">
       <div className="db-head">
-        <Link className="db-logo" href="/home" title={m.app.shell.brandAria} aria-label={m.app.shell.brandAria}>
+        <Link className="db-logo" href="/" title={m.app.shell.brandAria} aria-label={m.app.shell.brandAria}>
           <img src="/logo3.svg" alt={m.app.shell.logoAlt} />
         </Link>
         <div className="db-biz">

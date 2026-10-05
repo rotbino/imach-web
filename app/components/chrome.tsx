@@ -84,9 +84,9 @@ export function useNavItems(arm: Arm): NavItem[] {
     ];
   }
   return [
-    { href: "/buy", label: "لیست خرید", icon: List },
-    { href: "/buy/suppliers", label: "تأمین‌کنندگان", icon: Building2 },
-    { href: "/buy/suggestions", label: "پیشنهادها", icon: Sparkles },
+    { href: "/home", label: "لیست خرید", icon: List },
+    { href: "/saved", label: "ذخیره‌شده‌ها", icon: Building2 },
+    { href: "/offers", label: "پیشنهادها", icon: Sparkles },
     { href: "/profile", label: "پروفایل", icon: CircleUserRound },
   ];
 }
@@ -100,7 +100,7 @@ export function armColor(arm: Arm): string {
 function useCurrentArm(): Arm {
   const stored = useArm();
   const pathname = usePathname();
-  if (pathname?.startsWith("/buy")) return "buy";
+  if (pathname?.startsWith("/home")) return "buy";
   if (pathname?.startsWith("/sell")) return "sell";
   return stored;
 }
@@ -127,7 +127,7 @@ function useDisabledArmGuard(arm: Arm) {
     const ownPage = OWN_SELL.test(pathname ?? "") || OWN_BUY.test(pathname ?? "");
     if (!ownPage) return;
     if (armEnabled(biz, arm)) return;
-    router.replace(firstEnabledArm(biz) === "buy" ? "/buy" : "/sell");
+    router.replace(firstEnabledArm(biz) === "buy" ? "/home" : "/sell/catalog");
   }, [authed, biz, bizQ.isLoading, arm, pathname, router]);
 }
 
@@ -138,13 +138,8 @@ function isActivePath(href: string, pathname: string): boolean {
       pathname === "/sell" ||
       (pathname.startsWith("/sell/") && !pathname.startsWith("/sell/requests"))
     );
-  if (base === "/buy")
-    return (
-      pathname === "/buy" ||
-      (pathname.startsWith("/buy/") &&
-        !pathname.startsWith("/buy/suppliers") &&
-        !pathname.startsWith("/buy/suggestions"))
-    );
+  if (base === "/home")
+    return pathname === "/home" || pathname.startsWith("/home/");
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
@@ -157,7 +152,7 @@ function useArmSwitch() {
     setArm(target);
     if (pathname.startsWith("/" + target)) return;
     // صفحات مشترک (پروفایل/…) — فقط بازو عوض می‌شود؛ جا نمی‌رویم
-    if (!pathname.startsWith("/sell") && !pathname.startsWith("/buy")) return;
+    if (!pathname.startsWith("/sell") && !pathname.startsWith("/home")) return;
     // جعبه‌ی دریافت ↔ جعبه‌ی دریافت؛ بقیه‌ی صفحات → خانه‌ی بازوی مقصد
     if (pathname.startsWith("/sell/requests") || pathname.startsWith("/buy/suggestions")) {
       router.push(target === "sell" ? "/sell/requests" : "/buy/suggestions");

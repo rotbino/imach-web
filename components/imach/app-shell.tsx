@@ -24,6 +24,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useMeOnce, useSetPrefs, useUnits } from "@/lib/queries";
 import { NotifSheet } from "./notif-sheet";
+import { useSheetParam } from "./demo-sheet-param";
 import { CurrencyProvider } from "./currency-context";
 
 export type Arm = "buy" | "sell";
@@ -161,6 +162,10 @@ export function AppShell({
   const openNotif = useCallback(() => {
     setNotifOpen(true);
   }, []);
+
+  // ── فاز ۹: بازکردن شیت از پارامتر آدرس (?sheet=switch|notif) — ناوبری Demo Hub ──
+  useSheetParam("switch", openSwitch);
+  useSheetParam("notif", openNotif);
 
   // ── فاز ۶: تم — state + کوکی + ذخیره روی حساب ──
   const setTheme = useCallback(

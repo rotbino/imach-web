@@ -22,6 +22,7 @@
  */
 
 import { useMemo, useState } from "react";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActiveBusiness } from "@/lib/active-biz";
@@ -237,6 +238,20 @@ export function OffersView() {
   const [sheetOffer, setSheetOffer] = useState<RfqOfferDto | null>(null);
 
   const groups = useMemo(() => rfqsQ.data?.groups ?? [], [rfqsQ.data]);
+
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=offer → شیت وضعیت روی اولین پیشنهاد.
+  // دادهٔ گروه‌ها async می‌رسد → الگوی رسمی «تنظیم state حین رندر» (نه افکت)
+  // با گارد یک‌بارمصرف تا آبشار رندر ایجاد نشود.
+  const [demoOfferAsked, setDemoOfferAsked] = useState(false);
+  const [demoOfferDone, setDemoOfferDone] = useState(false);
+  useSheetParam("offer", () => setDemoOfferAsked(true));
+  if (demoOfferAsked && !demoOfferDone) {
+    const first = groups.find((g) => g.offers.length > 0);
+    if (first) {
+      setDemoOfferDone(true);
+      setSheetOffer(first.offers[0]);
+    }
+  }
   const recent = rfqsQ.data?.recentOfferCount ?? 0;
   const active = useMemo(() => groups.find((g) => g.id === openId) ?? null, [groups, openId]);
 

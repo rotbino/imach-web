@@ -216,7 +216,7 @@ export function FollowersSheet({
             <span>{t.earnInviteSub as string}</span>
           </span>
         </div>
-        <Link className="earn-row" href="/sell/promos" style={{ cursor: "pointer", textDecoration: "none", color: "inherit" }}>
+        <Link className="earn-row" href="/sell/campaign" style={{ cursor: "pointer", textDecoration: "none", color: "inherit" }}>
           <span className="e-ico" style={{ background: "var(--orange-tint)", color: "var(--primary-strong)" }}>
             <Icon name="i-star" />
           </span>

@@ -23,6 +23,8 @@ import { fa, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon, type IconName } from "@/components/imach/icon";
+import { ShareSheet } from "@/components/imach/share-sheet";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 import { useToast } from "@/hooks/use-toast";
 
 const ART_BY_CATEGORY: Record<string, IconName> = {
@@ -49,6 +51,11 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
   const startThread = useStartThread();
 
   const [busyThread, setBusyThread] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareContacts, setShareContacts] = useState(false);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=share | ?sheet=contacts
+  useSheetParam("share", () => { setShareContacts(false); setShareOpen(true); });
+  useSheetParam("contacts", () => { setShareContacts(true); setShareOpen(true); });
   const [saved, setSaved] = useState(false);
 
   const buyListings = useMemo(
@@ -85,23 +92,8 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
     }
   };
 
-  const shareList = async () => {
-    const url = `${window.location.origin}/b/${biz.slug}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: biz.name, url });
-        return;
-      }
-      throw new Error("no-web-share");
-    } catch {
-      try {
-        await navigator.clipboard.writeText(url);
-        toast({ title: m.app.home.linkCopied });
-      } catch {
-        toast({ title: m.app.home.copyFailed, variant: "destructive" });
-      }
-    }
-  };
+  // فاز ۹ — شیت اشتراک کامل (مخاطبین گوشی + اشتراک سیستمی + کپی + QR)
+  const shareList = () => setShareOpen(true);
 
   const saveList = () => {
     if (!hasToken || !myBiz) {
@@ -190,7 +182,7 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
           <button
             className="btn btn-outline btn-lg"
             style={{ flex: "0 0 auto" }}
-            onClick={() => void shareList()}
+            onClick={shareList}
             title={t.shareListAria}
             aria-label={t.shareListAria}
           >
@@ -250,6 +242,17 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
           <span>{t.listHint}</span>
         </div>
       </div>
+
+      {/* فاز ۹ — شیت اشتراک کامل لیست خرید عمومی */}
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        kind="list"
+        path={`b/${biz.slug}`}
+        entity={biz.name}
+        autoContacts={shareContacts}
+        loginPath={`/login?mode=login&dest=${encodeURIComponent(`/b/${biz.slug}`)}`}
+      />
     </section>
   );
 }

@@ -101,7 +101,8 @@ export function setArmActive(arm: Arm): void {
  *  بلافاصله به بازوی فعال ریدایرکت می‌کند — صفحات ورور هم مسیر را از
  *  پاسخ login (enabledArms) هوشمندانه انتخاب می‌کنند. */
 export function myArmHref(): string {
-  return storedArm() === "buy" ? "/buy" : "/sell";
+  // فاز ۹ — خانه‌های v18 (درخت legacy /buy حذف شد)
+  return storedArm() === "buy" ? "/home" : "/sell/catalog";
 }
 
 /**

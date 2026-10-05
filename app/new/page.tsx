@@ -62,10 +62,11 @@ function NewListingBody() {
 
   if (!active) return <NoBusinessState variant="sell" />;
 
-  const backHref = arm === "buy" ? "/buy" : "/sell";
+  // فاز ۹ — ناوبری به خانه‌های v18 (بازوی خرید /home · بازوی فروش /sell/catalog)
+  const backHref = arm === "buy" ? "/home" : "/sell/catalog";
   const onDone = (kind: "sell" | "buy") => {
     smartSwitchArm(kind);
-    router.push(kind === "sell" ? "/sell" : "/buy");
+    router.push(kind === "sell" ? "/sell/catalog" : "/home");
   };
 
   return (

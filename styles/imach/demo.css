@@ -1,0 +1,333 @@
+/* ═══════════════ فاز ۹ — Demo Hub (/demo) ═══════════════
+   ابزار QA داخلی: سایدبار همهٔ صفحات/شیت‌ها + پیش‌نمایش iframe با قاب موبایل ۳۹۲.
+   معادل کارکردی rapid-demo.html پروتوتایپ — روی اپ واقعی. */
+
+.demo-hub {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  direction: rtl;
+}
+
+/* ── نوار بالا ── */
+.demo-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  z-index: 30;
+}
+
+.demo-top-logo {
+  height: 22px;
+  width: auto;
+}
+
+.demo-top-title {
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.demo-top-url {
+  flex: 1;
+  min-width: 0;
+  font-size: 10.5px;
+  color: var(--muted);
+  direction: ltr;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--muted-bg);
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
+.demo-top-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.demo-fab {
+  display: none;
+}
+
+/* ── بدنه: سایدبار + پیش‌نمایش ── */
+.demo-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.demo-side-wrap {
+  width: 288px;
+  flex-shrink: 0;
+  border-inline-start: 1px solid var(--border);
+  background: var(--card);
+  min-height: 0;
+}
+
+.demo-side {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-side-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.demo-side-head img {
+  height: 26px;
+  width: auto;
+}
+
+.demo-side-head .tx b {
+  font-size: 13px;
+  display: block;
+}
+
+.demo-side-head .tx span {
+  font-size: 9.5px;
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
+}
+
+.demo-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 14px;
+  padding: 0 12px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+}
+
+.demo-search svg {
+  width: 15px;
+  height: 15px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.demo-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  outline: none;
+  color: var(--fg);
+}
+
+.demo-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px 12px;
+}
+
+.demo-group {
+  margin-bottom: 6px;
+}
+
+.demo-group-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 10px 8px 5px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+.demo-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  text-align: start;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--fg-soft);
+  cursor: pointer;
+  transition: background .12s;
+}
+
+.demo-link:hover {
+  background: var(--muted-bg);
+}
+
+.demo-link.active {
+  background: var(--arm-tint);
+  color: var(--arm-tint-fg);
+  font-weight: 700;
+}
+
+.demo-link .lb {
+  flex: 1;
+  min-width: 0;
+}
+
+.demo-link .sheet-tag {
+  font-size: 8.5px;
+  font-weight: 700;
+  background: var(--teal-tint);
+  color: var(--teal-deep);
+  border-radius: 6px;
+  padding: 2px 6px;
+  flex-shrink: 0;
+}
+
+.demo-link .path {
+  font-size: 8.5px;
+  color: var(--muted);
+  direction: ltr;
+  max-width: 118px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.demo-side-foot {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  font-size: 9.5px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.demo-side-foot svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* ── پیش‌نمایش ── */
+.demo-main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 0)
+    0 0 / 22px 22px,
+    var(--bg);
+}
+
+.demo-frame {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+}
+
+.demo-phone {
+  width: 392px;
+  height: min(820px, 100%);
+  border-radius: 26px;
+  border: 1px solid var(--border-strong);
+  background: var(--card);
+  padding: 10px 8px 8px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .14);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.demo-phone-notch {
+  width: 110px;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--border-strong);
+  margin: 0 auto 8px;
+  flex-shrink: 0;
+}
+
+.demo-frame-phone {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+/* ── کشو در باریک‌تر از ۱۲۴۰ (الگوی rapid-demo) ── */
+@media (max-width: 1239px) {
+  .demo-side-wrap {
+    display: none;
+  }
+
+  .demo-fab {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--arm);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .demo-fab svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .demo-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .38);
+    z-index: 40;
+  }
+
+  .demo-drawer {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: min(320px, 86vw);
+    background: var(--card);
+    border-inline-end: 1px solid var(--border);
+    z-index: 41;
+    animation: demo-drawer-in .22s ease-out;
+  }
+}
+
+@keyframes demo-drawer-in {
+  from { transform: translateX(100%); opacity: .4; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* تاریک — توکن‌ها خودکار اعمال می‌شوند؛ فقط سایهٔ قاب روشن‌تر می‌شود */
+[data-theme="dark"] .demo-phone {
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+}

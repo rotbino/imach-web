@@ -16,7 +16,7 @@
  *   · pk-chips = پکیج‌بندی چندتایی (Listing.packaging) یا variantLabel
  */
 
-import { useMemo, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import Link from "next/link";
 import { useActiveBusiness } from "@/lib/active-biz";
 import {
@@ -35,10 +35,11 @@ import { Icon } from "@/components/imach/icon";
 import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
 import { Spinner } from "@/components/imach/spinner";
-import { useToast } from "@/hooks/use-toast";
 import { QuickPriceSheet } from "../_shared/quickprice-sheet";
 import { FollowersSheet } from "../_shared/followers-sheet";
 import { PromoteSheet } from "../_shared/promote-sheet";
+import { ShareSheet } from "@/components/imach/share-sheet";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 
 type Pack = { label: string; qty?: number; priceMinor?: number; stock?: number };
 
@@ -54,7 +55,6 @@ export function CatalogView() {
   const m = useMessages();
   const t = m.app.sellCatalog as unknown as Record<string, string>;
   const { locale } = useLocale();
-  const { toast } = useToast();
   const biz = useActiveBusiness();
   const bizId = biz?.id ?? null;
 
@@ -69,8 +69,18 @@ export function CatalogView() {
   const [cat, setCat] = useState<string | null>(null);
   const [quickListing, setQuickListing] = useState<GoodItemDto | null>(null);
   const [followersOpen, setFollowersOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareContacts, setShareContacts] = useState(false);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=share|contacts|followers|promote|quick
+  useSheetParam("share", () => { setShareContacts(false); setShareOpen(true); });
+  useSheetParam("contacts", () => { setShareContacts(true); setShareOpen(true); });
+  useSheetParam("followers", () => setFollowersOpen(true));
+  useSheetParam("promote", () => setPromoteOpen(true));
 
   const listings = listingsQ.data ?? [];
+  const [demoQuickAsked, setDemoQuickAsked] = useState(false);
+  const [demoQuickDone, setDemoQuickDone] = useState(false);
+  useSheetParam("quick", () => setDemoQuickAsked(true));
   const active = listings.filter((l) => l.isActive !== false && (l.mode === "SELL" || l.mode === "BOTH"));
   const archived = listings.filter((l) => l.isActive === false && (l.mode === "SELL" || l.mode === "BOTH"));
 
@@ -99,29 +109,22 @@ export function CatalogView() {
     [listings, cat, q]
   );
 
+  // الگوی رسمی «تنظیم state حین رندر» — دادهٔ لیستینگ‌ها async می‌رسد (Demo Hub ?sheet=quick)
+  if (demoQuickAsked && !demoQuickDone) {
+    const first = listings.find((l) => l.isActive !== false && (l.mode === "SELL" || l.mode === "BOTH"));
+    if (first) {
+      setDemoQuickDone(true);
+      setQuickListing(first);
+    }
+  }
+
   const lastUpdate = listings.reduce<string | null>((acc, l) => {
     if (!l.updatedAt) return acc;
     return !acc || l.updatedAt > acc ? l.updatedAt : acc;
   }, null);
 
-  const shareCatalog = async () => {
-    if (!biz?.slug || typeof window === "undefined") return;
-    const url = `${window.location.origin}/sell/${biz.slug}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: biz.name, url });
-        return;
-      }
-      throw new Error("no-web-share");
-    } catch {
-      try {
-        await navigator.clipboard.writeText(url);
-        toast({ title: m.app.home.linkCopied as string });
-      } catch {
-        toast({ title: m.app.home.copyFailed as string, variant: "destructive" });
-      }
-    }
-  };
+  // فاز ۹ — شیت اشتراک کامل (مسیر عمومی جدید /c/) جایگزین فراخوانی خالی navigator.share
+  const shareCatalog = () => setShareOpen(true);
 
   const thumb = (l: GoodItemDto): string | null =>
     l.gallery?.[0]?.thumbUrl ?? l.gallery?.[0]?.url ?? l.product?.imageUrl ?? null;
@@ -250,7 +253,7 @@ export function CatalogView() {
             <b>{t.shareTitle as string}</b>
             <span>{(t.shareSub as string).replace("{slug}", biz.slug ?? "")}</span>
           </span>
-          <button className="btn btn-primary btn-sm" onClick={() => void shareCatalog()}>{t.shareCta as string}</button>
+          <button className="btn btn-primary btn-sm" onClick={shareCatalog}>{t.shareCta as string}</button>
         </div>
 
         {/* ورودی تخفیف‌ها */}
@@ -398,6 +401,16 @@ export function CatalogView() {
         followersCount={quickListing ? saverCount(quickListing.id) : undefined}
       />
       <FollowersSheet open={followersOpen} onClose={() => setFollowersOpen(false)} businessId={biz.id} mode="catalog" />
+
+      {/* فاز ۹ — شیت اشتراک کاتالوگ: مخاطبین گوشی + اشتراک سیستمی + کپی + QR */}
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        kind="catalog"
+        path={`c/${biz.slug}`}
+        entity={biz.name}
+        autoContacts={shareContacts}
+      />
     </section>
   );
 }

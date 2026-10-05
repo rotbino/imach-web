@@ -2,7 +2,7 @@
 
 /**
  * iMach Appbar — هدر اپ (عین Prototype v18) · فاز ۲: دادهٔ واقعی.
- * موبایل: برند + pill بازوی فعال + زنگ اعلان (dot = نخوانده‌های واقعی).
+ * لوگو = goHome → صفحهٔ روت (دستور مالک فاز ۹) · موبایل: برند + pill بازوی فعال + زنگ اعلان (dot = نخوانده‌های واقعی).
  * دسکتاپ ≥۹۲۰: برند مخفی، عنوان صفحه (desk-title) ظاهر می‌شود.
  */
 
@@ -21,7 +21,7 @@ export function Appbar({ deskTitle }: { deskTitle: string }) {
   return (
     <header className="appbar">
       <b className="desk-title">{deskTitle}</b>
-      <Link className="brand" href="/home" title={m.app.shell.brandAria} aria-label={m.app.shell.brandAria}>
+      <Link className="brand" href="/" title={m.app.shell.brandAria} aria-label={m.app.shell.brandAria}>
         <img src="/logo3.svg" alt={m.app.shell.logoAlt} />
       </Link>
       <div className="side">

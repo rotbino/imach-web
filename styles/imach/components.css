@@ -5094,3 +5094,29 @@ transition-duration: .01ms !important;
   padding: 7px 11px; cursor: pointer;
 }
 .ia .stop-confirm .sc-yes:disabled { opacity: .6; cursor: default; }
+
+
+/* ═══════════════ فاز ۹ — رفع آیکون‌های بیش‌ازحد بزرگ (باگ‌های خود Prototype) ═══════════════
+   ۱) چرخ‌دنده/برچسب اسپانسر داخل قاب عکس کارت محصول: `.p-card .ph svg` (58px برای
+      آیکون هنری جای‌خالی) به‌خاطر specificity بالاتر از `.ic-sm` (15px) و
+      `.badge-sponsor svg` (10px) جلو می‌زد → آیکون‌ها غول‌پیکر دیده می‌شدند.
+   ۲) chevron کلاس lv خارج از .link-row (ردیف‌های لیست پیام‌ها) هیچ قاعده‌ای
+      نداشت → اندازهٔ پیش‌فرض مرورگر (بزرگ/نامشخص).
+   ۳) تور ایمن: svg بدون کلاس داخل .ia که هیچ قاعدهٔ ظرفی‌ای سایزش را تعیین
+      نمی‌کند — :where ⇒ specificity صفر ⇒ از هر قاعدهٔ ظرفی موجود ضعیف‌تر است. */
+
+.ia .p-card .ph .gear-btn svg {
+width: 15px; height: 15px;
+}
+
+.ia .p-card .ph .badge-sponsor svg {
+width: 10px; height: 10px;
+}
+
+.ia svg.lv {
+width: 15px; height: 15px; flex-shrink: 0; color: var(--border-strong);
+}
+
+:where(.ia) svg:not([class]) {
+width: 20px; height: 20px; flex-shrink: 0;
+}

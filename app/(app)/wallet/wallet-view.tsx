@@ -19,14 +19,14 @@ import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
 import { Icon } from "@/components/imach/icon";
 import { Spinner } from "@/components/imach/spinner";
-import { Sheet } from "@/components/imach/sheet";
+import { ShareSheet } from "@/components/imach/share-sheet";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useWallet, useMyPromos, usePromoReport } from "@/lib/queries";
 import { fa, fmtMoney } from "@/lib/format";
 import { useMoney } from "@/components/imach/currency-context";
 import { faPlain } from "../sell/_shared/num";
-import { useToast } from "@/hooks/use-toast";
 import type { WalletTxnDto, PromoMineDto } from "@/lib/api";
 
 function timeAgo(iso: string): string {
@@ -58,37 +58,19 @@ export function WalletView() {
   const money = useMoney();
   const m = useMessages();
   const t = m.app.wallet;
-  const { toast } = useToast();
   const biz = useActiveBusiness();
   const bizId = biz?.id ?? null;
   const walletQ = useWallet(bizId);
   const promosQ = useMyPromos(bizId);
   const [shareOpen, setShareOpen] = useState(false);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=share
+  useSheetParam("share", () => setShareOpen(true));
 
   const txns = walletQ.data?.txns ?? [];
   const promos = promosQ.data ?? [];
   const activePromos = promos.filter((p) => p.isActive);
   const activePromo = activePromos[0] ?? null;
   const reportQ = usePromoReport(bizId, activePromo?.id ?? null);
-
-  const shareCatalog = async () => {
-    if (!biz) return;
-    const url = `${window.location.origin}/sell/${biz.slug}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: biz.name, url });
-        return;
-      }
-      throw new Error("no-web-share");
-    } catch {
-      try {
-        await navigator.clipboard.writeText(url);
-        toast({ title: m.app.home.linkCopied as string });
-      } catch {
-        toast({ title: m.app.home.copyFailed as string, variant: "destructive" });
-      }
-    }
-  };
 
   if (!bizId || walletQ.isLoading) {
     return (
@@ -241,39 +223,16 @@ export function WalletView() {
 
       <Tabbar active="profile" />
 
-      {/* شیت اشتراک کاتالوگ — مسیر دعوت (دقیقاً مثل شیت اشتراک کاتالوگ فروش) */}
-      <Sheet open={shareOpen} onClose={() => setShareOpen(false)} label={m.app.sellCatalog.shareTitle as string}>
-        <div className="grab" />
-        <h3>{m.app.sellCatalog.shareTitle as string}</h3>
-        <div className="sub">{(m.app.sellCatalog.shareSub as string).replace("{slug}", biz?.slug ?? "")}</div>
-        <button className="sheet-row" onClick={() => void shareCatalog()}>
-          <span className="ico" style={{ background: "var(--teal-tint)", color: "var(--teal-deep)" }}>
-            <Icon name="i-share" />
-          </span>
-          <span className="tx">
-            <b>{m.app.sellCatalog.shareCta as string}</b>
-            <span>{(m.app.sellCatalog.shareSub as string).replace("{slug}", biz?.slug ?? "")}</span>
-          </span>
-        </button>
-        <button
-          className="sheet-row"
-          onClick={() => {
-            void navigator.clipboard
-              .writeText(`${window.location.origin}/sell/${biz?.slug ?? ""}`)
-              .then(() => toast({ title: m.app.home.linkCopied as string }))
-              .catch(() => undefined);
-            setShareOpen(false);
-          }}
-        >
-          <span className="ico" style={{ background: "var(--muted-bg)", color: "var(--fg-soft)" }}>
-            <Icon name="i-list" />
-          </span>
-          <span className="tx">
-            <b>{m.app.home.linkCopied as string}</b>
-            <span>{`imatch.ir/s/${biz?.slug ?? ""}`}</span>
-          </span>
-        </button>
-      </Sheet>
+      {/* فاز ۹ — شیت اشتراک کامل کاتالوگ (مخاطبین گوشی + اشتراک + کپی + QR) */}
+      {biz?.slug ? (
+        <ShareSheet
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          kind="catalog"
+          path={`c/${biz.slug}`}
+          entity={biz.name}
+        />
+      ) : null}
     </section>
   );
 }

@@ -102,8 +102,8 @@ app/
 | sheet-savers | /item/[goodId] | ۳ | GET /savers?goodId |
 | sheet-followers | /sell/catalog, /c/[slug] | ۵ | GET /follows?target=me |
 | sheet-promote | /sell/catalog | ۶ | POST /promos |
-| sheet-share / sheet-share-list / sheet-share-product | ShareSheet(global) | ۶ | - (Web Share/local) |
-| sheet-contacts | AppShell | ۶ | GET/POST /contacts |
+| sheet-share / sheet-share-list / sheet-share-product / sheet-share-rfq | ShareSheet(components/imach/share-sheet) — ۷ میزبان | ۹ ✅ | Web Share · کلیپ‌بورد · QR واقعی · مخاطبین → ContactsSheet |
+| sheet-contacts | ContactsSheet(share-sheet) — موبایل: Contact Picker API · دسکتاپ: ورود دستی · میهمان: کارت ورود | ۹ ✅ | GET/POST /contacts (sync/getContacts/invite) · sms: دعوت‌دار ref |
 | sheet-call | /msgs/[id], /c/[slug] | ۶ | GET /contacts (tel:) |
 | sheet-new-group | /add | ۵ | POST /goods (grouping) |
 
@@ -195,3 +195,19 @@ Good=2479 · Product=40417 · Brand=3769 · Category=207 · Unit=62 · Business=
 | شهرها چندزبانه | — | رشتهٔ آزاد به‌عنوان واردشده | دیتاست شهرهای چندزبانه کار داده‌ای است نه کدی؛ در فاز داده انجام می‌شود |
 | اعداد عربی محاسباتی | ٠١٢٣ | ارقام فارسی ۰۱۲۳ | سازگاری ریاضی fa()؛ تفاوت بصری جزئی؛ اعداد ثابت دیکشنری عربی‌اند |
 | پنل ادمین | — | طراحی legacy (Tailwind) فارسی | ابزار داخلی؛ قانون «UI قابل تعویض» فقط لایهٔ کاربر را پوشش می‌دهد |
+
+
+**پایان فاز ۹ (2026-10-06)**: بدون تغییر دیتابیس (بک‌آپ phase9-pre: ۳۰ کالکشن · ۴۷٬۹۲۴ سند) · Contact یک سند تست E2E (حسن آزمون) + lastInvitedAt — ContactsModule موجود از قبل بود و حالا UI دارد.
+
+**تطبیق‌های آگاهانهٔ جدید فاز ۹:**
+| موضوع | در Prototype | در پیاده‌سازی | دلیل |
+|---|---|---|---|
+| sheet-share QR | SVG دموی ثابت | QR واقعی (qrcode.react) از لینک ref دار | ارزش واقعی: قابل اسکن برای سردر مغازه/کارت ویزیت |
+| sheet-contacts لیست | ۵ مخاطب دموی ثابت | Contact Picker API (اندروید/کروم) + ورود دستی + sync سرور | دادهٔ واقعی دفترچهٔ کاربر با اجازه‌اش؛ اعضا با User.phone تطبیق زنده |
+| ارسال چند مخاطب | toast دمو | عضو → اطلاع درون‌برنامه‌ای (invite ممیزی) · غریبه → sms: با متن دعوت‌دار | پیامک سیستمِ گوشی خود کاربر است — بدون درگاه و هزینهٔ سرور |
+| rapid-demo.html | فهرست زنده از DOM خودش | /demo با iframe same-origin + ?sheet= بازکردن خودکار | اپ واقعی چندمسیری است نه SPA تک‌فایلی؛ همان الگوی UX (سایدبار پین/کشو/قاب ۳۹۲) |
+| آیکون چرخ‌دنده/برچسب اسپانسر/chevron lv | بیش‌اندازه (باگ Prototype) | 15px/10px/15px با قواعد هدفمند | دستور مالک: «این مشکلات ریز رو هم درست کن» — انحراف عمدی از Prototype |
+| لوگو اپ‌بار/دسک‌بار | goHome به خانهٔ خریدار | → صفحهٔ روت (/) | دستور مالک فاز ۹: «بره به صفحهٔ اصلی برنامه یعنی صفحه روت» |
+| sc-add-item (ردیف ۲۲) | ویزارد v18 | فرم legacy /new زنده (ناوبری اصلاح‌شده به v18) | فرم کارا و کامل (solo/excel/ref/scan)؛ پورت v18 کار جداگانه است — باقی‌ماندهٔ ثبت‌شده |
+| sc-search (ردیف ۲۱) | صفحهٔ جست‌وجوی سراسری | جست‌وجوی موجود در /item و کاتالوک | بدون مسیر سراسری — باقی‌ماندهٔ ثبت‌شده |
+| درخت legacy (app/buy · brand · market · sell/panel · customers + ۹ کامپوننت) | — | حذف کامل (۶۹ فایل) + ریدایرکت‌ها ماندند | قانون §۱۰: هیچ کد مرده‌ای در پایان — تاریخچه در گیت |

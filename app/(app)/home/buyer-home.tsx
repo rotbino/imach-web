@@ -15,7 +15,7 @@
  *   pulse-dot = watched · b-orange «قیمت تازه» = priceChanged
  */
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useActiveBusiness } from "@/lib/active-biz";
 import { useMyBusinesses, useWatchedGoods, useMyRfqs, useFollows, usePriceBoard, useWatchGood } from "@/lib/queries";
@@ -27,8 +27,9 @@ import { Icon, type IconName } from "@/components/imach/icon";
 import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
 import { Spinner } from "@/components/imach/spinner";
-import { useToast } from "@/hooks/use-toast";
 import { useMoney } from "@/components/imach/currency-context";
+import { ShareSheet } from "@/components/imach/share-sheet";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 
 /** نگاشت دستهٔ کالا → آیکون هنری Prototype (فاقد نقش هنری → آیکون جعبه) */
 const ART_BY_CATEGORY: Record<string, IconName> = {
@@ -47,7 +48,8 @@ export function BuyerHome() {
   const m = useMessages();
   const t = m.app.home;
   const { locale } = useLocale();
-  const { toast } = useToast();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareContacts, setShareContacts] = useState(false);
   // فاز ۸ — قیمت‌ها در ارز نمایش کاربر (نرخ تقریبی؛ معامله در ارز فروشنده)
   const money = useMoney();
   const biz = useActiveBusiness();
@@ -96,25 +98,11 @@ export function BuyerHome() {
     return new Date(iso).toLocaleDateString(locale === "en" ? "en-US" : "fa-IR");
   };
 
-  const shareList = async () => {
-    if (!biz?.slug || typeof window === "undefined") return;
-    const url = `${window.location.origin}/b/${biz.slug}`;
-    const shareData = { title: biz.name, url };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        return;
-      }
-      throw new Error("no-web-share");
-    } catch {
-      try {
-        await navigator.clipboard.writeText(url);
-        toast({ title: t.linkCopied });
-      } catch {
-        toast({ title: t.copyFailed, variant: "destructive" });
-      }
-    }
-  };
+  // شیت اشتراک v18 (فاز ۹) — مخاطبین گوشی / اشتراک سیستمی / کپی / QR
+  const openShare = () => setShareOpen(true);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=share | ?sheet=contacts
+  useSheetParam("share", () => { setShareContacts(false); setShareOpen(true); });
+  useSheetParam("contacts", () => { setShareContacts(true); setShareOpen(true); });
 
   // ── حالت‌ها: بارگذاری / بدون کسب‌وکار / خالی / داده ──
   const businessesLoading = businesses.isLoading;
@@ -199,7 +187,7 @@ export function BuyerHome() {
             <b>{t.shareTitle}</b>
             <span>{t.shareSubN.replace("{slug}", biz.slug ?? "")}</span>
           </span>
-          <button className="btn btn-soft btn-sm" onClick={() => void shareList()}>
+          <button className="btn btn-soft btn-sm" onClick={openShare}>
             {t.shareCta}
           </button>
         </div>
@@ -370,6 +358,18 @@ export function BuyerHome() {
       </div>
 
       <Tabbar active="list" />
+
+      {/* فاز ۹ — شیت اشتراک کامل: مخاطبین گوشی + اشتراک سیستمی + کپی + QR */}
+      {biz.slug ? (
+        <ShareSheet
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          kind="list"
+          path={`b/${biz.slug}`}
+          entity={biz.name}
+          autoContacts={shareContacts}
+        />
+      ) : null}
     </section>
   );
 }

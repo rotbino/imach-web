@@ -14,6 +14,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Icon } from "@/components/imach/icon";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 import { Spinner } from "@/components/imach/spinner";
 import { Sheet } from "@/components/imach/sheet";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -58,6 +59,8 @@ export function ChatView() {
 
   const [text, setText] = useState("");
   const [callOpen, setCallOpen] = useState(false);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=call
+  useSheetParam("call", () => setCallOpen(true));
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);

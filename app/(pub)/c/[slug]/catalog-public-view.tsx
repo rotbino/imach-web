@@ -24,6 +24,8 @@ import { fa, fmtMoney, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon } from "@/components/imach/icon";
+import { ShareSheet } from "@/components/imach/share-sheet";
+import { useSheetParam } from "@/components/imach/demo-sheet-param";
 import { useToast } from "@/hooks/use-toast";
 
 /** کاشی حرفی/تصویر آگهی — همان الگوی کاتالوگ مالک (فاز ۵) */
@@ -63,6 +65,11 @@ export function CatalogPublicView({ biz }: { biz: BusinessProfileDto }) {
   const [query, setQuery] = useState("");
   const [catFilter, setCatFilter] = useState<string | null>(null);
   const [busyThread, setBusyThread] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareContacts, setShareContacts] = useState(false);
+  // فاز ۹ — ناوبری Demo Hub: ?sheet=share | ?sheet=contacts
+  useSheetParam("share", () => { setShareContacts(false); setShareOpen(true); });
+  useSheetParam("contacts", () => { setShareContacts(true); setShareOpen(true); });
 
   const sellListings = useMemo(
     () => (biz.listings ?? []).filter((l) => (l.mode === "SELL" || l.mode === "BOTH") && l.priceMinor !== null),
@@ -85,23 +92,8 @@ export function CatalogPublicView({ biz }: { biz: BusinessProfileDto }) {
 
   const cats = biz.customCategories ?? [];
 
-  const shareCatalog = async () => {
-    const url = `${window.location.origin}/c/${biz.slug}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: biz.name, url });
-        return;
-      }
-      throw new Error("no-web-share");
-    } catch {
-      try {
-        await navigator.clipboard.writeText(url);
-        toast({ title: m.app.home.linkCopied });
-      } catch {
-        toast({ title: m.app.home.copyFailed, variant: "destructive" });
-      }
-    }
-  };
+  // فاز ۹ — شیت اشتراک کامل (مخاطبین گوشی + اشتراک سیستمی + کپی + QR)
+  const shareCatalog = () => setShareOpen(true);
 
   const needLogin = () => router.push(`/login?mode=login&dest=${encodeURIComponent(`/c/${biz.slug}`)}`);
 
@@ -217,7 +209,7 @@ export function CatalogPublicView({ biz }: { biz: BusinessProfileDto }) {
               <button
                 className="btn btn-outline btn-lg"
                 style={{ flex: "0 0 auto" }}
-                onClick={() => void shareCatalog()}
+                onClick={shareCatalog}
                 title={t.shareAria}
                 aria-label={t.shareAria}
               >
@@ -308,6 +300,17 @@ export function CatalogPublicView({ biz }: { biz: BusinessProfileDto }) {
         </div>
         <div className="viral-row">{t.viralRow}</div>
       </div>
+
+      {/* فاز ۹ — شیت اشتراک کامل کاتالوک عمومی (میهمان: اشتراک/کپی/QR؛ مخاطبین پشت ورود) */}
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        kind="catalog"
+        path={`c/${biz.slug}`}
+        entity={biz.name}
+        autoContacts={shareContacts}
+        loginPath={`/login?mode=login&dest=${encodeURIComponent(`/c/${biz.slug}`)}`}
+      />
     </section>
   );
 }
