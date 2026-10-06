@@ -54,6 +54,7 @@
   <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v1"/><rect x="4" y="8" width="16" height="11" rx="2.5"/><circle cx="16.5" cy="13.5" r="1.2" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M19 5L5 19"/><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="16.5" cy="16.5" r="2.6"/></symbol>
   <symbol id="i-steps" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h5v-5h5v-5h5V5h-4"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L2 12V2h10l8.6 8.6a2 2 0 010 2.8z"/><circle cx="7" cy="7" r=".9" fill="currentColor" stroke="none"/></symbol>
 </svg>
 
 <!-- ═══════════ آرت محصولات (flat illustration) ═══════════ -->
@@ -285,13 +286,19 @@
               <svg class="chev"><use href="#i-chev"/></svg>
             </button>
 
+            <!-- v19/فاز ۱۱: کارت‌های دفتر خرید — فراداده به‌صورت چیپ‌های آیکون‌دار (منظم و خوانا)؛ کل کارت کلیک‌پذیر -->
             <div id="listRows" class="g2">
               <div class="row-card" data-go="sc-buy-item">
                 <span class="thumb rice"><svg><use href="#a-rice"/></svg></span>
                 <div class="body">
-                  <div class="t">برنج هاشمی <span class="pulse-dot" title="رصد فعال"></span><span class="badge b-teal"><svg><use href="#i-bm"/></svg> ۳ دنبال‌شده</span></div>
+                  <div class="t">برنج هاشمی <span class="pulse-dot" title="رصد فعال"></span></div>
                   <div class="pl"><b>۸۴٬۵۰۰</b><span class="u">تومان / کیلوگرم</span><span class="trend down"><svg class="ic-sm ic-12"><use href="#i-tdn"/></svg> ۲٪</span></div>
-                  <div class="s">ارزان‌ترین: <b>سبزدانه همدان</b> · <b>۶ تأمین‌کننده</b> در تابلو · آخرین به‌روزرسانی: ۲ ساعت پیش</div>
+                  <div class="rc-meta">
+                    <span class="m"><svg><use href="#i-bm"/></svg>۳ دنبال‌شده</span>
+                    <span class="m"><svg><use href="#i-users"/></svg>۶ تأمین‌کننده</span>
+                    <span class="m hl"><svg><use href="#i-tag"/></svg>ارزان‌ترین <b>سبزدانه همدان</b></span>
+                    <span class="m"><svg><use href="#i-clock"/></svg>۲ ساعت پیش</span>
+                  </div>
                 </div>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </div>
@@ -299,9 +306,14 @@
               <div class="row-card" data-go="sc-buy-item">
                 <span class="thumb oil"><svg><use href="#a-oil"/></svg></span>
                 <div class="body">
-                  <div class="t">روغن سرخ‌کردنی ۱۶ کیلویی <span class="pulse-dot"></span><span class="badge b-teal"><svg><use href="#i-bm"/></svg> ۲ دنبال‌شده</span></div>
+                  <div class="t">روغن سرخ‌کردنی ۱۶ کیلویی <span class="pulse-dot"></span></div>
                   <div class="pl"><b>۱٬۸۵۰٬۰۰۰</b><span class="u">تومان / بستهٔ ۱۶ کیلویی</span><span class="badge b-orange">قیمت تازه</span></div>
-                  <div class="s">نیاز: <b>۲۰ بسته در ماه</b> · <b>۴ تأمین‌کننده</b> در تابلو · آخرین به‌روزرسانی: امروز</div>
+                  <div class="rc-meta">
+                    <span class="m"><svg><use href="#i-bm"/></svg>۲ دنبال‌شده</span>
+                    <span class="m"><svg><use href="#i-users"/></svg>۴ تأمین‌کننده</span>
+                    <span class="m"><svg><use href="#i-basket"/></svg>نیاز <b>۲۰ بسته / ماه</b></span>
+                    <span class="m"><svg><use href="#i-clock"/></svg>امروز</span>
+                  </div>
                 </div>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </div>
@@ -309,9 +321,12 @@
               <div class="row-card" data-go="sc-buy-item">
                 <span class="thumb sugar"><svg><use href="#a-sugar"/></svg></span>
                 <div class="body">
-                  <div class="t">شکر <span class="badge b-stone"><svg><use href="#i-users"/></svg> ۲ تأمین‌کننده</span></div>
+                  <div class="t">شکر</div>
                   <div class="pl"><b>۶۵٬۰۰۰</b><span class="u">تومان / کیلوگرم</span><span class="trend flat">— بدون تغییر</span></div>
-                  <div class="s">هنوز دنبال نمی‌کنی — <b>رصد را روشن کن</b> تا قیمت زنده جلوی چشمت باشد</div>
+                  <div class="rc-meta">
+                    <span class="m"><svg><use href="#i-users"/></svg>۲ تأمین‌کننده</span>
+                    <button class="m warn" onclick="event.stopPropagation();watchOn(this,'شکر')"><svg><use href="#i-eye"/></svg>رصد خاموش — روشن کن</button>
+                  </div>
                 </div>
                 <svg class="chev"><use href="#i-chev"/></svg>
               </div>
@@ -321,9 +336,14 @@
                 <span class="thumb lentil"><svg><use href="#a-lentil"/></svg></span>
                 <div class="body">
                   <div class="t">عدس</div>
-                  <div class="s">هنوز تأمین‌کننده‌ای پیدا نشده — رصد را روشن کن تا خبرت کنیم</div>
+                  <div class="rc-meta">
+                    <span class="m"><svg><use href="#i-search"/></svg>در انتظار اولین تأمین‌کننده</span>
+                  </div>
                 </div>
-                <button class="btn btn-soft btn-sm" onclick="event.stopPropagation();watchCold()">فعال‌سازی رصد</button>
+                <div class="cold-cta">
+                  <button class="btn btn-soft btn-sm" onclick="event.stopPropagation();watchCold()"><svg class="ic-sm"><use href="#i-eye"/></svg> فعال‌سازی رصد</button>
+                  <button class="mini-info" onclick="event.stopPropagation();openSheet('sheet-watch-info')" title="رصد چیست؟" aria-label="رصد چیست؟"><svg><use href="#i-info"/></svg></button>
+                </div>
               </div>
             </div>
 
@@ -396,21 +416,21 @@
                 <span class="tx"><b>پخش قصر دان <span class="badge b-stone" style="margin-right:2px">آرشیو</span></b><span>آرشیو شد — آخرین قیمت: ۸۶٬۰۰۰ · ۳ روز پیش</span></span>
                 <button class="btn btn-ghost btn-sm" style="color:var(--muted)" onclick="toast('از دفترت حذف شد — رصد بقیه سرجایش است')"><svg class="ic-sm ic-12"><use href="#i-trash"/></svg> حذف</button>
               </div>
+              <!-- فاز ۱۱ (حکم مالک): دکمه‌های «دنبال‌کردن تأمین‌کنندگان دیگر» + «درخواست قیمت بهتر» — پیوسته با لیست قیمت‌های دنبال‌شده، هم‌سبک و کنارِ هم -->
+              <div class="pair-cta">
+                <button class="pc-btn" onclick="go('sc-board')">
+                  <span class="pc-ico"><svg class="ic-sm"><use href="#i-arrf"/></svg></span>
+                  <span class="pc-tx"><b>دنبال‌کردن تأمین‌کنندگان دیگر</b><i>۶ فروشندهٔ فعال در تابلوی تأمین</i></span>
+                </button>
+                <button class="pc-btn" onclick="go('sc-rfq')">
+                  <span class="pc-ico"><svg class="ic-sm"><use href="#i-send"/></svg></span>
+                  <span class="pc-tx"><b>درخواست قیمت بهتر</b><i>یک استعلام، چند قیمت رسمی کنارِ هم</i></span>
+                </button>
+              </div>
             </div>
             <!-- v7: حکم مالک — متن پشت‌صحنه از UI حذف شد؛ برای پیاده‌سازی واقعی:
      «ردیف پیشنهادی = جایگاهِ تبلیغاتیِ فروشنده ویژه؛ فقط به کاربری نشان داده می‌شود که هنوز قیمتش را دنبال نمی‌کند؛ رتبهٔ تطبیق مستقل از پرداخت محاسبه می‌شود.» -->
 <div class="note-c">قیمتِ دنبال‌شده همیشه به‌روز می‌ماند — هر نوسان معناداری را بهت خبر می‌دهیم</div>
-            <div class="hero-quote tap" onclick="go('sc-rfq')">
-              <span class="hq-ico"><svg class="ic-sm"><use href="#i-send"/></svg></span>
-              <span class="hq-tx"><b>درخواست قیمت بهتر</b><span>برای همین کالا — دنبال‌شده‌هایت از قبل تیک خورده‌اند؛ یک استعلام، چند قیمت رسمی کنارِ هم</span></span>
-              <svg class="hq-ch"><use href="#i-chev"/></svg>
-            </div>
-            <div class="btn-row" style="margin-top:10px">
-              <button class="btn btn-outline btn-lg" onclick="go('sc-board')">
-                <svg class="ic-sm"><use href="#i-arrf"/></svg> تأمین‌کنندگان دیگر این کالا — ۶ نفر
-              </button>
-            </div>
-            <div class="note-c">تابلوی تأمین — مقایسهٔ زندهٔ قیمت و شرایط فروشنده‌ها</div>
 
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-basket"/></svg> نیاز من</h2></div>
             <div class="card">
@@ -431,7 +451,8 @@
               </div>
             </div>
 
-            <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-eye"/></svg> رصد و اطلاع‌رسانی</h2></div>
+            <!-- فاز ۱۱: آیکون «رصد چیست؟» کناف عنوان بخش -->
+            <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-eye"/></svg> رصد و اطلاع‌رسانی</h2><button class="info-mini" onclick="openSheet('sheet-watch-info')" title="رصد چیست؟" aria-label="رصد چیست؟"><svg><use href="#i-info"/></svg></button></div>
             <div class="card">
               <div class="follow-row" style="border-bottom:1px dashed var(--border)">
                 <svg class="ic" style="color:var(--muted)"><use href="#i-chart"/></svg>
@@ -450,11 +471,53 @@
               </div>
             </div>
 
+            <!-- فاز ۱۱ (حکم مالک): بخش «مدیریت کالا» — ویرایش نیاز، تعویض عکس، آرشیو و حذف، پاییین فرم -->
+            <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-gear"/></svg> مدیریت کالا</h2></div>
+            <div class="card">
+              <div class="follow-row" style="border-bottom:1px dashed var(--border)">
+                <svg class="ic" style="color:var(--muted)"><use href="#i-edit"/></svg>
+                <span class="tx"><b>ویرایش نیاز خرید</b><span>حجم، دورهٔ خرید و شهر تحویل</span></span>
+                <button class="btn btn-soft btn-sm" onclick="openEditItem('buy')"><svg class="ic-sm ic-12"><use href="#i-edit"/></svg> ویرایش</button>
+              </div>
+              <div class="follow-row" style="border-bottom:1px dashed var(--border)">
+                <svg class="ic" style="color:var(--muted)"><use href="#i-img"/></svg>
+                <span class="tx"><b>عکس کالا</b><span>الان عکس مرجع است — عکس خودت را بگذار</span></span>
+                <button class="btn btn-soft btn-sm" onclick="toast('گالری یا دوربین — عکس جدید کالا')">تعویض</button>
+              </div>
+              <div class="follow-row">
+                <svg class="ic" style="color:var(--muted)"><use href="#i-inbox"/></svg>
+                <span class="tx"><b>آرشیو موقت</b><span>از دفترِ روزمره کنار می‌رود؛ هر وقت خواستی برمی‌گردد</span></span>
+                <button class="btn btn-outline btn-sm" onclick="askArchiveBuy()">آرشیو</button>
+              </div>
+              <div id="archBuyConfirm" style="display:none">
+                <div class="stop-confirm">
+                  <svg><use href="#i-info"/></svg>
+                  <span>رصد و تاریخچهٔ قیمت می‌ماند؛ فقط از لیست روزمره کنار می‌رود.</span>
+                  <span class="sc-btns">
+                    <button class="sc-no" onclick="cancelArchiveBuy()">انصراف</button>
+                    <button class="sc-yes" onclick="archiveBuyItem()">بله، آرشیو</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- فاز ۱۱: حذف — آیکون کوچک، ته فرم -->
+            <div class="item-danger">
+              <button class="danger-quiet" onclick="askRemoveItem2()"><svg><use href="#i-trash"/></svg> حذف کالا از لیست خرید</button>
+              <div id="removeBuyConfirm" style="display:none">
+                <div class="stop-confirm">
+                  <svg><use href="#i-info"/></svg>
+                  <span>رصد و تابلوی این کالا هم بسته می‌شود.</span>
+                  <span class="sc-btns">
+                    <button class="sc-no" onclick="cancelRemoveItem2()">انصراف</button>
+                    <button class="sc-yes" onclick="removeItem()">بله، حذف کن</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div class="btn-row" style="margin-top:9px">
               <button class="btn btn-ghost" onclick="openSheet('sheet-share-product')"><svg class="ic-sm"><use href="#i-share"/></svg> اشتراک</button>
-            </div>
-            <div style="text-align:center;margin-top:12px">
-              <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="toast('کالا از لیست حذف شد')"><svg class="ic-sm"><use href="#i-trash"/></svg> حذف از لیست</button>
             </div>
           </div>
         </section>
@@ -3666,6 +3729,22 @@
   </div>
 </div>
 
+<!-- ═══════════ فاز ۱۱ — شیت: رصد چیست؟ (توضیح «فعال‌سازی رصد») ═══════════ -->
+<div class="sheet" id="sheet-watch-info">
+  <div class="grab"></div>
+  <h3>رصد یعنی چه؟</h3>
+  <div class="sub">کالای دفترت را زیرِ نظر می‌گیریم و فقط وقتی خبرت می‌کنیم که چیزیِ مهم عوض شده باشد:</div>
+  <div class="watch-info-rows">
+    <div class="wi2-row"><span class="wic"><svg><use href="#i-chart"/></svg></span><span><b>تغییر قیمت</b> — نوسانِ معنادارِ قیمتِ هر تأمین‌کننده‌ای که دنبال می‌کنی</span></div>
+    <div class="wi2-row"><span class="wic"><svg><use href="#i-users"/></svg></span><span><b>تأمین‌کنندهٔ جدید</b> — فروشنده‌ای که تازه این کالا را به کاتالوگش اضافه کند</span></div>
+    <div class="wi2-row"><span class="wic"><svg><use href="#i-bell"/></svg></span><span><b>خبرها کجا می‌آیند</b> — اعلان‌ها، پیام‌ها و صفحهٔ پیشنهادها</span></div>
+  </div>
+  <div class="unit-calc" style="margin-top:12px"><svg><use href="#i-eye"/></svg> <span>رصدِ خاموش: کالا در دفترت می‌ماند، اما هیچ خبری نمی‌گیری — قیمت را فقط خودت در تابلوی تأمین می‌بینی.</span></div>
+  <div class="sheet-actions">
+    <button class="btn btn-primary btn-lg" onclick="closeSheets()">فهمیدم</button>
+  </div>
+</div>
+
 <!-- ═══════════ فاز ۱۰ — شیت: تأیید حذف حساب و شروع دوباره ثبت‌نام ═══════════ -->
 <div class="sheet" id="sheet-edit-phone">
   <div class="grab"></div>
@@ -4178,6 +4257,8 @@ function closeSheet() {
   $('#backdrop').classList.remove('on');
   $$('.sheet').forEach(s => s.classList.remove('on'));
 }
+/* فاز ۱۱ — رفع باگ قدیمی: closeSheets در ۴ onclick استفاده شده بود اما تعریف نشده بود */
+const closeSheets = closeSheet;
 function toggleQR() {
   const q = $('#qrBox');
   q.style.display = q.style.display === 'none' ? '' : 'none';
@@ -4242,15 +4323,31 @@ function watchCold() {
       row.classList.remove('dashed');
       row.querySelector('.body').innerHTML =
         '<div class="t">عدس <span class="pulse-dot"></span></div>' +
-        '<div class="s"><span>رصد فعال — منتظر اولین تأمین‌کننده</span></div>';
-      const btn = row.querySelector('button.btn');
-      if (btn) btn.outerHTML = '<span class="badge b-teal" style="flex-shrink:0">رصد فعال</span>';
+        '<div class="rc-meta"><span class="m hl"><svg><use href="#i-eye"/></svg>رصد فعال — منتظر اولین تأمین‌کننده</span></div>';
+      const cta = row.querySelector('.cold-cta');
+      if (cta) cta.outerHTML = '<span class="badge b-teal" style="flex-shrink:0">رصد فعال</span>';
     }
     toast('رصد عدس فعال شد — اولین تأمین‌کننده که وارد شود خبرت می‌کنیم');
   } else {
     toast('رصد عدس همین حالا فعال است');
   }
 }
+
+/* ═══ فاز ۱۱ — دفتر خرید: رصدِ کارت‌های عادی + مدیریت کالا ═══ */
+function watchOn(chip, name) {
+  const card = chip.closest('.row-card');
+  chip.outerHTML = '<span class="m hl"><svg><use href="#i-eye"/></svg>رصد فعال شد</span>';
+  if (card) {
+    const t = card.querySelector('.t');
+    if (t && !t.querySelector('.pulse-dot')) t.insertAdjacentHTML('beforeend', '<span class="pulse-dot"></span>');
+  }
+  toast('رصد ' + (name || 'کالا') + ' فعال شد — تغییر قیمت و تأمین‌کنندهٔ جدید را خبرت می‌کنیم');
+}
+function askArchiveBuy()    { $('#archBuyConfirm').style.display = ''; }
+function cancelArchiveBuy() { $('#archBuyConfirm').style.display = 'none'; }
+function archiveBuyItem()   { go('sc-buy-list'); toast('برنج هاشمی آرشیو شد — از «مدیریت کالا» هر وقت خواستی برش‌گردان'); }
+function askRemoveItem2()    { $('#removeBuyConfirm').style.display = ''; }
+function cancelRemoveItem2() { $('#removeBuyConfirm').style.display = 'none'; }
 
 function addItemSubmit() {
   if (!state.pasteAdded) {

@@ -2974,3 +2974,121 @@ body.rd.rd-mob .btn-row { max-width: none !important; }
     animation-iteration-count: 1 !important;
   }
 }
+
+/* ═══════════════ فاز ۱۱ — دفتر خرید: کارت‌های خوانا + مدیریت کالا + توضیح رصد ═══════════════ */
+
+/* ── چیپ‌های فرادادهٔ کارت دفتر خرید (rc-meta) — آیکون + برچسب؛ رنگ فرعی = رنگ بازو ── */
+.rc-meta {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  margin-top: 7px;
+}
+.rc-meta .m {
+  display: inline-flex; align-items: center; gap: 4.5px;
+  font-size: 10px; font-weight: 600; color: var(--fg-soft);
+  background: var(--muted-bg);
+  border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  border-radius: 8px; padding: 3.5px 8px;
+  max-width: 100%; line-height: 1.6;
+}
+.rc-meta .m svg { width: 11.5px; height: 11.5px; color: var(--arm); flex-shrink: 0; }
+.rc-meta .m b { font-weight: 800; color: var(--fg); }
+/* فیلد خاص با رنگ فرعی (فیروزه‌ای بازوی خرید) */
+.rc-meta .m.hl {
+  background: var(--arm-tint);
+  border-color: color-mix(in srgb, var(--arm) 28%, transparent);
+  color: var(--arm-tint-fg);
+}
+.rc-meta .m.hl svg { color: var(--arm-strong); }
+.rc-meta .m.hl b { color: var(--arm-tint-fg); }
+/* چیپِ اقدام‌پذیرِ کهربایی (رصد خاموش — روشن کن) */
+.rc-meta .m.warn {
+  background: var(--amber-tint);
+  border-color: color-mix(in srgb, var(--amber) 30%, transparent);
+  color: var(--amber);
+  cursor: pointer; font-family: inherit; font-weight: 700;
+  transition: filter .14s;
+}
+.rc-meta .m.warn svg { color: var(--amber); }
+.rc-meta .m.warn:hover { filter: brightness(.96); }
+.rc-meta .m.warn:active { transform: scale(.96); }
+
+/* ── کارت سرد (بدون تأمین‌کننده): دکمه + آیکونِ «رصد چیست؟» ── */
+.cold-cta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.mini-info {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--muted-bg); color: var(--muted);
+  border: 1px solid var(--border); font-family: inherit;
+  transition: color .14s, border-color .14s;
+}
+.mini-info svg { width: 13px; height: 13px; }
+.mini-info:hover { color: var(--arm); border-color: var(--arm); }
+
+/* ── pair-cta: دو دکمهٔ هم‌سبک، پیوسته با لیست قیمت‌های دنبال‌شده (پایین همان کارت) ── */
+.pair-cta {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin: 10px -14px -4px;           /* خون‌ریزی تا لبه‌های کارت (padding: 4px 14px) */
+  padding: 12px 12px 14px;
+  border-top: 1px dashed var(--border-strong);
+}
+.pc-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  background: var(--arm-tint);
+  border: 1px solid color-mix(in srgb, var(--arm) 30%, transparent);
+  border-radius: 13px; padding: 11px 12px;
+  font-family: inherit; cursor: pointer; text-align: right;
+  transition: filter .15s, transform .1s;
+}
+.pc-btn:hover { filter: brightness(.97); }
+.pc-btn:active { transform: scale(.97); }
+.pc-ico {
+  width: 30px; height: 30px; border-radius: 9px;
+  background: #fff; color: var(--arm-strong);
+  display: grid; place-items: center; flex-shrink: 0;
+}
+.pc-ico svg { width: 15px; height: 15px; }
+.pc-tx b { display: block; font-size: 11.5px; font-weight: 800; color: var(--arm-tint-fg); line-height: 1.65; }
+.pc-tx i {
+  display: block; font-style: normal; font-size: 9px; font-weight: 500;
+  color: color-mix(in srgb, var(--arm-tint-fg) 72%, transparent);
+  margin-top: 2px; line-height: 1.7;
+}
+
+/* ── آیکون کوچک «رصد چیست؟» در عنوان بخش‌ها ── */
+.sec-title .info-mini {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--muted-bg); color: var(--muted);
+  border: 1px solid var(--border); font-family: inherit;
+  transition: color .14s, border-color .14s;
+}
+.sec-title .info-mini svg { width: 13px; height: 13px; }
+.sec-title .info-mini:hover { color: var(--arm); border-color: var(--arm); }
+
+/* ── حذفِ کالا: قابِ پایین فرم (danger-quiet + stop-confirm موجود) ── */
+.item-danger { margin-top: 14px; }
+
+/* ── شیت «رصد چیست؟» ── */
+.watch-info-rows { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
+.wi2-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 11px; color: var(--fg-soft); line-height: 1.85;
+  background: var(--muted-bg); border-radius: 12px; padding: 10px 12px;
+}
+.wi2-row .wic {
+  width: 34px; height: 34px; border-radius: 11px; flex-shrink: 0;
+  background: #fff; color: var(--arm-strong);
+  display: grid; place-items: center;
+  border: 1px solid color-mix(in srgb, var(--arm) 22%, transparent);
+}
+.wi2-row .wic svg { width: 16px; height: 16px; }
+.wi2-row b { color: var(--fg); }
+
+/* ── ریسپانسیو فاز ۱۱ ── */
+@media (max-width: 379px) {
+  .pair-cta { grid-template-columns: 1fr; }
+}
+@media (min-width: 920px) {
+  .pc-tx b { font-size: 12px; }
+  .pc-tx i { font-size: 9.5px; }
+}
