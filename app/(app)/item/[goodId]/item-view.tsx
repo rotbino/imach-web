@@ -10,26 +10,37 @@
  *   · setNotifPrefs — سوییچ‌های رصد (priceChange/suggestions از API واقعی)
  *   · unwatchGood + deleteListing — حذف از لیست
  *
+ * فاز ۱۲ (پورت فاز ۱۱ پروتوتایپ — حکم مالک):
+ *   · pair-cta: «دنبال‌کردن تأمین‌کنندگان دیگر» + «درخواست قیمت بهتر» —
+ *     پیوسته با کارتِ قیمت‌های دنبال‌شده، هم‌سبک و کنارِ هم
+ *   · بخش «مدیریت کالا»: ویرایش نیاز خرید (شیت واقعی → saveListing) ·
+ *     تعویض عکس (آپلود گالری آگهی) · آرشیو موقت (رصد می‌ماند) ·
+ *     حذف کوچک ته فرم (danger-quiet + تأیید)
+ *   · آیکون «رصد چیست؟» کنار عنوان بخش + توستِ توضیحی بعد از فعال‌سازی
+ *   · getSupplyBoard فاز ۱۲: buyListingId/buyMode/buySell — ویرایشِ BOTH
+ *     سمت فروش را نمی‌شکند (spec فروش همان‌طور برگردانده می‌شود)
+ *
  * تطبیق آگاهانه با Prototype (ثبت در MIGRATION-MAP §۴):
  *   · چارت spark هیرو حذف شد — API تاریخچهٔ قیمتِ هر کالا وجود ندارد
- *     (PriceLog از طریق API عمومی افشا نمی‌شود)؛ فاز بعدی می‌تواند اضافه شود
- *   · «ویرایش» (شیت ویرایش نیاز) → فاز ویرایش آیتم؛ فعلاً از مسیر legacy
  *   · سوییچ «تغییر موجودی» حذف شد — NotifPrefs بک‌اند این کلید را ندارد
- *   · دکمهٔ اشتراک حذف شد — کالا هنوز صفحهٔ عمومی ندارد (فاز ۷ · (pub)/p)
  *   · «شرایط» (عندالتحویل و…) در ردیف‌ها غایب — فیلدی در API نیست
  */
 
-import { useMemo } from "react";
+import { useMemo, useRef, useState, type ChangeEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActiveBusiness } from "@/lib/active-biz";
 import {
   useDeleteListing,
   useFollowToggle,
+  useMyListings,
+  useSaveListing,
   useSetNotifPrefs,
   useSupplyBoard,
   useUnwatchGood,
+  useUploadFile,
   useWatchGood,
+  useArchiveWatchedGood,
   useWatchedGoods,
 } from "@/lib/queries";
 import type { BoardSupplierDto } from "@/lib/api";
@@ -40,7 +51,10 @@ import { useLocale } from "@/i18n/locale-context";
 import { Icon, type IconName } from "@/components/imach/icon";
 import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
+import { Sheet } from "@/components/imach/sheet";
 import { Spinner } from "@/components/imach/spinner";
+import { NumberInput } from "@/components/number-input";
+import { WatchInfoSheet } from "@/components/imach/watch-info-sheet";
 import { useMoney } from "@/components/imach/currency-context";
 import { useToast } from "@/hooks/use-toast";
 
@@ -51,6 +65,8 @@ const ART_BY_CATEGORY: Record<string, IconName> = {
   sugar: "a-sugar",
   lentil: "a-lentil",
 };
+
+const FREQS = ["WEEKLY", "MONTHLY", "OCCASIONAL"] as const;
 
 /** پالت آواتار v18 — همان خانوادهٔ رنگی Prototype */
 const AVATAR_BG = ["var(--teal-tint)", "var(--emerald)", "var(--amber)", "var(--fg-soft)", "var(--muted)"];
@@ -75,17 +91,42 @@ export function ItemView({ goodId }: { goodId: string }) {
 
   const boardQ = useSupplyBoard(bizId, goodId);
   const watchedQ = useWatchedGoods(bizId);
+  // فاز ۱۲ — گالری آگهی BUY برای «تعویض عکس» (شامل غیرفعال = آرشیوشده)
+  const myListingsQ = useMyListings(bizId, { includeInactive: true });
   const followMut = useFollowToggle();
   const watchMut = useWatchGood();
   const unwatchMut = useUnwatchGood();
   const deleteListingMut = useDeleteListing();
   const notifPrefsMut = useSetNotifPrefs();
+  const saveMut = useSaveListing();
+  const uploadMut = useUploadFile();
+  const archiveMut = useArchiveWatchedGood();
+
+  // ── فاز ۱۲ — شیت‌ها و تأییدها ──
+  const [editOpen, setEditOpen] = useState(false);
+  const [watchInfoOpen, setWatchInfoOpen] = useState(false);
+  const [archiveConfirm, setArchiveConfirm] = useState(false);
+  const [removeConfirm, setRemoveConfirm] = useState(false);
+  const [editVol, setEditVol] = useState<number | null>(null);
+  const [editFreq, setEditFreq] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const board = boardQ.data;
   const watchedRow = useMemo(
     () => (watchedQ.data ?? []).find((r) => r.goodId === goodId),
     [watchedQ.data, goodId]
   );
+  const myBuyListing = useMemo(
+    () =>
+      (myListingsQ.data ?? []).find(
+        (l) => l.good.id === goodId && (l.mode === "BUY" || l.mode === "BOTH")
+      ),
+    [myListingsQ.data, goodId]
+  );
+  const listingPhoto = myBuyListing?.gallery?.[0]?.thumbUrl ?? myBuyListing?.gallery?.[0]?.url ?? null;
+  const buyListingId = board?.buyListingId ?? watchedRow?.buyListingId ?? null;
+  const buyMode = board?.buyMode ?? null;
+  const buySell = board?.buySell ?? null;
 
   if (!bizId || boardQ.isLoading) {
     return (
@@ -154,14 +195,74 @@ export function ItemView({ goodId }: { goodId: string }) {
     notifPrefsMut.mutate({ id: biz.id, ...patch });
   };
 
+  // ── فاز ۱۲ — ویرایش نیاز خرید (شیت واقعی → saveListing) ──
+  const openEdit = () => {
+    setEditVol(board?.volume ?? watchedRow?.volume ?? null);
+    setEditFreq(board?.frequency ?? watchedRow?.frequency ?? "MONTHLY");
+    setEditOpen(true);
+  };
+
+  const saveNeed = async () => {
+    if (!bizId || !editVol || editVol <= 0 || !editFreq) return;
+    try {
+      await saveMut.mutateAsync({
+        businessId: bizId,
+        goodId,
+        ...(buyListingId ? { listingId: buyListingId } : {}),
+        mode: buyMode === "BOTH" ? "BOTH" : "BUY",
+        // ویرایشِ BOTH نباید سمت فروش را بزند — spec فروش همان‌طور برمی‌گردد
+        ...(buyMode === "BOTH" && buySell
+          ? {
+              sell: {
+                priceMinor: buySell.priceMinor,
+                stock: buySell.stock ?? 0,
+                minOrder: buySell.minOrder ?? 1,
+              },
+            }
+          : {}),
+        buy: { volume: editVol, frequency: editFreq },
+      });
+      toast({ title: t.editSavedToast });
+      setEditOpen(false);
+    } catch {
+      toast({ title: t.editFailedToast, variant: "destructive" });
+    }
+  };
+
+  // ── فاز ۱۲ — تعویض عکس: آپلود واقعی به گالریِ آگهی BUY ──
+  const onPickPhoto = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !buyListingId || !bizId) return;
+    uploadMut.mutate(
+      { file, model: "Listing", modelId: buyListingId, key: "gallery" },
+      {
+        onSuccess: () => toast({ title: t.photoToast }),
+        onError: () => toast({ title: t.photoFailed, variant: "destructive" }),
+      }
+    );
+  };
+
+  // ── فاز ۱۲ — آرشیو موقت: رصد و تاریخچه می‌ماند ──
+  const archiveItem = async () => {
+    if (!bizId) return;
+    try {
+      await archiveMut.mutateAsync({ businessId: bizId, goodId, archived: true });
+      toast({ title: t.archivedToastN.replace("{name}", name) });
+      router.push("/home");
+    } catch {
+      toast({ title: m.app.home.copyFailed, variant: "destructive" });
+    }
+  };
+
   const removeFromList = async () => {
     if (!bizId) return;
     try {
       await unwatchMut.mutateAsync({ businessId: bizId, goodId });
-      if (watchedRow?.buyListingId) {
-        await deleteListingMut.mutateAsync(watchedRow.buyListingId);
+      if (buyListingId) {
+        await deleteListingMut.mutateAsync(buyListingId);
       }
-      toast({ title: t.removed });
+      toast({ title: t.removedToastN.replace("{name}", name) });
       router.push("/home");
     } catch {
       toast({ title: m.app.home.copyFailed, variant: "destructive" });
@@ -184,24 +285,23 @@ export function ItemView({ goodId }: { goodId: string }) {
             {board?.watched || watchedRow ? `${t.inList} · ${board?.watched ? t.watching : t.notWatching}` : t.notWatching}
           </span>
         </div>
-        {board?.watched === false && bizId ? (
-          <button
-            className="btn btn-soft btn-sm act"
-            disabled={watchMut.isPending}
-            onClick={() =>
-              void watchMut
-                .mutateAsync({ businessId: bizId, goodId })
-                .then(() => toast({ title: t.watching }))
-            }
-          >
-            {watchMut.isPending ? <Spinner size={12} /> : null} {t.watchCta}
-          </button>
-        ) : null}
+        {/* فاز ۱۲ — ویرایش نیاز خرید (میان‌بر صفحه) */}
+        <button type="button" className="btn btn-soft btn-sm act" onClick={openEdit}>
+          <Icon className="ic-sm" name="i-edit" /> {t.edit}
+        </button>
       </div>
 
       <div className="screen-body">
         <div className={`thumb lg ${good.category?.slug ?? ""}`}>
-          <Icon name={artIcon} />
+          {listingPhoto ? (
+            <img
+              src={listingPhoto}
+              alt={name}
+              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }}
+            />
+          ) : (
+            <Icon name={artIcon} />
+          )}
         </div>
 
         {/* ═══ هیرو: ارزان‌ترین قیمت + روند + بازهٔ بازار ═══ */}
@@ -253,7 +353,7 @@ export function ItemView({ goodId }: { goodId: string }) {
           </div>
         )}
 
-        {/* ═══ قیمت‌های دنبال‌شده ═══ */}
+        {/* ═══ قیمت‌های دنبال‌شده + pair-cta پیوسته با همان کارت (فاز ۱۲) ═══ */}
         {rows.length > 0 ? (
           <>
             <div className="sec-title">
@@ -322,30 +422,57 @@ export function ItemView({ goodId }: { goodId: string }) {
                   ))}
                 </>
               ) : null}
+
+              {/* فاز ۱۲ — pair-cta: دنبال‌کردن تأمین‌کنندگان دیگر + درخواست قیمت بهتر */}
+              <div className="pair-cta">
+                <Link className="pc-btn" href={`/board/${goodId}`}>
+                  <span className="pc-ico">
+                    <Icon className="ic-sm" name="i-arrf" />
+                  </span>
+                  <span className="pc-tx">
+                    <b>{t.pairFollow}</b>
+                    <i>{t.pairFollowSub.replace("{n}", fa(rows.length))}</i>
+                  </span>
+                </Link>
+                <Link className="pc-btn" href={`/rfq/${goodId}`}>
+                  <span className="pc-ico">
+                    <Icon className="ic-sm" name="i-send" />
+                  </span>
+                  <span className="pc-tx">
+                    <b>{t.pairRfq}</b>
+                    <i>{t.pairRfqSub}</i>
+                  </span>
+                </Link>
+              </div>
             </div>
           </>
-        ) : null}
+        ) : (
+          <div className="card" style={{ padding: "4px 14px" }}>
+            {/* کالای سرد — pair-cta تنها: راهِ رسیدن به اولین تأمین‌کننده */}
+            <div className="pair-cta" style={{ margin: "4px -14px -4px" }}>
+              <Link className="pc-btn" href={`/board/${goodId}`}>
+                <span className="pc-ico">
+                  <Icon className="ic-sm" name="i-arrf" />
+                </span>
+                <span className="pc-tx">
+                  <b>{t.pairFollow}</b>
+                  <i>{t.pairFollowSub.replace("{n}", fa(rows.length))}</i>
+                </span>
+              </Link>
+              <Link className="pc-btn" href={`/rfq/${goodId}`}>
+                <span className="pc-ico">
+                  <Icon className="ic-sm" name="i-send" />
+                </span>
+                <span className="pc-tx">
+                  <b>{t.pairRfq}</b>
+                  <i>{t.pairRfqSub}</i>
+                </span>
+              </Link>
+            </div>
+          </div>
+        )}
 
         <div className="note-c">{t.noteFollowed}</div>
-
-        {/* ═══ درخواست قیمت بهتر — ویزارد استعلام گروهی v18 (فاز ۴) ═══ */}
-        <Link className="hero-quote tap" href={`/rfq/${goodId}`}>
-          <span className="hq-ico">
-            <Icon className="ic-sm" name="i-send" />
-          </span>
-          <span className="hq-tx">
-            <b>{t.quoteTitle}</b>
-            <span>{t.quoteSub}</span>
-          </span>
-          <Icon name="i-chev" className="hq-ch" />
-        </Link>
-
-        <div className="btn-row" style={{ marginTop: 10 }}>
-          <Link className="btn btn-outline btn-lg" href={`/board/${goodId}`}>
-            <Icon className="ic-sm" name="i-arrf" /> {t.otherSuppliers.replace("{n}", fa(rows.length))}
-          </Link>
-        </div>
-        <div className="note-c">{t.noteBoard}</div>
 
         {/* ═══ نیاز من ═══ */}
         <div className="sec-title">
@@ -387,11 +514,20 @@ export function ItemView({ goodId }: { goodId: string }) {
           ) : null}
         </div>
 
-        {/* ═══ رصد و اطلاع‌رسانی — سوییچ‌های واقعی NotifPrefs ═══ */}
+        {/* ═══ رصد و اطلاع‌رسانی — سوییچ‌های واقعی NotifPrefs + «رصد چیست؟» (فاز ۱۲) ═══ */}
         <div className="sec-title">
           <h2>
             <Icon className="ic-sm" name="i-eye" /> {t.watchTitle}
           </h2>
+          <button
+            type="button"
+            className="info-mini"
+            aria-label={m.app.home.watchInfo.title}
+            title={m.app.home.watchInfo.title}
+            onClick={() => setWatchInfoOpen(true)}
+          >
+            <Icon name="i-info" />
+          </button>
         </div>
         <div className="card">
           <div className="follow-row" style={{ borderBottom: "1px dashed var(--border)" }}>
@@ -426,21 +562,192 @@ export function ItemView({ goodId }: { goodId: string }) {
               onClick={() => setPref({ suggestions: prefs?.suggestions === false })}
             />
           </div>
+          {board?.watched === false && bizId ? (
+            <div style={{ padding: "10px 2px 4px" }}>
+              <button
+                type="button"
+                className="btn btn-soft btn-sm btn-block"
+                disabled={watchMut.isPending}
+                onClick={() =>
+                  void watchMut
+                    .mutateAsync({ businessId: bizId, goodId })
+                    .then(() =>
+                      toast({
+                        title: t.watchToastN.replace("{name}", name),
+                        description: t.watchToastDesc,
+                      })
+                    )
+                }
+              >
+                {watchMut.isPending ? <Spinner size={12} /> : <Icon className="ic-sm" name="i-eye" />} {t.watchCta}
+              </button>
+            </div>
+          ) : null}
         </div>
 
-        <div className="btn-row" style={{ marginTop: 9 }}>
-          <button
-            className="btn btn-ghost btn-sm"
-            style={{ color: "var(--red)", margin: "12px auto", display: "block" }}
-            disabled={unwatchMut.isPending || deleteListingMut.isPending}
-            onClick={() => void removeFromList()}
-          >
-            <Icon className="ic-sm" name="i-trash" /> {t.remove}
+        {/* ═══ فاز ۱۲ — مدیریت کالا: ویرایش نیاز / عکس / آرشیو ═══ */}
+        <div className="sec-title">
+          <h2>
+            <Icon className="ic-sm" name="i-gear" /> {t.manageTitle}
+          </h2>
+        </div>
+        <div className="card">
+          <div className="follow-row" style={{ borderBottom: "1px dashed var(--border)" }}>
+            <Icon className="ic" name="i-edit" style={{ color: "var(--muted)" }} />
+            <span className="tx">
+              <b>{t.editNeed}</b>
+              <span>{t.editNeedSub}</span>
+            </span>
+            <button type="button" className="btn btn-soft btn-sm" onClick={openEdit}>
+              <Icon className="ic-sm ic-12" name="i-edit" /> {t.edit}
+            </button>
+          </div>
+          <div className="follow-row" style={{ borderBottom: "1px dashed var(--border)" }}>
+            <Icon className="ic" name="i-img" style={{ color: "var(--muted)" }} />
+            <span className="tx">
+              <b>{t.photoRow}</b>
+              <span>{buyListingId ? t.photoSub : t.photoNeed}</span>
+            </span>
+            {buyListingId ? (
+              <>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={onPickPhoto}
+                  aria-label={t.photoRow}
+                />
+                <button
+                  type="button"
+                  className="btn btn-soft btn-sm"
+                  disabled={uploadMut.isPending}
+                  onClick={() => fileRef.current?.click()}
+                >
+                  {uploadMut.isPending ? <Spinner size={12} /> : null}
+                  {t.photoBtn}
+                </button>
+              </>
+            ) : null}
+          </div>
+          <div className="follow-row">
+            <Icon className="ic" name="i-inbox" style={{ color: "var(--muted)" }} />
+            <span className="tx">
+              <b>{t.archiveRow}</b>
+              <span>{t.archiveRowSub}</span>
+            </span>
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              disabled={archiveMut.isPending}
+              onClick={() => setArchiveConfirm(true)}
+            >
+              {t.archiveBtn}
+            </button>
+          </div>
+          {archiveConfirm ? (
+            <div className="stop-confirm">
+              <Icon name="i-info" />
+              <span>{t.archiveConfirm}</span>
+              <span className="sc-btns">
+                <button type="button" className="sc-no" onClick={() => setArchiveConfirm(false)}>
+                  {t.cancel}
+                </button>
+                <button
+                  type="button"
+                  className="sc-yes"
+                  disabled={archiveMut.isPending}
+                  onClick={() => void archiveItem()}
+                >
+                  {archiveMut.isPending ? <Spinner size={10} /> : null}
+                  {t.archiveYes}
+                </button>
+              </span>
+            </div>
+          ) : null}
+        </div>
+
+        {/* ═══ فاز ۱۲ — حذف: آیکون کوچک ته فرم + تأیید ═══ */}
+        <div className="item-danger">
+          <button type="button" className="danger-quiet" onClick={() => setRemoveConfirm((v) => !v)}>
+            <Icon name="i-trash" /> {t.dangerRemove}
           </button>
+          {removeConfirm ? (
+            <div className="stop-confirm">
+              <Icon name="i-info" />
+              <span>{t.removeConfirm}</span>
+              <span className="sc-btns">
+                <button type="button" className="sc-no" onClick={() => setRemoveConfirm(false)}>
+                  {t.cancel}
+                </button>
+                <button
+                  type="button"
+                  className="sc-yes"
+                  disabled={unwatchMut.isPending || deleteListingMut.isPending}
+                  onClick={() => void removeFromList()}
+                >
+                  {unwatchMut.isPending || deleteListingMut.isPending ? <Spinner size={10} /> : null}
+                  {t.removeYes}
+                </button>
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
 
       <Tabbar active="list" />
+
+      {/* فاز ۱۲ — شیت ویرایش نیاز خرید */}
+      <Sheet open={editOpen} onClose={() => setEditOpen(false)} label={t.editSheetTitle}>
+        <div className="sheet">
+          <div className="grab" />
+          <h3>{t.editSheetTitle}</h3>
+          <div className="sub">
+            {t.editSheetSub} — {name}
+          </div>
+          <div style={{ marginTop: 14 }}>
+            <div className="field" style={{ marginBottom: 4 }}>
+              <label htmlFor="edit-vol">{t.editVolume}</label>
+              <NumberInput
+                id="edit-vol"
+                value={editVol}
+                onChange={setEditVol}
+                locale={locale === "en" ? "en" : "fa"}
+                min={1}
+                suffix={unit}
+              />
+            </div>
+            <div className="field" style={{ marginTop: 12 }}>
+              <label>{t.editFreq}</label>
+              <div className="unit-chips" style={{ marginTop: 6 }}>
+                {FREQS.map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    className={`chip${editFreq === f ? " active" : ""}`}
+                    onClick={() => setEditFreq(f)}
+                  >
+                    {frequencyLabel(f, locale)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="sheet-actions">
+            <button
+              type="button"
+              className="btn btn-primary btn-lg"
+              disabled={saveMut.isPending || !editVol || editVol <= 0 || !editFreq}
+              onClick={() => void saveNeed()}
+            >
+              {saveMut.isPending ? <Spinner size={14} /> : <Icon className="ic-sm" name="i-check" />} {t.editSave}
+            </button>
+          </div>
+        </div>
+      </Sheet>
+
+      {/* فاز ۱۲ — شیت «رصد یعنی چه؟» */}
+      <WatchInfoSheet open={watchInfoOpen} onClose={() => setWatchInfoOpen(false)} />
     </section>
   );
 }

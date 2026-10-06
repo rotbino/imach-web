@@ -119,11 +119,16 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
       needLogin();
       return;
     }
+    // فاز ۱۲ — supplierId مبدأ: «دنبال کردن کالا (آگهی فروش)» یعنی همین
+    // فروشنده هم به‌طور طبیعی به لیست دنبال‌شده‌های قیمتِ این کالا اضافه شود
     marketApi
-      .watchGood(myBiz.id, listing.good.id)
+      .watchGood(myBiz.id, listing.good.id, biz.id)
       .then(() => {
         setWatched(true);
-        toast({ title: m.app.home.watchCta });
+        toast({
+          title: m.app.home.watchOnToastN.replace("{name}", goodName(listing.good, locale)),
+          description: m.app.home.watchOnToastDesc,
+        });
       })
       .catch(() => toast({ title: t.loginForAction, variant: "destructive" }));
   };

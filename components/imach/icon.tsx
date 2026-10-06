@@ -50,6 +50,7 @@ export const ICON_NAMES = [
   "i-wallet",
   "i-percent",
   "i-steps",
+  "i-tag",
   "a-rice",
   "a-oil",
   "a-sugar",

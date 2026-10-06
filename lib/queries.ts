@@ -502,28 +502,43 @@ export function useArchiveInquiry() {
 
 // ═══ فاز ۵ — دنبال‌کردن قیمت + لیست خرید (طرح ۰۸) ═══
 
-/** لیست خرید — ردیف‌های WatchedGood ∪ BUY listing با خلاصه‌ی تابلوی تأمین */
-export function useWatchedGoods(businessId: string | null | undefined): UseQueryResult<WatchedRowDto[]> {
+/** لیست خرید — ردیف‌های WatchedGood ∪ BUY listing با خلاصه‌ی تابلوی تأمین.
+ *  فاز ۱۲ — archived=true: فقط ردیف‌های آرشیوشده (رصد می‌ماند) */
+export function useWatchedGoods(
+  businessId: string | null | undefined,
+  opts?: { archived?: boolean }
+): UseQueryResult<WatchedRowDto[]> {
   return useQuery({
-    queryKey: qk.watched(businessId ?? ""),
-    queryFn: () => marketApi.getWatchedGoods(businessId as string),
+    queryKey: [...qk.watched(businessId ?? ""), opts?.archived ? "archived" : "active"],
+    queryFn: () => marketApi.getWatchedGoods(businessId as string, opts),
     enabled: !!businessId,
     staleTime: 15_000,
   });
 }
 
 /** «دنبال کردن قیمت» از کاتالوگ عمومی / ردیف بی‌تابلو — کالاهای من عوض می‌شود؛
- *  دایرکتوری تأمین‌کنندگان و پیشنهادها هم سوختشان کالاهای من است. */
+ *  دایرکتوری تأمین‌کنندگان و پیشنهادها هم سوختشان کالاهای من است.
+ *  فاز ۱۲ — supplierId مبدأ: تامین‌کنندهٔ مبدأ هم Follow می‌شود (قیمت‌های
+ *  دنبال‌شدهٔ همان کالا از همان لحظه پر می‌شوند). */
 export function useWatchGood() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ businessId, goodId }: { businessId: string; goodId: string }) =>
-      marketApi.watchGood(businessId, goodId),
+    mutationFn: ({
+      businessId,
+      goodId,
+      supplierId,
+    }: {
+      businessId: string;
+      goodId: string;
+      supplierId?: string;
+    }) => marketApi.watchGood(businessId, goodId, supplierId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["market", "watched"] });
       void qc.invalidateQueries({ queryKey: ["market", "supplyBoard"] });
       void qc.invalidateQueries({ queryKey: ["market", "suggestions"] });
       void qc.invalidateQueries({ queryKey: ["market", "suppliersDirectory"] });
+      void qc.invalidateQueries({ queryKey: ["market", "follows"] });
+      void qc.invalidateQueries({ queryKey: ["market", "priceBoard"] });
     },
   });
 }
@@ -538,6 +553,29 @@ export function useUnwatchGood() {
       void qc.invalidateQueries({ queryKey: ["market", "supplyBoard"] });
       void qc.invalidateQueries({ queryKey: ["market", "suggestions"] });
       void qc.invalidateQueries({ queryKey: ["market", "suppliersDirectory"] });
+    },
+  });
+}
+
+/** فاز ۱۲ — آرشیو موقت ردیف دفتر خرید (archived=false = بازگردانی):
+ *  رصد و تاریخچه می‌ماند؛ فقط از لیست روزمره کنار می‌رود. */
+export function useArchiveWatchedGood() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      businessId,
+      goodId,
+      archived,
+    }: {
+      businessId: string;
+      goodId: string;
+      archived: boolean;
+    }) => marketApi.archiveWatchedGood(businessId, goodId, archived),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["market", "watched"] });
+      void qc.invalidateQueries({ queryKey: ["market", "supplyBoard"] });
+      void qc.invalidateQueries({ queryKey: ["listings"] });
+      void qc.invalidateQueries({ queryKey: ["business"] });
     },
   });
 }

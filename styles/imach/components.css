@@ -5628,3 +5628,224 @@ transition-duration: .01ms !important;
 
 }
 
+
+/* ═══════════════ فاز ۱۱ — دفتر خرید: کارت‌های خوانا + مدیریت کالا + توضیح رصد ═══════════════ */
+
+/* ── چیپ‌های فرادادهٔ کارت دفتر خرید (rc-meta) — آیکون + برچسب؛ رنگ فرعی = رنگ بازو ── */
+.ia .rc-meta {
+display: flex; flex-wrap: wrap; gap: 4px;
+  margin-top: 7px;
+}
+
+.ia .rc-meta .m {
+display: inline-flex; align-items: center; gap: 4.5px;
+  font-size: 10px; font-weight: 600; color: var(--fg-soft);
+  background: var(--muted-bg);
+  border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  border-radius: 8px; padding: 3.5px 8px;
+  max-width: 100%; line-height: 1.6;
+}
+
+.ia .rc-meta .m svg {
+width: 11.5px; height: 11.5px; color: var(--arm); flex-shrink: 0;
+}
+
+.ia .rc-meta .m b {
+font-weight: 800; color: var(--fg);
+}
+
+/* فیلد خاص با رنگ فرعی (فیروزه‌ای بازوی خرید) */
+.ia .rc-meta .m.hl {
+background: var(--arm-tint);
+  border-color: color-mix(in srgb, var(--arm) 28%, transparent);
+  color: var(--arm-tint-fg);
+}
+
+.ia .rc-meta .m.hl svg {
+color: var(--arm-strong);
+}
+
+.ia .rc-meta .m.hl b {
+color: var(--arm-tint-fg);
+}
+
+/* چیپِ اقدام‌پذیرِ کهربایی (رصد خاموش — روشن کن) */
+.ia .rc-meta .m.warn {
+background: var(--amber-tint);
+  border-color: color-mix(in srgb, var(--amber) 30%, transparent);
+  color: var(--amber);
+  cursor: pointer; font-family: inherit; font-weight: 700;
+  transition: filter .14s;
+}
+
+.ia .rc-meta .m.warn svg {
+color: var(--amber);
+}
+
+.ia .rc-meta .m.warn:hover {
+filter: brightness(.96);
+}
+
+.ia .rc-meta .m.warn:active {
+transform: scale(.96);
+}
+
+
+/* ── کارت سرد (بدون تأمین‌کننده): دکمه + آیکونِ «رصد چیست؟» ── */
+.ia .cold-cta {
+display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+
+.ia .mini-info {
+width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--muted-bg); color: var(--muted);
+  border: 1px solid var(--border); font-family: inherit;
+  transition: color .14s, border-color .14s;
+}
+
+.ia .mini-info svg {
+width: 13px; height: 13px;
+}
+
+.ia .mini-info:hover {
+color: var(--arm); border-color: var(--arm);
+}
+
+
+/* ── pair-cta: دو دکمهٔ هم‌سبک، پیوسته با لیست قیمت‌های دنبال‌شده (پایین همان کارت) ── */
+.ia .pair-cta {
+display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin: 10px -14px -4px;           /* خون‌ریزی تا لبه‌های کارت (padding: 4px 14px) */
+  padding: 12px 12px 14px;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.ia .pc-btn {
+display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  background: var(--arm-tint);
+  border: 1px solid color-mix(in srgb, var(--arm) 30%, transparent);
+  border-radius: 13px; padding: 11px 12px;
+  font-family: inherit; cursor: pointer; text-align: right;
+  transition: filter .15s, transform .1s;
+}
+
+.ia .pc-btn:hover {
+filter: brightness(.97);
+}
+
+.ia .pc-btn:active {
+transform: scale(.97);
+}
+
+.ia .pc-ico {
+width: 30px; height: 30px; border-radius: 9px;
+  background: var(--surface); color: var(--arm-strong);
+  display: grid; place-items: center; flex-shrink: 0;
+}
+
+.ia .pc-ico svg {
+width: 15px; height: 15px;
+}
+
+.ia .pc-tx b {
+display: block; font-size: 11.5px; font-weight: 800; color: var(--arm-tint-fg); line-height: 1.65;
+}
+
+.ia .pc-tx i {
+display: block; font-style: normal; font-size: 9px; font-weight: 500;
+  color: color-mix(in srgb, var(--arm-tint-fg) 72%, transparent);
+  margin-top: 2px; line-height: 1.7;
+}
+
+
+/* ── آیکون کوچک «رصد چیست؟» در عنوان بخش‌ها ── */
+.ia .sec-title .info-mini {
+width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--muted-bg); color: var(--muted);
+  border: 1px solid var(--border); font-family: inherit;
+  transition: color .14s, border-color .14s;
+}
+
+.ia .sec-title .info-mini svg {
+width: 13px; height: 13px;
+}
+
+.ia .sec-title .info-mini:hover {
+color: var(--arm); border-color: var(--arm);
+}
+
+
+/* ── حذفِ کالا: قابِ پایین فرم (danger-quiet + stop-confirm موجود) ── */
+.ia .item-danger {
+margin-top: 14px;
+}
+
+
+/* ── شیت «رصد چیست؟» ── */
+.ia .watch-info-rows {
+display: flex; flex-direction: column; gap: 9px; margin-top: 12px;
+}
+
+.ia .wi2-row {
+display: flex; align-items: flex-start; gap: 10px;
+  font-size: 11px; color: var(--fg-soft); line-height: 1.85;
+  background: var(--muted-bg); border-radius: 12px; padding: 10px 12px;
+}
+
+.ia .wi2-row .wic {
+width: 34px; height: 34px; border-radius: 11px; flex-shrink: 0;
+  background: var(--surface); color: var(--arm-strong);
+  display: grid; place-items: center;
+  border: 1px solid color-mix(in srgb, var(--arm) 22%, transparent);
+}
+
+.ia .wi2-row .wic svg {
+width: 16px; height: 16px;
+}
+
+.ia .wi2-row b {
+color: var(--fg);
+}
+
+
+/* ── ریسپانسیو فاز ۱۱ ── */
+@media (max-width: 379px) {
+
+  .ia .pair-cta {
+grid-template-columns: 1fr;
+}
+
+}
+
+@media (min-width: 920px) {
+
+  .ia .pc-tx b {
+font-size: 12px;
+}
+
+  .ia .pc-tx i {
+font-size: 9.5px;
+}
+
+}
+
+
+/* ── فاز ۱۲ — stop-confirm (دستی؛ پورتر به‌عنوان اسکفولد دمو انداخته‌اش بود اما
+   محصول لازمش دارد: تأییدِ آرشیو/حذف در دفتر خرید + کامپاین‌ویو از قبل استفاده می‌کرد) ── */
+.ia .stop-confirm {
+  display: flex; align-items: center; gap: 8px; margin-top: 11px;
+  background: var(--red-tint); border: 1px solid #f2c6bf; border-radius: 12px; padding: 9px 11px;
+  font-size: 10.5px; color: var(--red); font-weight: 600;
+}
+.ia .stop-confirm svg { width: 15px; height: 15px; flex-shrink: 0; }
+.ia .stop-confirm .sc-btns { margin-inline-start: auto; display: flex; gap: 6px; }
+.ia .stop-confirm .sc-yes {
+  background: var(--red); color: #fff; border: none; border-radius: 8px;
+  font-family: inherit; font-size: 10px; font-weight: 700; padding: 7px 11px; cursor: pointer;
+}
+.ia .stop-confirm .sc-no {
+  background: var(--surface); color: var(--fg-soft); border: 1px solid var(--border-strong);
+  border-radius: 8px; font-family: inherit; font-size: 10px; font-weight: 700; padding: 7px 11px; cursor: pointer;
+}

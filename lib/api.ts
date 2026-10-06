@@ -569,6 +569,8 @@ export interface WatchedRowDto {
   watched: boolean;
   watchedAt: string | null;
   lastNotifiedAt: string | null;
+  /** فاز ۱۲ — آرشیو موقت: non-null یعنی ردیف آرشیوست (رصد می‌ماند) */
+  archivedAt: string | null;
   supplierCount: number;
   cheapest: CheapestSupplierDto | null;
   /** درصد تغییر ارزان‌ترین قیمت در ۷ روز — منفی یعنی ارزان‌تر */
@@ -668,6 +670,11 @@ export interface SupplyBoardDto {
   volume: number | null;
   frequency: string | null;
   variantLabel: string | null;
+  /** فاز ۱۲ — شیت «ویرایش نیاز خرید»: ردیف فیزیکی BUY + حالت واقعی +
+   *  spec فروش (فقط وقتی BOTH است تا ویرایش سمت فروش را نکند) */
+  buyListingId: string | null;
+  buyMode: "BUY" | "BOTH" | null;
+  buySell: { priceMinor: number; currency: string | null; stock: number | null; minOrder: number | null } | null;
   rows: BoardSupplierDto[];
 }
 
@@ -1384,17 +1391,28 @@ export const marketApi = {
   archiveInquiry: (id: string) =>
     api<{ ok: boolean }>(`/market/archiveInquiry/${id}`, { method: "POST" }),
   // ═══ فاز ۵ — دنبال‌کردن قیمت + لیست خرید (طرح ۰۸) ═══
-  getWatchedGoods: (businessId: string) =>
-    api<WatchedRowDto[]>("/market/getWatchedGoods", { params: { businessId } }),
-  watchGood: (businessId: string, goodId: string) =>
-    api<{ ok: boolean; watched: boolean }>("/market/watchGood", {
+  getWatchedGoods: (businessId: string, opts?: { archived?: boolean }) =>
+    api<WatchedRowDto[]>("/market/getWatchedGoods", {
+      params: { businessId, ...(opts?.archived ? { archived: "true" } : {}) },
+    }),
+  /** فاز ۱۲ — supplierId مبدأ: دنبال‌کردن کالا از کاتالوک/صفحهٔ محصول یک
+   *  فروشنده = همان فروشنده به‌طور خودکار به لیست دنبال‌شده‌های قیمت این
+   *  کالا اضافه می‌شود (Follow خودکار در بک‌اند). */
+  watchGood: (businessId: string, goodId: string, supplierId?: string) =>
+    api<{ ok: boolean; watched: boolean; followed: boolean }>("/market/watchGood", {
       method: "POST",
-      body: { businessId, goodId },
+      body: { businessId, goodId, ...(supplierId ? { supplierId } : {}) },
     }),
   unwatchGood: (businessId: string, goodId: string) =>
     api<{ ok: boolean; watched: boolean }>(`/market/unwatchGood/${goodId}`, {
       method: "POST",
       body: { businessId },
+    }),
+  /** فاز ۱۲ — آرشیو موقت ردیف دفتر خرید (archived=false = بازگردانی) */
+  archiveWatchedGood: (businessId: string, goodId: string, archived: boolean) =>
+    api<{ ok: boolean; archived: boolean }>("/market/archiveWatchedGood", {
+      method: "POST",
+      body: { businessId, goodId, archived },
     }),
   /** «درخواست‌های من» — استعلام‌های فرستاده‌ی خریدار + پاسخ‌های دریافتی */
   getMyInquiries: (businessId: string) =>

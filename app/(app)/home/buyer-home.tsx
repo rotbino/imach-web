@@ -12,12 +12,23 @@
  *   · پیش‌نمایش دفتر خرید — لینک دم‌دست برای دیدنِ همان چیزی که
  *     فروشنده‌ها/رهاگذرها از لینک عمومی می‌بینند (/b/{slug})
  *   · متن راهنمای جدید مالک (ساده و اقدام‌محور)
+ *
+ * فاز ۱۲ (پورت فاز ۱۱ پروتوتایپ — حکم مالک):
+ *   · کل کارت کلیک‌پذیر است (نه فقط عنوان/عکس) — می‌رود به جزئیات کالا
+ *   · فراداده به‌صورت چیپ‌های آیکون‌دار (rc-meta): دنبال‌شده / تأمین‌کننده /
+ *     ارزان‌ترین (رنگ فرعی بازو) / نیاز / به‌روزرسانی — منظم و خوانا
+ *   · رصد خاموش = چیپ کهربایی اقدام‌پذیر «روشن کن» + توستِ توضیحی
+ *     بعد از فعال‌سازی (کاربر بفهمد رصد چه می‌کند)
+ *   · کارت سرد: cold-cta (فعال‌سازی رصد + «رصد چیست؟»)
+ *   · فیلتر «آرشیو» + بازگردانی ردیف‌های آرشیوشده (رصد می‌ماند)
  */
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useActiveBusiness } from "@/lib/active-biz";
-import { useMyBusinesses, useWatchedGoods, useMyRfqs, useFollows, usePriceBoard, useWatchGood } from "@/lib/queries";
+import { useMyBusinesses, useWatchedGoods, useMyRfqs, useFollows, usePriceBoard, useWatchGood, useArchiveWatchedGood } from "@/lib/queries";
+import { useToast } from "@/hooks/use-toast";
 import type { WatchedRowDto } from "@/lib/api";
 import { fa, fmtMoney, frequencyLabel, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
@@ -29,6 +40,7 @@ import { Sheet } from "@/components/imach/sheet";
 import { Spinner } from "@/components/imach/spinner";
 import { useMoney } from "@/components/imach/currency-context";
 import { ShareSheet } from "@/components/imach/share-sheet";
+import { WatchInfoSheet } from "@/components/imach/watch-info-sheet";
 import { useSheetParam } from "@/components/imach/demo-sheet-param";
 
 /** نگاشت دستهٔ کالا → آیکون هنری Prototype (فاقد نقش هنری → آیکون جعبه) */
@@ -51,15 +63,18 @@ function toAsciiDigits(s: string): string {
     .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
 }
 
-type FilterKey = "all" | "fresh" | "watched";
+type FilterKey = "all" | "fresh" | "watched" | "archived";
 
 export function BuyerHome() {
   const m = useMessages();
   const t = m.app.home;
   const { locale } = useLocale();
+  const { toast } = useToast();
+  const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
   const [shareContacts, setShareContacts] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [watchInfoOpen, setWatchInfoOpen] = useState(false);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [search, setSearch] = useState("");
   // فاز ۸ — قیمت‌ها در ارز نمایش کاربر (نرخ تقریبی؛ معامله در ارز فروشنده)
@@ -69,12 +84,17 @@ export function BuyerHome() {
   const bizId = biz?.id ?? null;
 
   const watched = useWatchedGoods(bizId);
+  // فاز ۱۲ — ردیف‌های آرشیوشده (رصد می‌ماند؛ فقط از لیست روزمره کنار رفته)
+  const archivedQ = useWatchedGoods(bizId, { archived: true });
   const rfqs = useMyRfqs(bizId);
   const follows = useFollows(bizId);
   const board = usePriceBoard(bizId);
   const watchMut = useWatchGood();
+  const archiveMut = useArchiveWatchedGood();
 
   const rows = useMemo(() => watched.data ?? [], [watched.data]);
+  const archivedRows = useMemo(() => archivedQ.data ?? [], [archivedQ.data]);
+  const archivedCount = archivedRows.length;
   const freshCount = useMemo(() => rows.filter((r) => r.priceChanged).length, [rows]);
   const watchedCount = useMemo(() => rows.filter((r) => r.watched).length, [rows]);
   const offersCount = rfqs.data?.recentOfferCount ?? 0;
@@ -83,7 +103,8 @@ export function BuyerHome() {
   /** فیلتر + جستجو — الهام redesign-base: چیپ‌های شمار‌دار + سرچ درون‌لیستی */
   const visibleRows = useMemo(() => {
     const needle = toAsciiDigits(search).trim().toLocaleLowerCase();
-    return rows.filter((r) => {
+    const source = filter === "archived" ? archivedRows : rows;
+    return source.filter((r) => {
       if (filter === "fresh" && !r.priceChanged) return false;
       if (filter === "watched" && !r.watched) return false;
       if (needle) {
@@ -92,7 +113,14 @@ export function BuyerHome() {
       }
       return true;
     });
-  }, [rows, filter, search, locale]);
+  }, [rows, archivedRows, filter, search, locale]);
+
+  /** فاز ۱۲ — شمارِ دنبال‌شده‌های هر کالا (خوراک getPriceBoard) */
+  const followedCountByGood = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const row of board.data?.rows ?? []) map.set(row.goodId, row.suppliers.length);
+    return map;
+  }, [board.data]);
 
   /** فاز ۶ — ردیف‌های «فروشندهٔ ویژه»: پروموهای تزریق‌شدهٔ تابلو (U05/U06). */
   const promoRows = useMemo(
@@ -128,8 +156,48 @@ export function BuyerHome() {
   // فاز ۹ — ناوبری Demo Hub: ?sheet=share | ?sheet=contacts
   useSheetParam("share", () => { setShareContacts(false); setShareOpen(true); });
   useSheetParam("contacts", () => { setShareContacts(true); setShareOpen(true); });
-  // فاز ۱۰ — ناوبری Demo Hub: ?sheet=what-is
+  // فاز ۱۰ — ناوبری Demo Hub: ?sheet=what-is | فاز ۱۲: ?sheet=watch-info
   useSheetParam("what-is", () => setInfoOpen(true));
+  useSheetParam("watch-info", () => setWatchInfoOpen(true));
+
+  // ── فاز ۱۲ — رصد از خود دفتر: بدون تامین‌کنندهٔ مبدأ؛ توستِ توضیحی ──
+  const nameOf = (row: WatchedRowDto): string => (row.good ? goodName(row.good, locale) : "—");
+  const watchOn = (row: WatchedRowDto) => {
+    if (!bizId || watchMut.isPending) return;
+    watchMut.mutate(
+      { businessId: bizId, goodId: row.goodId },
+      {
+        onSuccess: () =>
+          toast({
+            title: t.watchOnToastN.replace("{name}", nameOf(row)),
+            description: t.watchOnToastDesc,
+          }),
+      }
+    );
+  };
+  const watchCold = (row: WatchedRowDto) => {
+    if (!bizId || watchMut.isPending) return;
+    watchMut.mutate(
+      { businessId: bizId, goodId: row.goodId },
+      {
+        onSuccess: () =>
+          toast({
+            title: t.watchColdToastN.replace("{name}", nameOf(row)),
+            description: t.watchOnToastDesc,
+          }),
+      }
+    );
+  };
+  const unarchive = (row: WatchedRowDto) => {
+    if (!bizId || archiveMut.isPending) return;
+    archiveMut.mutate(
+      { businessId: bizId, goodId: row.goodId, archived: false },
+      {
+        onSuccess: () =>
+          toast({ title: t.unarchivedToastN.replace("{name}", nameOf(row)) }),
+      }
+    );
+  };
 
   // ── حالت‌ها: بارگذاری / بدون کسب‌وکار / خالی / داده ──
   const businessesLoading = businesses.isLoading;
@@ -222,7 +290,7 @@ export function BuyerHome() {
           </Link>
         </div>
 
-        {/* چیپ‌های فیلتر — شمار‌دار */}
+        {/* چیپ‌های فیلتر — شمار‌دار + آرشیو (فاز ۱۲) */}
         <div className="filter-chips">
           <button
             type="button"
@@ -245,6 +313,15 @@ export function BuyerHome() {
           >
             {t.chipWatched} <i>{fa(watchedCount)}</i>
           </button>
+          {archivedCount > 0 ? (
+            <button
+              type="button"
+              className={filter === "archived" ? "fchip on" : "fchip"}
+              onClick={() => setFilter("archived")}
+            >
+              {t.chipArchive} <i>{fa(archivedCount)}</i>
+            </button>
+          ) : null}
         </div>
 
         {/* ── نوار اشتراک + پیش‌نمایش (فاز ۱۰) ── */}
@@ -295,7 +372,7 @@ export function BuyerHome() {
           </Link>
         </div>
 
-        {rows.length === 0 ? (
+        {rows.length === 0 && archivedCount === 0 ? (
           <div className="empty-state">
             <span className="art" style={{ background: "var(--teal-tint)", color: "var(--teal-strong)" }}>
               <Icon name="i-basket" />
@@ -307,59 +384,69 @@ export function BuyerHome() {
             </Link>
           </div>
         ) : visibleRows.length === 0 ? (
-          <div className="empty-state" style={{ padding: "26px 14px" }}>
-            <span className="art" style={{ background: "var(--muted-bg)", color: "var(--fg-soft)", width: 44, height: 44 }}>
-              <Icon name="i-search" />
-            </span>
-            <h3 style={{ fontSize: 13 }}>{t.searchNoResult}</h3>
-          </div>
+          rows.length === 0 && archivedCount > 0 ? (
+            // همهٔ ردیف‌ها آرشیو‌اند — راهنمای بازگردانی
+            <div className="empty-state" style={{ padding: "26px 14px" }}>
+              <span className="art" style={{ background: "var(--muted-bg)", color: "var(--fg-soft)", width: 44, height: 44 }}>
+                <Icon name="i-inbox" />
+              </span>
+              <h3 style={{ fontSize: 13 }}>{t.allArchived}</h3>
+            </div>
+          ) : filter === "archived" ? (
+            <div className="empty-state" style={{ padding: "26px 14px" }}>
+              <span className="art" style={{ background: "var(--muted-bg)", color: "var(--fg-soft)", width: 44, height: 44 }}>
+                <Icon name="i-inbox" />
+              </span>
+              <h3 style={{ fontSize: 13 }}>{t.archivedEmpty}</h3>
+            </div>
+          ) : (
+            <div className="empty-state" style={{ padding: "26px 14px" }}>
+              <span className="art" style={{ background: "var(--muted-bg)", color: "var(--fg-soft)", width: 44, height: 44 }}>
+                <Icon name="i-search" />
+              </span>
+              <h3 style={{ fontSize: 13 }}>{t.searchNoResult}</h3>
+            </div>
+          )
         ) : (
           <div className="g2">
             {visibleRows.map((row) => {
-              const name = row.good ? goodName(row.good, locale) : "—";
+              const name = nameOf(row);
+              const isArchived = filter === "archived";
               const isCold = row.supplierCount === 0;
               const cheapest = row.cheapest;
               const rel = relTime(lastUpdateByGood.get(row.goodId));
-              const needParts = row.volume
-                ? t.needLine
-                    .replace("{vol}", fa(row.volume))
-                    .replace("{unit}", row.good ? unitLabel(row.good.unit, locale) : "")
-                    .replace("{freq}", row.frequency ? frequencyLabel(row.frequency, locale) : "")
-                : null;
-
-              const subParts: Array<string | { b: string }> = [];
-              if (cheapest) {
-                subParts.push("ارزان‌ترین: ", { b: cheapest.seller.name });
-                if (row.supplierCount > 0) {
-                  subParts.push(
-                    ` · ${t.inBoardN.replace("{n}", fa(row.supplierCount))}`
-                  );
-                }
-                if (rel) subParts.push(` · ${t.lastUpdate}: ${rel}`);
-              } else if (needParts) {
-                // ردیف سرد با نیاز ثبت‌شده: نیاز + وضعیت رصد
-                subParts.push(needParts, ` · ${t.coldWatched}`);
-              } else {
-                subParts.push(t.coldWatched);
-              }
-
+              const followedCount = followedCountByGood.get(row.goodId) ?? 0;
               const pct = row.trendPct;
 
+              // فاز ۱۲ — کل کارت کلیک‌پذیر (پورت data-go پروتوتایپ)؛
+              // دکمه‌های درون کارت با stopPropagation مسیر خودشان را می‌روند
+              const goItem = () => router.push(`/item/${row.goodId}`);
+
               return (
-                <div className={isCold ? "row-card dashed" : "row-card"} key={`${row.goodId}-${row.buyListingId ?? "w"}`}>
-                  <Link className="thumb" href={`/item/${row.goodId}`} aria-label={name}>
+                <div
+                  className={`${isCold && !isArchived ? "row-card dashed" : "row-card"}`}
+                  key={`${row.goodId}-${row.buyListingId ?? "w"}`}
+                  role="link"
+                  tabIndex={0}
+                  aria-label={name}
+                  style={{ cursor: "pointer" }}
+                  onClick={goItem}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      goItem();
+                    }
+                  }}
+                >
+                  <span className="thumb">
                     <Icon name={artOf(row)} />
-                  </Link>
+                  </span>
                   <div className="body">
                     <div className="t">
-                      <Link href={`/item/${row.goodId}`}>{name}</Link>
-                      {row.watched ? <span className="pulse-dot" title="رصد فعال" /> : null}
+                      {name}
+                      {row.watched ? <span className="pulse-dot" title={t.watchingAria} /> : null}
                       {row.variantLabel ? <span className="badge b-stone">{row.variantLabel}</span> : null}
-                      {row.supplierCount > 0 ? (
-                        <span className="badge b-stone">
-                          <Icon name="i-users" /> {fa(row.supplierCount)} {t.suppliers}
-                        </span>
-                      ) : null}
+                      {isArchived ? <span className="badge b-stone">{t.archiveBadge}</span> : null}
                     </div>
                     {cheapest ? (
                       <div className="pl">
@@ -380,21 +467,99 @@ export function BuyerHome() {
                         )}
                       </div>
                     ) : null}
-                    <div className="s">
-                      {subParts.map((p, i) =>
-                        typeof p === "string" ? <span key={i}>{p}</span> : <b key={i}>{p.b}</b>
+                    {/* فاز ۱۲ — rc-meta: فراداده به‌صورت چیپ‌های آیکون‌دار */}
+                    <div className="rc-meta">
+                      {followedCount > 0 ? (
+                        <span className="m">
+                          <Icon name="i-bm" /> {t.followedN.replace("{n}", fa(followedCount))}
+                        </span>
+                      ) : null}
+                      {row.supplierCount > 0 ? (
+                        <span className="m">
+                          <Icon name="i-users" /> {t.inBoardN.replace("{n}", fa(row.supplierCount))}
+                        </span>
+                      ) : isArchived ? null : (
+                        <span className="m">
+                          <Icon name="i-search" /> {t.waitingFirst}
+                        </span>
                       )}
+                      {cheapest ? (
+                        <span className="m hl">
+                          <Icon name="i-tag" /> {t.cheapest} <b>{cheapest.seller.name}</b>
+                        </span>
+                      ) : null}
+                      {row.volume ? (
+                        <span className="m">
+                          <Icon name="i-basket" />{" "}
+                          {t.needChip
+                            .replace("{vol}", fa(row.volume))
+                            .replace("{unit}", row.good ? unitLabel(row.good.unit, locale) : "")
+                            .replace(
+                              "{freq}",
+                              row.frequency ? frequencyLabel(row.frequency, locale) : ""
+                            )}
+                        </span>
+                      ) : null}
+                      {rel ? (
+                        <span className="m">
+                          <Icon name="i-clock" /> {rel}
+                        </span>
+                      ) : null}
+                      {!isArchived && !row.watched && row.supplierCount > 0 && bizId ? (
+                        <button
+                          type="button"
+                          className="m warn"
+                          disabled={watchMut.isPending}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            watchOn(row);
+                          }}
+                        >
+                          <Icon name="i-eye" /> {t.watchOffChip}
+                        </button>
+                      ) : null}
                     </div>
                   </div>
-                  {isCold && !row.watched && bizId ? (
+                  {isArchived ? (
                     <button
+                      type="button"
                       className="btn btn-soft btn-sm"
-                      disabled={watchMut.isPending}
-                      onClick={() => watchMut.mutate({ businessId: bizId, goodId: row.goodId })}
+                      disabled={archiveMut.isPending}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        unarchive(row);
+                      }}
                     >
-                      {watchMut.isPending ? <Spinner size={14} /> : null}
-                      {t.watchCta}
+                      {archiveMut.isPending ? <Spinner size={14} /> : null}
+                      {t.unarchiveCta}
                     </button>
+                  ) : isCold && !row.watched && bizId ? (
+                    <div className="cold-cta">
+                      <button
+                        type="button"
+                        className="btn btn-soft btn-sm"
+                        disabled={watchMut.isPending}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          watchCold(row);
+                        }}
+                      >
+                        {watchMut.isPending ? <Spinner size={14} /> : <Icon className="ic-sm" name="i-eye" />}
+                        {t.watchCta}
+                      </button>
+                      <button
+                        type="button"
+                        className="mini-info"
+                        aria-label={t.watchInfo.title}
+                        title={t.watchInfo.title}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setWatchInfoOpen(true);
+                        }}
+                      >
+                        <Icon name="i-info" />
+                      </button>
+                    </div>
                   ) : (
                     <Icon name="i-chev" className="chev" />
                   )}
@@ -483,6 +648,9 @@ export function BuyerHome() {
           </div>
         </div>
       </Sheet>
+
+      {/* فاز ۱۲ — شیت «رصد یعنی چه؟» (mini-info کارت سرد) */}
+      <WatchInfoSheet open={watchInfoOpen} onClose={() => setWatchInfoOpen(false)} />
 
       {/* فاز ۹ — شیت اشتراک کامل: مخاطبین گوشی + اشتراک سیستمی + کپی + QR */}
       {biz.slug ? (
