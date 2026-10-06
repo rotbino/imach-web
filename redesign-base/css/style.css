@@ -84,6 +84,8 @@ body {
 /* رنگِ بازوی فعال — کل شل از این متغیر تغذیه می‌کند */
 .phone[data-arm="sell"] { --arm: var(--primary); --arm-fg: #fff; --arm-tint: var(--accent); }
 .phone[data-arm="buy"]  { --arm: var(--stone); --arm-fg: #fff; --arm-tint: var(--stone-tint); }
+/* صفحات مشترک دو دستیار (پیام‌ها/گفتگو) — در پروتوتایپ رنگِ بازوی فعلی می‌ماند؛ در نمایش مستقل = برند */
+.phone[data-arm="keep"] { --arm: var(--primary); --arm-fg: #fff; --arm-tint: var(--accent); }
 
 /* ═══════════════ هدر و سوییچ اصلی ═══════════════ */
 .appbar {
@@ -122,6 +124,7 @@ body {
   display: grid; place-items: center;
   line-height: 1;
 }
+.icon-btn svg { width: 18px; height: 18px; }
 .avatar {
   width: 36px; height: 36px;
   border-radius: 50%;
@@ -132,7 +135,28 @@ body {
   cursor: pointer;
 }
 
-/* ── سوییچ اصلی دستیارها — قلب بازطراحی ── */
+/* ── پیل سوییچ دستیارها (الگوی فاینال: داخل اپ‌بار + شیت) ── */
+.arm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 11px 8px 9px;
+  border-radius: 999px;
+  background: var(--arm-tint);
+  color: var(--stone-soft);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color .15s;
+}
+.arm-pill:hover { border-color: var(--border-strong); }
+.arm-pill svg { width: 14px; height: 14px; color: var(--arm); }
+.arm-pill .caret { width: 11px; height: 11px; color: var(--muted-fg); }
+
+/* ── سوییچ قدیمی دستیارها (بلاک حذف‌شده از صفحه‌ها؛ برای سازگاری می‌ماند) ── */
 .arm-switch {
   flex-shrink: 0;
   display: grid;
@@ -186,6 +210,7 @@ body {
 .tabbar .tabs { display: grid; }
 .tabbar[data-cols="3"] .tabs { grid-template-columns: repeat(3, 1fr); }
 .tabbar[data-cols="4"] .tabs { grid-template-columns: repeat(4, 1fr); }
+.tabbar[data-cols="5"] .tabs { grid-template-columns: repeat(5, 1fr); }
 .tab {
   display: flex;
   flex-direction: column;

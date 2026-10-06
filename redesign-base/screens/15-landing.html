@@ -28,156 +28,100 @@
 
   /* هیرو — تینت نارنجی نرم */
   .hero-land {
-    padding: 26px 4px 22px;
+    padding: 26px 4px 24px;
     background: linear-gradient(180deg, #fdeedd 0%, #fcfbf8 100%);
     margin: 0 -16px; padding-right: 20px; padding-left: 20px;
   }
-  .hero-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #fff; border: 1px solid var(--border);
-    border-radius: 999px; padding: 5px 12px;
-    font-size: 11px; font-weight: 700; color: var(--accent-fg);
-    box-shadow: var(--shadow-card);
-  }
-  .hero-pill svg { width: 13px; height: 13px; color: var(--primary); }
+  .hero-logo { display: block; height: 38px; width: auto; margin-bottom: 14px; }
   .hero-land h1 {
     font-size: 26px; font-weight: 700; line-height: 1.6;
-    margin: 12px 0 8px;
+    margin: 0 0 10px;
   }
   .hero-land h1 em { font-style: normal; color: var(--primary-strong); }
   .hero-land .sub {
     font-size: 13px; color: var(--muted-fg); line-height: 2.1;
   }
+  .hero-land .sub em { font-style: normal; color: var(--primary-strong); font-weight: 700; }
   .hero-cta { display: flex; gap: 9px; margin-top: 16px; }
   .hero-cta .btn { flex: 1; height: 48px; font-size: 15px; }
-  .hero-note {
-    display: flex; align-items: center; gap: 6px; justify-content: center;
-    margin-top: 10px; font-size: 11px; color: var(--muted-fg);
-  }
-  .hero-note svg { width: 13px; height: 13px; color: var(--green); }
 
-  /* ═══ کروسل اسکرین‌شات‌های واقعی ═══ */
+  /* ═══ تصویر محصول (نسخهٔ دسکتاپ) ═══ */
+  .land-shot {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 18px; padding: 8px;
+    box-shadow: var(--shadow-card); margin-top: 18px;
+  }
+  .land-shot img { display: block; width: 100%; border-radius: 12px; }
+
   .land-sec { margin-top: 26px; }
-  .land-sec > h2 {
-    font-size: 16.5px; font-weight: 700;
-    display: flex; align-items: center; gap: 7px;
-  }
-  .land-sec > h2 svg { width: 18px; height: 18px; color: var(--primary); }
-  .land-sec > .desc {
-    font-size: 11.5px; color: var(--muted-fg); margin: 5px 0 12px; line-height: 1.9;
-  }
-  .rail {
-    display: flex; gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    padding: 4px 2px 10px;
-    margin: 0 -16px; padding-right: 16px; padding-left: 16px;
-  }
-  .rail::-webkit-scrollbar { display: none; }
-  .shot-card {
-    flex-shrink: 0;
-    width: 192px;
-    scroll-snap-align: start;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: var(--shadow-card);
-    cursor: pointer;
-    transition: box-shadow .15s;
-  }
-  .shot-card:hover { box-shadow: var(--shadow-pop); }
-  .shot-card .img {
-    height: 330px;
-    overflow: hidden;
-    position: relative;
-  }
-  .shot-card .img img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: top;
-    display: block;
-  }
-  .shot-card .cap {
-    padding: 9px 12px 10px;
-    display: flex; align-items: center; justify-content: space-between; gap: 6px;
-  }
-  .shot-card .cap b { font-size: 11.5px; font-weight: 700; }
-  .shot-card .cap span {
-    font-size: 9px; color: #fff; background: var(--arm);
-    border-radius: 6px; padding: 2px 7px; white-space: nowrap;
-  }
-  .shot-card .cap span.buy { background: var(--stone); }
-  .rail-hint {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 10.5px; color: var(--muted-fg); margin-top: 2px;
-  }
-  .rail-hint svg { width: 13px; height: 13px; }
 
-  /* ═══ دو دستیار ═══ */
-  .arm-card {
+  /* ═══ جداکنندهٔ «آی‌مچ چیست؟» ═══ */
+  .intro-sep { display: flex; align-items: center; gap: 12px; color: var(--muted-fg); }
+  .intro-sep i { flex: 1; height: 1px; background: var(--border-strong); }
+  .intro-sep span { font-size: 12.5px; font-weight: 700; }
+
+  /* ═══ کارت معرفی + موتور تطبیق ═══ */
+  .intro-card {
     background: #fff; border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-card);
-    overflow: hidden; margin-bottom: 10px;
+    padding: 16px; margin-top: 12px; text-align: center;
   }
-  .arm-card .head {
-    display: flex; align-items: center; gap: 10px;
-    padding: 13px 14px; color: #fff;
+  .match-viz { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 13px; }
+  .mv { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; }
+  .mv svg { width: 23px; height: 23px; }
+  .mv.mv-buy { background: var(--stone-tint); color: var(--stone); }
+  .mv.mv-sell { background: var(--accent); color: var(--primary-strong); }
+  .mv-link { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .mv-link svg { width: 20px; height: 20px; color: var(--primary-strong); }
+  .mv-link small { font-size: 9.5px; font-weight: 700; color: var(--muted-fg); }
+  .intro-card h3 { font-size: 14px; font-weight: 700; line-height: 1.9; }
+  .intro-card p { font-size: 11.5px; color: var(--muted-fg); line-height: 2; margin-top: 8px; text-align: right; }
+
+  /* ═══ سه سؤال ═══ */
+  .steps3 { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .s3 {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px;
+    box-shadow: var(--shadow-card);
   }
-  .arm-card.sell .head { background: linear-gradient(135deg, #f97316, #ea580c); }
-  .arm-card.buy .head { background: linear-gradient(135deg, #44403c, #292524); }
-  .arm-card .head .ic {
+  .s3 .ico {
+    width: 36px; height: 36px; border-radius: 11px;
+    background: var(--accent); color: var(--primary-strong);
+    display: grid; place-items: center; margin-bottom: 10px;
+  }
+  .s3 .ico svg { width: 18px; height: 18px; }
+  .s3 b { font-size: 13px; font-weight: 700; display: block; line-height: 1.8; }
+  .s3 p { font-size: 11px; color: var(--muted-fg); line-height: 2; margin-top: 5px; }
+
+  /* ═══ مزایا — دو ستونِ بازوها ═══ */
+  .ben-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow-card);
+    overflow: hidden; margin-top: 12px;
+  }
+  .ben-head { display: flex; align-items: center; gap: 10px; padding: 13px 14px; color: #fff; }
+  .ben-head.buy { background: linear-gradient(135deg, #44403c, #292524); }
+  .ben-head.sell { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .ben-head .ic {
     width: 38px; height: 38px; border-radius: 11px;
     background: rgba(255,255,255,.18);
     display: grid; place-items: center; flex-shrink: 0;
   }
-  .arm-card .head .ic svg { width: 20px; height: 20px; color: #fff; }
-  .arm-card .head .tt { flex: 1; }
-  .arm-card .head .tt b { font-size: 15px; font-weight: 700; display: block; }
-  .arm-card .head .tt small { font-size: 10.5px; opacity: .85; display: block; margin-top: 2px; }
-  .arm-card ul { list-style: none; padding: 12px 14px; }
-  .arm-card li {
-    display: flex; align-items: flex-start; gap: 9px;
-    font-size: 12.5px; color: var(--stone-soft);
-    padding: 7px 0; line-height: 1.9;
+  .ben-head .ic svg { width: 20px; height: 20px; color: #fff; }
+  .ben-head b { font-size: 14.5px; font-weight: 700; }
+  .ben-list { padding: 4px 14px 10px; }
+  .ben { display: flex; gap: 11px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--border); }
+  .ben:last-child { border-bottom: 0; }
+  .ben .b-n {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+    color: #fff; margin-top: 2px;
   }
-  .arm-card li svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 4px; }
-  .arm-card.sell li svg { color: var(--primary); }
-  .arm-card.buy li svg { color: var(--stone-soft); }
-
-  /* ═══ گرید امکانات ═══ */
-  .feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .feat {
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 13px 12px;
-    box-shadow: var(--shadow-card);
-  }
-  .feat .ic {
-    width: 34px; height: 34px; border-radius: 10px;
-    background: var(--accent); color: var(--primary-strong);
-    display: grid; place-items: center; margin-bottom: 9px;
-  }
-  .feat .ic svg { width: 17px; height: 17px; }
-  .feat b { font-size: 12.5px; font-weight: 700; display: block; }
-  .feat p { font-size: 10.5px; color: var(--muted-fg); margin-top: 4px; line-height: 1.9; }
-
-  /* ═══ سه قدم ═══ */
-  .steps { display: flex; flex-direction: column; gap: 9px; }
-  .step {
-    display: flex; gap: 12px; align-items: flex-start;
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 13px 14px;
-    box-shadow: var(--shadow-card);
-  }
-  .step .num {
-    width: 30px; height: 30px; border-radius: 50%;
-    background: var(--accent); color: var(--accent-fg);
-    font-size: 14px; font-weight: 700;
-    display: grid; place-items: center; flex-shrink: 0;
-  }
-  .step b { font-size: 13px; font-weight: 700; display: block; }
-  .step p { font-size: 11.5px; color: var(--muted-fg); margin-top: 3px; line-height: 1.9; }
+  .buy-side .b-n { background: var(--stone); }
+  .sell-side .b-n { background: var(--primary); }
+  .ben .b-tx b { font-size: 13px; font-weight: 700; display: block; line-height: 1.7; }
+  .ben .b-tx span { font-size: 11px; color: var(--muted-fg); line-height: 1.95; display: block; margin-top: 3px; }
 
   /* ═══ CTA پایانی ═══ */
   .final-cta {
@@ -195,44 +139,6 @@
     margin-top: 14px; background: #fff; color: var(--primary-strong);
     width: 100%; height: 46px; font-size: 15px;
   }
-
-  /* ═══ نظرات کاربران ═══ */
-  .tst {
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px;
-    box-shadow: var(--shadow-card); margin-bottom: 10px;
-    position: relative;
-  }
-  .tst .mark {
-    position: absolute; top: 10px; left: 14px;
-    font-size: 34px; font-weight: 700; color: var(--accent); line-height: 1;
-  }
-  .tst .who { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
-  .tst .who .nm { font-size: 12.5px; font-weight: 700; display: block; }
-  .tst .who .rl { font-size: 10.5px; color: var(--muted-fg); display: block; margin-top: 2px; }
-  .tst p { font-size: 12px; color: var(--stone-soft); line-height: 2; }
-  .tst.sell { border-right: 3px solid var(--primary); }
-  .tst.buy { border-right: 3px solid var(--stone); }
-
-  /* ═══ سوالات پرتکرار ═══ */
-  .faq-item {
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-card);
-    margin-bottom: 8px; overflow: hidden;
-  }
-  .faq-item .qq {
-    display: flex; align-items: center; gap: 10px;
-    padding: 13px 14px; cursor: pointer;
-  }
-  .faq-item .qq b { flex: 1; font-size: 13px; font-weight: 700; }
-  .faq-item .qq svg { width: 16px; height: 16px; color: var(--muted-fg); flex-shrink: 0; transition: transform .2s; }
-  .faq-item.open .qq svg { transform: rotate(90deg); color: var(--primary); }
-  .faq-item .aa {
-    display: none; padding: 0 14px 13px 36px;
-    font-size: 12px; color: var(--muted-fg); line-height: 2.1;
-  }
-  .faq-item.open .aa { display: block; }
 
   /* فوتر */
   .land-foot {
@@ -262,17 +168,10 @@
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
   <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
   <symbol id="i-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.7-6.2a1.6 1.6 0 013 .3L10.5 8h3l.8-2.9a1.6 1.6 0 013-.3L19 11"/><path d="M4 11h16l-1.4 8.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/></symbol>
-  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></symbol>
   <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
   <symbol id="i-board" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M9 9v11M15 9v11"/></symbol>
-  <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.5-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.7 1.1z"/></symbol>
-  <symbol id="i-barcode" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h2M20 6V4h-2M4 18v2h2M20 18v2h-2"/><path d="M7 8v8M10 8v8M13 8v8M16.5 8v8"/></symbol>
-  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0115 0"/></symbol>
-  <symbol id="i-chevl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></symbol>
-  <symbol id="i-chevr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></symbol>
-  <symbol id="i-drag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8"/><path d="M14.5 8.5l3.5 3.5-3.5 3.5"/><path d="M9.5 8.5L6 12l3.5 3.5"/></symbol>
 </svg>
 
 <div class="stage">
@@ -289,144 +188,125 @@
 
       <!-- هیرو -->
       <section class="hero-land">
-        <span class="hero-pill"><svg><use href="#i-spark"/></svg> دستیار هوشمند اصناف ایران</span>
-        <h1>خرید و فروشِ<br>کسب‌وکارت، <em>ساده و حرفه‌ای</em></h1>
-        <p class="sub">کاتالوگ کالاهایت را بساز، از خریداران درخواست قیمت بگیر و برای خریدهایت بهترین تأمین‌کننده را پیدا کن — همه در یک اپ.</p>
+        <img class="hero-logo" src="../assets/logo3.svg" alt="iMach">
+        <h1><em>خرید عمده</em>،<br>مسألهٔ اکثر کسب‌وکارهاست</h1>
+        <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛ <em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
         <div class="hero-cta">
           <button class="btn btn-primary">ساخت حساب</button>
           <button class="btn btn-outline">ورود</button>
         </div>
-        <div class="hero-note"><svg><use href="#i-check"/></svg> ثبت‌نام فقط با شماره موبایل · کمتر از ۲ دقیقه</div>
       </section>
 
-      <!-- ═══ کروسل: از داخل ای‌مچ ═══ -->
-      <section class="land-sec" style="padding:0 16px">
-        <h2><svg><use href="#i-drag"/></svg> از داخل ای‌مچ</h2>
-        <div class="desc">صفحات واقعی اپ — با انگشت بکشید</div>
-        <div class="rail">
-          <div class="shot-card">
-            <div class="img"><img src="../png/01-sell-catalog.png" alt="کاتالوک من"></div>
-            <div class="cap"><b>کاتالوگ من</b><span>فروش</span></div>
-          </div>
-          <div class="shot-card">
-            <div class="img"><img src="../png/08-buy-list.png" alt="لیست خرید"></div>
-            <div class="cap"><b>لیست خرید</b><span class="buy">خرید</span></div>
-          </div>
-          <div class="shot-card">
-            <div class="img"><img src="../png/09-supply-board.png" alt="تابلوی تأمین"></div>
-            <div class="cap"><b>تابلوی تأمین</b><span class="buy">خرید</span></div>
-          </div>
-          <div class="shot-card">
-            <div class="img"><img src="../png/05-sell-requests.png" alt="درخواست‌های قیمت"></div>
-            <div class="cap"><b>درخواست‌های قیمت</b><span>فروش</span></div>
-          </div>
-          <div class="shot-card">
-            <div class="img"><img src="../png/11-suggestions.png" alt="پیشنهادها"></div>
-            <div class="cap"><b>پیشنهادها</b><span class="buy">خرید</span></div>
-          </div>
-          <div class="shot-card">
-            <div class="img"><img src="../png/13-catalog-public.png" alt="کاتالوگ عمومی"></div>
-            <div class="cap"><b>کاتالوگ عمومی</b><span>فروش</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ دو دستیار ═══ -->
-      <section class="land-sec" style="padding:0 16px">
-        <h2><svg><use href="#i-spark"/></svg> یک اپ، دو دستیار</h2>
-        <div class="desc">هر طرفِ کسب‌وکار، دستیارِ خودش را دارد — همیشه یک‌دست و بدون شلوغی.</div>
-
-        <div class="arm-card sell">
-          <div class="head">
-            <div class="ic"><svg><use href="#i-store"/></svg></div>
-            <div class="tt"><b>دستیار فروش</b><small>فروشندگان، پخش‌ها و تولیدکننده‌ها</small></div>
-          </div>
-          <ul>
-            <li><svg><use href="#i-check"/></svg> کاتالوگ عکس‌دار در چند دقیقه بساز</li>
-            <li><svg><use href="#i-inbox"/></svg> درخواست‌های قیمت خریداران، یک‌جا</li>
-            <li><svg><use href="#i-user"/></svg> مشتری پیدا کن، حتی بدون تماس</li>
-          </ul>
+      <!-- تصویر محصول + بخش‌های معرفی (با پدینگ کناری) -->
+      <div style="padding:0 16px">
+        <div class="land-shot">
+          <img src="../png/d3-desktop-landing.png" alt="آی‌مچ روی دسکتاپ">
         </div>
 
-        <div class="arm-card buy">
-          <div class="head">
+        <!-- ═══ آی‌مچ چیست؟ ═══ -->
+        <div class="land-sec">
+        <div class="intro-sep"><i></i><span>آی‌مچ چیست؟</span><i></i></div>
+
+        <div class="intro-card">
+          <div class="match-viz">
+            <span class="mv mv-buy"><svg><use href="#i-basket"/></svg></span>
+            <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
+            <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
+          </div>
+          <h3>آی‌مچ؛ پلتفرم تطبیق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
+          <p>ای‌مچ با موتور تطابق خودش، درخواست‌های خرید خریداران عمده رو به محصولات تامین‌کنندگان مچ می‌کنه، و با این کار یک بازار کاملاً اختصاصی خرید و فروش عمده برای شما می‌سازه که دقیقاً متناسب با کالاها و حجم خرید یا فروش شماست.</p>
+        </div>
+
+        <!-- سه سؤال -->
+        <div class="steps3">
+          <div class="s3">
+            <span class="ico"><svg><use href="#i-spark"/></svg></span>
+            <b>برای خریدهای عمده دنبال تأمین‌کننده مناسبی؟</b>
+            <p>نیاز خریدت رو ثبت کن تا آیمچ تأمین‌کننده‌هایی رو بهت پیشنهاد بده که کالای موردنیازت رو با حجم و شرایط مناسب تأمین می‌کنن. قیمت، فاصله، شرایط پرداخت و تحویل هم در پیشنهادها در نظر گرفته می‌شه.</p>
+          </div>
+          <div class="s3">
+            <span class="ico"><svg><use href="#i-board"/></svg></span>
+            <b>می‌خوای قیمت چند تأمین‌کننده رو با هم ببینی؟</b>
+            <p>کاتالوگ تأمین‌کننده‌های مختلف رو ذخیره کن و قیمت کالاهاشون رو دنبال کن. برای هر کالای عمده، قیمت و شرایط چند تأمین‌کننده رو کنار هم ببین و راحت‌تر برای خرید تصمیم بگیر.</p>
+          </div>
+          <div class="s3">
+            <span class="ico"><svg><use href="#i-user"/></svg></span>
+            <b>دنبال خریدار عمده جدیدی؟</b>
+            <p>کالاها و قیمت‌هات رو توی کاتالوگت بذار تا آیمچ اون‌ها رو به خریداران عمده‌ای که به کالاها و حجم فروش تو نیاز دارن پیشنهاد بده؛ در کنار مشتری‌هایی که خودت از قبل داری.</p>
+          </div>
+        </div>
+
+        <!-- مزایا: خریدار عمده -->
+        <div class="ben-card buy-side">
+          <div class="ben-head buy">
             <div class="ic"><svg><use href="#i-basket"/></svg></div>
-            <div class="tt"><b>دستیار خرید</b><small>مغازه‌دارها، رستوران‌ها و خریداران</small></div>
+            <b>مزایای آی‌مچ برای خریدار عمده</b>
           </div>
-          <ul>
-            <li><svg><use href="#i-check"/></svg> لیست خرید همیشه به‌روز</li>
-            <li><svg><use href="#i-board"/></svg> تابلوی تأمین: قیمت‌ها کنارِ هم</li>
-            <li><svg><use href="#i-spark"/></svg> iMatch: جورچینِ نیاز و کالا</li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- ═══ امکانات کلیدی ═══ -->
-      <section class="land-sec" style="padding:0 16px">
-        <h2><svg><use href="#i-check"/></svg> ابزارهایی که کار را جلو می‌برند</h2>
-        <div class="feat-grid">
-          <div class="feat"><div class="ic"><svg><use href="#i-spark"/></svg></div><b>موتور تطبیق iMatch</b><p>نیازت را با کالاها و فروشنده‌ها جور می‌کند</p></div>
-          <div class="feat"><div class="ic"><svg><use href="#i-board"/></svg></div><b>تابلوی تأمین</b><p>قیمت چند تأمین‌کننده را کنار هم ببین</p></div>
-          <div class="feat"><div class="ic"><svg><use href="#i-bell"/></svg></div><b>اعلان تغییر قیمت</b><p>کالای دنبال‌شده‌ات ارزان شد؟ خبرت می‌کنیم</p></div>
-          <div class="feat"><div class="ic"><svg><use href="#i-inbox"/></svg></div><b>درخواست قیمت</b><p>یک سؤال بپرس، چند جواب بگیر</p></div>
-          <div class="feat"><div class="ic"><svg><use href="#i-barcode"/></svg></div><b>اسکن بارکد</b><p>کالا را اسکن کن، سریع ثبت کن</p></div>
-          <div class="feat"><div class="ic"><svg><use href="#i-share"/></svg></div><b>کاتالوگ عمومی</b><p>لینک و QR — مشتری بدون اپ هم می‌بیند</p></div>
-        </div>
-      </section>
-
-      <!-- ═══ چطور کار می‌کند ═══ -->
-      <section class="land-sec" style="padding:0 16px">
-        <h2><svg><use href="#i-chevl"/></svg> چطور کار می‌کند؟</h2>
-        <div class="steps">
-          <div class="step"><div class="num">۱</div><div><b>ثبت‌نام کن</b><p>فقط شماره موبایل و چند سؤال ساده درباره کسب‌وکارت</p></div></div>
-          <div class="step"><div class="num">۲</div><div><b>کارت را بساز</b><p>کاتالوگ فروش یا لیست خرید — با عکس، قیمت و موجودی</p></div></div>
-          <div class="step"><div class="num">۳</div><div><b>بگذار ای‌مچ کار کند</b><p>درخواست قیمت بگیر، تابلوی تأمین و پیشنهادها را ببین</p></div></div>
-        </div>
-      </section>
-
-      <!-- ═══ نظرات کاربران ═══ -->
-      <section class="land-sec" style="padding:0 16px">
-        <h2><svg><use href="#i-user"/></svg> از زبان خودشان</h2>
-        <div class="tst sell">
-          <div class="mark">”</div>
-          <div class="who">
-            <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">ر</div>
-            <div><span class="nm">رضا اکبری</span><span class="rl">مدیر تولید · تولیدی لوازم پلاستیکی</span></div>
+          <div class="ben-list">
+            <div class="ben">
+              <span class="b-n">۱</span>
+              <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۲</span>
+              <span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۳</span>
+              <span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>قیمت یک کالا (مثلاً برنج هاشمی) را از کاتالوگ چند فروشنده دنبال کن و برای هر کالا یک «تابلوی تأمین» بساز</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۴</span>
+              <span class="b-tx"><b>مقایسهٔ قیمت زنده و کنارِ هم</b><span>با تابلوی قیمت هر کالا، قیمت زندهٔ یک کالا را از چند تأمین‌کننده، کنار هم مقایسه کن</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۵</span>
+              <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
+            </div>
           </div>
-          <p>کاتالوگ محصولاتم رو ساختم و لینکش رو فرستادم. جالب این بود که خریدارهایی که قبلاً نمی‌شناختم هم از طریق ای‌مچ سراغم اومدن.</p>
         </div>
-        <div class="tst buy">
-          <div class="mark">”</div>
-          <div class="who">
-            <div class="avatar-sm" style="background:linear-gradient(135deg,#57534e,#292524)">م</div>
-            <div><span class="nm">محمد نوری</span><span class="rl">مدیر رستوران · رستوران آراد</span></div>
-          </div>
-          <p>لیست خرید هفتگی‌مون رو ساختم و لینکش رو برای تأمین‌کننده‌هایی که می‌شناختم فرستادم. بعدش چند تأمین‌کننده دیگه هم پیشنهاد دادن که قبلاً نمی‌شناختم.</p>
-        </div>
-      </section>
 
-      <!-- ═══ سوالات پرتکرار ═══ -->
-      <section class="land-sec" style="padding:0 16px">
-        <h2><svg><use href="#i-chevl"/></svg> سوالات پرتکرار</h2>
-        <div class="faq-item open">
-          <div class="qq"><b>آی‌مچ دقیقاً چیست؟</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d='M9.5 5.5L16 12l-6.5 6.5'/></svg></div>
-          <div class="aa">بستری برای اتصال نیاز خریداران به تأمین‌کننده‌های مناسب — کاتالوگ فروش و لیست خرید، ساده‌ترین راه برای شروع کار با آی‌مچ هستند.</div>
+        <!-- مزایا: تأمین‌کنندگان و فروشندگان عمده -->
+        <div class="ben-card sell-side">
+          <div class="ben-head sell">
+            <div class="ic"><svg><use href="#i-store"/></svg></div>
+            <b>مزایای آی‌مچ برای تأمین‌کنندگان و فروشندگان عمده</b>
+          </div>
+          <div class="ben-list">
+            <div class="ben">
+              <span class="b-n">۱</span>
+              <span class="b-tx"><b>خریدارانِ دقیقاً مرتبط</b><span>محصولت را به خریدارهایی معرفی می‌کنیم که دقیقاً دنبال همان کالا هستند — اول شهر خودت، بعد استان، بعد کل کشور. از سفارش یک کارتنیِ سوپرمارکت تا حجم‌های بزرگ صادراتی</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۲</span>
+              <span class="b-tx"><b>کاتالوگ هوشمند اختصاصی</b><span>کاتالوگ اختصاصی خودت را با لینک قابل ارسال برای خریداران بساز — قیمت‌ها همیشه به‌روز</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۳</span>
+              <span class="b-tx"><b>تخفیف به اندازهٔ مشتری و حجم خرید</b><span>تخفیف همکار و قراردادی روی کل کاتالوگ، تخفیف پله‌ای بر اساس حجم خرید، و تخفیف اختصاصی برای هر کالا — فقط چند درصد ساده؛ خریدار همان قیمت نهایی را روی کاتالوگ می‌بیند</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۴</span>
+              <span class="b-tx"><b>حضور در لیست تأمین خریداران</b><span>خریدارانی که کاتالوگت را می‌گیرند، می‌توانند قیمت هر کالا را جداگانه دنبال کنند؛ این‌طور در لیست تأمین آن‌ها قرار می‌گیری و قیمتت همیشه جلوی چشمشان می‌ماند</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۵</span>
+              <span class="b-tx"><b>خریداران جدیدِ مرتبط</b><span>علاوه بر مشتریان فعلی خودت، خریداران جدیدی را پیدا کن که دقیقاً با کالاها و حجم فروشت هم‌خوانی دارند — پیشنهاد خودِ آی‌مچ</span></span>
+            </div>
+            <div class="ben">
+              <span class="b-n">۶</span>
+              <span class="b-tx"><b>ابزارهای همیشه رایگان + تبلیغ کم‌هزینه</b><span>محصولت را با کمترین هزینه تبلیغ کن — کالا را دقیقاً جلوی چشم خریدارِ همان کالا با همان حجم می‌گذاریم و فقط در صورت مشاهده یا دنبال‌کردنِ قیمت، مبلغ کمی از اعتبارت کم می‌شود</span></span>
+            </div>
+          </div>
         </div>
-        <div class="faq-item">
-          <div class="qq"><b>برای استفاده باید برنامه نصب کنم؟</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d='M9.5 5.5L16 12l-6.5 6.5'/></svg></div>
-          <div class="aa">نه. کاتالوگ‌ها و صفحه‌های خرید از طریق لینک قابل مشاهده‌اند؛ مشتری یا تأمین‌کننده بدون نصب برنامه هم می‌تواند ببیند.</div>
         </div>
-        <div class="faq-item">
-          <div class="qq"><b>آی‌مچ فقط یک ابزار ساخت کاتالوگ است؟</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d='M9.5 5.5L16 12l-6.5 6.5'/></svg></div>
-          <div class="aa">نه. کاتالوگ و لیست خرید فقط نقطه شروع هستند. هدف آی‌مچ این است که نیاز خریدار هر کالا را با اطلاعات تأمین‌کنندگان مناسب همان کالا نزدیک کند.</div>
-        </div>
-      </section>
+      </div>
 
       <!-- ═══ CTA پایانی ═══ -->
       <section style="padding:0 16px">
         <div class="final-cta">
-          <b>همین حالا شروع کن</b>
-          <p>اولین کاتالوگ یا لیست خریدت، ۵ دقیقه بعد آماده است.</p>
+          <b>همهٔ این‌ها رایگان شروع می‌شود</b>
+          <p>ثبت‌نام فقط با شمارهٔ موبایل — کمتر از ۲ دقیقه</p>
           <button class="btn">ساخت حساب</button>
         </div>
       </section>

@@ -27,15 +27,14 @@
     <header class="appbar">
       <div class="brand"><img src="../assets/logo3.svg" alt="iMach"></div>
       <div class="actions">
+        <button class="arm-pill" aria-label="تعویض دستیار">
+          <svg><use href="#i-basket"/></svg> دستیار خرید
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+        </button>
         <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
         <div class="avatar" style="background:#0e7490">ن</div>
       </div>
     </header>
-
-    <div class="arm-switch" role="tablist" aria-label="تعویض دستیار">
-      <button><svg><use href="#i-store"/></svg> دستیار فروش</button>
-      <button class="active"><svg><use href="#i-basket"/></svg> دستیار خرید</button>
-    </div>
 
     <main class="screen-body">
 
@@ -133,20 +132,24 @@
 
     </main>
 
-    <!-- ناوبری پایین دستیار خرید — ۴ آیتم -->
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab active">
           <svg><use href="#i-list"/></svg>
-          لیست خرید
+          دفتر خرید
         </button>
         <button class="tab">
           <svg><use href="#i-building"/></svg>
-          تأمین‌کنندگان
+          کاتالوگ‌ها
         </button>
         <button class="tab">
           <svg><use href="#i-sparkles"/></svg>
           پیشنهادها
+        </button>
+        <button class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>
+          پیام‌ها
+          <span class="badge">۱</span>
         </button>
         <button class="tab">
           <svg><use href="#i-user"/></svg>
