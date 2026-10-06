@@ -3,10 +3,11 @@
 /**
  * IntlPhoneField — ورودی موبایل بین‌المللی به سبک تلگرام (فاز ۱۰ · بازخورد مالک).
  *
- * خواستهٔ مالک:
- *   · باکس شماره همیشه LTR باشد — حتی در زبان‌های راست‌چین
- *   · پرچم + کد کشور در ابتدای باکس؛ انتخاب کشور از همین‌جا (بدون لینک جدا)
- *   · انتخاب کشور با مدال جست‌جدار باز شود؛ پرچم هر کشور نمایش داده شود
+ * فاز ۱۳ (بازخورد مالک — پرچم روی ویندوز دیده نمی‌شد):
+ *   · پرچم‌های ایموجی → SVG واقعی (/flags/*.svg از flag-icons) — در همهٔ
+ *     سیستم‌عامل‌ها (ویندوز هم) یکسان و زیبا رندر می‌شود و تراز کد/پرچم حفظ می‌شود.
+ *   · شیت کشور ارتفاع صریح گرفت (height نه فقط max-height) تا در هیچ
+ *     محیطی «جمع‌شده» و بی‌ارتفاع نشود.
  *
  * ساختار: یک ردیفِ LTR — دکمهٔ [پرچم +۹۸ ▾] + اینپوت شمارهٔ ملی.
  * مدال کشور: شیت v18 با سرچ (نام/کد/شماره) و ردیف‌های پرچم‌دار.
@@ -20,10 +21,21 @@ import { Sheet } from "@/components/imach/sheet";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { fa } from "@/lib/format";
 
-/** پرچم کشوری از کد ISO — نشان‌های منطقه‌ای یونیکد (🇮🇷 و…) */
-export function flagOf(code: string): string {
-  if (!/^[A-Z]{2}$/.test(code)) return "🏳";
-  return String.fromCodePoint(...[...code].map((c) => 127397 + c.charCodeAt(0)));
+/** پرچم SVG واقعی — ایموجی روی ویندوز رندر نمی‌شود (فاز ۱۳) */
+export function Flag({ code, w = 22 }: { code: string; w?: number }) {
+  const h = Math.round((w * 3) / 4);
+  if (!/^[A-Za-z]{2}$/.test(code)) return null;
+  return (
+     
+    <img
+      className="flag-img"
+      src={`/flags/${code.toLowerCase()}.svg`}
+      alt=""
+      width={w}
+      height={h}
+      draggable={false}
+    />
+  );
 }
 
 /** نرمال‌سازی ارقام فارسی/عربی → لاتین (§۲۱ فرم‌های production-grade) */
@@ -76,9 +88,7 @@ export function IntlPhoneField({
           disabled={!onCountryChange}
           title={current?.name ?? country}
         >
-          <span className="flag" aria-hidden>
-            {flagOf(country)}
-          </span>
+          <Flag code={country} w={22} />
           <b>+{dial}</b>
           {onCountryChange ? <Icon className="ic-sm ic-10 caret" name="i-chev" /> : null}
         </button>
@@ -176,9 +186,7 @@ function CountryPickerSheet({
               aria-selected={c.code === current}
               onClick={() => onPick(c.code)}
             >
-              <span className="flag" aria-hidden>
-                {flagOf(c.code)}
-              </span>
+              <Flag code={c.code} w={24} />
               <span className="nm">{c.name}</span>
               <span className="dc" dir="ltr">
                 +{c.dial}

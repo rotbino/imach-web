@@ -141,6 +141,8 @@ export interface BusinessSummaryDto {
   country?: string;
   currency?: string;
   isVerified: boolean;
+  /** فاز ۱۳ — معرفی کوتاه خود نوشته (زیر نام در ویترین عمومی) */
+  bio?: string | null;
   /** فاز ۳ — دسته‌های شخصی ویترین (چیپ‌های بالای کاتالوگ) */
   customCategories?: CatalogCategoryDto[] | null;
   /** لوکیشن دقیق اختیاری — فقط مبنای تطابق؛ علنی نمی‌شود */
@@ -404,6 +406,8 @@ export interface BusinessProfileDto {
   currency?: string;
   isVerified: boolean;
   isDemo: boolean;
+  /** فاز ۱۳ — معرفی کوتاه فروشنده (زیر نامش در ویترین عمومی) */
+  bio?: string | null;
   /** طرح ۸ (U61) — شمار ذخیره‌کنندگان کاتالوگ (عمومی و بی‌خطر) */
   saverCount?: number;
   /** صاحب کاتالوگ — ویترین اعتماد: در عمده‌فروشی طرف می‌خواهد بداند با چه کسی طرف است */
@@ -1160,6 +1164,8 @@ export const businessesApi = {
     phone?: string | null;
     hours?: string | null;
     defaultPayTerm?: string | null;
+    /** فاز ۱۳ — معرفی کوتاه فروشنده؛ null = پاک کردن */
+    bio?: string | null;
   }) => api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
   /** فاز ۳ (طرح ۰۱) — دسته‌های شخصی کاتالوگ: کل لیست یکجا replace می‌شود

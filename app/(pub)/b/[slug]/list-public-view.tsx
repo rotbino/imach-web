@@ -129,6 +129,7 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
   };
 
   const ownerName = [biz.owner?.firstName, biz.owner?.lastName].filter(Boolean).join(" ") || biz.owner?.name;
+  const avatarSrc = biz.owner?.avatar?.thumbUrl || biz.owner?.avatar?.url || biz.logo?.thumbUrl || biz.logo?.url || null;
 
   return (
     <section className="screen" data-screen="list-public">
@@ -143,18 +144,19 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
       </div>
 
       <div className="screen-body">
-        {/* ── هویت خریدار (فاز ۱۰ — غنی‌شده) ── */}
+        {/* ── هویت خریدار (فاز ۱۰ — غنی‌شده؛ فاز ۱۳: عکس و معرفی صاحب دفتر) ── */}
         <div className="card" style={{ display: "flex", alignItems: "center", gap: 13 }}>
-          {biz.logo?.thumbUrl || biz.logo?.url ? (
+          {avatarSrc ? (
+             
             <img
-              src={(biz.logo.thumbUrl ?? biz.logo.url) as string}
+              src={avatarSrc as string}
               alt={biz.name}
-              style={{ width: 52, height: 52, borderRadius: 17, objectFit: "cover", flexShrink: 0 }}
+              style={{ width: 56, height: 56, borderRadius: 18, objectFit: "cover", flexShrink: 0 }}
             />
           ) : (
             <div
               className="avatar"
-              style={{ width: 52, height: 52, borderRadius: 17, fontSize: 19, background: "var(--teal-strong)", flexShrink: 0 }}
+              style={{ width: 56, height: 56, borderRadius: 18, fontSize: 21, background: "var(--teal-strong)", flexShrink: 0 }}
             >
               {biz.name.charAt(0)}
             </div>
@@ -164,13 +166,18 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
               {biz.name}
               {biz.isVerified ? <Icon className="ic-sm" name="i-shield" style={{ color: "var(--teal-strong)" }} /> : null}
             </div>
+            {ownerName || biz.bio ? (
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: "var(--fg-soft)", marginTop: 4, lineHeight: 1.9 }}>
+                {ownerName}
+                {biz.bio ? <span style={{ color: "var(--teal-strong)" }}>{ownerName ? ` — ${biz.bio}` : biz.bio}</span> : null}
+              </div>
+            ) : null}
             <div style={{ fontSize: 10.5, color: "var(--muted)", marginTop: 4, lineHeight: 1.8 }}>
               {t.buyerRole
                 .replace("{trade}", biz.trade ?? biz.activityType ?? "")
                 .replace("{city}", biz.city)}
               {" · "}
               {t.nGoods.replace("{n}", fa(buyListings.length))}
-              {ownerName ? ` · ${t.ownerLine.replace("{name}", ownerName)}` : ""}
             </div>
           </div>
         </div>

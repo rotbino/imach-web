@@ -122,18 +122,16 @@
           </div>
           <div class="onboard">
             <div class="blobs"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+            <div class="hero-grid">
             <div class="mid">
               <img class="logo-h" src="assets/logo3.svg" alt="iMatch">
               <div class="tagline">جلوی چشم خریدارت باش</div>
               <div class="hero-desc">
                 <b>خرید عمده و تامین، مسألهٔ تقریباً تمام کسب‌وکارهاست</b>
-                <span>از مغازه‌های کوچک تا کارخانه‌های بزرگ</span>
-                <span>از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی</span>
-                <em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند</em>
+                <p>از مغازه‌های کوچک تا کارخانه‌های بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛ <em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
               </div>
               <div class="q">شما در بازار عمده چه نقشی دارید؟</div>
-            </div>
-            <div class="choice-grid">
+              <div class="choice-grid">
             <button class="choice-card buy" onclick="choose('buy')">
               <span class="ico"><svg><use href="#i-basket"/></svg></span>
               <span class="tx"><b>خریدار عمده هستم</b><span>لیست خریدت رو بساز و با تامین‌کنندگان به اشتراک بذار</span></span>
@@ -147,6 +145,15 @@
             </div>
             <div class="footnote">اگر هر دو نقش را دارید نگران نباشید؛ بعد از ثبت‌نام می‌توانید بین <b>دستیار خرید</b> و <b>دستیار فروش</b> جابه‌جا شوید.</div>
             <div class="login-link">قبلاً حساب ساخته‌اید؟ <u onclick="go('sc-login')" style="cursor:pointer">وارد شوید</u> · <u onclick="go('sc-signup')" style="cursor:pointer">ساخت حساب</u></div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+              <i class="hv-glow"></i>
+              <div class="hv-phone back"><img src="assets/shots/buy-list.png" alt=""></div>
+              <div class="hv-phone front"><img src="assets/shots/sell-catalog.png" alt=""></div>
+              <span class="hv-chip c1"><svg><use href="#i-tag"/></svg> تابلوی قیمت هر کالا</span>
+              <span class="hv-chip c2"><svg><use href="#i-users"/></svg> تأمین‌کننده‌های دقیق</span>
+            </div>
+            </div>
 
             <!-- ═══ v10: معرفی آی‌مچ — چیست و چه فایده‌ای دارد (زیر ثبت‌نام) ═══ -->
             <div class="intro-wrap">
@@ -244,7 +251,11 @@
               </div>
             </div>
 
-            <div class="ben-foot">همهٔ این‌ها رایگان شروع می‌شود — <b>ثبت‌نام فقط با شمارهٔ موبایل</b><br>گزینهٔ بالا را انتخاب کنید تا همین حالا وارد شوید<br><a href="help.html" style="display:inline-block;margin-top:8px;color:var(--arm-tint-fg);font-weight:700;text-decoration:none;border-bottom:1px dashed currentColor">راهنمای کامل آی‌مچ را بخوانید →</a></div>
+            <div class="final-cta">
+              <b>همهٔ این‌ها رایگان شروع می‌شود — ثبت‌نام فقط با شمارهٔ موبایل</b>
+              <p>گزینهٔ بالا را انتخاب کنید تا همین حالا وارد شوید</p>
+              <a href="help.html">راهنمای کامل آی‌مچ را بخوانید</a>
+            </div>
             </div>
           </div>
         </section>
@@ -2294,7 +2305,7 @@
                   <!-- فاز ۱۰ — باکس بین‌المللی تلگرامی: پرچم + کد کشور داخل باکس، همیشه LTR -->
                   <div class="intl-phone">
                     <button class="cc" type="button" onclick="openCountrySheet()">
-                      <span class="flag">🇮🇷</span><b>+98</b>
+                      <img class="flag" src="assets/flags/ir.svg" alt=""><b>+98</b>
                       <svg class="ic-sm ic-10 caret"><use href="#i-chev"/></svg>
                     </button>
                     <input id="suPhone" class="num" inputmode="tel" placeholder="۹۱۲ ۳۴۵ ۶۷۸۹" oninput="suPhoneCheck()">
@@ -2391,7 +2402,7 @@
                 <!-- فاز ۱۰ — باکس بین‌المللی تلگرامی -->
                 <div class="intl-phone">
                   <button class="cc" type="button" onclick="openCountrySheet()">
-                    <span class="flag">🇮🇷</span><b>+98</b>
+                    <img class="flag" src="assets/flags/ir.svg" alt=""><b>+98</b>
                     <svg class="ic-sm ic-10 caret"><use href="#i-chev"/></svg>
                   </button>
                   <input class="num" inputmode="tel" value="۹۱۲ ۳۴۵ ۶۷۸۹">
@@ -2610,9 +2621,11 @@
           </div>
           <div class="screen-body">
             <div class="card" style="display:flex;align-items:center;gap:13px">
-              <div class="avatar" style="width:52px;height:52px;border-radius:17px;font-size:19px">ک</div>
+              <!-- فاز ۱۳ — اسم و تصویر صاحب کاتالوگ + معرفی خودنوشتهٔ او -->
+              <div class="avatar" style="width:56px;height:56px;border-radius:18px;font-size:21px;background:linear-gradient(135deg,#c2703a,#ea580c);color:#fff">ع</div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:6px">برنج هاشمی کارون <svg class="ic-sm" style="color:var(--teal-strong)"><use href="#i-shield"/></svg></div>
+                <div style="font-size:12.5px;font-weight:700;color:var(--fg-soft);margin-top:4px">علی امینی — <span style="color:var(--primary-strong)">فروشندهٔ انواع برنج هاشمی و طارم</span></div>
                 <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.8">تأمین‌کنندهٔ برنج · همدان · ۱۲ کالا<br>آخرین به‌روزرسانی: ۲ ساعت پیش</div>
               </div>
               <span style="font-size:11px;color:var(--emerald);background:var(--emerald-tint);border-radius:8px;padding:4px 8px;font-weight:700">۹۸٪ پاسخگویی</span>
@@ -3700,14 +3713,31 @@
     <input class="inp" placeholder="جستجوی کشور…" oninput="countryFilter(this.value)">
   </div>
   <div class="cs-list">
-    <button class="cs-row on" type="button" onclick="pickCountry(this,'IR','98','ایران')"><span class="flag">🇮🇷</span><span class="nm">ایران</span><span class="dc">+98</span><svg class="ic-sm ic-14"><use href="#i-check"/></svg></button>
-    <button class="cs-row" type="button" onclick="pickCountry(this,'IQ','964','العراق')"><span class="flag">🇮🇶</span><span class="nm">العراق</span><span class="dc">+964</span></button>
-    <button class="cs-row" type="button" onclick="pickCountry(this,'AE','971','الإمارات')"><span class="flag">🇦🇪</span><span class="nm">الإمارات</span><span class="dc">+971</span></button>
-    <button class="cs-row" type="button" onclick="pickCountry(this,'TR','90','Türkiye')"><span class="flag">🇹🇷</span><span class="nm">Türkiye</span><span class="dc">+90</span></button>
-    <button class="cs-row" type="button" onclick="pickCountry(this,'CN','86','China')"><span class="flag">🇨🇳</span><span class="nm">China</span><span class="dc">+86</span></button>
-    <button class="cs-row" type="button" onclick="pickCountry(this,'DE','49','Germany')"><span class="flag">🇩🇪</span><span class="nm">Germany</span><span class="dc">+49</span></button>
-    <button class="cs-row" type="button" onclick="pickCountry(this,'GB','44','United Kingdom')"><span class="flag">🇬🇧</span><span class="nm">United Kingdom</span><span class="dc">+44</span></button>
-    <button class="cs-row" type="button" onclick="pickCountry(this,'US','1','United States')"><span class="flag">🇺🇸</span><span class="nm">United States</span><span class="dc">+1</span></button>
+    <button class="cs-row on" type="button" onclick="pickCountry(this,'IR','98','ایران')"><img class="flag" src="assets/flags/ir.svg" alt=""><span class="nm">ایران</span><span class="dc">+98</span><svg class="ic-sm ic-14"><use href="#i-check"/></svg></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'AF','93','Afghanistan')"><img class="flag" src="assets/flags/af.svg" alt=""><span class="nm">Afghanistan</span><span class="dc">+93</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'PK','92','Pakistan')"><img class="flag" src="assets/flags/pk.svg" alt=""><span class="nm">Pakistan</span><span class="dc">+92</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'TM','993','Turkmenistan')"><img class="flag" src="assets/flags/tm.svg" alt=""><span class="nm">Turkmenistan</span><span class="dc">+993</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'AZ','994','Azerbaijan')"><img class="flag" src="assets/flags/az.svg" alt=""><span class="nm">Azerbaijan</span><span class="dc">+994</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'AM','374','Armenia')"><img class="flag" src="assets/flags/am.svg" alt=""><span class="nm">Armenia</span><span class="dc">+374</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'TR','90','Türkiye')"><img class="flag" src="assets/flags/tr.svg" alt=""><span class="nm">Türkiye</span><span class="dc">+90</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'IQ','964','العراق')"><img class="flag" src="assets/flags/iq.svg" alt=""><span class="nm">العراق</span><span class="dc">+964</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'SY','963','سوريا')"><img class="flag" src="assets/flags/sy.svg" alt=""><span class="nm">سوريا</span><span class="dc">+963</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'LB','961','لبنان')"><img class="flag" src="assets/flags/lb.svg" alt=""><span class="nm">لبنان</span><span class="dc">+961</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'JO','962','الأردن')"><img class="flag" src="assets/flags/jo.svg" alt=""><span class="nm">الأردن</span><span class="dc">+962</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'AE','971','الإمارات')"><img class="flag" src="assets/flags/ae.svg" alt=""><span class="nm">الإمارات</span><span class="dc">+971</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'SA','966','السعودية')"><img class="flag" src="assets/flags/sa.svg" alt=""><span class="nm">السعودية</span><span class="dc">+966</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'QA','974','قطر')"><img class="flag" src="assets/flags/qa.svg" alt=""><span class="nm">قطر</span><span class="dc">+974</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'KW','965','الكويت')"><img class="flag" src="assets/flags/kw.svg" alt=""><span class="nm">الكويت</span><span class="dc">+965</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'BH','973','البحرين')"><img class="flag" src="assets/flags/bh.svg" alt=""><span class="nm">البحرين</span><span class="dc">+973</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'OM','968','عُمان')"><img class="flag" src="assets/flags/om.svg" alt=""><span class="nm">عُمان</span><span class="dc">+968</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'YE','967','اليمن')"><img class="flag" src="assets/flags/ye.svg" alt=""><span class="nm">اليمن</span><span class="dc">+967</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'EG','20','مصر')"><img class="flag" src="assets/flags/eg.svg" alt=""><span class="nm">مصر</span><span class="dc">+20</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'CN','86','China')"><img class="flag" src="assets/flags/cn.svg" alt=""><span class="nm">China</span><span class="dc">+86</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'IN','91','India')"><img class="flag" src="assets/flags/in.svg" alt=""><span class="nm">India</span><span class="dc">+91</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'RU','7','Russia')"><img class="flag" src="assets/flags/ru.svg" alt=""><span class="nm">Russia</span><span class="dc">+7</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'DE','49','Germany')"><img class="flag" src="assets/flags/de.svg" alt=""><span class="nm">Germany</span><span class="dc">+49</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'GB','44','United Kingdom')"><img class="flag" src="assets/flags/gb.svg" alt=""><span class="nm">United Kingdom</span><span class="dc">+44</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'US','1','United States')"><img class="flag" src="assets/flags/us.svg" alt=""><span class="nm">United States</span><span class="dc">+1</span></button>
   </div>
 </div>
 
@@ -4721,9 +4751,10 @@ function pickCountry(btn, code, dial, name) {
   document.querySelectorAll('#sheet-country .cs-row').forEach(r => r.classList.remove('on'));
   btn.classList.add('on');
   /* پرچم + کد روی هر دو فون (ثبت‌نام/ورود) */
-  const flag = btn.querySelector('.flag')?.textContent || '';
+  const flagSrc = btn.querySelector('.flag')?.getAttribute('src') || 'assets/flags/ir.svg';
   document.querySelectorAll('.intl-phone .cc').forEach(cc => {
-    cc.querySelector('.flag').textContent = flag;
+    const f = cc.querySelector('.flag');
+    if (f && f.tagName === 'IMG') f.src = flagSrc; else if (f) f.textContent = '';
     cc.querySelector('b').textContent = '+' + dial;
   });
   closeSheets();

@@ -20,7 +20,7 @@ import type { BusinessProfileDto, GoodItemDto } from "@/lib/api";
 import { businessesApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { useFollows, useStartThread } from "@/lib/queries";
-import { fa, fmtMoney, goodName, unitLabel } from "@/lib/format";
+import { activityTypeLabel, fa, fmtMoney, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon } from "@/components/imach/icon";
@@ -129,6 +129,8 @@ export function CatalogPublicView({ biz }: { biz: BusinessProfileDto }) {
     return times.length ? times[times.length - 1] : null;
   }, [biz.listings]);
 
+  const ownerName = [biz.owner?.firstName, biz.owner?.lastName].filter(Boolean).join(" ") || biz.owner?.name || "";
+
   const relTime = (iso?: string | null): string => {
     if (!iso) return "—";
     const hours = (Date.now() - new Date(iso).getTime()) / 3_600_000;
@@ -151,17 +153,29 @@ export function CatalogPublicView({ biz }: { biz: BusinessProfileDto }) {
       </div>
 
       <div className="screen-body">
-        {/* کارت کسب‌وکار — ویترین اعتماد */}
+        {/* کارت هویت — فاز ۱۳: اسم و تصویر صاحب کاتالوگ + معرفی خودنوشتهٔ او.
+            در عمده‌فروشی خریدار می‌خواهد بداند دقیقاً با چه کسی طرف است. */}
         <div className="card" style={{ display: "flex", alignItems: "center", gap: 13 }}>
           <div
             className="avatar"
-            style={{ width: 52, height: 52, borderRadius: 17, fontSize: 19, flexShrink: 0 }}
+            style={{ width: 56, height: 56, borderRadius: 18, fontSize: 21, flexShrink: 0, background: "linear-gradient(135deg, #c2703a, #ea580c)" }}
           >
-            {biz.logo?.thumbUrl ? (
+            {biz.owner?.avatar?.thumbUrl || biz.owner?.avatar?.url ? (
                
-              <img src={biz.logo.thumbUrl} alt={biz.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
+              <img
+                src={(biz.owner?.avatar?.thumbUrl ?? biz.owner?.avatar?.url) as string}
+                alt={ownerName}
+                style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }}
+              />
+            ) : biz.logo?.thumbUrl || biz.logo?.url ? (
+               
+              <img
+                src={(biz.logo?.thumbUrl ?? biz.logo?.url) as string}
+                alt={biz.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }}
+              />
             ) : (
-              biz.name.charAt(0)
+              (ownerName || biz.name).charAt(0)
             )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -169,8 +183,14 @@ export function CatalogPublicView({ biz }: { biz: BusinessProfileDto }) {
               {biz.name}
               {biz.isVerified ? <Icon className="ic-sm" name="i-shield" style={{ color: "var(--teal-strong)" }} /> : null}
             </div>
+            {ownerName || biz.bio ? (
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: "var(--fg-soft)", marginTop: 4, lineHeight: 1.9 }}>
+                {ownerName}
+                {biz.bio ? <span style={{ color: "var(--primary-strong)" }}>{ownerName ? ` — ${biz.bio}` : biz.bio}</span> : null}
+              </div>
+            ) : null}
             <div style={{ fontSize: 10.5, color: "var(--muted)", marginTop: 4, lineHeight: 1.8 }}>
-              {biz.activityType ? t.supplierN.replace("{trade}", biz.activityType) : t.supplierOnly} · {biz.city} · {t.nGoods.replace("{n}", fa(sellListings.length))}
+              {biz.activityType ? t.supplierN.replace("{trade}", activityTypeLabel(biz.activityType, locale) || biz.activityType) : t.supplierOnly} · {biz.city} · {t.nGoods.replace("{n}", fa(sellListings.length))}
               <br />
               {t.lastUpdate.replace("{rel}", relTime(latestUpdate))}
             </div>

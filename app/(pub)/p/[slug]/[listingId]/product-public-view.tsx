@@ -20,7 +20,7 @@ import type { BusinessProfileDto, GoodItemDto } from "@/lib/api";
 import { businessesApi, marketApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { useStartThread } from "@/lib/queries";
-import { fmtMoney, goodName, unitLabel } from "@/lib/format";
+import { activityTypeLabel, fmtMoney, goodName, unitLabel } from "@/lib/format";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { Icon } from "@/components/imach/icon";
@@ -54,6 +54,9 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
 
   const gallery = listing.gallery ?? [];
   const heroImg = gallery[photo]?.url ?? null;
+
+  /** فاز ۱۳ — نام شخصِ صاحب کاتالوگ (ویترین اعتماد) */
+  const ownerName = [biz.owner?.firstName, biz.owner?.lastName].filter(Boolean).join(" ") || biz.owner?.name || "";
 
   const specs = useMemo(() => {
     const rows: Array<{ k: string; v: string; small?: string }> = [];
@@ -173,8 +176,11 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
         ) : null}
 
         <div className="card" style={{ display: "flex", alignItems: "center", gap: 11 }}>
-          <div className="avatar" style={{ borderRadius: 13 }}>
-            {biz.logo?.thumbUrl ? (
+          <div className="avatar" style={{ borderRadius: 13, background: "linear-gradient(135deg, #c2703a, #ea580c)" }}>
+            {biz.owner?.avatar?.thumbUrl || biz.owner?.avatar?.url ? (
+               
+              <img src={(biz.owner?.avatar?.thumbUrl ?? biz.owner?.avatar?.url) as string} alt={ownerName} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
+            ) : biz.logo?.thumbUrl ? (
                
               <img src={biz.logo.thumbUrl} alt={biz.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
             ) : (
@@ -186,8 +192,14 @@ export function ProductPublicView({ biz, listing }: { biz: BusinessProfileDto; l
               {biz.name}
               {biz.isVerified ? <Icon className="ic-sm" name="i-shield" style={{ color: "var(--teal-strong)" }} /> : null}
             </div>
+            {ownerName || biz.bio ? (
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--fg-soft)", marginTop: 2 }}>
+                {ownerName}
+                {biz.bio ? <span style={{ color: "var(--primary-strong)" }}>{ownerName ? ` — ${biz.bio}` : biz.bio}</span> : null}
+              </div>
+            ) : null}
             <div style={{ fontSize: 10.5, color: "var(--muted)", marginTop: 3 }}>
-              {biz.activityType ? t.supplierN.replace("{trade}", biz.activityType) : t.supplierOnly} · {biz.city}
+              {biz.activityType ? t.supplierN.replace("{trade}", activityTypeLabel(biz.activityType, locale) || biz.activityType) : t.supplierOnly} · {biz.city}
             </div>
           </div>
           <Link className="more" href={`/c/${biz.slug}`}>{t.chipAll} ←</Link>

@@ -342,6 +342,8 @@ export function useEditBusiness() {
       phone?: string | null;
       hours?: string | null;
       defaultPayTerm?: string | null;
+      /** فاز ۱۳ — معرفی کوتاه فروشنده (زیر نامش در کاتالوگ عمومی) */
+      bio?: string | null;
     }) => businessesApi.editBusiness(id, body),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["businesses"] });

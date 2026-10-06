@@ -103,9 +103,11 @@
   .ia.landing .onboard {
     padding-inline: clamp(26px, 6vw, 72px);
   }
+  /* فاز ۱۳ — عرض محتوا با خودِ .onboard (۹۰۰px) مدیریت می‌شود؛
+     این محدودیت‌های قدیمی ۷۲۰px فقط در موبایل/تبلت معنا داشتند. */
   .ia.landing .choice-grid,
   .ia.landing .intro-wrap {
-    max-width: 720px;
+    max-width: none;
     margin-inline: auto;
     width: 100%;
   }

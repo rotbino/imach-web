@@ -791,21 +791,58 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 8px 26px 34px;
+  padding: 8px 24px 38px;
   position: relative;
   overflow: hidden;
+  /* فاز ۱۳ — نور نارنجی نرم بالای صفحهٔ اول؛ رنگ برند اصلی */
+  background:
+    radial-gradient(640px 300px at 50% -40px, rgba(249, 115, 22, .12), transparent 72%),
+    linear-gradient(180deg, #faf8f2 0%, var(--bg) 360px);
 }
 .onboard .blobs { display: none; }
-.onboard .mid { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
-.onboard .logo-h { height: 74px; }
-.onboard .tagline { font-size: 12px; color: var(--muted); margin-top: 12px; letter-spacing: .02em; }
-.onboard .q { font-size: 23px; font-weight: 700; margin: 34px 0 6px; line-height: 1.6; }
 
-/* ── فاز ۱۰: هیروی جدید — چهار خطِ معرفی (متن مالک) ── */
-.onboard .hero-desc { display: flex; flex-direction: column; gap: 5px; margin-top: 14px; }
-.onboard .hero-desc b { font-size: 14.5px; font-weight: 800; line-height: 2; color: var(--fg); }
-.onboard .hero-desc span { font-size: 11.5px; color: var(--muted); line-height: 2; }
-.onboard .hero-desc em { font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--teal-strong); line-height: 2.1; margin-top: 3px; }
+/* فاز ۱۳ — هیرو دوستونه در دسکتاپ: متن + کلاژ گوشی */
+.onboard .hero-grid { display: grid; grid-template-columns: 1fr; }
+.onboard .mid { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+.onboard .logo-h { height: 70px; }
+.onboard .tagline {
+  margin-top: 3px; /* چسبیده به زیر لوگو — خواستهٔ مالک */
+  font-size: 13px; font-weight: 700; color: var(--primary-strong); letter-spacing: .01em;
+}
+.onboard .q { font-size: 22px; font-weight: 700; margin: 30px 0 12px; line-height: 1.6; }
+
+/* فاز ۱۳ — تیتر + یک پاراگراف واحد (متن مالک) */
+.onboard .hero-desc { display: flex; flex-direction: column; align-items: center; gap: 9px; margin-top: 18px; }
+.onboard .hero-desc b { font-size: 16px; font-weight: 800; line-height: 1.95; color: var(--fg); }
+.onboard .hero-desc p { font-size: 12.5px; color: var(--fg-soft); line-height: 2.2; max-width: 34ch; }
+.onboard .hero-desc em { font-style: normal; font-weight: 800; color: var(--primary-strong); }
+
+/* فاز ۱۳ — کلاژ گوشی (فقط دسکتاپ) */
+.onboard .hero-visual { display: none; position: relative; direction: ltr; min-height: 560px; }
+.onboard .hv-glow { position: absolute; inset: 30px -60px 10px -30px; background: radial-gradient(closest-side at 55% 45%, rgba(249, 115, 22, .17), transparent 75%); }
+.onboard .hv-phone {
+  position: absolute; border-radius: 36px; border: 9px solid #292524;
+  overflow: hidden; background: #fff;
+  box-shadow: 0 26px 60px rgba(41, 36, 29, .24);
+}
+.onboard .hv-phone::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 110px; height: 22px; background: #292524;
+  border-radius: 0 0 14px 14px; z-index: 2;
+}
+.onboard .hv-phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.onboard .hv-phone.back { width: 212px; height: 452px; left: 10px; top: 76px; z-index: 1; transform: rotate(-4.5deg); opacity: .97; }
+.onboard .hv-phone.front { width: 248px; height: 524px; left: 158px; top: 14px; z-index: 2; transform: rotate(2.5deg); }
+.onboard .hv-chip {
+  position: absolute; z-index: 3;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 7px 13px; font-size: 11px; font-weight: 700; color: var(--fg-soft);
+  box-shadow: var(--shadow-2); white-space: nowrap;
+}
+.onboard .hv-chip svg { width: 13px; height: 13px; color: var(--primary-strong); }
+.onboard .hv-chip.c1 { top: 96px; left: -26px; }
+.onboard .hv-chip.c2 { bottom: 74px; left: 196px; }
 
 /* ── فاز ۱۰: سه باکس معرفی مدرن ── */
 .steps3 { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 13px; }
@@ -820,7 +857,7 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   margin-bottom: 10px;
 }
 .steps3 .s3:nth-child(2) .ico { background: var(--orange-tint); color: var(--primary-strong); }
-.steps3 .s3:nth-child(3) .ico { background: var(--emerald-tint); color: var(--emerald); }
+.steps3 .s3:nth-child(3) .ico { background: var(--amber-tint); color: var(--amber); }
 .steps3 .s3 .ico svg { width: 21px; height: 21px; }
 .steps3 .s3 b { display: block; font-size: 12.5px; font-weight: 800; line-height: 1.9; }
 .steps3 .s3 p { font-size: 10.5px; color: var(--muted); line-height: 2.1; margin-top: 5px; }
@@ -840,28 +877,28 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 }
 .ben-head .ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; flex-shrink: 0; }
 .ben-head .ico svg { width: 19px; height: 19px; }
-.ben-head.buy { background: var(--teal-tint); color: var(--teal-deep); }
-.ben-head.buy .ico { background: var(--teal); color: #fff; }
-.ben-head.sell { background: var(--orange-tint); color: var(--primary-strong); }
-.ben-head.sell .ico { background: var(--primary); color: #fff; }
-.ben-head b { font-size: 12px; font-weight: 800; line-height: 1.8; }
+.ben-head.buy { background: linear-gradient(135deg, #14b8a6, #0d9488); color: #fff; }
+.ben-head.buy .ico { background: rgba(255, 255, 255, .2); color: #fff; }
+.ben-head.sell { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; }
+.ben-head.sell .ico { background: rgba(255, 255, 255, .2); color: #fff; }
+.ben-head b { font-size: 12.5px; font-weight: 800; line-height: 1.8; }
 .choice-card {
   width: 100%;
   display: flex;
   align-items: center;
   gap: 14px;
   background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 17px;
   padding: 16px 17px;
   text-align: right;
-  box-shadow: var(--shadow-2);
-  transition: transform .15s, border-color .15s, box-shadow .15s;
+  box-shadow: none;
+  transition: transform .14s, border-color .14s;
   position: relative;
   overflow: hidden;
   margin-bottom: 12px;
 }
-.choice-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.choice-card:hover { transform: translateY(-2px); }
 .choice-card:active { transform: scale(.98); }
 .choice-card .ico {
   width: 54px; height: 54px;
@@ -1470,7 +1507,7 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   transition: background .15s;
 }
 .intl-phone .cc:hover { background: color-mix(in srgb, var(--arm) 9%, var(--muted-bg)); }
-.intl-phone .cc .flag { font-size: 19px; line-height: 1; font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; }
+.intl-phone .cc .flag { width: 22px; height: 16.5px; border-radius: 3px; display: block; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(41,36,29,.12); }
 .intl-phone .cc .caret { color: var(--muted); transform: rotate(180deg); }
 .intl-phone .num {
   flex: 1; min-width: 0; border: 0; outline: none; background: transparent;
@@ -1482,7 +1519,7 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .intl-phone.inp-lg .num { padding: 13px 14px; font-size: 16.5px; }
 
 /* ── فاز ۱۰: مدال انتخاب کشور ── */
-.country-sheet { max-height: min(72vh, 560px); display: flex; flex-direction: column; }
+.country-sheet { height: min(70vh, 560px); max-height: min(70vh, 560px); display: flex; flex-direction: column; }
 .cs-search {
   display: flex; align-items: center; gap: 9px;
   background: var(--muted-bg); border: 1px solid var(--border);
@@ -1499,7 +1536,7 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 }
 .cs-row:hover { background: var(--muted-bg); }
 .cs-row.on { background: color-mix(in srgb, var(--arm) 10%, transparent); }
-.cs-row .flag { font-size: 21px; line-height: 1; flex-shrink: 0; font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; }
+.cs-row .flag { width: 24px; height: 18px; border-radius: 3px; flex-shrink: 0; display: block; box-shadow: 0 0 0 1px rgba(41,36,29,.12); }
 .cs-row .nm { flex: 1; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cs-row .dc { color: var(--muted); font-size: 12px; font-weight: 700; }
 .cs-row svg { color: var(--teal-strong); }
@@ -2382,8 +2419,21 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .ben .b-tx { flex: 1; min-width: 0; }
 .ben .b-tx b { font-size: 12px; display: block; }
 .ben .b-tx span { font-size: 10px; color: var(--muted); display: block; margin-top: 3px; line-height: 2; }
-.ben-foot { font-size: 10px; color: var(--muted); text-align: center; margin: 13px 0 6px; line-height: 2.1; }
-.ben-foot b { color: var(--fg-soft); }
+/* فاز ۱۳ — CTA پایانی نارنجی (به‌جای ben-foot) */
+.final-cta {
+  margin-top: 18px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border-radius: 18px; padding: 21px 18px 19px;
+  text-align: center; color: #fff;
+  box-shadow: 0 14px 32px rgba(234, 88, 12, .24);
+}
+.final-cta b { font-size: 15px; font-weight: 800; display: block; line-height: 1.9; }
+.final-cta p { font-size: 11.5px; opacity: .92; margin-top: 5px; line-height: 2.1; }
+.final-cta a {
+  display: inline-block; margin-top: 9px;
+  color: #fff; font-weight: 700; font-size: 11.5px; text-decoration: none;
+  border-bottom: 1.5px dashed rgba(255, 255, 255, .55); padding-bottom: 1px;
+}
 
 /* ═══ v12: تخفیف‌ها — تب‌بار واقعی، بلوک‌های سطح، سطرهای تخفیف، سه‌ورودی هم‌بسته ═══ */
 
@@ -2537,7 +2587,6 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .tri-row .tri-who em,
 .hp-lvl .tx span,
 .ben .b-tx span,
-.ben-foot,
 .viral-row,
 .freepath,
 .trust,
@@ -2772,17 +2821,16 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
   .sticky-cta { left: max(24px, calc((100% - 880px) / 2)); right: max(24px, calc((100% - 880px) / 2)); }
   .form-cta { left: max(24px, calc((100% - 680px) / 2)); right: max(24px, calc((100% - 680px) / 2)); }
 
-  /* آنبوردینگ: هیروی وسط */
-  #sc-onboard .onboard { max-width: 880px; margin-inline: auto; width: 100%; padding: 40px 34px 48px; }
-  #sc-onboard .mid { min-height: 240px; }
-  /* فاز ۱۰ — دسکتاپِ اختصاصیِ صفحهٔ اول: هیرو و مقیاس تایپوگرافی */
-  #sc-onboard .logo-h { height: 88px; }
-  #sc-onboard .tagline { font-size: 13px; font-weight: 700; }
+  /* آنبوردینگ (فاز ۱۳): عرض مالک = ۹۰۰px */
+  #sc-onboard .onboard { max-width: 900px; margin-inline: auto; width: 100%; padding: 36px 34px 48px; }
+  #sc-onboard .mid { min-height: 200px; }
+  #sc-onboard .logo-h { height: 84px; }
+  #sc-onboard .tagline { font-size: 14px; }
   #sc-onboard .hero-desc b { font-size: 17px; }
-  #sc-onboard .hero-desc span { font-size: 13px; }
-  #sc-onboard .hero-desc em { font-size: 14.5px; }
-  #sc-onboard .q { font-size: 25px; margin-top: 40px; }
-  #sc-onboard .choice-card .tx b { font-size: 18px; }
+  #sc-onboard .hero-desc p { font-size: 13px; max-width: 40ch; }
+  #sc-onboard .hero-desc em { font-size: 13.5px; }
+  #sc-onboard .q { font-size: 24px; margin-top: 38px; }
+  #sc-onboard .choice-card .tx b { font-size: 17.5px; }
   #sc-onboard .choice-card .tx span { font-size: 12px; }
   #sc-onboard .steps3 { grid-template-columns: repeat(3, 1fr); gap: 13px; }
   #sc-onboard .steps3 .s3 b { font-size: 13.5px; }
@@ -2798,6 +2846,14 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
 /* ── ۳) دسکتاپ ≥1024: اسپلیت‌ها + bump تایپوگرافی ── */
 @media (min-width: 1024px) {
   :root { --deskbar-w: 248px; --content-w: 1000px; }
+
+  /* فاز ۱۳ — هیروی دوستونه: متن + کلاژ گوشی واقعی */
+  #sc-onboard .hero-grid { grid-template-columns: 1.02fr .98fr; gap: 44px; align-items: center; }
+  #sc-onboard .hero-visual { display: block; }
+  #sc-onboard .mid { min-height: 0; }
+  #sc-onboard .onboard { padding-top: 46px; }
+  #sc-onboard .q { margin-top: 34px; }
+
 
   .greet b { font-size: 19px; }
   .greet span { font-size: 12.5px; }
@@ -2840,6 +2896,12 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
 /* ── ۴) ≥1280: پهن‌تر ── */
 @media (min-width: 1280px) {
   #sc-onboard .onboard { max-width: 1020px; }
+  /* فاز ۱۳ — چیدمان دسکتاپی غنی‌تر */
+  .grid-2 { grid-template-columns: repeat(4, 1fr); }
+  .g2 { grid-template-columns: 1fr 1fr 1fr; }
+  #sc-onboard .hero-grid { grid-template-columns: 1.05fr .95fr; gap: 56px; }
+  #sc-onboard .hero-desc b { font-size: 19px; }
+  #sc-onboard .hero-desc p { font-size: 14px; max-width: 42ch; }
   :root { --content-w: 1080px; }
   .grid-2 { grid-template-columns: repeat(4, 1fr); }
   #dsPanels { grid-template-columns: minmax(0, 700px) minmax(320px, 400px); }
@@ -2847,9 +2909,10 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
 
 /* ── ۵) ≥1440: تابلوی سه‌ستونه ── */
 @media (min-width: 1440px) {
-  #sc-onboard .onboard { max-width: 1140px; }
-  #sc-onboard .hero-desc b { font-size: 19px; }
-  #sc-onboard .q { font-size: 27px; }
+  #sc-onboard .onboard { max-width: 1120px; }
+  #sc-onboard .hero-desc b { font-size: 20px; }
+  #sc-onboard .hero-desc p { font-size: 14.5px; max-width: 44ch; }
+  #sc-onboard .q { font-size: 26px; }
   #sc-onboard .steps3 .s3 p { font-size: 12px; line-height: 2.2; }
   :root { --content-w: 1140px; }
   .g2 { grid-template-columns: 1fr 1fr 1fr; }
@@ -2859,6 +2922,8 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
 /* ── ۶) ≥1600: فضای خالیِ عمدی ── */
 @media (min-width: 1600px) {
   :root { --content-w: 1220px; }
+  /* فاز ۱۳ — کاتالوگ ۵ ستونه در نمایشگرهای خیلی پهن */
+  .grid-2 { grid-template-columns: repeat(5, 1fr); }
   .screen-body { padding: 30px 44px 56px; }
   #dsPanels { grid-template-columns: minmax(0, 760px) minmax(320px, 440px); }
 }
@@ -2979,33 +3044,33 @@ body.rd.rd-mob .btn-row { max-width: none !important; }
 
 /* ── چیپ‌های فرادادهٔ کارت دفتر خرید (rc-meta) — آیکون + برچسب؛ رنگ فرعی = رنگ بازو ── */
 .rc-meta {
-  display: flex; flex-wrap: wrap; gap: 4px;
+  display: flex; flex-wrap: wrap; gap: 3px 13px;
   margin-top: 7px;
 }
 .rc-meta .m {
+  /* فاز ۱۳ — فلت: بدون پس‌زمینه و حاشیه؛ فرادادهٔ تایپوگرافیک، نه دکمه */
   display: inline-flex; align-items: center; gap: 4.5px;
-  font-size: 10px; font-weight: 600; color: var(--fg-soft);
-  background: var(--muted-bg);
-  border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
-  border-radius: 8px; padding: 3.5px 8px;
-  max-width: 100%; line-height: 1.6;
+  font-size: 10.5px; font-weight: 600; color: var(--muted);
+  background: none; border: 0; border-radius: 0; padding: 1px 0;
+  max-width: 100%; line-height: 1.7;
 }
-.rc-meta .m svg { width: 11.5px; height: 11.5px; color: var(--arm); flex-shrink: 0; }
-.rc-meta .m b { font-weight: 800; color: var(--fg); }
+.rc-meta .m svg { width: 12px; height: 12px; color: var(--arm); flex-shrink: 0; opacity: .92; }
+.rc-meta .m b { font-weight: 800; color: var(--fg-soft); }
 /* فیلد خاص با رنگ فرعی (فیروزه‌ای بازوی خرید) */
 .rc-meta .m.hl {
-  background: var(--arm-tint);
-  border-color: color-mix(in srgb, var(--arm) 28%, transparent);
+  /* فیلد خاص: فقط رنگ، بدون جعبه */
+  background: none; border: 0;
   color: var(--arm-tint-fg);
 }
-.rc-meta .m.hl svg { color: var(--arm-strong); }
-.rc-meta .m.hl b { color: var(--arm-tint-fg); }
+.rc-meta .m.hl svg { color: var(--arm-strong); opacity: 1; }
+.rc-meta .m.hl b { color: var(--arm-strong); }
 /* چیپِ اقدام‌پذیرِ کهربایی (رصد خاموش — روشن کن) */
 .rc-meta .m.warn {
-  background: var(--amber-tint);
-  border-color: color-mix(in srgb, var(--amber) 30%, transparent);
+  /* تنها چیپِ اقدام‌پذیر: تینتِ نرمِ فلت — بدون حاشیه */
+  background: var(--amber-tint); border: 0;
   color: var(--amber);
   cursor: pointer; font-family: inherit; font-weight: 700;
+  border-radius: 9px; padding: 4px 10px;
   transition: filter .14s;
 }
 .rc-meta .m.warn svg { color: var(--amber); }

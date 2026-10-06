@@ -41,6 +41,7 @@ export function EditBizForm() {
   const [trade, setTrade] = useState("");
   const [city, setCity] = useState("");
   const [phone, setPhone] = useState("");
+  const [bio, setBio] = useState("");
   const [errName, setErrName] = useState(false);
 
   // مقدار اولیهٔ فرم از دیتای واقعی — الگوی تنظیم حین رندر (نه effect)
@@ -51,6 +52,7 @@ export function EditBizForm() {
     setTrade(biz.trade ?? "");
     setCity(biz.city ?? "");
     setPhone(biz.phone ?? "");
+    setBio(biz.bio ?? "");
   }
 
   if (!biz) {
@@ -77,6 +79,7 @@ export function EditBizForm() {
         trade: trade.trim() || null,
         ...(city && city !== biz.city ? { city } : {}),
         phone: phone.trim() ? toLatinDigits(phone.replace(/[\s-]/g, "")) : null,
+        bio: bio.trim() || null,
       },
       {
         onSuccess: () => {
@@ -161,6 +164,25 @@ export function EditBizForm() {
               maxLength={20}
               placeholder={fa("0912 345 6789")}
             />
+          </div>
+
+          {/* فاز ۱۳ — معرفی کوتاه فروشنده: زیر نامش در کاتالوگ عمومی دیده می‌شود */}
+          <div className="field" style={{ marginBottom: 4 }}>
+            <label>
+              {t.bio}
+              <i>{t.bioNote}</i>
+            </label>
+            <textarea
+              className="inp"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              maxLength={160}
+              rows={2}
+              dir="auto"
+              placeholder={t.bioPh}
+              style={{ resize: "none", lineHeight: 2 }}
+            />
+            <i className="f-count">{fa(bio.length)}/۱۶۰</i>
           </div>
         </div>
 
