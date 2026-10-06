@@ -3,16 +3,15 @@
 /**
  * /home — خانهٔ خریدار (پورت sc-buy-list · فاز ۲: دادهٔ واقعی از API).
  *
- * Vertical Slice کامل فاز ۲ — مهاجرت UI→API→DB→UI:
- *   · ردیف‌ها = WatchedGoodها (خلاصهٔ تابلوی تأمین: ارزان‌ترین/روند/شمار تأمین‌کننده)
- *   · بج پیشنهادها = answeredCount · کاتالوگ‌های ذخیره = فالوها
- *   · نوار اشتراک = slug واقعی + Web Share/کلیپ‌بورد
- *   · ردیف سرد (بی‌تأمین‌کننده) = فعال‌سازی رصد با watchGood واقعی
- *   · «آخرین به‌روزرسانی» = جدیدترین updatedAt تابلوی همان کالا
- *
- * نگاشت آگاهانه داده (ثبت در MIGRATION-MAP §۴):
- *   بج b-teal «N دنبال‌شده» پروتوتایپ → بج b-stone «N تأمین‌کننده» (دادهٔ صادقانهٔ موجود)
- *   pulse-dot = watched · b-orange «قیمت تازه» = priceChanged
+ * فاز ۱۰ (بازخورد مالک — «دفتر خرید»):
+ *   · سلام ساده: «سلام، خوش اومدید» — نه نامِ placeholder بیزینس
+ *   · باکس کاتالوگ‌های ذخیره‌شده از این صفحه حذف شد (لینکش در ناوبری هست)
+ *   · redesign-base 08-buy-list الهامِ مدیریت: جستجو + چیپ‌های فیلتر +
+ *     دکمهٔ «افزودن کالا» با عرضِ خودش (نه تمام‌عرضِ زشت در دسکتاپ)
+ *   · آیکون اطلاعات کنار سلام → شیت «دفتر خرید به چه دردی می‌خورد؟»
+ *   · پیش‌نمایش دفتر خرید — لینک دم‌دست برای دیدنِ همان چیزی که
+ *     فروشنده‌ها/رهاگذرها از لینک عمومی می‌بینند (/b/{slug})
+ *   · متن راهنمای جدید مالک (ساده و اقدام‌محور)
  */
 
 import { useMemo, useState } from "react";
@@ -26,6 +25,7 @@ import { useLocale } from "@/i18n/locale-context";
 import { Icon, type IconName } from "@/components/imach/icon";
 import { Appbar } from "@/components/imach/appbar";
 import { Tabbar } from "@/components/imach/tabbar";
+import { Sheet } from "@/components/imach/sheet";
 import { Spinner } from "@/components/imach/spinner";
 import { useMoney } from "@/components/imach/currency-context";
 import { ShareSheet } from "@/components/imach/share-sheet";
@@ -44,12 +44,24 @@ function artOf(row: WatchedRowDto): IconName {
   return ART_BY_CATEGORY[slug] ?? "i-box";
 }
 
+/** نرمال‌سازی ارقام فارسی/عربی → لاتین (§۲۱ فرم‌های production-grade) */
+function toAsciiDigits(s: string): string {
+  return s
+    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
+}
+
+type FilterKey = "all" | "fresh" | "watched";
+
 export function BuyerHome() {
   const m = useMessages();
   const t = m.app.home;
   const { locale } = useLocale();
   const [shareOpen, setShareOpen] = useState(false);
   const [shareContacts, setShareContacts] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [filter, setFilter] = useState<FilterKey>("all");
+  const [search, setSearch] = useState("");
   // فاز ۸ — قیمت‌ها در ارز نمایش کاربر (نرخ تقریبی؛ معامله در ارز فروشنده)
   const money = useMoney();
   const biz = useActiveBusiness();
@@ -64,12 +76,25 @@ export function BuyerHome() {
 
   const rows = useMemo(() => watched.data ?? [], [watched.data]);
   const freshCount = useMemo(() => rows.filter((r) => r.priceChanged).length, [rows]);
+  const watchedCount = useMemo(() => rows.filter((r) => r.watched).length, [rows]);
   const offersCount = rfqs.data?.recentOfferCount ?? 0;
-  const followsCount = follows.data?.length ?? 0;
+  void follows; // فاز ۱۰ — نوار کاتالوگ‌های ذخیره از این صفحه رفت (ناوبری خودش لینک دارد)
 
-  /** فاز ۶ — ردیف‌های «فروشندهٔ ویژه»: پروموهای تزریق‌شدهٔ تابلو (U05/U06).
-   *  هدف‌گیری سمت سرور انجام شده (فقط کالاهای لیست من، از فروشنده‌ای که
-   *  کاتالوکش را ذخیره نکرده‌ام) — اینجا فقط نمایش با برچسب شفاف ویژه. */
+  /** فیلتر + جستجو — الهام redesign-base: چیپ‌های شمار‌دار + سرچ درون‌لیستی */
+  const visibleRows = useMemo(() => {
+    const needle = toAsciiDigits(search).trim().toLocaleLowerCase();
+    return rows.filter((r) => {
+      if (filter === "fresh" && !r.priceChanged) return false;
+      if (filter === "watched" && !r.watched) return false;
+      if (needle) {
+        const name = r.good ? goodName(r.good, locale) : "";
+        if (!name.toLocaleLowerCase().includes(needle)) return false;
+      }
+      return true;
+    });
+  }, [rows, filter, search, locale]);
+
+  /** فاز ۶ — ردیف‌های «فروشندهٔ ویژه»: پروموهای تزریق‌شدهٔ تابلو (U05/U06). */
   const promoRows = useMemo(
     () => (board.data?.rows ?? []).filter((r) => r.promo !== null),
     [board.data]
@@ -103,6 +128,8 @@ export function BuyerHome() {
   // فاز ۹ — ناوبری Demo Hub: ?sheet=share | ?sheet=contacts
   useSheetParam("share", () => { setShareContacts(false); setShareOpen(true); });
   useSheetParam("contacts", () => { setShareContacts(true); setShareOpen(true); });
+  // فاز ۱۰ — ناوبری Demo Hub: ?sheet=what-is
+  useSheetParam("what-is", () => setInfoOpen(true));
 
   // ── حالت‌ها: بارگذاری / بدون کسب‌وکار / خالی / داده ──
   const businessesLoading = businesses.isLoading;
@@ -145,28 +172,82 @@ export function BuyerHome() {
     );
   }
 
-  const bizName = biz.name;
+  const hasSearchOrFilter = search.trim().length > 0 || filter !== "all";
 
   return (
     <section className="screen" data-screen="buy-list">
       <Appbar deskTitle={t.secList} />
 
       <div className="screen-body">
-        <div className="greet">
-          <b>{t.greetTitle.replace("{biz}", bizName)}</b>
-          <span>
-            {freshCount > 0
-              ? t.greetSubFresh.replace("{n}", fa(freshCount))
-              : t.greetSubCalm}
-          </span>
+        {/* ── سلام + آیکون اطلاعات (فاز ۱۰) ── */}
+        <div className="greet greet-bar">
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <b>{t.greetTitle}</b>
+            <span>
+              {freshCount > 0
+                ? t.greetSubFresh.replace("{n}", fa(freshCount))
+                : t.greetSubCalm}
+            </span>
+          </div>
+          <button
+            type="button"
+            className="info-btn"
+            aria-label={t.whatIsTitle}
+            title={t.whatIsTitle}
+            onClick={() => setInfoOpen(true)}
+          >
+            <Icon name="i-info" />
+          </button>
         </div>
 
-        <div className="btn-row" style={{ margin: "10px 0 4px" }}>
-          <Link className="btn btn-primary" href="/new" style={{ flex: 1 }}>
+        {/* ── جستجو + افزودن (الهام redesign-base — عرض دکمه به‌اندازه) ── */}
+        <div className="list-tools">
+          <div className="searchbar">
+            <Icon name="i-search" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t.searchPh}
+              aria-label={t.searchPh}
+              inputMode="search"
+            />
+            {search ? (
+              <button type="button" className="clr" aria-label={m.auth.search.clear} onClick={() => setSearch("")}>
+                <Icon className="ic-sm ic-12" name="i-x" />
+              </button>
+            ) : null}
+          </div>
+          <Link className="btn btn-primary add-btn" href="/new?tab=buy">
             <Icon className="ic-sm" name="i-plus" /> {t.addCta}
           </Link>
         </div>
 
+        {/* چیپ‌های فیلتر — شمار‌دار */}
+        <div className="filter-chips">
+          <button
+            type="button"
+            className={filter === "all" ? "fchip on" : "fchip"}
+            onClick={() => setFilter("all")}
+          >
+            {t.chipAll} <i>{fa(rows.length)}</i>
+          </button>
+          <button
+            type="button"
+            className={filter === "fresh" ? "fchip fresh on" : "fchip fresh"}
+            onClick={() => setFilter("fresh")}
+          >
+            {t.chipFresh} <i>{fa(freshCount)}</i>
+          </button>
+          <button
+            type="button"
+            className={filter === "watched" ? "fchip on" : "fchip"}
+            onClick={() => setFilter("watched")}
+          >
+            {t.chipWatched} <i>{fa(watchedCount)}</i>
+          </button>
+        </div>
+
+        {/* ── نوار اشتراک + پیش‌نمایش (فاز ۱۰) ── */}
         <div className="share-strip">
           <span
             className="ico"
@@ -187,9 +268,22 @@ export function BuyerHome() {
             <b>{t.shareTitle}</b>
             <span>{t.shareSubN.replace("{slug}", biz.slug ?? "")}</span>
           </span>
-          <button className="btn btn-soft btn-sm" onClick={openShare}>
-            {t.shareCta}
-          </button>
+          <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+            {biz.slug ? (
+              <Link
+                className="btn btn-soft btn-sm"
+                href={`/b/${biz.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={t.previewSub}
+              >
+                <Icon className="ic-sm" name="i-eye" /> {t.previewCta}
+              </Link>
+            ) : null}
+            <button className="btn btn-soft btn-sm" onClick={openShare}>
+              {t.shareCta}
+            </button>
+          </div>
         </div>
 
         <div className="sec-title">
@@ -201,17 +295,6 @@ export function BuyerHome() {
           </Link>
         </div>
 
-        <Link className="saved-strip" href="/saved">
-          <span className="ico">
-            <Icon name="i-bm" />
-          </span>
-          <span className="txt">
-            <b>{t.savedStripTitle}</b>
-            <span>{t.savedStripSubN.replace("{n}", fa(followsCount))}</span>
-          </span>
-          <Icon name="i-chev" className="chev" />
-        </Link>
-
         {rows.length === 0 ? (
           <div className="empty-state">
             <span className="art" style={{ background: "var(--teal-tint)", color: "var(--teal-strong)" }}>
@@ -219,13 +302,20 @@ export function BuyerHome() {
             </span>
             <h3>{t.emptyTitle}</h3>
             <p>{t.emptySub}</p>
-            <Link className="btn btn-primary" href="/new">
+            <Link className="btn btn-primary" href="/new?tab=buy">
               <Icon className="ic-sm" name="i-plus" /> {t.addCta}
             </Link>
           </div>
+        ) : visibleRows.length === 0 ? (
+          <div className="empty-state" style={{ padding: "26px 14px" }}>
+            <span className="art" style={{ background: "var(--muted-bg)", color: "var(--fg-soft)", width: 44, height: 44 }}>
+              <Icon name="i-search" />
+            </span>
+            <h3 style={{ fontSize: 13 }}>{t.searchNoResult}</h3>
+          </div>
         ) : (
           <div className="g2">
-            {rows.map((row) => {
+            {visibleRows.map((row) => {
               const name = row.good ? goodName(row.good, locale) : "—";
               const isCold = row.supplierCount === 0;
               const cheapest = row.cheapest;
@@ -314,10 +404,8 @@ export function BuyerHome() {
           </div>
         )}
 
-        {/* فاز ۶ — ردیف‌های «فروشندهٔ ویژه» (جایگاه قیمت‌های دنبال‌شدهٔ خریدار).
-            هدف‌گیری سمت سرور (U06): فقط کالاهایی که رصد می‌کنم و کاتالوک فروشنده‌اش
-            را ذخیره نکرده‌ام — شفاف با برچسب ویژه؛ رتبهٔ تطبیق مستقل می‌ماند. */}
-        {promoRows.length > 0 ? (
+        {/* فاز ۶ — ردیف‌های «فروشندهٔ ویژه» (جایگاه قیمت‌های دنبال‌شدهٔ خریدار). */}
+        {promoRows.length > 0 && !hasSearchOrFilter ? (
           <div className="g2" style={{ marginTop: 10 }}>
             {promoRows.map((r) => (
               <Link
@@ -358,6 +446,43 @@ export function BuyerHome() {
       </div>
 
       <Tabbar active="list" />
+
+      {/* فاز ۱۰ — شیت «دفتر خرید به چه دردی می‌خورد؟» */}
+      <Sheet open={infoOpen} onClose={() => setInfoOpen(false)} label={t.whatIsTitle}>
+        <div className="sheet">
+          <div className="grab" />
+          <h3>{t.whatIsTitle}</h3>
+          <div className="sub">{t.whatIsLead}</div>
+          <div className="what-is-rows">
+            {t.whatIsRows.map((r, i) => (
+              <div className="wi-row" key={i}>
+                <span className="n">{fa(i + 1)}</span>
+                <span>{r}</span>
+              </div>
+            ))}
+          </div>
+          <div className="unit-calc" style={{ marginTop: 12 }}>
+            <Icon name="i-share" />
+            <span>{t.whatIsFoot}</span>
+          </div>
+          {biz.slug ? (
+            <Link
+              className="btn btn-soft btn-lg btn-block"
+              href={`/b/${biz.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ marginTop: 10 }}
+            >
+              <Icon className="ic-sm" name="i-eye" /> {t.previewOpen}
+            </Link>
+          ) : null}
+          <div className="sheet-actions">
+            <button type="button" className="btn btn-primary btn-lg" onClick={() => setInfoOpen(false)}>
+              {t.whatIsClose}
+            </button>
+          </div>
+        </div>
+      </Sheet>
 
       {/* فاز ۹ — شیت اشتراک کامل: مخاطبین گوشی + اشتراک سیستمی + کپی + QR */}
       {biz.slug ? (

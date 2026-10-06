@@ -3,24 +3,33 @@
 /**
  * /start — ویزارد ثبت‌نام با دیزاین‌سیستم v18 (پورت sc-signup · فاز ۳).
  *
- * منطق کسب‌وکار عیناً از ویزارد legacy (فاز ۹ طرح ۱۶) — Business Source of Truth:
+ * منطق کسب‌وکار عیناً از ویزارد legacy — Business Source of Truth:
  *   ۱) گام ۱: شماره (+ کشور) → quickRegister → حساب + بیزینس placeholder
  *      شمارهٔ دارای رمز → PHONE_HAS_PASSWORD → هدایت به /login
- *   ۲) گام ۲: هویت + کسب‌وکار (نام/صنف/شهر/نقش) → editBusiness یا createBusiness
- *      + setArms (نقش فقط پیش‌فرض دستیارهاست) → routeAfterAuth
+ *   ۲) گام ۲: هویت + کسب‌وکار (نام/صنف/شهر) → editBusiness یا createBusiness
+ *      + setArms → routeAfterAuth
  *   کد دعوت (?ref) همان منطق legacy: ذخیره → ارسال → پاک‌سازی
  *
- * تطبیق آگاهانه با Prototype (ثبت در MIGRATION-MAP §۴):
- *   · «دریافت کد تأیید» → «ادامه» (بک‌اند OTP ندارد؛ ثبت‌نام سریع واقعی؛ §۶۳)
- *   · بنر phone-verified همان sc-signup — بعد از ثبت موفق شماره
- *   · فیلد نامِ یکی → دو فیلد نام/نام خانوادگی (API واقعی این دو فیلد را می‌خواهد)
- *   · chips صنف = صنف‌های واقعی این استقرار (زنجیرهٔ برنج)، نه دموی Prototype
+ * فاز ۱۰ (بازخورد مالک — «عملیاتی شدن واقعی»):
+ *   · بنر «شماره تأیید شد» → بنر ویرایش شماره؛ دکمهٔ ویرایشِ در چشم +
+ *     بازگشت به صفحهٔ اول = حذف حساب (deleteMe با توکن خود کاربر) و
+ *     شروع کاملاً تازه
+ *   · شماره همیشه LTR با پرچم + کد کشور داخل باکس (IntlPhoneField، سبک
+ *     تلگرام) — مدال انتخاب کشور با سرچ
+ *   · اصناف از دیتابیس: ۴ چیپ هسته‌ای + «سایر»ِ رنگی؛ ورودی هوشمند با
+ *     تایپ‌آهد — انتخاب صنفِ موجود (بازاستفاده/ای‌دی مشترک سمت سرور) یا
+ *     ساخت صنف جدید (resolveTrade در بک‌اند)
+ *   · حذف سؤال «اول از کجا شروع می‌کنی؟» — نقش از صفحهٔ اول (?role=) می‌آید
+ *   · چک‌باکس شرایط استفاده کامنت شد (ثبت‌نام سریع — خواستهٔ مالک)
+ *   · متن توضیح دستیارها → متن جدید مالک + نکتهٔ چند-کسب‌وکاری
+ *   · شهر: placeholder «انتخاب شهر» روی خود سلکتور + بوردر مثل اینپوت‌ها
  */
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ApiError, businessesApi } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { ApiError, businessesApi, type TradeDto } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { routeAfterAuth, setArmActive, type Arm } from "@/lib/active-biz";
 import { useCreateBusiness, useMyBusinesses, useSetArms, useEditProfile } from "@/lib/queries";
@@ -37,29 +46,28 @@ import { useLocale } from "@/i18n/locale-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { Icon } from "@/components/imach/icon";
 import { Spinner } from "@/components/imach/spinner";
+import { Sheet } from "@/components/imach/sheet";
 import { SearchSelect } from "@/components/search-select";
-import { countrySelectItems } from "@/app/components/phone-field";
+import { IntlPhoneField } from "@/components/imach/intl-phone-field";
 import { useToast } from "@/hooks/use-toast";
-
-/** نرمال‌سازی ارقام فارسی/عربی → لاتین (§۲۱ فرم‌های production-grade) */
-function toAsciiDigits(s: string): string {
-  return s
-    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
-}
-
-/** فقط رقم + حذف زندهٔ صفرهای آغازین (الگوی PhoneField موجود) */
-function sanitizePhone(v: string): string {
-  const d = toAsciiDigits(v).replace(/\D/g, "");
-  return d.replace(/^0+/, "").slice(0, 12);
-}
 
 /** بیزینسِ خالیِ ثبت‌نام سریع — تا وقتی گام ۲ پر شود */
 function isPlaceholderBiz(b: { city: string; name: string } | undefined): boolean {
   return !!b && (b.city === "—" || b.name === "کاتالوگ شما");
 }
 
-const TRADES = ["رستوران", "پخش برنج", "پخش مواد غذایی", "قنادی", "پوشاک", "ابزار و یراق", "سایر"];
+/** ۴ صنف هسته‌ای — fallback موقت تا پاسخ getTrades برسد (و در خطای شبکه) */
+const CORE_FALLBACK = ["سوپرمارکت", "پخش مواد غذایی", "تولید پوشاک", "قنادی"];
+
+/** نرمال‌سازی نام صنف برای مقایسهٔ «همین صنف است؟» — همان قاعدهٔ سرور */
+function normTrade(s: string): string {
+  return s
+    .trim()
+    .replace(/[ي]/g, "ی")
+    .replace(/[ك]/g, "ک")
+    .replace(/\u200c/g, " ")
+    .toLocaleLowerCase("fa");
+}
 
 export function SignupWizard() {
   return (
@@ -81,8 +89,6 @@ export function SignupWizard() {
 
 function SignupFlow() {
   const router = useRouter();
-  const m = useMessages();
-  const t = m.app.signup;
   const searchParams = useSearchParams();
   const { status: authStatus } = useAuthStore();
   const storeBiz = useAuthStore((s) => s.businesses[0]);
@@ -166,7 +172,7 @@ function Steps({ now }: { now: 1 | 2 }) {
   );
 }
 
-/* ═══════════ گام ۱ — شمارهٔ موبایل ═══════════ */
+/* ═══════════ گام ۱ — شمارهٔ موبایل (بین‌المللی، سبک تلگرام) ═══════════ */
 function Step1() {
   const { toast } = useToast();
   const router = useRouter();
@@ -177,9 +183,12 @@ function Step1() {
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref") ?? loadReferralCode();
 
-  const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("IR");
-  const [showCountry, setShowCountry] = useState(false);
+  // فاز ۱۰ — ورود مستقیم از /login با شمارهٔ تایپ‌شده (سوییچ خودکار بدون پاک‌شدن شماره)
+  const prePhone = searchParams.get("phone") ?? "";
+  const preCountry = searchParams.get("cc") ?? "";
+
+  const [phone, setPhone] = useState(prePhone.replace(/^0+/, "").replace(/\D/g, "").slice(0, 12));
+  const [country, setCountry] = useState(preCountry || "IR");
   const [busy, setBusy] = useState(false);
   const guessed = useRef(false);
 
@@ -192,15 +201,14 @@ function Step1() {
   useEffect(() => {
     if (guessed.current) return;
     guessed.current = true;
-    const c = guessCountryCode();
+    const c = preCountry || guessCountryCode();
     setCountry(c);
-    // همگام‌سازی زبان با کشورِ حدسی فقط بدون انتخاب صریح (فاز ۳: کوکی زبان مقدم است)
+    // همگام‌سازی زبان با کشورِ حدسی فقط بدون انتخاب صریح (کوکی زبان مقدم است)
     if (!hasExplicitLocale()) syncLangWithCountry(c);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (c !== "IR") setShowCountry(true);
+     
   }, []);
 
-  const phoneIntl = normalizeIntlPhone(toAsciiDigits(phone), country);
+  const phoneIntl = normalizeIntlPhone(phone, country);
 
   const submit = async () => {
     if (!phoneIntl) {
@@ -215,7 +223,8 @@ function Step1() {
     } catch (err) {
       if (err instanceof ApiError && err.code === "PHONE_HAS_PASSWORD") {
         toast({ title: t.errHasPassword });
-        router.replace("/login");
+        // فاز ۱۰ — شماره را با خودش ببر تا کاربر دوباره تایپ نکند
+        router.replace(`/login?phone=${encodeURIComponent(phone)}&cc=${country}`);
       } else {
         toast({
           title: t.errGeneric,
@@ -244,47 +253,20 @@ function Step1() {
         <Steps now={1} />
 
         <div className="card">
-          {showCountry ? (
-            <div className="field">
-              <label>{m.app.login.country}</label>
-              <SearchSelect
-                items={countrySelectItems}
-                value={country}
-                onChange={(code) => {
-                  setCountry(code);
-                  syncLangWithCountry(code);
-                  setPhone("");
-                }}
-                placeholder={m.app.login.country}
-                searchPlaceholder="…"
-                emptyText="—"
-                ariaLabel={m.app.login.country}
-              />
-            </div>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-soft btn-sm"
-              style={{ alignSelf: "flex-start", marginBottom: 10 }}
-              onClick={() => setShowCountry(true)}
-            >
-              <Icon className="ic-sm" name="i-globe" /> {m.app.login.changeCountry}
-            </button>
-          )}
-
           <div className="field">
             <label>{t.phoneLabel}</label>
-            <input
-              className="inp inp-lg"
-              dir="ltr"
-              style={{ textAlign: "right" }}
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder={m.app.login.phonePlaceholder}
+            <IntlPhoneField
               value={phone}
-              onChange={(e) => setPhone(sanitizePhone(e.target.value))}
-              onKeyDown={(e) => e.key === "Enter" && void submit()}
-              aria-label={t.phoneLabel}
+              onChange={setPhone}
+              country={country}
+              onCountryChange={(code) => {
+                setCountry(code);
+                syncLangWithCountry(code);
+              }}
+              placeholder={m.app.login.phonePlaceholder}
+              ariaLabel={t.phoneLabel}
+              autoFocus
+              onEnter={() => void submit()}
             />
           </div>
 
@@ -319,7 +301,7 @@ function Step1() {
 function Step2({
   existingBiz,
 }: {
-  existingBiz: { id: string; name: string; city: string; slug: string } | undefined;
+  existingBiz: { id: string; name: string; city: string; slug: string; trade?: string | null } | undefined;
 }) {
   const { toast } = useToast();
   const router = useRouter();
@@ -329,6 +311,7 @@ function Step2({
   const createBiz = useCreateBusiness();
   const editBizProfile = useEditProfile();
   const setArms = useSetArms();
+  const deleteAccount = useAuthStore((s) => s.deleteAccount);
   const user = useAuthStore((s) => s.user);
 
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
@@ -336,18 +319,93 @@ function Step2({
   const [bizName, setBizName] = useState(
     existingBiz && !isPlaceholderBiz(existingBiz) ? existingBiz.name : ""
   );
-  const [trade, setTrade] = useState("");
-  const [customTrade, setCustomTrade] = useState("");
+  // صنف انتخابی — نامِ رکورد Trade (هسته‌ای یا شخصی)
+  const [trade, setTrade] = useState(existingBiz?.trade ?? "");
+  const [otherOpen, setOtherOpen] = useState(false);
+  const [tradeQuery, setTradeQuery] = useState("");
   const [city, setCity] = useState("");
-  const [intent, setIntent] = useState<"sell" | "buy" | "both" | null>(() => {
+  // فاز ۱۰ — نقش از صفحهٔ اول (?role=) می‌آید؛ سؤال تکراری حذف شد.
+  // بدون نقش (ورود مستقیم از /login) → هر دو دستیار فعال می‌مانند.
+  const [intent] = useState<"sell" | "buy" | "both">(() => {
     const r = searchParams.get("role");
-    return r === "buy" || r === "sell" ? r : null;
+    return r === "buy" || r === "sell" ? r : "both";
   });
-  const [terms, setTerms] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [editSheet, setEditSheet] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const isOther = trade === "سایر";
   const phone = user?.phone ?? "";
+
+  /* ── اصناف از دیتابیس (فاز ۱۰) ── */
+  const tradesQ = useQuery({
+    queryKey: ["trades"],
+    queryFn: () => businessesApi.getTrades(),
+    staleTime: 5 * 60_000,
+  });
+  const trades: TradeDto[] = tradesQ.data ?? [];
+  const coreTrades = useMemo(() => {
+    const core = trades.filter((tr) => tr.isCore).map((tr) => tr.name);
+    return core.length > 0 ? core : CORE_FALLBACK;
+  }, [trades]);
+  const usageOf = (name: string): number | null => {
+    const hit = trades.find((tr) => normTrade(tr.name) === normTrade(name));
+    return hit ? hit.usageCount : null;
+  };
+  // صنف انتخابیِ غیرهسته‌ای → چیپ اختصاصی انتهای ردیف
+  const customChip = trade && !coreTrades.some((c) => normTrade(c) === normTrade(trade)) ? trade : null;
+
+  /* ── تایپ‌آهد صنف (ورودی «سایر») ── */
+  const [tradeResults, setTradeResults] = useState<TradeDto[]>([]);
+  const [tradeSearching, setTradeSearching] = useState(false);
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const runTradeSearch = (q: string) => {
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    if (q.trim().length < 2) {
+      setTradeResults([]);
+      setTradeSearching(false);
+      return;
+    }
+    setTradeSearching(true);
+    searchTimer.current = setTimeout(async () => {
+      try {
+        setTradeResults(await businessesApi.searchTrades(q.trim()));
+      } catch {
+        setTradeResults([]);
+      } finally {
+        setTradeSearching(false);
+      }
+    }, 260);
+  };
+  useEffect(() => () => {
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+  }, []);
+
+  const query = tradeQuery.trim();
+  const exactExists =
+    query.length >= 2 &&
+    (tradeResults.some((r) => normTrade(r.name) === normTrade(query)) ||
+      coreTrades.some((c) => normTrade(c) === normTrade(query)));
+  // نتایج منهای خود متنِ دقیق (که در ردیف «صنف جدید» می‌آید اگر تازه باشد)
+  const suggestions = tradeResults.filter((r) => normTrade(r.name) !== normTrade(query));
+
+  const pickTrade = (name: string) => {
+    setTrade(name);
+    setOtherOpen(false);
+    setTradeQuery("");
+    setTradeResults([]);
+  };
+
+  /* ── ویرایش شماره → حذف حساب و شروع دوباره (فاز ۱۰) ── */
+  const restartSignup = async () => {
+    setDeleting(true);
+    try {
+      await deleteAccount(); // سرور: کاسکید کامل؛ کلاینت: پاک + هدایت به /
+    } catch {
+      toast({ title: t.errDelete, variant: "destructive" });
+      setDeleting(false);
+    }
+  };
 
   const save = async () => {
     if (firstName.trim().length < 2 || lastName.trim().length < 2) {
@@ -362,17 +420,10 @@ function Step2({
       toast({ title: t.errCity, variant: "destructive" });
       return;
     }
-    const finalTrade = isOther ? customTrade.trim() : trade;
+    // صنف: چیپ انتخابی، یا متنِ تایپ‌شده (صنف جدید) در ورودی هوشمند
+    const finalTrade = trade || (otherOpen && query.length >= 2 ? query : "");
     if (finalTrade.length < 2) {
       toast({ title: t.errTrade, variant: "destructive" });
-      return;
-    }
-    if (!intent) {
-      toast({ title: t.errRole, variant: "destructive" });
-      return;
-    }
-    if (!terms) {
-      toast({ title: t.errTerms, variant: "destructive" });
       return;
     }
     setBusy(true);
@@ -380,13 +431,14 @@ function Step2({
       // ۱) هویت شخص (نام صاحب کسب‌وکار — روی ویترین هم دیده می‌شود)
       await editBizProfile.mutateAsync({ firstName: firstName.trim(), lastName: lastName.trim() });
       // ۲) کسب‌وکار: placeholder ثبت‌نام سریع → ویرایش؛ بدون بیزینس → ساخت
+      //    صنف سمت سرور به رجیستری Trade حل می‌شود (بازاستفاده یا ساخت)
       if (existingBiz) {
         await businessesApi.editBusiness(existingBiz.id, {
           name: bizName.trim(),
           city,
           trade: finalTrade,
         });
-        // ۳) نقش → دستیارهای فعال (فقط پیش‌فرض؛ بعداً از پروفایل)
+        // ۳) نقش از صفحهٔ اول → پیش‌فرضِ دستیارها (both = هر دو روشن)
         if (intent !== "both") {
           await setArms.mutateAsync({
             id: existingBiz.id,
@@ -402,8 +454,7 @@ function Step2({
           intent: intent === "both" ? undefined : intent,
         });
       }
-      // ۴) ورود به بازوی درست — مستقیم (استورِ businesses هنوز placeholder است؛
-      //    کش /home خودش را با کوئری تازه می‌کند)
+      // ۴) ورود به بازوی درست — مستقیم (کش /home خودش را با کوئری تازه می‌کند)
       const arm: Arm = intent === "buy" ? "buy" : "sell";
       setArmActive(arm);
       router.replace(arm === "buy" ? "/home" : "/sell");
@@ -431,13 +482,16 @@ function Step2({
       </div>
 
       <div className="screen-body">
-        {/* بنر شمارهٔ تأییدشده — عین sc-signup */}
-        <div className="phone-verified">
-          <Icon name="i-checkc" />
-          <span dir="ltr">{fmtPhone(phone)}</span>
-          <span style={{ fontSize: 10, fontWeight: 800, color: "#065f46", flexShrink: 0 }}>
-            {t.verified}
-          </span>
+        {/* فاز ۱۰ — بنر ویرایش شماره (به‌جای «شماره تأیید شد») */}
+        <div className="phone-banner">
+          <Icon name="i-tel" className="ico" />
+          <div className="txt">
+            <b dir="ltr">{fmtPhone(phone)}</b>
+            <span>{t.editBannerSub}</span>
+          </div>
+          <button type="button" className="btn btn-edit-num" onClick={() => setEditSheet(true)}>
+            <Icon className="ic-sm" name="i-edit" /> {t.editBtn}
+          </button>
         </div>
 
         <Steps now={2} />
@@ -479,31 +533,100 @@ function Step2({
             />
           </div>
 
+          {/* ── صنف — چیپ‌های دیتابیسی + سایرِ رنگی + ورودی هوشمند ── */}
           <div className="field">
             <label>{t.tradeLabel}</label>
-            <div className="unit-chips">
-              {TRADES.map((tr) => (
+            <div className="trade-chips" role="radiogroup" aria-label={t.tradeLabel}>
+              {coreTrades.map((tr) => (
                 <button
                   type="button"
+                  role="radio"
+                  aria-checked={trade === tr}
                   key={tr}
-                  className={trade === tr ? "chip active" : "chip"}
-                  onClick={() => setTrade(tr)}
+                  className={
+                    trade && normTrade(trade) === normTrade(tr) ? "tchip on" : "tchip"
+                  }
+                  onClick={() => pickTrade(tr)}
                 >
-                  {tr === "سایر" ? t.tradeOther : tr}
+                  {tr}
+                  {usageOf(tr) !== null && usageOf(tr)! > 0 ? (
+                    <i className="n">{usageOf(tr)}</i>
+                  ) : null}
                 </button>
               ))}
+              {customChip ? (
+                <button type="button" role="radio" aria-checked className="tchip on custom">
+                  {customChip}
+                </button>
+              ) : null}
+              <button
+                type="button"
+                role="radio"
+                aria-checked={otherOpen}
+                className={otherOpen ? "tchip other on" : "tchip other"}
+                onClick={() => {
+                  if (otherOpen) {
+                    // بستن ورودی → چیپ انتخابی می‌ماند اگر باشد
+                    setOtherOpen(false);
+                    setTradeQuery("");
+                    setTradeResults([]);
+                  } else {
+                    setOtherOpen(true);
+                  }
+                }}
+              >
+                <Icon className="ic-sm ic-12" name="i-plus" />
+                {t.tradeOther}
+              </button>
             </div>
-            {isOther ? (
-              <input
-                className="inp"
-                style={{ marginTop: 8 }}
-                value={customTrade}
-                maxLength={60}
-                onChange={(e) => setCustomTrade(e.target.value)}
-                placeholder={t.tradeOtherPh}
-                autoFocus
-                aria-label={t.tradeOtherPh}
-              />
+
+            {otherOpen ? (
+              <div className="trade-smart">
+                <Icon name="i-search" className="lead" />
+                <input
+                  className="inp"
+                  value={tradeQuery}
+                  maxLength={60}
+                  placeholder={t.tradeSearchPh}
+                  onChange={(e) => {
+                    setTradeQuery(e.target.value);
+                    runTradeSearch(e.target.value);
+                  }}
+                  aria-label={t.tradeLabel}
+                  autoFocus
+                />
+                {(tradeSearching || suggestions.length > 0 || (query.length >= 2 && !exactExists)) && (
+                  <div className="ts-drop">
+                    {suggestions.map((r) => (
+                      <button
+                        type="button"
+                        className="ts-row"
+                        key={r.id}
+                        onClick={() => pickTrade(r.name)}
+                      >
+                        <span className="nm">{r.name}</span>
+                        <span className="hint-tx">
+                          {t.tradePickN.replace("{n}", String(r.usageCount))}
+                        </span>
+                        <Icon className="ic-sm ic-14 go" name="i-chev" />
+                      </button>
+                    ))}
+                    {query.length >= 2 && !exactExists ? (
+                      <button type="button" className="ts-row new" onClick={() => pickTrade(query)}>
+                        <span className="nm">
+                          {query} <b className="ts-badge">{t.tradeNewBadge}</b>
+                        </span>
+                        <span className="hint-tx">{t.tradeNewHint}</span>
+                      </button>
+                    ) : null}
+                    {tradeSearching ? (
+                      <div className="ts-loading">
+                        <Spinner size={14} />
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+              </div>
             ) : null}
           </div>
 
@@ -513,52 +636,15 @@ function Step2({
               items={iranCityItems}
               value={city}
               onChange={setCity}
-              placeholder={m.auth.placeholders.city}
+              placeholder={t.cityPh}
               searchPlaceholder={m.auth.search.city}
               emptyText={m.auth.search.empty}
-              ariaLabel={t.cityLabel}
+              ariaLabel={t.cityPh}
+              className="ia-select h-[46px] border-[1.5px] border-[color:var(--border-strong)] text-[13px] font-bold"
             />
           </div>
 
-          <div className="field" style={{ marginBottom: 6 }}>
-            <label>{t.roleLabel}</label>
-            <div className="unit-chips">
-              <button
-                type="button"
-                className={intent === "buy" ? "chip active" : "chip"}
-                onClick={() => setIntent("buy")}
-              >
-                {t.buy}
-              </button>
-              <button
-                type="button"
-                className={intent === "sell" ? "chip active" : "chip"}
-                onClick={() => setIntent("sell")}
-              >
-                {t.sell}
-              </button>
-              <button
-                type="button"
-                className={intent === "both" ? "chip active" : "chip"}
-                onClick={() => setIntent("both")}
-              >
-                {t.both}
-              </button>
-            </div>
-            <div style={{ fontSize: 10.5, color: "var(--muted)", marginTop: 8, lineHeight: 1.9 }}>
-              {t.roleHint}
-            </div>
-          </div>
-
-          <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", marginTop: 10 }}>
-            <input
-              type="checkbox"
-              checked={terms}
-              onChange={(e) => setTerms(e.target.checked)}
-              style={{ accentColor: "var(--teal-deep)", width: 15, height: 15 }}
-            />
-            <span style={{ fontSize: 12, lineHeight: 1.9 }}>{t.terms}</span>
-          </label>
+          {/* فاز ۱۰ — سؤال نقش حذف شد؛ نقش از صفحهٔ اول (?role=) می‌آید */}
         </div>
 
         <button
@@ -573,9 +659,40 @@ function Step2({
 
         <div className="hint">
           <Icon name="i-shield" />
-          <span>{t.hint}</span>
+          <span>
+            {t.armsHint}
+            <br />
+            <span style={{ color: "var(--fg-soft)" }}>{t.multiBizNote}</span>
+          </span>
         </div>
       </div>
+
+      {/* فاز ۱۰ — تأیید حذف حساب و شروع دوباره */}
+      <Sheet open={editSheet} onClose={() => setEditSheet(false)} label={t.editBtn}>
+        <div className="sheet">
+          <div className="grab" />
+          <h3>{t.editConfirmTitle}</h3>
+          <div className="sub">{t.editConfirmBody}</div>
+          <div className="sheet-actions">
+            <button
+              type="button"
+              className="btn btn-soft btn-lg"
+              onClick={() => setEditSheet(false)}
+            >
+              {t.editConfirmNo}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-lg"
+              disabled={deleting}
+              onClick={() => void restartSignup()}
+            >
+              {deleting ? <Spinner size={16} /> : null}
+              {t.editConfirmYes}
+            </button>
+          </div>
+        </div>
+      </Sheet>
     </section>
   );
 }

@@ -1,15 +1,14 @@
 "use client";
 
 /**
- * /b/[slug] — لیست خرید عمومی، دید تأمین‌کننده (پورت sc-list-public · فاز ۷).
+ * /b/[slug] — دفتر خرید عمومی، دید تأمین‌کننده (پورت sc-list-public · فاز ۷).
  *
- * رشد از سمت خریدار: خریدار لیستش را به اشتراک می‌گذارد (نوار share در /home)؛
- * تأمین‌کننده از لینک/QR می‌آید، نیازها را می‌بیند و گوش‌به‌زنگ می‌شود.
- * تعامل‌ها: تماس/پیام (گیت عضویت مثل کاتالوگ) · ذخیرهٔ لیست = فالو صفحهٔ BUY
- * خریدار (followSupplier با صفحهٔ BUY — همان یال رشد) · گوش‌به‌زنگ = نیازهای
- * BUY listingها؛ برای میهمان → ورود.
- * نگاشت آگاهانه: دکمهٔ alert هر ردیف = watchGood روی همان کالا (سمت عضو) —
- * همان دادهٔ موتور گوش‌به‌زنگ؛ بدون API جدید.
+ * فاز ۱۰ (بازخورد مالک — «زیبا، چشم‌نواز و کاربردی»):
+ *   · کارت هویت غنی: آواتار/لوگو + نام + تأیید + صنف · شهر + نام مدیر
+ *   · کالاها کارت عکس‌دار شدند — گالری آگهی یا عکس مرجع محصول
+ *     (fallback: کاشی هنری)، نیاز (حجم/واحد/تناوب) و دکمهٔ گوش‌به‌زنگ
+ *   · چیدمان g2 (۲ ستونه ≥۹۲۰ · ۳ ستونه ≥۱۴۴۰) عین دفترِ مالک —
+ *     ویرایش همان چیزی است که دیگران می‌بینند
  */
 
 import { useMemo, useState } from "react";
@@ -37,6 +36,14 @@ const ART_BY_CATEGORY: Record<string, IconName> = {
 function artOf(l: GoodItemDto): IconName {
   const slug = (l.good as { category?: { slug?: string } }).category?.slug ?? "";
   return ART_BY_CATEGORY[slug] ?? "i-box";
+}
+
+/** عکسِ ردیف: گالری آگهی → عکس مرجع محصول → null (کاشی هنری) */
+function photoOf(l: GoodItemDto): string | null {
+  const g = l.gallery?.[0];
+  if (g?.thumbUrl || g?.url) return (g.thumbUrl ?? g.url) as string;
+  if (l.product?.imageUrl) return l.product.imageUrl;
+  return null;
 }
 
 export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
@@ -100,7 +107,7 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
       needLogin();
       return;
     }
-    // ذخیرهٔ لیست خریدار = فالو صفحهٔ SELL من به صفحهٔ BUY او — همان یالِ رشد
+    // ذخیرهٔ دفتر خرید خریدار = فالو صفحهٔ SELL من به صفحهٔ BUY او — همان یالِ رشد
     marketApi
       .followSupplier(myBiz.id, biz.id, { source: "SHARED" })
       .then(() => {
@@ -121,6 +128,8 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
       .catch(() => toast({ title: t.loginForAction, variant: "destructive" }));
   };
 
+  const ownerName = [biz.owner?.firstName, biz.owner?.lastName].filter(Boolean).join(" ") || biz.owner?.name;
+
   return (
     <section className="screen" data-screen="list-public">
       <div className="pagehead">
@@ -134,20 +143,34 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
       </div>
 
       <div className="screen-body">
+        {/* ── هویت خریدار (فاز ۱۰ — غنی‌شده) ── */}
         <div className="card" style={{ display: "flex", alignItems: "center", gap: 13 }}>
-          <div
-            className="avatar"
-            style={{ width: 52, height: 52, borderRadius: 17, fontSize: 19, background: "var(--teal-strong)", flexShrink: 0 }}
-          >
-            {biz.name.charAt(0)}
-          </div>
+          {biz.logo?.thumbUrl || biz.logo?.url ? (
+            <img
+              src={(biz.logo.thumbUrl ?? biz.logo.url) as string}
+              alt={biz.name}
+              style={{ width: 52, height: 52, borderRadius: 17, objectFit: "cover", flexShrink: 0 }}
+            />
+          ) : (
+            <div
+              className="avatar"
+              style={{ width: 52, height: 52, borderRadius: 17, fontSize: 19, background: "var(--teal-strong)", flexShrink: 0 }}
+            >
+              {biz.name.charAt(0)}
+            </div>
+          )}
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 15.5, fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
               {biz.name}
               {biz.isVerified ? <Icon className="ic-sm" name="i-shield" style={{ color: "var(--teal-strong)" }} /> : null}
             </div>
             <div style={{ fontSize: 10.5, color: "var(--muted)", marginTop: 4, lineHeight: 1.8 }}>
-              {t.buyerRole.replace("{trade}", biz.activityType ?? "").replace("{city}", biz.city)} · {t.nGoods.replace("{n}", fa(buyListings.length))}
+              {t.buyerRole
+                .replace("{trade}", biz.trade ?? biz.activityType ?? "")
+                .replace("{city}", biz.city)}
+              {" · "}
+              {t.nGoods.replace("{n}", fa(buyListings.length))}
+              {ownerName ? ` · ${t.ownerLine.replace("{name}", ownerName)}` : ""}
             </div>
           </div>
         </div>
@@ -209,31 +232,46 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
             <h3>{t.emptyList}</h3>
           </div>
         ) : (
-          <div className="card" style={{ padding: "6px 14px" }}>
-            {buyListings.map((l, i) => (
-              <div
-                key={l.id}
-                className="follow-row"
-                style={{ borderBottom: i < buyListings.length - 1 ? "1px dashed var(--border)" : "none" }}
-              >
-                <span className="thumb th-40" style={{ display: "grid", placeItems: "center" }}>
-                  <Icon name={artOf(l)} style={{ width: 25, height: 25 }} />
-                </span>
-                <span className="tx">
-                  <b>{goodName(l.good, locale)}</b>
-                  <span>
-                    {t.needLine
-                      .replace("{vol}", l.volume ? fa(l.volume) : "—")
-                      .replace("{unit}", unitLabel(l.good.unit, locale))
-                      .replace("{freq}", l.frequency ? frequencyLabel(l.frequency, locale) : "")}
-                    {l.stock === 0 ? ` · ${t.needNoSupplier}` : ""}
-                  </span>
-                </span>
-                <button className="alert-btn" onClick={() => alertOn(l)} title={t.alertAria} aria-label={t.alertAria}>
-                  <Icon name="i-bell" />
-                </button>
-              </div>
-            ))}
+          /* فاز ۱۰ — کارت‌های عکس‌دار: ویرایشِ همان چیزی که دیگران می‌بینند */
+          <div className="g2">
+            {buyListings.map((l) => {
+              const photo = photoOf(l);
+              const name = goodName(l.good, locale);
+              const freq = l.frequency ? frequencyLabel(l.frequency, locale) : null;
+              return (
+                <div className="row-card" key={l.id}>
+                  {photo ? (
+                     
+                    <img className="thumb photo" src={photo} alt={name} loading="lazy" />
+                  ) : (
+                    <span className="thumb" style={{ display: "grid", placeItems: "center" }}>
+                      <Icon name={artOf(l)} />
+                    </span>
+                  )}
+                  <div className="body">
+                    <div className="t">
+                      {name}
+                      {l.variantLabel ? <span className="badge b-stone">{l.variantLabel}</span> : null}
+                    </div>
+                    <div className="pl">
+                      <b className="need">
+                        {t.needVol
+                          .replace("{vol}", l.volume ? fa(l.volume) : "—")
+                          .replace("{unit}", unitLabel(l.good.unit, locale))}
+                      </b>
+                      {freq ? <span className="u">{t.needFreq.replace("{freq}", freq)}</span> : null}
+                    </div>
+                    <div className="s">
+                      {l.stock === 0 ? t.needNoSupplier : null}
+                      {l.updatedAt ? ` · ${t.updated.replace("{rel}", relabel(l.updatedAt, locale))}` : ""}
+                    </div>
+                  </div>
+                  <button className="alert-btn" onClick={() => alertOn(l)} title={t.alertAria} aria-label={t.alertAria}>
+                    <Icon name="i-bell" />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -243,7 +281,7 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
         </div>
       </div>
 
-      {/* فاز ۹ — شیت اشتراک کامل لیست خرید عمومی */}
+      {/* فاز ۹ — شیت اشتراک کامل دفتر خرید عمومی */}
       <ShareSheet
         open={shareOpen}
         onClose={() => setShareOpen(false)}
@@ -255,4 +293,18 @@ export function ListPublicView({ biz }: { biz: BusinessProfileDto }) {
       />
     </section>
   );
+}
+
+/** زمان نسبتی سبک برای ردیف‌های عمومی */
+function relabel(iso: string, locale: string): string {
+  const days = (Date.now() - new Date(iso).getTime()) / 86_400_000;
+  if (days < 1) return locale === "en" ? "today" : locale === "ar" ? "اليوم" : "امروز";
+  if (days < 30) {
+    const n = Math.floor(days);
+    const fa = (x: number) => x.toLocaleString("fa-IR");
+    if (locale === "en") return `${n}d ago`;
+    if (locale === "ar") return `قبل ${n} يوم`;
+    return `${fa(n)} روز پیش`;
+  }
+  return new Date(iso).toLocaleDateString(locale === "en" ? "en-US" : "fa-IR");
 }

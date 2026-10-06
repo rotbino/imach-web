@@ -84,7 +84,8 @@ function NewListingBody() {
         <div className="min-w-0 flex-1">
           <p className="text-[15px] font-bold leading-tight">افزودن کالا</p>
           <p className="truncate text-[10.5px] font-normal leading-tight text-muted-foreground">
-            به کاتالوگ «{active.name}»
+            {/* فاز ۱۰ — واژهٔ درستِ هر بازو: کاتالوک (فروش) / دفتر خرید (خرید) */}
+            {arm === "buy" ? `به دفتر خرید «${active.name}»` : `به کاتالوگ «${active.name}»`}
           </p>
         </div>
       </header>

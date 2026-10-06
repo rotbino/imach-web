@@ -262,7 +262,8 @@ color: var(--red); background: var(--red-tint);
 }
 
 .ia .btn-block {
-width: 100%;
+/* فاز ۱۰ — inline-flex با margin-inline:auto وسط نمی‌افتد؛ block-level می‌شود */
+  display: flex; width: 100%;
 }
 
 .ia .btn-sm {
@@ -1032,8 +1033,117 @@ font-size: 12px; color: var(--muted); margin-top: 12px; letter-spacing: .02em;
 font-size: 23px; font-weight: 700; margin: 34px 0 6px; line-height: 1.6;
 }
 
-.ia .onboard .qsub {
-font-size: 11.5px; color: var(--muted); margin-bottom: 22px;
+
+/* ── فاز ۱۰: هیروی جدید — چهار خطِ معرفی (متن مالک) ── */
+.ia .onboard .hero-desc {
+display: flex; flex-direction: column; gap: 5px; margin-top: 14px;
+}
+
+.ia .onboard .hero-desc b {
+font-size: 14.5px; font-weight: 800; line-height: 2; color: var(--fg);
+}
+
+.ia .onboard .hero-desc span {
+font-size: 11.5px; color: var(--muted); line-height: 2;
+}
+
+.ia .onboard .hero-desc em {
+font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--teal-strong); line-height: 2.1; margin-top: 3px;
+}
+
+
+/* ── فاز ۱۰: سه باکس معرفی مدرن ── */
+.ia .steps3 {
+display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 13px;
+}
+
+.ia .steps3 .s3 {
+background: var(--surface); border: 1px solid var(--border); border-radius: 15px;
+  padding: 14px 15px 13px;
+}
+
+.ia .steps3 .s3 .ico {
+width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: var(--teal-tint); color: var(--teal-deep);
+  margin-bottom: 10px;
+}
+
+.ia .steps3 .s3:nth-child(2) .ico {
+background: var(--orange-tint); color: var(--primary-strong);
+}
+
+.ia .steps3 .s3:nth-child(3) .ico {
+background: var(--emerald-tint); color: var(--emerald);
+}
+
+.ia .steps3 .s3 .ico svg {
+width: 21px; height: 21px;
+}
+
+.ia .steps3 .s3 b {
+display: block; font-size: 12.5px; font-weight: 800; line-height: 1.9;
+}
+
+.ia .steps3 .s3 p {
+font-size: 10.5px; color: var(--muted); line-height: 2.1; margin-top: 5px;
+}
+
+
+@media (min-width: 640px) {
+
+  .ia .onboard .choice-grid {
+display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+
+  .ia .onboard .choice-grid .choice-card + .choice-card {
+margin-top: 0; margin-bottom: 12px;
+}
+
+}
+
+
+/* ── فاز ۱۰: مزایا — دو ستون جدا (اول خریدار، بعد فروشنده) ── */
+.ia .ben-cols {
+display: grid; grid-template-columns: 1fr; gap: 13px; margin-top: 13px;
+}
+
+.ia .ben-col {
+min-width: 0;
+}
+
+.ia .ben-head {
+display: flex; align-items: center; gap: 10px;
+  border-radius: 14px; padding: 11px 13px;
+  margin-bottom: 9px;
+}
+
+.ia .ben-head .ico {
+width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; flex-shrink: 0;
+}
+
+.ia .ben-head .ico svg {
+width: 19px; height: 19px;
+}
+
+.ia .ben-head.buy {
+background: var(--teal-tint); color: var(--teal-deep);
+}
+
+.ia .ben-head.buy .ico {
+background: var(--teal); color: #fff;
+}
+
+.ia .ben-head.sell {
+background: var(--orange-tint); color: var(--primary-strong);
+}
+
+.ia .ben-head.sell .ico {
+background: var(--primary); color: #fff;
+}
+
+.ia .ben-head b {
+font-size: 12px; font-weight: 800; line-height: 1.8;
 }
 
 .ia .choice-card {
@@ -2076,18 +2186,272 @@ flex: 1; height: 3px; border-radius: 99px; background: var(--muted-bg); min-widt
 background: var(--arm-tint);
 }
 
-.ia .phone-verified {
-display: flex; align-items: center; gap: 9px; background: var(--emerald-tint);
-  color: #065f46; border-radius: 13px; padding: 11px 13px; font-size: 11.5px; font-weight: 700;
-  margin-bottom: 13px;
+/* ── فاز ۱۰: بنر ویرایش شماره (گام ۲ ثبت‌نام — به‌جای «تأیید شد») ── */
+.ia .phone-banner {
+display: flex; align-items: center; gap: 11px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 13px;
+  padding: 10px 12px; margin-bottom: 13px;
 }
 
-.ia .phone-verified svg {
-width: 17px; height: 17px; flex-shrink: 0;
+.ia .phone-banner .ico {
+width: 34px; height: 34px; flex-shrink: 0; border-radius: 11px;
+  background: var(--teal-tint); color: var(--teal-strong);
+  display: grid; place-items: center;
 }
 
-.ia .phone-verified span {
-direction: ltr; flex: 1;
+.ia .phone-banner .ico svg {
+width: 17px; height: 17px;
+}
+
+.ia .phone-banner .txt {
+flex: 1; min-width: 0;
+}
+
+.ia .phone-banner .txt b {
+display: block; font-size: 13.5px; font-weight: 800; letter-spacing: .3px;
+}
+
+.ia .phone-banner .txt span {
+display: block; font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.7;
+}
+
+.ia .btn-edit-num {
+background: var(--amber-tint); color: var(--amber);
+  border: 1px solid color-mix(in srgb, var(--amber) 30%, transparent);
+  flex-shrink: 0;
+}
+
+.ia .btn-edit-num:hover {
+filter: brightness(.96);
+}
+
+
+/* ── فاز ۱۰: ورودی موبایل بین‌المللی (سبک تلگرام) — همیشه LTR ── */
+.ia .intl-phone {
+display: flex; align-items: stretch;
+  border: 1px solid var(--border-strong); border-radius: 12px;
+  background: var(--surface); overflow: hidden;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.ia .intl-phone:focus-within {
+border-color: var(--arm); box-shadow: 0 0 0 3px color-mix(in srgb, var(--arm) 13%, transparent);
+}
+
+.ia .intl-phone .cc {
+display: flex; align-items: center; gap: 7px; padding: 12px;
+  background: var(--muted-bg); border-inline-end: 1px solid var(--border);
+  color: var(--fg); font-size: 13.5px; font-weight: 800; cursor: pointer; flex-shrink: 0;
+  transition: background .15s;
+}
+
+.ia .intl-phone .cc:hover {
+background: color-mix(in srgb, var(--arm) 9%, var(--muted-bg));
+}
+
+.ia .intl-phone .cc .flag {
+font-size: 19px; line-height: 1; font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
+}
+
+.ia .intl-phone .cc .caret {
+color: var(--muted); transform: rotate(180deg);
+}
+
+.ia .intl-phone .num {
+flex: 1; min-width: 0; border: 0; outline: none; background: transparent;
+  padding: 12px 14px; font-size: 16px; font-weight: 700; color: var(--fg);
+  text-align: left; direction: ltr; letter-spacing: .3px;
+}
+
+.ia .intl-phone .num::placeholder {
+color: #97907d; font-weight: 600; letter-spacing: 0;
+}
+
+.ia .intl-phone.inp-lg .cc {
+padding: 13px 12px; font-size: 14.5px;
+}
+
+.ia .intl-phone.inp-lg .num {
+padding: 13px 14px; font-size: 16.5px;
+}
+
+
+/* ── فاز ۱۰: مدال انتخاب کشور ── */
+.ia .country-sheet {
+max-height: min(72vh, 560px); display: flex; flex-direction: column;
+}
+
+.ia .cs-search {
+display: flex; align-items: center; gap: 9px;
+  background: var(--muted-bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 3px 11px; margin: 12px 0 4px;
+}
+
+.ia .cs-search svg {
+width: 16px; height: 16px; color: var(--muted); flex-shrink: 0;
+}
+
+.ia .cs-search .inp {
+background: transparent; border: 0; box-shadow: none; padding: 9px 0; text-align: start; direction: ltr;
+}
+
+.ia .cs-search .inp:focus {
+border-color: transparent; box-shadow: none;
+}
+
+.ia .cs-list {
+overflow-y: auto; overscroll-behavior: contain; margin: 4px -18px 0; padding: 0 18px 6px; flex: 1;
+}
+
+.ia .cs-row {
+display: flex; align-items: center; gap: 11px; width: 100%;
+  padding: 10px; border-radius: 11px; color: var(--fg);
+  font-size: 13px; font-weight: 700; transition: background .12s;
+}
+
+.ia .cs-row:hover {
+background: var(--muted-bg);
+}
+
+.ia .cs-row.on {
+background: color-mix(in srgb, var(--arm) 10%, transparent);
+}
+
+.ia .cs-row .flag {
+font-size: 21px; line-height: 1; flex-shrink: 0; font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
+}
+
+.ia .cs-row .nm {
+flex: 1; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.ia .cs-row .dc {
+color: var(--muted); font-size: 12px; font-weight: 700;
+}
+
+.ia .cs-row svg {
+color: var(--teal-strong);
+}
+
+
+/* ── فاز ۱۰: نوار اصناف — مستطیلیِ گرد + اسکرول افقی در موبایل ── */
+.ia .trade-chips {
+display: flex; flex-wrap: nowrap; gap: 7px;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  padding-bottom: 3px; margin: 0 -2px 2px;
+  scrollbar-width: none;
+}
+
+.ia .trade-chips::-webkit-scrollbar {
+display: none;
+}
+
+.ia .tchip {
+flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 10px; border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--fg-soft);
+  padding: 8px 13px; font-size: 12px; font-weight: 700; white-space: nowrap;
+  transition: border-color .13s, background .13s, color .13s;
+}
+
+.ia .tchip .n {
+font-style: normal; font-size: 9.5px; font-weight: 800;
+  color: var(--muted); background: var(--muted-bg);
+  border-radius: 7px; padding: 2px 6px;
+}
+
+.ia .tchip:hover {
+border-color: var(--arm);
+}
+
+.ia .tchip.on {
+background: var(--arm-tint); color: var(--arm-tint-fg); border-color: var(--arm);
+}
+
+.ia .tchip.on .n {
+background: color-mix(in srgb, var(--arm) 16%, transparent); color: var(--arm-tint-fg);
+}
+
+.ia .tchip.other {
+background: var(--amber-tint); color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 38%, transparent); border-style: dashed;
+}
+
+.ia .tchip.other.on {
+background: var(--amber-tint); color: var(--amber); border-style: solid; border-color: var(--amber);
+}
+
+
+/* ── فاز ۱۰: ورودی هوشمند صنف («سایر») با تایپ‌آهد ── */
+.ia .trade-smart {
+position: relative; margin-top: 8px;
+}
+
+.ia .trade-smart .lead {
+position: absolute; inset-inline-start: 13px; top: 13px; color: var(--muted); z-index: 1; width: 16px; height: 16px;
+}
+
+.ia .trade-smart .inp {
+padding-inline-start: 36px;
+}
+
+.ia .ts-drop {
+position: absolute; inset-inline: 0; top: calc(100% + 6px); z-index: 30;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 13px;
+  box-shadow: var(--shadow-pop); padding: 5px;
+  max-height: 244px; overflow-y: auto;
+}
+
+.ia .ts-row {
+display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 9px 10px; border-radius: 10px;
+  font-size: 12.5px; font-weight: 700; color: var(--fg); text-align: start;
+}
+
+.ia .ts-row:hover {
+background: var(--muted-bg);
+}
+
+.ia .ts-row .nm {
+flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.ia .ts-row .hint-tx {
+font-size: 10px; font-weight: 600; color: var(--muted); flex-shrink: 0;
+}
+
+.ia .ts-row .go {
+color: var(--muted); flex-shrink: 0;
+}
+
+.ia .ts-row.new {
+border: 1px dashed color-mix(in srgb, var(--amber) 45%, transparent); margin-top: 4px;
+}
+
+.ia .ts-badge {
+font-size: 9.5px; font-weight: 800;
+  background: var(--amber-tint); color: var(--amber);
+  border-radius: 7px; padding: 2.5px 7px; margin-inline-start: 6px;
+}
+
+
+/* ── فاز ۱۰: ردیف اکشن‌های شیت (تأیید/انصراف) ── */
+.ia .sheet-actions {
+display: flex; gap: 9px; margin-top: 15px;
+}
+
+.ia .sheet-actions .btn {
+flex: 1;
+}
+
+
+/* ── فاز ۱۰: سلکتور شهر — placeholder داخل + بوردر مشخص ── */
+.ia .city-select {
+display: flex; align-items: center; gap: 9px; cursor: pointer;
+}
+
+.ia .city-select .ph {
+flex: 1; color: var(--muted); font-weight: 600;
 }
 
 
@@ -2630,6 +2994,132 @@ flex: 1; display: flex; align-items: center; gap: 9px;
 
 .ia .searchbar svg {
 width: 16px; height: 16px; flex-shrink: 0;
+}
+
+.ia .searchbar input {
+flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--fg);
+}
+
+.ia .searchbar input::placeholder {
+color: var(--muted); font-weight: 500;
+}
+
+.ia .searchbar .clr {
+width: 24px; height: 24px; border-radius: 8px; flex-shrink: 0;
+  display: grid; place-items: center; color: var(--muted);
+  background: var(--muted-bg);
+}
+
+
+/* ── فاز ۱۰: مدیریت دفتر خرید — جستجو + افزودن + چیپ‌های فیلتر (الهام redesign-base) ── */
+.ia .list-tools {
+display: flex; align-items: center; gap: 9px;
+  margin: 12px 0 10px;
+}
+
+.ia .list-tools .add-btn {
+flex-shrink: 0; height: 46px;
+}
+
+.ia .filter-chips {
+display: flex; gap: 7px; flex-wrap: nowrap; overflow-x: auto;
+  padding-bottom: 2px; margin: 0 -2px 4px;
+  scrollbar-width: none;
+}
+
+.ia .filter-chips::-webkit-scrollbar {
+display: none;
+}
+
+.ia .fchip {
+flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 10px; border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--fg-soft);
+  padding: 7px 12px; font-size: 11.5px; font-weight: 700; white-space: nowrap;
+  transition: border-color .13s, background .13s, color .13s;
+}
+
+.ia .fchip i {
+font-style: normal; font-size: 9.5px; font-weight: 800;
+  background: var(--muted-bg); color: var(--muted);
+  border-radius: 7px; padding: 2px 6px;
+}
+
+.ia .fchip:hover {
+border-color: var(--arm);
+}
+
+.ia .fchip.on {
+background: var(--arm-tint); color: var(--arm-tint-fg); border-color: var(--arm);
+}
+
+.ia .fchip.on i {
+background: color-mix(in srgb, var(--arm) 16%, transparent); color: var(--arm-tint-fg);
+}
+
+.ia .fchip.fresh i {
+background: var(--orange-tint); color: var(--amber);
+}
+
+.ia .fchip.fresh.on i {
+background: color-mix(in srgb, var(--amber) 22%, transparent); color: var(--amber);
+}
+
+
+/* ── فاز ۱۰: سلامِ دفتر خرید + آیکون اطلاعات ── */
+.ia .greet-bar {
+display: flex; align-items: flex-start; gap: 10px;
+}
+
+.ia .greet-bar .info-btn {
+width: 38px; height: 38px; border-radius: 12px; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: var(--teal-tint); color: var(--teal-strong);
+  border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent);
+  transition: filter .15s;
+}
+
+.ia .greet-bar .info-btn:hover {
+filter: brightness(.95);
+}
+
+.ia .greet-bar .info-btn svg {
+width: 18px; height: 18px;
+}
+
+
+/* ── فاز ۱۰: کارت عکس‌دار در دفتر خرید عمومی ── */
+.ia .row-card .thumb.photo {
+width: 58px; height: 58px; border-radius: 13px;
+  object-fit: cover; flex-shrink: 0; background: var(--muted-bg);
+}
+
+.ia .row-card .pl .need {
+font-size: 14.5px;
+}
+
+
+/* ── فاز ۱۰: شیت «دفتر خرید چیست؟» ── */
+.ia .what-is-rows {
+margin-top: 4px;
+}
+
+.ia .wi-row {
+display: flex; gap: 10px; align-items: flex-start;
+  padding: 9px 2px;
+  font-size: 11.5px; color: var(--fg-soft); line-height: 2;
+}
+
+.ia .wi-row + .wi-row {
+border-top: 1px dashed var(--border);
+}
+
+.ia .wi-row .n {
+width: 24px; height: 24px; border-radius: 9px; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: var(--teal-tint); color: var(--teal-deep);
+  font-size: 11px; font-weight: 800; margin-top: 4px;
 }
 
 
@@ -3824,30 +4314,6 @@ font-size: 14px; font-weight: 800; line-height: 2; text-align: center;
 font-size: 10.5px; color: var(--muted); line-height: 2.1; text-align: center; margin-top: 6px;
 }
 
-.ia .intro-tabs {
-display: flex; gap: 5px; margin-top: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px;
-}
-
-.ia .itab {
-flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; background: transparent; border-radius: 10px; padding: 9px 2px; font-family: inherit; font-size: 10.5px; font-weight: 800; color: var(--muted); cursor: pointer; transition: background .15s, color .15s;
-}
-
-.ia .itab svg {
-width: 14px; height: 14px;
-}
-
-.ia .itab.sell.active {
-background: var(--orange-tint); color: var(--primary-strong);
-}
-
-.ia .itab.buy.active {
-background: var(--teal-tint); color: var(--teal-deep);
-}
-
-.ia .ben-title {
-font-size: 11.5px; font-weight: 800; color: var(--fg-soft); margin: 13px 2px 2px;
-}
-
 .ia .ben {
 display: flex; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 11px 12px; margin-top: 7px;
 }
@@ -4858,11 +5324,80 @@ left: max(24px, calc((100% - 680px) / 2)); right: max(24px, calc((100% - 680px) 
 
   /* آنبوردینگ: هیروی وسط */
   .ia [data-screen="onboard"] .onboard {
-max-width: 660px; margin-inline: auto; width: 100%; padding: 36px 30px 44px;
+max-width: 880px; margin-inline: auto; width: 100%; padding: 40px 34px 48px;
 }
 
   .ia [data-screen="onboard"] .mid {
-min-height: 250px;
+min-height: 240px;
+}
+
+  /* فاز ۱۰ — دسکتاپِ اختصاصیِ صفحهٔ اول: هیرو و مقیاس تایپوگرافی */
+  .ia [data-screen="onboard"] .logo-h {
+height: 88px;
+}
+
+  .ia [data-screen="onboard"] .tagline {
+font-size: 13px; font-weight: 700;
+}
+
+  .ia [data-screen="onboard"] .hero-desc b {
+font-size: 17px;
+}
+
+  .ia [data-screen="onboard"] .hero-desc span {
+font-size: 13px;
+}
+
+  .ia [data-screen="onboard"] .hero-desc em {
+font-size: 14.5px;
+}
+
+  .ia [data-screen="onboard"] .q {
+font-size: 25px; margin-top: 40px;
+}
+
+  .ia [data-screen="onboard"] .choice-card .tx b {
+font-size: 18px;
+}
+
+  .ia [data-screen="onboard"] .choice-card .tx span {
+font-size: 12px;
+}
+
+  .ia [data-screen="onboard"] .steps3 {
+grid-template-columns: repeat(3, 1fr); gap: 13px;
+}
+
+  .ia [data-screen="onboard"] .steps3 .s3 b {
+font-size: 13.5px;
+}
+
+  .ia [data-screen="onboard"] .steps3 .s3 p {
+font-size: 11.5px;
+}
+
+  .ia [data-screen="onboard"] .ben-cols {
+grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;
+}
+
+  .ia [data-screen="onboard"] .intro-card h3 {
+font-size: 16px;
+}
+
+  .ia [data-screen="onboard"] .intro-card p {
+font-size: 12.5px; max-width: 640px; margin-inline: auto;
+}
+
+  .ia [data-screen="onboard"] .ben .b-tx b {
+font-size: 12.5px;
+}
+
+  .ia [data-screen="onboard"] .ben .b-tx span {
+font-size: 11px;
+}
+
+  .ia [data-screen="onboard"] .footnote {
+font-size: 11.5px;
 }
 
 }
@@ -5002,6 +5537,10 @@ gap: 14px;
 /* ── ۴) ≥1280: پهن‌تر ── */
 @media (min-width: 1280px) {
 
+  .ia [data-screen="onboard"] .onboard {
+max-width: 1020px;
+}
+
   .ia .grid-2 {
 grid-template-columns: repeat(4, 1fr);
 }
@@ -5015,6 +5554,22 @@ grid-template-columns: minmax(0, 700px) minmax(320px, 400px);
 
 /* ── ۵) ≥1440: تابلوی سه‌ستونه ── */
 @media (min-width: 1440px) {
+
+  .ia [data-screen="onboard"] .onboard {
+max-width: 1140px;
+}
+
+  .ia [data-screen="onboard"] .hero-desc b {
+font-size: 19px;
+}
+
+  .ia [data-screen="onboard"] .q {
+font-size: 27px;
+}
+
+  .ia [data-screen="onboard"] .steps3 .s3 p {
+font-size: 12px; line-height: 2.2;
+}
 
   .ia .g2 {
 grid-template-columns: 1fr 1fr 1fr;
@@ -5073,50 +5628,3 @@ transition-duration: .01ms !important;
 
 }
 
-
-/* ── فاز ۶: توقف کمپین — تأیید درجا (sc-campaign v3) ──
-   (پورت verbatim از Prototype با جایگزینی #fff → var(--card) برای تم تاریک) */
-.ia .stop-confirm {
-  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
-  background: var(--red-tint); border: 1px solid color-mix(in srgb, var(--red) 25%, transparent);
-  border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 8px;
-  font-size: 10.5px; font-weight: 600; color: var(--fg-soft); line-height: 1.7;
-}
-.ia .stop-confirm svg { width: 14px; height: 14px; color: var(--red); flex-shrink: 0; }
-.ia .stop-confirm .sc-btns { margin-inline-start: auto; display: flex; gap: 6px; }
-.ia .stop-confirm .sc-yes {
-  background: var(--red); color: #fff; border: none; border-radius: 8px;
-  font-family: inherit; font-size: 10px; font-weight: 700; padding: 7px 11px; cursor: pointer;
-}
-.ia .stop-confirm .sc-no {
-  background: var(--card); color: var(--fg-soft); border: 1px solid var(--border-strong);
-  border-radius: 8px; font-family: inherit; font-size: 10px; font-weight: 700;
-  padding: 7px 11px; cursor: pointer;
-}
-.ia .stop-confirm .sc-yes:disabled { opacity: .6; cursor: default; }
-
-
-/* ═══════════════ فاز ۹ — رفع آیکون‌های بیش‌ازحد بزرگ (باگ‌های خود Prototype) ═══════════════
-   ۱) چرخ‌دنده/برچسب اسپانسر داخل قاب عکس کارت محصول: `.p-card .ph svg` (58px برای
-      آیکون هنری جای‌خالی) به‌خاطر specificity بالاتر از `.ic-sm` (15px) و
-      `.badge-sponsor svg` (10px) جلو می‌زد → آیکون‌ها غول‌پیکر دیده می‌شدند.
-   ۲) chevron کلاس lv خارج از .link-row (ردیف‌های لیست پیام‌ها) هیچ قاعده‌ای
-      نداشت → اندازهٔ پیش‌فرض مرورگر (بزرگ/نامشخص).
-   ۳) تور ایمن: svg بدون کلاس داخل .ia که هیچ قاعدهٔ ظرفی‌ای سایزش را تعیین
-      نمی‌کند — :where ⇒ specificity صفر ⇒ از هر قاعدهٔ ظرفی موجود ضعیف‌تر است. */
-
-.ia .p-card .ph .gear-btn svg {
-width: 15px; height: 15px;
-}
-
-.ia .p-card .ph .badge-sponsor svg {
-width: 10px; height: 10px;
-}
-
-.ia svg.lv {
-width: 15px; height: 15px; flex-shrink: 0; color: var(--border-strong);
-}
-
-:where(.ia) svg:not([class]) {
-width: 20px; height: 20px; flex-shrink: 0;
-}

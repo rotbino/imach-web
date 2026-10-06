@@ -23,7 +23,7 @@ export function Deskbar() {
   const items: Array<{ icon: IconName; label: string; href: string; dot?: string }> =
     arm === "buy"
       ? [
-          { icon: "i-list", label: m.app.tabs.list, href: "/home" },
+          { icon: "i-list", label: m.app.tabs.list, href: "/home" }, // فاز ۱۰ — برچسب کامل دسکتاپ «دفتر خرید من»
           { icon: "i-bm", label: m.app.tabs.saved, href: "/saved" },
           {
             icon: "i-spark",

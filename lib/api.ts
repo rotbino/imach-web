@@ -135,6 +135,8 @@ export interface BusinessSummaryDto {
   activityType: string | null;
   /** صنف — «سوپرمارکت»؛ کلید جست‌وجوی کپی از هم‌صنف‌ها */
   trade?: string | null;
+  /** فاز ۱۰ — پیوند رجیستری اصناف (بازاستفاده از صنف موجود) */
+  tradeId?: string | null;
   city: string;
   country?: string;
   currency?: string;
@@ -382,11 +384,21 @@ export interface GoodItemDto {
   product?: { imageUrl: string | null } | null;
 }
 
+/** فاز ۱۰ — رکورد رجیستری اصناف (فرم ثبت‌نام / ورودی هوشمند) */
+export interface TradeDto {
+  id: string;
+  name: string;
+  usageCount: number;
+  isCore?: boolean;
+}
+
 export interface BusinessProfileDto {
   id: string;
   slug: string;
   name: string;
   activityType: string | null;
+  /** فاز ۱۰ — صنف خریدار در نمای عمومی لیست خرید */
+  trade?: string | null;
   city: string;
   country?: string;
   currency?: string;
@@ -1046,6 +1058,8 @@ export const authApi = {
   /** ویرایش پروفایل — نام و نام خانوادگی مالک (در ویترین کاتالوگ نشان داده می‌شود) */
   editProfile: (body: { firstName?: string; lastName?: string }) =>
     api<{ user: UserDto }>("/auth/editProfile", { method: "POST", body }),
+  /** فاز ۱۰ — حذف حساب توسط خود کاربر (بازگشت از ثبت‌نام / شروع دوباره) */
+  deleteMe: () => api<{ ok: boolean }>("/auth/deleteMe", { method: "POST" }),
 };
 
 export const goodsApi = {
@@ -1123,6 +1137,12 @@ export const unitsApi = {
 
 export const businessesApi = {
   getMyBusinesses: () => api<(BusinessSummaryDto & { _count: { listings: number } })[]>("/businesses/getMyBusinesses"),
+  /** فاز ۱۰ — رجیستری اصناف برای چیپ‌های ثبت‌نام (هسته‌ای‌ها اول) */
+  getTrades: () =>
+    api<TradeDto[]>("/businesses/getTrades", { auth: false }),
+  /** فاز ۱۰ — تایپ‌آهد ورودی هوشمند صنف («سایر») */
+  searchTrades: (q: string) =>
+    api<TradeDto[]>(`/businesses/searchTrades?q=${encodeURIComponent(q)}`, { auth: false }),
   createBusiness: (body: { name: string; city: string; trade?: string; intent?: "sell" | "buy" | "both" }) =>
     api<BusinessSummaryDto & { slug: string }>("/businesses/createBusiness", { method: "POST", body }),
   editBusiness: (id: string, body: {

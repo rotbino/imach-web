@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * /login — ورود با دیزاین‌سیستم v18 (پورت sc-login · فاز ۲ مهاجرت).
+ * /login — ورود با دیزاین‌سیستم v18 (پورت sc-login · فاز ۲).
  *
  * جریان واقعی (Business Source of Truth — همان بک‌اند، بدون تغییر):
  *   ۱) شماره → checkPhone
@@ -9,16 +9,17 @@
  *      ثبت‌نام سریعِ قبلی (بدون رمز) → ورود بی‌رمز همان لحظه (quickRegister)
  *      شمارهٔ تازه → بنر کهربایی + دعوت به /start
  *
- * تطبیق آگاهانه با Prototype (ثبت‌شده در MIGRATION-MAP):
- *   · ردیف OTP پروتوتایپ → فرم رمز عبور واقعی (بک‌اند هنوز OTP ندارد؛
- *     ظاهر OTP بدون بک‌اند = نقض §۶۳ «mock دائمی ممنوع»)
- *   · بنر «شماره تأیید شد» از sc-signup برای گام رمز استفاده شد
- *   · pagehead/back عین Prototype — بازگشت به /start
+ * فاز ۱۰ (بازخورد مالک):
+ *   · باکس شماره همیشه LTR + پرچم/کد کشور داخل باکس (IntlPhoneField تلگرامی)
+ *     — لینک «تغییر کشور» حذف شد؛ کشور از خودِ باکس عوض می‌شود (مدال سرچ‌دار)
+ *   · سوییچ خودکار به ثبت‌نام: شمارهٔ تایپ‌شده با خودش به /start می‌رود تا
+ *     کاربر مجبور به تایپ مجدد نباشد
+ *   · ورود از /start با شمارهٔ از-قبل-تایپ‌شده (?phone=&cc=)
  */
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ApiError, authApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { routeAfterAuth } from "@/lib/active-biz";
@@ -33,22 +34,8 @@ import { useLocale } from "@/i18n/locale-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { Icon } from "@/components/imach/icon";
 import { Spinner } from "@/components/imach/spinner";
+import { IntlPhoneField } from "@/components/imach/intl-phone-field";
 import { useToast } from "@/hooks/use-toast";
-import { countrySelectItems } from "@/app/components/phone-field";
-import { SearchSelect } from "@/components/search-select";
-
-/** نرمال‌سازی ارقام فارسی/عربی → لاتین (§۲۱ فرم‌های production-grade) */
-function toAsciiDigits(s: string): string {
-  return s
-    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
-}
-
-/** فقط رقم + حذف زندهٔ صفرهای آغازین (الگوی PhoneField موجود) */
-function sanitizePhone(v: string): string {
-  const d = toAsciiDigits(v).replace(/\D/g, "");
-  return d.replace(/^0+/, "").slice(0, 12);
-}
 
 export function LoginForm() {
   const router = useRouter();
@@ -56,14 +43,18 @@ export function LoginForm() {
   const { locale, setLocale } = useLocale();
   const m = useMessages();
   const t = m.app.login;
+  const searchParams = useSearchParams();
   const status = useAuthStore((s) => s.status);
   const login = useAuthStore((s) => s.login);
   const quickRegister = useAuthStore((s) => s.quickRegister);
 
   const [step, setStep] = useState<"phone" | "password">("phone");
-  const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("IR");
-  const [showCountry, setShowCountry] = useState(false);
+  // فاز ۱۰ — شمارهٔ پیوسته از /start یا لینک‌های داخلی
+  const [phone, setPhone] = useState(() => {
+    const p = searchParams.get("phone") ?? "";
+    return p.replace(/^0+/, "").replace(/\D/g, "").slice(0, 12);
+  });
+  const [country, setCountry] = useState(() => searchParams.get("cc") || "IR");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -79,12 +70,12 @@ export function LoginForm() {
   useEffect(() => {
     if (guessed.current) return;
     guessed.current = true;
-    const c = guessCountryCode();
+    const pre = searchParams.get("cc");
+    const c = pre || guessCountryCode();
     setCountry(c);
-    // همگام‌سازی زبان با کشورِ حدسی فقط بدون انتخاب صریح (فاز ۳: کوکی زبان مقدم است)
+    // همگام‌سازی زبان با کشورِ حدسی فقط بدون انتخاب صریح (کوکی زبان مقدم است)
     if (!hasExplicitLocale()) syncLangWithCountry(c);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (c !== "IR") setShowCountry(true);
+     
   }, []);
 
   // کاربرِ واردشده اینجا کاری ندارد → بازوی خودش
@@ -94,7 +85,10 @@ export function LoginForm() {
     }
   }, [status, router]);
 
-  const phoneIntl = normalizeIntlPhone(toAsciiDigits(phone), country);
+  const phoneIntl = normalizeIntlPhone(phone, country);
+
+  /** مقصد ثبت‌نام — شماره/کشور با خودش می‌آید تا دوباره تایپ نشود (فاز ۱۰) */
+  const signupHref = `/start?mode=register${phone ? `&phone=${encodeURIComponent(phone)}` : ""}${country ? `&cc=${country}` : ""}`;
 
   const next = async () => {
     if (!phoneIntl) {
@@ -166,47 +160,24 @@ export function LoginForm() {
       <div className="screen-body">
         {step === "phone" ? (
           <div className="card">
-            {showCountry ? (
-              <div className="field">
-                <label>{t.country}</label>
-                <SearchSelect
-                  items={countrySelectItems}
-                  value={country}
-                  onChange={(code) => {
-                    setCountry(code);
-                    syncLangWithCountry(code);
-                    setPhone("");
-                  }}
-                  placeholder={t.country}
-                  searchPlaceholder="…"
-                  emptyText="—"
-                  ariaLabel={t.country}
-                />
-              </div>
-            ) : (
-              <button
-                type="button"
-                className="btn btn-soft btn-sm"
-                style={{ alignSelf: "flex-start", marginBottom: 10 }}
-                onClick={() => setShowCountry(true)}
-              >
-                <Icon className="ic-sm" name="i-globe" /> {t.changeCountry}
-              </button>
-            )}
-
             <div className="field">
               <label>{t.phoneLabel}</label>
-              <input
-                className="inp inp-lg"
-                dir="ltr"
-                style={{ textAlign: "right" }}
-                inputMode="tel"
-                autoComplete="tel"
-                placeholder={t.phonePlaceholder}
+              {/* فاز ۱۰ — باکس بین‌المللی تلگرامی: پرچم + کد کشور داخل باکس، همیشه LTR */}
+              <IntlPhoneField
                 value={phone}
-                onChange={(e) => setPhone(sanitizePhone(e.target.value))}
-                onKeyDown={(e) => e.key === "Enter" && void next()}
-                aria-label={t.phoneLabel}
+                onChange={(v) => {
+                  setPhone(v);
+                  if (noAccount) setNoAccount(false);
+                }}
+                country={country}
+                onCountryChange={(code) => {
+                  setCountry(code);
+                  syncLangWithCountry(code);
+                }}
+                placeholder={t.phonePlaceholder}
+                ariaLabel={t.phoneLabel}
+                autoFocus
+                onEnter={() => void next()}
               />
               {noAccount ? (
                 <div
@@ -225,7 +196,7 @@ export function LoginForm() {
                   <Icon name="i-info" />
                   <span style={{ flex: 1 }}>{t.noAccount}</span>
                   <Link
-                    href="/start?mode=register"
+                    href={signupHref}
                     className="btn btn-soft btn-sm"
                     style={{ color: "var(--amber)", flexShrink: 0 }}
                   >
@@ -247,20 +218,23 @@ export function LoginForm() {
           </div>
         ) : (
           <div className="card">
-            {/* بنر شماره — از sc-signup (phone-verified) */}
-            <div className="phone-verified">
-              <Icon name="i-checkc" />
-              <span dir="ltr">{fmtPhone(phoneIntl)}</span>
+            {/* بنر شماره — ویرایش‌پذیر (فاز ۱۰: هماهنگ با ثبت‌نام) */}
+            <div className="phone-banner">
+              <Icon name="i-tel" className="ico" />
+              <div className="txt">
+                <b dir="ltr">{fmtPhone(phoneIntl)}</b>
+                <span>{t.editPhone}</span>
+              </div>
               <button
                 type="button"
-                className="btn btn-soft btn-sm"
+                className="btn btn-edit-num"
                 onClick={() => {
                   setStep("phone");
                   setPassword("");
                   setNoAccount(false);
                 }}
               >
-                {t.editPhone}
+                <Icon className="ic-sm" name="i-edit" /> {t.editPhone}
               </button>
             </div>
 
@@ -293,7 +267,7 @@ export function LoginForm() {
                     placeItems: "center",
                   }}
                 >
-                  <Icon className="ic-sm" name={showPw ? "i-eye" : "i-eye"} style={{ opacity: showPw ? 1 : 0.55 }} />
+                  <Icon className="ic-sm" name="i-eye" style={{ opacity: showPw ? 1 : 0.55 }} />
                 </button>
               </div>
             </div>
@@ -311,7 +285,7 @@ export function LoginForm() {
         )}
 
         <div className="card" style={{ padding: "5px 16px" }}>
-          <Link className="link-row" href="/start?mode=register">
+          <Link className="link-row" href={signupHref}>
             <Icon name="i-user" />
             <span style={{ flex: 1 }}>
               <b>{t.makeAccountRow}</b>
@@ -324,7 +298,7 @@ export function LoginForm() {
         <div className="hint">
           <Icon name="i-shield" />
           <span>
-            {t.hint} <Link href="/start?mode=register" style={{ fontWeight: 800, color: "var(--arm-strong)" }}>{t.hintLink}</Link>
+            {t.hint} <Link href={signupHref} style={{ fontWeight: 800, color: "var(--arm-strong)" }}>{t.hintLink}</Link>
           </span>
         </div>
       </div>

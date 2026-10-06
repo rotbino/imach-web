@@ -37,6 +37,10 @@ interface AuthState {
   /** ثبت‌نام سریع — فقط موبایل. Business خودکار با نام «کاتالوگ شما» ساخته می‌شود. */
   quickRegister: (phone: string, country?: string, ref?: string) => Promise<void>;
   logout: (dest?: string) => Promise<void>;
+  /** فاز ۱۰ — حذف حساب توسط خود کاربر (بازگشت از ثبت‌نام با شمارهٔ اشتباه)؛
+   *  حساب + کسب‌وکارهای placeholder سمت سرور حذف می‌شوند، سپس کلاینت پاک و
+   *  به صفحهٔ اول برمی‌گردد تا همه‌چیز از اول شروع شود. */
+  deleteAccount: () => Promise<void>;
   setSession: (session: { accessToken: string; user: UserDto; businesses: BusinessSummaryDto[] }) => void;
   /** refresh ساکت برای api client — توکن جدید را برمی‌گرداند */
   refresh: () => Promise<string | null>;
@@ -92,6 +96,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   quickRegister: async (phone, country, ref) => {
     const session = await authApi.quickRegister({ phone, country, ref });
     get().setSession(session);
+  },
+
+  deleteAccount: async () => {
+    // سرور: کاسکید کامل (کسب‌وکارها/آگهی‌ها/توکن‌ها)؛ سپس پاکسازی کلاینت
+    // مثل logout ولی با مقصد پیش‌فرض صفحهٔ اول (شروع دوبارهٔ ثبت‌نام).
+    try {
+      await authApi.deleteMe();
+    } catch (err) {
+      // اگر سرور نتوانست حذف کند، خطا به کاربر می‌رسد (کلاینت پاک نمی‌شود تا دوباره تلاش کند)
+      throw err;
+    }
+    await get().logout("/");
   },
 
   markPasswordSet: () => {

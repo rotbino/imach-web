@@ -127,7 +127,7 @@ function mapSelector(sel, inDesktop) {
     warnings.push(`unhandled .phone descendant selector: ${sel}`);
     return null;
   }
-  s = s.replace(/\[_data_screen_/g, "[data-screen=");
+  s = s.replace(/\[_data_screen_=/g, "[data-screen="); // فاز ۱۰ — رفع باگ == دوتایی (نشان‌گذار = را هم بلع)
   return `.ia ${s}`;
 }
 

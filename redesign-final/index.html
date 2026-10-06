@@ -101,7 +101,7 @@
       <nav class="deskbar" id="deskbar" aria-label="ناوبری اصلی">
         <div class="db-head">
           <button class="db-logo" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
-          <div class="db-biz"><b id="deskBizName">رستوران مهر</b><span id="deskBizRole">دستیار خرید عمده</span></div>
+          <div class="db-biz"><b id="deskBizName">رستوران مهر</b><span id="deskBizRole">دستیار خرید</span></div>
         </div>
         <div class="db-arm" aria-label="جابه‌جایی دستیار">
           <button class="da buy" id="da-buy" onclick="setMode('buy')"><svg><use href="#i-basket"/></svg> خرید</button>
@@ -123,19 +123,24 @@
             <div class="blobs"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
             <div class="mid">
               <img class="logo-h" src="assets/logo3.svg" alt="iMatch">
-              <div class="tagline">تأمین‌کنندهٔ مناسب را برای خرید عمده پیدا کن</div>
+              <div class="tagline">جلوی چشم خریدارت باش</div>
+              <div class="hero-desc">
+                <b>خرید عمده و تامین، مسألهٔ تقریباً تمام کسب‌وکارهاست</b>
+                <span>از مغازه‌های کوچک تا کارخانه‌های بزرگ</span>
+                <span>از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی</span>
+                <em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند</em>
+              </div>
               <div class="q">شما در بازار عمده چه نقشی دارید؟</div>
-              <div class="qsub">فقط برای شروع می‌پرسیم — بعداً می‌توانید بین دو دستیار جابه‌جا شوید</div>
             </div>
             <div class="choice-grid">
             <button class="choice-card buy" onclick="choose('buy')">
               <span class="ico"><svg><use href="#i-basket"/></svg></span>
-              <span class="tx"><b>خریدار عمده هستم</b><span>لیست خریدم را می‌سازم و قیمتِ چند تأمین‌کننده را زنده و کنارِ هم دنبال می‌کنم</span></span>
+              <span class="tx"><b>خریدار عمده هستم</b><span>لیست خریدت رو بساز و با تامین‌کنندگان به اشتراک بذار</span></span>
               <svg class="ar"><use href="#i-back"/></svg>
             </button>
             <button class="choice-card sell" onclick="choose('sell')">
               <span class="ico"><svg><use href="#i-box"/></svg></span>
-              <span class="tx"><b>فروشندهٔ عمده هستم</b><span>کاتالوگم را می‌سازم — خریدارهای عمده قیمتش را زنده دنبال می‌کنند</span></span>
+              <span class="tx"><b>تامین‌کننده هستم</b><span>کاتالوگ محصولاتت رو بساز و با خریداران به اشتراک بذار</span></span>
               <svg class="ar"><use href="#i-back"/></svg>
             </button>
             </div>
@@ -153,16 +158,63 @@
                   <span class="mv mv-sell"><svg><use href="#i-box"/></svg></span>
                 </div>
                 <h3>آی‌مچ؛ پلتفرم تطبیق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
-                <p>آی‌مچ با موتور تطبیق اختصاصی خود، درخواست‌های خریدِ خریداران عمده را با محصولات تأمین‌کنندگان مچ می‌کند و برای هر کالا و هر حجم خرید یا فروش، یک بازارِ عمدهٔ اختصاصی می‌سازد.</p>
+                <p>ای‌مچ با موتور تطابق خودش، درخواست‌های خرید خریداران عمده رو به محصولات تامین‌کنندگان مچ می‌کنه، و با این کار یک بازار کاملاً اختصاصی خرید و فروش عمده برای شما می‌سازه که دقیقاً متناسب با کالاها و حجم خرید یا فروش شماست.</p>
               </div>
 
-              <div class="intro-tabs">
-                <button class="itab sell active" onclick="introTab(this,'sell')"><svg><use href="#i-box"/></svg> برای تأمین‌کننده و فروشنده</button>
-                <button class="itab buy" onclick="introTab(this,'buy')"><svg><use href="#i-basket"/></svg> برای خریدار عمده</button>
+              <!-- ═══ فاز ۱۰: سه باکس معرفی مدرن (متن مالک) ═══ -->
+              <div class="steps3">
+                <div class="s3">
+                  <span class="ico"><svg><use href="#i-spark"/></svg></span>
+                  <b>برای خریدهای عمده دنبال تأمین‌کننده مناسبی؟</b>
+                  <p>نیاز خریدت رو ثبت کن تا آیمچ تأمین‌کننده‌هایی رو بهت پیشنهاد بده که کالای موردنیازت رو با حجم و شرایط مناسب تأمین می‌کنن. قیمت، فاصله، شرایط پرداخت و تحویل هم در پیشنهادها در نظر گرفته می‌شه.</p>
+                </div>
+                <div class="s3">
+                  <span class="ico"><svg><use href="#i-chart"/></svg></span>
+                  <b>می‌خوای قیمت چند تأمین‌کننده رو با هم ببینی؟</b>
+                  <p>کاتالوگ تأمین‌کننده‌های مختلف رو ذخیره کن و قیمت کالاهاشون رو دنبال کن. برای هر کالای عمده، قیمت و شرایط چند تأمین‌کننده رو کنار هم ببین و راحت‌تر برای خرید تصمیم بگیر.</p>
+                </div>
+                <div class="s3">
+                  <span class="ico"><svg><use href="#i-users"/></svg></span>
+                  <b>دنبال خریدار عمده جدیدی؟</b>
+                  <p>کالاها و قیمت‌هات رو توی کاتالوگت بذار تا آیمچ اون‌ها رو به خریداران عمده‌ای که به کالاها و حجم فروش تو نیاز دارن پیشنهاد بده؛ در کنار مشتری‌هایی که خودت از قبل داری.</p>
+                </div>
               </div>
 
-              <div id="introSell" class="ben-list sell-side">
-                <div class="ben-title">مزایای آی‌مچ برای تأمین‌کنندگان و فروشندگان عمده</div>
+              <div class="ben-cols">
+              <div class="ben-col buy-side">
+                <div class="ben-head buy">
+                  <span class="ico"><svg><use href="#i-basket"/></svg></span>
+                  <b>مزایای آی‌مچ برای خریدار عمده</b>
+                </div>
+                <div class="ben-list buy-side">
+                <div class="ben">
+                  <span class="b-n">۱</span>
+                  <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۲</span>
+                  <span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۳</span>
+                  <span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>قیمت یک کالا (مثلاً برنج هاشمی) را از کاتالوگ چند فروشنده دنبال کن و برای هر کالا یک «تابلوی تأمین» بساز</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۴</span>
+                  <span class="b-tx"><b>مقایسهٔ قیمت زنده و کنارِ هم</b><span>با تابلوی قیمت هر کالا، قیمت زندهٔ یک کالا را از چند تأمین‌کننده، کنار هم مقایسه کن</span></span>
+                </div>
+                <div class="ben">
+                  <span class="b-n">۵</span>
+                  <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
+                </div>
+                </div>
+              </div>
+              <div class="ben-col sell-side">
+                <div class="ben-head sell">
+                  <span class="ico"><svg><use href="#i-box"/></svg></span>
+                  <b>مزایای آی‌مچ برای تأمین‌کنندگان و فروشندگان عمده</b>
+                </div>
+                <div class="ben-list sell-side">
                 <div class="ben">
                   <span class="b-n">۱</span>
                   <span class="b-tx"><b>خریدارانِ دقیقاً مرتبط</b><span>محصولت را به خریدارهایی معرفی می‌کنیم که دقیقاً دنبال همان کالا هستند — اول شهر خودت، بعد استان، بعد کل کشور. از سفارش یک کارتنیِ سوپرمارکت تا حجم‌های بزرگ صادراتی</span></span>
@@ -187,33 +239,11 @@
                   <span class="b-n">۶</span>
                   <span class="b-tx"><b>ابزارهای همیشه رایگان + تبلیغ کم‌هزینه</b><span>محصولت را با کمترین هزینه تبلیغ کن — کالا را دقیقاً جلوی چشم خریدارِ همان کالا با همان حجم می‌گذاریم و فقط در صورت مشاهده یا دنبال‌کردنِ قیمت، مبلغ کمی از اعتبارت کم می‌شود</span></span>
                 </div>
-              </div>
-
-              <div id="introBuy" class="ben-list buy-side" style="display:none">
-                <div class="ben-title">مزایای آی‌مچ برای خریدار عمده</div>
-                <div class="ben">
-                  <span class="b-n">۱</span>
-                  <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span>
-                </div>
-                <div class="ben">
-                  <span class="b-n">۲</span>
-                  <span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span>
-                </div>
-                <div class="ben">
-                  <span class="b-n">۳</span>
-                  <span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>قیمت یک کالا (مثلاً برنج هاشمی) را از کاتالوگ چند فروشنده دنبال کن و برای هر کالا یک «تابلوی تأمین» بساز</span></span>
-                </div>
-                <div class="ben">
-                  <span class="b-n">۴</span>
-                  <span class="b-tx"><b>مقایسهٔ قیمت زنده و کنارِ هم</b><span>با تابلوی قیمت هر کالا، قیمت زندهٔ یک کالا را از چند تأمین‌کننده، کنار هم مقایسه کن</span></span>
-                </div>
-                <div class="ben">
-                  <span class="b-n">۵</span>
-                  <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
                 </div>
               </div>
+            </div>
 
-              <div class="ben-foot">همهٔ این‌ها رایگان شروع می‌شود — <b>ثبت‌نام فقط با شمارهٔ موبایل</b><br>گزینهٔ بالا را انتخاب کنید تا همین حالا وارد شوید<br><a href="help.html" style="display:inline-block;margin-top:8px;color:var(--arm-tint-fg);font-weight:700;text-decoration:none;border-bottom:1px dashed currentColor">راهنمای کامل آی‌مچ را بخوانید →</a></div>
+            <div class="ben-foot">همهٔ این‌ها رایگان شروع می‌شود — <b>ثبت‌نام فقط با شمارهٔ موبایل</b><br>گزینهٔ بالا را انتخاب کنید تا همین حالا وارد شوید<br><a href="help.html" style="display:inline-block;margin-top:8px;color:var(--arm-tint-fg);font-weight:700;text-decoration:none;border-bottom:1px dashed currentColor">راهنمای کامل آی‌مچ را بخوانید →</a></div>
             </div>
           </div>
         </section>
@@ -225,7 +255,7 @@
             <button class="brand" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
             <div class="side">
               <button class="arm-pill" onclick="openSheet('sheet-switch')">
-                <svg><use href="#i-basket"/></svg> خرید عمده <svg class="caret"><use href="#i-chev"/></svg>
+                <svg><use href="#i-basket"/></svg> دستیار خرید <svg class="caret"><use href="#i-chev"/></svg>
               </button>
               <button class="icon-btn" aria-label="اعلان‌ها" onclick="openSheet('sheet-notif')"><svg class="ic"><use href="#i-bell"/></svg><span class="dot" id="bellDotBuy">۲</span></button>
               <a class="demo-link" href="rapid-demo.html" title="دموی سریع — فهرست همهٔ صفحه‌ها و شیت‌ها"><svg class="ic-sm"><use href="#i-list"/></svg> دمو</a>
@@ -299,14 +329,14 @@
 
             <div class="hint">
               <svg><use href="#i-info"/></svg>
-              <span>هر کالا در لیست، یک <b>تابلوی تأمین</b> دارد — روی کالا بزن تا قیمت‌های زندهٔ چند تأمین‌کننده و شرایطشان را ببینی؛ هر کدام را که خواستی <b>دنبال کن</b> تا همیشه در دفترت بماند. تابلو از ناوبری اصلی بیرون است؛ همیشه از دلِ کالا باز می‌شود.</span>
+              <span>لیست خریدت رو بساز و لینکش رو برای تامین‌کنندگانی که می‌شناسی ارسال کن.</span>
             </div>
           </div>
           <nav class="tabbar" id="nav-buy">
-            <button class="tab active" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>لیست خرید</button>
-            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>ذخیره‌شده‌ها</button>
+            <button class="tab active" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>دفتر خرید</button>
+            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>کاتالوگ‌ها</button>
             <button class="tab" data-go="sc-offers"><svg><use href="#i-spark"/></svg>پیشنهادها<span class="tdot">۳</span></button>
-            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab" data-go="sc-buy-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -554,13 +584,13 @@
           <header class="appbar">
             <button class="brand" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
             <div class="side">
-              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-basket"/></svg> خرید عمده <svg class="caret"><use href="#i-chev"/></svg></button>
+              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-basket"/></svg> دستیار خرید <svg class="caret"><use href="#i-chev"/></svg></button>
               <button class="icon-btn" aria-label="اعلان‌ها" onclick="openSheet('sheet-notif')"><svg class="ic"><use href="#i-bell"/></svg><span class="dot">۲</span></button>
             </div>
           </header>
           <div class="screen-body">
             <div class="greet">
-              <b>کاتالوگ‌های ذخیره‌شده</b>
+              <b>کاتالوگ‌های مورد علاقه</b>
               <span>ویترین تأمین‌کنندگانی که ذخیره کرده‌ای — کالاهای جدیدشان را می‌بینی</span>
             </div>
 
@@ -642,10 +672,10 @@
             </div>
           </div>
           <nav class="tabbar">
-            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>لیست خرید</button>
-            <button class="tab active" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>ذخیره‌شده‌ها</button>
+            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>دفتر خرید</button>
+            <button class="tab active" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>کاتالوگ‌ها</button>
             <button class="tab" data-go="sc-offers"><svg><use href="#i-spark"/></svg>پیشنهادها<span class="tdot">۳</span></button>
-            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab" data-go="sc-buy-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -656,7 +686,7 @@
           <header class="appbar">
             <button class="brand" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
             <div class="side">
-              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-basket"/></svg> خرید عمده <svg class="caret"><use href="#i-chev"/></svg></button>
+              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-basket"/></svg> دستیار خرید <svg class="caret"><use href="#i-chev"/></svg></button>
               <button class="icon-btn" aria-label="اعلان‌ها" onclick="openSheet('sheet-notif')"><svg class="ic"><use href="#i-bell"/></svg><span class="dot">۲</span></button>
             </div>
           </header>
@@ -667,7 +697,7 @@
             </div>
 
             <div class="greet" style="margin-top:11px">
-              <b>پیشنهادها</b>
+              <b>پیشنهاد قیمت به درخواست‌های من</b>
               <span>قیمت‌ها و شرایطی که تأمین‌کنندگان برای درخواست‌هایت فرستاده‌اند — ۳ پیشنهاد جدید</span>
             </div>
 
@@ -799,10 +829,10 @@
             </div>
           </div>
           <nav class="tabbar">
-            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>لیست خرید</button>
-            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>ذخیره‌شده‌ها</button>
+            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>دفتر خرید</button>
+            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>کاتالوگ‌ها</button>
             <button class="tab active" data-go="sc-offers"><svg><use href="#i-spark"/></svg>پیشنهادها<span class="tdot">۳</span></button>
-            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab" data-go="sc-buy-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -813,7 +843,7 @@
           <header class="appbar">
             <button class="brand" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
             <div class="side">
-              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-basket"/></svg> خرید عمده <svg class="caret"><use href="#i-chev"/></svg></button>
+              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-basket"/></svg> دستیار خرید <svg class="caret"><use href="#i-chev"/></svg></button>
               <button class="icon-btn" aria-label="اعلان‌ها" onclick="openSheet('sheet-notif')"><svg class="ic"><use href="#i-bell"/></svg><span class="dot">۲</span></button>
             </div>
           </header>
@@ -837,12 +867,12 @@
             <div class="card">
               <div class="cap-row">
                 <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-basket"/></svg></span>
-                <span class="tx"><b>دستیار خرید عمده</b><span>لیست خرید، تابلوهای تأمین، پیشنهادها</span></span>
+                <span class="tx"><b>دستیار خرید</b><span>لیست خرید، تابلوهای تأمین، پیشنهادها</span></span>
                 <span class="switch on arm"></span>
               </div>
               <div class="cap-row">
                 <span class="ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-box"/></svg></span>
-                <span class="tx"><b>دستیار فروش عمده</b><span id="sellArmDesc">کاتالوگ فروش هم داشته باش — برای عمده‌فروش‌ها</span></span>
+                <span class="tx"><b>دستیار فروش</b><span id="sellArmDesc">کاتالوگ فروش هم داشته باش — برای عمده‌فروش‌ها</span></span>
                 <span class="switch arm" id="sellArmSwitch" onclick="toggleSellArm()"></span>
               </div>
               <div class="note-l">هر دو دستیار می‌توانند همزمان فعال باشند؛ حداقل یکی باید روشن بماند.</div>
@@ -862,10 +892,10 @@
             </div>
           </div>
           <nav class="tabbar">
-            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>لیست خرید</button>
-            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>ذخیره‌شده‌ها</button>
+            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>دفتر خرید</button>
+            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>کاتالوگ‌ها</button>
             <button class="tab" data-go="sc-offers"><svg><use href="#i-spark"/></svg>پیشنهادها<span class="tdot">۳</span></button>
-            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab active" data-go="sc-buy-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -876,7 +906,7 @@
           <header class="appbar">
             <button class="brand" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
             <div class="side">
-              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-box"/></svg> فروش عمده <svg class="caret"><use href="#i-chev"/></svg></button>
+              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-box"/></svg> دستیار فروش <svg class="caret"><use href="#i-chev"/></svg></button>
               <button class="icon-btn" aria-label="اعلان‌ها" onclick="openSheet('sheet-notif')"><svg class="ic"><use href="#i-bell"/></svg><span class="dot" id="bellDotSell">۱</span></button>
               <a class="demo-link" href="rapid-demo.html" title="دموی سریع — فهرست همهٔ صفحه‌ها و شیت‌ها"><svg class="ic-sm"><use href="#i-list"/></svg> دمو</a>
             </div>
@@ -1059,7 +1089,7 @@
           <nav class="tabbar">
             <button class="tab active" data-go="sc-sell-catalog"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
             <button class="tab" data-go="sc-sell-requests"><svg><use href="#i-inbox"/></svg>درخواست‌های قیمت<span class="tdot">۲</span></button>
-            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab" data-go="sc-sell-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -1273,7 +1303,7 @@
           <header class="appbar">
             <button class="brand" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
             <div class="side">
-              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-box"/></svg> فروش عمده <svg class="caret"><use href="#i-chev"/></svg></button>
+              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-box"/></svg> دستیار فروش <svg class="caret"><use href="#i-chev"/></svg></button>
               <button class="icon-btn" aria-label="اعلان‌ها" onclick="openSheet('sheet-notif')"><svg class="ic"><use href="#i-bell"/></svg><span class="dot" id="bellDotReq">۱</span></button>
             </div>
           </header>
@@ -1451,7 +1481,7 @@
           <nav class="tabbar">
             <button class="tab" data-go="sc-sell-catalog"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
             <button class="tab active" data-go="sc-sell-requests"><svg><use href="#i-inbox"/></svg>درخواست‌های قیمت<span class="tdot">۲</span></button>
-            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab" data-go="sc-sell-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -1701,7 +1731,7 @@
           <header class="appbar">
             <button class="brand" onclick="goHome()" title="صفحهٔ اصلی" aria-label="صفحهٔ اصلی"><img src="assets/logo3.svg" alt="iMatch"></button>
             <div class="side">
-              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-box"/></svg> فروش عمده <svg class="caret"><use href="#i-chev"/></svg></button>
+              <button class="arm-pill" onclick="openSheet('sheet-switch')"><svg><use href="#i-box"/></svg> دستیار فروش <svg class="caret"><use href="#i-chev"/></svg></button>
               <button class="icon-btn" aria-label="اعلان‌ها" onclick="openSheet('sheet-notif')"><svg class="ic"><use href="#i-bell"/></svg><span class="dot">۱</span></button>
             </div>
           </header>
@@ -1737,12 +1767,12 @@
             <div class="card">
               <div class="cap-row">
                 <span class="ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-box"/></svg></span>
-                <span class="tx"><b>دستیار فروش عمده</b><span>کاتالوگ، درخواست‌های قیمت، دنبال‌کنندگان</span></span>
+                <span class="tx"><b>دستیار فروش</b><span>کاتالوگ، درخواست‌های قیمت، دنبال‌کنندگان</span></span>
                 <span class="switch on arm"></span>
               </div>
               <div class="cap-row">
                 <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-basket"/></svg></span>
-                <span class="tx"><b>دستیار خرید عمده</b><span>خرید هم داری؟ دستیار خرید را روشن کن</span></span>
+                <span class="tx"><b>دستیار خرید</b><span>خرید هم داری؟ دستیار خرید را روشن کن</span></span>
                 <span class="switch arm" id="buyArmSwitch" onclick="toggleBuyArm()"></span>
               </div>
               <div class="note-l">هر دو دستیار می‌توانند همزمان فعال باشند؛ حداقل یکی باید روشن بماند.</div>
@@ -1767,7 +1797,7 @@
           <nav class="tabbar">
             <button class="tab" data-go="sc-sell-catalog"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
             <button class="tab" data-go="sc-sell-requests"><svg><use href="#i-inbox"/></svg>درخواست‌های قیمت<span class="tdot">۲</span></button>
-            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab" data-go="sc-msgs" title="پیام‌ها"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab active" data-go="sc-sell-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -2198,61 +2228,87 @@
               <div class="card">
                 <div class="field">
                   <label>شمارهٔ موبایل</label>
-                  <input id="suPhone" class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" placeholder="۰۹۱۲ ··· ···" oninput="suPhoneCheck()">
-                  <div class="f-err" id="suPhoneErr" style="display:none"><svg><use href="#i-info"/></svg> شماره با ۰۹ شروع می‌شود و ۱۱ رقم دارد</div>
+                  <!-- فاز ۱۰ — باکس بین‌المللی تلگرامی: پرچم + کد کشور داخل باکس، همیشه LTR -->
+                  <div class="intl-phone">
+                    <button class="cc" type="button" onclick="openCountrySheet()">
+                      <span class="flag">🇮🇷</span><b>+98</b>
+                      <svg class="ic-sm ic-10 caret"><use href="#i-chev"/></svg>
+                    </button>
+                    <input id="suPhone" class="num" inputmode="tel" placeholder="۹۱۲ ۳۴۵ ۶۷۸۹" oninput="suPhoneCheck()">
+                  </div>
+                  <div class="f-err" id="suPhoneErr" style="display:none"><svg><use href="#i-info"/></svg> شمارهٔ موبایل معتبر نیست</div>
                 </div>
-                <button class="btn btn-primary btn-lg btn-block" id="suCodeBtn" onclick="suSendCode()" disabled>دریافت کد تأیید</button>
+                <button class="btn btn-primary btn-lg btn-block" id="suCodeBtn" onclick="suSendCode()" disabled>ادامه</button>
               </div>
               <div class="gate-note">با ساخت حساب، قوانین آی‌مچ را می‌پذیری</div>
             </div>
 
             <div id="suStep2" style="display:none">
-              <div class="phone-verified"><svg><use href="#i-checkc"/></svg><span dir="ltr">۰۹۱۲ ۱۲۳ ۴۵۶۷</span> شماره تأیید شد</div>
+              <!-- فاز ۱۰ — بنر ویرایش شماره (به‌جای «تأیید شد») -->
+              <div class="phone-banner">
+                <span class="ico"><svg><use href="#i-tel"/></svg></span>
+                <div class="txt">
+                  <b dir="ltr">۰۹۱۲ ۱۲۳ ۴۵۶۷</b>
+                  <span>اشتباه بود؟ ویرایشش کن و از اول شروع کن</span>
+                </div>
+                <button class="btn btn-edit-num" type="button" onclick="openEditPhoneSheet()">
+                  <svg class="ic-sm"><use href="#i-edit"/></svg> ویرایش شماره
+                </button>
+              </div>
               <div class="steps">
                 <div class="step done"><span class="n"><svg class="ic-sm ic-12"><use href="#i-check"/></svg></span> شماره</div>
                 <div class="bar"></div>
                 <div class="step active"><span class="n">۲</span> کسب‌وکار</div>
               </div>
               <div class="card">
-                <div class="field">
-                  <label>نام و نام خانوادگی</label>
-                  <input class="inp" value="مهدی محمدی">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+                  <div class="field">
+                    <label>نام</label>
+                    <input class="inp" value="مهدی">
+                  </div>
+                  <div class="field">
+                    <label>نام خانوادگی</label>
+                    <input class="inp" value="محمدی">
+                  </div>
                 </div>
                 <div class="field">
                   <label>نام کسب‌وکار</label>
-                  <input class="inp" value="رستوران مهر">
+                  <input class="inp" value="سوپرمارکت مهر">
                 </div>
                 <div class="field">
                   <label>صنف</label>
-                  <div class="unit-chips">
-                    <button class="chip active">رستوران</button>
-                    <button class="chip">عمده‌فروش</button>
-                    <button class="chip">کارخانه</button>
-                    <button class="chip">خرده‌فروش</button>
+                  <!-- فاز ۱۰ — اصناف از دیتابیس: ۴ چیپ هسته‌ای + «سایر»ِ رنگی + ورودی هوشمند -->
+                  <div class="trade-chips">
+                    <button class="tchip on" type="button" onclick="tradeChip(this)">سوپرمارکت<i class="n">۱۲</i></button>
+                    <button class="tchip" type="button" onclick="tradeChip(this)">پخش مواد غذایی<i class="n">۸</i></button>
+                    <button class="tchip" type="button" onclick="tradeChip(this)">تولید پوشاک<i class="n">۳</i></button>
+                    <button class="tchip" type="button" onclick="tradeChip(this)">قنادی<i class="n">۲</i></button>
+                    <button class="tchip other" type="button" onclick="tradeOther(this)"><svg class="ic-sm ic-12"><use href="#i-plus"/></svg> سایر</button>
+                  </div>
+                  <div class="trade-smart" id="suTradeSmart" style="display:none">
+                    <svg class="lead"><use href="#i-search"/></svg>
+                    <input class="inp" placeholder="مثلاً: قصابی، لوازم تحریر، خشکبار…" oninput="tradeTypeahead(this)">
+                    <div class="ts-drop" id="suTradeDrop" style="display:none">
+                      <button class="ts-row" type="button" onclick="tradePickRow(this)"><span class="nm">قصابی</span><span class="hint-tx">۴ کسب‌وکار</span><svg class="ic-sm ic-14 go"><use href="#i-chev"/></svg></button>
+                      <button class="ts-row" type="button" onclick="tradePickRow(this)"><span class="nm">لوازم تحریر</span><span class="hint-tx">۲ کسب‌وکار</span><svg class="ic-sm ic-14 go"><use href="#i-chev"/></svg></button>
+                      <button class="ts-row new" type="button" onclick="tradePickRow(this)"><span class="nm">خشکبار <b class="ts-badge">صنف جدید</b></span><span class="hint-tx">این صنف هنوز در آی‌مچ نیست — با ثبت حساب ساخته می‌شود.</span></button>
+                    </div>
                   </div>
                 </div>
                 <div class="field">
                   <label>شهر</label>
-                  <div class="inp" style="display:flex;align-items:center;gap:9px">
+                  <!-- فاز ۱۰ — placeholder روی خود سلکتور + بوردر مشخص -->
+                  <div class="inp city-select">
                     <svg class="ic-sm" style="color:var(--muted)"><use href="#i-pin"/></svg>
-                    همدان
-                    <svg class="ic-sm" style="color:var(--muted);margin-right:auto"><use href="#i-chev"/></svg>
+                    <span class="ph" id="suCityPh">انتخاب شهر</span>
+                    <svg class="ic-sm" style="color:var(--muted);margin-inline-start:auto"><use href="#i-chev"/></svg>
                   </div>
-                </div>
-                <div class="field" style="margin-bottom:6px">
-                  <label>اول از کجا شروع می‌کنی؟</label>
-                  <div class="unit-chips">
-                    <button class="chip active" id="suRoleBuy" onclick="suRole('buy')">می‌خرم</button>
-                    <button class="chip" id="suRoleSell" onclick="suRole('sell')">می‌فروشم</button>
-                    <button class="chip" id="suRoleBoth" onclick="suRole('both')">هر دو</button>
-                  </div>
-                  <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.9">فقط پیش‌فرضِ شروع است — دستیاری که لازم نداری، از تنظیمات خاموش می‌کنی.</div>
                 </div>
               </div>
               <button class="btn btn-primary btn-lg btn-block" onclick="suFinish()">ساخت حساب و ورود</button>
               <div class="hint">
                 <svg><use href="#i-shield"/></svg>
-                <span>رستوران‌ها و عمده‌فروشی‌ها می‌توانند <b>هر دو دستیار</b> را داشته باشند — مثلاً عمده‌فروشی که از شالیکش می‌خرد و به رستوران‌ها می‌فروشد. بعداً هم قابل تغییر است.</span>
+                <span>بعضی کسب‌وکارها مثل تولیدی‌ها یا عمده‌فروش‌ها هم خرید عمده دارند و هم فروش عمده؛ بعضی مثل بازاریاب‌ها فقط فروش عمده و بعضی مثل خرده‌فروش‌ها فقط خرید عمده. بنابراین هر کسب‌وکار هم <b>دستیار خرید</b> دارد و هم <b>دستیار فروش</b>. اگر به هر دو دستیار در این کسب‌وکار نیاز ندارید، می‌توانید فقط از یکی استفاده کنید و از دیگری در صورت لزوم به‌صورت موردی استفاده کنید.<br><span style="color:var(--fg-soft)">اگر چند کسب‌وکار دارید، بعداً می‌توانید در پنل خود کسب‌وکار جدیدی ایجاد کنید — پس نگران سایر کسب‌وکارهایتان نباشید.</span></span>
               </div>
             </div>
           </div>
@@ -2269,7 +2325,14 @@
             <div class="card">
               <div class="field">
                 <label>شمارهٔ موبایل</label>
-                <input class="inp inp-lg" style="direction:ltr;text-align:right" inputmode="numeric" value="۰۹۱۲ ۱۲۳ ۴۵۶۷">
+                <!-- فاز ۱۰ — باکس بین‌المللی تلگرامی -->
+                <div class="intl-phone">
+                  <button class="cc" type="button" onclick="openCountrySheet()">
+                    <span class="flag">🇮🇷</span><b>+98</b>
+                    <svg class="ic-sm ic-10 caret"><use href="#i-chev"/></svg>
+                  </button>
+                  <input class="num" inputmode="tel" value="۹۱۲ ۳۴۵ ۶۷۸۹">
+                </div>
               </div>
               <div class="ng-title" style="margin:2px 2px 8px">کد پیامک‌شده</div>
               <div class="otp-row">
@@ -2587,14 +2650,14 @@
           <div class="statusbar"><span>۹:۴۱</span><div class="icons"></div></div>
           <div class="pagehead">
             <button class="back" onclick="goBack()"><svg class="ic"><use href="#i-back"/></svg></button>
-            <div class="tt"><b>لیست خرید عمومی</b><span>imatch.ir/b/mehr — از لینک یا QR رسیده‌ای</span></div>
+            <div class="tt"><b>دفتر خرید عمومی</b><span>imatch.ir/b/mehr — از لینک یا QR رسیده‌ای</span></div>
           </div>
           <div class="screen-body">
             <div class="card" style="display:flex;align-items:center;gap:13px">
               <div class="avatar" style="width:52px;height:52px;border-radius:17px;font-size:19px;background:var(--teal-strong)">م</div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:6px">رستوران مهر <svg class="ic-sm" style="color:var(--teal-strong)"><use href="#i-shield"/></svg></div>
-                <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.8">رستوران و پذیرایی · همدان · ۴ کالا<br>نیازهای هفتگی — خرید منظم</div>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.8">رستوران و پذیرایی · همدان · ۴ کالا · مدیر: مهدی محمدی<br>نیازهای هفتگی — خرید منظم</div>
               </div>
             </div>
 
@@ -2621,25 +2684,42 @@
             </div>
 
             <div class="sec-title"><h2><svg class="ic-sm"><use href="#i-list"/></svg> کالاهای این لیست</h2></div>
-            <div class="card" style="padding:6px 14px">
-              <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <span class="thumb rice th-40"><svg style="width:25px;height:25px"><use href="#a-rice"/></svg></span>
-                <span class="tx"><b>برنج هاشمی</b><span>نیاز: ۵۰۰ کیلو در هفته · تحویل همدان</span></span>
+            <!-- فاز ۱۰ — کارت‌های عکس‌دار (گالری آگهی/عکس مرجع؛ اینجا نسخهٔ نمایشی) -->
+            <div class="g2">
+              <div class="row-card">
+                <img class="thumb photo" src="png/goods/rice.jpg" alt="برنج هاشمی" onerror="this.outerHTML='<span class=\'thumb rice\'><svg><use href=\'#a-rice\'/></svg></span>'">
+                <div class="body">
+                  <div class="t">برنج هاشمی</div>
+                  <div class="pl"><b class="need">۵۰۰ کیلو</b><span class="u">در هفته</span></div>
+                  <div class="s">تحویل همدان · به‌روزرسانی امروز</div>
+                </div>
                 <button class="alert-btn on" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
-              <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <span class="thumb oil th-40"><svg style="width:25px;height:25px"><use href="#a-oil"/></svg></span>
-                <span class="tx"><b>روغن سرخ‌کردنی ۱۶ کیلویی</b><span>نیاز: ۲۰ عدد در ماه</span></span>
+              <div class="row-card">
+                <img class="thumb photo" src="png/goods/oil.jpg" alt="روغن سرخ‌کردنی" onerror="this.outerHTML='<span class=\'thumb oil\'><svg><use href=\'#a-oil\'/></svg></span>'">
+                <div class="body">
+                  <div class="t">روغن سرخ‌کردنی ۱۶ کیلویی</div>
+                  <div class="pl"><b class="need">۲۰ عدد</b><span class="u">در ماه</span></div>
+                  <div class="s">به‌روزرسانی ۲ روز پیش</div>
+                </div>
                 <button class="alert-btn" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
-              <div class="follow-row" style="border-bottom:1px dashed var(--border)">
-                <span class="thumb sugar th-40"><svg style="width:25px;height:25px"><use href="#a-sugar"/></svg></span>
-                <span class="tx"><b>شکر</b><span>نیاز: ۱۰۰ کیلو در ماه</span></span>
+              <div class="row-card">
+                <img class="thumb photo" src="png/goods/sugar.jpg" alt="شکر" onerror="this.outerHTML='<span class=\'thumb sugar\'><svg><use href=\'#a-sugar\'/></svg></span>'">
+                <div class="body">
+                  <div class="t">شکر</div>
+                  <div class="pl"><b class="need">۱۰۰ کیلو</b><span class="u">در ماه</span></div>
+                  <div class="s">به‌روزرسانی ۵ روز پیش</div>
+                </div>
                 <button class="alert-btn" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
-              <div class="follow-row">
-                <span class="thumb lentil th-40"><svg style="width:25px;height:25px"><use href="#a-lentil"/></svg></span>
-                <span class="tx"><b>عدس</b><span>نیاز: ۵۰ کیلو در ماه · هنوز تأمین‌کننده ندارد</span></span>
+              <div class="row-card dashed">
+                <img class="thumb photo" src="png/goods/lentil.jpg" alt="عدس" onerror="this.outerHTML='<span class=\'thumb lentil\'><svg><use href=\'#a-lentil\'/></svg></span>'">
+                <div class="body">
+                  <div class="t">عدس</div>
+                  <div class="pl"><b class="need">۵۰ کیلو</b><span class="u">در ماه</span></div>
+                  <div class="s">هنوز تأمین‌کننده ندارد</div>
+                </div>
                 <button class="alert-btn" onclick="toggleAlertBtn(this)" title="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
               </div>
             </div>
@@ -2902,10 +2982,10 @@
             </div>
           </div>
           <nav class="tabbar">
-            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>لیست خرید</button>
-            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>ذخیره‌شده‌ها</button>
+            <button class="tab" data-go="sc-buy-list"><svg><use href="#i-list"/></svg>دفتر خرید</button>
+            <button class="tab" data-go="sc-suppliers"><svg><use href="#i-bm"/></svg>کاتالوگ‌ها</button>
             <button class="tab" data-go="sc-offers"><svg><use href="#i-spark"/></svg>پیشنهادها<span class="tdot">۳</span></button>
-            <button class="tab active" data-go="sc-msgs"><svg><use href="#i-msg"/></svg>چت<span class="tdot">۱</span></button>
+            <button class="tab active" data-go="sc-msgs"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="tdot">۱</span></button>
             <button class="tab" data-go="sc-buy-profile"><svg><use href="#i-user"/></svg>پروفایل</button>
           </nav>
         </section>
@@ -2953,12 +3033,12 @@
   <div class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب کن الان کدام را ببینی</div>
   <button class="sheet-row" onclick="setMode('buy');closeSheet()">
     <span class="ico" style="background:var(--teal-tint);color:var(--teal-deep)"><svg><use href="#i-basket"/></svg></span>
-    <span class="tx"><b>دستیار خرید عمده</b><span>لیست خرید · تابلوهای تأمین · پیشنهادها</span></span>
+    <span class="tx"><b>دستیار خرید</b><span>لیست خرید · تابلوهای تأمین · پیشنهادها</span></span>
     <svg class="check" id="chk-buy"><use href="#i-check"/></svg>
   </button>
   <button class="sheet-row" onclick="setMode('sell');closeSheet()">
     <span class="ico" style="background:var(--orange-tint);color:var(--primary-strong)"><svg><use href="#i-box"/></svg></span>
-    <span class="tx"><b>دستیار فروش عمده</b><span>کاتالوگ من · درخواست‌های قیمت · دنبال‌کنندگان</span></span>
+    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · درخواست‌های قیمت · دنبال‌کنندگان</span></span>
     <svg class="check" id="chk-sell" style="display:none"><use href="#i-check"/></svg>
   </button>
   <div class="sub" style="margin-bottom:8px">نقش تو ثابت نیست — عمده‌فروش می‌تواند همزمان از هر دو دستیار استفاده کند.</div>
@@ -3547,6 +3627,56 @@
   <div class="sub" style="margin:9px 0 0">هر کس با پیامک بیاید و اولین قیمت را دنبال کند: <b>+۵٬۰۰۰ تومان</b> به کیف پولت — دعوت‌ها برای خریداران و فروشندگان عمده</div>
 </div>
 
+<!-- ═══════════ فاز ۱۰ — شیت: انتخاب کشور (فون بین‌المللی) ═══════════ -->
+<div class="sheet country-sheet" id="sheet-country">
+  <div class="grab"></div>
+  <h3>کشور خود را انتخاب کنید</h3>
+  <div class="sub">پرچم و کد کشور — شمارهٔ شما همیشه بین‌المللی و چپ‌به‌راست می‌ماند</div>
+  <div class="cs-search">
+    <svg><use href="#i-search"/></svg>
+    <input class="inp" placeholder="جستجوی کشور…" oninput="countryFilter(this.value)">
+  </div>
+  <div class="cs-list">
+    <button class="cs-row on" type="button" onclick="pickCountry(this,'IR','98','ایران')"><span class="flag">🇮🇷</span><span class="nm">ایران</span><span class="dc">+98</span><svg class="ic-sm ic-14"><use href="#i-check"/></svg></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'IQ','964','العراق')"><span class="flag">🇮🇶</span><span class="nm">العراق</span><span class="dc">+964</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'AE','971','الإمارات')"><span class="flag">🇦🇪</span><span class="nm">الإمارات</span><span class="dc">+971</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'TR','90','Türkiye')"><span class="flag">🇹🇷</span><span class="nm">Türkiye</span><span class="dc">+90</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'CN','86','China')"><span class="flag">🇨🇳</span><span class="nm">China</span><span class="dc">+86</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'DE','49','Germany')"><span class="flag">🇩🇪</span><span class="nm">Germany</span><span class="dc">+49</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'GB','44','United Kingdom')"><span class="flag">🇬🇧</span><span class="nm">United Kingdom</span><span class="dc">+44</span></button>
+    <button class="cs-row" type="button" onclick="pickCountry(this,'US','1','United States')"><span class="flag">🇺🇸</span><span class="nm">United States</span><span class="dc">+1</span></button>
+  </div>
+</div>
+
+<!-- ═══════════ فاز ۱۰ — شیت: دفتر خرید به چه دردی می‌خورد؟ ═══════════ -->
+<div class="sheet" id="sheet-what-is">
+  <div class="grab"></div>
+  <h3>دفتر خرید به چه دردی می‌خورد؟</h3>
+  <div class="sub">خرید عمده بدون اطلاعات، ضرر است. دفتر خرید آی‌مچ این مشکلات را حل می‌کند:</div>
+  <div class="what-is-rows">
+    <div class="wi-row"><span class="n">۱</span><span>نیازهای خریدت را یک‌بار ثبت می‌کنی و لینکش را برای تأمین‌کننده‌هایی که می‌شناسی می‌فرستی؛</span></div>
+    <div class="wi-row"><span class="n">۲</span><span>قیمت هر کالا را از چند تأمین‌کننده، زنده و کنارِ هم می‌بینی و مقایسه می‌کنی؛</span></div>
+    <div class="wi-row"><span class="n">۳</span><span>کاتالوگ تأمین‌کننده‌های مختلف را ذخیره می‌کنی و از تغییر قیمتشان باخبر می‌شوی؛</span></div>
+    <div class="wi-row"><span class="n">۴</span><span>برای هر کالا استعلام قیمت رقابتی می‌سازی تا بهترین شرایط را انتخاب کنی.</span></div>
+  </div>
+  <div class="unit-calc" style="margin-top:12px"><svg><use href="#i-share"/></svg> <span>تأمین‌کننده‌ها بدون ثبت‌نام لیستت را می‌بینند — فقط یک لینک.</span></div>
+  <button class="btn btn-soft btn-lg btn-block" style="margin-top:10px" onclick="go('sc-list-public')"><svg class="ic-sm"><use href="#i-eye"/></svg> باز کردن صفحهٔ عمومی</button>
+  <div class="sheet-actions">
+    <button class="btn btn-primary btn-lg" onclick="closeSheets()">فهمیدم</button>
+  </div>
+</div>
+
+<!-- ═══════════ فاز ۱۰ — شیت: تأیید حذف حساب و شروع دوباره ثبت‌نام ═══════════ -->
+<div class="sheet" id="sheet-edit-phone">
+  <div class="grab"></div>
+  <h3>حذف حساب و شروع دوباره؟</h3>
+  <div class="sub">حسابی که با این شماره ساخته شده حذف می‌شود و به صفحهٔ اول برمی‌گردی تا با شمارهٔ درست از اول ثبت‌نام کنی.</div>
+  <div class="sheet-actions">
+    <button class="btn btn-soft btn-lg" onclick="closeSheets()">ماندن</button>
+    <button class="btn btn-primary btn-lg" onclick="restartSignup()">بله، شروع دوباره</button>
+  </div>
+</div>
+
 <!-- ═══════════ شیت: به‌روزرسانی سریع قیمت ═══════════ -->
 <div class="sheet" id="sheet-quickprice">
   <div class="grab"></div>
@@ -3964,7 +4094,6 @@ const state = {
   slots: { board: true, feed: true },   // v3: جایگاه‌های نمایش
   editMode: null,         // v3: null | 'sell' | 'buy'
   _pendingEdit: null,
-  suRole: 'buy'
 };
 
 /* ── v3: نرخ پله‌ایِ «فروشنده ویژه» — نرخ به کالا وابسته است، نه به شخص ── */
@@ -4442,25 +4571,102 @@ function toggleQR2() {
 
 /* ── ثبت‌نام و ورود ── */
 function suPhoneCheck() {
-  const v = ($('#suPhone').value || '').replace(/[\s۰-۹]/g, m => '۰۱۲۳۴۵۶۷۸۹'.indexOf(m) >= 0 ? String('۰۱۲۳۴۵۶۷۸۹'.indexOf(m)) : '');
-  const ok = /^09\d{9}$/.test(v);
+  /* فاز ۱۰ — شمارهٔ ملی داخل باکس بین‌المللی (+98 ثابتِ نمایش)؛ فقط رقم، بدون صفر آغازین */
+  const v = ($('#suPhone').value || '').replace(/[۰-۹]/g, m => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(m))).replace(/\D/g, '').replace(/^0+/, '');
+  const ok = v.length >= 9;
   $('#suPhoneErr').style.display = v.length > 0 && !ok ? 'flex' : 'none';
   $('#suCodeBtn').disabled = !ok;
 }
 function suSendCode() {
   $('#suStep1').style.display = 'none';
   $('#suStep2').style.display = '';
-  toast('کد تأیید پیامک شد — شماره تأیید شد');
+  toast('حساب موقت ساخته شد — کسب‌وکارت را کامل کن');
 }
-function suRole(r) {
-  state.suRole = r;
-  ['buy','sell','both'].forEach(k => {
-    const el = $('#suRole' + k[0].toUpperCase() + k.slice(1));
-    if (el) el.classList.toggle('active', k === r);
+
+/* ═══ فاز ۱۰ — اصناف هوشمند (چیپ‌های دیتابیسی + ورودی «سایر») ═══ */
+function tradeChip(btn) {
+  document.querySelectorAll('#sc-signup .tchip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  const smart = $('#suTradeSmart'); if (smart) smart.style.display = 'none';
+  const drop = $('#suTradeDrop'); if (drop) drop.style.display = 'none';
+}
+function tradeOther(btn) {
+  document.querySelectorAll('#sc-signup .tchip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  const smart = $('#suTradeSmart');
+  if (smart) {
+    const open = smart.style.display !== 'none';
+    smart.style.display = open ? 'none' : '';
+    const inp = smart.querySelector('input'); if (!open && inp) inp.focus();
+  }
+}
+function tradeTypeahead(inp) {
+  const drop = $('#suTradeDrop'); if (!drop) return;
+  drop.style.display = inp.value.trim().length >= 2 ? '' : 'none';
+}
+function tradePickRow(row) {
+  const smart = $('#suTradeSmart'); if (smart) smart.style.display = 'none';
+  const drop = $('#suTradeDrop'); if (drop) drop.style.display = 'none';
+  toast('صنف انتخاب شد');
+}
+
+/* ═══ فاز ۱۰ — انتخاب کشور (فون بین‌المللی تلگرامی) ═══ */
+function openCountrySheet() { openSheet('sheet-country'); }
+function countryFilter(q) {
+  const needle = (q || '').trim().toLowerCase();
+  document.querySelectorAll('#sheet-country .cs-row').forEach(r => {
+    const nm = (r.querySelector('.nm')?.textContent || '').toLowerCase();
+    const dc = (r.querySelector('.dc')?.textContent || '').replace('+', '');
+    r.style.display = !needle || nm.includes(needle) || dc.startsWith(needle) ? '' : 'none';
   });
 }
+function pickCountry(btn, code, dial, name) {
+  document.querySelectorAll('#sheet-country .cs-row').forEach(r => r.classList.remove('on'));
+  btn.classList.add('on');
+  /* پرچم + کد روی هر دو فون (ثبت‌نام/ورود) */
+  const flag = btn.querySelector('.flag')?.textContent || '';
+  document.querySelectorAll('.intl-phone .cc').forEach(cc => {
+    cc.querySelector('.flag').textContent = flag;
+    cc.querySelector('b').textContent = '+' + dial;
+  });
+  closeSheets();
+  toast('کشور: ' + name + ' (+' + dial + ')');
+}
+
+/* ═══ فاز ۱۰ — فیلتر دفتر خرید (چیپ + سرچ) ═══ */
+function buyListChip(btn, key) {
+  $$('.filter-chips .fchip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  const rows = $$('#listRows .row-card');
+  rows.forEach(r => {
+    const fresh = r.querySelector('.b-orange') !== null;
+    const watched = r.querySelector('.pulse-dot') !== null;
+    const show = key === 'all' || (key === 'fresh' && fresh) || (key === 'watched' && watched);
+    r.style.display = show ? '' : 'none';
+  });
+}
+function buyListFilter(q) {
+  const needle = (q || '').trim().toLowerCase();
+  $$('#listRows .row-card').forEach(r => {
+    const name = (r.querySelector('.t')?.textContent || '').toLowerCase();
+    r.style.display = !needle || name.includes(needle) ? '' : 'none';
+  });
+}
+
+/* ═══ فاز ۱۰ — ویرایش شماره → حذف حساب و شروع دوباره ═══ */
+function openEditPhoneSheet() { openSheet('sheet-edit-phone'); }
+function restartSignup() {
+  closeSheets();
+  $('#suStep2').style.display = 'none';
+  $('#suStep1').style.display = '';
+  $('#suPhone').value = '';
+  suPhoneCheck();
+  toast('حساب حذف شد — با شمارهٔ درست از اول شروع کن');
+}
+
 function suFinish() {
-  setMode(state.suRole === 'sell' ? 'sell' : 'buy');
+  /* نقش از انتخاب صفحهٔ اول می‌آید (state.mode) — سؤال تکراری حذف شد */
+  setMode(state.mode === 'sell' ? 'sell' : 'buy');
   toast('حساب ساخته شد — به آی‌مچ خوش آمدی');
 }
 function loginDone() {
@@ -4890,14 +5096,6 @@ function bulkApply() {
   toast('خلاصهٔ اثر گروهی: ' + faDig(n * 2) + ' قیمت تغییر می‌کند و ' + faDig(n * 9) + ' دنبال‌کننده باخبر می‌شوند — پیش‌نمایش کامل قبل از اعمال');
 }
 
-/* صفحهٔ شروع: تب مزایا (فروشنده/خریدار) */
-function introTab(btn, side) {
-  $$('.intro-tabs .itab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  $('#introSell').style.display = side === 'sell' ? '' : 'none';
-  $('#introBuy').style.display = side === 'buy' ? '' : 'none';
-}
-
 /* ── افزودن کالا: جست‌وجو و روش‌های جایگزین ── */
 function addSearchCheck(inp) {
   const q = (inp.value || '').trim();
@@ -5124,16 +5322,16 @@ function saversMore(btn) {
 /* ═══════════ v14: دسک‌بار — رندر و همگام‌سازی ناوبری دسکتاپ ═══════════ */
 const DESK_NAV = {
   buy: [
-    { nav:'sc-buy-list',    ico:'#i-list',  t:'لیست خرید' },
-    { nav:'sc-suppliers',   ico:'#i-bm',    t:'ذخیره‌شده‌ها' },
-    { nav:'sc-offers',      ico:'#i-spark', t:'پیشنهادها', dot:'۳' },
-    { nav:'sc-msgs',   ico:'#i-msg',   t:'چت', dot:'۱' },
+    { nav:'sc-buy-list',    ico:'#i-list',  t:'دفتر خرید من' },
+    { nav:'sc-suppliers',   ico:'#i-bm',    t:'کاتالوگ‌های مورد علاقه' },
+    { nav:'sc-offers',      ico:'#i-spark', t:'پیشنهادهای قیمت', dot:'۳' },
+    { nav:'sc-msgs',   ico:'#i-msg',   t:'پیام‌ها', dot:'۱' },
     { nav:'sc-buy-profile', ico:'#i-user',  t:'پروفایل' }
   ],
   sell: [
     { nav:'sc-sell-catalog',   ico:'#i-store', t:'کاتالوگ من' },
     { nav:'sc-sell-requests',  ico:'#i-inbox', t:'درخواست‌های قیمت', dot:'۲' },
-    { nav:'sc-msgs',      ico:'#i-msg',   t:'چت', dot:'۱' },
+    { nav:'sc-msgs',      ico:'#i-msg',   t:'پیام‌ها', dot:'۱' },
     { nav:'sc-sell-profile',   ico:'#i-user',  t:'پروفایل' }
   ]
 };
@@ -5145,7 +5343,7 @@ const DESK_PARENT = {
   'sc-settings':'sc-sell-profile', 'sc-edit-biz':'sc-sell-profile', 'sc-chat':'sc-msgs'
 };
 const DESK_BIZ = {
-  buy:  ['رستوران مهر',   'دستیار خرید عمده'],
+  buy:  ['رستوران مهر',   'دستیار خرید'],
   sell: ['پخش برنج پارس', 'دستیار فروش عمده']
 };
 const deskState = { arm: null };

@@ -2,7 +2,9 @@
 
 /**
  * iMach Tabbar — ناوبری پایین موبایل (عین Prototype v18) · فاز ۲: لینک + بج واقعی.
- * بازوی خرید: لیست خرید(/home) · ذخیره‌شده‌ها(/buy/suppliers) · پیشنهادها(/buy/requests) · چت · پروفایل(/profile)
+ * فاز ۱۰ — برچسب کوتاه موبایل (دفتر خرید · کاتالوگ‌ها · پیشنهادها · پیام‌ها)؛
+ * برچسب کامل دسکتاپ در Deskbar می‌نشیند.
+ * بازوی خرید: دفتر خرید(/home) · کاتالوگ‌ها(/saved) · پیشنهادها(/offers) · پیام‌ها · پروفایل(/profile)
  * بازوی فروش: کاتالوگ من(/sell) · درخواست‌های قیمت(/sell/requests) · چت · پروفایل(/profile)
  * بج‌ها از API واقعی (useShellData)؛ چت هنوز بک‌اند/مسیر ندارد (فاز ۶) → بدون بج و بدون لینک.
  */
@@ -32,12 +34,12 @@ export function Tabbar({ active }: { active?: TabKey }) {
   const tabs: Array<{ key: TabKey; icon: IconName; label: string; href?: string; dot?: string }> =
     arm === "buy"
       ? [
-          { key: "list", icon: "i-list", label: m.app.tabs.list, href: "/home" },
-          { key: "saved", icon: "i-bm", label: m.app.tabs.saved, href: "/saved" },
+          { key: "list", icon: "i-list", label: m.app.tabs.listShort, href: "/home" },
+          { key: "saved", icon: "i-bm", label: m.app.tabs.savedShort, href: "/saved" },
           {
             key: "offers",
             icon: "i-spark",
-            label: m.app.tabs.offers,
+            label: m.app.tabs.offersShort,
             href: "/offers",
             dot: offersCount > 0 ? fa(offersCount) : undefined,
           },

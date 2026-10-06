@@ -381,7 +381,10 @@ body[data-arm="buy"]  { --arm: var(--teal-strong); --arm-strong: var(--teal-deep
 .btn-outline { border-color: var(--border-strong); background: #fff; color: var(--fg-soft); }
 .btn-ghost { color: var(--muted); }
 .btn-danger { color: var(--red); background: var(--red-tint); }
-.btn-block { width: 100%; }
+.btn-block {
+  /* فاز ۱۰ — inline-flex با margin-inline:auto وسط نمی‌افتد؛ block-level می‌شود */
+  display: flex; width: 100%;
+}
 .btn-sm { padding: 8px 13px; font-size: 11.5px; border-radius: 10px; }
 .btn-lg { padding: 14px 22px; font-size: 14px; border-radius: 13px; }
 .btn-row { display: flex; gap: 9px; }
@@ -797,7 +800,51 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .onboard .logo-h { height: 74px; }
 .onboard .tagline { font-size: 12px; color: var(--muted); margin-top: 12px; letter-spacing: .02em; }
 .onboard .q { font-size: 23px; font-weight: 700; margin: 34px 0 6px; line-height: 1.6; }
-.onboard .qsub { font-size: 11.5px; color: var(--muted); margin-bottom: 22px; }
+
+/* ── فاز ۱۰: هیروی جدید — چهار خطِ معرفی (متن مالک) ── */
+.onboard .hero-desc { display: flex; flex-direction: column; gap: 5px; margin-top: 14px; }
+.onboard .hero-desc b { font-size: 14.5px; font-weight: 800; line-height: 2; color: var(--fg); }
+.onboard .hero-desc span { font-size: 11.5px; color: var(--muted); line-height: 2; }
+.onboard .hero-desc em { font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--teal-strong); line-height: 2.1; margin-top: 3px; }
+
+/* ── فاز ۱۰: سه باکس معرفی مدرن ── */
+.steps3 { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 13px; }
+.steps3 .s3 {
+  background: #fff; border: 1px solid var(--border); border-radius: 15px;
+  padding: 14px 15px 13px;
+}
+.steps3 .s3 .ico {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: var(--teal-tint); color: var(--teal-deep);
+  margin-bottom: 10px;
+}
+.steps3 .s3:nth-child(2) .ico { background: var(--orange-tint); color: var(--primary-strong); }
+.steps3 .s3:nth-child(3) .ico { background: var(--emerald-tint); color: var(--emerald); }
+.steps3 .s3 .ico svg { width: 21px; height: 21px; }
+.steps3 .s3 b { display: block; font-size: 12.5px; font-weight: 800; line-height: 1.9; }
+.steps3 .s3 p { font-size: 10.5px; color: var(--muted); line-height: 2.1; margin-top: 5px; }
+
+@media (min-width: 640px) {
+  .onboard .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .onboard .choice-grid .choice-card + .choice-card { margin-top: 0; margin-bottom: 12px; }
+}
+
+/* ── فاز ۱۰: مزایا — دو ستون جدا (اول خریدار، بعد فروشنده) ── */
+.ben-cols { display: grid; grid-template-columns: 1fr; gap: 13px; margin-top: 13px; }
+.ben-col { min-width: 0; }
+.ben-head {
+  display: flex; align-items: center; gap: 10px;
+  border-radius: 14px; padding: 11px 13px;
+  margin-bottom: 9px;
+}
+.ben-head .ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; flex-shrink: 0; }
+.ben-head .ico svg { width: 19px; height: 19px; }
+.ben-head.buy { background: var(--teal-tint); color: var(--teal-deep); }
+.ben-head.buy .ico { background: var(--teal); color: #fff; }
+.ben-head.sell { background: var(--orange-tint); color: var(--primary-strong); }
+.ben-head.sell .ico { background: var(--primary); color: #fff; }
+.ben-head b { font-size: 12px; font-weight: 800; line-height: 1.8; }
 .choice-card {
   width: 100%;
   display: flex;
@@ -1386,13 +1433,139 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .step.active .n { background: var(--arm); color: #fff; }
 .step .bar { flex: 1; height: 3px; border-radius: 99px; background: var(--muted-bg); min-width: 26px; }
 .step.done .bar, .step.active .bar { background: var(--arm-tint); }
-.phone-verified {
-  display: flex; align-items: center; gap: 9px; background: var(--emerald-tint);
-  color: #065f46; border-radius: 13px; padding: 11px 13px; font-size: 11.5px; font-weight: 700;
-  margin-bottom: 13px;
+/* ── فاز ۱۰: بنر ویرایش شماره (گام ۲ ثبت‌نام — به‌جای «تأیید شد») ── */
+.phone-banner {
+  display: flex; align-items: center; gap: 11px;
+  background: #fff; border: 1px solid var(--border); border-radius: 13px;
+  padding: 10px 12px; margin-bottom: 13px;
 }
-.phone-verified svg { width: 17px; height: 17px; flex-shrink: 0; }
-.phone-verified span { direction: ltr; flex: 1; }
+.phone-banner .ico {
+  width: 34px; height: 34px; flex-shrink: 0; border-radius: 11px;
+  background: var(--teal-tint); color: var(--teal-strong);
+  display: grid; place-items: center;
+}
+.phone-banner .ico svg { width: 17px; height: 17px; }
+.phone-banner .txt { flex: 1; min-width: 0; }
+.phone-banner .txt b { display: block; font-size: 13.5px; font-weight: 800; letter-spacing: .3px; }
+.phone-banner .txt span { display: block; font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.7; }
+.btn-edit-num {
+  background: var(--amber-tint); color: var(--amber);
+  border: 1px solid color-mix(in srgb, var(--amber) 30%, transparent);
+  flex-shrink: 0;
+}
+.btn-edit-num:hover { filter: brightness(.96); }
+
+/* ── فاز ۱۰: ورودی موبایل بین‌المللی (سبک تلگرام) — همیشه LTR ── */
+.intl-phone {
+  display: flex; align-items: stretch;
+  border: 1px solid var(--border-strong); border-radius: 12px;
+  background: #fff; overflow: hidden;
+  transition: border-color .15s, box-shadow .15s;
+}
+.intl-phone:focus-within { border-color: var(--arm); box-shadow: 0 0 0 3px color-mix(in srgb, var(--arm) 13%, transparent); }
+.intl-phone .cc {
+  display: flex; align-items: center; gap: 7px; padding: 12px;
+  background: var(--muted-bg); border-inline-end: 1px solid var(--border);
+  color: var(--fg); font-size: 13.5px; font-weight: 800; cursor: pointer; flex-shrink: 0;
+  transition: background .15s;
+}
+.intl-phone .cc:hover { background: color-mix(in srgb, var(--arm) 9%, var(--muted-bg)); }
+.intl-phone .cc .flag { font-size: 19px; line-height: 1; font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; }
+.intl-phone .cc .caret { color: var(--muted); transform: rotate(180deg); }
+.intl-phone .num {
+  flex: 1; min-width: 0; border: 0; outline: none; background: transparent;
+  padding: 12px 14px; font-size: 16px; font-weight: 700; color: var(--fg);
+  text-align: left; direction: ltr; letter-spacing: .3px;
+}
+.intl-phone .num::placeholder { color: #97907d; font-weight: 600; letter-spacing: 0; }
+.intl-phone.inp-lg .cc { padding: 13px 12px; font-size: 14.5px; }
+.intl-phone.inp-lg .num { padding: 13px 14px; font-size: 16.5px; }
+
+/* ── فاز ۱۰: مدال انتخاب کشور ── */
+.country-sheet { max-height: min(72vh, 560px); display: flex; flex-direction: column; }
+.cs-search {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--muted-bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 3px 11px; margin: 12px 0 4px;
+}
+.cs-search svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+.cs-search .inp { background: transparent; border: 0; box-shadow: none; padding: 9px 0; text-align: start; direction: ltr; }
+.cs-search .inp:focus { border-color: transparent; box-shadow: none; }
+.cs-list { overflow-y: auto; overscroll-behavior: contain; margin: 4px -18px 0; padding: 0 18px 6px; flex: 1; }
+.cs-row {
+  display: flex; align-items: center; gap: 11px; width: 100%;
+  padding: 10px; border-radius: 11px; color: var(--fg);
+  font-size: 13px; font-weight: 700; transition: background .12s;
+}
+.cs-row:hover { background: var(--muted-bg); }
+.cs-row.on { background: color-mix(in srgb, var(--arm) 10%, transparent); }
+.cs-row .flag { font-size: 21px; line-height: 1; flex-shrink: 0; font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; }
+.cs-row .nm { flex: 1; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-row .dc { color: var(--muted); font-size: 12px; font-weight: 700; }
+.cs-row svg { color: var(--teal-strong); }
+
+/* ── فاز ۱۰: نوار اصناف — مستطیلیِ گرد + اسکرول افقی در موبایل ── */
+.trade-chips {
+  display: flex; flex-wrap: nowrap; gap: 7px;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  padding-bottom: 3px; margin: 0 -2px 2px;
+  scrollbar-width: none;
+}
+.trade-chips::-webkit-scrollbar { display: none; }
+.tchip {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 10px; border: 1px solid var(--border-strong);
+  background: #fff; color: var(--fg-soft);
+  padding: 8px 13px; font-size: 12px; font-weight: 700; white-space: nowrap;
+  transition: border-color .13s, background .13s, color .13s;
+}
+.tchip .n {
+  font-style: normal; font-size: 9.5px; font-weight: 800;
+  color: var(--muted); background: var(--muted-bg);
+  border-radius: 7px; padding: 2px 6px;
+}
+.tchip:hover { border-color: var(--arm); }
+.tchip.on { background: var(--arm-tint); color: var(--arm-tint-fg); border-color: var(--arm); }
+.tchip.on .n { background: color-mix(in srgb, var(--arm) 16%, transparent); color: var(--arm-tint-fg); }
+.tchip.other {
+  background: var(--amber-tint); color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 38%, transparent); border-style: dashed;
+}
+.tchip.other.on { background: var(--amber-tint); color: var(--amber); border-style: solid; border-color: var(--amber); }
+
+/* ── فاز ۱۰: ورودی هوشمند صنف («سایر») با تایپ‌آهد ── */
+.trade-smart { position: relative; margin-top: 8px; }
+.trade-smart .lead { position: absolute; inset-inline-start: 13px; top: 13px; color: var(--muted); z-index: 1; width: 16px; height: 16px; }
+.trade-smart .inp { padding-inline-start: 36px; }
+.ts-drop {
+  position: absolute; inset-inline: 0; top: calc(100% + 6px); z-index: 30;
+  background: #fff; border: 1px solid var(--border); border-radius: 13px;
+  box-shadow: var(--shadow-pop); padding: 5px;
+  max-height: 244px; overflow-y: auto;
+}
+.ts-row {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 9px 10px; border-radius: 10px;
+  font-size: 12.5px; font-weight: 700; color: var(--fg); text-align: start;
+}
+.ts-row:hover { background: var(--muted-bg); }
+.ts-row .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ts-row .hint-tx { font-size: 10px; font-weight: 600; color: var(--muted); flex-shrink: 0; }
+.ts-row .go { color: var(--muted); flex-shrink: 0; }
+.ts-row.new { border: 1px dashed color-mix(in srgb, var(--amber) 45%, transparent); margin-top: 4px; }
+.ts-badge {
+  font-size: 9.5px; font-weight: 800;
+  background: var(--amber-tint); color: var(--amber);
+  border-radius: 7px; padding: 2.5px 7px; margin-inline-start: 6px;
+}
+
+/* ── فاز ۱۰: ردیف اکشن‌های شیت (تأیید/انصراف) ── */
+.sheet-actions { display: flex; gap: 9px; margin-top: 15px; }
+.sheet-actions .btn { flex: 1; }
+
+/* ── فاز ۱۰: سلکتور شهر — placeholder داخل + بوردر مشخص ── */
+.city-select { display: flex; align-items: center; gap: 9px; cursor: pointer; }
+.city-select .ph { flex: 1; color: var(--muted); font-weight: 600; }
 
 /* ── خطا و گیت فرم (E) ── */
 .inp.err { border-color: var(--red); background: #fffafa; }
@@ -1630,6 +1803,80 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
   color: var(--muted); font-size: 12px; min-width: 0;
 }
 .searchbar svg { width: 16px; height: 16px; flex-shrink: 0; }
+.searchbar input {
+  flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--fg);
+}
+.searchbar input::placeholder { color: var(--muted); font-weight: 500; }
+.searchbar .clr {
+  width: 24px; height: 24px; border-radius: 8px; flex-shrink: 0;
+  display: grid; place-items: center; color: var(--muted);
+  background: var(--muted-bg);
+}
+
+/* ── فاز ۱۰: مدیریت دفتر خرید — جستجو + افزودن + چیپ‌های فیلتر (الهام redesign-base) ── */
+.list-tools {
+  display: flex; align-items: center; gap: 9px;
+  margin: 12px 0 10px;
+}
+.list-tools .add-btn { flex-shrink: 0; height: 46px; }
+.filter-chips {
+  display: flex; gap: 7px; flex-wrap: nowrap; overflow-x: auto;
+  padding-bottom: 2px; margin: 0 -2px 4px;
+  scrollbar-width: none;
+}
+.filter-chips::-webkit-scrollbar { display: none; }
+.fchip {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 10px; border: 1px solid var(--border-strong);
+  background: #fff; color: var(--fg-soft);
+  padding: 7px 12px; font-size: 11.5px; font-weight: 700; white-space: nowrap;
+  transition: border-color .13s, background .13s, color .13s;
+}
+.fchip i {
+  font-style: normal; font-size: 9.5px; font-weight: 800;
+  background: var(--muted-bg); color: var(--muted);
+  border-radius: 7px; padding: 2px 6px;
+}
+.fchip:hover { border-color: var(--arm); }
+.fchip.on { background: var(--arm-tint); color: var(--arm-tint-fg); border-color: var(--arm); }
+.fchip.on i { background: color-mix(in srgb, var(--arm) 16%, transparent); color: var(--arm-tint-fg); }
+.fchip.fresh i { background: var(--orange-tint); color: var(--amber); }
+.fchip.fresh.on i { background: color-mix(in srgb, var(--amber) 22%, transparent); color: var(--amber); }
+
+/* ── فاز ۱۰: سلامِ دفتر خرید + آیکون اطلاعات ── */
+.greet-bar { display: flex; align-items: flex-start; gap: 10px; }
+.greet-bar .info-btn {
+  width: 38px; height: 38px; border-radius: 12px; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: var(--teal-tint); color: var(--teal-strong);
+  border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent);
+  transition: filter .15s;
+}
+.greet-bar .info-btn:hover { filter: brightness(.95); }
+.greet-bar .info-btn svg { width: 18px; height: 18px; }
+
+/* ── فاز ۱۰: کارت عکس‌دار در دفتر خرید عمومی ── */
+.row-card .thumb.photo {
+  width: 58px; height: 58px; border-radius: 13px;
+  object-fit: cover; flex-shrink: 0; background: var(--muted-bg);
+}
+.row-card .pl .need { font-size: 14.5px; }
+
+/* ── فاز ۱۰: شیت «دفتر خرید چیست؟» ── */
+.what-is-rows { margin-top: 4px; }
+.wi-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 9px 2px;
+  font-size: 11.5px; color: var(--fg-soft); line-height: 2;
+}
+.wi-row + .wi-row { border-top: 1px dashed var(--border); }
+.wi-row .n {
+  width: 24px; height: 24px; border-radius: 9px; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: var(--teal-tint); color: var(--teal-deep);
+  font-size: 11px; font-weight: 800; margin-top: 4px;
+}
 
 /* ── یادداشت واحد در تابلوی تأمین ── */
 .unit-note {
@@ -2128,12 +2375,6 @@ textarea.inp { resize: none; height: 74px; line-height: 1.9; }
 .mv-link small { font-size: 8.5px; font-weight: 800; color: var(--muted); }
 .intro-card h3 { font-size: 14px; font-weight: 800; line-height: 2; text-align: center; }
 .intro-card p { font-size: 10.5px; color: var(--muted); line-height: 2.1; text-align: center; margin-top: 6px; }
-.intro-tabs { display: flex; gap: 5px; margin-top: 12px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 4px; }
-.itab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; background: transparent; border-radius: 10px; padding: 9px 2px; font-family: inherit; font-size: 10.5px; font-weight: 800; color: var(--muted); cursor: pointer; transition: background .15s, color .15s; }
-.itab svg { width: 14px; height: 14px; }
-.itab.sell.active { background: var(--orange-tint); color: var(--primary-strong); }
-.itab.buy.active { background: var(--teal-tint); color: var(--teal-deep); }
-.ben-title { font-size: 11.5px; font-weight: 800; color: var(--fg-soft); margin: 13px 2px 2px; }
 .ben { display: flex; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 11px 12px; margin-top: 7px; }
 .ben .b-n { width: 24px; height: 24px; border-radius: 9px; display: grid; place-items: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
 .sell-side .b-n { background: var(--orange-tint); color: var(--primary-strong); }
@@ -2532,8 +2773,26 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
   .form-cta { left: max(24px, calc((100% - 680px) / 2)); right: max(24px, calc((100% - 680px) / 2)); }
 
   /* آنبوردینگ: هیروی وسط */
-  #sc-onboard .onboard { max-width: 660px; margin-inline: auto; width: 100%; padding: 36px 30px 44px; }
-  #sc-onboard .mid { min-height: 250px; }
+  #sc-onboard .onboard { max-width: 880px; margin-inline: auto; width: 100%; padding: 40px 34px 48px; }
+  #sc-onboard .mid { min-height: 240px; }
+  /* فاز ۱۰ — دسکتاپِ اختصاصیِ صفحهٔ اول: هیرو و مقیاس تایپوگرافی */
+  #sc-onboard .logo-h { height: 88px; }
+  #sc-onboard .tagline { font-size: 13px; font-weight: 700; }
+  #sc-onboard .hero-desc b { font-size: 17px; }
+  #sc-onboard .hero-desc span { font-size: 13px; }
+  #sc-onboard .hero-desc em { font-size: 14.5px; }
+  #sc-onboard .q { font-size: 25px; margin-top: 40px; }
+  #sc-onboard .choice-card .tx b { font-size: 18px; }
+  #sc-onboard .choice-card .tx span { font-size: 12px; }
+  #sc-onboard .steps3 { grid-template-columns: repeat(3, 1fr); gap: 13px; }
+  #sc-onboard .steps3 .s3 b { font-size: 13.5px; }
+  #sc-onboard .steps3 .s3 p { font-size: 11.5px; }
+  #sc-onboard .ben-cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  #sc-onboard .intro-card h3 { font-size: 16px; }
+  #sc-onboard .intro-card p { font-size: 12.5px; max-width: 640px; margin-inline: auto; }
+  #sc-onboard .ben .b-tx b { font-size: 12.5px; }
+  #sc-onboard .ben .b-tx span { font-size: 11px; }
+  #sc-onboard .footnote { font-size: 11.5px; }
 }
 
 /* ── ۳) دسکتاپ ≥1024: اسپلیت‌ها + bump تایپوگرافی ── */
@@ -2580,6 +2839,7 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
 
 /* ── ۴) ≥1280: پهن‌تر ── */
 @media (min-width: 1280px) {
+  #sc-onboard .onboard { max-width: 1020px; }
   :root { --content-w: 1080px; }
   .grid-2 { grid-template-columns: repeat(4, 1fr); }
   #dsPanels { grid-template-columns: minmax(0, 700px) minmax(320px, 400px); }
@@ -2587,6 +2847,10 @@ button:focus-visible, .chip:focus-visible, .tab:focus-visible,
 
 /* ── ۵) ≥1440: تابلوی سه‌ستونه ── */
 @media (min-width: 1440px) {
+  #sc-onboard .onboard { max-width: 1140px; }
+  #sc-onboard .hero-desc b { font-size: 19px; }
+  #sc-onboard .q { font-size: 27px; }
+  #sc-onboard .steps3 .s3 p { font-size: 12px; line-height: 2.2; }
   :root { --content-w: 1140px; }
   .g2 { grid-template-columns: 1fr 1fr 1fr; }
   #sc-buy-list .g2, #sc-sell-requests .g2 { grid-template-columns: 1fr 1fr 1fr; }
