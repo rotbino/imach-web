@@ -85,3 +85,18 @@ cd design-reference && python3 -m http.server 8899
 - مبنای پیاده‌سازی مرحله‌به‌مرحله: `implementation-details.md`
 
 > ⚠️ این دایرکتوری مرجع تاریخی است — برای اصلاح طراحی، نسخه جدید بسازید و این را دست‌نخورده نگه دارید.
+
+---
+
+## Build / ساخت پروتوتایپ
+
+از فاز ۱۶ به بعد، `index.html` یک پروتوتایپ تعاملی تک‌فایلی است که از منابع ساخته می‌شود:
+
+```bash
+node tools/build.mjs      # screens/*.html + css/style.css → index.html
+```
+
+- منابع حقیقت: `screens/*.html` (مارک‌آپ عیناً منتقل می‌شود) + `css/style.css` (دست‌نخورده)
+- شیت‌های پایین صفحه: `screens/90-sheets.html`
+- تصویر هیروی لندینگ: `tools/hero-mock.html` (رندر ۲x → `png/d3-desktop-landing.jpg`)
+- ناوبری/تعامل: موتور JS داخل همان خروجی (فقط رفتاری — بدون دست‌زدن به دیزاین)

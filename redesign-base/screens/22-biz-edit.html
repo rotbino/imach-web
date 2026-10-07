@@ -9,6 +9,8 @@
 <body>
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
   <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></symbol>
 </svg>
 
 <div class="stage">
@@ -23,12 +25,12 @@
 
       <!-- هویت کسب‌وکار -->
       <div class="card" style="display:flex;align-items:center;gap:12px">
-        <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+        <div class="avatar-lg" style="padding:0"><img src="../png/goods/catalog-logo.png" alt="لوگوی کسب‌وکار"></div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13.5px;font-weight:700">عکس کسب‌وکار</div>
-          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">لوگو یا عکس فروشگاه — در کاتالوگ عمومی دیده می‌شود</div>
+          <div style="font-size:13.5px;font-weight:700">لوگوی کسب‌وکار</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">کنار نامت در کاتالوگ عمومی و پیام‌ها دیده می‌شود</div>
         </div>
-        <button class="btn btn-sm btn-outline">تعویض عکس</button>
+        <button class="btn btn-sm btn-outline">تعویض لوگو</button>
       </div>
 
       <!-- فرم ویرایش -->
@@ -38,9 +40,21 @@
       </div>
 
       <div class="field">
-        <label>صنف</label>
-        <input class="input" value="پخش مواد غذایی">
-        <div class="hint">صنف از میان اصناف ای‌مچ انتخاب می‌شود</div>
+        <label>نوع کسب‌وکار <span class="opt">— خریداران می‌بینند</span></label>
+        <button class="input sel" data-sheet="sheet-biztype">
+          <span style="color:var(--foreground);font-weight:700">عمده‌فروش</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="hint">خریدار از همان اول می‌داند از تولیدکننده می‌خرد یا از عمده‌فروش — روی کاتالوگت هم نمایش داده می‌شود</div>
+      </div>
+
+      <div class="field">
+        <label>صنف <span class="opt">— با جستجو</span></label>
+        <button class="input sel" data-sheet="sheet-trade">
+          <span style="color:var(--foreground);font-weight:700">پخش مواد غذایی</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="hint">از میان اصناف ای‌مچ جستجو و انتخاب می‌شود</div>
       </div>
 
       <div class="field">
@@ -48,8 +62,31 @@
         <div class="pillchoice">
           <button class="pill active">رشت</button>
           <button class="pill">تهران</button>
-          <button class="pill">قزوین</button>
+          <button class="pill">اصفهان</button>
+          <button class="pill">همدان</button>
+          <button class="pill" data-sheet="sheet-city">سایر…</button>
         </div>
+      </div>
+
+      <div class="field">
+        <label>لوکیشن روی نقشه</label>
+        <div class="loc-box">
+          <div class="loc-map">
+            <img src="../png/map-flat.jpg" alt="نقشهٔ لوکیشن">
+            <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          </div>
+          <div class="loc-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <span>رشت — جادهٔ فومن، انبار مرکزی</span>
+            <button class="btn btn-sm btn-outline">انتخاب از نقشه</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>آدرس <span class="opt">— اختیاری</span></label>
+        <input class="input" value="رشت، خیابان معلم، جنب پمپ بنزین، انبار برنج پارس">
+        <div class="hint">برای مراجعهٔ خریداران محلی — نمایش آن اختیاری است</div>
       </div>
 
       <div class="field">

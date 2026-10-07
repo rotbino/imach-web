@@ -27,19 +27,19 @@
 <div class="stage">
   <div class="phone" data-arm="sell">
 
-    <!-- ═══ هدر: لوگو + زنگ + آواتار ═══ -->
+    <!-- ═══ هدر: لوگو + زنگ + پیش‌نمایش عمومی ═══ -->
     <header class="appbar">
       <div class="brand"><img src="../assets/logo3.svg" alt="iMach"></div>
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-store"/></svg> دستیار فروش
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
-        <div class="avatar" style="background:linear-gradient(135deg,#ea580c,#f97316)">ا</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -51,16 +51,16 @@
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-          <div class="sub">پخش مواد غذایی · رشت</div>
+          <div class="sub">پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span></div>
         </div>
         <button class="icon-btn" aria-label="تنظیمات کاتالوگ" data-sheet="sheet-cset"><svg><use href="#i-gear"/></svg></button>
         <button class="icon-btn" aria-label="اشتراک کاتالوگ" data-sheet="sheet-share"><svg><use href="#i-share"/></svg></button>
       </div>
 
       <div class="stat-strip">
-        <div class="stat"><div class="v">۵</div><div class="k">کالا</div></div>
-        <div class="stat"><div class="v">۱۲۰</div><div class="k">بازدید ماه</div></div>
-        <div class="stat hot"><div class="v">۳۸</div><div class="k">ذخیره‌کننده</div></div>
+        <div class="stat" data-go="26" title="کالاهای کاتالوگ"><div class="v">۵</div><div class="k">کالا</div></div>
+        <div class="stat" data-go="24" title="بازدیدکنندگان کاتالوگ"><div class="v">۱۲۰</div><div class="k">بازدید</div></div>
+        <div class="stat hot" data-go="25" title="ذخیره‌کنندگان کاتالوگ"><div class="v">۳۸</div><div class="k">ذخیره‌کننده</div></div>
       </div>
 
       <!-- جستجو + افزودن -->
@@ -88,7 +88,7 @@
 
         <div class="pcard">
           <div class="ph">
-            <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
+            <div class="thumb"><img src="../png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی"></div>
             <button class="gear" aria-label="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
@@ -122,7 +122,7 @@
 
         <div class="pcard">
           <div class="ph">
-            <div class="thumb"><span class="glyph">۱۰ کیلو</span></div>
+            <div class="thumb"><img src="../png/goods/hashemi-10.png" alt="برنج هاشمی — کیسه ۱۰ کیلویی"></div>
             <button class="gear" aria-label="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
@@ -139,7 +139,7 @@
 
         <div class="pcard">
           <div class="ph">
-            <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
+            <div class="thumb"><img src="../png/goods/fajar-50.jpg" alt="برنج فجر — کیسه ۵۰ کیلویی"></div>
             <button class="gear" aria-label="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
@@ -169,7 +169,7 @@
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-tasks"/></svg>
-          کارهای امروز
+          کارها
           <span class="badge">۶</span>
         </button>
         <button class="tab active">
@@ -178,7 +178,7 @@
         </button>
         <button class="tab">
           <svg><use href="#i-inbox"/></svg>
-          درخواست‌های قیمت
+          درخواست‌ها
           <span class="badge">۳</span>
         </button>
         <button class="tab">

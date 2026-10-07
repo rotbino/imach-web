@@ -14,8 +14,7 @@
 .scr[hidden] { display: none; }
 body > div[id^="scr-d"][hidden] { display: none; }
 
-
-/* ── شیت‌های پایین صفحه (الگوی فاز ۱۷ — تعمیم‌یافته فاز ۱۸) ── */
+/* ── شیت‌های پایین صفحه (الگوی فاز ۱۷ — تعمیم‌یافته فاز ۱۸ و ۱۹) ── */
 .backdrop{position:absolute;inset:0;background:rgba(42,39,35,.5);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
 .backdrop.show{opacity:1;pointer-events:auto}
 .sheet{position:absolute;bottom:0;right:0;left:0;background:#fff;border-radius:20px 20px 0 0;box-shadow:var(--shadow-pop);z-index:61;padding:8px 16px 16px;transform:translateY(105%);transition:transform .25s;max-height:88%;overflow-y:auto}
@@ -45,7 +44,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
 .sheet .btn.done-send{color:var(--green);border-color:#b6e2c6;background:var(--green-bg)}
 .sheet .hintnote{font-size:11px;color:var(--muted-fg);line-height:1.9;margin-top:11px;background:var(--muted);border-radius:10px;padding:8px 10px}
 .sheet .avatar-sm{flex-shrink:0}
-
+/* ── فاز ۱۹ ── */
+.sheet-hdr{display:flex;align-items:center;gap:10px}
+.sheet-hdr h3{flex:1}
+.sheet-hdr .mg{width:34px;height:34px;border-radius:10px;border:1px solid var(--border-strong);background:#fff;display:grid;place-items:center;color:var(--muted-fg);cursor:pointer;flex-shrink:0}
+.sheet-hdr .mg svg{width:16px;height:16px}
+.sheet .pillchoice .pill{padding:8px 4px;font-size:11.5px}
+.grp-row{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-top:9px;font-family:inherit}
+.grp-row .tx{flex:1;min-width:0}
+.grp-row .tx b{font-size:13px;display:block}
+.grp-row .tx span{font-size:10.5px;color:var(--muted-fg);display:block;margin-top:2px;line-height:1.7}
+.grp-row .pct{width:58px;text-align:center;flex-shrink:0}
+.grp-row .pct .input{padding:0 6px}
+.add-row{display:flex;align-items:center;gap:9px;width:100%;border:1.5px dashed var(--border-strong);border-radius:12px;padding:11px 12px;margin-top:9px;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--primary-strong);cursor:pointer}
+.add-row svg{width:15px;height:15px}
+.sheet-search{margin-top:11px}
+.sheet-search .input{width:100%;box-sizing:border-box}
+.sheet-search .input svg{width:15px;height:15px;color:var(--muted-fg);flex-shrink:0}
+.sheet-search .input .ph{flex:1;text-align:right}
+.sheet .loc-box{margin-top:4px}
+.sheet .row-act{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;color:var(--muted-fg);cursor:pointer;border:0;background:none}
+.sheet .row-act svg{width:15px;height:15px}
+.sheet .row-act.warn{color:var(--red)}
 
 /* ── استایل صفحهٔ 03 (03-product-owner.html) ── */
 
@@ -74,6 +94,34 @@ body > div[id^="scr-d"][hidden] { display: none; }
     font-size: 13px; font-weight: 700; color: var(--stone-soft);
     cursor: pointer; padding: 8px 10px; border-radius: 10px;
   }
+
+  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
+  #scr-15 .land-lang {
+    display: flex; align-items: center; gap: 2px;
+    padding: 10px 16px 0;
+    position: relative;
+  }
+  #scr-15 .land-lang .lg {
+    border: 0; background: none; font-family: inherit;
+    font-size: 12px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 6px 10px; border-radius: 9px;
+  }
+  #scr-15 .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  #scr-15 .land-lang .lg-wrap { position: relative; }
+  #scr-15 .land-lang .lang-dd {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: #fff; border: 1px solid var(--border-strong);
+    border-radius: 12px; box-shadow: var(--shadow-pop);
+    padding: 6px; min-width: 168px; display: none; z-index: 50;
+  }
+  #scr-15 .land-lang .lang-dd.open { display: block; }
+  #scr-15 .land-lang .lang-dd button {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    width: 100%; border: 0; background: none; font-family: inherit;
+    font-size: 12.5px; font-weight: 700; color: var(--stone-soft);
+    padding: 9px 10px; border-radius: 9px; cursor: pointer; text-align: right;
+  }
+  #scr-15 .land-lang .lang-dd button span { font-size: 10.5px; color: var(--muted-fg); font-weight: 400; }
 
   /* هیرو — تینت نارنجی نرم */
   #scr-15 .hero-land {
@@ -126,6 +174,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-15 .mv-link small { font-size: 9.5px; font-weight: 700; color: var(--muted-fg); }
   #scr-15 .intro-card h3 { font-size: 14px; font-weight: 700; line-height: 1.9; }
   #scr-15 .intro-card p { font-size: 11.5px; color: var(--muted-fg); line-height: 2; margin-top: 8px; text-align: right; }
+  #scr-15 .intro-card p em { font-style: normal; color: var(--primary-strong); font-weight: 700; }
 
   /* ═══ سه سؤال ═══ */
   #scr-15 .steps3 { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
@@ -469,6 +518,30 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-d3 .dl-main::-webkit-scrollbar { display: none; }
   #scr-d3 .dl-wrap { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
 
+  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
+  #scr-d3 .land-lang { display: flex; align-items: center; gap: 4px; padding: 14px 0 0; position: relative; }
+  #scr-d3 .land-lang .lg {
+    border: 0; background: none; font-family: inherit;
+    font-size: 13px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 7px 13px; border-radius: 10px;
+  }
+  #scr-d3 .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  #scr-d3 .land-lang .lg-wrap { position: relative; }
+  #scr-d3 .land-lang .lang-dd {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    background: #fff; border: 1px solid var(--border-strong);
+    border-radius: 13px; box-shadow: var(--shadow-pop);
+    padding: 7px; min-width: 190px; display: none; z-index: 50;
+  }
+  #scr-d3 .land-lang .lang-dd.open { display: block; }
+  #scr-d3 .land-lang .lang-dd button {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; border: 0; background: none; font-family: inherit;
+    font-size: 13.5px; font-weight: 700; color: var(--stone-soft);
+    padding: 10px 12px; border-radius: 9px; cursor: pointer; text-align: right;
+  }
+  #scr-d3 .land-lang .lang-dd button span { font-size: 11px; color: var(--muted-fg); font-weight: 400; }
+
   /* هیرو */
   #scr-d3 .dl-hero {
     display: grid; grid-template-columns: 1.05fr .95fr;
@@ -544,6 +617,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-d3 .mv-link small { font-size: 10.5px; font-weight: 700; color: var(--muted-fg); }
   #scr-d3 .dl-intro h3 { font-size: 17px; font-weight: 700; line-height: 1.9; }
   #scr-d3 .dl-intro p { font-size: 13px; color: var(--muted-fg); line-height: 2.1; margin-top: 10px; text-align: right; }
+  #scr-d3 .dl-intro p em { font-style: normal; color: var(--primary-strong); font-weight: 700; }
 
   /* سه سؤال */
   #scr-d3 .dl-q3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
@@ -618,7 +692,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 </head>
 <body>
 
-<!-- ═══ اسپرایت واحد (ادغام همهٔ آیکون‌های صفحه‌ها + شیت‌ها — عیناً همان symbolها) ═══ -->
+<!-- ═══ اسپرایت واحد (ادغام همهٔ آیکون‌های همهٔ صفحه‌ها — عیناً همان symbolها) ═══ -->
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
 <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
 <symbol id="i-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.7-6.2a1.6 1.6 0 013 .3L10.5 8h3l.8-2.9a1.6 1.6 0 013-.3L19 11"/><path d="M4 11h16l-1.4 8.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/></symbol>
@@ -656,18 +730,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></symbol>
 <symbol id="i-spark-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
 <symbol id="i-board" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M9 9v11M15 9v11"/></symbol>
-<symbol id="i-back-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></symbol>
+<symbol id="i-back-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></symbol>
 <symbol id="i-check-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
 <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.5" r="0.5" fill="currentColor"/></symbol>
-<symbol id="i-back-v3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 5-3.5 8.5-7.5 10-4-1.5-7.5-5-7.5-10v-6z"/><path d="M9 12l2 2 4-4"/></symbol>
 <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
 <symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></symbol>
+<symbol id="i-pin-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+<symbol id="i-chev-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></symbol>
 <symbol id="i-store2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
 <symbol id="i-users-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
 <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
 <symbol id="i-msg-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
 <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -677,19 +753,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-01" data-arm="sell" hidden>
 
 
-    <!-- ═══ هدر: لوگو + زنگ + آواتار ═══ -->
+    <!-- ═══ هدر: لوگو + زنگ + پیش‌نمایش عمومی ═══ -->
     <header class="appbar">
       <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-store"/></svg> دستیار فروش
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
-        <div class="avatar" style="background:linear-gradient(135deg,#ea580c,#f97316)">ا</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -701,16 +777,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-          <div class="sub">پخش مواد غذایی · رشت</div>
+          <div class="sub">پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span></div>
         </div>
         <button class="icon-btn" aria-label="تنظیمات کاتالوگ" data-sheet="sheet-cset"><svg><use href="#i-gear"/></svg></button>
         <button class="icon-btn" aria-label="اشتراک کاتالوگ" data-sheet="sheet-share"><svg><use href="#i-share"/></svg></button>
       </div>
 
       <div class="stat-strip">
-        <div class="stat"><div class="v">۵</div><div class="k">کالا</div></div>
-        <div class="stat"><div class="v">۱۲۰</div><div class="k">بازدید ماه</div></div>
-        <div class="stat hot"><div class="v">۳۸</div><div class="k">ذخیره‌کننده</div></div>
+        <div class="stat" data-go="26" title="کالاهای کاتالوگ"><div class="v">۵</div><div class="k">کالا</div></div>
+        <div class="stat" data-go="24" title="بازدیدکنندگان کاتالوگ"><div class="v">۱۲۰</div><div class="k">بازدید</div></div>
+        <div class="stat hot" data-go="25" title="ذخیره‌کنندگان کاتالوگ"><div class="v">۳۸</div><div class="k">ذخیره‌کننده</div></div>
       </div>
 
       <!-- جستجو + افزودن -->
@@ -738,7 +814,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="pcard">
           <div class="ph">
-            <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
+            <div class="thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی"></div>
             <button class="gear" aria-label="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
@@ -772,7 +848,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="pcard">
           <div class="ph">
-            <div class="thumb"><span class="glyph">۱۰ کیلو</span></div>
+            <div class="thumb"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی — کیسه ۱۰ کیلویی"></div>
             <button class="gear" aria-label="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
@@ -789,7 +865,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="pcard">
           <div class="ph">
-            <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
+            <div class="thumb"><img src="png/goods/fajar-50.jpg" alt="برنج فجر — کیسه ۵۰ کیلویی"></div>
             <button class="gear" aria-label="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
@@ -819,7 +895,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-tasks"/></svg>
-          کارهای امروز
+          کارها
           <span class="badge">۶</span>
         </button>
         <button class="tab active">
@@ -828,7 +904,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </button>
         <button class="tab">
           <svg><use href="#i-inbox"/></svg>
-          درخواست‌های قیمت
+          درخواست‌ها
           <span class="badge">۳</span>
         </button>
         <button class="tab">
@@ -858,12 +934,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body nopad">
 
       <!-- گالری -->
-      <div style="height:210px;background:linear-gradient(135deg,#f3f1ea,#e9e5db);display:grid;place-items:center;position:relative">
-        <span style="font-size:13px;color:#a8a29a;font-weight:700">کیسه ۵۰ کیلویی</span>
+      <div style="height:210px;position:relative">
+        <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی" style="width:100%;height:100%;object-fit:cover;display:block">
         <div style="position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:5px">
-          <span style="width:16px;height:5px;border-radius:3px;background:var(--stone)"></span>
-          <span style="width:5px;height:5px;border-radius:3px;background:#d8d4ca"></span>
-          <span style="width:5px;height:5px;border-radius:3px;background:#d8d4ca"></span>
+          <span style="width:16px;height:5px;border-radius:3px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25)"></span>
+          <span style="width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.65)"></span>
+          <span style="width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.65)"></span>
         </div>
       </div>
 
@@ -904,7 +980,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px">
               پخش برنج پارس <svg style="width:14px;height:14px;color:#1d5fb8"><use href="#i-verified"/></svg>
             </div>
-            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">پخش مواد غذایی · رشت · ۳۸ دنبال‌کننده</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span> · ۳۸ دنبال‌کننده</div>
           </div>
           <button class="btn btn-outline btn-sm">ذخیره کاتالوگ</button>
         </div>
@@ -1133,6 +1209,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
+      <!-- تخفیف اختصاصی این کالا — بالاترین اولویت -->
+      <div class="field">
+        <label>تخفیف اختصاصی این کالا <span class="opt">— اختیاری</span></label>
+        <div style="display:flex;gap:9px;align-items:center">
+          <div class="toggle" style="flex-shrink:0"></div>
+          <div class="input" style="flex:1">
+            <span style="color:var(--foreground);font-weight:700">۵٪</span>
+            <span class="suffix">درصد</span>
+          </div>
+        </div>
+        <div class="hint">تخفیفِ خودِ کالا همیشه از تخفیف کاتالوگ و گروه کالا بالاتر است؛ هنگام اعمال، آن‌ها نادیده گرفته می‌شوند.</div>
+      </div>
+
       <!-- ویژگی‌ها -->
       <div class="field">
         <label>بوجار</label>
@@ -1176,20 +1265,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-store"/></svg> دستیار فروش
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
-        <div class="avatar" style="background:linear-gradient(135deg,#ea580c,#f97316)">ا</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
     <main class="screen-body">
 
       <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های قیمت</h2>
+        <h2><svg><use href="#i-inbox"/></svg> درخواست‌ها</h2>
         <span class="more">۴ درخواست این ماه</span>
       </div>
 
@@ -1259,7 +1348,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-tasks"/></svg>
-          کارهای امروز
+          کارها
           <span class="badge">۶</span>
         </button>
         <button class="tab">
@@ -1268,7 +1357,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </button>
         <button class="tab active">
           <svg><use href="#i-inbox"/></svg>
-          درخواست‌های قیمت
+          درخواست‌ها
           <span class="badge">۳</span>
         </button>
         <button class="tab">
@@ -1385,10 +1474,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-store"/></svg> دستیار فروش
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
-        <div class="avatar" style="background:linear-gradient(135deg,#ea580c,#f97316)">ا</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -1474,7 +1563,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-tasks"/></svg>
-          کارهای امروز
+          کارها
           <span class="badge">۶</span>
         </button>
         <button class="tab">
@@ -1483,7 +1572,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </button>
         <button class="tab">
           <svg><use href="#i-inbox"/></svg>
-          درخواست‌های قیمت
+          درخواست‌ها
         </button>
         <button class="tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>
@@ -1507,10 +1596,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-basket"/></svg> دستیار خرید
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
-        <div class="avatar" style="background:#0e7490">ن</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -1774,10 +1863,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-basket"/></svg> دستیار خرید
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
-        <div class="avatar" style="background:#0e7490">ن</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -1921,10 +2010,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-basket"/></svg> دستیار خرید
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
-        <div class="avatar" style="background:#0e7490">ن</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -2170,7 +2259,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
           <div class="meta">
             <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-            <div class="sub">پخش مواد غذایی · رشت · ۳۸ دنبال‌کننده</div>
+            <div class="sub">پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span></div>
           </div>
         </div>
         <div style="display:flex;gap:8px;padding-bottom:12px">
@@ -2198,7 +2287,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
           <div class="pcard">
             <div class="ph">
-              <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
+              <div class="thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی"></div>
               <button class="gear" aria-label="دنبال کردن قیمت"><svg><use href="#i-bookmark"/></svg></button>
             </div>
             <div class="info">
@@ -2222,7 +2311,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
           <div class="pcard">
             <div class="ph">
-              <div class="thumb"><span class="glyph">۱۰ کیلو</span></div>
+              <div class="thumb"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی — کیسه ۱۰ کیلویی"></div>
               <button class="gear" aria-label="دنبال کردن قیمت"><svg><use href="#i-bookmark"/></svg></button>
             </div>
             <div class="info">
@@ -2234,7 +2323,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
           <div class="pcard">
             <div class="ph">
-              <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
+              <div class="thumb"><img src="png/goods/fajar-50.jpg" alt="برنج فجر — کیسه ۵۰ کیلویی"></div>
               <button class="gear" aria-label="دنبال کردن قیمت"><svg><use href="#i-bookmark"/></svg></button>
             </div>
             <div class="info">
@@ -2272,10 +2361,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-basket"/></svg> دستیار خرید
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
-        <div class="avatar" style="background:#0e7490">ن</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -2333,7 +2422,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:12.5px">
           <div class="toggle"></div>
-          <span style="flex:1">پاسخ درخواست‌های قیمت</span>
+          <span style="flex:1">پاسخ درخواست‌ها</span>
         </div>
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:12.5px">
           <div class="toggle on"></div>
@@ -2410,6 +2499,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- ═══ بدنه لندینگ ═══ -->
     <main class="screen-body landing-body nopad" style="padding:0 0 0">
 
+      <!-- نوار زبان — فقط نمایشی -->
+      <div class="land-lang">
+        <button class="lg">English</button>
+        <button class="lg active">فارسی</button>
+        <button class="lg">العربية</button>
+        <div class="lg-wrap">
+          <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+          <div class="lang-dd">
+            <button>Türkçe <span>استانبولی</span></button>
+            <button>中文 <span>چینی</span></button>
+            <button>Русский <span>روسی</span></button>
+            <button>日本語 <span>ژاپنی</span></button>
+          </div>
+        </div>
+      </div>
+
       <!-- هیرو -->
       <section class="hero-land">
         <h1><em>خرید عمده</em>، مسألهٔ اکثر کسب‌وکارهاست</h1>
@@ -2424,7 +2529,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- تصویر محصول + بخش‌های معرفی (با پدینگ کناری) -->
       <div style="padding:0 16px">
         <div class="land-shot">
-          <img src="png/d3-desktop-landing.png" alt="آی‌مچ روی دسکتاپ">
+          <img src="png/d3-desktop-landing.jpg" alt="آی‌مچ روی دسکتاپ">
         </div>
 
         <!-- ═══ آی‌مچ چیست؟ ═══ -->
@@ -2437,8 +2542,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم تطبیق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
-          <p>ای‌مچ با موتور تطابق خودش، درخواست‌های خرید خریداران عمده رو به محصولات تامین‌کنندگان مچ می‌کنه، و با این کار یک بازار کاملاً اختصاصی خرید و فروش عمده برای شما می‌سازه که دقیقاً متناسب با کالاها و حجم خرید یا فروش شماست.</p>
+          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
         <!-- سه سؤال -->
@@ -2662,7 +2767,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- ═══ هدر ساده ═══ -->
     <div class="subheader">
-      <div class="back"><svg><use href="#i-back-v3"/></svg></div>
+      <div class="back"><svg><use href="#i-back-v2"/></svg></div>
       <div class="ttl">ورود<small>یک قدم تا دستیارت</small></div>
       <div style="width:34px"></div>
     </div>
@@ -2735,10 +2840,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-basket"/></svg> دستیار خرید
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
-        <div class="avatar" style="background:#0e7490">ن</div>
+        <button class="icon-btn eye-preview" aria-label="پیش‌نمایش عمومی" data-go="13" title="پیش‌نمایش عمومی"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -2895,13 +3000,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="actions">
         <button class="arm-pill" aria-label="تعویض دستیار">
           <svg><use href="#i-store"/></svg> دستیار فروش
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
         <button class="icon-btn" aria-label="اعلان‌ها">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
-        <div class="avatar" style="background:linear-gradient(135deg,#ea580c,#f97316)">ا</div>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
 
@@ -2909,7 +3014,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body">
 
       <div style="display:flex;align-items:baseline;gap:8px;margin:2px 2px 6px">
-        <b style="font-size:17px">کارهای امروز</b>
+        <b style="font-size:17px">کارها</b>
         <span style="font-size:11.5px;color:var(--muted-fg)">شنبه ۱۵ آذر · ۶ کار در انتظار</span>
       </div>
 
@@ -2991,7 +3096,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab active">
           <svg><use href="#i-tasks"/></svg>
-          کارهای امروز
+          کارها
           <span class="badge">۶</span>
         </button>
         <button class="tab">
@@ -3000,7 +3105,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </button>
         <button class="tab">
           <svg><use href="#i-inbox"/></svg>
-          درخواست‌های قیمت
+          درخواست‌ها
           <span class="badge">۳</span>
         </button>
         <button class="tab">
@@ -3136,12 +3241,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <!-- هویت کسب‌وکار -->
       <div class="card" style="display:flex;align-items:center;gap:12px">
-        <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+        <div class="avatar-lg" style="padding:0"><img src="png/goods/catalog-logo.png" alt="لوگوی کسب‌وکار"></div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13.5px;font-weight:700">عکس کسب‌وکار</div>
-          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">لوگو یا عکس فروشگاه — در کاتالوگ عمومی دیده می‌شود</div>
+          <div style="font-size:13.5px;font-weight:700">لوگوی کسب‌وکار</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">کنار نامت در کاتالوگ عمومی و پیام‌ها دیده می‌شود</div>
         </div>
-        <button class="btn btn-sm btn-outline">تعویض عکس</button>
+        <button class="btn btn-sm btn-outline">تعویض لوگو</button>
       </div>
 
       <!-- فرم ویرایش -->
@@ -3151,9 +3256,21 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <div class="field">
-        <label>صنف</label>
-        <input class="input" value="پخش مواد غذایی">
-        <div class="hint">صنف از میان اصناف ای‌مچ انتخاب می‌شود</div>
+        <label>نوع کسب‌وکار <span class="opt">— خریداران می‌بینند</span></label>
+        <button class="input sel" data-sheet="sheet-biztype">
+          <span style="color:var(--foreground);font-weight:700">عمده‌فروش</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="hint">خریدار از همان اول می‌داند از تولیدکننده می‌خرد یا از عمده‌فروش — روی کاتالوگت هم نمایش داده می‌شود</div>
+      </div>
+
+      <div class="field">
+        <label>صنف <span class="opt">— با جستجو</span></label>
+        <button class="input sel" data-sheet="sheet-trade">
+          <span style="color:var(--foreground);font-weight:700">پخش مواد غذایی</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="hint">از میان اصناف ای‌مچ جستجو و انتخاب می‌شود</div>
       </div>
 
       <div class="field">
@@ -3161,8 +3278,31 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="pillchoice">
           <button class="pill active">رشت</button>
           <button class="pill">تهران</button>
-          <button class="pill">قزوین</button>
+          <button class="pill">اصفهان</button>
+          <button class="pill">همدان</button>
+          <button class="pill" data-sheet="sheet-city">سایر…</button>
         </div>
+      </div>
+
+      <div class="field">
+        <label>لوکیشن روی نقشه</label>
+        <div class="loc-box">
+          <div class="loc-map">
+            <img src="png/map-flat.jpg" alt="نقشهٔ لوکیشن">
+            <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          </div>
+          <div class="loc-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <span>رشت — جادهٔ فومن، انبار مرکزی</span>
+            <button class="btn btn-sm btn-outline">انتخاب از نقشه</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>آدرس <span class="opt">— اختیاری</span></label>
+        <input class="input" value="رشت، خیابان معلم، جنب پمپ بنزین، انبار برنج پارس">
+        <div class="hint">برای مراجعهٔ خریداران محلی — نمایش آن اختیاری است</div>
       </div>
 
       <div class="field">
@@ -3179,7 +3319,500 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
-<!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸) ═══ -->
+    <section class="scr" id="scr-23" data-arm="buy" hidden>
+
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">پیش‌نمایش عمومی<small>لیست خریدت از دید فروشنده‌ها</small></div>
+      <span class="badge b-new" style="margin-left:auto;flex-shrink:0">عمومی</span>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- هویت خریدار — این‌طور فروشنده‌ها تو را می‌بینند -->
+      <div class="biz-head" style="margin-top:10px">
+        <div class="row1">
+          <div class="avatar-lg" style="background:#0e7490">آ</div>
+          <div style="flex:1;min-width:0">
+            <div class="biz-name">سوپرمارکت آریا <svg><use href="#i-verified"/></svg></div>
+            <div class="biz-meta" style="margin-top:5px">
+              سوپرمارکت · رشت <span class="badge b-stone">خریدار عمده</span>
+            </div>
+          </div>
+        </div>
+        <div class="biz-bio">خرید هفتگی غلات، شکر و روغن برای دو شعبه — پرداخت نقدی، تحویل از انبار.</div>
+        <div class="biz-meta">
+          <span class="owner"><svg><use href="#i-user"/></svg> آرش محمدی</span>
+          <span>·</span>
+          <span>به‌روزرسانی: امروز</span>
+        </div>
+      </div>
+
+      <!-- نیازهای خرید -->
+      <div class="sec-title" style="margin-top:14px"><h2><svg><use href="#i-basket"/></svg> نیازهای خرید این لیست</h2></div>
+
+      <div class="rows">
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج هاشمی</div>
+            <div class="s">۲۰ کیسهٔ ۵۰ کیلویی · هفتگی · قیمت هدف: ۲٬۷۰۰٬۰۰۰</div>
+          </div>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج طارم</div>
+            <div class="s">۱۰ کیسهٔ ۵۰ کیلویی · دوهفتگی</div>
+          </div>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9.5px">شکر</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">شکر سفید</div>
+            <div class="s">۱۰ کارتن ۱۰ کیلویی · ماهانه</div>
+          </div>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9.5px">روغن</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">روغن مایع</div>
+            <div class="s">۶ کارتن · ماهانه</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- راهنما -->
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-eye"/></svg>
+        <div>
+          <b>این همان صفحه‌ای است که فروشنده‌ها می‌بینند.</b><br>
+          هرچه لیستت کامل‌تر باشد، پیشنهادهای دقیق‌تری می‌گیری — نام، برند و حجم هر کالا مهم است.
+        </div>
+      </div>
+
+    </main>
+
+    <div class="action-bar">
+      <button class="btn btn-stone" style="flex:1" data-sheet="sheet-contacts">
+        <svg><use href="#i-basket"/></svg>
+        ارسال لیست به تأمین‌کنندگان
+      </button>
+    </div>
+
+    </section>
+
+    <section class="scr" id="scr-24" data-arm="sell" hidden>
+
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">بازدیدکنندگان کاتالوگ<small>۱۲۰ بازدید · ۴۱ کسب‌وکار</small></div>
+      <button class="icon-btn" aria-label="اشتراک‌گذاری کاتالوگ" data-sheet="sheet-share" style="margin-left:auto"><svg><use href="#i-share"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- هویت کسب‌وکار -->
+      <div class="biz-head" style="margin-top:10px">
+        <div class="row1">
+          <div class="avatar-lg" style="padding:0"><img src="png/goods/catalog-logo.png" alt="لوگوی کسب‌وکار"></div>
+          <div style="flex:1;min-width:0">
+            <div class="biz-name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
+            <div class="biz-meta" style="margin-top:5px">
+              پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span>
+            </div>
+          </div>
+        </div>
+        <div class="biz-bio">فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان</div>
+        <div class="biz-meta">
+          <span class="owner"><svg><use href="#i-user"/></svg> علی امینی</span>
+          <span>·</span>
+          <span>کاتالوگ عمومی: imach.ir/c/pars-rice</span>
+        </div>
+      </div>
+
+      <!-- جستجو -->
+      <div class="searchbar" style="margin-top:12px">
+        <svg><use href="#i-search"/></svg>
+        <span>جستجوی نام کسب‌وکار…</span>
+      </div>
+
+      <!-- فیلتر صنف + بازهٔ تاریخی -->
+      <div class="meta-filter">
+        <div class="mf-row">
+          <span class="mf-k">صنف</span>
+          <div class="chips">
+            <button class="chip active">همه (۴۱)</button>
+            <button class="chip">سوپرمارکت (۱۴)</button>
+            <button class="chip">رستوران (۱۱)</button>
+            <button class="chip">پخش (۹)</button>
+            <button class="chip">قنادی (۷)</button>
+          </div>
+        </div>
+        <div class="mf-row">
+          <span class="mf-k">بازه</span>
+          <div class="pillchoice">
+            <button class="pill">۷ روز</button>
+            <button class="pill active">۳۰ روز</button>
+            <button class="pill">۳ ماه</button>
+            <button class="pill">کل</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- لیست بازدیدکنندگان -->
+      <div class="rows" style="margin-top:12px">
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#0e7490">آ</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">سوپرمارکت آریا</div>
+            <div class="s">سوپرمارکت · رشت · ۳ بازدید · آخرین: دیروز</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#b45309">ن</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">پخش نگین <span class="badge b-new">ذخیره کرده</span></div>
+            <div class="s">پخش · قزوین · ۵ بازدید · آخرین: امروز</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#7c3aed">م</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رستوران مهر</div>
+            <div class="s">رستوران · تهران · ۲ بازدید · آخرین: ۳ روز پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#0d9488">ف</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">هایپر فیروزه</div>
+            <div class="s">سوپرمارکت · تبریز · ۴ بازدید · آخرین: ۴ روز پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#9333ea">ب</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رستوران سنتی بهار</div>
+            <div class="s">رستوران · قزوین · ۱ بازدید · آخرین: ۶ روز پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#4d7c0f">ج</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">سوپرمارکت جامی</div>
+            <div class="s">سوپرمارکت · اهواز · ۲ بازدید · آخرین: ۱ هفته پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#15803d">س</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">پخش سبز</div>
+            <div class="s">پخش · مشهد · ۳ بازدید · آخرین: ۱ هفته پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#c2410c">گ</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">قنادی گل‌ها</div>
+            <div class="s">قنادی · رشت · ۱ بازدید · آخرین: ۲ هفته پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+      </div>
+
+      <!-- تشویق به اشتراک‌گذاری -->
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-share"/></svg>
+        <div>
+          <b>هرچه بیشتر اشتراک بگذاری، بیشتر دیده می‌شوی.</b><br>
+          لینک کاتالوگت را برای مشتری‌های فعلی بفرست — بازدید یعنی شانسِ پیشنهاد قیمت بیشتر.
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer;white-space:nowrap" data-sheet="sheet-share"> اشتراک‌گذاری کاتالوگ</span>
+        </div>
+      </div>
+
+    </main>
+
+    </section>
+
+    <section class="scr" id="scr-25" data-arm="sell" hidden>
+
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">ذخیره‌کنندگان کاتالوگ<small>۳۸ کسب‌وکار · ۷ نفر این هفته</small></div>
+      <button class="icon-btn" aria-label="اشتراک‌گذاری کاتالوگ" data-sheet="sheet-share" style="margin-left:auto"><svg><use href="#i-share"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- هویت کسب‌وکار -->
+      <div class="biz-head" style="margin-top:10px">
+        <div class="row1">
+          <div class="avatar-lg" style="padding:0"><img src="png/goods/catalog-logo.png" alt="لوگوی کسب‌وکار"></div>
+          <div style="flex:1;min-width:0">
+            <div class="biz-name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
+            <div class="biz-meta" style="margin-top:5px">
+              پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span>
+            </div>
+          </div>
+        </div>
+        <div class="biz-bio">فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان</div>
+        <div class="biz-meta">
+          <span class="owner"><svg><use href="#i-user"/></svg> علی امینی</span>
+          <span>·</span>
+          <span>کاتالوگ عمومی: imach.ir/c/pars-rice</span>
+        </div>
+      </div>
+
+      <!-- جستجو -->
+      <div class="searchbar" style="margin-top:12px">
+        <svg><use href="#i-search"/></svg>
+        <span>جستجوی نام کسب‌وکار…</span>
+      </div>
+
+      <!-- فیلتر صنف + بازهٔ تاریخی -->
+      <div class="meta-filter">
+        <div class="mf-row">
+          <span class="mf-k">صنف</span>
+          <div class="chips">
+            <button class="chip active">همه (۳۸)</button>
+            <button class="chip">سوپرمارکت (۱۳)</button>
+            <button class="chip">رستوران (۱۰)</button>
+            <button class="chip">پخش (۸)</button>
+            <button class="chip">قنادی (۷)</button>
+          </div>
+        </div>
+        <div class="mf-row">
+          <span class="mf-k">بازه</span>
+          <div class="pillchoice">
+            <button class="pill">۷ روز</button>
+            <button class="pill active">۳۰ روز</button>
+            <button class="pill">۳ ماه</button>
+            <button class="pill">کل</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- لیست ذخیره‌کنندگان -->
+      <div class="rows" style="margin-top:12px">
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#b45309">ن</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">پخش نگین <span class="badge b-new">درخواست باز</span></div>
+            <div class="s">پخش · قزوین · ذخیره: ۳ روز پیش · در حال مقایسه قیمت‌ها</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#7c3aed">م</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رستوران مهر <span class="badge b-new">درخواست باز</span></div>
+            <div class="s">رستوران · تهران · ذخیره: ۱ هفته پیش · درخواست ۲۰ کیسه</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#0e7490">آ</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">سوپرمارکت آریا</div>
+            <div class="s">سوپرمارکت · رشت · ذخیره: ۲ روز پیش</div>
+          </div>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#0d9488">ف</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">هایپر فیروزه</div>
+            <div class="s">سوپرمارکت · تبریز · ذخیره: ۴ روز پیش</div>
+          </div>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#9333ea">ب</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رستوران سنتی بهار</div>
+            <div class="s">رستوران · قزوین · ذخیره: ۶ روز پیش</div>
+          </div>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#4d7c0f">ج</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">سوپرمارکت جامی</div>
+            <div class="s">سوپرمارکت · اهواز · ذخیره: ۱ هفته پیش</div>
+          </div>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#15803d">س</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">پخش سبز</div>
+            <div class="s">پخش · مشهد · ذخیره: ۲ هفته پیش</div>
+          </div>
+        </div>
+
+        <div class="row-card">
+          <div class="avatar-sm" style="background:#b91c1c">خ</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">فروشگاه خانواده</div>
+            <div class="s">سوپرمارکت · کرج · ذخیره: ۳ هفته پیش</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- تشویق به اشتراک‌گذاری -->
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-bookmark"/></svg>
+        <div>
+          <b>ذخیره‌کننده‌ها قیمت‌هایت را دنبال می‌کنند.</b><br>
+          هر تغییر قیمت، همان لحظه جلوی چشمشان است — مشتری‌های وفادارِ کاتالوگت هستند.
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer;white-space:nowrap" data-sheet="sheet-share"> اشتراک‌گذاری برای مشتری‌های بیشتر</span>
+        </div>
+      </div>
+
+    </main>
+
+    </section>
+
+    <section class="scr" id="scr-26" data-arm="sell" hidden>
+
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">کالاهای کاتالوگ<small>۵ کالا · ۱ غیرفعال</small></div>
+      <button class="icon-btn" aria-label="افزودن کالا" style="margin-left:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- هویت کسب‌وکار -->
+      <div class="biz-head" style="margin-top:10px">
+        <div class="row1">
+          <div class="avatar-lg" style="padding:0"><img src="png/goods/catalog-logo.png" alt="لوگوی کسب‌وکار"></div>
+          <div style="flex:1;min-width:0">
+            <div class="biz-name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
+            <div class="biz-meta" style="margin-top:5px">
+              پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span>
+            </div>
+          </div>
+        </div>
+        <div class="biz-bio">فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان</div>
+        <div class="biz-meta">
+          <span class="owner"><svg><use href="#i-user"/></svg> علی امینی</span>
+          <span>·</span>
+          <span>کاتالوگ عمومی: imach.ir/c/pars-rice</span>
+        </div>
+      </div>
+
+      <!-- جستجو -->
+      <div class="searchbar" style="margin-top:12px">
+        <svg><use href="#i-search"/></svg>
+        <span>جستجو در کالاهای کاتالوگ…</span>
+      </div>
+
+      <!-- لیست کالاها با شاخص‌های هر کالا -->
+      <div class="rows" style="margin-top:12px">
+
+        <div class="row-card">
+          <div class="thumb" style="width:48px;height:48px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج هاشمی <span class="badge b-green">موجود</span></div>
+            <div class="s">کیسه ۵۰ کیلویی · ۲٬۸۵۰٬۰۰۰ تومان</div>
+            <div class="s" style="margin-top:2px">
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-eye"/></svg> ۲۱ بازدید</span>
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-compare"/></svg> ۴ در مقایسه قیمت</span>
+            </div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="thumb" style="width:48px;height:48px"><span class="glyph" style="font-size:9.5px">۵۰ کیلو</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج طارم <span class="badge b-green">موجود</span></div>
+            <div class="s">کیسه ۵۰ کیلویی · ۲٬۷۵۰٬۰۰۰ تومان</div>
+            <div class="s" style="margin-top:2px">
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-eye"/></svg> ۱۷ بازدید</span>
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-compare"/></svg> ۲ در مقایسه قیمت</span>
+            </div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="thumb" style="width:48px;height:48px"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج هاشمی <span class="badge b-green">موجود</span></div>
+            <div class="s">کیسه ۱۰ کیلویی · ۵۹۵٬۰۰۰ تومان</div>
+            <div class="s" style="margin-top:2px">
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-eye"/></svg> ۹ بازدید</span>
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-compare"/></svg> ۱ در مقایسه قیمت</span>
+            </div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card">
+          <div class="thumb" style="width:48px;height:48px"><img src="png/goods/fajar-50.jpg" alt="برنج فجر"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج فجر <span class="badge b-amber">موجودی کم</span></div>
+            <div class="s">کیسه ۵۰ کیلویی · ۲٬۴۸۰٬۰۰۰ تومان</div>
+            <div class="s" style="margin-top:2px">
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-eye"/></svg> ۱۴ بازدید</span>
+              <span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-compare"/></svg> ۳ در مقایسه قیمت</span>
+            </div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+        </div>
+
+        <div class="row-card" style="opacity:.62">
+          <div class="thumb off" style="width:48px;height:48px"><span class="glyph" style="font-size:9.5px">۵۰ کیلو</span></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج صدری <span class="badge b-muted">غیرفعال</span></div>
+            <div class="s">کیسه ۵۰ کیلویی · ۲٬۲۰۰٬۰۰۰ تومان</div>
+          </div>
+          <span style="font-size:11px;color:var(--primary-strong);font-weight:700;flex-shrink:0;cursor:pointer">فعال‌سازی</span>
+        </div>
+
+      </div>
+
+      <!-- راهنما -->
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-compare"/></svg>
+        <div>
+          <b>کالاهایی که در «لیست مقایسه قیمت» خریداران هستند،</b><br>
+          قیمتشان زنده مقایسه می‌شود — عکس و قیمت دقیق، شانس فروش را بالا می‌برد.
+        </div>
+      </div>
+
+    </main>
+
+    </section>
+
+<!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
 <!-- ═══ ۱) شیت سوییچ دستیارها — الگوی فاینال، هم‌زبان بیس (منتقل از فاز ۱۷) ═══ -->
@@ -3194,7 +3827,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
   <button class="sheet-row" data-arm-go="sell">
     <span class="ico sell"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · درخواست‌های قیمت · پیام‌ها</span></span>
+    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · درخواست‌ها · پیام‌ها</span></span>
     <svg class="check" data-check="sell" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <div class="sub" style="margin:10px 0 2px">نقش تو ثابت نیست — عمده‌فروش می‌تواند همزمان از هر دو دستیار استفاده کند.</div>
@@ -3254,12 +3887,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="sub">پخش برنج پارس · پخش مواد غذایی — رشت</div>
   <button class="sheet-row" data-sheet="sheet-cedit">
     <span class="ico"><svg><use href="#i-pencil"/></svg></span>
-    <span class="tx"><b>ویرایش کاتالوگ</b><span>نام، توضیح و عکس کاتالوگ</span></span>
+    <span class="tx"><b>ویرایش کاتالوگ</b><span>نام، عکس، لوکیشن و گروه‌های کالا</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" data-sheet="sheet-discount">
+  <button class="sheet-row" data-sheet="sheet-vol">
     <span class="ico"><svg><use href="#i-tag"/></svg></span>
-    <span class="tx"><b>تخفیف‌ها و قیمت‌ها</b><span>تخفیف پلکانی بر اساس حجم خرید</span></span>
+    <span class="tx"><b>تخفیف‌های حجمی</b><span>پله‌ای بر اساس حجم خرید هر مشتری</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-sheet="sheet-cgroup">
+    <span class="ico"><svg><use href="#i-users-v2"/></svg></span>
+    <span class="tx"><b>تخفیف‌های گروه مشتری</b><span>درصد ثابت برای هر گروه مشتری</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-sheet="sheet-campaign">
@@ -3269,7 +3907,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
   <button class="sheet-row" data-go="22">
     <span class="ico"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>ویرایش کسب‌وکار</b><span>نام، صنف، شهر و معرفی</span></span>
+    <span class="tx"><b>ویرایش کسب‌وکار</b><span>نام، نوع، صنف، شهر و معرفی</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-go="13">
@@ -3280,13 +3918,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۵) ویرایش کاتالوگ ═══ -->
+<!-- ═══ ۵) ویرایش کاتالوگ — عکس + لوکیشن + نوع + گروه‌های کالا ═══ -->
 <div class="sheet" id="sheet-cedit" role="dialog" aria-label="ویرایش کاتالوگ">
   <div class="grab"></div>
   <h3>ویرایش کاتالوگ</h3>
   <div class="sub">پخش برنج پارس</div>
   <div class="sheet-row" style="cursor:default">
-    <div class="avatar" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+    <div class="avatar" style="padding:0"><img src="png/goods/catalog-logo.png" alt="عکس کاتالوگ"></div>
     <span class="tx"><b>عکس کاتالوگ</b><span>لوگو یا عکس فروشگاه</span></span>
     <button class="btn btn-sm btn-outline">تعویض عکس</button>
   </div>
@@ -3298,18 +3936,66 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <label>توضیح کوتاه</label>
     <textarea class="input">فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان</textarea>
   </div>
+  <div class="field">
+    <label>نوع کسب‌وکار <span style="font-weight:400;color:var(--muted-fg);font-size:10.5px">— خریداران می‌بینند</span></label>
+    <button class="input sel" data-sheet="sheet-biztype">
+      <span style="color:var(--foreground);font-weight:700">عمده‌فروش</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </div>
+  <div class="field">
+    <label>لوکیشن روی نقشه</label>
+    <div class="loc-box">
+      <div class="loc-map">
+        <img src="png/map-flat.jpg" alt="نقشهٔ لوکیشن">
+        <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      </div>
+      <div class="loc-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <span>رشت — جادهٔ فومن، انبار مرکزی</span>
+        <button class="btn btn-sm btn-outline">انتخاب از نقشه</button>
+      </div>
+    </div>
+  </div>
+  <button class="sheet-row" data-sheet="sheet-pgroups">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه‌های کالا</b><span>۳ گروه: هاشمی · طارم · فجر — افزودن و مدیریت</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
   <button class="btn btn-primary sheet-cta" data-close>ذخیره تغییرات</button>
 </div>
 
-<!-- ═══ ۶) تخفیف‌ها و تنظیمات قیمت ═══ -->
-<div class="sheet" id="sheet-discount" role="dialog" aria-label="تخفیف‌ها و تنظیمات قیمت">
+<!-- ═══ ۶) تخفیف‌های حجمی — سطح کاتالوگ / گروه کالا ═══ -->
+<div class="sheet" id="sheet-vol" role="dialog" aria-label="تخفیف‌های حجمی">
   <div class="grab"></div>
-  <h3>تخفیف‌ها و تنظیمات قیمت</h3>
-  <div class="sub">تخفیف در سطح کاتالوگ — بر اساس حجم خرید هر مشتری</div>
+  <div class="sheet-hdr">
+    <h3>تخفیف‌های حجمی</h3>
+    <button class="mg" data-sheet="sheet-vgroups" title="مدیریت گروه‌های تخفیف"><svg><use href="#i-tasks"/></svg></button>
+  </div>
+  <div class="sub">پله‌ای بر اساس حجم خرید — در سطح کاتالوگ</div>
   <div class="sheet-row" style="cursor:default">
-    <span class="tx"><b>تخفیف پلکانی فعال باشد</b><span>هرچه حجم خرید بیشتر، تخفیف بیشتر</span></span>
+    <span class="tx"><b>تخفیف حجمی فعال باشد</b><span>هرچه حجم خرید بیشتر، تخفیف بیشتر</span></span>
     <div class="toggle on"></div>
   </div>
+  <div class="grp">اعمال روی کالاها</div>
+  <div class="field">
+    <div class="pillchoice">
+      <button class="pill">همهٔ کالاها</button>
+      <button class="pill active">کالاهای خاص</button>
+    </div>
+  </div>
+  <div class="grp">گروه کالاهای این تخفیف</div>
+  <button class="sheet-row" data-sheet="sheet-vgroups">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا: برنج هاشمی · برنج فجر · برنج طارم — گروه‌های موجود این‌جا</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <div class="field">
+    <label>نام گروه جدید</label>
+    <input class="input" placeholder="مثلاً گروه تخفیف حجمی خشکبار">
+    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">کالاهایی که انتخاب می‌کنی همین گروه را می‌سازند — اسم پیشنهادی آماده است</div>
+  </div>
+  <div class="hintnote">گروه‌بندیِ تخفیف مستقل از گروه‌بندی کاتالوگ است؛ حتی اگر کاتالوگت گروهی نداشته باشد، می‌توانی برای چند کالا گروه تخفیف بسازی. اگر هم گروهی نسازی، تخفیف روی همهٔ کالاها اعمال می‌شود.</div>
   <div class="grp">پله‌های تخفیف</div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۵ کیسه به بالا</b></span>
@@ -3323,14 +4009,82 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>از ۵۰ کیسه به بالا</b></span>
     <input class="input tier-in" value="۸٪">
   </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن پلهٔ جدید</button>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>نمایش نشان تخفیف در کاتالوگ عمومی</b><span>خریداران تخفیف را روی قیمت می‌بینند</span></span>
     <div class="toggle on"></div>
   </div>
-  <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف‌ها</button>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف‌های حجمی</button>
 </div>
 
-<!-- ═══ ۷) کمپین جدید ═══ -->
+<!-- ═══ ۷) مدیریت گروه‌های تخفیف حجمی ═══ -->
+<div class="sheet" id="sheet-vgroups" role="dialog" aria-label="مدیریت گروه‌های تخفیف حجمی">
+  <div class="grab"></div>
+  <h3>گروه‌های تخفیف حجمی</h3>
+  <div class="sub">گروه‌های کالاهای دارای تخفیف — مستقل از گروه‌بندی کاتالوگ</div>
+  <div class="grp-row">
+    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا · برنج هاشمی، برنج فجر، برنج طارم</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>گروه تخفیف حجمی حبوبات</b><span>۲ کالا · عدس، لوبیا چیتی</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه تخفیف جدید</button>
+  <div class="hintnote">اینجا گروه‌ها را مدیریت می‌کنی: کالا اضافه و کم کن، اسم عوض کن یا گروه بساز. موقع تعریف تخفیف حجمی، همین گروه‌ها در فهرست می‌آیند و می‌توانی گروه تازه هم بسازی.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۸) تخفیف‌های گروه مشتری ═══ -->
+<div class="sheet" id="sheet-cgroup" role="dialog" aria-label="تخفیف‌های گروه مشتری">
+  <div class="grab"></div>
+  <h3>تخفیف‌های گروه مشتری</h3>
+  <div class="sub">درصد ثابت برای هر گروه مشتری — روی کل کاتالوگ</div>
+  <div class="grp">گروه‌های مشتری تو</div>
+  <div class="grp-row">
+    <span class="tx"><b>همکارهای قدیمی</b><span>کیفیت: درجهٔ یک · ۱۲ مشتری</span></span>
+    <input class="input pct" value="۷٪">
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>خریداران عمده</b><span>کیفیت: درجهٔ دو · ۸ مشتری</span></span>
+    <input class="input pct" value="۵٪">
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>مشتریان جدید</b><span>کیفیت: درجهٔ سه · ۲۳ مشتری</span></span>
+    <input class="input pct" value="۲٪">
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp">افزودن گروه مشتری</div>
+  <div class="field">
+    <label>نام گروه مشتری</label>
+    <input class="input" placeholder="مثلاً همکارهای شعبهٔ مرکزی">
+  </div>
+  <div class="field">
+    <label>کیفیت مشتری</label>
+    <div class="pillchoice">
+      <button class="pill active">درجهٔ ۱</button>
+      <button class="pill">درجهٔ ۲</button>
+      <button class="pill">درجهٔ ۳</button>
+      <button class="pill">درجهٔ ۴</button>
+      <button class="pill">درجهٔ ۵</button>
+    </div>
+    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">از درجهٔ یک (مشتری ممتاز) تا درجهٔ پنج — هر وقت خواستی عوضش کن</div>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>درصد تخفیف این گروه</b><span>روی کل کاتالوگ اعمال می‌شود</span></span>
+    <input class="input pct" value="۳٪">
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>افزودن گروه و ذخیره</button>
+</div>
+
+<!-- ═══ ۹) کمپین جدید ═══ -->
 <div class="sheet" id="sheet-campaign" role="dialog" aria-label="کمپین جدید">
   <div class="grab"></div>
   <h3>کمپین جدید</h3>
@@ -3362,7 +4116,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>راه‌اندازی کمپین</button>
 </div>
 
-<!-- ═══ ۸) تنظیمات کالا ═══ -->
+<!-- ═══ ۱۰) تنظیمات کالا ═══ -->
 <div class="sheet" id="sheet-pset" role="dialog" aria-label="تنظیمات کالا">
   <div class="grab"></div>
   <h3>تنظیمات کالا</h3>
@@ -3382,14 +4136,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>تغییر موجودی</b><span>فقط موجودی همین کالا</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
+  <button class="sheet-row" data-sheet="sheet-pdiscount">
+    <span class="ico"><svg><use href="#i-percent"/></svg></span>
+    <span class="tx"><b>تخفیف اختصاصی این کالا</b><span>بالاترین اولویت — بالاتر از کاتالوگ و گروه</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
   <button class="sheet-row" data-sheet="sheet-campaign">
     <span class="ico"><svg><use href="#i-spark"/></svg></span>
     <span class="tx"><b>ایجاد کمپین برای این کالا</b><span>کمپین اختصاصی همین کالا</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-sheet="sheet-discount">
-    <span class="ico"><svg><use href="#i-percent"/></svg></span>
-    <span class="tx"><b>تخفیف‌ها و تنظیمات قیمت</b><span>پله‌های تخفیف و قیمت‌گذاری</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row danger" data-sheet="sheet-pause">
@@ -3400,7 +4154,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۹) تغییر سریع قیمت ═══ -->
+<!-- ═══ ۱۱) تغییر سریع قیمت ═══ -->
 <div class="sheet" id="sheet-price" role="dialog" aria-label="تغییر سریع قیمت">
   <div class="grab"></div>
   <h3>تغییر سریع قیمت</h3>
@@ -3413,7 +4167,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>ذخیره قیمت</button>
 </div>
 
-<!-- ═══ ۱۰) تغییر موجودی ═══ -->
+<!-- ═══ ۱۲) تغییر موجودی ═══ -->
 <div class="sheet" id="sheet-stock" role="dialog" aria-label="تغییر موجودی">
   <div class="grab"></div>
   <h3>تغییر موجودی</h3>
@@ -3422,11 +4176,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <label>موجودی (کیسه)</label>
     <input class="input" value="۱۲۰">
   </div>
-  <div class="hintnote">وقتی موجودی کم شود، خودکار در «کارهای امروز» یادآوری می‌شود.</div>
+  <div class="hintnote">وقتی موجودی کم شود، خودکار در «کارها» یادآوری می‌شود.</div>
   <button class="btn btn-primary sheet-cta" data-close>ذخیره موجودی</button>
 </div>
 
-<!-- ═══ ۱۱) ویرایش جزئیات کالا ═══ -->
+<!-- ═══ ۱۳) ویرایش جزئیات کالا ═══ -->
 <div class="sheet" id="sheet-details" role="dialog" aria-label="ویرایش جزئیات کالا">
   <div class="grab"></div>
   <h3>ویرایش جزئیات کالا</h3>
@@ -3446,13 +4200,167 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>ذخیره</button>
 </div>
 
-<!-- ═══ ۱۲) غیرفعال کردن کالا ═══ -->
+<!-- ═══ ۱۴) تخفیف اختصاصی کالا ═══ -->
+<div class="sheet" id="sheet-pdiscount" role="dialog" aria-label="تخفیف اختصاصی کالا">
+  <div class="grab"></div>
+  <h3>تخفیف اختصاصی این کالا</h3>
+  <div class="sub">برنج هاشمی · کیسه ۵۰ کیلویی</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>تخفیف اختصاصی فعال باشد</b><span>فقط روی همین کالا</span></span>
+    <div class="toggle on"></div>
+  </div>
+  <div class="field">
+    <label>درصد تخفیف</label>
+    <input class="input" value="۵٪">
+  </div>
+  <div class="hintnote">تخفیفِ خودِ کالا همیشه بالاترین اولویت را دارد؛ هنگام اعمال، تخفیف کاتالوگ و گروه کالا نادیده گرفته می‌شود.</div>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف</button>
+</div>
+
+<!-- ═══ ۱۵) غیرفعال کردن کالا ═══ -->
 <div class="sheet" id="sheet-pause" role="dialog" aria-label="غیرفعال کردن کالا">
   <div class="grab"></div>
   <h3>غیرفعال کردن کالا؟</h3>
   <div class="sub">«برنج هاشمی» از کاتالوگ عمومی پنهان می‌شود؛ رصد و «لیست مقایسه قیمت» خریداران حفظ می‌شود و با فعال‌سازی برمی‌گردد.</div>
   <button class="btn sheet-cta" style="background:var(--red);color:#fff" data-close>غیرفعال کن</button>
   <button class="btn btn-outline" style="width:100%;margin-top:8px" data-close>انصراف</button>
+</div>
+
+<!-- ═══ ۱۶) گروه‌های کالا ═══ -->
+<div class="sheet" id="sheet-pgroups" role="dialog" aria-label="گروه‌های کالا">
+  <div class="grab"></div>
+  <h3>گروه‌های کالا</h3>
+  <div class="sub">دسته‌بندی کالاهای کاتالوگ — برای فیلتر نمایش به خریداران</div>
+  <div class="grp-row">
+    <span class="tx"><b>هاشمی</b><span>۲ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>طارم</b><span>۱ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>فجر</b><span>۱ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="field">
+    <label>گروه جدید</label>
+    <input class="input" placeholder="مثلاً صدری">
+  </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه کالا</button>
+  <div class="hintnote">گروه کالا برای دسته‌بندی و فیلتر نمایش است؛ گروه تخفیف حجمی چیزی جدا است — چه بسا کاتالوگت گروه نداشته باشد اما گروه تخفیف داشته باشد.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۱۷) انتخاب شهر ═══ -->
+<div class="sheet" id="sheet-city" role="dialog" aria-label="انتخاب شهر">
+  <div class="grab"></div>
+  <h3>انتخاب شهر</h3>
+  <div class="sub">شهر محل کسب‌وکارت را جستجو و انتخاب کن</div>
+  <div class="field sheet-search">
+    <div class="input">
+      <svg><use href="#i-search"/></svg>
+      <span class="ph">جستجوی شهر…</span>
+    </div>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>رشت</b><span>گیلان</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>تهران</b><span>تهران</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>مشهد</b><span>خراسان رضوی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>اصفهان</b><span>اصفهان</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>شیراز</b><span>فارس</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>همدان</b><span>همدان</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>تبریز</b><span>آذربایجان شرقی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>کرج</b><span>البرز</span></span>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۱۸) انتخاب صنف ═══ -->
+<div class="sheet" id="sheet-trade" role="dialog" aria-label="انتخاب صنف">
+  <div class="grab"></div>
+  <h3>انتخاب صنف</h3>
+  <div class="sub">از میان اصناف ای‌مچ — با جستجو</div>
+  <div class="field sheet-search">
+    <div class="input">
+      <svg><use href="#i-search"/></svg>
+      <span class="ph">جستجوی صنف…</span>
+    </div>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>پخش مواد غذایی</b><span>۴۲۱ کسب‌وکار</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>سوپرمارکت</b><span>۱٬۲۰۴ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>حبوبات و غلات</b><span>۹۸ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>قصابی تجاری</b><span>۶۳ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>قنادی</b><span>۵۷ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نان سنتی</b><span>۴۲ کسب‌وکار</span></span>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۱۹) نوع کسب‌وکار ═══ -->
+<div class="sheet" id="sheet-biztype" role="dialog" aria-label="نوع کسب‌وکار">
+  <div class="grab"></div>
+  <h3>نوع کسب‌وکار</h3>
+  <div class="sub">خریداران می‌بینند از چه کسی می‌خرند — روی کاتالوگت هم نمایش داده می‌شود</div>
+  <div class="sheet-row">
+    <span class="tx"><b>تولیدکننده</b><span>کارخانه و تولید مستقیم</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>واردکننده</b><span>واردات و پخش کالای خارجی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>توزیع‌کننده</b><span>توزیع کالا به خرده‌فروشان</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>عمده‌فروش</b><span>فروش عمده از بازار و انبار</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>بنک‌دار</b><span>بنک و فروش نقدی عمده</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نمایندگی پخش رسمی</b><span>پخش رسمی یک برند</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>پخش غیررسمی</b><span>پخش چند برند</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نمایندهٔ فروش</b><span>نمایندگی فروش مستقل</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نمایندگی برند</b><span>نمایندگی انحصاری برند</span></span>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
   </div>
@@ -3471,12 +4379,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </div>
     <nav class="desk-nav">
       <a class="active"><svg><use href="#i-store"/></svg>کاتالوگ من</a>
-      <a><svg><use href="#i-inbox"/></svg>درخواست‌های قیمت <span class="badge b-new" style="margin-top:2px">۳</span></a>
+      <a><svg><use href="#i-inbox"/></svg>درخواست‌ها <span class="badge b-new" style="margin-top:2px">۳</span></a>
       <a><svg><use href="#i-user"/></svg>پروفایل</a>
     </nav>
     <div style="margin-right:auto;display:flex;align-items:center;gap:10px">
       <button class="icon-btn" aria-label="اعلان‌ها"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۳</span></button>
-      <div class="avatar" style="background:linear-gradient(135deg,#ea580c,#f97316)">ا</div>
+      <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg style="width:18px;height:18px"><use href="#i-eye"/></svg></button>
     </div>
   </header>
 
@@ -3671,7 +4579,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </nav>
     <div style="margin-right:auto;display:flex;align-items:center;gap:10px">
       <button class="icon-btn" aria-label="اعلان‌ها"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۲</span></button>
-      <div class="avatar" style="background:#0e7490">ن</div>
+      <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg style="width:18px;height:18px"><use href="#i-eye"/></svg></button>
     </div>
   </header>
 
@@ -3845,6 +4753,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="dl-main">
       <div class="dl-wrap">
 
+        <!-- نوار زبان — فقط نمایشی -->
+        <div class="land-lang">
+          <button class="lg">English</button>
+          <button class="lg active">فارسی</button>
+          <button class="lg">العربية</button>
+          <div class="lg-wrap">
+            <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+            <div class="lang-dd">
+              <button>Türkçe <span>استانبولی</span></button>
+              <button>中文 <span>چینی</span></button>
+              <button>Русский <span>روسی</span></button>
+              <button>日本語 <span>ژاپنی</span></button>
+            </div>
+          </div>
+        </div>
+
         <!-- هیرو -->
         <section class="dl-hero">
           <div>
@@ -3864,7 +4788,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <!-- تصویر محصول — نمای دسکتاپ -->
         <div class="dl-showcase">
-          <img src="png/d3-desktop-landing.png" alt="آی‌مچ روی دسکتاپ">
+          <img src="png/d3-desktop-landing.jpg" alt="آی‌مچ روی دسکتاپ">
         </div>
 
         <!-- ═══ آی‌مچ چیست؟ ═══ -->
@@ -3876,8 +4800,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم تطبیق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
-          <p>ای‌مچ با موتور تطابق خودش، درخواست‌های خرید خریداران عمده رو به محصولات تامین‌کنندگان مچ می‌کنه، و با این کار یک بازار کاملاً اختصاصی خرید و فروش عمده برای شما می‌سازه که دقیقاً متناسب با کالاها و حجم خرید یا فروش شماست.</p>
+          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
         <!-- سه سؤال -->
@@ -3975,9 +4899,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
-      ['20', 'کارهای امروز', '<svg><use href="#i-tasks"/></svg>', '<span class="badge">۶</span>'],
+      ['20', 'کارها', '<svg><use href="#i-tasks"/></svg>', '<span class="badge">۶</span>'],
       ['01', 'کاتالوگ من', '<svg><use href="#i-store"/></svg>', ''],
-      ['05', 'درخواست‌های قیمت', '<svg><use href="#i-inbox"/></svg>', '<span class="badge">۳</span>'],
+      ['05', 'درخواست‌ها', '<svg><use href="#i-inbox"/></svg>', '<span class="badge">۳</span>'],
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
       ['07', 'پروفایل', '<svg><use href="#i-user"/></svg>', '']
     ],
@@ -3992,7 +4916,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   var DEFAULT_BACK = {
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
     '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
-    '20': '01', '21': '03', '22': '01'
+    '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01'
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
@@ -4012,10 +4936,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '16': [['ساخت حساب و ورود', '01'], ['وارد شوید', '17']],
     '17': [['ورود به ای‌مچ', '01'], ['ساخت حساب', '16']],
     '22': [['ذخیره تغییرات', '01']],
+    '23': [['ارسال پیشنهاد قیمت', '12']],
+    '24': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
+    '25': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
-  var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19' };
-  var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارهای امروز · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های قیمت · دستیار فروش","06":"۰۶ — جزئیات درخواست و پاسخ","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19', '21': '06', '24': '06', '25': '06', '26': '03' };
+  var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌ها · دستیار فروش","06":"۰۶ — جزئیات درخواست و پاسخ","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
 
   var stack = [];
   var current = null;
@@ -4037,7 +4964,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     sh.classList.add('show');
   }
 
-  /* کروم مشترک صفحهٔ ۱۸ (پیام‌ها): تب‌بار و پیل بر اساس بازوی فعال */
+  /* کروم مشترک صفحهٔ ۱۸ (پیام‌ها): تب‌بار و پیل و چشمِ پیش‌نمایش بر اساس بازوی فعال */
   function renderKeepChrome(target) {
     if (!target || target.dataset.arm !== 'keep') return;
     var arm = phoneArm();
@@ -4057,8 +4984,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var ic = arm === 'sell' ? '#i-store' : '#i-basket';
       var lb = arm === 'sell' ? 'دستیار فروش' : 'دستیار خرید';
       pill.innerHTML = '<svg><use href="' + ic + '"/></svg> ' + lb +
-        ' <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>';
+        ' <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>';
     }
+    var eye = target.querySelector('.eye-preview');
+    if (eye) eye.dataset.go = arm === 'sell' ? '13' : '23';
   }
 
   function show(id) {
@@ -4146,6 +5075,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var t = e.target;
     if (!t.closest) return;
 
+    /* زبان‌ها (لندینگ) — فقط نمایشی؛ «سایر» دراپ‌داun باز/بسته می‌شود */
+    var langMore = t.closest('.lang-more');
+    if (langMore) {
+      var dd = langMore.parentElement.querySelector('.lang-dd');
+      if (dd) dd.classList.toggle('open');
+      return;
+    }
+    var langWrap = t.closest('.land-lang');
+    if (langWrap) {
+      var d2 = langWrap.querySelector('.lang-dd');
+      if (d2) d2.classList.remove('open');
+    }
+
     /* شیت سوییچ دستیار */
     var ap = t.closest('.arm-pill');
     if (ap) {
@@ -4168,7 +5110,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }
     if (t.closest('#sheet-close')) { closeSheet(); return; }
 
-    /* شیت‌های فاز ۱۸ — بستن / بازکردن / کپی لینک / ارسال به مخاطب */
+    /* شیت‌ها — بستن / بازکردن / کپی لینک / ارسال به مخاطب */
     var closeEl = t.closest('[data-close]');
     if (closeEl) { closeSheet(); return; }
 

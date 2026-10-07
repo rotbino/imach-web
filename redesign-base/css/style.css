@@ -877,3 +877,86 @@ textarea.input { height: 76px; padding: 11px 13px; display: block; }
 
 /* برچسب کوچک بالای ماکاپ‌ها (خارج از قاب گوشی — فقط در index استفاده) */
  cap { display: none; }
+
+/* ═══════════════ فاز ۱۹ — عکس واقعی کالا · آمار کلیک‌پذیر · لوکیشن · سلکت ═══════════════ */
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.avatar img, .avatar-lg img, .avatar-sm img {
+  width: 100%; height: 100%; border-radius: 50%;
+  object-fit: cover; display: block;
+}
+
+/* آمار کلیک‌پذیر — می‌رود به صفحهٔ همان آدم‌ها */
+.stat[data-go] { cursor: pointer; transition: border-color .15s, background .15s; }
+.stat[data-go]:hover { border-color: var(--border-strong); background: var(--muted); }
+.stat[data-go]:active { transform: translateY(1px); }
+
+/* ردیف سلکت-مانند (صنف / نوع کسب‌وکار / شهر) */
+.input.sel { cursor: pointer; font-family: inherit; }
+.input.sel .chev { width: 15px; height: 15px; color: var(--muted-fg); flex-shrink: 0; }
+
+/* ═══ جعبهٔ انتخاب لوکیشن (نقشه) ═══ */
+.loc-box {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #fff;
+}
+.loc-box .loc-map { position: relative; height: 118px; }
+.loc-box .loc-map img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.loc-box .pin {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -88%);
+  width: 30px; height: 30px;
+  color: var(--primary-strong);
+  filter: drop-shadow(0 4px 6px rgba(42, 39, 35, .35));
+}
+.loc-box .loc-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--stone-soft);
+}
+.loc-box .loc-row svg { width: 14px; height: 14px; color: var(--primary-strong); flex-shrink: 0; }
+.loc-box .loc-row .btn { margin-right: auto; flex-shrink: 0; }
+
+/* هویت کسب‌وکار بالای صفحات آدم‌ها (بازدید/ذخیره) */
+.biz-head {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow-card);
+  padding: 13px 14px;
+}
+.biz-head .row1 { display: flex; align-items: center; gap: 11px; }
+.biz-head .biz-name { font-size: 15.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.biz-head .biz-name svg { width: 16px; height: 16px; color: #1d5fb8; flex-shrink: 0; }
+.biz-head .biz-bio { font-size: 11px; color: var(--muted-fg); line-height: 1.9; margin-top: 7px; }
+.biz-head .biz-meta {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  margin-top: 8px; font-size: 11px; color: var(--muted-fg);
+}
+.biz-head .owner { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; color: var(--stone-soft); }
+.biz-head .owner svg { width: 12px; height: 12px; color: var(--muted-fg); }
+
+/* فیلتر صنف + بازهٔ تاریخ — زیبا و مینیمال */
+.meta-filter {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+  margin-top: 10px;
+}
+.meta-filter .mf-row { display: flex; align-items: center; gap: 8px; }
+.meta-filter .mf-row + .mf-row { margin-top: 9px; }
+.meta-filter .mf-k {
+  font-size: 10.5px; font-weight: 700; color: var(--muted-fg);
+  flex-shrink: 0; width: 44px;
+}
+.meta-filter .chips { margin: 0; flex: 1; }
+.meta-filter .pillchoice { flex: 1; gap: 6px; }
+.meta-filter .pill { padding: 6px 4px; font-size: 11.5px; }
+
+/* آیکون‌های عمل ردیف (ویرایش/حذف گروه) */
+.row-act {
+  width: 32px; height: 32px; border-radius: 9px;
+  display: grid; place-items: center; flex-shrink: 0;
+  color: var(--muted-fg); cursor: pointer; border: 0; background: none;
+}
+.row-act svg { width: 15px; height: 15px; }
+.row-act.warn { color: var(--red); }
+.row-act:hover { background: var(--muted); }

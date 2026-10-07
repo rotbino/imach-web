@@ -1,0 +1,366 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<title>hero-mock — تصویر لندینگ (فریم‌بند دو گوشی)</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  /* ═══ بوم فریم‌بند ۱۴۴۰×۹۰۰ — پس‌زمینه سفید گرم ═══ */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  .hero-canvas {
+    width: 1440px; height: 900px;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+    font-family: 'IRANSans', 'Segoe UI', Tahoma, sans-serif;
+    direction: rtl;
+  }
+  /* هالهٔ خیلی ملایم پشت گوشی‌ها */
+  .hero-canvas::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(46% 60% at 62% 52%, rgba(249, 115, 22, .055), transparent 70%),
+      radial-gradient(30% 40% at 30% 40%, rgba(249, 115, 22, .035), transparent 70%);
+  }
+
+  /* ═══ قاب گوشی ═══ */
+  .hp {
+    position: absolute;
+    background: #fff;
+    border-radius: 46px;
+    border: 11px solid #292524;
+    box-shadow: 0 34px 80px rgba(42, 39, 35, .30);
+    overflow: hidden;
+  }
+  .hp::before {
+    content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 118px; height: 27px; background: #292524;
+    border-radius: 0 0 15px 15px; z-index: 30;
+  }
+  .hp .notch { position: absolute; top: 7px; left: 50%; transform: translateX(-50%); width: 14px; height: 14px; border-radius: 50%; background: #1c1917; box-shadow: inset 0 0 3px #000; z-index: 31; }
+  .hp.front { width: 402px; height: 822px; right: 318px; top: 44px; transform: rotate(1.6deg); z-index: 20; }
+  .hp.back  { width: 352px; height: 720px; right: 596px; top: 132px; transform: rotate(-5deg); z-index: 10; opacity: .98; }
+
+  .hp .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg); }
+
+  /* ═══ هدر گوشی جلو — لوگو + دکمه‌های کوچک ساخت حساب/ورود ═══ */
+  .mk-top {
+    height: 58px; flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 16px 0 12px;
+    background: rgba(255,255,255,.95);
+    border-bottom: 1px solid var(--border);
+    position: relative; z-index: 20;
+  }
+  .mk-top .lg { height: 27px; margin-right: 2px; }
+  .mk-top .sp { flex: 1; }
+  .mk-top .ghost {
+    border: 0; background: none; font-family: inherit; cursor: pointer;
+    font-size: 12.5px; font-weight: 700; color: var(--stone-soft);
+    padding: 7px 10px; border-radius: 9px;
+  }
+  .mk-top .cta {
+    border: 0; cursor: pointer; font-family: inherit;
+    background: var(--primary); color: #fff;
+    font-size: 12.5px; font-weight: 700;
+    padding: 8px 14px; border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(249, 115, 22, .32);
+  }
+
+  .mk-body { flex: 1; overflow: hidden; padding: 12px 14px 0; }
+
+  /* ویترین */
+  .mk-case { display: flex; align-items: center; gap: 10px; }
+  .mk-case .av { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; flex-shrink: 0; box-shadow: 0 2px 6px rgba(42,39,35,.14); }
+  .mk-case .av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mk-case .nm { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+  .mk-case .nm svg { width: 15px; height: 15px; color: #1d5fb8; }
+  .mk-case .sb { font-size: 10.5px; color: var(--muted-fg); margin-top: 3px; display: flex; align-items: center; gap: 5px; }
+  .mk-case .bt { font-size: 9px; font-weight: 700; color: var(--accent-fg); background: var(--accent); border-radius: 6px; padding: 1.5px 7px; }
+
+  /* آمار */
+  .mk-stats { display: flex; gap: 7px; margin-top: 10px; }
+  .mk-stats .st { flex: 1; background: #fff; border: 1px solid var(--border); border-radius: 11px; padding: 8px 4px; text-align: center; }
+  .mk-stats .st .v { font-size: 14.5px; font-weight: 700; }
+  .mk-stats .st .k { font-size: 9px; color: var(--muted-fg); margin-top: 2px; }
+  .mk-stats .st.hot .v { color: var(--primary-strong); }
+
+  /* جستجو */
+  .mk-search { display: flex; gap: 7px; margin-top: 10px; }
+  .mk-search .sb2 { flex: 1; height: 40px; background: #fff; border: 1px solid var(--border-strong); border-radius: 11px; display: flex; align-items: center; gap: 8px; padding: 0 11px; }
+  .mk-search .sb2 svg { width: 15px; height: 15px; color: var(--muted-fg); flex-shrink: 0; }
+  .mk-search .sb2 span { font-size: 11.5px; color: #b0aca1; }
+  .mk-search .ad { border: 0; cursor: pointer; font-family: inherit; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; padding: 0 13px; border-radius: 11px; display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 10px rgba(249,115,22,.3); }
+  .mk-search .ad svg { width: 13px; height: 13px; }
+
+  /* چیپ‌ها */
+  .mk-chips { display: flex; gap: 5px; margin-top: 10px; }
+  .mk-chips .c { border: 1px solid var(--border-strong); background: #fff; border-radius: 999px; padding: 5px 11px; font-size: 10.5px; font-weight: 700; color: var(--stone-soft); font-family: inherit; cursor: pointer; }
+  .mk-chips .c.on { background: var(--accent); border-color: transparent; color: var(--primary-strong); }
+
+  /* گرید محصولات */
+  .mk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 11px; }
+  .mk-p { background: #fff; border: 1px solid var(--border); border-radius: 15px; box-shadow: var(--shadow-card); overflow: hidden; position: relative; }
+  .mk-p .im { height: 96px; position: relative; }
+  .mk-p .im img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mk-p .im .gl { position: absolute; inset: 0; display: grid; place-items: center; font-size: 10px; color: #a8a29a; font-weight: 700; letter-spacing: .4px; background: linear-gradient(135deg, #f3f1ea, #e9e5db); }
+  .mk-p .cm { position: absolute; top: 7px; left: 7px; width: 26px; height: 26px; border-radius: 8px; background: rgba(255,255,255,.94); border: 1px solid var(--border); display: grid; place-items: center; color: var(--primary-strong); box-shadow: 0 2px 5px rgba(42,39,35,.12); }
+  .mk-p .cm svg { width: 13px; height: 13px; }
+  .mk-p .cm b { position: absolute; top: -6px; right: -6px; min-width: 15px; height: 15px; border-radius: 8px; background: var(--primary); color: #fff; font-size: 8.5px; font-weight: 700; display: grid; place-items: center; padding: 0 3px; }
+  .mk-p .inf { padding: 7px 9px 9px; }
+  .mk-p .n { font-size: 11.5px; font-weight: 700; }
+  .mk-p .u { font-size: 9px; color: var(--muted-fg); margin-top: 1px; }
+  .mk-p .p { margin-top: 4px; font-size: 11.5px; font-weight: 700; color: var(--primary-strong); }
+  .mk-p .p small { font-size: 8.5px; font-weight: 400; color: var(--muted-fg); }
+  .mk-p .mt { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 9px; color: var(--muted-fg); }
+  .mk-p .mt svg { width: 11px; height: 11px; }
+
+  /* تب‌بار */
+  .mk-tabs {
+    margin-top: auto; flex-shrink: 0;
+    display: flex; height: 64px;
+    background: rgba(255,255,255,.96);
+    border-top: 1px solid var(--border);
+  }
+  .mk-tabs .t { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 9.5px; font-weight: 700; color: var(--muted-fg); position: relative; }
+  .mk-tabs .t svg { width: 20px; height: 20px; }
+  .mk-tabs .t.on { color: var(--primary-strong); }
+  .mk-tabs .t .bd { position: absolute; top: 9px; left: calc(50% + 9px); min-width: 16px; height: 16px; border-radius: 9px; background: var(--primary); color: #fff; font-size: 9px; font-weight: 700; display: grid; place-items: center; padding: 0 4px; }
+
+  /* ═══ گوشی عقب — تابلوی تأمین ═══ */
+  .bp-head { height: 52px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 0 13px; background: rgba(255,255,255,.95); border-bottom: 1px solid var(--border); }
+  .bp-head .bk { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; color: var(--stone-soft); }
+  .bp-head .bk svg { width: 16px; height: 16px; }
+  .bp-head .tt { font-size: 13px; font-weight: 700; }
+  .bp-head .tt small { display: block; font-size: 9px; color: var(--muted-fg); font-weight: 400; margin-top: 1px; }
+  .bp-body { flex: 1; overflow: hidden; padding: 11px 12px 0; }
+  .bp-best {
+    background: linear-gradient(180deg, #f4fcf6, #fff 45%);
+    border: 1px solid #b6dfc5; border-radius: 14px; padding: 10px 11px;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .bp-best .th { width: 42px; height: 42px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+  .bp-best .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .bp-best .nm2 { flex: 1; min-width: 0; }
+  .bp-best .nm2 b { font-size: 11.5px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+  .bp-best .nm2 b svg { width: 12px; height: 12px; color: #1d5fb8; }
+  .bp-best .nm2 span { font-size: 9px; color: var(--muted-fg); display: block; margin-top: 2px; }
+  .bp-best .pr { text-align: left; flex-shrink: 0; }
+  .bp-best .pr b { font-size: 12.5px; font-weight: 700; color: var(--green); }
+  .bp-best .pr small { font-size: 8px; color: var(--muted-fg); display: block; }
+  .bp-row { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 9px 11px; display: flex; align-items: center; gap: 9px; margin-top: 8px; }
+  .bp-row .th { width: 38px; height: 38px; border-radius: 9px; background: linear-gradient(135deg, #f3f1ea, #e9e5db); display: grid; place-items: center; font-size: 8.5px; color: #a8a29a; font-weight: 700; flex-shrink: 0; overflow: hidden; }
+  .bp-row .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .bp-row .nm2 { flex: 1; min-width: 0; }
+  .bp-row .nm2 b { font-size: 11px; font-weight: 700; display: block; }
+  .bp-row .nm2 span { font-size: 8.5px; color: var(--muted-fg); display: block; margin-top: 2px; }
+  .bp-row .pr { font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .bp-row .pr small { font-size: 8px; color: var(--muted-fg); font-weight: 400; }
+  .bp-foot { margin-top: auto; flex-shrink: 0; display: flex; gap: 7px; padding: 10px 12px 13px; background: rgba(255,255,255,.97); border-top: 1px solid var(--border); }
+  .bp-foot .b1 { flex: 1; border: 0; cursor: pointer; font-family: inherit; background: var(--stone); color: #fff; font-size: 11.5px; font-weight: 700; padding: 10px 8px; border-radius: 11px; }
+  .bp-foot .b2 { border: 1px solid var(--border-strong); background: #fff; cursor: pointer; font-family: inherit; color: var(--foreground); font-size: 11.5px; font-weight: 700; padding: 10px 12px; border-radius: 11px; }
+
+  /* ═══ آیکون اشتراک‌گذاری کوچکِ شناور ═══ */
+  .share-float {
+    position: absolute; z-index: 40;
+    right: 600px; top: 412px;
+    width: 58px; height: 58px; border-radius: 19px;
+    background: #fff;
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 12px 30px rgba(42, 39, 35, .16);
+    display: grid; place-items: center;
+    color: var(--primary-strong);
+    transform: rotate(-4deg);
+  }
+  .share-float svg { width: 25px; height: 25px; }
+  .share-float::after {
+    content: ''; position: absolute; inset: -8px; border-radius: 24px;
+    background: radial-gradient(closest-side, rgba(249,115,22,.16), transparent);
+    z-index: -1;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero-canvas">
+
+  <!-- ═══ گوشی جلو — کاتالوگ فروش ═══ -->
+  <div class="hp front">
+    <div class="screen">
+      <div class="mk-top">
+        <img class="lg" src="../assets/logo3.svg" alt="iMach">
+        <div class="sp"></div>
+        <button class="ghost">ورود</button>
+        <button class="cta">ساخت حساب</button>
+      </div>
+
+      <div class="mk-body">
+        <div class="mk-case">
+          <div class="av"><img src="../png/goods/catalog-logo.png" alt=""></div>
+          <div>
+            <div class="nm">پخش برنج پارس
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <div class="sb">پخش مواد غذایی · رشت <span class="bt">عمده‌فروش</span></div>
+          </div>
+        </div>
+
+        <div class="mk-stats">
+          <div class="st"><div class="v">۵</div><div class="k">کالا</div></div>
+          <div class="st"><div class="v">۱۲۰</div><div class="k">بازدید</div></div>
+          <div class="st hot"><div class="v">۳۸</div><div class="k">ذخیره‌کننده</div></div>
+        </div>
+
+        <div class="mk-search">
+          <div class="sb2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <span>جستجو در کاتالوگ…</span>
+          </div>
+          <button class="ad">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            افزودن کالا
+          </button>
+        </div>
+
+        <div class="mk-chips">
+          <button class="c on">همه</button>
+          <button class="c">هاشمی</button>
+          <button class="c">طارم</button>
+          <button class="c">فجر</button>
+          <button class="c">صدری</button>
+        </div>
+
+        <div class="mk-grid">
+          <div class="mk-p">
+            <div class="im"><img src="../png/goods/rice-sack.jpg" alt="">
+              <div class="cm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 3 21 7 17 11"/><line x1="21" y1="7" x2="3" y2="7"/><polyline points="7 13 3 17 7 21"/><line x1="3" y1="17" x2="21" y2="17"/></svg><b>۴</b></div>
+            </div>
+            <div class="inf">
+              <div class="n">برنج هاشمی</div>
+              <div class="u">کیسه ۵۰ کیلویی · فله</div>
+              <div class="p">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+              <div class="mt">
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg> ۲۱</span>
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 3 21 7 17 11"/><line x1="21" y1="7" x2="3" y2="7"/><polyline points="7 13 3 17 7 21"/><line x1="3" y1="17" x2="21" y2="17"/></svg> ۴</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mk-p">
+            <div class="im"><div class="gl">۵۰ کیلو</div></div>
+            <div class="inf">
+              <div class="n">برنج طارم</div>
+              <div class="u">کیسه ۵۰ کیلویی · فله</div>
+              <div class="p">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
+              <div class="mt">
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg> ۱۷</span>
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 3 21 7 17 11"/><line x1="21" y1="7" x2="3" y2="7"/><polyline points="7 13 3 17 7 21"/><line x1="3" y1="17" x2="21" y2="17"/></svg> ۲</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mk-p">
+            <div class="im"><img src="../png/goods/hashemi-10.png" alt=""></div>
+            <div class="inf">
+              <div class="n">برنج هاشمی</div>
+              <div class="u">کیسه ۱۰ کیلویی · فله</div>
+              <div class="p">۵۹۵٬۰۰۰ <small>تومان</small></div>
+            </div>
+          </div>
+
+          <div class="mk-p">
+            <div class="im"><img src="../png/goods/fajar-50.jpg" alt=""></div>
+            <div class="inf">
+              <div class="n">برنج فجر</div>
+              <div class="u">کیسه ۵۰ کیلویی · فله</div>
+              <div class="p">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mk-tabs">
+        <div class="t">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 13.5l2 2 4-4.5"/></svg>
+          کارها <span class="bd">۶</span>
+        </div>
+        <div class="t on">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></svg>
+          کاتالوگ من
+        </div>
+        <div class="t">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.5-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.7 1.1z"/></svg>
+          درخواست‌ها <span class="bd">۳</span>
+        </div>
+        <div class="t">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>
+          پیام‌ها
+        </div>
+      </div>
+    </div>
+    <div class="notch"></div>
+  </div>
+
+  <!-- ═══ گوشی عقب — تابلوی تأمین ═══ -->
+  <div class="hp back">
+    <div class="screen" style="background:#fff">
+      <div class="bp-head">
+        <div class="bk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+        <div class="tt">تابلوی تأمین<small>برنج هاشمی · ۵ فروشنده</small></div>
+      </div>
+      <div class="bp-body">
+        <div class="bp-best">
+          <div class="th"><img src="../png/goods/rice-sack.jpg" alt=""></div>
+          <div class="nm2">
+            <b>پخش برنج پارس
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></svg>
+            </b>
+            <span>رشت · ارزان‌ترین · نقدی</span>
+          </div>
+          <div class="pr"><b>۲٬۸۵۰٬۰۰۰</b><small>تومان</small></div>
+        </div>
+
+        <div class="bp-row">
+          <div class="th"><img src="../png/goods/sack-pile.jpg" alt=""></div>
+          <div class="nm2"><b>برنج گیلانه</b><span>رشت · ۳۰ روزه</span></div>
+          <div class="pr">۲٬۹۲۰٬۰۰۰ <small>تومان</small></div>
+        </div>
+
+        <div class="bp-row">
+          <div class="th"><img src="../png/goods/rice-grains.jpg" alt=""></div>
+          <div class="nm2"><b>طارم لاجان</b><span>پونل · نقدی</span></div>
+          <div class="pr">۲٬۹۸۰٬۰۰۰ <small>تومان</small></div>
+        </div>
+
+        <div class="bp-row">
+          <div class="th">۵۰ کیلو</div>
+          <div class="nm2"><b>هاشمی سرا</b><span>فومن · چک صیادی</span></div>
+          <div class="pr">۳٬۰۵۰٬۰۰۰ <small>تومان</small></div>
+        </div>
+
+        <div class="bp-row">
+          <div class="th">۵۰ کیلو</div>
+          <div class="nm2"><b>برنج انار</b><span>رشت · اسفندی</span></div>
+          <div class="pr">۳٬۱۰۰٬۰۰۰ <small>تومان</small></div>
+        </div>
+      </div>
+      <div class="bp-foot">
+        <button class="b1">درخواست قیمت</button>
+        <button class="b2">مقایسه</button>
+      </div>
+    </div>
+    <div class="notch"></div>
+  </div>
+
+  <!-- ═══ آیکون اشتراک‌گذاری کوچک ═══ -->
+  <div class="share-float">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>
+  </div>
+
+</div>
+
+</body>
+</html>

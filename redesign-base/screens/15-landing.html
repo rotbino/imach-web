@@ -26,6 +26,34 @@
     cursor: pointer; padding: 8px 10px; border-radius: 10px;
   }
 
+  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
+  .land-lang {
+    display: flex; align-items: center; gap: 2px;
+    padding: 10px 16px 0;
+    position: relative;
+  }
+  .land-lang .lg {
+    border: 0; background: none; font-family: inherit;
+    font-size: 12px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 6px 10px; border-radius: 9px;
+  }
+  .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  .land-lang .lg-wrap { position: relative; }
+  .land-lang .lang-dd {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: #fff; border: 1px solid var(--border-strong);
+    border-radius: 12px; box-shadow: var(--shadow-pop);
+    padding: 6px; min-width: 168px; display: none; z-index: 50;
+  }
+  .land-lang .lang-dd.open { display: block; }
+  .land-lang .lang-dd button {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    width: 100%; border: 0; background: none; font-family: inherit;
+    font-size: 12.5px; font-weight: 700; color: var(--stone-soft);
+    padding: 9px 10px; border-radius: 9px; cursor: pointer; text-align: right;
+  }
+  .land-lang .lang-dd button span { font-size: 10.5px; color: var(--muted-fg); font-weight: 400; }
+
   /* هیرو — تینت نارنجی نرم */
   .hero-land {
     padding: 32px 20px 28px;
@@ -77,6 +105,7 @@
   .mv-link small { font-size: 9.5px; font-weight: 700; color: var(--muted-fg); }
   .intro-card h3 { font-size: 14px; font-weight: 700; line-height: 1.9; }
   .intro-card p { font-size: 11.5px; color: var(--muted-fg); line-height: 2; margin-top: 8px; text-align: right; }
+  .intro-card p em { font-style: normal; color: var(--primary-strong); font-weight: 700; }
 
   /* ═══ سه سؤال ═══ */
   .steps3 { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
@@ -185,6 +214,22 @@
     <!-- ═══ بدنه لندینگ ═══ -->
     <main class="screen-body landing-body nopad" style="padding:0 0 0">
 
+      <!-- نوار زبان — فقط نمایشی -->
+      <div class="land-lang">
+        <button class="lg">English</button>
+        <button class="lg active">فارسی</button>
+        <button class="lg">العربية</button>
+        <div class="lg-wrap">
+          <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+          <div class="lang-dd">
+            <button>Türkçe <span>استانبولی</span></button>
+            <button>中文 <span>چینی</span></button>
+            <button>Русский <span>روسی</span></button>
+            <button>日本語 <span>ژاپنی</span></button>
+          </div>
+        </div>
+      </div>
+
       <!-- هیرو -->
       <section class="hero-land">
         <h1><em>خرید عمده</em>، مسألهٔ اکثر کسب‌وکارهاست</h1>
@@ -199,7 +244,7 @@
       <!-- تصویر محصول + بخش‌های معرفی (با پدینگ کناری) -->
       <div style="padding:0 16px">
         <div class="land-shot">
-          <img src="../png/d3-desktop-landing.png" alt="آی‌مچ روی دسکتاپ">
+          <img src="../png/d3-desktop-landing.jpg" alt="آی‌مچ روی دسکتاپ">
         </div>
 
         <!-- ═══ آی‌مچ چیست؟ ═══ -->
@@ -212,8 +257,8 @@
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم تطبیق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
-          <p>ای‌مچ با موتور تطابق خودش، درخواست‌های خرید خریداران عمده رو به محصولات تامین‌کنندگان مچ می‌کنه، و با این کار یک بازار کاملاً اختصاصی خرید و فروش عمده برای شما می‌سازه که دقیقاً متناسب با کالاها و حجم خرید یا فروش شماست.</p>
+          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
         <!-- سه سؤال -->

@@ -14,6 +14,30 @@
   .dl-main::-webkit-scrollbar { display: none; }
   .dl-wrap { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
 
+  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
+  .land-lang { display: flex; align-items: center; gap: 4px; padding: 14px 0 0; position: relative; }
+  .land-lang .lg {
+    border: 0; background: none; font-family: inherit;
+    font-size: 13px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 7px 13px; border-radius: 10px;
+  }
+  .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  .land-lang .lg-wrap { position: relative; }
+  .land-lang .lang-dd {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    background: #fff; border: 1px solid var(--border-strong);
+    border-radius: 13px; box-shadow: var(--shadow-pop);
+    padding: 7px; min-width: 190px; display: none; z-index: 50;
+  }
+  .land-lang .lang-dd.open { display: block; }
+  .land-lang .lang-dd button {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; border: 0; background: none; font-family: inherit;
+    font-size: 13.5px; font-weight: 700; color: var(--stone-soft);
+    padding: 10px 12px; border-radius: 9px; cursor: pointer; text-align: right;
+  }
+  .land-lang .lang-dd button span { font-size: 11px; color: var(--muted-fg); font-weight: 400; }
+
   /* هیرو */
   .dl-hero {
     display: grid; grid-template-columns: 1.05fr .95fr;
@@ -89,6 +113,7 @@
   .mv-link small { font-size: 10.5px; font-weight: 700; color: var(--muted-fg); }
   .dl-intro h3 { font-size: 17px; font-weight: 700; line-height: 1.9; }
   .dl-intro p { font-size: 13px; color: var(--muted-fg); line-height: 2.1; margin-top: 10px; text-align: right; }
+  .dl-intro p em { font-style: normal; color: var(--primary-strong); font-weight: 700; }
 
   /* سه سؤال */
   .dl-q3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
@@ -186,6 +211,22 @@
     <main class="dl-main">
       <div class="dl-wrap">
 
+        <!-- نوار زبان — فقط نمایشی -->
+        <div class="land-lang">
+          <button class="lg">English</button>
+          <button class="lg active">فارسی</button>
+          <button class="lg">العربية</button>
+          <div class="lg-wrap">
+            <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+            <div class="lang-dd">
+              <button>Türkçe <span>استانبولی</span></button>
+              <button>中文 <span>چینی</span></button>
+              <button>Русский <span>روسی</span></button>
+              <button>日本語 <span>ژاپنی</span></button>
+            </div>
+          </div>
+        </div>
+
         <!-- هیرو -->
         <section class="dl-hero">
           <div>
@@ -205,7 +246,7 @@
 
         <!-- تصویر محصول — نمای دسکتاپ -->
         <div class="dl-showcase">
-          <img src="../png/d3-desktop-landing.png" alt="آی‌مچ روی دسکتاپ">
+          <img src="../png/d3-desktop-landing.jpg" alt="آی‌مچ روی دسکتاپ">
         </div>
 
         <!-- ═══ آی‌مچ چیست؟ ═══ -->
@@ -217,8 +258,8 @@
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم تطبیق نیازِ خریداران عمده با تأمین‌کنندگان عمده</h3>
-          <p>ای‌مچ با موتور تطابق خودش، درخواست‌های خرید خریداران عمده رو به محصولات تامین‌کنندگان مچ می‌کنه، و با این کار یک بازار کاملاً اختصاصی خرید و فروش عمده برای شما می‌سازه که دقیقاً متناسب با کالاها و حجم خرید یا فروش شماست.</p>
+          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
         <!-- سه سؤال -->

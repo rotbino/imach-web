@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=390, initial-scale=1">
 <title>۹۰ — شیت‌های مشترک</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="../css/style.css">
 <style>
-/* ── شیت‌های پایین صفحه (الگوی فاز ۱۷ — تعمیم‌یافته فاز ۱۸) ── */
+/* ── شیت‌های پایین صفحه (الگوی فاز ۱۷ — تعمیم‌یافته فاز ۱۸ و ۱۹) ── */
 .backdrop{position:absolute;inset:0;background:rgba(42,39,35,.5);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
 .backdrop.show{opacity:1;pointer-events:auto}
 .sheet{position:absolute;bottom:0;right:0;left:0;background:#fff;border-radius:20px 20px 0 0;box-shadow:var(--shadow-pop);z-index:61;padding:8px 16px 16px;transform:translateY(105%);transition:transform .25s;max-height:88%;overflow-y:auto}
@@ -36,6 +36,28 @@
 .sheet .btn.done-send{color:var(--green);border-color:#b6e2c6;background:var(--green-bg)}
 .sheet .hintnote{font-size:11px;color:var(--muted-fg);line-height:1.9;margin-top:11px;background:var(--muted);border-radius:10px;padding:8px 10px}
 .sheet .avatar-sm{flex-shrink:0}
+/* ── فاز ۱۹ ── */
+.sheet-hdr{display:flex;align-items:center;gap:10px}
+.sheet-hdr h3{flex:1}
+.sheet-hdr .mg{width:34px;height:34px;border-radius:10px;border:1px solid var(--border-strong);background:#fff;display:grid;place-items:center;color:var(--muted-fg);cursor:pointer;flex-shrink:0}
+.sheet-hdr .mg svg{width:16px;height:16px}
+.sheet .pillchoice .pill{padding:8px 4px;font-size:11.5px}
+.grp-row{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-top:9px;font-family:inherit}
+.grp-row .tx{flex:1;min-width:0}
+.grp-row .tx b{font-size:13px;display:block}
+.grp-row .tx span{font-size:10.5px;color:var(--muted-fg);display:block;margin-top:2px;line-height:1.7}
+.grp-row .pct{width:58px;text-align:center;flex-shrink:0}
+.grp-row .pct .input{padding:0 6px}
+.add-row{display:flex;align-items:center;gap:9px;width:100%;border:1.5px dashed var(--border-strong);border-radius:12px;padding:11px 12px;margin-top:9px;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--primary-strong);cursor:pointer}
+.add-row svg{width:15px;height:15px}
+.sheet-search{margin-top:11px}
+.sheet-search .input{width:100%;box-sizing:border-box}
+.sheet-search .input svg{width:15px;height:15px;color:var(--muted-fg);flex-shrink:0}
+.sheet-search .input .ph{flex:1;text-align:right}
+.sheet .loc-box{margin-top:4px}
+.sheet .row-act{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;color:var(--muted-fg);cursor:pointer;border:0;background:none}
+.sheet .row-act svg{width:15px;height:15px}
+.sheet .row-act.warn{color:var(--red)}
 </style>
 </head>
 <body>
@@ -46,6 +68,11 @@
   <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
   <symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
   <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3.5a2.8 2.8 0 114 4L8 20.5 3 22l1.5-5z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
 </svg>
 
 <div class="backdrop" id="backdrop"></div>
@@ -62,7 +89,7 @@
   </button>
   <button class="sheet-row" data-arm-go="sell">
     <span class="ico sell"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · درخواست‌های قیمت · پیام‌ها</span></span>
+    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · درخواست‌ها · پیام‌ها</span></span>
     <svg class="check" data-check="sell" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <div class="sub" style="margin:10px 0 2px">نقش تو ثابت نیست — عمده‌فروش می‌تواند همزمان از هر دو دستیار استفاده کند.</div>
@@ -122,12 +149,17 @@
   <div class="sub">پخش برنج پارس · پخش مواد غذایی — رشت</div>
   <button class="sheet-row" data-sheet="sheet-cedit">
     <span class="ico"><svg><use href="#i-pencil"/></svg></span>
-    <span class="tx"><b>ویرایش کاتالوگ</b><span>نام، توضیح و عکس کاتالوگ</span></span>
+    <span class="tx"><b>ویرایش کاتالوگ</b><span>نام، عکس، لوکیشن و گروه‌های کالا</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" data-sheet="sheet-discount">
+  <button class="sheet-row" data-sheet="sheet-vol">
     <span class="ico"><svg><use href="#i-tag"/></svg></span>
-    <span class="tx"><b>تخفیف‌ها و قیمت‌ها</b><span>تخفیف پلکانی بر اساس حجم خرید</span></span>
+    <span class="tx"><b>تخفیف‌های حجمی</b><span>پله‌ای بر اساس حجم خرید هر مشتری</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-sheet="sheet-cgroup">
+    <span class="ico"><svg><use href="#i-users"/></svg></span>
+    <span class="tx"><b>تخفیف‌های گروه مشتری</b><span>درصد ثابت برای هر گروه مشتری</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-sheet="sheet-campaign">
@@ -137,7 +169,7 @@
   </button>
   <button class="sheet-row" data-go="22">
     <span class="ico"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>ویرایش کسب‌وکار</b><span>نام، صنف، شهر و معرفی</span></span>
+    <span class="tx"><b>ویرایش کسب‌وکار</b><span>نام، نوع، صنف، شهر و معرفی</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-go="13">
@@ -148,13 +180,13 @@
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۵) ویرایش کاتالوگ ═══ -->
+<!-- ═══ ۵) ویرایش کاتالوگ — عکس + لوکیشن + نوع + گروه‌های کالا ═══ -->
 <div class="sheet" id="sheet-cedit" role="dialog" aria-label="ویرایش کاتالوگ">
   <div class="grab"></div>
   <h3>ویرایش کاتالوگ</h3>
   <div class="sub">پخش برنج پارس</div>
   <div class="sheet-row" style="cursor:default">
-    <div class="avatar" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+    <div class="avatar" style="padding:0"><img src="../png/goods/catalog-logo.png" alt="عکس کاتالوگ"></div>
     <span class="tx"><b>عکس کاتالوگ</b><span>لوگو یا عکس فروشگاه</span></span>
     <button class="btn btn-sm btn-outline">تعویض عکس</button>
   </div>
@@ -166,18 +198,66 @@
     <label>توضیح کوتاه</label>
     <textarea class="input">فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان</textarea>
   </div>
+  <div class="field">
+    <label>نوع کسب‌وکار <span style="font-weight:400;color:var(--muted-fg);font-size:10.5px">— خریداران می‌بینند</span></label>
+    <button class="input sel" data-sheet="sheet-biztype">
+      <span style="color:var(--foreground);font-weight:700">عمده‌فروش</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </div>
+  <div class="field">
+    <label>لوکیشن روی نقشه</label>
+    <div class="loc-box">
+      <div class="loc-map">
+        <img src="../png/map-flat.jpg" alt="نقشهٔ لوکیشن">
+        <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      </div>
+      <div class="loc-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <span>رشت — جادهٔ فومن، انبار مرکزی</span>
+        <button class="btn btn-sm btn-outline">انتخاب از نقشه</button>
+      </div>
+    </div>
+  </div>
+  <button class="sheet-row" data-sheet="sheet-pgroups">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه‌های کالا</b><span>۳ گروه: هاشمی · طارم · فجر — افزودن و مدیریت</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
   <button class="btn btn-primary sheet-cta" data-close>ذخیره تغییرات</button>
 </div>
 
-<!-- ═══ ۶) تخفیف‌ها و تنظیمات قیمت ═══ -->
-<div class="sheet" id="sheet-discount" role="dialog" aria-label="تخفیف‌ها و تنظیمات قیمت">
+<!-- ═══ ۶) تخفیف‌های حجمی — سطح کاتالوگ / گروه کالا ═══ -->
+<div class="sheet" id="sheet-vol" role="dialog" aria-label="تخفیف‌های حجمی">
   <div class="grab"></div>
-  <h3>تخفیف‌ها و تنظیمات قیمت</h3>
-  <div class="sub">تخفیف در سطح کاتالوگ — بر اساس حجم خرید هر مشتری</div>
+  <div class="sheet-hdr">
+    <h3>تخفیف‌های حجمی</h3>
+    <button class="mg" data-sheet="sheet-vgroups" title="مدیریت گروه‌های تخفیف"><svg><use href="#i-tasks"/></svg></button>
+  </div>
+  <div class="sub">پله‌ای بر اساس حجم خرید — در سطح کاتالوگ</div>
   <div class="sheet-row" style="cursor:default">
-    <span class="tx"><b>تخفیف پلکانی فعال باشد</b><span>هرچه حجم خرید بیشتر، تخفیف بیشتر</span></span>
+    <span class="tx"><b>تخفیف حجمی فعال باشد</b><span>هرچه حجم خرید بیشتر، تخفیف بیشتر</span></span>
     <div class="toggle on"></div>
   </div>
+  <div class="grp">اعمال روی کالاها</div>
+  <div class="field">
+    <div class="pillchoice">
+      <button class="pill">همهٔ کالاها</button>
+      <button class="pill active">کالاهای خاص</button>
+    </div>
+  </div>
+  <div class="grp">گروه کالاهای این تخفیف</div>
+  <button class="sheet-row" data-sheet="sheet-vgroups">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا: برنج هاشمی · برنج فجر · برنج طارم — گروه‌های موجود این‌جا</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <div class="field">
+    <label>نام گروه جدید</label>
+    <input class="input" placeholder="مثلاً گروه تخفیف حجمی خشکبار">
+    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">کالاهایی که انتخاب می‌کنی همین گروه را می‌سازند — اسم پیشنهادی آماده است</div>
+  </div>
+  <div class="hintnote">گروه‌بندیِ تخفیف مستقل از گروه‌بندی کاتالوگ است؛ حتی اگر کاتالوگت گروهی نداشته باشد، می‌توانی برای چند کالا گروه تخفیف بسازی. اگر هم گروهی نسازی، تخفیف روی همهٔ کالاها اعمال می‌شود.</div>
   <div class="grp">پله‌های تخفیف</div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۵ کیسه به بالا</b></span>
@@ -191,14 +271,82 @@
     <span class="tx"><b>از ۵۰ کیسه به بالا</b></span>
     <input class="input tier-in" value="۸٪">
   </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن پلهٔ جدید</button>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>نمایش نشان تخفیف در کاتالوگ عمومی</b><span>خریداران تخفیف را روی قیمت می‌بینند</span></span>
     <div class="toggle on"></div>
   </div>
-  <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف‌ها</button>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف‌های حجمی</button>
 </div>
 
-<!-- ═══ ۷) کمپین جدید ═══ -->
+<!-- ═══ ۷) مدیریت گروه‌های تخفیف حجمی ═══ -->
+<div class="sheet" id="sheet-vgroups" role="dialog" aria-label="مدیریت گروه‌های تخفیف حجمی">
+  <div class="grab"></div>
+  <h3>گروه‌های تخفیف حجمی</h3>
+  <div class="sub">گروه‌های کالاهای دارای تخفیف — مستقل از گروه‌بندی کاتالوگ</div>
+  <div class="grp-row">
+    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا · برنج هاشمی، برنج فجر، برنج طارم</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>گروه تخفیف حجمی حبوبات</b><span>۲ کالا · عدس، لوبیا چیتی</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه تخفیف جدید</button>
+  <div class="hintnote">اینجا گروه‌ها را مدیریت می‌کنی: کالا اضافه و کم کن، اسم عوض کن یا گروه بساز. موقع تعریف تخفیف حجمی، همین گروه‌ها در فهرست می‌آیند و می‌توانی گروه تازه هم بسازی.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۸) تخفیف‌های گروه مشتری ═══ -->
+<div class="sheet" id="sheet-cgroup" role="dialog" aria-label="تخفیف‌های گروه مشتری">
+  <div class="grab"></div>
+  <h3>تخفیف‌های گروه مشتری</h3>
+  <div class="sub">درصد ثابت برای هر گروه مشتری — روی کل کاتالوگ</div>
+  <div class="grp">گروه‌های مشتری تو</div>
+  <div class="grp-row">
+    <span class="tx"><b>همکارهای قدیمی</b><span>کیفیت: درجهٔ یک · ۱۲ مشتری</span></span>
+    <input class="input pct" value="۷٪">
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>خریداران عمده</b><span>کیفیت: درجهٔ دو · ۸ مشتری</span></span>
+    <input class="input pct" value="۵٪">
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>مشتریان جدید</b><span>کیفیت: درجهٔ سه · ۲۳ مشتری</span></span>
+    <input class="input pct" value="۲٪">
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp">افزودن گروه مشتری</div>
+  <div class="field">
+    <label>نام گروه مشتری</label>
+    <input class="input" placeholder="مثلاً همکارهای شعبهٔ مرکزی">
+  </div>
+  <div class="field">
+    <label>کیفیت مشتری</label>
+    <div class="pillchoice">
+      <button class="pill active">درجهٔ ۱</button>
+      <button class="pill">درجهٔ ۲</button>
+      <button class="pill">درجهٔ ۳</button>
+      <button class="pill">درجهٔ ۴</button>
+      <button class="pill">درجهٔ ۵</button>
+    </div>
+    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">از درجهٔ یک (مشتری ممتاز) تا درجهٔ پنج — هر وقت خواستی عوضش کن</div>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>درصد تخفیف این گروه</b><span>روی کل کاتالوگ اعمال می‌شود</span></span>
+    <input class="input pct" value="۳٪">
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>افزودن گروه و ذخیره</button>
+</div>
+
+<!-- ═══ ۹) کمپین جدید ═══ -->
 <div class="sheet" id="sheet-campaign" role="dialog" aria-label="کمپین جدید">
   <div class="grab"></div>
   <h3>کمپین جدید</h3>
@@ -230,7 +378,7 @@
   <button class="btn btn-primary sheet-cta" data-close>راه‌اندازی کمپین</button>
 </div>
 
-<!-- ═══ ۸) تنظیمات کالا ═══ -->
+<!-- ═══ ۱۰) تنظیمات کالا ═══ -->
 <div class="sheet" id="sheet-pset" role="dialog" aria-label="تنظیمات کالا">
   <div class="grab"></div>
   <h3>تنظیمات کالا</h3>
@@ -250,14 +398,14 @@
     <span class="tx"><b>تغییر موجودی</b><span>فقط موجودی همین کالا</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
+  <button class="sheet-row" data-sheet="sheet-pdiscount">
+    <span class="ico"><svg><use href="#i-percent"/></svg></span>
+    <span class="tx"><b>تخفیف اختصاصی این کالا</b><span>بالاترین اولویت — بالاتر از کاتالوگ و گروه</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
   <button class="sheet-row" data-sheet="sheet-campaign">
     <span class="ico"><svg><use href="#i-spark"/></svg></span>
     <span class="tx"><b>ایجاد کمپین برای این کالا</b><span>کمپین اختصاصی همین کالا</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-sheet="sheet-discount">
-    <span class="ico"><svg><use href="#i-percent"/></svg></span>
-    <span class="tx"><b>تخفیف‌ها و تنظیمات قیمت</b><span>پله‌های تخفیف و قیمت‌گذاری</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row danger" data-sheet="sheet-pause">
@@ -268,7 +416,7 @@
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۹) تغییر سریع قیمت ═══ -->
+<!-- ═══ ۱۱) تغییر سریع قیمت ═══ -->
 <div class="sheet" id="sheet-price" role="dialog" aria-label="تغییر سریع قیمت">
   <div class="grab"></div>
   <h3>تغییر سریع قیمت</h3>
@@ -281,7 +429,7 @@
   <button class="btn btn-primary sheet-cta" data-close>ذخیره قیمت</button>
 </div>
 
-<!-- ═══ ۱۰) تغییر موجودی ═══ -->
+<!-- ═══ ۱۲) تغییر موجودی ═══ -->
 <div class="sheet" id="sheet-stock" role="dialog" aria-label="تغییر موجودی">
   <div class="grab"></div>
   <h3>تغییر موجودی</h3>
@@ -290,11 +438,11 @@
     <label>موجودی (کیسه)</label>
     <input class="input" value="۱۲۰">
   </div>
-  <div class="hintnote">وقتی موجودی کم شود، خودکار در «کارهای امروز» یادآوری می‌شود.</div>
+  <div class="hintnote">وقتی موجودی کم شود، خودکار در «کارها» یادآوری می‌شود.</div>
   <button class="btn btn-primary sheet-cta" data-close>ذخیره موجودی</button>
 </div>
 
-<!-- ═══ ۱۱) ویرایش جزئیات کالا ═══ -->
+<!-- ═══ ۱۳) ویرایش جزئیات کالا ═══ -->
 <div class="sheet" id="sheet-details" role="dialog" aria-label="ویرایش جزئیات کالا">
   <div class="grab"></div>
   <h3>ویرایش جزئیات کالا</h3>
@@ -314,13 +462,167 @@
   <button class="btn btn-primary sheet-cta" data-close>ذخیره</button>
 </div>
 
-<!-- ═══ ۱۲) غیرفعال کردن کالا ═══ -->
+<!-- ═══ ۱۴) تخفیف اختصاصی کالا ═══ -->
+<div class="sheet" id="sheet-pdiscount" role="dialog" aria-label="تخفیف اختصاصی کالا">
+  <div class="grab"></div>
+  <h3>تخفیف اختصاصی این کالا</h3>
+  <div class="sub">برنج هاشمی · کیسه ۵۰ کیلویی</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>تخفیف اختصاصی فعال باشد</b><span>فقط روی همین کالا</span></span>
+    <div class="toggle on"></div>
+  </div>
+  <div class="field">
+    <label>درصد تخفیف</label>
+    <input class="input" value="۵٪">
+  </div>
+  <div class="hintnote">تخفیفِ خودِ کالا همیشه بالاترین اولویت را دارد؛ هنگام اعمال، تخفیف کاتالوگ و گروه کالا نادیده گرفته می‌شود.</div>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف</button>
+</div>
+
+<!-- ═══ ۱۵) غیرفعال کردن کالا ═══ -->
 <div class="sheet" id="sheet-pause" role="dialog" aria-label="غیرفعال کردن کالا">
   <div class="grab"></div>
   <h3>غیرفعال کردن کالا؟</h3>
   <div class="sub">«برنج هاشمی» از کاتالوگ عمومی پنهان می‌شود؛ رصد و «لیست مقایسه قیمت» خریداران حفظ می‌شود و با فعال‌سازی برمی‌گردد.</div>
   <button class="btn sheet-cta" style="background:var(--red);color:#fff" data-close>غیرفعال کن</button>
   <button class="btn btn-outline" style="width:100%;margin-top:8px" data-close>انصراف</button>
+</div>
+
+<!-- ═══ ۱۶) گروه‌های کالا ═══ -->
+<div class="sheet" id="sheet-pgroups" role="dialog" aria-label="گروه‌های کالا">
+  <div class="grab"></div>
+  <h3>گروه‌های کالا</h3>
+  <div class="sub">دسته‌بندی کالاهای کاتالوگ — برای فیلتر نمایش به خریداران</div>
+  <div class="grp-row">
+    <span class="tx"><b>هاشمی</b><span>۲ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>طارم</b><span>۱ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>فجر</b><span>۱ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="field">
+    <label>گروه جدید</label>
+    <input class="input" placeholder="مثلاً صدری">
+  </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه کالا</button>
+  <div class="hintnote">گروه کالا برای دسته‌بندی و فیلتر نمایش است؛ گروه تخفیف حجمی چیزی جدا است — چه بسا کاتالوگت گروه نداشته باشد اما گروه تخفیف داشته باشد.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۱۷) انتخاب شهر ═══ -->
+<div class="sheet" id="sheet-city" role="dialog" aria-label="انتخاب شهر">
+  <div class="grab"></div>
+  <h3>انتخاب شهر</h3>
+  <div class="sub">شهر محل کسب‌وکارت را جستجو و انتخاب کن</div>
+  <div class="field sheet-search">
+    <div class="input">
+      <svg><use href="#i-search"/></svg>
+      <span class="ph">جستجوی شهر…</span>
+    </div>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>رشت</b><span>گیلان</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>تهران</b><span>تهران</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>مشهد</b><span>خراسان رضوی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>اصفهان</b><span>اصفهان</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>شیراز</b><span>فارس</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>همدان</b><span>همدان</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>تبریز</b><span>آذربایجان شرقی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>کرج</b><span>البرز</span></span>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۱۸) انتخاب صنف ═══ -->
+<div class="sheet" id="sheet-trade" role="dialog" aria-label="انتخاب صنف">
+  <div class="grab"></div>
+  <h3>انتخاب صنف</h3>
+  <div class="sub">از میان اصناف ای‌مچ — با جستجو</div>
+  <div class="field sheet-search">
+    <div class="input">
+      <svg><use href="#i-search"/></svg>
+      <span class="ph">جستجوی صنف…</span>
+    </div>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>پخش مواد غذایی</b><span>۴۲۱ کسب‌وکار</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>سوپرمارکت</b><span>۱٬۲۰۴ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>حبوبات و غلات</b><span>۹۸ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>قصابی تجاری</b><span>۶۳ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>قنادی</b><span>۵۷ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نان سنتی</b><span>۴۲ کسب‌وکار</span></span>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۱۹) نوع کسب‌وکار ═══ -->
+<div class="sheet" id="sheet-biztype" role="dialog" aria-label="نوع کسب‌وکار">
+  <div class="grab"></div>
+  <h3>نوع کسب‌وکار</h3>
+  <div class="sub">خریداران می‌بینند از چه کسی می‌خرند — روی کاتالوگت هم نمایش داده می‌شود</div>
+  <div class="sheet-row">
+    <span class="tx"><b>تولیدکننده</b><span>کارخانه و تولید مستقیم</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>واردکننده</b><span>واردات و پخش کالای خارجی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>توزیع‌کننده</b><span>توزیع کالا به خرده‌فروشان</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>عمده‌فروش</b><span>فروش عمده از بازار و انبار</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>بنک‌دار</b><span>بنک و فروش نقدی عمده</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نمایندگی پخش رسمی</b><span>پخش رسمی یک برند</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>پخش غیررسمی</b><span>پخش چند برند</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نمایندهٔ فروش</b><span>نمایندگی فروش مستقل</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="tx"><b>نمایندگی برند</b><span>نمایندگی انحصاری برند</span></span>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
 </body>
