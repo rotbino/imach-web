@@ -884,6 +884,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-d3 .dl-foot .lnks { display: flex; gap: 20px; margin-right: auto; }
   #scr-d3 .dl-foot .lnks span { cursor: pointer; font-weight: 700; color: var(--stone-soft); }
 
+  /* ═══ فاز ۲۲ — حضور آنلاین (Presence) + تاریخچهٔ رویدادها ═══ */
+  .presence { display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 700; border-radius: 999px; padding: 3px 8px; line-height: 1.5; flex-shrink: 0; }
+  .presence i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .presence.on { background: var(--green-bg); color: var(--green); }
+  .presence.on i { animation: prs-pulse 1.9s infinite; }
+  @keyframes prs-pulse { 0% { box-shadow: 0 0 0 0 rgba(34,151,72,.4); } 70% { box-shadow: 0 0 0 5px rgba(34,151,72,0); } 100% { box-shadow: 0 0 0 0 rgba(34,151,72,0); } }
+  .pdot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 2.5px var(--green-bg); margin-left: 4px; vertical-align: middle; }
+  .ev-day { font-size: 10px; font-weight: 700; color: var(--muted-fg); margin: 13px 2px 1px; padding-top: 9px; border-top: 1px solid #f0eee8; }
+  #ev-list .ev-day:first-child { border-top: 0; margin-top: 2px; padding-top: 0; }
+  .ev-row { display: flex; gap: 10px; padding: 9px 2px; }
+  .ev-row .ev-av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 11.5px; flex-shrink: 0; }
+  .ev-row .ev-tx { flex: 1; min-width: 0; }
+  .ev-row .ev-t { font-size: 12px; font-weight: 600; line-height: 1.9; }
+  .ev-row .ev-when { font-size: 9.5px; color: var(--muted-fg); margin-top: 2px; }
+  .ev-empty { font-size: 11.5px; color: var(--muted-fg); text-align: center; padding: 24px 0 12px; }
+
 </style>
 </head>
 <body>
@@ -951,6 +967,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-info-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></symbol>
 <symbol id="i-userplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.8"/><path d="M3 20.5a6.5 6.5 0 0113 0"/><path d="M18.5 8v6M15.5 11h6"/></symbol>
 <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4.5"/><path d="M7.5 9L12 4.5 16.5 9"/><path d="M4 15.5v2.5a2 2 0 002 2h12a2 2 0 002-2v-2.5"/></symbol>
+<symbol id="i-stairs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5h4.5v-4.5h4.5v-4.5h4.5V7h4"/></symbol>
+<symbol id="i-box-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 3.5h9l4 4v9l-4 4h-9l-4-4v-9z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -1089,11 +1107,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       </div>
 
-      <!-- ردیف کالای غیرفعال -->
+      <!-- ردیف کالای عدم‌نمایش (فاز ۲۲ — جایگزین «غیرفعال») -->
       <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11.5px;color:var(--muted-fg)">
-        <span class="badge b-muted">غیرفعال</span>
+        <span class="badge b-muted">عدم نمایش</span>
         برنج صدری — کیسه ۵۰ کیلویی (۱ کالا)
-        <span style="margin-right:auto;color:var(--primary-strong);font-weight:700;cursor:pointer">فعال‌سازی</span>
+        <span style="margin-right:auto;color:var(--primary-strong);font-weight:700;cursor:pointer">نمایش مجدد</span>
       </div>
 
     </main>
@@ -1184,8 +1202,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="card" style="margin-top:10px;display:flex;align-items:center;gap:10px">
           <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px">
+            <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
               پخش برنج پارس <svg style="width:14px;height:14px;color:#1d5fb8"><use href="#i-verified"/></svg>
+              <!-- فاز ۲۲ — Presence: فروشندهٔ این کالا از دید خریدار (همان منطق کاتالوگ عمومی) -->
+              <span class="presence on"><i></i>آنلاین</span>
             </div>
             <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span> · ۳۸ دنبال‌کننده</div>
           </div>
@@ -1269,6 +1289,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
         <!-- ═══ پنل مدیریت — قلب ادغام نمای مالک و عمومی ═══ -->
+        <!-- فاز ۲۲ — IMPLEMENTATION NOTE (اولویت تخفیف‌ها — برای پیاده‌سازی عملیاتی):
+             تخفیف علاوه بر «سطح کاتالوگ» و «گروه مشتری»، روی خودِ کالا هم قابل اعمال است و بالاترین اولویت را دارد:
+             تخفیف کالا (اختصاصی / پلکانی / همکار)  ›  تخفیف گروه مشتری  ›  تخفیف کاتالوگ.
+             «اتمام موجودی» = کالا با برچسبِ اتمام در کاتالوگ می‌ماند اما سفارش/استعلام بسته می‌شود؛ با شارژ موجودی خودکار برمی‌گردد.
+             «عدم نمایش» (جایگزین «غیرفعال») = پنهان‌سازی کامل از کاتالوگ عمومی؛ رصد و لیست مقایسهٔ خریداران حفظ می‌شود. -->
         <div class="card" style="margin-top:13px">
           <div style="font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">
             <svg style="width:15px;height:15px;color:var(--primary)"><use href="#i-pencil"/></svg>
@@ -1278,17 +1303,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <button class="btn btn-outline btn-sm" data-sheet="sheet-price"><svg><use href="#i-tag"/></svg> تغییر قیمت</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-stock"><svg><use href="#i-boxes"/></svg> تغییر موجودی</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-details"><svg><use href="#i-pencil"/></svg> ویرایش جزئیات</button>
-            <button class="btn btn-outline btn-sm" style="color:var(--red)" data-sheet="sheet-pause"><svg><use href="#i-pause"/></svg> غیرفعال کردن</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-campaign"><svg><use href="#i-spark"/></svg> ایجاد کمپین</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-ptier"><svg><use href="#i-stairs"/></svg> تخفیف پلکانی</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-cowork"><svg><use href="#i-users"/></svg> تخفیف همکار</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-eos"><svg><use href="#i-box-x"/></svg> اتمام موجودی</button>
+            <button class="btn btn-outline btn-sm" style="color:var(--red)" data-sheet="sheet-pause"><svg><use href="#i-pause"/></svg> عدم نمایش</button>
           </div>
         </div>
 
-        <!-- عملکرد ۳۰ روز -->
-        <div class="sec-title"><h2>عملکرد ۳۰ روز اخیر</h2></div>
-        <div class="stat-strip" style="margin:0">
-          <div class="stat"><div class="v">۲۱</div><div class="k">بازدید</div></div>
-          <div class="stat hot"><div class="v">۴</div><div class="k">در مقایسه قیمت</div></div>
-          <div class="stat"><div class="v">۲</div><div class="k">درخواست باز</div></div>
+        <!-- فاز ۲۲ — «نتایج حضور در آیمچ» (جایگزین «عملکرد ۳۰ روز اخیر") -->
+        <!-- IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی): شمارنده‌ها از ابتدای ثبت کالا جمع می‌شوند (نه پنجرهٔ ۳۰ روزه)؛
+             رویدادها (بازدید / افزودن به لیست خرید / افزودن به لیست مقایسه قیمت / استعلام قیمت / شروع گفتگو) با مهر زمانی
+             کامل لاگ می‌شوند و از مودال «تاریخچهٔ رویدادها» با فیلتر بازهٔ زمانی قابل مرورند. -->
+        <div class="sec-title">
+          <h2>نتایج حضور در آیمچ</h2>
+          <span class="more" data-sheet="sheet-events" style="color:var(--primary-strong);font-weight:700;display:inline-flex;align-items:center;gap:4px"><svg style="width:14px;height:14px"><use href="#i-history"/></svg> تاریخچهٔ رویدادها</span>
         </div>
+        <div class="stat-strip" style="margin:0">
+          <div class="stat"><div class="v">۲۴۸</div><div class="k">بازدید</div></div>
+          <div class="stat hot"><div class="v">۳۶</div><div class="k">در مقایسه قیمت</div></div>
+          <div class="stat"><div class="v">۲۲</div><div class="k">استعلام قیمت</div></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted-fg);margin-top:7px">شمارنده‌ها از ابتدای ثبت این کالا در آیمچ جمع شده‌اند — برای دیدن اتفاق‌های یک بازهٔ مشخص، «تاریخچهٔ رویدادها» را باز کنید.</div>
 
         <!-- خریداران علاقه‌مند — کالای در «لیست مقایسه قیمت» خریداران -->
         <div class="sec-title">
@@ -2601,7 +2637,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="showcase" style="padding-bottom:8px">
           <div class="avatar-lg" style="padding:0;box-shadow:0 2px 8px rgba(42,39,35,.18)"><img src="png/goods/seller-portrait.png" alt="عکس فروشنده"></div>
           <div class="meta">
-            <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
+            <!-- فاز ۲۲ — IMPLEMENTATION NOTE (Presence): خریدار قبل از شروع چت می‌فهمد فروشنده همین الان آنلاین است.
+                 حضورِ لحظه‌ای انگیزهٔ ماندگاری آنلاین کاربران در آیمچ است؛ حالت آفلاین: چیپ خاکستری + «آخرین بازدید …». -->
+            <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg> <span class="presence on"><i></i>آنلاین</span></div>
             <div class="sub">به مدیریت علی امینی · پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span></div>
           </div>
         </div>
@@ -3213,7 +3251,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="row-card conv">
           <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
           <div class="body">
-            <div class="t">پخش برنج پارس <span class="badge b-stone">تأمین‌کننده</span></div>
+            <div class="t">پخش برنج پارس <span class="pdot" title="آنلاین الآن"></span><span class="badge b-stone">تأمین‌کننده</span></div>
             <div class="s">عالی — ۵۰ کیسه رزرو کنید</div>
           </div>
           <div class="tm">
@@ -3238,7 +3276,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="row-card conv">
           <div class="avatar-sm" style="background:#16a34a">م</div>
           <div class="body">
-            <div class="t">رستوران مهر <span class="badge b-stone">خریدار</span></div>
+            <div class="t">رستوران مهر <span class="pdot" title="آنلاین الآن"></span><span class="badge b-stone">خریدار</span></div>
             <div class="s">فردا ۱۰ صبح تحویل می‌دهم</div>
           </div>
           <div class="tm">
@@ -3292,7 +3330,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
-      <div class="ttl">پخش برنج پارس<small>معمولاً سریع جواب می‌دهد · رشت</small></div>
+      <!-- فاز ۲۲ — Presence در گفتگو: مخاطب همین الان آنلاین است (مهم‌ترین جای کاربرد نشانگر حضور) -->
+      <div class="ttl">پخش برنج پارس<small><span class="presence on"><i></i>آنلاین</span> · رشت</small></div>
       <button class="icon-btn" aria-label="تماس با پخش برنج پارس"><svg><use href="#i-phone"/></svg></button>
     </header>
 
@@ -3440,8 +3479,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="row-card" data-go="01">
           <div class="avatar-sm" style="background:#57534e">ص</div>
           <div class="body">
-            <div class="t" style="font-size:13px">«برنج صدری» غیرفعال است</div>
-            <div class="s">۱ کالا از کاتالوگ پنهان شده — فعالش کن؟</div>
+            <div class="t" style="font-size:13px">«برنج صدری» نمایش داده نمی‌شود</div>
+            <div class="s">۱ کالا در حالت «عدم نمایش» است — نمایشش را برمی‌گردانی؟</div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
@@ -3710,7 +3749,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="row1">
           <div class="avatar-lg" style="background:#0e7490">آ</div>
           <div style="flex:1;min-width:0">
-            <div class="biz-name">سوپرمارکت آریا <svg><use href="#i-verified"/></svg></div>
+            <!-- فاز ۲۲ — IMPLEMENTATION NOTE (Presence): فروشنده‌ای که این لیست را می‌بیند، وضعیت آنلاینِ خریدار را می‌فهمد
+                 (مهم برای شروع گفتگو) — همان منطق کاتالوگ، این‌بار به سود خریدار. -->
+            <div class="biz-name">سوپرمارکت آریا <svg><use href="#i-verified"/></svg> <span class="presence on"><i></i>آنلاین</span></div>
             <div class="biz-meta" style="margin-top:5px">
               سوپرمارکت · رشت <span class="badge b-stone">خریدار عمده</span>
             </div>
@@ -4077,7 +4118,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">کالاهای کاتالوگ<small>۵ کالا · ۱ غیرفعال</small></div>
+      <div class="ttl">کالاهای کاتالوگ<small>۵ کالا · ۱ عدم نمایش</small></div>
       <button class="icon-btn" aria-label="افزودن کالا" style="margin-left:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
     </header>
 
@@ -4166,10 +4207,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="row-card" style="opacity:.62">
           <div class="thumb off" style="width:48px;height:48px"><span class="glyph" style="font-size:9.5px">۵۰ کیلو</span></div>
           <div class="body">
-            <div class="t" style="font-size:13px">برنج صدری <span class="badge b-muted">غیرفعال</span></div>
+            <div class="t" style="font-size:13px">برنج صدری <span class="badge b-muted">عدم نمایش</span></div>
             <div class="s">کیسه ۵۰ کیلویی · ۲٬۲۰۰٬۰۰۰ تومان</div>
           </div>
-          <span style="font-size:11px;color:var(--primary-strong);font-weight:700;flex-shrink:0;cursor:pointer">فعال‌سازی</span>
+          <span style="font-size:11px;color:var(--primary-strong);font-weight:700;flex-shrink:0;cursor:pointer">نمایش مجدد</span>
         </div>
 
       </div>
@@ -4997,9 +5038,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>ایجاد کمپین برای این کالا</b><span>کمپین اختصاصی همین کالا</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
+  <button class="sheet-row" data-sheet="sheet-ptier">
+    <span class="ico"><svg><use href="#i-stairs"/></svg></span>
+    <span class="tx"><b>تخفیف پلکانی این کالا</b><span>هرچه حجم خرید بیشتر، ارزان‌تر</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-sheet="sheet-cowork">
+    <span class="ico"><svg><use href="#i-users"/></svg></span>
+    <span class="tx"><b>تخفیف همکار این کالا</b><span>ویژهٔ خریداران هم‌صنف</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-sheet="sheet-eos">
+    <span class="ico"><svg><use href="#i-box-x"/></svg></span>
+    <span class="tx"><b>اتمام موجودی</b><span>می‌ماند، اما قابل سفارش نیست</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
   <button class="sheet-row danger" data-sheet="sheet-pause">
     <span class="ico"><svg><use href="#i-pause"/></svg></span>
-    <span class="tx"><b>غیرفعال کردن کالا</b><span>پنهان شدن از کاتالوگ عمومی</span></span>
+    <span class="tx"><b>عدم نمایش کالا</b><span>پنهان شدن از کاتالوگ عمومی</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
@@ -5068,13 +5124,92 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف</button>
 </div>
 
-<!-- ═══ ۱۵) غیرفعال کردن کالا ═══ -->
-<div class="sheet" id="sheet-pause" role="dialog" aria-label="غیرفعال کردن کالا">
+<!-- ═══ ۱۵) عدم نمایش کالا (فاز ۲۲ — جایگزین واژهٔ «غیرفعال») ═══ -->
+<div class="sheet" id="sheet-pause" role="dialog" aria-label="عدم نمایش کالا">
   <div class="grab"></div>
-  <h3>غیرفعال کردن کالا؟</h3>
-  <div class="sub">«برنج هاشمی» از کاتالوگ عمومی پنهان می‌شود؛ رصد و «لیست مقایسه قیمت» خریداران حفظ می‌شود و با فعال‌سازی برمی‌گردد.</div>
-  <button class="btn sheet-cta" style="background:var(--red);color:#fff" data-close>غیرفعال کن</button>
+  <h3>عدم نمایش کالا؟</h3>
+  <div class="sub">«برنج هاشمی» از کاتالوگ عمومی پنهان می‌شود؛ رصد و «لیست مقایسه قیمت» خریداران حفظ می‌شود و با «نمایش مجدد» برمی‌گردد.</div>
+  <button class="btn sheet-cta" style="background:var(--red);color:#fff" data-close>عدم نمایش</button>
   <button class="btn btn-outline" style="width:100%;margin-top:8px" data-close>انصراف</button>
+</div>
+
+<!-- ═══ ۱۵-ب) تخفیف پلکانی این کالا (فاز ۲۲) ═══ -->
+<div class="sheet" id="sheet-ptier" role="dialog" aria-label="تخفیف پلکانی این کالا">
+  <div class="grab"></div>
+  <h3>تخفیف پلکانی این کالا</h3>
+  <div class="sub">برنج هاشمی · کیسه ۵۰ کیلویی — هرچه خریدار حجم بیشتری ببرد، تخفیف بیشتری می‌گیرد</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>تخفیف پلکانی فعال باشد</b><span>فقط روی همین کالا</span></span>
+    <div class="toggle on"></div>
+  </div>
+  <div class="grp">پله‌های خرید</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>از ۵ کیسه به بالا</b></span>
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۲" inputmode="numeric"><span class="sfx">٪</span></div>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>از ۲۰ کیسه به بالا</b></span>
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۴" inputmode="numeric"><span class="sfx">٪</span></div>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>از ۵۰ کیسه به بالا</b></span>
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۷" inputmode="numeric"><span class="sfx">٪</span></div>
+  </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن پلهٔ جدید</button>
+  <div class="hintnote">اولویت اعمال تخفیف: تخفیفِ خودِ کالا (اختصاصی / پلکانی / همکار) بالاتر از تخفیف گروه مشتری و تخفیف کاتالوگ است؛ در صورت وجود، همان اعمال می‌شود.</div>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره پله‌ها</button>
+</div>
+
+<!-- ═══ ۱۵-پ) تخفیف همکار این کالا (فاز ۲۲) ═══ -->
+<div class="sheet" id="sheet-cowork" role="dialog" aria-label="تخفیف همکار این کالا">
+  <div class="grab"></div>
+  <h3>تخفیف همکار</h3>
+  <div class="sub">برنج هاشمی · کیسه ۵۰ کیلویی — قیمت ویژه برای همکارانِ هم‌صنف</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="tx"><b>تخفیف همکار فعال باشد</b><span>فقط برای خریدارانِ هم‌صنفِ شما</span></span>
+    <div class="toggle on"></div>
+  </div>
+  <div class="field">
+    <label>درصد تخفیف همکار</label>
+    <input class="input" value="۷٪">
+  </div>
+  <div class="hintnote">«همکار» یعنی کسب‌وکارِ هم‌صنفی که از شما خرید عمده می‌کند. این تخفیف مثل بقیهٔ تخفیف‌های کالا بالاترین اولویت را دارد — بالاتر از گروه مشتری و کاتالوگ.</div>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف همکار</button>
+</div>
+
+<!-- ═══ ۱۵-ت) اتمام موجودی (فاز ۲۲) ═══ -->
+<div class="sheet" id="sheet-eos" role="dialog" aria-label="اتمام موجودی">
+  <div class="grab"></div>
+  <h3>اعلام اتمام موجودی؟</h3>
+  <div class="sub">«برنج هاشمی» با برچسب «اتمام موجودی» در کاتالوگ می‌ماند؛ سفارش و استعلام قیمت بسته می‌شود و خریدارانی که قیمت این کالا را دنبال می‌کنند مطلع می‌شوند. با شارژ موجودی، خودکار برمی‌گردد.</div>
+  <button class="btn sheet-cta" style="background:var(--red);color:#fff" data-close>اعلام اتمام موجودی</button>
+  <button class="btn btn-outline" style="width:100%;margin-top:8px" data-close>انصراف</button>
+</div>
+
+<!-- ═══ ۱۵-ث) تاریخچهٔ رویدادهای کالا — «نتایج حضور در آیمچ» (فاز ۲۲) ═══ -->
+<div class="sheet" id="sheet-events" role="dialog" aria-label="تاریخچهٔ رویدادهای کالا">
+  <div class="grab"></div>
+  <h3>تاریخچهٔ رویدادها</h3>
+  <div class="sub">همهٔ اتفاق‌های «برنج هاشمی» در آیمچ، به تفکیک تاریخ</div>
+  <div class="chips" id="ev-chips" style="margin-top:11px">
+    <button class="chip active" data-evf="all">همه</button>
+    <button class="chip" data-evf="today">امروز</button>
+    <button class="chip" data-evf="7">۷ روز اخیر</button>
+    <button class="chip" data-evf="30">۳۰ روز اخیر</button>
+    <button class="chip" data-evf="custom">بازهٔ دلخواه</button>
+  </div>
+  <div id="ev-range" hidden>
+    <div style="display:flex;gap:7px;margin-top:9px;align-items:center">
+      <input class="input" id="ev-from" value="۱۴۰۵/۰۷/۰۱" style="flex:1;min-width:0" inputmode="numeric" aria-label="از تاریخ">
+      <span style="font-size:10.5px;color:var(--muted-fg);flex-shrink:0">تا</span>
+      <input class="input" id="ev-to" value="۱۴۰۵/۰۷/۱۶" style="flex:1;min-width:0" inputmode="numeric" aria-label="تا تاریخ">
+      <button class="btn btn-outline btn-sm" data-evapply style="flex-shrink:0">اعمال</button>
+    </div>
+  </div>
+  <div id="ev-count" style="font-size:10.5px;color:var(--muted-fg);margin-top:10px;font-weight:700"></div>
+  <div id="ev-list"></div>
+  <!-- IMPLEMENTATION NOTE: در اپ واقعی، این لیست از لاگ رویدادهای کالا (بازدید · افزودن به لیست خرید ·
+       افزودن به لیست مقایسه قیمت · استعلام قیمت · شروع گفتگو) با مهر زمانی کامل، صفحه‌بندی و فیلتر بازهٔ شمسی ساخته می‌شود. -->
 </div>
 
 <!-- ═══ ۱۶) گروه‌های کالا ═══ -->
@@ -5347,7 +5482,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <button class="chip">هاشمی</button>
           <button class="chip">طارم</button>
           <button class="chip">فجر</button>
-          <button class="chip">غیرفعال (۱)</button>
+          <button class="chip">عدم نمایش (۱)</button>
         </div>
         <span style="margin-right:auto;font-size:11.5px;color:var(--muted-fg)">آخرین قیمت‌ها امروز به‌روزرسانی شده</span>
       </div>
@@ -5434,8 +5569,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="m"><svg><use href="#i-eye"/></svg> ۲</span>
             <span class="m"><svg><use href="#i-bookmark"/></svg> ۰</span>
           </div>
-          <span class="badge b-muted">غیرفعال</span>
-          <span style="color:var(--green);font-weight:700;cursor:pointer">فعال‌سازی</span>
+          <span class="badge b-muted">عدم نمایش</span>
+          <span style="color:var(--green);font-weight:700;cursor:pointer">نمایش مجدد</span>
         </div>
       </div>
 
@@ -6037,6 +6172,56 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (m === 'brand') gfSetBrand('اشی مشی', true);
   }
 
+  /* ── فاز ۲۲: تاریخچهٔ رویدادهای کالا — «نتایج حضور در آیمچ» ──
+     در پیاده‌سازی عملیاتی: لاگ رویدادهای هر کالا (بازدید · افزودن به لیست خرید · افزودن به لیست مقایسه قیمت ·
+     استعلام قیمت · شروع گفتگو) با مهر زمانی کامل؛ شمارنده‌های صفحه از ابتدا جمع می‌شوند (نه پنجرهٔ ۳۰ روزه). */
+  var ITEM_EVENTS = [
+    { ini: 'ع', col: '#b45309', t: 'علی محمدی از سوپرماکت علی از این کالا بازدید کرد', when: '۲ ساعت پیش', d: 0, date: '۱۴۰۵/۰۷/۱۶', ds: '1405/07/16' },
+    { ini: 'ر', col: '#7c3aed', t: 'رضا اکبری این کالا به لیست مقایسه قیمت خود اضافه کرد', when: 'دیروز ساعت ۱۶:۳۰', d: 1, date: '۱۴۰۵/۰۷/۱۵', ds: '1405/07/15' },
+    { ini: 'س', col: '#0e7490', t: 'سارا کاظمی از سوپرمارکت الماس این کالا را به لیست خرید خود اضافه کرد', when: 'دیروز ساعت ۱۱:۰۵', d: 1, date: '۱۴۰۵/۰۷/۱۵', ds: '1405/07/15' },
+    { ini: 'ه', col: '#0d9488', t: 'هایپر فیروزه درخواست استعلام قیمت برای ۲۰ کیسه از این کالا فرستاد', when: '۲ روز پیش', d: 2, date: '۱۴۰۵/۰۷/۱۴', ds: '1405/07/14' },
+    { ini: 'م', col: '#9333ea', t: 'رستوران مهر گفتگو را دربارهٔ این کالا شروع کرد', when: '۳ روز پیش', d: 3, date: '۱۴۰۵/۰۷/۱۳', ds: '1405/07/13' },
+    { ini: 'ن', col: '#b45309', t: 'پخش نگین این کالا به لیست مقایسه قیمت خود اضافه کرد', when: '۴ روز پیش', d: 4, date: '۱۴۰۵/۰۷/۱۲', ds: '1405/07/12' },
+    { ini: 'آ', col: '#0e7490', t: 'سوپرمارکت آریا از این کالا بازدید کرد', when: '۵ روز پیش', d: 5, date: '۱۴۰۵/۰۷/۱۱', ds: '1405/07/11' },
+    { ini: 'ب', col: '#9333ea', t: 'رستوران سنتی بهار درخواست قیمت برای ۱۰ کیسه از این کالا فرستاد', when: '۱ هفته پیش', d: 7, date: '۱۴۰۵/۰۷/۰۹', ds: '1405/07/09' },
+    { ini: 'ه', col: '#0d9488', t: 'هایپر فیروزه این کالا را به لیست خرید خود اضافه کرد', when: '۱ هفته پیش', d: 8, date: '۱۴۰۵/۰۷/۰۸', ds: '1405/07/08' },
+    { ini: 'م', col: '#c2703a', t: 'سوپرمارکت مهدی از این کالا بازدید کرد', when: '۲ هفته پیش', d: 13, date: '۱۴۰۵/۰۷/۰۳', ds: '1405/07/03' },
+    { ini: 'ن', col: '#b45309', t: 'پخش نگین از این کالا بازدید کرد', when: '۳ هفته پیش', d: 20, date: '۱۴۰۵/۰۶/۲۷', ds: '1405/06/27' },
+    { ini: 'م', col: '#9333ea', t: 'رستوران مهر این کالا به لیست مقایسه قیمت خود اضافه کرد', when: '۱ ماه پیش', d: 32, date: '۱۴۰۵/۰۶/۱۵', ds: '1405/06/15' },
+    { ini: 'ر', col: '#7c3aed', t: 'رضا اکبری از این کالا بازدید کرد', when: '۲ ماه پیش', d: 55, date: '۱۴۰۵/۰۵/۲۲', ds: '1405/05/22' }
+  ];
+  var evFilter = 'all';
+  function faNum(n) { return String(n).replace(/\d/g, function (x) { return '۰۱۲۳۴۵۶۷۸۹'.charAt(+x); }); }
+  function evNorm(s) { return (s || '').replace(/[۰-۹]/g, function (ch) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(ch)); }).replace(/[-.]/g, '/').replace(/\s/g, ''); }
+  function evRender(list) {
+    var host = document.getElementById('ev-list');
+    if (!host) return;
+    var html = '', lastDay = '';
+    list.forEach(function (ev) {
+      var day = ev.d === 0 ? 'امروز' : ev.d === 1 ? 'دیروز' : ev.date;
+      if (day !== lastDay) { html += '<div class="ev-day">' + day + '</div>'; lastDay = day; }
+      html += '<div class="ev-row"><div class="ev-av" style="background:' + ev.col + '">' + ev.ini + '</div>' +
+        '<div class="ev-tx"><div class="ev-t">' + ev.t + '</div><div class="ev-when">' + ev.when +
+        (ev.d > 1 ? ' · ' + ev.date : '') + '</div></div></div>';
+    });
+    if (!list.length) html = '<div class="ev-empty">در این بازهٔ زمانی رویدادی برای این کالا ثبت نشده است.</div>';
+    host.innerHTML = html;
+    var cnt = document.getElementById('ev-count');
+    if (cnt) cnt.textContent = faNum(list.length) + ' رویداد';
+  }
+  function evApply() {
+    var list = ITEM_EVENTS.slice();
+    if (evFilter === 'today') list = list.filter(function (e) { return e.d === 0; });
+    else if (evFilter === '7') list = list.filter(function (e) { return e.d < 7; });
+    else if (evFilter === '30') list = list.filter(function (e) { return e.d < 30; });
+    else if (evFilter === 'custom') {
+      var fEl = document.getElementById('ev-from'), tEl = document.getElementById('ev-to');
+      var f = evNorm(fEl && fEl.value), to = evNorm(tEl && tEl.value);
+      if (f && to) list = list.filter(function (e) { return e.ds >= f && e.ds <= to; });
+    }
+    evRender(list);
+  }
+
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -6230,6 +6415,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var backEl = t.closest('[data-back]');
     if (backEl) { back(); return; }
 
+    /* ── فاز ۲۲: فیلتر تاریخچهٔ رویدادها (نتایج حضور در آیمچ) ── */
+    var evc = t.closest('[data-evf]');
+    if (evc) {
+      evc.parentElement.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
+      evc.classList.add('active');
+      var rng = document.getElementById('ev-range');
+      if (rng) rng.hidden = evc.dataset.evf !== 'custom';
+      evFilter = evc.dataset.evf;
+      evApply();
+      return;
+    }
+    var eva = t.closest('[data-evapply]');
+    if (eva) { evApply(); return; }
+
     var chip = t.closest('.chip');
     if (chip && chip.parentElement && chip.parentElement.classList.contains('chips')) {
       chip.parentElement.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
@@ -6277,6 +6476,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   });
 
   wire();
+  evRender(ITEM_EVENTS);
   var init = (location.hash || '').slice(1);
   go(el(init) ? init : '15', false);
 })();
