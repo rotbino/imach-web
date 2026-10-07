@@ -47,6 +47,8 @@ const MOBILE = [
   ['24', '24-viewers.html'],
   ['25', '25-savers.html'],
   ['26', '26-goods.html'],
+  ['27', '27-notifications.html'],
+  ['28', '28-offers.html'],
 ];
 const DESKTOP = [
   ['d1', 'd1-desktop-catalog.html'],
@@ -259,21 +261,21 @@ const runtime = String.raw`
   var DEFAULT_BACK = {
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
     '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
-    '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01'
+    '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
+    '27': '01', '28': '05'
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
-    '02': [['درخواست قیمت', '12'], ['دنبال کردن قیمت', '08'], ['مشاهده تابلوی تأمین', '09']],
+    '02': [['درخواست قیمت', '12'], ['مشاهده تابلوی تأمین', '09']],
     '03': [['ویرایش کامل کالا', '04'], ['مشاهده و پاسخ', '06']],
     '04': [['ذخیره در کاتالوگ', '01']],
-    '06': [['ارسال پیشنهاد', '05'], ['بایگانی', '05']],
+    '06': [['ارسال پیشنهاد', '28'], ['بایگانی', '05']],
     '07': [['نمای عمومی', '13'], ['خروج از حساب', '15']],
     '08': [['دنبال کردن', '13'], ['افزودن کالا', '13']],
     '09': [['درخواست قیمت', '12'], ['کاتالوگ', '13'], ['درخواست قیمت از تأمین‌کننده‌های انتخابی', '12']],
     '10': [['کاتالوگ', '13']],
     '11': [['افزودن به تابلو', '09'], ['مشاهده کاتالوگ', '13'], ['افزودن به لیست', '08'], ['مشاهده', '02']],
     '12': [['ارسال به ۲ فروشنده + شبکه iMach', '08']],
-    '13': [['دنبال کردن قیمت همهٔ کالاهای انتخابی (۲)', '08']],
     '14': [['خروج از حساب', '15']],
     '15': [['ساخت حساب', '16'], ['ورود', '17']],
     '16': [['ساخت حساب و ورود', '01'], ['وارد شوید', '17']],
@@ -282,6 +284,7 @@ const runtime = String.raw`
     '23': [['ارسال پیشنهاد قیمت', '12']],
     '24': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
     '25': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
+    '28': [['مشاهده و پاسخ', '06']],
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19', '21': '06', '24': '06', '25': '06', '26': '03' };
@@ -297,7 +300,7 @@ const runtime = String.raw`
   /* ── شیت‌های پایین صفحه (الگوی فاز ۱۷ — تعمیم‌یافته فاز ۱۸) ── */
   function closeSheet() {
     document.getElementById('backdrop').classList.remove('show');
-    document.querySelectorAll('.sheet.show').forEach(function (s) { s.classList.remove('show'); });
+    document.querySelectorAll('.sheet.show, .dlg.show').forEach(function (s) { s.classList.remove('show'); });
   }
   function openSheet(id) {
     closeSheet();
@@ -444,6 +447,61 @@ const runtime = String.raw`
       openSheet('sheet-switch'); return;
     }
     if (t.closest('#backdrop')) { closeSheet(); return; }
+
+    /* ── فاز ۲۰: انتخاب گروه تخفیف (دراپ‌داون حجمی) ── */
+    var vgs = t.closest('[data-vgsel]');
+    if (vgs) {
+      var vlbl = document.getElementById('vol-group-name');
+      if (vlbl) vlbl.textContent = vgs.dataset.vgsel;
+      closeSheet(); return;
+    }
+
+    /* ── فاز ۲۰: گرید انتخاب کالا (گروه تخفیف / انتخاب چندتایی) ── */
+    var gc = t.closest('.gcell');
+    if (gc) { gc.classList.toggle('on'); return; }
+
+    /* ── فاز ۲۰: سطح مشتری (رادیویی) ── */
+    var lr = t.closest('.lvl-row');
+    if (lr) {
+      lr.parentElement.querySelectorAll('.lvl-row').forEach(function (r) { r.classList.remove('active'); });
+      lr.classList.add('active'); return;
+    }
+
+    /* ── فاز ۲۰: اطلاعات بازشو (آیکون ℹ) ── */
+    var infoEl = t.closest('[data-info]');
+    if (infoEl) {
+      var host = infoEl.closest('.field') || infoEl.closest('.dlg') || infoEl.parentElement;
+      var blk = host && host.querySelector('.info-block');
+      if (blk) blk.hidden = !blk.hidden;
+      return;
+    }
+
+    /* ── فاز ۲۰: تأیید دنبال کردن قیمت ── */
+    var fol = t.closest('[data-followed]');
+    if (fol) {
+      fol.classList.add('followed');
+      fol.innerHTML = 'به لیست خرید اضافه شد ✓';
+      setTimeout(closeSheet, 900);
+      return;
+    }
+
+    /* ── فاز ۲۰: آپلود مدرک (نمایشی) ── */
+    var up = t.closest('.up-box');
+    if (up) {
+      up.classList.toggle('done');
+      var upb = up.querySelector('.tx b');
+      var ups = up.querySelector('.tx span');
+      var upp = up.querySelector('.pick');
+      if (up.classList.contains('done')) {
+        if (ups && !ups.dataset.orig) { ups.dataset.orig = ups.textContent; ups.textContent = 'بارگذاری شد —' + ' فایل انتخاب شد'; }
+        if (upp) upp.textContent = 'تغییر';
+      } else {
+        if (ups && ups.dataset.orig) ups.textContent = ups.dataset.orig;
+        if (upp) upp.textContent = 'انتخاب فایل';
+      }
+      return;
+    }
+
     var srow = t.closest('.sheet-row[data-arm-go]');
     if (srow) {
       var want = srow.dataset.armGo;
@@ -492,7 +550,13 @@ const runtime = String.raw`
     var pill = t.closest('.pill');
     if (pill) {
       pill.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
-      pill.classList.add('active'); return;
+      pill.classList.add('active');
+      /* فاز ۲۰ — دامنهٔ تخفیف حجمی: فقط با «کالاهای خاص» گروه نشان داده می‌شود */
+      if (pill.parentElement.id === 'vol-scope') {
+        var blk2 = document.getElementById('vol-group-block');
+        if (blk2) blk2.style.display = pill.textContent.indexOf('خاص') >= 0 ? 'block' : 'none';
+      }
+      return;
     }
 
     var itab = t.closest('.inner-tabs button');

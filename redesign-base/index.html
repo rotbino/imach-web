@@ -67,10 +67,124 @@ body > div[id^="scr-d"][hidden] { display: none; }
 .sheet .row-act svg{width:15px;height:15px}
 .sheet .row-act.warn{color:var(--red)}
 
+/* ═══ فاز ۲۰ ═══ */
+/* مدال مرکزی (تأیید/انتخاب) */
+.dlg{position:absolute;right:16px;left:16px;top:50%;transform:translateY(-50%) scale(.97);opacity:0;pointer-events:none;background:#fff;border-radius:18px;box-shadow:var(--shadow-pop);border:1px solid var(--border);z-index:62;padding:18px 16px 14px;transition:opacity .2s,transform .2s;max-height:86%;overflow-y:auto}
+.dlg.show{opacity:1;pointer-events:auto;transform:translateY(-50%) scale(1)}
+.dlg h3{font-size:15px}
+.dlg .dlg-q{font-size:14px;font-weight:700;line-height:1.8;margin-top:2px}
+.dlg .dlg-p{font-size:11.5px;color:var(--stone-soft);line-height:2.05;margin-top:8px}
+.dlg .dlg-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.dlg .btn.followed{color:var(--green);border-color:#b6e2c6;background:var(--green-bg)}
+
+/* لینک اطلاعات + بلوک بازشو */
+.infolink{display:flex;align-items:center;gap:6px;border:0;background:none;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--primary-strong);cursor:pointer;margin-top:12px;padding:0}
+.infolink svg{width:14px;height:14px}
+.info-block{font-size:11px;color:var(--stone-soft);line-height:2;background:var(--muted);border-radius:10px;padding:10px 12px;margin-top:9px}
+.info-block[hidden]{display:none}
+.info-i{width:21px;height:21px;border-radius:50%;border:1px solid var(--border-strong);background:#fff;display:inline-grid;place-items:center;color:var(--muted-fg);cursor:pointer;padding:0;vertical-align:-4px;margin-right:5px}
+.info-i svg{width:12px;height:12px}
+
+/* گرید انتخاب کالا (گروه تخفیف / انتخاب چندتایی) */
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.gcell{position:relative;border:1px solid var(--border);border-radius:12px;background:#fff;padding:6px 6px 8px;cursor:pointer;font-family:inherit;text-align:right}
+.gcell .gth{display:block;height:60px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#f3f1ea,#e9e5db)}
+.gcell .gth img{width:100%;height:100%;object-fit:cover;display:block}
+.gcell .gth .gl{height:100%;display:grid;place-items:center;font-size:9.5px;font-weight:700;color:#a8a29a;letter-spacing:.4px}
+.gcell .gn{display:block;font-size:10.5px;font-weight:700;line-height:1.7;margin-top:6px;color:var(--foreground)}
+.gcell .gchk{position:absolute;top:10px;left:10px;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border-strong);background:rgba(255,255,255,.94);display:grid;place-items:center;color:#fff;box-shadow:0 1px 3px rgba(42,39,35,.12)}
+.gcell .gchk svg{width:12px;height:12px;display:none}
+.gcell.on{border-color:var(--primary)}
+.gcell.on .gchk{background:var(--primary);border-color:var(--primary)}
+.gcell.on .gchk svg{display:block}
+
+/* دراپ‌داون گروه + دکمهٔ + */
+.sel-plus{display:flex;gap:8px;margin-top:9px}
+.sel-plus .input{flex:1;min-width:0}
+.sel-plus .plusbtn{width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:#fff;color:var(--primary-strong);display:grid;place-items:center;cursor:pointer}
+.sel-plus .plusbtn:active{background:var(--accent)}
+
+/* درصد با پسوند ٪ — فقط عدد می‌پذیرد */
+.pctw{position:relative}
+.pctw input{width:100%;box-sizing:border-box;text-align:center;padding-left:32px}
+.pctw .sfx{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted-fg);pointer-events:none}
+
+/* سطح مشتری — انتخاب رادیویی */
+.lvl-list{display:flex;flex-direction:column;gap:7px}
+.lvl-row{display:flex;align-items:center;gap:9px;border:1px solid var(--border-strong);background:#fff;border-radius:11px;padding:9px 12px;cursor:pointer;font-family:inherit;text-align:right}
+.lvl-row b{font-size:11.5px;color:var(--muted-fg);flex-shrink:0;min-width:46px}
+.lvl-row span{font-size:12.5px;font-weight:700;color:var(--foreground);flex:1}
+.lvl-row .tick{width:17px;height:17px;color:var(--primary-strong);display:none;flex-shrink:0}
+.lvl-row.active{border-color:var(--primary);background:var(--accent)}
+.lvl-row.active b{color:var(--primary-strong)}
+.lvl-row.active .tick{display:block}
+
+/* دکمهٔ «ایجاد گروه مشتری جدید» — هم‌عرضِ ردیف‌ها، ایکون و رنگ متفاوت */
+.add-row.alt{border-style:solid;border-color:#efc98a;background:#fffaf1;color:var(--amber)}
+.add-row.alt svg{color:var(--amber)}
+
+/* آپلود مدرک — جدا جدا */
+.up-box{display:flex;align-items:center;gap:11px;width:100%;border:1.5px dashed var(--border-strong);border-radius:12px;background:#fff;padding:11px 12px;margin-top:9px;cursor:pointer;font-family:inherit;text-align:right}
+.up-box .uic{width:38px;height:38px;border-radius:11px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;flex-shrink:0}
+.up-box .uic svg{width:17px;height:17px}
+.up-box .tx{flex:1;min-width:0}
+.up-box .tx b{font-size:12.5px;display:block}
+.up-box .tx span{font-size:10px;color:var(--muted-fg);display:block;margin-top:2px}
+.up-box .pick{font-size:10.5px;font-weight:700;color:var(--primary-strong);background:var(--accent);border-radius:8px;padding:5px 10px;flex-shrink:0}
+.up-box.done{border-style:solid;border-color:#b6e2c6;background:var(--green-bg)}
+.up-box.done .pick{color:var(--green);background:#fff}
+.up-box.done .uic{background:var(--green-bg);color:var(--green)}
+
+/* چک‌رو با تیتر و توضیح (جایگاه‌های تبلیغاتی) */
+.checkrow .cw{flex:1;min-width:0}
+.checkrow .cw b{font-size:12.5px;display:block;line-height:1.7}
+.checkrow .cw span{font-size:10.5px;color:var(--muted-fg);display:block;margin-top:2px;line-height:1.7}
+
+/* کارت تیک اعتماد (فرم کسب‌وکار) */
+.trust-card{display:flex;align-items:center;gap:12px;margin-top:12px;background:linear-gradient(180deg,#f5faff,#fff);border:1px solid #cfe0f4;border-radius:var(--radius);box-shadow:var(--shadow-card);padding:13px 14px}
+.trust-card .tc-ic{width:44px;height:44px;border-radius:13px;background:#e8f1fd;color:#1d5fb8;display:grid;place-items:center;flex-shrink:0}
+.trust-card .tc-ic svg{width:21px;height:21px}
+.trust-card .tc-tx{flex:1;min-width:0}
+.trust-card .tc-tx b{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.trust-card .tc-tx span{display:block;font-size:10.5px;color:var(--muted-fg);margin-top:4px;line-height:1.8}
+
 /* ── استایل صفحهٔ 03 (03-product-owner.html) ── */
 
 #scr-03 .pd-photo {position:relative;height:196px;background:var(--muted)}
 #scr-03 .pd-photo img {width:100%;height:100%;object-fit:cover;display:block}
+
+
+/* ── استایل صفحهٔ 05 (05-sell-requests.html) ── */
+
+  /* ═══ درخواست‌های خرید — کارت‌های خوانا: درخواست بالا، خریدار پایین ═══ */
+  #scr-05 .inner-tabs button svg { width: 13px; height: 13px; vertical-align: -2px; margin-left: 4px; }
+  #scr-05 .req-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 12px 13px; cursor: pointer; }
+  #scr-05 .req-card:active { transform: translateY(1px); }
+  #scr-05 .req-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  #scr-05 .req-t { font-size: 13px; font-weight: 700; line-height: 1.75; color: var(--foreground); }
+  #scr-05 .req-meta { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; font-size: 10.5px; color: var(--muted-fg); margin-top: 6px; line-height: 1.8; }
+  #scr-05 .req-meta svg { width: 11px; height: 11px; flex-shrink: 0; }
+  #scr-05 .req-meta .sep { color: var(--border-strong); }
+  #scr-05 .req-biz { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border); margin-top: 10px; padding-top: 9px; }
+  #scr-05 .req-biz .avatar-sm { width: 26px; height: 26px; font-size: 11px; }
+  #scr-05 .req-biz .bn { font-size: 11.5px; font-weight: 700; }
+  #scr-05 .req-biz .bm { font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
+  #scr-05 .match-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--green); background: var(--green-bg); border-radius: 999px; padding: 3px 9px; flex-shrink: 0; white-space: nowrap; }
+  #scr-05 .match-chip svg { width: 11px; height: 11px; }
+
+
+/* ── استایل صفحهٔ 13 (13-catalog-public.html) ── */
+
+  /* ═══ دکمهٔ چندانتخابی کنار جستجو ═══ */
+  #scr-13 .ms-btn {
+    width: 46px; height: 46px; flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: #fff; color: var(--stone-soft);
+    display: grid; place-items: center; cursor: pointer;
+  }
+  #scr-13 .ms-btn:active { background: var(--accent); color: var(--primary-strong); }
+  #scr-13 .ms-btn svg { width: 19px; height: 19px; }
 
 
 /* ── استایل صفحهٔ 15 (15-landing.html) ── */
@@ -95,37 +209,40 @@ body > div[id^="scr-d"][hidden] { display: none; }
     cursor: pointer; padding: 8px 10px; border-radius: 10px;
   }
 
-  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
+  /* ═══ نوار زبان — داخل بنر، پیل‌های تمام‌گرد ═══ */
   #scr-15 .land-lang {
-    display: flex; align-items: center; gap: 2px;
-    padding: 10px 16px 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+    padding: 12px 16px 0;
     position: relative;
+    flex-wrap: wrap;
+    row-gap: 6px;
   }
   #scr-15 .land-lang .lg {
     border: 0; background: none; font-family: inherit;
-    font-size: 12px; font-weight: 700; color: var(--muted-fg);
-    cursor: pointer; padding: 6px 10px; border-radius: 9px;
+    font-size: 11.5px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 6px 13px; border-radius: 999px;
+    background: rgba(255,255,255,.72);
+    transition: background .15s, color .15s;
   }
-  #scr-15 .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  #scr-15 .land-lang .lg.active { color: var(--primary-strong); background: #fff; box-shadow: 0 1px 5px rgba(42,39,35,.12); }
   #scr-15 .land-lang .lg-wrap { position: relative; }
   #scr-15 .land-lang .lang-dd {
     position: absolute; top: calc(100% + 6px); right: 0;
     background: #fff; border: 1px solid var(--border-strong);
     border-radius: 12px; box-shadow: var(--shadow-pop);
-    padding: 6px; min-width: 168px; display: none; z-index: 50;
+    padding: 6px; min-width: 150px; display: none; z-index: 50;
   }
   #scr-15 .land-lang .lang-dd.open { display: block; }
   #scr-15 .land-lang .lang-dd button {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    width: 100%; border: 0; background: none; font-family: inherit;
+    display: block; width: 100%; border: 0; background: none; font-family: inherit;
     font-size: 12.5px; font-weight: 700; color: var(--stone-soft);
     padding: 9px 10px; border-radius: 9px; cursor: pointer; text-align: right;
   }
-  #scr-15 .land-lang .lang-dd button span { font-size: 10.5px; color: var(--muted-fg); font-weight: 400; }
 
   /* هیرو — تینت نارنجی نرم */
   #scr-15 .hero-land {
-    padding: 32px 20px 28px;
+    padding: 0 20px 28px;
     background: linear-gradient(180deg, #fdeedd 0%, #fcfbf8 100%);
     margin: 0 -16px;
   }
@@ -508,6 +625,62 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-19 .c-send svg { width: 18px; height: 18px; }
 
 
+/* ── استایل صفحهٔ 22 (22-biz-edit.html) ── */
+
+  /* ═══ کارت تیک اعتماد (فاز ۲۰) ═══ */
+  #scr-22 .trust-card {display:flex;align-items:center;gap:12px;margin-top:12px;background:linear-gradient(180deg,#f5faff,#fff);border:1px solid #cfe0f4;border-radius:var(--radius);box-shadow:var(--shadow-card);padding:13px 14px}
+  #scr-22 .trust-card .tc-ic {width:44px;height:44px;border-radius:13px;background:#e8f1fd;color:#1d5fb8;display:grid;place-items:center;flex-shrink:0}
+  #scr-22 .trust-card .tc-ic svg {width:21px;height:21px}
+  #scr-22 .trust-card .tc-tx {flex:1;min-width:0}
+  #scr-22 .trust-card .tc-tx b {font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #scr-22 .trust-card .tc-tx span {display:block;font-size:10.5px;color:var(--muted-fg);margin-top:4px;line-height:1.8}
+
+
+/* ── استایل صفحهٔ 27 (27-notifications.html) ── */
+
+  /* ═══ اعلان‌ها — صفحهٔ کامل (نه مدال) ═══ */
+  #scr-27 .notif { display: flex; align-items: flex-start; gap: 11px; background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 12px 13px; }
+  #scr-27 .notif .nic { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; flex-shrink: 0; }
+  #scr-27 .notif .nic svg { width: 17px; height: 17px; }
+  #scr-27 .notif .ntx { flex: 1; min-width: 0; }
+  #scr-27 .notif .ntx .t { font-size: 13px; font-weight: 700; line-height: 1.7; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  #scr-27 .notif .ntx .b { font-size: 11px; color: var(--stone-soft); line-height: 1.95; margin-top: 4px; }
+  #scr-27 .notif .ntx .tm { font-size: 10px; color: var(--muted-fg); margin-top: 6px; }
+  #scr-27 .notif .ntx .act { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--primary-strong); margin-top: 7px; cursor: pointer; padding: 0; border: 0; background: none; font-family: inherit; }
+  #scr-27 .notif .ntx .act svg { width: 12px; height: 12px; }
+  #scr-27 .notif.feat .nic { background: var(--accent); color: var(--primary-strong); }
+  #scr-27 .notif.sys .nic { background: #e8f1fd; color: #1d5fb8; }
+  #scr-27 .notif.ok .nic { background: var(--green-bg); color: var(--green); }
+  #scr-27 .notif.warn .nic { background: var(--amber-bg); color: var(--amber); }
+  #scr-27 .notif.old { opacity: .62; }
+  #scr-27 .inner-tabs button svg { width: 13px; height: 13px; vertical-align: -2px; margin-left: 4px; }
+
+
+/* ── استایل صفحهٔ 28 (28-offers.html) ── */
+
+  /* ═══ پیگیری پیشنهادها — تاریخچه و وضعیت پیشنهادهای فروشنده ═══ */
+  #scr-28 .offer { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 12px 13px; }
+  #scr-28 .offer .o-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  #scr-28 .offer .o-t { font-size: 13px; font-weight: 700; line-height: 1.7; }
+  #scr-28 .offer .o-sub { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 10.5px; color: var(--muted-fg); margin-top: 5px; }
+  #scr-28 .offer .o-sub .sep { color: var(--border-strong); }
+  #scr-28 .offer .o-buyer { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px; }
+  #scr-28 .offer .o-buyer .avatar-sm { width: 26px; height: 26px; font-size: 11px; }
+  #scr-28 .offer .o-buyer .bn { font-size: 11.5px; font-weight: 700; }
+  #scr-28 .offer .o-buyer .bm { font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
+  #scr-28 .offer .o-note { font-size: 11px; color: var(--stone-soft); line-height: 1.9; background: var(--muted); border-radius: 9px; padding: 8px 10px; margin-top: 10px; }
+  #scr-28 .offer .o-acts { display: flex; gap: 7px; margin-top: 10px; }
+  #scr-28 .offer .o-acts .btn { flex: 1; }
+  #scr-28 .offer.done { opacity: .72; }
+  #scr-28 .o-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 3px 9px; flex-shrink: 0; white-space: nowrap; }
+  #scr-28 .o-chip svg { width: 11px; height: 11px; }
+  #scr-28 .o-chip.wait { background: var(--amber-bg); color: var(--amber); }
+  #scr-28 .o-chip.msg { background: #e8f1fd; color: #1d5fb8; }
+  #scr-28 .o-chip.rej { background: var(--red-bg); color: var(--red); }
+  #scr-28 .o-chip.arch { background: var(--muted); color: var(--muted-fg); }
+  #scr-28 .o-chip.win { background: var(--green-bg); color: var(--green); }
+
+
 /* ── استایل صفحهٔ d3 (d3-desktop-landing.html) ── */
 
   /* ═══ لندینگ دسکتاپ ═══ */
@@ -518,29 +691,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-d3 .dl-main::-webkit-scrollbar { display: none; }
   #scr-d3 .dl-wrap { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
 
-  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
-  #scr-d3 .land-lang { display: flex; align-items: center; gap: 4px; padding: 14px 0 0; position: relative; }
+  /* ═══ نوار زبان — داخل بنر (هیرو)، پیل تمام‌گرد ═══ */
+  #scr-d3 .land-lang { display: flex; align-items: center; gap: 6px; position: relative; margin-bottom: 18px; }
   #scr-d3 .land-lang .lg {
-    border: 0; background: none; font-family: inherit;
-    font-size: 13px; font-weight: 700; color: var(--muted-fg);
-    cursor: pointer; padding: 7px 13px; border-radius: 10px;
+    border: 0; background: rgba(255,255,255,.8); font-family: inherit;
+    font-size: 12.5px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 7px 16px; border-radius: 999px;
+    transition: background .15s, color .15s;
   }
-  #scr-d3 .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  #scr-d3 .land-lang .lg.active { color: var(--primary-strong); background: #fff; box-shadow: 0 1px 6px rgba(42,39,35,.14); }
   #scr-d3 .land-lang .lg-wrap { position: relative; }
   #scr-d3 .land-lang .lang-dd {
     position: absolute; top: calc(100% + 8px); right: 0;
     background: #fff; border: 1px solid var(--border-strong);
     border-radius: 13px; box-shadow: var(--shadow-pop);
-    padding: 7px; min-width: 190px; display: none; z-index: 50;
+    padding: 7px; min-width: 170px; display: none; z-index: 50;
   }
   #scr-d3 .land-lang .lang-dd.open { display: block; }
   #scr-d3 .land-lang .lang-dd button {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    width: 100%; border: 0; background: none; font-family: inherit;
+    display: block; width: 100%; border: 0; background: none; font-family: inherit;
     font-size: 13.5px; font-weight: 700; color: var(--stone-soft);
     padding: 10px 12px; border-radius: 9px; cursor: pointer; text-align: right;
   }
-  #scr-d3 .land-lang .lang-dd button span { font-size: 11px; color: var(--muted-fg); font-weight: 400; }
 
   /* هیرو */
   #scr-d3 .dl-hero {
@@ -583,11 +755,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     transform: rotate(2.5deg);
   }
 
-  /* تصویر محصول — نمای دسکتاپ */
+  /* تصویر محصول — نمای دسکتاپ (حد ۹۲۰px، وسط‌چین) */
   #scr-d3 .dl-showcase {
     background: #fff; border: 1px solid var(--border);
     border-radius: 20px; padding: 10px;
     box-shadow: var(--shadow-card);
+    max-width: 920px; margin: 0 auto;
   }
   #scr-d3 .dl-showcase img { display: block; width: 100%; border-radius: 12px; }
 
@@ -711,12 +884,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
 <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 2 .7 2.9a2 2 0 01-.5 2.1L8 10a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5c.9.3 1.9.6 2.9.7a2 2 0 011.7 2z"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
+<symbol id="i-bmark-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18.5 21l-6.5-4.6L5.5 21V5.2A2.2 2.2 0 017.7 3h8.6a2.2 2.2 0 012.2 2.2z"/><path d="M12 8.2v4.6M9.7 10.5h4.6"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
 <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3.5a2.8 2.8 0 114 4L8 20.5 3 22l1.5-5z"/></symbol>
 <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.6 2.6L21.4 11.4a2 2 0 010 2.8l-7.2 7.2a2 2 0 01-2.8 0L2.6 12.6V4.6a2 2 0 012-2z"/><circle cx="7.8" cy="7.8" r="1.6"/></symbol>
 <symbol id="i-boxes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 3.5h9l4 4v9l-4 4h-9l-4-4v-9z"/><path d="M7.5 8.5h9M7.5 12.5h9M7.5 16.5h9"/></symbol>
 <symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9.5v5M14 9.5v5"/></symbol>
 <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 15.5l-4.5-4.5-7.5 7.5"/></symbol>
 <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 6-8 11.5-8 11.5s-8-5.5-8-11.5a8 8 0 1116 0z"/><circle cx="12" cy="10.5" r="2.7"/></symbol>
+<symbol id="i-bell-ring" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/><path d="M2.5 3.5l2.5 2M21.5 3.5l-2.5 2"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></symbol>
 <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
 <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M17.5 20a6.4 6.4 0 00-1.7-4.4"/></symbol>
 <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18 15 15 0 010-18z"/></symbol>
@@ -724,26 +902,32 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></symbol>
 <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/><path d="M19 4.5l.7 2 .2.3M19 17.5l-.7-2"/></symbol>
-<symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></symbol>
+<symbol id="i-spark-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></symbol>
 <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 108.5-8.5A8.4 8.4 0 006 6"/><path d="M3.5 3.5V6h2.8"/><path d="M12 8v4.2l3 1.8"/></symbol>
 <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L10.5 13.5"/><path d="M21 3l-7 18-3.5-7.5L3 10z"/></symbol>
+<symbol id="i-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="9" height="9" rx="2"/><path d="M7 7.5l1.7 1.7L11.5 6"/><rect x="3.5" y="14.5" width="9" height="7" rx="2"/><path d="M15.5 6.5h5M15.5 10h5M15.5 17.5h5M15.5 20.5h3"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></symbol>
-<symbol id="i-spark-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
 <symbol id="i-board" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M9 9v11M15 9v11"/></symbol>
 <symbol id="i-back-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></symbol>
 <symbol id="i-check-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
 <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.5" r="0.5" fill="currentColor"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 5-3.5 8.5-7.5 10-4-1.5-7.5-5-7.5-10v-6z"/><path d="M9 12l2 2 4-4"/></symbol>
 <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
-<symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></symbol>
+<symbol id="i-msg-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></symbol>
 <symbol id="i-pin-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
 <symbol id="i-chev-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 3 21 7 17 11"/><line x1="21" y1="7" x2="3" y2="7"/><polyline points="7 13 3 17 7 21"/><line x1="3" y1="17" x2="21" y2="17"/></symbol>
+<symbol id="i-clock-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+<symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v9a2 2 0 002 2h10a2 2 0 002-2V9"/><path d="M10 13h4"/></symbol>
 <symbol id="i-store2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
 <symbol id="i-users-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
 <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
-<symbol id="i-msg-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
 <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></symbol>
+<symbol id="i-info-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></symbol>
+<symbol id="i-userplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.8"/><path d="M3 20.5a6.5 6.5 0 0113 0"/><path d="M18.5 8v6M15.5 11h6"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4.5"/><path d="M7.5 9L12 4.5 16.5 9"/><path d="M4 15.5v2.5a2 2 0 002 2h12a2 2 0 002-2v-2.5"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -761,7 +945,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-store"/></svg> دستیار فروش
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها">
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
@@ -985,22 +1169,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <button class="btn btn-outline btn-sm">ذخیره کاتالوگ</button>
         </div>
 
-        <!-- پیش‌نمایش تابلوی تأمین همین کالا -->
+        <!-- جایگاه تبلیغاتی: تأمین‌کنندگان ویژهٔ همین کالا -->
         <div class="card" style="margin-top:10px;padding:13px 14px">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px">
-              <svg style="width:17px;height:17px;color:var(--stone)"><use href="#i-inbox"/></svg>
-              سایر تأمین‌کنندگان این کالا
+              <svg style="width:17px;height:17px;color:var(--primary)"><use href="#i-spark"/></svg>
+              تأمین‌کنندگان ویژهٔ این کالا
             </div>
-            <span class="badge b-stone">۳ مورد</span>
+            <span class="badge b-orange">۳ مورد</span>
           </div>
           <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px">
             <div style="display:flex;justify-content:space-between;font-size:12px">
-              <span style="color:var(--stone-soft)">آریو غلات — اصفهان</span>
+              <span style="color:var(--stone-soft)">آریو غلات — اصفهان <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></span>
               <b>۲٬۹۲۰٬۰۰۰ <small style="color:var(--muted-fg)">تومان</small></b>
             </div>
             <div style="display:flex;justify-content:space-between;font-size:12px">
-              <span style="color:var(--stone-soft)">کیان غلات — قزوین</span>
+              <span style="color:var(--stone-soft)">کیان غلات — قزوین <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></span>
               <b>۳٬۰۰۰٬۰۰۰ <small style="color:var(--muted-fg)">تومان</small></b>
             </div>
           </div>
@@ -1013,14 +1197,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
     </main>
 
-    <!-- اکشن‌های اصلی خریدار: دنبال کردن قیمت + درخواست قیمت -->
+    <!-- اکشن‌های اصلی خریدار: تماس + پیام + درخواست قیمت + دنبال کردن قیمت -->
     <div class="action-bar">
       <button class="icon-btn" style="width:48px;height:48px;border-radius:12px" aria-label="تماس با فروشنده">
         <svg><use href="#i-phone"/></svg>
       </button>
+      <button class="icon-btn" style="width:48px;height:48px;border-radius:12px" aria-label="ارسال پیام به فروشنده" data-go="19" title="ارسال پیام">
+        <svg><use href="#i-msg"/></svg>
+      </button>
       <button class="btn btn-outline" style="flex:1">درخواست قیمت</button>
-      <button class="btn btn-stone" style="flex:1.3">
-        <svg><use href="#i-bookmark"/></svg>
+      <button class="btn btn-stone" style="flex:1.15" data-sheet="sheet-follow">
+        <svg><use href="#i-bmark-plus"/></svg>
         دنبال کردن قیمت
       </button>
     </div>
@@ -1267,7 +1454,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-store"/></svg> دستیار فروش
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها">
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
@@ -1278,68 +1465,92 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body">
 
       <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-inbox"/></svg> درخواست‌ها</h2>
-        <span class="more">۴ درخواست این ماه</span>
+        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید</h2>
+        <span class="more" data-go="28">پیگیری پیشنهادها ›</span>
       </div>
 
-      <!-- دو حالت: مستقیم به من + فرصت‌های بازار -->
+      <!-- سه برگه: از من · فرصت‌های بازار · گوش به زنگ -->
       <div class="inner-tabs">
-        <button class="active">به من <span class="cnt">(۳)</span></button>
-        <button>فرصت‌های بازار <span class="cnt">(۱۲)</span></button>
+        <button class="active"><svg><use href="#i-inbox"/></svg> از من <span class="cnt">(۳)</span></button>
+        <button><svg><use href="#i-spark"/></svg> فرصت‌های بازار <span class="cnt">(۱۲)</span></button>
+        <button><svg><use href="#i-bell-ring"/></svg> گوش به زنگ <span class="cnt">(۴)</span></button>
       </div>
 
       <div class="rows">
 
-        <div class="row-card" style="border-color:#f9c48f;background:#fffdf9">
-          <div class="avatar-sm" style="background:#7c3aed">م</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">رستوران مهر <span class="badge b-new">جدید</span></div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> تهران · هم‌استان</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--accent);border-radius:9px;padding:7px 10px;color:var(--accent-fg)">
-              <b>برنج هاشمی · ۲۰ کیسه</b> — «تحویل تهران، پنج‌شنبه‌ها»
-            </div>
+        <div class="req-card" data-go="06">
+          <div class="req-top">
+            <div class="req-t">درخواست خرید ۲۰ کیسه برنج هاشمی درجه یک <span class="badge b-new">جدید</span></div>
+            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          <div class="req-meta">
+            <svg><use href="#i-pin"/></svg>
+            <span>محل تحویل: تهران، بازار تهران</span>
+            <span class="sep">·</span>
+            <span>دوره خرید: معمولاً هفته‌ای یکبار</span>
+          </div>
+          <div class="req-biz">
+            <div class="avatar-sm" style="background:#7c3aed">م</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">رستوران مهر</div>
+              <div class="bm">تهران (هم‌شهری) · خریدار تجاری</div>
+            </div>
+            <span class="match-chip"><svg><use href="#i-target"/></svg> تقاضای منطبق با تو</span>
+          </div>
         </div>
 
-        <div class="row-card">
-          <div class="avatar-sm" style="background:#0e7490">ن</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">پخش نگین</div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین · هم‌شهری</span>
-              <span style="font-size:10px">۲ روز پیش</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--accent);border-radius:9px;padding:7px 10px;color:var(--accent-fg)">
-              <b>برنج طارم · ۳۰ کیسه</b> — ماهانه
-            </div>
+        <div class="req-card" data-go="06">
+          <div class="req-top">
+            <div class="req-t">درخواست خرید ۳۰ کیسه برنج طارم درجه یک</div>
+            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          <div class="req-meta">
+            <svg><use href="#i-pin"/></svg>
+            <span>محل تحویل: قزوین، مرکز شهر</span>
+            <span class="sep">·</span>
+            <span>دوره خرید: ماهانه</span>
+            <span class="sep">·</span>
+            <span>۲ روز پیش</span>
+          </div>
+          <div class="req-biz">
+            <div class="avatar-sm" style="background:#0e7490">ن</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">پخش نگین</div>
+              <div class="bm">قزوین (هم‌شهری) · خریدار تجاری</div>
+            </div>
+            <span class="match-chip"><svg><use href="#i-target"/></svg> تقاضای منطبق با تو</span>
+          </div>
         </div>
 
-        <div class="row-card" style="opacity:.75">
-          <div class="avatar-sm" style="background:#c2703a">س</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">سوپرمارکت سعید <span class="badge b-answered">پاسخ داده‌شده</span></div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · هم‌شهری</span>
-              <span style="font-size:10px">۵ روز پیش</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--muted);border-radius:9px;padding:7px 10px;color:var(--stone-soft)">
-              <b>برنج فجر · ۱۰ کیسه</b> — پیشنهاد شما ارسال شد
-            </div>
+        <div class="req-card" style="opacity:.75" data-go="28">
+          <div class="req-top">
+            <div class="req-t">درخواست خرید ۱۰ کیسه برنج فجر درجه یک <span class="badge b-answered">پاسخ داده‌شده</span></div>
+            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          <div class="req-meta">
+            <svg><use href="#i-pin"/></svg>
+            <span>محل تحویل: رشت، بازار روز</span>
+            <span class="sep">·</span>
+            <span>دوره خرید: هفتگی</span>
+            <span class="sep">·</span>
+            <span>۵ روز پیش</span>
+          </div>
+          <div class="req-biz">
+            <div class="avatar-sm" style="background:#c2703a">س</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">سوپرمارکت سعید</div>
+              <div class="bm">رشت (هم‌شهری) · خریدار تجاری</div>
+            </div>
+            <span class="match-chip" style="color:var(--muted-fg);background:var(--muted)"><svg><use href="#i-target"/></svg> پیشنهاد شما ارسال شد</span>
+          </div>
         </div>
 
       </div>
 
-      <!-- راهنمای تمایز -->
+      <!-- راهنمای تمایز سه برگه -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>«به من» = درخواست‌هایی که مستقیم برای کالاهای شما پیام شده.<br>«فرصت‌های بازار» = نیازی که iMach شبیه کاتالوگ شما دیده و می‌توانید پیشنهاد بدهید.</div>
+        <div>«از من» = درخواست‌هایی که مستقیم برای کالاهای شما پیام شده.<br>«فرصت‌های بازار» = نیازی که iMach شبیه کاتالوگ شما دیده و می‌توانید پیشنهاد بدهید.<br>«گوش به زنگ» = خریدار و کالاهایی که روی درخواست‌شان گوش به زنگ کرده‌اید — هر درخواست تازهٔ همان خریدار، همان لحظه به شما اطلاع داده می‌شود.</div>
       </div>
 
     </main>
@@ -1379,7 +1590,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">درخواست قیمت<small>دریافته ۲ روز پیش · تهران</small></div>
+      <div class="ttl">پیشنهاد قیمت<small>دریافته ۲ روز پیش · تهران</small></div>
       <span class="badge b-new">جدید</span>
     </header>
 
@@ -1454,6 +1665,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
+      <div style="font-size:11px;color:var(--stone-soft);line-height:1.9;background:var(--muted);border-radius:10px;padding:9px 11px;margin-top:2px">بعد از ارسال، وضعیت پیشنهادت را از «پیگیری پیشنهادها» دنبال کن — پاسخ خریدار، پیام‌ها و نتیجهٔ نهایی همهٔ همان‌جاست.</div>
+
     </main>
 
     <div class="action-bar">
@@ -1476,7 +1689,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-store"/></svg> دستیار فروش
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
         <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
@@ -1598,7 +1811,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-basket"/></svg> دستیار خرید
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
         <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
@@ -1777,7 +1990,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <!-- ═══ تأمین‌کننده ۲ — پیشنهاد iMatch (جدا از تطبیق طبیعی) ═══ -->
       <div class="supplier-card sponsored">
-        <span class="sponsor-tag"><svg><use href="#i-spark"/></svg> معرفی iMach</span>
+        <span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> معرفی iMach</span>
         <div class="sup-head" style="margin-top:4px">
           <div class="avatar-sm" style="background:#7c3aed">آ</div>
           <div class="nm">
@@ -1865,7 +2078,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-basket"/></svg> دستیار خرید
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
         <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
@@ -2012,7 +2225,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-basket"/></svg> دستیار خرید
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
         <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
@@ -2214,7 +2427,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- گسترش به شبکه iMach -->
       <div class="card" style="display:flex;align-items:center;gap:11px;background:#fdfcf9">
         <div style="width:38px;height:38px;border-radius:11px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone)">
-          <svg style="width:19px;height:19px"><use href="#i-spark"/></svg>
+          <svg style="width:19px;height:19px"><use href="#i-spark-v2"/></svg>
         </div>
         <div style="flex:1">
           <div style="font-size:12.5px;font-weight:700">تأمین‌کنندگان جدید iMach هم ببینند</div>
@@ -2253,26 +2466,30 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body nopad">
 
-      <!-- هدر فروشگاه — نمای عمومی -->
+      <!-- هدر فروشگاه — نام و عکس فروشنده، بدون تداخل با لوگو -->
       <div style="padding:14px 16px 4px;background:linear-gradient(180deg,var(--stone-tint),transparent)">
         <div class="showcase" style="padding-bottom:8px">
-          <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+          <div class="avatar-lg" style="padding:0;box-shadow:0 2px 8px rgba(42,39,35,.18)"><img src="png/goods/seller-portrait.png" alt="عکس فروشنده"></div>
           <div class="meta">
             <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-            <div class="sub">پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span></div>
+            <div class="sub">به مدیریت علی امینی · پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span></div>
           </div>
         </div>
-        <div style="display:flex;gap:8px;padding-bottom:12px">
+        <div style="display:flex;gap:7px;padding-bottom:12px">
           <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)"><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
-          <button class="btn btn-stone btn-sm" style="flex:1"><svg><use href="#i-phone"/></svg> تماس با پخش برنج پارس</button>
+          <button class="btn btn-stone btn-sm" style="flex:1.1" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
+          <button class="btn btn-outline btn-sm" style="flex:.66;color:var(--stone)"><svg><use href="#i-phone"/></svg> تماس</button>
         </div>
       </div>
 
       <div style="padding:6px 16px 16px">
 
-        <div class="searchbar" style="margin-top:6px">
-          <svg><use href="#i-search"/></svg>
-          <span>جستجو در این کاتالوگ…</span>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <div class="searchbar" style="flex:1;margin:0">
+            <svg><use href="#i-search"/></svg>
+            <span>جستجو در این کاتالوگ…</span>
+          </div>
+          <button class="ms-btn" data-sheet="sheet-pick" aria-label="انتخاب چند کالا" title="افزودن چند کالا به لیست خرید"><svg><use href="#i-checklist"/></svg></button>
         </div>
 
         <div class="chips">
@@ -2282,13 +2499,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <button class="chip">فجر</button>
         </div>
 
-        <!-- همان کارت‌های کاتالوگ؛ بدون ابزار مدیریت، با دکمه «دنبال قیمت» -->
+        <!-- کارت‌های کاتالوگ — آیکون اختصاصی «دنبال کردن قیمت» -->
         <div class="pgrid">
 
           <div class="pcard">
             <div class="ph">
               <div class="thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی"></div>
-              <button class="gear" aria-label="دنبال کردن قیمت"><svg><use href="#i-bookmark"/></svg></button>
+              <button class="gear" aria-label="دنبال کردن قیمت" data-sheet="sheet-follow" title="دنبال کردن قیمت"><svg><use href="#i-bmark-plus"/></svg></button>
             </div>
             <div class="info">
               <div class="n">برنج هاشمی</div>
@@ -2300,7 +2517,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div class="pcard">
             <div class="ph">
               <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
-              <button class="gear" aria-label="دنبال کردن قیمت"><svg><use href="#i-bookmark"/></svg></button>
+              <button class="gear" aria-label="دنبال کردن قیمت" data-sheet="sheet-follow" title="دنبال کردن قیمت"><svg><use href="#i-bmark-plus"/></svg></button>
             </div>
             <div class="info">
               <div class="n">برنج طارم</div>
@@ -2312,7 +2529,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div class="pcard">
             <div class="ph">
               <div class="thumb"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی — کیسه ۱۰ کیلویی"></div>
-              <button class="gear" aria-label="دنبال کردن قیمت"><svg><use href="#i-bookmark"/></svg></button>
+              <button class="gear" aria-label="دنبال کردن قیمت" data-sheet="sheet-follow" title="دنبال کردن قیمت"><svg><use href="#i-bmark-plus"/></svg></button>
             </div>
             <div class="info">
               <div class="n">برنج هاشمی</div>
@@ -2324,7 +2541,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div class="pcard">
             <div class="ph">
               <div class="thumb"><img src="png/goods/fajar-50.jpg" alt="برنج فجر — کیسه ۵۰ کیلویی"></div>
-              <button class="gear" aria-label="دنبال کردن قیمت"><svg><use href="#i-bookmark"/></svg></button>
+              <button class="gear" aria-label="دنبال کردن قیمت" data-sheet="sheet-follow" title="دنبال کردن قیمت"><svg><use href="#i-bmark-plus"/></svg></button>
             </div>
             <div class="info">
               <div class="n">برنج فجر</div>
@@ -2337,19 +2554,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <!-- رد ویروسی -->
         <div style="margin-top:16px;text-align:center;font-size:10.5px;color:var(--muted-fg)">
-          ساخته‌شده با <b style="color:var(--primary-strong)">iMach</b> — کاتالوگ رایگان برای کسب‌وکار شما
+          ساخته‌شده با <b style="color:var(--primary-strong)">iMach</b> — ساخت کاتالوگ رایگان و دستیار خرید و فروش عمده
         </div>
 
       </div>
     </main>
-
-    <!-- اکشن‌های خریدار روی کاتالوگ دیگران -->
-    <div class="action-bar">
-      <button class="btn btn-outline btn-block" style="color:var(--stone)">
-        <svg><use href="#i-bookmark"/></svg>
-        دنبال کردن قیمت همهٔ کالاهای انتخابی (۲)
-      </button>
-    </div>
 
     </section>
 
@@ -2363,7 +2572,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-basket"/></svg> دستیار خرید
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
         <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
@@ -2499,25 +2708,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- ═══ بدنه لندینگ ═══ -->
     <main class="screen-body landing-body nopad" style="padding:0 0 0">
 
-      <!-- نوار زبان — فقط نمایشی -->
-      <div class="land-lang">
-        <button class="lg">English</button>
-        <button class="lg active">فارسی</button>
-        <button class="lg">العربية</button>
-        <div class="lg-wrap">
-          <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
-          <div class="lang-dd">
-            <button>Türkçe <span>استانبولی</span></button>
-            <button>中文 <span>چینی</span></button>
-            <button>Русский <span>روسی</span></button>
-            <button>日本語 <span>ژاپنی</span></button>
+      <!-- هیرو + نوار زبان داخل خودش -->
+      <section class="hero-land">
+        <!-- نوار زبان — داخل بنر، فقط نمایشی -->
+        <div class="land-lang">
+          <button class="lg">English</button>
+          <button class="lg active">فارسی</button>
+          <button class="lg">العربية</button>
+          <div class="lg-wrap">
+            <button class="lg lang-more">other <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+            <div class="lang-dd">
+              <button>Türkçe</button>
+              <button>中文</button>
+              <button>Русский</button>
+              <button>日本語</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- هیرو -->
-      <section class="hero-land">
-        <h1><em>خرید عمده</em>، مسألهٔ اکثر کسب‌وکارهاست</h1>
+        <h1 style="margin-top:14px"><em>خرید عمده</em>، مسألهٔ اکثر کسب‌وکارهاست</h1>
         <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛</p>
         <p class="sub strong-line"><em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
         <div class="hero-cta">
@@ -2542,14 +2750,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <h3>آی‌مچ؛ پلتفرم اتصال محلی خریداران عمده به تأمین‌کنندگان عمده</h3>
           <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
         <!-- سه سؤال -->
         <div class="steps3">
           <div class="s3">
-            <span class="ico"><svg><use href="#i-spark-v2"/></svg></span>
+            <span class="ico"><svg><use href="#i-spark"/></svg></span>
             <b>برای خریدهای عمده دنبال تأمین‌کننده مناسبی؟</b>
             <p>نیاز خریدت رو ثبت کن تا آیمچ تأمین‌کننده‌هایی رو بهت پیشنهاد بده که کالای موردنیازت رو با حجم و شرایط مناسب تأمین می‌کنن. قیمت، فاصله، شرایط پرداخت و تحویل هم در پیشنهادها در نظر گرفته می‌شه.</p>
           </div>
@@ -2576,7 +2784,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div class="ben-list">
             <div class="ben">
               <span class="b-n">۱</span>
-              <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span>
+              <span class="b-tx"><b>لیست خرید قابل اشتراک گذاری</b><span>لیست خریدت رو بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — آیمچ هم تامین‌کنندگان به‌صرفه‌تری بهت معرفی می‌کند.</span></span>
             </div>
             <div class="ben">
               <span class="b-n">۲</span>
@@ -2842,7 +3050,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-basket"/></svg> دستیار خرید
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها"><svg><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
         <button class="icon-btn eye-preview" aria-label="پیش‌نمایش عمومی" data-go="13" title="پیش‌نمایش عمومی"><svg><use href="#i-eye"/></svg></button>
       </div>
     </header>
@@ -2851,7 +3059,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body">
 
       <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-msg"/></svg> پیام‌ها</h2>
+        <h2><svg><use href="#i-msg-v2"/></svg> پیام‌ها</h2>
         <span class="more">۳ گفتگو</span>
       </div>
 
@@ -2920,7 +3128,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           پیشنهادها
         </button>
         <button class="tab active">
-          <svg><use href="#i-msg"/></svg>
+          <svg><use href="#i-msg-v2"/></svg>
           پیام‌ها
           <span class="badge">۱</span>
         </button>
@@ -2977,6 +3185,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- ═══ نوار تایپ + پاسخ‌های سریع ═══ -->
     <div class="chat-foot">
       <div class="quick-chips">
+        <button class="chip">سلام، وقت به خیر</button>
         <button class="chip">قیمت امروز؟</button>
         <button class="chip">موجودی دارید؟</button>
         <button class="chip">شرایط پرداخت؟</button>
@@ -3002,7 +3211,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg><use href="#i-store"/></svg> دستیار فروش
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها">
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
@@ -3042,11 +3251,32 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- در انتظار جواب خریدار -->
       <div class="sec-title"><h2>در انتظار جواب خریدار</h2></div>
       <div class="rows">
-        <div class="row-card" data-go="05">
+        <div class="row-card" data-go="28">
           <div class="avatar-sm" style="background:#b45309">ن</div>
           <div class="body">
             <div class="t" style="font-size:13px">پیشنهاد قیمت به پخش نگین</div>
             <div class="s">برنج هاشمی · ۳۰ کیسه · ۳٪ تخفیف پلکانی · ۳ روز پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+      </div>
+
+      <!-- کارهای اجباری سیستم — تا انجام نشود حذف نمی‌شوند -->
+      <div class="sec-title"><h2>کارهای سیستم <span class="badge b-amber" style="margin-right:4px">تا انجام حذف نمی‌شود</span></h2></div>
+      <div class="rows">
+        <div class="row-card" data-sheet="sheet-trust">
+          <div class="avatar-sm" style="background:#1d5fb8">ت</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">مدارک «تیک اعتماد» ارسال نشده</div>
+            <div class="s">اعتماد خریداران را با تیک اعتماد جلب کن — ارسال مدارک، چند دقیقه بیشتر نمی‌برد</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+        <div class="row-card" data-go="27">
+          <div class="avatar-sm" style="background:#0e7490">ع</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">اعلان‌ها روشن نیست</div>
+            <div class="s">برای باخبر شدن از درخواست‌های تازه، اعلان‌ها را فعال کن</div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
@@ -3083,10 +3313,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <!-- راهنما -->
       <div class="callout" style="margin-top:14px">
-        <svg><use href="#i-bell"/></svg>
+        <svg><use href="#i-tasks"/></svg>
         <div>
-          <b>کارهای انجام‌شده تا آخر امروز می‌مانند</b><br>
-          فردا صبح خودکار آرشیو می‌شوند و جای کارهای تازه را می‌گیرند.
+          <b>کارها تا تعیین تکلیف از کارتابل حذف نمی‌شوند</b><br>
+          انجام‌شده‌ها از فهرست برمی‌داریم و کارهای تازه بالاتر می‌آیند؛ جای انجامِ بیشترِ کارها خود این‌جا نیست — از همین‌جا به جای انجام‌شان برو.
         </div>
       </div>
 
@@ -3247,6 +3477,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">کنار نامت در کاتالوگ عمومی و پیام‌ها دیده می‌شود</div>
         </div>
         <button class="btn btn-sm btn-outline">تعویض لوگو</button>
+      </div>
+
+      <!-- تیک اعتماد — ارسال مدارک هویتی برای ادمین -->
+      <div class="trust-card">
+        <div class="tc-ic"><svg><use href="#i-verified"/></svg></div>
+        <div class="tc-tx">
+          <b>تیک اعتماد iMach <span class="badge b-verified">اختیاری</span></b>
+          <span>برای اعتمادسازی بیشتر، تیک اعتماد بگیر تا خریداران با خیال راحت‌تر از تو خرید کنند — فقط به صاحب اصلی کسب‌وکار داده می‌شود.</span>
+        </div>
+        <button class="btn btn-sm btn-outline" data-sheet="sheet-trust">ارسال مدارک</button>
       </div>
 
       <!-- فرم ویرایش -->
@@ -3812,6 +4052,228 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <section class="scr" id="scr-27" data-arm="keep" hidden>
+
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">اعلان‌ها<small>۳ اعلان خوانده‌نشده</small></div>
+      <button class="icon-btn" aria-label="همه را خوانده‌شده کن" title="همه را خوانده‌شده کن"><svg><use href="#i-check"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="inner-tabs" style="margin-top:6px">
+        <button class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/></svg> همه <span class="cnt">(۵)</span></button>
+        <button><svg><use href="#i-spark"/></svg> سیستمی <span class="cnt">(۲)</span></button>
+        <button><svg><use href="#i-trend"/></svg> بازار <span class="cnt">(۲)</span></button>
+      </div>
+
+      <div class="rows">
+
+        <!-- امکان جدید -->
+        <div class="notif feat">
+          <span class="nic"><svg><use href="#i-spark"/></svg></span>
+          <div class="ntx">
+            <div class="t">امکان تازه در ای‌مچ <span class="badge b-new">جدید</span></div>
+            <div class="b">«پیامک تبلیغاتی هدفمند» فعال شد — حالا می‌توانید به خریدارانِ هم‌صنفِ کالاهای خودتان پیامک بفرستید؛ فقط کسانی که واقعاً خریدار همان کالا هستند.</div>
+            <div class="tm">امروز · ۱۰:۲۴</div>
+          </div>
+        </div>
+
+        <!-- تیک اعتماد -->
+        <div class="notif sys">
+          <span class="nic"><svg><use href="#i-verified"/></svg></span>
+          <div class="ntx">
+            <div class="t">مدارک «تیک اعتماد» در انتظار بررسی</div>
+            <div class="b">مدارک ارسال‌شدهٔ شما (کارت ملی و جواز کسب) در صف بررسی ادمین است؛ نتیجه ظرف ۲ روز کاری از همین‌جا اعلام می‌شود.</div>
+            <div class="tm">دیروز · ۱۶:۰۲</div>
+          </div>
+        </div>
+
+        <!-- بازدید کاتالوگ -->
+        <div class="notif ok">
+          <span class="nic"><svg><use href="#i-check"/></svg></span>
+          <div class="ntx">
+            <div class="t">۵۰ بازدید تازهٔ کاتالوگ شما</div>
+            <div class="b">در ۷ روز گذشته، ۵۰ بار کاتالوگتان دیده شد — بیشتر از هفتهٔ قبل. خریدارانِ بازدیدکننده را ببینید.</div>
+            <button class="act" data-go="24">مشاهدهٔ بازدیدکنندگان <svg><use href="#i-chev"/></svg></button>
+            <div class="tm">۲ روز پیش</div>
+          </div>
+        </div>
+
+        <!-- تغییر قیمت رقیب -->
+        <div class="notif warn">
+          <span class="nic"><svg><use href="#i-trend"/></svg></span>
+          <div class="ntx">
+            <div class="t">قیمت رقیب تغییر کرد</div>
+            <div class="b">«پخش نگین» قیمت برنج هاشمی ۵۰ کیلویی را ۲٪ کم کرد — در تابلوی تأمین، وضعیت قیمت خودتان را ببینید.</div>
+            <button class="act" data-go="09">مشاهدهٔ تابلوی تأمین <svg><use href="#i-chev"/></svg></button>
+            <div class="tm">۳ روز پیش</div>
+          </div>
+        </div>
+
+        <!-- خوانده‌شده / قدیمی -->
+        <div class="notif old">
+          <span class="nic"><svg><use href="#i-bell"/></svg></span>
+          <div class="ntx">
+            <div class="t">نسخهٔ جدید ای‌مچ منتشر شد</div>
+            <div class="b">در این نسخه: ذخیرهٔ کاتالوگ، پیام‌ها و گروه‌های تخفیف — بدون نیاز به کار، همه فعال‌اند.</div>
+            <div class="tm">هفتهٔ گذشته</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- مرز اعلان و کارها -->
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>اعلان فقط برای دیدن است؛ اگر کاری از شما بخواهد، همان به «کارها» می‌رود.</div>
+      </div>
+
+    </main>
+
+    </section>
+
+    <section class="scr" id="scr-28" data-arm="sell" hidden>
+
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">پیگیری پیشنهادها<small>۸ پیشنهاد در ۳۰ روز گذشته</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="inner-tabs" style="margin-top:6px">
+        <button class="active">همه <span class="cnt">(۸)</span></button>
+        <button>در انتظار <span class="cnt">(۳)</span></button>
+        <button>پاسخ‌دار <span class="cnt">(۲)</span></button>
+        <button>آرشیو <span class="cnt">(۳)</span></button>
+      </div>
+
+      <div class="rows">
+
+        <!-- پیام جدید از خریدار -->
+        <div class="offer">
+          <div class="o-top">
+            <div class="o-t">برنج هاشمی · ۲۰ کیسه</div>
+            <span class="o-chip msg"><svg><use href="#i-msg"/></svg> پیام جدید خریدار</span>
+          </div>
+          <div class="o-sub">
+            <span>پیشنهاد: ۲٬۸۰۰٬۰۰۰ تومان</span><span class="sep">·</span><span>امروز</span>
+          </div>
+          <div class="o-buyer">
+            <div class="avatar-sm" style="background:#7c3aed">م</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">رستوران مهر</div>
+              <div class="bm">تهران · خریدار تجاری</div>
+            </div>
+          </div>
+          <div class="o-note">«سلام — اگر ۲٪ پایین‌تر بیاید، همین هفته ۲۰ کیسه می‌گیرم.»</div>
+          <div class="o-acts">
+            <button class="btn btn-primary btn-sm" data-go="19"><svg><use href="#i-msg"/></svg> پاسخ در پیام‌ها</button>
+            <button class="btn btn-outline btn-sm" data-go="23">لیست خرید خریدار</button>
+          </div>
+        </div>
+
+        <!-- در انتظار پاسخ -->
+        <div class="offer">
+          <div class="o-top">
+            <div class="o-t">برنج هاشمی · ۳۰ کیسه</div>
+            <span class="o-chip wait"><svg><use href="#i-clock-v2"/></svg> در انتظار پاسخ خریدار</span>
+          </div>
+          <div class="o-sub">
+            <span>پیشنهاد: ۲٬۸۰۰٬۰۰۰ تومان</span><span class="sep">·</span><span>۳٪ تخفیف پلکانی</span><span class="sep">·</span><span>۳ روز پیش</span>
+          </div>
+          <div class="o-buyer">
+            <div class="avatar-sm" style="background:#b45309">ن</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">پخش نگین</div>
+              <div class="bm">قزوین · خریدار تجاری</div>
+            </div>
+          </div>
+          <div class="o-acts">
+            <button class="btn btn-outline btn-sm" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
+            <button class="btn btn-outline btn-sm" data-go="06">مشاهدهٔ درخواست</button>
+          </div>
+        </div>
+
+        <!-- برنده شدن -->
+        <div class="offer">
+          <div class="o-top">
+            <div class="o-t">برنج طارم · ۴۰ کیسه</div>
+            <span class="o-chip win"><svg><use href="#i-check"/></svg> انتخاب شدید</span>
+          </div>
+          <div class="o-sub">
+            <span>پیشنهاد: ۲٬۷۰۰٬۰۰۰ تومان</span><span class="sep">·</span><span>ارسال رایگان قزوین</span><span class="sep">·</span><span>۵ روز پیش</span>
+          </div>
+          <div class="o-buyer">
+            <div class="avatar-sm" style="background:#0e7490">آ</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">سوپرمارکت آریا</div>
+              <div class="bm">رشت · هم‌شهری</div>
+            </div>
+          </div>
+          <div class="o-note">خریدار شما را برای این خرید انتخاب کرد — هماهنگی تحویل را در پیام‌ها ادامه دهید.</div>
+          <div class="o-acts">
+            <button class="btn btn-primary btn-sm" data-go="19"><svg><use href="#i-msg"/></svg> ادامهٔ هماهنگی</button>
+          </div>
+        </div>
+
+        <!-- رد شده -->
+        <div class="offer done">
+          <div class="o-top">
+            <div class="o-t">برنج فجر · ۲۵ کیسه</div>
+            <span class="o-chip rej"><svg><use href="#i-x"/></svg> رد شد</span>
+          </div>
+          <div class="o-sub">
+            <span>پیشنهاد: ۲٬۴۵۰٬۰۰۰ تومان</span><span class="sep">·</span><span>۶ روز پیش</span>
+          </div>
+          <div class="o-buyer">
+            <div class="avatar-sm" style="background:#c2703a">س</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">سوپرمارکت سعید</div>
+              <div class="bm">رشت · هم‌شهری</div>
+            </div>
+          </div>
+          <div class="o-note">خریدار پیشنهاد دیگری را انتخاب کرد — با پیام یا قیمت تازه می‌توانی دوباره تلاش کنی.</div>
+          <div class="o-acts">
+            <button class="btn btn-outline btn-sm" data-go="19"><svg><use href="#i-msg"/></svg> پیام به خریدار</button>
+          </div>
+        </div>
+
+        <!-- منقضی -->
+        <div class="offer done">
+          <div class="o-top">
+            <div class="o-t">برنج هاشمی · ۱۰ کیسه</div>
+            <span class="o-chip arch"><svg><use href="#i-archive"/></svg> منقضی و آرشیو شد</span>
+          </div>
+          <div class="o-sub">
+            <span>پیشنهاد: ۲٬۸۵۰٬۰۰۰ تومان</span><span class="sep">·</span><span>۱ هفته پیش</span>
+          </div>
+          <div class="o-buyer">
+            <div class="avatar-sm" style="background:#57534e">ک</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">کترینا فود</div>
+              <div class="bm">لاهیجان · خریدار تجاری</div>
+            </div>
+          </div>
+          <div class="o-note">درخواست خرید منقضی شد؛ اگر خریدار دوباره نیاز گرفت، پیشنهادت دوباره پیشنهاد می‌شود.</div>
+        </div>
+
+      </div>
+
+      <!-- راهنمای وضعیت‌ها -->
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>همهٔ پیشنهادهایی که فرستاده‌ای این‌جاست: منتظرِ پاسخ، پاسخ‌دار، ردشده یا منقضی — و همیشه می‌توانی با پیام، قیمت بهتری پیشنهاد کنی.</div>
+      </div>
+
+    </main>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -3850,7 +4312,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-go="19">
-    <span class="ico"><svg><use href="#i-msg-v2"/></svg></span>
+    <span class="ico"><svg><use href="#i-msg"/></svg></span>
     <span class="tx"><b>ارسال در پیام‌های ای‌مچ</b><span>فرستادن لینک داخل یکی از گفتگوهایت</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
@@ -3979,35 +4441,35 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </div>
   <div class="grp">اعمال روی کالاها</div>
   <div class="field">
-    <div class="pillchoice">
-      <button class="pill">همهٔ کالاها</button>
-      <button class="pill active">کالاهای خاص</button>
+    <div class="pillchoice" id="vol-scope">
+      <button class="pill active">همهٔ کالاها</button>
+      <button class="pill">کالاهای خاص</button>
     </div>
   </div>
-  <div class="grp">گروه کالاهای این تخفیف</div>
-  <button class="sheet-row" data-sheet="sheet-vgroups">
-    <span class="ico"><svg><use href="#i-tag"/></svg></span>
-    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا: برنج هاشمی · برنج فجر · برنج طارم — گروه‌های موجود این‌جا</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <div class="field">
-    <label>نام گروه جدید</label>
-    <input class="input" placeholder="مثلاً گروه تخفیف حجمی خشکبار">
-    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">کالاهایی که انتخاب می‌کنی همین گروه را می‌سازند — اسم پیشنهادی آماده است</div>
+  <!-- فقط وقتی «کالاهای خاص» است: دراپ‌داون گروه + ساخت گروه تازه -->
+  <div id="vol-group-block" style="display:none">
+    <div class="grp">گروه کالاهای این تخفیف</div>
+    <div class="sel-plus">
+      <button class="input sel" data-sheet="sheet-vgpick">
+        <span id="vol-group-name" style="color:var(--foreground);font-weight:700">گروه تخفیف حجمی خشکبار</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button class="plusbtn" data-sheet="sheet-vgedit" title="ساخت گروه تخفیف تازه"><svg><use href="#i-plus"/></svg></button>
+    </div>
+    <div class="hintnote">گروه‌بندیِ تخفیف مستقل از گروه‌بندی کاتالوگ است؛ حتی اگر کاتالوگت گروهی نداشته باشد، می‌توانی برای چند کالا گروه تخفیف بسازی.</div>
   </div>
-  <div class="hintnote">گروه‌بندیِ تخفیف مستقل از گروه‌بندی کاتالوگ است؛ حتی اگر کاتالوگت گروهی نداشته باشد، می‌توانی برای چند کالا گروه تخفیف بسازی. اگر هم گروهی نسازی، تخفیف روی همهٔ کالاها اعمال می‌شود.</div>
   <div class="grp">پله‌های تخفیف</div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۵ کیسه به بالا</b></span>
-    <input class="input tier-in" value="۳٪">
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۳" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۲۰ کیسه به بالا</b></span>
-    <input class="input tier-in" value="۵٪">
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۵" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۵۰ کیسه به بالا</b></span>
-    <input class="input tier-in" value="۸٪">
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۸" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
   <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن پلهٔ جدید</button>
   <div class="sheet-row" style="cursor:default">
@@ -4017,6 +4479,69 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف‌های حجمی</button>
 </div>
 
+<!-- ═══ ۶-ب) انتخاب گروه تخفیف (دراپ‌داون) ═══ -->
+<div class="sheet" id="sheet-vgpick" role="dialog" aria-label="انتخاب گروه تخفیف">
+  <div class="grab"></div>
+  <h3>گروه کالاهای تخفیف</h3>
+  <div class="sub">یکی از گروه‌های تخفیف حجمی‌ات را انتخاب کن</div>
+  <button class="sheet-row" data-vgsel="گروه تخفیف حجمی خشکبار">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا · برنج هاشمی، برنج فجر، برنج طارم</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+  </button>
+  <button class="sheet-row" data-vgsel="گروه تخفیف حجمی حبوبات">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه تخفیف حجمی حبوبات</b><span>۲ کالا · عدس، لوبیا چیتی</span></span>
+  </button>
+  <button class="add-row" data-sheet="sheet-vgedit"><svg><use href="#i-plus"/></svg> ساخت گروه تخفیف تازه</button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۶-پ) ساخت / ویرایش گروه تخفیف — مینیمال: اسم + سرچ + گرید تیک ═══ -->
+<div class="sheet" id="sheet-vgedit" role="dialog" aria-label="ساخت گروه تخفیف">
+  <div class="grab"></div>
+  <h3>ساخت گروه تخفیف</h3>
+  <div class="sub">کالاهای گروه را تیک بزن — این گروه مستقل از گروه‌بندی کاتالوگ است</div>
+  <div class="field">
+    <label>نام گروه</label>
+    <input class="input" value="گروه تخفیف حجمی خشکبار">
+  </div>
+  <div class="field sheet-search">
+    <div class="input">
+      <svg><use href="#i-search"/></svg>
+      <span class="ph">جستجوی کالا…</span>
+    </div>
+  </div>
+  <div class="ggrid">
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/rice-sack.jpg" alt=""></span>
+      <span class="gn">برنج هاشمی · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/sack-scoop.jpg" alt=""></span>
+      <span class="gn">برنج طارم · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="png/goods/hashemi-10.png" alt=""></span>
+      <span class="gn">برنج هاشمی · ۱۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/fajar-50.jpg" alt=""></span>
+      <span class="gn">برنج فجر · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><span class="gl">۵۰ کیلو</span></span>
+      <span class="gn">برنج صدری · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره گروه</button>
+</div>
+
 <!-- ═══ ۷) مدیریت گروه‌های تخفیف حجمی ═══ -->
 <div class="sheet" id="sheet-vgroups" role="dialog" aria-label="مدیریت گروه‌های تخفیف حجمی">
   <div class="grab"></div>
@@ -4024,67 +4549,76 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="sub">گروه‌های کالاهای دارای تخفیف — مستقل از گروه‌بندی کاتالوگ</div>
   <div class="grp-row">
     <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا · برنج هاشمی، برنج فجر، برنج طارم</span></span>
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act" data-sheet="sheet-vgedit" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
   <div class="grp-row">
     <span class="tx"><b>گروه تخفیف حجمی حبوبات</b><span>۲ کالا · عدس، لوبیا چیتی</span></span>
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act" data-sheet="sheet-vgedit" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
-  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه تخفیف جدید</button>
-  <div class="hintnote">اینجا گروه‌ها را مدیریت می‌کنی: کالا اضافه و کم کن، اسم عوض کن یا گروه بساز. موقع تعریف تخفیف حجمی، همین گروه‌ها در فهرست می‌آیند و می‌توانی گروه تازه هم بسازی.</div>
+  <button class="add-row" data-sheet="sheet-vgedit"><svg><use href="#i-plus"/></svg> افزودن گروه تخفیف جدید</button>
+  <div class="hintnote">با ساخت گروه‌های تخفیف می‌توانید تخفیف‌های حجمی را به یک‌باره به تعداد زیادی کالا اعمال کنید. این کار شما را از اعمال تخفیف حجمی به تک‌تک کالاها بی‌نیاز می‌کند. البته برای کالاهایی که تخفیف خاص نیاز دارند، همچنان می‌توانید از طریق تنظیمات خودِ کالا، تخفیف خاص را اعمال کنید و محدودیتی ندارید.</div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۸) تخفیف‌های گروه مشتری ═══ -->
+<!-- ═══ ۸) تخفیف‌های گروه مشتری — لیست + دکمهٔ ایجاد ═══ -->
 <div class="sheet" id="sheet-cgroup" role="dialog" aria-label="تخفیف‌های گروه مشتری">
   <div class="grab"></div>
   <h3>تخفیف‌های گروه مشتری</h3>
   <div class="sub">درصد ثابت برای هر گروه مشتری — روی کل کاتالوگ</div>
   <div class="grp">گروه‌های مشتری تو</div>
   <div class="grp-row">
-    <span class="tx"><b>همکارهای قدیمی</b><span>کیفیت: درجهٔ یک · ۱۲ مشتری</span></span>
-    <input class="input pct" value="۷٪">
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <span class="tx"><b>همکارهای قدیمی</b><span>سطح ۲ — مشتری مهم · ۱۲ مشتری</span></span>
+    <div class="pctw" style="width:66px;flex-shrink:0"><input class="input" value="۷" inputmode="numeric"><span class="sfx">٪</span></div>
+    <button class="row-act" data-sheet="sheet-cgnew" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
   <div class="grp-row">
-    <span class="tx"><b>خریداران عمده</b><span>کیفیت: درجهٔ دو · ۸ مشتری</span></span>
-    <input class="input pct" value="۵٪">
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <span class="tx"><b>خریداران عمده</b><span>سطح ۱ — مشتری ویژه · ۸ مشتری</span></span>
+    <div class="pctw" style="width:66px;flex-shrink:0"><input class="input" value="۵" inputmode="numeric"><span class="sfx">٪</span></div>
+    <button class="row-act" data-sheet="sheet-cgnew" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
   <div class="grp-row">
-    <span class="tx"><b>مشتریان جدید</b><span>کیفیت: درجهٔ سه · ۲۳ مشتری</span></span>
-    <input class="input pct" value="۲٪">
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <span class="tx"><b>مشتریان جدید</b><span>سطح ۳ — مشتری عادی · ۲۳ مشتری</span></span>
+    <div class="pctw" style="width:66px;flex-shrink:0"><input class="input" value="۲" inputmode="numeric"><span class="sfx">٪</span></div>
+    <button class="row-act" data-sheet="sheet-cgnew" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
-  <div class="grp">افزودن گروه مشتری</div>
-  <div class="field">
-    <label>نام گروه مشتری</label>
-    <input class="input" placeholder="مثلاً همکارهای شعبهٔ مرکزی">
-  </div>
-  <div class="field">
-    <label>کیفیت مشتری</label>
-    <div class="pillchoice">
-      <button class="pill active">درجهٔ ۱</button>
-      <button class="pill">درجهٔ ۲</button>
-      <button class="pill">درجهٔ ۳</button>
-      <button class="pill">درجهٔ ۴</button>
-      <button class="pill">درجهٔ ۵</button>
-    </div>
-    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">از درجهٔ یک (مشتری ممتاز) تا درجهٔ پنج — هر وقت خواستی عوضش کن</div>
-  </div>
-  <div class="sheet-row" style="cursor:default">
-    <span class="tx"><b>درصد تخفیف این گروه</b><span>روی کل کاتالوگ اعمال می‌شود</span></span>
-    <input class="input pct" value="۳٪">
-  </div>
-  <button class="btn btn-primary sheet-cta" data-close>افزودن گروه و ذخیره</button>
+  <button class="add-row alt" data-sheet="sheet-cgnew"><svg><use href="#i-userplus"/></svg> ایجاد گروه مشتری جدید</button>
+  <div class="hintnote">هر گروه مشتری یک درصد ثابت روی کل کاتالوگ می‌گیرد؛ در هر سطح می‌توانی چند گروه داشته باشی و هر وقت خواستی درصد را عوض کنی.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۹) کمپین جدید ═══ -->
+<!-- ═══ ۸-ب) ایجاد / ویرایش گروه مشتری — مدال جدا ═══ -->
+<div class="sheet" id="sheet-cgnew" role="dialog" aria-label="ایجاد گروه مشتری جدید">
+  <div class="grab"></div>
+  <h3>ایجاد گروه مشتری جدید</h3>
+  <div class="sub">نام، سطح و درصد تخفیف گروه را تعیین کن</div>
+  <div class="field">
+    <label>نام گروه مشتری</label>
+    <input class="input" placeholder="مثلاً مشتریان همکار">
+  </div>
+  <div class="field">
+    <label>سطح مشتری <button class="info-i" data-info title="سطح مشتری چیست؟"><svg><use href="#i-info-v2"/></svg></button></label>
+    <div class="lvl-list">
+      <button class="lvl-row active"><b>سطح ۱</b><span>مشتری ویژه</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۲</b><span>مشتری مهم</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۳</b><span>مشتری عادی</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۴</b><span>مشتری گذری</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۵</b><span>مشتری بدقلق</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+    <div class="info-block" hidden>سطح مشتری نشان‌دهندهٔ اهمیت مشتری برای شماست و مشتریِ سطح بالا همان مشتری‌ای است که شما حاضری تخفیف بیشتری به او بدهید. تعیین سطح، بعداً در گزارش‌ها به درد شما می‌خورد و در صورت نیاز، در هر سطح می‌توانید صفر تا چند گروه مشتری داشته باشید.</div>
+  </div>
+  <div class="field">
+    <label>درصد تخفیف این گروه <span class="opt">— روی کل کاتالوگ اعمال می‌شود</span></label>
+    <div class="pctw"><input class="input" value="۳" inputmode="numeric"><span class="sfx">٪</span></div>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>ایجاد گروه و ذخیره</button>
+</div>
+
+<!-- ═══ ۹) کمپین جدید — جایگاه‌های تبلیغاتی + کالاهای کمپین ═══ -->
 <div class="sheet" id="sheet-campaign" role="dialog" aria-label="کمپین جدید">
   <div class="grab"></div>
   <h3>کمپین جدید</h3>
@@ -4109,6 +4643,39 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <button class="pill">۲ هفته</button>
     </div>
   </div>
+  <div class="grp">جایگاه‌های تبلیغاتی</div>
+  <div class="checkrow">
+    <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="cw"><b>نمایش در کاتالوگ سایر فروشندگان، در جزئیات کالای مرتبط</b><span>به‌عنوان «فروشندهٔ ویژهٔ این کالا»</span></div>
+  </div>
+  <div class="checkrow">
+    <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="cw"><b>نمایش در لیست پیشنهاد، برای افزودن به بخش مقایسه قیمت</b><span>به‌عنوان «فروشندهٔ ویژهٔ این کالا»</span></div>
+  </div>
+  <div class="grp">کالاهای این کمپین</div>
+  <div class="ggrid">
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/rice-sack.jpg" alt=""></span>
+      <span class="gn">برنج هاشمی · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/sack-scoop.jpg" alt=""></span>
+      <span class="gn">برنج طارم · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="png/goods/hashemi-10.png" alt=""></span>
+      <span class="gn">برنج هاشمی · ۱۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="png/goods/fajar-50.jpg" alt=""></span>
+      <span class="gn">برنج فجر · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+  </div>
+  <div class="hintnote">هزینهٔ اعتبار: هر مشاهده در لیست ۲ اعتبار · هر مشاهدهٔ کاتالوگ از این طریق ۴ اعتبار · هر دنبال کردن قیمت ۵ اعتبار. برای اطمینان، در گزارش کمپین، لیست تمام خریدارانی که مشاهده کرده‌اند در اختیار شما قرار می‌گیرد.</div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>نشان ویژه در کاتالوگ</b><span>کالاهای کمپین‌دار با نشان مخصوص دیده می‌شوند</span></span>
     <div class="toggle on"></div>
@@ -4363,6 +4930,88 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
+<!-- ═══ ۲۰) تأیید دنبال کردن قیمت — مدال مرکزی ═══ -->
+<div class="dlg" id="sheet-follow" role="dialog" aria-label="دنبال کردن قیمت">
+  <h3>دنبال کردن قیمت</h3>
+  <div class="dlg-q">آیا می‌خواهید قیمت این کالا را دنبال کنید؟</div>
+  <div class="dlg-p">فقط اگر خریدار عمده این کالا هستید، آن را به دستیار خرید خود اضافه کنید. با این کار، قیمت این فروشنده را در کنار قیمت سایر تأمین‌کنندگان این کالا می‌بینید و راحت‌تر مقایسه می‌کنید؛ تأمین‌کنندگان هم شما را به‌عنوان خریدار عمده این کالا خواهند شناخت و قیمت‌های بهتری پیشنهاد خواهند داد.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-followed><svg><use href="#i-bmark-plus"/></svg> دنبال کردن قیمت</button>
+    <button class="btn btn-outline" data-close>انصراف</button>
+  </div>
+  <button class="infolink" data-info><svg><use href="#i-info-v2"/></svg> اطلاعات بیشتر در مورد لیست مقایسه</button>
+  <div class="info-block" hidden>وقتی در یک کاتالوگ روی آیکون دنبال کردن قیمت می‌زنید و تأیید می‌کنید، آن کالا به لیست خرید شما در دستیار خریدتان اضافه می‌شود. وقتی در دستیار خرید خود در آیمچ روی آن کالا بزنید، قیمت این فروشنده را در لیست مقایسه خواهید دید. همچنین در لیست مقایسه، تأمین‌کنندگان دیگر این کالا نیز به شما معرفی می‌شوند تا در صورت نیاز، آنها را هم به لیست مقایسه خود اضافه کنید.</div>
+</div>
+
+<!-- ═══ ۲۱) انتخاب چند کالا برای دنبال کردن — مدال مرکزی ═══ -->
+<div class="dlg" id="sheet-pick" role="dialog" aria-label="افزودن چند کالا به لیست خرید">
+  <h3>افزودن چند کالا به لیست خرید</h3>
+  <div class="dlg-p" style="margin-top:4px">کالاهایی که می‌خواهی قیمتشان را دنبال کنی تیک بزن — همه یک‌جا به دستیار خریدت اضافه می‌شوند.</div>
+  <div class="ggrid">
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/rice-sack.jpg" alt=""></span>
+      <span class="gn">برنج هاشمی · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/sack-scoop.jpg" alt=""></span>
+      <span class="gn">برنج طارم · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="png/goods/hashemi-10.png" alt=""></span>
+      <span class="gn">برنج هاشمی · ۱۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="png/goods/fajar-50.jpg" alt=""></span>
+      <span class="gn">برنج فجر · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+  </div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-followed><svg><use href="#i-bmark-plus"/></svg> دنبال کردن قیمت ۲ کالای انتخابی</button>
+    <button class="btn btn-outline" data-close>انصراف</button>
+  </div>
+</div>
+
+<!-- ═══ ۲۲) مدارک تیک اعتماد — آپلود جداگانه ═══ -->
+<div class="sheet" id="sheet-trust" role="dialog" aria-label="مدارک تیک اعتماد">
+  <div class="grab"></div>
+  <div class="sheet-hdr">
+    <h3>تیک اعتماد iMach</h3>
+    <span class="tc-ic" style="width:34px;height:34px;border-radius:10px;background:#e8f1fd;color:#1d5fb8;display:grid;place-items:center;flex-shrink:0"><svg style="width:17px;height:17px"><use href="#i-verified"/></svg></span>
+  </div>
+  <div class="sub">جهت اعتمادسازی بیشتر، تیک اعتماد دریافت کنید تا خریداران با خیال راحت‌تر از شما خرید کنند. تیک فقط به صاحب اصلی کسب‌وکار داده می‌شود و مدارک صرفاً برای بررسی ادمین ارسال می‌شود.</div>
+  <div class="field">
+    <label>کد ملی صاحب کسب‌وکار</label>
+    <input class="input" placeholder="کد ملی ۱۰ رقمی" inputmode="numeric">
+  </div>
+  <div class="grp">مدارک — جداگانه آپلود کنید</div>
+  <button class="up-box done">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>تصویر روی کارت ملی</b><span>بارگذاری شد — melli-front.jpg</span></span>
+    <span class="pick">تغییر</span>
+  </button>
+  <button class="up-box">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>تصویر پشت کارت ملی</b><span>JPG یا PNG · حداکثر ۵ مگابایت</span></span>
+    <span class="pick">انتخاب فایل</span>
+  </button>
+  <button class="up-box">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>جواز کسب</b><span>تصویر جواز یا پروانهٔ کسب‌وکار</span></span>
+    <span class="pick">انتخاب فایل</span>
+  </button>
+  <button class="up-box">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>سایر مدارک کسب‌وکار</b><span>اختیاری — روزنامهٔ رسمی، شناسه ملی و…</span></span>
+    <span class="pick">انتخاب فایل</span>
+  </button>
+  <div class="hintnote">بعد از ارسال، مدارک توسط ادمین iMach بررسی می‌شود و نتیجه از «اعلان‌ها» به شما اعلام خواهد شد.</div>
+  <button class="btn btn-primary sheet-cta" data-close>ارسال برای بررسی</button>
+</div>
+
   </div>
 </div>
 
@@ -4383,7 +5032,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <a><svg><use href="#i-user"/></svg>پروفایل</a>
     </nav>
     <div style="margin-right:auto;display:flex;align-items:center;gap:10px">
-      <button class="icon-btn" aria-label="اعلان‌ها"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۳</span></button>
+      <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۳</span></button>
       <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg style="width:18px;height:18px"><use href="#i-eye"/></svg></button>
     </div>
   </header>
@@ -4578,7 +5227,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <a><svg><use href="#i-user"/></svg>پروفایل</a>
     </nav>
     <div style="margin-right:auto;display:flex;align-items:center;gap:10px">
-      <button class="icon-btn" aria-label="اعلان‌ها"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۲</span></button>
+      <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg style="width:18px;height:18px"><use href="#i-bell"/></svg><span class="dot">۲</span></button>
       <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg style="width:18px;height:18px"><use href="#i-eye"/></svg></button>
     </div>
   </header>
@@ -4657,7 +5306,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <button class="chip">تازه‌ترین</button>
             <button class="chip">آشنا</button>
           </div>
-          <button class="btn btn-stone"><svg><use href="#i-spark"/></svg> درخواست قیمت از ۳ نفر</button>
+          <button class="btn btn-stone"><svg><use href="#i-spark-v2"/></svg> درخواست قیمت از ۳ نفر</button>
         </div>
       </div>
 
@@ -4680,7 +5329,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             </td>
           </tr>
           <tr>
-            <td><span class="sponsor-tag" style="position:static"><svg><use href="#i-spark"/></svg> معرفی iMach</span></td>
+            <td><span class="sponsor-tag" style="position:static"><svg><use href="#i-spark-v2"/></svg> معرفی iMach</span></td>
             <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar-sm" style="background:#7c3aed">آ</div><b>آریو غلات</b></div></td>
             <td>اصفهان</td>
             <td><b>۲٬۹۲۰٬۰۰۰</b></td>
@@ -4721,7 +5370,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
         <div class="card" style="width:340px;padding:14px 16px;background:#fdfcf9">
           <div style="font-size:12.5px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px">
-            <svg style="width:14px;height:14px;color:var(--primary)"><use href="#i-spark"/></svg>
+            <svg style="width:14px;height:14px;color:var(--primary)"><use href="#i-spark-v2"/></svg>
             درباره «معرفی iMach»
           </div>
           <div style="font-size:11px;color:var(--stone-soft);line-height:2">
@@ -4753,25 +5402,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="dl-main">
       <div class="dl-wrap">
 
-        <!-- نوار زبان — فقط نمایشی -->
-        <div class="land-lang">
-          <button class="lg">English</button>
-          <button class="lg active">فارسی</button>
-          <button class="lg">العربية</button>
-          <div class="lg-wrap">
-            <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
-            <div class="lang-dd">
-              <button>Türkçe <span>استانبولی</span></button>
-              <button>中文 <span>چینی</span></button>
-              <button>Русский <span>روسی</span></button>
-              <button>日本語 <span>ژاپنی</span></button>
-            </div>
-          </div>
-        </div>
+        <!-- نوار زبان بالای هیرو حذف شد — داخل بنر رفت -->
 
-        <!-- هیرو -->
+        <!-- هیرو — نوار زبان داخل خود بنر -->
         <section class="dl-hero">
           <div>
+            <div class="land-lang">
+              <button class="lg">English</button>
+              <button class="lg active">فارسی</button>
+              <button class="lg">العربية</button>
+              <div class="lg-wrap">
+                <button class="lg lang-more">other <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+                <div class="lang-dd">
+                  <button>Türkçe</button>
+                  <button>中文</button>
+                  <button>Русский</button>
+                  <button>日本語</button>
+                </div>
+              </div>
+            </div>
             <h1><em>خرید عمده</em>،<br>مسألهٔ اکثر کسب‌وکارهاست</h1>
             <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛</p>
             <p class="sub strong-line"><em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
@@ -4800,7 +5449,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <h3>آی‌مچ؛ پلتفرم اتصال محلی خریداران عمده به تأمین‌کنندگان عمده</h3>
           <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
@@ -4835,7 +5484,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               </div>
               <div class="dl-ben buy">
               <ul>
-                <li><span class="b-n">۱</span><span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span></li>
+                <li><span class="b-n">۱</span><span class="b-tx"><b>لیست خرید قابل اشتراک گذاری</b><span>لیست خریدت رو بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — آیمچ هم تامین‌کنندگان به‌صرفه‌تری بهت معرفی می‌کند.</span></span></li>
                 <li><span class="b-n">۲</span><span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span></li>
                 <li><span class="b-n">۳</span><span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>قیمت یک کالا (مثلاً برنج هاشمی) را از کاتالوگ چند فروشنده دنبال کن و برای هر کالا یک «تابلوی تأمین» بساز</span></span></li>
                 <li><span class="b-n">۴</span><span class="b-tx"><b>مقایسهٔ قیمت زنده و کنارِ هم</b><span>با تابلوی قیمت هر کالا، قیمت زندهٔ یک کالا را از چند تأمین‌کننده، کنار هم مقایسه کن</span></span></li>
@@ -4916,21 +5565,21 @@ body > div[id^="scr-d"][hidden] { display: none; }
   var DEFAULT_BACK = {
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
     '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
-    '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01'
+    '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
+    '27': '01', '28': '05'
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
-    '02': [['درخواست قیمت', '12'], ['دنبال کردن قیمت', '08'], ['مشاهده تابلوی تأمین', '09']],
+    '02': [['درخواست قیمت', '12'], ['مشاهده تابلوی تأمین', '09']],
     '03': [['ویرایش کامل کالا', '04'], ['مشاهده و پاسخ', '06']],
     '04': [['ذخیره در کاتالوگ', '01']],
-    '06': [['ارسال پیشنهاد', '05'], ['بایگانی', '05']],
+    '06': [['ارسال پیشنهاد', '28'], ['بایگانی', '05']],
     '07': [['نمای عمومی', '13'], ['خروج از حساب', '15']],
     '08': [['دنبال کردن', '13'], ['افزودن کالا', '13']],
     '09': [['درخواست قیمت', '12'], ['کاتالوگ', '13'], ['درخواست قیمت از تأمین‌کننده‌های انتخابی', '12']],
     '10': [['کاتالوگ', '13']],
     '11': [['افزودن به تابلو', '09'], ['مشاهده کاتالوگ', '13'], ['افزودن به لیست', '08'], ['مشاهده', '02']],
     '12': [['ارسال به ۲ فروشنده + شبکه iMach', '08']],
-    '13': [['دنبال کردن قیمت همهٔ کالاهای انتخابی (۲)', '08']],
     '14': [['خروج از حساب', '15']],
     '15': [['ساخت حساب', '16'], ['ورود', '17']],
     '16': [['ساخت حساب و ورود', '01'], ['وارد شوید', '17']],
@@ -4939,10 +5588,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '23': [['ارسال پیشنهاد قیمت', '12']],
     '24': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
     '25': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
+    '28': [['مشاهده و پاسخ', '06']],
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19', '21': '06', '24': '06', '25': '06', '26': '03' };
-  var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌ها · دستیار فروش","06":"۰۶ — جزئیات درخواست و پاسخ","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
 
   var stack = [];
   var current = null;
@@ -4954,7 +5604,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ── شیت‌های پایین صفحه (الگوی فاز ۱۷ — تعمیم‌یافته فاز ۱۸) ── */
   function closeSheet() {
     document.getElementById('backdrop').classList.remove('show');
-    document.querySelectorAll('.sheet.show').forEach(function (s) { s.classList.remove('show'); });
+    document.querySelectorAll('.sheet.show, .dlg.show').forEach(function (s) { s.classList.remove('show'); });
   }
   function openSheet(id) {
     closeSheet();
@@ -5101,6 +5751,61 @@ body > div[id^="scr-d"][hidden] { display: none; }
       openSheet('sheet-switch'); return;
     }
     if (t.closest('#backdrop')) { closeSheet(); return; }
+
+    /* ── فاز ۲۰: انتخاب گروه تخفیف (دراپ‌داون حجمی) ── */
+    var vgs = t.closest('[data-vgsel]');
+    if (vgs) {
+      var vlbl = document.getElementById('vol-group-name');
+      if (vlbl) vlbl.textContent = vgs.dataset.vgsel;
+      closeSheet(); return;
+    }
+
+    /* ── فاز ۲۰: گرید انتخاب کالا (گروه تخفیف / انتخاب چندتایی) ── */
+    var gc = t.closest('.gcell');
+    if (gc) { gc.classList.toggle('on'); return; }
+
+    /* ── فاز ۲۰: سطح مشتری (رادیویی) ── */
+    var lr = t.closest('.lvl-row');
+    if (lr) {
+      lr.parentElement.querySelectorAll('.lvl-row').forEach(function (r) { r.classList.remove('active'); });
+      lr.classList.add('active'); return;
+    }
+
+    /* ── فاز ۲۰: اطلاعات بازشو (آیکون ℹ) ── */
+    var infoEl = t.closest('[data-info]');
+    if (infoEl) {
+      var host = infoEl.closest('.field') || infoEl.closest('.dlg') || infoEl.parentElement;
+      var blk = host && host.querySelector('.info-block');
+      if (blk) blk.hidden = !blk.hidden;
+      return;
+    }
+
+    /* ── فاز ۲۰: تأیید دنبال کردن قیمت ── */
+    var fol = t.closest('[data-followed]');
+    if (fol) {
+      fol.classList.add('followed');
+      fol.innerHTML = 'به لیست خرید اضافه شد ✓';
+      setTimeout(closeSheet, 900);
+      return;
+    }
+
+    /* ── فاز ۲۰: آپلود مدرک (نمایشی) ── */
+    var up = t.closest('.up-box');
+    if (up) {
+      up.classList.toggle('done');
+      var upb = up.querySelector('.tx b');
+      var ups = up.querySelector('.tx span');
+      var upp = up.querySelector('.pick');
+      if (up.classList.contains('done')) {
+        if (ups && !ups.dataset.orig) { ups.dataset.orig = ups.textContent; ups.textContent = 'بارگذاری شد —' + ' فایل انتخاب شد'; }
+        if (upp) upp.textContent = 'تغییر';
+      } else {
+        if (ups && ups.dataset.orig) ups.textContent = ups.dataset.orig;
+        if (upp) upp.textContent = 'انتخاب فایل';
+      }
+      return;
+    }
+
     var srow = t.closest('.sheet-row[data-arm-go]');
     if (srow) {
       var want = srow.dataset.armGo;
@@ -5149,7 +5854,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var pill = t.closest('.pill');
     if (pill) {
       pill.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
-      pill.classList.add('active'); return;
+      pill.classList.add('active');
+      /* فاز ۲۰ — دامنهٔ تخفیف حجمی: فقط با «کالاهای خاص» گروه نشان داده می‌شود */
+      if (pill.parentElement.id === 'vol-scope') {
+        var blk2 = document.getElementById('vol-group-block');
+        if (blk2) blk2.style.display = pill.textContent.indexOf('خاص') >= 0 ? 'block' : 'none';
+      }
+      return;
     }
 
     var itab = t.closest('.inner-tabs button');

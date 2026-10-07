@@ -5,12 +5,22 @@
 <meta name="viewport" content="width=390, initial-scale=1">
 <title>۲۲ — ویرایش کسب‌وکار · دستیار فروش</title>
 <link rel="stylesheet" href="../css/style.css">
+<style>
+  /* ═══ کارت تیک اعتماد (فاز ۲۰) ═══ */
+  .trust-card{display:flex;align-items:center;gap:12px;margin-top:12px;background:linear-gradient(180deg,#f5faff,#fff);border:1px solid #cfe0f4;border-radius:var(--radius);box-shadow:var(--shadow-card);padding:13px 14px}
+  .trust-card .tc-ic{width:44px;height:44px;border-radius:13px;background:#e8f1fd;color:#1d5fb8;display:grid;place-items:center;flex-shrink:0}
+  .trust-card .tc-ic svg{width:21px;height:21px}
+  .trust-card .tc-tx{flex:1;min-width:0}
+  .trust-card .tc-tx b{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .trust-card .tc-tx span{display:block;font-size:10.5px;color:var(--muted-fg);margin-top:4px;line-height:1.8}
+</style>
 </head>
 <body>
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
   <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-verified" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></symbol>
 </svg>
 
 <div class="stage">
@@ -31,6 +41,16 @@
           <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">کنار نامت در کاتالوگ عمومی و پیام‌ها دیده می‌شود</div>
         </div>
         <button class="btn btn-sm btn-outline">تعویض لوگو</button>
+      </div>
+
+      <!-- تیک اعتماد — ارسال مدارک هویتی برای ادمین -->
+      <div class="trust-card">
+        <div class="tc-ic"><svg><use href="#i-verified"/></svg></div>
+        <div class="tc-tx">
+          <b>تیک اعتماد iMach <span class="badge b-verified">اختیاری</span></b>
+          <span>برای اعتمادسازی بیشتر، تیک اعتماد بگیر تا خریداران با خیال راحت‌تر از تو خرید کنند — فقط به صاحب اصلی کسب‌وکار داده می‌شود.</span>
+        </div>
+        <button class="btn btn-sm btn-outline" data-sheet="sheet-trust">ارسال مدارک</button>
       </div>
 
       <!-- فرم ویرایش -->

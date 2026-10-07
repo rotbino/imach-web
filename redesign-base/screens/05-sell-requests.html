@@ -3,8 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=390, initial-scale=1">
-<title>۰۵ — درخواست‌ها · دستیار فروش</title>
+<title>۰۵ — درخواست‌های خرید · دستیار فروش</title>
 <link rel="stylesheet" href="../css/style.css">
+<style>
+  /* ═══ درخواست‌های خرید — کارت‌های خوانا: درخواست بالا، خریدار پایین ═══ */
+  .inner-tabs button svg { width: 13px; height: 13px; vertical-align: -2px; margin-left: 4px; }
+  .req-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 12px 13px; cursor: pointer; }
+  .req-card:active { transform: translateY(1px); }
+  .req-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .req-t { font-size: 13px; font-weight: 700; line-height: 1.75; color: var(--foreground); }
+  .req-meta { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; font-size: 10.5px; color: var(--muted-fg); margin-top: 6px; line-height: 1.8; }
+  .req-meta svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .req-meta .sep { color: var(--border-strong); }
+  .req-biz { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border); margin-top: 10px; padding-top: 9px; }
+  .req-biz .avatar-sm { width: 26px; height: 26px; font-size: 11px; }
+  .req-biz .bn { font-size: 11.5px; font-weight: 700; }
+  .req-biz .bm { font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
+  .match-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--green); background: var(--green-bg); border-radius: 999px; padding: 3px 9px; flex-shrink: 0; white-space: nowrap; }
+  .match-chip svg { width: 11px; height: 11px; }
+</style>
 </head>
 <body>
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
@@ -16,6 +33,9 @@
   <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 6-8 11.5-8 11.5s-8-5.5-8-11.5a8 8 0 1116 0z"/><circle cx="12" cy="10.5" r="2.7"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 13.5l2 2 4-4.5"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
+  <symbol id="i-bell-ring" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/><path d="M2.5 3.5l2.5 2M21.5 3.5l-2.5 2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></symbol>
 </svg>
 
 <div class="stage">
@@ -28,7 +48,7 @@
           <svg><use href="#i-store"/></svg> دستیار فروش
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
-        <button class="icon-btn" aria-label="اعلان‌ها">
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
@@ -39,68 +59,92 @@
     <main class="screen-body">
 
       <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-inbox"/></svg> درخواست‌ها</h2>
-        <span class="more">۴ درخواست این ماه</span>
+        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید</h2>
+        <span class="more" data-go="28">پیگیری پیشنهادها ›</span>
       </div>
 
-      <!-- دو حالت: مستقیم به من + فرصت‌های بازار -->
+      <!-- سه برگه: از من · فرصت‌های بازار · گوش به زنگ -->
       <div class="inner-tabs">
-        <button class="active">به من <span class="cnt">(۳)</span></button>
-        <button>فرصت‌های بازار <span class="cnt">(۱۲)</span></button>
+        <button class="active"><svg><use href="#i-inbox"/></svg> از من <span class="cnt">(۳)</span></button>
+        <button><svg><use href="#i-spark"/></svg> فرصت‌های بازار <span class="cnt">(۱۲)</span></button>
+        <button><svg><use href="#i-bell-ring"/></svg> گوش به زنگ <span class="cnt">(۴)</span></button>
       </div>
 
       <div class="rows">
 
-        <div class="row-card" style="border-color:#f9c48f;background:#fffdf9">
-          <div class="avatar-sm" style="background:#7c3aed">م</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">رستوران مهر <span class="badge b-new">جدید</span></div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> تهران · هم‌استان</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--accent);border-radius:9px;padding:7px 10px;color:var(--accent-fg)">
-              <b>برنج هاشمی · ۲۰ کیسه</b> — «تحویل تهران، پنج‌شنبه‌ها»
-            </div>
+        <div class="req-card" data-go="06">
+          <div class="req-top">
+            <div class="req-t">درخواست خرید ۲۰ کیسه برنج هاشمی درجه یک <span class="badge b-new">جدید</span></div>
+            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          <div class="req-meta">
+            <svg><use href="#i-pin"/></svg>
+            <span>محل تحویل: تهران، بازار تهران</span>
+            <span class="sep">·</span>
+            <span>دوره خرید: معمولاً هفته‌ای یکبار</span>
+          </div>
+          <div class="req-biz">
+            <div class="avatar-sm" style="background:#7c3aed">م</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">رستوران مهر</div>
+              <div class="bm">تهران (هم‌شهری) · خریدار تجاری</div>
+            </div>
+            <span class="match-chip"><svg><use href="#i-target"/></svg> تقاضای منطبق با تو</span>
+          </div>
         </div>
 
-        <div class="row-card">
-          <div class="avatar-sm" style="background:#0e7490">ن</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">پخش نگین</div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین · هم‌شهری</span>
-              <span style="font-size:10px">۲ روز پیش</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--accent);border-radius:9px;padding:7px 10px;color:var(--accent-fg)">
-              <b>برنج طارم · ۳۰ کیسه</b> — ماهانه
-            </div>
+        <div class="req-card" data-go="06">
+          <div class="req-top">
+            <div class="req-t">درخواست خرید ۳۰ کیسه برنج طارم درجه یک</div>
+            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          <div class="req-meta">
+            <svg><use href="#i-pin"/></svg>
+            <span>محل تحویل: قزوین، مرکز شهر</span>
+            <span class="sep">·</span>
+            <span>دوره خرید: ماهانه</span>
+            <span class="sep">·</span>
+            <span>۲ روز پیش</span>
+          </div>
+          <div class="req-biz">
+            <div class="avatar-sm" style="background:#0e7490">ن</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">پخش نگین</div>
+              <div class="bm">قزوین (هم‌شهری) · خریدار تجاری</div>
+            </div>
+            <span class="match-chip"><svg><use href="#i-target"/></svg> تقاضای منطبق با تو</span>
+          </div>
         </div>
 
-        <div class="row-card" style="opacity:.75">
-          <div class="avatar-sm" style="background:#c2703a">س</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">سوپرمارکت سعید <span class="badge b-answered">پاسخ داده‌شده</span></div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · هم‌شهری</span>
-              <span style="font-size:10px">۵ روز پیش</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--muted);border-radius:9px;padding:7px 10px;color:var(--stone-soft)">
-              <b>برنج فجر · ۱۰ کیسه</b> — پیشنهاد شما ارسال شد
-            </div>
+        <div class="req-card" style="opacity:.75" data-go="28">
+          <div class="req-top">
+            <div class="req-t">درخواست خرید ۱۰ کیسه برنج فجر درجه یک <span class="badge b-answered">پاسخ داده‌شده</span></div>
+            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          <div class="req-meta">
+            <svg><use href="#i-pin"/></svg>
+            <span>محل تحویل: رشت، بازار روز</span>
+            <span class="sep">·</span>
+            <span>دوره خرید: هفتگی</span>
+            <span class="sep">·</span>
+            <span>۵ روز پیش</span>
+          </div>
+          <div class="req-biz">
+            <div class="avatar-sm" style="background:#c2703a">س</div>
+            <div style="flex:1;min-width:0">
+              <div class="bn">سوپرمارکت سعید</div>
+              <div class="bm">رشت (هم‌شهری) · خریدار تجاری</div>
+            </div>
+            <span class="match-chip" style="color:var(--muted-fg);background:var(--muted)"><svg><use href="#i-target"/></svg> پیشنهاد شما ارسال شد</span>
+          </div>
         </div>
 
       </div>
 
-      <!-- راهنمای تمایز -->
+      <!-- راهنمای تمایز سه برگه -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>«به من» = درخواست‌هایی که مستقیم برای کالاهای شما پیام شده.<br>«فرصت‌های بازار» = نیازی که iMach شبیه کاتالوگ شما دیده و می‌توانید پیشنهاد بدهید.</div>
+        <div>«از من» = درخواست‌هایی که مستقیم برای کالاهای شما پیام شده.<br>«فرصت‌های بازار» = نیازی که iMach شبیه کاتالوگ شما دیده و می‌توانید پیشنهاد بدهید.<br>«گوش به زنگ» = خریدار و کالاهایی که روی درخواست‌شان گوش به زنگ کرده‌اید — هر درخواست تازهٔ همان خریدار، همان لحظه به شما اطلاع داده می‌شود.</div>
       </div>
 
     </main>

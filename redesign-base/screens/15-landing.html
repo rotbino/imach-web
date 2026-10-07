@@ -26,37 +26,40 @@
     cursor: pointer; padding: 8px 10px; border-radius: 10px;
   }
 
-  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
+  /* ═══ نوار زبان — داخل بنر، پیل‌های تمام‌گرد ═══ */
   .land-lang {
-    display: flex; align-items: center; gap: 2px;
-    padding: 10px 16px 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+    padding: 12px 16px 0;
     position: relative;
+    flex-wrap: wrap;
+    row-gap: 6px;
   }
   .land-lang .lg {
     border: 0; background: none; font-family: inherit;
-    font-size: 12px; font-weight: 700; color: var(--muted-fg);
-    cursor: pointer; padding: 6px 10px; border-radius: 9px;
+    font-size: 11.5px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 6px 13px; border-radius: 999px;
+    background: rgba(255,255,255,.72);
+    transition: background .15s, color .15s;
   }
-  .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  .land-lang .lg.active { color: var(--primary-strong); background: #fff; box-shadow: 0 1px 5px rgba(42,39,35,.12); }
   .land-lang .lg-wrap { position: relative; }
   .land-lang .lang-dd {
     position: absolute; top: calc(100% + 6px); right: 0;
     background: #fff; border: 1px solid var(--border-strong);
     border-radius: 12px; box-shadow: var(--shadow-pop);
-    padding: 6px; min-width: 168px; display: none; z-index: 50;
+    padding: 6px; min-width: 150px; display: none; z-index: 50;
   }
   .land-lang .lang-dd.open { display: block; }
   .land-lang .lang-dd button {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    width: 100%; border: 0; background: none; font-family: inherit;
+    display: block; width: 100%; border: 0; background: none; font-family: inherit;
     font-size: 12.5px; font-weight: 700; color: var(--stone-soft);
     padding: 9px 10px; border-radius: 9px; cursor: pointer; text-align: right;
   }
-  .land-lang .lang-dd button span { font-size: 10.5px; color: var(--muted-fg); font-weight: 400; }
 
   /* هیرو — تینت نارنجی نرم */
   .hero-land {
-    padding: 32px 20px 28px;
+    padding: 0 20px 28px;
     background: linear-gradient(180deg, #fdeedd 0%, #fcfbf8 100%);
     margin: 0 -16px;
   }
@@ -214,25 +217,24 @@
     <!-- ═══ بدنه لندینگ ═══ -->
     <main class="screen-body landing-body nopad" style="padding:0 0 0">
 
-      <!-- نوار زبان — فقط نمایشی -->
-      <div class="land-lang">
-        <button class="lg">English</button>
-        <button class="lg active">فارسی</button>
-        <button class="lg">العربية</button>
-        <div class="lg-wrap">
-          <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
-          <div class="lang-dd">
-            <button>Türkçe <span>استانبولی</span></button>
-            <button>中文 <span>چینی</span></button>
-            <button>Русский <span>روسی</span></button>
-            <button>日本語 <span>ژاپنی</span></button>
+      <!-- هیرو + نوار زبان داخل خودش -->
+      <section class="hero-land">
+        <!-- نوار زبان — داخل بنر، فقط نمایشی -->
+        <div class="land-lang">
+          <button class="lg">English</button>
+          <button class="lg active">فارسی</button>
+          <button class="lg">العربية</button>
+          <div class="lg-wrap">
+            <button class="lg lang-more">other <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+            <div class="lang-dd">
+              <button>Türkçe</button>
+              <button>中文</button>
+              <button>Русский</button>
+              <button>日本語</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- هیرو -->
-      <section class="hero-land">
-        <h1><em>خرید عمده</em>، مسألهٔ اکثر کسب‌وکارهاست</h1>
+        <h1 style="margin-top:14px"><em>خرید عمده</em>، مسألهٔ اکثر کسب‌وکارهاست</h1>
         <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛</p>
         <p class="sub strong-line"><em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
         <div class="hero-cta">
@@ -257,7 +259,7 @@
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <h3>آی‌مچ؛ پلتفرم اتصال محلی خریداران عمده به تأمین‌کنندگان عمده</h3>
           <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
@@ -291,7 +293,7 @@
           <div class="ben-list">
             <div class="ben">
               <span class="b-n">۱</span>
-              <span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span>
+              <span class="b-tx"><b>لیست خرید قابل اشتراک گذاری</b><span>لیست خریدت رو بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — آیمچ هم تامین‌کنندگان به‌صرفه‌تری بهت معرفی می‌کند.</span></span>
             </div>
             <div class="ben">
               <span class="b-n">۲</span>

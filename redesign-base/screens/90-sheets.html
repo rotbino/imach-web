@@ -58,6 +58,87 @@
 .sheet .row-act{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;color:var(--muted-fg);cursor:pointer;border:0;background:none}
 .sheet .row-act svg{width:15px;height:15px}
 .sheet .row-act.warn{color:var(--red)}
+
+/* ═══ فاز ۲۰ ═══ */
+/* مدال مرکزی (تأیید/انتخاب) */
+.dlg{position:absolute;right:16px;left:16px;top:50%;transform:translateY(-50%) scale(.97);opacity:0;pointer-events:none;background:#fff;border-radius:18px;box-shadow:var(--shadow-pop);border:1px solid var(--border);z-index:62;padding:18px 16px 14px;transition:opacity .2s,transform .2s;max-height:86%;overflow-y:auto}
+.dlg.show{opacity:1;pointer-events:auto;transform:translateY(-50%) scale(1)}
+.dlg h3{font-size:15px}
+.dlg .dlg-q{font-size:14px;font-weight:700;line-height:1.8;margin-top:2px}
+.dlg .dlg-p{font-size:11.5px;color:var(--stone-soft);line-height:2.05;margin-top:8px}
+.dlg .dlg-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.dlg .btn.followed{color:var(--green);border-color:#b6e2c6;background:var(--green-bg)}
+
+/* لینک اطلاعات + بلوک بازشو */
+.infolink{display:flex;align-items:center;gap:6px;border:0;background:none;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--primary-strong);cursor:pointer;margin-top:12px;padding:0}
+.infolink svg{width:14px;height:14px}
+.info-block{font-size:11px;color:var(--stone-soft);line-height:2;background:var(--muted);border-radius:10px;padding:10px 12px;margin-top:9px}
+.info-block[hidden]{display:none}
+.info-i{width:21px;height:21px;border-radius:50%;border:1px solid var(--border-strong);background:#fff;display:inline-grid;place-items:center;color:var(--muted-fg);cursor:pointer;padding:0;vertical-align:-4px;margin-right:5px}
+.info-i svg{width:12px;height:12px}
+
+/* گرید انتخاب کالا (گروه تخفیف / انتخاب چندتایی) */
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.gcell{position:relative;border:1px solid var(--border);border-radius:12px;background:#fff;padding:6px 6px 8px;cursor:pointer;font-family:inherit;text-align:right}
+.gcell .gth{display:block;height:60px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#f3f1ea,#e9e5db)}
+.gcell .gth img{width:100%;height:100%;object-fit:cover;display:block}
+.gcell .gth .gl{height:100%;display:grid;place-items:center;font-size:9.5px;font-weight:700;color:#a8a29a;letter-spacing:.4px}
+.gcell .gn{display:block;font-size:10.5px;font-weight:700;line-height:1.7;margin-top:6px;color:var(--foreground)}
+.gcell .gchk{position:absolute;top:10px;left:10px;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border-strong);background:rgba(255,255,255,.94);display:grid;place-items:center;color:#fff;box-shadow:0 1px 3px rgba(42,39,35,.12)}
+.gcell .gchk svg{width:12px;height:12px;display:none}
+.gcell.on{border-color:var(--primary)}
+.gcell.on .gchk{background:var(--primary);border-color:var(--primary)}
+.gcell.on .gchk svg{display:block}
+
+/* دراپ‌داون گروه + دکمهٔ + */
+.sel-plus{display:flex;gap:8px;margin-top:9px}
+.sel-plus .input{flex:1;min-width:0}
+.sel-plus .plusbtn{width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:#fff;color:var(--primary-strong);display:grid;place-items:center;cursor:pointer}
+.sel-plus .plusbtn:active{background:var(--accent)}
+
+/* درصد با پسوند ٪ — فقط عدد می‌پذیرد */
+.pctw{position:relative}
+.pctw input{width:100%;box-sizing:border-box;text-align:center;padding-left:32px}
+.pctw .sfx{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted-fg);pointer-events:none}
+
+/* سطح مشتری — انتخاب رادیویی */
+.lvl-list{display:flex;flex-direction:column;gap:7px}
+.lvl-row{display:flex;align-items:center;gap:9px;border:1px solid var(--border-strong);background:#fff;border-radius:11px;padding:9px 12px;cursor:pointer;font-family:inherit;text-align:right}
+.lvl-row b{font-size:11.5px;color:var(--muted-fg);flex-shrink:0;min-width:46px}
+.lvl-row span{font-size:12.5px;font-weight:700;color:var(--foreground);flex:1}
+.lvl-row .tick{width:17px;height:17px;color:var(--primary-strong);display:none;flex-shrink:0}
+.lvl-row.active{border-color:var(--primary);background:var(--accent)}
+.lvl-row.active b{color:var(--primary-strong)}
+.lvl-row.active .tick{display:block}
+
+/* دکمهٔ «ایجاد گروه مشتری جدید» — هم‌عرضِ ردیف‌ها، ایکون و رنگ متفاوت */
+.add-row.alt{border-style:solid;border-color:#efc98a;background:#fffaf1;color:var(--amber)}
+.add-row.alt svg{color:var(--amber)}
+
+/* آپلود مدرک — جدا جدا */
+.up-box{display:flex;align-items:center;gap:11px;width:100%;border:1.5px dashed var(--border-strong);border-radius:12px;background:#fff;padding:11px 12px;margin-top:9px;cursor:pointer;font-family:inherit;text-align:right}
+.up-box .uic{width:38px;height:38px;border-radius:11px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;flex-shrink:0}
+.up-box .uic svg{width:17px;height:17px}
+.up-box .tx{flex:1;min-width:0}
+.up-box .tx b{font-size:12.5px;display:block}
+.up-box .tx span{font-size:10px;color:var(--muted-fg);display:block;margin-top:2px}
+.up-box .pick{font-size:10.5px;font-weight:700;color:var(--primary-strong);background:var(--accent);border-radius:8px;padding:5px 10px;flex-shrink:0}
+.up-box.done{border-style:solid;border-color:#b6e2c6;background:var(--green-bg)}
+.up-box.done .pick{color:var(--green);background:#fff}
+.up-box.done .uic{background:var(--green-bg);color:var(--green)}
+
+/* چک‌رو با تیتر و توضیح (جایگاه‌های تبلیغاتی) */
+.checkrow .cw{flex:1;min-width:0}
+.checkrow .cw b{font-size:12.5px;display:block;line-height:1.7}
+.checkrow .cw span{font-size:10.5px;color:var(--muted-fg);display:block;margin-top:2px;line-height:1.7}
+
+/* کارت تیک اعتماد (فرم کسب‌وکار) */
+.trust-card{display:flex;align-items:center;gap:12px;margin-top:12px;background:linear-gradient(180deg,#f5faff,#fff);border:1px solid #cfe0f4;border-radius:var(--radius);box-shadow:var(--shadow-card);padding:13px 14px}
+.trust-card .tc-ic{width:44px;height:44px;border-radius:13px;background:#e8f1fd;color:#1d5fb8;display:grid;place-items:center;flex-shrink:0}
+.trust-card .tc-ic svg{width:21px;height:21px}
+.trust-card .tc-tx{flex:1;min-width:0}
+.trust-card .tc-tx b{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.trust-card .tc-tx span{display:block;font-size:10.5px;color:var(--muted-fg);margin-top:4px;line-height:1.8}
 </style>
 </head>
 <body>
@@ -73,6 +154,14 @@
   <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-bmark-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18.5 21l-6.5-4.6L5.5 21V5.2A2.2 2.2 0 017.7 3h8.6a2.2 2.2 0 012.2 2.2z"/><path d="M12 8.2v4.6M9.7 10.5h4.6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></symbol>
+  <symbol id="i-userplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.8"/><path d="M3 20.5a6.5 6.5 0 0113 0"/><path d="M18.5 8v6M15.5 11h6"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4.5"/><path d="M7.5 9L12 4.5 16.5 9"/><path d="M4 15.5v2.5a2 2 0 002 2h12a2 2 0 002-2v-2.5"/></symbol>
+  <symbol id="i-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="9" height="9" rx="2"/><path d="M7 7.5l1.7 1.7L11.5 6"/><rect x="3.5" y="14.5" width="9" height="7" rx="2"/><path d="M15.5 6.5h5M15.5 10h5M15.5 17.5h5M15.5 20.5h3"/></symbol>
+  <symbol id="i-verified" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.7-6.2a1.6 1.6 0 013 .3L10.5 8h3l.8-2.9a1.6 1.6 0 013-.3L19 11"/><path d="M4 11h16l-1.4 8.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
 </svg>
 
 <div class="backdrop" id="backdrop"></div>
@@ -241,35 +330,35 @@
   </div>
   <div class="grp">اعمال روی کالاها</div>
   <div class="field">
-    <div class="pillchoice">
-      <button class="pill">همهٔ کالاها</button>
-      <button class="pill active">کالاهای خاص</button>
+    <div class="pillchoice" id="vol-scope">
+      <button class="pill active">همهٔ کالاها</button>
+      <button class="pill">کالاهای خاص</button>
     </div>
   </div>
-  <div class="grp">گروه کالاهای این تخفیف</div>
-  <button class="sheet-row" data-sheet="sheet-vgroups">
-    <span class="ico"><svg><use href="#i-tag"/></svg></span>
-    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا: برنج هاشمی · برنج فجر · برنج طارم — گروه‌های موجود این‌جا</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <div class="field">
-    <label>نام گروه جدید</label>
-    <input class="input" placeholder="مثلاً گروه تخفیف حجمی خشکبار">
-    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">کالاهایی که انتخاب می‌کنی همین گروه را می‌سازند — اسم پیشنهادی آماده است</div>
+  <!-- فقط وقتی «کالاهای خاص» است: دراپ‌داون گروه + ساخت گروه تازه -->
+  <div id="vol-group-block" style="display:none">
+    <div class="grp">گروه کالاهای این تخفیف</div>
+    <div class="sel-plus">
+      <button class="input sel" data-sheet="sheet-vgpick">
+        <span id="vol-group-name" style="color:var(--foreground);font-weight:700">گروه تخفیف حجمی خشکبار</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button class="plusbtn" data-sheet="sheet-vgedit" title="ساخت گروه تخفیف تازه"><svg><use href="#i-plus"/></svg></button>
+    </div>
+    <div class="hintnote">گروه‌بندیِ تخفیف مستقل از گروه‌بندی کاتالوگ است؛ حتی اگر کاتالوگت گروهی نداشته باشد، می‌توانی برای چند کالا گروه تخفیف بسازی.</div>
   </div>
-  <div class="hintnote">گروه‌بندیِ تخفیف مستقل از گروه‌بندی کاتالوگ است؛ حتی اگر کاتالوگت گروهی نداشته باشد، می‌توانی برای چند کالا گروه تخفیف بسازی. اگر هم گروهی نسازی، تخفیف روی همهٔ کالاها اعمال می‌شود.</div>
   <div class="grp">پله‌های تخفیف</div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۵ کیسه به بالا</b></span>
-    <input class="input tier-in" value="۳٪">
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۳" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۲۰ کیسه به بالا</b></span>
-    <input class="input tier-in" value="۵٪">
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۵" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>از ۵۰ کیسه به بالا</b></span>
-    <input class="input tier-in" value="۸٪">
+    <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۸" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
   <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن پلهٔ جدید</button>
   <div class="sheet-row" style="cursor:default">
@@ -279,6 +368,69 @@
   <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف‌های حجمی</button>
 </div>
 
+<!-- ═══ ۶-ب) انتخاب گروه تخفیف (دراپ‌داون) ═══ -->
+<div class="sheet" id="sheet-vgpick" role="dialog" aria-label="انتخاب گروه تخفیف">
+  <div class="grab"></div>
+  <h3>گروه کالاهای تخفیف</h3>
+  <div class="sub">یکی از گروه‌های تخفیف حجمی‌ات را انتخاب کن</div>
+  <button class="sheet-row" data-vgsel="گروه تخفیف حجمی خشکبار">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا · برنج هاشمی، برنج فجر، برنج طارم</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+  </button>
+  <button class="sheet-row" data-vgsel="گروه تخفیف حجمی حبوبات">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه تخفیف حجمی حبوبات</b><span>۲ کالا · عدس، لوبیا چیتی</span></span>
+  </button>
+  <button class="add-row" data-sheet="sheet-vgedit"><svg><use href="#i-plus"/></svg> ساخت گروه تخفیف تازه</button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۶-پ) ساخت / ویرایش گروه تخفیف — مینیمال: اسم + سرچ + گرید تیک ═══ -->
+<div class="sheet" id="sheet-vgedit" role="dialog" aria-label="ساخت گروه تخفیف">
+  <div class="grab"></div>
+  <h3>ساخت گروه تخفیف</h3>
+  <div class="sub">کالاهای گروه را تیک بزن — این گروه مستقل از گروه‌بندی کاتالوگ است</div>
+  <div class="field">
+    <label>نام گروه</label>
+    <input class="input" value="گروه تخفیف حجمی خشکبار">
+  </div>
+  <div class="field sheet-search">
+    <div class="input">
+      <svg><use href="#i-search"/></svg>
+      <span class="ph">جستجوی کالا…</span>
+    </div>
+  </div>
+  <div class="ggrid">
+    <button class="gcell on">
+      <span class="gth"><img src="../png/goods/rice-sack.jpg" alt=""></span>
+      <span class="gn">برنج هاشمی · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="../png/goods/sack-scoop.jpg" alt=""></span>
+      <span class="gn">برنج طارم · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="../png/goods/hashemi-10.png" alt=""></span>
+      <span class="gn">برنج هاشمی · ۱۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="../png/goods/fajar-50.jpg" alt=""></span>
+      <span class="gn">برنج فجر · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><span class="gl">۵۰ کیلو</span></span>
+      <span class="gn">برنج صدری · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره گروه</button>
+</div>
+
 <!-- ═══ ۷) مدیریت گروه‌های تخفیف حجمی ═══ -->
 <div class="sheet" id="sheet-vgroups" role="dialog" aria-label="مدیریت گروه‌های تخفیف حجمی">
   <div class="grab"></div>
@@ -286,67 +438,76 @@
   <div class="sub">گروه‌های کالاهای دارای تخفیف — مستقل از گروه‌بندی کاتالوگ</div>
   <div class="grp-row">
     <span class="tx"><b>گروه تخفیف حجمی خشکبار</b><span>۳ کالا · برنج هاشمی، برنج فجر، برنج طارم</span></span>
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act" data-sheet="sheet-vgedit" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
   <div class="grp-row">
     <span class="tx"><b>گروه تخفیف حجمی حبوبات</b><span>۲ کالا · عدس، لوبیا چیتی</span></span>
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act" data-sheet="sheet-vgedit" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
-  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه تخفیف جدید</button>
-  <div class="hintnote">اینجا گروه‌ها را مدیریت می‌کنی: کالا اضافه و کم کن، اسم عوض کن یا گروه بساز. موقع تعریف تخفیف حجمی، همین گروه‌ها در فهرست می‌آیند و می‌توانی گروه تازه هم بسازی.</div>
+  <button class="add-row" data-sheet="sheet-vgedit"><svg><use href="#i-plus"/></svg> افزودن گروه تخفیف جدید</button>
+  <div class="hintnote">با ساخت گروه‌های تخفیف می‌توانید تخفیف‌های حجمی را به یک‌باره به تعداد زیادی کالا اعمال کنید. این کار شما را از اعمال تخفیف حجمی به تک‌تک کالاها بی‌نیاز می‌کند. البته برای کالاهایی که تخفیف خاص نیاز دارند، همچنان می‌توانید از طریق تنظیمات خودِ کالا، تخفیف خاص را اعمال کنید و محدودیتی ندارید.</div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۸) تخفیف‌های گروه مشتری ═══ -->
+<!-- ═══ ۸) تخفیف‌های گروه مشتری — لیست + دکمهٔ ایجاد ═══ -->
 <div class="sheet" id="sheet-cgroup" role="dialog" aria-label="تخفیف‌های گروه مشتری">
   <div class="grab"></div>
   <h3>تخفیف‌های گروه مشتری</h3>
   <div class="sub">درصد ثابت برای هر گروه مشتری — روی کل کاتالوگ</div>
   <div class="grp">گروه‌های مشتری تو</div>
   <div class="grp-row">
-    <span class="tx"><b>همکارهای قدیمی</b><span>کیفیت: درجهٔ یک · ۱۲ مشتری</span></span>
-    <input class="input pct" value="۷٪">
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <span class="tx"><b>همکارهای قدیمی</b><span>سطح ۲ — مشتری مهم · ۱۲ مشتری</span></span>
+    <div class="pctw" style="width:66px;flex-shrink:0"><input class="input" value="۷" inputmode="numeric"><span class="sfx">٪</span></div>
+    <button class="row-act" data-sheet="sheet-cgnew" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
   <div class="grp-row">
-    <span class="tx"><b>خریداران عمده</b><span>کیفیت: درجهٔ دو · ۸ مشتری</span></span>
-    <input class="input pct" value="۵٪">
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <span class="tx"><b>خریداران عمده</b><span>سطح ۱ — مشتری ویژه · ۸ مشتری</span></span>
+    <div class="pctw" style="width:66px;flex-shrink:0"><input class="input" value="۵" inputmode="numeric"><span class="sfx">٪</span></div>
+    <button class="row-act" data-sheet="sheet-cgnew" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
   <div class="grp-row">
-    <span class="tx"><b>مشتریان جدید</b><span>کیفیت: درجهٔ سه · ۲۳ مشتری</span></span>
-    <input class="input pct" value="۲٪">
-    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <span class="tx"><b>مشتریان جدید</b><span>سطح ۳ — مشتری عادی · ۲۳ مشتری</span></span>
+    <div class="pctw" style="width:66px;flex-shrink:0"><input class="input" value="۲" inputmode="numeric"><span class="sfx">٪</span></div>
+    <button class="row-act" data-sheet="sheet-cgnew" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
-  <div class="grp">افزودن گروه مشتری</div>
-  <div class="field">
-    <label>نام گروه مشتری</label>
-    <input class="input" placeholder="مثلاً همکارهای شعبهٔ مرکزی">
-  </div>
-  <div class="field">
-    <label>کیفیت مشتری</label>
-    <div class="pillchoice">
-      <button class="pill active">درجهٔ ۱</button>
-      <button class="pill">درجهٔ ۲</button>
-      <button class="pill">درجهٔ ۳</button>
-      <button class="pill">درجهٔ ۴</button>
-      <button class="pill">درجهٔ ۵</button>
-    </div>
-    <div class="hint" style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">از درجهٔ یک (مشتری ممتاز) تا درجهٔ پنج — هر وقت خواستی عوضش کن</div>
-  </div>
-  <div class="sheet-row" style="cursor:default">
-    <span class="tx"><b>درصد تخفیف این گروه</b><span>روی کل کاتالوگ اعمال می‌شود</span></span>
-    <input class="input pct" value="۳٪">
-  </div>
-  <button class="btn btn-primary sheet-cta" data-close>افزودن گروه و ذخیره</button>
+  <button class="add-row alt" data-sheet="sheet-cgnew"><svg><use href="#i-userplus"/></svg> ایجاد گروه مشتری جدید</button>
+  <div class="hintnote">هر گروه مشتری یک درصد ثابت روی کل کاتالوگ می‌گیرد؛ در هر سطح می‌توانی چند گروه داشته باشی و هر وقت خواستی درصد را عوض کنی.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۹) کمپین جدید ═══ -->
+<!-- ═══ ۸-ب) ایجاد / ویرایش گروه مشتری — مدال جدا ═══ -->
+<div class="sheet" id="sheet-cgnew" role="dialog" aria-label="ایجاد گروه مشتری جدید">
+  <div class="grab"></div>
+  <h3>ایجاد گروه مشتری جدید</h3>
+  <div class="sub">نام، سطح و درصد تخفیف گروه را تعیین کن</div>
+  <div class="field">
+    <label>نام گروه مشتری</label>
+    <input class="input" placeholder="مثلاً مشتریان همکار">
+  </div>
+  <div class="field">
+    <label>سطح مشتری <button class="info-i" data-info title="سطح مشتری چیست؟"><svg><use href="#i-info"/></svg></button></label>
+    <div class="lvl-list">
+      <button class="lvl-row active"><b>سطح ۱</b><span>مشتری ویژه</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۲</b><span>مشتری مهم</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۳</b><span>مشتری عادی</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۴</b><span>مشتری گذری</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="lvl-row"><b>سطح ۵</b><span>مشتری بدقلق</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+    <div class="info-block" hidden>سطح مشتری نشان‌دهندهٔ اهمیت مشتری برای شماست و مشتریِ سطح بالا همان مشتری‌ای است که شما حاضری تخفیف بیشتری به او بدهید. تعیین سطح، بعداً در گزارش‌ها به درد شما می‌خورد و در صورت نیاز، در هر سطح می‌توانید صفر تا چند گروه مشتری داشته باشید.</div>
+  </div>
+  <div class="field">
+    <label>درصد تخفیف این گروه <span class="opt">— روی کل کاتالوگ اعمال می‌شود</span></label>
+    <div class="pctw"><input class="input" value="۳" inputmode="numeric"><span class="sfx">٪</span></div>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>ایجاد گروه و ذخیره</button>
+</div>
+
+<!-- ═══ ۹) کمپین جدید — جایگاه‌های تبلیغاتی + کالاهای کمپین ═══ -->
 <div class="sheet" id="sheet-campaign" role="dialog" aria-label="کمپین جدید">
   <div class="grab"></div>
   <h3>کمپین جدید</h3>
@@ -371,6 +532,39 @@
       <button class="pill">۲ هفته</button>
     </div>
   </div>
+  <div class="grp">جایگاه‌های تبلیغاتی</div>
+  <div class="checkrow">
+    <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="cw"><b>نمایش در کاتالوگ سایر فروشندگان، در جزئیات کالای مرتبط</b><span>به‌عنوان «فروشندهٔ ویژهٔ این کالا»</span></div>
+  </div>
+  <div class="checkrow">
+    <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="cw"><b>نمایش در لیست پیشنهاد، برای افزودن به بخش مقایسه قیمت</b><span>به‌عنوان «فروشندهٔ ویژهٔ این کالا»</span></div>
+  </div>
+  <div class="grp">کالاهای این کمپین</div>
+  <div class="ggrid">
+    <button class="gcell on">
+      <span class="gth"><img src="../png/goods/rice-sack.jpg" alt=""></span>
+      <span class="gn">برنج هاشمی · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="../png/goods/sack-scoop.jpg" alt=""></span>
+      <span class="gn">برنج طارم · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="../png/goods/hashemi-10.png" alt=""></span>
+      <span class="gn">برنج هاشمی · ۱۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="../png/goods/fajar-50.jpg" alt=""></span>
+      <span class="gn">برنج فجر · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+  </div>
+  <div class="hintnote">هزینهٔ اعتبار: هر مشاهده در لیست ۲ اعتبار · هر مشاهدهٔ کاتالوگ از این طریق ۴ اعتبار · هر دنبال کردن قیمت ۵ اعتبار. برای اطمینان، در گزارش کمپین، لیست تمام خریدارانی که مشاهده کرده‌اند در اختیار شما قرار می‌گیرد.</div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>نشان ویژه در کاتالوگ</b><span>کالاهای کمپین‌دار با نشان مخصوص دیده می‌شوند</span></span>
     <div class="toggle on"></div>
@@ -623,6 +817,88 @@
     <span class="tx"><b>نمایندگی برند</b><span>نمایندگی انحصاری برند</span></span>
   </div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۲۰) تأیید دنبال کردن قیمت — مدال مرکزی ═══ -->
+<div class="dlg" id="sheet-follow" role="dialog" aria-label="دنبال کردن قیمت">
+  <h3>دنبال کردن قیمت</h3>
+  <div class="dlg-q">آیا می‌خواهید قیمت این کالا را دنبال کنید؟</div>
+  <div class="dlg-p">فقط اگر خریدار عمده این کالا هستید، آن را به دستیار خرید خود اضافه کنید. با این کار، قیمت این فروشنده را در کنار قیمت سایر تأمین‌کنندگان این کالا می‌بینید و راحت‌تر مقایسه می‌کنید؛ تأمین‌کنندگان هم شما را به‌عنوان خریدار عمده این کالا خواهند شناخت و قیمت‌های بهتری پیشنهاد خواهند داد.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-followed><svg><use href="#i-bmark-plus"/></svg> دنبال کردن قیمت</button>
+    <button class="btn btn-outline" data-close>انصراف</button>
+  </div>
+  <button class="infolink" data-info><svg><use href="#i-info"/></svg> اطلاعات بیشتر در مورد لیست مقایسه</button>
+  <div class="info-block" hidden>وقتی در یک کاتالوگ روی آیکون دنبال کردن قیمت می‌زنید و تأیید می‌کنید، آن کالا به لیست خرید شما در دستیار خریدتان اضافه می‌شود. وقتی در دستیار خرید خود در آیمچ روی آن کالا بزنید، قیمت این فروشنده را در لیست مقایسه خواهید دید. همچنین در لیست مقایسه، تأمین‌کنندگان دیگر این کالا نیز به شما معرفی می‌شوند تا در صورت نیاز، آنها را هم به لیست مقایسه خود اضافه کنید.</div>
+</div>
+
+<!-- ═══ ۲۱) انتخاب چند کالا برای دنبال کردن — مدال مرکزی ═══ -->
+<div class="dlg" id="sheet-pick" role="dialog" aria-label="افزودن چند کالا به لیست خرید">
+  <h3>افزودن چند کالا به لیست خرید</h3>
+  <div class="dlg-p" style="margin-top:4px">کالاهایی که می‌خواهی قیمتشان را دنبال کنی تیک بزن — همه یک‌جا به دستیار خریدت اضافه می‌شوند.</div>
+  <div class="ggrid">
+    <button class="gcell on">
+      <span class="gth"><img src="../png/goods/rice-sack.jpg" alt=""></span>
+      <span class="gn">برنج هاشمی · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="../png/goods/sack-scoop.jpg" alt=""></span>
+      <span class="gn">برنج طارم · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="../png/goods/hashemi-10.png" alt=""></span>
+      <span class="gn">برنج هاشمی · ۱۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="../png/goods/fajar-50.jpg" alt=""></span>
+      <span class="gn">برنج فجر · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+  </div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-followed><svg><use href="#i-bmark-plus"/></svg> دنبال کردن قیمت ۲ کالای انتخابی</button>
+    <button class="btn btn-outline" data-close>انصراف</button>
+  </div>
+</div>
+
+<!-- ═══ ۲۲) مدارک تیک اعتماد — آپلود جداگانه ═══ -->
+<div class="sheet" id="sheet-trust" role="dialog" aria-label="مدارک تیک اعتماد">
+  <div class="grab"></div>
+  <div class="sheet-hdr">
+    <h3>تیک اعتماد iMach</h3>
+    <span class="tc-ic" style="width:34px;height:34px;border-radius:10px;background:#e8f1fd;color:#1d5fb8;display:grid;place-items:center;flex-shrink:0"><svg style="width:17px;height:17px"><use href="#i-verified"/></svg></span>
+  </div>
+  <div class="sub">جهت اعتمادسازی بیشتر، تیک اعتماد دریافت کنید تا خریداران با خیال راحت‌تر از شما خرید کنند. تیک فقط به صاحب اصلی کسب‌وکار داده می‌شود و مدارک صرفاً برای بررسی ادمین ارسال می‌شود.</div>
+  <div class="field">
+    <label>کد ملی صاحب کسب‌وکار</label>
+    <input class="input" placeholder="کد ملی ۱۰ رقمی" inputmode="numeric">
+  </div>
+  <div class="grp">مدارک — جداگانه آپلود کنید</div>
+  <button class="up-box done">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>تصویر روی کارت ملی</b><span>بارگذاری شد — melli-front.jpg</span></span>
+    <span class="pick">تغییر</span>
+  </button>
+  <button class="up-box">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>تصویر پشت کارت ملی</b><span>JPG یا PNG · حداکثر ۵ مگابایت</span></span>
+    <span class="pick">انتخاب فایل</span>
+  </button>
+  <button class="up-box">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>جواز کسب</b><span>تصویر جواز یا پروانهٔ کسب‌وکار</span></span>
+    <span class="pick">انتخاب فایل</span>
+  </button>
+  <button class="up-box">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>سایر مدارک کسب‌وکار</b><span>اختیاری — روزنامهٔ رسمی، شناسه ملی و…</span></span>
+    <span class="pick">انتخاب فایل</span>
+  </button>
+  <div class="hintnote">بعد از ارسال، مدارک توسط ادمین iMach بررسی می‌شود و نتیجه از «اعلان‌ها» به شما اعلام خواهد شد.</div>
+  <button class="btn btn-primary sheet-cta" data-close>ارسال برای بررسی</button>
 </div>
 
 </body>

@@ -14,29 +14,28 @@
   .dl-main::-webkit-scrollbar { display: none; }
   .dl-wrap { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
 
-  /* ═══ نوار زبان — بالای بنر، از راست ═══ */
-  .land-lang { display: flex; align-items: center; gap: 4px; padding: 14px 0 0; position: relative; }
+  /* ═══ نوار زبان — داخل بنر (هیرو)، پیل تمام‌گرد ═══ */
+  .land-lang { display: flex; align-items: center; gap: 6px; position: relative; margin-bottom: 18px; }
   .land-lang .lg {
-    border: 0; background: none; font-family: inherit;
-    font-size: 13px; font-weight: 700; color: var(--muted-fg);
-    cursor: pointer; padding: 7px 13px; border-radius: 10px;
+    border: 0; background: rgba(255,255,255,.8); font-family: inherit;
+    font-size: 12.5px; font-weight: 700; color: var(--muted-fg);
+    cursor: pointer; padding: 7px 16px; border-radius: 999px;
+    transition: background .15s, color .15s;
   }
-  .land-lang .lg.active { color: var(--primary-strong); background: var(--accent); }
+  .land-lang .lg.active { color: var(--primary-strong); background: #fff; box-shadow: 0 1px 6px rgba(42,39,35,.14); }
   .land-lang .lg-wrap { position: relative; }
   .land-lang .lang-dd {
     position: absolute; top: calc(100% + 8px); right: 0;
     background: #fff; border: 1px solid var(--border-strong);
     border-radius: 13px; box-shadow: var(--shadow-pop);
-    padding: 7px; min-width: 190px; display: none; z-index: 50;
+    padding: 7px; min-width: 170px; display: none; z-index: 50;
   }
   .land-lang .lang-dd.open { display: block; }
   .land-lang .lang-dd button {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    width: 100%; border: 0; background: none; font-family: inherit;
+    display: block; width: 100%; border: 0; background: none; font-family: inherit;
     font-size: 13.5px; font-weight: 700; color: var(--stone-soft);
     padding: 10px 12px; border-radius: 9px; cursor: pointer; text-align: right;
   }
-  .land-lang .lang-dd button span { font-size: 11px; color: var(--muted-fg); font-weight: 400; }
 
   /* هیرو */
   .dl-hero {
@@ -79,11 +78,12 @@
     transform: rotate(2.5deg);
   }
 
-  /* تصویر محصول — نمای دسکتاپ */
+  /* تصویر محصول — نمای دسکتاپ (حد ۹۲۰px، وسط‌چین) */
   .dl-showcase {
     background: #fff; border: 1px solid var(--border);
     border-radius: 20px; padding: 10px;
     box-shadow: var(--shadow-card);
+    max-width: 920px; margin: 0 auto;
   }
   .dl-showcase img { display: block; width: 100%; border-radius: 12px; }
 
@@ -211,25 +211,25 @@
     <main class="dl-main">
       <div class="dl-wrap">
 
-        <!-- نوار زبان — فقط نمایشی -->
-        <div class="land-lang">
-          <button class="lg">English</button>
-          <button class="lg active">فارسی</button>
-          <button class="lg">العربية</button>
-          <div class="lg-wrap">
-            <button class="lg lang-more">سایر <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
-            <div class="lang-dd">
-              <button>Türkçe <span>استانبولی</span></button>
-              <button>中文 <span>چینی</span></button>
-              <button>Русский <span>روسی</span></button>
-              <button>日本語 <span>ژاپنی</span></button>
-            </div>
-          </div>
-        </div>
+        <!-- نوار زبان بالای هیرو حذف شد — داخل بنر رفت -->
 
-        <!-- هیرو -->
+        <!-- هیرو — نوار زبان داخل خود بنر -->
         <section class="dl-hero">
           <div>
+            <div class="land-lang">
+              <button class="lg">English</button>
+              <button class="lg active">فارسی</button>
+              <button class="lg">العربية</button>
+              <div class="lg-wrap">
+                <button class="lg lang-more">other <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></button>
+                <div class="lang-dd">
+                  <button>Türkçe</button>
+                  <button>中文</button>
+                  <button>Русский</button>
+                  <button>日本語</button>
+                </div>
+              </div>
+            </div>
             <h1><em>خرید عمده</em>،<br>مسألهٔ اکثر کسب‌وکارهاست</h1>
             <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛</p>
             <p class="sub strong-line"><em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
@@ -258,7 +258,7 @@
             <span class="mv-link"><svg><use href="#i-bolt"/></svg><small>موتور تطبیق</small></span>
             <span class="mv mv-sell"><svg><use href="#i-store"/></svg></span>
           </div>
-          <h3>آی‌مچ؛ پلتفرم اتصال خریداران عمده به تأمین‌کنندگان عمده در سراسر جهان است</h3>
+          <h3>آی‌مچ؛ پلتفرم اتصال محلی خریداران عمده به تأمین‌کنندگان عمده</h3>
           <p>ای‌مچ با موتور هوشمند تطابق محلی، درخواست‌های خرید خریداران عمده را به محصولات تأمین‌کنندگان مرتبط می‌کند و برای هر کسب‌وکار، یک بازار اختصاصی متناسب با کالا و حجم خرید یا فروشش می‌سازد. چه یک مغازه‌دار کوچک باشید و چه یک تاجر بین‌المللی، ای‌مچ مناسب‌ترین و به‌صرفه‌ترین تأمین‌کنندگان را بر اساس <em>قیمت، فاصله، شرایط پرداخت و حمل</em> پیدا می‌کند و با مقایسهٔ آن‌ها، به شما کمک می‌کند بهترین خرید را برای کسب‌وکارتان انجام دهید.</p>
         </div>
 
@@ -293,7 +293,7 @@
               </div>
               <div class="dl-ben buy">
               <ul>
-                <li><span class="b-n">۱</span><span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span></li>
+                <li><span class="b-n">۱</span><span class="b-tx"><b>لیست خرید قابل اشتراک گذاری</b><span>لیست خریدت رو بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — آیمچ هم تامین‌کنندگان به‌صرفه‌تری بهت معرفی می‌کند.</span></span></li>
                 <li><span class="b-n">۲</span><span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span></li>
                 <li><span class="b-n">۳</span><span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>قیمت یک کالا (مثلاً برنج هاشمی) را از کاتالوگ چند فروشنده دنبال کن و برای هر کالا یک «تابلوی تأمین» بساز</span></span></li>
                 <li><span class="b-n">۴</span><span class="b-tx"><b>مقایسهٔ قیمت زنده و کنارِ هم</b><span>با تابلوی قیمت هر کالا، قیمت زندهٔ یک کالا را از چند تأمین‌کننده، کنار هم مقایسه کن</span></span></li>
