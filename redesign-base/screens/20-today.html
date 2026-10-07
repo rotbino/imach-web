@@ -3,17 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=390, initial-scale=1">
-<title>۰۵ — درخواست‌های قیمت · دستیار فروش</title>
+<title>۲۰ — کارهای امروز · دستیار فروش</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
   <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
-  <symbol id="i-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.7-6.2a1.6 1.6 0 013 .3L10.5 8h3l.8-2.9a1.6 1.6 0 013-.3L19 11"/><path d="M4 11h16l-1.4 8.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/></symbol>
   <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.5-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.7 1.1z"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0115 0"/></symbol>
-  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 6-8 11.5-8 11.5s-8-5.5-8-11.5a8 8 0 1116 0z"/><circle cx="12" cy="10.5" r="2.7"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 13.5l2 2 4-4.5"/></symbol>
 </svg>
@@ -21,6 +19,7 @@
 <div class="stage">
   <div class="phone" data-arm="sell">
 
+    <!-- ═══ هدر: لوگو + زنگ + آواتار ═══ -->
     <header class="appbar">
       <div class="brand"><img src="../assets/logo3.svg" alt="iMach"></div>
       <div class="actions">
@@ -36,78 +35,91 @@
       </div>
     </header>
 
+    <!-- ═══ بدنه ═══ -->
     <main class="screen-body">
 
-      <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های قیمت</h2>
-        <span class="more">۴ درخواست این ماه</span>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:2px 2px 6px">
+        <b style="font-size:17px">کارهای امروز</b>
+        <span style="font-size:11.5px;color:var(--muted-fg)">شنبه ۱۵ آذر · ۶ کار در انتظار</span>
       </div>
 
-      <!-- دو حالت: مستقیم به من + فرصت‌های بازار -->
-      <div class="inner-tabs">
-        <button class="active">به من <span class="cnt">(۳)</span></button>
-        <button>فرصت‌های بازار <span class="cnt">(۱۲)</span></button>
-      </div>
-
+      <!-- نیاز به پاسخ تو -->
+      <div class="sec-title" style="margin-top:8px"><h2>نیاز به پاسخ تو</h2></div>
       <div class="rows">
-
-        <div class="row-card" style="border-color:#f9c48f;background:#fffdf9">
+        <div class="row-card" data-go="06">
           <div class="avatar-sm" style="background:#7c3aed">م</div>
           <div class="body">
-            <div class="t" style="font-size:13.5px">رستوران مهر <span class="badge b-new">جدید</span></div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> تهران · هم‌استان</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--accent);border-radius:9px;padding:7px 10px;color:var(--accent-fg)">
-              <b>برنج هاشمی · ۲۰ کیسه</b> — «تحویل تهران، پنج‌شنبه‌ها»
-            </div>
+            <div class="t" style="font-size:13px">درخواست قیمت — رستوران مهر</div>
+            <div class="s">برنج هاشمی · ۲۰ کیسه · ۲ ساعت پیش</div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
-
-        <div class="row-card">
-          <div class="avatar-sm" style="background:#0e7490">ن</div>
+        <div class="row-card" data-go="06">
+          <div class="avatar-sm" style="background:#0e7490">آ</div>
           <div class="body">
-            <div class="t" style="font-size:13.5px">پخش نگین</div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین · هم‌شهری</span>
-              <span style="font-size:10px">۲ روز پیش</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--accent);border-radius:9px;padding:7px 10px;color:var(--accent-fg)">
-              <b>برنج طارم · ۳۰ کیسه</b> — ماهانه
-            </div>
+            <div class="t" style="font-size:13px">درخواست قیمت — سوپرمارکت آریا</div>
+            <div class="s">برنج طارم · ۱۰ کیسه · دیروز</div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
-
-        <div class="row-card" style="opacity:.75">
-          <div class="avatar-sm" style="background:#c2703a">س</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">سوپرمارکت سعید <span class="badge b-answered">پاسخ داده‌شده</span></div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · هم‌شهری</span>
-              <span style="font-size:10px">۵ روز پیش</span>
-            </div>
-            <div style="margin-top:7px;font-size:12.5px;background:var(--muted);border-radius:9px;padding:7px 10px;color:var(--stone-soft)">
-              <b>برنج فجر · ۱۰ کیسه</b> — پیشنهاد شما ارسال شد
-            </div>
-          </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
-        </div>
-
       </div>
 
-      <!-- راهنمای تمایز -->
-      <div class="legend">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>«به من» = درخواست‌هایی که مستقیم برای کالاهای شما پیام شده.<br>«فرصت‌های بازار» = نیازی که iMach شبیه کاتالوگ شما دیده و می‌توانید پیشنهاد بدهید.</div>
+      <!-- در انتظار جواب خریدار -->
+      <div class="sec-title"><h2>در انتظار جواب خریدار</h2></div>
+      <div class="rows">
+        <div class="row-card" data-go="05">
+          <div class="avatar-sm" style="background:#b45309">ن</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">پیشنهاد قیمت به پخش نگین</div>
+            <div class="s">برنج هاشمی · ۳۰ کیسه · ۳٪ تخفیف پلکانی · ۳ روز پیش</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+      </div>
+
+      <!-- یادآوری‌ها -->
+      <div class="sec-title"><h2>یادآوری‌ها</h2></div>
+      <div class="rows">
+        <div class="row-card" data-go="03">
+          <div class="avatar-sm" style="background:#d97706">ف</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">موجودی «برنج فجر» رو به اتمام است</div>
+            <div class="s">فقط ۴ کیسه باقی مانده — شاید وقت سفارش باشد</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+        <div class="row-card" data-go="01">
+          <div class="avatar-sm" style="background:#57534e">ص</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">«برنج صدری» غیرفعال است</div>
+            <div class="s">۱ کالا از کاتالوگ پنهان شده — فعالش کن؟</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+        <div class="row-card" data-go="18">
+          <div class="avatar-sm" style="background:#0e7490">پ</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">پیام خوانده‌نشده</div>
+            <div class="s">«پخش نگین» درباره لیست مقایسه قیمت پرسیده</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+      </div>
+
+      <!-- راهنما -->
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-bell"/></svg>
+        <div>
+          <b>کارهای انجام‌شده تا آخر امروز می‌مانند</b><br>
+          فردا صبح خودکار آرشیو می‌شوند و جای کارهای تازه را می‌گیرند.
+        </div>
       </div>
 
     </main>
 
     <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
       <div class="tabs">
-        <button class="tab">
+        <button class="tab active">
           <svg><use href="#i-tasks"/></svg>
           کارهای امروز
           <span class="badge">۶</span>
@@ -116,7 +128,7 @@
           <svg><use href="#i-store"/></svg>
           کاتالوگ من
         </button>
-        <button class="tab active">
+        <button class="tab">
           <svg><use href="#i-inbox"/></svg>
           درخواست‌های قیمت
           <span class="badge">۳</span>

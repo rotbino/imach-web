@@ -28,21 +28,22 @@
 
   /* هیرو — تینت نارنجی نرم */
   .hero-land {
-    padding: 26px 4px 24px;
+    padding: 32px 20px 28px;
     background: linear-gradient(180deg, #fdeedd 0%, #fcfbf8 100%);
-    margin: 0 -16px; padding-right: 20px; padding-left: 20px;
+    margin: 0 -16px;
   }
-  .hero-logo { display: block; height: 38px; width: auto; margin-bottom: 14px; }
   .hero-land h1 {
-    font-size: 26px; font-weight: 700; line-height: 1.6;
-    margin: 0 0 10px;
+    font-size: 17.5px; font-weight: 700; line-height: 1.7;
+    text-align: center; margin: 0 0 9px;
   }
   .hero-land h1 em { font-style: normal; color: var(--primary-strong); }
   .hero-land .sub {
-    font-size: 13px; color: var(--muted-fg); line-height: 2.1;
+    font-size: 13px; color: var(--muted-fg);
+    text-align: center; line-height: 2; margin: 0;
   }
+  .hero-land .strong-line { margin-top: 5px; }
   .hero-land .sub em { font-style: normal; color: var(--primary-strong); font-weight: 700; }
-  .hero-cta { display: flex; gap: 9px; margin-top: 16px; }
+  .hero-cta { display: flex; gap: 9px; margin-top: 18px; }
   .hero-cta .btn { flex: 1; height: 48px; font-size: 15px; }
 
   /* ═══ تصویر محصول (نسخهٔ دسکتاپ) ═══ */
@@ -93,22 +94,20 @@
   .s3 b { font-size: 13px; font-weight: 700; display: block; line-height: 1.8; }
   .s3 p { font-size: 11px; color: var(--muted-fg); line-height: 2; margin-top: 5px; }
 
-  /* ═══ مزایا — دو ستونِ بازوها ═══ */
+  /* ═══ مزایا — نوار جدا + کارت ═══ */
+  .ben-sec { margin-top: 14px; }
+  .ben-bar { display: flex; align-items: center; gap: 10px; padding: 2px 2px 0; }
+  .ben-bar .ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; }
+  .ben-bar .ic svg { width: 17px; height: 17px; }
+  .ben-bar b { font-size: 13.5px; font-weight: 700; }
+  .ben-bar i { flex: 1; height: 1px; background: var(--border-strong); }
+  .ben-bar.buy .ic { background: var(--stone-tint); color: var(--stone); }
+  .ben-bar.sell .ic { background: var(--accent); color: var(--primary-strong); }
   .ben-card {
-    background: #fff; border: 1px solid var(--border);
+    background: var(--card); border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-card);
-    overflow: hidden; margin-top: 12px;
+    overflow: hidden; margin-top: 10px;
   }
-  .ben-head { display: flex; align-items: center; gap: 10px; padding: 13px 14px; color: #fff; }
-  .ben-head.buy { background: linear-gradient(135deg, #44403c, #292524); }
-  .ben-head.sell { background: linear-gradient(135deg, #f97316, #ea580c); }
-  .ben-head .ic {
-    width: 38px; height: 38px; border-radius: 11px;
-    background: rgba(255,255,255,.18);
-    display: grid; place-items: center; flex-shrink: 0;
-  }
-  .ben-head .ic svg { width: 20px; height: 20px; color: #fff; }
-  .ben-head b { font-size: 14.5px; font-weight: 700; }
   .ben-list { padding: 4px 14px 10px; }
   .ben { display: flex; gap: 11px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--border); }
   .ben:last-child { border-bottom: 0; }
@@ -118,8 +117,8 @@
     font-size: 13px; font-weight: 700; flex-shrink: 0;
     color: #fff; margin-top: 2px;
   }
-  .buy-side .b-n { background: var(--stone); }
-  .sell-side .b-n { background: var(--primary); }
+  .ben-sec.buy .b-n { background: var(--stone); }
+  .ben-sec.sell .b-n { background: var(--primary); }
   .ben .b-tx b { font-size: 13px; font-weight: 700; display: block; line-height: 1.7; }
   .ben .b-tx span { font-size: 11px; color: var(--muted-fg); line-height: 1.95; display: block; margin-top: 3px; }
 
@@ -188,9 +187,9 @@
 
       <!-- هیرو -->
       <section class="hero-land">
-        <img class="hero-logo" src="../assets/logo3.svg" alt="iMach">
-        <h1><em>خرید عمده</em>،<br>مسألهٔ اکثر کسب‌وکارهاست</h1>
-        <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛ <em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
+        <h1><em>خرید عمده</em>، مسألهٔ اکثر کسب‌وکارهاست</h1>
+        <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛</p>
+        <p class="sub strong-line"><em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
         <div class="hero-cta">
           <button class="btn btn-primary">ساخت حساب</button>
           <button class="btn btn-outline">ورود</button>
@@ -237,11 +236,13 @@
         </div>
 
         <!-- مزایا: خریدار عمده -->
-        <div class="ben-card buy-side">
-          <div class="ben-head buy">
-            <div class="ic"><svg><use href="#i-basket"/></svg></div>
+        <div class="ben-sec buy">
+          <div class="ben-bar buy">
+            <span class="ic"><svg><use href="#i-basket"/></svg></span>
             <b>مزایای آی‌مچ برای خریدار عمده</b>
+            <i></i>
           </div>
+          <div class="ben-card">
           <div class="ben-list">
             <div class="ben">
               <span class="b-n">۱</span>
@@ -264,14 +265,17 @@
               <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
             </div>
           </div>
+          </div>
         </div>
 
         <!-- مزایا: تأمین‌کنندگان و فروشندگان عمده -->
-        <div class="ben-card sell-side">
-          <div class="ben-head sell">
-            <div class="ic"><svg><use href="#i-store"/></svg></div>
+        <div class="ben-sec sell">
+          <div class="ben-bar sell">
+            <span class="ic"><svg><use href="#i-store"/></svg></span>
             <b>مزایای آی‌مچ برای تأمین‌کنندگان و فروشندگان عمده</b>
+            <i></i>
           </div>
+          <div class="ben-card">
           <div class="ben-list">
             <div class="ben">
               <span class="b-n">۱</span>
@@ -297,6 +301,7 @@
               <span class="b-n">۶</span>
               <span class="b-tx"><b>ابزارهای همیشه رایگان + تبلیغ کم‌هزینه</b><span>محصولت را با کمترین هزینه تبلیغ کن — کالا را دقیقاً جلوی چشم خریدارِ همان کالا با همان حجم می‌گذاریم و فقط در صورت مشاهده یا دنبال‌کردنِ قیمت، مبلغ کمی از اعتبارت کم می‌شود</span></span>
             </div>
+          </div>
           </div>
         </div>
         </div>

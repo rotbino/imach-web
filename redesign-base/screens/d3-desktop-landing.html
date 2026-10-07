@@ -18,13 +18,13 @@
   .dl-hero {
     display: grid; grid-template-columns: 1.05fr .95fr;
     gap: 30px; align-items: center;
-    padding: 56px 0 48px;
+    padding: 44px 0 40px;
   }
-  .dl-logo { display: block; height: 44px; width: auto; margin-bottom: 18px; }
   .dl-hero h1 { font-size: 42px; font-weight: 700; line-height: 1.55; margin: 0 0 14px; }
   .dl-hero h1 em { font-style: normal; color: var(--primary-strong); }
   .dl-hero .sub { font-size: 15.5px; color: var(--muted-fg); line-height: 2.2; max-width: 500px; }
   .dl-hero .sub em { font-style: normal; color: var(--primary-strong); font-weight: 700; }
+  .dl-hero .strong-line { margin-top: 6px; }
   .dl-hero .ctas { display: flex; gap: 12px; margin-top: 26px; }
   .dl-hero .ctas .btn { height: 52px; padding: 0 30px; font-size: 16px; }
 
@@ -105,23 +105,21 @@
   .dl-q b { font-size: 15px; display: block; line-height: 1.8; }
   .dl-q p { font-size: 12.5px; color: var(--muted-fg); margin-top: 7px; line-height: 2.05; }
 
-  /* مزایا — دو ستونِ بازوها */
+  /* مزایا — دو ستونِ بازوها (نوار جدا + کارت) */
   .dl-bens { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  .dl-ben-col { display: flex; flex-direction: column; }
+  .dl-ben-bar { display: flex; align-items: center; gap: 12px; }
+  .dl-ben-bar .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; }
+  .dl-ben-bar .ic svg { width: 19px; height: 19px; }
+  .dl-ben-bar b { font-size: 15px; font-weight: 700; }
+  .dl-ben-bar i { flex: 1; height: 1px; background: var(--border-strong); }
+  .dl-ben-bar.buy .ic { background: var(--stone-tint); color: var(--stone); }
+  .dl-ben-bar.sell .ic { background: var(--accent); color: var(--primary-strong); }
   .dl-ben {
     background: #fff; border: 1px solid var(--border);
     border-radius: 20px; box-shadow: var(--shadow-card);
-    overflow: hidden;
+    overflow: hidden; margin-top: 12px;
   }
-  .dl-ben .head { display: flex; align-items: center; gap: 14px; padding: 18px 22px; color: #fff; }
-  .dl-ben.buy .head { background: linear-gradient(135deg, #44403c, #292524); }
-  .dl-ben.sell .head { background: linear-gradient(135deg, #f97316, #ea580c); }
-  .dl-ben .head .ic {
-    width: 48px; height: 48px; border-radius: 14px;
-    background: rgba(255,255,255,.18);
-    display: grid; place-items: center; flex-shrink: 0;
-  }
-  .dl-ben .head .ic svg { width: 25px; height: 25px; color: #fff; }
-  .dl-ben .head b { font-size: 17px; }
   .dl-ben ul { list-style: none; padding: 6px 22px 14px; }
   .dl-ben li {
     display: flex; gap: 13px; align-items: flex-start;
@@ -191,9 +189,9 @@
         <!-- هیرو -->
         <section class="dl-hero">
           <div>
-            <img class="dl-logo" src="../assets/logo3.svg" alt="iMach">
             <h1><em>خرید عمده</em>،<br>مسألهٔ اکثر کسب‌وکارهاست</h1>
-            <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛ <em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
+            <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی؛</p>
+            <p class="sub strong-line"><em>آیمچ در این زنجیرهٔ عظیم شما را به تامین‌کنندهٔ دقیق وصل می‌کند.</em></p>
             <div class="ctas">
               <button class="btn btn-primary">ساخت حساب</button>
               <button class="btn btn-outline">ورود</button>
@@ -246,11 +244,13 @@
         <section class="dl-sec">
           <h2>مزایای آی‌مچ</h2>
           <div class="dl-bens">
-            <div class="dl-ben buy">
-              <div class="head">
-                <div class="ic"><svg><use href="#i-basket"/></svg></div>
+            <div class="dl-ben-col">
+              <div class="dl-ben-bar buy">
+                <span class="ic"><svg><use href="#i-basket"/></svg></span>
                 <b>مزایای آی‌مچ برای خریدار عمده</b>
+                <i></i>
               </div>
+              <div class="dl-ben buy">
               <ul>
                 <li><span class="b-n">۱</span><span class="b-tx"><b>دفتر خریدِ اشتراکی</b><span>دفتر خریدت را بساز و با تأمین‌کنندگان آشنا به اشتراک بگذار — همیشه آمادهٔ اعلام نیاز باش و در لحظه، بهترین قیمت‌ها و شرایط را دریافت کن</span></span></li>
                 <li><span class="b-n">۲</span><span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span></li>
@@ -259,11 +259,14 @@
                 <li><span class="b-n">۵</span><span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span></li>
               </ul>
             </div>
-            <div class="dl-ben sell">
-              <div class="head">
-                <div class="ic"><svg><use href="#i-store"/></svg></div>
+            </div>
+            <div class="dl-ben-col">
+              <div class="dl-ben-bar sell">
+                <span class="ic"><svg><use href="#i-store"/></svg></span>
                 <b>مزایای آی‌مچ برای تأمین‌کنندگان و فروشندگان عمده</b>
+                <i></i>
               </div>
+              <div class="dl-ben sell">
               <ul>
                 <li><span class="b-n">۱</span><span class="b-tx"><b>خریدارانِ دقیقاً مرتبط</b><span>محصولت را به خریدارهایی معرفی می‌کنیم که دقیقاً دنبال همان کالا هستند — اول شهر خودت، بعد استان، بعد کل کشور. از سفارش یک کارتنیِ سوپرمارکت تا حجم‌های بزرگ صادراتی</span></span></li>
                 <li><span class="b-n">۲</span><span class="b-tx"><b>کاتالوگ هوشمند اختصاصی</b><span>کاتالوگ اختصاصی خودت را با لینک قابل ارسال برای خریداران بساز — قیمت‌ها همیشه به‌روز</span></span></li>
@@ -272,6 +275,7 @@
                 <li><span class="b-n">۵</span><span class="b-tx"><b>خریداران جدیدِ مرتبط</b><span>علاوه بر مشتریان فعلی خودت، خریداران جدیدی را پیدا کن که دقیقاً با کالاها و حجم فروشت هم‌خوانی دارند — پیشنهاد خودِ آی‌مچ</span></span></li>
                 <li><span class="b-n">۶</span><span class="b-tx"><b>ابزارهای همیشه رایگان + تبلیغ کم‌هزینه</b><span>محصولت را با کمترین هزینه تبلیغ کن — کالا را دقیقاً جلوی چشم خریدارِ همان کالا با همان حجم می‌گذاریم و فقط در صورت مشاهده یا دنبال‌کردنِ قیمت، مبلغ کمی از اعتبارت کم می‌شود</span></span></li>
               </ul>
+            </div>
             </div>
           </div>
         </section>

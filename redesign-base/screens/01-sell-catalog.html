@@ -20,6 +20,8 @@
   <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0115 0"/></symbol>
   <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></symbol>
   <symbol id="i-verified" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 13.5l2 2 4-4.5"/></symbol>
+  <symbol id="i-compare" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 3 21 7 17 11"/><line x1="21" y1="7" x2="3" y2="7"/><polyline points="7 13 3 17 7 21"/><line x1="3" y1="17" x2="21" y2="17"/></symbol>
 </svg>
 
 <div class="stage">
@@ -51,13 +53,14 @@
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
           <div class="sub">پخش مواد غذایی · رشت</div>
         </div>
-        <button class="icon-btn" aria-label="اشتراک کاتالوگ"><svg><use href="#i-share"/></svg></button>
+        <button class="icon-btn" aria-label="تنظیمات کاتالوگ" data-sheet="sheet-cset"><svg><use href="#i-gear"/></svg></button>
+        <button class="icon-btn" aria-label="اشتراک کاتالوگ" data-sheet="sheet-share"><svg><use href="#i-share"/></svg></button>
       </div>
 
       <div class="stat-strip">
         <div class="stat"><div class="v">۵</div><div class="k">کالا</div></div>
         <div class="stat"><div class="v">۱۲۰</div><div class="k">بازدید ماه</div></div>
-        <div class="stat hot"><div class="v">۳۸</div><div class="k">دنبال‌کننده</div></div>
+        <div class="stat hot"><div class="v">۳۸</div><div class="k">ذخیره‌کننده</div></div>
       </div>
 
       <!-- جستجو + افزودن -->
@@ -94,7 +97,7 @@
             <div class="p">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
             <div class="mini-metrics mm">
               <span class="m"><svg><use href="#i-eye"/></svg> ۲۱</span>
-              <span class="m"><svg><use href="#i-bookmark"/></svg> ۴</span>
+              <span class="m" title="در لیست مقایسه قیمت خریداران"><svg><use href="#i-compare"/></svg> ۴</span>
               <span class="badge b-green">موجود</span>
             </div>
           </div>
@@ -111,7 +114,7 @@
             <div class="p">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
             <div class="mini-metrics mm">
               <span class="m"><svg><use href="#i-eye"/></svg> ۱۷</span>
-              <span class="m"><svg><use href="#i-bookmark"/></svg> ۲</span>
+              <span class="m" title="در لیست مقایسه قیمت خریداران"><svg><use href="#i-compare"/></svg> ۲</span>
               <span class="badge b-green">موجود</span>
             </div>
           </div>
@@ -128,7 +131,7 @@
             <div class="p">۵۹۵٬۰۰۰ <small>تومان</small></div>
             <div class="mini-metrics mm">
               <span class="m"><svg><use href="#i-eye"/></svg> ۹</span>
-              <span class="m"><svg><use href="#i-bookmark"/></svg> ۱</span>
+              <span class="m" title="در لیست مقایسه قیمت خریداران"><svg><use href="#i-compare"/></svg> ۱</span>
               <span class="badge b-green">موجود</span>
             </div>
           </div>
@@ -145,7 +148,7 @@
             <div class="p">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
             <div class="mini-metrics mm">
               <span class="m"><svg><use href="#i-eye"/></svg> ۱۴</span>
-              <span class="m"><svg><use href="#i-bookmark"/></svg> ۳</span>
+              <span class="m" title="در لیست مقایسه قیمت خریداران"><svg><use href="#i-compare"/></svg> ۳</span>
               <span class="badge b-amber">موجودی کم</span>
             </div>
           </div>
@@ -162,8 +165,13 @@
 
     </main>
 
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار فروش">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
       <div class="tabs">
+        <button class="tab">
+          <svg><use href="#i-tasks"/></svg>
+          کارهای امروز
+          <span class="badge">۶</span>
+        </button>
         <button class="tab active">
           <svg><use href="#i-store"/></svg>
           کاتالوگ من

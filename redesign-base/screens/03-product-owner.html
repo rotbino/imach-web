@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=390, initial-scale=1">
 <title>۰۳ — جزئیات کالا · دید مالک</title>
 <link rel="stylesheet" href="../css/style.css">
+<style>
+.pd-photo{position:relative;height:196px;background:var(--muted)}
+.pd-photo img{width:100%;height:100%;object-fit:cover;display:block}
+</style>
 </head>
 <body>
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
@@ -17,6 +21,7 @@
   <symbol id="i-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18.5 21l-6.5-4.6L5.5 21V5.2A2.2 2.2 0 017.7 3h8.6a2.2 2.2 0 012.2 2.2z"/></symbol>
   <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.5-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.7 1.1z"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="1.8" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="8" cy="17" r="1.8" fill="currentColor" stroke="none"/></symbol>
 </svg>
 
 <div class="stage">
@@ -25,14 +30,14 @@
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">برنج هاشمی<small>در کاتالوگ من · رشت</small></div>
-      <span class="badge b-green" style="margin-left:auto">فعال</span>
+      <button class="icon-btn" aria-label="تنظیمات کالا" data-sheet="sheet-pset" style="margin-left:auto"><svg><use href="#i-gear"/></svg></button>
     </header>
 
     <main class="screen-body nopad">
 
       <!-- گالری -->
-      <div style="height:172px;background:linear-gradient(135deg,#f3f1ea,#e9e5db);display:grid;place-items:center;position:relative">
-        <span style="font-size:12px;color:#a8a29a;font-weight:700">کیسه ۵۰ کیلویی</span>
+      <div class="pd-photo">
+        <img src="../png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی">
         <span class="badge b-orange" style="position:absolute;top:10px;right:12px">پر بازدید</span>
       </div>
 
@@ -57,10 +62,10 @@
             مدیریت این کالا
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn btn-outline btn-sm"><svg><use href="#i-tag"/></svg> تغییر قیمت</button>
-            <button class="btn btn-outline btn-sm"><svg><use href="#i-boxes"/></svg> تغییر موجودی</button>
-            <button class="btn btn-outline btn-sm"><svg><use href="#i-pencil"/></svg> ویرایش جزئیات</button>
-            <button class="btn btn-outline btn-sm" style="color:var(--red)"><svg><use href="#i-pause"/></svg> غیرفعال کردن</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-price"><svg><use href="#i-tag"/></svg> تغییر قیمت</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-stock"><svg><use href="#i-boxes"/></svg> تغییر موجودی</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-details"><svg><use href="#i-pencil"/></svg> ویرایش جزئیات</button>
+            <button class="btn btn-outline btn-sm" style="color:var(--red)" data-sheet="sheet-pause"><svg><use href="#i-pause"/></svg> غیرفعال کردن</button>
           </div>
         </div>
 
@@ -68,21 +73,21 @@
         <div class="sec-title"><h2>عملکرد ۳۰ روز اخیر</h2></div>
         <div class="stat-strip" style="margin:0">
           <div class="stat"><div class="v">۲۱</div><div class="k">بازدید</div></div>
-          <div class="stat hot"><div class="v">۴</div><div class="k">دنبال‌کننده قیمت</div></div>
+          <div class="stat hot"><div class="v">۴</div><div class="k">در مقایسه قیمت</div></div>
           <div class="stat"><div class="v">۲</div><div class="k">درخواست باز</div></div>
         </div>
 
-        <!-- خریداران علاقه‌مند — خریدارِ دنبال‌کننده فقط برای مالک -->
+        <!-- خریداران علاقه‌مند — کالای در «لیست مقایسه قیمت» خریداران -->
         <div class="sec-title">
           <h2>خریداران علاقه‌مند</h2>
-          <span class="more">مشاهده همه (۴)</span>
+          <span class="more" data-go="21">همه خریداران علاقه‌مند این کالا (۹)</span>
         </div>
         <div class="rows">
           <div class="row-card">
-            <div class="avatar-sm" style="background:#0e7490">ن</div>
+            <div class="avatar-sm" style="background:#b45309">ن</div>
             <div class="body">
               <div class="t" style="font-size:13px">پخش نگین <span class="badge b-new">درخواست باز</span></div>
-              <div class="s">قزوین · دنبال می‌کند از ۳ روز پیش</div>
+              <div class="s">قزوین · به لیست مقایسه قیمت اضافه کرده · ۳ روز پیش</div>
             </div>
             <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
           </div>
@@ -90,7 +95,31 @@
             <div class="avatar-sm" style="background:#7c3aed">م</div>
             <div class="body">
               <div class="t" style="font-size:13px">رستوران مهر</div>
-              <div class="s">تهران · دنبال می‌کند از ۱ هفته پیش</div>
+              <div class="s">تهران · به لیست مقایسه قیمت اضافه کرده · ۱ هفته پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          </div>
+          <div class="row-card">
+            <div class="avatar-sm" style="background:#0e7490">آ</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت آریا</div>
+              <div class="s">رشت · به لیست مقایسه قیمت اضافه کرده · ۲ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          </div>
+          <div class="row-card">
+            <div class="avatar-sm" style="background:#0d9488">ف</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">هایپر فیروزه</div>
+              <div class="s">تبریز · به لیست مقایسه قیمت اضافه کرده · ۴ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+          </div>
+          <div class="row-card">
+            <div class="avatar-sm" style="background:#9333ea">ب</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رستوران سنتی بهار</div>
+              <div class="s">قزوین · به لیست مقایسه قیمت اضافه کرده · ۶ روز پیش</div>
             </div>
             <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
           </div>
