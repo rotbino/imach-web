@@ -186,6 +186,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-13 .ms-btn:active { background: var(--accent); color: var(--primary-strong); }
   #scr-13 .ms-btn svg { width: 19px; height: 19px; }
 
+  /* ═══ فاز ۲۱ — کاتالوگ عمومی: مشتری بودن + آمار اشتراک‌گذاری ═══ */
+  #scr-13 .cust-banner { display: flex; align-items: center; gap: 8px; background: var(--green-bg); border: 1px solid #b6e2c6; color: var(--green); border-radius: 12px; padding: 8px 11px; font-size: 11px; font-weight: 700; line-height: 1.8; margin-top: 2px; }
+  #scr-13 .cust-banner svg { width: 15px; height: 15px; flex-shrink: 0; }
+  #scr-13 .pub-stats { display: flex; gap: 7px; margin: 10px 0 2px; }
+  #scr-13 .pub-stats span { flex: 1; text-align: center; font-size: 9.5px; color: var(--muted-fg); background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 7px 4px 6px; }
+  #scr-13 .pub-stats b { display: block; font-size: 14px; color: var(--foreground); line-height: 1.5; }
+  #scr-13 .pcard .p .old-p { display: block; text-decoration: line-through; font-size: 10px; font-weight: 600; color: var(--muted-fg); }
+
+  /* ═══ فاز ۲۱ — فرم افزودن کالا: جریان گود ← برند ← کالای مرجع ═══ */
+  .gf-pick { width: 100%; font-family: inherit; cursor: pointer; text-align: right; }
+  .gf-pick .chg { margin-right: auto; font-size: 10px; color: var(--primary-strong); font-weight: 700; }
+  .qlink { background: none; border: 0; padding: 0; font: inherit; font-size: 12px; font-weight: 800; color: var(--primary-strong); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .qlink:active { opacity: .7; }
+  .refcard { display: flex; gap: 9px; background: var(--green-bg); border: 1px solid #b6e2c6; border-radius: 12px; padding: 10px 12px; font-size: 11px; color: var(--green); line-height: 1.9; margin-top: 4px; }
+  .refcard svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 4px; }
+  .scanframe { position: relative; height: 150px; border-radius: 14px; background: linear-gradient(160deg, #403d38, #282622); display: grid; place-items: center; margin-top: 12px; overflow: hidden; }
+  .scanframe::before { content: ''; position: absolute; inset: 10px; border: 1.5px dashed rgba(255, 255, 255, .4); border-radius: 10px; }
+  .scanframe svg { width: 58px; height: 36px; opacity: .92; }
+  .scanframe span { position: absolute; bottom: 11px; right: 0; left: 0; text-align: center; font-size: 10.5px; color: rgba(255, 255, 255, .85); }
+
+  /* ═══ فاز ۲۱ — گروه مشتری: مدیریت اعضا ═══ */
+  .pickish { font-size: 10.5px; font-weight: 700; color: var(--primary-strong); background: var(--accent); border-radius: 8px; padding: 5px 10px; flex-shrink: 0; }
+
 
 /* ── استایل صفحهٔ 15 (15-landing.html) ── */
 
@@ -1347,93 +1370,200 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- گام ۱: انتخاب نوع کالا از کاتالوگ مرجع -->
+      <!-- ═══ گام ۱: گود — نوع کالا از جدول مرجع iMach ═══ -->
       <div class="field">
-        <label>نوع کالا <span class="opt">— از فهرست iMach انتخاب کنید</span></label>
-        <div class="searchbar input focus">
+        <label>گود <span class="opt">— نوع کالا در جدول مرجع iMach</span></label>
+        <button class="searchbar gf-pick" data-sheet="sheet-goodpick">
           <svg><use href="#i-search"/></svg>
-          <span style="color:var(--foreground);font-weight:700">برنج هاشمی</span>
-          <span style="font-size:10px;color:var(--primary-strong);font-weight:700">تغییر</span>
-        </div>
-        <div class="hint">مسیر: غلات و حبوبات ‹ برنج ‹ هاشمی · واحد پایه: کیسه ۵۰ کیلویی</div>
+          <span id="gf-good" style="color:var(--foreground);font-weight:700">برنج هاشمی</span>
+          <span class="chg">تغییر</span>
+        </button>
+        <div class="hint" id="gf-good-path">غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کنندهٔ این گود: کیلوگرم</div>
       </div>
 
-      <!-- برند -->
+      <!-- ═══ گام ۲: برند دارد؟ ═══ -->
       <div class="field">
         <label>این کالا برند دارد؟</label>
         <div class="pillchoice">
-          <button class="pill">برند دارد</button>
-          <button class="pill active">فله (بدون برند)</button>
+          <button class="pill" data-gmode="brand">برند دارد</button>
+          <button class="pill active" data-gmode="felle">فله (بدون برند)</button>
         </div>
       </div>
 
-      <!-- مشخصات فروش -->
-      <div class="sec-title" style="margin-top:8px"><h2>قیمت و شرایط فروش</h2></div>
+      <!-- ═══ مسیر فله: ویژگی‌های گود + ورود دستی مشخصات ═══ -->
+      <div id="gf-felle">
 
-      <div class="field">
-        <label>قیمت هر کیسه ۵۰ کیلویی</label>
-        <div class="input">
-          <span style="color:var(--foreground);font-weight:700">۲٬۸۵۰٬۰۰۰</span>
-          <span class="suffix">تومان</span>
+        <div class="sec-title" style="margin-top:4px"><h2>مشخصات کالا</h2></div>
+
+        <div class="field">
+          <label>کیفیت <span class="opt">— ویژگی‌های گود</span></label>
+          <div class="pillchoice">
+            <button class="pill">معمولی</button>
+            <button class="pill active">ممتاز</button>
+            <button class="pill">صادراتی</button>
+          </div>
         </div>
-        <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
-      </div>
 
-      <div style="display:flex;gap:9px">
-        <div class="field" style="flex:1">
-          <label>موجودی</label>
+        <div class="field">
+          <label>بوجار <span class="opt">— ویژگی‌های گود</span></label>
+          <div class="pillchoice">
+            <button class="pill active">درجه یک</button>
+            <button class="pill">درجه دو</button>
+            <button class="pill">سوپر</button>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:6px">
+          <label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label>
+          <div class="gallery-add">
+            <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">۵۰ کیلو</span></div>
+            <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">جزئیات</span></div>
+            <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
+            <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-top:4px"><h2>قیمت و شرایط فروش</h2></div>
+
+        <div class="field">
+          <label>قیمت هر کیلوگرم <button class="info-i" data-sheet="sheet-priceinfo" title="قیمت پایه چیست؟"><svg><use href="#i-info-v2"/></svg></button> <span class="opt">— واحد مصرف‌کنندهٔ گود</span></label>
           <div class="input">
-            <span style="color:var(--foreground);font-weight:700">۱۲۰</span>
-            <span class="suffix">کیسه</span>
+            <span style="color:var(--foreground);font-weight:700">۵۷٬۰۰۰</span>
+            <span class="suffix">تومان</span>
+          </div>
+          <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
+        </div>
+
+        <div class="field">
+          <label>بسته‌بندی فروش عمده <span class="opt">— خودت تعیین می‌کنی</span></label>
+          <div class="pillchoice">
+            <button class="pill">کیلوگرم</button>
+            <button class="pill">کیسه ۱۰ کیلویی</button>
+            <button class="pill active">کیسه ۵۰ کیلویی</button>
+          </div>
+          <div class="hint">قیمت هر بسته خودکار از قیمت کیلوگرم حساب می‌شود — کیسه ۵۰ کیلویی: ۲٬۸۵۰٬۰۰۰ تومان</div>
+        </div>
+
+        <div style="display:flex;gap:9px">
+          <div class="field" style="flex:1">
+            <label>موجودی</label>
+            <div class="input">
+              <span style="color:var(--foreground);font-weight:700">۱۲۰</span>
+              <span class="suffix">کیسه</span>
+            </div>
+          </div>
+          <div class="field" style="flex:1">
+            <label>حداقل سفارش</label>
+            <div class="input">
+              <span style="color:var(--foreground);font-weight:700">۵</span>
+              <span class="suffix">کیسه</span>
+            </div>
           </div>
         </div>
-        <div class="field" style="flex:1">
-          <label>حداقل سفارش</label>
+      </div>
+
+      <!-- ═══ مسیر برنددار: برند ← کالای مرجع (با عکس) ← مشخصات فروش ═══ -->
+      <div id="gf-brand" hidden>
+
+        <div class="sec-title" style="margin-top:4px"><h2>برند و کالای مرجع</h2></div>
+
+        <div class="field">
+          <label>برند <span class="opt" id="gf-brand-scope">— برندهای مرتبط با گود «پفک»</span></label>
+          <button class="searchbar gf-pick" data-sheet="sheet-brandpick">
+            <svg><use href="#i-search"/></svg>
+            <span id="gf-brandname" style="color:var(--foreground);font-weight:700">اشی مشی</span>
+            <span class="chg">تغییر</span>
+          </button>
+          <div class="hint">برندت در فهرست نیست؟ در همان صفحه «ثبت برند جدید» را بزن — ثبت و انتخاب با هم انجام می‌شود.</div>
+        </div>
+
+        <!-- کالاهای مرجعِ برند — همراه با عکس -->
+        <div id="gf-refs">
+          <div class="field">
+            <label>کالای مرجع <span class="opt">— محصولات ثبت‌شدهٔ این برند</span></label>
+            <div class="ggrid">
+              <button class="gcell" data-prodsel>
+                <span class="gth"><img src="png/goods/pofak-small.jpg" alt="پفک اشی مشی — بسته کوچک"></span>
+                <span class="gn">پفک اشی مشی · بسته کوچک</span>
+                <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              </button>
+              <button class="gcell on" data-prodsel>
+                <span class="gth"><img src="png/goods/pofak-big.jpg" alt="پفک اشی مشی — بسته بزرگ"></span>
+                <span class="gn">پفک اشی مشی · بسته بزرگ</span>
+                <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              </button>
+            </div>
+          </div>
+          <div class="refcard">
+            <svg><use href="#i-verified"/></svg>
+            <div>از کالای مرجع پر شد: عکس، «واحد فروش عمده» (کارتن ۵۰ عددی) و «تعداد در بسته» (۵۰ عدد) خودکار از جدول مرجع آمد — فقط قیمت و حداقل حجم خرید را وارد کن.</div>
+          </div>
+        </div>
+
+        <!-- برندِ بدون کالای مرجع — ورود دستی -->
+        <div id="gf-norefs" hidden>
+          <div class="callout" style="margin-top:4px">
+            <svg><use href="#i-info"/></svg>
+            <div>برای این برند هنوز کالای مرجعی در iMach ثبت نشده — عکس و مشخصات را خودت وارد کن؛ ثبت تو به‌عنوان کالای مرجع برای فروشندگان بعدی هم ذخیره می‌شود.</div>
+          </div>
+          <div class="field">
+            <label>نام محصول</label>
+            <div class="input"><span id="gf-norefs-name" style="color:var(--foreground);font-weight:700">پفک · بسته بزرگ</span></div>
+          </div>
+          <div style="display:flex;gap:9px">
+            <div class="field" style="flex:1.3">
+              <label>واحد فروش عمده</label>
+              <div class="input"><span style="color:var(--foreground);font-weight:700">کارتن ۵۰ عددی</span></div>
+            </div>
+            <div class="field" style="flex:1">
+              <label>تعداد در هر واحد</label>
+              <div class="input"><span style="color:var(--foreground);font-weight:700">۵۰</span></div>
+            </div>
+          </div>
+          <div class="field" style="margin-top:6px">
+            <label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label>
+            <div class="gallery-add">
+              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
+              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
+              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
+              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-top:4px"><h2>قیمت و شرایط فروش</h2></div>
+
+        <div class="field">
+          <label><span id="gf-price-label">قیمت هر کارتن ۵۰ عددی</span> <button class="info-i" data-sheet="sheet-priceinfo" title="قیمت پایه چیست؟"><svg><use href="#i-info-v2"/></svg></button></label>
           <div class="input">
-            <span style="color:var(--foreground);font-weight:700">۵</span>
-            <span class="suffix">کیسه</span>
+            <span style="color:var(--foreground);font-weight:700">۴۸۵٬۰۰۰</span>
+            <span class="suffix">تومان</span>
           </div>
+          <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
         </div>
-      </div>
 
-      <!-- تخفیف اختصاصی این کالا — بالاترین اولویت -->
-      <div class="field">
-        <label>تخفیف اختصاصی این کالا <span class="opt">— اختیاری</span></label>
-        <div style="display:flex;gap:9px;align-items:center">
-          <div class="toggle" style="flex-shrink:0"></div>
-          <div class="input" style="flex:1">
-            <span style="color:var(--foreground);font-weight:700">۵٪</span>
-            <span class="suffix">درصد</span>
+        <div style="display:flex;gap:9px">
+          <div class="field" style="flex:1">
+            <label>حداقل حجم خرید</label>
+            <div class="input">
+              <span style="color:var(--foreground);font-weight:700">۲</span>
+              <span class="suffix">کارتن</span>
+            </div>
           </div>
-        </div>
-        <div class="hint">تخفیفِ خودِ کالا همیشه از تخفیف کاتالوگ و گروه کالا بالاتر است؛ هنگام اعمال، آن‌ها نادیده گرفته می‌شوند.</div>
-      </div>
-
-      <!-- ویژگی‌ها -->
-      <div class="field">
-        <label>بوجار</label>
-        <div class="pillchoice">
-          <button class="pill active">درجه یک</button>
-          <button class="pill">درجه دو</button>
-          <button class="pill">سوپر</button>
-        </div>
-      </div>
-
-      <!-- گالری -->
-      <div class="field" style="margin-top:6px">
-        <label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label>
-        <div class="gallery-add">
-          <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">۵۰ کیلو</span></div>
-          <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">جزئیات</span></div>
-          <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
-          <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
+          <div class="field" style="flex:1">
+            <label>موجودی</label>
+            <div class="input">
+              <span style="color:var(--foreground);font-weight:700">۸۰</span>
+              <span class="suffix">کارتن</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- ثبت سریع با اسکنر / اکسل -->
       <div class="callout" style="margin-top:10px">
-        <svg><use href="#i-image"/></svg>
-        <div>برای افزودن سریع چند کالا، از <b>«اسکنر بارکد»</b> یا <b>«بارگذاری اکسل»</b> استفاده کنید — از همین صفحه در دسترس است.</div>
+        <svg><use href="#i-bolt"/></svg>
+        <div>برای افزودن سریع چند کالا، از <button class="qlink" data-sheet="sheet-scan">«اسکنر بارکد»</button> یا <button class="qlink" data-sheet="sheet-xlsx">«بارگذاری اکسل»</button> استفاده کنید.</div>
       </div>
 
     </main>
@@ -2475,10 +2605,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="sub">به مدیریت علی امینی · پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span></div>
           </div>
         </div>
-        <div style="display:flex;gap:7px;padding-bottom:12px">
+
+        <!-- فاز ۲۱ — نوار «شما در لیست مشتریان هستید» -->
+        <div class="cust-banner">
+          <svg><use href="#i-users"/></svg>
+          <span>شما در لیست مشتریان صاحب این کاتالوگ هستید — قیمت‌ها با تخفیف گروه «همکارهای قدیمی» (٪۷) نمایش داده می‌شود.</span>
+        </div>
+
+        <div style="display:flex;gap:7px;padding-bottom:10px">
           <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)"><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
           <button class="btn btn-stone btn-sm" style="flex:1.1" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
           <button class="btn btn-outline btn-sm" style="flex:.66;color:var(--stone)"><svg><use href="#i-phone"/></svg> تماس</button>
+        </div>
+
+        <!-- فاز ۲۱ — آمار اشتراک‌گذاری: مشوقِ بیشتر دیده شدن -->
+        <div class="pub-stats">
+          <span><b>۱۲</b> کالا</span>
+          <span><b>۴۱</b> ذخیره‌شده</span>
+          <span><b>۴۳</b> مشتری</span>
         </div>
       </div>
 
@@ -2510,7 +2654,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="info">
               <div class="n">برنج هاشمی</div>
               <div class="u">کیسه ۵۰ کیلویی · فله</div>
-              <div class="p">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+              <div class="p"><span class="old-p">۲٬۸۵۰٬۰۰۰</span>۲٬۶۵۰٬۵۰۰ <small>تومان</small></div>
             </div>
           </div>
 
@@ -2522,7 +2666,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="info">
               <div class="n">برنج طارم</div>
               <div class="u">کیسه ۵۰ کیلویی · فله</div>
-              <div class="p">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
+              <div class="p"><span class="old-p">۲٬۷۵۰٬۰۰۰</span>۲٬۵۵۷٬۵۰۰ <small>تومان</small></div>
             </div>
           </div>
 
@@ -2534,7 +2678,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="info">
               <div class="n">برنج هاشمی</div>
               <div class="u">کیسه ۱۰ کیلویی · فله</div>
-              <div class="p">۵۹۵٬۰۰۰ <small>تومان</small></div>
+              <div class="p"><span class="old-p">۵۹۵٬۰۰۰</span>۵۵۳٬۵۰۰ <small>تومان</small></div>
             </div>
           </div>
 
@@ -2546,7 +2690,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="info">
               <div class="n">برنج فجر</div>
               <div class="u">کیسه ۵۰ کیلویی · فله</div>
-              <div class="p">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
+              <div class="p"><span class="old-p">۲٬۴۸۰٬۰۰۰</span>۲٬۳۰۶٬۵۰۰ <small>تومان</small></div>
             </div>
           </div>
 
@@ -3311,15 +3455,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- راهنما -->
-      <div class="callout" style="margin-top:14px">
-        <svg><use href="#i-tasks"/></svg>
-        <div>
-          <b>کارها تا تعیین تکلیف از کارتابل حذف نمی‌شوند</b><br>
-          انجام‌شده‌ها از فهرست برمی‌داریم و کارهای تازه بالاتر می‌آیند؛ جای انجامِ بیشترِ کارها خود این‌جا نیست — از همین‌جا به جای انجام‌شان برو.
-        </div>
-      </div>
-
     </main>
 
     <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
@@ -3559,7 +3694,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
-    <section class="scr" id="scr-23" data-arm="buy" hidden>
+    <section class="scr" id="scr-23" data-arm="keep" hidden>
 
 
     <header class="subheader">
@@ -4587,7 +4722,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
   </div>
   <button class="add-row alt" data-sheet="sheet-cgnew"><svg><use href="#i-userplus"/></svg> ایجاد گروه مشتری جدید</button>
-  <div class="hintnote">هر گروه مشتری یک درصد ثابت روی کل کاتالوگ می‌گیرد؛ در هر سطح می‌توانی چند گروه داشته باشی و هر وقت خواستی درصد را عوض کنی.</div>
+  <div class="hintnote">هر گروه مشتری یک درصد ثابت روی کل کاتالوگ می‌گیرد؛ در هر سطح می‌توانی چند گروه داشته باشی و هر وقت خواستی درصد را عوض کنی. مشتری‌ها را از داخل هر گروه اضافه و مدیریت کن.</div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
@@ -4615,7 +4750,156 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <label>درصد تخفیف این گروه <span class="opt">— روی کل کاتالوگ اعمال می‌شود</span></label>
     <div class="pctw"><input class="input" value="۳" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
+
+  <!-- فاز ۲۱ — اعضای گروه: جستجو با شماره، افزودن، دعوت غیرعضو -->
+  <div class="grp">مشتری‌های این گروه</div>
+  <div class="grp-row">
+    <div class="avatar-sm" style="background:#b45309">ن</div>
+    <span class="tx"><b>پخش نگین</b><span>عضو آیمچ · قزوین · خریدار عمده</span></span>
+    <button class="row-act warn" title="حذف از گروه"><svg><use href="#i-x"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <div class="avatar-sm" style="background:#7c3aed">م</div>
+    <span class="tx"><b>رستوران مهر</b><span>عضو آیمچ · تهران · خریدار تجاری</span></span>
+    <button class="row-act warn" title="حذف از گروه"><svg><use href="#i-x"/></svg></button>
+  </div>
+  <div class="field">
+    <label>افزودن مشتری به گروه <span class="opt">— شماره موبایل یا نام کسب‌وکار</span></label>
+    <div class="searchbar input">
+      <svg><use href="#i-search"/></svg>
+      <span style="color:var(--foreground);font-weight:700">۰۹۱۲…</span>
+    </div>
+    <button class="sheet-row" style="margin-top:8px">
+      <div class="avatar-sm" style="background:#15803d">س</div>
+      <span class="tx"><b>پخش سبز</b><span>عضو آیمچ · مشهد · خریدار عمده</span></span>
+      <span class="pickish" data-addmem>افزودن</span>
+    </button>
+    <div class="hint">از این به بعد این مشتری کاتالوگ شما را با تخفیف همین گروه می‌بیند.</div>
+  </div>
+  <div class="hintnote">عضو آیمچ نیست؟ لینک کاتالوگ یا دعوت آیمچ را برایش بفرست — بعد از ثبت‌نام، همان‌جا به گروه اضافه می‌شود.</div>
+  <button class="add-row" data-send><svg><use href="#i-send"/></svg> ارسال لینک دعوت آیمچ برای مشتری جدید</button>
+
   <button class="btn btn-primary sheet-cta" data-close>ایجاد گروه و ذخیره</button>
+</div>
+
+<!-- ═══ ۸-پ) فاز ۲۱ — انتخاب گود (جدول مرجع آیمچ) ═══ -->
+<div class="sheet" id="sheet-goodpick" role="dialog" aria-label="انتخاب گود">
+  <div class="grab"></div>
+  <h3>انتخاب گود</h3>
+  <div class="sub">گود یعنی نوع کالا در جدول مرجع آیمچ — مثل «برنج» یا «پفک». کالای بدون برند مستقیم روی گود ثبت می‌شود؛ کالای برنددار از روی «کالای مرجع» همان برند.</div>
+  <div class="sheet-search">
+    <input class="input" value="پفک" placeholder="جستجوی گود…">
+  </div>
+  <div class="grp">نتیجه‌های جستجو — ۳ گود</div>
+  <button class="sheet-row" data-goodpick="brand" data-gname="پفک" data-gpath="تنقلات ‹ اسنک ‹ پفک · ۸ برند مرتبط">
+    <span class="tx"><b>پفک</b><span>تنقلات ‹ اسنک · دارای برند و کالای مرجع</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-goodpick="felle" data-gname="رنگ پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ رنگ پفک · واحد مصرف‌کننده: کیلوگرم">
+    <span class="tx"><b>رنگ پفک</b><span>مواد اولیه ‹ افزودنی خوراکی · بدون برند</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-goodpick="felle" data-gname="نشاسته برای پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ نشاسته · واحد مصرف‌کننده: کیلوگرم">
+    <span class="tx"><b>نشاسته برای پفک</b><span>مواد اولیه ‹ افزودنی خوراکی · بدون برند</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <div class="grp">پرجستجوترین‌ها</div>
+  <button class="sheet-row" data-goodpick="felle" data-gname="برنج هاشمی" data-gpath="غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کننده: کیلوگرم">
+    <span class="tx"><b>برنج هاشمی</b><span>غلات و حبوبات ‹ برنج</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="add-row" data-reveal="gp-new"><svg><use href="#i-plus"/></svg> گودی که می‌خواهی در فهرست نیست؟ گود جدید بساز</button>
+  <div id="gp-new" hidden>
+    <div class="field">
+      <label>نام گود جدید</label>
+      <input class="input" id="gp-new-input" placeholder="مثلاً کشمش سبز">
+    </div>
+    <button class="btn btn-primary sheet-cta" data-goodnew>ثبت و انتخاب این گود</button>
+    <div class="hintnote">گود جدید اول برای کالای خودت ثبت می‌شود و بعد از بازبینی ادمین برای همهٔ کاربران آیمچ نمایش داده می‌شود.</div>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
+</div>
+
+<!-- ═══ ۸-ت) فاز ۲۱ — انتخاب برند (برندهای مرتبط با گود) ═══ -->
+<div class="sheet" id="sheet-brandpick" role="dialog" aria-label="انتخاب برند">
+  <div class="grab"></div>
+  <h3>انتخاب برند</h3>
+  <div class="sub">برندهای مرتبط با گود «پفک» — اگر برندت نیست، همان‌جا ثبتش کن؛ ثبت و انتخاب با هم انجام می‌شود.</div>
+  <div class="sheet-search">
+    <input class="input" value="اشی" placeholder="جستجوی برند…">
+  </div>
+  <div class="grp">برندهای «پفک»</div>
+  <button class="sheet-row" data-brandpick="1" data-bname="اشی مشی">
+    <span class="tx"><b>اشی مشی</b><span>۲ کالای مرجع · ثبت‌شده توسط ادمین</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-brandpick="0" data-bname="چیتوز">
+    <span class="tx"><b>چیتوز</b><span>بدون کالای مرجع — با ثبت تو کامل می‌شود</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-brandpick="0" data-bname="مینو">
+    <span class="tx"><b>مینو</b><span>بدون کالای مرجع — با ثبت تو کامل می‌شود</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="add-row" data-reveal="bp-new"><svg><use href="#i-plus"/></svg> برند جدید ثبت کن</button>
+  <div id="bp-new" hidden>
+    <div class="field">
+      <label>نام برند جدید</label>
+      <input class="input" id="bp-new-input" placeholder="مثلاً آزاده">
+    </div>
+    <button class="btn btn-primary sheet-cta" data-brandnew>ثبت و انتخاب این برند</button>
+    <div class="hintnote">برند جدید همزمان با ثبت کالای تو انتخاب می‌شود و بعد از تأیید ادمین در فهرست برندهای همین گود می‌آید.</div>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
+</div>
+
+<!-- ═══ ۸-ث) فاز ۲۱ — قیمت پایه (ℹ کنار قیمت) ═══ -->
+<div class="dlg" id="sheet-priceinfo" role="dialog" aria-label="قیمت پایه چیست؟">
+  <h3>قیمت پایه چیست؟</h3>
+  <div class="dlg-p">این قیمت، قیمت و حجم فروش پایه شماست و در صورت لزوم بعداً می‌توانید برای مشتریان همکار و سایر گروه‌های مشتری تخفیف‌های اختصاصی تعریف کنید. این کار از طریق تنظیمات کاتالوگ و کالا به آسانی و سرعت امکان‌پذیر است. در این صورت مشتریان همکار کاتالوگ شما را با همان قیمت خواهند دید.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-outline" data-close>متوجه شدم</button>
+  </div>
+</div>
+
+<!-- ═══ ۸-ج) فاز ۲۱ — اسکنر بارکد (ثبت سریع) ═══ -->
+<div class="sheet" id="sheet-scan" role="dialog" aria-label="اسکنر بارکد">
+  <div class="grab"></div>
+  <h3>اسکنر بارکد</h3>
+  <div class="sub">بارکد هر کالا را بگیر — با گود و کالای مرجع آیمچ تطبیق داده می‌شود و پیش‌نویس کالا آماده می‌شود؛ فقط قیمت و شرایط فروش را وارد کن.</div>
+  <div class="scanframe">
+    <svg viewBox="0 0 64 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M6 2v36M12 2v36M17 2v24M23 2v36M29 2v16M34 2v36M40 2v24M46 2v36M52 2v16M58 2v36"/></svg>
+    <span>بارکد را داخل کادر نگه دارید</span>
+  </div>
+  <div class="grp">اسکن‌های این نشست — ۲ کالا</div>
+  <button class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-check"/></svg></span>
+    <span class="tx"><b>پفک اشی مشی · بسته بزرگ</b><span>تطبیق شد با کالای مرجع — کارتن ۵۰ عددی</span></span>
+  </button>
+  <button class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-check"/></svg></span>
+    <span class="tx"><b>روغن سرخ‌کردنی ۱.۶ لیتری</b><span>تطبیق شد با گود «روغن آفتابگردنی» — بدون برند</span></span>
+  </button>
+  <button class="btn btn-primary sheet-cta" data-close>ادامه — تکمیل کالاهای اسکن‌شده</button>
+</div>
+
+<!-- ═══ ۸-چ) فاز ۲۱ — بارگذاری اکسل (ثبت سریع) ═══ -->
+<div class="sheet" id="sheet-xlsx" role="dialog" aria-label="بارگذاری اکسل">
+  <div class="grab"></div>
+  <h3>بارگذاری اکسل</h3>
+  <div class="sub">فهرست کالاها را یک‌جا بار بگذار — آیمچ نام هر ردیف را با گود و کالای مرجع تطبیق می‌دهد و پیش‌نویس می‌سازد؛ تو فقط بازبینی کن و قیمت بگذار.</div>
+  <button class="up-box">
+    <span class="uic"><svg><use href="#i-upload"/></svg></span>
+    <span class="tx"><b>فایل اکسل کالاها</b><span>XLSX یا CSV · حداکثر ۵ مگابایت · ۱۰۰۰ ردیف</span></span>
+    <span class="pick">انتخاب فایل</span>
+  </button>
+  <button class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-list"/></svg></span>
+    <span class="tx"><b>قالب نمونهٔ اکسل</b><span>ستون‌های آماده: نام کالا، برند، واحد، قیمت، حداقل حجم</span></span>
+    <span class="pickish">دانلود</span>
+  </button>
+  <div class="hintnote">ردیف‌های ناهم‌خوان جدا فهرست می‌شوند تا با کمی ویرایش ثبت شوند — چیزی از دست نمی‌رود.</div>
+  <button class="btn btn-primary sheet-cta" data-close>شروع بارگذاری و تطبیق</button>
 </div>
 
 <!-- ═══ ۹) کمپین جدید — جایگاه‌های تبلیغاتی + کالاهای کمپین ═══ -->
@@ -4946,7 +5230,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <!-- ═══ ۲۱) انتخاب چند کالا برای دنبال کردن — مدال مرکزی ═══ -->
 <div class="dlg" id="sheet-pick" role="dialog" aria-label="افزودن چند کالا به لیست خرید">
   <h3>افزودن چند کالا به لیست خرید</h3>
-  <div class="dlg-p" style="margin-top:4px">کالاهایی که می‌خواهی قیمتشان را دنبال کنی تیک بزن — همه یک‌جا به دستیار خریدت اضافه می‌شوند.</div>
+  <div class="dlg-p" style="margin-top:4px">کالاهایی که می‌خواهی قیمتشان را دنبال کنی تیک بزن — همه بصورت یکجا به دستیار خریدت اضافه می‌شن و می‌تونی قیمتهاشون رو دنبال کنی.</div>
   <div class="ggrid">
     <button class="gcell on">
       <span class="gth"><img src="png/goods/rice-sack.jpg" alt=""></span>
@@ -5591,7 +5875,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '28': [['مشاهده و پاسخ', '06']],
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
-  var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19', '21': '06', '24': '06', '25': '06', '26': '03' };
+  var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' };
   var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
 
   var stack = [];
@@ -5720,6 +6004,39 @@ body > div[id^="scr-d"][hidden] { display: none; }
     });
   }
 
+  /* ── فاز ۲۱: فرم افزودن کالا — جریان گود ← برند ← کالای مرجع ── */
+  var GMODES = {
+    felle: { good: 'برنج هاشمی', path: 'غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کنندهٔ این گود: کیلوگرم' },
+    brand: { good: 'پفک', path: 'تنقلات ‹ اسنک ‹ پفک · ۸ برند مرتبط' }
+  };
+  function gfSetBrand(name, hasRefs) {
+    var bn = document.getElementById('gf-brandname');
+    if (bn) bn.textContent = name;
+    var refs = document.getElementById('gf-refs');
+    var nof = document.getElementById('gf-norefs');
+    var lbl = document.getElementById('gf-price-label');
+    if (refs) refs.hidden = !hasRefs;
+    if (nof) nof.hidden = !!hasRefs;
+    if (lbl) lbl.textContent = hasRefs ? 'قیمت هر کارتن ۵۰ عددی' : 'قیمت هر واحد فروش عمده';
+    var nn = document.getElementById('gf-norefs-name');
+    if (nn) nn.textContent = 'پفک ' + name + ' · بسته بزرگ';
+  }
+  function gfSetMode(mode) {
+    var m = GMODES[mode] ? mode : 'felle';
+    document.querySelectorAll('#scr-04 .pillchoice .pill[data-gmode]').forEach(function (p) {
+      p.classList.toggle('active', p.dataset.gmode === m);
+    });
+    var goodEl = document.getElementById('gf-good');
+    var pathEl = document.getElementById('gf-good-path');
+    if (goodEl) goodEl.textContent = GMODES[m].good;
+    if (pathEl) pathEl.textContent = GMODES[m].path;
+    var fel = document.getElementById('gf-felle');
+    var brd = document.getElementById('gf-brand');
+    if (fel) fel.hidden = (m !== 'felle');
+    if (brd) brd.hidden = (m !== 'brand');
+    if (m === 'brand') gfSetBrand('اشی مشی', true);
+  }
+
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -5751,6 +6068,74 @@ body > div[id^="scr-d"][hidden] { display: none; }
       openSheet('sheet-switch'); return;
     }
     if (t.closest('#backdrop')) { closeSheet(); return; }
+
+    /* ── فاز ۲۱: کالای مرجع — انتخاب رادیویی (فقط یکی) ── */
+    var ps = t.closest('[data-prodsel]');
+    if (ps) {
+      ps.parentElement.querySelectorAll('.gcell').forEach(function (c) { c.classList.remove('on'); });
+      ps.classList.add('on');
+      return;
+    }
+
+    /* ── فاز ۲۱: انتخاب گود از شیت جستجو ── */
+    var gp = t.closest('[data-goodpick]');
+    if (gp) {
+      closeSheet();
+      gfSetMode(gp.dataset.goodpick);
+      var gN = document.getElementById('gf-good');
+      var gP = document.getElementById('gf-good-path');
+      if (gp.dataset.gname && gN) gN.textContent = gp.dataset.gname;
+      if (gp.dataset.gname && gP) gP.textContent = gp.dataset.gpath || '';
+      return;
+    }
+
+    /* ── فاز ۲۱: انتخاب برند از شیت جستجو ── */
+    var bp = t.closest('[data-brandpick]');
+    if (bp) {
+      closeSheet();
+      gfSetBrand(bp.dataset.bname, bp.dataset.brandpick === '1');
+      return;
+    }
+
+    /* ── فاز ۲۱: فرم بازشو (گود جدید / برند جدید) ── */
+    var rv = t.closest('[data-reveal]');
+    if (rv) {
+      var rvT = document.getElementById(rv.dataset.reveal);
+      if (rvT) rvT.hidden = !rvT.hidden;
+      return;
+    }
+
+    /* ── فاز ۲۱: ثبت و انتخاب گود جدید ── */
+    var gnn = t.closest('[data-goodnew]');
+    if (gnn) {
+      closeSheet();
+      gfSetMode('felle');
+      var gInp = document.getElementById('gp-new-input');
+      var gVal = gInp && gInp.value.trim() ? gInp.value.trim() : 'گود جدید';
+      var gN2 = document.getElementById('gf-good');
+      var gP2 = document.getElementById('gf-good-path');
+      if (gN2) gN2.textContent = gVal;
+      if (gP2) gP2.textContent = 'گود جدید — پس از بازبینی ادمین برای همهٔ کاربران آیمچ عمومی می‌شود';
+      return;
+    }
+
+    /* ── فاز ۲۱: ثبت و انتخاب برند جدید ── */
+    var bnn = t.closest('[data-brandnew]');
+    if (bnn) {
+      closeSheet();
+      var bInp = document.getElementById('bp-new-input');
+      var bVal = bInp && bInp.value.trim() ? bInp.value.trim() : 'برند جدید';
+      gfSetBrand(bVal, false);
+      return;
+    }
+
+    /* ── فاز ۲۱: افزودن مشتری به گروه (تغییر به «اضافه شد») ── */
+    var am = t.closest('[data-addmem]');
+    if (am) {
+      am.textContent = 'اضافه شد ✓';
+      am.classList.add('done-send');
+      return;
+    }
 
     /* ── فاز ۲۰: انتخاب گروه تخفیف (دراپ‌داون حجمی) ── */
     var vgs = t.closest('[data-vgsel]');
@@ -5860,6 +6245,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         var blk2 = document.getElementById('vol-group-block');
         if (blk2) blk2.style.display = pill.textContent.indexOf('خاص') >= 0 ? 'block' : 'none';
       }
+      /* فاز ۲۱ — فرم افزودن کالا: سوییچ فله / برنددار */
+      if (pill.dataset.gmode) gfSetMode(pill.dataset.gmode);
       return;
     }
 
