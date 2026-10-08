@@ -972,10 +972,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* سرصفحهٔ گزارش تبلیغ — سوییچ بین کمپین و هدفمند */
   .rep-people .row-card .s .seenchip { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; color: var(--green); background: var(--green-bg); border-radius: 6px; padding: 2px 7px; }
 
-  /* ═══ فاز ۲۴ — بلاک CSS ═══ */
-  /* تب‌بار ۶ ستونهٔ دستیار خرید — «کمپین‌ها» در فوتر */
-  .tabbar[data-cols="6"] .tabs { grid-template-columns: repeat(6, 1fr); }
-  .tabbar[data-cols="6"] .tab { font-size: 9.5px; }
+  /* ═══ فاز ۲۶ — فوتر استاندارد ۵ تبی ═══ */
+  /* «پیشنهادها» حذف شد — پیشنهادِ تأمین‌کننده روی خود کالا (لیست مقایسهٔ ۳۳ / تابلوی ۰۹) انجام می‌شود؛ همهٔ تب‌بارها ۵ آیتم‌اند */
 
   /* کارت کسب‌وکار (current business) در پروفایل فروشنده */
   #scr-07 .biz-card { padding: 12px 14px 13px; cursor: pointer; }
@@ -1083,6 +1081,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
 <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></symbol>
+<symbol id="i-dots" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></symbol>
 <symbol id="i-info-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></symbol>
 <symbol id="i-userplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.8"/><path d="M3 20.5a6.5 6.5 0 0113 0"/><path d="M18.5 8v6M15.5 11h6"/></symbol>
 <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4.5"/><path d="M7.5 9L12 4.5 16.5 9"/><path d="M4 15.5v2.5a2 2 0 002 2h12a2 2 0 002-2v-2.5"/></symbol>
@@ -1336,14 +1335,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <!-- فروشنده -->
+        <!-- فروشنده — فاز ۲۶: لمس کارت فروشنده → کاتالوگ او (۱۳) -->
         <div class="card" style="margin-top:10px;display:flex;align-items:center;gap:10px">
           <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
-          <div style="flex:1;min-width:0">
+          <div style="flex:1;min-width:0;cursor:pointer" data-go="13" title="مشاهدهٔ کاتالوگ فروشنده">
             <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
               پخش برنج پارس <svg style="width:14px;height:14px;color:#1d5fb8"><use href="#i-verified"/></svg>
               <!-- فاز ۲۲ — Presence: فروشندهٔ این کالا از دید خریدار (همان منطق کاتالوگ عمومی) -->
               <span class="presence on"><i></i>آنلاین</span>
+              <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
             </div>
             <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span> · ۳۸ دنبال‌کننده</div>
           </div>
@@ -2209,8 +2209,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <div class="sec-title" style="margin-top:4px">
         <h2><svg><use href="#i-list"/></svg> لیست خرید من</h2>
-        <span class="more" style="display:flex;align-items:center;gap:5px">
-          درخواست‌های من
+        <!-- فاز ۲۶ — «درخواست‌های من» → «درخواست‌های قیمت من»: قرمز، بولد، کلیک → صفحهٔ ۱۱ -->
+        <span class="more" style="display:flex;align-items:center;gap:5px;color:var(--red);font-weight:800;cursor:pointer" data-go="11" title="درخواست‌های قیمت من">
+          درخواست‌های قیمت من
           <span class="badge b-new">۲</span>
         </span>
       </div>
@@ -2247,6 +2248,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <span class="trend down">▼ ۲٪ این هفته</span>
               <span>ماهانه · ۲۰ کیسه</span>
             </div>
+            <!-- فاز ۲۶ — وضعیت استعلام روی کارت: در حال استعلام قیمت + شمار پیشنهادهای جدید -->
+            <div class="s" style="margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+              <span class="badge b-orange" style="font-size:9.5px"><svg style="width:10px;height:10px"><use href="#i-clock"/></svg> در حال استعلام قیمت</span>
+              <span class="badge b-new" style="font-size:9.5px">۳ پیشنهاد جدید</span>
+            </div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
@@ -2261,6 +2267,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="s" style="margin-top:2px">
               <span class="trend up">▲ ۵٪ این هفته</span>
               <span>ماهانه · ۴۰ عدد</span>
+            </div>
+            <div class="s" style="margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+              <span class="badge b-orange" style="font-size:9.5px"><svg style="width:10px;height:10px"><use href="#i-clock"/></svg> در حال استعلام قیمت</span>
+              <span class="badge b-new" style="font-size:9.5px">۱ پیشنهاد جدید</span>
             </div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
@@ -2301,7 +2311,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="6" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab active">
           <svg><use href="#i-list"/></svg>
@@ -2314,10 +2324,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab">
           <svg><use href="#i-spark"/></svg>
           کمپین‌ها
-        </button>
-        <button class="tab">
-          <svg><use href="#i-sparkles"/></svg>
-          پیشنهادها
         </button>
         <button class="tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>
@@ -2352,6 +2358,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="chip">نزدیک‌ترین</button>
       </div>
 
+      <!-- ═══ فاز ۲۶ — «قیمت بهتر» (منتقل از صفحهٔ پیشنهادها): نیروی اصلی صفحه، ۲٫۵٪ ارزان‌تر از تأمین‌کنندگان فعلی شما ═══ -->
+      <div class="card" style="border-color:#b6dfc5;background:linear-gradient(180deg,#f4fcf6,#fff 45%)">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="badge b-green">قیمت بهتر</span>
+          <span class="badge b-muted">مطابق لیست شما</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <div>
+            <div style="font-size:15px;font-weight:700">برنج هاشمی</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:3px">تجارت گیل‌رنج · رشت · هم‌شهری</div>
+          </div>
+          <div style="text-align:left">
+            <div class="price" style="font-size:16.5px;color:var(--green)">۲٬۷۸۰٬۰۰۰ <small>تومان</small></div>
+            <div class="trend down">▼ ۲٫۵٪ ارزان‌تر از تأمین‌کنندگان فعلی شما</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:11px">
+          <button class="btn btn-stone btn-sm" style="flex:1" data-go="33">افزودن به لیست مقایسه</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" data-go="13">مشاهده کاتالوگ</button>
+        </div>
+      </div>
+
       <!-- ═══ تأمین‌کننده ۱ — ارزان‌ترین + آشنا ═══ -->
       <div class="supplier-card best">
         <div class="sup-head">
@@ -2381,9 +2409,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- ═══ تأمین‌کننده ۲ — تبلیغ هدفمند: جایگاه تابلوی تأمین (فاز ۲۴: برچسب یکدست با مدل تبلیغ) ═══ -->
+      <!-- ═══ تأمین‌کننده ۲ — تبلیغ هدفمند: جایگاه تابلوی تأمین (فاز ۲۶: نشان یکدست «فروشندهٔ ویژه» با ۰۲) ═══ -->
       <div class="supplier-card sponsored">
-        <span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> ویژهٔ لیست خرید شما</span>
+        <span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> فروشندهٔ ویژه</span>
         <div class="sup-head" style="margin-top:4px">
           <div class="avatar-sm" style="background:#7c3aed">آ</div>
           <div class="nm">
@@ -2437,6 +2465,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
+      <!-- ═══ فاز ۲۶ — «جایگزین» (منتقل از صفحهٔ پیشنهادها): کالای مشابه با قیمت پایین‌تر ═══ -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="badge b-orange">جایگزین</span>
+          <span class="badge b-muted">مشابه برنج هاشمی</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <div>
+            <div style="font-size:14.5px;font-weight:700">برنج طارم — درجه یک</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:3px">کیان غلات · قزوین · هم‌استان</div>
+          </div>
+          <div class="price" style="font-size:15px">۲٬۶۵۰٬۰۰۰ <small>تومان</small></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:11px">
+          <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-plus"/></svg> افزودن به لیست</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" data-go="02">مشاهده</button>
+        </div>
+      </div>
+
       <!-- افزودن تأمین‌کننده دیگر -->
       <button class="btn btn-outline btn-block" style="margin-top:4px">
         <svg><use href="#i-plus"/></svg>
@@ -2446,7 +2493,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- شفافیت معرفی‌ها — جدایی کامل از تطبیق -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>«معرفی iMach» یعنی این تأمین‌کننده از سوی شبکه iMach معرفی شده — با نتایج طبیعیِ تطبیق شما جدا و شفاف است و رتبه‌بندی را تغییر نمی‌دهد.</div>
+        <div>«فروشندهٔ ویژه» یعنی این تأمین‌کننده در حال تبلیغ است و با پرداختِ خودش بالاتر از نتایج مشابه دیده می‌شود — پیشنهادهای دیگر از موتور تطبیق iMach می‌آیند و رتبهٔ آن‌ها خریدنی نیست.</div>
       </div>
 
     </main>
@@ -2464,6 +2511,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-10" data-arm="buy" hidden>
 
 
+    <!-- فاز ۲۶ — «کاتالوگ‌های ذخیره‌شدهٔ من»: دفترچهٔ تلفن خریدار
+         IMPLEMENTATION NOTE: هر ردیف = یک کاتالوگ ذخیره‌شده (دکمهٔ ذخیره در کاتالوگ عمومی ۱۳).
+         جستجو روی نام شخص / کسب‌وکار؛ تماس و کاتالوگ در دسترس؛ سه‌نقطه → شیت منو (sheet-catmenu) با حذف.
+         بخش «کاتالوگ‌های مرتبط بیشتر» همان محتوای تب قدیمی «مرتبط با من» است: موتور تطابق +
+         جایگاه تبلیغ هدفمندِ کاتالوگ‌های ذخیره‌شده (فروشندهٔ ویژه) — فرصت تبلیغ‌کننده برای قرارگرفتن
+         در لیست ذخیرهٔ خریداران مرتبط. تب‌ها حذف شدند؛ فقط کاتالوگ‌های ذخیره‌شده نمایش داده می‌شود. -->
     <header class="appbar">
       <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
       <div class="actions">
@@ -2479,131 +2532,159 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body">
 
       <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-building"/></svg> تأمین‌کنندگان</h2>
-        <span class="more">مرتبط با لیست خرید شما</span>
+        <h2><svg><use href="#i-building"/></svg> کاتالوگ‌های ذخیره‌شدهٔ من</h2>
+        <span class="more" id="saved-cats-count">۳ کاتالوگ</span>
       </div>
 
-      <!-- فقط دو حالت — بدون دایرکتوری کل بازار -->
-      <div class="inner-tabs">
-        <button class="active">مرتبط با من <span class="cnt">(۵)</span></button>
-        <button>ذخیره‌شده <span class="cnt">(۳)</span></button>
+      <!-- جستجوی دفترچهٔ تلفن -->
+      <div class="searchbar">
+        <svg><use href="#i-search"/></svg>
+        <span>جستجوی نام شخص یا کسب و کار</span>
       </div>
 
-      <div class="rows">
+      <!-- ردیف‌های ذخیره‌شده — مثل دفترچهٔ تلفن -->
+      <div class="rows" id="saved-cats">
 
-        <!-- فاز ۲۳ — جایگاه تبلیغ هدفمند: فقط برای خریدارِ کالای موجود در لیست خریدش -->
-        <div class="row-card" style="align-items:flex-start;border-style:dashed;border-color:#f3c99a;background:#fffdf8">
-          <div class="avatar-sm" style="background:#0d9488;margin-top:2px">ش</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">شالی‌زار طالب
-              <span class="sponsor-tag" style="margin-right:2px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></svg> پیشنهاد مرتبط با لیست خرید شما</span>
-            </div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت</span>
-              <span>شالی‌زار و برداشت برنج</span>
-            </div>
-            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
-              <span class="badge b-stone">برنج هاشمی</span>
-              <span class="badge b-orange">۲٬۷۸۰٬۰۰۰ تومان</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">چون «برنج هاشمی» در لیست خرید شماست</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-            <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
-            <button class="btn btn-outline btn-sm">کاتالوگ</button>
-          </div>
-        </div>
-
-        <div class="row-card" style="align-items:flex-start">
-          <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c);margin-top:2px">پ</div>
+        <div class="row-card" style="align-items:center">
+          <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
           <div class="body">
             <div class="t" style="font-size:13.5px">پخش برنج پارس <svg style="width:13px;height:13px;color:#1d5fb8"><use href="#i-verified"/></svg></div>
             <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت</span>
-              <span>پخش مواد غذایی</span>
-            </div>
-            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
-              <span class="badge b-stone">برنج هاشمی</span>
-              <span class="badge b-stone">برنج طارم</span>
-              <span class="badge b-green">خریده‌ام از او</span>
+              <span>مرتضی رضایی · رشت</span>
+              <span dir="ltr">۰۹۱۱ ۲۳۴ ۵۶۷۸</span>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-            <span class="badge b-muted" style="background:var(--stone);color:#fff"><svg style="width:10px;height:10px;display:none"></svg>ذخیره ✓</span>
-            <button class="btn btn-outline btn-sm">کاتالوگ</button>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <button class="icon-btn" style="width:38px;height:38px;border-radius:10px;color:var(--green)" aria-label="تماس" title="تماس"><svg><use href="#i-phone"/></svg></button>
+            <button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>
+            <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های بیشتر" data-sheet="sheet-catmenu" title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>
           </div>
         </div>
 
-        <div class="row-card" style="align-items:flex-start">
-          <div class="avatar-sm" style="background:#7c3aed;margin-top:2px">آ</div>
+        <div class="row-card" style="align-items:center">
+          <div class="avatar-sm" style="background:#7c3aed">آ</div>
           <div class="body">
             <div class="t" style="font-size:13.5px">آریو غلات <svg style="width:13px;height:13px;color:#1d5fb8"><use href="#i-verified"/></svg></div>
             <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> اصفهان</span>
-              <span>غلات و حبوبات</span>
-            </div>
-            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
-              <span class="badge b-stone">روغن سرخ‌کردنی</span>
-              <span class="badge b-orange">معرفی iMach</span>
-            </div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:5px;line-height:1.8">
-              ۲ قیمت از این فروشنده در تابلوهای شماست
+              <span>امیر قاسمی · اصفهان</span>
+              <span dir="ltr">۰۹۱۲ ۳۳۴ ۴۴۱۲</span>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-            <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
-            <button class="btn btn-outline btn-sm">کاتالوگ</button>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <button class="icon-btn" style="width:38px;height:38px;border-radius:10px;color:var(--green)" aria-label="تماس" title="تماس"><svg><use href="#i-phone"/></svg></button>
+            <button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>
+            <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های بیشتر" data-sheet="sheet-catmenu" title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>
           </div>
         </div>
 
-        <div class="row-card" style="align-items:flex-start">
-          <div class="avatar-sm" style="background:#0e7490;margin-top:2px">ک</div>
+        <div class="row-card" style="align-items:center">
+          <div class="avatar-sm" style="background:#0e7490">ک</div>
           <div class="body">
             <div class="t" style="font-size:13.5px">کیان غلات</div>
             <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین</span>
-              <span>پخش مواد غذایی</span>
-            </div>
-            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
-              <span class="badge b-stone">برنج هاشمی</span>
-              <span class="badge b-muted">خودش آمد</span>
+              <span>کیان رستمی · قزوین</span>
+              <span dir="ltr">۰۹۳۵ ۷۷۶ ۸۸۲۳</span>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-            <span class="badge b-muted" style="background:var(--stone);color:#fff">ذخیره ✓</span>
-            <button class="btn btn-outline btn-sm">کاتالوگ</button>
-          </div>
-        </div>
-
-        <div class="row-card" style="align-items:flex-start">
-          <div class="avatar-sm" style="background:#c2703a;margin-top:2px">ن</div>
-          <div class="body">
-            <div class="t" style="font-size:13.5px">نگین گلستان</div>
-            <div class="s">
-              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین</span>
-              <span>کنسروسازی</span>
-            </div>
-            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
-              <span class="badge b-stone">رب گوجه‌فرنگی</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-            <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
-            <button class="btn btn-outline btn-sm">کاتالوگ</button>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <button class="icon-btn" style="width:38px;height:38px;border-radius:10px;color:var(--green)" aria-label="تماس" title="تماس"><svg><use href="#i-phone"/></svg></button>
+            <button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>
+            <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های بیشتر" data-sheet="sheet-catmenu" title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>
           </div>
         </div>
 
       </div>
 
-      <!-- پرهیز از دایرکتوری — این صفحه فقط مرتبط با نیاز واقعی -->
+      <!-- ═══ کاتالوگ‌های مرتبط بیشتر (محتوای تب قدیمی «مرتبط با من») ═══ -->
+      <button class="card" style="display:flex;align-items:center;gap:11px;width:100%;text-align:right;margin-top:12px;cursor:pointer;font-family:inherit" data-reveal="rel-cats" title="کاتالوگ‌های مرتبط بیشتر">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone);flex-shrink:0">
+          <svg style="width:19px;height:19px"><use href="#i-spark-v2"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700">کاتالوگ‌های مرتبط بیشتر</div>
+          <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">بر اساس لیست خرید و تابلوهای شما</div>
+        </div>
+        <svg style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0"><use href="#i-chev"/></svg>
+      </button>
+
+      <div id="rel-cats" hidden>
+        <div class="rows" style="margin-top:10px">
+
+          <!-- جایگاه تبلیغ هدفمند: کاتالوگ‌های ذخیره‌شدهٔ خریدار — فروشندهٔ ویژه (در حال تبلیغ) بالاتر -->
+          <div class="row-card" style="align-items:flex-start;border-style:dashed;border-color:#f3c99a;background:#fffdf8">
+            <div class="avatar-sm" style="background:#0d9488;margin-top:2px">ش</div>
+            <div class="body">
+              <div class="t" style="font-size:13.5px">شالی‌زار طالب
+                <span class="sponsor-tag" style="margin-right:2px"><svg><use href="#i-spark-v2"/></svg> فروشندهٔ ویژه</span>
+              </div>
+              <div class="s">
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت</span>
+                <span>شالی‌زار و برداشت برنج</span>
+              </div>
+              <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+                <span class="badge b-stone">برنج هاشمی</span>
+                <span class="badge b-orange">۲٬۷۸۰٬۰۰۰ تومان</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">چون «برنج هاشمی» در لیست خرید شماست</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+              <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
+              <button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>
+            </div>
+          </div>
+
+          <div class="row-card" style="align-items:flex-start">
+            <div class="avatar-sm" style="background:#b45309;margin-top:2px">گ</div>
+            <div class="body">
+              <div class="t" style="font-size:13.5px">تجارت گیل‌رنج <svg style="width:13px;height:13px;color:#1d5fb8"><use href="#i-verified"/></svg></div>
+              <div class="s">
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت</span>
+                <span>پخش برنج</span>
+              </div>
+              <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+                <span class="badge b-stone">برنج هاشمی</span>
+                <span class="badge b-orange">معرفی iMach</span>
+              </div>
+              <div style="font-size:11px;color:var(--muted-fg);margin-top:5px;line-height:1.8">
+                هم‌جنسِ لیست شما را با حداقل سفارش پایین‌تر می‌فروشد
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+              <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
+              <button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>
+            </div>
+          </div>
+
+          <div class="row-card" style="align-items:flex-start">
+            <div class="avatar-sm" style="background:#c2703a;margin-top:2px">ن</div>
+            <div class="body">
+              <div class="t" style="font-size:13.5px">نگین گلستان</div>
+              <div class="s">
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین</span>
+                <span>کنسروسازی</span>
+              </div>
+              <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+                <span class="badge b-stone">رب گوجه‌فرنگی</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+              <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
+              <button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- شفافیت -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>این فهرست فقط فروشنده‌هایی را نشان می‌دهد که به کالاهای لیست شما مرتبط‌اند — دایرکتوری کامل بازار نیست. کارت‌های «پیشنهاد مرتبط با لیست خرید شما» تبلیغِ هدفمندِ همان کالا هستند و با قابِ خط‌چین از نتایج طبیعی جدا می‌شوند.</div>
+        <div>کاتالوگ‌های ذخیره‌شدهٔ شما مثل دفترچهٔ تلفن عمل می‌کنند — جستجو، تماس و کاتالوگ همیشه در دسترس. کارت‌های خط‌چینِ «فروشندهٔ ویژه» تبلیغِ هدفمند است: دقیقاً برای کالای موجود در لیست خرید شما، با پرداختِ خودِ فروشنده.</div>
       </div>
 
     </main>
 
-    <nav class="tabbar" data-cols="6" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
@@ -2614,8 +2695,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
           کاتالوگ‌ها
         </button>
         <button class="tab">
-          <svg><use href="#i-sparkles"/></svg>
-          پیشنهادها
+          <svg><use href="#i-spark"/></svg>
+          کمپین‌ها
         </button>
         <button class="tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>
@@ -2634,132 +2715,196 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-11" data-arm="buy" hidden>
 
 
-    <header class="appbar">
-      <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
-      <div class="actions">
-        <button class="arm-pill" aria-label="تعویض دستیار">
-          <svg><use href="#i-basket"/></svg> دستیار خرید
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
-        </button>
-        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
-        <button class="icon-btn" aria-label="پیش‌نمایش عمومی لیست خرید" data-go="23" title="پیش‌نمایش عمومی لیست خرید"><svg><use href="#i-eye"/></svg></button>
-      </div>
+    <!-- فاز ۲۶ — «درخواست‌های قیمت من»: صفحهٔ کامل مدیریت استعلام‌ها (مودال نیست)
+         IMPLEMENTATION NOTE: هر استعلام از فرم ۱۲ می‌آید و مهلت ۱ تا ۵ روز (یا «سایر» تا ۳۰ روز) دارد؛
+         پس از پایان مهلت، درخواست خودکار برای فروشندگان نمایش داده نمی‌شود و به آرشیو می‌رود.
+         پیشنهادهای رسیده همان «پیشنهاد قیمت» فروشندگان است (فرم ۰۶ سمت فروشنده). شمار «پیشنهاد جدید»
+         روی کارت دفتر خرید (۰۸) و بج قرمز لینک همین صفحه، از همین وضعیت می‌آید.
+         «متوقف کردن» = درخواست موقتاً برای فروشندگان نامرئی؛ «بایگانی» = انتقال به آرشیو با امکان
+         «ساخت درخواست مشابه» (شرایط و گیرندگان قبلی، پیش‌فرض فرم ۱۲ می‌شوند). -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">درخواست‌های قیمت من<small id="prq-sub">۲ جاری · ۳ آرشیو</small></div>
+      <button class="icon-btn" aria-label="استعلام جدید" data-go="12" title="استعلام گروهی جدید"><svg><use href="#i-plus"/></svg></button>
     </header>
 
     <main class="screen-body">
 
-      <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-sparkles"/></svg> پیشنهادهای iMach</h2>
-        <span class="more">۳ جدید</span>
-      </div>
-      <div style="font-size:11.5px;color:var(--muted-fg);margin:-4px 0 12px;line-height:1.9">
-        بر اساس کالاهای لیست خرید و تابلوهای تأمین شما
+      <!-- سوییچ جاری / آرشیو -->
+      <div class="inner-tabs" id="prq-tabs">
+        <button class="active" data-prqtab="now">جاری <span class="cnt" id="prq-cnt-now">(۲)</span></button>
+        <button data-prqtab="arch">آرشیو <span class="cnt" id="prq-cnt-arch">(۳)</span></button>
       </div>
 
-      <!-- ═══ کارت ۱: قیمت بهتر ═══ -->
-      <div class="card" style="border-color:#b6dfc5;background:linear-gradient(180deg,#f4fcf6,#fff 45%)">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="badge b-green">قیمت بهتر</span>
-          <span class="badge b-muted">مطابق لیست شما</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-          <div>
-            <div style="font-size:15px;font-weight:700">برنج هاشمی</div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:3px">تجارت گیل‌رنج · رشت</div>
-          </div>
-          <div style="text-align:left">
-            <div class="price" style="font-size:16.5px;color:var(--green)">۲٬۷۸۰٬۰۰۰ <small>تومان</small></div>
-            <div class="trend down">▼ ۲٫۵٪ ارزان‌تر از تابلوی شما</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:11px">
-          <button class="btn btn-stone btn-sm" style="flex:1">افزودن به تابلو</button>
-          <button class="btn btn-outline btn-sm" style="flex:1">مشاهده کاتالوگ</button>
-        </div>
-      </div>
+      <!-- ═══ بخش جاری ═══ -->
+      <div id="prq-now">
 
-      <!-- ═══ کارت ۲: تأمین‌کننده جدید + امتیاز تطبیق ═══ -->
-      <div class="card" style="margin-top:10px">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="badge b-new">تأمین‌کننده جدید</span>
-        </div>
-        <div style="display:flex;gap:11px;margin-top:10px;align-items:center">
-          <div class="matchring" style="background:conic-gradient(var(--primary-deep) 87%, #e8e7e5 0)">
-            <span class="in" style="color:var(--primary-deep)">۸۷٪</span>
-          </div>
-          <div style="flex:1">
-            <div style="font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:5px">
-              آریو غلات <svg style="width:14px;height:14px;color:#1d5fb8"><use href="#i-verified"/></svg>
+        <!-- ─── استعلام ۱: برنج هاشمی ─── -->
+        <div class="card prq-card" style="margin-top:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۵۰ کیلو</span></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:700">برنج هاشمی</div>
+              <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۲۰ کیسه · تحویل این ماه · ارسال به ۳ فروشنده</div>
             </div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:3px;display:flex;align-items:center;gap:5px">
-              <svg style="width:11px;height:11px"><use href="#i-pin"/></svg> اصفهان · برای «روغن سرخ‌کردنی» شما
+            <div style="text-align:left;flex-shrink:0">
+              <div style="font-size:9.5px;color:var(--muted-fg);margin-bottom:2px">مهلت</div>
+              <span class="badge b-orange prq-deadline">۳ روز مانده</span>
             </div>
           </div>
-        </div>
-        <div style="font-size:11px;color:var(--stone-soft);background:var(--muted);border-radius:9px;padding:8px 10px;margin-top:10px;line-height:1.8">
-          هم‌جنسِ روغن لیست شما را با حداقل سفارش پایین‌تر می‌فروشد — ارسال به قزوین دارد.
-        </div>
-        <div style="display:flex;gap:8px;margin-top:11px">
-          <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)">ذخیره</button>
-          <button class="btn btn-stone btn-sm" style="flex:1">مشاهده کاتالوگ</button>
-        </div>
-      </div>
 
-      <!-- ═══ کارت ۳: کالای مشابه ═══ -->
-      <div class="card" style="margin-top:10px">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="badge b-orange">جایگزین</span>
-          <span class="badge b-muted">مشابه برنج هاشمی</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-          <div>
-            <div style="font-size:14.5px;font-weight:700">برنج طارم — درجه یک</div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:3px">کیان غلات · قزوین · هم‌استان</div>
+          <span class="badge prq-stopbadge" hidden style="margin-top:8px;background:var(--red-bg);color:var(--red)">متوقف — برای فروشندگان نمایش داده نمی‌شود</span>
+
+          <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
+            <span class="badge b-new">۳ پیشنهاد جدید</span>
+            <span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">۲٬۷۸۰٬۰۰۰</b></span>
           </div>
-          <div class="price" style="font-size:15px">۲٬۶۵۰٬۰۰۰ <small>تومان</small></div>
+
+          <!-- پیشنهادهای رسیده و شرایط -->
+          <div style="margin-top:10px;border-top:1px dashed #eee9dd;padding-top:4px">
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f6f4ee">
+              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:#b45309">گ</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700">تجارت گیل‌رنج <span class="badge b-green" style="font-size:8.5px;padding:1px 6px">بهترین</span></div>
+                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۲٬۷۸۰٬۰۰۰ تومان · کیسه ۵۰ کیلویی · حداقل ۸ کیسه · ۲ ساعت پیش</div>
+              </div>
+              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f6f4ee">
+              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700">پخش برنج پارس</div>
+                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۲٬۸۵۰٬۰۰۰ تومان · حداقل ۵ کیسه · ارسال رایگان قزوین · امروز</div>
+              </div>
+              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0">
+              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:#7c3aed">آ</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700">آریو غلات</div>
+                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۲٬۹۲۰٬۰۰۰ تومان · حداقل ۱۰ کیسه · دیروز</div>
+              </div>
+              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
+            </div>
+          </div>
+
+          <div class="prq-actions" style="display:flex;gap:8px;margin-top:11px">
+            <button class="btn btn-outline btn-sm" style="flex:1" data-prqpause>متوقف کردن</button>
+            <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)" data-prqarch>بایگانی</button>
+          </div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:11px">
-          <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-plus"/></svg> افزودن به لیست</button>
-          <button class="btn btn-outline btn-sm" style="flex:1">مشاهده</button>
+
+        <!-- ─── استعلام ۲: روغن سرخ‌کردنی ─── -->
+        <div class="card prq-card" style="margin-top:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۱۰ لیتر</span></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:700">روغن سرخ‌کردنی</div>
+              <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۴۰ عدد · فوری · ارسال به ۲ فروشنده</div>
+            </div>
+            <div style="text-align:left;flex-shrink:0">
+              <div style="font-size:9.5px;color:var(--muted-fg);margin-bottom:2px">مهلت</div>
+              <span class="badge prq-deadline" style="background:var(--red-bg);color:var(--red)">امروز آخرین روز</span>
+            </div>
+          </div>
+
+          <span class="badge prq-stopbadge" hidden style="margin-top:8px;background:var(--red-bg);color:var(--red)">متوقف — برای فروشندگان نمایش داده نمی‌شود</span>
+
+          <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
+            <span class="badge b-new">۱ پیشنهاد جدید</span>
+            <span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">۵۱۰٬۰۰۰</b></span>
+          </div>
+
+          <div style="margin-top:10px;border-top:1px dashed #eee9dd;padding-top:4px">
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 0">
+              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:#0d9488">ص</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700">صنایع روغن آفتاب <span class="badge b-green" style="font-size:8.5px;padding:1px 6px">بهترین</span></div>
+                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۵۱۰٬۰۰۰ تومان · کارتن ۱۰ عددی · حداقل ۱۰ کارتن · ۱ ساعت پیش</div>
+              </div>
+              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
+            </div>
+          </div>
+
+          <div class="prq-actions" style="display:flex;gap:8px;margin-top:11px">
+            <button class="btn btn-outline btn-sm" style="flex:1" data-prqpause>متوقف کردن</button>
+            <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)" data-prqarch>بایگانی</button>
+          </div>
         </div>
+
+        <div class="legend">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <div>مهلت هر استعلام ۱ تا ۵ روز است؛ پس از پایان مهلت، درخواست خودکار برای فروشندگان نمایش داده نمی‌شود و به آرشیو می‌رود.</div>
+        </div>
+
       </div>
 
-      <div class="legend">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>پیشنهادها از موتور تطبیق iMach می‌آیند — هیچ‌کس با پرداخت پول در صدر این فهرست نمی‌نشیند.</div>
+      <!-- ═══ بخش آرشیو ═══ -->
+      <div id="prq-arch" hidden>
+
+        <div id="prq-arch-list">
+
+          <!-- آرشیو ۱: پایان مهلت -->
+          <div class="card prq-card" style="margin-top:10px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۵۰ کیلو</span></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:14px;font-weight:700">برنج هاشمی</div>
+                <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۲۰ کیسه · مرداد · پایان مهلت</div>
+              </div>
+              <span class="badge b-muted">۴ پیشنهاد</span>
+            </div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:8px">بهترین پیشنهاد: <b style="color:var(--green)">۲٬۸۷۰٬۰۰۰</b> · پخش برنج پارس</div>
+            <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="12">
+              <svg><use href="#i-plus"/></svg>
+              ساخت درخواست مشابه
+            </button>
+          </div>
+
+          <!-- آرشیو ۲: پایان مهلت -->
+          <div class="card prq-card" style="margin-top:10px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۵۰۰ گرم</span></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:14px;font-weight:700">رب گوجه‌فرنگی</div>
+                <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۶۰ عدد · تیر · پایان مهلت</div>
+              </div>
+              <span class="badge b-muted">۲ پیشنهاد</span>
+            </div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:8px">بهترین پیشنهاد: <b style="color:var(--green)">۹۸٬۰۰۰</b> · نگین گلستان</div>
+            <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="12">
+              <svg><use href="#i-plus"/></svg>
+              ساخت درخواست مشابه
+            </button>
+          </div>
+
+          <!-- آرشیو ۳: متوقف‌شده -->
+          <div class="card prq-card" style="margin-top:10px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۱۰ لیتر</span></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:14px;font-weight:700">روغن سرخ‌کردنی</div>
+                <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۲۰ عدد · خرداد · متوقف توسط شما</div>
+              </div>
+              <span class="badge b-muted">۱ پیشنهاد</span>
+            </div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:8px">بهترین پیشنهاد: <b style="color:var(--green)">۵۱۸٬۰۰۰</b> · صنایع روغن آفتاب</div>
+            <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="12">
+              <svg><use href="#i-plus"/></svg>
+              ساخت درخواست مشابه
+            </button>
+          </div>
+
+        </div>
+
+        <div class="legend">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <div>از هر درخواست آرشیو‌شده می‌توانی «درخواست مشابه» بسازی — شرایط و گیرندگان قبلی، پیش‌فرض فرم می‌شوند.</div>
+        </div>
+
       </div>
 
     </main>
-
-    <nav class="tabbar" data-cols="6" aria-label="ناوبری دستیار خرید">
-      <div class="tabs">
-        <button class="tab">
-          <svg><use href="#i-list"/></svg>
-          دفتر خرید
-        </button>
-        <button class="tab">
-          <svg><use href="#i-building"/></svg>
-          کاتالوگ‌ها
-        </button>
-        <button class="tab">
-          <svg><use href="#i-spark"/></svg>
-          کمپین‌ها
-        </button>
-        <button class="tab active">
-          <svg><use href="#i-sparkles"/></svg>
-          پیشنهادها
-        </button>
-        <button class="tab">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>
-          پیام‌ها
-          <span class="badge">۱</span>
-        </button>
-        <button class="tab">
-          <svg><use href="#i-user"/></svg>
-          پروفایل
-        </button>
-      </div>
-    </nav>
 
     </section>
 
@@ -2768,7 +2913,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">درخواست قیمت<small>برنج هاشمی — از تابلوی تأمین</small></div>
+      <div class="ttl">درخواست قیمت<small>برنج هاشمی · استعلام گروهی</small></div>
     </header>
 
     <main class="screen-body">
@@ -2808,6 +2953,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="input" style="height:60px;align-items:flex-start">
           <span style="color:var(--foreground);font-size:12.5px;line-height:1.9;padding-top:9px">تحویل قزوین، لطفاً قیمت و شرایط ارسال را بفرمایید.</span>
         </div>
+      </div>
+
+      <!-- فاز ۲۶ — مهلت پاسخ‌گویی: ۱ تا ۵ روز + «سایر» (حداکثر ۳۰ روز)؛ پس از پایان مهلت، درخواست برای فروشندگان نمایش داده نمی‌شود -->
+      <div class="field">
+        <label>مهلت پاسخ‌گویی</label>
+        <div class="pillchoice" id="dl-choice">
+          <button class="pill">۱ روز</button>
+          <button class="pill active">۳ روز</button>
+          <button class="pill">۵ روز</button>
+          <button class="pill" data-deadline="other">سایر</button>
+        </div>
+        <div id="dl-custom" hidden style="display:flex;gap:8px;margin-top:8px">
+          <div class="input" style="flex:1;height:42px">
+            <span style="color:var(--foreground);font-weight:700">۷</span>
+            <span class="suffix">روز</span>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted-fg);align-self:center">حداکثر ۳۰ روز</div>
+        </div>
+        <div style="font-size:10.5px;color:var(--muted-fg);margin-top:6px">پس از پایان مهلت، درخواست دیگر برای فروشندگان نمایش داده نمی‌شود.</div>
       </div>
 
       <!-- گیرندگان: انتخاب از تابلو + شبکه iMach -->
@@ -2861,7 +3025,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- تمایز از تابلو -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>این یک درخواست مشخص و مقطعی است — با «تابلوی تأمین» که رصد دائمی قیمت‌هاست فرق دارد. پاسخ‌ها در «درخواست‌های من» می‌نشینند.</div>
+        <div>این یک درخواست مشخص و مقطعی است — با «تابلوی تأمین» که رصد دائمی قیمت‌هاست فرق دارد. پاسخ‌ها در «درخواست‌های قیمت من» می‌نشینند.</div>
       </div>
 
     </main>
@@ -3032,7 +3196,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <!-- میان‌برها -->
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer;padding:11px 13px">
+        <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer;padding:11px 13px" data-go="08">
           <div style="width:36px;height:36px;border-radius:10px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone)">
             <svg style="width:18px;height:18px"><use href="#i-list"/></svg>
           </div>
@@ -3042,13 +3206,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
           <svg style="width:14px;height:14px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
-        <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer;padding:11px 13px">
+        <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer;padding:11px 13px" data-go="10">
           <div style="width:36px;height:36px;border-radius:10px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone)">
             <svg style="width:18px;height:18px"><use href="#i-building"/></svg>
           </div>
           <div style="flex:1">
-            <div style="font-size:13px;font-weight:700">تأمین‌کنندگان من</div>
-            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۳ نفر · ۱ پیشنهاد تازه</div>
+            <div style="font-size:13px;font-weight:700">کاتالوگ‌های ذخیره‌شدهٔ من</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۳ کاتالوگ · ۱ پیشنهاد تازه</div>
           </div>
           <svg style="width:14px;height:14px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
@@ -3104,7 +3268,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="6" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
@@ -3117,10 +3281,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab">
           <svg><use href="#i-spark"/></svg>
           کمپین‌ها
-        </button>
-        <button class="tab">
-          <svg><use href="#i-sparkles"/></svg>
-          پیشنهادها
         </button>
         <button class="tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>
@@ -3553,7 +3713,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </main>
 
     <!-- ═══ ناوبری پایین — دستیار خرید (در دستیار فروش، خودکار تعویض می‌شود) ═══ -->
-    <nav class="tabbar" data-cols="6" aria-label="ناوبری پیام‌ها">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری پیام‌ها">
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
@@ -3566,10 +3726,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab">
           <svg><use href="#i-spark"/></svg>
           کمپین‌ها
-        </button>
-        <button class="tab">
-          <svg><use href="#i-sparkles"/></svg>
-          پیشنهادها
         </button>
         <button class="tab active">
           <svg><use href="#i-msg-v2"/></svg>
@@ -5360,7 +5516,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="6" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
@@ -5373,10 +5529,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab active">
           <svg><use href="#i-spark"/></svg>
           کمپین‌ها
-        </button>
-        <button class="tab">
-          <svg><use href="#i-sparkles"/></svg>
-          پیشنهادها
         </button>
         <button class="tab">
           <svg><use href="#i-msg-v2"/></svg>
@@ -5474,9 +5626,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <!-- جایگاه ۲ -->
         <div class="adslot on" style="cursor:default">
           <span class="as-shot"><img src="png/p23/slot-supply-board.png" alt="جایگاه تبلیغاتی در تابلوی تأمین کالا"></span>
-          <span class="as-tag"><span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> ویژهٔ لیست خرید شما</span></span>
+          <span class="as-tag"><span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> فروشندهٔ ویژه</span></span>
           <div class="as-t">۲) تابلوی تأمینِ همان کالا</div>
-          <div class="as-d">وقتی خریداری که کالای شما در لیست خریدش است، تابلوی تأمینِ آن کالا را باز می‌کند، شما به‌عنوان «تأمین‌کنندهٔ ویژهٔ لیست خرید» بالاتر از بقیه دیده می‌شوید — با قیمت و شرایط، آمادهٔ درخواست قیمت.</div>
+          <div class="as-d">وقتی خریداری که کالای شما در لیست خریدش است، تابلوی تأمینِ آن کالا را باز می‌کند، شما با نشان «فروشندهٔ ویژه» و جایگاه بالاتر از نتایج مشابه دیده می‌شوید — با قیمت و شرایط، آمادهٔ درخواست قیمت.</div>
           <div class="as-p">
             <span>هر مشاهده <b>۱٬۰۰۰ تومان</b></span>
             <span>در صورت درخواست قیمت <b>۵٬۰۰۰ تومان</b></span>
@@ -5514,6 +5666,160 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <section class="scr" id="scr-33" data-arm="buy" hidden>
+
+
+    <!-- فاز ۲۶ — «لیست مقایسه»: قلب دستیار خرید
+         IMPLEMENTATION NOTE: هر ردیف = قیمتی که خریدار از کاتالوگ فروشنده دنبال کرده (sheet-follow در ۱۳/۰۲).
+         لمس هر ردیف → همان فرم جزئیات کالای ۰۲ (دید خریدار)؛ از آن‌جا هم کاتالوگ فروشنده (۱۳) باز می‌شود.
+         زیر لیست، پیشنهادهای موتور تطبیق: اولویت نمایش با فروشندگان در حال تبلیغ — نشان «فروشندهٔ ویژه»
+         و جایگاه بالاتر وقتی دو مورد تطبیق شبیه هم باشند (همان قاعدهٔ تابلوی تأمین ۰۹).
+         استعلام گروهی → فرم ۱۲ با همان فروشندگان دنبال‌شده؛ کادر «تأمین‌کنندگان دیگر این کالا» → تابلوی تأمین ۰۹. -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">برنج هاشمی<small>لیست مقایسه · ۳ فروشندهٔ دنبال‌شده</small></div>
+      <button class="icon-btn" aria-label="استعلام گروهی" data-go="12" title="استعلام گروهی از فروشندگان دنبال‌شده"><svg><use href="#i-send"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- مرتب‌سازی -->
+      <div class="chips" style="margin-top:2px">
+        <button class="chip active">ارزان‌ترین</button>
+        <button class="chip">تازه‌ترین</button>
+        <button class="chip">آشنا (خریده‌ام)</button>
+      </div>
+
+      <!-- ═══ گرید مقایسه: قیمت‌های دنبال‌شده، مرتب زیر هم — لمس هر رکورد = جزئیات کامل کالا ═══ -->
+      <div class="rows">
+
+        <!-- رتبهٔ ۱ — ارزان‌ترین -->
+        <div class="row-card" style="align-items:center;border-color:#b6dfc5;background:linear-gradient(180deg,#f4fcf6,#fff 60%);cursor:pointer" data-go="02" title="جزئیات کامل کالا">
+          <span class="badge b-green" style="flex-shrink:0;font-size:11px">۱</span>
+          <div class="body">
+            <div class="t" style="font-size:13.5px">پخش برنج پارس <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg> <span class="badge b-green" style="font-size:9px;padding:1px 6px">ارزان‌ترین</span></div>
+            <div class="s">
+              <span>کیسه ۵۰ کیلویی · حداقل ۵ کیسه</span>
+              <span>رشت · به‌روزرسانی ۳ روز پیش</span>
+            </div>
+            <div class="s" style="margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="trend down">▼ از ۲٬۹۰۰٬۰۰۰</span>
+              <span class="badge b-green" style="font-size:9px">از او خریده‌ام</span>
+            </div>
+          </div>
+          <div style="text-align:left;flex-shrink:0">
+            <div class="price" style="font-size:15px;color:var(--green)">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+          </div>
+        </div>
+
+        <!-- رتبهٔ ۲ -->
+        <div class="row-card" style="align-items:center;cursor:pointer" data-go="02" title="جزئیات کامل کالا">
+          <span class="badge b-stone" style="flex-shrink:0;font-size:11px">۲</span>
+          <div class="body">
+            <div class="t" style="font-size:13.5px">آریو غلات <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg></div>
+            <div class="s">
+              <span>کیسه ۵۰ کیلویی · حداقل ۱۰ کیسه</span>
+              <span>اصفهان · به‌روزرسانی ۵ روز پیش</span>
+            </div>
+            <div class="s" style="margin-top:2px">
+              <span class="trend flat">— بدون تغییر</span>
+              <span>ارسال به همه شهرها</span>
+            </div>
+          </div>
+          <div style="text-align:left;flex-shrink:0">
+            <div class="price" style="font-size:15px">۲٬۹۲۰٬۰۰۰ <small>تومان</small></div>
+          </div>
+        </div>
+
+        <!-- رتبهٔ ۳ -->
+        <div class="row-card" style="align-items:center;cursor:pointer" data-go="02" title="جزئیات کامل کالا">
+          <span class="badge b-stone" style="flex-shrink:0;font-size:11px">۳</span>
+          <div class="body">
+            <div class="t" style="font-size:13.5px">کیان غلات</div>
+            <div class="s">
+              <span>کیسه ۵۰ کیلویی · حداقل ۲۰ کیسه</span>
+              <span>قزوین · هم‌استان · به‌روزرسانی ۱۱ روز پیش</span>
+            </div>
+            <div class="s" style="margin-top:2px">
+              <span class="trend flat">— بدون تغییر</span>
+            </div>
+          </div>
+          <div style="text-align:left;flex-shrink:0">
+            <div class="price" style="font-size:15px">۳٬۰۰۰٬۰۰۰ <small>تومان</small></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>هر ردیف را بزنید تا جزئیات کامل همان کالا و کاتالوگ فروشنده باز شود.</div>
+      </div>
+
+      <!-- ═══ پیشنهاد سیستم تطابق iMach — درست زیر لیست مقایسه ═══ -->
+      <div class="sec-title"><h2>پیشنهاد تطابق iMach</h2><span class="more">دنبال کردن قیمت</span></div>
+
+      <!-- فروشندهٔ در حال تبلیغ: جایگاه بالاتر + نشان ویژه -->
+      <div class="row-card" style="align-items:flex-start;border-style:dashed;border-color:#f3c99a;background:#fffdf8">
+        <div class="avatar-sm" style="background:#0d9488;margin-top:2px">ش</div>
+        <div class="body">
+          <div class="t" style="font-size:13.5px">شالی‌زار طالب
+            <span class="sponsor-tag" style="margin-right:2px"><svg><use href="#i-spark-v2"/></svg> فروشندهٔ ویژه</span>
+          </div>
+          <div class="s">
+            <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · شالی‌زار و برداشت برنج</span>
+          </div>
+          <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+            <span class="badge b-stone">برنج هاشمی</span>
+            <span class="badge b-orange">۲٬۷۸۰٬۰۰۰ تومان</span>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">چون «برنج هاشمی» در لیست خرید شماست</div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="color:var(--stone);flex-shrink:0;align-self:center">دنبال کردن قیمت</button>
+      </div>
+
+      <!-- نتیجهٔ طبیعی تطبیق -->
+      <div class="row-card" style="align-items:flex-start">
+        <div class="matchring" style="background:conic-gradient(var(--primary-deep) 87%, #e8e7e5 0);margin-top:2px;flex-shrink:0">
+          <span class="in" style="color:var(--primary-deep)">۸۷٪</span>
+        </div>
+        <div class="body">
+          <div class="t" style="font-size:13.5px">تجارت گیل‌رنج <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg></div>
+          <div class="s">
+            <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · پخش برنج</span>
+          </div>
+          <div style="font-size:10.5px;color:var(--stone-soft);background:var(--muted);border-radius:9px;padding:7px 10px;margin-top:6px;line-height:1.8">هم‌جنسِ برنج لیست شما را با حداقل سفارش پایین‌تر می‌فروشد — ۲٫۵٪ ارزان‌تر از تأمین‌کنندگان فعلی شما.</div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="color:var(--stone);flex-shrink:0;align-self:center">دنبال کردن قیمت</button>
+      </div>
+
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>«فروشندهٔ ویژه» در حال تبلیغ است و در تطبیق‌های مشابه، بالاتر نمایش داده می‌شود — رتبهٔ نتایج طبیعیِ تطبیق خریدنی نیست.</div>
+      </div>
+
+      <!-- ═══ استعلام گروهی از فروشندگان دنبال‌شده ═══ -->
+      <button class="btn btn-stone btn-block" style="margin-top:12px" data-go="12">
+        <svg><use href="#i-send"/></svg>
+        استعلام گروهی از ۳ فروشندهٔ دنبال‌شده
+      </button>
+
+      <!-- ═══ کادر تأمین‌کنندگان دیگر این کالا → تابلوی تأمین ═══ -->
+      <div class="card" style="display:flex;align-items:center;gap:11px;margin-top:10px;cursor:pointer" data-go="09">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone);flex-shrink:0">
+          <svg style="width:19px;height:19px"><use href="#i-board"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700">تأمین‌کنندگان دیگر این کالا</div>
+          <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">تابلوی تأمین · ۳ تأمین‌کننده + پیشنهادهای تطبیق</div>
+        </div>
+        <svg style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0"><use href="#i-chev"/></svg>
+      </div>
+
+    </main>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -5524,7 +5830,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب کن الان کدام را ببینی</div>
   <button class="sheet-row" data-arm-go="buy">
     <span class="ico buy"><svg><use href="#i-basket"/></svg></span>
-    <span class="tx"><b>دستیار خرید</b><span>لیست خرید · تابلوهای تأمین · پیشنهادها</span></span>
+    <span class="tx"><b>دستیار خرید</b><span>دفتر خرید · کاتالوگ‌ها · درخواست‌های قیمت</span></span>
     <svg class="check" data-check="buy" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <button class="sheet-row" data-arm-go="sell">
@@ -5534,6 +5840,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
   <div class="sub" style="margin:10px 0 2px">نقش تو ثابت نیست — عمده‌فروش می‌تواند همزمان از هر دو دستیار استفاده کند.</div>
   <button class="btn btn-outline" id="sheet-close" data-close style="width:100%;margin-top:8px">بستن</button>
+</div>
+
+<!-- ═══ فاز ۲۶ — منوی سه‌نقطهٔ کاتالوگ ذخیره‌شده (دفترچهٔ تلفن ۱۰) ═══ -->
+<!-- IMPLEMENTATION NOTE: عنوان شیت موقع باز شدن با نام همان ردیف هم‌گام می‌شود (JS فاز ۲۶).
+     «حذف» ردیف را از لیست ذخیره‌شده‌ها برمی‌دارد و شمارنده را به‌روز می‌کند — کاتالوگ هر زمان دوباره قابل ذخیره است. -->
+<div class="sheet" id="sheet-catmenu" role="dialog" aria-label="گزینه‌های کاتالوگ ذخیره‌شده">
+  <div class="grab"></div>
+  <h3 id="catmenu-title">پخش برنج پارس</h3>
+  <div class="sub">کاتالوگ ذخیره‌شده</div>
+  <button class="sheet-row" data-close>
+    <span class="ico buy"><svg><use href="#i-phone"/></svg></span>
+    <span class="tx"><b>تماس</b><span dir="ltr">۰۹۱۱ ۲۳۴ ۵۶۷۸</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-go="13">
+    <span class="ico buy"><svg><use href="#i-store"/></svg></span>
+    <span class="tx"><b>مشاهدهٔ کاتالوگ</b><span>کالاها، قیمت‌ها و شرایط</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row danger" data-catdel>
+    <span class="ico"><svg><use href="#i-trash"/></svg></span>
+    <span class="tx"><b>حذف از کاتالوگ‌های ذخیره‌شده</b><span>کاتالوگ هر زمان دوباره قابل ذخیره است</span></span>
+  </button>
 </div>
 
 <!-- ═══ ۱-ب) فاز ۲۴ — کسب‌وکارهای من: انتخاب کسب‌وکارِ فعال (current business) ═══ -->
@@ -6149,7 +6478,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <!-- جایگاه ۲: تابلوی تأمین — ردیف فشرده با تصویر کوچک -->
   <div class="sheet-row slot-row" style="cursor:default">
     <span class="as-thumb"><img src="png/p23/slot-supply-board.png" alt="جایگاه در تابلوی تأمین کالا"></span>
-    <span class="tx"><b>تابلوی تأمینِ همان کالا</b><span>بالای تأمین‌کنندگان، ویژهٔ لیست خرید خریدار · هر مشاهده ۱٬۰۰۰ / درخواست قیمت ۵٬۰۰۰ تومان</span></span>
+    <span class="tx"><b>تابلوی تأمینِ همان کالا</b><span>بالای تأمین‌کنندگان، با نشان «فروشندهٔ ویژه» · هر مشاهده ۱٬۰۰۰ / درخواست قیمت ۵٬۰۰۰ تومان</span></span>
     <div class="toggle on"></div>
   </div>
 
@@ -7171,7 +7500,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   'use strict';
   /* موتور پروتوتایپ — فقط رفتار؛ هیچ عنصری از دیزاین تغییر نمی‌کند */
   var ARM_HOME = { sell: '01', buy: '08' };
-  var TABS = { sell: ['20', '01', '05', '18', '07'], buy: ['08', '10', '31', '11', '18', '14'] };
+  var TABS = { sell: ['20', '01', '05', '18', '07'], buy: ['08', '10', '31', '18', '14'] }; /* فاز ۲۶: «پیشنهادها» حذف — فوتر استاندارد ۵ تبی */
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
@@ -7185,16 +7514,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
       ['08', 'دفتر خرید', '<svg><use href="#i-list"/></svg>', ''],
       ['10', 'کاتالوگ‌ها', '<svg><use href="#i-building"/></svg>', ''],
       ['31', 'کمپین‌ها', '<svg><use href="#i-spark"/></svg>', ''],
-      ['11', 'پیشنهادها', '<svg><use href="#i-sparkles"/></svg>', ''],
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
       ['14', 'پروفایل', '<svg><use href="#i-user"/></svg>', '']
     ]
   };
   var DEFAULT_BACK = {
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
-    '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
+    '11': '08', '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
-    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07'
+    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07', '33': '08'
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
@@ -7203,11 +7531,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '04': [['ذخیره در کاتالوگ', '01']],
     '06': [['ارسال پیشنهاد', '28'], ['بایگانی', '05']],
     '07': [['نمای عمومی', '13'], ['خروج از حساب', '15']],
-    '08': [['دنبال کردن', '13'], ['افزودن کالا', '13']],
-    '09': [['درخواست قیمت', '12'], ['کاتالوگ', '13'], ['درخواست قیمت از تأمین‌کننده‌های انتخابی', '12']],
-    '10': [['کاتالوگ', '13']],
-    '11': [['افزودن به تابلو', '09'], ['مشاهده کاتالوگ', '13'], ['افزودن به لیست', '08'], ['مشاهده', '02']],
-    '12': [['ارسال به ۲ فروشنده + شبکه iMach', '08']],
+    '08': [['دنبال کردن', '13'], ['افزودن کالا', '13'], ['درخواست‌های قیمت من', '11']],
+    '09': [['درخواست قیمت', '12'], ['کاتالوگ', '13'], ['درخواست قیمت از تأمین‌کننده‌های انتخابی', '12'], ['افزودن به لیست مقایسه', '33'], ['مشاهده کاتالوگ', '13']],
+    '10': [['کاتالوگ', '13'], ['مشاهدهٔ کاتالوگ', '13']],
+    '11': [['ساخت درخواست مشابه', '12'], ['گفتگو', '19']],
+    '12': [['ارسال به ۲ فروشنده + شبکه iMach', '11']],
     '14': [['خروج از حساب', '15']],
     '15': [['ساخت حساب', '16'], ['ورود', '17']],
     '16': [['ساخت حساب و ورود', '01'], ['وارد شوید', '17']],
@@ -7219,8 +7547,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '28': [['مشاهده و پاسخ', '06']],
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
-  var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' };
-  var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش"};
+  var CARDS = { '01': '03', '05': '06', '08': '33', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' }; /* فاز ۲۶: کارت دفتر خرید → لیست مقایسهٔ ۳۳ */
+  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های قیمت من · دستیار خرید","12":"۱۲ — فرم درخواست قیمت · استعلام گروهی","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — دفتر خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی"};
 
   var stack = [];
   var current = null;
@@ -7467,6 +7795,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (sb) sb.scrollTop = 0;
   }
 
+  /* ── فاز ۲۶: شمارنده‌های زنده — درخواست‌های قیمت (۱۱) و دفترچهٔ کاتالوگ‌ها (۱۰) ── */
+  var catRow = null;
+  function prqCount() {
+    var now = document.querySelectorAll('#prq-now .prq-card').length;
+    var arch = document.querySelectorAll('#prq-arch .prq-card').length;
+    var n = document.getElementById('prq-cnt-now');
+    var a = document.getElementById('prq-cnt-arch');
+    if (n) n.textContent = '(' + faNum(now) + ')';
+    if (a) a.textContent = '(' + faNum(arch) + ')';
+    var sub = document.getElementById('prq-sub');
+    if (sub) sub.textContent = faNum(now) + ' جاری · ' + faNum(arch) + ' آرشیو';
+  }
+  function prqCountSaved() {
+    var cnt = document.getElementById('saved-cats-count');
+    var rows = document.querySelectorAll('#saved-cats > .row-card').length;
+    if (cnt) cnt.textContent = faNum(rows) + ' کاتالوگ';
+  }
+
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -7557,6 +7903,83 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (langWrap) {
       var d2 = langWrap.querySelector('.lang-dd');
       if (d2) d2.classList.remove('open');
+    }
+
+    /* ── فاز ۲۶: درخواست‌های قیمت من (۱۱) — سوییچ جاری/آرشیو · متوقف · بایگانی ── */
+    var prqT = t.closest('[data-prqtab]');
+    if (prqT) {
+      prqT.parentElement.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b === prqT); });
+      var nowSec = document.getElementById('prq-now');
+      var archSec = document.getElementById('prq-arch');
+      var isNow = prqT.dataset.prqtab === 'now';
+      if (nowSec) nowSec.hidden = !isNow;
+      if (archSec) archSec.hidden = isNow;
+      var sb11 = document.querySelector('#scr-11 .screen-body');
+      if (sb11) sb11.scrollTop = 0;
+      return;
+    }
+    var prqP = t.closest('[data-prqpause]');
+    if (prqP) {
+      var pcard = prqP.closest('.prq-card');
+      if (pcard) {
+        var stopped = pcard.classList.toggle('prq-stopped');
+        var sbadge = pcard.querySelector('.prq-stopbadge');
+        if (sbadge) sbadge.hidden = !stopped;
+        prqP.textContent = stopped ? 'شروع مجدد' : 'متوقف کردن';
+      }
+      return;
+    }
+    var prqA = t.closest('[data-prqarch]');
+    if (prqA) {
+      var acard = prqA.closest('.prq-card');
+      var alist = document.getElementById('prq-arch-list');
+      if (acard && alist) {
+        var dl = acard.querySelector('.prq-deadline');
+        if (dl) { dl.textContent = 'بایگانی شد'; dl.className = 'badge b-muted prq-deadline'; }
+        var sbtn2 = acard.querySelector('.prq-stopbadge');
+        if (sbtn2) sbtn2.hidden = true;
+        var act = acard.querySelector('.prq-actions');
+        if (act) {
+          var sim = document.createElement('button');
+          sim.className = 'btn btn-stone btn-sm btn-block';
+          sim.setAttribute('data-go', '12');
+          sim.innerHTML = '<svg><use href="#i-plus"/></svg> ساخت درخواست مشابه';
+          act.replaceWith(sim);
+        }
+        alist.appendChild(acard);
+        prqCount();
+      }
+      return;
+    }
+
+    /* ── فاز ۲۶: مهلت «سایر» در فرم استعلام (۱۲) — نمایش ورودی روز دلخواه ── */
+    var dlp = t.closest('#dl-choice .pill');
+    if (dlp) {
+      dlp.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('active', p === dlp); });
+      var cstm = document.getElementById('dl-custom');
+      if (cstm) cstm.hidden = dlp.dataset.deadline !== 'other';
+      return;
+    }
+
+    /* ── فاز ۲۶: منوی سه‌نقطهٔ کاتالوگ ذخیره‌شده (۱۰) — عنوان هم‌گام + حذف ردیف ── */
+    var catDots = t.closest('[data-sheet="sheet-catmenu"]');
+    if (catDots) {
+      catRow = catDots.closest('.row-card');
+      var catNm = catRow && catRow.querySelector('.t');
+      var catH = document.getElementById('catmenu-title');
+      if (catNm && catH) catH.textContent = catNm.textContent.replace(/\s+/g, ' ').trim();
+      openSheet('sheet-catmenu');
+      return;
+    }
+    var catDel = t.closest('[data-catdel]');
+    if (catDel) {
+      closeSheet();
+      if (catRow && catRow.parentElement) {
+        catRow.remove();
+        catRow = null;
+        prqCountSaved();
+      }
+      return;
     }
 
     /* شیت سوییچ دستیار */
