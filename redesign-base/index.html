@@ -187,8 +187,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-13 .ms-btn svg { width: 19px; height: 19px; }
 
   /* ═══ فاز ۲۱ — کاتالوگ عمومی: مشتری بودن + آمار اشتراک‌گذاری ═══ */
-  #scr-13 .cust-banner { display: flex; align-items: center; gap: 8px; background: var(--green-bg); border: 1px solid #b6e2c6; color: var(--green); border-radius: 12px; padding: 11px 13px; font-size: 11.5px; font-weight: 700; line-height: 1.8; margin: 10px 0 4px; }
-  #scr-13 .cust-banner svg { width: 15px; height: 15px; flex-shrink: 0; }
+  #scr-13 .cust-banner { display: flex; align-items: center; gap: 7px; background: var(--green-bg); border: 1px solid #d9eee2; color: var(--green); border-radius: 9px; padding: 7px 11px; font-size: 10px; font-weight: 600; line-height: 1.6; margin: 8px 0 2px; }
+  #scr-13 .cust-banner svg { width: 12.5px; height: 12.5px; flex-shrink: 0; opacity: .8; }
   #scr-13 .pub-stats { display: flex; gap: 7px; margin: 10px 0 2px; }
   #scr-13 .pub-stats span { flex: 1; text-align: center; font-size: 9.5px; color: var(--muted-fg); background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 7px 4px 6px; }
   #scr-13 .pub-stats b { display: block; font-size: 14px; color: var(--foreground); line-height: 1.5; }
@@ -1374,7 +1374,37 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span style="color:var(--stone-soft)">۵۰ کیسه به بالا <span class="badge b-green" style="font-size:9px;padding:1px 7px;margin-right:4px">بهترین</span></span>
             <span><b style="color:var(--green)">۲٬۶۵۰٬۵۰۰</b> <small style="color:var(--muted-fg)">تومان</small> <span class="badge b-green" style="font-size:9px;padding:1px 7px">٪۷</span></span>
           </div>
-          <div style="font-size:10px;color:var(--muted-fg);margin-top:8px;line-height:1.8">هرچه حجم خرید بیشتر، ارزان‌تر — روی سفارش همین کالا خودکار اعمال می‌شود.</div>
+        </div>
+
+        <!-- فاز ۲۵ — تخفیف همکار: خریدارِ این صفحه در گروه مشتری «همکار» فروشنده است (همان ۷٪ کاتالوگ عمومی ۱۳) -->
+        <div style="margin-top:10px;display:flex;align-items:center;gap:7px;background:var(--green-bg);border:1px solid #d9eee2;color:var(--green);border-radius:9px;padding:8px 12px;font-size:10.5px;font-weight:600;line-height:1.6">
+          <svg style="width:13px;height:13px;flex-shrink:0"><use href="#i-percent"/></svg>
+          <span>تخفیف برای شما که مشتری همکار هستید ۷٪</span>
+        </div>
+
+        <!-- جایگاه تبلیغاتی: تأمین‌کنندگان ویژهٔ همین کالا (فاز ۲۵: بازگردانده شد — کالاهای کمپین‌دارِ سایر فروشندگان در جزئیات کالای مرتبط) -->
+        <div class="card" style="margin-top:10px;padding:13px 14px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px">
+              <svg style="width:17px;height:17px;color:var(--primary)"><use href="#i-spark"/></svg>
+              تأمین‌کنندگان ویژهٔ این کالا
+            </div>
+            <span class="badge b-orange">۳ مورد</span>
+          </div>
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--stone-soft)">آریو غلات — اصفهان <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></span>
+              <b>۲٬۹۲۰٬۰۰۰ <small style="color:var(--muted-fg)">تومان</small></b>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--stone-soft)">کیان غلات — قزوین <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></span>
+              <b>۳٬۰۰۰٬۰۰۰ <small style="color:var(--muted-fg)">تومان</small></b>
+            </div>
+          </div>
+          <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="09">
+            مشاهده تابلوی تأمین
+            <svg><use href="#i-chev"/></svg>
+          </button>
         </div>
 
       </div>
@@ -5405,7 +5435,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-spark"/></svg> کمپین چطور کار می‌کند؟</h2></div>
       <div class="card" style="padding:14px">
         <div class="gstep"><span class="gn">۱</span><span>کمپینت را با چند لمس می‌سازی: نام، نوع (تخفیف ویژه / ارسال رایگان / بسته ترکیبی)، مدت و کالاها.</span></div>
-        <div class="gstep"><span class="gn">۲</span><span>کمپین در <b>بخش «کمپین‌ها»</b> — دکمهٔ پایین اپ خریداران — نمایش داده می‌شود؛ جایگاه تبلیغاتی دیگری ندارد.</span></div>
+        <div class="gstep"><span class="gn">۲</span><span>کمپین در <b>بخش «کمپین‌ها»</b> — دکمهٔ پایین اپ خریداران — نمایش داده می‌شود؛ در جزئیات کالای مرتبطِ سایر فروشندگان هم «تأمین‌کنندهٔ ویژه» دیده می‌شوی.</span></div>
         <div class="gstep"><span class="gn">۳</span><span>کالاهای کمپین‌دار در کاتالوگ خودت <b>نشان ویژه</b> می‌گیرند و تخفیف کمپین روی قیمت‌ها دیده می‌شود.</span></div>
         <div class="gstep"><span class="gn">۴</span><span>با هر مشاهدهٔ کمپین توسط خریداران، ۱٬۰۰۰ تومان و با هر ذخیرهٔ کاتالوگ یا شروع گفتگو، ۵٬۰۰۰ تومان از کیف پولت کم می‌شود — نه بیشتر، نه کمتر.</span></div>
 
@@ -6020,10 +6050,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>شروع بارگذاری و تطبیق</button>
 </div>
 
-<!-- ═══ ۹) کمپین جدید — فاز ۲۴: راهنما به صفحهٔ مستقل؛ فقط در «بخش کمپین‌ها» نمایش ═══ -->
-<!-- IMPLEMENTATION NOTE (فاز ۲۴): راهنمای کامل کمپین/تبلیغ به صفحهٔ ۳۲ منتقل شد تا فرم ساده بماند —
-     راهنما معمولاً یک بار خوانده می‌شود و نباید هر بار جلوی چشم باشد. کمپین جایگاه تبلیغاتیِ دیگر ندارد:
-     فقط در بخش «کمپین‌ها» (دکمهٔ پایین اپ خریداران) + نشان ویژه روی کالاهای کاتالوگ خودِ فروشنده دیده می‌شود. -->
+<!-- ═══ ۹) کمپین جدید — فاز ۲۴: راهنما به صفحهٔ مستقل · فاز ۲۵: جایگاه «تأمین‌کنندگان ویژه» بازگردانده شد ═══ -->
+<!-- IMPLEMENTATION NOTE (فاز ۲۴/۲۵): راهنمای کامل کمپین/تبلیغ به صفحهٔ ۳۲ منتقل شد تا فرم ساده بماند —
+     راهنما معمولاً یک بار خوانده می‌شود و نباید هر بار جلوی چشم باشد. نمایش کمپین: بخش «کمپین‌ها» (دکمهٔ پایین اپ خریداران)
+     + نشان ویژه روی کالاهای کاتالوگ خودِ فروشنده + جایگاه «تأمین‌کنندگان ویژهٔ این کالا» در جزئیات کالای مرتبط (۰۲).
+     دکمهٔ مدیریت کمپین فقط از مسیرهای اصلی (پروفایل/تنظیمات/بخش کمپین) باز می‌شود — نه در سطح کالا/کاتالوگ (خواستهٔ فاز ۲۴). -->
 <div class="sheet" id="sheet-campaign" role="dialog" aria-label="کمپین جدید">
   <div class="grab"></div>
   <h3>کمپین جدید</h3>
@@ -6077,7 +6108,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </button>
   </div>
   <!-- فاز ۲۳ — قیمت‌گذاری یکپارچه تومانی + فاز ۲۴: جایگاه نمایش کمپین -->
-  <div class="hintnote">هزینه از کیف پول: هر مشاهدهٔ تبلیغ <b>۱٬۰۰۰ تومان</b> · هر ذخیرهٔ کاتالوگ یا گفتگو <b>۵٬۰۰۰ تومان</b> — فقط وقتی کسر می‌شود که واقعاً اتفاق بیفتد. کمپین فقط در بخش «کمپین‌ها» (پایین اپ خریداران) نمایش داده می‌شود؛ جایگاه تبلیغاتی دیگری مصرف نمی‌کند.</div>
+  <div class="hintnote">هزینه از کیف پول: هر مشاهدهٔ تبلیغ <b>۱٬۰۰۰ تومان</b> · هر ذخیرهٔ کاتالوگ یا گفتگو <b>۵٬۰۰۰ تومان</b> — فقط وقتی کسر می‌شود که واقعاً اتفاق بیفتد.</div>
   <div class="sheet-row" style="cursor:default">
     <span class="ico" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-wallet"/></svg></span>
     <span class="tx"><b>موجودی کیف پول: <span data-wallet>۸۵٬۰۰۰</span> تومان</b><span>پرداخت فقط وقتی دیده شوی — شارژ در صورت لزوم</span></span>
@@ -6159,7 +6190,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <div class="dlg" id="dlg-campok" role="dialog" aria-label="راه‌اندازی کمپین">
   <h3>راه‌اندازی کمپین</h3>
   <div class="dlg-q">کمپین «فروش پاییزهٔ برنج» فعال شود؟</div>
-  <div class="dlg-p">کالاهای کمپین از همین حالا با نشان ویژه در بخش «کمپین‌ها» و کاتالوگ شما دیده می‌شوند. هزینه فقط وقتی از کیف پول کم می‌شود که خریداری تبلیغ شما را ببیند (۱٬۰۰۰ تومان) یا ذخیره کند و گفتگو کند (۵٬۰۰۰ تومان). گزارش دقیق چه‌کسان و ریز مصرف، همیشه در «گزارش تبلیغ‌ها» در اختیار توست.</div>
+  <div class="dlg-p">کالاهای کمپین از همین حالا با نشان ویژه در بخش «کمپین‌ها»، کاتالوگ شما و جزئیات کالاهای مرتبط دیده می‌شوند. هزینه فقط وقتی از کیف پول کم می‌شود که خریداری تبلیغ شما را ببیند (۱٬۰۰۰ تومان) یا ذخیره کند و گفتگو کند (۵٬۰۰۰ تومان). گزارش دقیق چه‌کسان و ریز مصرف، همیشه در «گزارش تبلیغ‌ها» در اختیار توست.</div>
   <div class="dlg-btns">
     <button class="btn btn-primary" data-go="30">راه‌اندازی و مشاهدهٔ گزارش</button>
     <button class="btn btn-outline" data-close>بستن</button>
