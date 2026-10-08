@@ -1,0 +1,178 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<title>adslot-mock — تصاویر جایگاه‌های تبلیغاتی هدفمند (سمت خریدار)</title>
+<link rel="stylesheet" href="../../css/style.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  .frame {
+    width: 360px; height: 560px;
+    background: var(--bg);
+    overflow: hidden;
+    position: relative;
+    font-family: 'IRANSans', 'Segoe UI', Tahoma, sans-serif;
+    direction: rtl;
+    display: flex; flex-direction: column;
+  }
+  .mk-appbar { height: 52px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 10px; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--border); }
+  .mk-appbar .lg { height: 26px; }
+  .mk-appbar .sp { flex: 1; }
+  .mk-body { flex: 1; overflow: hidden; padding: 12px 14px 0; }
+  /* چیپ‌های بالای کاتالوگ‌های ذخیره‌شده */
+  .mk-tabs { display: flex; gap: 7px; margin-bottom: 10px; }
+  .mk-tabs span { font-size: 11px; font-weight: 700; padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border); background: #fff; color: var(--muted-fg); }
+  .mk-tabs span.on { background: #efedf7; border-color: transparent; color: #57534e; }
+</style>
+</head>
+<body>
+
+<!-- ═══ تصویر ۱ — جایگاه «کاتالوگ‌های ذخیره‌شدهٔ خریدار» ═══ -->
+<div class="frame" id="shot-saved">
+  <div class="mk-appbar">
+    <img class="lg" src="../../assets/logo3.svg" alt="iMach">
+    <span class="sp"></span>
+    <span style="font-size:11px;font-weight:700;color:var(--stone-soft);background:var(--stone-tint);border-radius:999px;padding:5px 12px">دستیار خرید</span>
+  </div>
+  <div class="mk-body">
+    <div style="font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px">
+      <svg style="width:17px;height:17px;color:var(--stone)"><use href="#i-building"/></svg>
+      کاتالوگ‌های ذخیره‌شده
+      <span style="font-size:10.5px;font-weight:400;color:var(--muted-fg);margin-right:auto">۴ کاتالوگ</span>
+    </div>
+
+    <div class="mk-tabs" style="margin-top:10px">
+      <span>مرتبط با من</span>
+      <span class="on">ذخیره‌شده (۴)</span>
+    </div>
+
+    <!-- کارت تبلیغ هدفمند — جایگاه اصلی -->
+    <div class="row-card" style="align-items:flex-start;border-style:dashed;border-color:#f3c99a;background:#fffdf8">
+      <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c);margin-top:2px">پ</div>
+      <div class="body">
+        <div class="t" style="font-size:13.5px">پخش برنج پارس
+          <span class="sponsor-tag" style="margin-right:2px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></svg> پیشنهاد مرتبط با لیست خرید شما</span>
+        </div>
+        <div class="s">
+          <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت</span>
+          <span>پخش مواد غذایی</span>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge b-stone">برنج هاشمی</span>
+          <span class="badge b-orange">۲٬۸۵۰٬۰۰۰ تومان</span>
+        </div>
+        <div style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">چون «برنج هاشمی» در لیست خرید شماست</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
+        <button class="btn btn-outline btn-sm">کاتالوگ</button>
+      </div>
+    </div>
+
+    <!-- کارت‌های عادی ذخیره‌شده -->
+    <div class="row-card" style="align-items:flex-start;margin-top:9px">
+      <div class="avatar-sm" style="background:#0e7490;margin-top:2px">ک</div>
+      <div class="body">
+        <div class="t" style="font-size:13.5px">کیان غلات</div>
+        <div class="s">
+          <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین</span>
+          <span>پخش مواد غذایی</span>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge b-stone">برنج هاشمی</span>
+          <span class="badge b-muted" style="background:var(--stone);color:#fff">ذخیره ✓</span>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" style="align-self:center;flex-shrink:0">کاتالوگ</button>
+    </div>
+
+    <div class="row-card" style="align-items:flex-start;margin-top:9px;opacity:.92">
+      <div class="avatar-sm" style="background:#c2703a;margin-top:2px">ن</div>
+      <div class="body">
+        <div class="t" style="font-size:13.5px">نگین گلستان</div>
+        <div class="s">
+          <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین</span>
+          <span>کنسروسازی</span>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge b-stone">رب گوجه‌فرنگی</span>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" style="align-self:center;flex-shrink:0">کاتالوگ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ تصویر ۲ — جایگاه «تابلوی تأمین لیست خرید» ═══ -->
+<div class="frame" id="shot-board" style="margin-top:40px">
+  <div class="mk-appbar">
+    <img class="lg" src="../../assets/logo3.svg" alt="iMach">
+    <span class="sp"></span>
+    <span style="font-size:11px;font-weight:700;color:var(--stone-soft);background:var(--stone-tint);border-radius:999px;padding:5px 12px">دستیار خرید</span>
+  </div>
+  <div class="mk-body">
+    <div style="font-size:14px;font-weight:700">برنج هاشمی <span style="font-size:10.5px;font-weight:400;color:var(--muted-fg)">تابلوی تأمین · ۴ تأمین‌کننده</span></div>
+
+    <!-- تأمین‌کنندهٔ پیشنهادی (هدفمند) -->
+    <div class="supplier-card sponsored" style="margin-top:10px">
+      <span class="sponsor-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></svg> ویژهٔ لیست خرید شما</span>
+      <div class="sup-head" style="margin-top:4px">
+        <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+        <div class="nm">
+          <div class="n">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
+          <div class="c">
+            <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · هم‌شهری</span>
+            <span>به‌روزرسانی امروز</span>
+          </div>
+        </div>
+        <div class="sup-price">
+          <div class="price">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+          <span class="trend down">▼ از ۲٬۹۰۰٬۰۰۰</span>
+        </div>
+      </div>
+      <div class="sup-conditions">
+        <span class="cond">کیسه ۵۰ کیلویی</span>
+        <span class="cond">حداقل ۵ کیسه</span>
+        <span class="cond" style="background:var(--green-bg);color:var(--green)">موجود</span>
+      </div>
+      <div class="sup-actions">
+        <button class="btn btn-stone btn-sm" style="flex:1">درخواست قیمت</button>
+        <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
+      </div>
+    </div>
+
+    <!-- تأمین‌کنندهٔ عادی -->
+    <div class="supplier-card" style="margin-top:9px">
+      <div class="sup-head">
+        <div class="avatar-sm" style="background:#0e7490">ک</div>
+        <div class="nm">
+          <div class="n">کیان غلات</div>
+          <div class="c">
+            <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین · هم‌استان</span>
+            <span>به‌روزرسانی ۱۱ روز پیش</span>
+          </div>
+        </div>
+        <div class="sup-price">
+          <div class="price">۳٬۰۰۰٬۰۰۰ <small>تومان</small></div>
+          <span class="trend flat">— بدون تغییر</span>
+        </div>
+      </div>
+      <div class="sup-conditions">
+        <span class="cond">کیسه ۵۰ کیلویی</span>
+        <span class="cond">حداقل ۲۰ کیسه</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- اسپرایت آیکون‌های لازم -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5c0 6-8 11.5-8 11.5s-8-5.5-8-11.5a8 8 0 1116 0z"/><circle cx="12" cy="10.5" r="2.7"/></symbol>
+  <symbol id="i-verified" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
+</svg>
+
+</body>
+</html>

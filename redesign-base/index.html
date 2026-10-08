@@ -900,6 +900,78 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .ev-row .ev-when { font-size: 9.5px; color: var(--muted-fg); margin-top: 2px; }
   .ev-empty { font-size: 11.5px; color: var(--muted-fg); text-align: center; padding: 24px 0 12px; }
 
+  /* ═══ فاز ۲۳ — مدل درآمدی: کیف پول · شارژ · جایگاه‌های تبلیغاتی · ریز مصرف ═══ */
+  /* کارت کیف پول (پروفایل و بالای صفحهٔ شارژ) */
+  .wallet-card { display: flex; align-items: center; gap: 11px; }
+  .wallet-card .wic { width: 40px; height: 40px; border-radius: 12px; background: var(--accent); color: var(--primary-strong); display: grid; place-items: center; flex-shrink: 0; }
+  .wallet-card .wic svg { width: 20px; height: 20px; }
+  .wallet-card .wtx { flex: 1; min-width: 0; }
+  .wallet-card .wtx .wv { font-size: 16.5px; font-weight: 800; color: var(--primary-strong); line-height: 1.4; }
+  .wallet-card .wtx .wk { font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  /* بنر بزرگ موجودی در صفحهٔ کیف پول */
+  .wallet-hero { display: flex; align-items: center; gap: 13px; }
+  .wallet-hero .whic { width: 52px; height: 52px; border-radius: 16px; background: var(--accent); color: var(--primary-strong); display: grid; place-items: center; flex-shrink: 0; }
+  .wallet-hero .whic svg { width: 26px; height: 26px; }
+  .wallet-hero .wv { font-size: 24px; font-weight: 800; color: var(--primary-strong); line-height: 1.3; }
+  .wallet-hero .wv small { font-size: 12px; font-weight: 500; color: var(--muted-fg); }
+  .wallet-hero .wk { font-size: 11px; color: var(--muted-fg); margin-top: 3px; line-height: 1.8; }
+  .price-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .price-chips .pc2 { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; background: var(--muted); border-radius: 8px; padding: 4px 9px; color: var(--stone-soft); }
+  .price-chips .pc2 svg { width: 11px; height: 11px; }
+  .price-chips .pc2 b { color: var(--primary-strong); }
+  /* بسته‌های شارژ */
+  .packgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .paypack { position: relative; border: 1.5px solid var(--border); background: #fff; border-radius: 13px; padding: 12px 10px 10px; text-align: center; cursor: pointer; font-family: inherit; }
+  .paypack .pv { font-size: 15px; font-weight: 800; display: block; }
+  .paypack .pk { font-size: 9.5px; color: var(--muted-fg); display: block; margin-top: 3px; }
+  .paypack .gift { position: absolute; top: -7px; right: 8px; font-size: 9px; font-weight: 700; background: var(--green-bg); color: var(--green); border-radius: 999px; padding: 2px 8px; }
+  .paypack.on { border-color: var(--primary); background: #fffaf3; box-shadow: 0 2px 8px rgba(249,115,22,.12); }
+  .paypack.on .pv { color: var(--primary-strong); }
+  /* ردیف ریز مصرف */
+  .usg-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0eee8; }
+  .usg-row:last-child { border-bottom: 0; }
+  .usg-row .uic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; }
+  .usg-row .uic svg { width: 16px; height: 16px; }
+  .usg-row .utx { flex: 1; min-width: 0; }
+  .usg-row .utx .t { font-size: 12.5px; font-weight: 600; line-height: 1.7; }
+  .usg-row .utx .s { font-size: 10px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .usg-row .cost { font-size: 12px; font-weight: 800; color: var(--red); flex-shrink: 0; white-space: nowrap; }
+  .usg-row .cost.plus { color: var(--green); }
+  /* جایگاه تبلیغاتی — بلوک توضیح با تصویر (شیت تبلیغات هدفمند) */
+  .adslot { border: 1px solid var(--border); border-radius: 14px; background: #fff; padding: 9px; margin-top: 9px; cursor: pointer; position: relative; }
+  .adslot.on { border-color: var(--primary); box-shadow: 0 2px 10px rgba(249,115,22,.10); }
+  .adslot .as-shot { display: block; height: 132px; border-radius: 9px; overflow: hidden; border: 1px solid #ecebe4; background: #faf9f6; position: relative; }
+  .adslot .as-shot img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .adslot .as-tag { position: absolute; top: 17px; right: 17px; z-index: 2; }
+  .adslot .as-chk { position: absolute; top: 17px; left: 17px; z-index: 2; width: 21px; height: 21px; border-radius: 6px; border: 1.5px solid #fff; background: rgba(42,39,35,.38); color: #fff; display: grid; place-items: center; }
+  .adslot .as-chk svg { width: 12px; height: 12px; display: none; }
+  .adslot.on .as-chk { background: var(--primary); border-color: var(--primary); }
+  .adslot.on .as-chk svg { display: block; }
+  .adslot .as-t { font-size: 12px; font-weight: 700; line-height: 1.7; margin-top: 8px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .adslot .as-d { font-size: 10.5px; color: var(--stone-soft); line-height: 1.9; margin-top: 3px; }
+  .adslot .as-p { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; }
+  .adslot .as-p span { font-size: 9.5px; font-weight: 700; background: var(--muted); border-radius: 7px; padding: 3px 8px; color: var(--stone-soft); }
+  .adslot .as-p span b { color: var(--primary-strong); }
+  /* حالت انتخاب چندکالا در کاتالوگ (سطح کاتالوگ → کمپین / تبلیغ هدفمند) */
+  .scr.selmode #scr-01-chips-x { display: none; }
+  .selmode .pcard { cursor: pointer; }
+  .selmode .pcard .ph::before { content: ''; position: absolute; top: 9px; left: 9px; z-index: 3; width: 21px; height: 21px; border-radius: 6px; border: 1.5px solid #fff; background: rgba(42,39,35,.38); }
+  .selmode .pcard.picked .ph::before { content: '✓'; display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 800; background: var(--primary); border-color: var(--primary); }
+  .selmode .pcard.picked { border-color: var(--primary); }
+  .selmode .pcard .gear { display: none; }
+  .selbar { position: absolute; right: 12px; left: 12px; bottom: 86px; z-index: 55; background: #fff; border: 1px solid var(--border); border-radius: 15px; box-shadow: 0 10px 30px rgba(42,39,35,.20); padding: 10px 12px; display: none; }
+  .scr.selmode .selbar { display: block; }
+  .selbar .sb-tx { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .selbar .sb-tx b { color: var(--primary-strong); font-size: 13px; }
+  .selbar .sb-btns { display: flex; gap: 7px; }
+  .selbar .sb-btns .btn { flex: 1; }
+  /* آیکون دکمهٔ انتخاب برای تبلیغ کنار جستجو */
+  .selmode-btn { height: 44px; width: 44px; border-radius: 12px; border: 1px solid var(--border-strong); background: #fff; color: var(--primary-strong); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  .selmode-btn svg { width: 19px; height: 19px; }
+  .selmode-btn:active { background: var(--accent); }
+  /* سرصفحهٔ گزارش تبلیغ — سوییچ بین کمپین و هدفمند */
+  .rep-people .row-card .s .seenchip { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; color: var(--green); background: var(--green-bg); border-radius: 6px; padding: 2px 7px; }
+
 </style>
 </head>
 <body>
@@ -969,6 +1041,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4.5"/><path d="M7.5 9L12 4.5 16.5 9"/><path d="M4 15.5v2.5a2 2 0 002 2h12a2 2 0 002-2v-2.5"/></symbol>
 <symbol id="i-stairs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5h4.5v-4.5h4.5v-4.5h4.5V7h4"/></symbol>
 <symbol id="i-box-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 3.5h9l4 4v9l-4 4h-9l-4-4v-9z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A2.5 2.5 0 015.5 5h13A2.5 2.5 0 0121 7.5v9a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 16.5z"/><path d="M3 9h18"/><path d="M15.5 13.5h2"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M9.5 20V4M15 20v-8M20.5 20V7"/><path d="M2.5 20h19"/></symbol>
+<symbol id="i-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12a1 1 0 011 1V21l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5L5 21V4.5a1 1 0 011-1z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -1014,19 +1089,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="stat hot" data-go="25" title="ذخیره‌کنندگان کاتالوگ"><div class="v">۳۸</div><div class="k">ذخیره‌کننده</div></div>
       </div>
 
-      <!-- جستجو + افزودن -->
+      <!-- جستجو + افزودن + تبلیغ (فاز ۲۳: انتخاب چندکالا برای کمپین/هدفمند) -->
       <div style="display:flex;gap:8px;margin-top:12px">
         <div class="searchbar" style="flex:1">
           <svg><use href="#i-search"/></svg>
           <span>جستجو در کاتالوگ…</span>
         </div>
+        <button class="selmode-btn" data-selmode aria-label="انتخاب کالاها برای تبلیغ" title="تبلیغ برای چند کالا">
+          <svg><use href="#i-target"/></svg>
+        </button>
         <button class="btn btn-primary" style="height:44px;padding:0 16px">
           <svg><use href="#i-plus"/></svg> افزودن کالا
         </button>
       </div>
 
       <!-- فیلتر دسته -->
-      <div class="chips">
+      <div class="chips" id="scr-01-chips-x">
         <button class="chip active">همه</button>
         <button class="chip">هاشمی</button>
         <button class="chip">طارم</button>
@@ -1112,6 +1190,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span class="badge b-muted">عدم نمایش</span>
         برنج صدری — کیسه ۵۰ کیلویی (۱ کالا)
         <span style="margin-right:auto;color:var(--primary-strong);font-weight:700;cursor:pointer">نمایش مجدد</span>
+      </div>
+
+      <!-- فاز ۲۳ — نوار انتخاب چندکالا: تیک‌زدن کالاها در سطح کاتالوگ برای کمپین یا تبلیغات هدفمند -->
+      <!-- IMPLEMENTATION NOTE: حالت انتخاب با دکمهٔ هدف کنار جستجو فعال می‌شود؛ کارت‌های کالا تیک‌پذیر می‌شوند
+           و نوار پایین با شمارندهٔ انتخاب، دو مسیر «کمپین» و «تبلیغ هدفمند» را برای کالاهای تیک‌خورده باز می‌کند.
+           در پیاده‌سازی عملیاتی، کالاهای انتخاب‌شده به فرم کمپین/هدفمند به‌صورت پیش‌انتخاب منتقل می‌شوند. -->
+      <div class="selbar">
+        <div class="sb-tx"><b data-sel-count>۰</b> کالا انتخاب شد — برای تبلیغ انتخاب کن</div>
+        <div class="sb-btns">
+          <button class="btn btn-outline btn-sm" data-selgo="sheet-campaign"><svg><use href="#i-spark"/></svg> کمپین</button>
+          <button class="btn btn-primary btn-sm" data-selgo="sheet-target"><svg><use href="#i-target"/></svg> تبلیغ هدفمند</button>
+          <button class="btn btn-ghost btn-sm" data-selcancel>انصراف</button>
+        </div>
       </div>
 
     </main>
@@ -1304,6 +1395,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <button class="btn btn-outline btn-sm" data-sheet="sheet-stock"><svg><use href="#i-boxes"/></svg> تغییر موجودی</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-details"><svg><use href="#i-pencil"/></svg> ویرایش جزئیات</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-campaign"><svg><use href="#i-spark"/></svg> ایجاد کمپین</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-target"><svg><use href="#i-target"/></svg> تبلیغ هدفمند</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-ptier"><svg><use href="#i-stairs"/></svg> تخفیف پلکانی</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-cowork"><svg><use href="#i-users"/></svg> تخفیف همکار</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-eos"><svg><use href="#i-box-x"/></svg> اتمام موجودی</button>
@@ -1877,6 +1969,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="stat hot"><div class="v">۳۸</div><div class="k">مشتری</div></div>
       </div>
 
+      <!-- فاز ۲۳ — کیف پول: همیشه جلوی چشم، هدایت مستقیم به شارژ -->
+      <div class="card wallet-card" data-go="29" style="cursor:pointer">
+        <div class="wic"><svg><use href="#i-wallet"/></svg></div>
+        <div class="wtx">
+          <div class="wv"><span data-wallet>۸۵٬۰۰۰</span> <small style="font-size:11px;font-weight:500;color:var(--muted-fg)">تومان شارژ</small></div>
+          <div class="wk">مصرف تبلیغ فقط وقتی دیده شوی · ۱٬۰۰۰ / ۵٬۰۰۰ تومان</div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0">خرید شارژ</button>
+      </div>
+
       <!-- مشتریان من -->
       <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer">
         <div style="width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:var(--primary-strong)">
@@ -1896,6 +1998,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div style="display:flex;gap:8px">
           <button class="btn btn-primary btn-sm" style="flex:1"><svg><use href="#i-share"/></svg> اشتراک کاتالوگ</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-eye"/></svg> نمای عمومی</button>
+        </div>
+      </div>
+
+      <!-- فاز ۲۳ — تبلیغات: هر دو نوع، همیشه در دسترس -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-spark"/></svg> تبلیغات</h2></div>
+      <div class="card" style="padding:0 14px">
+        <div data-sheet="sheet-campaign" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-spark"/></svg>
+          <span style="flex:1">کمپین جدید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">کاتالوگت بالاتر و بیشتر دیده شود</span></span>
+          <span class="badge b-green">۱ فعال</span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
+        <div data-sheet="sheet-target" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-target"/></svg>
+          <span style="flex:1">تبلیغات هدفمند<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">دقیقاً برای خریدارِ همان کالا</span></span>
+          <span class="badge b-green">۱ فعال</span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
+        <div data-go="30" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-chart"/></svg>
+          <span style="flex:1">گزارش تبلیغ‌ها<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">چه کسانی دیدند، ذخیره کردند، تماس گرفتند</span></span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
       </div>
 
@@ -2264,6 +2388,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <div class="rows">
 
+        <!-- فاز ۲۳ — جایگاه تبلیغ هدفمند: فقط برای خریدارِ کالای موجود در لیست خریدش -->
+        <div class="row-card" style="align-items:flex-start;border-style:dashed;border-color:#f3c99a;background:#fffdf8">
+          <div class="avatar-sm" style="background:#0d9488;margin-top:2px">ش</div>
+          <div class="body">
+            <div class="t" style="font-size:13.5px">شالی‌زار طالب
+              <span class="sponsor-tag" style="margin-right:2px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></svg> پیشنهاد مرتبط با لیست خرید شما</span>
+            </div>
+            <div class="s">
+              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت</span>
+              <span>شالی‌زار و برداشت برنج</span>
+            </div>
+            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+              <span class="badge b-stone">برنج هاشمی</span>
+              <span class="badge b-orange">۲٬۷۸۰٬۰۰۰ تومان</span>
+            </div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">چون «برنج هاشمی» در لیست خرید شماست</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            <button class="btn btn-outline btn-sm" style="color:var(--stone)">ذخیره</button>
+            <button class="btn btn-outline btn-sm">کاتالوگ</button>
+          </div>
+        </div>
+
         <div class="row-card" style="align-items:flex-start">
           <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c);margin-top:2px">پ</div>
           <div class="body">
@@ -2348,7 +2495,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- پرهیز از دایرکتوری — این صفحه فقط مرتبط با نیاز واقعی -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>این فهرست فقط فروشنده‌هایی را نشان می‌دهد که به کالاهای لیست شما مرتبط‌اند — دایرکتوری کامل بازار نیست. برای کاوش بیشتر، «پیشنهادها» را ببینید.</div>
+        <div>این فهرست فقط فروشنده‌هایی را نشان می‌دهد که به کالاهای لیست شما مرتبط‌اند — دایرکتوری کامل بازار نیست. کارت‌های «پیشنهاد مرتبط با لیست خرید شما» تبلیغِ هدفمندِ همان کالا هستند و با قابِ خط‌چین از نتایج طبیعی جدا می‌شوند.</div>
       </div>
 
     </main>
@@ -3447,6 +3594,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- کارهای اجباری سیستم — تا انجام نشود حذف نمی‌شوند -->
       <div class="sec-title"><h2>کارهای سیستم <span class="badge b-amber" style="margin-right:4px">تا انجام حذف نمی‌شود</span></h2></div>
       <div class="rows">
+        <!-- فاز ۲۳ — فرصت تبلیغ به‌عنوان کار سیستم: کاربر همه‌جا ابزار تبلیغ را ببیند -->
+        <div class="row-card" data-sheet="sheet-target">
+          <div class="avatar-sm" style="background:var(--primary)">ت</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">کالای پربازدید شما آمادهٔ تبلیغ هدفمند است</div>
+            <div class="s">«برنج هاشمی» با ۲۴۸ بازدید — دقیقاً به خریدارِ همین کالا نشان داده شو (هر مشاهده ۱٬۰۰۰ تومان)</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
         <div class="row-card" data-sheet="sheet-trust">
           <div class="avatar-sm" style="background:#1d5fb8">ت</div>
           <div class="body">
@@ -4247,6 +4403,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <div class="rows">
 
+        <!-- فاز ۲۳ — کیف پول و تبلیغ: کاربر در جریان مصرف و موجودی -->
+        <div class="notif feat">
+          <span class="nic"><svg><use href="#i-wallet"/></svg></span>
+          <div class="ntx">
+            <div class="t">تبلیغ هدفمند دیده شد — مصرف از کیف پول <span class="badge b-new">− ۱٬۰۰۰</span></div>
+            <div class="b">«سوپرمارکت آریا» کاتالوگ شما را در کاتالوگ‌های ذخیره‌شده‌اش دید. موجودی فعلی: <b data-wallet>۸۵٬۰۰۰</b> تومان — ریز کامل مصرف در کیف پول شماست.</div>
+            <button class="act" data-go="30">مشاهدهٔ گزارش تبلیغ <svg><use href="#i-chev"/></svg></button>
+            <div class="tm">امروز · ۱۱:۴۰</div>
+          </div>
+        </div>
+
         <!-- امکان جدید -->
         <div class="notif feat">
           <span class="nic"><svg><use href="#i-spark"/></svg></span>
@@ -4450,6 +4617,541 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <!-- ═══ فاز ۲۳ — ۲۹) کیف پول و شارژ (مدل درآمدی) ═══ -->
+    <!-- IMPLEMENTATION NOTE (مدل درآمدی — برای پیاده‌سازی عملیاتی):
+         کیف پول واحدِ مصرف هر دو نوع تبلیغ است (کمپین + تبلیغات هدفمند). شارژ فقط از این صفحه و از درگاه رسمی؛
+         مصرف رویداد-محور است و فقط وقتی کسر می‌شود که اتفاق واقعی بیفتد:
+         هر «مشاهدهٔ» تبلیغ ۱٬۰۰۰ تومان · هر «ذخیرهٔ کاتالوگ» یا «درخواست قیمت / گفتگو» ۵٬۰۰۰ تومان.
+         اگر موجودی تمام شود تبلیغ خودکار متوقف می‌شود (نه حذف) و با شارژ بعدی از همان‌جا ادامه می‌یابد؛
+         کاربر از راه‌های «شارژ کافی نیست» (دیالوگ هدایت) و ریز مصرف همیشه در جریان است. -->
+    <section class="scr" id="scr-29" data-arm="sell" hidden>
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">کیف پول و شارژ<small>پرداخت فقط وقتی دیده می‌شوی</small></div>
+      <button class="icon-btn" aria-label="گزارش تبلیغ‌ها" data-go="30" title="گزارش تبلیغ‌ها" style="margin-left:auto"><svg><use href="#i-chart"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- موجودی -->
+      <div class="card wallet-hero">
+        <div class="whic"><svg><use href="#i-wallet"/></svg></div>
+        <div>
+          <div class="wv"><span data-wallet>۸۵٬۰۰۰</span> <small>تومان شارژ</small></div>
+          <div class="wk">مصرف فقط با اتفاق واقعی — نه صرفاً نمایش</div>
+        </div>
+      </div>
+      <div class="price-chips" style="margin-top:9px">
+        <span class="pc2"><svg><use href="#i-eye"/></svg> هر مشاهدهٔ تبلیغ <b>۱٬۰۰۰ تومان</b></span>
+        <span class="pc2"><svg><use href="#i-bookmark"/></svg> هر ذخیرهٔ کاتالوگ <b>۵٬۰۰۰ تومان</b></span>
+        <span class="pc2"><svg><use href="#i-phone"/></svg> هر درخواست قیمت / گفتگو <b>۵٬۰۰۰ تومان</b></span>
+      </div>
+
+      <!-- بسته‌های شارژ -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-plus"/></svg> افزایش شارژ</h2></div>
+      <div class="packgrid">
+        <button class="paypack" data-pack="50000">
+          <span class="pv">۵۰٬۰۰۰</span>
+          <span class="pk">تومان</span>
+        </button>
+        <button class="paypack on" data-pack="100000">
+          <span class="gift">۵٪ هدیه · پیشنهاد ما</span>
+          <span class="pv">۱۰۰٬۰۰۰</span>
+          <span class="pk">تومان + ۵٬۰۰۰ هدیه</span>
+        </button>
+        <button class="paypack" data-pack="300000">
+          <span class="pv">۳۰۰٬۰۰۰</span>
+          <span class="pk">تومان</span>
+        </button>
+        <button class="paypack" data-pack="500000">
+          <span class="gift">۱۰٪ هدیه</span>
+          <span class="pv">۵۰۰٬۰۰۰</span>
+          <span class="pk">تومان + ۵۰٬۰۰۰ هدیه</span>
+        </button>
+      </div>
+      <div class="card" style="padding:0 14px;margin-top:10px">
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
+          <svg style="width:16px;height:16px;color:var(--green)"><use href="#i-shield"/></svg>
+          <span style="flex:1">درگاه پرداخت اینترنتی</span>
+          <span class="badge b-answered">انتخاب شده</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;color:var(--muted-fg)">
+          <svg style="width:16px;height:16px"><use href="#i-phone"/></svg>
+          <span style="flex:1">کارت به کارت (تأیید دستی تا چند ساعت)</span>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" id="wallet-charge" style="margin-top:12px">
+        <svg><use href="#i-wallet"/></svg> پرداخت و شارژ کیف پول
+      </button>
+      <div class="hintnote" id="wallet-charged" hidden style="margin-top:9px;background:var(--green-bg);color:var(--green);font-weight:700">شارژ شد ✓ — کیف پول شما به‌روز شد و تبلیغ‌های فعال ادامه می‌یابند.</div>
+
+      <!-- تبلیغ‌های فعال -->
+      <div class="sec-title" style="margin-top:18px"><h2><svg><use href="#i-spark"/></svg> تبلیغ‌های فعال من</h2></div>
+      <div class="rows">
+        <div class="row-card" data-go="30">
+          <div class="avatar-sm" style="background:var(--primary)">ک</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">کمپین «فروش پاییزهٔ برنج» <span class="badge b-green">فعال</span></div>
+            <div class="s">کل کاتالوگ · ۲ روز از ۷ روز مانده · ۲۴۶ مشاهده تاکنون</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+        <div class="row-card" data-go="30">
+          <div class="avatar-sm" style="background:#b45309">ه</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">تبلیغ هدفمند «برنج هاشمی» <span class="badge b-green">فعال</span></div>
+            <div class="s">۲ جایگاه · ۱۲۸ نمایش تاکنون · مصرف از همین کیف پول</div>
+          </div>
+          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-outline btn-sm" style="flex:1" data-sheet="sheet-campaign"><svg><use href="#i-spark"/></svg> کمپین جدید</button>
+        <button class="btn btn-outline btn-sm" style="flex:1" data-sheet="sheet-target"><svg><use href="#i-target"/></svg> تبلیغ هدفمند جدید</button>
+      </div>
+
+      <!-- آخرین ریز مصرف -->
+      <div class="sec-title" style="margin-top:18px">
+        <h2><svg><use href="#i-receipt"/></svg> آخرین ریز مصرف</h2>
+        <span class="more" data-go="30">گزارش کامل…</span>
+      </div>
+      <div class="card" style="padding:2px 14px">
+        <div class="usg-row">
+          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-eye"/></svg></div>
+          <div class="utx">
+            <div class="t">مشاهدهٔ تبلیغ در کاتالوگ‌های ذخیره‌شده</div>
+            <div class="s">سوپرمارکت آریا · امروز · تبلیغ هدفمند «برنج هاشمی»</div>
+          </div>
+          <span class="cost">− ۱٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-bookmark"/></svg></div>
+          <div class="utx">
+            <div class="t">ذخیرهٔ کاتالوگ توسط خریدار</div>
+            <div class="s">هایپر فیروزه · دیروز · تبلیغ هدفمند «برنج هاشمی»</div>
+          </div>
+          <span class="cost">− ۵٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:#e8f1fd;color:#1d5fb8"><svg><use href="#i-msg"/></svg></div>
+          <div class="utx">
+            <div class="t">گفتگو دربارهٔ کالای کمپین</div>
+            <div class="s">رستوران مهر · دیروز · کمپین «فروش پاییزهٔ برنج»</div>
+          </div>
+          <span class="cost">− ۵٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-eye"/></svg></div>
+          <div class="utx">
+            <div class="t">۳ مشاهدهٔ تبلیغ در لیست پیشنهادها</div>
+            <div class="s">۳ خریدار · ۲ روز پیش · کمپین «فروش پاییزهٔ برنج»</div>
+          </div>
+          <span class="cost">− ۳٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-wallet"/></svg></div>
+          <div class="utx">
+            <div class="t">شارژ کیف پول</div>
+            <div class="s">۳ روز پیش · درگاه پرداخت — رسید در پیام</div>
+          </div>
+          <span class="cost plus">+ ۳۰۰٬۰۰۰</span>
+        </div>
+      </div>
+
+      <!-- راه رایگان -->
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-share"/></svg>
+        <div>
+          <b>راه رایگانِ دیده‌شدن هم هست.</b><br>
+          لینک کاتالوگت را برای خریدارانی که می‌شناسی بفرست — به‌محض ثبت‌نام، کاتالوگت ذخیرهٔ آن‌ها می‌شود و مستقیم دیده می‌شوی.
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer;white-space:nowrap" data-sheet="sheet-share"> ارسال لینک کاتالوگ</span>
+        </div>
+      </div>
+
+    </main>
+
+    </section>
+
+    <!-- ═══ فاز ۲۳ — ۳۰) گزارش تبلیغ‌ها (کمپین + هدفمند) ═══ -->
+    <!-- IMPLEMENTATION NOTE (گزارش تبلیغ — برای پیاده‌سازی عملیاتی):
+         گزارش هر تبلیغ سه لایه دارد: (۱) آمار کلی (مشاهده/ذخیره/تماس) (۲) فهرست دقیق خریداران و کسب‌وکارهایی که
+         هر رویداد را انجام داده‌اند — به‌عنوان مدرک، با امکان بازکردن لیست خرید/گفتگوی همان خریدار (۳) ریز مصرف
+         شارژ به ازای هر نوع رویداد با قیمت واحد و جمع کل. اعداد آمار = جمع واقعی لاگ رویدادهای همان تبلیغ است. -->
+    <section class="scr" id="scr-30" data-arm="sell" hidden>
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">گزارش تبلیغ‌ها<small>چه کسانی دیدند، ذخیره کردند، تماس گرفتند</small></div>
+      <button class="icon-btn" aria-label="کیف پول و شارژ" data-go="29" title="کیف پول و شارژ" style="margin-left:auto"><svg><use href="#i-wallet"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- سوییچ بین دو تبلیغ -->
+      <div class="chips" style="margin-top:6px">
+        <button class="chip active" data-rep="camp">کمپین فروش پاییزه</button>
+        <button class="chip" data-rep="target">تبلیغ هدفمند · برنج هاشمی</button>
+      </div>
+
+      <!-- ═══ بلوک کمپین ═══ -->
+      <div id="rep-camp" class="rep-people">
+        <div class="card" style="margin-top:11px;display:flex;align-items:center;gap:10px">
+          <div class="avatar-sm" style="background:var(--primary)">ک</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:700">کمپین «فروش پاییزهٔ برنج» <span class="badge b-green">فعال</span></div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:3px;line-height:1.7">کل کاتالوگ · نشان ویژه روی کالاها · ۲ روز از ۷ روز مانده</div>
+          </div>
+        </div>
+
+        <div class="stat-strip" style="margin-top:10px">
+          <div class="stat"><div class="v">۲۴۶</div><div class="k">مشاهدهٔ تبلیغ</div></div>
+          <div class="stat hot"><div class="v">۳۸</div><div class="k">ذخیرهٔ کاتالوگ</div></div>
+          <div class="stat"><div class="v">۹</div><div class="k">گفتگو و استعلام</div></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted-fg);margin-top:6px">شمارنده‌ها از شروع کمپین (۵ روز پیش) جمع شده‌اند.</div>
+
+        <div class="sec-title" style="margin-top:15px">
+          <h2><svg><use href="#i-eye"/></svg> چه کسانی دیدند</h2>
+          <span class="more">۴۱ کسب‌وکار</span>
+        </div>
+        <div class="rows">
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0e7490">آ</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت آریا <span class="badge b-green">ذخیره کرده</span></div>
+              <div class="s">سوپرمارکت · رشت <span class="seenchip">۴ مشاهده</span> آخرین: دیروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#b45309">ن</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">پخش نگین <span class="badge b-green">ذخیره کرده</span></div>
+              <div class="s">پخش · قزوین <span class="seenchip">۵ مشاهده</span> آخرین: امروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#7c3aed">م</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رستوران مهر <span class="badge b-new">گفتگو</span></div>
+              <div class="s">رستوران · تهران <span class="seenchip">۲ مشاهده</span> آخرین: ۳ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0d9488">ف</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">هایپر فیروزه <span class="badge b-green">ذخیره کرده</span></div>
+              <div class="s">سوپرمارکت · تبریز <span class="seenchip">۴ مشاهده</span> آخرین: دیروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#c2703a">ع</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت علی <span class="badge b-new">گفتگو</span></div>
+              <div class="s">سوپرمارکت · رشت <span class="seenchip">۳ مشاهده</span> آخرین: امروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#4d7c0f">س</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت الماس</div>
+              <div class="s">سوپرمارکت · مشهد <span class="seenchip">۲ مشاهده</span> آخرین: ۴ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#9333ea">ب</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رستوران سنتی بهار</div>
+              <div class="s">رستوران · قزوین <span class="seenchip">۱ مشاهده</span> آخرین: ۶ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-top:15px">
+          <h2><svg><use href="#i-bookmark"/></svg> چه کسانی ذخیره کردند</h2>
+          <span class="more">۳۸ ذخیره</span>
+        </div>
+        <div class="rows">
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#b45309">ن</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">پخش نگین</div>
+              <div class="s">پخش · قزوین · ذخیرهٔ کاتالوگ · امروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0d9488">ف</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">هایپر فیروزه</div>
+              <div class="s">سوپرمارکت · تبریز · ذخیرهٔ کاتالوگ · دیروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0e7490">آ</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت آریا</div>
+              <div class="s">سوپرمارکت · رشت · ذخیرهٔ کاتالوگ · ۳ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#15803d">س</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">پخش سبز</div>
+              <div class="s">پخش · مشهد · ذخیرهٔ کاتالوگ · ۴ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-top:15px">
+          <h2><svg><use href="#i-phone"/></svg> چه کسانی تماس گرفتند</h2>
+          <span class="more">۹ گفتگو</span>
+        </div>
+        <div class="rows">
+          <div class="row-card" data-go="19">
+            <div class="avatar-sm" style="background:#7c3aed">م</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رستوران مهر</div>
+              <div class="s">گفتگو دربارهٔ «برنج هاشمی · ۲۰ کیسه» · دیروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="19">
+            <div class="avatar-sm" style="background:#c2703a">ع</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت علی</div>
+              <div class="s">استعلام قیمت برای ۱۰ کیسه · امروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="19">
+            <div class="avatar-sm" style="background:#7c3aed">ر</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رضا اکبری</div>
+              <div class="s">گفتگو دربارهٔ شرایط ارسال · ۲ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+        </div>
+
+        <!-- ریز مصرف کمپین -->
+        <div class="sec-title" style="margin-top:15px"><h2><svg><use href="#i-receipt"/></svg> ریز مصرف این کمپین</h2></div>
+        <div class="card" style="padding:2px 14px">
+          <div class="usg-row">
+            <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-eye"/></svg></div>
+            <div class="utx"><div class="t">۲۴۶ مشاهدهٔ تبلیغ</div><div class="s">در لیست‌ها و جزئیات کالای مرتبط</div></div>
+            <span class="cost">− ۲۴۶٬۰۰۰</span>
+          </div>
+          <div class="usg-row">
+            <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-bookmark"/></svg></div>
+            <div class="utx"><div class="t">۳۸ ذخیرهٔ کاتالوگ</div><div class="s">خریدارانِ کمپین شما را ذخیره کردند</div></div>
+            <span class="cost">− ۱۹۰٬۰۰۰</span>
+          </div>
+          <div class="usg-row">
+            <div class="uic" style="background:#e8f1fd;color:#1d5fb8"><svg><use href="#i-msg"/></svg></div>
+            <div class="utx"><div class="t">۹ گفتگو و استعلام قیمت</div><div class="s">دربارهٔ کالاهای این کمپین</div></div>
+            <span class="cost">− ۴۵٬۰۰۰</span>
+          </div>
+          <div class="usg-row">
+            <div class="uic" style="background:var(--muted);color:var(--stone-soft)"><svg><use href="#i-receipt"/></svg></div>
+            <div class="utx"><div class="t" style="font-weight:800">جمع مصرف این کمپین</div><div class="s">از ۵ روز پیش تا امروز</div></div>
+            <span class="cost" style="font-size:13px">− ۴۸۱٬۰۰۰ تومان</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+          <div style="font-size:11px;color:var(--muted-fg);flex:1;line-height:1.8">موجودی کیف پول: <b style="color:var(--foreground)"><span data-wallet>۸۵٬۰۰۰</span> تومان</b></div>
+          <button class="btn btn-outline btn-sm" data-go="29"><svg><use href="#i-wallet"/></svg> شارژ</button>
+        </div>
+      </div>
+
+      <!-- ═══ بلوک تبلیغ هدفمند ═══ -->
+      <div id="rep-target" class="rep-people" hidden>
+        <div class="card" style="margin-top:11px;display:flex;align-items:center;gap:10px">
+          <div class="avatar-sm" style="background:#b45309">ه</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:700">تبلیغ هدفمند «برنج هاشمی» <span class="badge b-green">فعال</span></div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:3px;line-height:1.7">۲ جایگاه · فقط برای خریدارانی که این کالا در لیست خریدشان است</div>
+          </div>
+        </div>
+
+        <div class="stat-strip" style="margin-top:10px">
+          <div class="stat"><div class="v">۱۲۸</div><div class="k">نمایش در جایگاه</div></div>
+          <div class="stat hot"><div class="v">۲۲</div><div class="k">ذخیرهٔ کاتالوگ</div></div>
+          <div class="stat"><div class="v">۶</div><div class="k">درخواست قیمت</div></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted-fg);margin-top:6px">دیده‌شدن‌های هدفمند یعنی خریدارِ خودِ همین کالا — نه هر بیننده‌ای.</div>
+
+        <div class="sec-title" style="margin-top:15px">
+          <h2><svg><use href="#i-eye"/></svg> چه کسانی دیدند</h2>
+          <span class="more">۱۹ خریدارِ همان کالا</span>
+        </div>
+        <div class="rows">
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#c2703a">ع</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت علی <span class="badge b-new">درخواست قیمت</span></div>
+              <div class="s">سوپرمارکت · رشت <span class="seenchip">۴ نمایش</span> جایگاه: کاتالوگ‌های ذخیره‌شده</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0d9488">ف</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">هایپر فیروزه <span class="badge b-green">ذخیره کرده</span></div>
+              <div class="s">سوپرمارکت · تبریز <span class="seenchip">۳ نمایش</span> جایگاه: کاتالوگ‌های ذخیره‌شده</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0e7490">آ</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت آریا <span class="badge b-green">ذخیره کرده</span></div>
+              <div class="s">سوپرمارکت · رشت <span class="seenchip">۳ نمایش</span> جایگاه: تابلوی تأمین</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#7c3aed">ر</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رضا اکبری</div>
+              <div class="s">سوپرمارکت · رشت <span class="seenchip">۳ نمایش</span> جایگاه: تابلوی تأمین</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#4d7c0f">س</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت الماس</div>
+              <div class="s">سوپرمارکت · مشهد <span class="seenchip">۲ نمایش</span> جایگاه: کاتالوگ‌های ذخیره‌شده</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-top:15px">
+          <h2><svg><use href="#i-bookmark"/></svg> چه کسانی ذخیره کردند</h2>
+          <span class="more">۲۲ ذخیره</span>
+        </div>
+        <div class="rows">
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0d9488">ف</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">هایپر فیروزه</div>
+              <div class="s">سوپرمارکت · تبریز · کاتالوگ شما را ذخیره کرد · دیروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#0e7490">آ</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت آریا</div>
+              <div class="s">سوپرمارکت · رشت · کاتالوگ شما را ذخیره کرد · ۳ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#4d7c0f">س</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت الماس</div>
+              <div class="s">سوپرمارکت · مشهد · کاتالوگ شما را ذخیره کرد · ۴ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="23">
+            <div class="avatar-sm" style="background:#9333ea">ب</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رستوران سنتی بهار</div>
+              <div class="s">رستوران · قزوین · کاتالوگ شما را ذخیره کرد · ۵ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-top:15px">
+          <h2><svg><use href="#i-phone"/></svg> چه کسانی تماس گرفتند</h2>
+          <span class="more">۶ درخواست</span>
+        </div>
+        <div class="rows">
+          <div class="row-card" data-go="19">
+            <div class="avatar-sm" style="background:#c2703a">ع</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">سوپرمارکت علی</div>
+              <div class="s">استعلام قیمت برای ۱۰ کیسه · امروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="19">
+            <div class="avatar-sm" style="background:#7c3aed">م</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رستوران مهر</div>
+              <div class="s">درخواست قیمت برای ۲۰ کیسه · دیروز</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+          <div class="row-card" data-go="19">
+            <div class="avatar-sm" style="background:#7c3aed">ر</div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رضا اکبری</div>
+              <div class="s">گفتگو دربارهٔ شرایط ارسال · ۲ روز پیش</div>
+            </div>
+            <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
+          </div>
+        </div>
+
+        <!-- ریز مصرف هدفمند -->
+        <div class="sec-title" style="margin-top:15px"><h2><svg><use href="#i-receipt"/></svg> ریز مصرف این تبلیغ</h2></div>
+        <div class="card" style="padding:2px 14px">
+          <div class="usg-row">
+            <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-eye"/></svg></div>
+            <div class="utx"><div class="t">۱۲۸ نمایش در جایگاه</div><div class="s">کاتالوگ‌های ذخیره‌شده + تابلوی تأمین</div></div>
+            <span class="cost">− ۱۲۸٬۰۰۰</span>
+          </div>
+          <div class="usg-row">
+            <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-bookmark"/></svg></div>
+            <div class="utx"><div class="t">۲۲ ذخیرهٔ کاتالوگ</div><div class="s">هر ذخیره ۵٬۰۰۰ تومان</div></div>
+            <span class="cost">− ۱۱۰٬۰۰۰</span>
+          </div>
+          <div class="usg-row">
+            <div class="uic" style="background:#e8f1fd;color:#1d5fb8"><svg><use href="#i-phone"/></svg></div>
+            <div class="utx"><div class="t">۶ درخواست قیمت</div><div class="s">مستقیم از جایگاه تبلیغ</div></div>
+            <span class="cost">− ۳۰٬۰۰۰</span>
+          </div>
+          <div class="usg-row">
+            <div class="uic" style="background:var(--muted);color:var(--stone-soft)"><svg><use href="#i-receipt"/></svg></div>
+            <div class="utx"><div class="t" style="font-weight:800">جمع مصرف این تبلیغ</div><div class="s">از ۵ روز پیش تا امروز</div></div>
+            <span class="cost" style="font-size:13px">− ۲۶۸٬۰۰۰ تومان</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+          <div style="font-size:11px;color:var(--muted-fg);flex:1;line-height:1.8">موجودی کیف پول: <b style="color:var(--foreground)"><span data-wallet>۸۵٬۰۰۰</span> تومان</b></div>
+          <button class="btn btn-outline btn-sm" data-go="29"><svg><use href="#i-wallet"/></svg> شارژ</button>
+        </div>
+      </div>
+
+      <!-- تشویق به اشتراک‌گذاری -->
+      <div class="callout" style="margin-top:14px">
+        <svg><use href="#i-share"/></svg>
+        <div>
+          <b>دیده‌شدنِ رایگان هم در دست توست.</b><br>
+          لینک کاتالوگت را بفرست — خریدارِ ثبت‌نام‌شده، کاتالوگت را ذخیره می‌کند و بدون هزینه در جایگاه ذخیره‌شده‌هایش می‌مانی.
+          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer;white-space:nowrap" data-sheet="sheet-share"> ارسال لینک</span>
+        </div>
+      </div>
+
+    </main>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -4540,7 +5242,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
   <button class="sheet-row" data-sheet="sheet-campaign">
     <span class="ico"><svg><use href="#i-spark"/></svg></span>
-    <span class="tx"><b>کمپین و تبلیغ</b><span>اجرای کمپین روی کل کاتالوگ</span></span>
+    <span class="tx"><b>کمپین</b><span>اجرای کمپین روی کل کاتالوگ · دیده‌شدن گسترده‌تر</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-sheet="sheet-target">
+    <span class="ico"><svg><use href="#i-target"/></svg></span>
+    <span class="tx"><b>تبلیغات هدفمند</b><span>نمایش دقیق به خریدارِ همان کالا · با تصویر جایگاه‌ها</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-go="30">
+    <span class="ico"><svg><use href="#i-chart"/></svg></span>
+    <span class="tx"><b>گزارش تبلیغ‌ها</b><span>چه کسانی دیدند، ذخیره کردند، تماس گرفتند + ریز مصرف</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-go="29">
+    <span class="ico"><svg><use href="#i-wallet"/></svg></span>
+    <span class="tx"><b>کیف پول و شارژ</b><span>موجودی <span data-wallet>۸۵٬۰۰۰</span> تومان · خرید شارژ و ریز مصرف</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-go="22">
@@ -5000,12 +5717,114 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
     </button>
   </div>
-  <div class="hintnote">هزینهٔ اعتبار: هر مشاهده در لیست ۲ اعتبار · هر مشاهدهٔ کاتالوگ از این طریق ۴ اعتبار · هر دنبال کردن قیمت ۵ اعتبار. برای اطمینان، در گزارش کمپین، لیست تمام خریدارانی که مشاهده کرده‌اند در اختیار شما قرار می‌گیرد.</div>
+  <!-- فاز ۲۳ — قیمت‌گذاری یکپارچه تومانی (جایگزین «اعتبار»)؛ همان دو عدد سراسری مدل درآمدی: ۱٬۰۰۰ / ۵٬۰۰۰ -->
+  <div class="hintnote">هزینه از کیف پول: هر مشاهدهٔ تبلیغ <b>۱٬۰۰۰ تومان</b> · هر ذخیرهٔ کاتالوگ یا گفتگو <b>۵٬۰۰۰ تومان</b> — فقط وقتی کسر می‌شود که واقعاً اتفاق بیفتد. در گزارش کمپین، فهرست همهٔ خریدارانی که دیده‌اند در اختیار شماست.</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-wallet"/></svg></span>
+    <span class="tx"><b>موجودی کیف پول: <span data-wallet>۸۵٬۰۰۰</span> تومان</b><span>پرداخت فقط وقتی دیده شوی — شارژ در صورت لزوم</span></span>
+    <button class="btn btn-sm btn-outline" data-go="29">شارژ</button>
+  </div>
   <div class="sheet-row" style="cursor:default">
     <span class="tx"><b>نشان ویژه در کاتالوگ</b><span>کالاهای کمپین‌دار با نشان مخصوص دیده می‌شوند</span></span>
     <div class="toggle on"></div>
   </div>
-  <button class="btn btn-primary sheet-cta" data-close>راه‌اندازی کمپین</button>
+  <button class="btn btn-primary sheet-cta" data-sheet="dlg-campok">راه‌اندازی کمپین</button>
+</div>
+
+<!-- ═══ ۹-ب) فاز ۲۳ — تبلیغات هدفمند: جایگاه‌های تبلیغاتی با تصویر + کالاهای تبلیغ ═══ -->
+<!-- IMPLEMENTATION NOTE (تبلیغات هدفمند — برای پیاده‌سازی عملیاتی):
+     هدفمند = نمایش جراحی‌وار فقط به خریدارِ همان کالا؛ دو جایگاه: (۱) کاتالوگ‌های ذخیره‌شدهٔ خریدار
+     (۲) تابلوی تأمینِ همان کالا در لیست خرید خریدار. قیمت‌گذاری رویداد-محور سراسری:
+     هر مشاهده ۱٬۰۰۰ تومان · هر ذخیرهٔ کاتالوگ ۵٬۰۰۰ تومان · هر درخواست قیمت ۵٬۰۰۰ تومان.
+     جایگاه‌ها با تصویر واقعی سمت خریدار توضیح داده می‌شوند (png/p23). راه رایگان (اشتراک لینک) همیشه کنارش است. -->
+<div class="sheet" id="sheet-target" role="dialog" aria-label="تبلیغات هدفمند">
+  <div class="grab"></div>
+  <h3>تبلیغات هدفمند</h3>
+  <div class="sub">کاتالوگ یا کالای شما، دقیقاً برای خریداری نمایش داده می‌شود که همان کالا را در لیست خریدش دارد</div>
+  <div class="grp">جایگاه‌های تبلیغاتی — با تصویر واقعیِ سمت خریدار</div>
+
+  <!-- جایگاه ۱: کاتالوگ‌های ذخیره‌شده -->
+  <div class="adslot on" data-adslot>
+    <span class="as-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    <span class="as-shot"><img src="png/p23/slot-saved-cats.png" alt="جایگاه تبلیغاتی در کاتالوگ‌های ذخیره‌شدهٔ خریدار"></span>
+    <span class="as-tag"><span class="sponsor-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></svg> پیشنهاد مرتبط با لیست خرید شما</span></span>
+    <div class="as-t">۱) کاتالوگ‌های ذخیره‌شدهٔ خریدار</div>
+    <div class="as-d">در بخش کاتالوگ‌های ذخیره‌شده توسط خریدار، ما کاتالوگ یا کالای شمار رو دقیقاً برای خریداری که در لیست خریدش کالای شما رو داره نمایش می‌دیم — کنار کاتالوگ‌های خودش، با برچسب «پیشنهاد مرتبط با لیست خرید شما».</div>
+    <div class="as-p">
+      <span>هر مشاهده <b>۱٬۰۰۰ تومان</b></span>
+      <span>در صورت ذخیرهٔ کاتالوگ <b>۵٬۰۰۰ تومان</b></span>
+    </div>
+  </div>
+
+  <!-- جایگاه ۲: تابلوی تأمین -->
+  <div class="adslot on" data-adslot>
+    <span class="as-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    <span class="as-shot"><img src="png/p23/slot-supply-board.png" alt="جایگاه تبلیغاتی در تابلوی تأمین کالا"></span>
+    <span class="as-tag"><span class="sponsor-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/></svg> ویژهٔ لیست خرید شما</span></span>
+    <div class="as-t">۲) تابلوی تأمینِ همان کالا</div>
+    <div class="as-d">وقتی خریداری که کالای شما در لیست خریدش است، تابلوی تأمینِ آن کالا را باز می‌کند، شما به‌عنوان «تأمین‌کنندهٔ ویژهٔ لیست خرید» بالاتر از بقیه دیده می‌شوید — با قیمت و شرایط، آمادهٔ درخواست قیمت.</div>
+    <div class="as-p">
+      <span>هر مشاهده <b>۱٬۰۰۰ تومان</b></span>
+      <span>در صورت درخواست قیمت <b>۵٬۰۰۰ تومان</b></span>
+    </div>
+  </div>
+
+  <div class="grp">کالاهای این تبلیغ</div>
+  <div class="ggrid">
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/rice-sack.jpg" alt=""></span>
+      <span class="gn">برنج هاشمی · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell on">
+      <span class="gth"><img src="png/goods/hashemi-10.png" alt=""></span>
+      <span class="gn">برنج هاشمی · ۱۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="png/goods/sack-scoop.jpg" alt=""></span>
+      <span class="gn">برنج طارم · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+    <button class="gcell">
+      <span class="gth"><img src="png/goods/fajar-50.jpg" alt=""></span>
+      <span class="gn">برنج فجر · ۵۰ کیلویی</span>
+      <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </button>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-wallet"/></svg></span>
+    <span class="tx"><b>موجودی کیف پول: <span data-wallet>۸۵٬۰۰۰</span> تومان</b><span>این تبلیغ به‌طور میانگین حدود ۱۰۰٬۰۰۰ تومان در هفته مصرف می‌کند</span></span>
+    <button class="btn btn-sm btn-outline" data-go="29">شارژ</button>
+  </div>
+  <div class="hintnote">راه رایگان: لینک کاتالوگت را برای خریدارانی که می‌شناسی بفرست — به‌محض ثبت‌نام، کاتالوگت ذخیرهٔ آن‌ها می‌شود و در همین جایگاه، بدون هزینه دیده می‌شوی؛ خریدارانِ ثبت‌نام‌شده هم فقط با یک «ذخیره» کاتالوگت را نگه می‌دارند.
+    <span style="color:var(--primary-strong);font-weight:700;cursor:pointer;white-space:nowrap" data-sheet="sheet-share"> ارسال لینک کاتالوگ</span></div>
+  <button class="btn btn-primary sheet-cta" data-sheet="dlg-lowcharge">راه‌اندازی تبلیغ هدفمند</button>
+</div>
+
+<!-- ═══ ۹-پ) فاز ۲۳ — دیالوگ راه‌اندازی کمپین (شفافیت مصرف) ═══ -->
+<div class="dlg" id="dlg-campok" role="dialog" aria-label="راه‌اندازی کمپین">
+  <h3>راه‌اندازی کمپین</h3>
+  <div class="dlg-q">کمپین «فروش پاییزهٔ برنج» فعال شود؟</div>
+  <div class="dlg-p">کالاهای کمپین از همین حالا با نشان ویژه در جایگاه‌های انتخاب‌شده دیده می‌شوند. هزینه فقط وقتی از کیف پول کم می‌شود که خریداری تبلیغ شما را ببیند (۱٬۰۰۰ تومان) یا ذخیره کند و گفتگو کند (۵٬۰۰۰ تومان). گزارش دقیق چه‌کسان و ریز مصرف، همیشه در «گزارش تبلیغ‌ها» در اختیار توست.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-go="30">راه‌اندازی و مشاهدهٔ گزارش</button>
+    <button class="btn btn-outline" data-close>بستن</button>
+  </div>
+</div>
+
+<!-- ═══ ۹-ت) فاز ۲۳ — دیالوگ «شارژ کافی نیست» (هدایت به کیف پول) ═══ -->
+<!-- IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی این دیالوگ با آستانهٔ تخمین مصرف هفتگی جایگاه‌ها فعال می‌شود؛
+     انتخاب «با همین شارژ» یعنی تبلیغ تا پایان موجودی فعال می‌ماند و سپس خودکار متوقف می‌شود (نه حذف) —
+     و با اعلان + کارتابل، کاربر برای ادامه به شارژ هدایت می‌شود. -->
+<div class="dlg" id="dlg-lowcharge" role="dialog" aria-label="شارژ کافی نیست">
+  <h3>شارژ کافی نیست</h3>
+  <div class="dlg-q">برای این تبلیغ، شارژ بیشتری لازم است</div>
+  <div class="dlg-p">این تبلیغ به‌طور میانگین حدود <b>۱۰۰٬۰۰۰ تومان</b> در هفته مصرف می‌کند؛ موجودی کیف پول شما <b><span data-wallet>۸۵٬۰۰۰</span> تومان</b> است. اگر همین‌طور شروع کنی، با پایان شارژ، تبلیغ موقتاً متوقف می‌شود (حذف نمی‌شود) و با شارژ بعدی از همان‌جا ادامه می‌یابد.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-go="29"><svg><use href="#i-wallet"/></svg> افزایش شارژ کیف پول</button>
+    <button class="btn btn-outline" data-go="30">با همین شارژ شروع کن</button>
+  </div>
 </div>
 
 <!-- ═══ ۱۰) تنظیمات کالا ═══ -->
@@ -5035,7 +5854,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
   <button class="sheet-row" data-sheet="sheet-campaign">
     <span class="ico"><svg><use href="#i-spark"/></svg></span>
-    <span class="tx"><b>ایجاد کمپین برای این کالا</b><span>کمپین اختصاصی همین کالا</span></span>
+    <span class="tx"><b>ایجاد کمپین برای این کالا</b><span>کاتالوگت بالاتر و بیشتر دیده شود</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-sheet="sheet-target">
+    <span class="ico"><svg><use href="#i-target"/></svg></span>
+    <span class="tx"><b>تبلیغات هدفمند این کالا</b><span>نمایش دقیق به خریدارِ همین کالا · ۱٬۰۰۰ تومان هر مشاهده</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-sheet="sheet-ptier">
@@ -5985,7 +6809,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
     '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
-    '27': '01', '28': '05'
+    '27': '01', '28': '05', '29': '07', '30': '07'
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
@@ -6011,7 +6835,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   var CARDS = { '01': '03', '05': '06', '08': '09', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' };
-  var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"10":"۱۰ — تأمین‌کنندگان · دستیار خرید","11":"۱۱ — پیشنهادها · دستیار خرید","12":"۱۲ — فرم درخواست قیمت","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش"};
 
   var stack = [];
   var current = null;
@@ -6067,6 +6891,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     target.hidden = false;
     document.getElementById('stage').hidden = isDesk(id);
     closeSheet();
+    if (id !== '01') selExit(); /* فاز ۲۳: خروج از حالت انتخاب چندکالا هنگام ترک کاتالوگ */
     if (!isDesk(id)) {
       var arm = target.dataset.arm;
       if (arm && arm !== 'keep') document.getElementById('phone').dataset.arm = arm;
@@ -6222,10 +7047,98 @@ body > div[id^="scr-d"][hidden] { display: none; }
     evRender(list);
   }
 
+  /* ── فاز ۲۳: مدل درآمدی — کیف پول · انتخاب چندکالا · گزارش تبلیغ ──
+     کیف پول یک وضعیت مشترک است و همهٔ نمایش‌های موجودی (پروفایل، شیت‌ها، دیالوگ، گزارش) با آن به‌روز می‌شوند.
+     قیمت‌گذاری رویداد-محور سراسری: مشاهده ۱٬۰۰۰ تومان · ذخیره/درخواست قیمت/گفتگو ۵٬۰۰۰ تومان. */
+  var WALLET = 85000;
+  function faMoney(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(/,/g, '٬').replace(/\d/g, function (x) { return '۰۱۲۳۴۵۶۷۸۹'.charAt(+x); });
+  }
+  function walletRender() {
+    document.querySelectorAll('[data-wallet]').forEach(function (elm) { elm.textContent = faMoney(WALLET); });
+  }
+  var WALLET_PACK = 100000;
+  function selUpdate() {
+    var scr = document.getElementById('scr-01');
+    if (!scr) return;
+    var n = scr.querySelectorAll('.pcard.picked').length;
+    var cnt = document.querySelector('[data-sel-count]');
+    if (cnt) cnt.textContent = faNum(n);
+  }
+  function selExit() {
+    var scr = document.getElementById('scr-01');
+    if (!scr) return;
+    scr.classList.remove('selmode');
+    scr.querySelectorAll('.pcard.picked').forEach(function (c) { c.classList.remove('picked'); });
+    selUpdate();
+  }
+  function repShow(which) {
+    var camp = document.getElementById('rep-camp');
+    var tgt = document.getElementById('rep-target');
+    if (!camp || !tgt) return;
+    camp.hidden = which !== 'camp';
+    tgt.hidden = which !== 'target';
+    var sb = document.querySelector('#scr-30 .screen-body');
+    if (sb) sb.scrollTop = 0;
+  }
+
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
     var t = e.target;
     if (!t.closest) return;
+
+    /* ── فاز ۲۳: حالت انتخاب چندکالا (کاتالوگ → کمپین/هدفمند) — قبل از ناوبری کارت ── */
+    var smb = t.closest('[data-selmode]');
+    if (smb) {
+      var scr1 = document.getElementById('scr-01');
+      if (scr1) { scr1.classList.add('selmode'); selUpdate(); }
+      return;
+    }
+    var scl = t.closest('[data-selcancel]');
+    if (scl) { selExit(); return; }
+    var sgb = t.closest('[data-selgo]');
+    if (sgb) { openSheet(sgb.dataset.selgo); return; }
+    var scr1v = document.getElementById('scr-01');
+    if (scr1v && scr1v.classList.contains('selmode')) {
+      var pickCard = t.closest('.pcard');
+      if (pickCard && !t.closest('.gear')) { pickCard.classList.toggle('picked'); selUpdate(); return; }
+    }
+
+    /* ── فاز ۲۳: بسته‌های شارژ کیف پول (رادیویی) ── */
+    var pk = t.closest('.paypack');
+    if (pk) {
+      pk.parentElement.querySelectorAll('.paypack').forEach(function (p) { p.classList.remove('on'); });
+      pk.classList.add('on');
+      WALLET_PACK = parseInt(pk.dataset.pack, 10) || 100000;
+      return;
+    }
+
+    /* ── فاز ۲۳: شارژ کیف پول — موجودی به‌روز می‌شود و همه‌جا نمایش داده می‌شود ── */
+    var wch = t.closest('#wallet-charge');
+    if (wch) {
+      WALLET += WALLET_PACK;
+      walletRender();
+      var done = document.getElementById('wallet-charged');
+      if (done) {
+        done.hidden = false;
+        done.textContent = 'شارژ شد ✓ — ' + faMoney(WALLET_PACK) + ' تومان به کیف پول شما اضافه شد و تبلیغ‌های فعال ادامه می‌یابند.';
+        setTimeout(function () { done.hidden = true; }, 4200);
+      }
+      return;
+    }
+
+    /* ── فاز ۲۳: جایگاه‌های تبلیغاتی هدفمند — انتخاب/لغو هر جایگاه ── */
+    var asl = t.closest('[data-adslot]');
+    if (asl && !t.closest('img')) { asl.classList.toggle('on'); return; }
+
+    /* ── فاز ۲۳: سوییچ گزارش کمپین/هدفمند — قبل از چیپ عمومی ── */
+    var rpc = t.closest('[data-rep]');
+    if (rpc) {
+      rpc.parentElement.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
+      rpc.classList.add('active');
+      repShow(rpc.dataset.rep);
+      return;
+    }
 
     /* زبان‌ها (لندینگ) — فقط نمایشی؛ «سایر» دراپ‌داun باز/بسته می‌شود */
     var langMore = t.closest('.lang-more');
@@ -6477,6 +7390,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   wire();
   evRender(ITEM_EVENTS);
+  walletRender();
   var init = (location.hash || '').slice(1);
   go(el(init) ? init : '15', false);
 })();
