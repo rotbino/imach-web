@@ -1254,6 +1254,39 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-22 .as-hint { font-size: 10.5px; color: var(--muted-fg); line-height: 2; margin-top: 4px; border-top: 1px dashed var(--border); padding-top: 9px; }
   #scr-22 .as-err { font-size: 11px; font-weight: 700; color: var(--red); background: #fdf1f1; border: 1px solid #f3c1c1; border-radius: 9px; padding: 7px 10px; margin-top: 8px; }
 
+  /* ═══ فاز ۳۲ — راهنمای دستیارها (۴۰/۴۱): نوار فیلم‌های آموزشی + پخش‌کنندهٔ شیت + پرسش‌وپاسخ ═══ */
+  /* نوار افقی آموزش‌ها — هر آیتم: عکس + نشان پخش + مدت + عنوان زیر عکس (لمس = پخش فیلم) */
+  .vd-row { display: flex; gap: 10px; overflow-x: auto; padding: 2px; margin-top: 10px; scrollbar-width: none; -ms-overflow-style: none; }
+  .vd-row::-webkit-scrollbar { display: none; }
+  .vd-card { width: 124px; flex-shrink: 0; cursor: pointer; background: none; border: 0; padding: 0; text-align: right; font: inherit; color: inherit; }
+  .vd-thumb { position: relative; display: block; height: 82px; border-radius: 11px; overflow: hidden; border: 1px solid var(--border); background: var(--muted); }
+  .vd-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .vd-thumb .vd-pl { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(15, 23, 42, .18); }
+  .vd-thumb .vd-pl i { width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, .95); display: grid; place-items: center; color: var(--primary-strong); }
+  .vd-thumb .vd-pl svg { width: 13px; height: 13px; margin-right: 1px; }
+  .vd-thumb .vd-len { position: absolute; bottom: 5px; left: 5px; font-size: 8.5px; font-weight: 700; color: #fff; background: rgba(15, 23, 42, .68); border-radius: 5px; padding: 1.5px 5px; }
+  .vd-t { font-size: 10.5px; font-weight: 600; line-height: 1.65; color: var(--foreground); margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 34px; }
+  /* متن مالک بالای پرسش‌وپاسخ — عیناً */
+  .gd-ask { display: flex; gap: 9px; align-items: flex-start; }
+  .gd-ask svg { width: 15px; height: 15px; color: var(--primary-strong); flex-shrink: 0; margin-top: 3px; }
+  .gd-ask p { font-size: 11.5px; font-weight: 600; color: var(--stone-soft); line-height: 2.05; }
+  /* شیت پخش فیلم — ماک پخش‌کنندهٔ پروتوتایپ: پوستر + پخش بزرگ + نوار پیشرفت */
+  #sheet-video .vd-player { position: relative; margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: #101828; cursor: pointer; }
+  #sheet-video .vd-player img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; display: block; }
+  #sheet-video .vd-big { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(15, 23, 42, .2); border: 0; cursor: pointer; padding: 0; }
+  #sheet-video .vd-big i { width: 54px; height: 54px; border-radius: 50%; background: #fff; display: grid; place-items: center; color: var(--primary-strong); box-shadow: 0 6px 18px rgba(15, 23, 42, .35); }
+  #sheet-video .vd-big svg { width: 22px; height: 22px; margin-right: 2px; }
+  #sheet-video .vd-fin { position: absolute; top: 10px; right: 10px; font-size: 9px; font-weight: 700; color: #fff; background: rgba(15, 23, 42, .72); border-radius: 6px; padding: 2.5px 7px; }
+  #sheet-video .vd-ctrl { display: flex; align-items: center; gap: 9px; margin-top: 10px; }
+  #sheet-video .vd-ctrl .vbtn { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border-strong); background: #fff; display: grid; place-items: center; color: var(--primary-strong); cursor: pointer; flex-shrink: 0; }
+  #sheet-video .vd-ctrl .vbtn svg { width: 14px; height: 14px; }
+  #sheet-video .vd-bar { flex: 1; height: 4.5px; border-radius: 99px; background: var(--muted); overflow: hidden; }
+  #sheet-video .vd-bar i { display: block; height: 100%; width: 0; background: var(--primary); border-radius: 99px; }
+  #sheet-video .vd-time { font-size: 10px; font-weight: 700; color: var(--muted-fg); flex-shrink: 0; }
+  #sheet-video .vd-learn { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+  #sheet-video .vd-learn .li { display: flex; gap: 7px; font-size: 11px; line-height: 1.95; color: var(--stone-soft); }
+  #sheet-video .vd-learn .li svg { width: 12px; height: 12px; color: var(--green); flex-shrink: 0; margin-top: 5px; }
+
 </style>
 </head>
 <body>
@@ -1332,6 +1365,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.6l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z"/></symbol>
 <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15.6 3.5 9.3a4.8 4.8 0 018.5-3 4.8 4.8 0 018.5 3c0 6.3-8.5 11.2-8.5 11.2z"/></symbol>
 <symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5.5-4-10.5-11-11z"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8.2 5.4v13.2c0 .8.9 1.3 1.6.9l10-6.6a1 1 0 000-1.8l-10-6.6c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -1702,7 +1736,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <!-- ═══ پنل مدیریت — قلب ادغام نمای مالک و عمومی ═══ -->
+        <!-- ═══ فاز ۳۲ — پنل مدیریت در سه کادر: «مدیریت قیمت» · «موجودی و ویرایش» · «تبلیغات و کمپین» ═══ -->
         <!-- فاز ۲۲ — IMPLEMENTATION NOTE (اولویت تخفیف‌ها — برای پیاده‌سازی عملیاتی):
              تخفیف علاوه بر «سطح کاتالوگ» و «گروه مشتری»، روی خودِ کالا هم قابل اعمال است و بالاترین اولویت را دارد:
              تخفیف کالا (اختصاصی / پلکانی / همکار)  ›  تخفیف گروه مشتری  ›  تخفیف کاتالوگ.
@@ -1710,19 +1744,35 @@ body > div[id^="scr-d"][hidden] { display: none; }
              «عدم نمایش» (جایگزین «غیرفعال») = پنهان‌سازی کامل از کاتالوگ عمومی؛ رصد و لیست مقایسهٔ خریداران حفظ می‌شود. -->
         <div class="card" style="margin-top:13px">
           <div style="font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">
-            <svg style="width:15px;height:15px;color:var(--primary)"><use href="#i-pencil"/></svg>
-            مدیریت این کالا
+            <svg style="width:15px;height:15px;color:var(--primary)"><use href="#i-tag"/></svg>
+            مدیریت قیمت
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn btn-outline btn-sm" data-sheet="sheet-price"><svg><use href="#i-tag"/></svg> تغییر قیمت</button>
-            <button class="btn btn-outline btn-sm" data-sheet="sheet-stock"><svg><use href="#i-boxes"/></svg> تغییر موجودی</button>
-            <button class="btn btn-outline btn-sm" data-sheet="sheet-details"><svg><use href="#i-pencil"/></svg> ویرایش جزئیات</button>
-            <button class="btn btn-outline btn-sm" data-sheet="sheet-campaign"><svg><use href="#i-spark"/></svg> ایجاد کمپین</button>
-            <button class="btn btn-outline btn-sm" data-sheet="sheet-target"><svg><use href="#i-target"/></svg> تبلیغ هدفمند</button>
+            <button class="btn btn-outline btn-sm" style="grid-column:1/-1" data-sheet="sheet-price"><svg><use href="#i-tag"/></svg> تغییر قیمت</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-ptier"><svg><use href="#i-stairs"/></svg> تخفیف پلکانی</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-cowork"><svg><use href="#i-users"/></svg> تخفیف همکار</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <div style="font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            <svg style="width:15px;height:15px;color:var(--primary)"><use href="#i-boxes"/></svg>
+            موجودی و ویرایش
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-stock"><svg><use href="#i-boxes"/></svg> تغییر موجودی</button>
             <button class="btn btn-outline btn-sm" data-sheet="sheet-eos"><svg><use href="#i-box-x"/></svg> اتمام موجودی</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-details"><svg><use href="#i-pencil"/></svg> ویرایش جزئیات</button>
             <button class="btn btn-outline btn-sm" style="color:var(--red)" data-sheet="sheet-pause"><svg><use href="#i-pause"/></svg> عدم نمایش</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <div style="font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            <svg style="width:15px;height:15px;color:var(--primary)"><use href="#i-target"/></svg>
+            تبلیغات و کمپین
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-target"><svg><use href="#i-target"/></svg> تبلیغ هدفمند</button>
+            <button class="btn btn-outline btn-sm" data-sheet="sheet-campaign"><svg><use href="#i-spark"/></svg> ایجاد کمپین</button>
           </div>
         </div>
 
@@ -2255,7 +2305,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <svg><use href="#i-check"/></svg>
         ارسال پیشنهاد
       </button>
-      <button class="btn btn-outline" style="flex:1">بایگانی</button>
+      <!-- فاز ۳۲ — «انصراف» (به‌جای «بایگانی»): بازگشت به همان‌جایی که فروشنده از آن آمده (لیست خرید / درخواست‌ها) -->
+      <button class="btn btn-outline" style="flex:1" data-cancel>انصراف</button>
     </div>
 
     </section>
@@ -2350,6 +2401,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div style="flex:1">
           <div style="font-size:13.5px;font-weight:700">نظر و ایده دربارهٔ دستیار فروش</div>
           <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">چطور می‌تونیم دستیار فروش رو برای شما بهتر کنیم؟</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      </div>
+
+      <!-- فاز ۳۲ — راهنمای دستیار فروش → صفحهٔ راهنما (۴۱): فیلم‌های آموزشی + سوال و جواب کاربران -->
+      <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer" data-go="41">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:var(--primary-strong)">
+          <svg style="width:19px;height:19px"><use href="#i-play"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:700">راهنمای دستیار فروش</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">فیلم‌های آموزشی و سوال و جواب کاربران</div>
         </div>
         <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
       </div>
@@ -3449,6 +3512,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
           <svg style="width:14px;height:14px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
+        <!-- فاز ۳۲ — راهنمای دستیار خرید → صفحهٔ راهنما (۴۰): فیلم‌های آموزشی + سوال و جواب کاربران -->
+        <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer;padding:11px 13px" data-go="40">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone)">
+            <svg style="width:18px;height:18px"><use href="#i-play"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">راهنمای دستیار خرید</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">فیلم‌های آموزشی و سوال و جواب کاربران</div>
+          </div>
+          <svg style="width:14px;height:14px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
       </div>
 
       <!-- اعلان‌ها — قلب رابطه با تابلوها -->
@@ -4499,7 +4573,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- ═══ لیست خرید معمول — ردیف‌ها با زنگولهٔ گوش به زنگ ═══ -->
-      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-list"/></svg> لیست خرید</h2><span class="more">۴ کالا</span></div>
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-list"/></svg> لیست خرید معمول</h2><span class="more">۴ کالا</span></div>
       <div class="rows">
         <div class="row-card">
           <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
@@ -6535,6 +6609,88 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <section class="scr" id="scr-40" data-arm="buy" hidden>
+
+
+    <!-- ═══ فاز ۳۲ — راهنمای دستیار خرید ═══
+         از پروفایل خریدار (۱۴) باز می‌شود. ساختار به خواست مالک:
+         ۱) نوار افقی فیلم‌های آموزشی — هر آیتم عکس + عنوان زیرش؛ لمس = پخش فیلم (شیت sheet-video).
+         ۲) زیر نوار: سوال و جواب کاربران — متن مالک عیناً + فرم سوال + پست‌ها/پاسخ‌ها
+         (همان موتور بازخورد ۳۷/۳۸ — دیتا: FB_DATA['40']، فیلم‌ها: VD_DATA['40']). -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">راهنمای دستیار خرید<small>فیلم‌های آموزشی و پرسش‌وپاسخ</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- نوار افقی فیلم‌های آموزشی (JS رندر می‌کند) -->
+      <div class="sec-title" style="margin-top:10px"><h2><svg><use href="#i-play"/></svg> فیلم‌های آموزشی</h2><span class="more">۵ آموزش</span></div>
+      <div class="vd-row" id="vd-row-40"></div>
+
+      <!-- سوال و جواب کاربران -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-comment"/></svg> سوال و جواب کاربران</h2><span class="more" id="fb-count-40"></span></div>
+      <div class="card gd-ask" style="padding:11px 13px">
+        <svg><use href="#i-info"/></svg>
+        <p>اگر همچنان بعد از دیدن فیلمها ابهامی یا سوالی دارید اینجا سوال خود را مطرح کنید تا سایر کاربران به شما پاسخ دهند.</p>
+      </div>
+
+      <!-- فرم سوال — تکست‌باکس ساده -->
+      <div class="card fb-form" style="margin-top:10px;padding:13px 14px">
+        <div class="field">
+          <textarea class="input" id="fb-text-40" rows="3" placeholder="سوالتون رو بنویسید…"></textarea>
+        </div>
+        <div class="cm-err" id="fb-err-40" hidden>سوال خود را بنویسید</div>
+        <button class="btn btn-primary btn-block" style="margin-top:10px" data-fbsend="40"><svg><use href="#i-send"/></svg> ثبت سوال</button>
+      </div>
+
+      <!-- سوال‌ها و پاسخ‌های کاربران (JS رندر می‌کند) -->
+      <div class="rows" id="fb-list-40" style="margin-top:10px"></div>
+
+    </main>
+
+    </section>
+
+    <section class="scr" id="scr-41" data-arm="sell" hidden>
+
+
+    <!-- ═══ فاز ۳۲ — راهنمای دستیار فروش ═══
+         از پروفایل فروش (۰۷) باز می‌شود. همان ساختار راهنمای خرید (۴۰) با فیلم‌ها و
+         سوال‌های فروشندگی — دیتا: FB_DATA['41'] (دو سوال نمونهٔ مالک عیناً) و VD_DATA['41']. -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">راهنمای دستیار فروش<small>فیلم‌های آموزشی و پرسش‌وپاسخ</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- نوار افقی فیلم‌های آموزشی (JS رندر می‌کند) -->
+      <div class="sec-title" style="margin-top:10px"><h2><svg><use href="#i-play"/></svg> فیلم‌های آموزشی</h2><span class="more">۵ آموزش</span></div>
+      <div class="vd-row" id="vd-row-41"></div>
+
+      <!-- سوال و جواب کاربران -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-comment"/></svg> سوال و جواب کاربران</h2><span class="more" id="fb-count-41"></span></div>
+      <div class="card gd-ask" style="padding:11px 13px">
+        <svg><use href="#i-info"/></svg>
+        <p>اگر همچنان بعد از دیدن فیلمها ابهامی یا سوالی دارید اینجا سوال خود را مطرح کنید تا سایر کاربران به شما پاسخ دهند.</p>
+      </div>
+
+      <!-- فرم سوال — تکست‌باکس ساده -->
+      <div class="card fb-form" style="margin-top:10px;padding:13px 14px">
+        <div class="field">
+          <textarea class="input" id="fb-text-41" rows="3" placeholder="سوالتون رو بنویسید…"></textarea>
+        </div>
+        <div class="cm-err" id="fb-err-41" hidden>سوال خود را بنویسید</div>
+        <button class="btn btn-primary btn-block" style="margin-top:10px" data-fbsend="41"><svg><use href="#i-send"/></svg> ثبت سوال</button>
+      </div>
+
+      <!-- سوال‌ها و پاسخ‌های کاربران (JS رندر می‌کند) -->
+      <div class="rows" id="fb-list-41" style="margin-top:10px"></div>
+
+    </main>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -7996,6 +8152,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>ارسال برای بررسی</button>
 </div>
 
+<!-- ═══ فاز ۳۲ — شیت پخش فیلم آموزشی (راهنمای دستیارها ۴۰/۴۱) ═══ -->
+<!-- IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی، این شیت پخش‌کنندهٔ ویدیوی واقعی همان آموزش است
+     (mp4 از سرور). در پروتوتایپ، پخش شبیه‌سازی شده: نوار پیشرفت و زمان با ضریب ~۱۴ برابر سریع‌تر
+     جلو می‌رود تا رفتار (پخش/توقف/پایان/دوباره) قابل آزمایش باشد. محتوای شیت از VD_DATA پر می‌شود. -->
+<div class="sheet" id="sheet-video" role="dialog" aria-label="فیلم آموزشی">
+  <div class="grab"></div>
+  <h3 id="vdv-title">شروع کار با دستیار خرید</h3>
+  <div class="sub" id="vdv-sub">فیلم آموزشی · ۲:۱۴</div>
+  <div class="vd-player" data-vdplay>
+    <img id="vdv-poster" src="png/p27/08-buy-list.png" alt="پیش‌نمایش فیلم آموزشی">
+    <span class="vd-fin" id="vdv-fin" hidden>پایان فیلم</span>
+    <button type="button" class="vd-big" id="vdv-big" aria-label="پخش فیلم"><i><svg><use href="#i-play"/></svg></i></button>
+  </div>
+  <div class="vd-ctrl">
+    <button type="button" class="vbtn" id="vdv-toggle" data-vdplay aria-label="پخش / توقف"><svg><use href="#i-play"/></svg></button>
+    <span class="vd-bar"><i id="vdv-fill"></i></span>
+    <span class="vd-time" id="vdv-time">۰:۰۰ / ۲:۱۴</span>
+  </div>
+  <div class="grp" id="vdv-grp">در این فیلم می‌بینید</div>
+  <div class="vd-learn" id="vdv-learn"></div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
   </div>
 </div>
 
@@ -8552,14 +8731,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '11': '08', '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
     '27': '01', '28': '05', '29': '07', '30': '07', '31': '08', '32': '07', '33': '08', '34': '08', '35': '07', '36': '11',
-    '37': '14', '38': '07', '39': '08', '10': '14' /* فاز ۳۱: کارهای خرید → خانهٔ خرید؛ کاتالوک‌ها (۱۰) اکنون زیرصفحهٔ پروفایل */
+    '37': '14', '38': '07', '39': '08', '10': '14', /* فاز ۳۱: کارهای خرید → خانهٔ خرید؛ کاتالوک‌ها (۱۰) اکنون زیرصفحهٔ پروفایل */
+    '40': '14', '41': '07' /* فاز ۳۲: راهنمای خریدار/فروش ← پروفایل همان بازو */
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
     '02': [['درخواست خرید', '12'], ['مشاهده تابلوی تأمین', '09']],
     '03': [['ویرایش کامل کالا', '04'], ['مشاهده و پاسخ', '06']],
     '04': [['ذخیره در کاتالوگ', '01']],
-    '06': [['ارسال پیشنهاد', '28'], ['بایگانی', '05']],
+    '06': [['ارسال پیشنهاد', '28']], /* فاز ۳۲: «بایگانی» بی‌معنا بود → «انصراف» (data-cancel در مارک‌آپ، بازگشت به مبدأ) */
     '07': [['نمای عمومی', '13'], ['خروج از حساب', '15']],
     '08': [['درخواست‌های خرید من', '11'], ['افزودن کالا', '34']],
     '09': [['درخواست خرید', '12'], ['کاتالوگ', '13'], ['درخواست خرید از تأمین‌کننده‌های انتخابی', '12'], ['افزودن به لیست مقایسه', '33'], ['مشاهده کاتالوگ', '13']],
@@ -8578,7 +8758,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   var CARDS = { '01': '03', '05': '06', '08': '33', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' }; /* فاز ۲۶: کارت لیست خرید (۰۸) → لیست مقایسهٔ ۳۳ */
-  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش","36":"۳۶ — پیشنهادات درخواست · دستیار خرید","37":"۳۷ — نظر و ایده دربارهٔ دستیار خرید · بازخورد خریداران","38":"۳۸ — نظر و ایده دربارهٔ دستیار فروش · بازخورد فروشندگان","39":"۳۹ — کارها · دستیار خرید"};
+  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش","36":"۳۶ — پیشنهادات درخواست · دستیار خرید","37":"۳۷ — نظر و ایده دربارهٔ دستیار خرید · بازخورد خریداران","38":"۳۸ — نظر و ایده دربارهٔ دستیار فروش · بازخورد فروشندگان","39":"۳۹ — کارها · دستیار خرید","40":"۴۰ — راهنمای دستیار خرید · فیلم‌ها و پرسش‌وپاسخ","41":"۴۱ — راهنمای دستیار فروش · فیلم‌ها و پرسش‌وپاسخ"};
 
   var stack = [];
   var current = null;
@@ -9094,12 +9274,35 @@ body > div[id^="scr-d"][hidden] { display: none; }
         { n: 'تیم آیمچ', team: true, when: '۳ روز پیش', tx: 'هوم! تماس‌ها هم همین حالا در «چه کسانی تماس گرفتند» گزارش می‌شوند؛ از گزارش تبلیغ‌ها بخش سوم را ببینید.' }
       ] },
       { n: 'کیان غلات', av: '#c2703a', v: false, when: '۱ هفتهٔ پیش', tx: 'کمپین خوب است ولی برای شروع، لینک کاتالوک را خودم می‌فرستم و مشتری جمع می‌کنم. مسیر رایگان‌اش همین است؟', likes: 5, liked: false, replies: [] }
+    ],
+    /* فاز ۳۲ — سوال و جواب کاربران خریدار (راهنمای دستیار خرید ۴۰): همان الگوی مالک — سوالِ کاربر + پاسخ کاربر دیگر */
+    '40': [
+      { n: 'مریم رضایی · سوپرمارکت نگین', av: '#0e7490', v: true, when: '۲ روز پیش', tx: 'کسی تا حالا درخواست خرید فرستاده؟ واقعاً چند تا فروشنده جواب می‌ده؟', likes: 7, liked: false, replies: [
+        { n: 'مهدی نوری · رستوران مهر', av: '#9333ea', when: 'دیروز', tx: 'بله، من هر ماه برای برنج و روغن یک بار می‌فرستم. معمولاً تا فرداش دو سه تا پیشنهاد می‌رسه؛ مهلت رو هم ۳ روز می‌ذارم که همه فرصت جواب داشته باشن.' }
+      ] },
+      { n: 'حسن کریمی · خواربار مرکزی', av: '#c2703a', v: false, when: '۵ روز پیش', tx: 'قیمت برنج تو لیست مقایسه‌ام بالاست. راهی هست وقتی ارزان شد خودم خبر شم؟', likes: 5, liked: false, replies: [
+        { n: 'هایپر سفید', av: '#7c3aed', v: true, when: '۴ روز پیش', tx: 'زنگولهٔ «گوش به زنگ» رو روی همون کالا روشن کن و قیمت هدفت رو بده — قیمت به هدف رسید، اعلان می‌گیری.' }
+      ] },
+      { n: 'سارا احمدی · هایپر فیروزه', av: '#0d9488', v: false, when: '۱ هفتهٔ پیش', tx: 'لینک لیست خریدم رو کجا پیدا کنم که برای تأمین‌کننده‌هام بفرستم؟', likes: 3, liked: false, replies: [
+        { n: 'سوپرمارکت آریا', av: '#0e7490', v: true, when: '۶ روز پیش', tx: 'کنار اسم لیستت آیکون اشتراک‌گذاری هست — لینکش رو بفرست. فروشنده لیستت رو ذخیره می‌کنه و هر تغییری رو می‌بینه.' }
+      ] }
+    ],
+    /* فاز ۳۲ — سوال و جواب کاربران فروشنده (راهنمای دستیار فروش ۴۱): دو نمونهٔ مالک عیناً */
+    '41': [
+      { n: 'امیر صادقی · پخش نارون', av: '#b45309', v: false, when: '۲ روز پیش', tx: 'کسی تا حالا کمپین فروش برگزار کرده؟ آیا نتیجهٔ خوبی هم گرفتین؟', likes: 6, liked: false, replies: [
+        { n: 'علی محمدی · پخش هگمتان', av: '#c2703a', v: true, when: 'دیروز', tx: 'بله من تا حالا چهار بار کمپین فروش برگزار کردم و نتیجه خیلی خوبی هم گرفتم. در کل هزینه‌ای که می‌دی در برابر فروشی که کردم واقعا ناچیز بود' }
+      ] },
+      { n: 'فاطمه نوری · تنقلات پارس', av: '#7c3aed', v: false, when: '۵ روز پیش', tx: 'خواستم با لیست اکسل کالاهامو ثبت کنم نشد؟ می‌گه لیستت استاندارد نیست. چیکار کنم؟', likes: 4, liked: false, replies: [
+        { n: 'رضا عسگری · تولید موارد غذایی غزال', av: '#0d9488', v: true, when: '۴ روز پیش', tx: 'باید اکسلت رو به هوش مصنوعی بدی و پرامپتی که آیمچ بهت میده رو هم بدی و بعد اکسلی که هوش مصنوعی تولید می‌کنه رو در آیمچ آپلود کنی. نه اکسل خام خودت رو' }
+      ] }
     ]
   };
+  /* اسم شمارش هر صفحه: بازخوردها «نظر»، راهنماها «سوال» */
+  var FB_NOUN = { '37': 'نظر', '38': 'نظر', '40': 'سوال', '41': 'سوال' };
   var fbReplyOpen = {}; /* '37:1' → جعبهٔ پاسخِ پست ۱ صفحهٔ ۳۷ باز است */
   function fbWho(pid) {
-    /* هویت پست/پاسخ جدید = کسب‌وکار فعال همان بازو (۳۷: خریدار — ۳۸: فروشنده) */
-    return pid === '37'
+    /* هویت پست/پاسخ جدید = کسب‌وکار فعال همان بازو (۳۷/۴۰: خریدار — ۳۸/۴۱: فروشنده) */
+    return (pid === '37' || pid === '40')
       ? { n: 'سوپرمارکت آریا', av: '#0e7490', v: true }
       : { n: 'پخش برنج پارس', av: 'linear-gradient(135deg,#c2703a,#ea580c)', v: true };
   }
@@ -9135,9 +9338,110 @@ body > div[id^="scr-d"][hidden] { display: none; }
       '</div>';
     }).join('');
     var cnt = document.getElementById('fb-count-' + pid);
-    if (cnt) cnt.textContent = faNum(data.length) + ' نظر';
+    if (cnt) cnt.textContent = faNum(data.length) + ' ' + (FB_NOUN[pid] || 'نظر');
   }
-  function fbRenderAll() { fbRender('37'); fbRender('38'); }
+  function fbRenderAll() { fbRender('37'); fbRender('38'); fbRender('40'); fbRender('41'); }
+
+  /* ═══ فاز ۳۲ — فیلم‌های آموزشی راهنمای دستیارها (۴۰/۴۱) ═══
+     نوار افقی: هر آموزش = عکس (اسکرین‌شات همان بخش سیستم) + مدت + عنوان زیر عکس؛
+     لمس → شیت پخش (sheet-video). در پیاده‌سازی عملیاتی این‌ها ویدیوهای mp4 واقعی‌اند
+     که برای هر قابلیت ضبط می‌شوند؛ اینجا با پوستر + «در این فیلم می‌بینید» نمایان می‌شوند. */
+  var VD_DATA = {
+    '40': [
+      { t: 'شروع کار با دستیار خرید', dur: '۲:۱۴', d: 134, img: 'png/p27/08-buy-list.png',
+        learn: ['ساخت اولین لیست خرید و افزودن کالا به آن', 'گروه‌بندی کالاها و دورهٔ خرید هفتگی / دوهفتگی / ماهانه', 'پیش‌نمایش لیست همان‌طور که فروشنده می‌بیند'] },
+      { t: 'آموزش درخواست خرید', dur: '۳:۰۵', d: 185, img: 'png/p26/12-deadline.png',
+        learn: ['ارسال یک فرم درخواست برای چند تأمین‌کننده با هم', 'تعیین مهلت پاسخ‌گویی (۱ / ۳ / ۵ روز)', 'دنبال‌کردن پیشنهادهای رسیده از «درخواست‌های خرید من»'] },
+      { t: 'لیست مقایسه قیمت', dur: '۱:۴۸', d: 108, img: 'png/p26/33-compare.png',
+        learn: ['رتبه‌بندی قیمت فروشنده‌هایی که دنبال می‌کنید — ارزان‌ترین سبز', 'تنظیم قیمت هدف و «گوش به زنگ» برای هر کالا', 'پیشنهادهای تطبیقی آیمچ برای تأمین‌کنندهٔ بهتر'] },
+      { t: 'ذخیرهٔ کاتالوگ‌ها و دفترچهٔ تلفن', dur: '۲:۰۵', d: 125, img: 'png/p26/10-phonebook.png',
+        learn: ['ذخیرهٔ کاتالوگ فروشنده‌ها و دسترسی سریع به تماس', 'جستجوی نام شخص یا کسب‌وکار در دفترچه', 'کاتالوگ‌های مرتبط پیشنهادی آیمچ'] },
+      { t: 'گوش به زنگ و اعلان‌ها', dur: '۱:۳۲', d: 92, img: 'png/p27/sheet-alertinfo.png',
+        learn: ['روشن‌کردن زنگولهٔ هر کالا و تعیین قیمت هدف', 'اعلان کاهش قیمت و اعلام نیاز فروشنده', 'مدیریت اعلان‌ها از تنظیمات'] }
+    ],
+    '41': [
+      { t: 'شروع کار با دستیار فروش', dur: '۲:۳۰', d: 150, img: 'png/01-sell-catalog.png',
+        learn: ['ساخت کاتالوگ و شروع حضور آنلاین', 'افزودن اولین کالا با قیمت و موجودی', 'خلاصهٔ وضعیت فروش از «کارها»'] },
+      { t: 'ساخت کاتالوگ و افزودن کالا', dur: '۳:۱۲', d: 192, img: 'png/04-product-form.png',
+        learn: ['انتخاب گود، برند و واحد فروش عمده', 'قیمت، حداقل سفارش و موجودی هر کالا', 'ویرایش سریع قیمت و موجودی بعداً از صفحهٔ کالا'] },
+      { t: 'پاسخ به درخواست‌های خرید', dur: '۲:۲۲', d: 142, img: 'png/06-sell-request-detail.png',
+        learn: ['دیدن درخواست‌های خرید خریداران عمده', 'ارسال پیشنهاد قیمت با شرایط تحویل', 'پیگیری پیشنهادها تا نتیجهٔ نهایی'] },
+      { t: 'تخفیف پلکانی و تخفیف همکار', dur: '۱:۵۵', d: 115, img: 'png/p32/03-manage-three.png',
+        learn: ['تخفیف پله‌ای بر اساس حجم خرید خریدار', 'تخفیف همکار برای مشتری‌های همکار شما', 'اولویت تخفیف کالا نسبت به گروه مشتری و کاتالوگ'] },
+      { t: 'تبلیغ هدفمند و کمپین فروش', dur: '۲:۴۰', d: 160, img: 'png/p24/31-campaigns.png',
+        learn: ['فرق تبلیغ هدفمند با کمپین فروش', 'کمپین با قیمت ویژه برای خریداران مرتبط', 'گزارش نمایش‌ها و شارژ کیف پول'] }
+    ]
+  };
+  function vdRender(pid) {
+    var host = document.getElementById('vd-row-' + pid); if (!host) return;
+    host.innerHTML = (VD_DATA[pid] || []).map(function (v, i) {
+      return '<button type="button" class="vd-card" data-vdopen="' + pid + ':' + i + '" title="' + v.t + '">' +
+        '<span class="vd-thumb"><img src="' + v.img + '" alt="' + v.t + '" loading="lazy">' +
+          '<span class="vd-pl"><i><svg><use href="#i-play"/></svg></i></span>' +
+          '<span class="vd-len">' + v.dur + '</span>' +
+        '</span>' +
+        '<span class="vd-t">' + v.t + '</span>' +
+      '</button>';
+    }).join('');
+  }
+
+  /* پخش‌کنندهٔ ماک (پروتوتایپ): زمان فیلم با ضریب ۱۴ سریع‌تر جلو می‌رود تا رفتار قابل آزمایش باشد */
+  var VD = { t: 0, dur: 0, playing: false, done: false, timer: null };
+  var VD_RATE = 14;
+  function vdFmt(s) {
+    s = Math.max(0, Math.round(s));
+    var m = Math.floor(s / 60), r = s % 60;
+    return faNum(m) + ':' + faNum(r < 10 ? '0' + r : String(r));
+  }
+  function vdUI() {
+    var sh = document.getElementById('sheet-video'); if (!sh) return;
+    var v = (VD_DATA[sh.dataset.vdPid] || [])[parseInt(sh.dataset.vdIx || '0', 10)] || {};
+    var fill = document.getElementById('vdv-fill');
+    if (fill) fill.style.width = VD.dur ? (VD.t / VD.dur * 100).toFixed(1) + '%' : '0%';
+    var tm = document.getElementById('vdv-time');
+    if (tm) tm.textContent = vdFmt(VD.t) + ' / ' + (v.dur || '');
+    var big = document.getElementById('vdv-big');
+    if (big) big.hidden = VD.playing;
+    var fin = document.getElementById('vdv-fin');
+    if (fin) fin.hidden = !VD.done;
+    var tg = document.getElementById('vdv-toggle');
+    if (tg) tg.innerHTML = '<svg><use href="#i-' + (VD.playing ? 'pause' : 'play') + '"/></svg>';
+  }
+  function vdPause() {
+    VD.playing = false;
+    if (VD.timer) { clearInterval(VD.timer); VD.timer = null; }
+    vdUI();
+  }
+  function vdPlay() {
+    if (VD.done) { VD.t = 0; VD.done = false; } /* دوباره‌پخش پس از پایان */
+    VD.playing = true;
+    if (VD.timer) clearInterval(VD.timer);
+    VD.timer = setInterval(function () {
+      var sh = document.getElementById('sheet-video');
+      if (!sh || !sh.classList.contains('show')) { vdPause(); return; } /* شیت بسته شد → پخش هم قطع */
+      VD.t += 0.25 * VD_RATE;
+      if (VD.t >= VD.dur) { VD.t = VD.dur; VD.done = true; vdPause(); return; }
+      vdUI();
+    }, 250);
+    vdUI();
+  }
+  function vdOpen(pid, ix) {
+    var v = (VD_DATA[pid] || [])[ix]; if (!v) return;
+    var sh = document.getElementById('sheet-video'); if (!sh) return;
+    sh.dataset.vdPid = pid; sh.dataset.vdIx = String(ix);
+    document.getElementById('vdv-title').textContent = v.t;
+    document.getElementById('vdv-sub').textContent = 'فیلم آموزشی · ' + v.dur;
+    var po = document.getElementById('vdv-poster');
+    if (po) po.src = v.img;
+    var ln = document.getElementById('vdv-learn');
+    if (ln) ln.innerHTML = (v.learn || []).map(function (l) {
+      return '<div class="li"><svg><use href="#i-check"/></svg><span>' + l + '</span></div>';
+    }).join('');
+    VD.dur = v.d; VD.t = 0; VD.done = false; VD.playing = false;
+    if (VD.timer) { clearInterval(VD.timer); VD.timer = null; }
+    vdUI();
+    openSheet('sheet-video');
+  }
 
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
@@ -9616,6 +9920,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
+    /* ═══ فاز ۳۲ — راهنمای دستیارها: بازکردن فیلم آموزشی + پخش/توقف ═══ */
+    var vdo = t.closest('[data-vdopen]');
+    if (vdo) {
+      var vk = vdo.dataset.vdopen.split(':');
+      vdOpen(vk[0], parseInt(vk[1], 10));
+      return;
+    }
+    var vdp = t.closest('[data-vdplay]');
+    if (vdp) {
+      if (VD.playing) vdPause(); else vdPlay();
+      return;
+    }
+
     /* شیت سوییچ دستیار */
     var ap = t.closest('.arm-pill');
     if (ap) {
@@ -9798,6 +10115,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var goEl = t.closest('[data-go]');
     if (goEl) { go(goEl.dataset.go); return; }
 
+    /* فاز ۳۲ — «انصراف» فرم پیشنهاد قیمت (۰۶): بازگشت به همان صفحه‌ای که فروشنده از آن آمده است
+       (لیست خرید خریدار از شیت درخواست، یا درخواست‌های خرید فروشنده) — نه سرگردانی به صفحهٔ دیگر */
+    var canx = t.closest('[data-cancel]');
+    if (canx) { back(); return; }
+
     var backEl = t.closest('[data-back]');
     if (backEl) { back(); return; }
 
@@ -9866,7 +10188,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   walletRender();
   cmRender();
   cmSumRender();
-  fbRenderAll(); /* فاز ۳۰ — پست‌های بازخورد ۳۷/۳۸ */
+  fbRenderAll(); /* فاز ۳۰ — پست‌های بازخورد ۳۷/۳۸ · فاز ۳۲ — سوال‌های راهنما ۴۰/۴۱ */
+  vdRender('40'); vdRender('41'); /* فاز ۳۲ — نوار فیلم‌های آموزشی راهنمای دستیارها */
   assistSyncToggles(); /* فاز ۳۱ — سوییچ‌های ۲۲ با وضعیت ذخیره‌شده هم‌گام */
   assistChrome();      /* فاز ۳۱ — اگر دستیاری خاموش است، پیل هدر از همان بارگذاری مخفی است */
   var init = (location.hash || '').slice(1);
