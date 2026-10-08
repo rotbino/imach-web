@@ -264,13 +264,17 @@ await page.click('#sheet-lgroups [data-close]');
 await page.waitForTimeout(300);
 
 // ═══ نام سراسری «درخواست خرید» — نمونه‌ها ═══
-for (const [scr, needle] of [['02', 'درخواست خرید'], ['09', 'درخواست خرید'], ['05', 'درخواست خرید'], ['28', 'درخواست خرید'], ['33', 'درخواست خرید'], ['31', 'درخواست خرید'], ['21', 'درخواست']]) {
+// فاز ۲۸: ۳۱ عمداً هیچ‌کدام را ندارد (دکمه‌های کمپین → تماس/پیام) — فقط «درخواست قیمت» نباید باشد
+for (const [scr, needle] of [['02', 'درخواست خرید'], ['09', 'درخواست خرید'], ['05', 'درخواست خرید'], ['28', 'درخواست خرید'], ['33', 'درخواست خرید'], ['21', 'درخواست']]) {
   await page.goto(URL + '#' + scr);
   await page.waitForTimeout(400);
   const txt = await page.$eval('#scr-' + scr, el => el.textContent);
   const ok = txt.includes(needle) && !txt.includes('درخواست قیمت');
   check(scr + ' واژهٔ واحد «درخواست خرید» (بدون «درخواست قیمت»)', ok);
 }
+await page.goto(URL + '#31');
+await page.waitForTimeout(350);
+check('31 بدون «درخواست قیمت» (دکمه‌های کمپین فاز ۲۸: تماس/پیام)', !(await page.$eval('#scr-31', el => el.textContent)).includes('درخواست قیمت'));
 // فوتر همهٔ صفحات خرید
 for (const scr of ['10', '14', '18', '31']) {
   await page.goto(URL + '#' + scr);

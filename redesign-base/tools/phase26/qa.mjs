@@ -1,6 +1,7 @@
 // tools/phase26/qa.mjs — QA فاز ۲۶: بازطراحی دستیار خرید
 // دفتر خرید (۰۸: لینک قرمز «درخواست‌های قیمت من» + بج‌های استعلام + کارت→لیست مقایسه) ·
-// صفحهٔ جدید ۱۱ «درخواست‌های قیمت من» (جاری/آرشیو · مهلت · متوقف/بایگانی · ساخت درخواست مشابه) ·
+// صفحهٔ جدید ۱۱ «درخواست‌های قیمت من» (جاری/آرشیو · مهلت · متوقف/بایگانی · ساخت درخواست مشابه)
+//     — فاز ۲۷: نام «درخواست‌های خرید من» · فاز ۲۸: ۱۱ فقط لیست؛ جزئیات/پیشنهادها/مدیریت در ۳۶؛ آرشیو: «تکرار درخواست» با آیکون کپی ·
 // فرم ۱۲ (مهلت ۱/۳/۵ + سایر تا ۳۰ روز · ارسال→۱۱) · صفحهٔ جدید ۳۳ «لیست مقایسه» (گرید قیمت دنبال‌شده
 // + جزئیات ۰۲ + پیشنهاد تطابق با بج «فروشندهٔ ویژه» + استعلام گروهی + کادر تأمین‌کنندگان دیگر→۰۹) ·
 // تابلوی ۰۹ (کارت «۲٫۵٪ ارزان‌تر» + جایگزین + بج فروشندهٔ ویژه) · دفترچهٔ تلفن ۱۰ (کاتالوگ‌های
@@ -48,15 +49,15 @@ await page.locator('#scr-08 .prqlink').click();
 await page.waitForTimeout(350);
 check('۰۸ کلیک لینک → صفحهٔ ۱۱', (await hash()) === '#11' && !(await page.$eval('#scr-11', el => el.hidden)));
 
-// ═══ ۱۱ — درخواست‌های خرید من (نام فاز ۲۷؛ صفحهٔ کامل، نه مودال) ═══
+// ═══ ۱۱ — درخواست‌های خرید من (نام فاز ۲۷؛ فاز ۲۸: فقط لیست — جزئیات/پیشنهادها در ۳۶) ═══
 t = await page.locator('#scr-11').innerText();
 const t11all = await page.$eval('#scr-11', el => el.textContent);
 check('۱۱ صفحهٔ کامل با هدر بازگشت (subheader، بدون تب‌بار)', !!(await page.$('#scr-11 .subheader .back')) && !(await page.$('#scr-11 .tabbar')));
 check('۱۱ عنوان + سوییچ جاری/آرشیو', t.includes('درخواست‌های خرید من') && t.includes('جاری') && t.includes('آرشیو'));
 check('۱۱ مهلت‌ها: «۳ روز مانده» (برنج) و «امروز آخرین روز» (روغن)', t.includes('۳ روز مانده') && t.includes('امروز آخرین روز'));
-check('۱۱ پیشنهادهای رسیده با قیمت و شرایط (تجارت گیل‌رنج ۲٬۷۸۰٬۰۰۰ بهترین)', t.includes('تجارت گیل‌رنج') && t.includes('۲٬۷۸۰٬۰۰۰') && t.includes('بهترین'));
-check('۱۱ مدیریت: «متوقف کردن» + «بایگانی»', t.includes('متوقف کردن') && t.includes('بایگانی'));
-check('۱۱ آرشیو: «ساخت درخواست مشابه» (نه «کپی»)', t11all.includes('ساخت درخواست مشابه') && !t11all.includes('کپی'));
+check('۱۱ فقط لیست (فاز ۲۸): بهترین روی کارت، بدون پیشنهاد درون‌کارت', t.includes('بهترین:') && t.includes('۲٬۷۸۰٬۰۰۰') && !t.includes('گفتگو'));
+check('۱۱ مدیریت منتقل به ۳۶ (فاز ۲۸: بدون متوقف/بایگانی روی کارت‌های ۱۱)', !t.includes('متوقف کردن'));
+check('۱۱ آرشیو: «تکرار درخواست» با آیکون کپی (فاز ۲۸)', t11all.includes('تکرار درخواست'));
 await page.locator('#phone').screenshot({ path: OUT + '/11-prq-now.png' });
 
 // ۱۱ — سوییچ آرشیو و بازگشت
@@ -67,25 +68,43 @@ await page.locator('#phone').screenshot({ path: OUT + '/11-prq-arch.png' });
 await page.locator('#prq-tabs button[data-prqtab="now"]').click();
 await page.waitForTimeout(250);
 
-// ۱۱ — بایگانی: انتقال کارت به آرشیو + شمارنده‌ها
+// ۱۱ → ۳۶ (فاز ۲۸) — جزئیات + پیشنهادها + مدیریت
+await page.locator('#prq-now .prq-card').first().click();
+await page.waitForTimeout(400);
+check('۱۱ کارت → صفحهٔ ۳۶ (پیشنهادات درخواست)', (await hash()) === '#36');
+t = await page.locator('#scr-36').innerText();
+check('۳۶ پیشنهادهای رسیده با قیمت (تجارت گیل‌رنج ۲٬۷۸۰٬۰۰۰ بهترین آیمچ)', t.includes('تجارت گیل‌رنج') && t.includes('۲٬۷۸۰٬۰۰۰') && t.includes('بهترین آیمچ'));
+check('۳۶ مدیریت: «متوقف کردن» + «بایگانی»', t.includes('متوقف کردن') && t.includes('بایگانی'));
+
+// ۳۶ — بایگانی: کارت ۱۱ به آرشیو منتقل می‌شود + شمارنده‌ها
 const archBefore = await page.$$eval('#prq-arch .prq-card', els => els.length);
-await page.locator('#prq-now .prq-card').first().locator('[data-prqarch]').click();
-await page.waitForTimeout(250);
-check('۱۱ بایگانی → کارت به آرشیو منتقل شد (' + archBefore + '→' + (archBefore + 1) + ')', (await page.$$eval('#prq-arch .prq-card', els => els.length)) === archBefore + 1);
+await page.locator('#po-acts [data-prqarch]').click();
+await page.waitForTimeout(300);
+check('۳۶ بایگانی → کارت ۱۱ به آرشیو منتقل شد (' + archBefore + '→' + (archBefore + 1) + ')', (await page.$$eval('#prq-arch .prq-card', els => els.length)) === archBefore + 1);
 const sub11 = await page.$eval('#prq-sub', el => el.textContent.trim());
 check('۱۱ شمارندهٔ سرصفحه به‌روز: ' + sub11, sub11.includes('۱ جاری') && sub11.includes('۴ آرشیو'));
 
-// ۱۱ — متوقف کردن
-await page.locator('#prq-now .prq-card').first().locator('[data-prqpause]').click();
-await page.waitForTimeout(200);
-const pausedState = await page.$eval('#prq-now .prq-card', c => {
-  const b = c.querySelector('.prq-stopbadge');
+// ۳۶ — متوقف کردن (کارت جاری باقی‌مانده: روغن)
+await page.goto(URL + '#11');
+await page.waitForTimeout(350);
+await page.locator('#prq-now .prq-card').first().click();
+await page.waitForTimeout(400);
+await page.locator('#po-acts [data-prqpause]').click();
+await page.waitForTimeout(250);
+const pausedState = await page.$eval('#po-req', c => {
+  const b = document.getElementById('po-stop');
   const btn = c.querySelector('[data-prqpause]');
   return { shown: b && !b.hidden, label: btn.textContent.trim() };
 });
-check('۱۱ متوقف → بج «متوقف» + دکمه «شروع مجدد»', pausedState.shown && pausedState.label === 'شروع مجدد');
+check('۳۶ متوقف → بج «متوقف» + دکمه «شروع مجدد»', pausedState.shown && pausedState.label === 'شروع مجدد');
+await page.locator('#po-acts [data-prqpause]').click();
+await page.waitForTimeout(200);
 
-// ۱۱ — بازگشت → ۰۸
+// ۱۱ — بازگشت → ۰۸ (از ناوبری تازه)
+await page.goto(URL + '#08');
+await page.waitForTimeout(300);
+await page.goto(URL + '#11');
+await page.waitForTimeout(350);
 await page.locator('#scr-11 .subheader .back').click();
 await page.waitForTimeout(350);
 check('۱۱ دکمهٔ بازگشت → ۰۸', (await hash()) === '#08');
@@ -171,7 +190,7 @@ check('۱۰ جستجوی «نام شخص یا کسب و کار»', t.includes('�
 check('۱۰ تب‌های «مرتبط با من / ذخیره‌شده» حذف شدند', !(await page.$('#scr-10 .inner-tabs')));
 check('۱۰ سه‌نقطه در هر ۳ ردیف ذخیره‌شده', (await page.$$('#saved-cats .row-card [data-sheet="sheet-catmenu"]')).length === 3);
 check('۱۰ شماره تلفن در ردیف‌ها (دفترچهٔ تلفن)', t.includes('۰۹۱۱ ۲۳۴ ۵۶۷۸'));
-check('۱۰ بخش «کاتالوگ‌های مرتبط بیشتر» (محتوای تب قدیمی مرتبط با من)', t.includes('کاتالوگ‌های مرتبط بیشتر'));
+check('۱۰ بخش «مشاهده کاتالوگ‌های بیشتر» (نام فاز ۲۸ — محتوای تب قدیمی مرتبط با من)', t.includes('مشاهده کاتالوگ‌های بیشتر'));
 await page.locator('[data-reveal="rel-cats"]').click();
 await page.waitForTimeout(250);
 const relShown = await page.$eval('#rel-cats', el => !el.hidden);

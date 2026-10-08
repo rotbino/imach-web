@@ -1078,6 +1078,33 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #sheet-reqview .reqv-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   #sheet-reqview .sheet-row { cursor: default; }
 
+  /* ═══ فاز ۲۸ ═══ */
+  /* ۱۱ — کارت‌های لیست درخواست (فقط لیست؛ جزئیات و پیشنهادها در ۳۶) */
+  .rq-open { cursor: pointer; }
+  .rq-open:active { border-color: var(--border-strong); }
+  .rq-copy { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border-strong); background: #fff; color: var(--stone-soft); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  .rq-copy svg { width: 15px; height: 15px; }
+  .rq-copy:active { color: var(--arm); border-color: var(--arm); }
+  .rq-stopflag { background: var(--red-bg); color: var(--red); }
+  .rq-stopflag[hidden] { display: none; }
+  /* ۳۶ — صفحهٔ پیشنهادات درخواست */
+  .sortchips .chip { padding: 6px 12px; font-size: 11.5px; }
+  .offer-card { cursor: pointer; }
+  .offer-card .oprice { text-align: left; flex-shrink: 0; }
+  .offer-card .oprice .p { font-size: 13px; font-weight: 800; }
+  .offer-card .oprice .u { font-size: 9.5px; color: var(--muted-fg); margin-top: 2px; }
+  .obest { background: var(--green-bg); color: var(--green); }
+  #scr-36 #po-acts { display: flex; gap: 8px; margin-top: 11px; }
+  #scr-36 #po-acts[hidden], #scr-36 #po-repeat[hidden] { display: none; }
+  /* ۳۱ — فروش‌های ویژهٔ تامین‌کنندگان: ردیف‌های اطلاعات کارت کمپین */
+  .camp-meta { margin-top: 9px; padding-top: 9px; border-top: 1px dashed #eee9dd; display: flex; flex-direction: column; gap: 6px; }
+  .camp-meta .cm { display: flex; align-items: flex-start; gap: 7px; font-size: 11px; color: var(--muted-fg); line-height: 1.7; }
+  .camp-meta .cm svg { width: 13.5px; height: 13.5px; flex-shrink: 0; margin-top: 2px; color: var(--stone-soft); }
+  .camp-meta .cm b { color: var(--foreground); font-weight: 700; }
+  /* شیت کارت پیشنهاد (۳۶) */
+  #sheet-offerview .sheet-row { cursor: default; }
+  #sheet-offerview .contact-row .btn { flex: 1; font-size: 13px; padding: 10px 8px; }
+
 </style>
 </head>
 <body>
@@ -1151,6 +1178,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A2.5 2.5 0 015.5 5h13A2.5 2.5 0 0121 7.5v9a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 16.5z"/><path d="M3 9h18"/><path d="M15.5 13.5h2"/></symbol>
 <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M9.5 20V4M15 20v-8M20.5 20V7"/><path d="M2.5 20h19"/></symbol>
 <symbol id="i-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12a1 1 0 011 1V21l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5L5 21V4.5a1 1 0 011-1z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 013 13.5v-9A1.5 1.5 0 014.5 3h9A1.5 1.5 0 0115 4.5V5"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -2590,7 +2618,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- فاز ۲۶ — «کاتالوگ‌های ذخیره‌شدهٔ من»: دفترچهٔ تلفن خریدار
          IMPLEMENTATION NOTE: هر ردیف = یک کاتالوگ ذخیره‌شده (دکمهٔ ذخیره در کاتالوگ عمومی ۱۳).
          جستجو روی نام شخص / کسب‌وکار؛ تماس و کاتالوگ در دسترس؛ سه‌نقطه → شیت منو (sheet-catmenu) با حذف.
-         بخش «کاتالوگ‌های مرتبط بیشتر» همان محتوای تب قدیمی «مرتبط با من» است: موتور تطابق +
+         بخش «مشاهده کاتالوگ‌های بیشتر» (نام فاز ۲۸) همان محتوای تب قدیمی «مرتبط با من» است: موتور تطابق +
          جایگاه تبلیغ هدفمندِ کاتالوگ‌های ذخیره‌شده (فروشندهٔ ویژه) — فرصت تبلیغ‌کننده برای قرارگرفتن
          در لیست ذخیرهٔ خریداران مرتبط. تب‌ها حذف شدند؛ فقط کاتالوگ‌های ذخیره‌شده نمایش داده می‌شود. -->
     <header class="appbar">
@@ -2612,8 +2640,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span class="more" id="saved-cats-count">۳ کاتالوگ</span>
       </div>
 
-      <!-- جستجوی دفترچهٔ تلفن -->
-      <div class="searchbar">
+      <!-- جستجوی دفترچهٔ تلفن (فاز ۲۸: مارجین پایین — جدا از کارت اول) -->
+      <div class="searchbar" style="margin-bottom:10px">
         <svg><use href="#i-search"/></svg>
         <span>جستجوی نام شخص یا کسب و کار</span>
       </div>
@@ -2671,13 +2699,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       </div>
 
-      <!-- ═══ کاتالوگ‌های مرتبط بیشتر (محتوای تب قدیمی «مرتبط با من») ═══ -->
-      <button class="card" style="display:flex;align-items:center;gap:11px;width:100%;text-align:right;margin-top:12px;cursor:pointer;font-family:inherit" data-reveal="rel-cats" title="کاتالوگ‌های مرتبط بیشتر">
+      <!-- ═══ مشاهدهٔ کاتالوگ‌های بیشتر (محتوای تب قدیمی «مرتبط با من» — فاز ۲۸: نام جدید) ═══ -->
+      <button class="card" style="display:flex;align-items:center;gap:11px;width:100%;text-align:right;margin-top:12px;cursor:pointer;font-family:inherit" data-reveal="rel-cats" title="مشاهده کاتالوگ‌های بیشتر">
         <div style="width:38px;height:38px;border-radius:11px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone);flex-shrink:0">
           <svg style="width:19px;height:19px"><use href="#i-spark-v2"/></svg>
         </div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700">کاتالوگ‌های مرتبط بیشتر</div>
+          <div style="font-size:13px;font-weight:700">مشاهده کاتالوگ‌های بیشتر</div>
           <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">بر اساس لیست خرید و تابلوهای شما</div>
         </div>
         <svg style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0"><use href="#i-chev"/></svg>
@@ -2752,11 +2780,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- شفافیت -->
-      <div class="legend">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>کاتالوگ‌های ذخیره‌شدهٔ شما مثل دفترچهٔ تلفن عمل می‌کنند — جستجو، تماس و کاتالوگ همیشه در دسترس. کارت‌های خط‌چینِ «فروشندهٔ ویژه» تبلیغِ هدفمند است: دقیقاً برای کالای موجود در لیست خرید شما، با پرداختِ خودِ فروشنده.</div>
-      </div>
+      <!-- فاز ۲۸ (یادداشت پیاده‌سازی — متن مالک، از فرم حذف و به کد منتقل شد):
+           کاتالوگ‌های ذخیره‌شدهٔ شما مثل دفترچهٔ تلفن عمل می‌کنند — جستجو، تماس و کاتالوگ همیشه در دسترس.
+           کارت‌های خط‌چینِ «فروشندهٔ ویژه» تبلیغِ هدفمند است: دقیقاً برای کالای موجود در لیست خرید شما، با پرداختِ خودِ فروشنده. -->
 
     </main>
 
@@ -2791,13 +2817,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-11" data-arm="buy" hidden>
 
 
-    <!-- فاز ۲۶ — «درخواست‌های خرید من» (نام فاز ۲۷): صفحهٔ کامل مدیریت درخواست‌ها (مودال نیست)
-         IMPLEMENTATION NOTE: هر درخواست خرید از فرم ۱۲ می‌آید و مهلت ۱ تا ۵ روز (یا «سایر» تا ۳۰ روز) دارد؛
-         پس از پایان مهلت، درخواست خودکار برای فروشندگان نمایش داده نمی‌شود و به آرشیو می‌رود.
-         پیشنهادهای رسیده همان «پیشنهاد قیمت» فروشندگان است (فرم ۰۶ سمت فروشنده). شمار «پیشنهاد جدید»
-         روی کارت لیست خرید (۰۸) و بج قرمز لینک همین صفحه، از همین وضعیت می‌آید.
-         «متوقف کردن» = درخواست موقتاً برای فروشندگان نامرئی؛ «بایگانی» = انتقال به آرشیو با امکان
-         «ساخت درخواست مشابه» (شرایط و گیرندگان قبلی، پیش‌فرض فرم ۱۲ می‌شوند). -->
+    <!-- فاز ۲۸ — «درخواست‌های خرید من»: فقط لیست درخواست‌ها (کارت مینیمال) —
+         لمس هر کارت → صفحهٔ «پیشنهادات درخواست» (۳۶): جزئیات درخواست بالا + پیشنهادهای فروشندگان
+         با مرتب‌سازی (بهترین آیمچ / ارزان‌ترین / نزدیک‌ترین / جدیدترین) + کارت پیشنهاد (شیت).
+         IMPLEMENTATION NOTE: هر درخواست خرید از فرم ۱۲ می‌آید و مهلت ۱ تا ۵ روز دارد؛ پس از پایان
+         مهلت درخواست به آرشیو می‌رود. «متوقف کردن» و «بایگانی» از کارت درخواست در ۳۶ انجام می‌شود
+         تا لیست ۱۱ تمیز بماند. در آرشیو، «تکرار درخواست» (آیکون کپی) شرایط و گیرندگان قبلی را
+         پیش‌فرض فرم ۱۲ می‌کند. شمار پیشنهادها روی کارت‌های همین صفحه و بج قرمز لینک ۰۸ می‌آید. -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">درخواست‌های خرید من<small id="prq-sub">۲ جاری · ۳ آرشیو</small></div>
@@ -2812,68 +2838,34 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button data-prqtab="arch">آرشیو <span class="cnt" id="prq-cnt-arch">(۳)</span></button>
       </div>
 
-      <!-- ═══ بخش جاری ═══ -->
+      <!-- ═══ بخش جاری — فقط لیست؛ جزئیات و پیشنهادها در صفحهٔ ۳۶ ═══ -->
       <div id="prq-now">
 
         <!-- ─── درخواست خرید ۱: برنج هاشمی ─── -->
-        <div class="card prq-card" style="margin-top:10px">
+        <div class="card prq-card rq-open" style="margin-top:10px" data-reqopen data-reqkey="rice">
           <div style="display:flex;align-items:center;gap:10px">
-            <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۵۰ کیلو</span></div>
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
             <div style="flex:1;min-width:0">
               <div style="font-size:14px;font-weight:700">برنج هاشمی</div>
-              <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۲۰ کیسه · تحویل این ماه · ارسال به ۳ فروشنده</div>
+              <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۲۰ کیسه · ارسال به ۳ فروشنده</div>
             </div>
             <div style="text-align:left;flex-shrink:0">
               <div style="font-size:9.5px;color:var(--muted-fg);margin-bottom:2px">مهلت</div>
               <span class="badge b-orange prq-deadline">۳ روز مانده</span>
             </div>
           </div>
-
-          <span class="badge prq-stopbadge" hidden style="margin-top:8px;background:var(--red-bg);color:var(--red)">متوقف — برای فروشندگان نمایش داده نمی‌شود</span>
-
+          <span class="badge rq-stopflag" hidden style="margin-top:8px">متوقف — برای فروشندگان نمایش داده نمی‌شود</span>
           <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
             <span class="badge b-new">۳ پیشنهاد جدید</span>
             <span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">۲٬۷۸۰٬۰۰۰</b></span>
-          </div>
-
-          <!-- پیشنهادهای رسیده و شرایط -->
-          <div style="margin-top:10px;border-top:1px dashed #eee9dd;padding-top:4px">
-            <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f6f4ee">
-              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:#b45309">گ</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:12px;font-weight:700">تجارت گیل‌رنج <span class="badge b-green" style="font-size:8.5px;padding:1px 6px">بهترین</span></div>
-                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۲٬۷۸۰٬۰۰۰ تومان · کیسه ۵۰ کیلویی · حداقل ۸ کیسه · ۲ ساعت پیش</div>
-              </div>
-              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
-            </div>
-            <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f6f4ee">
-              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:12px;font-weight:700">پخش برنج پارس</div>
-                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۲٬۸۵۰٬۰۰۰ تومان · حداقل ۵ کیسه · ارسال رایگان قزوین · امروز</div>
-              </div>
-              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
-            </div>
-            <div style="display:flex;align-items:center;gap:9px;padding:8px 0">
-              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:#7c3aed">آ</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:12px;font-weight:700">آریو غلات</div>
-                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۲٬۹۲۰٬۰۰۰ تومان · حداقل ۱۰ کیسه · دیروز</div>
-              </div>
-              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
-            </div>
-          </div>
-
-          <div class="prq-actions" style="display:flex;gap:8px;margin-top:11px">
-            <button class="btn btn-outline btn-sm" style="flex:1" data-prqpause>متوقف کردن</button>
-            <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)" data-prqarch>بایگانی</button>
+            <svg style="width:14px;height:14px;color:var(--border-strong);margin-right:auto;flex-shrink:0"><use href="#i-chev"/></svg>
           </div>
         </div>
 
         <!-- ─── درخواست خرید ۲: روغن سرخ‌کردنی ─── -->
-        <div class="card prq-card" style="margin-top:10px">
+        <div class="card prq-card rq-open" style="margin-top:10px" data-reqopen data-reqkey="oil">
           <div style="display:flex;align-items:center;gap:10px">
-            <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۱۰ لیتر</span></div>
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی"></div>
             <div style="flex:1;min-width:0">
               <div style="font-size:14px;font-weight:700">روغن سرخ‌کردنی</div>
               <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۴۰ عدد · فوری · ارسال به ۲ فروشنده</div>
@@ -2883,28 +2875,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <span class="badge prq-deadline" style="background:var(--red-bg);color:var(--red)">امروز آخرین روز</span>
             </div>
           </div>
-
-          <span class="badge prq-stopbadge" hidden style="margin-top:8px;background:var(--red-bg);color:var(--red)">متوقف — برای فروشندگان نمایش داده نمی‌شود</span>
-
+          <span class="badge rq-stopflag" hidden style="margin-top:8px">متوقف — برای فروشندگان نمایش داده نمی‌شود</span>
           <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
             <span class="badge b-new">۱ پیشنهاد جدید</span>
             <span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">۵۱۰٬۰۰۰</b></span>
-          </div>
-
-          <div style="margin-top:10px;border-top:1px dashed #eee9dd;padding-top:4px">
-            <div style="display:flex;align-items:center;gap:9px;padding:8px 0">
-              <div class="avatar-sm" style="width:32px;height:32px;font-size:12px;background:#0d9488">ص</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:12px;font-weight:700">صنایع روغن آفتاب <span class="badge b-green" style="font-size:8.5px;padding:1px 6px">بهترین</span></div>
-                <div style="font-size:10px;color:var(--muted-fg);margin-top:2px">۵۱۰٬۰۰۰ تومان · کارتن ۱۰ عددی · حداقل ۱۰ کارتن · ۱ ساعت پیش</div>
-              </div>
-              <button class="btn btn-outline btn-sm" data-go="19">گفتگو</button>
-            </div>
-          </div>
-
-          <div class="prq-actions" style="display:flex;gap:8px;margin-top:11px">
-            <button class="btn btn-outline btn-sm" style="flex:1" data-prqpause>متوقف کردن</button>
-            <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)" data-prqarch>بایگانی</button>
+            <svg style="width:14px;height:14px;color:var(--border-strong);margin-right:auto;flex-shrink:0"><use href="#i-chev"/></svg>
           </div>
         </div>
 
@@ -2915,67 +2890,64 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       </div>
 
-      <!-- ═══ بخش آرشیو ═══ -->
+      <!-- ═══ بخش آرشیو — همان ساختار لیست + آیکون «تکرار درخواست» ═══ -->
       <div id="prq-arch" hidden>
 
         <div id="prq-arch-list">
 
           <!-- آرشیو ۱: پایان مهلت -->
-          <div class="card prq-card" style="margin-top:10px">
+          <div class="card prq-card rq-open" style="margin-top:10px" data-reqopen data-reqkey="rice2" data-arch="1">
             <div style="display:flex;align-items:center;gap:10px">
-              <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۵۰ کیلو</span></div>
+              <div class="thumb" style="width:46px;height:46px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:14px;font-weight:700">برنج هاشمی</div>
                 <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۲۰ کیسه · مرداد · پایان مهلت</div>
               </div>
-              <span class="badge b-muted">۴ پیشنهاد</span>
+              <button class="rq-copy" data-go="12" aria-label="تکرار درخواست" title="تکرار درخواست"><svg><use href="#i-copy"/></svg></button>
             </div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:8px">بهترین پیشنهاد: <b style="color:var(--green)">۲٬۸۷۰٬۰۰۰</b> · پخش برنج پارس</div>
-            <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="12">
-              <svg><use href="#i-plus"/></svg>
-              ساخت درخواست مشابه
-            </button>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
+              <span class="badge b-muted">۴ پیشنهاد</span>
+              <span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">۲٬۸۷۰٬۰۰۰</b> · پخش برنج پارس</span>
+            </div>
           </div>
 
           <!-- آرشیو ۲: پایان مهلت -->
-          <div class="card prq-card" style="margin-top:10px">
+          <div class="card prq-card rq-open" style="margin-top:10px" data-reqopen data-reqkey="paste" data-arch="1">
             <div style="display:flex;align-items:center;gap:10px">
-              <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۵۰۰ گرم</span></div>
+              <div class="thumb" style="width:46px;height:46px"><img src="png/goods/tomato-paste.jpg" alt="رب گوجه‌فرنگی"></div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:14px;font-weight:700">رب گوجه‌فرنگی</div>
                 <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۶۰ عدد · تیر · پایان مهلت</div>
               </div>
-              <span class="badge b-muted">۲ پیشنهاد</span>
+              <button class="rq-copy" data-go="12" aria-label="تکرار درخواست" title="تکرار درخواست"><svg><use href="#i-copy"/></svg></button>
             </div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:8px">بهترین پیشنهاد: <b style="color:var(--green)">۹۸٬۰۰۰</b> · نگین گلستان</div>
-            <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="12">
-              <svg><use href="#i-plus"/></svg>
-              ساخت درخواست مشابه
-            </button>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
+              <span class="badge b-muted">۲ پیشنهاد</span>
+              <span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">۹۸٬۰۰۰</b> · نگین گلستان</span>
+            </div>
           </div>
 
           <!-- آرشیو ۳: متوقف‌شده -->
-          <div class="card prq-card" style="margin-top:10px">
+          <div class="card prq-card rq-open" style="margin-top:10px" data-reqopen data-reqkey="oil2" data-arch="1">
             <div style="display:flex;align-items:center;gap:10px">
-              <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۱۰ لیتر</span></div>
+              <div class="thumb" style="width:46px;height:46px"><img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی"></div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:14px;font-weight:700">روغن سرخ‌کردنی</div>
                 <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">۲۰ عدد · خرداد · متوقف توسط شما</div>
               </div>
-              <span class="badge b-muted">۱ پیشنهاد</span>
+              <button class="rq-copy" data-go="12" aria-label="تکرار درخواست" title="تکرار درخواست"><svg><use href="#i-copy"/></svg></button>
             </div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:8px">بهترین پیشنهاد: <b style="color:var(--green)">۵۱۸٬۰۰۰</b> · صنایع روغن آفتاب</div>
-            <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="12">
-              <svg><use href="#i-plus"/></svg>
-              ساخت درخواست مشابه
-            </button>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
+              <span class="badge b-muted">۱ پیشنهاد</span>
+              <span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">۵۱۸٬۰۰۰</b> · صنایع روغن آفتاب</span>
+            </div>
           </div>
 
         </div>
 
         <div class="legend">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-          <div>از هر درخواست آرشیو‌شده می‌توانی «درخواست مشابه» بسازی — شرایط و گیرندگان قبلی، پیش‌فرض فرم می‌شوند.</div>
+          <div>از هر درخواست آرشیو‌شده می‌توانی با «تکرار درخواست» همان درخواست را با شرایط و گیرندگان قبلی دوباره بسازی.</div>
         </div>
 
       </div>
@@ -3255,12 +3227,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- هدر خریدار -->
-      <div class="showcase">
-        <div class="avatar-lg" style="background:linear-gradient(135deg,#155e75,#0e7490)">ن</div>
-        <div class="meta">
-          <div class="name" style="font-size:18px">پخش مواد غذایی نگین</div>
-          <div class="sub">نگار محمدی · سوپرمارکت و پخش · قزوین</div>
+      <!-- فاز ۲۸ — کارت کسب‌وکار (current business) در دستیار خرید — دقیقاً مثل کاتالوگ (۰۷) -->
+      <!-- IMPLEMENTATION NOTE (مالک): کسب‌وکار به کاربر تعلق دارد، نه به کاتالوگ یا دستیار خرید.
+           هر کاربر می‌تواند یک یا چند کسب‌وکار داشته باشد و هر کسب‌وکار یک دستیار خرید و یک دستیار فروش دارد.
+           همان کسب‌وکارها هم از کاتالوگ (۰۷) و هم از این‌جا انتخاب یا ایجاد می‌شوند — تعویض کسب‌وکار
+           فقط سوییچ زمینه است، نه خروج از حساب. آیکون مداد = فرم ویرایش کسب‌وکار (۲۲). -->
+      <div class="card biz-card" data-sheet="sheet-biz">
+        <div class="biz-top">
+          <span class="biz-cap">
+            <svg><use href="#i-store"/></svg>
+            کسب و کار
+          </span>
+          <span class="biz-acts">
+            <button class="biz-edit" data-go="22" aria-label="ویرایش کسب‌وکار" title="ویرایش کسب‌وکار"><svg><use href="#i-pencil"/></svg></button>
+            <svg class="biz-dd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
+          </span>
+        </div>
+        <div class="showcase" style="padding:0;margin:0">
+          <div class="avatar-lg" style="background:#0e7490">ن</div>
+          <div class="meta">
+            <div class="name" style="font-size:17px">سوپرمارکت نگین</div>
+            <div class="sub">نگار محمدی · سوپرمارکت و پخش · قزوین</div>
+          </div>
         </div>
       </div>
 
@@ -3321,7 +3309,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-user"/></svg>
           <span style="flex:1">نام و لوگو</span>
-          <span style="color:var(--muted-fg);font-size:11.5px">پخش نگین</span>
+          <span style="color:var(--muted-fg);font-size:11.5px">سوپرمارکت نگین</span>
           <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
@@ -4353,6 +4341,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
           <button class="alert-bell" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
         </div>
+      </div>
+
+      <!-- فاز ۲۸ — کادر راهنمای گوش به زنگ (متن دقیق مالک) -->
+      <div class="legend" style="margin-top:14px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/></svg>
+        <div>اگر تأمین‌کننده عمده هرکدام از کالاهای موردنیاز این خریدار هستید و می‌خواهید از درخواست‌های خرید او باخبر شوید، روی آیکون 🔔 کنار کالا بزنید. در این صورت، درخواست‌های خرید این کالا در بخش درخواست‌های قیمت دستیار خرید آیمچ به شما اطلاع داده می‌شود تا قیمت خود را برای این خریدار ارسال کنید.</div>
       </div>
 
     </main>
@@ -5554,14 +5548,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body">
 
       <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-spark"/></svg> کمپین‌های فروشندگان</h2>
+        <h2><svg><use href="#i-spark"/></svg> فروش‌های ویژه تامین‌کنندگان</h2>
         <span class="more">۲ فعال</span>
       </div>
-      <div style="font-size:11.5px;color:var(--muted-fg);margin:-4px 0 12px;line-height:1.9">
-        تخفیف‌ها و پیشنهادهای ویژهٔ فعال — نشان «کمپین» یعنی تبلیغِ فروشنده، جدا از نتایج طبیعی
-      </div>
+      <!-- فاز ۲۸ (یادداشت پیاده‌سازی — متن مالک برای فهم، روی فرم نمی‌آید):
+           تخفیف‌ها و پیشنهادهای ویژهٔ فعال — نشان «کمپین» یعنی تبلیغِ فروشنده، جدا از نتایج طبیعی.
+           کارت‌های این بخش کمپینِ تبلیغاتیِ فروشندگان است؛ نمایش آن برای خریدار رایگان است و هزینه‌اش بر عهدهٔ فروشنده است.
+           پیشنهادهای مرتبط با لیست خرید خودِ خریدار، در «کاتالوگ‌ها» (۱۰) دیده می‌شود. -->
 
-      <!-- ═══ فاز ۲۴ — کمپین ۱: تخفیف ویژه ═══ -->
+      <!-- ═══ فاز ۲۴ — کمپین ۱: تخفیف ویژه (فاز ۲۸: تماس/پیام + حداقل خرید/شهر/آدرس/توضیح فروشنده) ═══ -->
       <div class="card camp-card" style="padding:13px 14px">
         <div style="display:flex;align-items:center;gap:10px">
           <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
@@ -5569,7 +5564,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
               پخش برنج پارس <svg style="width:13px;height:13px;color:#1d5fb8"><use href="#i-verified"/></svg>
             </div>
-            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">پخش مواد غذایی · رشت · هم‌شهری</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+              پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> · <span class="badge b-green" style="font-size:8.5px;padding:1.5px 6px">هم‌شهری</span>
+            </div>
           </div>
           <span class="badge b-orange">۲ روز مانده</span>
         </div>
@@ -5587,13 +5584,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="cg-p"><b>۲٬۵۵۷٬۵۰۰</b> <small style="color:var(--muted-fg)">تومان</small><span class="old-c">۲٬۷۵۰٬۰۰۰</span><span class="badge b-green" style="font-size:9px;padding:1px 7px">٪۷</span></span>
           </div>
         </div>
+        <div class="camp-meta">
+          <div class="cm"><svg><use href="#i-boxes"/></svg><span>حداقل خرید: <b>۱۰ کیسه</b></span></div>
+          <div class="cm"><svg><use href="#i-pin"/></svg><span><b>رشت</b> — بلوار امام خمینی، مرکز توزیع میلاد</span></div>
+          <div class="cm"><svg><use href="#i-info"/></svg><span>توضیح فروشنده: برنج برداشت امسال — تحویل فوری از انبار سرد</span></div>
+        </div>
         <div style="display:flex;gap:8px;margin-top:11px">
-          <button class="btn btn-stone btn-sm" style="flex:1" data-go="13">مشاهده کاتالوگ</button>
-          <button class="btn btn-outline btn-sm" style="flex:1" data-go="12">درخواست خرید</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" aria-label="تماس با فروشنده" title="تماس با فروشنده"><svg><use href="#i-phone"/></svg> تماس</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" data-go="19"><svg><use href="#i-msg"/></svg> پیام</button>
+          <button class="btn btn-stone btn-sm" style="flex:1" data-go="13">کاتالوگ</button>
         </div>
       </div>
 
-      <!-- ═══ فاز ۲۴ — کمپین ۲: ارسال رایگان ═══ -->
+      <!-- ═══ فاز ۲۴ — کمپین ۲: ارسال رایگان (فاز ۲۸: تماس/پیام + حداقل خرید/شهر/آدرس/توضیح فروشنده) ═══ -->
       <div class="card camp-card" style="padding:13px 14px;margin-top:12px">
         <div style="display:flex;align-items:center;gap:10px">
           <div class="avatar-sm" style="background:#0e7490">گ</div>
@@ -5601,7 +5604,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
               برنج گیلانه <svg style="width:13px;height:13px;color:#1d5fb8"><use href="#i-verified"/></svg>
             </div>
-            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">برنج‌فروشی · رشت · هم‌شهری</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+              برنج‌فروشی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> · <span class="badge b-green" style="font-size:8.5px;padding:1.5px 6px">هم‌شهری</span>
+            </div>
           </div>
           <span class="badge b-orange">۵ روز مانده</span>
         </div>
@@ -5615,17 +5620,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="cg-p"><b>۲٬۹۲۰٬۰۰۰</b> <small style="color:var(--muted-fg)">تومان</small><span class="badge b-green" style="font-size:9px;padding:1px 7px">ارسال رایگان +۲۰ کیسه</span></span>
           </div>
         </div>
+        <div class="camp-meta">
+          <div class="cm"><svg><use href="#i-boxes"/></svg><span>حداقل خرید: <b>۲۰ کیسه</b></span></div>
+          <div class="cm"><svg><use href="#i-pin"/></svg><span><b>رشت</b> — خیابان استاد مطهری، برنج‌فروشی گیلانه</span></div>
+          <div class="cm"><svg><use href="#i-info"/></svg><span>توضیح فروشنده: ارسال رایگان داخل رشت — تحویل از انبار روزانه</span></div>
+        </div>
         <div style="display:flex;gap:8px;margin-top:11px">
-          <button class="btn btn-stone btn-sm" style="flex:1" data-go="13">مشاهده کاتالوگ</button>
-          <button class="btn btn-outline btn-sm" style="flex:1" data-go="12">درخواست خرید</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" aria-label="تماس با فروشنده" title="تماس با فروشنده"><svg><use href="#i-phone"/></svg> تماس</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" data-go="19"><svg><use href="#i-msg"/></svg> پیام</button>
+          <button class="btn btn-stone btn-sm" style="flex:1" data-go="13">کاتالوگ</button>
         </div>
       </div>
 
-      <!-- شفافیت -->
-      <div class="legend" style="margin-top:14px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>کارت‌های این بخش، کمپینِ تبلیغاتیِ فروشندگان است و با نشان «کمپین» از نتایج طبیعی جدا می‌شود — نمایش آن برای شما رایگان است و هزینه‌اش بر عهدهٔ فروشنده است. پیشنهادهای مرتبط با لیست خرید خودت، در «کاتالوگ‌ها» می‌بینی.</div>
-      </div>
+      <!-- فاز ۲۸ (یادداشت پیاده‌سازی — متن مالک، از فرم حذف و به کد منتقل شد):
+           کارت‌های این بخش، کمپینِ تبلیغاتیِ فروشندگان است و با نشان «کمپین» از نتایج طبیعی جدا می‌شود —
+           نمایش آن برای شما رایگان است و هزینه‌اش بر عهدهٔ فروشنده است.
+           پیشنهادهای مرتبط با لیست خرید خودت، در «کاتالوگ‌ها» می‌بینی. -->
 
     </main>
 
@@ -6078,6 +6088,58 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <section class="scr" id="scr-36" data-arm="buy" hidden>
+
+
+    <!-- فاز ۲۸ — پیشنهادات درخواست: از کارت درخواست در ۱۱ باز می‌شود.
+         بالا جزئیات درخواست، زیرش پیشنهادهای فروشندگان با مرتب‌سازی
+         (بهترین آیمچ / ارزان‌ترین / نزدیک‌ترین / جدیدترین).
+         IMPLEMENTATION NOTE: «بهترین آیمچ» امتیاز ترکیبی است: قیمت + هم‌شهری + خرید قبلی + احراز.
+         کارت پیشنهاد → شیت جزئیات پیشنهاد (دیتای کامل + تماس/پیام/کاتالوگ).
+         «متوقف/بایگانی» از کارت‌های لیست (۱۱) به کارت درخواست همین صفحه منتقل شد تا لیست تمیز بماند. -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">پیشنهادات درخواست<small id="po-sub">برنج هاشمی · ۵ پیشنهاد</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- ═══ جزئیات درخواست ═══ -->
+      <div class="card prq-card" id="po-req" style="margin-top:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="thumb" style="width:52px;height:52px"><img id="po-img" src="png/goods/rice-sack.jpg" alt="کالای درخواست"></div>
+          <div style="flex:1;min-width:0">
+            <div id="po-title" style="font-size:14.5px;font-weight:700">برنج هاشمی</div>
+            <div id="po-meta" style="font-size:10.5px;color:var(--muted-fg);margin-top:3px">۲۰ کیسهٔ ۵۰ کیلویی · ارسال به ۳ فروشنده</div>
+          </div>
+          <div style="text-align:left;flex-shrink:0">
+            <div id="po-dl-cap" style="font-size:9.5px;color:var(--muted-fg);margin-bottom:2px">مهلت</div>
+            <span class="badge b-orange" id="po-dl">۳ روز مانده</span>
+          </div>
+        </div>
+        <span class="badge rq-stopflag" id="po-stop" hidden style="margin-top:8px">متوقف — برای فروشندگان نمایش داده نمی‌شود</span>
+        <div id="po-acts">
+          <button class="btn btn-outline btn-sm" style="flex:1" data-prqpause>متوقف کردن</button>
+          <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)" data-prqarch>بایگانی</button>
+        </div>
+        <button class="btn btn-stone btn-sm btn-block" id="po-repeat" hidden data-go="12" style="margin-top:11px"><svg><use href="#i-copy"/></svg> تکرار درخواست</button>
+      </div>
+
+      <!-- ═══ مرتب‌سازی پیشنهادها ═══ -->
+      <div class="chips sortchips" id="po-sort" style="margin-top:12px">
+        <button class="chip active" data-posort="best">بهترین آیمچ</button>
+        <button class="chip" data-posort="cheap">ارزان‌ترین</button>
+        <button class="chip" data-posort="near">نزدیک‌ترین</button>
+        <button class="chip" data-posort="new">جدیدترین</button>
+      </div>
+
+      <!-- ═══ لیست پیشنهادها (JS از PO_DATA رندر می‌کند) ═══ -->
+      <div class="rows" id="po-list"></div>
+
+    </main>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -6302,27 +6364,76 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
+<!-- ═══ فاز ۲۸ — کارت پیشنهاد (لمس کارت پیشنهاد در ۳۶): دیتای کامل + تماس/پیام/کاتالوگ ═══ -->
+<!-- IMPLEMENTATION NOTE: محتوای شیت از شیء پیشنهاد (PO_DATA) پر می‌شود — قیمت واحد،
+     مجموع برای مقدار درخواست، حداقل سفارش، اعتبار، شرایط تحویل و توضیح فروشنده.
+     «پیام» → گفتگو (۱۹)؛ «کاتالوگ» → کاتالوگ عمومی فروشنده (۱۳). -->
+<div class="sheet" id="sheet-offerview" role="dialog" aria-label="جزئیات پیشنهاد">
+  <div class="grab"></div>
+  <h3 id="ov-title">پیشنهاد قیمت — تجارت گیل‌رنج</h3>
+  <div class="sub" id="ov-sub">پخش برنج · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span></div>
+  <div class="showcase" style="padding:4px 0 4px">
+    <div class="avatar-lg" id="ov-av" style="background:#b45309">گ</div>
+    <div class="meta">
+      <div class="name" id="ov-name" style="font-size:16px">تجارت گیل‌رنج <svg><use href="#i-verified"/></svg></div>
+      <div class="sub" id="ov-bizmeta">رضا گیل‌رنج · پخش برنج · ۳ سال در آیمچ</div>
+    </div>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b id="ov-price">۲٬۷۸۰٬۰۰۰ تومان</b><span id="ov-per">قیمت هر کیسهٔ ۵۰ کیلویی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-boxes"/></svg></span>
+    <span class="tx"><b id="ov-total">۵۵٬۶۰۰٬۰۰۰ تومان</b><span id="ov-totallbl">مجموع برای ۲۰ کیسه</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-list"/></svg></span>
+    <span class="tx"><b id="ov-min">۸ کیسه</b><span>حداقل سفارش</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-clock"/></svg></span>
+    <span class="tx"><b id="ov-val">۴۸ ساعت</b><span>اعتبار پیشنهاد</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-send"/></svg></span>
+    <span class="tx"><b id="ov-del">ارسال رایگان · ۲ روز کاری</b><span>شرایط تحویل</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-info"/></svg></span>
+    <span class="tx"><b>توضیح فروشنده</b><span id="ov-note">برداشت امسال — پخت عالی، تحویل از انبار.</span></span>
+  </div>
+  <div class="contact-row" style="margin-top:13px">
+    <button class="btn btn-outline" aria-label="تماس با فروشنده" title="تماس با فروشنده"><svg><use href="#i-phone"/></svg> تماس</button>
+    <button class="btn btn-primary" data-go="19"><svg><use href="#i-msg"/></svg> پیام</button>
+    <button class="btn btn-stone" data-go="13">کاتالوگ</button>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
 <!-- ═══ ۱-ب) فاز ۲۴ — کسب‌وکارهای من: انتخاب کسب‌وکارِ فعال (current business) ═══ -->
-<!-- IMPLEMENTATION NOTE: هر کسب‌وکار کاتالوگ، بازوی فروش و داده‌های خودش را دارد؛ انتخاب از این شیت
-     «کسب‌وکار فعال» را در سطح سیستم عوض می‌کند (کاتالوگ، کارها، پیام‌ها، کیف پول تبلیغ) — بدون خروج از حساب.
+<!-- IMPLEMENTATION NOTE (فاز ۲۸ — مدل مالک): کسب‌وکار مربوط به کاربر است، نه به کاتالوگ یا دستیار خرید.
+     هر کاربر یک یا چند کسب‌وکار دارد و هر کسب‌وکار یک دستیار خرید و یک دستیار فروش دارد؛ همان کسب‌وکارها
+     از کاتالوگ (۰۷) و دستیار خرید (۱۴) قابل انتخاب/ایجاد‌اند. انتخاب «کسب‌وکار فعال» در سطح سیستم
+     عوض می‌شود (کاتالوگ، لیست خرید، کارها، پیام‌ها) — بدون خروج از حساب.
      «ایجاد کسب‌وکار جدید» همان فرم ویرایش کسب‌وکار (۲۲) را با حالت خالی باز می‌کند. -->
 <div class="sheet" id="sheet-biz" role="dialog" aria-label="کسب‌وکارهای من">
   <div class="grab"></div>
   <h3>کسب‌وکارهای من</h3>
-  <div class="sub">هر کسب‌وکار کاتالوگ و بازوی فروش خودش را دارد — با انتخاب، همه‌چیز به همان کسب‌وکار برمی‌گردد</div>
+  <div class="sub">هر کسب‌وکار یک دستیار خرید و یک دستیار فروش دارد — با انتخاب، همه‌چیز به همان کسب‌وکار برمی‌گردد</div>
   <button class="sheet-row current" data-bizpick="1" data-biz-name="پخش برنج پارس" data-biz-sub="احمد رضایی · پخش مواد غذایی · رشت">
-    <span class="ico sell"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>پخش برنج پارس <span class="biz-badge badge b-green" style="font-size:9.5px;padding:1.5px 7px;margin-right:4px">فعال</span></b><span>احمد رضایی · پخش مواد غذایی · رشت · دستیار فروش</span></span>
+    <span class="ico"><svg><use href="#i-store"/></svg></span>
+    <span class="tx"><b>پخش برنج پارس <span class="biz-badge badge b-green" style="font-size:9.5px;padding:1.5px 7px;margin-right:4px">فعال</span></b><span>احمد رضایی · پخش مواد غذایی · رشت</span></span>
     <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <button class="sheet-row" data-bizpick="1" data-biz-name="سوپرمارکت نگین" data-biz-sub="نگار محمدی · سوپرمارکت و پخش · قزوین">
-    <span class="ico buy"><svg><use href="#i-basket"/></svg></span>
-    <span class="tx"><b>سوپرمارکت نگین</b><span>نگار محمدی · سوپرمارکت و پخش · قزوین · دستیار خرید</span></span>
+    <span class="ico"><svg><use href="#i-store"/></svg></span>
+    <span class="tx"><b>سوپرمارکت نگین</b><span>نگار محمدی · سوپرمارکت و پخش · قزوین</span></span>
     <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <button class="sheet-row" data-bizpick="1" data-biz-name="توزیع ارزاق رضایی" data-biz-sub="احمد رضایی · بازرگانی · تهران">
-    <span class="ico sell"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>توزیع ارزاق رضایی</b><span>احمد رضایی · بازرگانی · تهران · دستیار فروش</span></span>
+    <span class="ico"><svg><use href="#i-store"/></svg></span>
+    <span class="tx"><b>توزیع ارزاق رضایی</b><span>احمد رضایی · بازرگانی · تهران</span></span>
     <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <button class="add-row" data-go="22"><svg><use href="#i-plus"/></svg> ایجاد کسب‌وکار جدید</button>
@@ -7967,7 +8078,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
     '11': '08', '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
-    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07', '33': '08', '34': '08', '35': '07'
+    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07', '33': '08', '34': '08', '35': '07', '36': '11'
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
@@ -7979,7 +8090,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '08': [['درخواست‌های خرید من', '11'], ['افزودن کالا', '34']],
     '09': [['درخواست خرید', '12'], ['کاتالوگ', '13'], ['درخواست خرید از تأمین‌کننده‌های انتخابی', '12'], ['افزودن به لیست مقایسه', '33'], ['مشاهده کاتالوگ', '13']],
     '10': [['کاتالوگ', '13'], ['مشاهدهٔ کاتالوگ', '13']],
-    '11': [['ساخت درخواست مشابه', '12'], ['گفتگو', '19']],
+    '11': [['تکرار درخواست', '12']],
     '12': [['ارسال به ۲ فروشنده + شبکه iMach', '11']],
     '14': [['خروج از حساب', '15']],
     '15': [['ساخت حساب', '16'], ['ورود', '17']],
@@ -7994,7 +8105,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   var CARDS = { '01': '03', '05': '06', '08': '33', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' }; /* فاز ۲۶: کارت لیست خرید (۰۸) → لیست مقایسهٔ ۳۳ */
-  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش"};
+  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش","36":"۳۶ — پیشنهادات درخواست · دستیار خرید"};
 
   var stack = [];
   var current = null;
@@ -8261,6 +8372,135 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (cnt) cnt.textContent = faNum(rows) + ' کاتالوگ';
   }
 
+  /* ═══ فاز ۲۸ — صفحهٔ ۳۶ «پیشنهادات درخواست»: لیست ۱۱ فقط لیست است؛ جزئیات و پیشنهادها این‌جا ═══
+     هر درخواست یک کلید دارد (rice/oil/rice2/paste/oil2)؛ کارت‌های ۱۱ با data-reqkey همین‌جا را باز می‌کنند.
+     پیشنهادها: قیمت + شهر + هم‌شهری + خرید قبلی + احراز + زمان. «بهترین آیمچ» = امتیاز ترکیبی
+     (قیمت ۰٫۵۵ + هم‌شهری ۰٫۲۵ + خرید قبلی ۰٫۱ + احراز ۰٫۱) — جدا از «ارزان‌ترین» که فقط قیمت است. */
+  var PO_DATA = {
+    rice: {
+      t: 'برنج هاشمی', img: 'png/goods/rice-sack.jpg', qty: '۲۰ کیسهٔ ۵۰ کیلویی', qtyN: 20, totLbl: 'مجموع برای ۲۰ کیسه', to: '۳ فروشنده',
+      dl: '۳ روز مانده', dlc: 'b-orange',
+      offers: [
+        { n: 'تجارت گیل‌رنج', av: '#b45309', v: true, city: 'رشت', sc: true, pb: false, p: 2780000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۸ کیسه', val: '۴۸ ساعت', del: 'ارسال رایگان · ۲ روز کاری', note: 'برداشت امسال — پخت عالی، تحویل از انبار رشت.', when: '۲ ساعت پیش', h: 2, biz: 'پخش برنج', bmeta: 'رضا گیل‌رنج · پخش برنج · ۳ سال در آیمچ' },
+        { n: 'شالی‌زار طالب', av: '#0d9488', v: false, city: 'لاهیجان', sc: false, pb: false, p: 2740000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۱۵ کیسه', val: '۲۴ ساعت', del: 'ارسال ۳ روزه از لاهیجان', note: 'برنج دشت لاهیجان — ارسال با خرید بالای ۲۰ کیسه.', when: '۴ ساعت پیش', h: 4, biz: 'شالی‌زار و برداشت برنج', bmeta: 'طالب احمدی · شالی‌زار و برداشت برنج · ۲ سال در آیمچ' },
+        { n: 'پخش برنج پارس', av: 'linear-gradient(135deg,#c2703a,#ea580c)', v: true, city: 'رشت', sc: true, pb: true, p: 2850000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۵ کیسه', val: '۳ روز', del: 'ارسال رایگان · امروز', note: 'مشتری قدیمی — تخفیف همکار ۷٪ خودکار اعمال می‌شود.', when: 'امروز', h: 5, biz: 'پخش مواد غذایی', bmeta: 'احمد رضایی · پخش مواد غذایی · ۵ سال در آیمچ' },
+        { n: 'آریو غلات', av: '#7c3aed', v: true, city: 'اصفهان', sc: false, pb: false, p: 2920000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۱۰ کیسه', val: '۴۸ ساعت', del: 'ارسال ۴ روزه', note: 'ارسال از اصفهان — کیفیت درجه یک.', when: 'دیروز', h: 26, biz: 'بازرگانی غلات', bmeta: 'امیر قاسمی · بازرگانی غلات · ۴ سال در آیمچ' },
+        { n: 'برنج یکتا', av: '#c2703a', v: false, city: 'رشت', sc: true, pb: false, p: 2990000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۶ کیسه', val: '۲۴ ساعت', del: 'تحویل از انبار — همان روز', note: 'کیسه‌بندی ۵۰ کیلویی جدید.', when: 'دیروز', h: 20, biz: 'برنج‌فروشی', bmeta: 'یکتا کریمی · برنج‌فروشی · ۱ سال در آیمچ' }
+      ]
+    },
+    oil: {
+      t: 'روغن سرخ‌کردنی', img: 'png/goods/oil-bottle.jpg', qty: '۴۰ عدد ۱۰ لیتری', qtyN: 40, totLbl: 'مجموع برای ۴۰ عدد', to: '۲ فروشنده',
+      dl: 'امروز آخرین روز', dlc: 'b-red',
+      offers: [
+        { n: 'صنایع روغن آفتاب', av: '#0d9488', v: true, city: 'رشت', sc: true, pb: true, p: 510000, per: 'قیمت هر عدد ۱۰ لیتری', ps: 'عدد ۱۰ لیتری', min: '۱۰ کارتن', val: 'امروز', del: 'تحویل امروز', note: 'کارتن ۱۰ عددی — پرداخت نقدی.', when: '۱ ساعت پیش', h: 1, biz: 'تولید روغن', bmeta: 'سارا نیک‌فر · تولید روغن · ۶ سال در آیمچ' },
+        { n: 'بازار روغن مرکزی', av: '#b45309', v: false, city: 'تهران', sc: false, pb: false, p: 498000, per: 'قیمت هر عدد ۱۰ لیتری', ps: 'عدد ۱۰ لیتری', min: '۲۰ کارتن', val: '۴۸ ساعت', del: 'ارسال ۴ روزه از تهران', note: 'قیمت درب انبار — ارسال از تهران.', when: 'دیروز', h: 24, biz: 'پخش روغن', bmeta: 'رضا مرکزی · پخش روغن · ۲ سال در آیمچ' },
+        { n: 'پخش روغن گیل', av: '#0e7490', v: false, city: 'رشت', sc: true, pb: false, p: 522000, per: 'قیمت هر عدد ۱۰ لیتری', ps: 'عدد ۱۰ لیتری', min: '۵ کارتن', val: '۲۴ ساعت', del: 'ارسال فردا', note: 'تحویل حضوری از انبار رشت.', when: '۳ روز پیش', h: 70, biz: 'پخش روغن', bmeta: 'گیل عبدی · پخش روغن · ۳ سال در آیمچ' }
+      ]
+    },
+    rice2: {
+      arch: 'پایان مهلت', t: 'برنج هاشمی', img: 'png/goods/rice-sack.jpg', qty: '۲۰ کیسهٔ ۵۰ کیلویی', qtyN: 20, totLbl: 'مجموع برای ۲۰ کیسه', to: '۳ فروشنده',
+      offers: [
+        { n: 'پخش برنج پارس', av: 'linear-gradient(135deg,#c2703a,#ea580c)', v: true, city: 'رشت', sc: true, pb: true, p: 2870000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۵ کیسه', val: 'منقضی', del: 'ارسال رایگان', note: 'مرداد — برنج نوبرداشت.', when: '۳ ماه پیش', h: 2200, biz: 'پخش مواد غذایی', bmeta: 'احمد رضایی · پخش مواد غذایی · ۵ سال در آیمچ' },
+        { n: 'تجارت گیل‌رنج', av: '#b45309', v: true, city: 'رشت', sc: true, pb: false, p: 2920000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۸ کیسه', val: 'منقضی', del: 'ارسال رایگان', note: 'مرداد — تحویل از انبار.', when: '۳ ماه پیش', h: 2210, biz: 'پخش برنج', bmeta: 'رضا گیل‌رنج · پخش برنج · ۳ سال در آیمچ' },
+        { n: 'برنج یکتا', av: '#c2703a', v: false, city: 'رشت', sc: true, pb: false, p: 2890000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۶ کیسه', val: 'منقضی', del: 'تحویل از انبار', note: 'مرداد — کیسه‌بندی جدید.', when: '۳ ماه پیش', h: 2230, biz: 'برنج‌فروشی', bmeta: 'یکتا کریمی · برنج‌فروشی · ۱ سال در آیمچ' },
+        { n: 'آریو غلات', av: '#7c3aed', v: true, city: 'اصفهان', sc: false, pb: false, p: 2950000, per: 'قیمت هر کیسهٔ ۵۰ کیلویی', ps: 'کیسهٔ ۵۰ کیلویی', min: '۱۰ کیسه', val: 'منقضی', del: 'ارسال ۴ روزه', note: 'مرداد — ارسال از اصفهان.', when: '۳ ماه پیش', h: 2250, biz: 'بازرگانی غلات', bmeta: 'امیر قاسمی · بازرگانی غلات · ۴ سال در آیمچ' }
+      ]
+    },
+    paste: {
+      arch: 'پایان مهلت', t: 'رب گوجه‌فرنگی', img: 'png/goods/tomato-paste.jpg', qty: '۶۰ عدد', qtyN: 60, totLbl: 'مجموع برای ۶۰ عدد', to: '۲ فروشنده',
+      offers: [
+        { n: 'نگین گلستان', av: '#c2703a', v: false, city: 'قزوین', sc: false, pb: true, p: 98000, per: 'قیمت هر بسته ۸۰۰ گرمی', ps: 'بسته ۸۰۰ گرمی', min: '۲ کارتن', val: 'منقضی', del: 'ارسال ۲ روزه', note: 'تیرموز — رب غلیظ.', when: '۴ ماه پیش', h: 2900, biz: 'کنسروسازی', bmeta: 'نگار گلستانی · کنسروسازی · ۴ سال در آیمچ' },
+        { n: 'کنسر عالیس', av: '#0d9488', v: true, city: 'رشت', sc: true, pb: false, p: 104000, per: 'قیمت هر بسته ۸۰۰ گرمی', ps: 'بسته ۸۰۰ گرمی', min: '۵ کارتن', val: 'منقضی', del: 'تحویل از انبار', note: 'تیرموز — تحویل حضوری.', when: '۴ ماه پیش', h: 2920, biz: 'کنسروسازی', bmeta: 'عالیس رستمی · کنسروسازی · ۲ سال در آیمچ' }
+      ]
+    },
+    oil2: {
+      arch: 'متوقف توسط شما', t: 'روغن سرخ‌کردنی', img: 'png/goods/oil-bottle.jpg', qty: '۲۰ عدد', qtyN: 20, totLbl: 'مجموع برای ۲۰ عدد', to: '۲ فروشنده',
+      offers: [
+        { n: 'صنایع روغن آفتاب', av: '#0d9488', v: true, city: 'رشت', sc: true, pb: true, p: 518000, per: 'قیمت هر عدد ۱۰ لیتری', ps: 'عدد ۱۰ لیتری', min: '۱۰ کارتن', val: 'منقضی', del: 'تحویل همان روز', note: 'خرداد — پرداخت نقدی.', when: '۵ ماه پیش', h: 3600, biz: 'تولید روغن', bmeta: 'سارا نیک‌فر · تولید روغن · ۶ سال در آیمچ' }
+      ]
+    }
+  };
+  var poKey = null, poSort = 'best';
+  function poScore(o, mn, mx) {
+    return (mx > mn ? (1 - (o.p - mn) / (mx - mn)) * 0.55 : 1) + (o.sc ? 0.25 : 0) + (o.pb ? 0.1 : 0) + (o.v ? 0.1 : 0);
+  }
+  function poBestIdx(key) {
+    var d = PO_DATA[key]; if (!d) return -1;
+    var ps = d.offers.map(function (o) { return o.p; });
+    var mn = Math.min.apply(null, ps), mx = Math.max.apply(null, ps);
+    var best = -1, bs = -1;
+    d.offers.forEach(function (o, i) { var s = poScore(o, mn, mx); if (s > bs) { bs = s; best = i; } });
+    return best;
+  }
+  function poRender() {
+    var d = PO_DATA[poKey]; if (!d) return;
+    var host = document.getElementById('po-list'); if (!host) return;
+    var rows = d.offers.map(function (o, i) { return { o: o, i: i }; });
+    var ps = d.offers.map(function (o) { return o.p; });
+    var mn = Math.min.apply(null, ps), mx = Math.max.apply(null, ps);
+    if (poSort === 'cheap') rows.sort(function (a, b) { return a.o.p - b.o.p; });
+    else if (poSort === 'new') rows.sort(function (a, b) { return a.o.h - b.o.h; });
+    else if (poSort === 'near') rows.sort(function (a, b) { return (b.o.sc ? 1 : 0) - (a.o.sc ? 1 : 0) || (a.o.p - b.o.p); });
+    else rows.sort(function (a, b) { return poScore(b.o, mn, mx) - poScore(a.o, mn, mx); });
+    var bi = poBestIdx(poKey);
+    host.innerHTML = rows.map(function (r) {
+      var o = r.o;
+      return '<div class="row-card offer-card" data-offerview="' + r.i + '">' +
+        '<div class="avatar-sm" style="background:' + o.av + '">' + o.n.charAt(0) + '</div>' +
+        '<div class="body">' +
+          '<div class="t" style="font-size:13px">' + o.n + (o.v ? ' <svg style="width:12.5px;height:12.5px;color:#1d5fb8"><use href="#i-verified"/></svg>' : '') +
+            (r.i === bi ? ' <span class="badge obest" style="font-size:8.5px;padding:1.5px 7px">بهترین آیمچ</span>' : '') + '</div>' +
+          '<div class="s"><span class="city-chip"><svg><use href="#i-pin"/></svg> ' + o.city + '</span>' +
+            (o.sc ? '<span class="badge b-green" style="font-size:8.5px;padding:1.5px 7px">هم‌شهری</span>' : '') +
+            (o.pb ? '<span class="badge b-stone" style="font-size:8.5px;padding:1.5px 7px">خرید قبلی</span>' : '') +
+            '<span>' + o.when + '</span></div>' +
+        '</div>' +
+        '<div class="oprice"><div class="p">' + faMoney(o.p) + '</div><div class="u">' + o.ps + '</div></div>' +
+      '</div>';
+    }).join('');
+  }
+  function poOpen(key, archFlag) {
+    var d = PO_DATA[key]; if (!d) return;
+    poKey = key; poSort = 'best';
+    document.querySelectorAll('#po-sort .chip').forEach(function (c) { c.classList.toggle('active', c.dataset.posort === 'best'); });
+    var t = document.getElementById('po-title'); if (t) t.textContent = d.t;
+    var im = document.getElementById('po-img'); if (im) im.src = d.img;
+    var me = document.getElementById('po-meta'); if (me) me.textContent = d.qty + ' · ارسال به ' + d.to + ' · ' + faNum(d.offers.length) + ' پیشنهاد';
+    var sb = document.getElementById('po-sub'); if (sb) sb.textContent = d.t + ' · ' + faNum(d.offers.length) + ' پیشنهاد';
+    var archived = !!archFlag || !!d.arch;
+    var dl = document.getElementById('po-dl'), cap = document.getElementById('po-dl-cap');
+    if (dl) { dl.textContent = archived ? (d.arch || 'بایگانی شد') : d.dl; dl.className = 'badge ' + (archived ? 'b-muted' : d.dlc); }
+    if (cap) cap.textContent = archived ? 'وضعیت' : 'مهلت';
+    var acts = document.getElementById('po-acts'), rep = document.getElementById('po-repeat');
+    if (acts) acts.hidden = archived;
+    if (rep) rep.hidden = !archived;
+    var rq = document.getElementById('po-req');
+    if (rq) rq.classList.remove('prq-stopped');
+    var st = document.getElementById('po-stop'); if (st) st.hidden = true;
+    var pb = rq && rq.querySelector('[data-prqpause]'); if (pb) pb.textContent = 'متوقف کردن';
+    poRender();
+    go('36');
+  }
+  function poSheet(i) {
+    var d = PO_DATA[poKey]; if (!d) return;
+    var o = d.offers[i]; if (!o) return;
+    var ttl = document.getElementById('ov-title'); if (ttl) ttl.textContent = 'پیشنهاد قیمت — ' + o.n;
+    var sub = document.getElementById('ov-sub');
+    if (sub) sub.innerHTML = o.biz + ' · <span class="city-chip"><svg><use href="#i-pin"/></svg> ' + o.city + '</span>' + (o.sc ? ' · هم‌شهری' : '');
+    var av = document.getElementById('ov-av'); if (av) { av.style.background = o.av; av.textContent = o.n.charAt(0); }
+    var nm = document.getElementById('ov-name'); if (nm) nm.innerHTML = o.n + (o.v ? ' <svg style="width:14px;height:14px;color:#1d5fb8"><use href="#i-verified"/></svg>' : '');
+    var bm = document.getElementById('ov-bizmeta'); if (bm) bm.textContent = o.bmeta;
+    var pr = document.getElementById('ov-price'); if (pr) pr.textContent = faMoney(o.p) + ' تومان';
+    var pe = document.getElementById('ov-per'); if (pe) pe.textContent = o.per;
+    var to = document.getElementById('ov-total'); if (to) to.textContent = faMoney(o.p * d.qtyN) + ' تومان';
+    var tl = document.getElementById('ov-totallbl'); if (tl) tl.textContent = d.totLbl;
+    var mn2 = document.getElementById('ov-min'); if (mn2) mn2.textContent = o.min;
+    var va = document.getElementById('ov-val'); if (va) va.textContent = o.val;
+    var de = document.getElementById('ov-del'); if (de) de.textContent = o.del;
+    var no = document.getElementById('ov-note'); if (no) no.textContent = o.note;
+    openSheet('sheet-offerview');
+  }
+
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -8270,19 +8510,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var bedit = t.closest('.biz-edit');
     if (bedit) { go('22'); return; }
 
-    /* ── فاز ۲۴: انتخاب «کسب‌وکار فعال» از شیت — کارت پروفایل همان لحظه به‌روز می‌شود ── */
+    /* ── فاز ۲۴→۲۸: انتخاب «کسب‌وکار فعال» از شیت — کارت پروفایل فروش (۰۷) و خرید (۱۴) همان لحظه به‌روز می‌شوند ── */
     var bizp = t.closest('#sheet-biz [data-bizpick]');
     if (bizp) {
       document.querySelectorAll('#sheet-biz [data-bizpick]').forEach(function (r) { r.classList.toggle('current', r === bizp); });
-      var bizCard = document.querySelector('#scr-07 .biz-card');
-      if (bizCard) {
+      document.querySelectorAll('#scr-07 .biz-card, #scr-14 .biz-card').forEach(function (bizCard) {
         var bizNm = bizCard.querySelector('.meta .name');
         var bizSb = bizCard.querySelector('.meta .sub');
         var bizAv = bizCard.querySelector('.avatar-lg');
         if (bizNm) bizNm.textContent = bizp.dataset.bizName || bizNm.textContent;
         if (bizSb) bizSb.textContent = bizp.dataset.bizSub || bizSb.textContent;
         if (bizAv) bizAv.textContent = (bizp.dataset.bizName || 'پ').trim().charAt(0);
-      }
+      });
       setTimeout(closeSheet, 380);
       return;
     }
@@ -8353,7 +8592,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (d2) d2.classList.remove('open');
     }
 
-    /* ── فاز ۲۶: درخواست‌های قیمت من (۱۱) — سوییچ جاری/آرشیو · متوقف · بایگانی ── */
+    /* ── فاز ۲۶→۲۸: درخواست‌های خرید من — سوییچ جاری/آرشیو · متوقف · بایگانی (مدیریت از کارت درخواست ۳۶) ── */
     var prqT = t.closest('[data-prqtab]');
     if (prqT) {
       prqT.parentElement.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b === prqT); });
@@ -8368,35 +8607,53 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }
     var prqP = t.closest('[data-prqpause]');
     if (prqP) {
-      var pcard = prqP.closest('.prq-card');
-      if (pcard) {
-        var stopped = pcard.classList.toggle('prq-stopped');
-        var sbadge = pcard.querySelector('.prq-stopbadge');
-        if (sbadge) sbadge.hidden = !stopped;
+      var rq6 = document.getElementById('po-req');
+      if (rq6) {
+        var stopped = rq6.classList.toggle('prq-stopped');
+        var s6 = document.getElementById('po-stop');
+        if (s6) s6.hidden = !stopped;
         prqP.textContent = stopped ? 'شروع مجدد' : 'متوقف کردن';
+        var lflag = poKey && document.querySelector('#scr-11 .prq-card[data-reqkey="' + poKey + '"] .rq-stopflag');
+        if (lflag) lflag.hidden = !stopped;
       }
       return;
     }
     var prqA = t.closest('[data-prqarch]');
     if (prqA) {
-      var acard = prqA.closest('.prq-card');
+      var d36 = PO_DATA[poKey];
+      var lcard = poKey && document.querySelector('#scr-11 #prq-now .prq-card[data-reqkey="' + poKey + '"]');
       var alist = document.getElementById('prq-arch-list');
-      if (acard && alist) {
-        var dl = acard.querySelector('.prq-deadline');
-        if (dl) { dl.textContent = 'بایگانی شد'; dl.className = 'badge b-muted prq-deadline'; }
-        var sbtn2 = acard.querySelector('.prq-stopbadge');
-        if (sbtn2) sbtn2.hidden = true;
-        var act = acard.querySelector('.prq-actions');
-        if (act) {
-          var sim = document.createElement('button');
-          sim.className = 'btn btn-stone btn-sm btn-block';
-          sim.setAttribute('data-go', '12');
-          sim.innerHTML = '<svg><use href="#i-plus"/></svg> ساخت درخواست مشابه';
-          act.replaceWith(sim);
-        }
-        alist.appendChild(acard);
+      if (d36 && lcard && alist) {
+        var mnP = Math.min.apply(null, d36.offers.map(function (o) { return o.p; }));
+        var archCard = document.createElement('div');
+        archCard.className = 'card prq-card rq-open';
+        archCard.style.marginTop = '10px';
+        archCard.setAttribute('data-reqopen', '');
+        archCard.setAttribute('data-reqkey', poKey);
+        archCard.setAttribute('data-arch', '1');
+        archCard.innerHTML =
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div class="thumb" style="width:46px;height:46px"><img src="' + d36.img + '" alt="' + d36.t + '"></div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="font-size:14px;font-weight:700">' + d36.t + '</div>' +
+              '<div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">' + d36.qty + ' · امروز · بایگانی شد</div>' +
+            '</div>' +
+            '<button class="rq-copy" data-go="12" aria-label="تکرار درخواست" title="تکرار درخواست"><svg><use href="#i-copy"/></svg></button>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-top:9px">' +
+            '<span class="badge b-muted">' + faNum(d36.offers.length) + ' پیشنهاد</span>' +
+            '<span style="font-size:10.5px;color:var(--muted-fg)">بهترین: <b style="color:var(--green)">' + faMoney(mnP) + '</b></span>' +
+          '</div>';
+        alist.appendChild(archCard);
+        lcard.remove();
         prqCount();
       }
+      var dl36 = document.getElementById('po-dl'), cap36 = document.getElementById('po-dl-cap');
+      if (dl36) { dl36.textContent = 'بایگانی شد'; dl36.className = 'badge b-muted'; }
+      if (cap36) cap36.textContent = 'وضعیت';
+      var acts36 = document.getElementById('po-acts'), rep36 = document.getElementById('po-repeat');
+      if (acts36) acts36.hidden = true;
+      if (rep36) rep36.hidden = false;
       return;
     }
 
@@ -8489,6 +8746,39 @@ body > div[id^="scr-d"][hidden] { display: none; }
         sl.style.color = 'var(--green)';
         sl.innerHTML = '<svg><use href="#i-check"/></svg> ذخیره شد — در «لیست خریداران ذخیره‌شده»';
       }
+      return;
+    }
+
+    /* ═══ فاز ۲۸ — ۱۱ → ۳۶ · مرتب‌سازی پیشنهادها · کارت پیشنهاد · شیت کسب‌وکارها ═══ */
+
+    /* کارت درخواست در ۱۱ → صفحهٔ پیشنهادات همان درخواست (۳۶) — دکمه‌های داخلی کارت را نمی‌بلعد */
+    var rqo = t.closest('[data-reqopen]');
+    if (rqo && !t.closest('button, [data-go], [data-sheet], .alert-bell, .toggle, a, .chip')) {
+      poOpen(rqo.dataset.reqkey, rqo.dataset.arch === '1');
+      return;
+    }
+
+    /* مرتب‌سازی پیشنهادها (۳۶): بهترین آیمچ / ارزان‌ترین / نزدیک‌ترین / جدیدترین */
+    var pso = t.closest('[data-posort]');
+    if (pso) {
+      pso.parentElement.querySelectorAll('.chip').forEach(function (c) { c.classList.toggle('active', c === pso); });
+      poSort = pso.dataset.posort;
+      poRender();
+      return;
+    }
+
+    /* کارت پیشنهاد (۳۶) → شیت جزئیات پیشنهاد (دیتای کامل + تماس/پیام/کاتالوگ) */
+    var ovc = t.closest('[data-offerview]');
+    if (ovc) { poSheet(parseInt(ovc.dataset.offerview, 10)); return; }
+
+    /* شیت کسب‌وکارها (فاز ۲۸): «فعال» بر اساس بازوی جاری — فروش → پخش برنج پارس · خرید → سوپرمارکت نگین */
+    var bizOpen = t.closest('[data-sheet="sheet-biz"]');
+    if (bizOpen) {
+      var armNow = phoneArm();
+      document.querySelectorAll('#sheet-biz [data-bizpick]').forEach(function (r, i) {
+        r.classList.toggle('current', i === (armNow === 'sell' ? 0 : 1));
+      });
+      openSheet('sheet-biz');
       return;
     }
 
