@@ -213,7 +213,8 @@ const cntLabel = await page.$eval('#saved-cats-count', el => el.textContent.trim
 check('۱۰ شمارندهٔ «۲ کاتالوگ» به‌روز شد', cntLabel.includes('۲'));
 
 // ═══ فوتر ۵ تبی در همهٔ صفحات خرید ═══
-for (const id of ['08', '10', '14', '31']) {
+// فاز ۳۱: ۱۰ زیرصفحهٔ پروفایل شد (فوتر ندارد و از فوتر خرید حذف شد — جایش «کارها»)؛ فوترچک فقط برای صفحات فوتردار
+for (const id of ['08', '14', '31']) {
   await page.goto(URL + '#' + id);
   await page.waitForTimeout(300);
   const tabs = await page.$$eval('#scr-' + id + ' .tabbar .tab', els => els.map(e => e.textContent.trim()));

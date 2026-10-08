@@ -280,8 +280,8 @@ for (const [scr, needle] of [['02', 'درخواست خرید'], ['09', 'درخو
 await page.goto(URL + '#31');
 await page.waitForTimeout(350);
 check('31 بدون «درخواست قیمت» (دکمه‌های کمپین فاز ۲۸: تماس/پیام)', !(await page.$eval('#scr-31', el => el.textContent)).includes('درخواست قیمت'));
-// فوتر همهٔ صفحات خرید
-for (const scr of ['10', '14', '18', '31']) {
+// فوتر همهٔ صفحات خرید — فاز ۳۱: ۱۰ زیرصفحهٔ پروفایل شد و فوتر ندارد
+for (const scr of ['14', '18', '31']) {
   await page.goto(URL + '#' + scr);
   await page.waitForTimeout(350);
   const foot = await page.$eval('#scr-' + scr + ' .tabbar', el => el.textContent);
