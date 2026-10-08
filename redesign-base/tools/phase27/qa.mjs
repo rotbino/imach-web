@@ -38,18 +38,21 @@ let t = await page.locator('#scr-08').innerText();
 check('۰۸ عنوان: «لیست خرید من»', t.includes('لیست خرید من'));
 check('۰۸ بدون واژهٔ «دفتر خرید» در متن', !t.includes('دفتر خرید'));
 
-// لینک درخواست‌های خرید من — مشکی + آیکون + بج قرمز/سفید
-const prq = page.locator('#scr-08 .prqlink');
-check('۰۸ لینک «درخواست‌های خرید من» موجود', await prq.count() === 1);
-const prqInfo = await page.$eval('#scr-08 .prqlink', el => {
+// فاز ۲۹ — بخش «درخواست‌های خرید جاری» (کارت‌های افقی + لینک «همه درخواستها» ← جایگزین باکس prqlink)
+const prq = page.locator('#scr-08 .morelnk');
+check('۰۸ لینک «همه درخواستها» موجود', await prq.count() === 1);
+const prqInfo = await page.$eval('#scr-08 .morelnk', el => {
   const cs = getComputedStyle(el);
-  const b = el.querySelector('.badge.b-rednum');
-  const bs = b ? getComputedStyle(b) : null;
-  return { color: cs.color, icon: !!el.querySelector('svg'), badge: !!b, badgeBg: bs && bs.backgroundColor, badgeColor: bs && bs.color, go: el.dataset.go };
+  return { color: cs.color, weight: cs.fontWeight, go: el.dataset.go };
 });
-check('۰۸ لینک مشکی (color=' + prqInfo.color + ')', prqInfo.color === 'rgb(42, 39, 35)');
-check('۰۸ لینک با آیکون', prqInfo.icon);
-check('۰۸ بج قرمز با متن سفید (bg=' + prqInfo.badgeBg + ', color=' + prqInfo.badgeColor + ')', prqInfo.badge && /rgb\(2[0-5]\d, ?[3-9]\d, ?[3-9]\d\)/.test(prqInfo.badgeBg) && prqInfo.badgeColor === 'rgb(255, 255, 255)');
+const rfqCards = await page.$$eval('#scr-08 .bl-rfq', els => els.map(e => ({
+  key: e.dataset.reqkey, img: !!e.querySelector('.bl-rfq-img img'),
+  dl: e.querySelector('.dl') && e.querySelector('.dl').textContent.trim(),
+  n: e.querySelector('.bl-rfq-n') && e.querySelector('.bl-rfq-n').textContent.trim()
+})));
+check('۰۸ دو کارت افقی جاری (rice/oil) با عکس و مهلت', rfqCards.length === 2 && rfqCards[0].key === 'rice' && rfqCards[1].key === 'oil' && rfqCards.every(c => c.img && c.dl));
+check('۰۸ تعداد پیشنهاد روی کارت (۵/۳)', rfqCards[0].n.includes('۵') && rfqCards[1].n.includes('۳'));
+check('۰۸ لینک «همه درخواستها» قرمز بولد (color=' + prqInfo.color + ')', prqInfo.color === 'rgb(220, 38, 38)' && prqInfo.weight === '800');
 check('۰۸ لینک → ۱۱', prqInfo.go === '11');
 
 // دکمه‌های اشتراک و تنظیمات کنار نام
@@ -144,7 +147,7 @@ check('۳۴ «افزودن به لیست خرید» → بازگشت به ۰۸',
 // ═══ ۰۸ → ۱۱ (لینک) ═══
 await page.goto(URL + '#08');
 await page.waitForTimeout(400);
-await page.click('#scr-08 .prqlink');
+await page.click('#scr-08 .morelnk');
 await page.waitForTimeout(350);
 check('۰۸ کلیک لینک → صفحهٔ ۱۱', (await hash()) === '#11' && (await vis('#scr-11')));
 t = await page.locator('#scr-11').innerText();
@@ -169,7 +172,9 @@ check('۲۳ بدون «پیش‌نمایش عمومی» در هدر', !(await pa
 check('۲۳ بدون بج «عمومی» و جملهٔ حذف‌شده', !t.includes('هرچه لیستت کامل‌تر باشد') && (await page.$$eval('#scr-23 .subheader .badge', els => els.length === 0)));
 check('۲۳ آیکون اشتراک در هدر (→ sheet-contacts)', !!(await page.$('#scr-23 .subheader [data-sheet="sheet-contacts"]')));
 check('۲۳ چیپ شهر رشت با آیکون لوکیشن', !!(await page.$('#scr-23 .city-chip')) && t23all.includes('رشت'));
-check('۲۳ تماس + ارسال پیام', t.includes('تماس') && t.includes('ارسال پیام'));
+check('۲۳ تماس + پیام + ذخیرهٔ لیست در یک ردیف (فاز ۲۹)', t.includes('تماس') && t.includes('پیام') && t.includes('ذخیرهٔ لیست'));
+check('۲۳ سه دکمه در یک contact-row', (await page.$$eval('#scr-23 .contact-row .btn', els => els.length)) === 3);
+check('۲۳ بدون نوار top-act جداگانه', (await page.$$('#scr-23 .top-act')).length === 0);
 check('۲۳ آمار: ۴ کالا · ۱۲ ذخیره‌کننده · ۸۶ بازدید', t.includes('۴') && t.includes('۱۲') && t.includes('۸۶'));
 check('۲۳ دکمهٔ «ذخیرهٔ لیست»', t.includes('ذخیرهٔ لیست'));
 check('۲۳ دو بخش: «درخواست‌های خرید جاری» + «لیست خرید»', t.includes('درخواست‌های خرید جاری') && t.includes('لیست خرید'));
@@ -207,11 +212,11 @@ await page.waitForTimeout(300);
 const bells2 = await page.$$eval('#scr-23 .alert-bell', els => els.map(e => e.classList.contains('on')));
 check('۲۳ فعال‌سازی → زنگوله سبز شد', bells2.filter(Boolean).length === 2);
 
-// ذخیرهٔ لیست
+// ذخیرهٔ لیست (فاز ۲۹: دکمهٔ فشرده در ردیف سه‌اکشنی — متن کوتاه)
 await page.click('#scr-23 [data-savelist]');
 await page.waitForTimeout(300);
 const savedTxt = await page.$eval('#scr-23 [data-savelist]', el => el.textContent.trim());
-check('۲۳ «ذخیرهٔ لیست» → «ذخیره شد — در لیست خریداران ذخیره‌شده»', savedTxt.includes('ذخیره شد') && savedTxt.includes('لیست خریداران ذخیره‌شده'));
+check('۲۳ «ذخیرهٔ لیست» → «ذخیره شد» (فشرده)', savedTxt.includes('ذخیره شد') && savedTxt.includes('لیست خریداران') === false);
 
 // ═══ ۰۷ — کارت دفترچهٔ خریداران ═══
 await page.goto(URL + '#07');

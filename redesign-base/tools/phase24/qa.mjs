@@ -29,11 +29,11 @@ await page.evaluate(() => { document.querySelector('#scr-15 .landing-body').scro
 await page.waitForTimeout(250);
 await phone.screenshot({ path: OUT + '/15-landing-hero.png' });
 
-// ۱۳ — بنر مشتری کوتاه
+// ۱۳ — بنر مشتری کوتاه (فاز ۲۹: فلت و کوتاه — .cowork-line)
 await page.goto(URL + '#13');
 await page.waitForTimeout(500);
-const bannerText = await page.locator('#scr-13 .cust-banner span').textContent();
-console.log('cust-banner text:', bannerText.trim());
+const bannerText = await page.locator('#scr-13 .cowork-line span').textContent();
+console.log('cowork-line text:', bannerText.trim());
 await phone.screenshot({ path: OUT + '/13-cust-banner.png' });
 
 // ۰۲ — تخفیف حجمی + فوتر جدید

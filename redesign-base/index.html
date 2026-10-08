@@ -187,8 +187,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-13 .ms-btn svg { width: 19px; height: 19px; }
 
   /* ═══ فاز ۲۱ — کاتالوگ عمومی: مشتری بودن + آمار اشتراک‌گذاری ═══ */
-  #scr-13 .cust-banner { display: flex; align-items: center; gap: 7px; background: var(--green-bg); border: 1px solid #d9eee2; color: var(--green); border-radius: 9px; padding: 7px 11px; font-size: 10px; font-weight: 600; line-height: 1.6; margin: 8px 0 2px; }
-  #scr-13 .cust-banner svg { width: 12.5px; height: 12.5px; flex-shrink: 0; opacity: .8; }
+  /* فاز ۲۹ — تخفیف همکار: فلت (بدون باکس/پس‌زمینه) + مارجین پایین تا به دکمه‌ها نچسبد */
+  #scr-13 .cowork-line { display: flex; align-items: center; gap: 6px; margin: 4px 2px 13px; font-size: 11px; font-weight: 500; color: var(--muted-fg); }
+  #scr-13 .cowork-line svg { width: 13px; height: 13px; color: var(--green); flex-shrink: 0; }
+  #scr-13 .cowork-line b { color: var(--green); font-weight: 800; font-size: 12px; }
   #scr-13 .pub-stats { display: flex; gap: 7px; margin: 10px 0 2px; }
   #scr-13 .pub-stats span { flex: 1; text-align: center; font-size: 9.5px; color: var(--muted-fg); background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 7px 4px 6px; }
   #scr-13 .pub-stats b { display: block; font-size: 14px; color: var(--foreground); line-height: 1.5; }
@@ -1035,10 +1037,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .bl-groups .chips { flex: 1; margin: 0; }
   .bl-groups .chip-manage { width: 38px; height: 38px; border-radius: 11px; border: 1px solid var(--border-strong); background: #fff; color: var(--stone-soft); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
   .bl-groups .chip-manage svg { width: 17px; height: 17px; }
-  /* لینک «درخواست‌های خرید من» — متن مشکی + آیکون؛ عدد = بج قرمز با متن سفید */
-  .prqlink { display: flex; align-items: center; gap: 7px; background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 10px 12px; cursor: pointer; margin-top: 10px; font-size: 12.5px; font-weight: 700; color: var(--foreground); }
-  .prqlink > svg:first-child { width: 16px; height: 16px; color: var(--muted-fg); flex-shrink: 0; }
-  .prqlink .chev { margin-right: auto; width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
+  /* فاز ۲۹ — باکس «درخواست‌های خرید من» (.prqlink) حذف شد؛ جایگزین: بخش «درخواست‌های خرید جاری» + لینک «همه درخواستها» */
   .badge.b-rednum { background: var(--red); color: #fff; }
   /* چیپ شهر با آیکون لوکیشن — رنگ متمایز (لیست خرید عمومی + کاتالوگ) */
   .city-chip { display: inline-flex; align-items: center; gap: 4px; color: var(--green); font-weight: 700; }
@@ -1058,12 +1057,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .alert-bell.on { background: var(--green-bg); border-color: #b6e2c6; color: var(--green); }
   /* نوار تماس + نوار آمار + اکشن‌های بالای لیست خرید عمومی */
   .contact-row { display: flex; gap: 8px; margin-top: 11px; }
+  /* فاز ۲۹ — نوار top-act حذف شد؛ «ذخیرهٔ لیست» به ردیف سه‌اکشنی تماس/پیام پیوست */
   .insight-strip { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 9px 13px; font-size: 11px; color: var(--muted-fg); }
   .insight-strip b { color: var(--foreground); font-size: 12px; }
   .insight-strip svg { width: 14px; height: 14px; }
   .insight-strip .sep { flex: 1; }
-  .top-act { display: flex; gap: 8px; margin-top: 11px; }
-  .top-act .btn { flex: 1; }
   /* فرم افزودن کالا به لیست خرید (۳۴) — استپر مقدار */
   .qty-stepper { display: flex; align-items: center; justify-content: space-between; background: var(--muted); border-radius: 12px; padding: 7px 10px; }
   .qty-stepper button { width: 34px; height: 34px; border-radius: 10px; border: 0; background: #fff; color: var(--primary-strong); font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 1px 2px rgba(42,39,35,.1); }
@@ -1104,6 +1102,57 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* شیت کارت پیشنهاد (۳۶) */
   #sheet-offerview .sheet-row { cursor: default; }
   #sheet-offerview .contact-row .btn { flex: 1; font-size: 13px; padding: 10px 8px; }
+
+  /* ═══ فاز ۲۹ ═══ */
+  /* ۱۳ — نظرات و امتیاز کاتالوگ: ردیف ستاره‌ها (چپ‌به‌راست: ستارهٔ ۱ … ۵) */
+  .stars { display: inline-flex; gap: 2px; direction: ltr; vertical-align: middle; }
+  .stars svg { width: 13px; height: 13px; color: var(--border-strong); fill: none; flex-shrink: 0; }
+  .stars svg.on { color: var(--amber); fill: var(--amber); }
+  .stars.big svg { width: 16px; height: 16px; }
+  .stars.mini svg { width: 11px; height: 11px; }
+  /* خلاصهٔ امتیاز شیت نظرات */
+  .cm-sum { display: flex; align-items: center; gap: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 13px; padding: 11px 13px; margin-top: 11px; }
+  .cm-sum .num { font-size: 23px; font-weight: 800; color: var(--amber); line-height: 1; }
+  .cm-sum .mid { display: flex; flex-direction: column; gap: 4px; }
+  .cm-sum .cnt { font-size: 10.5px; color: var(--muted-fg); }
+  /* کارت نظر */
+  .cm-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 2px; }
+  .cm-item + .cm-item { border-top: 1px dashed #eee9dd; }
+  .cm-item .cm-bd { flex: 1; min-width: 0; }
+  .cm-item .who { display: flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 800; flex-wrap: wrap; }
+  .cm-item .who .stars { margin-right: 2px; }
+  .cm-item .cm-tx { font-size: 11.5px; line-height: 1.9; color: var(--stone-soft); margin-top: 4px; }
+  .cm-item .cm-when { font-size: 10px; color: var(--muted-fg); margin-top: 5px; }
+  .cm-item.fresh { background: var(--green-bg); border-radius: 11px; padding-left: 10px; padding-right: 10px; }
+  /* فرم ثبت نظر + ستاره‌سِلکت */
+  .cm-picker { display: flex; gap: 6px; direction: ltr; justify-content: flex-end; margin-top: 8px; }
+  .cm-picker button { background: none; border: 0; padding: 2px; cursor: pointer; display: grid; place-items: center; }
+  .cm-picker svg { width: 23px; height: 23px; color: var(--border-strong); fill: none; transition: color .12s, fill .12s, transform .12s; }
+  .cm-picker svg.on { color: var(--amber); fill: var(--amber); }
+  .cm-picker button:active svg { transform: scale(1.15); }
+  .cm-picker.err svg { color: var(--red); }
+  .cm-err { font-size: 10.5px; color: var(--red); margin-top: 7px; }
+  .cm-err[hidden] { display: none; }
+  /* ۰۸ — کارت‌های افقی «درخواست‌های خرید جاری» (ایدهٔ ۲۳ به لیست خود خریدار) */
+  .sec-title .more.morelnk { color: var(--red); font-weight: 800; }
+  .sec-title .more.morelnk svg { width: 12px; height: 12px; vertical-align: -1.5px; margin-right: 2px; }
+  #scr-08 .bl-rfq-row { display: flex; gap: 10px; overflow-x: auto; padding: 2px; margin-top: 10px; scrollbar-width: none; -ms-overflow-style: none; }
+  #scr-08 .bl-rfq-row::-webkit-scrollbar { display: none; }
+  #scr-08 .bl-rfq { flex: 0 0 138px; border: 1px solid var(--border); border-radius: 14px; background: #fff; overflow: hidden; cursor: pointer; }
+  #scr-08 .bl-rfq:active { border-color: var(--border-strong); }
+  #scr-08 .bl-rfq-img { height: 92px; position: relative; background: var(--muted); }
+  #scr-08 .bl-rfq-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #scr-08 .bl-rfq-img .dl { position: absolute; top: 7px; right: 7px; }
+  #scr-08 .bl-rfq-t { font-size: 12px; font-weight: 800; padding: 7px 9px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #scr-08 .bl-rfq-q { font-size: 10px; color: var(--muted-fg); padding: 3px 9px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #scr-08 .bl-rfq-n { display: flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--red); padding: 6px 9px 8px; }
+  #scr-08 .bl-rfq-n svg { width: 12px; height: 12px; }
+  /* ۲۳ — ردیف سه‌اکشنی: تماس / پیام / ذخیرهٔ لیست (رنگ‌های متمایز، فشرده‌تر) */
+  #scr-23 .contact-row .btn { flex: 1; font-size: 12.5px; font-weight: 700; padding: 10px 6px; }
+  #scr-23 .contact-row .btn svg { width: 15px; height: 15px; }
+  .btn-save { background: var(--green); color: #fff; border: 1px solid var(--green); }
+  .btn-save:active { background: #12833c; }
+  #scr-23 .contact-row .btn[data-savelist].saved { background: var(--green-bg); color: var(--green); border-color: #b6e2c6; }
 
 </style>
 </head>
@@ -1179,6 +1228,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M9.5 20V4M15 20v-8M20.5 20V7"/><path d="M2.5 20h19"/></symbol>
 <symbol id="i-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12a1 1 0 011 1V21l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5L5 21V4.5a1 1 0 011-1z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></symbol>
 <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 013 13.5v-9A1.5 1.5 0 014.5 3h9A1.5 1.5 0 0115 4.5V5"/></symbol>
+<symbol id="i-comment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 01-8.5 8.5c-1.6 0-3.1-.4-4.4-1.2L3 20l1.2-4.9A8.5 8.5 0 1121 11.5z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.6l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -2323,12 +2374,32 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- فاز ۲۷ — «درخواست‌های خرید من»: متن مشکی + آیکون؛ شمار، بج قرمز با متن سفید -->
-      <div class="prqlink" data-go="11" title="درخواست‌های خرید من">
-        <svg><use href="#i-inbox"/></svg>
-        <span>درخواست‌های خرید من</span>
-        <span class="badge b-rednum">۲</span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+      <!-- فاز ۲۹ — «درخواست‌های خرید جاری» (ایدهٔ ۲۳ روی لیست خودِ خریدار):
+           کارت‌های افقی عکس‌دار (عکس + بج مهلت + نیاز + تعداد پیشنهاد) — لمس کارت → پیشنهادات همان
+           درخواست (۳۶)؛ «همه درخواستها» → صفحهٔ ۱۱. جایگزین باکس «درخواست‌های خرید من» شد. -->
+      <div class="sec-title" style="margin-top:12px">
+        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید جاری</h2>
+        <span class="more morelnk" data-go="11" title="همهٔ درخواست‌های خرید">همه درخواستها <svg><use href="#i-chev"/></svg></span>
+      </div>
+      <div class="bl-rfq-row">
+        <div class="bl-rfq" data-reqopen data-reqkey="rice" title="پیشنهادات این درخواست">
+          <div class="bl-rfq-img">
+            <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
+            <span class="badge b-orange dl">۳ روز مانده</span>
+          </div>
+          <div class="bl-rfq-t">برنج هاشمی</div>
+          <div class="bl-rfq-q">۲۰ کیسهٔ ۵۰ کیلویی</div>
+          <div class="bl-rfq-n"><svg><use href="#i-spark"/></svg> ۵ پیشنهاد</div>
+        </div>
+        <div class="bl-rfq" data-reqopen data-reqkey="oil" title="پیشنهادات این درخواست">
+          <div class="bl-rfq-img">
+            <img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی">
+            <span class="badge b-rednum dl">امروز آخرین روز</span>
+          </div>
+          <div class="bl-rfq-t">روغن سرخ‌کردنی</div>
+          <div class="bl-rfq-q">۴۰ عدد ۱۰ لیتری</div>
+          <div class="bl-rfq-n"><svg><use href="#i-spark"/></svg> ۳ پیشنهاد</div>
+        </div>
       </div>
 
       <!-- جستجو + افزودن -->
@@ -3093,6 +3164,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">پخش برنج پارس<small>کاتالوگ فروش</small></div>
+      <!-- فاز ۲۹ — نظرات و امتیاز کاتالوگ: کنار دکمهٔ اشتراک‌گذاری -->
+      <button class="icon-btn" aria-label="نظرات و امتیاز کاتالوگ" data-sheet="sheet-cmnts" title="نظرات و امتیاز کاتالوگ"><svg><use href="#i-comment"/></svg></button>
       <button class="icon-btn" aria-label="اشتراک"><svg><use href="#i-share"/></svg></button>
     </header>
 
@@ -3110,10 +3183,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <!-- فاز ۲۱ — نوار «شما در لیست مشتریان هستید» (فاز ۲۴: متن کوتاه + مارجین عمودی) -->
-        <div class="cust-banner">
-          <svg><use href="#i-users"/></svg>
-          <span>شما مشتری همکار این کسب و کار هستید. تخفیف برای شما ۷٪</span>
+        <!-- فاز ۲۹ — تخفیف همکار: فلت و کوتاه (سابقاً باکس سبزِ all — مالک: «کاتالوگ رو زشت کرده»).
+             متن کامل «شما مشتری همکار این کسب و کار هستید. تخفیف برای شما ۷٪» فقط در tooltip و همین کامنت می‌ماند. -->
+        <div class="cowork-line" title="شما مشتری همکار این کسب و کار هستید — تخفیف برای شما ۷٪">
+          <svg><use href="#i-percent"/></svg>
+          <span>تخفیف همکار شما <b>۷٪</b></span>
         </div>
 
         <div style="display:flex;gap:7px;padding-bottom:10px">
@@ -4263,10 +4337,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- تماس + پیام (فاز ۲۷) -->
+      <!-- فاز ۲۹ — تماس + پیام + ذخیرهٔ لیست: سه‌تایی در یک ردیف؛ هر کدام رنگ خودش، فشرده‌تر.
+           «امکان تماس» از تنظیمات لیست خرید (۰۸) قابل حذف است — data-contactbtn همان دکمهٔ تماس است. -->
       <div class="contact-row">
-        <button class="btn btn-outline" style="flex:1" data-sheet="sheet-contacts" title="تماس با خریدار"><svg><use href="#i-phone"/></svg> تماس</button>
-        <button class="btn btn-stone" style="flex:1" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
+        <button class="btn btn-outline" data-sheet="sheet-contacts" data-contactbtn title="تماس با خریدار" aria-label="تماس با خریدار"><svg><use href="#i-phone"/></svg> تماس</button>
+        <button class="btn btn-primary" data-go="19" title="ارسال پیام به خریدار"><svg><use href="#i-msg"/></svg> پیام</button>
+        <button class="btn btn-save" data-savelist title="ذخیرهٔ لیست خریدار"><svg><use href="#i-bmark-plus"/></svg> ذخیرهٔ لیست</button>
       </div>
 
       <!-- آمار لیست -->
@@ -4274,11 +4350,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span><svg><use href="#i-list"/></svg> <b>۴</b> کالا</span>
         <span><svg><use href="#i-bookmark"/></svg> <b>۱۲</b> ذخیره‌کننده</span>
         <span><svg><use href="#i-eye"/></svg> <b>۸۶</b> بازدید</span>
-      </div>
-
-      <!-- ذخیرهٔ لیست — فروشنده لیست‌های خرید دلخواه را ذخیره می‌کند (دفترچهٔ خریداران ۳۵) -->
-      <div class="top-act">
-        <button class="btn btn-stone" style="height:48px;font-size:14px" data-savelist><svg><use href="#i-bmark-plus"/></svg> ذخیرهٔ لیست</button>
       </div>
 
       <!-- ═══ درخواست‌های خرید جاری — کارت‌های اینستاگرامی (عکس بالا + مقدار مورد نیاز زیر عکس) ═══ -->
@@ -6202,6 +6273,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>گروه‌های کالا</b><span>۴ گروه: غلات · روغن · کنسرو · شیرینی — افزودن و مدیریت</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
+  <!-- فاز ۲۹ — امکان تماس: خریدار می‌تواند دکمهٔ تماس خود را از لیست خرید عمومی (۲۳) بردارد -->
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-phone"/></svg></span>
+    <span class="tx"><b>امکان تماس از لیست خرید</b><span>دکمهٔ تماس شما در لیست عمومی، برای فروشنده‌ها</span></span>
+    <div class="toggle on" data-contacttoggle></div>
+  </div>
   <button class="sheet-row" data-go="23">
     <span class="ico"><svg><use href="#i-eye"/></svg></span>
     <span class="tx"><b>پیش‌نمایش عمومی</b><span>دیدن لیست خرید مثل یک فروشنده</span></span>
@@ -6408,6 +6485,39 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <button class="btn btn-primary" data-go="19"><svg><use href="#i-msg"/></svg> پیام</button>
     <button class="btn btn-stone" data-go="13">کاتالوگ</button>
   </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۲۹ — نظرات و امتیاز کاتالوگ (۱۳): آیکون گفتگو در هدر کنار اشتراک‌گذاری ═══ -->
+<!-- IMPLEMENTATION NOTE: خریداران عمده می‌توانند به کاتالوگ فروشنده امتیاز (۱ تا ۵ ستاره) و نظر بدهند.
+     خلاصهٔ امتیاز (میانگین + تعداد) بالای لیست؛ هر نظر نام خریدار + ستاره‌های همان نظر را کنار متن دارد.
+     فرم پایین: ستاره‌سِلکت ۱-۵ (چپ‌به‌راست) + متن نظر؛ ثبت → همان لحظه بالای لیست می‌نشیند و میانگین/تعداد
+     به‌روز می‌شود. هویت ثبت‌کننده = کسب‌وکار فعال کاربر (اینجا: سوپرمارکت آریا). -->
+<div class="sheet" id="sheet-cmnts" role="dialog" aria-label="نظرات و امتیاز کاتالوگ">
+  <div class="grab"></div>
+  <h3>نظرات و امتیاز کاتالوگ</h3>
+  <div class="sub">پخش برنج پارس · تجربهٔ خرید خریداران عمده از این کاتالوگ</div>
+  <div class="cm-sum">
+    <div class="num" id="cm-avg">۴٫۴</div>
+    <div class="mid">
+      <span class="stars big" id="cm-avgstars"></span>
+      <span class="cnt" id="cm-cnt">از ۲۴ نظر خریدار</span>
+    </div>
+  </div>
+  <div id="cm-list"></div>
+  <div class="grp" style="margin-top:13px">امتیاز شما به این کاتالوگ</div>
+  <div class="cm-picker" id="cm-picker">
+    <button type="button" data-cstar="1" aria-label="۱ ستاره"><svg><use href="#i-star"/></svg></button>
+    <button type="button" data-cstar="2" aria-label="۲ ستاره"><svg><use href="#i-star"/></svg></button>
+    <button type="button" data-cstar="3" aria-label="۳ ستاره"><svg><use href="#i-star"/></svg></button>
+    <button type="button" data-cstar="4" aria-label="۴ ستاره"><svg><use href="#i-star"/></svg></button>
+    <button type="button" data-cstar="5" aria-label="۵ ستاره"><svg><use href="#i-star"/></svg></button>
+  </div>
+  <div class="field" style="margin-top:9px">
+    <textarea class="input" id="cm-text" rows="3" placeholder="تجربهٔ خرید از این کاتالوگ را بنویسید…"></textarea>
+  </div>
+  <div class="cm-err" id="cm-err" hidden>امتیاز و متن نظر هر دو لازم است</div>
+  <button class="btn btn-primary sheet-cta" data-cmnt-send><svg><use href="#i-send"/></svg> ثبت نظر</button>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
@@ -8501,6 +8611,44 @@ body > div[id^="scr-d"][hidden] { display: none; }
     openSheet('sheet-offerview');
   }
 
+  /* ═══ فاز ۲۹ — نظرات و امتیاز کاتالوگ (۱۳) ═══ */
+  /* ۲۴ امتیاز کل (خیلی‌ها فقط ستاره می‌دهند و متن نمی‌نویسند) — ۴ نظرِ متنی نمایش داده می‌شود.
+     ثبت نظر جدید: میانگین/تعداد به‌روز + نظر با هویت کسب‌وکار فعال (سوپرمارکت آریا) بالای لیست. */
+  var CMNT_DATA = [
+    { n: 'سوپرمارکت نگین', av: '#0e7490', v: true, s: 5, when: '۳ روز پیش', tx: 'برنج همیشه نوبرداشت و تازه است؛ سه سال است سفارش‌های ماهانه‌مان را از همین کاتالوگ می‌زنیم و ارسال رشت همان روز انجام می‌شود.' },
+    { n: 'رستوران سنتی بهار', av: '#b45309', v: false, s: 4, when: '۱ هفتهٔ پیش', tx: 'کیفیت پخت عالی و قیمت منصفانه است. فقط دو بار ارسال با تاخیر یک‌روزه داشتیم — در مجموع قابل اعتماد.' },
+    { n: 'هایپر سفید', av: '#7c3aed', v: true, s: 5, when: '۲ هفتهٔ پیش', tx: 'قیمت‌های عمده واقعی است، نه نمایشی. تخفیف همکار بعد از چند سفارش خودکار فعال شد و حسابی به‌صرفه شد.' },
+    { n: 'خواربار مرکزی', av: '#c2703a', v: false, s: 3, when: '۳ هفتهٔ پیش', tx: 'برنج خوب است اما حداقل سفارش ۵ کیسه برای خرده‌فروشی کمی زیاد است؛ پاسخگویی پیام‌ها هم چند ساعت طول می‌کشد.' }
+  ];
+  var cmBaseCnt = 24, cmBaseAvg = 4.4, cmPick = 0;
+  function cmStarRow(s, cls) {
+    var out = '';
+    for (var i = 1; i <= 5; i++) out += '<svg' + (i <= s ? ' class="on"' : '') + '><use href="#i-star"/></svg>';
+    return '<span class="stars' + (cls ? ' ' + cls : '') + '">' + out + '</span>';
+  }
+  function cmRender() {
+    var host = document.getElementById('cm-list'); if (!host) return;
+    host.innerHTML = CMNT_DATA.map(function (c) {
+      return '<div class="cm-item' + (c.fresh ? ' fresh' : '') + '">' +
+        '<div class="avatar-sm" style="background:' + c.av + '">' + c.n.charAt(0) + '</div>' +
+        '<div class="cm-bd">' +
+          '<div class="who">' + c.n + (c.v ? ' <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg>' : '') + cmStarRow(c.s, 'mini') + '</div>' +
+          '<div class="cm-tx">' + c.tx + '</div>' +
+          '<div class="cm-when">' + c.when + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+  function cmSumRender() {
+    var a = document.getElementById('cm-avg'); if (a) a.textContent = faNum(Math.round(cmBaseAvg * 10) / 10).replace('.', '٫');
+    var st = document.getElementById('cm-avgstars'); if (st) st.innerHTML = cmStarRow(Math.round(cmBaseAvg), '');
+    var c = document.getElementById('cm-cnt'); if (c) c.textContent = 'از ' + faNum(cmBaseCnt) + ' نظر خریدار';
+  }
+  function cmPickRender() {
+    var p = document.getElementById('cm-picker'); if (!p) return;
+    p.querySelectorAll('svg').forEach(function (sv, i) { sv.classList.toggle('on', i < cmPick); });
+  }
+
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -8736,15 +8884,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* «ذخیرهٔ لیست» (۲۳) — لیست خریدار به دفترچهٔ خریداران (۳۵) اضافه می‌شود */
+    /* «ذخیرهٔ لیست» (۲۳) — لیست خریدار به دفترچهٔ خریداران (۳۵) اضافه می‌شود
+       (فاز ۲۹: دکمه در ردیف سه‌اکشنی فشرده شد — متن حالت ذخیره هم کوتاه) */
     var sl = t.closest('[data-savelist]');
     if (sl) {
       if (!sl.classList.contains('saved')) {
         sl.classList.add('saved');
-        sl.style.background = 'var(--green-bg)';
-        sl.style.borderColor = '#b6e2c6';
-        sl.style.color = 'var(--green)';
-        sl.innerHTML = '<svg><use href="#i-check"/></svg> ذخیره شد — در «لیست خریداران ذخیره‌شده»';
+        sl.innerHTML = '<svg><use href="#i-check"/></svg> ذخیره شد';
+        sl.title = 'در «لیست خریداران ذخیره‌شده»';
       }
       return;
     }
@@ -8796,6 +8943,54 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var lbl = document.getElementById(rp.dataset.roleTarget);
       if (lbl) lbl.textContent = rp.querySelector('b').textContent;
       if (roleFrom) { openSheet(roleFrom); roleFrom = null; } else closeSheet();
+      return;
+    }
+
+    /* ═══ فاز ۲۹ — نظرات و امتیاز کاتالوگ · امکان تماس لیست خرید ═══ */
+
+    /* ستاره‌سِلکت نظر جدید: لمس ستارهٔ n → n ستاره روشن (چپ‌به‌راست) */
+    var cstar = t.closest('[data-cstar]');
+    if (cstar) {
+      cmPick = parseInt(cstar.dataset.cstar, 10) || 0;
+      var pk = document.getElementById('cm-picker');
+      if (pk) pk.classList.remove('err');
+      var er = document.getElementById('cm-err'); if (er) er.hidden = true;
+      cmPickRender();
+      return;
+    }
+
+    /* ثبت نظر: ستاره + متن هر دو لازم؛ نظر با هویت خریدارِ فعلی بالای لیست می‌نشیند و میانگین/تعداد به‌روز می‌شود */
+    var csend = t.closest('[data-cmnt-send]');
+    if (csend) {
+      var ctxt = document.getElementById('cm-text');
+      var txt = ctxt ? ctxt.value.trim() : '';
+      if (!cmPick || !txt) {
+        var pk2 = document.getElementById('cm-picker');
+        if (pk2 && !cmPick) pk2.classList.add('err');
+        var er2 = document.getElementById('cm-err'); if (er2) er2.hidden = false;
+        return;
+      }
+      CMNT_DATA.unshift({ n: 'سوپرمارکت آریا', av: '#0e7490', v: true, s: cmPick, when: 'همین حالا', tx: txt, fresh: true });
+      cmBaseAvg = (cmBaseAvg * cmBaseCnt + cmPick) / (cmBaseCnt + 1);
+      cmBaseCnt += 1;
+      cmRender();
+      cmSumRender();
+      if (ctxt) ctxt.value = '';
+      cmPick = 0;
+      cmPickRender();
+      var er3 = document.getElementById('cm-err'); if (er3) er3.hidden = true;
+      var lst = document.getElementById('cm-list');
+      if (lst) lst.scrollTop = 0;
+      return;
+    }
+
+    /* «امکان تماس» (تنظیمات لیست خرید · ۰۸): روشن/خاموش → دکمهٔ تماس لیست عمومی (۲۳) پنهان/آشکار */
+    var ctTg = t.closest('[data-contacttoggle]');
+    if (ctTg) {
+      ctTg.classList.toggle('on');
+      var on = ctTg.classList.contains('on');
+      var cBtn = document.querySelector('#scr-23 [data-contactbtn]');
+      if (cBtn) cBtn.hidden = !on;
       return;
     }
 
@@ -9037,6 +9232,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   wire();
   evRender(ITEM_EVENTS);
   walletRender();
+  cmRender();
+  cmSumRender();
   var init = (location.hash || '').slice(1);
   go(el(init) ? init : '15', false);
 })();

@@ -31,23 +31,23 @@ const hash = () => page.evaluate(() => location.hash);
 await page.goto(URL + '#08');
 await page.waitForTimeout(600);
 let t = await page.locator('#scr-08').innerText();
-check('۰۸ لینک «درخواست‌های خرید من» (نام فاز ۲۷)', t.includes('درخواست‌های خرید من'));
-const linkStyle = await page.$eval('#scr-08 .prqlink', el => {
+check('۰۸ بخش «درخواست‌های خرید جاری» (فاز ۲۹ — جایگزین باکس «درخواست‌های خرید من»)', t.includes('درخواست‌های خرید جاری') && !t.includes('درخواست‌های خرید من'));
+const linkStyle = await page.$eval('#scr-08 .morelnk', el => {
   const cs = getComputedStyle(el);
-  return { color: cs.color, weight: cs.fontWeight };
+  return { color: cs.color, weight: cs.fontWeight, go: el.dataset.go };
 });
-check('۰۸ لینک مشکی (color=' + linkStyle.color + ')', linkStyle.color === 'rgb(42, 39, 35)');
-check('۰۸ لینک بولد (وزن ' + linkStyle.weight + ')', linkStyle.weight === '700');
+check('۰۸ لینک «همه درخواستها» قرمز (color=' + linkStyle.color + ')', linkStyle.color === 'rgb(220, 38, 38)');
+check('۰۸ لینک «همه درخواستها» بولد (وزن ' + linkStyle.weight + ')', linkStyle.weight === '800');
 check('۰۸ فرادادهٔ استعلام روی برنج: ۳ آیکون+عدد (فاز ۲۷)', (await page.$$eval('#scr-08 .bl-card:first-child .mm', els => els.length)) === 3);
 check('۰۸ فرادادهٔ استعلام روی روغن: ۳ آیکون+عدد (فاز ۲۷)', (await page.$$eval('#scr-08 .bl-card:nth-child(2) .mm', els => els.length)) === 3);
 const tabs8 = await page.$$eval('#scr-08 .tabbar .tab', els => els.map(e => e.textContent.trim()));
 check('۰۸ فوتر ۵ تبی: لیست خرید · کاتالوگ‌ها · کمپین‌ها · پیام‌ها · پروفایل', tabs8.length === 5 && tabs8.join('|').includes('کمپین‌ها') && !tabs8.join('|').includes('پیشنهادها'));
 await page.locator('#phone').screenshot({ path: OUT + '/08-buy-notebook.png' });
 
-// ۰۸ → ۱۱
-await page.locator('#scr-08 .prqlink').click();
+// ۰۸ → ۱۱ (فاز ۲۹: لینک «همه درخواستها»)
+await page.locator('#scr-08 .morelnk').click();
 await page.waitForTimeout(350);
-check('۰۸ کلیک لینک → صفحهٔ ۱۱', (await hash()) === '#11' && !(await page.$eval('#scr-11', el => el.hidden)));
+check('۰۸ کلیک «همه درخواستها» → صفحهٔ ۱۱', (await hash()) === '#11' && !(await page.$eval('#scr-11', el => el.hidden)));
 
 // ═══ ۱۱ — درخواست‌های خرید من (نام فاز ۲۷؛ فاز ۲۸: فقط لیست — جزئیات/پیشنهادها در ۳۶) ═══
 t = await page.locator('#scr-11').innerText();

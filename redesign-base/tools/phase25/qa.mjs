@@ -65,17 +65,17 @@ await page.evaluate(() => {
 await page.waitForTimeout(250);
 await page.locator('#phone').screenshot({ path: OUT + '/02-cw-suppliers.png' });
 
-// ═══ ۱۳ — بنر مشتری همکار: ریزتر و ظریف‌تر ═══
+// ═══ ۱۳ — تخفیف همکار: فلت و کوتاه (فاز ۲۹ — جایگزین باکس سبز cust-banner) ═══
 await page.goto(URL + '#13');
 await page.waitForTimeout(600);
 const banner = await page.evaluate(() => {
-  const b = document.querySelector('#scr-13 .cust-banner');
+  const b = document.querySelector('#scr-13 .cowork-line');
   const cs = getComputedStyle(b);
-  return { text: b.textContent.replace(/\s+/g, ' ').trim(), font: cs.fontSize, weight: cs.fontWeight, pad: cs.padding, h: b.offsetHeight };
+  return { text: b.textContent.replace(/\s+/g, ' ').trim(), font: cs.fontSize, bg: cs.backgroundColor, border: cs.borderTopWidth, h: b.offsetHeight };
 });
-check('۱۳ متن بنر: «شما مشتری همکار این کسب و کار هستید. تخفیف برای شما ۷٪»', banner.text === 'شما مشتری همکار این کسب و کار هستید. تخفیف برای شما ۷٪');
-check('۱۳ بنر ریزتر (فونت ۱۰px)', banner.font === '10px');
-check('۱۳ بنر ظریف‌تر (وزن ۶۰۰ و ارتفاع ≤ ۳۶px)', banner.weight === '600' && banner.h <= 36);
+check('۱۳ متن فلت: «تخفیف همکار شما ۷٪»', banner.text === 'تخفیف همکار شما ۷٪');
+check('۱۳ فلت — بدون پس‌زمینه و حاشیه', banner.bg === 'rgba(0, 0, 0, 0)' && banner.border === '0px');
+check('۱۳ فونت ۱۱px و تک‌خطی (≤ ۲۴px)', banner.font === '11px' && banner.h <= 24);
 await page.locator('#phone').screenshot({ path: OUT + '/13-cust-banner.png' });
 
 // ═══ سازگاری متن‌های کمپین با جایگاه بازگردانده‌شده ═══
