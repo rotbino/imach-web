@@ -26,33 +26,33 @@ let pass = 0, fail = 0;
 const check = (name, ok) => { console.log((ok ? 'PASS' : 'FAIL') + ' — ' + name); ok ? pass++ : fail++; };
 const hash = () => page.evaluate(() => location.hash);
 
-// ═══ ۰۸ — دفتر خرید ═══
+// ═══ ۰۸ — لیست خرید (نام فاز ۲۷؛ سابقاً دفتر خرید) ═══
 await page.goto(URL + '#08');
 await page.waitForTimeout(600);
 let t = await page.locator('#scr-08').innerText();
-check('۰۸ لینک «درخواست‌های قیمت من»', t.includes('درخواست‌های قیمت من'));
-const linkStyle = await page.$eval('#scr-08 .sec-title .more[data-go="11"]', el => {
+check('۰۸ لینک «درخواست‌های خرید من» (نام فاز ۲۷)', t.includes('درخواست‌های خرید من'));
+const linkStyle = await page.$eval('#scr-08 .prqlink', el => {
   const cs = getComputedStyle(el);
   return { color: cs.color, weight: cs.fontWeight };
 });
-check('۰۸ لینک قرمز (color=' + linkStyle.color + ')', /rgb\(2[0-5]\d, ?\d{1,2}, ?\d{1,2}\)/.test(linkStyle.color));
-check('۰۸ لینک بولد (وزن ' + linkStyle.weight + ')', linkStyle.weight === '800');
-check('۰۸ بج استعلام روی برنج: «در حال استعلام قیمت» + «۳ پیشنهاد جدید»', t.includes('در حال استعلام قیمت') && t.includes('۳ پیشنهاد جدید'));
-check('۰۸ بج استعلام روی روغن: «۱ پیشنهاد جدید»', t.includes('۱ پیشنهاد جدید'));
+check('۰۸ لینک مشکی (color=' + linkStyle.color + ')', linkStyle.color === 'rgb(42, 39, 35)');
+check('۰۸ لینک بولد (وزن ' + linkStyle.weight + ')', linkStyle.weight === '700');
+check('۰۸ فرادادهٔ استعلام روی برنج: ۳ آیکون+عدد (فاز ۲۷)', (await page.$$eval('#scr-08 .bl-card:first-child .mm', els => els.length)) === 3);
+check('۰۸ فرادادهٔ استعلام روی روغن: ۳ آیکون+عدد (فاز ۲۷)', (await page.$$eval('#scr-08 .bl-card:nth-child(2) .mm', els => els.length)) === 3);
 const tabs8 = await page.$$eval('#scr-08 .tabbar .tab', els => els.map(e => e.textContent.trim()));
-check('۰۸ فوتر ۵ تبی: دفتر خرید · کاتالوگ‌ها · کمپین‌ها · پیام‌ها · پروفایل', tabs8.length === 5 && tabs8.join('|').includes('کمپین‌ها') && !tabs8.join('|').includes('پیشنهادها'));
+check('۰۸ فوتر ۵ تبی: لیست خرید · کاتالوگ‌ها · کمپین‌ها · پیام‌ها · پروفایل', tabs8.length === 5 && tabs8.join('|').includes('کمپین‌ها') && !tabs8.join('|').includes('پیشنهادها'));
 await page.locator('#phone').screenshot({ path: OUT + '/08-buy-notebook.png' });
 
 // ۰۸ → ۱۱
-await page.locator('#scr-08 .sec-title .more[data-go="11"]').click();
+await page.locator('#scr-08 .prqlink').click();
 await page.waitForTimeout(350);
-check('۰۸ کلیک لینک قرمز → صفحهٔ ۱۱', (await hash()) === '#11' && !(await page.$eval('#scr-11', el => el.hidden)));
+check('۰۸ کلیک لینک → صفحهٔ ۱۱', (await hash()) === '#11' && !(await page.$eval('#scr-11', el => el.hidden)));
 
-// ═══ ۱۱ — درخواست‌های قیمت من (صفحهٔ کامل، نه مودال) ═══
+// ═══ ۱۱ — درخواست‌های خرید من (نام فاز ۲۷؛ صفحهٔ کامل، نه مودال) ═══
 t = await page.locator('#scr-11').innerText();
 const t11all = await page.$eval('#scr-11', el => el.textContent);
 check('۱۱ صفحهٔ کامل با هدر بازگشت (subheader، بدون تب‌بار)', !!(await page.$('#scr-11 .subheader .back')) && !(await page.$('#scr-11 .tabbar')));
-check('۱۱ عنوان + سوییچ جاری/آرشیو', t.includes('درخواست‌های قیمت من') && t.includes('جاری') && t.includes('آرشیو'));
+check('۱۱ عنوان + سوییچ جاری/آرشیو', t.includes('درخواست‌های خرید من') && t.includes('جاری') && t.includes('آرشیو'));
 check('۱۱ مهلت‌ها: «۳ روز مانده» (برنج) و «امروز آخرین روز» (روغن)', t.includes('۳ روز مانده') && t.includes('امروز آخرین روز'));
 check('۱۱ پیشنهادهای رسیده با قیمت و شرایط (تجارت گیل‌رنج ۲٬۷۸۰٬۰۰۰ بهترین)', t.includes('تجارت گیل‌رنج') && t.includes('۲٬۷۸۰٬۰۰۰') && t.includes('بهترین'));
 check('۱۱ مدیریت: «متوقف کردن» + «بایگانی»', t.includes('متوقف کردن') && t.includes('بایگانی'));
@@ -94,7 +94,7 @@ check('۱۱ دکمهٔ بازگشت → ۰۸', (await hash()) === '#08');
 await page.goto(URL + '#12');
 await page.waitForTimeout(500);
 t = await page.locator('#scr-12').innerText();
-check('۱۲ زیرعنوان «استعلام گروهی»', t.includes('استعلام گروهی'));
+check('۱۲ زیرعنوان «ارسال به چند تأمین‌کننده» (نام فاز ۲۷)', t.includes('ارسال به چند تأمین‌کننده'));
 check('۱۲ فیلد «مهلت پاسخ‌گویی» با گزینه‌های ۱/۳/۵/سایر', t.includes('مهلت پاسخ‌گویی') && t.includes('۱ روز') && t.includes('۳ روز') && t.includes('۵ روز') && t.includes('سایر'));
 check('۱۲ سقف ۳۰ روز ذکر شده', t.includes('حداکثر ۳۰ روز'));
 check('۱۲ جملهٔ مهلت: پس از پایان، نمایش به فروشندگان متوقف', t.includes('نمایش داده نمی‌شود'));
@@ -118,7 +118,7 @@ const order33 = await page.$$eval('#scr-33 .rows > .row-card', els => els.map(e 
 check('۳۳ ترتیب صعودی قیمت در DOM + برجسته‌سازی ارزان‌ترین', order33[0].includes('۲٬۸۵۰٬۰۰۰') && order33[1].includes('۲٬۹۲۰٬۰۰۰') && order33[2].includes('۳٬۰۰۰٬۰۰۰') && order33[0].includes('ارزان‌ترین'));
 check('۳۳ پیشنهاد تطابق iMach زیر لیست + بج «فروشندهٔ ویژه» (شالی‌زار طالب تبلیغی بالاتر)', t.includes('پیشنهاد تطابق iMach') && t.includes('فروشندهٔ ویژه') && t.includes('شالی‌زار طالب'));
 check('۳۳ نتیجهٔ طبیعی تطابق با درجهٔ تطبیق ۸۷٪ (تجارت گیل‌رنج)', t.includes('۸۷٪') && t.includes('تجارت گیل‌رنج'));
-check('۳۳ استعلام گروهی از ۳ فروشندهٔ دنبال‌شده', t.includes('استعلام گروهی از ۳ فروشندهٔ دنبل‌شده'.replace('دنبل', 'دنبال')));
+check('۳۳ درخواست خرید از ۳ فروشندهٔ دنبال‌شده (نام فاز ۲۷)', t.includes('درخواست خرید از ۳ فروشندهٔ دنبال‌شده'));
 check('۳۳ کادر «تأمین‌کنندگان دیگر این کالا»', t.includes('تأمین‌کنندگان دیگر این کالا'));
 await page.locator('#phone').screenshot({ path: OUT + '/33-compare.png' });
 
@@ -134,9 +134,9 @@ check('۰۲ کارت فروشنده → کاتالوگ (۱۳)', (await hash()) =
 // ۳۳ — استعلام گروهی → ۱۲
 await page.goto(URL + '#33');
 await page.waitForTimeout(400);
-await page.locator('#scr-33 button', { hasText: 'استعلام گروهی از ۳ فروشندهٔ دنبال‌شده' }).click();
+await page.locator('#scr-33 button', { hasText: 'درخواست خرید از ۳ فروشندهٔ دنبال‌شده' }).click();
 await page.waitForTimeout(350);
-check('۳۳ استعلام گروهی → فرم ۱۲', (await hash()) === '#12');
+check('۳۳ درخواست خرید گروهی → فرم ۱۲', (await hash()) === '#12');
 
 // ۳۳ — کادر تأمین‌کنندگان دیگر → ۰۹
 await page.goto(URL + '#33');
@@ -158,7 +158,7 @@ check('۰۹ «افزودن به لیست مقایسه» → ۳۳', (await hash()
 // ═══ ۰۸ کارت → ۳۳ (نه ۰۹) ═══
 await page.goto(URL + '#08');
 await page.waitForTimeout(400);
-await page.locator('#scr-08 .row-card').first().click();
+await page.locator('#scr-08 .bl-card').first().click(); /* فاز ۲۷: کارت مینیمال bl-card */
 await page.waitForTimeout(350);
 check('۰۸ کارت برنج → لیست مقایسه (۳۳) — نه تابلوی تأمین', (await hash()) === '#33');
 

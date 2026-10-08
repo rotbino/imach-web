@@ -1017,6 +1017,67 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #sheet-target .slot-row .as-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
   #sheet-target .slot-row .as-thumb::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.4); border-radius: 11px; }
 
+  /* ═══ فاز ۲۷ — لیست خرید مینیمال · دفترچهٔ خریداران · نقش‌ها ═══ */
+  /* کارت مینیمال لیست خرید (۰۸): عکس بزرگ ~۱۰۰px، عنوان کامل، مقدار+دوره، فراداده = آیکون+عدد */
+  #scr-08 .bl-card { display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: #fff; border: 1px solid var(--border); border-radius: 16px; cursor: pointer; }
+  #scr-08 .bl-thumb { width: 100px; height: 100px; border-radius: 13px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border); background: var(--muted); }
+  #scr-08 .bl-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #scr-08 .bl-body { flex: 1; min-width: 0; padding-top: 2px; }
+  #scr-08 .bl-t { font-size: 14.5px; font-weight: 800; line-height: 1.6; }
+  #scr-08 .bl-q { font-size: 11.5px; color: var(--muted-fg); margin-top: 4px; }
+  #scr-08 .bl-meta { display: flex; align-items: center; gap: 13px; margin-top: 11px; flex-wrap: wrap; }
+  #scr-08 .mm { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 800; color: var(--stone-soft); }
+  #scr-08 .mm svg { width: 14px; height: 14px; color: var(--muted-fg); }
+  #scr-08 .mm.hot { color: var(--red); }
+  #scr-08 .mm.hot svg { color: var(--red); }
+  /* نوار گروه‌بندی لیست خرید — چیپ گروه‌ها + دکمهٔ مدیریت گروه‌ها */
+  .bl-groups { display: flex; align-items: center; gap: 8px; }
+  .bl-groups .chips { flex: 1; margin: 0; }
+  .bl-groups .chip-manage { width: 38px; height: 38px; border-radius: 11px; border: 1px solid var(--border-strong); background: #fff; color: var(--stone-soft); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  .bl-groups .chip-manage svg { width: 17px; height: 17px; }
+  /* لینک «درخواست‌های خرید من» — متن مشکی + آیکون؛ عدد = بج قرمز با متن سفید */
+  .prqlink { display: flex; align-items: center; gap: 7px; background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 10px 12px; cursor: pointer; margin-top: 10px; font-size: 12.5px; font-weight: 700; color: var(--foreground); }
+  .prqlink > svg:first-child { width: 16px; height: 16px; color: var(--muted-fg); flex-shrink: 0; }
+  .prqlink .chev { margin-right: auto; width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
+  .badge.b-rednum { background: var(--red); color: #fff; }
+  /* چیپ شهر با آیکون لوکیشن — رنگ متمایز (لیست خرید عمومی + کاتالوگ) */
+  .city-chip { display: inline-flex; align-items: center; gap: 4px; color: var(--green); font-weight: 700; }
+  .city-chip svg { width: 12.5px; height: 12.5px; }
+  /* کارت اینستاگرامی «درخواست‌های خرید جاری» (۲۳) — عکس بالا، نیاز زیر عکس */
+  #scr-23 .rfq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  #scr-23 .rfq-card { border: 1px solid var(--border); border-radius: 15px; overflow: hidden; background: #fff; cursor: pointer; }
+  #scr-23 .rfq-img { height: 118px; overflow: hidden; position: relative; background: var(--muted); }
+  #scr-23 .rfq-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #scr-23 .rfq-img .dl { position: absolute; top: 8px; right: 8px; }
+  #scr-23 .rfq-bd { padding: 9px 10px 10px; }
+  #scr-23 .rfq-t { font-size: 12.5px; font-weight: 800; line-height: 1.55; }
+  #scr-23 .rfq-q { font-size: 10.5px; color: var(--muted-fg); margin-top: 4px; }
+  /* زنگولهٔ گوش به زنگ روی ردیف‌های لیست خرید عمومی (۲۳) */
+  .alert-bell { width: 36px; height: 36px; border-radius: 11px; border: 1px solid var(--border-strong); background: #fff; color: var(--stone-soft); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  .alert-bell svg { width: 16px; height: 16px; }
+  .alert-bell.on { background: var(--green-bg); border-color: #b6e2c6; color: var(--green); }
+  /* نوار تماس + نوار آمار + اکشن‌های بالای لیست خرید عمومی */
+  .contact-row { display: flex; gap: 8px; margin-top: 11px; }
+  .insight-strip { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 9px 13px; font-size: 11px; color: var(--muted-fg); }
+  .insight-strip b { color: var(--foreground); font-size: 12px; }
+  .insight-strip svg { width: 14px; height: 14px; }
+  .insight-strip .sep { flex: 1; }
+  .top-act { display: flex; gap: 8px; margin-top: 11px; }
+  .top-act .btn { flex: 1; }
+  /* فرم افزودن کالا به لیست خرید (۳۴) — استپر مقدار */
+  .qty-stepper { display: flex; align-items: center; justify-content: space-between; background: var(--muted); border-radius: 12px; padding: 7px 10px; }
+  .qty-stepper button { width: 34px; height: 34px; border-radius: 10px; border: 0; background: #fff; color: var(--primary-strong); font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 1px 2px rgba(42,39,35,.1); }
+  .qty-stepper .val { font-size: 14px; font-weight: 800; }
+  .qty-stepper .val .unit { font-size: 10.5px; font-weight: 400; color: var(--muted-fg); margin-right: 4px; }
+  #scr-34 .row-card.picked { border-color: var(--arm); box-shadow: 0 0 0 2px color-mix(in srgb, var(--arm) 15%, transparent); }
+  /* شیت نقش‌ها — تیک فقط روی انتخاب فعلی (الگوی sheet-biz) */
+  #sheet-rolebuy .sheet-row .check, #sheet-rolesell .sheet-row .check { display: none; color: var(--green); width: 18px; height: 18px; flex-shrink: 0; }
+  #sheet-rolebuy .sheet-row.current .check, #sheet-rolesell .sheet-row.current .check { display: block; }
+  /* شیت کارت درخواست خرید (۲۳) */
+  #sheet-reqview .reqv-img { height: 120px; border-radius: 13px; overflow: hidden; margin-top: 11px; border: 1px solid var(--border); }
+  #sheet-reqview .reqv-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #sheet-reqview .sheet-row { cursor: default; }
+
 </style>
 </head>
 <body>
@@ -1123,7 +1184,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-          <div class="sub">پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span></div>
+          <div class="sub">پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-orange">عمده‌فروش</span></div>
         </div>
         <button class="icon-btn" aria-label="تنظیمات کاتالوگ" data-sheet="sheet-cset"><svg><use href="#i-gear"/></svg></button>
         <button class="icon-btn" aria-label="اشتراک کاتالوگ" data-sheet="sheet-share"><svg><use href="#i-share"/></svg></button>
@@ -1410,7 +1471,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
     </main>
 
-    <!-- اکشن‌های اصلی خریدار — فاز ۲۴: دنبال‌کردن قیمت به‌صورت آیکون + دکمهٔ «درخواست قیمت بهتر» تک‌خطی -->
+    <!-- اکشن‌های اصلی خریدار — فاز ۲۴: دنبال‌کردن قیمت به‌صورت آیکون + دکمهٔ «درخواست خرید» تک‌خطی (فاز ۲۷: نام جدید) -->
     <div class="action-bar">
       <button class="icon-btn" style="width:46px;height:46px;border-radius:12px" aria-label="تماس با فروشنده" title="تماس با فروشنده">
         <svg><use href="#i-phone"/></svg>
@@ -1421,7 +1482,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <button class="icon-btn" style="width:46px;height:46px;border-radius:12px" aria-label="دنبال کردن قیمت" data-sheet="sheet-follow" title="دنبال کردن قیمت — با هر تغییر قیمت خبرت می‌کنیم">
         <svg><use href="#i-bmark-plus"/></svg>
       </button>
-      <button class="btn btn-stone" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-go="12">درخواست قیمت بهتر</button>
+      <button class="btn btn-stone" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-go="12">درخواست خرید</button>
     </div>
 
     </section>
@@ -1461,7 +1522,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <!-- فاز ۲۲ — IMPLEMENTATION NOTE (اولویت تخفیف‌ها — برای پیاده‌سازی عملیاتی):
              تخفیف علاوه بر «سطح کاتالوگ» و «گروه مشتری»، روی خودِ کالا هم قابل اعمال است و بالاترین اولویت را دارد:
              تخفیف کالا (اختصاصی / پلکانی / همکار)  ›  تخفیف گروه مشتری  ›  تخفیف کاتالوگ.
-             «اتمام موجودی» = کالا با برچسبِ اتمام در کاتالوگ می‌ماند اما سفارش/استعلام بسته می‌شود؛ با شارژ موجودی خودکار برمی‌گردد.
+             «اتمام موجودی» = کالا با برچسبِ اتمام در کاتالوگ می‌ماند اما سفارش/درخواست خرید بسته می‌شود؛ با شارژ موجودی خودکار برمی‌گردد.
              «عدم نمایش» (جایگزین «غیرفعال») = پنهان‌سازی کامل از کاتالوگ عمومی؛ رصد و لیست مقایسهٔ خریداران حفظ می‌شود. -->
         <div class="card" style="margin-top:13px">
           <div style="font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">
@@ -1483,7 +1544,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <!-- فاز ۲۲ — «نتایج حضور در آیمچ» (جایگزین «عملکرد ۳۰ روز اخیر") -->
         <!-- IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی): شمارنده‌ها از ابتدای ثبت کالا جمع می‌شوند (نه پنجرهٔ ۳۰ روزه)؛
-             رویدادها (بازدید / افزودن به لیست خرید / افزودن به لیست مقایسه قیمت / استعلام قیمت / شروع گفتگو) با مهر زمانی
+             رویدادها (بازدید / افزودن به لیست خرید / افزودن به لیست مقایسه قیمت / درخواست خرید / شروع گفتگو) با مهر زمانی
              کامل لاگ می‌شوند و از مودال «تاریخچهٔ رویدادها» با فیلتر بازهٔ زمانی قابل مرورند. -->
         <div class="sec-title">
           <h2>نتایج حضور در آیمچ</h2>
@@ -1492,7 +1553,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="stat-strip" style="margin:0">
           <div class="stat"><div class="v">۲۴۸</div><div class="k">بازدید</div></div>
           <div class="stat hot"><div class="v">۳۶</div><div class="k">در مقایسه قیمت</div></div>
-          <div class="stat"><div class="v">۲۲</div><div class="k">استعلام قیمت</div></div>
+          <div class="stat"><div class="v">۲۲</div><div class="k">درخواست خرید</div></div>
         </div>
         <div style="font-size:10px;color:var(--muted-fg);margin-top:7px">شمارنده‌ها از ابتدای ثبت این کالا در آیمچ جمع شده‌اند — برای دیدن اتفاق‌های یک بازهٔ مشخص، «تاریخچهٔ رویدادها» را باز کنید.</div>
 
@@ -1548,7 +1609,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="callout" style="margin-top:14px">
           <svg><use href="#i-inbox"/></svg>
           <div>
-            <b>۲ درخواست قیمت باز برای این کالا</b><br>
+            <b>۲ درخواست خرید باز برای این کالا</b><br>
             «رستوران مهر» به دنبال ۲۰ کیسه برنج هاشمی است.
             <span style="color:var(--primary-strong);font-weight:700;cursor:pointer;white-space:nowrap"> مشاهده و پاسخ</span>
           </div>
@@ -2085,6 +2146,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
       </div>
 
+      <!-- فاز ۲۷ — لیست خریداران ذخیره‌شده: دفترچهٔ تلفنِ خریدارها برای فروشنده -->
+      <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer" data-go="35">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:var(--primary-strong)">
+          <svg style="width:19px;height:19px"><use href="#i-bookmark"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:700">لیست خریداران ذخیره‌شده</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">۲ خریدار · اعلام نیاز بعدی را اول از همه ببین</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      </div>
+
       <!-- ابزار رشد -->
       <div class="card" style="margin-top:10px">
         <div style="font-size:13px;font-weight:700;margin-bottom:3px">ابزار رشد کاتالوگ</div>
@@ -2193,6 +2266,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-08" data-arm="buy" hidden>
 
 
+    <!-- فاز ۲۷ — «لیست خرید» (نام یکدست در همه‌جا؛ سابقاً «دفتر خرید»):
+         کارت مینیمال عکس‌دار (~۱۰۰px): عنوان کامل + مقدار و دورهٔ خرید + فراداده به‌صورت آیکون+عدد.
+         نوار گروه‌بندی (جای فیلتر بی‌مفهوم) · اشتراک و تنظیمات کنار نام لیست ·
+         افزودن کالا → فرم ۳۴ (حجم و دورهٔ خرید از کاربر گرفته می‌شود).
+         دنبال‌کردن فقط در کاتالوگ دیگران معنی دارد — روی کارت این‌جا نیست. -->
+
     <header class="appbar">
       <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
       <div class="actions">
@@ -2207,98 +2286,95 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
+      <!-- نام لیست + اشتراک‌گذاری + تنظیمات (فاز ۲۷) -->
       <div class="sec-title" style="margin-top:4px">
         <h2><svg><use href="#i-list"/></svg> لیست خرید من</h2>
-        <!-- فاز ۲۶ — «درخواست‌های من» → «درخواست‌های قیمت من»: قرمز، بولد، کلیک → صفحهٔ ۱۱ -->
-        <span class="more" style="display:flex;align-items:center;gap:5px;color:var(--red);font-weight:800;cursor:pointer" data-go="11" title="درخواست‌های قیمت من">
-          درخواست‌های قیمت من
-          <span class="badge b-new">۲</span>
-        </span>
+        <div style="display:flex;align-items:center;gap:7px">
+          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="اشتراک‌گذاری لیست خرید" data-sheet="sheet-contacts" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg></button>
+          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="تنظیمات لیست خرید" data-sheet="sheet-listset" title="تنظیمات لیست خرید"><svg><use href="#i-gear"/></svg></button>
+        </div>
+      </div>
+
+      <!-- فاز ۲۷ — «درخواست‌های خرید من»: متن مشکی + آیکون؛ شمار، بج قرمز با متن سفید -->
+      <div class="prqlink" data-go="11" title="درخواست‌های خرید من">
+        <svg><use href="#i-inbox"/></svg>
+        <span>درخواست‌های خرید من</span>
+        <span class="badge b-rednum">۲</span>
+        <svg class="chev"><use href="#i-chev"/></svg>
       </div>
 
       <!-- جستجو + افزودن -->
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:8px;margin-top:10px">
         <div class="searchbar" style="flex:1">
           <svg><use href="#i-search"/></svg>
           <span>جستجو در لیست…</span>
         </div>
-        <button class="btn btn-stone" style="height:44px;padding:0 16px">
+        <button class="btn btn-stone" style="height:44px;padding:0 16px" data-go="34">
           <svg><use href="#i-plus"/></svg> افزودن کالا
         </button>
       </div>
 
-      <div class="chips">
-        <button class="chip active">همه (۴)</button>
-        <button class="chip">تغییر قیمت (۲)</button>
-        <button class="chip">هفتگی</button>
-        <button class="chip">ماهانه</button>
+      <!-- فاز ۲۷ — گروه‌بندی کالا (مثل کاتالوگ): چیپ گروه‌ها + مدیریت گروه‌ها -->
+      <div class="bl-groups" style="margin-top:10px">
+        <div class="chips">
+          <button class="chip active">همه (۴)</button>
+          <button class="chip">غلات (۲)</button>
+          <button class="chip">روغن (۱)</button>
+          <button class="chip">کنسرو (۱)</button>
+        </div>
+        <button class="chip-manage" data-sheet="sheet-lgroups" title="گروه‌های کالا" aria-label="گروه‌های کالا"><svg><use href="#i-tag"/></svg></button>
       </div>
 
-      <!-- ردیف‌های لیست — هر کالا یک تابلوی تأمین -->
-      <div class="rows">
+      <!-- ردیف‌های لیست — مینیمال و عکس‌دار؛ فراداده: آیکون+عدد -->
+      <div class="rows" style="margin-top:10px">
 
-        <div class="row-card">
-          <div class="thumb" style="width:46px;height:46px"><span class="glyph" style="font-size:9px">۵۰ کیلو</span></div>
-          <div class="body">
-            <div class="t">برنج هاشمی <span class="badge b-stone">۳ تأمین‌کننده</span></div>
-            <div class="s">
-              <span>ارزان‌ترین: <b style="color:var(--foreground)">۲٬۸۵۰٬۰۰۰</b> · پخش برنج پارس</span>
-            </div>
-            <div class="s" style="margin-top:2px">
-              <span class="trend down">▼ ۲٪ این هفته</span>
-              <span>ماهانه · ۲۰ کیسه</span>
-            </div>
-            <!-- فاز ۲۶ — وضعیت استعلام روی کارت: در حال استعلام قیمت + شمار پیشنهادهای جدید -->
-            <div class="s" style="margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
-              <span class="badge b-orange" style="font-size:9.5px"><svg style="width:10px;height:10px"><use href="#i-clock"/></svg> در حال استعلام قیمت</span>
-              <span class="badge b-new" style="font-size:9.5px">۳ پیشنهاد جدید</span>
+        <div class="bl-card" data-go="33">
+          <div class="bl-thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+          <div class="bl-body">
+            <div class="bl-t">برنج هاشمی</div>
+            <div class="bl-q">۲۰ کیسهٔ ۵۰ کیلویی · ماهانه</div>
+            <div class="bl-meta">
+              <span class="mm" title="تأمین‌کنندگان دنبال‌شده"><svg><use href="#i-users"/></svg>۳</span>
+              <span class="mm" title="درخواست خرید جاری"><svg><use href="#i-inbox"/></svg>۱</span>
+              <span class="mm hot" title="پیشنهادهای جدید"><svg><use href="#i-spark"/></svg>۳</span>
             </div>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
 
-        <div class="row-card">
-          <div class="thumb" style="width:46px;height:46px"><span class="glyph" style="font-size:9px">۱۰ لیتر</span></div>
-          <div class="body">
-            <div class="t">روغن سرخ‌کردنی <span class="badge b-stone">۲ تأمین‌کننده</span></div>
-            <div class="s">
-              <span>ارزان‌ترین: <b style="color:var(--foreground)">۵۱۰٬۰۰۰</b> · صنایع روغن آفتاب</span>
-            </div>
-            <div class="s" style="margin-top:2px">
-              <span class="trend up">▲ ۵٪ این هفته</span>
-              <span>ماهانه · ۴۰ عدد</span>
-            </div>
-            <div class="s" style="margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
-              <span class="badge b-orange" style="font-size:9.5px"><svg style="width:10px;height:10px"><use href="#i-clock"/></svg> در حال استعلام قیمت</span>
-              <span class="badge b-new" style="font-size:9.5px">۱ پیشنهاد جدید</span>
+        <div class="bl-card" data-go="33">
+          <div class="bl-thumb"><img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی"></div>
+          <div class="bl-body">
+            <div class="bl-t">روغن سرخ‌کردنی ۱۰ لیتری</div>
+            <div class="bl-q">۴۰ عدد · ماهانه</div>
+            <div class="bl-meta">
+              <span class="mm" title="تأمین‌کنندگان دنبال‌شده"><svg><use href="#i-users"/></svg>۲</span>
+              <span class="mm" title="درخواست خرید جاری"><svg><use href="#i-inbox"/></svg>۱</span>
+              <span class="mm hot" title="پیشنهادهای جدید"><svg><use href="#i-spark"/></svg>۱</span>
             </div>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
 
-        <div class="row-card">
-          <div class="thumb" style="width:46px;height:46px"><span class="glyph" style="font-size:9px">۵۰۰ گرم</span></div>
-          <div class="body">
-            <div class="t">رب گوجه‌فرنگی <span class="badge b-stone">۱ تأمین‌کننده</span></div>
-            <div class="s">
-              <span>تنها قیمت: <b style="color:var(--foreground)">۹۸٬۰۰۰</b> · نگین گلستان</span>
-            </div>
-            <div class="s" style="margin-top:2px">
-              <span class="trend flat">— بدون تغییر</span>
-              <span>هفتگی · ۶۰ عدد</span>
+        <div class="bl-card" data-go="33">
+          <div class="bl-thumb"><img src="png/goods/tomato-paste.jpg" alt="رب گوجه‌فرنگی"></div>
+          <div class="bl-body">
+            <div class="bl-t">رب گوجه‌فرنگی</div>
+            <div class="bl-q">۶۰ عدد ۵۰۰ گرمی · هفتگی</div>
+            <div class="bl-meta">
+              <span class="mm" title="تأمین‌کنندگان دنبال‌شده"><svg><use href="#i-users"/></svg>۱</span>
             </div>
           </div>
-          <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
         </div>
 
-        <!-- کالای بدون تابلو — با CTA دنبال کردن -->
-        <div class="row-card" style="border-style:dashed">
-          <div class="thumb" style="width:46px;height:46px"><span class="glyph" style="font-size:9px">۹۰۰ گرم</span></div>
-          <div class="body">
-            <div class="t">قند</div>
-            <div class="s">هنوز تابلویی ندارد — با دنبال کردن قیمت، تأمین‌کننده‌ها پیدا می‌شوند</div>
+        <!-- قند — مثل بقیهٔ کالاها (فاز ۲۷: دنبال‌کردن فقط روی کاتالوگ دیگران معنی دارد) -->
+        <div class="bl-card" data-go="33">
+          <div class="bl-thumb"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
+          <div class="bl-body">
+            <div class="bl-t">قند</div>
+            <div class="bl-q">۱۰ کارتن ۱۰ کیلویی · ماهانه</div>
+            <div class="bl-meta">
+              <span class="mm" title="تأمین‌کنندگان دنبال‌شده"><svg><use href="#i-users"/></svg>۰</span>
+            </div>
           </div>
-          <button class="btn btn-outline btn-sm" style="color:var(--stone);flex-shrink:0">دنبال کردن</button>
         </div>
 
       </div>
@@ -2306,7 +2382,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- راهنما: این لیست چطور پر می‌شود -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>هر کالایی را در کاتالوگ فروشنده‌ها «دنبال کردن قیمت» بزنید، این‌جا می‌نشیند و تابلوی تأمینش ساخته می‌شود.</div>
+        <div>هر کالایی که از کاتالوگ فروشنده‌ها دنبال کنید، به لیست خرید شما اضافه می‌شود. همچنین می‌توانید کالا را از <b>«افزودن کالا»</b> هم اضافه کنید. در هر دو صورت، می‌توانید قیمت آن کالا را از چند تامین‌کنندهٔ دلخواه مشاهده و مقایسه کنید.</div>
       </div>
 
     </main>
@@ -2315,7 +2391,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab active">
           <svg><use href="#i-list"/></svg>
-          دفتر خرید
+          لیست خرید
         </button>
         <button class="tab">
           <svg><use href="#i-building"/></svg>
@@ -2403,7 +2479,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cond" style="background:var(--green-bg);color:var(--green)"><svg style="width:11px;height:11px"><use href="#i-history"/></svg> از او خریده‌ام</span>
         </div>
         <div class="sup-actions">
-          <button class="btn btn-stone btn-sm" style="flex:1">درخواست قیمت</button>
+          <button class="btn btn-stone btn-sm" style="flex:1">درخواست خرید</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
           <button class="btn btn-outline btn-sm" style="color:var(--green)"><svg><use href="#i-check"/></svg></button>
         </div>
@@ -2432,7 +2508,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cond">ارسال به همه شهرها</span>
         </div>
         <div class="sup-actions">
-          <button class="btn btn-stone btn-sm" style="flex:1">درخواست قیمت</button>
+          <button class="btn btn-stone btn-sm" style="flex:1">درخواست خرید</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
           <button class="btn btn-outline btn-sm">ذخیره</button>
         </div>
@@ -2459,7 +2535,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cond">حداقل ۲۰ کیسه</span>
         </div>
         <div class="sup-actions">
-          <button class="btn btn-stone btn-sm" style="flex:1">درخواست قیمت</button>
+          <button class="btn btn-stone btn-sm" style="flex:1">درخواست خرید</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
           <button class="btn btn-outline btn-sm">ذخیره</button>
         </div>
@@ -2498,11 +2574,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <!-- اکشن اصلی: درخواست قیمت از چند تأمین‌کننده -->
+    <!-- اکشن اصلی: درخواست خرید از چند تأمین‌کننده -->
     <div class="action-bar">
       <button class="btn btn-stone btn-block">
         <svg><use href="#i-bookmark"/></svg>
-        درخواست قیمت از تأمین‌کننده‌های انتخابی
+        درخواست خرید از تأمین‌کننده‌های انتخابی
       </button>
     </div>
 
@@ -2688,7 +2764,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
-          دفتر خرید
+          لیست خرید
         </button>
         <button class="tab active">
           <svg><use href="#i-building"/></svg>
@@ -2715,17 +2791,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-11" data-arm="buy" hidden>
 
 
-    <!-- فاز ۲۶ — «درخواست‌های قیمت من»: صفحهٔ کامل مدیریت استعلام‌ها (مودال نیست)
-         IMPLEMENTATION NOTE: هر استعلام از فرم ۱۲ می‌آید و مهلت ۱ تا ۵ روز (یا «سایر» تا ۳۰ روز) دارد؛
+    <!-- فاز ۲۶ — «درخواست‌های خرید من» (نام فاز ۲۷): صفحهٔ کامل مدیریت درخواست‌ها (مودال نیست)
+         IMPLEMENTATION NOTE: هر درخواست خرید از فرم ۱۲ می‌آید و مهلت ۱ تا ۵ روز (یا «سایر» تا ۳۰ روز) دارد؛
          پس از پایان مهلت، درخواست خودکار برای فروشندگان نمایش داده نمی‌شود و به آرشیو می‌رود.
          پیشنهادهای رسیده همان «پیشنهاد قیمت» فروشندگان است (فرم ۰۶ سمت فروشنده). شمار «پیشنهاد جدید»
-         روی کارت دفتر خرید (۰۸) و بج قرمز لینک همین صفحه، از همین وضعیت می‌آید.
+         روی کارت لیست خرید (۰۸) و بج قرمز لینک همین صفحه، از همین وضعیت می‌آید.
          «متوقف کردن» = درخواست موقتاً برای فروشندگان نامرئی؛ «بایگانی» = انتقال به آرشیو با امکان
          «ساخت درخواست مشابه» (شرایط و گیرندگان قبلی، پیش‌فرض فرم ۱۲ می‌شوند). -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">درخواست‌های قیمت من<small id="prq-sub">۲ جاری · ۳ آرشیو</small></div>
-      <button class="icon-btn" aria-label="استعلام جدید" data-go="12" title="استعلام گروهی جدید"><svg><use href="#i-plus"/></svg></button>
+      <div class="ttl">درخواست‌های خرید من<small id="prq-sub">۲ جاری · ۳ آرشیو</small></div>
+      <button class="icon-btn" aria-label="درخواست خرید جدید" data-go="12" title="درخواست خرید جدید"><svg><use href="#i-plus"/></svg></button>
     </header>
 
     <main class="screen-body">
@@ -2739,7 +2815,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- ═══ بخش جاری ═══ -->
       <div id="prq-now">
 
-        <!-- ─── استعلام ۱: برنج هاشمی ─── -->
+        <!-- ─── درخواست خرید ۱: برنج هاشمی ─── -->
         <div class="card prq-card" style="margin-top:10px">
           <div style="display:flex;align-items:center;gap:10px">
             <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۵۰ کیلو</span></div>
@@ -2794,7 +2870,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <!-- ─── استعلام ۲: روغن سرخ‌کردنی ─── -->
+        <!-- ─── درخواست خرید ۲: روغن سرخ‌کردنی ─── -->
         <div class="card prq-card" style="margin-top:10px">
           <div style="display:flex;align-items:center;gap:10px">
             <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9px">۱۰ لیتر</span></div>
@@ -2834,7 +2910,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="legend">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-          <div>مهلت هر استعلام ۱ تا ۵ روز است؛ پس از پایان مهلت، درخواست خودکار برای فروشندگان نمایش داده نمی‌شود و به آرشیو می‌رود.</div>
+          <div>مهلت هر درخواست خرید ۱ تا ۵ روز است؛ پس از پایان مهلت، درخواست دیگر برای فروشندگان نمایش داده نمی‌شود و به آرشیو می‌رود.</div>
         </div>
 
       </div>
@@ -2913,7 +2989,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">درخواست قیمت<small>برنج هاشمی · استعلام گروهی</small></div>
+      <div class="ttl">درخواست خرید<small>برنج هاشمی · ارسال به چند تأمین‌کننده</small></div>
     </header>
 
     <main class="screen-body">
@@ -3025,7 +3101,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- تمایز از تابلو -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>این یک درخواست مشخص و مقطعی است — با «تابلوی تأمین» که رصد دائمی قیمت‌هاست فرق دارد. پاسخ‌ها در «درخواست‌های قیمت من» می‌نشینند.</div>
+        <div>این یک درخواست مشخص و مقطعی است — با «تابلوی تأمین» که رصد دائمی قیمت‌هاست فرق دارد. پاسخ‌ها در «درخواست‌های خرید من» می‌نشینند.</div>
       </div>
 
     </main>
@@ -3272,7 +3348,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
-          دفتر خرید
+          لیست خرید
         </button>
         <button class="tab">
           <svg><use href="#i-building"/></svg>
@@ -3400,7 +3476,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             </div>
             <div class="ben">
               <span class="b-n">۵</span>
-              <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
+              <span class="b-tx"><b>درخواست خرید رقابتی</b><span>برای هر کالا درخواست خرید بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
             </div>
           </div>
           </div>
@@ -3717,7 +3793,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
-          دفتر خرید
+          لیست خرید
         </button>
         <button class="tab">
           <svg><use href="#i-building"/></svg>
@@ -3834,7 +3910,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="row-card" data-go="06">
           <div class="avatar-sm" style="background:#7c3aed">م</div>
           <div class="body">
-            <div class="t" style="font-size:13px">درخواست قیمت — رستوران مهر</div>
+            <div class="t" style="font-size:13px">درخواست خرید — رستوران مهر</div>
             <div class="s">برنج هاشمی · ۲۰ کیسه · ۲ ساعت پیش</div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
@@ -3842,7 +3918,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="row-card" data-go="06">
           <div class="avatar-sm" style="background:#0e7490">آ</div>
           <div class="body">
-            <div class="t" style="font-size:13px">درخواست قیمت — سوپرمارکت آریا</div>
+            <div class="t" style="font-size:13px">درخواست خرید — سوپرمارکت آریا</div>
             <div class="s">برنج طارم · ۱۰ کیسه · دیروز</div>
           </div>
           <svg class="chev" style="width:16px;height:16px"><use href="#i-chev"/></svg>
@@ -4163,15 +4239,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-23" data-arm="keep" hidden>
 
 
+    <!-- فاز ۲۷ — لیست خرید از دید فروشنده/دیگران:
+         این همان صفحه‌ای است که خریدار لینکش را برای فروشنده‌ها می‌فرستد تا تامین‌کنندگانِ بیشتری
+         او را بشناسند و لیست خریدش را «ذخیره» کنند یا کالاهایش را «گوش به زنگ» شوند.
+         دو بخش دارد: «درخواست‌های خرید جاری» (کارت‌های اینستاگرامی — عکس بالا، نیاز زیر عکس؛
+         لمس = کارت درخواست خرید) + «لیست خرید» (ردیف‌های معمول با زنگولهٔ گوش به زنگ).
+         عنوان = همان لیست خرید (نه «پیش‌نمایش عمومی») + آیکون اشتراک‌گذاری. -->
+
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">پیش‌نمایش عمومی<small>لیست خریدت از دید فروشنده‌ها</small></div>
-      <span class="badge b-new" style="margin-left:auto;flex-shrink:0">عمومی</span>
+      <div class="ttl">لیست خرید سوپرمارکت آریا<small>imach.ir/b/arya — از لینک رسیده‌ای</small></div>
+      <button class="icon-btn" aria-label="اشتراک‌گذاری لیست" data-sheet="sheet-contacts" title="اشتراک‌گذاری لیست" style="margin-left:auto"><svg><use href="#i-share"/></svg></button>
     </header>
 
     <main class="screen-body">
 
-      <!-- هویت خریدار — این‌طور فروشنده‌ها تو را می‌بینند -->
+      <!-- هویت خریدار — این‌طور فروشنده‌ها او را می‌بینند -->
       <div class="biz-head" style="margin-top:10px">
         <div class="row1">
           <div class="avatar-lg" style="background:#0e7490">آ</div>
@@ -4180,7 +4263,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
                  (مهم برای شروع گفتگو) — همان منطق کاتالوگ، این‌بار به سود خریدار. -->
             <div class="biz-name">سوپرمارکت آریا <svg><use href="#i-verified"/></svg> <span class="presence on"><i></i>آنلاین</span></div>
             <div class="biz-meta" style="margin-top:5px">
-              سوپرمارکت · رشت <span class="badge b-stone">خریدار عمده</span>
+              سوپرمارکت · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-stone">خریدار عمده</span>
             </div>
           </div>
         </div>
@@ -4192,9 +4275,51 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- نیازهای خرید -->
-      <div class="sec-title" style="margin-top:14px"><h2><svg><use href="#i-basket"/></svg> نیازهای خرید این لیست</h2></div>
+      <!-- تماس + پیام (فاز ۲۷) -->
+      <div class="contact-row">
+        <button class="btn btn-outline" style="flex:1" data-sheet="sheet-contacts" title="تماس با خریدار"><svg><use href="#i-phone"/></svg> تماس</button>
+        <button class="btn btn-stone" style="flex:1" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
+      </div>
 
+      <!-- آمار لیست -->
+      <div class="insight-strip">
+        <span><svg><use href="#i-list"/></svg> <b>۴</b> کالا</span>
+        <span><svg><use href="#i-bookmark"/></svg> <b>۱۲</b> ذخیره‌کننده</span>
+        <span><svg><use href="#i-eye"/></svg> <b>۸۶</b> بازدید</span>
+      </div>
+
+      <!-- ذخیرهٔ لیست — فروشنده لیست‌های خرید دلخواه را ذخیره می‌کند (دفترچهٔ خریداران ۳۵) -->
+      <div class="top-act">
+        <button class="btn btn-stone" style="height:48px;font-size:14px" data-savelist><svg><use href="#i-bmark-plus"/></svg> ذخیرهٔ لیست</button>
+      </div>
+
+      <!-- ═══ درخواست‌های خرید جاری — کارت‌های اینستاگرامی (عکس بالا + مقدار مورد نیاز زیر عکس) ═══ -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید جاری</h2><span class="more">۲ درخواست</span></div>
+      <div class="rfq-grid">
+        <div class="rfq-card" data-rt="برنج هاشمی" data-rq="۲۰ کیسهٔ ۵۰ کیلویی" data-rimg="png/goods/rice-grains.jpg" data-rdl="۳ روز مانده" data-rdlc="b-orange">
+          <div class="rfq-img">
+            <img src="png/goods/rice-grains.jpg" alt="برنج هاشمی">
+            <span class="badge b-orange dl">۳ روز مانده</span>
+          </div>
+          <div class="rfq-bd">
+            <div class="rfq-t">برنج هاشمی</div>
+            <div class="rfq-q">نیاز: ۲۰ کیسهٔ ۵۰ کیلویی</div>
+          </div>
+        </div>
+        <div class="rfq-card" data-rt="روغن سرخ‌کردنی" data-rq="۴۰ عدد ۱۰ لیتری" data-rimg="png/goods/oil-bottle.jpg" data-rdl="امروز آخرین روز" data-rdlc="b-rednum">
+          <div class="rfq-img">
+            <img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی">
+            <span class="badge b-rednum dl">امروز آخرین روز</span>
+          </div>
+          <div class="rfq-bd">
+            <div class="rfq-t">روغن سرخ‌کردنی</div>
+            <div class="rfq-q">نیاز: ۴۰ عدد ۱۰ لیتری</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ لیست خرید معمول — ردیف‌ها با زنگولهٔ گوش به زنگ ═══ -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-list"/></svg> لیست خرید</h2><span class="more">۴ کالا</span></div>
       <div class="rows">
         <div class="row-card">
           <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
@@ -4202,6 +4327,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="t" style="font-size:13px">برنج هاشمی</div>
             <div class="s">۲۰ کیسهٔ ۵۰ کیلویی · هفتگی · قیمت هدف: ۲٬۷۰۰٬۰۰۰</div>
           </div>
+          <button class="alert-bell on" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
         </div>
         <div class="row-card">
           <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
@@ -4209,40 +4335,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="t" style="font-size:13px">برنج طارم</div>
             <div class="s">۱۰ کیسهٔ ۵۰ کیلویی · دوهفتگی</div>
           </div>
+          <button class="alert-bell" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
         </div>
         <div class="row-card">
-          <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9.5px">شکر</span></div>
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/sugar-cubes.jpg" alt="شکر سفید"></div>
           <div class="body">
             <div class="t" style="font-size:13px">شکر سفید</div>
             <div class="s">۱۰ کارتن ۱۰ کیلویی · ماهانه</div>
           </div>
+          <button class="alert-bell" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
         </div>
         <div class="row-card">
-          <div class="thumb" style="width:44px;height:44px"><span class="glyph" style="font-size:9.5px">روغن</span></div>
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/oil-bottle.jpg" alt="روغن مایع"></div>
           <div class="body">
             <div class="t" style="font-size:13px">روغن مایع</div>
             <div class="s">۶ کارتن · ماهانه</div>
           </div>
-        </div>
-      </div>
-
-      <!-- راهنما -->
-      <div class="callout" style="margin-top:14px">
-        <svg><use href="#i-eye"/></svg>
-        <div>
-          <b>این همان صفحه‌ای است که فروشنده‌ها می‌بینند.</b><br>
-          هرچه لیستت کامل‌تر باشد، پیشنهادهای دقیق‌تری می‌گیری — نام، برند و حجم هر کالا مهم است.
+          <button class="alert-bell" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
         </div>
       </div>
 
     </main>
-
-    <div class="action-bar">
-      <button class="btn btn-stone" style="flex:1" data-sheet="sheet-contacts">
-        <svg><use href="#i-basket"/></svg>
-        ارسال لیست به تأمین‌کنندگان
-      </button>
-    </div>
 
     </section>
 
@@ -4264,7 +4377,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div style="flex:1;min-width:0">
             <div class="biz-name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
             <div class="biz-meta" style="margin-top:5px">
-              پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span>
+              پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-orange">عمده‌فروش</span>
             </div>
           </div>
         </div>
@@ -4414,7 +4527,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div style="flex:1;min-width:0">
             <div class="biz-name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
             <div class="biz-meta" style="margin-top:5px">
-              پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span>
+              پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-orange">عمده‌فروش</span>
             </div>
           </div>
         </div>
@@ -4558,7 +4671,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div style="flex:1;min-width:0">
             <div class="biz-name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
             <div class="biz-meta" style="margin-top:5px">
-              پخش مواد غذایی · رشت <span class="badge b-orange">عمده‌فروش</span>
+              پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-orange">عمده‌فروش</span>
             </div>
           </div>
         </div>
@@ -4892,7 +5005,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- IMPLEMENTATION NOTE (مدل درآمدی — برای پیاده‌سازی عملیاتی):
          کیف پول واحدِ مصرف هر دو نوع تبلیغ است (کمپین + تبلیغات هدفمند). شارژ فقط از این صفحه و از درگاه رسمی؛
          مصرف رویداد-محور است و فقط وقتی کسر می‌شود که اتفاق واقعی بیفتد:
-         هر «مشاهدهٔ» تبلیغ ۱٬۰۰۰ تومان · هر «ذخیرهٔ کاتالوگ» یا «درخواست قیمت / گفتگو» ۵٬۰۰۰ تومان.
+         هر «مشاهدهٔ» تبلیغ ۱٬۰۰۰ تومان · هر «ذخیرهٔ کاتالوگ» یا «درخواست خرید / گفتگو» ۵٬۰۰۰ تومان.
          اگر موجودی تمام شود تبلیغ خودکار متوقف می‌شود (نه حذف) و با شارژ بعدی از همان‌جا ادامه می‌یابد؛
          کاربر از راه‌های «شارژ کافی نیست» (دیالوگ هدایت) و ریز مصرف همیشه در جریان است. -->
     <section class="scr" id="scr-29" data-arm="sell" hidden>
@@ -4916,7 +5029,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="price-chips" style="margin-top:9px">
         <span class="pc2"><svg><use href="#i-eye"/></svg> هر مشاهدهٔ تبلیغ <b>۱٬۰۰۰ تومان</b></span>
         <span class="pc2"><svg><use href="#i-bookmark"/></svg> هر ذخیرهٔ کاتالوگ <b>۵٬۰۰۰ تومان</b></span>
-        <span class="pc2"><svg><use href="#i-phone"/></svg> هر درخواست قیمت / گفتگو <b>۵٬۰۰۰ تومان</b></span>
+        <span class="pc2"><svg><use href="#i-phone"/></svg> هر درخواست خرید / گفتگو <b>۵٬۰۰۰ تومان</b></span>
       </div>
 
       <!-- بسته‌های شارژ -->
@@ -5078,7 +5191,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="stat-strip" style="margin-top:10px">
           <div class="stat"><div class="v">۲۴۶</div><div class="k">مشاهدهٔ تبلیغ</div></div>
           <div class="stat hot"><div class="v">۳۸</div><div class="k">ذخیرهٔ کاتالوگ</div></div>
-          <div class="stat"><div class="v">۹</div><div class="k">گفتگو و استعلام</div></div>
+          <div class="stat"><div class="v">۹</div><div class="k">گفتگو و درخواست</div></div>
         </div>
         <div style="font-size:10px;color:var(--muted-fg);margin-top:6px">شمارنده‌ها از شروع کمپین (۵ روز پیش) جمع شده‌اند.</div>
 
@@ -5201,7 +5314,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="avatar-sm" style="background:#c2703a">ع</div>
             <div class="body">
               <div class="t" style="font-size:13px">سوپرمارکت علی</div>
-              <div class="s">استعلام قیمت برای ۱۰ کیسه · امروز</div>
+              <div class="s">درخواست خرید برای ۱۰ کیسه · امروز</div>
             </div>
             <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
           </div>
@@ -5230,7 +5343,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
           <div class="usg-row">
             <div class="uic" style="background:#e8f1fd;color:#1d5fb8"><svg><use href="#i-msg"/></svg></div>
-            <div class="utx"><div class="t">۹ گفتگو و استعلام قیمت</div><div class="s">دربارهٔ کالاهای این کمپین</div></div>
+            <div class="utx"><div class="t">۹ گفتگو و درخواست خرید</div><div class="s">دربارهٔ کالاهای این کمپین</div></div>
             <span class="cost">− ۴۵٬۰۰۰</span>
           </div>
           <div class="usg-row">
@@ -5258,7 +5371,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="stat-strip" style="margin-top:10px">
           <div class="stat"><div class="v">۱۲۸</div><div class="k">نمایش در جایگاه</div></div>
           <div class="stat hot"><div class="v">۲۲</div><div class="k">ذخیرهٔ کاتالوگ</div></div>
-          <div class="stat"><div class="v">۶</div><div class="k">درخواست قیمت</div></div>
+          <div class="stat"><div class="v">۶</div><div class="k">درخواست خرید</div></div>
         </div>
         <div style="font-size:10px;color:var(--muted-fg);margin-top:6px">دیده‌شدن‌های هدفمند یعنی خریدارِ خودِ همین کالا — نه هر بیننده‌ای.</div>
 
@@ -5270,7 +5383,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div class="row-card" data-go="23">
             <div class="avatar-sm" style="background:#c2703a">ع</div>
             <div class="body">
-              <div class="t" style="font-size:13px">سوپرمارکت علی <span class="badge b-new">درخواست قیمت</span></div>
+              <div class="t" style="font-size:13px">سوپرمارکت علی <span class="badge b-new">درخواست خرید</span></div>
               <div class="s">سوپرمارکت · رشت <span class="seenchip">۴ نمایش</span> جایگاه: کاتالوگ‌های ذخیره‌شده</div>
             </div>
             <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
@@ -5357,7 +5470,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="avatar-sm" style="background:#c2703a">ع</div>
             <div class="body">
               <div class="t" style="font-size:13px">سوپرمارکت علی</div>
-              <div class="s">استعلام قیمت برای ۱۰ کیسه · امروز</div>
+              <div class="s">درخواست خرید برای ۱۰ کیسه · امروز</div>
             </div>
             <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
           </div>
@@ -5365,7 +5478,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="avatar-sm" style="background:#7c3aed">م</div>
             <div class="body">
               <div class="t" style="font-size:13px">رستوران مهر</div>
-              <div class="s">درخواست قیمت برای ۲۰ کیسه · دیروز</div>
+              <div class="s">درخواست خرید برای ۲۰ کیسه · دیروز</div>
             </div>
             <svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>
           </div>
@@ -5394,7 +5507,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
           <div class="usg-row">
             <div class="uic" style="background:#e8f1fd;color:#1d5fb8"><svg><use href="#i-phone"/></svg></div>
-            <div class="utx"><div class="t">۶ درخواست قیمت</div><div class="s">مستقیم از جایگاه تبلیغ</div></div>
+            <div class="utx"><div class="t">۶ درخواست خرید</div><div class="s">مستقیم از جایگاه تبلیغ</div></div>
             <span class="cost">− ۳۰٬۰۰۰</span>
           </div>
           <div class="usg-row">
@@ -5476,7 +5589,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
         <div style="display:flex;gap:8px;margin-top:11px">
           <button class="btn btn-stone btn-sm" style="flex:1" data-go="13">مشاهده کاتالوگ</button>
-          <button class="btn btn-outline btn-sm" style="flex:1" data-go="12">درخواست قیمت</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" data-go="12">درخواست خرید</button>
         </div>
       </div>
 
@@ -5504,7 +5617,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
         <div style="display:flex;gap:8px;margin-top:11px">
           <button class="btn btn-stone btn-sm" style="flex:1" data-go="13">مشاهده کاتالوگ</button>
-          <button class="btn btn-outline btn-sm" style="flex:1" data-go="12">درخواست قیمت</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" data-go="12">درخواست خرید</button>
         </div>
       </div>
 
@@ -5520,7 +5633,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab">
           <svg><use href="#i-list"/></svg>
-          دفتر خرید
+          لیست خرید
         </button>
         <button class="tab">
           <svg><use href="#i-building"/></svg>
@@ -5596,7 +5709,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="as-shot"><img src="png/p24/campaign-slot.png" alt="کارت کمپین در بخش کمپین‌های اپ خریداران"></span>
           <span class="as-tag"><span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> کمپین</span></span>
           <div class="as-t">کارت کمپین شما — این‌طور دیده می‌شود</div>
-          <div class="as-d">خریداران در بخش «کمپین‌ها» کارت شما را با نشان کمپین، قیمت‌های تخفیف‌خورده و دکمهٔ مستقیم «درخواست قیمت» می‌بینند.</div>
+          <div class="as-d">خریداران در بخش «کمپین‌ها» کارت شما را با نشان کمپین، قیمت‌های تخفیف‌خورده و دکمهٔ مستقیم «درخواست خرید» می‌بینند.</div>
           <div class="as-p">
             <span>هر مشاهده <b>۱٬۰۰۰ تومان</b></span>
             <span>ذخیرهٔ کاتالوگ یا گفتگو <b>۵٬۰۰۰ تومان</b></span>
@@ -5628,10 +5741,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="as-shot"><img src="png/p23/slot-supply-board.png" alt="جایگاه تبلیغاتی در تابلوی تأمین کالا"></span>
           <span class="as-tag"><span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> فروشندهٔ ویژه</span></span>
           <div class="as-t">۲) تابلوی تأمینِ همان کالا</div>
-          <div class="as-d">وقتی خریداری که کالای شما در لیست خریدش است، تابلوی تأمینِ آن کالا را باز می‌کند، شما با نشان «فروشندهٔ ویژه» و جایگاه بالاتر از نتایج مشابه دیده می‌شوید — با قیمت و شرایط، آمادهٔ درخواست قیمت.</div>
+          <div class="as-d">وقتی خریداری که کالای شما در لیست خریدش است، تابلوی تأمینِ آن کالا را باز می‌کند، شما با نشان «فروشندهٔ ویژه» و جایگاه بالاتر از نتایج مشابه دیده می‌شوید — با قیمت و شرایط، آمادهٔ درخواست خرید.</div>
           <div class="as-p">
             <span>هر مشاهده <b>۱٬۰۰۰ تومان</b></span>
-            <span>در صورت درخواست قیمت <b>۵٬۰۰۰ تومان</b></span>
+            <span>در صورت درخواست خرید <b>۵٬۰۰۰ تومان</b></span>
           </div>
         </div>
 
@@ -5674,11 +5787,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
          لمس هر ردیف → همان فرم جزئیات کالای ۰۲ (دید خریدار)؛ از آن‌جا هم کاتالوگ فروشنده (۱۳) باز می‌شود.
          زیر لیست، پیشنهادهای موتور تطبیق: اولویت نمایش با فروشندگان در حال تبلیغ — نشان «فروشندهٔ ویژه»
          و جایگاه بالاتر وقتی دو مورد تطبیق شبیه هم باشند (همان قاعدهٔ تابلوی تأمین ۰۹).
-         استعلام گروهی → فرم ۱۲ با همان فروشندگان دنبال‌شده؛ کادر «تأمین‌کنندگان دیگر این کالا» → تابلوی تأمین ۰۹. -->
+         درخواست خرید گروهی → فرم ۱۲ با همان فروشندگان دنبال‌شده؛ کادر «تأمین‌کنندگان دیگر این کالا» → تابلوی تأمین ۰۹. -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">برنج هاشمی<small>لیست مقایسه · ۳ فروشندهٔ دنبال‌شده</small></div>
-      <button class="icon-btn" aria-label="استعلام گروهی" data-go="12" title="استعلام گروهی از فروشندگان دنبال‌شده"><svg><use href="#i-send"/></svg></button>
+      <button class="icon-btn" aria-label="درخواست خرید گروهی" data-go="12" title="درخواست خرید از فروشندگان دنبال‌شده"><svg><use href="#i-send"/></svg></button>
     </header>
 
     <main class="screen-body">
@@ -5798,10 +5911,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div>«فروشندهٔ ویژه» در حال تبلیغ است و در تطبیق‌های مشابه، بالاتر نمایش داده می‌شود — رتبهٔ نتایج طبیعیِ تطبیق خریدنی نیست.</div>
       </div>
 
-      <!-- ═══ استعلام گروهی از فروشندگان دنبال‌شده ═══ -->
+      <!-- ═══ درخواست خرید از فروشندگان دنبال‌شده ═══ -->
       <button class="btn btn-stone btn-block" style="margin-top:12px" data-go="12">
         <svg><use href="#i-send"/></svg>
-        استعلام گروهی از ۳ فروشندهٔ دنبال‌شده
+        درخواست خرید از ۳ فروشندهٔ دنبال‌شده
       </button>
 
       <!-- ═══ کادر تأمین‌کنندگان دیگر این کالا → تابلوی تأمین ═══ -->
@@ -5820,6 +5933,151 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <section class="scr" id="scr-34" data-arm="buy" hidden>
+
+
+    <!-- فاز ۲۷ — فرم افزودن کالا به لیست خرید:
+         دکمهٔ «افزودن کالا» در ۰۸ این‌جا می‌آید (نه کاتالوگ) — کالا را پیدا می‌کنی/می‌سازی،
+         سپی «حجم خرید» و «دورهٔ خرید» از کاربر گرفته می‌شود (الگوی فرم فاینال). -->
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">افزودن کالا<small>به لیست خرید · حجم و دورهٔ خرید</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- کالا را پیدا کن یا بساز -->
+      <div class="card">
+        <div class="field" style="margin-bottom:9px">
+          <label>کالا را پیدا کن یا بساز</label>
+          <div class="input">
+            <svg><use href="#i-search"/></svg>
+            <span class="ph">مثلاً: برنج هاشمی…</span>
+          </div>
+        </div>
+        <div class="rows" style="margin-top:2px">
+          <button class="row-card" data-gpick>
+            <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+            <div class="body">
+              <div class="t" style="font-size:13px">برنج هاشمی</div>
+              <div class="s">غلات و حبوبات · ۴۵ تأمین‌کنندهٔ فعال</div>
+            </div>
+            <span class="badge b-stone">پرطرفدار</span>
+          </button>
+          <button class="row-card" data-gpick>
+            <div class="thumb" style="width:44px;height:44px"><img src="png/goods/tomato-paste.jpg" alt="رب گوجه‌فرنگی"></div>
+            <div class="body">
+              <div class="t" style="font-size:13px">رب گوجه‌فرنگی</div>
+              <div class="s">کنسروسازی · ۱۸ تأمین‌کنندهٔ فعال</div>
+            </div>
+          </button>
+          <button class="row-card" data-gpick>
+            <div class="thumb" style="width:44px;height:44px"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
+            <div class="body">
+              <div class="t" style="font-size:13px">قند</div>
+              <div class="s">قند و شکر · ۲۲ تأمین‌کنندهٔ فعال</div>
+            </div>
+          </button>
+        </div>
+        <button class="row-card" style="border-style:dashed;width:100%;margin-top:9px">
+          <svg style="width:18px;height:18px;color:var(--muted-fg);flex-shrink:0"><use href="#i-plus"/></svg>
+          <div class="body">
+            <div class="t" style="font-size:13px">کالای جدید بساز</div>
+            <div class="s">اگر در فهرست نبود، خودت تعریفش کن</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- چقدر و چه دوره‌ای؟ — بعد از انتخاب کالا ظاهر می‌شود -->
+      <div id="gqty-34" hidden>
+        <div class="sec-title"><h2>چقدر و چه دوره‌ای؟</h2></div>
+        <div class="card">
+          <div class="qty-stepper" id="qs-34" data-val="20" data-unit="کیسه">
+            <button type="button">−</button>
+            <span class="val">۲۰ <span class="unit">کیسه</span></span>
+            <button type="button">+</button>
+          </div>
+          <div class="pillchoice" style="margin-top:9px">
+            <button class="pill">هفتگی</button>
+            <button class="pill">دوهفتگی</button>
+            <button class="pill active">ماهانه</button>
+          </div>
+        </div>
+        <div class="legend">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <div>حجم و دورهٔ خرید برای تابلوی تأمین این کالا ساخته می‌شود — بعداً هم قابل ویرایش است.</div>
+        </div>
+      </div>
+
+    </main>
+
+    <div class="action-bar">
+      <button class="btn btn-stone" style="flex:1">
+        <svg><use href="#i-plus"/></svg>
+        افزودن به لیست خرید
+      </button>
+    </div>
+
+    </section>
+
+    <section class="scr" id="scr-35" data-arm="sell" hidden>
+
+
+    <!-- فاز ۲۷ — لیست خریداران ذخیره‌شده (سمت فروش):
+         دفترچهٔ تلفنِ خریدارها برای فروشنده — لیست‌هایی که با «ذخیرهٔ لیست» (۲۳) ذخیره کرده است.
+         از پروفایل فروش (۰۷) باز می‌شود؛ اعلام نیاز بعدی هر خریدار را اول از همه باخبر می‌شوید
+         و هنگام «ساخت لیست مشتری» هم می‌توان از همین خریداران شروع کرد. -->
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">لیست خریداران ذخیره‌شده<small>دفترچهٔ خریداران · ۲ خریدار</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="searchbar">
+        <svg><use href="#i-search"/></svg>
+        <span>جستجوی نام خریدار…</span>
+      </div>
+
+      <div class="rows" style="margin-top:10px">
+
+        <div class="row-card" data-go="23">
+          <div class="avatar-sm" style="background:#0e7490">آ</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">سوپرمارکت آریا</div>
+            <div class="s">
+              <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span>
+              <span>۴ کالا · ذخیره ۲ هفته پیش</span>
+            </div>
+          </div>
+          <span class="badge b-stone">۲ کالا گوش به زنگ</span>
+        </div>
+
+        <div class="row-card" data-go="23">
+          <div class="avatar-sm" style="background:#7c3aed">م</div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رستوران مهر</div>
+            <div class="s">
+              <span class="city-chip"><svg><use href="#i-pin"/></svg> تهران</span>
+              <span>۴ کالا · ذخیره دیروز</span>
+            </div>
+          </div>
+          <span class="badge b-stone">۱ کالا گوش به زنگ</span>
+        </div>
+
+      </div>
+
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>لیست‌های خریدِ ذخیره‌شده — اعلام نیاز بعدیِ هر خریدار را اول از همه باخبر می‌شوید. هنگام «ساخت لیست مشتری» هم می‌توانید از همین خریداران شروع کنید.</div>
+      </div>
+
+    </main>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -5830,7 +6088,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب کن الان کدام را ببینی</div>
   <button class="sheet-row" data-arm-go="buy">
     <span class="ico buy"><svg><use href="#i-basket"/></svg></span>
-    <span class="tx"><b>دستیار خرید</b><span>دفتر خرید · کاتالوگ‌ها · درخواست‌های قیمت</span></span>
+    <span class="tx"><b>دستیار خرید</b><span>لیست خرید · کاتالوگ‌ها · درخواست‌های خرید</span></span>
     <svg class="check" data-check="buy" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <button class="sheet-row" data-arm-go="sell">
@@ -5863,6 +6121,185 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="ico"><svg><use href="#i-trash"/></svg></span>
     <span class="tx"><b>حذف از کاتالوگ‌های ذخیره‌شده</b><span>کاتالوگ هر زمان دوباره قابل ذخیره است</span></span>
   </button>
+</div>
+
+<!-- ═══ فاز ۲۷ — تنظیمات لیست خرید (۰۸): تنظیمات · گروه‌های کالا · پیش‌نمایش عمومی ═══ -->
+<!-- IMPLEMENTATION NOTE: دکمهٔ چرخ‌دندهٔ کنار نام لیست خرید (۰۸) این شیت را باز می‌کند.
+     «پیش‌نمایش عمومی» همان صفحهٔ ۲۳ است — همان که آیکون چشمِ هدر هم می‌رود. -->
+<div class="sheet" id="sheet-listset" role="dialog" aria-label="تنظیمات لیست خرید">
+  <div class="grab"></div>
+  <h3>تنظیمات</h3>
+  <div class="sub">لیست خرید سوپرمارکت آریا</div>
+  <button class="sheet-row" data-sheet="sheet-listedit">
+    <span class="ico"><svg><use href="#i-pencil"/></svg></span>
+    <span class="tx"><b>تنظیمات لیست خرید</b><span>لوگو، توضیح کوتاه و نقش شما در کسب‌وکار</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-sheet="sheet-lgroups">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه‌های کالا</b><span>۴ گروه: غلات · روغن · کنسرو · شیرینی — افزودن و مدیریت</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-go="23">
+    <span class="ico"><svg><use href="#i-eye"/></svg></span>
+    <span class="tx"><b>پیش‌نمایش عمومی</b><span>دیدن لیست خرید مثل یک فروشنده</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۲۷ — ویرایش لیست خرید: لوگو + نام + توضیح کوتاه + نقش خریداری ═══ -->
+<!-- IMPLEMENTATION NOTE: نقش کاربر در کسب‌وکار (خریداری) در لیست خرید عمومی (۲۳) نمایش داده می‌شود —
+     فروشنده می‌داند با «مسئول خرید» طرف است یا «صاحب کسب‌وکار». -->
+<div class="sheet" id="sheet-listedit" role="dialog" aria-label="تنظیمات لیست خرید">
+  <div class="grab"></div>
+  <h3>تنظیمات لیست خرید</h3>
+  <div class="sub">این‌طور فروشنده‌ها لیست شما را می‌بینند</div>
+  <div class="sheet-row" style="cursor:default">
+    <div class="avatar" style="background:#0e7490">آ</div>
+    <span class="tx"><b>لوگوی لیست خرید</b><span>لوگو یا عکس کسب‌وکار</span></span>
+    <button class="btn btn-sm btn-outline">تعویض عکس</button>
+  </div>
+  <div class="field">
+    <label>نام لیست</label>
+    <input class="input" value="لیست خرید سوپرمارکت آریا">
+  </div>
+  <div class="field">
+    <label>توضیح کوتاه</label>
+    <textarea class="input">خرید هفتگی غلات، شکر و روغن برای دو شعبه — پرداخت نقدی، تحویل از انبار.</textarea>
+  </div>
+  <div class="field">
+    <label>نقش شما در کسب‌وکار <span style="font-weight:400;color:var(--muted-fg);font-size:10.5px">— فروشنده‌ها می‌بینند</span></label>
+    <button class="input sel" data-sheet="sheet-rolebuy">
+      <span id="rolebuy-label" style="color:var(--foreground);font-weight:700">مسئول خرید</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>ذخیره تغییرات</button>
+</div>
+
+<!-- ═══ فاز ۲۷ — نقش‌های خرید (تنظیمات لیست خرید) ═══ -->
+<div class="sheet" id="sheet-rolebuy" role="dialog" aria-label="نقش شما در کسب‌وکار">
+  <div class="grab"></div>
+  <h3>نقش شما در کسب‌وکار</h3>
+  <div class="sub">در لیست خرید عمومی نمایش داده می‌شود</div>
+  <button class="sheet-row" data-rolepick data-role-target="rolebuy-label">
+    <span class="tx"><b>صاحب کسب‌وکار</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row" data-rolepick data-role-target="rolebuy-label">
+    <span class="tx"><b>مدیرعامل</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row current" data-rolepick data-role-target="rolebuy-label">
+    <span class="tx"><b>مسئول خرید</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row" data-rolepick data-role-target="rolebuy-label">
+    <span class="tx"><b>واسطه خرید</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۲۷ — نقش‌های فروش (ویرایش کاتالوگ) ═══ -->
+<div class="sheet" id="sheet-rolesell" role="dialog" aria-label="نقش شما در کسب‌وکار">
+  <div class="grab"></div>
+  <h3>نقش شما در کسب‌وکار</h3>
+  <div class="sub">در کاتالوگ عمومی نمایش داده می‌شود</div>
+  <button class="sheet-row" data-rolepick data-role-target="rolesell-label">
+    <span class="tx"><b>صاحب کسب‌وکار</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row" data-rolepick data-role-target="rolesell-label">
+    <span class="tx"><b>مدیرعامل</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row" data-rolepick data-role-target="rolesell-label">
+    <span class="tx"><b>مدیر فروش</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row current" data-rolepick data-role-target="rolesell-label">
+    <span class="tx"><b>فروشنده</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row" data-rolepick data-role-target="rolesell-label">
+    <span class="tx"><b>ویزیتور</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row" data-rolepick data-role-target="rolesell-label">
+    <span class="tx"><b>بازاریاب</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="sheet-row" data-rolepick data-role-target="rolesell-label">
+    <span class="tx"><b>واسطه فروش</b></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۲۷ — گروه‌های کالای لیست خرید (الگوی گروه‌های کاتالوگ) ═══ -->
+<div class="sheet" id="sheet-lgroups" role="dialog" aria-label="گروه‌های کالای لیست خرید">
+  <div class="grab"></div>
+  <h3>گروه‌های کالا</h3>
+  <div class="sub">دسته‌بندی کالاهای لیست خرید — برای فیلتر نمایش</div>
+  <div class="grp-row">
+    <span class="tx"><b>غلات</b><span>۲ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>روغن</b><span>۱ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="grp-row">
+    <span class="tx"><b>کنسرو</b><span>۱ کالا</span></span>
+    <button class="row-act" title="ویرایش"><svg><use href="#i-pencil"/></svg></button>
+    <button class="row-act warn" title="حذف"><svg><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="field">
+    <label>گروه جدید</label>
+    <input class="input" placeholder="مثلاً لبنیات">
+  </div>
+  <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه کالا</button>
+  <div class="hintnote">گروه کالا برای دسته‌بندی و فیلتر نمایش در لیست خرید است — کالاهای بدون گروه زیر «سایر» می‌آیند.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۲۷ — گوش به زنگ (لیست خرید از دید فروشنده) ═══ -->
+<!-- IMPLEMENTATION NOTE: زنگولهٔ هر کالا در ۲۳ این شیت را باز می‌کند؛ «فعال‌سازی» همان زنگوله را
+     سبز می‌کند و درخواست‌های خرید بعدیِ همان خریدار در تب «گوش به زنگ» دستیار فروش (۰۵) می‌نشیند. -->
+<div class="sheet" id="sheet-alertinfo" role="dialog" aria-label="گوش به زنگ">
+  <div class="grab"></div>
+  <h3>گوش به زنگ</h3>
+  <div class="sub">با گوش به زنگ شدن این کالا از این خریدار، درخواست‌های خرید این خریدار را در بخش «گوش به زنگ» دستیار فروش خود خواهید دید.</div>
+  <button class="btn btn-primary sheet-cta" data-alerton><svg><use href="#i-bell-ring"/></svg> فعال‌سازی گوش به زنگ</button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۲۷ — کارت درخواست خرید (لمس کارت اینستاگرامی در ۲۳) ═══ -->
+<!-- IMPLEMENTATION NOTE: محتوای شیت از data-* همان کارت پر می‌شود (عنوان/مقدار/عکس/مهلت).
+     «ارسال پیشنهاد قیمت» → فرم پیشنهاد قیمت فروشنده (۰۶). -->
+<div class="sheet" id="sheet-reqview" role="dialog" aria-label="درخواست خرید">
+  <div class="grab"></div>
+  <h3 id="reqv-title">درخواست خرید — برنج هاشمی</h3>
+  <div class="sub">سوپرمارکت آریا · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span></div>
+  <div class="reqv-img"><img id="reqv-img" src="png/goods/rice-grains.jpg" alt="کالای درخواست"></div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-boxes"/></svg></span>
+    <span class="tx"><b>مقدار مورد نیاز</b><span id="reqv-qty">۲۰ کیسهٔ ۵۰ کیلویی</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-clock"/></svg></span>
+    <span class="tx"><b>مهلت پاسخ‌گویی</b><span id="reqv-dl">۳ روز مانده</span></span>
+  </div>
+  <div class="sheet-row">
+    <span class="ico"><svg><use href="#i-list"/></svg></span>
+    <span class="tx"><b>دورهٔ خرید</b><span>معمولاً ماهانه</span></span>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-go="06"><svg><use href="#i-send"/></svg> ارسال پیشنهاد قیمت</button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
 <!-- ═══ ۱-ب) فاز ۲۴ — کسب‌وکارهای من: انتخاب کسب‌وکارِ فعال (current business) ═══ -->
@@ -5920,7 +6357,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <div class="sheet" id="sheet-contacts" role="dialog" aria-label="اشتراک با مخاطبین">
   <div class="grab"></div>
   <h3>اشتراک با مخاطبین</h3>
-  <div class="sub">این مخاطبینِ گوشی عضو ای‌مچ‌اند — لینک کاتالوگ برایشان بفرست</div>
+  <div class="sub">این مخاطبینِ گوشی عضو ای‌مچ‌اند — لینک لیست خرید برایشان بفرست</div>
   <div class="sheet-row" style="cursor:default">
     <div class="avatar-sm" style="background:#0e7490">ع</div>
     <span class="tx"><b>علی اکبری</b><span>۰۹۱۲ ··· ۳۴۵ · سوپرمارکت</span></span>
@@ -6014,6 +6451,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <label>نوع کسب‌وکار <span style="font-weight:400;color:var(--muted-fg);font-size:10.5px">— خریداران می‌بینند</span></label>
     <button class="input sel" data-sheet="sheet-biztype">
       <span style="color:var(--foreground);font-weight:700">عمده‌فروش</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </div>
+  <!-- فاز ۲۷ — نقش کاربر در کسب‌وکار (فروش): در کاتالوگ عمومی نمایش داده می‌شود -->
+  <div class="field">
+    <label>نقش شما در کسب‌وکار <span style="font-weight:400;color:var(--muted-fg);font-size:10.5px">— خریداران می‌بینند</span></label>
+    <button class="input sel" data-sheet="sheet-rolesell">
+      <span id="rolesell-label" style="color:var(--foreground);font-weight:700">فروشنده</span>
       <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
     </button>
   </div>
@@ -6454,7 +6899,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <!-- IMPLEMENTATION NOTE (تبلیغات هدفمند — برای پیاده‌سازی عملیاتی):
      هدفمند = نمایش جراحی‌وار فقط به خریدارِ همان کالا؛ دو جایگاه: (۱) کاتالوگ‌های ذخیره‌شدهٔ خریدار
      (۲) تابلوی تأمینِ همان کالا در لیست خرید خریدار. قیمت‌گذاری رویداد-محور سراسری:
-     هر مشاهده ۱٬۰۰۰ تومان · هر ذخیرهٔ کاتالوگ ۵٬۰۰۰ تومان · هر درخواست قیمت ۵٬۰۰۰ تومان.
+     هر مشاهده ۱٬۰۰۰ تومان · هر ذخیرهٔ کاتالوگ ۵٬۰۰۰ تومان · هر درخواست خرید ۵٬۰۰۰ تومان.
      توضیح کامل جایگاه‌ها با تصویر واقعی سمت خریدار (png/p23) در صفحهٔ «راهنمای تبلیغ» (۳۲) است.
      راه رایگان (اشتراک لینک) همیشه کنارش است. -->
 <div class="sheet" id="sheet-target" role="dialog" aria-label="تبلیغات هدفمند">
@@ -6478,7 +6923,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <!-- جایگاه ۲: تابلوی تأمین — ردیف فشرده با تصویر کوچک -->
   <div class="sheet-row slot-row" style="cursor:default">
     <span class="as-thumb"><img src="png/p23/slot-supply-board.png" alt="جایگاه در تابلوی تأمین کالا"></span>
-    <span class="tx"><b>تابلوی تأمینِ همان کالا</b><span>بالای تأمین‌کنندگان، با نشان «فروشندهٔ ویژه» · هر مشاهده ۱٬۰۰۰ / درخواست قیمت ۵٬۰۰۰ تومان</span></span>
+    <span class="tx"><b>تابلوی تأمینِ همان کالا</b><span>بالای تأمین‌کنندگان، با نشان «فروشندهٔ ویژه» · هر مشاهده ۱٬۰۰۰ / درخواست خرید ۵٬۰۰۰ تومان</span></span>
     <div class="toggle on"></div>
   </div>
 
@@ -6718,7 +7163,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <div class="sheet" id="sheet-eos" role="dialog" aria-label="اتمام موجودی">
   <div class="grab"></div>
   <h3>اعلام اتمام موجودی؟</h3>
-  <div class="sub">«برنج هاشمی» با برچسب «اتمام موجودی» در کاتالوگ می‌ماند؛ سفارش و استعلام قیمت بسته می‌شود و خریدارانی که قیمت این کالا را دنبال می‌کنند مطلع می‌شوند. با شارژ موجودی، خودکار برمی‌گردد.</div>
+  <div class="sub">«برنج هاشمی» با برچسب «اتمام موجودی» در کاتالوگ می‌ماند؛ سفارش و درخواست خرید بسته می‌شود و خریدارانی که قیمت این کالا را دنبال می‌کنند مطلع می‌شوند. با شارژ موجودی، خودکار برمی‌گردد.</div>
   <button class="btn sheet-cta" style="background:var(--red);color:#fff" data-close>اعلام اتمام موجودی</button>
   <button class="btn btn-outline" style="width:100%;margin-top:8px" data-close>انصراف</button>
 </div>
@@ -6746,7 +7191,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div id="ev-count" style="font-size:10.5px;color:var(--muted-fg);margin-top:10px;font-weight:700"></div>
   <div id="ev-list"></div>
   <!-- IMPLEMENTATION NOTE: در اپ واقعی، این لیست از لاگ رویدادهای کالا (بازدید · افزودن به لیست خرید ·
-       افزودن به لیست مقایسه قیمت · استعلام قیمت · شروع گفتگو) با مهر زمانی کامل، صفحه‌بندی و فیلتر بازهٔ شمسی ساخته می‌شود. -->
+       افزودن به لیست مقایسه قیمت · درخواست خرید · شروع گفتگو) با مهر زمانی کامل، صفحه‌بندی و فیلتر بازهٔ شمسی ساخته می‌شود. -->
 </div>
 
 <!-- ═══ ۱۶) گروه‌های کالا ═══ -->
@@ -7262,7 +7707,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <button class="chip">تازه‌ترین</button>
             <button class="chip">آشنا</button>
           </div>
-          <button class="btn btn-stone"><svg><use href="#i-spark-v2"/></svg> درخواست قیمت از ۳ نفر</button>
+          <button class="btn btn-stone"><svg><use href="#i-spark-v2"/></svg> درخواست خرید از ۳ نفر</button>
         </div>
       </div>
 
@@ -7280,7 +7725,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <td style="font-size:11.5px;color:var(--muted-fg)">کیسه ۵۰ کیلو · حداقل ۵</td>
             <td><span class="cond" style="background:var(--green-bg);color:var(--green)"><svg style="width:11px;height:11px"><use href="#i-history"/></svg> خریده‌ام از او</span></td>
             <td style="display:flex;gap:6px;padding-top:9px;padding-bottom:9px">
-              <button class="btn btn-stone btn-sm">درخواست قیمت</button>
+              <button class="btn btn-stone btn-sm">درخواست خرید</button>
               <button class="btn btn-outline btn-sm">کاتالوگ</button>
             </td>
           </tr>
@@ -7293,7 +7738,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <td style="font-size:11.5px;color:var(--muted-fg)">کیسه ۵۰ کیلو · حداقل ۱۰ · ارسال سراسری</td>
             <td><span class="badge b-muted">جدید</span></td>
             <td style="display:flex;gap:6px;padding-top:9px;padding-bottom:9px">
-              <button class="btn btn-stone btn-sm">درخواست قیمت</button>
+              <button class="btn btn-stone btn-sm">درخواست خرید</button>
               <button class="btn btn-outline btn-sm">کاتالوگ</button>
             </td>
           </tr>
@@ -7306,7 +7751,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <td style="font-size:11.5px;color:var(--muted-fg)">کیسه ۵۰ کیلو · حداقل ۲۰</td>
             <td><span class="badge b-muted">خودش آمد</span></td>
             <td style="display:flex;gap:6px;padding-top:9px;padding-bottom:9px">
-              <button class="btn btn-stone btn-sm">درخواست قیمت</button>
+              <button class="btn btn-stone btn-sm">درخواست خرید</button>
               <button class="btn btn-outline btn-sm">کاتالوگ</button>
             </td>
           </tr>
@@ -7444,7 +7889,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
                 <li><span class="b-n">۲</span><span class="b-tx"><b>کاتالوگ‌های ذخیره‌شده با قیمت زنده</b><span>کاتالوگ تأمین‌کنندگان مختلفِ کالاهای مورد نیازت را ذخیره کن — همیشه با قیمت‌های به‌روز</span></span></li>
                 <li><span class="b-n">۳</span><span class="b-tx"><b>تابلوی تأمین برای هر کالا</b><span>قیمت یک کالا (مثلاً برنج هاشمی) را از کاتالوگ چند فروشنده دنبال کن و برای هر کالا یک «تابلوی تأمین» بساز</span></span></li>
                 <li><span class="b-n">۴</span><span class="b-tx"><b>مقایسهٔ قیمت زنده و کنارِ هم</b><span>با تابلوی قیمت هر کالا، قیمت زندهٔ یک کالا را از چند تأمین‌کننده، کنار هم مقایسه کن</span></span></li>
-                <li><span class="b-n">۵</span><span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای تابلوی تأمین هر کالا استعلام قیمت بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span></li>
+                <li><span class="b-n">۵</span><span class="b-tx"><b>درخواست خرید رقابتی</b><span>برای هر کالا درخواست خرید بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span></li>
               </ul>
             </div>
             </div>
@@ -7511,7 +7956,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       ['07', 'پروفایل', '<svg><use href="#i-user"/></svg>', '']
     ],
     buy: [
-      ['08', 'دفتر خرید', '<svg><use href="#i-list"/></svg>', ''],
+      ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
       ['10', 'کاتالوگ‌ها', '<svg><use href="#i-building"/></svg>', ''],
       ['31', 'کمپین‌ها', '<svg><use href="#i-spark"/></svg>', ''],
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
@@ -7522,17 +7967,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
     '11': '08', '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
-    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07', '33': '08'
+    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07', '33': '08', '34': '08', '35': '07'
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
-    '02': [['درخواست قیمت', '12'], ['مشاهده تابلوی تأمین', '09']],
+    '02': [['درخواست خرید', '12'], ['مشاهده تابلوی تأمین', '09']],
     '03': [['ویرایش کامل کالا', '04'], ['مشاهده و پاسخ', '06']],
     '04': [['ذخیره در کاتالوگ', '01']],
     '06': [['ارسال پیشنهاد', '28'], ['بایگانی', '05']],
     '07': [['نمای عمومی', '13'], ['خروج از حساب', '15']],
-    '08': [['دنبال کردن', '13'], ['افزودن کالا', '13'], ['درخواست‌های قیمت من', '11']],
-    '09': [['درخواست قیمت', '12'], ['کاتالوگ', '13'], ['درخواست قیمت از تأمین‌کننده‌های انتخابی', '12'], ['افزودن به لیست مقایسه', '33'], ['مشاهده کاتالوگ', '13']],
+    '08': [['درخواست‌های خرید من', '11'], ['افزودن کالا', '34']],
+    '09': [['درخواست خرید', '12'], ['کاتالوگ', '13'], ['درخواست خرید از تأمین‌کننده‌های انتخابی', '12'], ['افزودن به لیست مقایسه', '33'], ['مشاهده کاتالوگ', '13']],
     '10': [['کاتالوگ', '13'], ['مشاهدهٔ کاتالوگ', '13']],
     '11': [['ساخت درخواست مشابه', '12'], ['گفتگو', '19']],
     '12': [['ارسال به ۲ فروشنده + شبکه iMach', '11']],
@@ -7541,14 +7986,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '16': [['ساخت حساب و ورود', '01'], ['وارد شوید', '17']],
     '17': [['ورود به ای‌مچ', '01'], ['ساخت حساب', '16']],
     '22': [['ذخیره تغییرات', '01']],
-    '23': [['ارسال پیشنهاد قیمت', '12']],
+    '34': [['افزودن به لیست خرید', '08']],
+    '23': [['ارسال پیام', '19']],
     '24': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
     '25': [['اشتراک‌گذاری کاتالوگ', 'sheet-share-share']],
     '28': [['مشاهده و پاسخ', '06']],
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
-  var CARDS = { '01': '03', '05': '06', '08': '33', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' }; /* فاز ۲۶: کارت دفتر خرید → لیست مقایسهٔ ۳۳ */
-  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های قیمت من · دستیار خرید","12":"۱۲ — فرم درخواست قیمت · استعلام گروهی","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — پیش‌نمایش عمومی لیست خرید · دستیار خرید","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — دفتر خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی"};
+  var CARDS = { '01': '03', '05': '06', '08': '33', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' }; /* فاز ۲۶: کارت لیست خرید (۰۸) → لیست مقایسهٔ ۳۳ */
+  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش"};
 
   var stack = [];
   var current = null;
@@ -7712,16 +8158,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   /* ── فاز ۲۲: تاریخچهٔ رویدادهای کالا — «نتایج حضور در آیمچ» ──
      در پیاده‌سازی عملیاتی: لاگ رویدادهای هر کالا (بازدید · افزودن به لیست خرید · افزودن به لیست مقایسه قیمت ·
-     استعلام قیمت · شروع گفتگو) با مهر زمانی کامل؛ شمارنده‌های صفحه از ابتدا جمع می‌شوند (نه پنجرهٔ ۳۰ روزه). */
+     درخواست خرید · شروع گفتگو) با مهر زمانی کامل؛ شمارنده‌های صفحه از ابتدا جمع می‌شوند (نه پنجرهٔ ۳۰ روزه). */
   var ITEM_EVENTS = [
     { ini: 'ع', col: '#b45309', t: 'علی محمدی از سوپرماکت علی از این کالا بازدید کرد', when: '۲ ساعت پیش', d: 0, date: '۱۴۰۵/۰۷/۱۶', ds: '1405/07/16' },
     { ini: 'ر', col: '#7c3aed', t: 'رضا اکبری این کالا به لیست مقایسه قیمت خود اضافه کرد', when: 'دیروز ساعت ۱۶:۳۰', d: 1, date: '۱۴۰۵/۰۷/۱۵', ds: '1405/07/15' },
     { ini: 'س', col: '#0e7490', t: 'سارا کاظمی از سوپرمارکت الماس این کالا را به لیست خرید خود اضافه کرد', when: 'دیروز ساعت ۱۱:۰۵', d: 1, date: '۱۴۰۵/۰۷/۱۵', ds: '1405/07/15' },
-    { ini: 'ه', col: '#0d9488', t: 'هایپر فیروزه درخواست استعلام قیمت برای ۲۰ کیسه از این کالا فرستاد', when: '۲ روز پیش', d: 2, date: '۱۴۰۵/۰۷/۱۴', ds: '1405/07/14' },
+    { ini: 'ه', col: '#0d9488', t: 'هایپر فیروزه درخواست خرید برای ۲۰ کیسه از این کالا فرستاد', when: '۲ روز پیش', d: 2, date: '۱۴۰۵/۰۷/۱۴', ds: '1405/07/14' },
     { ini: 'م', col: '#9333ea', t: 'رستوران مهر گفتگو را دربارهٔ این کالا شروع کرد', when: '۳ روز پیش', d: 3, date: '۱۴۰۵/۰۷/۱۳', ds: '1405/07/13' },
     { ini: 'ن', col: '#b45309', t: 'پخش نگین این کالا به لیست مقایسه قیمت خود اضافه کرد', when: '۴ روز پیش', d: 4, date: '۱۴۰۵/۰۷/۱۲', ds: '1405/07/12' },
     { ini: 'آ', col: '#0e7490', t: 'سوپرمارکت آریا از این کالا بازدید کرد', when: '۵ روز پیش', d: 5, date: '۱۴۰۵/۰۷/۱۱', ds: '1405/07/11' },
-    { ini: 'ب', col: '#9333ea', t: 'رستوران سنتی بهار درخواست قیمت برای ۱۰ کیسه از این کالا فرستاد', when: '۱ هفته پیش', d: 7, date: '۱۴۰۵/۰۷/۰۹', ds: '1405/07/09' },
+    { ini: 'ب', col: '#9333ea', t: 'رستوران سنتی بهار درخواست خرید برای ۱۰ کیسه از این کالا فرستاد', when: '۱ هفته پیش', d: 7, date: '۱۴۰۵/۰۷/۰۹', ds: '1405/07/09' },
     { ini: 'ه', col: '#0d9488', t: 'هایپر فیروزه این کالا را به لیست خرید خود اضافه کرد', when: '۱ هفته پیش', d: 8, date: '۱۴۰۵/۰۷/۰۸', ds: '1405/07/08' },
     { ini: 'م', col: '#c2703a', t: 'سوپرمارکت مهدی از این کالا بازدید کرد', when: '۲ هفته پیش', d: 13, date: '۱۴۰۵/۰۷/۰۳', ds: '1405/07/03' },
     { ini: 'ن', col: '#b45309', t: 'پخش نگین از این کالا بازدید کرد', when: '۳ هفته پیش', d: 20, date: '۱۴۰۵/۰۶/۲۷', ds: '1405/06/27' },
@@ -7762,7 +8208,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   /* ── فاز ۲۳: مدل درآمدی — کیف پول · انتخاب چندکالا · گزارش تبلیغ ──
      کیف پول یک وضعیت مشترک است و همهٔ نمایش‌های موجودی (پروفایل، شیت‌ها، دیالوگ، گزارش) با آن به‌روز می‌شوند.
-     قیمت‌گذاری رویداد-محور سراسری: مشاهده ۱٬۰۰۰ تومان · ذخیره/درخواست قیمت/گفتگو ۵٬۰۰۰ تومان. */
+     قیمت‌گذاری رویداد-محور سراسری: مشاهده ۱٬۰۰۰ تومان · ذخیره/درخواست خرید/گفتگو ۵٬۰۰۰ تومان. */
   var WALLET = 85000;
   function faMoney(n) {
     return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(/,/g, '٬').replace(/\d/g, function (x) { return '۰۱۲۳۴۵۶۷۸۹'.charAt(+x); });
@@ -7797,6 +8243,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   /* ── فاز ۲۶: شمارنده‌های زنده — درخواست‌های قیمت (۱۱) و دفترچهٔ کاتالوگ‌ها (۱۰) ── */
   var catRow = null;
+  var alertBellSrc = null; /* فاز ۲۷: زنگولهٔ مبدأ (۲۳) */
+  var roleFrom = null;     /* فاز ۲۷: شیت والدِ انتخاب نقش */
   function prqCount() {
     var now = document.querySelectorAll('#prq-now .prq-card').length;
     var arch = document.querySelectorAll('#prq-arch .prq-card').length;
@@ -7952,7 +8400,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* ── فاز ۲۶: مهلت «سایر» در فرم استعلام (۱۲) — نمایش ورودی روز دلخواه ── */
+    /* ── فاز ۲۶: مهلت «سایر» در فرم درخواست خرید (۱۲) — نمایش ورودی روز دلخواه ── */
     var dlp = t.closest('#dl-choice .pill');
     if (dlp) {
       dlp.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('active', p === dlp); });
@@ -7979,6 +8427,85 @@ body > div[id^="scr-d"][hidden] { display: none; }
         catRow = null;
         prqCountSaved();
       }
+      return;
+    }
+
+    /* ═══ فاز ۲۷ — لیست خرید: گروه‌ها · فرم ۳۴ · گوش به زنگ · کارت درخواست خرید · نقش‌ها ═══ */
+
+    /* انتخاب کالا در فرم ۳۴ — انتخاب تکی + نمایش «چقدر و چه دوره‌ای؟» */
+    var gpick = t.closest('[data-gpick]');
+    if (gpick) {
+      gpick.parentElement.querySelectorAll('.row-card').forEach(function (r) { r.classList.toggle('picked', r === gpick); });
+      var gqty = document.getElementById('gqty-34');
+      if (gqty) gqty.hidden = false;
+      return;
+    }
+
+    /* استپر مقدار (۳۴) — عدد فارسی هم‌گام با data-val */
+    var qsb = t.closest('#qs-34 button');
+    if (qsb) {
+      var st = document.getElementById('qs-34');
+      var cur = parseInt((st && st.dataset.val) || '20', 10);
+      var nxt = cur + (qsb.textContent.trim() === '+' ? 1 : -1);
+      if (nxt < 1) nxt = 1;
+      st.dataset.val = String(nxt);
+      var val = st.querySelector('.val');
+      if (val) val.innerHTML = faNum(nxt) + ' <span class="unit">' + (st.dataset.unit || '') + '</span>';
+      return;
+    }
+
+    /* کارت اینستاگرامی درخواست خرید جاری (۲۳) → شیت کارت درخواست خرید */
+    var rfq = t.closest('.rfq-card');
+    if (rfq) {
+      var rt = document.getElementById('reqv-title');
+      var rq = document.getElementById('reqv-qty');
+      var ri = document.getElementById('reqv-img');
+      var rdl = document.getElementById('reqv-dl');
+      if (rt) rt.textContent = 'درخواست خرید — ' + rfq.dataset.rt;
+      if (rq) rq.textContent = rfq.dataset.rq;
+      if (ri) ri.src = rfq.dataset.rimg;
+      if (rdl) rdl.textContent = rfq.dataset.rdl;
+      openSheet('sheet-reqview');
+      return;
+    }
+
+    /* زنگولهٔ گوش به زنگ (۲۳) → شیت توضیح + فعال‌سازی */
+    var ab = t.closest('.alert-bell');
+    if (ab) { alertBellSrc = ab; openSheet('sheet-alertinfo'); return; }
+    var aon = t.closest('[data-alerton]');
+    if (aon) {
+      if (alertBellSrc) alertBellSrc.classList.toggle('on');
+      closeSheet();
+      return;
+    }
+
+    /* «ذخیرهٔ لیست» (۲۳) — لیست خریدار به دفترچهٔ خریداران (۳۵) اضافه می‌شود */
+    var sl = t.closest('[data-savelist]');
+    if (sl) {
+      if (!sl.classList.contains('saved')) {
+        sl.classList.add('saved');
+        sl.style.background = 'var(--green-bg)';
+        sl.style.borderColor = '#b6e2c6';
+        sl.style.color = 'var(--green)';
+        sl.innerHTML = '<svg><use href="#i-check"/></svg> ذخیره شد — در «لیست خریداران ذخیره‌شده»';
+      }
+      return;
+    }
+
+    /* شیت نقش‌ها: باز شدن از شیت والد — بعد از انتخاب، به شیت والد برمی‌گردیم */
+    var roleOpen = t.closest('[data-sheet="sheet-rolebuy"], [data-sheet="sheet-rolesell"]');
+    if (roleOpen) {
+      var parentSheet = roleOpen.closest('.sheet');
+      roleFrom = parentSheet ? parentSheet.id : null;
+      openSheet(roleOpen.dataset.sheet);
+      return;
+    }
+    var rp = t.closest('[data-rolepick]');
+    if (rp) {
+      rp.parentElement.querySelectorAll('.sheet-row').forEach(function (r) { r.classList.toggle('current', r === rp); });
+      var lbl = document.getElementById(rp.dataset.roleTarget);
+      if (lbl) lbl.textContent = rp.querySelector('b').textContent;
+      if (roleFrom) { openSheet(roleFrom); roleFrom = null; } else closeSheet();
       return;
     }
 
