@@ -1287,6 +1287,61 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #sheet-video .vd-learn .li { display: flex; gap: 7px; font-size: 11px; line-height: 1.95; color: var(--stone-soft); }
   #sheet-video .vd-learn .li svg { width: 12px; height: 12px; color: var(--green); flex-shrink: 0; margin-top: 5px; }
 
+  /* ═══ فاز ۳۳ — ۱) پروفایل شخصی: کارت در ۰۷/۱۴ + صفحهٔ ۴۲ + شیت انتخاب تصویر ═══ */
+  .pp-card { cursor: pointer; }
+  .pp-row { display: flex; align-items: center; gap: 12px; }
+  .pp-av { width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0; overflow: hidden; background: linear-gradient(135deg, #c2703a, #ea580c); color: #fff; display: grid; place-items: center; font-size: 20px; font-weight: 700; }
+  .pp-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pp-cap { font-size: 9.5px; font-weight: 800; color: var(--muted-fg); display: flex; align-items: center; gap: 4px; margin-bottom: 7px; }
+  .pp-cap svg { width: 11px; height: 11px; }
+  .pp-meta { flex: 1; min-width: 0; }
+  .pp-name { font-size: 15px; font-weight: 700; }
+  .pp-sub { font-size: 10.5px; color: var(--muted-fg); margin-top: 3px; line-height: 1.7; }
+  .pp-chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
+  /* صفحهٔ ۴۲ — عکس بزرگ پروفایل */
+  .pp-big { width: 78px; height: 78px; border-radius: 50%; flex-shrink: 0; overflow: hidden; background: linear-gradient(135deg, #c2703a, #ea580c); color: #fff; display: grid; place-items: center; font-size: 28px; font-weight: 700; box-shadow: 0 2px 10px rgba(42, 39, 35, .16); }
+  .pp-big img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* شیت انتخاب تصویر — گزینه‌های گالری (ماک) */
+  .ph-grid { display: flex; gap: 9px; margin-top: 12px; }
+  .ph-opt { width: 82px; flex-shrink: 0; background: none; border: 2px solid transparent; border-radius: 14px; padding: 3px 3px 5px; cursor: pointer; font: inherit; text-align: center; }
+  .ph-opt img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 10px; display: block; background: var(--muted); }
+  .ph-opt span { display: block; font-size: 9px; font-weight: 700; color: var(--muted-fg); margin-top: 4px; }
+  .ph-opt.on { border-color: var(--green); }
+  .ph-opt.on span { color: var(--green); }
+
+  /* ═══ فاز ۳۳ — ۲) نوار «نظر خریداران» لندینگ (۱۵) + صفحهٔ سایر نظرات (۴۳) + مدال ثبت نظر ═══ */
+  .ts-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 26px; }
+  .ts-head b { font-size: 13px; }
+  .ts-morelnk { background: none; border: 0; padding: 0; cursor: pointer; font: inherit; font-size: 11px; font-weight: 800; color: var(--red); display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; }
+  .ts-morelnk svg { width: 11px; height: 11px; }
+  .ts-row { display: flex; gap: 10px; overflow-x: auto; padding: 2px 16px 4px; margin: 10px -16px 0; scrollbar-width: none; -ms-overflow-style: none; } /* فول‌بلید تا لبهٔ صفحه — کارت اول/آخر ۱۶px از لبه */
+  .ts-row::-webkit-scrollbar { display: none; }
+  .ts-card { width: 250px; flex-shrink: 0; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px 13px 11px; display: flex; flex-direction: column; }
+  .ts-cap { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; font-size: 8.5px; font-weight: 800; color: var(--primary-strong); background: var(--accent); border-radius: 6px; padding: 2px 7px; margin-bottom: 8px; }
+  .ts-cap svg { width: 10px; height: 10px; }
+  .ts-who { display: flex; align-items: center; gap: 8px; }
+  .ts-av { width: 34px; height: 34px; border-radius: 50%; color: #fff; display: grid; place-items: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .ts-n { font-size: 12.5px; font-weight: 700; line-height: 1.5; }
+  .ts-role { font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
+  .ts-tx { font-size: 11px; line-height: 1.95; color: var(--stone-soft); margin-top: 8px; }
+  .ts-card .ts-tx { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; min-height: 0; }
+  .ts-btn { margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; border: 1px solid var(--border-strong); background: #fff; border-radius: 9px; padding: 7px 8px; font: inherit; font-size: 11px; font-weight: 700; color: var(--primary-strong); cursor: pointer; }
+  .ts-btn:active { background: var(--stone-tint); }
+  .ts-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .ts-when { font-size: 9px; color: var(--muted-fg); margin-top: 8px; }
+  .ts-cta { width: 250px; flex-shrink: 0; border: 1.5px dashed #86caad; background: var(--green-bg); border-radius: 14px; padding: 13px 14px 12px; display: flex; flex-direction: column; }
+  .ts-cta b { font-size: 13px; color: var(--green); line-height: 1.7; }
+  .ts-cta p { font-size: 10.5px; line-height: 1.95; color: var(--stone-soft); margin-top: 5px; }
+  .ts-cta .ts-btn { border-color: #86caad; background: #fff; color: var(--green); margin-top: auto; }
+  .ts-item { width: 100%; }
+  .ts-item .ts-tx { display: block; }
+  .ts-card.fresh { border-color: #b6e2c6; background: var(--green-bg); } /* کارت تازه — هم نوار (۱۵) هم فهرست (۴۳) */
+  /* مدال سادهٔ ثبت نظر (dlg-rvw) — فیلدها داخل دیالوگ */
+  .dlg .field { margin-top: 10px; margin-bottom: 0; }
+  .dlg .field .input { width: 100%; box-sizing: border-box; }
+  .dlg textarea.input { height: 64px; }
+  .rvw-err { font-size: 10.5px; font-weight: 700; color: var(--red); margin-top: 8px; }
+
 </style>
 </head>
 <body>
@@ -1366,6 +1421,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15.6 3.5 9.3a4.8 4.8 0 018.5-3 4.8 4.8 0 018.5 3c0 6.3-8.5 11.2-8.5 11.2z"/></symbol>
 <symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5.5-4-10.5-11-11z"/></symbol>
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8.2 5.4v13.2c0 .8.9 1.3 1.6.9l10-6.6a1 1 0 000-1.8l-10-6.6c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.2A2.2 2.2 0 015.2 6h1.9l1.4-2h6.9l1.4 2h1.9A2.2 2.2 0 0121 8.2v9.6a2.2 2.2 0 01-2.2 2.2H5.2A2.2 2.2 0 013 17.8z"/><circle cx="12" cy="13" r="3.6"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -2327,6 +2383,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </header>
 
     <main class="screen-body">
+
+      <!-- ═══ فاز ۳۳ — پروفایل شخصی: عکس و نامِ خودِ کاربر (جدا از کسب‌وکار) ═══
+           IMPLEMENTATION NOTE (مالک): کاربر در صفحهٔ پروفایل یک کادر «پروفایل شخصی» هم دارد که
+           عکس و نامش را نشان می‌دهد؛ لمس = صفحهٔ ۴۲ (ویرایش تصویر + نام/نام خانوادگی + جنسیت + تاریخ تولد).
+           این مشخصات به «کاربر» تعلق دارد نه کسب‌وکار — در هر دو پروفایل فروش (۰۷) و خرید (۱۴) همان است. -->
+      <div class="card pp-card" data-go="42">
+        <span class="pp-cap"><svg><use href="#i-user"/></svg> پروفایل شخصی</span>
+        <span class="pp-row">
+          <span class="pp-av" data-ppav><img src="png/users/me.jpg" alt="تصویر پروفایل شخصی"></span>
+          <span class="pp-meta">
+            <span class="pp-name" data-ppname>احمد رضایی</span>
+            <span class="pp-sub">تصویر، نام و مشخصات شخصی شما</span>
+          </span>
+          <svg class="pp-chev"><use href="#i-chev"/></svg>
+        </span>
+      </div>
 
       <!-- فاز ۲۴ — کارت کسب‌وکار (current business): انتخاب از بین کسب‌وکارها + ویرایش سریع -->
       <!-- IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی): کاربر می‌تواند چند کسب‌وکار داشته باشد که هر کدام
@@ -3448,6 +3520,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
+      <!-- ═══ فاز ۳۳ — پروفایل شخصی (همان کارت ۰۷): مشخصات به کاربر تعلق دارد، نه بازو ═══ -->
+      <div class="card pp-card" data-go="42">
+        <span class="pp-cap"><svg><use href="#i-user"/></svg> پروفایل شخصی</span>
+        <span class="pp-row">
+          <span class="pp-av" data-ppav><img src="png/users/me.jpg" alt="تصویر پروفایل شخصی"></span>
+          <span class="pp-meta">
+            <span class="pp-name" data-ppname>احمد رضایی</span>
+            <span class="pp-sub">تصویر، نام و مشخصات شخصی شما</span>
+          </span>
+          <svg class="pp-chev"><use href="#i-chev"/></svg>
+        </span>
+      </div>
+
       <!-- فاز ۲۸ — کارت کسب‌وکار (current business) در دستیار خرید — دقیقاً مثل کاتالوگ (۰۷) -->
       <!-- IMPLEMENTATION NOTE (مالک): کسب‌وکار به کاربر تعلق دارد، نه به کاتالوگ یا دستیار خرید.
            هر کاربر می‌تواند یک یا چند کسب‌وکار داشته باشد و هر کسب‌وکار یک دستیار خرید و یک دستیار فروش دارد.
@@ -3648,6 +3733,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <img src="png/d3-desktop-landing.jpg" alt="آی‌مچ روی دسکتاپ">
         </div>
 
+        <!-- ═══ فاز ۳۳ — نظر خریداران ═══
+             نوار افقی اسکرولی قبل از «آی‌مچ چیست؟»: هر نظر یک قابلیت آیمچ را از زبان یک کاربر
+             واقعی روایت می‌کند. بالای نوار لینک «سایر نظرات» (صفحهٔ ۴۳)؛ آخر آیتم‌ها کارت دعوت:
+             اگر آیمچ به شما هم کمک کرده نظرتان را ثبت کنید (مدال dlg-rvw) — هم دیگران می‌دانند
+             آیمچ چه کمکی می‌کند، هم نام کسب‌وکار شما دیده می‌شود (تبلیغ رایگان).
+             کارت‌ها را TS_DATA در JS می‌سازد؛ برای هر کاربر فقط «یک» دکمه:
+             فروشنده → مشاهده کاتالوگ (۱۳) · خریدار → مشاهده لیست خرید (۲۳). -->
+        <div class="ts-head">
+          <b>نظر خریداران</b>
+          <button type="button" class="ts-morelnk" data-go="43">سایر نظرات <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        </div>
+        <div class="ts-row" id="ts-row-15"></div>
+
         <!-- ═══ آی‌مچ چیست؟ ═══ -->
         <div class="land-sec">
         <div class="intro-sep"><i></i><span>آی‌مچ چیست؟</span><i></i></div>
@@ -3823,7 +3921,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="form-card">
         <div class="field">
           <label>نام و نام خانوادگی</label>
-          <div class="input"><span>علی رضایی</span></div>
+          <div class="input"><span>احمد رضایی</span></div>
         </div>
 
         <div class="field">
@@ -6691,6 +6789,109 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <section class="scr" id="scr-42" data-arm="keep" hidden>
+
+
+    <!-- ═══ فاز ۳۳ — پروفایل شخصی (ویرایش مشخصات) ═══
+         از کارت «پروفایل شخصی» هر دو پروفایل (۰۷/۱۴) باز می‌شود — مشخصات به «کاربر»
+         تعلق دارد نه به بازو یا کسب‌وکار. فیلدها به خواست مالک: تصویر پروفایل + نام و
+         نام خانوادگی (همان ثبت‌نام) + جنسیت + تاریخ تولد. «تغییر تصویر» شیت sheet-photo
+         را باز می‌کند (دوربین / گالری / حذف). «ذخیره» کارت‌های ۰۷/۱۴ را همان لحظه
+         به‌روز می‌کند و به همان پروفایلِ مبدأ برمی‌گردد. -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">پروفایل شخصی<small>تصویر و مشخصات شما — جدا از کسب‌وکارها</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- تصویر پروفایل -->
+      <div class="card" style="display:flex;align-items:center;gap:13px">
+        <span class="pp-big" data-ppbig><img src="png/users/me.jpg" alt="تصویر پروفایل"></span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:700">تصویر پروفایل</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">در نظرات، گفتگوها و کنار نام‌تان دیده می‌شود</div>
+          <button class="btn btn-sm btn-outline" style="margin-top:9px" data-sheet="sheet-photo"><svg><use href="#i-camera"/></svg> تغییر تصویر</button>
+        </div>
+      </div>
+
+      <!-- نام و نام خانوادگی — همان‌هایی که موقع ثبت‌نام وارد شده -->
+      <div class="field" style="margin-top:12px">
+        <label>نام <span class="opt">— همان ثبت‌نام</span></label>
+        <input class="input" id="pp-fn" value="احمد">
+      </div>
+
+      <div class="field">
+        <label>نام خانوادگی</label>
+        <input class="input" id="pp-ln" value="رضایی">
+      </div>
+
+      <div class="field">
+        <label>جنسیت</label>
+        <div class="pillchoice">
+          <button type="button" class="pill active" data-pgender="m">مرد</button>
+          <button type="button" class="pill" data-pgender="f">زن</button>
+        </div>
+        <div class="hint">در پیام‌ها و پشتیبانی درست خطاب شوید — نمایش عمومی ندارد</div>
+      </div>
+
+      <div class="field">
+        <label>تاریخ تولد <span class="opt">— اختیاری</span></label>
+        <input class="input" id="pp-bd" value="۱۳۶۲/۰۴/۱۵" placeholder="مثلاً ۱۳۶۲/۰۴/۱۵ — یا فقط سال: ۱۳۶۲">
+        <div class="hint">عمومی نمایش داده نمی‌شود — فقط برای امنیت حساب و یادآوری سالگرد تولد</div>
+      </div>
+
+      <!-- شماره موبایل — هویت ورود؛ فقط خواندنی -->
+      <div class="field">
+        <label>شماره موبایل <span class="opt">— هویت حساب</span></label>
+        <div class="input" style="display:flex;align-items:center;gap:8px">
+          <span>۰۹۱۲ ۳۴۵ ۶۷۸۹</span>
+          <span class="badge b-answered" style="font-size:9px;padding:1.5px 7px;margin-right:auto">تاییدشده</span>
+        </div>
+        <div class="hint">شماره‌ای که با آن ثبت‌نام کردید — برای تغییر از پشتیبانی درخواست دهید</div>
+      </div>
+
+    </main>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" style="flex:1" id="pp-save"><svg><use href="#i-check"/></svg> ذخیره تغییرات</button>
+    </div>
+
+    </section>
+
+    <section class="scr" id="scr-43" data-arm="sell" hidden>
+
+
+    <!-- ═══ فاز ۳۳ — سایر نظرات خریداران ═══
+         مقصدِ لینک «سایر نظرات» بالای نوار لندینگ (۱۵). همهٔ نظرات به‌صورت عمودی —
+         شش نظر نمونهٔ نوار + نظرات بیشتر + نظراتی که همین‌جا ثبت می‌شود (بالای لیست).
+         هر کاربر همان «یک» دکمه را دارد: فروشنده → مشاهده کاتالوگ (۱۳) · خریدار →
+         مشاهده لیست خرید (۲۳). مثل ۱۵/۱۶/۱۷ از گارد بازوها مستقل است (ARM_FREE) —
+         محتوای عمومی پیش از ورود. ثبت نظر = همان مدال dlg-rvw نوار. -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">سایر نظرات<small>تجربهٔ کاربران آیمچ از قابلیت‌ها</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- نظرات (JS رندر می‌کند — تازه‌ها اول) -->
+      <div style="display:flex;flex-direction:column;gap:10px" id="ts-list-43"></div>
+
+      <!-- دعوت به ثبت نظر — همان ایدهٔ کارت آخر نوار -->
+      <div class="card gd-ask" style="margin-top:12px;padding:11px 13px">
+        <svg><use href="#i-info"/></svg>
+        <p>اگر آیمچ به کسب‌وکار شما هم کمک کرده، نظرتان را ثبت کنید تا دیگران هم بدانند آیمچ چه کمکی می‌کند — و نام کسب‌وکار شما هم بین خریداران دیده شود.</p>
+      </div>
+
+    </main>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" style="flex:1" data-rvwopen><svg><use href="#i-comment"/></svg> ثبت نظر شما</button>
+    </div>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -8175,6 +8376,66 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
+<!-- ═══ فاز ۳۳ — شیت انتخاب تصویر پروفایل (صفحهٔ ۴۲) ═══ -->
+<!-- IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی «گرفتن عکس» دوربینِ دستگاه و «از گالری»
+     picker واقعی سیستم است؛ تصویر روی سرور فشرده و ذخیره می‌شود. در پروتوتایپ سه عکس
+     نمونه جابه‌جا می‌شوند تا رفتار (انتخاب / دوربین / حذف → حرف اول نام) قابل آزمایش باشد. -->
+<div class="sheet" id="sheet-photo" role="dialog" aria-label="تصویر پروفایل">
+  <div class="grab"></div>
+  <h3>تصویر پروفایل</h3>
+  <div class="sub">عکس جدید بگیرید، از گالری انتخاب کنید — یا تصویر فعلی را حذف کنید</div>
+  <div class="ph-grid">
+    <button type="button" class="ph-opt on" data-pphoto="png/users/me.jpg"><img src="png/users/me.jpg" alt="عکس فعلی"><span>عکس فعلی</span></button>
+    <button type="button" class="ph-opt" data-pphoto="png/users/alt-1.jpg"><img src="png/users/alt-1.jpg" alt="گزینهٔ گالری"><span>از گالری</span></button>
+    <button type="button" class="ph-opt" data-pphoto="png/users/alt-2.jpg"><img src="png/users/alt-2.jpg" alt="گزینهٔ گالری"><span>از گالری</span></button>
+  </div>
+  <button class="sheet-row" data-pphoto="next">
+    <span class="ico"><svg><use href="#i-camera"/></svg></span>
+    <span class="tx"><b>گرفتن عکس با دوربین</b><span>سلفی یا عکس جدید — همان لحظه استفاده می‌شود</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row danger" data-pphoto="remove">
+    <span class="ico"><svg><use href="#i-trash"/></svg></span>
+    <span class="tx"><b>حذف تصویر پروفایل</b><span>به‌جای عکس، حرف اول نام‌تان نشان داده می‌شود</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۳۳ — مدال سادهٔ ثبت نظر (نوار «نظر خریداران» لندینگ ۱۵ + سایر نظرات ۴۳) ═══ -->
+<!-- IMPLEMENTATION NOTE: نظر ثبت‌شده همان لحظه به انتهای نوار (قبل از کارت دعوت) و
+     بالای فهرست «سایر نظرات» اضافه می‌شود. انتخاب فروشنده/خریدار تعیین می‌کند دکمهٔ کارت
+     کاربر «مشاهده کاتالوگ» باشد یا «مشاهده لیست خرید» — هر کاربر فقط یکی. -->
+<div class="dlg" id="dlg-rvw" role="dialog" aria-label="ثبت نظر شما">
+  <h3>ثبت نظر شما</h3>
+  <div class="dlg-q">آیمچ چه کمکی به کسب‌وکار شما کرده؟</div>
+  <div class="dlg-p">نظر شما با نام و کسب‌وکارتان برای همه نمایش داده می‌شود — هم دیگران می‌دانند آیمچ چه می‌کند، هم کسب‌وکار شما دیده می‌شود.</div>
+  <div class="field">
+    <label>نام و نام خانوادگی</label>
+    <input class="input" id="rvw-name" placeholder="مثلاً: رضا کریمی">
+  </div>
+  <div class="field">
+    <label>کسب‌وکار شما</label>
+    <input class="input" id="rvw-biz" placeholder="مثلاً: تولیدکننده محصولات شوینده">
+  </div>
+  <div class="field">
+    <label>شما در آیمچ</label>
+    <div class="pillchoice">
+      <button type="button" class="pill active" data-rrole="sell">فروشنده‌ام</button>
+      <button type="button" class="pill" data-rrole="buy">خریدارم</button>
+    </div>
+  </div>
+  <div class="field">
+    <label>نظر شما</label>
+    <textarea class="input" id="rvw-text" rows="3" placeholder="آیمچ چه کمکی به کار شما کرده؟"></textarea>
+  </div>
+  <div class="rvw-err" id="rvw-err" hidden>نام، کسب‌وکار و متن نظر را کامل کنید</div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-rvwsend><svg><use href="#i-send"/></svg> ثبت نظر</button>
+    <button class="btn btn-outline" data-close>انصراف</button>
+  </div>
+</div>
+
   </div>
 </div>
 
@@ -8732,7 +8993,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
     '27': '01', '28': '05', '29': '07', '30': '07', '31': '08', '32': '07', '33': '08', '34': '08', '35': '07', '36': '11',
     '37': '14', '38': '07', '39': '08', '10': '14', /* فاز ۳۱: کارهای خرید → خانهٔ خرید؛ کاتالوک‌ها (۱۰) اکنون زیرصفحهٔ پروفایل */
-    '40': '14', '41': '07' /* فاز ۳۲: راهنمای خریدار/فروش ← پروفایل همان بازو */
+    '40': '14', '41': '07', /* فاز ۳۲: راهنمای خریدار/فروش ← پروفایل همان بازو */
+    '42': '07', '43': '15' /* فاز ۳۳: پروفایل شخصی ← پروفایل (مبدأ واقعی از استک) · سایر نظرات ← لندینگ */
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
@@ -8758,7 +9020,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   var CARDS = { '01': '03', '05': '06', '08': '33', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' }; /* فاز ۲۶: کارت لیست خرید (۰۸) → لیست مقایسهٔ ۳۳ */
-  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش","36":"۳۶ — پیشنهادات درخواست · دستیار خرید","37":"۳۷ — نظر و ایده دربارهٔ دستیار خرید · بازخورد خریداران","38":"۳۸ — نظر و ایده دربارهٔ دستیار فروش · بازخورد فروشندگان","39":"۳۹ — کارها · دستیار خرید","40":"۴۰ — راهنمای دستیار خرید · فیلم‌ها و پرسش‌وپاسخ","41":"۴۱ — راهنمای دستیار فروش · فیلم‌ها و پرسش‌وپاسخ"};
+  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش","36":"۳۶ — پیشنهادات درخواست · دستیار خرید","37":"۳۷ — نظر و ایده دربارهٔ دستیار خرید · بازخورد خریداران","38":"۳۸ — نظر و ایده دربارهٔ دستیار فروش · بازخورد فروشندگان","39":"۳۹ — کارها · دستیار خرید","40":"۴۰ — راهنمای دستیار خرید · فیلم‌ها و پرسش‌وپاسخ","41":"۴۱ — راهنمای دستیار فروش · فیلم‌ها و پرسش‌وپاسخ","42":"۴۲ — پروفایل شخصی · تصویر و مشخصات","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران"};
 
   var stack = [];
   var current = null;
@@ -8838,8 +9100,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (!target) { id = '15'; target = el(id); }
     /* فاز ۳۱ — گارد دستیارها: صفحهٔ بازوی خاموش در دسترس نیست → خانهٔ بازوی روشن.
        صفحات ورود/ثبت‌نام/لندینگ (۱۵/۱۶/۱۷) و دسکتاپ مستقل از این گارد‌اند؛
-       فرم ویرایش کسب‌وکار (۲۲) «keep» است تا با هر دستیاری باز شود و بتوان دستیار خاموش را دوباره روشن کرد. */
-    var ARM_FREE = { '15': 1, '16': 1, '17': 1 };
+       فرم ویرایش کسب‌وکار (۲۲) «keep» است تا با هر دستیاری باز شود و بتوان دستیار خاموش را دوباره روشن کرد.
+       فاز ۳۳: «سایر نظرات» (۴۳) هم محتوای عمومی پیش از ورود است — مثل لندینگ. */
+    var ARM_FREE = { '15': 1, '16': 1, '17': 1, '43': 1 };
     if (!isDesk(id) && !ARM_FREE[id]) {
       var tArm = target.dataset.arm;
       if (tArm && tArm !== 'keep' && !ASSIST[tArm]) { show(assistHome()); return; }
@@ -9441,6 +9704,96 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (VD.timer) { clearInterval(VD.timer); VD.timer = null; }
     vdUI();
     openSheet('sheet-video');
+  }
+
+  /* ═══ فاز ۳۳ — ۱) پروفایل شخصی: تصویر + نام + جنسیت + تاریخ تولد ═══
+     کارت «پروفایل شخصی» در ۰۷/۱۴ همان عکس و نام را نشان می‌دهد؛ صفحهٔ ۴۲ فرم ویرایش است.
+     عکس‌های شیت، ماک گالری‌اند — «دوربین» عکس بعدی را برمی‌دارد؛ «حذف» حرف اول نام می‌گذارد.
+     ذخیره: نام از فرم خوانده می‌شود، هر سه آواتار (۰۷/۱۴/۴۲) و نام کارت‌ها همان لحظه به‌روز می‌شوند. */
+  var PP = { photo: 'png/users/me.jpg', name: 'احمد رضایی' };
+  var PP_PHOTOS = ['png/users/me.jpg', 'png/users/alt-1.jpg', 'png/users/alt-2.jpg'];
+  function ppSync() {
+    var inner = PP.photo ? '<img src="' + PP.photo + '" alt="تصویر پروفایل">' : PP.name.trim().charAt(0);
+    document.querySelectorAll('[data-ppav]').forEach(function (a) { a.innerHTML = inner; });
+    var big = document.querySelector('[data-ppbig]');
+    if (big) big.innerHTML = inner;
+    document.querySelectorAll('[data-ppname]').forEach(function (n) { n.textContent = PP.name; });
+    document.querySelectorAll('#sheet-photo .ph-opt').forEach(function (o) {
+      o.classList.toggle('on', !!PP.photo && o.dataset.pphoto === PP.photo);
+    });
+  }
+
+  /* ═══ فاز ۳۳ — ۲) نظرات خریداران: نوار لندینگ (۱۵) + سایر نظرات (۴۳) + مدال ثبت ═══
+     شش نظر اول عین متن مالک؛ چهار نظر more فقط در «سایر نظرات». هر کاربر فقط «یک» دکمه دارد:
+     فروشنده → مشاهده کاتالوگ (۱۳) · خریدار → مشاهده لیست خرید (۲۳). نظر تازه = live:
+     انتهای نوار (قبل از کارت دعوت) و بالای فهرست ۴۳، با کارت سبز fresh. */
+  var TS_DATA = [
+    { n: 'علی محمدی', biz: 'پخش لوازم خودرو', av: '#b45309', role: 'sell', cap: 'کاتالوگ با قیمت همیشه به‌روز', when: '۳ روز پیش',
+      tx: 'با ساخت کاتالوگ محصولات و ارسال لینک اون به خریداران همکار، دیگه دغدغه ارسال قیمت هر روزه به همکارانم رو ندارم. یک‌بار قیمت‌ها رو به‌روز می‌کنم و همه می‌بینن.' },
+    { n: 'صادق اکبری', biz: 'ویزیتور مواد غذایی', av: '#0d9488', role: 'sell', cap: 'سفارش بدون حضور در محل', when: '۱ هفتهٔ پیش',
+      tx: 'با ساخت کاتالوگ محصولاتم و ارسال اون به سوپرمارکت‌ها، حالا حتی بدون حضور در محل هم می‌تونم سفارش‌های جدید بگیرم. ممنون از آیمچ!' },
+    { n: 'مهدی رضایی', biz: 'خریدار عمده مواد اولیه', av: '#7c3aed', role: 'buy', cap: 'مقایسهٔ قیمت تأمین‌کنندگان', when: '۲ هفتهٔ پیش',
+      tx: 'قبلاً برای پیدا کردن فروشنده و گرفتن قیمت باید با چند نفر تماس می‌گرفتم. حالا می‌تونم قیمت تأمین‌کننده‌های مختلف رو کنار هم دنبال کنم و راحت‌تر مقایسه کنم.' },
+    { n: 'رضا کریمی', biz: 'تولیدکننده محصولات شوینده', av: '#c2703a', role: 'sell', cap: 'معرفی محصولات به مشتریان', when: '۳ هفتهٔ پیش',
+      tx: 'با کاتالوگ آیمچ، محصولاتم رو یک‌جا به مشتریان معرفی می‌کنم و هر وقت محصول یا قیمت جدیدی داشته باشم، کاتالوگم رو به‌روز می‌کنم.' },
+    { n: 'حسین مرادی', biz: 'عمده‌فروش لوازم ساختمانی', av: '#0e7490', role: 'sell', cap: 'دنبال‌کردن درخواست‌های خرید', when: '۱ ماه پیش',
+      tx: 'لازم نیست منتظر تماس مشتری بمونم تا بفهمم چه کالایی می‌خواد. با دنبال کردن درخواست‌های خرید مرتبط، می‌تونم زودتر از نیاز خریدارها باخبر بشم و قیمت بدم.' },
+    { n: 'امیرحسین احمدی', biz: 'توزیع‌کننده محصولات کشاورزی', av: '#9333ea', role: 'sell', cap: 'قیمت و موجودی به‌روز', when: '۱ ماه پیش',
+      tx: 'قیمت و موجودی محصولات مدام تغییر می‌کنه. حالا می‌تونم اطلاعات کالاهای قابل عرضه‌ام رو در کاتالوگ به‌روز نگه دارم تا خریدارها قبل از تماس، اطلاعات بهتری داشته باشن.' },
+    /* چهار نظر دیگر — فقط در صفحهٔ «سایر نظرات» (۴۳) */
+    { n: 'مریم قاسمی', biz: 'سوپرمارکت قاصدک', av: '#0e7490', role: 'buy', cap: 'گوش به زنگ قیمت', when: '۲ هفتهٔ پیش', more: true,
+      tx: 'زنگولهٔ «گوش به زنگ» رو روی برنج و روغن روشن می‌کنم و قیمت هدف می‌دم؛ همون‌طور که قیمت به هدفم رسید پیام اومد. دیگه هر روز چند بار کاتالوگ‌ها رو چک نمی‌کنم.' },
+    { n: 'کریم دهقان', biz: 'پخش لبنیات مهرگان', av: '#b45309', role: 'sell', cap: 'درخواست‌های خرید مرتبط', when: '۳ هفتهٔ پیش', more: true,
+      tx: 'به‌جای اینکه منتظر بمونم مشتری زنگ بزنه، درخواست‌های خرید مرتبط با لبنیات رو می‌بینم و همون روز براشون قیمت می‌دم. فروش هفتگی‌ام منظم‌تر شده.' },
+    { n: 'الهام صادقی', biz: 'رستوران خانهٔ سبز', av: '#0d9488', role: 'buy', cap: 'یک فرم به چند تأمین‌کننده', when: '۱ ماه پیش', more: true,
+      tx: 'یک فرم درخواست خرید می‌فرستم برای چند تأمین‌کننده با هم و مهلت سه‌روزه می‌ذارم؛ روز سوم بهترین قیمت و شرایط جلوی چشممه. بعد فقط تماس نهایی رو می‌گیرم.' },
+    { n: 'بهرام نیک‌پور', biz: 'تولیدکننده زعفران و خشکبار', av: '#7c3aed', role: 'sell', cap: 'تبلیغ هدفمند کم‌هزینه', when: '۱ ماه پیش', more: true,
+      tx: 'با تبلیغ هدفمند، کالای من دقیقاً جلوی چشم خریدارِ همون کالا می‌ره — نه همه‌جا. هزینه‌ش هم فقط وقتی از کیف پول کم می‌شه که واقعاً دیده بشم.' }
+  ];
+  function tsCard(r, mode) {
+    var item = mode === 'item';
+    var btn = r.role === 'buy'
+      ? '<button type="button" class="ts-btn" data-go="23"><svg><use href="#i-list"/></svg> مشاهده لیست خرید</button>'
+      : '<button type="button" class="ts-btn" data-go="13"><svg><use href="#i-store"/></svg> مشاهده کاتالوگ</button>';
+    return '<div class="ts-card' + (item ? ' ts-item' : '') + (r.live ? ' fresh' : '') + '">' +
+      '<span class="ts-cap"><svg><use href="#i-spark"/></svg> ' + r.cap + '</span>' +
+      '<div class="ts-who">' +
+        '<span class="ts-av" style="background:' + r.av + '">' + r.n.charAt(0) + '</span>' +
+        '<div style="min-width:0"><div class="ts-n">' + r.n + '</div><div class="ts-role">' + r.biz + '</div></div>' +
+      '</div>' +
+      '<div class="ts-tx">' + r.tx + '</div>' +
+      (item ? '<div class="ts-when">' + r.when + '</div>' : '') +
+      btn +
+    '</div>';
+  }
+  function tsCta() {
+    return '<div class="ts-cta">' +
+      '<b>آیمچ به شما هم کمک کرده؟</b>' +
+      '<p>نظرتون رو ثبت کنید تا دیگران هم بدونند آیمچ چه کمکی به کسب‌وکارها می‌کنه — و کسب‌وکار شما هم بین خریدارها دیده بشه.</p>' +
+      '<button type="button" class="ts-btn" data-rvwopen><svg><use href="#i-comment"/></svg> ثبت نظر شما</button>' +
+    '</div>';
+  }
+  function tsRender() {
+    var bar = document.getElementById('ts-row-15');
+    if (bar) {
+      var base = TS_DATA.filter(function (r) { return !r.more; }); /* شش نظر مالک + نظرات تازه */
+      bar.innerHTML = base.map(function (r) { return tsCard(r, 'card'); }).join('') + tsCta();
+    }
+    var list = document.getElementById('ts-list-43');
+    if (list) {
+      var live = TS_DATA.filter(function (r) { return r.live; });
+      var rest = TS_DATA.filter(function (r) { return !r.live; });
+      list.innerHTML = live.concat(rest).map(function (r) { return tsCard(r, 'item'); }).join('');
+    }
+  }
+  function tsBarToEnd() {
+    var bar = document.getElementById('ts-row-15');
+    if (!bar) return;
+    /* بعد از ثبت، نوار می‌رود سراغ کارت تازه (وسط قاب) تا هم کارت جدید دیده شود هم کارت دعوت
+       بعد از آن. scrollIntoView با مختصات منطقی (center/end) مستقل از علامتِ RTL است. */
+    var cards = bar.querySelectorAll('.ts-card');
+    var last = cards[cards.length - 1] || bar.querySelector('.ts-cta');
+    if (last && last.scrollIntoView) last.scrollIntoView({ block: 'nearest', inline: 'center' });
   }
 
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
@@ -10112,6 +10465,65 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
+    /* ═══ فاز ۳۳ — پروفایل شخصی (۴۲) ═══ */
+
+    /* ذخیره: نام از فرم خوانده می‌شود؛ کارت‌های ۰۷/۱۴ و عکس بزرگ همان لحظه به‌روز می‌شوند
+       و به همان پروفایلی برمی‌گردیم که از آن آمده‌ایم (۰۷ یا ۱۴ — از استک). */
+    var savePP = t.closest('#pp-save');
+    if (savePP) {
+      var fnEl = document.getElementById('pp-fn');
+      var lnEl = document.getElementById('pp-ln');
+      var nm2 = (((fnEl && fnEl.value) || '') + ' ' + ((lnEl && lnEl.value) || '')).trim();
+      if (nm2) PP.name = nm2;
+      ppSync();
+      back();
+      return;
+    }
+
+    /* انتخاب تصویر از شیت: گزینهٔ گالری / دوربین (عکس بعدی در ماک) / حذف → حرف اول نام */
+    var php = t.closest('[data-pphoto]');
+    if (php) {
+      var pv = php.dataset.pphoto;
+      if (pv === 'remove') PP.photo = '';
+      else if (pv === 'next') {
+        var pix = PP.photo ? PP_PHOTOS.indexOf(PP.photo) : -1;
+        PP.photo = PP_PHOTOS[(pix + 1) % PP_PHOTOS.length];
+      } else PP.photo = pv;
+      ppSync();
+      setTimeout(closeSheet, 340);
+      return;
+    }
+
+    /* ═══ فاز ۳۳ — مدال سادهٔ ثبت نظر (نوار ۱۵ / سایر نظرات ۴۳) ═══ */
+
+    var rvo = t.closest('[data-rvwopen]');
+    if (rvo) { openSheet('dlg-rvw'); return; }
+
+    /* ثبت: نام + کسب‌وکار + متن لازم؛ نقش (فروشنده/خریدار) دکمهٔ کارت را تعیین می‌کند.
+       نظر تازه همان لحظه در انتهای نوار (قبل از کارت دعوت) و بالای فهرست ۴۳ می‌نشیند. */
+    var rvs = t.closest('[data-rvwsend]');
+    if (rvs) {
+      var rnm = document.getElementById('rvw-name');
+      var rbz = document.getElementById('rvw-biz');
+      var rtx = document.getElementById('rvw-text');
+      var rvn = rnm ? rnm.value.trim() : '';
+      var rvb = rbz ? rbz.value.trim() : '';
+      var rvt = rtx ? rtx.value.trim() : '';
+      var rerr = document.getElementById('rvw-err');
+      if (!rvn || !rvb || !rvt) { if (rerr) rerr.hidden = false; return; }
+      var rpl = document.querySelector('#dlg-rvw .pillchoice .pill.active');
+      var rrole = rpl && rpl.dataset.rrole === 'buy' ? 'buy' : 'sell';
+      TS_DATA.push({ n: rvn, biz: rvb, av: rrole === 'buy' ? '#0e7490' : '#b45309', role: rrole, cap: 'تجربهٔ کاربر', when: 'همین حالا', tx: rvt, live: true });
+      tsRender();
+      if (rnm) rnm.value = '';
+      if (rbz) rbz.value = '';
+      if (rtx) rtx.value = '';
+      if (rerr) rerr.hidden = true;
+      closeSheet();
+      tsBarToEnd(); /* نوار به انتها می‌رود تا کارت تازه + دعوت دیده شود */
+      return;
+    }
+
     var goEl = t.closest('[data-go]');
     if (goEl) { go(goEl.dataset.go); return; }
 
@@ -10190,6 +10602,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   cmSumRender();
   fbRenderAll(); /* فاز ۳۰ — پست‌های بازخورد ۳۷/۳۸ · فاز ۳۲ — سوال‌های راهنما ۴۰/۴۱ */
   vdRender('40'); vdRender('41'); /* فاز ۳۲ — نوار فیلم‌های آموزشی راهنمای دستیارها */
+  tsRender(); /* فاز ۳۳ — نوار «نظر خریداران» لندینگ + فهرست سایر نظرات */
+  ppSync();   /* فاز ۳۳ — کارت‌های پروفایل شخصی ۰۷/۱۴ + عکس بزرگ ۴۲ */
   assistSyncToggles(); /* فاز ۳۱ — سوییچ‌های ۲۲ با وضعیت ذخیره‌شده هم‌گام */
   assistChrome();      /* فاز ۳۱ — اگر دستیاری خاموش است، پیل هدر از همان بارگذاری مخفی است */
   var init = (location.hash || '').slice(1);
