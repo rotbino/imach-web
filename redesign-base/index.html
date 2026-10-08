@@ -977,16 +977,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ═══ فاز ۲۶ — فوتر استاندارد ۵ تبی ═══ */
   /* «پیشنهادها» حذف شد — پیشنهادِ تأمین‌کننده روی خود کالا (لیست مقایسهٔ ۳۳ / تابلوی ۰۹) انجام می‌شود؛ همهٔ تب‌بارها ۵ آیتم‌اند */
 
-  /* کارت کسب‌وکار (current business) در پروفایل فروشنده */
-  #scr-07 .biz-card { padding: 12px 14px 13px; cursor: pointer; }
-  #scr-07 .biz-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  #scr-07 .biz-cap { font-size: 11px; font-weight: 800; color: var(--muted-fg); display: flex; align-items: center; gap: 5px; }
-  #scr-07 .biz-cap svg { width: 13px; height: 13px; }
-  #scr-07 .biz-acts { display: flex; align-items: center; gap: 2px; }
-  #scr-07 .biz-edit { border: 0; background: none; cursor: pointer; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: var(--stone-soft); }
-  #scr-07 .biz-edit:active { background: var(--stone-tint); }
-  #scr-07 .biz-edit svg { width: 15px; height: 15px; }
-  #scr-07 .biz-dd { width: 15px; height: 15px; color: var(--stone-soft); }
+  /* کارت کسب‌وکار (current business) در پروفایل فروشنده (۰۷) و خرید (۱۴) —
+     فاز ۳۰: سلکتورها به ۱۴ هم تعمیم یافت؛ بدون این قید، SVGهای کارت در ۱۴ بی‌اندازه و غول‌آسا می‌شدند */
+  #scr-07 .biz-card, #scr-14 .biz-card { padding: 12px 14px 13px; cursor: pointer; }
+  #scr-07 .biz-top, #scr-14 .biz-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  #scr-07 .biz-cap, #scr-14 .biz-cap { font-size: 11px; font-weight: 800; color: var(--muted-fg); display: flex; align-items: center; gap: 5px; }
+  #scr-07 .biz-cap svg, #scr-14 .biz-cap svg { width: 13px; height: 13px; }
+  #scr-07 .biz-acts, #scr-14 .biz-acts { display: flex; align-items: center; gap: 2px; }
+  #scr-07 .biz-edit, #scr-14 .biz-edit { border: 0; background: none; cursor: pointer; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: var(--stone-soft); }
+  #scr-07 .biz-edit:active, #scr-14 .biz-edit:active { background: var(--stone-tint); }
+  #scr-07 .biz-edit svg, #scr-14 .biz-edit svg { width: 15px; height: 15px; }
+  #scr-07 .biz-dd, #scr-14 .biz-dd { width: 15px; height: 15px; color: var(--stone-soft); }
 
   /* شیت کسب‌وکارها — نشان «فعال» و تیک فقط روی انتخاب فعلی */
   #sheet-biz .sheet-row .check { display: none; color: var(--green); width: 18px; height: 18px; flex-shrink: 0; }
@@ -1153,6 +1154,88 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .btn-save { background: var(--green); color: #fff; border: 1px solid var(--green); }
   .btn-save:active { background: #12833c; }
   #scr-23 .contact-row .btn[data-savelist].saved { background: var(--green-bg); color: var(--green); border-color: #b6e2c6; }
+  /* فاز ۳۰ — گردی کمتر برای سه دکمهٔ نوار تماس پیش‌نمایش (۲۳) */
+  #scr-23 .contact-row .btn { border-radius: 7px; }
+  /* فاز ۳۰ — نوار آمار (۲۳): مارجین‌تاپ از نوار تماس + وسط‌چین‌بودن آیتم‌ها */
+  #scr-23 .insight-strip { margin-top: 13px; justify-content: center; }
+  #scr-23 .insight-strip > span { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+
+  /* ═══ فاز ۳۰ — اسکرول‌بار باریک/مخفی ═══ */
+  /* عرض اسکرول‌بار خیلی کم می‌شود (دسکتاپ) و در موبایل اصلاً دیده نمی‌شود — شیت‌ها و دیالوگ‌ها تمیز می‌مانند */
+  .sheet, .dlg { scrollbar-width: thin; scrollbar-color: rgba(42,39,35,.22) transparent; }
+  .sheet::-webkit-scrollbar, .dlg::-webkit-scrollbar { width: 3px; height: 3px; }
+  .sheet::-webkit-scrollbar-thumb, .dlg::-webkit-scrollbar-thumb { background: rgba(42,39,35,.22); border-radius: 99px; }
+  .sheet::-webkit-scrollbar-track, .dlg::-webkit-scrollbar-track { background: transparent; }
+  @media (max-width: 479px) {
+    .sheet, .dlg { scrollbar-width: none; }
+    .sheet::-webkit-scrollbar, .dlg::-webkit-scrollbar { display: none; }
+  }
+
+  /* ═══ فاز ۳۰ — تأمین‌کنندگان ویژهٔ این کالا (۰۲): ردیف دوسطحی + دکمهٔ «کاتالوک» هر فروشنده ═══ */
+  #scr-02 .sp-row { display: flex; align-items: center; gap: 9px; padding: 9px 0; border-bottom: 1px dashed #eee9dd; }
+  #scr-02 .sp-row:last-child { border-bottom: 0; }
+  #scr-02 .sp-info { flex: 1; min-width: 0; }
+  #scr-02 .sp-t { font-size: 12px; color: var(--stone-soft); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  #scr-02 .sp-p { font-size: 12px; margin-top: 3px; }
+  #scr-02 .sp-p small { color: var(--muted-fg); font-weight: 400; }
+  #scr-02 .sp-row .btn { flex-shrink: 0; font-size: 10.5px; padding: 6px 10px; border-radius: 8px; }
+  #scr-02 .sp-row .btn svg { width: 13px; height: 13px; }
+
+  /* ═══ فاز ۳۰ — صفحات بازخورد و ایده‌ها (۳۷/۳۸) ═══ */
+  /* کارت پرسش (متن مالک عیناً) */
+  .fb-hero { background: linear-gradient(135deg, #f0f7ff, #fbfdff); border: 1px solid #cfe0f5; }
+  .fb-hero .fb-h { font-size: 15.5px; font-weight: 800; line-height: 1.7; }
+  .fb-hero .fb-q { font-size: 12.5px; font-weight: 700; color: var(--primary-strong); margin-top: 9px; line-height: 1.9; }
+  .fb-hero .fb-p { font-size: 11px; color: var(--stone-soft); line-height: 2.05; margin-top: 7px; }
+  /* فرم ثبت ایده/نظر — تکست‌باکس ساده */
+  .fb-form textarea { width: 100%; box-sizing: border-box; }
+  /* پست‌های کاربران: لایک + پاسخ‌های زیرنویس (پرسش و پاسخ) */
+  .fb-item { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px; }
+  .fb-item.fresh { border-color: #b6e2c6; background: var(--green-bg); }
+  .fb-head { display: flex; align-items: center; gap: 8px; }
+  .fb-head .who { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .fb-head .when { font-size: 10px; color: var(--muted-fg); flex-shrink: 0; }
+  .fb-tx { font-size: 12px; line-height: 2; color: var(--foreground); margin-top: 8px; }
+  .fb-acts { display: flex; align-items: center; gap: 6px; margin-top: 9px; }
+  .fb-like { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--stone-soft); border: 1px solid var(--border-strong); background: #fff; border-radius: 8px; padding: 4px 9px; cursor: pointer; }
+  .fb-like svg { width: 13px; height: 13px; }
+  .fb-like.on { color: var(--red); border-color: #f3c1c1; background: #fdf1f1; }
+  .fb-like.on svg { fill: var(--red); }
+  .fb-repbtn { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--primary-strong); border: 0; background: none; cursor: pointer; padding: 4px 6px; border-radius: 8px; }
+  .fb-repbtn svg { width: 13px; height: 13px; }
+  /* پاسخ‌ها — تورفتگی + خط عمودی */
+  .fb-replies { margin-top: 10px; padding-right: 10px; border-right: 2px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+  .fb-reply { display: flex; gap: 7px; align-items: flex-start; }
+  .fb-reply .rb { flex: 1; min-width: 0; background: var(--muted); border-radius: 10px; padding: 7px 10px; }
+  .fb-reply .rh { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .fb-reply .rh .when { font-size: 9.5px; color: var(--muted-fg); font-weight: 400; }
+  .fb-reply .rt { font-size: 11px; line-height: 1.95; color: var(--stone-soft); margin-top: 3px; }
+  .fb-reply.team .rb { background: var(--green-bg); }
+  .fb-reply.team .rh { color: var(--green); }
+  .fb-rbox { display: flex; gap: 7px; margin-top: 9px; }
+  .fb-rbox input { flex: 1; min-width: 0; }
+  /* شیت نمای عمومی (۰۷) — امتیاز کاتالوگ همان‌طور که خریدار می‌بیند */
+  #sheet-pubview .pv-sum { display: flex; align-items: center; gap: 12px; background: var(--muted); border-radius: 13px; padding: 11px 13px; margin-top: 12px; }
+  #sheet-pubview .pv-sum .num { font-size: 26px; font-weight: 800; color: var(--amber); line-height: 1; }
+  #sheet-pubview .pv-sum .mid { display: flex; flex-direction: column; gap: 4px; }
+  #sheet-pubview .pv-sum .cnt { font-size: 10.5px; color: var(--muted-fg); }
+  #sheet-pubview .pv-side { flex: 1; text-align: left; font-size: 10.5px; color: var(--muted-fg); line-height: 1.8; }
+  #sheet-pubview .pv-side b { font-size: 15px; color: var(--foreground); }
+  #sheet-pubview .pv-side small { font-size: 10px; font-weight: 400; }
+  /* پاسخ فروشنده به نظرات (شیت نظرات) */
+  .cm-replies { margin-top: 9px; padding-right: 9px; border-right: 2px solid var(--border); display: flex; flex-direction: column; gap: 7px; }
+  .cm-reply { display: flex; gap: 6px; align-items: flex-start; }
+  .cm-reply .rb { flex: 1; min-width: 0; background: var(--muted); border-radius: 10px; padding: 6px 9px; }
+  .cm-reply .rh { font-size: 10.5px; font-weight: 700; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .cm-reply .rh .when { font-size: 9.5px; color: var(--muted-fg); font-weight: 400; }
+  .cm-reply .rt { font-size: 10.5px; line-height: 1.9; color: var(--stone-soft); margin-top: 2px; }
+  .cm-reply.seller .rb { background: var(--green-bg); }
+  .cm-reply.seller .rh { color: var(--green); }
+  .cm-repbtn { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--primary-strong); border: 0; background: none; cursor: pointer; padding: 3px 5px; border-radius: 7px; }
+  .cm-repbtn svg { width: 12px; height: 12px; }
+  .cm-rbox { display: flex; gap: 6px; margin-top: 8px; }
+  .cm-rbox input { flex: 1; min-width: 0; }
+  .cm-item .cm-when { display: flex; align-items: center; gap: 8px; }
 
 </style>
 </head>
@@ -1230,6 +1313,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 013 13.5v-9A1.5 1.5 0 014.5 3h9A1.5 1.5 0 0115 4.5V5"/></symbol>
 <symbol id="i-comment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 01-8.5 8.5c-1.6 0-3.1-.4-4.4-1.2L3 20l1.2-4.9A8.5 8.5 0 1121 11.5z"/></symbol>
 <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.6l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15.6 3.5 9.3a4.8 4.8 0 018.5-3 4.8 4.8 0 018.5 3c0 6.3-8.5 11.2-8.5 11.2z"/></symbol>
+<symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5.5-4-10.5-11-11z"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -1522,7 +1607,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span>تخفیف برای شما که مشتری همکار هستید ۷٪</span>
         </div>
 
-        <!-- جایگاه تبلیغاتی: تأمین‌کنندگان ویژهٔ همین کالا (فاز ۲۵: بازگردانده شد — کالاهای کمپین‌دارِ سایر فروشندگان در جزئیات کالای مرتبط) -->
+        <!-- جایگاه تبلیغاتی: تأمین‌کنندگان ویژهٔ همین کالا (فاز ۲۵: بازگردانده شد — کالاهای کمپین‌دارِ سایر فروشندگان در جزئیات کالای مرتبط)
+             فاز ۳۰ (مالک): دکمهٔ «مشاهده تابلوی تأمین» حذف شد؛ به‌جایش هر تأمین‌کنندهٔ ویژه دکمهٔ «کاتالوگ» خودش را دارد → کاتالوگ عمومی (۱۳) -->
         <div class="card" style="margin-top:10px;padding:13px 14px">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px">
@@ -1531,20 +1617,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
             </div>
             <span class="badge b-orange">۳ مورد</span>
           </div>
-          <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px">
-            <div style="display:flex;justify-content:space-between;font-size:12px">
-              <span style="color:var(--stone-soft)">آریو غلات — اصفهان <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></span>
-              <b>۲٬۹۲۰٬۰۰۰ <small style="color:var(--muted-fg)">تومان</small></b>
+          <div style="margin-top:6px">
+            <div class="sp-row">
+              <div class="sp-info">
+                <div class="sp-t">آریو غلات — اصفهان <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></div>
+                <div class="sp-p"><b>۲٬۹۲۰٬۰۰۰</b> <small>تومان</small></div>
+              </div>
+              <button class="btn btn-outline btn-sm" data-go="13" title="مشاهدهٔ کاتالوگ آریو غلات"><svg><use href="#i-store"/></svg> کاتالوگ</button>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:12px">
-              <span style="color:var(--stone-soft)">کیان غلات — قزوین <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></span>
-              <b>۳٬۰۰۰٬۰۰۰ <small style="color:var(--muted-fg)">تومان</small></b>
+            <div class="sp-row">
+              <div class="sp-info">
+                <div class="sp-t">کیان غلات — قزوین <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></div>
+                <div class="sp-p"><b>۳٬۰۰۰٬۰۰۰</b> <small>تومان</small></div>
+              </div>
+              <button class="btn btn-outline btn-sm" data-go="13" title="مشاهدهٔ کاتالوگ کیان غلات"><svg><use href="#i-store"/></svg> کاتالوگ</button>
             </div>
           </div>
-          <button class="btn btn-stone btn-sm btn-block" style="margin-top:11px" data-go="09">
-            مشاهده تابلوی تأمین
-            <svg><use href="#i-chev"/></svg>
-          </button>
         </div>
 
       </div>
@@ -2237,13 +2325,26 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
       </div>
 
+      <!-- فاز ۳۰ — نظر و ایده دربارهٔ دستیار فروش → صفحهٔ بازخورد (۳۸) -->
+      <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer" data-go="38">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:var(--primary-strong)">
+          <svg style="width:19px;height:19px"><use href="#i-comment"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:700">نظر و ایده دربارهٔ دستیار فروش</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">چطور می‌تونیم دستیار فروش رو برای شما بهتر کنیم؟</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      </div>
+
       <!-- ابزار رشد -->
       <div class="card" style="margin-top:10px">
         <div style="font-size:13px;font-weight:700;margin-bottom:3px">ابزار رشد کاتالوگ</div>
         <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin-bottom:10px">لینک کاتالوگتان را برای مشتری‌ها بفرستید — هر ثبت‌نام از لینک شما، خودکار مشتری شما می‌شود.</div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-primary btn-sm" style="flex:1"><svg><use href="#i-share"/></svg> اشتراک کاتالوگ</button>
-          <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-eye"/></svg> نمای عمومی</button>
+          <!-- فاز ۳۰ — نمای عمومی: شیت پیش‌نمایش همان‌طور که خریدار کاتالوگ را می‌بیند (شامل امتیاز کاتالوگ) -->
+          <button class="btn btn-outline btn-sm" style="flex:1" data-sheet="sheet-pubview"><svg><use href="#i-eye"/></svg> نمای عمومی</button>
         </div>
       </div>
 
@@ -3354,6 +3455,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
           <svg style="width:14px;height:14px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
+        <!-- فاز ۳۰ — نظر و ایده دربارهٔ دستیار خرید → صفحهٔ بازخورد (۳۷) -->
+        <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer;padding:11px 13px" data-go="37">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone)">
+            <svg style="width:18px;height:18px"><use href="#i-comment"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">نظر و ایده دربارهٔ دستیار خرید</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">کمک کن دستیار خرید رو برات مفیدتر کنیم</div>
+          </div>
+          <svg style="width:14px;height:14px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
       </div>
 
       <!-- اعلان‌ها — قلب رابطه با تابلوها -->
@@ -4338,10 +4450,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- فاز ۲۹ — تماس + پیام + ذخیرهٔ لیست: سه‌تایی در یک ردیف؛ هر کدام رنگ خودش، فشرده‌تر.
-           «امکان تماس» از تنظیمات لیست خرید (۰۸) قابل حذف است — data-contactbtn همان دکمهٔ تماس است. -->
+           «امکان تماس» و «امکان پیام» (فاز ۳۰) از تنظیمات لیست خرید (۰۸) قابل حذف‌اند —
+           data-contactbtn دکمهٔ تماس و data-msgbtn دکمهٔ پیام است. -->
       <div class="contact-row">
         <button class="btn btn-outline" data-sheet="sheet-contacts" data-contactbtn title="تماس با خریدار" aria-label="تماس با خریدار"><svg><use href="#i-phone"/></svg> تماس</button>
-        <button class="btn btn-primary" data-go="19" title="ارسال پیام به خریدار"><svg><use href="#i-msg"/></svg> پیام</button>
+        <button class="btn btn-primary" data-go="19" data-msgbtn title="ارسال پیام به خریدار"><svg><use href="#i-msg"/></svg> پیام</button>
         <button class="btn btn-save" data-savelist title="ذخیرهٔ لیست خریدار"><svg><use href="#i-bmark-plus"/></svg> ذخیرهٔ لیست</button>
       </div>
 
@@ -6211,6 +6324,85 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <section class="scr" id="scr-37" data-arm="buy" hidden>
+
+
+    <!-- فاز ۳۰ — بازخورد و ایده‌های خریداران عمده دربارهٔ دستیار خرید:
+         از پروفایل خریدار (۱۴) باز می‌شود. متن‌های بالا عیناً از مالک.
+         کاربر ایده/مشکل/نیازش را در یک تکست‌باکس ساده می‌نویسد؛ پست‌ها برای بقیهٔ کاربران
+         نمایش داده می‌شوند و لایک می‌خورند؛ زیر هر پست می‌شود پاسخ نوشت (پرسش و پاسخ) —
+         پاسخ تیم آیمچ با نشان سبز «تیم آیمچ» متمایز است. دیتا و رفتار: FB_DATA['37']. -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">نظر و ایده دربارهٔ دستیار خرید<small>بازخورد خریداران عمده</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- پرسش مالک — عیناً -->
+      <div class="card fb-hero" style="margin-top:10px;padding:14px 15px">
+        <div class="fb-h">کمک کن دستیار خرید رو برات مفیدتر کنیم!</div>
+        <div class="fb-q">چطور می‌تونیم دستیار خرید رو برای شما بهتر کنیم؟</div>
+        <div class="fb-p">هنگام استفاده از دستیار خرید برای خرید عمده، چه چیزی براتون سخت، پیچیده یا ناکارآمده؟ چه چیزی می‌تونه کار با آیمچ رو براتون راحت‌تر و مفیدتر کنه؟</div>
+        <div class="fb-p">از تجربه‌تون بگید؛ چه مشکلی داشتید، چه چیزی انتظارتون رو برآورده نکرده یا دوست دارید چه چیزی تغییر کنه. یا چه چیزی به دستیار خرید اضافه بشه. چه ایده ای دارید؟</div>
+      </div>
+
+      <!-- فرم — تکست‌باکس ساده -->
+      <div class="card fb-form" style="margin-top:10px;padding:13px 14px">
+        <div style="font-size:11.5px;font-weight:700;color:var(--stone-soft);line-height:1.9">ایده و نظر بدید تا دیگران لایک کنن و نظر اونارم بدونید</div>
+        <div class="field" style="margin-top:9px">
+          <textarea class="input" id="fb-text-37" rows="3" placeholder="ایده، مشکل یا نیازتون رو بنویسید…"></textarea>
+        </div>
+        <div class="cm-err" id="fb-err-37" hidden>متن نظر را بنویسید</div>
+        <button class="btn btn-primary btn-block" style="margin-top:10px" data-fbsend="37"><svg><use href="#i-send"/></svg> ثبت نظر و ایده</button>
+      </div>
+
+      <!-- پست‌های کاربران (JS رندر می‌کند) -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-comment"/></svg> ایده‌ها و نظرات خریداران</h2><span class="more" id="fb-count-37"></span></div>
+      <div class="rows" id="fb-list-37"></div>
+
+    </main>
+
+    </section>
+
+    <section class="scr" id="scr-38" data-arm="sell" hidden>
+
+
+    <!-- فاز ۳۰ — بازخورد و ایده‌های فروشندگان دربارهٔ دستیار فروش:
+         از پروفایل فروش (۰۷) باز می‌شود. متن‌های بالا عیناً از مالک.
+         همان موتور پست/لایک/پاسخِ صفحهٔ ۳۷ — دیتا و رفتار: FB_DATA['38']. -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">نظر و ایده دربارهٔ دستیار فروش<small>بازخورد فروشندگان</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- پرسش مالک — عیناً -->
+      <div class="card fb-hero" style="margin-top:10px;padding:14px 15px">
+        <div class="fb-h">چطور می‌تونیم دسیتار فروش رو برای شما بهتر کنیم؟</div>
+        <div class="fb-p" style="margin-top:9px">هنگام استفاده از آیمچ برای فروش عمده، چه چیزی براتون سخت، پیچیده یا ناکارآمده؟ چه چیزی می‌تونه کار با آیمچ رو براتون راحت‌تر و مفیدتر کنه؟</div>
+        <div class="fb-p">از تجربه‌تون بگید؛ چه مشکلی داشتید، چه چیزی انتظاراتون رو برآورده نکرده یا دوست دارید چه چیزی تغییر کنه. یا چه چیزی اضافه یا کم بشه؟ آیا ایده خاصی دارید؟</div>
+      </div>
+
+      <!-- فرم — تکست‌باکس ساده -->
+      <div class="card fb-form" style="margin-top:10px;padding:13px 14px">
+        <div style="font-size:11.5px;font-weight:700;color:var(--stone-soft);line-height:1.9">ایده و نظر بدید تا دیگران لایک کنن و نظر اونارم بدونید</div>
+        <div class="field" style="margin-top:9px">
+          <textarea class="input" id="fb-text-38" rows="3" placeholder="ایده، مشکل یا نیازتون رو بنویسید…"></textarea>
+        </div>
+        <div class="cm-err" id="fb-err-38" hidden>متن نظر را بنویسید</div>
+        <button class="btn btn-primary btn-block" style="margin-top:10px" data-fbsend="38"><svg><use href="#i-send"/></svg> ثبت نظر و ایده</button>
+      </div>
+
+      <!-- پست‌های کاربران (JS رندر می‌کند) -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-comment"/></svg> ایده‌ها و نظرات فروشندگان</h2><span class="more" id="fb-count-38"></span></div>
+      <div class="rows" id="fb-list-38"></div>
+
+    </main>
+
+    </section>
+
 <!-- ═══ شیت‌های پایین صفحه — فایل screens/90-sheets.html (فاز ۱۷ + ۱۸ + ۱۹) ═══ -->
 <div class="backdrop" id="backdrop"></div>
 
@@ -6278,6 +6470,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="ico"><svg><use href="#i-phone"/></svg></span>
     <span class="tx"><b>امکان تماس از لیست خرید</b><span>دکمهٔ تماس شما در لیست عمومی، برای فروشنده‌ها</span></span>
     <div class="toggle on" data-contacttoggle></div>
+  </div>
+  <!-- فاز ۳۰ — امکان پیام: مانند تماس، دکمهٔ پیام هم از لیست عمومی قابل برداشتن است -->
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-msg"/></svg></span>
+    <span class="tx"><b>امکان پیام از لیست خرید</b><span>دکمهٔ پیام شما در لیست عمومی، برای فروشنده‌ها</span></span>
+    <div class="toggle on" data-msgtoggle></div>
   </div>
   <button class="sheet-row" data-go="23">
     <span class="ico"><svg><use href="#i-eye"/></svg></span>
@@ -6492,7 +6690,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <!-- IMPLEMENTATION NOTE: خریداران عمده می‌توانند به کاتالوگ فروشنده امتیاز (۱ تا ۵ ستاره) و نظر بدهند.
      خلاصهٔ امتیاز (میانگین + تعداد) بالای لیست؛ هر نظر نام خریدار + ستاره‌های همان نظر را کنار متن دارد.
      فرم پایین: ستاره‌سِلکت ۱-۵ (چپ‌به‌راست) + متن نظر؛ ثبت → همان لحظه بالای لیست می‌نشیند و میانگین/تعداد
-     به‌روز می‌شود. هویت ثبت‌کننده = کسب‌وکار فعال کاربر (اینجا: سوپرمارکت آریا). -->
+     به‌روز می‌شود. هویت ثبت‌کننده = کسب‌وکار فعال کاربر (اینجا: سوپرمارکت آریا).
+     فاز ۳۰ — پاسخ فروشنده به نظرات: زیر هر نظر دکمهٔ «پاسخ» پاسخِ زیرنویس (همان الگوی پرسش و پاسخ)
+     می‌نویسد؛ پاسخ فروشنده با نشان سبز «فروشنده» متمایز است (هویت: مالک کاتالوگ — پخش برنج پارس). -->
 <div class="sheet" id="sheet-cmnts" role="dialog" aria-label="نظرات و امتیاز کاتالوگ">
   <div class="grab"></div>
   <h3>نظرات و امتیاز کاتالوگ</h3>
@@ -6518,6 +6718,36 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </div>
   <div class="cm-err" id="cm-err" hidden>امتیاز و متن نظر هر دو لازم است</div>
   <button class="btn btn-primary sheet-cta" data-cmnt-send><svg><use href="#i-send"/></svg> ثبت نظر</button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۳۰ — نمای عمومی کاتالوگ (۰۷): پیش‌نمایش همان‌طور که خریدار می‌بیند ═══ -->
+<!-- IMPLEMENTATION NOTE (پیشنهاد فاز ۲۹): امتیاز کاتالوگ (میانگین/تعداد/ستاره‌ها) همان‌طور که در کاتالوگ
+     عمومی (۱۳) و شیت نظرات دیده می‌شود، این‌جا هم جلوی چشم فروشنده است — مقادیر از همان state زندهٔ
+     نظرات (cmBaseAvg/cmBaseCnt) به‌روز می‌شوند. «مشاهدهٔ کامل کاتالوگ» → کاتالوگ عمومی (۱۳). -->
+<div class="sheet" id="sheet-pubview" role="dialog" aria-label="نمای عمومی کاتالوگ">
+  <div class="grab"></div>
+  <h3>نمای عمومی کاتالوگ</h3>
+  <div class="sub">همان‌طور که خریداران کاتالوگ شما را می‌بینند</div>
+  <div class="showcase" style="padding:4px 0">
+    <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+    <div class="meta">
+      <div class="name" style="font-size:16px">پخش برنج پارس <svg><use href="#i-verified"/></svg> <span class="presence on"><i></i>آنلاین</span></div>
+      <div class="sub">احمد رضایی · پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span></div>
+    </div>
+  </div>
+  <div class="pv-sum">
+    <div class="num" id="pv-avg">۴٫۴</div>
+    <div class="mid">
+      <span class="stars big" id="pv-avgstars"></span>
+      <span class="cnt" id="pv-cnt">از ۲۴ نظر خریدار</span>
+    </div>
+    <div class="pv-side">
+      <div><b>۳۸</b> <small>دنبال‌کننده</small></div>
+      <div class="cnt">۱۲۰ بازدید ماه</div>
+    </div>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-go="13"><svg><use href="#i-eye"/></svg> مشاهدهٔ کامل کاتالوگ</button>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
@@ -8188,7 +8418,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
     '11': '08', '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
-    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07', '33': '08', '34': '08', '35': '07', '36': '11'
+    '27': '01', '28': '05', '29': '07', '30': '07', '31': '10', '32': '07', '33': '08', '34': '08', '35': '07', '36': '11',
+    '37': '14', '38': '07' /* فاز ۳۰: بازگشت بازخوردها به پروفایل همان بازو */
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
@@ -8215,7 +8446,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   var CARDS = { '01': '03', '05': '06', '08': '33', '13': '02', '18': '19', '21': '06', '24': '23', '25': '06', '26': '03' }; /* فاز ۲۶: کارت لیست خرید (۰۸) → لیست مقایسهٔ ۳۳ */
-  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش","36":"۳۶ — پیشنهادات درخواست · دستیار خرید"};
+  var TITLES = {"10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","11":"۱۱ — درخواست‌های خرید من · دستیار خرید","12":"۱۲ — فرم درخواست خرید · ارسال به چند تأمین‌کننده","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — پروفایل · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","20":"۲۰ — کارها · دستیار فروش","21":"۲۱ — خریداران علاقه‌مند · برنج هاشمی","22":"۲۲ — ویرایش کسب‌وکار · دستیار فروش","23":"۲۳ — لیست خرید سوپرمارکت آریا · دید فروشنده","24":"۲۴ — بازدیدکنندگان کاتالوگ · دستیار فروش","25":"۲۵ — ذخیره‌کنندگان کاتالوگ · دستیار فروش","26":"۲۶ — کالاهای کاتالوگ · دستیار فروش","27":"۲۷ — اعلان‌ها","28":"۲۸ — پیگیری پیشنهادها · دستیار فروش","01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا · دید خریدار","03":"۰۳ — جزئیات کالا · دید مالک","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","06":"۰۶ — پیشنهاد قیمت","07":"۰۷ — پروفایل · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","d1":"D1 — کاتالوگ من · دسکتاپ","d2":"D2 — لیست خرید + تابلوی تأمین · دسکتاپ","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ","29":"۲۹ — کیف پول و شارژ · دستیار فروش","30":"۳۰ — گزارش تبلیغ‌ها · دستیار فروش","31":"۳۱ — کمپین‌ها · دستیار خرید","32":"۳۲ — راهنمای تبلیغ · دستیار فروش","33":"۳۳ — لیست مقایسه · برنج هاشمی","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","35":"۳۵ — لیست خریداران ذخیره‌شده · دستیار فروش","36":"۳۶ — پیشنهادات درخواست · دستیار خرید","37":"۳۷ — نظر و ایده دربارهٔ دستیار خرید · بازخورد خریداران","38":"۳۸ — نظر و ایده دربارهٔ دستیار فروش · بازخورد فروشندگان"};
 
   var stack = [];
   var current = null;
@@ -8613,28 +8844,47 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   /* ═══ فاز ۲۹ — نظرات و امتیاز کاتالوگ (۱۳) ═══ */
   /* ۲۴ امتیاز کل (خیلی‌ها فقط ستاره می‌دهند و متن نمی‌نویسند) — ۴ نظرِ متنی نمایش داده می‌شود.
-     ثبت نظر جدید: میانگین/تعداد به‌روز + نظر با هویت کسب‌وکار فعال (سوپرمارکت آریا) بالای لیست. */
+     ثبت نظر جدید: میانگین/تعداد به‌روز + نظر با هویت کسب‌وکار فعال (سوپرمارکت آریا) بالای لیست.
+     فاز ۳۰ — پاسخ فروشنده به نظرات: هر نظر آرایهٔ replies دارد؛ پاسخ مالک کاتالوگ با seller:true
+     و نشان سبز «فروشنده» رندر می‌شود. دکمهٔ «پاسخ» زیر هر نظر جعبهٔ پاسخ باز می‌کند. */
   var CMNT_DATA = [
-    { n: 'سوپرمارکت نگین', av: '#0e7490', v: true, s: 5, when: '۳ روز پیش', tx: 'برنج همیشه نوبرداشت و تازه است؛ سه سال است سفارش‌های ماهانه‌مان را از همین کاتالوگ می‌زنیم و ارسال رشت همان روز انجام می‌شود.' },
+    { n: 'سوپرمارکت نگین', av: '#0e7490', v: true, s: 5, when: '۳ روز پیش', tx: 'برنج همیشه نوبرداشت و تازه است؛ سه سال است سفارش‌های ماهانه‌مان را از همین کاتالوگ می‌زنیم و ارسال رشت همان روز انجام می‌شود.', replies: [
+      { n: 'پخش برنج پارس', seller: true, when: '۳ روز پیش', tx: 'ممنون از اعتماد شما؛ سفارش‌های ماهانهٔ شما همیشه اول صف ارسال است.' }
+    ] },
     { n: 'رستوران سنتی بهار', av: '#b45309', v: false, s: 4, when: '۱ هفتهٔ پیش', tx: 'کیفیت پخت عالی و قیمت منصفانه است. فقط دو بار ارسال با تاخیر یک‌روزه داشتیم — در مجموع قابل اعتماد.' },
     { n: 'هایپر سفید', av: '#7c3aed', v: true, s: 5, when: '۲ هفتهٔ پیش', tx: 'قیمت‌های عمده واقعی است، نه نمایشی. تخفیف همکار بعد از چند سفارش خودکار فعال شد و حسابی به‌صرفه شد.' },
-    { n: 'خواربار مرکزی', av: '#c2703a', v: false, s: 3, when: '۳ هفتهٔ پیش', tx: 'برنج خوب است اما حداقل سفارش ۵ کیسه برای خرده‌فروشی کمی زیاد است؛ پاسخگویی پیام‌ها هم چند ساعت طول می‌کشد.' }
+    { n: 'خواربار مرکزی', av: '#c2703a', v: false, s: 3, when: '۳ هفتهٔ پیش', tx: 'برنج خوب است اما حداقل سفارش ۵ کیسه برای خرده‌فروشی کمی زیاد است؛ پاسخگویی پیام‌ها هم چند ساعت طول می‌کشد.', replies: [
+      { n: 'پخش برنج پارس', seller: true, when: '۲ هفتهٔ پیش', tx: 'حداقل سفارش به‌خاطر بسته‌بندی ۵۰ کیلویی است؛ از ماه بعد بستهٔ ۲۰ کیلویی هم اضافه می‌شود. پیام‌ها را هم صبح‌ها سریع‌تر جواب می‌دهیم.' }
+    ] }
   ];
   var cmBaseCnt = 24, cmBaseAvg = 4.4, cmPick = 0;
+  var cmReplyOpen = -1; /* فاز ۳۰ — ایندکس نظری که جعبهٔ پاسخِ باز دارد */
   function cmStarRow(s, cls) {
     var out = '';
     for (var i = 1; i <= 5; i++) out += '<svg' + (i <= s ? ' class="on"' : '') + '><use href="#i-star"/></svg>';
     return '<span class="stars' + (cls ? ' ' + cls : '') + '">' + out + '</span>';
   }
+  function cmReplyRow(r) {
+    return '<div class="cm-reply' + (r.seller ? ' seller' : '') + '">' +
+      '<div class="avatar-sm" style="width:24px;height:24px;font-size:10px;flex-shrink:0;background:' + (r.seller ? 'linear-gradient(135deg,#c2703a,#ea580c)' : (r.av || '#a8a29a')) + '">' + r.n.charAt(0) + '</div>' +
+      '<div class="rb">' +
+        '<div class="rh">' + r.n + (r.seller ? ' <span class="badge b-green" style="font-size:8.5px;padding:1px 6px">فروشنده</span>' : '') + '<span class="when">' + r.when + '</span></div>' +
+        '<div class="rt">' + r.tx + '</div>' +
+      '</div>' +
+    '</div>';
+  }
   function cmRender() {
     var host = document.getElementById('cm-list'); if (!host) return;
-    host.innerHTML = CMNT_DATA.map(function (c) {
+    host.innerHTML = CMNT_DATA.map(function (c, i) {
+      var reps = (c.replies || []).map(cmReplyRow).join('');
       return '<div class="cm-item' + (c.fresh ? ' fresh' : '') + '">' +
         '<div class="avatar-sm" style="background:' + c.av + '">' + c.n.charAt(0) + '</div>' +
         '<div class="cm-bd">' +
           '<div class="who">' + c.n + (c.v ? ' <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg>' : '') + cmStarRow(c.s, 'mini') + '</div>' +
           '<div class="cm-tx">' + c.tx + '</div>' +
-          '<div class="cm-when">' + c.when + '</div>' +
+          '<div class="cm-when"><span>' + c.when + '</span><button type="button" class="cm-repbtn" data-cmreply="' + i + '"><svg><use href="#i-reply"/></svg> پاسخ</button></div>' +
+          (reps ? '<div class="cm-replies">' + reps + '</div>' : '') +
+          (cmReplyOpen === i ? '<div class="cm-rbox"><input class="input" id="cm-rin" placeholder="پاسخ فروشنده به این نظر…" style="padding:8px 11px;font-size:11px"><button type="button" class="btn btn-primary btn-sm" data-cmrsend="' + i + '" style="flex-shrink:0">ارسال</button></div>' : '') +
         '</div>' +
       '</div>';
     }).join('');
@@ -8648,6 +8898,79 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var p = document.getElementById('cm-picker'); if (!p) return;
     p.querySelectorAll('svg').forEach(function (sv, i) { sv.classList.toggle('on', i < cmPick); });
   }
+  /* فاز ۳۰ — شیت نمای عمومی (۰۷): امتیاز کاتالوگ از همان state زندهٔ نظرات */
+  function pvSumRender() {
+    var a = document.getElementById('pv-avg'); if (a) a.textContent = faNum(Math.round(cmBaseAvg * 10) / 10).replace('.', '٫');
+    var st = document.getElementById('pv-avgstars'); if (st) st.innerHTML = cmStarRow(Math.round(cmBaseAvg), '');
+    var c = document.getElementById('pv-cnt'); if (c) c.textContent = 'از ' + faNum(cmBaseCnt) + ' نظر خریدار';
+  }
+
+  /* ═══ فاز ۳۰ — بازخورد و ایده‌ها (۳۷ خریداران · ۳۸ فروشندگان) ═══ */
+  /* پرسش و پاسخ: پست‌ها لایک می‌خورند و زیرشان پاسخ نوشته می‌شود؛ پاسخ تیم آیمچ با team:true
+     و نشان سبز «تیم آیمچ» متمایز است. هویت پست جدید = کسب‌وکار فعال کاربرِ همان بازو. */
+  var FB_DATA = {
+    '37': [
+      { n: 'سوپرمارکت نگین', av: '#0e7490', v: true, when: '۲ روز پیش', tx: 'کاش می‌شد قیمت چند فروشنده را کنار هم دید و با یک لمس برای همه درخواست خرید فرستاد.', likes: 14, liked: false, replies: [
+        { n: 'تیم آیمچ', team: true, when: '۲ روز پیش', tx: 'سلام! همین حالا هم می‌شود: در «درخواست خرید» چند تأمین‌کننده را با هم انتخاب کنید و یک فرم برای همه بفرستید. از تب «لیست خرید» شروع کنید.' }
+      ] },
+      { n: 'خواربار مرکزی', av: '#c2703a', v: false, when: '۵ روز پیش', tx: 'برای هر کالا دنبال‌کردن قیمت خوب است؛ ولی خبر وقتی قیمت واقعاً کم شد هم می‌رسد؟ آیکون زنگوله روی کاتالوگ خیلی کمک می‌کند.', likes: 9, liked: true, replies: [
+        { n: 'رستوران سنتی بهار', av: '#b45309', when: '۴ روز پیش', tx: 'من فقط زنگوله‌ها را روشن می‌کنم و صبر می‌کنم — تا حالا دو بار قیمت بهتر پیام داده.' },
+        { n: 'تیم آیمچ', team: true, when: '۳ روز پیش', tx: 'بله؛ «گوش به زنگ» همان این کار را می‌کند — به‌محض کاهش قیمت یا اعلام نیاز، اعلان می‌فرستد.' }
+      ] },
+      { n: 'هایپر سفید', av: '#7c3aed', v: true, when: '۱ هفتهٔ پیش', tx: 'لیست خرید گروه‌بندی‌شده عالی است؛ کاش برای هر گروه روز خرید جدا می‌شد set کرد تا سفارش هفتگی خودکار یادآوری شود.', likes: 6, liked: false, replies: [] }
+    ],
+    '38': [
+      { n: 'توزیع ارزاق رضایی', av: '#7c3aed', v: false, when: '۲ روز پیش', tx: 'درخواست‌های خرید خریداران خیلی خوب است؛ کاش می‌شد روی کالایی که عرضه می‌کنم «گوش به زنگ» شدم و هر خریداری که همان کالا را خواست زنگ بخورم.', likes: 11, liked: false, replies: [
+        { n: 'تیم آیمچ', team: true, when: 'دیروز', tx: 'سلام! این همان «گوش به زنگ» روی لیست خرید خریدار است — زنگولهٔ کنار هر کالا را روشن کنید؛ اعلام نیاز بعدی همان لحظه به شما می‌رسد.' }
+      ] },
+      { n: 'آریو غلات', av: '#b45309', v: true, when: '۴ روز پیش', tx: 'گزارش تبلیغ‌ها شفاف است و می‌بینم چه کسی کاتالوگ را ذخیره کرده. ولی کاش تماس گرفتن خریدار هم در همان گزارش می‌آمد.', likes: 8, liked: true, replies: [
+        { n: 'تیم آیمچ', team: true, when: '۳ روز پیش', tx: 'هوم! تماس‌ها هم همین حالا در «چه کسانی تماس گرفتند» گزارش می‌شوند؛ از گزارش تبلیغ‌ها بخش سوم را ببینید.' }
+      ] },
+      { n: 'کیان غلات', av: '#c2703a', v: false, when: '۱ هفتهٔ پیش', tx: 'کمپین خوب است ولی برای شروع، لینک کاتالوک را خودم می‌فرستم و مشتری جمع می‌کنم. مسیر رایگان‌اش همین است؟', likes: 5, liked: false, replies: [] }
+    ]
+  };
+  var fbReplyOpen = {}; /* '37:1' → جعبهٔ پاسخِ پست ۱ صفحهٔ ۳۷ باز است */
+  function fbWho(pid) {
+    /* هویت پست/پاسخ جدید = کسب‌وکار فعال همان بازو (۳۷: خریدار — ۳۸: فروشنده) */
+    return pid === '37'
+      ? { n: 'سوپرمارکت آریا', av: '#0e7490', v: true }
+      : { n: 'پخش برنج پارس', av: 'linear-gradient(135deg,#c2703a,#ea580c)', v: true };
+  }
+  function fbReplyRow(r) {
+    return '<div class="fb-reply' + (r.team ? ' team' : '') + '">' +
+      '<div class="avatar-sm" style="width:26px;height:26px;font-size:10.5px;flex-shrink:0;background:' + (r.team ? '#16a34a' : (r.av || '#a8a29a')) + '">' + r.n.charAt(0) + '</div>' +
+      '<div class="rb">' +
+        '<div class="rh">' + r.n + (r.team ? ' <span class="badge b-green" style="font-size:8.5px;padding:1px 6px">تیم آیمچ</span>' : '') + '<span class="when">' + r.when + '</span></div>' +
+        '<div class="rt">' + r.tx + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function fbRender(pid) {
+    var host = document.getElementById('fb-list-' + pid); if (!host) return;
+    var data = FB_DATA[pid] || [];
+    host.innerHTML = data.map(function (p, i) {
+      var reps = (p.replies || []).map(fbReplyRow).join('');
+      var key = pid + ':' + i;
+      return '<div class="fb-item' + (p.fresh ? ' fresh' : '') + '">' +
+        '<div class="fb-head">' +
+          '<div class="avatar-sm" style="background:' + p.av + '">' + p.n.charAt(0) + '</div>' +
+          '<div class="who">' + p.n + (p.v ? ' <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg>' : '') + '</div>' +
+          '<span class="when">' + p.when + '</span>' +
+        '</div>' +
+        '<div class="fb-tx">' + p.tx + '</div>' +
+        '<div class="fb-acts">' +
+          '<button type="button" class="fb-like' + (p.liked ? ' on' : '') + '" data-fblike="' + key + '"><svg><use href="#i-heart"/></svg> ' + faNum(p.likes || 0) + '</button>' +
+          '<button type="button" class="fb-repbtn" data-fbreply="' + key + '"><svg><use href="#i-reply"/></svg> پاسخ</button>' +
+          (p.replies && p.replies.length ? '<span style="font-size:10px;color:var(--muted-fg);align-self:center">' + faNum(p.replies.length) + ' پاسخ</span>' : '') +
+        '</div>' +
+        (reps ? '<div class="fb-replies">' + reps + '</div>' : '') +
+        (fbReplyOpen[key] ? '<div class="fb-rbox"><input class="input" id="fb-rin-' + key + '" placeholder="پاسختون به این نظر…" style="padding:8px 11px;font-size:11px"><button type="button" class="btn btn-primary btn-sm" data-fbrsend="' + key + '" style="flex-shrink:0">ارسال</button></div>' : '') +
+      '</div>';
+    }).join('');
+    var cnt = document.getElementById('fb-count-' + pid);
+    if (cnt) cnt.textContent = faNum(data.length) + ' نظر';
+  }
+  function fbRenderAll() { fbRender('37'); fbRender('38'); }
 
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   document.addEventListener('click', function (e) {
@@ -8994,6 +9317,109 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
+    /* فاز ۳۰ — «امکان پیام» (تنظیمات لیست خرید · ۰۸): روشن/خاموش → دکمهٔ پیام لیست عمومی (۲۳) پنهان/آشکار */
+    var msTg = t.closest('[data-msgtoggle]');
+    if (msTg) {
+      msTg.classList.toggle('on');
+      var msgOn = msTg.classList.contains('on');
+      var mBtn = document.querySelector('#scr-23 [data-msgbtn]');
+      if (mBtn) mBtn.hidden = !msgOn;
+      return;
+    }
+
+    /* ═══ فاز ۳۰ — پاسخ فروشنده به نظرات · نمای عمومی · صفحات بازخورد ═══ */
+
+    /* شیت نمای عمومی (۰۷): قبل از باز شدن، امتیاز کاتالوگ از state زندهٔ نظرات هم‌گام می‌شود */
+    var pvOpen = t.closest('[data-sheet="sheet-pubview"]');
+    if (pvOpen) { pvSumRender(); openSheet('sheet-pubview'); return; }
+
+    /* «پاسخ» زیر هر نظر (شیت نظرات): جعبهٔ پاسخ همان نظر باز/بسته می‌شود */
+    var cmr = t.closest('[data-cmreply]');
+    if (cmr) {
+      var ri = parseInt(cmr.dataset.cmreply, 10);
+      cmReplyOpen = (cmReplyOpen === ri) ? -1 : ri;
+      cmRender();
+      var rin = document.getElementById('cm-rin');
+      if (rin) rin.focus();
+      return;
+    }
+
+    /* ارسال پاسخ فروشنده: با هویت مالک کاتالوگ زیر همان نظر می‌نشیند */
+    var cmrs = t.closest('[data-cmrsend]');
+    if (cmrs) {
+      var ridx = parseInt(cmrs.dataset.cmrsend, 10);
+      var rin2 = document.getElementById('cm-rin');
+      var rtxt = rin2 ? rin2.value.trim() : '';
+      if (!rtxt) { if (rin2) rin2.focus(); return; }
+      var c0 = CMNT_DATA[ridx];
+      if (c0) {
+        c0.replies = c0.replies || [];
+        c0.replies.push({ n: 'پخش برنج پارس', seller: true, when: 'همین حالا', tx: rtxt });
+      }
+      cmReplyOpen = -1;
+      cmRender();
+      return;
+    }
+
+    /* ثبت ایده/نظر جدید (۳۷/۳۸): پست با هویت کسب‌وکار فعالِ همان بازو بالای لیست می‌نشیند */
+    var fbs = t.closest('[data-fbsend]');
+    if (fbs) {
+      var pid = fbs.dataset.fbsend;
+      var fin = document.getElementById('fb-text-' + pid);
+      var ftxt = fin ? fin.value.trim() : '';
+      var ferr = document.getElementById('fb-err-' + pid);
+      if (!ftxt) { if (ferr) ferr.hidden = false; if (fin) fin.focus(); return; }
+      var who = fbWho(pid);
+      FB_DATA[pid].unshift({ n: who.n, av: who.av, v: who.v, when: 'همین حالا', tx: ftxt, likes: 0, liked: false, replies: [], fresh: true });
+      fbRender(pid);
+      if (fin) fin.value = '';
+      if (ferr) ferr.hidden = true;
+      return;
+    }
+
+    /* لایک: روشن/خاموش + شمارش زنده */
+    var fbl = t.closest('[data-fblike]');
+    if (fbl) {
+      var lkey = fbl.dataset.fblike.split(':');
+      var lpost = (FB_DATA[lkey[0]] || [])[parseInt(lkey[1], 10)];
+      if (lpost) {
+        lpost.liked = !lpost.liked;
+        lpost.likes = (lpost.likes || 0) + (lpost.liked ? 1 : -1);
+        if (lpost.likes < 0) lpost.likes = 0;
+        fbRender(lkey[0]);
+      }
+      return;
+    }
+
+    /* «پاسخ» زیر هر پست (۳۷/۳۸): جعبهٔ پاسخ باز/بسته */
+    var fbr = t.closest('[data-fbreply]');
+    if (fbr) {
+      var rkey = fbr.dataset.fbreply;
+      fbReplyOpen[rkey] = !fbReplyOpen[rkey];
+      fbRender(rkey.split(':')[0]);
+      var frin = document.getElementById('fb-rin-' + rkey);
+      if (frin) frin.focus();
+      return;
+    }
+
+    /* ارسال پاسخ (۳۷/۳۸): پاسخ با هویت کاربر زیر همان پست می‌نشیند */
+    var fbrs = t.closest('[data-fbrsend]');
+    if (fbrs) {
+      var skey = fbrs.dataset.fbrsend.split(':');
+      var spun = (FB_DATA[skey[0]] || [])[parseInt(skey[1], 10)];
+      var srin = document.getElementById('fb-rin-' + fbrs.dataset.fbrsend);
+      var srtx = srin ? srin.value.trim() : '';
+      if (!srtx) { if (srin) srin.focus(); return; }
+      if (spun) {
+        spun.replies = spun.replies || [];
+        var rwho = fbWho(skey[0]);
+        spun.replies.push({ n: rwho.n, av: rwho.av, when: 'همین حالا', tx: srtx });
+      }
+      delete fbReplyOpen[fbrs.dataset.fbrsend];
+      fbRender(skey[0]);
+      return;
+    }
+
     /* شیت سوییچ دستیار */
     var ap = t.closest('.arm-pill');
     if (ap) {
@@ -9234,6 +9660,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   walletRender();
   cmRender();
   cmSumRender();
+  fbRenderAll(); /* فاز ۳۰ — پست‌های بازخورد ۳۷/۳۸ */
   var init = (location.hash || '').slice(1);
   go(el(init) ? init : '15', false);
 })();

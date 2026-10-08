@@ -50,10 +50,17 @@ const overflow = await page.evaluate(() => {
 });
 check('۰۲ بدون سرریز افقی داخل قاب', overflow === 0);
 
-// ناوبری دکمهٔ «مشاهده تابلوی تأمین» → صفحهٔ ۰۹
-await page.locator('#scr-02 button', { hasText: 'مشاهده تابلوی تأمین' }).click();
-await page.waitForTimeout(400);
-check('دکمهٔ «مشاهده تابلوی تأمین» → صفحهٔ ۰۹ باز می‌شود', (await page.evaluate(() => location.hash)) === '#09' && !(await page.$eval('#scr-09', el => el.hidden)));
+// فاز ۳۰ (هم‌گام): دکمهٔ «مشاهده تابلوی تأمین» به‌فرمان مالک حذف شد — هر تأمین‌کنندهٔ ویژه دکمهٔ «کاتالوگ» خودش را دارد → ۱۳
+const spBtns = await page.$$eval('#scr-02 .sp-row .btn', els => els.map(e => ({ txt: e.textContent.trim(), go: e.getAttribute('data-go') || '' })));
+check('۰۲ هر تأمین‌کنندهٔ ویژه دکمهٔ «کاتالوگ» دارد (→ ۱۳)', spBtns.length === 2 && spBtns.every(b => b.txt.includes('کاتالوگ') && b.go === '13'));
+check('۰۲ دکمهٔ «مشاهده تابلوی تأمین» حذف شد (فاز ۳۰)', !(await page.locator('#scr-02 button', { hasText: 'مشاهده تابلوی تأمین' }).count()));
+if (spBtns.length) {
+  await page.locator('#scr-02 .sp-row .btn').first().click();
+  await page.waitForTimeout(400);
+  check('۰۲ دکمهٔ کاتالوگ تأمین‌کنندهٔ ویژه → کاتالوگ عمومی (۱۳)', (await page.evaluate(() => location.hash)) === '#13' && !(await page.$eval('#scr-13', el => el.hidden)));
+  await page.goto(URL + '#02');
+  await page.waitForTimeout(400);
+}
 
 // اسکرین‌شات: بلوک‌های جدید
 await page.goto(URL + '#02');
