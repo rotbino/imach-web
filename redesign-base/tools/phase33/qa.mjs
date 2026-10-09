@@ -168,15 +168,15 @@ const C7 = await page.evaluate(() => {
   return {
     card: !!c,
     go: c.dataset.go,
-    cap: (c.querySelector('.pp-cap') || {}).textContent.trim(),
+    cap: c.querySelector('.pp-cap') ? c.querySelector('.pp-cap').textContent : null, /* فاز ۳۵ (مالک): عنوان حذف شد — باید null بماند */
     name: (c.querySelector('.pp-name') || {}).textContent,
     sub: (c.querySelector('.pp-sub') || {}).textContent,
     img: (c.querySelector('.pp-av img') || {}).src || '',
     beforeBiz: c.compareDocumentPosition(document.querySelector('#scr-07 .biz-card')) & Node.DOCUMENT_POSITION_FOLLOWING
   };
 });
-check('۰۷: کارت «پروفایل شخصی» با عکس + نام «احمد رضایی» → ۴۲ — بالای کارت کسب‌وکار',
-  C7.card && C7.go === '42' && C7.cap === 'پروفایل شخصی' && C7.name === 'احمد رضایی' && C7.img.includes('png/users/me.jpg') && C7.beforeBiz);
+check('۰۷: کارت پروفایل شخصی با عکس + نام «احمد رضایی» → ۴۲ — بالای کارت کسب‌وکار — بدون عنوان (فاز ۳۵)',
+  C7.card && C7.go === '42' && C7.cap === null && C7.name === 'احمد رضایی' && C7.img.includes('png/users/me.jpg') && C7.beforeBiz);
 await page.locator('#phone').screenshot({ path: OUT + '/07-personal-card.png' });
 
 await nav('14');

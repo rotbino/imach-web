@@ -960,9 +960,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* کارت کسب‌وکار (current business) در پروفایل فروشنده (۰۷) و خرید (۱۴) —
      فاز ۳۰: سلکتورها به ۱۴ هم تعمیم یافت؛ بدون این قید، SVGهای کارت در ۱۴ بی‌اندازه و غول‌آسا می‌شدند */
   #scr-07 .biz-card, #scr-14 .biz-card { padding: 12px 14px 13px; cursor: pointer; }
-  #scr-07 .biz-top, #scr-14 .biz-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  #scr-07 .biz-cap, #scr-14 .biz-cap { font-size: 11px; font-weight: 800; color: var(--muted-fg); display: flex; align-items: center; gap: 5px; }
-  #scr-07 .biz-cap svg, #scr-14 .biz-cap svg { width: 13px; height: 13px; }
+  /* فاز ۳۵: biz-top/biz-cap حذف شدند — عنوان «کسب و کار» دیگر نیست؛ آیکون‌ها روبروی نام‌اند */
   #scr-07 .biz-acts, #scr-14 .biz-acts { display: flex; align-items: center; gap: 2px; }
   #scr-07 .biz-edit, #scr-14 .biz-edit { border: 0; background: none; cursor: pointer; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: var(--stone-soft); }
   #scr-07 .biz-edit:active, #scr-14 .biz-edit:active { background: var(--stone-tint); }
@@ -1267,13 +1265,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #sheet-video .vd-learn .li { display: flex; gap: 7px; font-size: 11px; line-height: 1.95; color: var(--stone-soft); }
   #sheet-video .vd-learn .li svg { width: 12px; height: 12px; color: var(--green); flex-shrink: 0; margin-top: 5px; }
 
-  /* ═══ فاز ۳۳ — ۱) پروفایل شخصی: کارت در ۰۷/۱۴ + صفحهٔ ۴۲ + شیت انتخاب تصویر ═══ */
+  /* ═══ فاز ۳۳ — ۱) پروفایل شخصی: کارت در ۰۷/۱۴ + صفحهٔ ۴۲ + شیت انتخاب تصویر ═══
+     فاز ۳۵: عنوان کارت (pp-cap) حذف شد — عکس خودش گویاست؛ سلکتور مرده پاک شد */
   .pp-card { cursor: pointer; }
   .pp-row { display: flex; align-items: center; gap: 12px; }
   .pp-av { width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0; overflow: hidden; background: linear-gradient(135deg, #c2703a, #ea580c); color: #fff; display: grid; place-items: center; font-size: 20px; font-weight: 700; }
   .pp-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .pp-cap { font-size: 9.5px; font-weight: 800; color: var(--muted-fg); display: flex; align-items: center; gap: 4px; margin-bottom: 7px; }
-  .pp-cap svg { width: 11px; height: 11px; }
   .pp-meta { flex: 1; min-width: 0; }
   .pp-name { font-size: 15px; font-weight: 700; }
   .pp-sub { font-size: 10.5px; color: var(--muted-fg); margin-top: 3px; line-height: 1.7; }
@@ -1361,6 +1358,45 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #dlg-terms .tm-foot { padding: 10px 16px 14px; border-top: 1px solid var(--border); flex-shrink: 0; }
   #dlg-terms .tm-foot .btn { width: 100%; }
 
+  /* ═══ فاز ۳۵ — پروفایل‌ها (۰۷/۱۴): فاصلهٔ عمودی یکنواخت بین باکس‌ها ═══
+     مالک: بخشی از کارت‌ها به هم چسبیده بودند و صفحه زشت شده بود؛ همهٔ فرزندانِ مستقیمِ
+     بدنهٔ پروفایل با یک مارجین عمودی واحد (۱۳px) از هم جدا می‌شوند (مارجین‌های همسایه
+     collapse می‌شوند، پس فاصله‌ها واقعاً یکنواخت می‌مانند). */
+  #scr-07 .screen-body > * + *, #scr-14 .screen-body > * + * { margin-top: 13px; }
+  /* فاز ۳۵: حذف عنوان‌های «پروفایل شخصی» و «کسب و کار» — آیکون‌های مداد/کمبو روبروی نام کسب‌وکار */
+  #scr-07 .biz-acts, #scr-14 .biz-acts { align-self: flex-start; margin-top: 1px; flex-shrink: 0; }
+
+  /* ═══ فاز ۳۵ — فرم کالا (۰۴): «محصولات برند» چندانتخابی + بسته‌بندی نوع/تعداد ═══ */
+  .bp-list { display: flex; flex-direction: column; gap: 9px; margin-top: 10px; }
+  .bp-item { border: 1px solid var(--border); border-radius: 13px; background: #fff; overflow: hidden; }
+  .bp-item.on { border-color: var(--primary); }
+  .bp-row { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: none; padding: 9px 11px; cursor: pointer; font: inherit; text-align: right; }
+  .bp-chk { width: 21px; height: 21px; border-radius: 7px; border: 1.5px solid var(--border-strong); background: rgba(255,255,255,.94); display: grid; place-items: center; color: #fff; flex-shrink: 0; box-shadow: 0 1px 3px rgba(42,39,35,.1); }
+  .bp-chk svg { width: 12px; height: 12px; display: none; }
+  .bp-item.on .bp-chk { background: var(--primary); border-color: var(--primary); }
+  .bp-item.on .bp-chk svg { display: block; }
+  .bp-th { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; display: block; background: linear-gradient(135deg, #f3f1ea, #e9e5db); flex-shrink: 0; }
+  .bp-th-new { display: grid; place-items: center; color: #a8a29a; }
+  .bp-th-new svg { width: 20px; height: 20px; }
+  .bp-meta { flex: 1; min-width: 0; }
+  .bp-meta b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.65; }
+  .bp-meta small { display: block; font-size: 10px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .bp-specs { padding: 2px 11px 11px; border-top: 1px dashed #eee9dd; background: #fcfbf8; }
+  .bp-specs .field { margin-top: 8px; }
+  .bp-specs .field:first-of-type { margin-top: 9px; }
+  .bp-newhead { display: flex; gap: 7px; align-items: flex-start; font-size: 10px; line-height: 1.9; background: var(--green-bg); border: 1px solid #d9eee2; color: var(--green); border-radius: 9px; padding: 7px 10px; margin-top: 9px; font-weight: 600; }
+  .bp-newhead svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 4px; }
+
+  /* فاز ۳۵ — بسته‌بندی فروش عمده: «تعداد در …» با تکست‌باکس عددی کم‌عرض + واحد پایهٔ نوع کالا */
+  .pkg-cnt { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+  .pkg-cnt label { font-size: 11.5px; font-weight: 700; flex-shrink: 0; }
+  .pkg-cnt-row { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+  .pkg-num { width: 74px; text-align: center; font-weight: 800; padding: 8px 6px; flex-shrink: 0; }
+  .pkg-unit { font-size: 11px; color: var(--muted-fg); font-weight: 600; }
+
+  /* فاز ۳۵ — فیلد توضیحات (همهٔ مسیرهای فرم کالا): تک‌خطی‌تر و سبک‌تر از input معمولی */
+  #scr-04 textarea.input { font-family: inherit; line-height: 1.9; resize: none; }
+
 </style>
 </head>
 <body>
@@ -1440,6 +1476,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5.5-4-10.5-11-11z"/></symbol>
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8.2 5.4v13.2c0 .8.9 1.3 1.6.9l10-6.6a1 1 0 000-1.8l-10-6.6c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></symbol>
 <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.2A2.2 2.2 0 015.2 6h1.9l1.4-2h6.9l1.4 2h1.9A2.2 2.2 0 0121 8.2v9.6a2.2 2.2 0 01-2.2 2.2H5.2A2.2 2.2 0 013 17.8z"/><circle cx="12" cy="13" r="3.6"/></symbol>
+<!-- فاز ۳۵ — تم تاریک/روشن (پروفایل‌ها) -->
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 14.5A8.5 8.5 0 019.6 3.9a8.5 8.5 0 1010.6 10.6z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4L19 19M19 5l-1.6 1.6M6.6 17.4L5 19"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -1683,6 +1722,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:12.5px">
             <span style="color:var(--muted-fg)">موجودی</span><span class="badge b-green">۱۲۰ کیسه موجود</span>
           </div>
+        </div>
+
+        <!-- ═══ فاز ۳۵ (مالک) — توضیحات فروشنده: همان فیلدِ توضیحاتِ فرم ثبت کالا (۰۴) ═══
+             هر اطلاعاتی که این‌جا نمایش داده می‌شود باید در فرم ثبت هم قابل ورود باشد
+             (و بالعکس) — متن زیر از فیلد «توضیحات» فرم ۰۴ می‌آید؛ خالی باشد، کارت نمایش داده نمی‌شود. -->
+        <div class="card" style="margin-top:10px">
+          <div style="font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-comment"/></svg>
+            توضیحات فروشنده
+          </div>
+          <div style="font-size:11px;line-height:2;color:var(--stone-soft)">ارسال روزانه از انبار رشت · تسویه نقدی یا چک صیادی برای مشتریان همکار · امکان تحویل حضوری از بنگاه.</div>
         </div>
 
         <!-- فروشنده — فاز ۲۶: لمس کارت فروشنده → کاتالوگ او (۱۳) -->
@@ -1945,33 +1995,37 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- ═══ گام ۱: گود — نوع کالا از جدول مرجع iMach ═══ -->
+      <!-- ═══ گام ۱: نوع کالا (سابقاً «گود») — فاز ۳۵ (مالک): واژهٔ «گود» برای کاربر فارسی‌زبان
+           نامفهوم بود؛ همه‌جا «نوع کالا» شد. جدول مرجع همچنان پشت‌صحنه همان گود است. ═══ -->
       <div class="field">
-        <label>گود <span class="opt">— نوع کالا در جدول مرجع iMach</span></label>
+        <label>نوع کالا</label>
         <button class="searchbar gf-pick" data-sheet="sheet-goodpick">
           <svg><use href="#i-search"/></svg>
-          <span id="gf-good" style="color:var(--foreground);font-weight:700">برنج هاشمی</span>
+          <span id="gf-good" style="color:var(--foreground);font-weight:700">پفک</span>
           <span class="chg">تغییر</span>
         </button>
-        <div class="hint" id="gf-good-path">غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کنندهٔ این گود: کیلوگرم</div>
+        <div class="hint" id="gf-good-path">تنقلات ‹ اسنک ‹ پفک · واحد مصرف‌کننده: کیلوگرم</div>
       </div>
 
-      <!-- ═══ گام ۲: برند دارد؟ ═══ -->
+      <!-- ═══ گام ۲: برند دارد؟ — فاز ۳۵ (مالک):
+           ▸ سوال «آیا …» شد؛ گزینه‌ها «برند دارد» / «فله یا بدون برند».
+           ▸ در حالت اولیه هیچ‌کدام انتخاب نیست (کاربر مجبور است یکی را بردارد).
+           ▸ تا انتخاب نشود، هیچ بخشی از فرم (فله/برند) لود نمی‌شود. ═══ -->
       <div class="field">
-        <label>این کالا برند دارد؟</label>
+        <label>آیا این کالا برند دارد؟</label>
         <div class="pillchoice">
           <button class="pill" data-gmode="brand">برند دارد</button>
-          <button class="pill active" data-gmode="felle">فله (بدون برند)</button>
+          <button class="pill" data-gmode="felle">فله یا بدون برند</button>
         </div>
       </div>
 
-      <!-- ═══ مسیر فله: ویژگی‌های گود + ورود دستی مشخصات ═══ -->
-      <div id="gf-felle">
+      <!-- ═══ مسیر فله (پفک): ویژگی‌های نوع کالا + ورود دستی مشخصات ═══ -->
+      <div id="gf-felle" hidden>
 
         <div class="sec-title" style="margin-top:4px"><h2>مشخصات کالا</h2></div>
 
         <div class="field">
-          <label>کیفیت <span class="opt">— ویژگی‌های گود</span></label>
+          <label>کیفیت <span class="opt">— ویژگی‌های نوع کالا</span></label>
           <div class="pillchoice">
             <button class="pill">معمولی</button>
             <button class="pill active">ممتاز</button>
@@ -1980,18 +2034,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
         <div class="field">
-          <label>بوجار <span class="opt">— ویژگی‌های گود</span></label>
+          <label>اندازه <span class="opt">— ویژگی‌های نوع کالا</span></label>
           <div class="pillchoice">
-            <button class="pill active">درجه یک</button>
-            <button class="pill">درجه دو</button>
-            <button class="pill">سوپر</button>
+            <button class="pill">ریز</button>
+            <button class="pill active">متوسط</button>
+            <button class="pill">درشت</button>
           </div>
         </div>
 
         <div class="field" style="margin-top:6px">
           <label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label>
           <div class="gallery-add">
-            <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">۵۰ کیلو</span></div>
+            <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">۱۰ کیلو</span></div>
             <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">جزئیات</span></div>
             <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
             <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
@@ -2000,86 +2054,197 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="sec-title" style="margin-top:4px"><h2>قیمت و شرایط فروش</h2></div>
 
+        <!-- فاز ۳۵ (مالک): عبارت «واحد مصرف‌کنندهٔ گود» از کنار قیمت حذف شد —
+             همین که کاربر واحد را در راهنمای نوع کالا می‌بیند کافی است. -->
         <div class="field">
-          <label>قیمت هر کیلوگرم <button class="info-i" data-sheet="sheet-priceinfo" title="قیمت پایه چیست؟"><svg><use href="#i-info-v2"/></svg></button> <span class="opt">— واحد مصرف‌کنندهٔ گود</span></label>
+          <label>قیمت هر کیلوگرم <button class="info-i" data-sheet="sheet-priceinfo" title="قیمت پایه چیست؟"><svg><use href="#i-info-v2"/></svg></button></label>
           <div class="input">
-            <span style="color:var(--foreground);font-weight:700">۵۷٬۰۰۰</span>
+            <span style="color:var(--foreground);font-weight:700">۸۵٬۰۰۰</span>
             <span class="suffix">تومان</span>
           </div>
           <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
         </div>
 
+        <!-- ═══ فاز ۳۵ (مالک) — بسته‌بندی فروش عمده: نوع + تعداد ═══
+             IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی — عیناً طبق خواستهٔ مالک):
+             ▸ کاربر فقط «نوع بسته‌بندی» را انتخاب می‌کند (گونی / کارتن / کیسه / …).
+             ▸ سپس «تعداد واحد پایه در هر بسته» را خودش در تکست‌باکس عددیِ کم‌عرض وارد می‌کند
+                (مثال مالک: کارتن انتخاب شد + واحد پایه «عدد» ← «تعداد در کارتن [۲۵] عدد»).
+             ▸ واحد پایه از «نوع کالا» (گود) می‌آید و این‌جا قابل تغییر نیست (اینجا: کیلوگرم).
+             ▸ گزینهٔ «سایر» شیت واحدها را باز می‌کند: جستجو، انتخاب، و در نبودِ واحدِ موردنظر،
+                ساخت واحد جدید — همان الگوی «انتخاب یا ثبت برند».
+             ▸ قیمت هر بسته = تعداد × قیمت واحد پایه؛ خودکار حساب و در راهنما نمایش داده می‌شود. -->
         <div class="field">
-          <label>بسته‌بندی فروش عمده <span class="opt">— خودت تعیین می‌کنی</span></label>
+          <label>نوع بسته‌بندی فروش عمده</label>
           <div class="pillchoice">
-            <button class="pill">کیلوگرم</button>
-            <button class="pill">کیسه ۱۰ کیلویی</button>
-            <button class="pill active">کیسه ۵۰ کیلویی</button>
+            <button class="pill" data-pack="گونی">گونی</button>
+            <button class="pill active" data-pack="کارتن">کارتن</button>
+            <button class="pill" data-pack="کیسه">کیسه</button>
+            <button class="pill pkg-other" data-pack="سایر" data-sheet="sheet-unitpick">سایر…</button>
           </div>
-          <div class="hint">قیمت هر بسته خودکار از قیمت کیلوگرم حساب می‌شود — کیسه ۵۰ کیلویی: ۲٬۸۵۰٬۰۰۰ تومان</div>
+          <div class="pkg-cnt">
+            <label id="gf-pkg-label">تعداد در کارتن</label>
+            <span class="pkg-cnt-row">
+              <input class="input pkg-num" value="۱۰" inputmode="numeric" aria-label="تعداد در کارتن">
+              <span class="pkg-unit">کیلوگرم</span>
+            </span>
+          </div>
+          <div class="hint">واحد پایه (کیلوگرم) از نوع کالا می‌آید — قیمت هر بسته خودکار حساب می‌شود: کارتن ۱۰ کیلویی = ۸۵۰٬۰۰۰ تومان</div>
         </div>
 
         <div style="display:flex;gap:9px">
           <div class="field" style="flex:1">
             <label>موجودی</label>
             <div class="input">
-              <span style="color:var(--foreground);font-weight:700">۱۲۰</span>
-              <span class="suffix">کیسه</span>
+              <span style="color:var(--foreground);font-weight:700">۸۰</span>
+              <span class="suffix">کارتن</span>
             </div>
           </div>
           <div class="field" style="flex:1">
             <label>حداقل سفارش</label>
             <div class="input">
-              <span style="color:var(--foreground);font-weight:700">۵</span>
-              <span class="suffix">کیسه</span>
+              <span style="color:var(--foreground);font-weight:700">۲</span>
+              <span class="suffix">کارتن</span>
             </div>
           </div>
         </div>
+
+        <!-- ═══ فاز ۳۵ (مالک) — فیلد توضیحات کنار قیمت/حجم/موجودی ═══
+             IMPLEMENTATION NOTE (هماهنگی فیلدها با کاتالوگ — طبق خواستهٔ مالک):
+             هر اطلاعاتی که در جزئیات کالای کاتالوگ (۰۲) نمایش داده می‌شود باید این‌جا وارد شود:
+             عکس ✓ · ویژگی‌های نوع کالا (کیفیت/اندازه) ✓ · بسته‌بندی و تعداد ✓ · قیمت ✓ ·
+             حداقل سفارش ✓ · موجودی ✓ · توضیحات/شرایط فروش ✓ (جدید — در ۰۲ زیر «توضیحات فروشنده» دیده می‌شود).
+             فیلدهای سطح بالاتر (تخفیف پلکانی/همکار، تبلیغ، وضعیت موجودی) بعداً از تنظیمات خود کالا (۰۳) مدیریت می‌شوند.
+             همهٔ فیلدها اختیاری‌اند مگر قیمت — بدون قیمت، کالا در نمای عمومی دیده نمی‌شود. -->
+        <div class="field">
+          <label>توضیحات <span class="opt">— اختیاری</span></label>
+          <textarea class="input" rows="3" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
+        </div>
       </div>
 
-      <!-- ═══ مسیر برنددار: برند ← کالای مرجع (با عکس) ← مشخصات فروش ═══ -->
+      <!-- ═══ فاز ۳۵ — مسیر برنددار: برند ← «محصولات برند» (چندانتخابی) ← مشخصات فروش هر محصول ═══
+           IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی — عیناً طبق خواستهٔ مالک):
+           ▸ بعد از انتخاب برند، محصولاتِ آن برند برای این نوع کالا (مثلاً پفک) لود می‌شود؛
+             عنوان بخش «محصولات برند» است — واژهٔ «کالای مرجع» به کاربر گفته نمی‌شود (پشت‌صحنه همان است).
+           ▸ کاربر می‌تواند چند محصول را «همزمان» تیک بزند؛ به محض تیک، مشخصات فروش همان محصول
+             زیر همان ردیف باز می‌شود (قیمت / حداقل حجم / موجودی / توضیحات) — هر محصول یک ردیف.
+           ▸ ممکن است همهٔ محصولات برند در آیمچ ثبت نشده باشد (مثلاً اشی مشی ۴ نوع پفک دارد و ۲ تای آن این‌جاست):
+             با «محصول جدید این برند…» محصول تازه ساخته می‌شود، مثل بقیه تیک می‌خورد و عکس/واحدش
+             همان‌جا وارد می‌شود؛ ثبت او برای فروشندگان بعدی هم در جدول مرجع می‌ماند. -->
       <div id="gf-brand" hidden>
 
-        <div class="sec-title" style="margin-top:4px"><h2>برند و کالای مرجع</h2></div>
+        <div class="sec-title" style="margin-top:4px"><h2>برند و محصولات</h2></div>
 
+        <!-- فاز ۳۵ (مالک): راهنمای «برندت در فهرست نیست؟…» حذف شد —
+             همان پیام، فشرده و سرراست، زیر عنوان شیت انتخاب برند نشسته است -->
         <div class="field">
-          <label>برند <span class="opt" id="gf-brand-scope">— برندهای مرتبط با گود «پفک»</span></label>
+          <label>برند <span class="opt" id="gf-brand-scope">— برندهای مرتبط با «پفک»</span></label>
           <button class="searchbar gf-pick" data-sheet="sheet-brandpick">
             <svg><use href="#i-search"/></svg>
             <span id="gf-brandname" style="color:var(--foreground);font-weight:700">اشی مشی</span>
             <span class="chg">تغییر</span>
           </button>
-          <div class="hint">برندت در فهرست نیست؟ در همان صفحه «ثبت برند جدید» را بزن — ثبت و انتخاب با هم انجام می‌شود.</div>
         </div>
 
-        <!-- کالاهای مرجعِ برند — همراه با عکس -->
+        <!-- ═══ محصولات برند — چندانتخابی؛ مشخصات فروش زیر هر ردیف ═══ -->
         <div id="gf-refs">
           <div class="field">
-            <label>کالای مرجع <span class="opt">— محصولات ثبت‌شدهٔ این برند</span></label>
-            <div class="ggrid">
-              <button class="gcell" data-prodsel>
-                <span class="gth"><img src="png/goods/pofak-small.jpg" alt="پفک اشی مشی — بسته کوچک"></span>
-                <span class="gn">پفک اشی مشی · بسته کوچک</span>
-                <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-              </button>
-              <button class="gcell on" data-prodsel>
-                <span class="gth"><img src="png/goods/pofak-big.jpg" alt="پفک اشی مشی — بسته بزرگ"></span>
-                <span class="gn">پفک اشی مشی · بسته بزرگ</span>
-                <span class="gchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-              </button>
+            <label>محصولات برند <span class="opt">— محصول‌های ثبت‌شدهٔ «اشی مشی» برای پفک</span></label>
+            <div class="bp-list" id="bp-list">
+
+              <div class="bp-item">
+                <button class="bp-row" data-bptick type="button">
+                  <span class="bp-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                  <img class="bp-th" src="png/goods/pofak-small.jpg" alt="پفک اشی مشی — بسته کوچک">
+                  <span class="bp-meta">
+                    <b>پفک اشی مشی · بسته کوچک</b>
+                    <small>واحد فروش عمده: کارتن ۱۰۰ عددی · ۱۰۰ عدد</small>
+                  </span>
+                </button>
+                <div class="bp-specs" hidden>
+                  <div class="field">
+                    <label>قیمت هر کارتن ۱۰۰ عددی</label>
+                    <div class="input">
+                      <span style="color:var(--foreground);font-weight:700">۲۴۰٬۰۰۰</span>
+                      <span class="suffix">تومان</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:8px">
+                    <div class="field" style="flex:1">
+                      <label>حداقل حجم خرید</label>
+                      <div class="input"><span style="color:var(--foreground);font-weight:700">۱۰</span><span class="suffix">کارتن</span></div>
+                    </div>
+                    <div class="field" style="flex:1">
+                      <label>موجودی</label>
+                      <div class="input"><span style="color:var(--foreground);font-weight:700">۴۵</span><span class="suffix">کارتن</span></div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label>توضیحات <span class="opt">— اختیاری</span></label>
+                    <textarea class="input" rows="2" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bp-item">
+                <button class="bp-row" data-bptick type="button">
+                  <span class="bp-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                  <img class="bp-th" src="png/goods/pofak-big.jpg" alt="پفک اشی مشی — بسته بزرگ">
+                  <span class="bp-meta">
+                    <b>پفک اشی مشی · بسته بزرگ</b>
+                    <small>واحد فروش عمده: کارتن ۵۰ عددی · ۵۰ عدد</small>
+                  </span>
+                </button>
+                <div class="bp-specs" hidden>
+                  <div class="field">
+                    <label>قیمت هر کارتن ۵۰ عددی</label>
+                    <div class="input">
+                      <span style="color:var(--foreground);font-weight:700">۴۸۵٬۰۰۰</span>
+                      <span class="suffix">تومان</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:8px">
+                    <div class="field" style="flex:1">
+                      <label>حداقل حجم خرید</label>
+                      <div class="input"><span style="color:var(--foreground);font-weight:700">۲</span><span class="suffix">کارتن</span></div>
+                    </div>
+                    <div class="field" style="flex:1">
+                      <label>موجودی</label>
+                      <div class="input"><span style="color:var(--foreground);font-weight:700">۸۰</span><span class="suffix">کارتن</span></div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label>توضیحات <span class="opt">— اختیاری</span></label>
+                    <textarea class="input" rows="2" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- فاز ۳۵ (مالک): ممکن است همهٔ محصولات برند ثبت نشده باشد (اشی مشی ۴ نوع پفک دارد،
+                 ۲ تای آن این‌جاست) — محصولات تازه همین‌جا ساخته و همزمان ثبت می‌شوند -->
+            <button class="add-row" data-reveal="bp-newprod"><svg><use href="#i-plus"/></svg> محصول دیگری از این برند در لیست نیست؟ محصول جدید بساز</button>
+            <div id="bp-newprod" hidden>
+              <div class="field">
+                <label>نام محصول جدید</label>
+                <input class="input" id="bp-newprod-input" placeholder="مثلاً پفک اشی مشی · بسته خانواده">
+              </div>
+              <button class="btn btn-primary sheet-cta" data-bpnew type="button">افزودن به فهرست و شروع ثبت</button>
+              <div class="hintnote">محصول جدید مثل بقیه تیک می‌خورد؛ عکس و واحد فروش عمده‌اش را همان‌جا وارد می‌کنی و برای فروشندگان بعدی هم در جدول مرجع ذخیره می‌شود.</div>
             </div>
           </div>
           <div class="refcard">
             <svg><use href="#i-verified"/></svg>
-            <div>از کالای مرجع پر شد: عکس، «واحد فروش عمده» (کارتن ۵۰ عددی) و «تعداد در بسته» (۵۰ عدد) خودکار از جدول مرجع آمد — فقط قیمت و حداقل حجم خرید را وارد کن.</div>
+            <div>عکس و واحد فروش عمدهٔ هر محصول خودکار از جدول مرجع آیمچ می‌آید — قیمت، حداقل حجم خرید، موجودی و توضیحاتِ هر کدام را در همان ردیف وارد کن؛ هر چه تیک بخورد، همزمان در کاتالوگ ثبت می‌شود.</div>
           </div>
         </div>
 
-        <!-- برندِ بدون کالای مرجع — ورود دستی -->
+        <!-- برندِ بدون محصول ثبت‌شده — ورود دستی -->
         <div id="gf-norefs" hidden>
           <div class="callout" style="margin-top:4px">
             <svg><use href="#i-info"/></svg>
-            <div>برای این برند هنوز کالای مرجعی در iMach ثبت نشده — عکس و مشخصات را خودت وارد کن؛ ثبت تو به‌عنوان کالای مرجع برای فروشندگان بعدی هم ذخیره می‌شود.</div>
+            <div>برای این برند هنوز محصولی ثبت نشده است. لطفا خودت عکس و مشخصات این کالا رو ثبت کن.</div>
           </div>
           <div class="field">
             <label>نام محصول</label>
@@ -2104,33 +2269,35 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
             </div>
           </div>
-        </div>
 
-        <div class="sec-title" style="margin-top:4px"><h2>قیمت و شرایط فروش</h2></div>
-
-        <div class="field">
-          <label><span id="gf-price-label">قیمت هر کارتن ۵۰ عددی</span> <button class="info-i" data-sheet="sheet-priceinfo" title="قیمت پایه چیست؟"><svg><use href="#i-info-v2"/></svg></button></label>
-          <div class="input">
-            <span style="color:var(--foreground);font-weight:700">۴۸۵٬۰۰۰</span>
-            <span class="suffix">تومان</span>
-          </div>
-          <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
-        </div>
-
-        <div style="display:flex;gap:9px">
-          <div class="field" style="flex:1">
-            <label>حداقل حجم خرید</label>
+          <div class="sec-title" style="margin-top:4px"><h2>قیمت و شرایط فروش</h2></div>
+          <div class="field">
+            <label>قیمت هر کارتن ۵۰ عددی</label>
             <div class="input">
-              <span style="color:var(--foreground);font-weight:700">۲</span>
-              <span class="suffix">کارتن</span>
+              <span style="color:var(--foreground);font-weight:700">۴۸۵٬۰۰۰</span>
+              <span class="suffix">تومان</span>
+            </div>
+            <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
+          </div>
+          <div style="display:flex;gap:9px">
+            <div class="field" style="flex:1">
+              <label>حداقل حجم خرید</label>
+              <div class="input">
+                <span style="color:var(--foreground);font-weight:700">۲</span>
+                <span class="suffix">کارتن</span>
+              </div>
+            </div>
+            <div class="field" style="flex:1">
+              <label>موجودی</label>
+              <div class="input">
+                <span style="color:var(--foreground);font-weight:700">۸۰</span>
+                <span class="suffix">کارتن</span>
+              </div>
             </div>
           </div>
-          <div class="field" style="flex:1">
-            <label>موجودی</label>
-            <div class="input">
-              <span style="color:var(--foreground);font-weight:700">۸۰</span>
-              <span class="suffix">کارتن</span>
-            </div>
+          <div class="field">
+            <label>توضیحات <span class="opt">— اختیاری</span></label>
+            <textarea class="input" rows="3" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
           </div>
         </div>
       </div>
@@ -2405,9 +2572,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- ═══ فاز ۳۳ — پروفایل شخصی: عکس و نامِ خودِ کاربر (جدا از کسب‌وکار) ═══
            IMPLEMENTATION NOTE (مالک): کاربر در صفحهٔ پروفایل یک کادر «پروفایل شخصی» هم دارد که
            عکس و نامش را نشان می‌دهد؛ لمس = صفحهٔ ۴۲ (ویرایش تصویر + نام/نام خانوادگی + جنسیت + تاریخ تولد).
-           این مشخصات به «کاربر» تعلق دارد نه کسب‌وکار — در هر دو پروفایل فروش (۰۷) و خرید (۱۴) همان است. -->
+           این مشخصات به «کاربر» تعلق دارد نه کسب‌وکار — در هر دو پروفایل فروش (۰۷) و خرید (۱۴) همان است.
+           فاز ۳۵ (مالک): عنوانِ «پروفایل شخصی» حذف شد — با دیدنِ عکس روشن است که پروفایلِ خودِ کاربر است. -->
       <div class="card pp-card" data-go="42">
-        <span class="pp-cap"><svg><use href="#i-user"/></svg> پروفایل شخصی</span>
         <span class="pp-row">
           <span class="pp-av" data-ppav><img src="png/users/me.jpg" alt="تصویر پروفایل شخصی"></span>
           <span class="pp-meta">
@@ -2422,24 +2589,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی): کاربر می‌تواند چند کسب‌وکار داشته باشد که هر کدام
            کاتالوگ و بازوی فروش خودش را دارد. «کسب‌وکارِ فعال» (current business) از همین کارت انتخاب می‌شود و
            از آن پس همه‌چیز (کاتالوگ، کارها، پیام‌ها، کیف پول تبلیغ) در سطح سیستم به همین کسب‌وکار تعلق می‌گیرد.
-           تعویض کسب‌وکار فقط سوییچ زمینه است — نه خروج از حساب. آیکون مداد = ویرایش همان فرم ویرایش کسب‌وکار (۲۲). -->
+           تعویض کسب‌وکار فقط سوییچ زمینه است — نه خروج از حساب. آیکون مداد = ویرایش همان فرم ویرایش کسب‌وکار (۲۲).
+           فاز ۳۵ (مالک): عنوانِ «کسب و کار» حذف شد — نام کسب‌وکار خودش عنوان است؛
+           مداد (ویرایش ۲۲) و کمبو (تعویض کسب‌وکار) روبروی نام، در ردیفِ عنوان نشستند. -->
       <div class="card biz-card" data-sheet="sheet-biz">
-        <div class="biz-top">
-          <span class="biz-cap">
-            <svg><use href="#i-store"/></svg>
-            کسب و کار
-          </span>
+        <div class="showcase" style="padding:0;margin:0;gap:11px">
+          <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+          <div class="meta">
+            <div class="name" style="font-size:16.5px;font-weight:800">پخش برنج پارس</div>
+            <div class="sub">احمد رضایی · پخش مواد غذایی · رشت</div>
+          </div>
           <span class="biz-acts">
             <button class="biz-edit" data-go="22" aria-label="ویرایش کسب‌وکار" title="ویرایش کسب‌وکار"><svg><use href="#i-pencil"/></svg></button>
             <svg class="biz-dd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
           </span>
-        </div>
-        <div class="showcase" style="padding:0;margin:0">
-          <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
-          <div class="meta">
-            <div class="name" style="font-size:17px">پخش برنج پارس</div>
-            <div class="sub">احمد رضایی · پخش مواد غذایی · رشت</div>
-          </div>
         </div>
       </div>
 
@@ -2508,7 +2671,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- ابزار رشد -->
-      <div class="card" style="margin-top:10px">
+      <div class="card">
         <div style="font-size:13px;font-weight:700;margin-bottom:3px">ابزار رشد کاتالوگ</div>
         <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin-bottom:10px">لینک کاتالوگتان را برای مشتری‌ها بفرستید — هر ثبت‌نام از لینک شما، خودکار مشتری شما می‌شود.</div>
         <div style="display:flex;gap:8px">
@@ -2519,7 +2682,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- فاز ۲۳ — تبلیغات: هر دو نوع، همیشه در دسترس -->
-      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-spark"/></svg> تبلیغات</h2></div>
+      <div class="sec-title"><h2><svg><use href="#i-spark"/></svg> تبلیغات</h2></div>
       <div class="card" style="padding:0 14px">
         <div data-sheet="sheet-campaign" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-spark"/></svg>
@@ -2571,6 +2734,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- حساب کاربری -->
       <div class="sec-title"><h2>حساب کاربری</h2></div>
       <div class="card" style="padding:0 14px">
+        <!-- فاز ۳۵ (مالک): تم تاریک / روشن — در پروتوتایپ فقط نمایشی است (لازم نیست کار کند).
+             IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی): سوییچ، data-theme را روی <html> می‌گذارد و
+             پالتِ تاریک با متغیرهای CSS جداگانه (پس‌زمینه/کارت/متن/حاشیه) اعمال می‌شود؛ انتخاب کاربر در
+             localStorage می‌ماند و در هر دو پروفایل (۰۷/۱۴) — مثل مشخصات شخصی — به «کاربر» تعلق دارد. -->
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-moon"/></svg>
+          <span style="flex:1">تم تاریک / روشن</span>
+          <div class="toggle" aria-label="تغییر تم"></div>
+        </div>
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-globe"/></svg>
           <span style="flex:1">زبان / Language</span>
@@ -2759,14 +2931,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
-        <button class="tab active">
-          <svg><use href="#i-list"/></svg>
-          لیست خرید
-        </button>
+        <!-- فاز ۳۵ (مالک): «کارها» اول — هماهنگ با فوتر فروش -->
         <button class="tab">
           <svg><use href="#i-tasks"/></svg>
           کارها
           <span class="badge">۶</span>
+        </button>
+        <button class="tab active">
+          <svg><use href="#i-list"/></svg>
+          لیست خرید
         </button>
         <button class="tab">
           <svg><use href="#i-spark"/></svg>
@@ -3538,9 +3711,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- ═══ فاز ۳۳ — پروفایل شخصی (همان کارت ۰۷): مشخصات به کاربر تعلق دارد، نه بازو ═══ -->
+      <!-- ═══ فاز ۳۳ — پروفایل شخصی (همان کارت ۰۷): مشخصات به کاربر تعلق دارد، نه بازو ═══
+           فاز ۳۵ (مالک): عنوان «پروفایل شخصی» حذف شد — عکس خودش گویاست -->
       <div class="card pp-card" data-go="42">
-        <span class="pp-cap"><svg><use href="#i-user"/></svg> پروفایل شخصی</span>
         <span class="pp-row">
           <span class="pp-av" data-ppav><img src="png/users/me.jpg" alt="تصویر پروفایل شخصی"></span>
           <span class="pp-meta">
@@ -3555,24 +3728,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- IMPLEMENTATION NOTE (مالک): کسب‌وکار به کاربر تعلق دارد، نه به کاتالوگ یا دستیار خرید.
            هر کاربر می‌تواند یک یا چند کسب‌وکار داشته باشد و هر کسب‌وکار یک دستیار خرید و یک دستیار فروش دارد.
            همان کسب‌وکارها هم از کاتالوگ (۰۷) و هم از این‌جا انتخاب یا ایجاد می‌شوند — تعویض کسب‌وکار
-           فقط سوییچ زمینه است، نه خروج از حساب. آیکون مداد = فرم ویرایش کسب‌وکار (۲۲). -->
+           فقط سوییچ زمینه است، نه خروج از حساب. آیکون مداد = فرم ویرایش کسب‌وکار (۲۲).
+           فاز ۳۵ (مالک): عنوان «کسب و کار» حذف شد؛ مداد و کمبو روبروی نام کسب‌وکار نشستند (مثل ۰۷). -->
       <div class="card biz-card" data-sheet="sheet-biz">
-        <div class="biz-top">
-          <span class="biz-cap">
-            <svg><use href="#i-store"/></svg>
-            کسب و کار
-          </span>
+        <div class="showcase" style="padding:0;margin:0;gap:11px">
+          <div class="avatar-lg" style="background:#0e7490">ن</div>
+          <div class="meta">
+            <div class="name" style="font-size:16.5px;font-weight:800">سوپرمارکت نگین</div>
+            <div class="sub">نگار محمدی · سوپرمارکت و پخش · قزوین</div>
+          </div>
           <span class="biz-acts">
             <button class="biz-edit" data-go="22" aria-label="ویرایش کسب‌وکار" title="ویرایش کسب‌وکار"><svg><use href="#i-pencil"/></svg></button>
             <svg class="biz-dd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
           </span>
-        </div>
-        <div class="showcase" style="padding:0;margin:0">
-          <div class="avatar-lg" style="background:#0e7490">ن</div>
-          <div class="meta">
-            <div class="name" style="font-size:17px">سوپرمارکت نگین</div>
-            <div class="sub">نگار محمدی · سوپرمارکت و پخش · قزوین</div>
-          </div>
         </div>
       </div>
 
@@ -3583,7 +3751,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- میان‌برها -->
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+      <div style="display:flex;flex-direction:column;gap:8px">
         <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer;padding:11px 13px" data-go="08">
           <div style="width:36px;height:36px;border-radius:10px;background:var(--stone-tint);display:grid;place-items:center;color:var(--stone)">
             <svg style="width:18px;height:18px"><use href="#i-list"/></svg>
@@ -3652,6 +3820,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- تنظیمات کسب‌وکار -->
       <div class="sec-title"><h2>تنظیمات کسب‌وکار</h2></div>
       <div class="card" style="padding:0 14px">
+        <!-- فاز ۳۵ (مالک): تم تاریک / روشن — در پروتوتایپ فقط نمایشی است (لازم نیست کار کند)؛
+             پیاده‌سازی عملیاتی در کامنت همین ردیف در پروفایل فروش (۰۷) توضیح داده شده است -->
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-moon"/></svg>
+          <span style="flex:1">تم تاریک / روشن</span>
+          <div class="toggle" aria-label="تغییر تم"></div>
+        </div>
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-user"/></svg>
           <span style="flex:1">نام و لوگو</span>
@@ -3671,7 +3846,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <div class="card" style="margin-top:10px;display:flex;align-items:center;gap:9px;padding:12px 14px;font-size:13px;color:var(--red);cursor:pointer">
+      <div class="card" style="display:flex;align-items:center;gap:9px;padding:12px 14px;font-size:13px;color:var(--red);cursor:pointer">
         <svg style="width:16px;height:16px"><use href="#i-logout"/></svg>
         خروج از حساب
       </div>
@@ -3680,14 +3855,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
-        <button class="tab">
-          <svg><use href="#i-list"/></svg>
-          لیست خرید
-        </button>
+        <!-- فاز ۳۵ (مالک): «کارها» اول نشست تا فوتر خرید با فوتر فروش (۲۰ اول) هماهنگ باشد -->
         <button class="tab">
           <svg><use href="#i-tasks"/></svg>
           کارها
           <span class="badge">۶</span>
+        </button>
+        <button class="tab">
+          <svg><use href="#i-list"/></svg>
+          لیست خرید
         </button>
         <button class="tab">
           <svg><use href="#i-spark"/></svg>
@@ -6015,14 +6191,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
-        <button class="tab">
-          <svg><use href="#i-list"/></svg>
-          لیست خرید
-        </button>
+        <!-- فاز ۳۵ (مالک): «کارها» اول — هماهنگ با فوتر فروش -->
         <button class="tab">
           <svg><use href="#i-tasks"/></svg>
           کارها
           <span class="badge">۶</span>
+        </button>
+        <button class="tab">
+          <svg><use href="#i-list"/></svg>
+          لیست خرید
         </button>
         <button class="tab active">
           <svg><use href="#i-spark"/></svg>
@@ -6690,14 +6867,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
-        <button class="tab">
-          <svg><use href="#i-list"/></svg>
-          لیست خرید
-        </button>
+        <!-- فاز ۳۵ (مالک): «کارها» اول — هماهنگ با فوتر فروش -->
         <button class="tab active">
           <svg><use href="#i-tasks"/></svg>
           کارها
           <span class="badge">۶</span>
+        </button>
+        <button class="tab">
+          <svg><use href="#i-list"/></svg>
+          لیست خرید
         </button>
         <button class="tab">
           <svg><use href="#i-spark"/></svg>
@@ -6912,7 +7090,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب کن الان کدام را ببینی</div>
   <button class="sheet-row" data-arm-go="buy">
     <span class="ico buy"><svg><use href="#i-basket"/></svg></span>
-    <span class="tx"><b>دستیار خرید</b><span>لیست خرید · کارها · درخواست‌های خرید</span></span>
+    <span class="tx"><b>دستیار خرید</b><span>کارها · لیست خرید · درخواست‌های خرید</span></span>
     <svg class="check" data-check="buy" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <button class="sheet-row" data-arm-go="sell">
@@ -7655,62 +7833,63 @@ body > div[id^="scr-d"][hidden] { display: none; }
 </div>
 
 <!-- ═══ ۸-پ) فاز ۲۱ — انتخاب گود (جدول مرجع آیمچ) ═══ -->
-<div class="sheet" id="sheet-goodpick" role="dialog" aria-label="انتخاب گود">
+<div class="sheet" id="sheet-goodpick" role="dialog" aria-label="انتخاب نوع کالا">
   <div class="grab"></div>
-  <h3>انتخاب گود</h3>
-  <div class="sub">گود یعنی نوع کالا در جدول مرجع آیمچ — مثل «برنج» یا «پفک». کالای بدون برند مستقیم روی گود ثبت می‌شود؛ کالای برنددار از روی «کالای مرجع» همان برند.</div>
+  <!-- فاز ۳۵ (مالک): «گود» → «نوع کالا» در همه‌جا؛ توضیح تعریفِ گود حذف شد (کاربر لازمش ندارد) -->
+  <h3>انتخاب نوع کالا</h3>
+  <div class="sub">نوع کالای مورد نظرت را جستجو کن — مثل «برنج» یا «پفک».</div>
   <div class="sheet-search">
-    <input class="input" value="پفک" placeholder="جستجوی گود…">
+    <input class="input" value="پفک" placeholder="جستجوی نوع کالا…">
   </div>
-  <div class="grp">نتیجه‌های جستجو — ۳ گود</div>
-  <button class="sheet-row" data-goodpick="brand" data-gname="پفک" data-gpath="تنقلات ‹ اسنک ‹ پفک · ۸ برند مرتبط">
-    <span class="tx"><b>پفک</b><span>تنقلات ‹ اسنک · دارای برند و کالای مرجع</span></span>
+  <div class="grp">نتیجه‌های جستجو — ۳ نوع کالا</div>
+  <button class="sheet-row" data-gname="پفک" data-gpath="تنقلات ‹ اسنک ‹ پفک · واحد مصرف‌کننده: کیلوگرم">
+    <span class="tx"><b>پفک</b><span>تنقلات ‹ اسنک · دارای برند</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" data-goodpick="felle" data-gname="رنگ پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ رنگ پفک · واحد مصرف‌کننده: کیلوگرم">
+  <button class="sheet-row" data-gname="رنگ پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ رنگ پفک · واحد مصرف‌کننده: کیلوگرم">
     <span class="tx"><b>رنگ پفک</b><span>مواد اولیه ‹ افزودنی خوراکی · بدون برند</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" data-goodpick="felle" data-gname="نشاسته برای پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ نشاسته · واحد مصرف‌کننده: کیلوگرم">
+  <button class="sheet-row" data-gname="نشاسته برای پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ نشاسته · واحد مصرف‌کننده: کیلوگرم">
     <span class="tx"><b>نشاسته برای پفک</b><span>مواد اولیه ‹ افزودنی خوراکی · بدون برند</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <div class="grp">پرجستجوترین‌ها</div>
-  <button class="sheet-row" data-goodpick="felle" data-gname="برنج هاشمی" data-gpath="غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کننده: کیلوگرم">
+  <button class="sheet-row" data-gname="برنج هاشمی" data-gpath="غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کننده: کیلوگرم">
     <span class="tx"><b>برنج هاشمی</b><span>غلات و حبوبات ‹ برنج</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <button class="add-row" data-reveal="gp-new"><svg><use href="#i-plus"/></svg> گودی که می‌خواهی در فهرست نیست؟ گود جدید بساز</button>
+  <button class="add-row" data-reveal="gp-new"><svg><use href="#i-plus"/></svg> نوع کالای مورد نظرت در فهرست نیست؟ نوع کالای جدید بساز</button>
   <div id="gp-new" hidden>
     <div class="field">
-      <label>نام گود جدید</label>
+      <label>نام نوع کالای جدید</label>
       <input class="input" id="gp-new-input" placeholder="مثلاً کشمش سبز">
     </div>
-    <button class="btn btn-primary sheet-cta" data-goodnew>ثبت و انتخاب این گود</button>
-    <div class="hintnote">گود جدید اول برای کالای خودت ثبت می‌شود و بعد از بازبینی ادمین برای همهٔ کاربران آیمچ نمایش داده می‌شود.</div>
+    <button class="btn btn-primary sheet-cta" data-goodnew>ثبت و انتخاب این نوع کالا</button>
+    <div class="hintnote">نوع کالای جدید اول برای کالای خودت ثبت می‌شود و بعد از بازبینی ادمین برای همهٔ کاربران آیمچ نمایش داده می‌شود.</div>
   </div>
   <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
 </div>
 
-<!-- ═══ ۸-ت) فاز ۲۱ — انتخاب برند (برندهای مرتبط با گود) ═══ -->
-<div class="sheet" id="sheet-brandpick" role="dialog" aria-label="انتخاب برند">
+<!-- ═══ ۸-ت) فاز ۲۱ — انتخاب برند (برندهای مرتبط با نوع کالا) · فاز ۳۵: عنوان و متن طبق مالک ═══ -->
+<div class="sheet" id="sheet-brandpick" role="dialog" aria-label="انتخاب یا ثبت برند">
   <div class="grab"></div>
-  <h3>انتخاب برند</h3>
-  <div class="sub">برندهای مرتبط با گود «پفک» — اگر برندت نیست، همان‌جا ثبتش کن؛ ثبت و انتخاب با هم انجام می‌شود.</div>
+  <h3>انتخاب یا ثبت برند</h3>
+  <div class="sub">اگر برند مورد نظرت در لیست نیست، خودت ثبتش کن</div>
   <div class="sheet-search">
     <input class="input" value="اشی" placeholder="جستجوی برند…">
   </div>
   <div class="grp">برندهای «پفک»</div>
   <button class="sheet-row" data-brandpick="1" data-bname="اشی مشی">
-    <span class="tx"><b>اشی مشی</b><span>۲ کالای مرجع · ثبت‌شده توسط ادمین</span></span>
+    <span class="tx"><b>اشی مشی</b><span>۲ محصول · ثبت‌شده توسط ادمین</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-brandpick="0" data-bname="چیتوز">
-    <span class="tx"><b>چیتوز</b><span>بدون کالای مرجع — با ثبت تو کامل می‌شود</span></span>
+    <span class="tx"><b>چیتوز</b><span>بدون محصول — با ثبت تو کامل می‌شود</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-brandpick="0" data-bname="مینو">
-    <span class="tx"><b>مینو</b><span>بدون کالای مرجع — با ثبت تو کامل می‌شود</span></span>
+    <span class="tx"><b>مینو</b><span>بدون محصول — با ثبت تو کامل می‌شود</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="add-row" data-reveal="bp-new"><svg><use href="#i-plus"/></svg> برند جدید ثبت کن</button>
@@ -7720,7 +7899,52 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <input class="input" id="bp-new-input" placeholder="مثلاً آزاده">
     </div>
     <button class="btn btn-primary sheet-cta" data-brandnew>ثبت و انتخاب این برند</button>
-    <div class="hintnote">برند جدید همزمان با ثبت کالای تو انتخاب می‌شود و بعد از تأیید ادمین در فهرست برندهای همین گود می‌آید.</div>
+    <div class="hintnote">برند جدید همزمان با ثبت کالای تو انتخاب می‌شود و بعد از تأیید ادمین در فهرست برندهای همین نوع کالا می‌آید.</div>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
+</div>
+
+<!-- ═══ ۸-ت-۲) فاز ۳۵ — شیت واحدها (گزینهٔ «سایر» بسته‌بندی فروش عمده) ═══
+     IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی — طبق خواستهٔ مالک):
+     ▸ گزینهٔ «سایر…» کنار گونی/کارتن/کیسه این شیت را باز می‌کند: جستجو و انتخاب واحد دلخواه؛
+       اگر واحد مورد نظر نبود، کاربر همان‌جا واحد جدید می‌سازد (الگوی انتخاب یا ثبت برند).
+     ▸ واحد پایه (اینجا کیلوگرم) از نوع کالا می‌آید و در این شیت نیست — فقط «نوع بسته‌بندی» انتخاب می‌شود. -->
+<div class="sheet" id="sheet-unitpick" role="dialog" aria-label="انتخاب واحد بسته‌بندی">
+  <div class="grab"></div>
+  <h3>انتخاب یا ساخت واحد</h3>
+  <div class="sub">نوع بسته‌بندی مورد نظرت را جستجو و انتخاب کن — اگر نبود، خودت بساز.</div>
+  <div class="sheet-search">
+    <input class="input" placeholder="جستجوی واحد…">
+  </div>
+  <div class="grp">واحدهای پرکاربرد</div>
+  <button class="sheet-row" data-unitpick="گونی">
+    <span class="tx"><b>گونی</b><span>معمول در خواربار فله</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-unitpick="جعبه">
+    <span class="tx"><b>جعبه</b><span>گروهی از بسته‌ها</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-unitpick="شانه">
+    <span class="tx"><b>شانه</b><span>موارد شمارشی مثل نوشیدنی</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-unitpick="بسته">
+    <span class="tx"><b>بسته</b><span>بسته‌بندی خرد</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-unitpick="پالت">
+    <span class="tx"><b>پالت</b><span>حمل انبوه با لیفتراک</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="add-row" data-reveal="up-new"><svg><use href="#i-plus"/></svg> واحد مورد نظرت نیست؟ واحد جدید بساز</button>
+  <div id="up-new" hidden>
+    <div class="field">
+      <label>نام واحد جدید</label>
+      <input class="input" id="up-new-input" placeholder="مثلاً خرجی">
+    </div>
+    <button class="btn btn-primary sheet-cta" data-unitnew>ثبت و انتخاب این واحد</button>
+    <div class="hintnote">واحد جدید بعد از بازبینی ادمین به فهرست واحدهای آیمچ اضافه می‌شود.</div>
   </div>
   <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
 </div>
@@ -7738,7 +7962,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <div class="sheet" id="sheet-scan" role="dialog" aria-label="اسکنر بارکد">
   <div class="grab"></div>
   <h3>اسکنر بارکد</h3>
-  <div class="sub">بارکد هر کالا را بگیر — با گود و کالای مرجع آیمچ تطبیق داده می‌شود و پیش‌نویس کالا آماده می‌شود؛ فقط قیمت و شرایط فروش را وارد کن.</div>
+  <div class="sub">بارکد هر کالا را بگیر — با نوع کالا و محصولات ثبت‌شدهٔ آیمچ تطبیق داده می‌شود و پیش‌نویس کالا آماده می‌شود؛ فقط قیمت و شرایط فروش را وارد کن.</div>
   <div class="scanframe">
     <svg viewBox="0 0 64 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M6 2v36M12 2v36M17 2v24M23 2v36M29 2v16M34 2v36M40 2v24M46 2v36M52 2v16M58 2v36"/></svg>
     <span>بارکد را داخل کادر نگه دارید</span>
@@ -7746,11 +7970,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="grp">اسکن‌های این نشست — ۲ کالا</div>
   <button class="sheet-row" style="cursor:default">
     <span class="ico"><svg><use href="#i-check"/></svg></span>
-    <span class="tx"><b>پفک اشی مشی · بسته بزرگ</b><span>تطبیق شد با کالای مرجع — کارتن ۵۰ عددی</span></span>
+    <span class="tx"><b>پفک اشی مشی · بسته بزرگ</b><span>تطبیق شد با محصول ثبت‌شده — کارتن ۵۰ عددی</span></span>
   </button>
   <button class="sheet-row" style="cursor:default">
     <span class="ico"><svg><use href="#i-check"/></svg></span>
-    <span class="tx"><b>روغن سرخ‌کردنی ۱.۶ لیتری</b><span>تطبیق شد با گود «روغن آفتابگردنی» — بدون برند</span></span>
+    <span class="tx"><b>روغن سرخ‌کردنی ۱.۶ لیتری</b><span>تطبیق شد با نوع کالا «روغن آفتابگردنی» — بدون برند</span></span>
   </button>
   <button class="btn btn-primary sheet-cta" data-close>ادامه — تکمیل کالاهای اسکن‌شده</button>
 </div>
@@ -7759,7 +7983,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <div class="sheet" id="sheet-xlsx" role="dialog" aria-label="بارگذاری اکسل">
   <div class="grab"></div>
   <h3>بارگذاری اکسل</h3>
-  <div class="sub">فهرست کالاها را یک‌جا بار بگذار — آیمچ نام هر ردیف را با گود و کالای مرجع تطبیق می‌دهد و پیش‌نویس می‌سازد؛ تو فقط بازبینی کن و قیمت بگذار.</div>
+  <div class="sub">فهرست کالاها را یک‌جا بار بگذار — آیمچ نام هر ردیف را با نوع کالا و محصولات ثبت‌شده تطبیق می‌دهد و پیش‌نویس می‌سازد؛ تو فقط بازبینی کن و قیمت بگذار.</div>
   <button class="up-box">
     <span class="uic"><svg><use href="#i-upload"/></svg></span>
     <span class="tx"><b>فایل اکسل کالاها</b><span>XLSX یا CSV · حداکثر ۵ مگابایت · ۱۰۰۰ ردیف</span></span>
@@ -9084,7 +9308,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* موتور پروتوتایپ — فقط رفتار؛ هیچ عنصری از دیزاین تغییر نمی‌کند */
   var ARM_HOME = { sell: '01', buy: '08' };
   /* فاز ۳۱: «کاتالوک‌ها» (۱۰) از فوتر خرید حذف شد — از میان‌بر پروفایل در دسترس است؛ «کارها» (۳۹) جای آن */
-  var TABS = { sell: ['20', '01', '05', '18', '07'], buy: ['08', '39', '31', '18', '14'] }; /* فاز ۲۶: «پیشنهادها» حذف — فوتر استاندارد ۵ تبی */
+  var TABS = { sell: ['20', '01', '05', '18', '07'], buy: ['39', '08', '31', '18', '14'] }; /* فاز ۲۶: «پیشنهادها» حذف — فوتر استاندارد ۵ تبی · فاز ۳۵ (مالک): «کارها» اول — هماهنگ با فوتر فروش */
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
@@ -9095,8 +9319,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
       ['07', 'پروفایل', '<svg><use href="#i-user"/></svg>', '']
     ],
     buy: [
-      ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
       ['39', 'کارها', '<svg><use href="#i-tasks"/></svg>', '<span class="badge">۶</span>'],
+      ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
       ['31', 'کمپین‌ها', '<svg><use href="#i-spark"/></svg>', ''],
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
       ['14', 'پروفایل', '<svg><use href="#i-user"/></svg>', '']
@@ -9300,37 +9524,57 @@ body > div[id^="scr-d"][hidden] { display: none; }
     });
   }
 
-  /* ── فاز ۲۱: فرم افزودن کالا — جریان گود ← برند ← کالای مرجع ── */
-  var GMODES = {
-    felle: { good: 'برنج هاشمی', path: 'غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کنندهٔ این گود: کیلوگرم' },
-    brand: { good: 'پفک', path: 'تنقلات ‹ اسنک ‹ پفک · ۸ برند مرتبط' }
-  };
+  /* ── فاز ۲۱/۳۵: فرم افزودن کالا — نوع کالا ← آیا برند دارد؟ ← (فله | برند و محصولات) ──
+     فاز ۳۵ (مالک): گامِ برند دیگر پیش‌انتخاب نیست؛ سوال «آیا این کالا برند دارد؟» بدون
+     پاسخ شروع می‌شود و هیچ بخشی (فله/برند) تا انتخاب کاربر لود نمی‌شود. */
+  function gfSetGood(name, path) {
+    var gN = document.getElementById('gf-good');
+    if (gN && name) gN.textContent = name;
+    var gP = document.getElementById('gf-good-path');
+    if (gP && path) gP.textContent = path;
+    var sc = document.getElementById('gf-brand-scope');
+    if (sc) sc.textContent = '— برندهای مرتبط با «' + (gN ? gN.textContent : 'پفک') + '»';
+    gfSetMode(null); /* با نوع کالای تازه، سوال برند از نو پرسیده می‌شود */
+  }
   function gfSetBrand(name, hasRefs) {
     var bn = document.getElementById('gf-brandname');
     if (bn) bn.textContent = name;
     var refs = document.getElementById('gf-refs');
     var nof = document.getElementById('gf-norefs');
-    var lbl = document.getElementById('gf-price-label');
     if (refs) refs.hidden = !hasRefs;
     if (nof) nof.hidden = !!hasRefs;
-    if (lbl) lbl.textContent = hasRefs ? 'قیمت هر کارتن ۵۰ عددی' : 'قیمت هر واحد فروش عمده';
     var nn = document.getElementById('gf-norefs-name');
-    if (nn) nn.textContent = 'پفک ' + name + ' · بسته بزرگ';
+    var gN = document.getElementById('gf-good');
+    if (nn) nn.textContent = (gN ? gN.textContent : 'پفک') + ' ' + name + ' · بسته بزرگ';
   }
   function gfSetMode(mode) {
-    var m = GMODES[mode] ? mode : 'felle';
+    var m = (mode === 'brand' || mode === 'felle') ? mode : null;
     document.querySelectorAll('#scr-04 .pillchoice .pill[data-gmode]').forEach(function (p) {
       p.classList.toggle('active', p.dataset.gmode === m);
     });
-    var goodEl = document.getElementById('gf-good');
-    var pathEl = document.getElementById('gf-good-path');
-    if (goodEl) goodEl.textContent = GMODES[m].good;
-    if (pathEl) pathEl.textContent = GMODES[m].path;
     var fel = document.getElementById('gf-felle');
     var brd = document.getElementById('gf-brand');
     if (fel) fel.hidden = (m !== 'felle');
     if (brd) brd.hidden = (m !== 'brand');
-    if (m === 'brand') gfSetBrand('اشی مشی', true);
+  }
+  /* فاز ۳۵: نوع بسته‌بندی فروش عمده — برچسب «تعداد در …» با نوعِ انتخاب‌شده هم‌گام می‌شود */
+  function gfSetPack(name) {
+    var lbl = document.getElementById('gf-pkg-label');
+    if (lbl) lbl.textContent = 'تعداد در ' + name;
+  }
+  /* فاز ۳۵: واحد انتخاب‌شده از شیت واحدها جای «سایر…» می‌نشیند
+     (پیلِ «سایر» با کلاس pkg-other علامت می‌خورد تا بعد از تغییر نام هم پیدا شود؛
+     data-sheet روی آن می‌ماند — لمس دوباره، شیت انتخاب واحدِ دیگری را باز می‌کند) */
+  function gfUnitApply(unit) {
+    var other = document.querySelector('#scr-04 .pill.pkg-other');
+    if (other) {
+      other.textContent = unit;
+      other.dataset.pack = unit;
+      other.classList.add('active');
+      var sibs = other.parentElement.querySelectorAll('.pill');
+      for (var i = 0; i < sibs.length; i++) if (sibs[i] !== other) sibs[i].classList.remove('active');
+    }
+    gfSetPack(unit);
   }
 
   /* ── فاز ۲۲: تاریخچهٔ رویدادهای کالا — «نتایج حضور در آیمچ» ──
@@ -9741,7 +9985,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       { t: 'شروع کار با دستیار فروش', dur: '۲:۳۰', d: 150, img: 'png/01-sell-catalog.png',
         learn: ['ساخت کاتالوگ و شروع حضور آنلاین', 'افزودن اولین کالا با قیمت و موجودی', 'خلاصهٔ وضعیت فروش از «کارها»'] },
       { t: 'ساخت کاتالوگ و افزودن کالا', dur: '۳:۱۲', d: 192, img: 'png/04-product-form.png',
-        learn: ['انتخاب گود، برند و واحد فروش عمده', 'قیمت، حداقل سفارش و موجودی هر کالا', 'ویرایش سریع قیمت و موجودی بعداً از صفحهٔ کالا'] },
+        learn: ['انتخاب نوع کالا، برند و واحد فروش عمده', 'قیمت، حداقل سفارش و موجودی هر کالا', 'ویرایش سریع قیمت و موجودی بعداً از صفحهٔ کالا'] },
       { t: 'پاسخ به درخواست‌های خرید', dur: '۲:۲۲', d: 142, img: 'png/06-sell-request-detail.png',
         learn: ['دیدن درخواست‌های خرید خریداران عمده', 'ارسال پیشنهاد قیمت با شرایط تحویل', 'پیگیری پیشنهادها تا نتیجهٔ نهایی'] },
       { t: 'تخفیف پلکانی و تخفیف همکار', dur: '۱:۵۵', d: 115, img: 'png/p32/03-manage-three.png',
@@ -10415,23 +10659,63 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }
     if (t.closest('#backdrop')) { closeSheet(); return; }
 
-    /* ── فاز ۲۱: کالای مرجع — انتخاب رادیویی (فقط یکی) ── */
-    var ps = t.closest('[data-prodsel]');
-    if (ps) {
-      ps.parentElement.querySelectorAll('.gcell').forEach(function (c) { c.classList.remove('on'); });
-      ps.classList.add('on');
+    /* ── فاز ۳۵: تیک چندگانهٔ «محصولات برند» — مشخصات فروش زیر همان ردیف باز/بسته می‌شود ── */
+    var bpt = t.closest('[data-bptick]');
+    if (bpt) {
+      var bpItem = bpt.closest('.bp-item');
+      if (bpItem) {
+        var bpOn = bpItem.classList.toggle('on');
+        var bpSpecs = bpItem.querySelector('.bp-specs');
+        if (bpSpecs) bpSpecs.hidden = !bpOn;
+      }
       return;
     }
 
-    /* ── فاز ۲۱: انتخاب گود از شیت جستجو ── */
-    var gp = t.closest('[data-goodpick]');
+    /* ── فاز ۳۵: ساخت محصول جدیدِ برند — ردیف تیک‌خورده با فرم کامل به فهرست اضافه می‌شود ──
+       (اشی مشی ۴ نوع پفک دارد و ۲ تای آن در لیست است؛ محصول تازه همین‌جا ساخته و ثبت می‌شود) */
+    var bpn = t.closest('[data-bpnew]');
+    if (bpn) {
+      var bpInp = document.getElementById('bp-newprod-input');
+      var bpVal = bpInp && bpInp.value.trim() ? bpInp.value.trim() : 'پفک اشی مشی · بسته خانواده';
+      var bpHost = document.getElementById('bp-list');
+      if (bpHost) {
+        var bpItem2 = document.createElement('div');
+        bpItem2.className = 'bp-item on';
+        bpItem2.innerHTML = '<button class="bp-row" data-bptick type="button">' +
+          '<span class="bp-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
+          '<span class="bp-th bp-th-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.2A2.2 2.2 0 015.2 6h1.9l1.4-2h6.9l1.4 2h1.9A2.2 2.2 0 0121 8.2v9.6a2.2 2.2 0 01-2.2 2.2H5.2A2.2 2.2 0 013 17.8z"/><circle cx="12" cy="13" r="3.6"/></svg></span>' +
+          '<span class="bp-meta"><b>' + bpVal + '</b><small>محصول جدید — عکس و واحد فروش عمده را همین‌جا وارد کن</small></span>' +
+          '</button>' +
+          '<div class="bp-specs">' +
+          '<div class="bp-newhead">عکس، واحد و قیمتِ این محصولِ جدید را همین‌جا کامل کن — همراه بقیهٔ تیک‌خورده‌ها در کاتالوگ ثبت می‌شود.</div>' +
+          '<div class="field" style="margin-top:8px"><label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label><div class="gallery-add">' +
+          '<div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>'.repeat(3) +
+          '</div></div>' +
+          '<div style="display:flex;gap:8px">' +
+          '<div class="field" style="flex:1.3"><label>واحد فروش عمده</label><input class="input" placeholder="مثلاً کارتن ۲۴ عددی"></div>' +
+          '<div class="field" style="flex:1"><label>تعداد در هر واحد</label><input class="input" placeholder="۲۴" inputmode="numeric"></div>' +
+          '</div>' +
+          '<div class="field"><label>قیمت هر واحد فروش عمده <span class="opt">— تومان</span></label><input class="input" placeholder="مثلاً ۳۶۰٬۰۰۰" inputmode="numeric"></div>' +
+          '<div style="display:flex;gap:8px">' +
+          '<div class="field" style="flex:1"><label>حداقل حجم خرید</label><input class="input" placeholder="۲"></div>' +
+          '<div class="field" style="flex:1"><label>موجودی</label><input class="input" placeholder="۵۰"></div>' +
+          '</div>' +
+          '<div class="field"><label>توضیحات <span class="opt">— اختیاری</span></label><textarea class="input" rows="2" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea></div>' +
+          '</div>';
+        bpHost.appendChild(bpItem2);
+        if (bpInp) bpInp.value = '';
+        var bpBox = document.getElementById('bp-newprod');
+        if (bpBox) bpBox.hidden = true;
+        bpItem2.scrollIntoView({ block: 'nearest' });
+      }
+      return;
+    }
+
+    /* ── فاز ۲۱/۳۵: انتخاب نوع کالا از شیت جستجو — سوال برند از نو پرسیده می‌شود ── */
+    var gp = t.closest('#sheet-goodpick .sheet-row[data-gname]');
     if (gp) {
       closeSheet();
-      gfSetMode(gp.dataset.goodpick);
-      var gN = document.getElementById('gf-good');
-      var gP = document.getElementById('gf-good-path');
-      if (gp.dataset.gname && gN) gN.textContent = gp.dataset.gname;
-      if (gp.dataset.gname && gP) gP.textContent = gp.dataset.gpath || '';
+      gfSetGood(gp.dataset.gname, gp.dataset.gpath);
       return;
     }
 
@@ -10443,7 +10727,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* ── فاز ۲۱: فرم بازشو (گود جدید / برند جدید) ── */
+    /* ── فاز ۲۱: فرم بازشو (نوع کالای جدید / برند جدید / واحد جدید) ── */
     var rv = t.closest('[data-reveal]');
     if (rv) {
       var rvT = document.getElementById(rv.dataset.reveal);
@@ -10451,17 +10735,31 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* ── فاز ۲۱: ثبت و انتخاب گود جدید ── */
+    /* ── فاز ۳۵: انتخاب واحد بسته‌بندی از شیت واحدها ── */
+    var upk = t.closest('[data-unitpick]');
+    if (upk) {
+      closeSheet();
+      gfUnitApply(upk.dataset.unitpick);
+      return;
+    }
+
+    /* ── فاز ۳۵: ثبت و انتخاب واحد جدید ── */
+    var unn = t.closest('[data-unitnew]');
+    if (unn) {
+      closeSheet();
+      var uInp = document.getElementById('up-new-input');
+      var uVal = uInp && uInp.value.trim() ? uInp.value.trim() : 'واحد جدید';
+      gfUnitApply(uVal);
+      return;
+    }
+
+    /* ── فاز ۲۱/۳۵: ثبت و انتخاب نوع کالای جدید ── */
     var gnn = t.closest('[data-goodnew]');
     if (gnn) {
       closeSheet();
-      gfSetMode('felle');
       var gInp = document.getElementById('gp-new-input');
-      var gVal = gInp && gInp.value.trim() ? gInp.value.trim() : 'گود جدید';
-      var gN2 = document.getElementById('gf-good');
-      var gP2 = document.getElementById('gf-good-path');
-      if (gN2) gN2.textContent = gVal;
-      if (gP2) gP2.textContent = 'گود جدید — پس از بازبینی ادمین برای همهٔ کاربران آیمچ عمومی می‌شود';
+      var gVal = gInp && gInp.value.trim() ? gInp.value.trim() : 'نوع کالای جدید';
+      gfSetGood(gVal, 'نوع کالای جدید — پس از بازبینی ادمین برای همهٔ کاربران آیمچ عمومی می‌شود');
       return;
     }
 
@@ -10551,7 +10849,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (closeEl) { closeSheet(); return; }
 
     var sheetOpen = t.closest('[data-sheet]');
-    if (sheetOpen) { openSheet(sheetOpen.dataset.sheet); return; }
+    if (sheetOpen) {
+      /* فاز ۳۵: پیل «سایر…» (بسته‌بندی فروش عمده) هم‌زمان با بازکردن شیت واحدها فعال می‌شود */
+      if (sheetOpen.classList.contains('pill') && sheetOpen.parentElement) {
+        sheetOpen.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
+        sheetOpen.classList.add('active');
+      }
+      openSheet(sheetOpen.dataset.sheet); return;
+    }
 
     var copyEl = t.closest('[data-copy]');
     if (copyEl) {
@@ -10694,6 +10999,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
       }
       /* فاز ۲۱ — فرم افزودن کالا: سوییچ فله / برنددار */
       if (pill.dataset.gmode) gfSetMode(pill.dataset.gmode);
+      /* فاز ۳۵ — نوع بسته‌بندی فروش عمده: برچسب «تعداد در …» هم‌گام می‌شود */
+      if (pill.dataset.pack && pill.dataset.pack !== 'سایر') gfSetPack(pill.dataset.pack);
       return;
     }
 

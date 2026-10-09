@@ -52,7 +52,7 @@ check('۳۹ سه بخش: پاسخ‌ها · سیستم · یادآوری‌ها'
 check('۳۹ بج «تا انجام حذف نمی‌شود» روی کارهای سیستم', p39.sysBadge);
 check('۳۹ شش کار — دو کار پیشنهاد قیمت با کلید rice/oil', p39.rows === 6 && p39.reqKeys.join(',') === 'rice,oil');
 check('۳۹ سیم‌کشی کارها: ۰۸ (لیست) · ۲۷ (اعلان) · ۳۳ (مقایسه) · ۱۸ (پیام)', p39.goes.join(',') === '08,27,33,18');
-check('۳۹ فوتر ۵ تبی: ۰۸/۳۹/۳۱/۱۸/۱۴ — کارها اکتیو با بج ۶', p39.tabs.join('|') === '08:لیست خرید|39:کارها ۶|31:کمپین‌ها|18:پیام‌ها ۱|14:پروفایل' && p39.activeTab.includes('کارها') && p39.tabBadge === '۶');
+check('۳۹ فوتر ۵ تبی: ۳۹/۰۸/۳۱/۱۸/۱۴ — کارها اول (فاز ۳۵) و اکتیو با بج ۶', p39.tabs.join('|') === '39:کارها ۶|08:لیست خرید|31:کمپین‌ها|18:پیام‌ها ۱|14:پروفایل' && p39.activeTab.includes('کارها') && p39.tabBadge === '۶');
 await page.locator('#phone').screenshot({ path: OUT + '/39-tasks.png' });
 
 /* کارت پیشنهاد قیمت → صفحهٔ ۳۶ (پیشنهادات درخواست) */
@@ -60,14 +60,14 @@ await page.click('#scr-39 .row-card[data-reqkey="rice"]');
 await page.waitForTimeout(300);
 check('۳۹ کارت «تجارت گیل‌رنج» → صفحهٔ ۳۶ پیشنهادات', await page.evaluate(() => location.hash === '#36' && !document.getElementById('scr-36').hidden));
 
-/* ═══ ۲) فوتر خرید همه‌جا: کارها جای کاتالوک‌ها ═══ */
+/* ═══ ۲) فوتر خرید همه‌جا: «کارها» اول — هماهنگ با فوتر فروش (فاز ۳۵) ═══ */
 for (const id of ['08', '14', '31']) {
   await nav(id);
   const f = await page.evaluate(i => [...document.querySelectorAll('#scr-' + i + ' .tabbar .tab')].map(t => (t.dataset.go || '?') + ':' + t.textContent.trim().replace(/\s+/g, ' ')), id);
-  check(id + ' فوتر: کارها (۳۹) جای کاتالوک‌ها — ۵ تبی', f.join('|') === '08:لیست خرید|39:کارها ۶|31:کمپین‌ها|18:پیام‌ها ۱|14:پروفایل');
+  check(id + ' فوتر: کارها (۳۹) اول — ۵ تبی', f.join('|') === '39:کارها ۶|08:لیست خرید|31:کمپین‌ها|18:پیام‌ها ۱|14:پروفایل');
 }
 await nav('08');
-await page.click('#scr-08 .tabbar .tab:nth-child(2)');
+await page.click('#scr-08 .tabbar .tab:nth-child(1)');
 await page.waitForTimeout(300);
 check('کلیک تب «کارها» در ۰۸ → صفحهٔ ۳۹', await page.evaluate(() => location.hash === '#39'));
 

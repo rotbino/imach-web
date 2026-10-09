@@ -42,7 +42,7 @@ const biz14 = await page.$eval('#scr-14 .biz-card', el => {
     cardH: card.height
   };
 });
-check('۱۴ آیکون کسب‌وکار ۱۳px (نه غول‌آسا)', biz14.cap === 13);
+check('۱۴ بدون آیکونِ عنوان «کسب و کار» (فاز ۳۵: عنوان حذف شد)', biz14.cap === 0);
 check('۱۴ آیکون مداد ۱۵px + شِوران ۱۵px', biz14.edit === 15 && biz14.dd === 15);
 check('۱۴ کارت کسب‌وکار ارتفاع منطقی (< 130px)', biz14.cardH > 60 && biz14.cardH < 130);
 const over14 = await page.evaluate(() => {

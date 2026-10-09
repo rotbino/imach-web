@@ -85,7 +85,7 @@ check('۰۸ کارت‌ها → لیست مقایسه ۳۳', cards.every(c => c.
 check('۰۸ بدون «دنبال کردن» روی قند', !t.includes('دنبال کردن'));
 check('۰۸ متن راهنمای جدید', t.includes('به لیست خرید شما اضافه می‌شود') && t.includes('افزودن کالا') && t.includes('مشاهده و مقایسه کنید'));
 const tabs8 = await page.$$eval('#scr-08 .tabbar .tab', els => els.map(e => e.textContent.trim()));
-check('۰۸ فوتر: «لیست خرید» (نه دفتر خرید)', tabs8[0] === 'لیست خرید');
+check('۰۸ فوتر: «کارها» اول (فاز ۳۵) و «لیست خرید» دوم (نه دفتر خرید)', tabs8[0].includes('کارها') && tabs8[1] === 'لیست خرید'); /* فاز ۳۵ (مالک): کارها اول شد تا با فوتر فروش هماهنگ باشد؛ تب اول بج ۶ هم دارد */
 await page.locator('#phone').screenshot({ path: OUT + '/08-buy-list.png' });
 
 // شیت تنظیمات لیست خرید

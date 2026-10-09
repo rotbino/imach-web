@@ -200,7 +200,7 @@ await page.locator('#phone').screenshot({ path: OUT + '/10-saved-cats.png' });
 await page.goto(URL + '#14');
 await page.waitForTimeout(500);
 t = await page.locator('#scr-14').innerText();
-check('۱۴ کارت کسب‌وکار (فعال از شیت)', t.includes('کسب و کار') && t.includes('سوپرمارکت نگین'));
+check('۱۴ کارت کسب‌وکار (فعال از شیت)', t.includes('سوپرمارکت نگین') && !t.includes('کسب و کار')); /* فاز ۳۵ (مالک): عنوان «کسب و کار» حذف شد — نام کسب‌وکار خودش عنوان است */
 const biz14 = await page.$eval('#scr-14 .biz-card', el => ({ sheet: el.dataset.sheet, edit: !!el.querySelector('.biz-edit') }));
 check('۱۴ کارت → sheet-biz + دکمهٔ ویرایش (۲۲)', biz14.sheet === 'sheet-biz' && biz14.edit);
 await page.click('#scr-14 .biz-card');
