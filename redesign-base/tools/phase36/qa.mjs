@@ -44,7 +44,8 @@ ok(grid.rows === 5, `۵ ردیف کالا در گرید (${grid.rows})`);
 ok(grid.priceX === 1 && grid.stockX === 1, 'ستون قیمت/موجودی در همهٔ ردیف‌ها تراز است');
 ok(!grid.overflow, 'بدون سرریز افقی');
 ok(/کالا/.test(grid.head) && /قیمت/.test(grid.head) && /موجودی/.test(grid.head), 'سرستون‌ها: کالا · قیمت · موجودی');
-ok(grid.chips === 6 && grid.reset, '۶ چیپ درصدی + بازنشانی');
+/* فاز ۳۹: چیپ‌ها حذف شدند — آیکون ٪ + لینک بازنشانی جایگزین */
+ok(grid.chips === 0 && grid.reset, 'چیپ‌های درصدی حذف شده + بازنشانی (لینک زیر گرید)');
 ok(grid.save && grid.cnt === '(۰)', 'دکمهٔ «ثبت تغییرات (۰)» از ابتدا');
 ok(grid.dirtyVisible === 0, 'نشان «ویرایش شد» در حالت اولیه پنهان است');
 ok(grid.xlsBtn && String(grid.xlsIcon).includes('i-xls'), 'دکمهٔ اکسل (آیکون i-xls) بالای فرم');
@@ -54,11 +55,17 @@ await page.click('#scr-44 .subheader .back');
 await page.waitForTimeout(220);
 ok(await page.evaluate(() => location.hash === '#01'), 'بازگشت ۴۴ → کاتالوگ (۰۱)');
 
-/* ═══ ۲) چیپ درصدی + بازنشانی ═══ */
-console.log('— چیپ درصدی و بازنشانی');
+/* ═══ ۲) تغییر درصدی (فاز ۳۹: مدال dlg-pct — استپر ۰٫۵٪) + بازنشانی ═══ */
+console.log('— تغییر درصدی (مدال فاز ۳۹) و بازنشانی');
 await nav('44');
-await page.click('[data-bkpc="5"]');
+/* +۵٪ = ۱۰ کلیک روی دکمهٔ زیاد */
+await page.click('#scr-44 .bk-pct');
+await page.waitForTimeout(280);
+for (let i = 0; i < 10; i++) await page.click('.pct-plus');
 await page.waitForTimeout(200);
+ok(await page.evaluate(() => document.getElementById('pct-input').value === '۵'), '۱۰ کلیک روی + → ورودی ۵٪ (گام ۰٫۵)');
+await page.click('#pct-apply');
+await page.waitForTimeout(250);
 const afterPc = await page.evaluate(() => ({
   chg: document.querySelectorAll('#scr-44 .bk-row.chg').length,
   cnt: document.getElementById('bk-count').textContent,
@@ -69,7 +76,7 @@ ok(afterPc.chg === 5 && afterPc.cnt === '(۵)', `+۵٪ → هر ۵ ردیف تغ
 ok(afterPc.p1 === '۲٬۹۹۲٬۵۰۰', `۲٬۸۵۰٬۰۰۰ × ۱٫۰۵ = ${afterPc.p1}`);
 ok(afterPc.dirty === 5, 'نشان «ویرایش شد» روی ردیف‌های تغییرکرده پیداست');
 
-await page.click('[data-bkreset]');
+await page.click('.bk-reset2');
 await page.waitForTimeout(200);
 const afterRs = await page.evaluate(() => ({
   chg: document.querySelectorAll('#scr-44 .bk-row.chg').length,
@@ -77,14 +84,22 @@ const afterRs = await page.evaluate(() => ({
 }));
 ok(afterRs.chg === 0 && afterRs.p1 === '۲٬۸۵۰٬۰۰۰', 'بازنشانی → مقدار اولیه و صفر تغییر');
 
-/* ترکیبی: +۵٪ سپس −۵٪ (روی فعلی ضرب می‌شود) */
-await page.click('[data-bkpc="5"]');
-await page.waitForTimeout(120);
-await page.click('[data-bkpc="-5"]');
+/* ترکیبی: +۵٪ سپس −۵٪ (روی فعلی ضرب می‌شود) — با مدال درصدی */
+await page.click('#scr-44 .bk-pct');
+await page.waitForTimeout(260);
+for (let i = 0; i < 10; i++) await page.click('.pct-plus');
+await page.waitForTimeout(150);
+await page.click('#pct-apply');
 await page.waitForTimeout(200);
+await page.click('#scr-44 .bk-pct');
+await page.waitForTimeout(260);
+for (let i = 0; i < 10; i++) await page.click('.pct-minus');
+await page.waitForTimeout(150);
+await page.click('#pct-apply');
+await page.waitForTimeout(220);
 const comp = await page.evaluate(() => document.querySelector('#scr-44 .bk-row .bk-price').value);
-ok(comp === '۲٬۸۴۲٬۸۷۵', `چیپ‌ها ترکیبی‌اند: ۲٬۸۵۰٬۰۰۰×۱٫۰۵×۰٫۹۵ = ${comp}`);
-await page.click('[data-bkreset]');
+ok(comp === '۲٬۸۴۲٬۸۷۵', `درصد ترکیبی: ۲٬۸۵۰٬۰۰۰×۱٫۰۵×۰٫۹۵ = ${comp}`);
+await page.click('.bk-reset2');
 await page.waitForTimeout(120);
 
 /* ═══ ۳) ویرایش دستی — نشان هوشمند ═══ */
@@ -255,7 +270,8 @@ const hero = await page.evaluate(() => ({
   em: document.querySelector('#scr-15 .hero-land h1 em').textContent.trim(),
 }));
 ok(hero.h1 === 'تامین کالا، مساله اکثر کسب و کارهاست' && hero.em === 'تامین کالا', `h1: «${hero.h1}»`);
-ok(hero.sub === 'از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی، نیاز به تامین کالا از تامین کنندگان مناسب دارند.', 'جملهٔ اول کامل شد');
+/* فاز ۳۹: متن مالک (کامیت Saeed changes) — «خرید عمده کالا»؛ d3 هم هم‌گام شد */
+ok(hero.sub === 'از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی، نیاز به خرید عمده کالا از تامین کنندگان مناسب دارند.', 'جملهٔ اول کامل شد (متن جدید مالک)');
 ok(hero.strong === 'آیمچ، با پیشنهاد دقیق، انتخاب تأمین‌کننده مناسب را آسان می‌کند.', 'جملهٔ دوم جدید');
 await nav('d3');
 const heroD = await page.evaluate(() => ({

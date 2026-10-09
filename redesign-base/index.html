@@ -1441,6 +1441,70 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .xls-status.err { background: var(--red-bg); color: var(--red); }
   .xls-note { font-size: 10.5px; color: var(--muted-fg); line-height: 1.9; margin-top: 10px; }
 
+  /* ═══ فاز ۳۹ — صفحهٔ ۴۴: مدال درصدی · اکسل ورود/ثبت‌نامی · بخش تخفیف‌ها ═══ */
+  /* آیکون ٪ ساب‌هدر — خنثی و آرام کنار اکسل سبز */
+  .bk-pct { background: #fff; color: var(--primary-strong); border-color: var(--border-strong); }
+  /* استپر درصدی: [−][عدد][+] — دو دکمهٔ طرفین، گام ۰٫۵٪ */
+  .pct-stepper { display: flex; align-items: stretch; gap: 9px; margin-top: 14px; }
+  .pct-btn { width: 52px; height: 56px; border-radius: 14px; border: 1.5px solid var(--border-strong); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--foreground); flex-shrink: 0; }
+  .pct-btn svg { width: 21px; height: 21px; }
+  .pct-btn:active { transform: scale(.94); }
+  .pct-minus { color: var(--red); border-color: #f3cfd4; background: var(--red-bg); }
+  .pct-plus { color: var(--green); border-color: #b6e2c6; background: var(--green-bg); }
+  .pct-val { position: relative; flex: 1; min-width: 0; }
+  .pct-num { width: 100%; height: 56px; box-sizing: border-box; border: 1.5px solid var(--border-strong); border-radius: 14px; background: #fff; text-align: center; font-family: inherit; font-size: 21px; font-weight: 800; color: var(--foreground); padding: 0 30px 0 12px; }
+  .pct-num:focus { border-color: var(--arm); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--arm) 14%, transparent); }
+  .pct-sign { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 700; color: var(--muted-fg); pointer-events: none; }
+  /* پیش‌نمایش زندهٔ اعمال درصد روی اولین ردیف */
+  .pct-preview { margin-top: 10px; border-radius: 11px; background: var(--muted); padding: 8px 11px; font-size: 11px; font-weight: 700; line-height: 1.9; color: var(--muted-fg); text-align: center; }
+  .pct-preview.up { background: var(--green-bg); color: var(--green); }
+  .pct-preview.down { background: var(--red-bg); color: var(--red); }
+  .pct-preview b { font-weight: 800; }
+  /* مدال اکسل — الگوی ورود/ثبت‌نام: آپلود اصلیِ سبز و درشت، دانلود لینک‌وار و کم‌رنگ */
+  .xls-up { display: flex; align-items: center; gap: 11px; width: 100%; box-sizing: border-box; text-align: right; background: var(--green-bg); border: 1.5px solid #b6e2c6; border-radius: 14px; padding: 13px 13px; margin-top: 14px; cursor: pointer; font-family: inherit; }
+  .xls-up:active { background: #eaf6ef; }
+  .xls-up .up-ico { width: 22px; height: 22px; color: var(--green); flex-shrink: 0; }
+  .xls-up .tx { flex: 1; min-width: 0; }
+  .xls-up .tx b { display: block; font-size: 13.5px; font-weight: 800; color: var(--green); }
+  .xls-up .tx small { display: block; font-size: 10.5px; font-weight: 600; color: var(--stone-soft); margin-top: 2px; }
+  .xls-dn { display: flex; align-items: center; gap: 9px; width: 100%; box-sizing: border-box; text-align: right; background: none; border: 0; border-top: 1px dashed var(--border-strong); border-radius: 0; padding: 10px 2px 2px; margin-top: 10px; cursor: pointer; font-family: inherit; }
+  .xls-dn .dn-ico { width: 15px; height: 15px; color: var(--muted-fg); flex-shrink: 0; }
+  .xls-dn .tx { flex: 1; min-width: 0; }
+  .xls-dn .tx b { display: block; font-size: 11px; font-weight: 700; color: var(--stone-soft); }
+  .xls-dn .tx small { display: block; font-size: 9.5px; font-weight: 500; color: var(--muted-fg); margin-top: 1px; }
+  .xls-dn .chev { width: 13px; height: 13px; color: var(--muted-fg); flex-shrink: 0; }
+  .xls-dn:active .tx b { color: var(--foreground); }
+  /* بازنشانی — لینک کم‌رنگ زیر گرید */
+  .bk-reset2 { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; margin-top: 9px; border: 0; background: none; font-family: inherit; font-size: 10.5px; font-weight: 700; color: var(--muted-fg); cursor: pointer; padding: 5px 0; }
+  .bk-reset2 svg { width: 13px; height: 13px; }
+  .bk-reset2:active { color: var(--red); }
+  /* دکمهٔ بازشوی تخفیف‌ها */
+  .disc-toggle { display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; text-align: right; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-top: 11px; cursor: pointer; font-family: inherit; }
+  .disc-toggle:active { border-color: var(--border-strong); }
+  .disc-toggle .dt-ico { width: 17px; height: 17px; color: var(--primary-strong); flex-shrink: 0; }
+  .disc-toggle .tx { flex: 1; min-width: 0; }
+  .disc-toggle .tx b { display: block; font-size: 12.5px; font-weight: 700; }
+  .disc-toggle .tx small { display: block; font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
+  .disc-toggle .chev { width: 15px; height: 15px; color: var(--muted-fg); flex-shrink: 0; transition: transform .18s ease; }
+  .disc-toggle.open .chev { transform: rotate(90deg); }
+  /* کارت تخفیف‌ها — بخش‌های کوچک با سرتیتر ریز */
+  .bk-disc { margin-top: 9px; padding: 4px 12px 12px; }
+  .bk-disc[hidden] { display: none; }
+  .disc-sec { padding: 9px 0 3px; border-top: 1px solid var(--border); }
+  .disc-sec:first-child { border-top: 0; }
+  .disc-h { font-size: 11px; font-weight: 800; color: var(--foreground); padding-bottom: 2px; }
+  .disc-h span { display: block; font-size: 9.5px; font-weight: 500; color: var(--muted-fg); margin-top: 1px; }
+  .disc-row { display: flex; align-items: center; gap: 9px; padding: 6px 0; position: relative; }
+  .disc-row .dn { flex: 1; min-width: 0; }
+  .disc-row .dn b { display: block; font-size: 11.5px; font-weight: 700; line-height: 1.5; }
+  .disc-row .dn small { display: block; font-size: 9.5px; color: var(--muted-fg); margin-top: 1px; }
+  .disc-row .pctw-s { width: 72px; flex-shrink: 0; }
+  .disc-row .pctw-s input { height: 34px; font-size: 12px; font-weight: 800; }
+  .disc-row.chg { background: #f7fcf8; border-radius: 9px; padding: 6px 7px; }
+  .disc-row.chg .pctw-s input { border-color: #b6e2c6; }
+  .disc-row .d-dirty { display: inline-block; font-size: 8.5px; font-weight: 800; color: var(--green); background: var(--green-bg); border-radius: 6px; padding: 1px 5px; margin-right: 5px; vertical-align: 1px; }
+  .disc-row .d-dirty[hidden] { display: none; }
+
   /* فاز ۳۶ (مالک): کال‌اوت «اسکنر/اکسل» باید در یک خط جا شود — فونت ۱۰px و
      لینک‌های داخلش هم فونت والد را می‌گیرند (.qlink پیش‌فرض ۱۲px ثابت دارد) */
   .callout-sm { font-size: 10px; line-height: 1.9; }
@@ -1841,10 +1905,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <!-- فاز ۲۵ — تخفیف همکار: خریدارِ این صفحه در گروه مشتری «همکار» فروشنده است (همان ۷٪ کاتالوگ عمومی ۱۳) -->
+        <!-- فاز ۲۵ — تخفیف همکار: خریدارِ این صفحه در گروه مشتری «همکار» فروشنده است (همان ۷٪ کاتالوگ عمومی ۱۳)
+             فاز ۳۹: درصد داخل <b id="cw-02"> تا از ثبت تخفیف‌های صفحهٔ ۴۴ زنده هم‌گام شود -->
         <div style="margin-top:10px;display:flex;align-items:center;gap:7px;background:var(--green-bg);border:1px solid #d9eee2;color:var(--green);border-radius:9px;padding:8px 12px;font-size:10.5px;font-weight:600;line-height:1.6">
           <svg style="width:13px;height:13px;flex-shrink:0"><use href="#i-percent"/></svg>
-          <span>تخفیف برای شما که مشتری همکار هستید ۷٪</span>
+          <span>تخفیف برای شما که مشتری همکار هستید <b id="cw-02" style="font-weight:800">۷٪</b></span>
         </div>
 
         <!-- جایگاه تبلیغاتی: تأمین‌کنندگان ویژهٔ همین کالا (فاز ۲۵: بازگردانده شد — کالاهای کمپین‌دارِ سایر فروشندگان در جزئیات کالای مرتبط)
@@ -7170,42 +7235,37 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-44" data-arm="sell" hidden>
 
 
-    <!-- ═══ فاز ۳۶ — به‌روزرسانی گروهی قیمت و موجودی ═══
+    <!-- ═══ فاز ۳۶ + ۳۹ — به‌روزرسانی گروهی قیمت و موجودی ═══
          IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی — خواستهٔ مالک):
          ▸ در ایران و کشورهای پرتورم قیمت‌ها حتی روزانه تغییر می‌کنند؛ فروشنده‌ای با کاتالوگِ
            بزرگ بدون ویرایش گروهی احتمالاً آیمچ را کنار می‌گذارد. این صفحه کار روزانهٔ اوست.
          ▸ ورودها: نوار «قیمت و موجودی» بالای کاتالوگ (۰۱) + ردیف اولِ تنظیمات کاتالوگ.
-         ▸ چیپ‌های درصدی (−۱۰٪ … +۱۰٪) روی قیمت‌های «فعلی» اعمال می‌شوند (ترکیبی: +۵٪ سپس
-           +۲٪ = ۱٫۰۵×۱٫۰۲)؛ «بازنشانی» قیمت/موجودی اولیهٔ هر ردیف را برمی‌گرداند.
-         ▸ اکسل: دکمهٔ سبز بالای فرم مدال dlg-xlsbulk را باز می‌کند — «دانلود اکسل کالاها»
-           یک CSV واقعی (UTF-8 BOM — در اکسل باز می‌شود) با ستون‌های نام کالا/قیمت/موجودی
-           می‌سازد؛ «بارگذاری فایل به‌روزشده» همان فایل را می‌خواند، ردیف‌ها را با نام کالا
-           تطبیق می‌دهد و قیمت/موجودی گرید همان‌جا به‌روز می‌شود. (XLSX باینری در پیاده‌سازی
-           عملیاتی با کتابخانهٔ سمت سرور خوانده می‌شود؛ در ماک، CSV همان تجربه را می‌دهد.)
-         ▸ «ثبت تغییرات»: قیمت و موجودیت تازه همان لحظه روی کارت‌های کاتالوگ (۰۱) و لیست
-           کالاهای کاتالوگ (۲۶) می‌نشیند — نشان موجودی هم بر اساس عدد جدید بازسازی می‌شود
-           (۰ = تمام شد · ≤۱۰ = موجودی کم · بیشتر = موجود)؛ سپس به کاتالوگ برمی‌گردیم. -->
+         ▸ فاز ۳۹ (مالک) — نوار چیپ‌های درصدی حذف شد؛ تغییر درصدی به آیکون ٪ کنار آیکون اکسل
+           منتقل شد که مدال dlg-pct را باز می‌کند: استپر [− | عدد | +] با گام ۰٫۵٪ + ورودی دستی
+           (مثبت/منفی/اعشاری) + پیش‌نمایش زنده روی اولین ردیف. اعمال درصد روی قیمت «فعلی»
+           هر ردیف ضرب می‌شود (ترکیبی: +۲٫۵٪ سپس +۱٪ = ۱٫۰۲۵×۱٫۰۱) و حداقل صفر.
+         ▸ فاز ۳۹ (مالک) — مدال اکسل مثل صفحات ورود/ثبت‌نام شد: «آپلود» اکشن اصلی و همیشه
+           بالای مدال است (درشت و سبز + توضیح)؛ «دانلود» اکشن ثانویه و کم‌اهمیت زیرش — چون
+           دانلود معمولاً فقط بار اول یا بعد از افزودن کالای جدید لازم می‌شود، آپلود همیشه هست.
+         ▸ فاز ۳۹ (مالک) — بخش بازشوی «تخفیف‌ها و قیمت‌های ویژه»: درصد همکار و گروه‌های مشتری
+           و پله‌های تخفیف حجمی (کاتالوگ + گروه‌های تخفیف) همین‌جا سریع عوض می‌شود؛ مدیریت
+           گروه‌ها (ساخت/حذف/اعضا) این‌جا نیست — فقط قیمت، درصد و موجودی (خواستهٔ صریح مالک).
+         ▸ «ثبت تغییرات» همه‌چیز را یک‌جا اعمال می‌کند: قیمت/موجودی دستی + درصدی + اکسل +
+           تخفیف‌ها؛ همان لحظه روی کارت‌های کاتالوگ (۰۱) و لیست کالاهای کاتالوگ (۲۶) و شیت‌های
+           تخفیف (cgroup/vol/ptier) و خط «تخفیف همکار» ۰۲/۱۳ می‌نشیند؛ نشان موجودی هم بازسازی
+           می‌شود (۰ = تمام شد · ≤۱۰ = موجودی کم · بیشتر = موجود)؛ سپس به کاتالوگ برمی‌گردیم.
+         ▸ اکسل: «دانلود» یک CSV واقعی (UTF-8 BOM) با ستون‌های نام کالا/قیمت/موجودی می‌سازد؛
+           «آپلود» همان فایل را می‌خواند، ردیف‌ها را با نام کالا تطبیق می‌دهد و گرید همان‌جا
+           به‌روز می‌شود. (XLSX باینری در پیاده‌سازی عملیاتی سمت سرور خوانده می‌شود؛ در ماک،
+           CSV همان تجربه را می‌دهد.) -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">قیمت و موجودی<small>به‌روزرسانی گروهی کالاهای کاتالوگ</small></div>
+      <button class="icon-btn bk-pct" aria-label="تغییر درصدی قیمت‌ها" title="تغییر درصدی قیمت‌ها" data-sheet="dlg-pct"><svg><use href="#i-percent"/></svg></button>
       <button class="icon-btn bk-xls" aria-label="به‌روزرسانی با اکسل" title="به‌روزرسانی با اکسل" data-sheet="dlg-xlsbulk"><svg><use href="#i-xls"/></svg></button>
     </header>
 
     <main class="screen-body">
-
-      <!-- ابزار سریع: درصد روی همهٔ قیمت‌ها -->
-      <div class="bk-tools card">
-        <span class="bt-l">درصد قیمت‌ها</span>
-        <span class="bt-chips">
-          <button class="bt-chip neg" data-bkpc="-10" type="button">−۱۰٪</button>
-          <button class="bt-chip neg" data-bkpc="-5" type="button">−۵٪</button>
-          <button class="bt-chip neg" data-bkpc="-2" type="button">−۲٪</button>
-          <button class="bt-chip pos" data-bkpc="2" type="button">+۲٪</button>
-          <button class="bt-chip pos" data-bkpc="5" type="button">+۵٪</button>
-          <button class="bt-chip pos" data-bkpc="10" type="button">+۱۰٪</button>
-        </span>
-        <button class="bt-reset" data-bkreset type="button">بازنشانی</button>
-      </div>
 
       <!-- گرید کالاها — قیمت و موجودی قابل ویرایش؛ ردیف تغییرکرده سبز می‌شود -->
       <div class="bk-grid">
@@ -7261,8 +7321,94 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
+      <!-- فاز ۳۹: بازنشانی — لینک کم‌رنگ زیر گرید (چیپ‌ها حذف شدند؛ بازنشانی برای برگرداندن
+           دستی/درصدی/اکسلیِ ردیف‌ها و تخفیف‌ها به حالت اولیه باقی مانده است) -->
+      <button class="bk-reset2" data-bkreset type="button"><svg><use href="#i-history"/></svg> بازنشانی همهٔ تغییرات</button>
+
+      <!-- ═══ فاز ۳۹ — تخفیف‌ها و قیمت‌های ویژه (بازشو) ═══
+           IMPLEMENTATION NOTE (خواستهٔ مالک):
+           ▸ درصد تخفیف‌ها و قیمت‌های پلکانی و گروه‌های مشتری این‌جا سریع عوض می‌شوند —
+             بدون شلوغ‌کردن فرم؛ پیش‌فرض جمع‌شده است و فقط با دکمه باز می‌شود.
+           ▸ مدیریت گروه‌ها (ساخت/حذف/اعضا) این‌جا نیست — از تنظیمات کاتالوگ؛ تخفیف اختصاصی
+             هر کالا هم از تنظیمات همان کالا (۰۳). این‌جا فقط «تغییر قیمت و درصد و موجودی».
+           ▸ تغییر هر درصد → ردیفش «ویرایش شد»؛ شمارندهٔ «ثبت تغییرات» شامل تخفیف‌ها هم هست؛
+             اعمال نهایی فقط با «ثبت تغییرات» (همان قاعدهٔ درصد و اکسل). -->
+      <button class="disc-toggle" data-disctoggle type="button" aria-expanded="false" aria-controls="bk-disc">
+        <svg class="dt-ico"><use href="#i-tag"/></svg>
+        <span class="tx"><b>تخفیف‌ها و قیمت‌های ویژه</b><small>همکار · گروه‌های مشتری · پله‌ای حجم خرید</small></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </button>
+      <div class="bk-disc card" id="bk-disc" hidden>
+
+        <div class="disc-sec">
+          <div class="disc-h">همکار و گروه‌های مشتری <span>درصد ثابت روی قیمت پایهٔ همهٔ کالاها</span></div>
+          <div class="disc-row" data-dn="تخفیف همکار" data-dsub="هم‌صنف‌هایی که از شما عمده می‌خرند">
+            <span class="dn"><b>تخفیف همکار</b><small>هم‌صنف‌هایی که از شما عمده می‌خرند</small></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۷" inputmode="decimal" aria-label="درصد تخفیف همکار"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row" data-dn="همکارهای قدیمی" data-dsub="سطح ۲ · ۱۲ مشتری">
+            <span class="dn"><b>همکارهای قدیمی</b><small>سطح ۲ · ۱۲ مشتری</small></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۷" inputmode="decimal" aria-label="درصد همکارهای قدیمی"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row" data-dn="خریداران عمده" data-dsub="سطح ۱ · ۸ مشتری">
+            <span class="dn"><b>خریداران عمده</b><small>سطح ۱ · ۸ مشتری</small></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۵" inputmode="decimal" aria-label="درصد خریداران عمده"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row" data-dn="مشتریان جدید" data-dsub="سطح ۳ · ۲۳ مشتری">
+            <span class="dn"><b>مشتریان جدید</b><small>سطح ۳ · ۲۳ مشتری</small></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۲" inputmode="decimal" aria-label="درصد مشتریان جدید"><span class="sfx">٪</span></div>
+          </div>
+        </div>
+
+        <div class="disc-sec">
+          <div class="disc-h">تخفیف حجمی — همهٔ کالاها <span>پله‌ای بر اساس حجم خرید</span></div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۵ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۳" inputmode="decimal" aria-label="تخفیف پلهٔ ۵ کیسه"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۲۰ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۵" inputmode="decimal" aria-label="تخفیف پلهٔ ۲۰ کیسه"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۵۰ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۸" inputmode="decimal" aria-label="تخفیف پلهٔ ۵۰ کیسه"><span class="sfx">٪</span></div>
+          </div>
+        </div>
+
+        <div class="disc-sec">
+          <div class="disc-h">گروه تخفیف حجمی خشکبار <span>۳ کالا — برنج هاشمی، فجر، طارم</span></div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۵ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۲" inputmode="decimal" aria-label="خشکبار — پلهٔ ۵ کیسه"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۲۰ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۴" inputmode="decimal" aria-label="خشکبار — پلهٔ ۲۰ کیسه"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۵۰ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۷" inputmode="decimal" aria-label="خشکبار — پلهٔ ۵۰ کیسه"><span class="sfx">٪</span></div>
+          </div>
+        </div>
+
+        <div class="disc-sec">
+          <div class="disc-h">گروه تخفیف حجمی حبوبات <span>۲ کالا — عدس، لوبیا چیتی</span></div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۱۰ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۳" inputmode="decimal" aria-label="حبوبات — پلهٔ ۱۰ کیسه"><span class="sfx">٪</span></div>
+          </div>
+          <div class="disc-row">
+            <span class="dn"><b>از ۳۰ کیسه به بالا</b></span>
+            <div class="pctw pctw-s"><input class="input" data-discinput value="۶" inputmode="decimal" aria-label="حبوبات — پلهٔ ۳۰ کیسه"><span class="sfx">٪</span></div>
+          </div>
+        </div>
+
+        <div class="hintnote">اینجا فقط درصد تخفیف‌ها عوض می‌شود؛ ساخت و حذف گروه‌ها و مدیریت مشتری‌ها از «تنظیمات کاتالوگ» و تخفیف اختصاصی هر کالا از تنظیمات خودِ همان کالا. همهٔ تخفیف‌ها روی «قیمت پایه» حساب می‌شوند و خریدار قیمت نهایی خودش را می‌بیند.</div>
+      </div>
+
       <!-- هر ردیفِ دست‌خورده همین نشان سبز را می‌گیرد (با JS تزریق می‌شود) -->
-      <div class="hintnote">قیمتِ واردشده «قیمت پایه» است — تخفیف‌های حجمی و گروه مشتری خودکار روی همین قیمت حساب می‌شوند و خریدارانِ همکار همان قیمت ویژهٔ خود را می‌بینند. ردیف‌های تغییرکرده سبز می‌شوند؛ با «ثبت تغییرات» در کاتالوگ می‌نشینند.</div>
+      <div class="hintnote">قیمتِ واردشده «قیمت پایه» است — تخفیف‌های حجمی و گروه مشتری خودکار روی همین قیمت حساب می‌شوند و خریدارانِ همکار همان قیمت ویژهٔ خود را می‌بینند. تغییر دستی، درصدی، اکسل و تخفیف‌ها فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند؛ ردیف‌های تغییرکرده سبز می‌شوند.</div>
 
     </main>
 
@@ -8198,24 +8344,75 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>شروع بارگذاری و تطبیق</button>
 </div>
 
-<!-- ═══ ۸-د) فاز ۳۶ — مدال اکسلِ به‌روزرسانی گروهی قیمت/موجودی (صفحهٔ ۴۴) ═══ -->
-<!-- IMPLEMENTATION NOTE: متن توضیح عیناً از مالک. «دانلود» یک CSV واقعی با BOM می‌سازد (اکسل باز می‌کند)؛
-     «بارگذاری» همان فایل ویرایش‌شده را می‌خواند، ردیف‌ها را با «نام کالا — بسته‌بندی» تطبیق می‌دهد و
-     گرید ۴۴ همان‌جا به‌روز می‌شود. در پیاده‌سازی عملیاتی XLSX واقعی سمت سرور parse می‌شود و پیش از
-     اعمال، پیش‌نمایش «قبل/بعد» به کاربر نشان داده می‌شود. -->
+<!-- ═══ ۸-د) فاز ۳۶ + ۳۹ — مدال اکسلِ به‌روزرسانی گروهی قیمت/موجودی (صفحهٔ ۴۴) ═══ -->
+<!-- IMPLEMENTATION NOTE (فاز ۳۹ — خواستهٔ مالک): الگوی «ورود/ثبت‌نام» — اکشنِ همیشگی بالا و درشت،
+     اکشنِ گاه‌به‌گاه پایین و کم‌رنگ. «آپلود» کار روزانهٔ فروشنده است: فایل قیمتهای جدید را
+     می‌آورد و همان لحظه گرید را به‌روز می‌کند؛ «دانلود» معمولاً فقط بار اول یا بعد از افزودن
+     کالای جدید لازم می‌شود (فایل آخرین لیست برای ویرایش آفلاین/آرشیو) پس ثانویه شد.
+     متن توضیح عیناً از مالک. «دانلود» یک CSV واقعی با BOM می‌سازد (اکسل باز می‌کند)؛
+     «آپلود» همان فایل ویرایش‌شده را می‌خواند، ردیف‌ها را با «نام کالا — بسته‌بندی» تطبیق می‌دهد و
+     گرید ۴۴ همان‌جا به‌روز می‌شود — و مثل بقیهٔ تغییرات فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند.
+     در پیاده‌سازی عملیاتی XLSX واقعی سمت سرور parse می‌شود و پیش از اعمال، پیش‌نمایش «قبل/بعد»
+     به کاربر نشان داده می‌شود. -->
 <div class="dlg" id="dlg-xlsbulk" role="dialog" aria-label="به‌روزرسانی با اکسل">
   <h3>به‌روزرسانی با اکسل</h3>
   <div class="dlg-q">قیمت و موجودی را یک‌جا عوض کن</div>
   <div class="dlg-p">اگر تعداد کالاهاتون زیاد می تونید با آپلود لیست اکسلتون سریع قیمت و موجودی رو در آیمچ آپدیت کنید.</div>
-  <div class="dlg-btns">
-    <button class="btn btn-primary" id="xls-export" type="button"><svg><use href="#i-xls"/></svg> دانلود فایل اکسل کالاها</button>
-    <button class="btn btn-outline" id="xls-import" type="button"><svg><use href="#i-upload"/></svg> بارگذاری فایل به‌روزشده</button>
-  </div>
-  <div class="xls-note">فایل با ستون‌های «نام کالا، قیمت، موجودی» دانلود می‌شود (CSV — در اکسل و همهٔ جدول‌ها باز می‌شود). قیمت‌ها را همان‌جا عوض کن و همان فایل را برگردان؛ ردیف‌ها با نام کالا تطبیق داده می‌شوند و تغییرات بعد از «ثبت تغییرات» در کاتالوگ می‌نشیند.</div>
+
+  <!-- اکشن اصلی (همیشه): آپلود فایل قیمتهای جدید -->
+  <button class="xls-up" id="xls-import" type="button">
+    <svg class="up-ico"><use href="#i-upload"/></svg>
+    <span class="tx"><b>آپلود فایل اکسل قیمت‌ها</b><small>فایل اکسل قیمتهای جدید را آپلود کنید</small></span>
+  </button>
+
+  <!-- اکشن ثانویه (گاه‌به‌گاه): دانلود آخرین لیست — مثل لینک ثبت‌نام زیر دکمهٔ ورود -->
+  <button class="xls-dn" id="xls-export" type="button">
+    <svg class="dn-ico"><use href="#i-xls"/></svg>
+    <span class="tx"><b>دانلود فایل اکسل کالاها</b><small>آخرین لیست کالاهایت — برای بار اول یا وقتی کالای جدید اضافه کرده‌ای</small></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+
   <div class="xls-status" id="xls-status" hidden></div>
+  <div class="xls-note">فایل با ستون‌های «نام کالا، قیمت، موجودی» دانلود می‌شود (CSV — در اکسل و همهٔ جدول‌ها باز می‌شود). قیمت‌ها را همان‌جا عوض کن و همان فایل را برگردان؛ ردیف‌ها با نام کالا تطبیق داده می‌شوند و تغییرات بعد از «ثبت تغییرات» در کاتالوگ می‌نشیند.</div>
   <button class="btn btn-outline" data-close style="width:100%;margin-top:10px">بستن</button>
 </div>
 <input type="file" id="xls-file" accept=".csv,text/csv,text/plain" hidden>
+
+<!-- ═══ ۸-ه) فاز ۳۹ — مدال تغییر درصدی قیمت‌ها (صفحهٔ ۴۴ — آیکون ٪ ساب‌هدر) ═══ -->
+<!-- IMPLEMENTATION NOTE (خواستهٔ مالک): نوار چیپ‌های ۱۰±٪ حذف شد و جای آن این مدال نشست.
+     استپر [− | عدد | +] هر کلیک ۰٫۵٪ اضافه/کم می‌کند؛ ورودی دستی عدد مثبت/منفی/اعشاری
+     می‌گیرد (۲٫۵ یا ‎−۱٫۵‎ یا -3). «اعمال روی قیمت‌ها» درصد را روی قیمت «فعلی» هر ردیف ضرب
+     می‌کند (ترکیبی با ویرایش‌های دستی/اکسل) و ردیف‌ها را «ویرایش شد» می‌کند — کاتالوگ فقط
+     با «ثبت تغییرات» عوض می‌شود. پیش‌نمایش زیر استپر با هر تغییر، جهت و عدد را روی
+     اولین ردیف گرید زنده نشان می‌دهد تا کاربر قبل از اعمال بداند چه اتفاقی می‌افتد.
+     در پیاده‌سازی عملیاتی: PUT /listings/bulk با deltaPercent + baseSelector،
+     محاسبه سمت سرور و ثبت ListingEventLog برای هر کالا. -->
+<div class="dlg" id="dlg-pct" role="dialog" aria-label="تغییر درصدی قیمت‌ها">
+  <h3>تغییر درصدی قیمت‌ها</h3>
+  <div class="dlg-q">همهٔ قیمت‌های این صفحه را یک‌جا کم یا زیاد کن</div>
+
+  <!-- کامپوننت درصدی: دو دکمهٔ طرفین (کم/زیاد — گام ۰٫۵٪) + ورودی دستی -->
+  <div class="pct-stepper" role="group" aria-label="درصد تغییر قیمت‌ها">
+    <button class="pct-btn pct-minus" data-pctstep="-0.5" type="button" aria-label="نیم درصد کم کن" title="نیم درصد کم کن">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <div class="pct-val">
+      <input id="pct-input" class="pct-num" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر — مثبت یا منفی، اعشاری هم می‌شود">
+      <span class="pct-sign" aria-hidden="true">٪</span>
+    </div>
+    <button class="pct-btn pct-plus" data-pctstep="0.5" type="button" aria-label="نیم درصد زیاد کن" title="نیم درصد زیاد کن">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div class="pct-preview" id="pct-preview" dir="rtl"></div>
+
+  <div class="hintnote">هر کلیک روی دکمه‌های طرفین نیم درصد (۰٫۵٪) اضافه یا کم می‌کند؛ می‌توانی خودت هم عدد بگذاری — مثبت یا منفی، حتی اعشاری (مثل ۲٫۵ یا ‎−۱٫۵‎). اعمال روی قیمت‌های فعلی ردیف‌ها ضرب می‌شود و فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند.</div>
+
+  <div class="dlg-btns" style="flex-direction:row">
+    <button class="btn btn-outline" data-close type="button" style="flex:1">انصراف</button>
+    <button class="btn btn-primary" id="pct-apply" type="button" style="flex:1.6">اعمال روی قیمت‌ها</button>
+  </div>
+</div>
 
 <!-- ═══ ۹) کمپین جدید — فاز ۲۴: راهنما به صفحهٔ مستقل · فاز ۲۵: جایگاه «تأمین‌کنندگان ویژه» بازگردانده شد ═══ -->
 <!-- IMPLEMENTATION NOTE (فاز ۲۴/۲۵): راهنمای کامل کمپین/تبلیغ به صفحهٔ ۳۲ منتقل شد تا فرم ساده بماند —
@@ -9404,7 +9601,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               </div>
             </div>
             <h1><em>تامین کالا</em>،<br>مساله اکثر کسب و کارهاست</h1>
-            <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی، نیاز به تامین کالا از تامین کنندگان مناسب دارند.</p>
+            <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی، نیاز به خرید عمده کالا از تامین کنندگان مناسب دارند.</p>
             <p class="sub strong-line"><em>آیمچ، با پیشنهاد دقیق، انتخاب تأمین‌کننده مناسب را آسان می‌کند.</em></p>
             <div class="ctas">
               <button class="btn btn-primary">ساخت حساب</button>
@@ -9873,12 +10070,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     selUpdate();
   }
 
-  /* ═══ فاز ۳۶ — به‌روزرسانی گروهی قیمت و موجودی (۴۴) ═══
+  /* ═══ فاز ۳۶ + ۳۹ — به‌روزرسانی گروهی قیمت و موجودی (۴۴) ═══
      BK.base قیمت/موجودی اولیهٔ هر ردیف را نگه می‌دارد تا «بازنشانی» دقیق برگردد.
      bkNum ارقام فارسی/لاتین و جداکننده‌ها را می‌شمارد؛ bkSync ردیف را با مبنا مقایسه
      می‌کند (اگر کاربر مقدار را به حالت اول برگرداند، نشان «ویرایش شد» هم برداشته می‌شود).
-     چیپ درصدی روی قیمتِ «فعلی» ضرب می‌شود (ترکیبی) و حداقل صفر. */
-  var BK = { base: [] };
+     فاز ۳۹: BK.disc درصد اولیهٔ ردیف‌های تخفیف را نگه می‌دارد (همان الگو) و pctParse
+     ورودی درصدیِ دستی را می‌خواند — فارسی/لاتین، مثبت/منفی، اعشاری (٫ و .). */
+  var BK = { base: [], disc: [] };
   function bkNum(v) {
     var s = String(v == null ? '' : v)
       .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
@@ -9887,7 +10085,26 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var n = parseInt(s, 10);
     return isNaN(n) ? null : n;
   }
+  /* فاز ۳۹ — پارس درصد: «۲٫۵» / «-1.5» / «−۳» / «۰/۵» → عدد */
+  function pctParse(v) {
+    var s = String(v == null ? '' : v)
+      .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+      .replace(/[٠-٩]/g, function (d) { return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)); })
+      .replace(/[٫\/]/g, '.')
+      .replace(/[−–—]/g, '-')
+      .replace(/[٬,%٪\s]/g, '')
+      .trim();
+    if (!s || s === '-' || s === '.') return null;
+    var n = parseFloat(s);
+    return isNaN(n) ? null : Math.max(-99.9, Math.min(99.9, n));
+  }
+  /* فاز ۳۹ — نمایش فارسی درصد با ممیز فارسی و علامت منفی واقعی */
+  function faPct(n) {
+    var abs = String(Math.abs(n)).replace('.', '٫');
+    return (n < 0 ? '−' : '') + faNum(abs);
+  }
   function bkRows() { return document.querySelectorAll('#scr-44 .bk-row'); }
+  function bkDiscRows() { return document.querySelectorAll('#bk-disc .disc-row'); }
   function bkInit() {
     BK.base = [];
     bkRows().forEach(function (r, i) {
@@ -9902,12 +10119,37 @@ body > div[id^="scr-d"][hidden] { display: none; }
         if (nm) nm.appendChild(d);
       }
     });
+    /* فاز ۳۹ — مبنای درصد تخفیف‌ها + تزریق نشان «ویرایش شد» کوچک */
+    BK.disc = [];
+    bkDiscRows().forEach(function (r, i) {
+      var inp = r.querySelector('[data-discinput]');
+      BK.disc[i] = pctParse(inp && inp.value);
+      if (!r.querySelector('.d-dirty')) {
+        var dd = document.createElement('span');
+        dd.className = 'd-dirty';
+        dd.hidden = true;
+        dd.textContent = 'ویرایش شد';
+        var b = r.querySelector('.dn b');
+        if (b) b.insertBefore(dd, b.firstChild);
+      }
+    });
     bkCount();
   }
   function bkCount() {
     var n = document.querySelectorAll('#scr-44 .bk-row.chg').length;
+    var m = document.querySelectorAll('#bk-disc .disc-row.chg').length;
     var c = document.getElementById('bk-count');
-    if (c) c.textContent = '(' + faNum(n) + ')';
+    if (c) c.textContent = '(' + faNum(n + m) + ')';
+  }
+  /* فاز ۳۹ — هم‌گام درصد تخفیف با مبنا (نشان هوشمند، مثل خود گرید) */
+  function bkDiscSync(r, i) {
+    var inp = r.querySelector('[data-discinput]');
+    var v = pctParse(inp && inp.value);
+    var same = (v === (BK.disc[i] == null ? null : BK.disc[i])) || (v != null && BK.disc[i] != null && Math.abs(v - BK.disc[i]) < 1e-9);
+    r.classList.toggle('chg', !same);
+    var d = r.querySelector('.d-dirty');
+    if (d) d.hidden = same;
+    bkCount();
   }
   function bkSync(r, i) {
     var b = BK.base[i] || {};
@@ -9948,7 +10190,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (st) {
       st.hidden = false;
       st.className = 'xls-status';
-      st.textContent = 'فایل کالاهایت دانلود شد — در اکسل بازش کن، قیمت‌ها و موجودی‌ها را عوض کن و همین فایل را با «بارگذاری فایل به‌روزشده» برگردان.';
+      st.textContent = 'فایل کالاهایت دانلود شد — در اکسل بازش کن، قیمت‌ها و موجودی‌ها را عوض کن و همان فایل را با «آپلود فایل اکسل قیمت‌ها» برگردان.';
     }
   }
   /* اکسل — خواندن فایل و تطبیق ردیف‌ها با «نام کالا — بسته‌بندی» */
@@ -9998,6 +10240,131 @@ body > div[id^="scr-d"][hidden] { display: none; }
       }
     };
     rd.readAsText(file, 'utf-8');
+  }
+
+  /* ═══ فاز ۳۹ — مدال تغییر درصدی (dlg-pct): استپر ۰٫۵٪ + ورودی دستی + پیش‌نمایش زنده ═══ */
+  function pctInputEl() { return document.getElementById('pct-input'); }
+  function pctCur() {
+    var v = pctParse(pctInputEl() && pctInputEl().value);
+    return v == null ? 0 : v;
+  }
+  /* پیش‌نمایش: جهت + عدد + مثال واقعی از اولین ردیف گرید */
+  function pctPreviewRender() {
+    var box = document.getElementById('pct-preview');
+    var inp = pctInputEl();
+    if (!box || !inp) return;
+    var v = pctParse(inp.value);
+    if (v == null) {
+      box.className = 'pct-preview';
+      box.textContent = 'عدد درصد را درست وارد کن — مثلاً ۲٫۵ یا ‎−۱٫۵';
+      return;
+    }
+    var r0 = bkRows()[0];
+    var cur = r0 ? bkNum(r0.querySelector('.bk-price').value) : null;
+    if (cur == null) { box.className = 'pct-preview'; box.textContent = ''; return; }
+    var next = Math.max(0, Math.round(cur * (1 + v / 100)));
+    var nm = r0 ? (r0.dataset.bkname + ' — ' + r0.dataset.bkdesc) : '';
+    if (v > 0) {
+      box.className = 'pct-preview up';
+      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> بیشتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(cur) + ' ← <b>' + faMoney(next) + '</b> تومان';
+    } else if (v < 0) {
+      box.className = 'pct-preview down';
+      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> کمتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(cur) + ' ← <b>' + faMoney(next) + '</b> تومان';
+    } else {
+      box.className = 'pct-preview';
+      box.textContent = 'درصد صفر است — با دکمه‌های طرفین یا تایپ دستی کم/زیاد کن.';
+    }
+  }
+  /* استپر: ±۰٫۵ — نمایش فارسی با ممیز فارسی */
+  function pctStep(delta) {
+    var inp = pctInputEl();
+    if (!inp) return;
+    var v = pctCur() + delta;
+    v = Math.max(-99.9, Math.min(99.9, Math.round(v * 10) / 10));
+    inp.value = faPct(v);
+    pctPreviewRender();
+  }
+  /* اعمال روی قیمت‌های فعلیِ ردیف‌ها (ترکیبی) — کاتالوگ فقط با «ثبت تغییرات» عوض می‌شود */
+  function pctApply() {
+    var inp = pctInputEl();
+    var v = pctParse(inp && inp.value);
+    var box = document.getElementById('pct-preview');
+    if (v == null) {
+      if (box) { box.className = 'pct-preview down'; box.textContent = 'عدد درصد را درست وارد کن — مثلاً ۲٫۵ یا ‎−۱٫۵'; }
+      return;
+    }
+    if (v === 0) {
+      if (box) { box.className = 'pct-preview'; box.textContent = 'درصد صفر است — چیزی تغییر نمی‌کند.'; }
+      return;
+    }
+    bkRows().forEach(function (r) {
+      var pi = r.querySelector('.bk-price');
+      var cur = bkNum(pi && pi.value);
+      if (cur == null) return;
+      pi.value = faMoney(Math.max(0, Math.round(cur * (1 + v / 100))));
+      bkSync(r, [].indexOf.call(bkRows(), r));
+    });
+    closeSheet();
+    /* بعد از اعمال، ورودی به صفر برمی‌گردد تا اعمال بعدی از صفر شروع شود */
+    if (inp) inp.value = '۰';
+  }
+
+  /* ═══ فاز ۳۹ — ثبت تخفیف‌ها: هم‌گامی با شیت‌های cgroup/vol/ptier/cowork + خط همکار ۰۲/۱۳ ═══
+     ترتیب ردیف‌های bk-disc (ایندکس) با شیت‌ها:
+       0 همکار (کاتالوگ)   1 همکارهای قدیمی   2 خریداران عمده   3 مشتریان جدید
+       4..6 پله‌های حجمی همهٔ کالاها (۵/۲۰/۵۰ کیسه — sheet-vol)
+       7..9 پله‌های گروه خشکبار (۵/۲۰/۵۰ کیسه — sheet-ptier همین مقادیر را برای هاشمی نشان می‌دهد)
+       10..11 پله‌های گروه حبوبات (۱۰/۳۰ کیسه) */
+  function bkDiscCommit() {
+    var vals = [];
+    bkDiscRows().forEach(function (r) {
+      var inp = r.querySelector('[data-discinput]');
+      vals.push(pctParse(inp && inp.value));
+    });
+    /* شیت گروه‌های مشتری — تطبیق با نام گروه */
+    document.querySelectorAll('#sheet-cgroup .grp-row').forEach(function (g) {
+      var nm = g.querySelector('.tx b');
+      var inp = g.querySelector('.pctw input');
+      if (!nm || !inp) return;
+      var t = nm.textContent.trim();
+      if (t === 'همکارهای قدیمی' && vals[1] != null) inp.value = faPct(vals[1]);
+      if (t === 'خریداران عمده' && vals[2] != null) inp.value = faPct(vals[2]);
+      if (t === 'مشتریان جدید' && vals[3] != null) inp.value = faPct(vals[3]);
+    });
+    /* شیت تخفیف حجمی (سطح کاتالوگ): سه پلهٔ ۵/۲۰/۵۰ */
+    var volIdx = 0;
+    document.querySelectorAll('#sheet-vol .sheet-row').forEach(function (srow) {
+      var inp = srow.querySelector('.pctw input');
+      if (!inp) return;
+      if (vals[4 + volIdx] != null) inp.value = faPct(vals[4 + volIdx]);
+      volIdx++;
+    });
+    /* شیت پلکانی کالا (هاشمی = گروه خشکبار): سه پله */
+    var ptIdx = 0;
+    document.querySelectorAll('#sheet-ptier .sheet-row').forEach(function (srow) {
+      var inp = srow.querySelector('.pctw input');
+      if (!inp) return;
+      if (vals[7 + ptIdx] != null) inp.value = faPct(vals[7 + ptIdx]);
+      ptIdx++;
+    });
+    /* شیت تخفیف همکار (کالا) + خط «تخفیف همکار» خریدار (۰۲ + ۱۳) */
+    var cw = document.querySelector('#sheet-cowork .field input');
+    if (cw && vals[0] != null) cw.value = faPct(vals[0]) + '٪';
+    if (vals[0] != null) {
+      var cw02 = document.getElementById('cw-02');
+      if (cw02) cw02.textContent = faPct(vals[0]) + '٪';
+      var cw13 = document.querySelector('#scr-13 .cowork-line b');
+      if (cw13) cw13.textContent = faPct(vals[0]) + '٪';
+    }
+    /* مبنای جدید = مقدار ثبت‌شده + نشان‌ها برداشته می‌شوند */
+    bkDiscRows().forEach(function (r, i) {
+      var inp = r.querySelector('[data-discinput]');
+      if (inp && vals[i] != null) { inp.value = faPct(vals[i]); BK.disc[i] = vals[i]; }
+      r.classList.remove('chg');
+      var d = r.querySelector('.d-dirty');
+      if (d) d.hidden = true;
+    });
+    return vals;
   }
   function repShow(which) {
     var camp = document.getElementById('rep-camp');
@@ -11063,17 +11430,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* ═══ فاز ۳۶: به‌روزرسانی گروهی (۴۴) — چیپ درصدی · بازنشانی · ثبت · اکسل ═══ */
-    var bkpc = t.closest('[data-bkpc]');
-    if (bkpc) {
-      var pct = parseFloat(bkpc.dataset.bkpc) || 0;
-      bkRows().forEach(function (r) {
-        var pi = r.querySelector('.bk-price');
-        var cur = bkNum(pi && pi.value);
-        if (cur == null) return;
-        pi.value = faMoney(Math.max(0, Math.round(cur * (1 + pct / 100))));
-        bkSync(r, [].indexOf.call(bkRows(), r));
-      });
+    /* ═══ فاز ۳۶+۳۹: به‌روزرسانی گروهی (۴۴) — درصدی (استپر/اعمال) · تخفیف‌ها (بازشو) · بازنشانی · ثبت · اکسل ═══ */
+    /* فاز ۳۹ — دکمه‌های طرفین استپر درصدی: هر کلیک ±۰٫۵٪ */
+    var pcst = t.closest('[data-pctstep]');
+    if (pcst) {
+      pctStep(parseFloat(pcst.dataset.pctstep) || 0);
+      return;
+    }
+    /* فاز ۳۹ — «اعمال روی قیمت‌ها» در مدال درصدی */
+    if (t.closest('#pct-apply')) { pctApply(); return; }
+    /* فاز ۳۹ — باز/بستن بخش «تخفیف‌ها و قیمت‌های ویژه» */
+    var dtg = t.closest('[data-disctoggle]');
+    if (dtg) {
+      var dbox = document.getElementById('bk-disc');
+      if (dbox) {
+        dbox.hidden = !dbox.hidden;
+        dtg.classList.toggle('open', !dbox.hidden);
+        dtg.setAttribute('aria-expanded', dbox.hidden ? 'false' : 'true');
+      }
       return;
     }
     var bkrs = t.closest('[data-bkreset]');
@@ -11084,6 +11458,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
         if (pi && b.price != null) pi.value = faMoney(b.price);
         if (si && b.stock != null) si.value = faNum(b.stock);
         bkSync(r, i);
+      });
+      /* فاز ۳۹ — تخفیف‌ها هم به درصد اولیه برمی‌گردند */
+      bkDiscRows().forEach(function (r, i) {
+        var inp = r.querySelector('[data-discinput]');
+        if (inp && BK.disc[i] != null) inp.value = faPct(BK.disc[i]);
+        bkDiscSync(r, i);
       });
       return;
     }
@@ -11121,10 +11501,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
         var dd = r.querySelector('.bk-dirty');
         if (dd) dd.hidden = true;
       });
+      /* فاز ۳۹ — تخفیف‌ها هم در همین ثبت می‌نشینند (شیت‌ها + خط همکار ۰۲/۱۳) */
+      var bkD = document.querySelectorAll('#bk-disc .disc-row.chg').length;
+      if (bkD > 0) bkDiscCommit();
       bkCount();
-      if (bkN > 0) {
+      if (bkN > 0 || bkD > 0) {
         bkSave.classList.add('bk-saved');
-        bkSave.innerHTML = '<svg><use href="#i-check"/></svg> ثبت شد — ' + faNum(bkN) + ' کالا به‌روز شد';
+        var msg = bkN > 0 && bkD > 0
+          ? 'ثبت شد — ' + faNum(bkN) + ' کالا و ' + faNum(bkD) + ' تخفیف به‌روز شد'
+          : (bkD > 0 ? 'ثبت شد — ' + faNum(bkD) + ' تخفیف به‌روز شد' : 'ثبت شد — ' + faNum(bkN) + ' کالا به‌روز شد');
+        bkSave.innerHTML = '<svg><use href="#i-check"/></svg> ' + msg;
         setTimeout(function () {
           bkSave.classList.remove('bk-saved');
           bkSave.innerHTML = 'ثبت تغییرات <span id="bk-count">(۰)</span>';
@@ -11287,7 +11673,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         sheetOpen.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
         sheetOpen.classList.add('active');
       }
-      openSheet(sheetOpen.dataset.sheet); return;
+      openSheet(sheetOpen.dataset.sheet);
+      /* فاز ۳۹: باز شدن مدال درصدی → پیش‌نمایش با وضعیت فعلی ورودی رندر شود */
+      if (sheetOpen.dataset.sheet === 'dlg-pct') pctPreviewRender();
+      return;
     }
 
     var copyEl = t.closest('[data-copy]');
@@ -11462,13 +11851,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (h && h !== current && el(h)) { if (current) stack.push(current); show(h); }
   });
 
-  /* ═══ فاز ۳۶ — گرید قیمت/موجودی (۴۴): ویرایش زندهٔ ردیف‌ها ═══
-     هر تایپ، ردیف را با مبنا مقایسه می‌کند؛ اگر به مقدار اولیه برگردد نشان «ویرایش شد» هم برداشته می‌شود. */
+  /* ═══ فاز ۳۶+۳۹ — گرید قیمت/موجودی (۴۴): ویرایش زندهٔ ردیف‌ها + درصد تخفیف‌ها + پیش‌نمایش درصدی ═══
+     هر تایپ، ردیف را با مبنا مقایسه می‌کند؛ اگر به مقدار اولیه برگردد نشان «ویرایش شد» هم برداشته می‌شود.
+     فاز ۳۹: ورودی درصد تخفیف همان الگو را دارد؛ تایپ در ورودی مدال درصدی، پیش‌نمایش را زنده به‌روز می‌کند. */
   document.addEventListener('input', function (e) {
     var t = e.target;
     if (!t.closest) return;
     var r = t.closest('#scr-44 .bk-row');
-    if (r) bkSync(r, [].indexOf.call(bkRows(), r));
+    if (r) { bkSync(r, [].indexOf.call(bkRows(), r)); return; }
+    var dr = t.closest('#bk-disc .disc-row');
+    if (dr) { bkDiscSync(dr, [].indexOf.call(bkDiscRows(), dr)); return; }
+    if (t.id === 'pct-input') pctPreviewRender();
+  });
+
+  /* فاز ۳۹ — Enter در ورودی درصدی مدال = «اعمال روی قیمت‌ها» */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    var t = e.target;
+    if (t && t.id === 'pct-input') { e.preventDefault(); pctApply(); }
   });
 
   /* فاز ۳۶ — بارگذاری فایل اکسل به‌روزشده (مدال dlg-xlsbulk) */
