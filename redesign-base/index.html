@@ -416,32 +416,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-16 .auth-title h1 { font-size: 20px; font-weight: 700; }
   #scr-16 .auth-title p { font-size: 12px; color: var(--muted-fg); margin-top: 6px; line-height: 1.9; }
 
-  /* اندیکاتور گام‌ها */
-  #scr-16 .steps-ind {
-    display: flex; align-items: center; gap: 0;
-    margin: 18px 24px 4px;
-  }
-  #scr-16 .steps-ind .st {
-    flex: 1; text-align: center; position: relative;
-    font-size: 11px; color: var(--muted-fg);
-  }
-  #scr-16 .steps-ind .st .ic {
-    width: 30px; height: 30px; border-radius: 50%;
-    margin: 0 auto 6px;
-    display: grid; place-items: center;
-    background: var(--muted); color: var(--muted-fg);
-    font-size: 12px; font-weight: 700;
-    border: 1.5px solid var(--border-strong);
-  }
-  #scr-16 .steps-ind .st .ic svg { width: 14px; height: 14px; }
-  #scr-16 .steps-ind .st.done .ic { background: var(--green-bg); color: var(--green); border-color: #b6dfc5; }
-  #scr-16 .steps-ind .st.now .ic { background: var(--arm); color: #fff; border-color: var(--arm); }
-  #scr-16 .steps-ind .st.now { color: var(--arm); font-weight: 700; }
-  #scr-16 .steps-ind .st .bar {
-    position: absolute; top: 15px; right: -50%;
-    width: 100%; height: 2px; background: var(--border-strong);
-  }
-  #scr-16 .steps-ind .st.done .bar { background: var(--green); }
+  /* نوار پیشرفت مینیمال (فاز ۳۴) — به‌جای اندیکاتور بزرگ گام‌ها؛
+     «قدم دوم از دو» را زیرعنوان هدر می‌گوید، اینجا فقط حس پیشرفت مینیمال می‌ماند */
+  #scr-16 .mini-prog { display: flex; gap: 5px; margin: 22px 42px 0; }
+  #scr-16 .mini-prog i { flex: 1; height: 4px; border-radius: 99px; background: var(--muted); }
+  #scr-16 .mini-prog i.done { background: var(--green); }
+  #scr-16 .mini-prog i.now { background: var(--arm); opacity: .5; }
 
   /* شماره تاییدشده */
   #scr-16 .verified-phone {
@@ -1342,6 +1322,45 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .dlg textarea.input { height: 64px; }
   .rvw-err { font-size: 10.5px; font-weight: 700; color: var(--red); margin-top: 8px; }
 
+  /* ═══ فاز ۳۴ — نوارهای افقی: درگ ماوس + چرخ عمودی→افقی + فلش‌های مینیمال ═══
+     ریشهٔ «اسکرول نمی‌خورد»: اسکرول‌بار مخفی بود و روی دسکتاپ نه لمس هست نه درگ بومی؛
+     حالا با ماوس درگ می‌شود، چرخِ عمودی نوار را می‌چرخاند (تا انتها؛ بعدش صفحه) و دو فلش
+     کوچک فقط روی دستگاه‌های دارای ماوس دیده می‌شوند — لمسِ موبایل مثل قبل بومی می‌چرخد. */
+  .hs-wrap { position: relative; }
+  .hs-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 27px; height: 27px; border-radius: 50%; display: none; place-items: center; background: #fff; border: 1px solid var(--border-strong); box-shadow: 0 2px 9px rgba(42,39,35,.16); color: var(--primary-strong); cursor: pointer; padding: 0; z-index: 4; transition: background .15s, transform .15s; }
+  .hs-arrow svg { width: 15px; height: 15px; display: block; }
+  .hs-arrow:hover { background: var(--accent); }
+  .hs-arrow:active { transform: translateY(-50%) scale(.9); }
+  .hs-prev { right: 3px; }  /* سمت راست — به سمت ابتدای نوار (RTL) */
+  .hs-next { left: 3px; }   /* سمت چپ — به سمت انتها */
+  @media (hover: hover) and (pointer: fine) {
+    .hs-wrap.can-prev .hs-prev,
+    .hs-wrap.can-next .hs-next { display: grid; }
+    .hs-row { cursor: grab; }
+    .hs-wrap.dragging .hs-row { cursor: grabbing; }
+    .hs-wrap.dragging { user-select: none; -webkit-user-select: none; }
+  }
+
+  /* ═══ فاز ۳۴ — لینک «شرایط استفاده» (چک‌باکس ثبت‌نام ۱۶) + مدال توافق‌نامه ═══ */
+  .terms-lnk { background: none; border: 0; padding: 0; font: inherit; font-weight: 800; color: var(--red); cursor: pointer; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+  .terms-lnk:active { opacity: .55; }
+  #dlg-terms { padding: 0; display: flex; flex-direction: column; overflow: hidden; }
+  #dlg-terms .tm-head { display: flex; align-items: flex-start; gap: 8px; padding: 15px 15px 11px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  #dlg-terms .tm-head h3 { font-size: 13.5px; line-height: 1.7; flex: 1; }
+  #dlg-terms .tm-x { width: 29px; height: 29px; border-radius: 9px; display: grid; place-items: center; border: 0; background: var(--muted); color: var(--muted-fg); cursor: pointer; flex-shrink: 0; padding: 0; }
+  #dlg-terms .tm-x svg { width: 13px; height: 13px; }
+  #dlg-terms .tm-x:active { background: var(--stone-tint); }
+  #dlg-terms .tm-body { overflow-y: auto; padding: 11px 16px 4px; flex: 1; min-height: 0; scrollbar-width: thin; scrollbar-color: rgba(42,39,35,.22) transparent; }
+  #dlg-terms .tm-body h4 { font-size: 12.5px; font-weight: 800; margin: 14px 0 3px; }
+  #dlg-terms .tm-body h4:first-child { margin-top: 1px; }
+  #dlg-terms .tm-body p { font-size: 10.8px; line-height: 2.15; color: var(--stone-soft); margin-top: 5px; }
+  #dlg-terms .tm-body p b { color: var(--foreground); }
+  #dlg-terms .tm-body ul { margin: 4px 0 0; padding: 0; list-style: none; }
+  #dlg-terms .tm-body ul li { position: relative; font-size: 10.8px; line-height: 2.1; color: var(--stone-soft); margin-top: 4px; padding-right: 11px; }
+  #dlg-terms .tm-body ul li::before { content: '•'; position: absolute; right: 0; color: var(--primary-strong); }
+  #dlg-terms .tm-foot { padding: 10px 16px 14px; border-top: 1px solid var(--border); flex-shrink: 0; }
+  #dlg-terms .tm-foot .btn { width: 100%; }
+
 </style>
 </head>
 <body>
@@ -1389,7 +1408,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="9" height="9" rx="2"/><path d="M7 7.5l1.7 1.7L11.5 6"/><rect x="3.5" y="14.5" width="9" height="7" rx="2"/><path d="M15.5 6.5h5M15.5 10h5M15.5 17.5h5M15.5 20.5h3"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></symbol>
 <symbol id="i-board" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M9 9v11M15 9v11"/></symbol>
-<symbol id="i-back-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></symbol>
 <symbol id="i-check-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
 <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.5" r="0.5" fill="currentColor"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 5-3.5 8.5-7.5 10-4-1.5-7.5-5-7.5-10v-6z"/><path d="M9 12l2 2 4-4"/></symbol>
@@ -3882,7 +3900,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- ═══ هدر ساده ═══ -->
     <div class="subheader">
-      <div class="back"><svg><use href="#i-back-v2"/></svg></div>
+      <button type="button" class="back" aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">ساخت حساب<small>قدم دوم از دو</small></div>
       <div style="width:34px"></div>
     </div>
@@ -3896,17 +3914,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <p>چند سؤال ساده — و دستیار خرید و فروشت آماده می‌شود</p>
       </div>
 
-      <!-- گام‌ها -->
-      <div class="steps-ind">
-        <div class="st done">
-          <div class="ic"><svg><use href="#i-check-v2"/></svg></div>
-          شماره موبایل
-          <div class="bar"></div>
-        </div>
-        <div class="st now">
-          <div class="ic">۲</div>
-          کسب‌وکار شما
-        </div>
+      <!-- نوار پیشرفت مینیمال (فاز ۳۴) — به‌جای اندیکاتور بزرگ گام‌ها -->
+      <div class="mini-prog" role="progressbar" aria-label="قدم دوم از دو" aria-valuenow="2" aria-valuemin="1" aria-valuemax="2">
+        <i class="done"></i><i class="now"></i>
       </div>
 
       <!-- شماره تاییدشده -->
@@ -3931,10 +3941,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
         <div class="field">
-          <label>شما در ای‌مچ چه می‌کنید؟</label>
+          <label>فعالیت شما در بازار</label>
           <div class="pillchoice">
-            <button class="pill active">می‌فروشم</button>
-            <button class="pill">می‌خرم</button>
+            <button class="pill">خرید عمده</button>
+            <button class="pill active">فروش عمده</button>
             <button class="pill">هر دو</button>
           </div>
           <div class="role-desc">
@@ -3961,7 +3971,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="checkrow" style="margin-top:2px">
           <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
-          <span style="font-size:12px;line-height:1.9">شرایط استفاده و حریم خصوصی ای‌مچ را می‌پذیرم</span>
+          <span style="font-size:12px;line-height:1.9"><button type="button" class="terms-lnk" data-termsopen>شرایط استفاده</button> از آیمچ را می‌پذیرم</span>
         </div>
       </div>
 
@@ -3981,7 +3991,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- ═══ هدر ساده ═══ -->
     <div class="subheader">
-      <div class="back"><svg><use href="#i-back-v2"/></svg></div>
+      <button type="button" class="back" aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">ورود<small>یک قدم تا دستیارت</small></div>
       <div style="width:34px"></div>
     </div>
@@ -8436,6 +8446,111 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </div>
 </div>
 
+<!-- ═══ فاز ۳۴ — مدال «شرایط استفاده از آیمچ» (لینکِ داخل چک‌باکس ثبت‌نام ۱۶) ═══ -->
+<!-- IMPLEMENTATION NOTE: سربرگ/پاص ثابت + بدنهٔ اسکرولی. دکمهٔ پایین «مطالعه کردم و می‌پذیرم»
+     همان لحظه تیک چک‌باکس شرایط را روشن می‌کند و می‌بندد؛ «بستن» (×) فقط می‌بندد.
+     متن توافق‌نامه عیناً متن مالک است. -->
+<div class="dlg" id="dlg-terms" role="dialog" aria-label="توافق‌نامه شرایط و قوانین استفاده از آیمچ">
+  <div class="tm-head">
+    <h3>توافق‌نامه شرایط و قوانین استفاده از آیمچ</h3>
+    <button type="button" class="tm-x" data-close aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="tm-body">
+    <h4>مقدمه</h4>
+    <p>به آیمچ خوش آمدید.</p>
+    <p>آیمچ با هدف آسان‌تر کردن خریدوفروش عمده، معرفی کسب‌وکارها و محصولات و کمک به خریداران و تأمین‌کنندگان برای پیدا کردن طرف‌های تجاری مناسب طراحی شده است. کاربران می‌توانند با استفاده از امکانات آیمچ، اطلاعات کسب‌وکار و محصولات خود را ثبت کنند، کاتالوگ محصولات بسازند، درخواست‌های خرید و قیمت را پیگیری کنند و با خریداران یا تأمین‌کنندگان مرتبط آشنا شوند.</p>
+    <p>استفاده از خدمات آیمچ مستلزم مطالعه و پذیرش این توافق‌نامه است. با ثبت‌نام و انتخاب گزینهٔ «شرایط آیمچ را می‌پذیرم»، اعلام می‌کنید که مفاد این توافق‌نامه را مطالعه کرده‌اید و می‌پذیرید مطابق آن از خدمات آیمچ استفاده کنید.</p>
+    <h4>ماده ۱ ـ تعاریف</h4>
+    <p>۱. <b>آیمچ:</b> سامانه‌ای برای کمک به ارتباط و توسعه روابط تجاری میان خریداران عمده، تأمین‌کنندگان، تولیدکنندگان، توزیع‌کنندگان، عمده‌فروشان و سایر فعالان خریدوفروش عمده است.</p>
+    <p>۲. <b>کاربر:</b> هر شخص حقیقی یا حقوقی که در آیمچ حساب کاربری ایجاد می‌کند یا از خدمات آن استفاده می‌کند.</p>
+    <p>۳. <b>حساب کاربری:</b> حسابی که برای دسترسی به امکانات آیمچ ایجاد می‌شود.</p>
+    <p>۴. <b>اطلاعات کسب‌وکار:</b> اطلاعاتی مانند نام کسب‌وکار، زمینه فعالیت، موقعیت جغرافیایی، راه‌های ارتباطی و سایر اطلاعات معرفی‌شده توسط کاربر.</p>
+    <p>۵. <b>اطلاعات محصول:</b> اطلاعات مربوط به کالا، از جمله نام، برند، مشخصات، تصاویر، قیمت، موجودی، واحد فروش، حداقل سفارش و شرایط پرداخت و تحویل.</p>
+    <p>۶. <b>کاتالوگ:</b> مجموعه‌ای از محصولات و اطلاعات مربوط به آن‌ها که کاربر در آیمچ ثبت و مدیریت می‌کند و می‌تواند برای معرفی محصولات خود در اختیار دیگران قرار دهد.</p>
+    <h4>ماده ۲ ـ شرایط عمومی استفاده</h4>
+    <p>۱. کاربر باید اطلاعات لازم برای ثبت‌نام را به‌درستی وارد کند و از شماره تلفن همراه فعال و تحت اختیار خود استفاده کند.</p>
+    <p>۲. کاربر باید از نظر قانونی مجاز به استفاده از خدمات آیمچ و انجام فعالیت تجاری مربوط به حساب خود باشد. در صورت نیاز به مجوز قانونی برای فعالیت یا عرضه یک کالا، مسئولیت دریافت و معتبر نگه‌داشتن آن بر عهده کاربر است.</p>
+    <p>۳. کاربر متعهد است قوانین و مقررات جاری کشور و مفاد این توافق‌نامه را رعایت کند.</p>
+    <p>۴. هر کاربر مسئول حفظ امنیت حساب خود و مراقبت از اطلاعات ورود و کدهای تأیید است. اطلاعات و کدهای امنیتی حساب نباید در اختیار افراد غیرمجاز قرار گیرد.</p>
+    <p>۵. کاربر نباید از حساب خود برای فریب دیگران، جعل هویت، ایجاد حساب‌های گمراه‌کننده یا انجام فعالیت‌های غیرقانونی استفاده کند.</p>
+    <p>۶. ثبت‌نام در آیمچ به‌معنای ایجاد مجوز یا تضمین برای انجام هر نوع معامله نیست. کاربر باید در تمام مراحل فعالیت تجاری، الزامات قانونی مربوط به کسب‌وکار و معاملات خود را رعایت کند.</p>
+    <h4>ماده ۳ ـ مسئولیت صحت اطلاعات کسب‌وکار و محصولات</h4>
+    <p>۱. مسئولیت صحت، کامل بودن و به‌روز بودن اطلاعاتی که کاربر در آیمچ وارد می‌کند، بر عهده خود اوست.</p>
+    <p>۲. کاربر متعهد است اطلاعات کسب‌وکار، محصولات، قیمت‌ها، موجودی و شرایط فروش را با صداقت و به‌گونه‌ای وارد کند که برای خریداران و تأمین‌کنندگان دیگر گمراه‌کننده نباشد.</p>
+    <p>۳. کاربر نباید درباره هویت، سابقه، توان تأمین، کیفیت کالا، اصالت برند، میزان موجودی، قیمت یا شرایط معامله ادعای نادرست یا اثبات‌نشده مطرح کند.</p>
+    <p>۴. در ثبت اطلاعات محصولات، لازم است موارد زیر تا حد امکان دقیق و متناسب با نوع کالا مشخص شوند:</p>
+    <ul>
+      <li>نام و مشخصات واقعی محصول و برند آن؛</li>
+      <li>واحد فروش، نوع بسته‌بندی و حداقل مقدار سفارش؛</li>
+      <li>قیمت و شرایطی که قیمت بر اساس آن اعلام شده است؛</li>
+      <li>موجودی واقعی یا امکان تأمین کالا؛</li>
+      <li>شرایط پرداخت، تحویل و ارسال، در صورت ارائه این اطلاعات؛</li>
+      <li>تصاویر مرتبط با محصول و توضیحات لازم برای شناخت بهتر آن.</li>
+    </ul>
+    <p>۵. اگر قیمت، موجودی، مشخصات یا شرایط فروش محصول تغییر کرد، کاربر باید اطلاعات ثبت‌شده را در اولین فرصت به‌روزرسانی کند. اطلاعات قدیمی یا نادرست نباید به‌گونه‌ای باقی بمانند که خریدار را درباره امکان خرید یا شرایط فعلی کالا به اشتباه بیندازد.</p>
+    <p>۶. اگر کاربر دیگر قادر به تأمین محصولی نیست یا فعالیت مرتبط با آن را متوقف کرده است، باید اطلاعات آن را اصلاح یا از دسترس خارج کند؛ در صورتی که چنین امکانی در سامانه فراهم باشد.</p>
+    <p>۷. کاربر باید از تصاویر واقعی یا تصاویر مجاز و دقیقاً مرتبط با محصول استفاده کند. استفاده از تصاویر گمراه‌کننده، تصاویر متعلق به دیگران بدون مجوز یا تصاویری که ویژگی‌های واقعی کالا را به‌اشتباه نشان می‌دهند، مجاز نیست.</p>
+    <p>۸. کاربر باید اطلاعات کسب‌وکار خود را نیز به‌روز نگه دارد؛ از جمله زمینه فعالیت، موقعیت، اطلاعات تماس و سایر مشخصاتی که در تصمیم خریداران یا تأمین‌کنندگان برای برقراری ارتباط مؤثر است.</p>
+    <p>۹. آیمچ توصیه می‌کند کاربران به‌صورت منظم اطلاعات محصولات و کسب‌وکار خود را بررسی و اصلاح کنند. اطلاعات دقیق و به‌روز به تصمیم‌گیری بهتر طرف‌های تجاری، افزایش اعتماد و کاهش اختلاف‌ها و بازخوردهای منفی کمک می‌کند.</p>
+    <h4>ماده ۴ ـ رفتار حرفه‌ای و حفظ اعتماد کاربران</h4>
+    <p>۱. کاربران متعهد هستند در ارتباطات و فعالیت‌های تجاری خود در آیمچ، صداقت، احترام و رفتار حرفه‌ای را رعایت کنند.</p>
+    <p>۲. ارائه اطلاعات خلاف واقع، وعده‌های غیرقابل انجام، اعلام قیمت یا موجودی غیرواقعی، پنهان کردن شرایط مهم معامله یا معرفی نادرست محصول با هدف جذب مشتری مجاز نیست.</p>
+    <p>۳. کاربران نباید از اطلاعات دیگر کاربران برای مزاحمت، فریب، تهدید، ارسال پیام‌های ناخواسته یا اهدافی خارج از چارچوب مجاز استفاده کنند.</p>
+    <p>۴. توهین، افترا، نشر اکاذیب، تهدید، تبعیض، آزار و انتشار محتوای غیرقانونی یا ناقض حقوق دیگران ممنوع است.</p>
+    <p>۵. کاربر می‌پذیرد که اطلاعات ناقص، رفتار غیرحرفه‌ای، پاسخ‌گویی نامناسب یا عمل نکردن به تعهدات اعلام‌شده ممکن است باعث کاهش اعتماد دیگران، دریافت بازخورد منفی یا از دست رفتن فرصت‌های تجاری شود. مسئولیت اصلاح رفتار و اطلاعات مربوط به کسب‌وکار بر عهده خود کاربر است.</p>
+    <p>۶. کاربر نباید برای افزایش اعتبار خود، نظر، امتیاز، سابقه معامله یا بازخورد جعلی ایجاد کند یا از دیگران بخواهد اطلاعات خلاف واقع ثبت کنند.</p>
+    <h4>ماده ۵ ـ ضوابط ثبت و انتشار محتوا</h4>
+    <p>۱. اطلاعات، تصاویر، توضیحات محصولات و سایر محتوایی که کاربر در آیمچ منتشر می‌کند، باید با قوانین کشور و این توافق‌نامه سازگار باشد.</p>
+    <p>۲. انتشار محتوای جعلی، تکراری با هدف گمراه کردن کاربران، نامرتبط، فریبنده، توهین‌آمیز یا ناقض حقوق مالکیت فکری دیگران مجاز نیست.</p>
+    <p>۳. ثبت محصولات یا معرفی خدمات غیرقانونی، کالاهای ممنوعه یا مواردی که عرضه آن‌ها نیازمند مجوز است و کاربر مجوز لازم را ندارد، ممنوع است.</p>
+    <p>۴. کاربر نباید از نام، نشان تجاری، تصاویر یا اطلاعات اختصاصی اشخاص و کسب‌وکارهای دیگر بدون مجوز قانونی استفاده کند؛ مگر در مواردی که استفاده از آن طبق قوانین مجاز باشد.</p>
+    <p>۵. انتخاب دسته‌بندی مناسب و ارائه توضیحات روشن و مرتبط با محصول بر عهده کاربر است. کاربر باید از وارد کردن اطلاعاتی که ممکن است باعث معرفی اشتباه محصول یا کسب‌وکار شود خودداری کند.</p>
+    <p>۶. آیمچ می‌تواند در صورت مشاهده یا دریافت گزارش درباره محتوای مغایر با این توافق‌نامه، آن را بررسی کند و متناسب با شرایط، برای اصلاح، محدود کردن نمایش یا حذف محتوا اقدام کند.</p>
+    <h4>ماده ۶ ـ استفاده از امکانات آیمچ</h4>
+    <p>۱. کاربر متعهد است از امکانات آیمچ، از جمله ثبت و مدیریت کاتالوگ، معرفی محصولات، پیگیری درخواست‌های خرید و قیمت و ارتباط با خریداران و تأمین‌کنندگان، در چارچوب هدف تجاری و قوانین مربوط استفاده کند.</p>
+    <p>۲. اطلاعات و درخواست‌هایی که کاربر ثبت می‌کند باید واقعی و مرتبط با فعالیت او باشند. ثبت درخواست ساختگی، اعلام نیاز غیرواقعی یا استفاده از امکانات سامانه برای فریب و مزاحمت ممنوع است.</p>
+    <p>۳. آیمچ ممکن است بر اساس اطلاعات محصولات، نیازهای خرید و مشخصات کسب‌وکارها، امکان شناسایی یا معرفی طرف‌های تجاری مرتبط را فراهم کند. این معرفی‌ها به‌معنای تأیید قطعی صلاحیت، اعتبار، توان مالی، موجودی یا قابل‌اعتماد بودن طرف معرفی‌شده از سوی آیمچ نیست.</p>
+    <p>۴. کاربر نباید با استفاده از ابزارهای خودکار، روش‌های مخرب، دسترسی غیرمجاز یا هر روش دیگری که موجب اختلال در سامانه یا نقض حقوق دیگران می‌شود، به آیمچ یا اطلاعات آن دسترسی پیدا کند.</p>
+    <p>۵. جمع‌آوری انبوه اطلاعات کاربران، استخراج غیرمجاز اطلاعات، تلاش برای دور زدن محدودیت‌های فنی یا استفاده از داده‌های سامانه برخلاف قوانین و حقوق آیمچ یا سایر کاربران ممنوع است.</p>
+    <p>۶. کاربر می‌پذیرد که آیمچ ممکن است برای بهبود کیفیت خدمات، حفظ امنیت و اجرای این توافق‌نامه، برخی محتواها یا فعالیت‌های گزارش‌شده و مشکوک را بررسی کند.</p>
+    <h4>ماده ۷ ـ مسئولیت طرفین در معاملات</h4>
+    <p>۱. آیمچ بستری برای معرفی کسب‌وکارها، محصولات و فرصت‌های ارتباط تجاری فراهم می‌کند. ثبت اطلاعات یا معرفی یک کاربر به کاربر دیگر، به‌تنهایی به‌معنای مشارکت آیمچ در معامله یا تضمین انجام آن نیست.</p>
+    <p>۲. مسئولیت بررسی هویت و صلاحیت طرف معامله، مشخصات و کیفیت کالا، قیمت نهایی، موجودی، شرایط پرداخت و تحویل، مجوزهای لازم و سایر جزئیات معامله بر عهده طرف‌های معامله است.</p>
+    <p>۳. کاربران باید پیش از توافق یا پرداخت وجه، اطلاعات مهم معامله را بررسی و شرایط آن را به‌صورت روشن با طرف مقابل هماهنگ کنند.</p>
+    <p>۴. ثبت اطلاعات محصول، اعلام قیمت یا مشاهده یک درخواست خرید، به‌خودی‌خود به‌معنای انعقاد قرارداد، ثبت سفارش قطعی یا تضمین فروش و تأمین کالا نیست؛ مگر آنکه طرفین جداگانه بر آن توافق کنند.</p>
+    <p>۵. هر کاربر مسئول تعهدات، اظهارات و اقداماتی است که شخصاً انجام می‌دهد. اختلاف درباره کیفیت یا تحویل کالا، پرداخت وجه، تأخیر، لغو معامله یا سایر تعهدات تجاری باید با توجه به توافق طرفین و قوانین مربوط پیگیری شود.</p>
+    <p>۶. آیمچ تلاش می‌کند خدمات خود را در حدود امکانات فنی و اجرایی موجود ارائه کند، اما نمی‌تواند تحقق فروش، پیدا شدن خریدار یا تأمین‌کننده، افزایش درآمد یا موفقیت تجاری کاربران را تضمین کند.</p>
+    <h4>ماده ۸ ـ اقدامات در صورت تخلف</h4>
+    <p>۱. اگر کاربری این توافق‌نامه را نقض کند، اطلاعات گمراه‌کننده ارائه دهد، از امکانات آیمچ سوءاستفاده کند یا فعالیت او مغایر با قوانین باشد، آیمچ می‌تواند متناسب با نوع و شدت تخلف، موضوع را بررسی و اقدامات لازم را انجام دهد.</p>
+    <p>۲. این اقدامات، حسب مورد و متناسب با امکانات سامانه، می‌تواند شامل درخواست اصلاح اطلاعات، محدود کردن نمایش محتوا، حذف محتوای مغایر، محدود کردن برخی امکانات یا تعلیق و مسدود کردن حساب کاربری باشد.</p>
+    <p>۳. کاربران می‌توانند موارد مشکوک، اطلاعات نادرست یا رفتارهای مغایر با این توافق‌نامه را از طریق راه‌های ارتباطی اعلام‌شده از سوی آیمچ گزارش کنند.</p>
+    <p>۴. در صورت لزوم قانونی، آیمچ می‌تواند اطلاعات مربوط را در اختیار مراجع ذی‌صلاح قرار دهد.</p>
+    <p>۵. انجام یا عدم انجام بررسی توسط آیمچ، مسئولیت کاربر در قبال صحت اطلاعات، رفتار و تعهدات تجاری خود را از بین نمی‌برد.</p>
+    <h4>ماده ۹ ـ حریم خصوصی و اطلاعات کاربران</h4>
+    <p>۱. آیمچ اطلاعات کاربران را در چارچوب قوانین و مقررات مربوط و مطابق سیاست حفظ حریم خصوصی خود جمع‌آوری، استفاده و نگهداری می‌کند.</p>
+    <p>۲. این اطلاعات ممکن است برای ایجاد و مدیریت حساب کاربری، ارائه خدمات، نمایش اطلاعاتی که کاربر برای معرفی کسب‌وکار یا محصولات خود ثبت کرده است، برقراری ارتباط، حفظ امنیت سامانه، رسیدگی به گزارش‌ها و بهبود خدمات استفاده شود.</p>
+    <p>۳. کاربر باید پیش از ثبت اطلاعات شخصی دیگران یا انتشار تصاویر و اطلاعات متعلق به آن‌ها، مجوزها و مبانی قانونی لازم را داشته باشد.</p>
+    <p>۴. آیمچ در حدود الزامات قانونی و امکانات فنی خود برای حفاظت از اطلاعات کاربران اقدام می‌کند. با این حال، هیچ سامانه‌ای را نمی‌توان در برابر همه خطرات امنیتی، اختلالات فنی یا رویدادهای خارج از کنترل، کاملاً مصون دانست.</p>
+    <p>۵. جزئیات مربوط به نوع اطلاعات جمع‌آوری‌شده، مدت نگهداری، شیوه استفاده و حقوق کاربران در خصوص اطلاعاتشان، تابع سیاست حفظ حریم خصوصی آیمچ و قوانین مربوط است.</p>
+    <h4>ماده ۱۰ ـ مالکیت فکری</h4>
+    <p>۱. حقوق مربوط به نام و نشان تجاری آیمچ، طراحی‌ها، رابط کاربری، نرم‌افزار، ساختار سامانه و سایر محتوای متعلق به آیمچ، تابع قوانین مالکیت فکری است.</p>
+    <p>۲. استفاده، تکثیر، انتشار، استخراج یا بهره‌برداری از دارایی‌های فکری آیمچ بدون مجوز لازم و خارج از استفاده معمول از خدمات مجاز نیست.</p>
+    <p>۳. کاربر مسئول است اطمینان حاصل کند که حق انتشار اطلاعات، تصاویر، علائم تجاری و سایر محتوایی را که در آیمچ بارگذاری می‌کند، دارد.</p>
+    <p>۴. کاربر با انتشار محتوا در آیمچ، مجوز استفاده از آن محتوا را در حد لازم برای نمایش، میزبانی و ارائه خدمات مرتبط با همان محتوا به آیمچ اعطا می‌کند. این بند به‌معنای انتقال مالکیت محتوای کاربر به آیمچ نیست.</p>
+    <h4>ماده ۱۱ ـ تغییرات خدمات و توافق‌نامه</h4>
+    <p>۱. آیمچ ممکن است برای توسعه خدمات، بهبود عملکرد، افزایش امنیت یا رعایت الزامات قانونی، امکانات خود را تغییر دهد یا امکانات جدیدی ارائه کند.</p>
+    <p>۲. آیمچ می‌تواند این توافق‌نامه را در صورت نیاز به‌روزرسانی کند. نسخه به‌روز توافق‌نامه از طریق راه‌های مناسب در اختیار کاربران قرار خواهد گرفت.</p>
+    <p>۳. در مواردی که تغییرات توافق‌نامه نیازمند پذیرش مجدد کاربر باشد، پذیرش مطابق روال اعلام‌شده از سوی آیمچ انجام خواهد شد.</p>
+    <p>۴. اگر کاربر با تغییرات مؤثر در شرایط استفاده موافق نباشد، می‌تواند استفاده از خدمات مربوط را متوقف کند؛ مشروط به رعایت تعهدات قانونی و تعهداتی که پیش‌تر در برابر دیگران پذیرفته است.</p>
+    <h4>ماده ۱۲ ـ پذیرش توافق‌نامه</h4>
+    <p>با انتخاب گزینه «شرایط آیمچ را می‌پذیرم» و ادامه فرایند ثبت‌نام، تأیید می‌کنم که این توافق‌نامه را مطالعه کرده‌ام، مفاد آن را می‌پذیرم و مسئولیت صحت اطلاعات، محتوای ثبت‌شده و رفتار خود در آیمچ را بر عهده می‌گیرم.</p>
+    <p>متعهد می‌شوم اطلاعات کسب‌وکار و محصولاتم را صادقانه ثبت کنم، در صورت تغییر آن‌ها را به‌روز نگه دارم، در تعامل با سایر کاربران رفتار حرفه‌ای داشته باشم و از امکانات آیمچ در چارچوب قوانین و شرایط این توافق‌نامه استفاده کنم.</p>
+  </div>
+  <div class="tm-foot">
+    <button type="button" class="btn btn-primary" data-termsok>مطالعه کردم و می‌پذیرم</button>
+  </div>
+</div>
+
   </div>
 </div>
 
@@ -10499,6 +10614,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var rvo = t.closest('[data-rvwopen]');
     if (rvo) { openSheet('dlg-rvw'); return; }
 
+    /* ═══ فاز ۳۴ — مدال «شرایط استفاده» (لینکِ چک‌باکس ثبت‌نام ۱۶) ═══
+       این بلوک عمداً قبل از checkrow نشسته: کلیک روی لینک نباید تیک را برگرداند.
+       «مطالعه کردم و می‌پذیرم» = پذیرش صریح → تیک روشن + بستن؛ «×» فقط می‌بندد. */
+    var tmo = t.closest('[data-termsopen]');
+    if (tmo) { openSheet('dlg-terms'); return; }
+    var tmk = t.closest('[data-termsok]');
+    if (tmk) {
+      var tcb = document.querySelector('#scr-16 .checkrow .checkbox');
+      if (tcb) tcb.classList.add('on');
+      closeSheet();
+      return;
+    }
+
     /* ثبت: نام + کسب‌وکار + متن لازم؛ نقش (فروشنده/خریدار) دکمهٔ کارت را تعیین می‌کند.
        نظر تازه همان لحظه در انتهای نوار (قبل از کارت دعوت) و بالای فهرست ۴۳ می‌نشیند. */
     var rvs = t.closest('[data-rvwsend]');
@@ -10594,6 +10722,101 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var h = location.hash.slice(1);
     if (h && h !== current && el(h)) { if (current) stack.push(current); show(h); }
   });
+
+  /* ═══ فاز ۳۴ — نوارهای افقی اسکرولی: درگ ماوس + چرخ عمودی→افقی + فلش‌های مینیمال ═══
+     اعمال روی: نوار «نظر خریداران» (۱۵) · فیلم‌های آموزشی (۴۰/۴۱) · درخواست‌های خرید جاری (۰۸).
+     چرا «اسکرول نمی‌خورد»؟ اسکرول‌بار عمداً مخفی بود و div ها درگ بومی ندارند؛ روی دسکتاپ
+     نه لمس هست نه فلش — نوار قفل به نظر می‌رسید. اکنون: با ماوس درگ کنید، چرخ را بچرخانید
+     (تا انتهای نوار؛ بعدش صفحه می‌چرخد) یا از دو فلش کوچک استفاده کنید. فلش‌ها فقط روی
+     دستگاه‌های ماوسی دیده می‌شوند؛ لمسِ موبایل مثل قبل اسکرول بومی دارد. */
+  function hsInit(row) {
+    if (!row || row.dataset.hs) return;
+    row.dataset.hs = '1';
+    row.classList.add('hs-row');
+
+    /* نوار را داخل یک قاب position:relative می‌گذاریم تا جای فلش‌ها مشخص شود؛
+       خود نوار (با مارجین‌های منفی فول‌بلید ۱۵) دست‌نخورده جابه‌جا می‌شود. */
+    var wrap = document.createElement('div');
+    wrap.className = 'hs-wrap';
+    row.replaceWith(wrap);
+    wrap.appendChild(row);
+
+    function mkArrow(cls, label, path) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'hs-arrow ' + cls;
+      b.setAttribute('aria-label', label);
+      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="' + path + '"/></svg>';
+      return b;
+    }
+    var prev = mkArrow('hs-prev', 'قبلی', 'M9 6l6 6-6 6');   /* راست‌گرد — به سمت ابتدای نوار */
+    var next = mkArrow('hs-next', 'بعدی', 'M15 6l-6 6 6 6'); /* چپ‌گرد — به سمت انتها */
+    wrap.appendChild(prev);
+    wrap.appendChild(next);
+
+    function maxScroll() { return row.scrollWidth - row.clientWidth; }
+    function pos() { return Math.abs(row.scrollLeft); } /* RTL: scrollLeft منفی است؛ قدرمطلق = فاصله از ابتدا */
+
+    var raf = 0;
+    function sync() {
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        raf = 0;
+        var max = maxScroll();
+        wrap.classList.toggle('can-prev', max > 4 && pos() > 4);
+        wrap.classList.toggle('can-next', max > 4 && pos() < max - 4);
+      });
+    }
+
+    prev.addEventListener('click', function () { row.scrollBy({ left: Math.round(row.clientWidth * .8), behavior: 'smooth' }); });
+    next.addEventListener('click', function () { row.scrollBy({ left: -Math.round(row.clientWidth * .8), behavior: 'smooth' }); });
+    row.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    new MutationObserver(sync).observe(row, { childList: true }); /* رندرهای JS (نظر تازه و…) دوباره هم‌گام می‌کنند */
+
+    /* چرخ عمودی → اسکرول افقی نوار؛ فقط تا جایی که نوار جای مانده دارد، بعدش صفحه */
+    row.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return; /* چرخ/ترک‌پد افقی خودش کار می‌کند */
+      var max = maxScroll();
+      if (max <= 4) return;
+      var p = pos();
+      var forward = e.deltaY > 0;
+      if ((forward && p < max - 1) || (!forward && p > 1)) {
+        e.preventDefault();
+        row.scrollLeft -= e.deltaY;
+      }
+    }, { passive: false });
+
+    /* درگ با ماوس — محتوا دنبال نشانگر می‌آید (لمس را قلم نمی‌گیریم؛ بومی می‌چرخد) */
+    var drag = null, moved = false;
+    function swallow(ev) { ev.stopPropagation(); ev.preventDefault(); }
+    row.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { x: e.clientX, sl: row.scrollLeft };
+      moved = false;
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var dx = e.clientX - drag.x;
+      if (Math.abs(dx) > 4) {
+        moved = true;
+        wrap.classList.add('dragging');
+        row.scrollLeft = drag.sl + dx;
+      }
+    });
+    window.addEventListener('pointerup', function () {
+      if (drag && moved) {
+        /* درگ تمام‌شده نباید به کلیک روی کارت/دکمه بینجامد */
+        row.addEventListener('click', swallow, true);
+        setTimeout(function () { row.removeEventListener('click', swallow, true); }, 60);
+      }
+      drag = null;
+      wrap.classList.remove('dragging');
+    });
+
+    sync();
+  }
+  document.querySelectorAll('#ts-row-15, .vd-row, #scr-08 .bl-rfq-row').forEach(hsInit);
 
   wire();
   evRender(ITEM_EVENTS);
