@@ -80,4 +80,4 @@
 
 ## ۵. چه چیزی حذف شد و چرا
 
-در ۱۹ مهر ۱۴۰۵ اسناد قبلی این پوشه حذف شدند: `MIGRATION-PLAN.md`، `MIGRATION-MAP.md`، `migrationPropmpt.txt` (مربوط به مهاجرت نسل اول از redesign-final)، `DATA-MODEL-ANALYSIS.md` (نسخه v0.9 تحلیل — محتوایش جذب و ارتقا یافته در سندهای 03/04/07)، و `iMach-Product-Spec-v1.0.docx/pdf` (مشخصات قدیمی محصول — جایگزین: سند 01). همه در تاریخچه گیت موجودند (کامیت `b4f38e2` و قبل‌تر) و در صورت نیاز قابل بازیابی‌اند.
+در ۱۹ مهر ۱۴۰۵ اسناد قبلی این پوشه حذف شدند: `MIGRATION-PLAN.md`، `MIGRATION-MAP.md`، `migrationPropmpt.txt` (مهاجرت نسل اول از redesign-final)، `DATA-MODEL-ANALYSIS.md` (تحلیل v0.9 — جذب و ارتقا در سندهای 03/04/07) و `iMach-Product-Spec-v1.0.docx/pdf` (مشخصات قدیمی — جایگزین: سند 01). پس از rebase روی کامیت مالک، دو فایل تاریخی دیگر هم به همین منطق حذف شدند: `iMach-Data-Model-Analysis-v0.9.pdf` و `imach-prototype-audit-A.md` (ممیزی فاز A نسل قبل — درس‌های کیفی‌اش در سند 07 §۲.۵ جذب شد). همه در تاریخچهٔ گیت موجودند (کامیت‌های `b4f38e2` و `c10fd18`) و قابل بازیابی‌اند.
