@@ -15,7 +15,7 @@
   }
   function load() { try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.listings) return s; } catch (e) { /* noop */ } return fresh(); }
   let st = load();
-  const save = () => localStorage.setItem(KEY, JSON.stringify(st));
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* storage unavailable: keep in memory */ } };
   const ui = { stack: [], add: {}, paste: {}, prices: null, sort: 'cheap', login: { step: 1, phone: '' } };
 
   /* ───────── دسترسی به داده ───────── */
@@ -32,6 +32,7 @@
   const fa = (s) => String(s).replace(/\d/g, (d) => FA[d]).replace(/\./g, '٫');
   const money = (n) => Math.round(n).toLocaleString('fa-IR');
   const toLatin = (s) => String(s).replace(/[۰-۹]/g, (d) => FA.indexOf(d)).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  const parseDec = (s) => { const v = parseFloat(toLatin(s || '').replace(/[٫/]/g, '.').replace(/[^\d.]/g, '')); return v > 0 ? v : 0; };
   const parseNum = (s) => { const v = toLatin(s || '').replace(/[^\d]/g, ''); return v ? +v : 0; };
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const icon = (n, c) => `<svg class="i ${c || ''}"><use href="#i-${n}"/></svg>`;
@@ -270,7 +271,7 @@
           <span class="badge green" style="margin-top:4px">${icon('check', 'sm')} نوع کالای مرجع</span></div><button class="link" data-act="add-reset">تغییر</button></div>
         <div class="field"><span>بسته‌بندی</span><div class="chips">${g.packs.map((p, i) => `<button class="chip ${A.packIdx === i ? 'on' : ''}" data-act="add-pack" data-i="${i}">${p.label}</button>`).join('')}
           <button class="chip ${A.packIdx === -1 ? 'on' : ''}" data-act="add-pack" data-i="-1">سایر</button></div>
-          ${A.packIdx === -1 ? `<div class="input-suffix" style="margin-top:8px"><input class="input num" id="customQty" inputmode="numeric" data-num data-in="customqty" value="${A.customQty ? money(A.customQty) : ''}" placeholder="چند ${g.unit}؟"><em>${g.unit}</em></div>` : ''}</div>
+          ${A.packIdx === -1 ? `<div class="input-suffix" style="margin-top:8px"><input class="input num" id="customQty" inputmode="decimal" data-dec data-in="customqty" value="${A.customQty ? fa(A.customQty) : ''}" placeholder="چند ${g.unit}؟"><em>${g.unit}</em></div>` : ''}</div>
         ${g.grades.length ? `<div class="field"><span>کیفیت <span class="muted tiny">(اختیاری)</span></span><div class="chips">${g.grades.map((x) => `<button class="chip ${A.grade === x ? 'on' : ''}" data-act="add-grade" data-g="${x}">${x}</button>`).join('')}</div></div>` : ''}
         ${priceField('قیمت ' + (pack ? 'هر ' + esc(pack.label) : ''), A.price)}
         ${marketHint('g:' + g.id, g.cmp)}
@@ -286,7 +287,7 @@
         ${!A.showAllGoods && gq.length ? '<button class="chip" data-act="new-allgoods">همه…</button>' : ''}</div></div>
       <label class="field"><span>برند <span class="muted tiny">(اگه داره)</span></span><input class="input" id="newBrand" value="${esc(A.newBrand || '')}" placeholder="مثلاً روژین"></label>
       <div class="grid2"><label class="field"><span>بسته‌بندی</span><input class="input" id="newPack" value="${esc(A.newPack || '')}" placeholder="کارتن ۱۲ عددی"></label>
-        <label class="field"><span>مقدار کل بسته</span><div class="input-suffix"><input class="input num" id="customQty" inputmode="numeric" data-num data-in="customqty" value="${A.customQty ? money(A.customQty) : ''}" placeholder="۰"><em>${g ? g.unit : 'واحد'}</em></div></label></div>
+        <label class="field"><span>مقدار کل بسته</span><div class="input-suffix"><input class="input num" id="customQty" inputmode="decimal" data-dec data-in="customqty" value="${A.customQty ? fa(A.customQty) : ''}" placeholder="۰"><em>${g ? g.unit : 'واحد'}</em></div></label></div>
       <button class="btn ghost block" data-act="photo">${icon('camera')} افزودن عکس</button>
       ${priceField('قیمت هر بسته', A.price)}
       ${stockRow(A.inStock)}
@@ -541,6 +542,8 @@
     'login-send': () => { const p = parseNum(document.getElementById('phoneIn').value); const s = String(p).padStart(11, '0'); if (s.length !== 11) return toast('شماره ۱۱ رقمی وارد کن'); ui.login.phone = s; ui.login.step = 2; rerender(); },
     'login-edit': () => { ui.login.step = 1; rerender(); },
     'login-verify': () => {
+      const code = [...app.querySelectorAll('.otp input')].map((i) => i.value).join('');
+      if (code.length !== 4) return toast('کد ۴ رقمی رو کامل وارد کن');
       const demo = ui.login.phone === SEED.businesses[0].phone;
       if (demo) { st = fresh(); st.authed = true; save(); ui.login = { step: 1 }; toast('خوش اومدی'); return go('/catalog'); }
       ui.login.step = 3; rerender();
@@ -663,6 +666,8 @@
     'bulk-undo': () => { ui.prices = null; rerender(); },
     'bulk-stock': (el) => { const d = ui.prices[el.dataset.id]; d.inStock = !d.inStock; rerender(); },
     'bulk-save': () => {
+      const bad = mine().find((l) => !(ui.prices[l.id].price > 0));
+      if (bad) { const row = document.getElementById('br-' + bad.id); if (row) { row.scrollIntoView({ block: 'center' }); const inp = row.querySelector('input'); if (inp) inp.focus(); } return toast('قیمت «' + lTitle(bad) + '» خالیه'); }
       let n = 0;
       mine().forEach((l) => { const d = ui.prices[l.id]; if (d.price !== l.price || d.inStock !== l.inStock) { if (d.price !== l.price) l.prevPrice = l.price; l.price = d.price; l.inStock = d.inStock; l.updatedAt = Date.now(); n++; } });
       if (!n) return toast('تغییری نبود');
@@ -695,7 +700,7 @@
     if (v('newName') != null) A.newName = v('newName').trim();
     if (v('newBrand') != null) A.newBrand = v('newBrand').trim();
     if (v('newPack') != null) A.newPack = v('newPack').trim();
-    if (v('customQty') != null) A.customQty = parseNum(v('customQty'));
+    if (v('customQty') != null) A.customQty = parseDec(v('customQty'));
     if (v('price') != null) A.price = parseNum(v('price'));
   }
 
@@ -704,7 +709,7 @@
     buyq: (el) => { ui.bq = el.value; document.getElementById('res').innerHTML = resultsHtml(el.value, 'buy'); },
     sheetq: (el) => { document.getElementById('sheetRes').innerHTML = resultsHtml(el.value, 'sheet'); },
     price: (el) => { ui.add.price = parseNum(el.value); updUnitHint(); },
-    customqty: (el) => { ui.add.customQty = parseNum(el.value); updUnitHint(); },
+    customqty: (el) => { ui.add.customQty = parseDec(el.value); updUnitHint(); },
     newname: (el) => { ui.add.newName = el.value; },
     pastetext: (el) => { ui.paste.text = el.value; },
     pasteprice: (el) => { const r = ui.paste.rows[+el.dataset.i]; r.price = parseNum(el.value); },
@@ -726,6 +731,7 @@
   document.addEventListener('input', (e) => {
     const el = e.target;
     if (el.hasAttribute('data-num')) { const n = parseNum(el.value); el.value = n ? money(n) : ''; }
+    if (el.hasAttribute('data-dec')) { const m = toLatin(el.value).replace(/[٫/]/g, '.').replace(/[^\d.]/g, '').match(/^\d*\.?\d*/); el.value = fa(m ? m[0] : ''); }
     const f = IN[el.dataset.in]; if (f) f(el);
   });
   document.addEventListener('change', (e) => { if (e.target.dataset.in === 'pasteprice') rerender(); });
