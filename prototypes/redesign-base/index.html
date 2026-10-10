@@ -2151,8 +2151,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
       </div>
-
-      </div>
+      <!-- فاز ۴۴-فیکس: یک </div> زائد (باقی‌ماندهٔ پیرایش ۰۵) اینجا بود و #phone را زودتر از موعد
+           می‌بست → همهٔ صفحه‌های ۰۷ به بعد بیرون از قاب گوشی رندر می‌شدند و انباشته می‌شدند -->
 
     </main>
 
@@ -4533,15 +4533,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="cnt">۱۲ کالا</div>
     </div>
   </div>
-    <div class="mid">
-      <span class="stars big" id="pv-avgstars"></span>
-      <span class="cnt" id="pv-cnt">از ۲۴ نظر خریدار</span>
-    </div>
-    <div class="pv-side">
-      <div><b>۳۸</b> <small>دنبال‌کننده</small></div>
-      <div class="cnt">۱۲۰ بازدید ماه</div>
-    </div>
-  </div>
+  <!-- فاز ۴۴-فیکس: بلوک جاماندهٔ «امتیاز + دنبال‌کننده» (هر دو حذفِ حکم فاز ۴۴) همراه یک </div> زائد
+       اینجا بود؛ شیت را زود بسته و سپس #phone را می‌بست → بقیهٔ شیت‌ها بیرون از قاب گوشی می‌افتادند -->
   <button class="btn btn-primary sheet-cta" data-go="13"><svg><use href="#i-eye"/></svg> مشاهدهٔ کامل کاتالوگ</button>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
@@ -6806,7 +6799,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     /* شیت نمای عمومی (۰۷): قبل از باز شدن، امتیاز کاتالوگ از state زندهٔ نظرات هم‌گام می‌شود */
     var pvOpen = t.closest('[data-sheet="sheet-pubview"]');
-    if (pvOpen) { pvSumRender(); openSheet('sheet-pubview'); return; }
+    if (pvOpen) { openSheet('sheet-pubview'); return; } /* فاز ۴۴-فیکس: pvSumRender در پیرایش JS حذف شده بود ولی فراخوانی‌اش مانده بود — ReferenceError می‌داد و «نمای عمومی» اصلاً باز نمی‌شد */
 
 /* شیت سوییچ دستیار */
     var ap = t.closest('.arm-pill');
