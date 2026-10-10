@@ -281,100 +281,54 @@ const heroD = await page.evaluate(() => ({
 ok(heroD.h1.includes('تامین کالا') && heroD.h1.includes('مساله اکثر کسب و کارهاست'), `d3 h1 هماهنگ: «${heroD.h1}»`);
 ok(heroD.strong.includes('انتخاب تأمین‌کننده مناسب را آسان می‌کند'), 'd3 جملهٔ دوم هماهنگ');
 
-/* ═══ ۸) کال‌اوت اسکنر/اکسل — متن و یک‌خطی ═══ */
+/* ═══ ۸) ورودهای سریع — هم‌گام فاز ۴۳: اسکن داخل جستجو + چسباندن لیست + اکسل ═══ */
 await nav('04');
-const callout = await page.evaluate(() => {
-  const c = [...document.querySelectorAll('#scr-04 .callout')].find(x => x.querySelector('[data-sheet="sheet-scan"]'));
-  if (!c) return null;
-  const div = c.querySelector('div');
+const entries = await page.evaluate(() => {
+  const c = document.querySelector('#scr-04 .gf-paste');
   return {
-    txt: div.textContent.replace(/\s+/g, ' ').trim(),
-    h: Math.round(div.getBoundingClientRect().height),
-    fs: getComputedStyle(c).fontSize,
+    pasteTxt: c ? c.textContent.replace(/\s+/g, ' ').trim() : '',
+    scan: !!document.querySelector('#scr-04 .gf-scan[data-sheet="sheet-scan"]'),
+    xls: !!document.querySelector('#scr-04 .gf-alt [data-sheet="sheet-xlsx"]'),
   };
 });
-ok(callout.txt === 'برای ثبت سریع کالاها، «اسکنر بارکد» یا «بارگذاری اکسل» را امتحان کنید.', 'متن کال‌اوت طبق مالک');
-ok(callout.h <= 22, `کال‌اوت یک‌خطی است (${callout.h}px در ${callout.fs})`);
+ok(entries.pasteTxt.includes('بچسبونش') && entries.pasteTxt.includes('واتس‌اپ'), 'کال‌اوت «چسباندن لیست قیمت» با متن مالک‌پسند');
+ok(entries.scan && entries.xls, 'اسکنر داخل نوار جستجو + لینک «بارگذاری اکسل»');
 
-/* ═══ ۹) فرم کالا — فونت نرمال + فیلد «عنوان در کاتالوگ» ═══ */
+/* ═══ ۹) فرم کالا — هم‌گام فاز ۴۳: عنوان در کاتالوگ (فله) + نام کالای جدید ═══ */
 console.log('— فرم کالا (۰۴)');
-await nav('04');
-/* مسیر فله */
-await page.evaluate(() => {
-  const f = document.querySelector('#scr-04 .pill[data-gmode="felle"]');
-  if (f) f.click();
-});
-await page.waitForTimeout(180);
+await page.fill('#gf-q', 'پفک');
+await page.waitForTimeout(150);
+await page.click('#gf-res .gf-row[data-gfpick="good"]');
+await page.waitForTimeout(200);
 const felle = await page.evaluate(() => {
-  const inp = document.getElementById('gf-felle-title');
-  const blk = document.getElementById('gf-felle');
-  return { exists: !!inp, visible: !blk.hidden, first: blk.querySelector('.field label').textContent.trim() };
+  const inp = document.getElementById('gf-title');
+  const blk = document.getElementById('gf-step2');
+  return { exists: !!inp, visible: !blk.hidden, label: inp ? inp.closest('.field').querySelector('label').textContent : '' };
 });
-ok(felle.exists && felle.visible, 'فله: فیلد «عنوان در کاتالوگ» اول مشخصات کالاست');
+ok(felle.exists && felle.visible, 'فله: فیلد «عنوان در کاتالوگ» در فرم قیمت');
+ok(/عنوان در کاتالوگ/.test(felle.label), 'لیبل = «عنوان در کاتالوگ … همین عنوان را خریداران می‌بینند»');
 
-/* مسیر برند → bp-newprod — ترتیب واقعی کاربر: نوع کالا ← «برند دارد» ← انتخاب برند */
-await page.evaluate(() => {
-  const good = document.querySelector('#sheet-goodpick .sheet-row[data-gname]');
-  if (good) good.click();
-});
-await page.waitForTimeout(250);
-await page.evaluate(() => {
-  const b = document.querySelector('#scr-04 .pill[data-gmode="brand"]');
-  if (b) b.click();
-});
-await page.waitForTimeout(180);
-await page.evaluate(() => {
-  const brand = document.querySelector('[data-brandpick]');
-  if (brand) brand.click();
-});
-await page.waitForTimeout(250);
-await page.evaluate(() => { const a = document.querySelector('.add-row[data-reveal="bp-newprod"]'); if (a) a.click(); });
+/* کالای جدید: نام کاربر + «در انتظار تأیید» */
+await page.locator('[data-gfreset]').click();
+await page.waitForTimeout(120);
+await page.fill('#gf-q', 'پفک اشی مشی بسته خانواده');
+await page.waitForTimeout(150);
+await page.click('#gf-res .gf-newcta');
 await page.waitForTimeout(200);
 const newprod = await page.evaluate(() => {
-  const box = document.getElementById('bp-newprod');
-  const titleInp = document.getElementById('bp-newprod-title');
-  const hint = box.querySelector('.hintnote');
-  const btn = box.querySelector('.sheet-cta');
+  const inp = document.getElementById('gf-newname');
+  const blk = document.getElementById('gf-step2');
   return {
-    visible: !box.hidden,
-    hasTitle: !!titleInp,
-    label: box.querySelectorAll('label')[1].textContent.trim(),
-    hintFs: getComputedStyle(hint).fontSize,
-    hintBox: getComputedStyle(hint).backgroundColor,
-    btnW: Math.round(btn.getBoundingClientRect().width),
+    visible: !blk.hidden,
+    hasName: !!inp,
+    val: inp ? inp.value : '',
+    pending: blk.innerText.includes('در انتظار تأیید'),
+    goodChips: document.querySelectorAll('[data-gfnewgood]').length,
   };
 });
-ok(newprod.visible && newprod.hasTitle, 'برند: فیلد «عنوان در کاتالوگ» در محصول جدید');
-ok(/عنوان در کاتالوگ/.test(newprod.label), 'لیبل دوم = «عنوان در کاتالوگ …»');
-ok(newprod.hintFs === '11px' && newprod.hintBox !== 'rgba(0, 0, 0, 0)', `hintnote صفحه = ۱۱px با کادر (${newprod.hintFs})`);
-ok(newprod.btnW > 340, `دکمهٔ «افزودن به فهرست» تمام‌عرض (${newprod.btnW}px)`);
-
-/* ثبت با عنوان → ردیف عنوان را نشان می‌دهد */
-await page.evaluate(() => {
-  document.getElementById('bp-newprod-input').value = 'پفک اشی مشی · بسته خانواده';
-  document.getElementById('bp-newprod-title').value = 'پفک اشی مشی خانواده — تازه و ترد';
-  document.querySelector('[data-bpnew]').click();
-});
-await page.waitForTimeout(200);
-const addedRow = await page.evaluate(() => {
-  const items = document.querySelectorAll('#bp-list .bp-item');
-  const last = items[items.length - 1];
-  return { n: items.length, b: last.querySelector('.bp-meta b').textContent.trim(), small: last.querySelector('.bp-meta small').textContent.trim() };
-});
-ok(addedRow.b === 'پفک اشی مشی خانواده — تازه و ترد', `ردیف تازه عنوانِ کاربر را نشان می‌دهد (${addedRow.b})`);
-ok(addedRow.small.includes('پفک اشی مشی · بسته خانواده'), 'نام محصول (جدول مرجع) در زیرعنوان می‌ماند');
-
-/* برندِ بدون محصول → gf-norefs عنوان */
-await page.evaluate(() => {
-  const nb = document.querySelector('[data-brandnew]');
-  if (nb) nb.click();
-});
-await page.waitForTimeout(250);
-const norefs = await page.evaluate(() => {
-  const blk = document.getElementById('gf-norefs');
-  return { visible: !blk.hidden, hasTitle: !!document.getElementById('gf-norefs-title') };
-});
-ok(norefs.visible && norefs.hasTitle, 'برند بدون محصول: فیلد «عنوان در کاتالوگ» موجود است');
+ok(newprod.visible && newprod.hasName && newprod.val.includes('پفک'), 'کالای جدید: نام کاربر پیش‌پر شد');
+ok(newprod.pending, 'کالای جدید: نشان «در انتظار تأیید»');
+ok(newprod.goodChips >= 1, 'کالای جدید: چیپ‌های «نوع کالا» برای اتصال به مرجع');
 
 /* ═══ ۱۰) e2e — ۴۷ صفحه بدون خطای کنسول ═══ */
 console.log('— e2e همهٔ صفحه‌ها');

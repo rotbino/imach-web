@@ -95,252 +95,78 @@ await page.waitForTimeout(200);
 const t18 = await page.evaluate(() => [...document.querySelectorAll('#scr-18 .tabbar .tab')].map(t => (t.dataset.go || '?') + ':' + t.textContent.trim().replace(/\s+/g, ' ')));
 ok(t18[0].startsWith('39:'), '۱۸ (بازوی خرید): «کارها» اول ستِ تب‌ها');
 
-/* ═══ ۳) فرم کالا (۰۴) — واژگان و جریان ═══ */
-console.log('— فرم کالا (۰۴): واژگان');
+/* ═══ ۳) فرم کالا (۰۴) — هم‌گام فاز ۴۳: الگوی MVP (جستجوی واحد ← انتخاب ← قیمت) ═══ */
+console.log('— فرم کالا (۰۴): جستجوی واحد');
 await nav('04');
 const f04 = await page.evaluate(() => {
   const txt = document.getElementById('scr-04').innerText;
   return {
     txt,
-    goodLabel: !!txt.match(/نوع کالا/),
+    goodLabel: ((document.getElementById('gf-q') || {}).placeholder || '').includes('چی می‌فروشی'),
     noGood: !txt.includes('گود'),
-    noRefWord: !txt.includes('کالای مرجع'),
-    q: txt.includes('آیا این کالا برند دارد؟'),
-    optBrand: txt.includes('برند دارد'),
-    optFelle: txt.includes('فله یا بدون برند'),
-    activePills: [...document.querySelectorAll('#scr-04 .pillchoice .pill[data-gmode].active')].length,
-    felleHidden: document.getElementById('gf-felle').hidden,
-    brandHidden: document.getElementById('gf-brand').hidden,
-    noBrandHint: !txt.includes('برندت در فهرست نیست'),
-    productsLabel: txt.includes('محصولات برند'),
-    noUnitGood: !txt.includes('واحد مصرف‌کنندهٔ گود'),
+    noBrandQ: !txt.includes('آیا این کالا برند دارد؟'),
+    step1: !document.getElementById('gf-step1').hidden,
+    step2Hidden: document.getElementById('gf-step2').hidden,
+    barHidden: document.getElementById('gf-bar').hidden,
+    pasteCallout: !!document.querySelector('.gf-paste'),
+    scanBtn: !!document.querySelector('.gf-scan'),
   };
 });
-ok(f04.goodLabel && f04.noGood, '«نوع کالا» جای «گود» نشست (بدون واژهٔ گود در متن)');
-ok(f04.noRefWord, 'واژهٔ «کالای مرجع» در فرم نیست — «محصولات برند»');
-ok(f04.q && f04.optBrand && f04.optFelle, 'سوال «آیا این کالا برند دارد؟» + گزینه‌های درست');
-ok(f04.activePills === 0 && f04.felleHidden && f04.brandHidden, 'حالت اولیه: هیچ گزینه‌ای انتخاب نیست و هیچ بخشی لود نشده');
-ok(f04.noBrandHint, 'راهنمای «برندت در فهرست نیست؟…» حذف شد');
-ok(f04.noUnitGood, '«واحد مصرف‌کنندهٔ گود» از کنار قیمت حذف شد');
+ok(f04.goodLabel && f04.noGood, 'جستجوی واحد «چی می‌فروشی؟» نشست (بدون واژهٔ گود)');
+ok(f04.noBrandQ, 'سوال «آیا برند دارد؟» حذف شد — نتایج جستجو خودش برند/فله را جدا می‌کند');
+ok(f04.step1 && f04.step2Hidden && f04.barHidden, 'حالت اولیه: گام ۱ باز، گام ۲ و اکشن‌بار بسته');
+ok(f04.pasteCallout && f04.scanBtn, 'ورودهای جایگزین: چسباندن لیست قیمت + اسکنر داخل نوار جستجو');
 
-/* جریان: انتخاب گزینه بخش مربوط را باز می‌کند */
-await page.click('#scr-04 .pill[data-gmode="brand"]');
-await page.waitForTimeout(120);
-const brandOn = await page.evaluate(() => ({
-  brand: !document.getElementById('gf-brand').hidden,
-  felle: document.getElementById('gf-felle').hidden,
-  act: document.querySelector('#scr-04 .pill[data-gmode="brand"]').classList.contains('active'),
-}));
-ok(brandOn.brand && brandOn.felle && brandOn.act, '«برند دارد» → بخش برند و محصولات باز شد');
-
-await page.click('#scr-04 .pill[data-gmode="felle"]');
-await page.waitForTimeout(120);
-const felleOn = await page.evaluate(() => ({
-  felle: !document.getElementById('gf-felle').hidden,
-  brand: document.getElementById('gf-brand').hidden,
-  act: document.querySelector('#scr-04 .pill[data-gmode="felle"]').classList.contains('active'),
-}));
-ok(felleOn.felle && felleOn.brand && felleOn.act, '«فله یا بدون برند» → مسیر فله باز شد');
-
-/* انتخاب نوع کالا از شیت → سوال از نو بی‌پاسخ می‌شود */
-await page.click('#scr-04 [data-sheet="sheet-goodpick"]');
-await page.waitForTimeout(250);
-const gpSheet = await page.evaluate(() => {
-  const sh = document.getElementById('sheet-goodpick');
-  const txt = sh.innerText;
-  return {
-    title: sh.querySelector('h3').textContent,
-    sub: sh.querySelector('.sub').textContent,
-    noGood: !txt.includes('گود'),
-    open: sh.classList.contains('show'),
-  };
-});
-ok(gpSheet.open && gpSheet.title === 'انتخاب نوع کالا', 'شیت نوع کالا: عنوان «انتخاب نوع کالا»');
-ok(gpSheet.noGood && !gpSheet.sub.includes('گود یعنی'), 'شیت نوع کالا: بدون واژهٔ گود و بدون توضیح تعریف');
-
-await page.click('#sheet-goodpick .sheet-row[data-gname="برنج هاشمی"]');
-await page.waitForTimeout(200);
-const afterGood = await page.evaluate(() => ({
-  name: document.getElementById('gf-good').textContent,
-  path: document.getElementById('gf-good-path').textContent,
-  active: [...document.querySelectorAll('#scr-04 .pillchoice .pill[data-gmode].active')].length,
-  felleHidden: document.getElementById('gf-felle').hidden,
-  brandHidden: document.getElementById('gf-brand').hidden,
-  scope: document.getElementById('gf-brand-scope').textContent,
-}));
-ok(afterGood.name === 'برنج هاشمی' && afterGood.path.includes('برنج'), 'انتخاب نوع کالا: نام و مسیر به‌روز شد');
-ok(afterGood.active === 0 && afterGood.felleHidden && afterGood.brandHidden, 'بعد از نوع کالای تازه: سوال برند از نو بی‌پاسخ است');
-ok(afterGood.scope.includes('برنج هاشمی'), 'برچسب برند هم‌گام شد («برندهای مرتبط با «برنج هاشمی»»)');
-
-/* ═══ ۴) محصولات برند: تیک چندگانه + ساخت محصول جدید ═══ */
-console.log('— محصولات برند (چندانتخابی)');
-await page.click('#scr-04 .pill[data-gmode="brand"]');
-await page.waitForTimeout(120);
-const bp0 = await page.evaluate(() => ({
-  rows: document.querySelectorAll('#bp-list .bp-item').length,
-  noneOn: document.querySelectorAll('#bp-list .bp-item.on').length,
-  specsHidden: [...document.querySelectorAll('#bp-list .bp-specs')].every(s => s.hidden),
-}));
-ok(bp0.rows === 2 && bp0.noneOn === 0 && bp0.specsHidden, 'محصولات برند: ۲ ردیف، هیچ‌کدام تیک‌خورده، مشخصات بسته');
-
-await page.click('#bp-list .bp-item:first-child .bp-row');
-await page.waitForTimeout(120);
-const bp1 = await page.evaluate(() => {
-  const items = [...document.querySelectorAll('#bp-list .bp-item')];
-  return {
-    firstOn: items[0].classList.contains('on'),
-    firstSpecs: !items[0].querySelector('.bp-specs').hidden,
-    secondOn: items[1].classList.contains('on'),
-    secondSpecs: items[1].querySelector('.bp-specs').hidden,
-    fields: items[0].querySelector('.bp-specs').innerText,
-  };
-});
-ok(bp1.firstOn && bp1.firstSpecs, 'تیک اول: همان ردیف تیک خورد و مشخصات فروش زیرش باز شد');
-ok(!bp1.secondOn && bp1.secondSpecs, 'ردیف دوم هنوز دست‌نخورده است');
-ok(bp1.fields.includes('قیمت') && bp1.fields.includes('حداقل حجم') && bp1.fields.includes('موجودی') && bp1.fields.includes('توضیحات'), 'مشخصات فروش: قیمت + حداقل حجم + موجودی + توضیحات');
-
-await page.click('#bp-list .bp-item:nth-child(2) .bp-row');
-await page.waitForTimeout(120);
-const bp2 = await page.evaluate(() => [...document.querySelectorAll('#bp-list .bp-item')].every(i => i.classList.contains('on') && !i.querySelector('.bp-specs').hidden));
-ok(bp2, 'تیک دوم: هر دو محصول همزمان انتخاب و باز شدند (ثبت همزمان)');
-
-await page.click('#bp-list .bp-item:first-child .bp-row');
-await page.waitForTimeout(120);
-const bp3 = await page.evaluate(() => {
-  const items = [...document.querySelectorAll('#bp-list .bp-item')];
-  return { off: !items[0].classList.contains('on'), specsHidden: items[0].querySelector('.bp-specs').hidden, secondStillOn: items[1].classList.contains('on') };
-});
-ok(bp3.off && bp3.specsHidden && bp3.secondStillOn, 'برداشتن تیک: مشخصات همان ردیف بسته شد، بقیه ماندند');
-
-/* ساخت محصول جدید (اشی مشی ۴ نوع پفک دارد، ۲ تای آن لیست است) */
-await page.click('#gf-refs [data-reveal="bp-newprod"]');
-await page.waitForTimeout(120);
-const revealShown = await page.evaluate(() => !document.getElementById('bp-newprod').hidden);
-ok(revealShown, '«محصول جدید این برند…» فرم نام را باز کرد');
-await page.fill('#bp-newprod-input', 'پفک اشی مشی · بسته خانواده');
-await page.click('[data-bpnew]');
+/* جریان: جستجو → انتخاب → فرم قیمت */
+await page.fill('#gf-q', 'پفک');
 await page.waitForTimeout(150);
-const bpNew = await page.evaluate(() => {
-  const items = [...document.querySelectorAll('#bp-list .bp-item')];
-  const last = items[items.length - 1];
-  return {
-    count: items.length,
-    on: last.classList.contains('on'),
-    specsOpen: !last.querySelector('.bp-specs').hidden,
-    name: last.querySelector('.bp-meta b').textContent,
-    hasPhoto: !!last.querySelector('.bp-specs .gallery-add'),
-    hasUnit: last.querySelector('.bp-specs').innerText.includes('واحد فروش عمده'),
-    revealHidden: document.getElementById('bp-newprod').hidden,
-    inputCleared: document.getElementById('bp-newprod-input').value === '',
-  };
-});
-ok(bpNew.count === 3 && bpNew.name === 'پفک اشی مشی · بسته خانواده', 'محصول جدید به فهرست اضافه شد');
-ok(bpNew.on && bpNew.specsOpen && bpNew.hasPhoto && bpNew.hasUnit, 'محصول جدید تیک‌خورده با عکس + واحد فروش عمده + قیمت باز شد');
-ok(bpNew.revealHidden && bpNew.inputCleared, 'فرم نام بسته و پاک شد');
-
-/* برند بدون محصول (چیتوز) — متن جدید مالک */
-await page.click('#scr-04 [data-sheet="sheet-brandpick"]');
-await page.waitForTimeout(250);
-const brSheet = await page.evaluate(() => {
-  const sh = document.getElementById('sheet-brandpick');
-  return { title: sh.querySelector('h3').textContent, sub: sh.querySelector('.sub').textContent, open: sh.classList.contains('show') };
-});
-ok(brSheet.open && brSheet.title === 'انتخاب یا ثبت برند', 'شیت برند: عنوان «انتخاب یا ثبت برند»');
-ok(brSheet.sub === 'اگر برند مورد نظرت در لیست نیست، خودت ثبتش کن', 'شیت برند: متن جدید مالک');
-await page.click('#sheet-brandpick .sheet-row[data-bname="چیتوز"]');
-await page.waitForTimeout(200);
-const noRefs = await page.evaluate(() => ({
-  nof: !document.getElementById('gf-norefs').hidden,
-  refs: document.getElementById('gf-refs').hidden,
-  txt: document.getElementById('gf-norefs').innerText,
+const f04b = await page.evaluate(() => ({
+  groups: [...document.querySelectorAll('.gf-group')].map(g => g.textContent),
+  rows: document.querySelectorAll('#gf-res .gf-row').length,
+  newCta: document.querySelectorAll('#gf-res .gf-newcta').length,
 }));
-ok(noRefs.nof && noRefs.refs, 'برند بدون محصول → فرم ورود دستی باز شد');
-ok(noRefs.txt.includes('برای این برند هنوز محصولی ثبت نشده است. لطفا خودت عکس و مشخصات این کالا رو ثبت کن.'), 'متن جدید «هنوز محصولی ثبت نشده» عیناً');
-ok(noRefs.txt.includes('توضیحات'), 'فرم ورود دستی هم فیلد توضیحات دارد');
+ok(f04b.rows >= 2 && f04b.groups.some(g => g.includes('برنددار')), 'نتایج گروه‌بندی‌شده: «فله / بدون برند» + «برنددار»');
+ok(f04b.newCta === 1, '«پیدا نکردی؟ ثبت کالای جدید»');
+await page.click('#gf-res .gf-row[data-gfpick="good"]');
+await page.waitForTimeout(200);
+const f04c = await page.evaluate(() => ({
+  step2: !document.getElementById('gf-step2').hidden,
+  bar: !document.getElementById('gf-bar').hidden,
+  save: document.getElementById('gf-save').textContent,
+  fields: document.getElementById('gf-step2').innerText,
+}));
+ok(f04c.step2 && f04c.bar, 'انتخاب کالا → گام ۲ + اکشن‌بار');
+ok(f04c.save.includes('افزودن به کاتالوگ'), 'دکمهٔ «افزودن به کاتالوگ»');
+ok(f04c.fields.includes('حداقل سفارش') && f04c.fields.includes('موجودی') && f04c.fields.includes('توضیحات'), 'مشخصات فروش: موجودی + حداقل سفارش + توضیحات');
 
-/* ═══ ۵) بسته‌بندی فروش عمده: نوع + تعداد + سایر ═══ */
-console.log('— بسته‌بندی فروش عمده');
-await page.click('#scr-04 .pill[data-gmode="felle"]');
-await page.waitForTimeout(120);
-const pkg0 = await page.evaluate(() => {
-  const pills = [...document.querySelectorAll('#scr-04 .pill[data-pack]')].map(p => p.textContent.trim());
-  const num = document.querySelector('.pkg-num');
-  return {
-    pills,
-    label: document.getElementById('gf-pkg-label').textContent,
-    numW: num ? num.getBoundingClientRect().width : 0,
-    unit: document.querySelector('.pkg-unit').textContent,
-    hint: [...document.querySelectorAll('#gf-felle .hint')].some(h => h.textContent.includes('واحد پایه')),
-  };
-});
-ok(pkg0.pills.join('|') === 'گونی|کارتن|کیسه|سایر…', `انواع بسته‌بندی: گونی/کارتن/کیسه/سایر (${pkg0.pills.join('|')})`);
-ok(pkg0.label === 'تعداد در کارتن' && pkg0.numW > 40 && pkg0.numW < 100, `«تعداد در کارتن» با تکست‌باکس کم‌عرض (${Math.round(pkg0.numW)}px)`);
-ok(pkg0.unit === 'کیلوگرم' && pkg0.hint, 'واحد پایه از نوع کالا می‌آید (کیلوگرم) + راهنمای قیمت خودکار');
-
-await page.click('#scr-04 .pill[data-pack="گونی"]');
-await page.waitForTimeout(100);
+/* بسته‌بندی فروش عمده: بسته‌های نوع کالا + «سایر…» */
+const pkg0 = await page.evaluate(() => ({
+  chips: [...document.querySelectorAll('[data-gfpack]')].map(c => c.textContent.trim()),
+  other: document.querySelector('[data-gfpack="other"]') !== null,
+  label: document.getElementById('gf-plabel').textContent,
+}));
+ok(pkg0.chips.length >= 3 && pkg0.other, `بسته‌بندی: بسته‌های نوع کالا + «سایر…» (${pkg0.chips.join('|')})`);
+await page.click('[data-gfpack="other"]');
+await page.waitForTimeout(150);
 const pkg1 = await page.evaluate(() => ({
-  label: document.getElementById('gf-pkg-label').textContent,
-  active: document.querySelector('#scr-04 .pill[data-pack="گونی"]').classList.contains('active'),
+  input: document.getElementById('gf-customqty') !== null,
+  ph: (document.getElementById('gf-customqty') || {}).placeholder || '',
 }));
-ok(pkg1.label === 'تعداد در گونی' && pkg1.active, 'انتخاب «گونی» → برچسب «تعداد در گونی»');
+ok(pkg1.input && pkg1.ph.includes('چند'), '«سایر…» → ورودی مقدار دلخواه («چند کیلوگرم؟»)');
 
-/* «سایر…» → شیت واحدها */
-await page.click('#scr-04 .pill[data-pack="سایر"]');
-await page.waitForTimeout(250);
-const upSheet = await page.evaluate(() => {
-  const pill = document.querySelector('#scr-04 .pill[data-pack="سایر"]');
-  const sh = document.getElementById('sheet-unitpick');
-  return {
-    open: sh.classList.contains('show'),
-    pillActive: pill.classList.contains('active'),
-    rows: sh.querySelectorAll('[data-unitpick]').length,
-    hasNew: !!sh.querySelector('[data-unitnew]'),
-  };
+/* عنوان در کاتالوگ (فاز ۳۶) در مسیر فله */
+const felleTitle = await page.evaluate(() => {
+  const t = document.getElementById('gf-title');
+  return !!t && (t.placeholder || '') !== '';
 });
-ok(upSheet.open && upSheet.pillActive, '«سایر…» شیت واحدها را باز کرد و پیل فعال شد');
-ok(upSheet.rows >= 4 && upSheet.hasNew, `شیت واحدها: ${upSheet.rows} واحد + ساخت واحد جدید`);
-await page.click('#sheet-unitpick [data-unitpick="جعبه"]');
-await page.waitForTimeout(150);
-const up1 = await page.evaluate(() => {
-  const other = document.querySelector('#scr-04 .pill.pkg-other');
-  return {
-    txt: other ? other.textContent.trim() : null,
-    active: other ? other.classList.contains('active') : false,
-    label: document.getElementById('gf-pkg-label').textContent,
-    keepsPicker: other ? other.hasAttribute('data-sheet') : false,
-    closed: !document.getElementById('sheet-unitpick').classList.contains('show'),
-  };
-});
-ok(up1.txt === 'جعبه' && up1.active && up1.closed, 'انتخاب «جعبه» → پیل سایر تبدیل به «جعبه» شد');
-ok(up1.label === 'تعداد در جعبه', 'برچسب به «تعداد در جعبه» هم‌گام شد');
-ok(up1.keepsPicker, 'لمس دوبارهٔ پیل سفارشی، شیت واحدها را دوباره باز می‌کند');
+ok(felleTitle, 'مسیر فله: فیلد «عنوان در کاتالوگ»');
 
-/* واحد جدید از شیت — لمس دوبارهٔ همان پیل سفارشی، شیت را باز می‌کند */
-await page.click('#scr-04 .pill.pkg-other');
-await page.waitForTimeout(250);
-ok(await page.evaluate(() => document.getElementById('sheet-unitpick').classList.contains('show')), 'پیل «جعبه» (سفارشی) دوباره شیت واحدها را باز کرد');
-await page.click('#sheet-unitpick [data-reveal="up-new"]');
-await page.waitForTimeout(100);
-await page.fill('#up-new-input', 'خرجی');
-await page.click('#sheet-unitpick [data-unitnew]');
-await page.waitForTimeout(150);
-const up2 = await page.evaluate(() => {
-  const other = document.querySelector('#scr-04 .pill.pkg-other');
-  return {
-    txt: other ? other.textContent.trim() : null,
-    label: document.getElementById('gf-pkg-label').textContent,
-    closed: !document.getElementById('sheet-unitpick').classList.contains('show'),
-  };
-});
-ok(up2.txt === 'خرجی' && up2.label === 'تعداد در خرجی' && up2.closed, 'ساخت واحد جدید «خرجی» → پیل و برچسب هم‌گام شدند');
-
-/* فیلد توضیحات در مسیر فله */
+/* فیلد توضیحات */
 const felleNotes = await page.evaluate(() => {
-  const ta = [...document.querySelectorAll('#gf-felle textarea.input')];
+  const ta = [...document.querySelectorAll('#gf-step2 textarea.input')];
   return ta.length > 0 && ta.every(t => (t.placeholder || '').includes('توضیحات اختیاری'));
 });
-ok(felleNotes, 'مسیر فله: فیلد توضیحات با پلیس‌هولدر مناسب');
+ok(felleNotes, 'فرم: فیلد توضیحات با پلیس‌هولدر مناسب');
 
 /* ═══ ۶) کاتالوگ (۰۲): هماهنگی فیلدها ═══ */
 console.log('— کاتالوگ (۰۲)');

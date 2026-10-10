@@ -197,12 +197,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-13 .pcard .p .old-p { display: block; text-decoration: line-through; font-size: 10px; font-weight: 600; color: var(--muted-fg); }
 
   /* ═══ فاز ۲۱ — فرم افزودن کالا: جریان گود ← برند ← کالای مرجع ═══ */
-  .gf-pick { width: 100%; font-family: inherit; cursor: pointer; text-align: right; }
-  .gf-pick .chg { margin-right: auto; font-size: 10px; color: var(--primary-strong); font-weight: 700; }
   .qlink { background: none; border: 0; padding: 0; font: inherit; font-size: 12px; font-weight: 800; color: var(--primary-strong); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
   .qlink:active { opacity: .7; }
-  .refcard { display: flex; gap: 9px; background: var(--green-bg); border: 1px solid #b6e2c6; border-radius: 12px; padding: 10px 12px; font-size: 11px; color: var(--green); line-height: 1.9; margin-top: 4px; }
-  .refcard svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 4px; }
   .scanframe { position: relative; height: 150px; border-radius: 14px; background: linear-gradient(160deg, #403d38, #282622); display: grid; place-items: center; margin-top: 12px; overflow: hidden; }
   .scanframe::before { content: ''; position: absolute; inset: 10px; border: 1.5px dashed rgba(255, 255, 255, .4); border-radius: 10px; }
   .scanframe svg { width: 58px; height: 36px; opacity: .92; }
@@ -1366,34 +1362,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۳۵: حذف عنوان‌های «پروفایل شخصی» و «کسب و کار» — آیکون‌های مداد/کمبو روبروی نام کسب‌وکار */
   #scr-07 .biz-acts, #scr-14 .biz-acts { align-self: flex-start; margin-top: 1px; flex-shrink: 0; }
 
-  /* ═══ فاز ۳۵ — فرم کالا (۰۴): «محصولات برند» چندانتخابی + بسته‌بندی نوع/تعداد ═══ */
-  .bp-list { display: flex; flex-direction: column; gap: 9px; margin-top: 10px; }
-  .bp-item { border: 1px solid var(--border); border-radius: 13px; background: #fff; overflow: hidden; }
-  .bp-item.on { border-color: var(--primary); }
-  .bp-row { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: none; padding: 9px 11px; cursor: pointer; font: inherit; text-align: right; }
-  .bp-chk { width: 21px; height: 21px; border-radius: 7px; border: 1.5px solid var(--border-strong); background: rgba(255,255,255,.94); display: grid; place-items: center; color: #fff; flex-shrink: 0; box-shadow: 0 1px 3px rgba(42,39,35,.1); }
-  .bp-chk svg { width: 12px; height: 12px; display: none; }
-  .bp-item.on .bp-chk { background: var(--primary); border-color: var(--primary); }
-  .bp-item.on .bp-chk svg { display: block; }
-  .bp-th { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; display: block; background: linear-gradient(135deg, #f3f1ea, #e9e5db); flex-shrink: 0; }
-  .bp-th-new { display: grid; place-items: center; color: #a8a29a; }
-  .bp-th-new svg { width: 20px; height: 20px; }
-  .bp-meta { flex: 1; min-width: 0; }
-  .bp-meta b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.65; }
-  .bp-meta small { display: block; font-size: 10px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
-  .bp-specs { padding: 2px 11px 11px; border-top: 1px dashed #eee9dd; background: #fcfbf8; }
-  .bp-specs .field { margin-top: 8px; }
-  .bp-specs .field:first-of-type { margin-top: 9px; }
-  .bp-newhead { display: flex; gap: 7px; align-items: flex-start; font-size: 10px; line-height: 1.9; background: var(--green-bg); border: 1px solid #d9eee2; color: var(--green); border-radius: 9px; padding: 7px 10px; margin-top: 9px; font-weight: 600; }
-  .bp-newhead svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 4px; }
-
-  /* فاز ۳۵ — بسته‌بندی فروش عمده: «تعداد در …» با تکست‌باکس عددی کم‌عرض + واحد پایهٔ نوع کالا */
-  .pkg-cnt { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
-  .pkg-cnt label { font-size: 11.5px; font-weight: 700; flex-shrink: 0; }
-  .pkg-cnt-row { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
-  .pkg-num { width: 74px; text-align: center; font-weight: 800; padding: 8px 6px; flex-shrink: 0; }
-  .pkg-unit { font-size: 11px; color: var(--muted-fg); font-weight: 600; }
-
   /* فاز ۳۵ — فیلد توضیحات (همهٔ مسیرهای فرم کالا): تک‌خطی‌تر و سبک‌تر از input معمولی */
   #scr-04 textarea.input { font-family: inherit; line-height: 1.9; resize: none; }
 
@@ -1505,15 +1473,89 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .disc-row .d-dirty { display: inline-block; font-size: 8.5px; font-weight: 800; color: var(--green); background: var(--green-bg); border-radius: 6px; padding: 1px 5px; margin-right: 5px; vertical-align: 1px; }
   .disc-row .d-dirty[hidden] { display: none; }
 
-  /* فاز ۳۶ (مالک): کال‌اوت «اسکنر/اکسل» باید در یک خط جا شود — فونت ۱۰px و
-     لینک‌های داخلش هم فونت والد را می‌گیرند (.qlink پیش‌فرض ۱۲px ثابت دارد) */
-  .callout-sm { font-size: 10px; line-height: 1.9; }
-  .callout-sm .qlink { font-size: inherit; }
-
   /* فاز ۳۶ (مالک): hintnote روی صفحه‌ها هم مانند شیت‌ها دیده شود — قبلاً فقط
      .sheet .hintnote استایل داشت و روی صفحه با فونت ۱۶px بی‌کادر می‌افتاد (خیلی بزرگ) */
   .hintnote { font-size: 11px; color: var(--muted-fg); line-height: 1.9; margin-top: 11px; background: var(--muted); border-radius: 10px; padding: 8px 10px; }
   #bp-newprod .sheet-cta { width: 100%; margin-top: 12px; box-sizing: border-box; }
+
+
+  /* فاز ۴۳: اکشن‌بار ۰۴ فقط در گام ۲ دیده می‌شود — display:flex جانشین [hidden] می‌شود */
+  .action-bar[hidden] { display: none; }
+
+  /* ═══ فاز ۴۳ — فرم افزودن کالا به الگوی MVP: جستجوی واحد ← انتخاب ← قیمت ═══ */
+  .gf-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 13px; color: var(--foreground); text-align: right; }
+  .gf-search input::placeholder { color: #b0aca1; }
+  .gf-scan { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--muted); border: 0; cursor: pointer; color: var(--stone); flex-shrink: 0; }
+  .gf-scan svg { width: 18px; height: 18px; }
+  .gf-paste { width: 100%; text-align: right; cursor: pointer; font-family: inherit; margin-top: 10px; margin-bottom: 0; }
+  .gf-paste:active { opacity: .75; }
+  .gf-group { font-size: 11px; font-weight: 700; color: var(--muted-fg); margin: 14px 2px 0; }
+  .gf-row { display: flex; align-items: center; gap: 11px; width: 100%; text-align: right; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; margin-top: 8px; cursor: pointer; font-family: inherit; }
+  .gf-row:active { border-color: var(--border-strong); }
+  .gf-row .th { width: 46px; height: 46px; border-radius: 10px; overflow: hidden; flex-shrink: 0; background: var(--muted); display: grid; place-items: center; }
+  .gf-row .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gf-row .tx { flex: 1; min-width: 0; }
+  .gf-row .tx b { font-size: 13px; display: block; }
+  .gf-row .tx span { font-size: 10.5px; color: var(--muted-fg); display: block; margin-top: 2px; }
+  .gf-row .chev { width: 15px; height: 15px; color: var(--muted-fg); flex-shrink: 0; }
+  .gf-empty { display: grid; place-items: center; gap: 5px; text-align: center; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px 14px; margin-top: 10px; font-size: 12.5px; color: var(--muted-fg); }
+  .gf-empty b { font-size: 13px; color: var(--foreground); }
+  .gf-newcta { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 1.5px dashed var(--border-strong); border-radius: 12px; padding: 11px 12px; margin-top: 12px; background: none; font-family: inherit; font-size: 12.5px; font-weight: 700; color: var(--primary-strong); cursor: pointer; }
+  .gf-newcta svg { width: 15px; height: 15px; }
+  .gf-selcard { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+  .gf-selcard .th { width: 54px; height: 54px; border-radius: 12px; overflow: hidden; flex-shrink: 0; background: var(--muted); display: grid; place-items: center; }
+  .gf-selcard .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gf-selcard .tx { flex: 1; min-width: 0; }
+  .gf-selcard .tx b { font-size: 13.5px; display: block; }
+  .gf-selcard .tx .bd { display: inline-flex; margin-top: 4px; }
+  .gf-selcard .tx span { font-size: 10.5px; color: var(--muted-fg); display: block; margin-top: 2px; }
+  .gf-chg { margin-right: auto; font-size: 11px; font-weight: 700; color: var(--primary-strong); background: none; border: 0; cursor: pointer; font-family: inherit; padding: 5px 7px; flex-shrink: 0; }
+  .gf-ok { display: flex; align-items: center; gap: 9px; background: var(--green-bg); border: 1px solid #d9eee2; border-radius: 12px; padding: 10px 12px; font-size: 12px; color: var(--green); font-weight: 600; margin-top: 10px; line-height: 1.8; }
+  .gf-ok svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .gf-ok .lnk { margin-right: auto; color: var(--primary-strong); font-weight: 800; font-size: 11.5px; background: none; border: 0; cursor: pointer; font-family: inherit; padding: 4px 6px; flex-shrink: 0; }
+  .gf-alt { font-size: 11px; color: var(--muted-fg); text-align: center; margin-top: 12px; }
+  .gf-alt .qlink { font-size: 11px; }
+  .gf-num { cursor: text; }
+  .gf-num input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 14px; font-weight: 700; color: var(--foreground); text-align: right; }
+  .gf-num input::placeholder { font-weight: 400; color: #b0aca1; }
+  .gf-unithint { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--muted-fg); line-height: 1.8; margin-top: 8px; background: var(--muted); border-radius: 10px; padding: 8px 10px; }
+  .gf-unithint svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--stone); }
+  .gf-unithint b { color: var(--foreground); }
+  .gf-mkt { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--green); line-height: 1.8; margin-top: 8px; background: var(--green-bg); border-radius: 10px; padding: 8px 10px; }
+  .gf-mkt svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .gf-mkt b { color: var(--green); }
+  .gf-err { font-size: 11px; color: var(--red); margin-top: 6px; line-height: 1.8; }
+  /* شیت چسباندن لیست قیمت */
+  .gf-prow { border: 1px solid var(--border); border-radius: 12px; padding: 10px 11px; margin-top: 10px; background: #fff; }
+  .gf-prow.on { border-color: var(--green); background: #f6fbf8; }
+  .gf-phead { display: flex; align-items: center; gap: 8px; }
+  .gf-ptoggle { width: 26px; height: 26px; border-radius: 9px; border: 1.5px solid var(--border-strong); background: #fff; cursor: pointer; display: grid; place-items: center; flex-shrink: 0; color: transparent; padding: 0; }
+  .gf-ptoggle svg { width: 14px; height: 14px; }
+  .gf-prow.on .gf-ptoggle { background: var(--green); border-color: var(--green); color: #fff; }
+  .gf-src { flex: 1; min-width: 0; font-size: 11.5px; color: var(--stone-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .gf-match { display: flex; align-items: center; gap: 9px; margin-top: 8px; background: var(--muted); border-radius: 10px; padding: 7px 9px; }
+  .gf-match .th { width: 38px; height: 38px; border-radius: 9px; overflow: hidden; flex-shrink: 0; background: #fff; }
+  .gf-match .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gf-match .tx { flex: 1; min-width: 0; }
+  .gf-match .tx b { font-size: 12px; display: block; }
+  .gf-match .tx span { font-size: 10px; color: var(--muted-fg); display: block; margin-top: 2px; }
+  .gf-match .chg { font-size: 10.5px; font-weight: 700; color: var(--primary-strong); background: none; border: 0; cursor: pointer; font-family: inherit; padding: 4px 5px; flex-shrink: 0; }
+  .gf-prow-price { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .gf-prow-price .input { flex: 1; }
+  .gf-prow-price .sfx { font-size: 11px; color: var(--muted-fg); flex-shrink: 0; }
+  .gf-choosebox { margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 9px; }
+  .gf-choosebox .searchbar { height: 40px; }
+  .gf-choosebox .searchbar input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 12.5px; color: var(--foreground); text-align: right; }
+  .gf-psrow { display: flex; align-items: center; gap: 9px; width: 100%; text-align: right; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 6px 9px; margin-top: 7px; cursor: pointer; font-family: inherit; }
+  .gf-psrow:active { border-color: var(--border-strong); }
+  .gf-psrow .th { width: 34px; height: 34px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: var(--muted); }
+  .gf-psrow .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gf-psrow .tx { flex: 1; min-width: 0; }
+  .gf-psrow .tx b { font-size: 11.5px; display: block; }
+  .gf-psrow .tx span { font-size: 9.5px; color: var(--muted-fg); display: block; margin-top: 1px; }
+  .gf-psum { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--green); font-weight: 700; background: var(--green-bg); border-radius: 10px; padding: 8px 10px; margin-top: 11px; line-height: 1.8; }
+  .gf-psum svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .gf-psum.mixed { color: var(--amber); background: var(--amber-bg); }
 
 </style>
 </head>
@@ -1594,6 +1636,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5.5-4-10.5-11-11z"/></symbol>
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8.2 5.4v13.2c0 .8.9 1.3 1.6.9l10-6.6a1 1 0 000-1.8l-10-6.6c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></symbol>
 <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.2A2.2 2.2 0 015.2 6h1.9l1.4-2h6.9l1.4 2h1.9A2.2 2.2 0 0121 8.2v9.6a2.2 2.2 0 01-2.2 2.2H5.2A2.2 2.2 0 013 17.8z"/><circle cx="12" cy="13" r="3.6"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5V3h6v1.5"/><path d="M9 10h6M9 13.5h6M9 17h3.5"/></symbol>
 <!-- فاز ۳۵ — تم تاریک/روشن (پروفایل‌ها) -->
 <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 14.5A8.5 8.5 0 019.6 3.9a8.5 8.5 0 1010.6 10.6z"/></symbol>
 <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4L19 19M19 5l-1.6 1.6M6.6 17.4L5 19"/></symbol>
@@ -2115,355 +2158,64 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
-    <section class="scr" id="scr-04" data-arm="sell" hidden>
-
+        <section class="scr" id="scr-04" data-arm="sell" hidden>
 
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">افزودن کالا<small>به کاتالوگ «پخش برنج پارس»</small></div>
+      <div class="ttl">افزودن کالا<small id="gf-sub">به کاتالوگ «پخش برنج پارس» · مرحلهٔ ۱ از ۲ — کالا را پیدا کن</small></div>
     </header>
 
     <main class="screen-body">
 
-      <!-- ═══ گام ۱: نوع کالا (سابقاً «گود») — فاز ۳۵ (مالک): واژهٔ «گود» برای کاربر فارسی‌زبان
-           نامفهوم بود؛ همه‌جا «نوع کالا» شد. جدول مرجع همچنان پشت‌صحنه همان گود است. ═══ -->
-      <div class="field">
-        <label>نوع کالا</label>
-        <button class="searchbar gf-pick" data-sheet="sheet-goodpick">
+      <!-- ═══ فاز ۴۳ (مالک): فرم افزودن کالا به الگوی MVP — «جستجوی واحد ← انتخاب ← قیمت» ═══
+           IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی):
+           ▸ جایگزین جریان سه‌مرحله‌ای قبلی (نوع کالا ← آیا برند دارد؟ ← مسیر فله/برند).
+             یک جستجوی واحد، «نوع کالا» و «محصول برنددار» را با هم می‌گردد؛ کاربر یکی را
+             برمی‌دارد و فقط قیمت و شرایط فروش را وارد می‌کند.
+           ▸ چهار راه ورود: جستجو (همین صفحه) · چسباندن لیست قیمت (شیت sheet-paste) ·
+             اسکن بارکد (sheet-scan — دکمهٔ داخل نوار جستجو) · اکسل (sheet-xlsx — لینک پایین).
+           ▸ «کالای جدید» اگر در مرجع نبود: نام + نوع کالا (برای مقایسه) + بسته‌بندی + مقدار کل؛
+             با نشان «در انتظار تأیید» در کاتالوگ می‌نشیند.
+           ▸ فیلدهای لازمِ کاتالوگ از طرح قبلی حفظ شدند (کم‌کسری نداشته باشد):
+             قیمت (اجباری — بدون قیمت در نمای عمومی دیده نمی‌شود) · حداقل سفارش · موجودی ·
+             توضیحات · عنوان در کاتالوگ (مسیر فله) · عکس (کالای جدید).
+           ▸ قیمت نرمال‌شده (هر کیلو/لیتر) و کمترین قیمت بازار همان لحظه زیر قیمت نشان داده می‌شود —
+             قرارداد واحد-قیمت سند ۰۴. -->
+
+      <!-- ── گام ۱: جستجوی واحد «چی می‌فروشی؟» ── -->
+      <div id="gf-step1">
+        <div id="gf-okbox"></div>
+        <div class="searchbar gf-search" style="margin-top:2px">
           <svg><use href="#i-search"/></svg>
-          <span id="gf-good" style="color:var(--foreground);font-weight:700">پفک</span>
-          <span class="chg">تغییر</span>
-        </button>
-        <div class="hint" id="gf-good-path">تنقلات ‹ اسنک ‹ پفک · واحد مصرف‌کننده: کیلوگرم</div>
-      </div>
-
-      <!-- ═══ گام ۲: برند دارد؟ — فاز ۳۵ (مالک):
-           ▸ سوال «آیا …» شد؛ گزینه‌ها «برند دارد» / «فله یا بدون برند».
-           ▸ در حالت اولیه هیچ‌کدام انتخاب نیست (کاربر مجبور است یکی را بردارد).
-           ▸ تا انتخاب نشود، هیچ بخشی از فرم (فله/برند) لود نمی‌شود. ═══ -->
-      <div class="field">
-        <label>آیا این کالا برند دارد؟</label>
-        <div class="pillchoice">
-          <button class="pill" data-gmode="brand">برند دارد</button>
-          <button class="pill" data-gmode="felle">فله یا بدون برند</button>
-        </div>
-      </div>
-
-      <!-- ═══ مسیر فله (پفک): ویژگی‌های نوع کالا + ورود دستی مشخصات ═══ -->
-      <div id="gf-felle" hidden>
-
-        <div class="sec-title" style="margin-top:4px"><h2>مشخصات کالا</h2></div>
-
-        <!-- فاز ۳۶ (مالک): عنوان کالا در کاتالوگ — کاربر خودش وارد می‌کند (برند یا غیر برند)؛
-             همین عنوان در کاتالوگ او دیده می‌شود. برای فله، پیش‌فرض از نوع کالا + ویژگی‌ها پیشنهاد می‌شود. -->
-        <div class="field">
-          <label>عنوان در کاتالوگ <span class="opt">— همین عنوان را خریداران می‌بینند</span></label>
-          <input class="input" id="gf-felle-title" placeholder="مثلاً پفک ممتاز · درشت و تازه">
-        </div>
-
-        <div class="field">
-          <label>کیفیت <span class="opt">— ویژگی‌های نوع کالا</span></label>
-          <div class="pillchoice">
-            <button class="pill">معمولی</button>
-            <button class="pill active">ممتاز</button>
-            <button class="pill">صادراتی</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>اندازه <span class="opt">— ویژگی‌های نوع کالا</span></label>
-          <div class="pillchoice">
-            <button class="pill">ریز</button>
-            <button class="pill active">متوسط</button>
-            <button class="pill">درشت</button>
-          </div>
-        </div>
-
-        <div class="field" style="margin-top:6px">
-          <label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label>
-          <div class="gallery-add">
-            <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">۱۰ کیلو</span></div>
-            <div class="gslot filled"><span style="font-size:10px;color:#a8a29a;font-weight:700">جزئیات</span></div>
-            <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
-            <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
-          </div>
-        </div>
-
-        <div class="sec-title" style="margin-top:4px"><h2>قیمت و شرایط فروش</h2></div>
-
-        <!-- فاز ۳۵ (مالک): عبارت «واحد مصرف‌کنندهٔ گود» از کنار قیمت حذف شد —
-             همین که کاربر واحد را در راهنمای نوع کالا می‌بیند کافی است. -->
-        <div class="field">
-          <label>قیمت هر کیلوگرم <button class="info-i" data-sheet="sheet-priceinfo" title="قیمت پایه چیست؟"><svg><use href="#i-info-v2"/></svg></button></label>
-          <div class="input">
-            <span style="color:var(--foreground);font-weight:700">۸۵٬۰۰۰</span>
-            <span class="suffix">تومان</span>
-          </div>
-          <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
-        </div>
-
-        <!-- ═══ فاز ۳۵ (مالک) — بسته‌بندی فروش عمده: نوع + تعداد ═══
-             IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی — عیناً طبق خواستهٔ مالک):
-             ▸ کاربر فقط «نوع بسته‌بندی» را انتخاب می‌کند (گونی / کارتن / کیسه / …).
-             ▸ سپس «تعداد واحد پایه در هر بسته» را خودش در تکست‌باکس عددیِ کم‌عرض وارد می‌کند
-                (مثال مالک: کارتن انتخاب شد + واحد پایه «عدد» ← «تعداد در کارتن [۲۵] عدد»).
-             ▸ واحد پایه از «نوع کالا» (گود) می‌آید و این‌جا قابل تغییر نیست (اینجا: کیلوگرم).
-             ▸ گزینهٔ «سایر» شیت واحدها را باز می‌کند: جستجو، انتخاب، و در نبودِ واحدِ موردنظر،
-                ساخت واحد جدید — همان الگوی «انتخاب یا ثبت برند».
-             ▸ قیمت هر بسته = تعداد × قیمت واحد پایه؛ خودکار حساب و در راهنما نمایش داده می‌شود. -->
-        <div class="field">
-          <label>نوع بسته‌بندی فروش عمده</label>
-          <div class="pillchoice">
-            <button class="pill" data-pack="گونی">گونی</button>
-            <button class="pill active" data-pack="کارتن">کارتن</button>
-            <button class="pill" data-pack="کیسه">کیسه</button>
-            <button class="pill pkg-other" data-pack="سایر" data-sheet="sheet-unitpick">سایر…</button>
-          </div>
-          <div class="pkg-cnt">
-            <label id="gf-pkg-label">تعداد در کارتن</label>
-            <span class="pkg-cnt-row">
-              <input class="input pkg-num" value="۱۰" inputmode="numeric" aria-label="تعداد در کارتن">
-              <span class="pkg-unit">کیلوگرم</span>
-            </span>
-          </div>
-          <div class="hint">واحد پایه (کیلوگرم) از نوع کالا می‌آید — قیمت هر بسته خودکار حساب می‌شود: کارتن ۱۰ کیلویی = ۸۵۰٬۰۰۰ تومان</div>
-        </div>
-
-        <div style="display:flex;gap:9px">
-          <div class="field" style="flex:1">
-            <label>موجودی</label>
-            <div class="input">
-              <span style="color:var(--foreground);font-weight:700">۸۰</span>
-              <span class="suffix">کارتن</span>
-            </div>
-          </div>
-          <div class="field" style="flex:1">
-            <label>حداقل سفارش</label>
-            <div class="input">
-              <span style="color:var(--foreground);font-weight:700">۲</span>
-              <span class="suffix">کارتن</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ═══ فاز ۳۵ (مالک) — فیلد توضیحات کنار قیمت/حجم/موجودی ═══
-             IMPLEMENTATION NOTE (هماهنگی فیلدها با کاتالوگ — طبق خواستهٔ مالک):
-             هر اطلاعاتی که در جزئیات کالای کاتالوگ (۰۲) نمایش داده می‌شود باید این‌جا وارد شود:
-             عکس ✓ · ویژگی‌های نوع کالا (کیفیت/اندازه) ✓ · بسته‌بندی و تعداد ✓ · قیمت ✓ ·
-             حداقل سفارش ✓ · موجودی ✓ · توضیحات/شرایط فروش ✓ (جدید — در ۰۲ زیر «توضیحات فروشنده» دیده می‌شود).
-             فیلدهای سطح بالاتر (تخفیف پلکانی/همکار، تبلیغ، وضعیت موجودی) بعداً از تنظیمات خود کالا (۰۳) مدیریت می‌شوند.
-             همهٔ فیلدها اختیاری‌اند مگر قیمت — بدون قیمت، کالا در نمای عمومی دیده نمی‌شود. -->
-        <div class="field">
-          <label>توضیحات <span class="opt">— اختیاری</span></label>
-          <textarea class="input" rows="3" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
-        </div>
-      </div>
-
-      <!-- ═══ فاز ۳۵ — مسیر برنددار: برند ← «محصولات برند» (چندانتخابی) ← مشخصات فروش هر محصول ═══
-           IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی — عیناً طبق خواستهٔ مالک):
-           ▸ بعد از انتخاب برند، محصولاتِ آن برند برای این نوع کالا (مثلاً پفک) لود می‌شود؛
-             عنوان بخش «محصولات برند» است — واژهٔ «کالای مرجع» به کاربر گفته نمی‌شود (پشت‌صحنه همان است).
-           ▸ کاربر می‌تواند چند محصول را «همزمان» تیک بزند؛ به محض تیک، مشخصات فروش همان محصول
-             زیر همان ردیف باز می‌شود (قیمت / حداقل حجم / موجودی / توضیحات) — هر محصول یک ردیف.
-           ▸ ممکن است همهٔ محصولات برند در آیمچ ثبت نشده باشد (مثلاً اشی مشی ۴ نوع پفک دارد و ۲ تای آن این‌جاست):
-             با «محصول جدید این برند…» محصول تازه ساخته می‌شود، مثل بقیه تیک می‌خورد و عکس/واحدش
-             همان‌جا وارد می‌شود؛ ثبت او برای فروشندگان بعدی هم در جدول مرجع می‌ماند. -->
-      <div id="gf-brand" hidden>
-
-        <div class="sec-title" style="margin-top:4px"><h2>برند و محصولات</h2></div>
-
-        <!-- فاز ۳۵ (مالک): راهنمای «برندت در فهرست نیست؟…» حذف شد —
-             همان پیام، فشرده و سرراست، زیر عنوان شیت انتخاب برند نشسته است -->
-        <div class="field">
-          <label>برند <span class="opt" id="gf-brand-scope">— برندهای مرتبط با «پفک»</span></label>
-          <button class="searchbar gf-pick" data-sheet="sheet-brandpick">
-            <svg><use href="#i-search"/></svg>
-            <span id="gf-brandname" style="color:var(--foreground);font-weight:700">اشی مشی</span>
-            <span class="chg">تغییر</span>
+          <input id="gf-q" type="text" placeholder="چی می‌فروشی؟ مثلاً «هاشمی» یا «پفک مینو»" autocomplete="off">
+          <button class="gf-scan" data-sheet="sheet-scan" type="button" aria-label="اسکن بارکد" title="اسکن بارکد">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4v16M8.5 4v16M12.5 4v11M16.5 4v16M20.5 4v16"/></svg>
           </button>
         </div>
 
-        <!-- ═══ محصولات برند — چندانتخابی؛ مشخصات فروش زیر هر ردیف ═══ -->
-        <div id="gf-refs">
-          <div class="field">
-            <label>محصولات برند <span class="opt">— محصول‌های ثبت‌شدهٔ «اشی مشی» برای پفک</span></label>
-            <div class="bp-list" id="bp-list">
+        <button class="callout gf-paste" data-sheet="sheet-paste" type="button">
+          <svg><use href="#i-clip"/></svg>
+          <div>لیست قیمت تلگرام یا واتس‌اپت را داری؟ <b>بچسبونش</b> — هر خط را خودکار با کالای مرجع آیمچ تطبیق می‌دهیم؛ فقط بازبینی کن.</div>
+        </button>
 
-              <div class="bp-item">
-                <button class="bp-row" data-bptick type="button">
-                  <span class="bp-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                  <img class="bp-th" src="png/goods/pofak-small.jpg" alt="پفک اشی مشی — بسته کوچک">
-                  <span class="bp-meta">
-                    <b>پفک اشی مشی · بسته کوچک</b>
-                    <small>واحد فروش عمده: کارتن ۱۰۰ عددی · ۱۰۰ عدد</small>
-                  </span>
-                </button>
-                <div class="bp-specs" hidden>
-                  <div class="field">
-                    <label>قیمت هر کارتن ۱۰۰ عددی</label>
-                    <div class="input">
-                      <span style="color:var(--foreground);font-weight:700">۲۴۰٬۰۰۰</span>
-                      <span class="suffix">تومان</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px">
-                    <div class="field" style="flex:1">
-                      <label>حداقل حجم خرید</label>
-                      <div class="input"><span style="color:var(--foreground);font-weight:700">۱۰</span><span class="suffix">کارتن</span></div>
-                    </div>
-                    <div class="field" style="flex:1">
-                      <label>موجودی</label>
-                      <div class="input"><span style="color:var(--foreground);font-weight:700">۴۵</span><span class="suffix">کارتن</span></div>
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label>توضیحات <span class="opt">— اختیاری</span></label>
-                    <textarea class="input" rows="2" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
-                  </div>
-                </div>
-              </div>
+        <div id="gf-res"></div>
 
-              <div class="bp-item">
-                <button class="bp-row" data-bptick type="button">
-                  <span class="bp-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                  <img class="bp-th" src="png/goods/pofak-big.jpg" alt="پفک اشی مشی — بسته بزرگ">
-                  <span class="bp-meta">
-                    <b>پفک اشی مشی · بسته بزرگ</b>
-                    <small>واحد فروش عمده: کارتن ۵۰ عددی · ۵۰ عدد</small>
-                  </span>
-                </button>
-                <div class="bp-specs" hidden>
-                  <div class="field">
-                    <label>قیمت هر کارتن ۵۰ عددی</label>
-                    <div class="input">
-                      <span style="color:var(--foreground);font-weight:700">۴۸۵٬۰۰۰</span>
-                      <span class="suffix">تومان</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px">
-                    <div class="field" style="flex:1">
-                      <label>حداقل حجم خرید</label>
-                      <div class="input"><span style="color:var(--foreground);font-weight:700">۲</span><span class="suffix">کارتن</span></div>
-                    </div>
-                    <div class="field" style="flex:1">
-                      <label>موجودی</label>
-                      <div class="input"><span style="color:var(--foreground);font-weight:700">۸۰</span><span class="suffix">کارتن</span></div>
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label>توضیحات <span class="opt">— اختیاری</span></label>
-                    <textarea class="input" rows="2" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- فاز ۳۵ (مالک): ممکن است همهٔ محصولات برند ثبت نشده باشد (اشی مشی ۴ نوع پفک دارد،
-                 ۲ تای آن این‌جاست) — محصولات تازه همین‌جا ساخته و همزمان ثبت می‌شوند -->
-            <button class="add-row" data-reveal="bp-newprod"><svg><use href="#i-plus"/></svg> محصول دیگری از این برند در لیست نیست؟ محصول جدید بساز</button>
-            <div id="bp-newprod" hidden>
-              <div class="field">
-                <label>نام محصول جدید</label>
-                <input class="input" id="bp-newprod-input" placeholder="مثلاً پفک اشی مشی · بسته خانواده">
-              </div>
-              <!-- فاز ۳۶ (مالک): عنوان کالا در کاتالوگ — کاربر خودش وارد می‌کند و همین
-                   عنوان در کاتالوگِ او نمایش داده می‌شود (نام محصول، نام ثبتِ جدول مرجع است) -->
-              <div class="field">
-                <label>عنوان در کاتالوگ <span class="opt">— همین عنوان را خریداران می‌بینند</span></label>
-                <input class="input" id="bp-newprod-title" placeholder="مثلاً پفک اشی مشی بسته خانواده — تازه و ترد">
-              </div>
-              <button class="btn btn-primary sheet-cta" data-bpnew type="button">افزودن به فهرست و شروع ثبت</button>
-              <div class="hintnote">محصول جدید مثل بقیه تیک می‌خورد؛ عکس و واحد فروش عمده‌اش را همان‌جا وارد می‌کنی و برای فروشندگان بعدی هم در جدول مرجع ذخیره می‌شود.</div>
-            </div>
-          </div>
-          <div class="refcard">
-            <svg><use href="#i-verified"/></svg>
-            <div>عکس و واحد فروش عمدهٔ هر محصول خودکار از جدول مرجع آیمچ می‌آید — قیمت، حداقل حجم خرید، موجودی و توضیحاتِ هر کدام را در همان ردیف وارد کن؛ هر چه تیک بخورد، همزمان در کاتالوگ ثبت می‌شود.</div>
-          </div>
-        </div>
-
-        <!-- برندِ بدون محصول ثبت‌شده — ورود دستی -->
-        <div id="gf-norefs" hidden>
-          <div class="callout" style="margin-top:4px">
-            <svg><use href="#i-info"/></svg>
-            <div>برای این برند هنوز محصولی ثبت نشده است. لطفا خودت عکس و مشخصات این کالا رو ثبت کن.</div>
-          </div>
-          <div class="field">
-            <label>نام محصول</label>
-            <div class="input"><span id="gf-norefs-name" style="color:var(--foreground);font-weight:700">پفک · بسته بزرگ</span></div>
-          </div>
-          <!-- فاز ۳۶ (مالک): عنوان در کاتالوگ — همین عنوان در کاتالوگ فروشنده نمایش داده می‌شود -->
-          <div class="field">
-            <label>عنوان در کاتالوگ <span class="opt">— همین عنوان را خریداران می‌بینند</span></label>
-            <input class="input" id="gf-norefs-title" placeholder="مثلاً پفک اشی مشی بسته بزرگ — تازه و ترد">
-          </div>
-          <div style="display:flex;gap:9px">
-            <div class="field" style="flex:1.3">
-              <label>واحد فروش عمده</label>
-              <div class="input"><span style="color:var(--foreground);font-weight:700">کارتن ۵۰ عددی</span></div>
-            </div>
-            <div class="field" style="flex:1">
-              <label>تعداد در هر واحد</label>
-              <div class="input"><span style="color:var(--foreground);font-weight:700">۵۰</span></div>
-            </div>
-          </div>
-          <div class="field" style="margin-top:6px">
-            <label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label>
-            <div class="gallery-add">
-              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
-              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
-              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
-              <div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>
-            </div>
-          </div>
-
-          <div class="sec-title" style="margin-top:4px"><h2>قیمت و شرایط فروش</h2></div>
-          <div class="field">
-            <label>قیمت هر کارتن ۵۰ عددی</label>
-            <div class="input">
-              <span style="color:var(--foreground);font-weight:700">۴۸۵٬۰۰۰</span>
-              <span class="suffix">تومان</span>
-            </div>
-            <div class="hint warn">تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div>
-          </div>
-          <div style="display:flex;gap:9px">
-            <div class="field" style="flex:1">
-              <label>حداقل حجم خرید</label>
-              <div class="input">
-                <span style="color:var(--foreground);font-weight:700">۲</span>
-                <span class="suffix">کارتن</span>
-              </div>
-            </div>
-            <div class="field" style="flex:1">
-              <label>موجودی</label>
-              <div class="input">
-                <span style="color:var(--foreground);font-weight:700">۸۰</span>
-                <span class="suffix">کارتن</span>
-              </div>
-            </div>
-          </div>
-          <div class="field">
-            <label>توضیحات <span class="opt">— اختیاری</span></label>
-            <textarea class="input" rows="3" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea>
-          </div>
-        </div>
+        <div class="gf-alt">کالاهای زیاد داری؟ <button class="qlink" data-sheet="sheet-xlsx" type="button">بارگذاری اکسل</button></div>
       </div>
 
-      <!-- ثبت سریع با اسکنر / اکسل — فاز ۳۶ (مالک): متن کوتاه‌تر شد و با کلاس callout-sm
-           فونت ۱۰px می‌گیرد تا کل پیام در یک خط جا شود -->
-      <div class="callout callout-sm" style="margin-top:10px">
-        <svg><use href="#i-bolt"/></svg>
-        <div>برای ثبت سریع کالاها، <button class="qlink" data-sheet="sheet-scan">«اسکنر بارکد»</button> یا <button class="qlink" data-sheet="sheet-xlsx">«بارگذاری اکسل»</button> را امتحان کنید.</div>
-      </div>
+      <!-- ── گام ۲: قیمت و شرایط فروش — با انتخاب کالا رندر می‌شود ── -->
+      <div id="gf-step2" hidden></div>
 
     </main>
 
-    <div class="action-bar">
-      <button class="btn btn-primary btn-block">ذخیره در کاتالوگ</button>
+    <div class="action-bar" id="gf-bar" hidden>
+      <button class="btn btn-primary btn-block" id="gf-save" type="button">افزودن به کاتالوگ</button>
     </div>
 
     </section>
+
+
+
 
     <section class="scr" id="scr-05" data-arm="sell" hidden>
 
@@ -8178,121 +7930,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-primary sheet-cta" data-close>ایجاد گروه و ذخیره</button>
 </div>
 
-<!-- ═══ ۸-پ) فاز ۲۱ — انتخاب گود (جدول مرجع آیمچ) ═══ -->
-<div class="sheet" id="sheet-goodpick" role="dialog" aria-label="انتخاب نوع کالا">
+<!-- ═══ ۸-ت) فاز ۴۳ — چسباندن لیست قیمت (الگوی MVP؛ مالک: فروشنده لیست قیمتش را در
+     تلگرام/واتس‌اپ برای مشتری‌ها می‌فرستد) — هر خط خودکار به کالای مرجع وصل می‌شود
+     (مطمئن / بررسی کن / پیدا نشد) و فروشنده فقط قیمت و تیک را تأیید می‌کند.
+     IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی، تطبیق سمت سرور با موتور جستجوی واحد
+     انجام می‌شود و خروجی هر خط {listingDraft, confidence} است؛ ردیف‌های «پیدا نشد»
+     به جریان «کالای جدید» (نوع کالا + مقدار کل بسته) هدایت می‌شوند. ═══ -->
+<div class="sheet" id="sheet-paste" role="dialog" aria-label="چسباندن لیست قیمت">
   <div class="grab"></div>
-  <!-- فاز ۳۵ (مالک): «گود» → «نوع کالا» در همه‌جا؛ توضیح تعریفِ گود حذف شد (کاربر لازمش ندارد) -->
-  <h3>انتخاب نوع کالا</h3>
-  <div class="sub">نوع کالای مورد نظرت را جستجو کن — مثل «برنج» یا «پفک».</div>
-  <div class="sheet-search">
-    <input class="input" value="پفک" placeholder="جستجوی نوع کالا…">
+  <h3>چسباندن لیست قیمت</h3>
+  <div class="sub">همان متنی که برای مشتری‌هایتان در تلگرام یا واتس‌اپ می‌فرستید — هر خط یک کالا؛ قیمت با «هزار» یا عدد خام.</div>
+  <div class="field" style="margin-top:11px">
+    <textarea class="input" id="pasteText" rows="6" placeholder="برنج هاشمی درجه یک کیسه ۱۰ کیلویی ۵۹۵ هزار&#10;روغن لادن ۱.۸ لیتری کارتن ۶ تایی ۲٬۴۵۰٬۰۰۰&#10;پفک مینو کارتن ۲۴ عددی ۵۹۰٬۰۰۰"></textarea>
   </div>
-  <div class="grp">نتیجه‌های جستجو — ۳ نوع کالا</div>
-  <button class="sheet-row" data-gname="پفک" data-gpath="تنقلات ‹ اسنک ‹ پفک · واحد مصرف‌کننده: کیلوگرم">
-    <span class="tx"><b>پفک</b><span>تنقلات ‹ اسنک · دارای برند</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-gname="رنگ پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ رنگ پفک · واحد مصرف‌کننده: کیلوگرم">
-    <span class="tx"><b>رنگ پفک</b><span>مواد اولیه ‹ افزودنی خوراکی · بدون برند</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-gname="نشاسته برای پفک" data-gpath="مواد اولیه ‹ افزودنی خوراکی ‹ نشاسته · واحد مصرف‌کننده: کیلوگرم">
-    <span class="tx"><b>نشاسته برای پفک</b><span>مواد اولیه ‹ افزودنی خوراکی · بدون برند</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <div class="grp">پرجستجوترین‌ها</div>
-  <button class="sheet-row" data-gname="برنج هاشمی" data-gpath="غلات و حبوبات ‹ برنج ‹ هاشمی · واحد مصرف‌کننده: کیلوگرم">
-    <span class="tx"><b>برنج هاشمی</b><span>غلات و حبوبات ‹ برنج</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="add-row" data-reveal="gp-new"><svg><use href="#i-plus"/></svg> نوع کالای مورد نظرت در فهرست نیست؟ نوع کالای جدید بساز</button>
-  <div id="gp-new" hidden>
-    <div class="field">
-      <label>نام نوع کالای جدید</label>
-      <input class="input" id="gp-new-input" placeholder="مثلاً کشمش سبز">
-    </div>
-    <button class="btn btn-primary sheet-cta" data-goodnew>ثبت و انتخاب این نوع کالا</button>
-    <div class="hintnote">نوع کالای جدید اول برای کالای خودت ثبت می‌شود و بعد از بازبینی ادمین برای همهٔ کاربران آیمچ نمایش داده می‌شود.</div>
-  </div>
-  <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
-</div>
-
-<!-- ═══ ۸-ت) فاز ۲۱ — انتخاب برند (برندهای مرتبط با نوع کالا) · فاز ۳۵: عنوان و متن طبق مالک ═══ -->
-<div class="sheet" id="sheet-brandpick" role="dialog" aria-label="انتخاب یا ثبت برند">
-  <div class="grab"></div>
-  <h3>انتخاب یا ثبت برند</h3>
-  <div class="sub">اگر برند مورد نظرت در لیست نیست، خودت ثبتش کن</div>
-  <div class="sheet-search">
-    <input class="input" value="اشی" placeholder="جستجوی برند…">
-  </div>
-  <div class="grp">برندهای «پفک»</div>
-  <button class="sheet-row" data-brandpick="1" data-bname="اشی مشی">
-    <span class="tx"><b>اشی مشی</b><span>۲ محصول · ثبت‌شده توسط ادمین</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-brandpick="0" data-bname="چیتوز">
-    <span class="tx"><b>چیتوز</b><span>بدون محصول — با ثبت تو کامل می‌شود</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-brandpick="0" data-bname="مینو">
-    <span class="tx"><b>مینو</b><span>بدون محصول — با ثبت تو کامل می‌شود</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="add-row" data-reveal="bp-new"><svg><use href="#i-plus"/></svg> برند جدید ثبت کن</button>
-  <div id="bp-new" hidden>
-    <div class="field">
-      <label>نام برند جدید</label>
-      <input class="input" id="bp-new-input" placeholder="مثلاً آزاده">
-    </div>
-    <button class="btn btn-primary sheet-cta" data-brandnew>ثبت و انتخاب این برند</button>
-    <div class="hintnote">برند جدید همزمان با ثبت کالای تو انتخاب می‌شود و بعد از تأیید ادمین در فهرست برندهای همین نوع کالا می‌آید.</div>
-  </div>
-  <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
-</div>
-
-<!-- ═══ ۸-ت-۲) فاز ۳۵ — شیت واحدها (گزینهٔ «سایر» بسته‌بندی فروش عمده) ═══
-     IMPLEMENTATION NOTE (برای پیاده‌سازی عملیاتی — طبق خواستهٔ مالک):
-     ▸ گزینهٔ «سایر…» کنار گونی/کارتن/کیسه این شیت را باز می‌کند: جستجو و انتخاب واحد دلخواه؛
-       اگر واحد مورد نظر نبود، کاربر همان‌جا واحد جدید می‌سازد (الگوی انتخاب یا ثبت برند).
-     ▸ واحد پایه (اینجا کیلوگرم) از نوع کالا می‌آید و در این شیت نیست — فقط «نوع بسته‌بندی» انتخاب می‌شود. -->
-<div class="sheet" id="sheet-unitpick" role="dialog" aria-label="انتخاب واحد بسته‌بندی">
-  <div class="grab"></div>
-  <h3>انتخاب یا ساخت واحد</h3>
-  <div class="sub">نوع بسته‌بندی مورد نظرت را جستجو و انتخاب کن — اگر نبود، خودت بساز.</div>
-  <div class="sheet-search">
-    <input class="input" placeholder="جستجوی واحد…">
-  </div>
-  <div class="grp">واحدهای پرکاربرد</div>
-  <button class="sheet-row" data-unitpick="گونی">
-    <span class="tx"><b>گونی</b><span>معمول در خواربار فله</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-unitpick="جعبه">
-    <span class="tx"><b>جعبه</b><span>گروهی از بسته‌ها</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-unitpick="شانه">
-    <span class="tx"><b>شانه</b><span>موارد شمارشی مثل نوشیدنی</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-unitpick="بسته">
-    <span class="tx"><b>بسته</b><span>بسته‌بندی خرد</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="sheet-row" data-unitpick="پالت">
-    <span class="tx"><b>پالت</b><span>حمل انبوه با لیفتراک</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
-  <button class="add-row" data-reveal="up-new"><svg><use href="#i-plus"/></svg> واحد مورد نظرت نیست؟ واحد جدید بساز</button>
-  <div id="up-new" hidden>
-    <div class="field">
-      <label>نام واحد جدید</label>
-      <input class="input" id="up-new-input" placeholder="مثلاً خرجی">
-    </div>
-    <button class="btn btn-primary sheet-cta" data-unitnew>ثبت و انتخاب این واحد</button>
-    <div class="hintnote">واحد جدید بعد از بازبینی ادمین به فهرست واحدهای آیمچ اضافه می‌شود.</div>
-  </div>
-  <button class="btn btn-outline sheet-cta" data-close>انصراف</button>
+  <button class="gf-alt" id="paste-sample" type="button" style="width:100%;background:none;border:0;cursor:pointer;font-family:inherit">استفاده از متن نمونه</button>
+  <div id="paste-res"></div>
+  <button class="btn btn-primary sheet-cta" id="paste-run" type="button">تطبیق خودکار</button>
+  <button class="btn btn-outline sheet-cta" data-close type="button">انصراف</button>
 </div>
 
 <!-- ═══ ۸-ث) فاز ۲۱ — قیمت پایه (ℹ کنار قیمت) ═══ -->
@@ -9743,7 +9397,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     ]
   };
   var DEFAULT_BACK = {
-    '02': '13', '03': '01', '04': '03', '06': '05', '09': '08',
+    '02': '13', '03': '01', '04': '01', '06': '05', '09': '08',
     '11': '08', '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '20': '01', '21': '03', '22': '01', '23': '08', '24': '01', '25': '01', '26': '01',
     '27': '01', '28': '05', '29': '07', '30': '07', '31': '08', '32': '07', '33': '08', '34': '08', '35': '07', '36': '11',
@@ -9756,7 +9410,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '01': [['افزودن کالا', '04']],
     '02': [['درخواست خرید', '12'], ['مشاهده تابلوی تأمین', '09']],
     '03': [['ویرایش کامل کالا', '04'], ['مشاهده و پاسخ', '06']],
-    '04': [['ذخیره در کاتالوگ', '01']],
     '06': [['ارسال پیشنهاد', '28']], /* فاز ۳۲: «بایگانی» بی‌معنا بود → «انصراف» (data-cancel در مارک‌آپ، بازگشت به مبدأ) */
     '07': [['نمای عمومی', '13'], ['خروج از حساب', '15']],
     '08': [['درخواست‌های خرید من', '11'], ['افزودن کالا', '34']],
@@ -9941,58 +9594,664 @@ body > div[id^="scr-d"][hidden] { display: none; }
     });
   }
 
-  /* ── فاز ۲۱/۳۵: فرم افزودن کالا — نوع کالا ← آیا برند دارد؟ ← (فله | برند و محصولات) ──
-     فاز ۳۵ (مالک): گامِ برند دیگر پیش‌انتخاب نیست؛ سوال «آیا این کالا برند دارد؟» بدون
-     پاسخ شروع می‌شود و هیچ بخشی (فله/برند) تا انتخاب کاربر لود نمی‌شود. */
-  function gfSetGood(name, path) {
-    var gN = document.getElementById('gf-good');
-    if (gN && name) gN.textContent = name;
-    var gP = document.getElementById('gf-good-path');
-    if (gP && path) gP.textContent = path;
-    var sc = document.getElementById('gf-brand-scope');
-    if (sc) sc.textContent = '— برندهای مرتبط با «' + (gN ? gN.textContent : 'پفک') + '»';
-    gfSetMode(null); /* با نوع کالای تازه، سوال برند از نو پرسیده می‌شود */
+  /* ═══ فاز ۴۳ (مالک) — فرم افزودن کالا به الگوی MVP: «جستجوی واحد ← انتخاب ← قیمت» ═══
+     جایگزین جریان سه‌مرحله‌ای «نوع کالا ← برند دارد؟ ← مسیر فله/برند».
+     ▸ یک جستجوی واحد «چی می‌فروشی؟» نوع کالا و محصول برنددار را با هم می‌گردد.
+     ▸ انتخاب ← فرم کوتاه قیمت: قیمت هر بسته + موجودی + حداقل سفارش + توضیحات
+       (+ کیفیت و بسته‌بندی برای فله؛ + نوع کالا/برند/بسته برای کالای جدید).
+     ▸ قیمت نرمال‌شده (هر کیلو/لیتر) و کمترین قیمت بازار زیر قیمت — قرارداد سند ۰۴.
+     ▸ ذخیرهٔ زنده: کارت در کاتالوگ ۰۱ و ردیف ۲۶ همان لحظه می‌نشیند (الگوی فاز ۳۶/۳۹)؛
+       تکراری بودن کالا یعنی «به‌روزرسانی قیمت»، نه ردیف جدید.
+     ▸ شیت چسباندن لیست قیمت (تلگرام/واتس‌اپ): هر خط خودکار تطبیق می‌خورد
+       (مطمئن / بررسی کن / پیدا نشد) و فروشنده فقط تیک و قیمت را تأیید می‌کند. */
+  var GF = { q: '', sel: null, last: null, paste: { mode: 'idle', rows: null, text: '' } };
+
+  var GF_GOODS = [
+    { id: 'g1', name: 'برنج هاشمی', cat: 'غلات و حبوبات', unit: 'کیلوگرم', cmp: 'کیلوگرم', cmpQty: 1, img: 'png/goods/rice-sack.jpg',
+      packs: [{ l: 'کیسه ۱۰ کیلویی', q: 10 }, { l: 'کیسه ۵۰ کیلویی', q: 50 }], grades: ['درجه یک', 'ممتاز', 'معمولی'] },
+    { id: 'g2', name: 'برنج طارم', cat: 'غلات و حبوبات', unit: 'کیلوگرم', cmp: 'کیلوگرم', cmpQty: 1, img: 'png/goods/rice-grains.jpg',
+      packs: [{ l: 'کیسه ۱۰ کیلویی', q: 10 }, { l: 'کیسه ۵۰ کیلویی', q: 50 }], grades: [] },
+    { id: 'g3', name: 'برنج فجر', cat: 'غلات و حبوبات', unit: 'کیلوگرم', cmp: 'کیلوگرم', cmpQty: 1, img: 'png/goods/fajar-50.jpg',
+      packs: [{ l: 'کیسه ۵۰ کیلویی', q: 50 }], grades: [] },
+    { id: 'g4', name: 'روغن آفتابگردنی', cat: 'روغن', unit: 'لیتر', cmp: 'لیتر', cmpQty: 1, img: 'png/goods/oil-bottle.jpg',
+      packs: [{ l: 'بسته ۱.۸ لیتری', q: 1.8 }, { l: 'کارتن ۶ عددی ۱.۸ لیتری', q: 10.8 }], grades: [] },
+    { id: 'g5', name: 'پفک', cat: 'تنقلات', unit: 'کیلوگرم', cmp: 'کیلوگرم', cmpQty: 1, img: 'png/goods/pofak-big.jpg',
+      packs: [{ l: 'کارتن ۵۰ عددی', q: 1.25 }, { l: 'کارتن ۱۰۰ عددی', q: 2.5 }], grades: ['درجه یک', 'ممتاز'] },
+    { id: 'g6', name: 'قند و شکر', cat: 'قند و شکر', unit: 'کیلوگرم', cmp: 'کیلوگرم', cmpQty: 1, img: 'png/goods/sugar-cubes.jpg',
+      packs: [{ l: 'کیسه ۱۰ کیلویی', q: 10 }, { l: 'گونی ۵۰ کیلویی', q: 50 }], grades: [] },
+    { id: 'g7', name: 'رب گوجه‌فرنگی', cat: 'کنسرو', unit: 'کیلوگرم', cmp: '۱۰۰ گرم', cmpQty: 0.1, img: 'png/goods/tomato-paste.jpg',
+      packs: [{ l: 'کارتن ۲۴ عددی ۸۰۰ گرمی', q: 19.2 }], grades: [] }
+  ];
+  var GF_REFS = [
+    { id: 'r1', g: 'g1', name: 'برنج هاشمی درجه یک', brand: 'کیان برنج', pack: 'کیسه ۱۰ کیلویی', q: 10, img: 'png/goods/hashemi-10.png' },
+    { id: 'r2', g: 'g4', name: 'روغن سرخ‌کردنی لادن', brand: 'لادن', pack: 'کارتن ۶ عددی ۱.۸ لیتری', q: 10.8, img: 'png/goods/oil-carton.jpg' },
+    { id: 'r3', g: 'g5', name: 'پفک اشی مشی · بسته کوچک', brand: 'اشی مشی', pack: 'کارتن ۱۰۰ عددی', q: 2.5, img: 'png/goods/pofak-small.jpg' },
+    { id: 'r4', g: 'g5', name: 'پفک مینو · کارتنی', brand: 'مینو', pack: 'کارتن ۲۴ عددی', q: 0.6, img: 'png/goods/pofak-big.jpg' },
+    { id: 'r5', g: 'g6', name: 'قند یکتا', brand: 'یکتا', pack: 'کیسه ۱۰ کیلویی', q: 10, img: 'png/goods/sugar-cubes.jpg' },
+    { id: 'r6', g: 'g7', name: 'رب چین‌چین ۸۰۰ گرمی', brand: 'چین‌چین', pack: 'کارتن ۲۴ عددی', q: 19.2, img: 'png/goods/tomato-paste.jpg' },
+    { id: 'r7', g: 'g2', name: 'برنج طارم گلستان', brand: 'گلستان', pack: 'کیسه ۱۰ کیلویی', q: 10, img: 'png/goods/rice-grains.jpg' }
+  ];
+  /* کمترین قیمت بازار به واحد مصرف‌کننده (قرارداد سند ۰۴) — از تابلوی تأمین همان لحظه */
+  var GF_MARKET = { g1: { p: 57000, n: 12 }, g2: { p: 55000, n: 9 }, g3: { p: 49500, n: 5 }, g4: { p: 215000, n: 14 }, g5: { p: 92000, n: 7 }, g6: { p: 76000, n: 11 }, g7: { p: 16800, n: 8 } };
+
+  function gfGood(id) { for (var i = 0; i < GF_GOODS.length; i++) if (GF_GOODS[i].id === id) return GF_GOODS[i]; return null; }
+  function gfRef(id) { for (var i = 0; i < GF_REFS.length; i++) if (GF_REFS[i].id === id) return GF_REFS[i]; return null; }
+  function gfEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function gfNorm(s) {
+    return String(s || '')
+      .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+      .replace(/[٠-٩]/g, function (d) { return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)); })
+      .replace(/[٫,٬]/g, ' ')
+      .replace(/[\u200c\u200f\u200e\s]+/g, ' ')
+      .replace(/ي/g, 'ی').replace(/ك/g, 'ک')
+      .trim().toLowerCase();
   }
-  function gfSetBrand(name, hasRefs) {
-    var bn = document.getElementById('gf-brandname');
-    if (bn) bn.textContent = name;
-    var refs = document.getElementById('gf-refs');
-    var nof = document.getElementById('gf-norefs');
-    if (refs) refs.hidden = !hasRefs;
-    if (nof) nof.hidden = !!hasRefs;
-    var nn = document.getElementById('gf-norefs-name');
-    var gN = document.getElementById('gf-good');
-    if (nn) nn.textContent = (gN ? gN.textContent : 'پفک') + ' ' + name + ' · بسته بزرگ';
-  }
-  function gfSetMode(mode) {
-    var m = (mode === 'brand' || mode === 'felle') ? mode : null;
-    document.querySelectorAll('#scr-04 .pillchoice .pill[data-gmode]').forEach(function (p) {
-      p.classList.toggle('active', p.dataset.gmode === m);
+  function gfDec(n) { return faNum(String(n).replace('.', '٫')); }
+  function gfIndex() {
+    if (GF._ix) return GF._ix;
+    var ix = [];
+    GF_GOODS.forEach(function (g) { ix.push({ type: 'good', id: g.id, g: g, name: g.name, keys: gfNorm(g.name + ' ' + g.cat) }); });
+    GF_REFS.forEach(function (r) {
+      var g = gfGood(r.g);
+      ix.push({ type: 'ref', id: r.id, r: r, g: g, name: r.name, keys: gfNorm(r.name + ' ' + r.brand + ' ' + r.pack + ' ' + (g ? g.name : '')) });
     });
-    var fel = document.getElementById('gf-felle');
-    var brd = document.getElementById('gf-brand');
-    if (fel) fel.hidden = (m !== 'felle');
-    if (brd) brd.hidden = (m !== 'brand');
+    GF._ix = ix;
+    return ix;
   }
-  /* فاز ۳۵: نوع بسته‌بندی فروش عمده — برچسب «تعداد در …» با نوعِ انتخاب‌شده هم‌گام می‌شود */
-  function gfSetPack(name) {
-    var lbl = document.getElementById('gf-pkg-label');
-    if (lbl) lbl.textContent = 'تعداد در ' + name;
+  function gfSearch(q) {
+    var nq = gfNorm(q);
+    if (!nq) return [];
+    var words = nq.split(' ').filter(Boolean);
+    return gfIndex().map(function (e) {
+      var score = 0, nm = gfNorm(e.name);
+      if (nm && (nm.indexOf(nq) >= 0 || nq.indexOf(nm) >= 0)) score += 4;
+      words.forEach(function (w) { if (w.length > 1 && e.keys.indexOf(w) >= 0) score += 2; });
+      return { e: e, score: score };
+    }).filter(function (x) { return x.score > 0; })
+      .sort(function (a, b) { return b.score - a.score; })
+      .map(function (x) { return x.e; });
   }
-  /* فاز ۳۵: واحد انتخاب‌شده از شیت واحدها جای «سایر…» می‌نشیند
-     (پیلِ «سایر» با کلاس pkg-other علامت می‌خورد تا بعد از تغییر نام هم پیدا شود؛
-     data-sheet روی آن می‌ماند — لمس دوباره، شیت انتخاب واحدِ دیگری را باز می‌کند) */
-  function gfUnitApply(unit) {
-    var other = document.querySelector('#scr-04 .pill.pkg-other');
-    if (other) {
-      other.textContent = unit;
-      other.dataset.pack = unit;
-      other.classList.add('active');
-      var sibs = other.parentElement.querySelectorAll('.pill');
-      for (var i = 0; i < sibs.length; i++) if (sibs[i] !== other) sibs[i].classList.remove('active');
+
+  /* ── گام ۱: نتیجه‌های جستجو — پرتکرار در صنف / گروه فله / گروه برنددار / کالای جدید ── */
+  function gfOwnedPacks(g) {
+    var packs = [];
+    document.querySelectorAll('#scr-01 .pcard').forEach(function (c) {
+      var n = c.querySelector('.n'), u = c.querySelector('.u');
+      if (n && u && n.textContent.trim() === g.name) packs.push((u.textContent.split('·')[0] || '').trim());
+    });
+    return packs;
+  }
+  function gfRowHtml(e) {
+    var img, name, sub, badge = '';
+    if (e.type === 'ref') {
+      img = e.r.img || (e.g && e.g.img); name = e.r.name; sub = e.r.brand + ' · ' + e.r.pack;
+    } else {
+      img = e.g.img; name = e.g.name; sub = 'فله / بدون برند · بسته‌بندی دلخواه';
+      if (gfOwnedPacks(e.g).length) badge = '<span class="badge b-green">در کاتالوگ</span>';
     }
-    gfSetPack(unit);
+    return '<button class="gf-row" type="button" data-gfpick="' + e.type + '" data-gfid="' + e.id + '">' +
+      '<span class="th"><img src="' + img + '" alt="' + gfEsc(name) + '"></span>' +
+      '<span class="tx"><b>' + gfEsc(name) + '</b><span>' + gfEsc(sub) + '</span></span>' +
+      badge + '<svg class="chev"><use href="#i-chev"/></svg></button>';
   }
+  function gfResultsHtml(q) {
+    var res = gfSearch(q);
+    if (!q.trim()) {
+      var sug = ['g1', 'r2', 'g6', 'r6', 'r3'].map(function (id) {
+        return gfIndex().filter(function (e) { return e.id === id; })[0];
+      }).filter(Boolean);
+      return '<div class="gf-group">پرتکرار در صنف شما — پخش مواد غذایی</div>' +
+        '<div>' + sug.map(gfRowHtml).join('') + '</div>';
+    }
+    if (!res.length) {
+      return '<div class="gf-empty"><b>«' + gfEsc(q) + '» پیدا نشد</b><span>می‌توانی همین حالا به‌عنوان کالای جدید ثبتش کنی.</span></div>' +
+        '<button class="gf-newcta" type="button" data-gfnew><svg><use href="#i-plus"/></svg> ثبت «' + gfEsc(q) + '» به‌عنوان کالای جدید</button>';
+    }
+    var gs = res.filter(function (e) { return e.type === 'good'; });
+    var rs = res.filter(function (e) { return e.type === 'ref'; });
+    var html = '';
+    var groups = [[gs, 'فله / بدون برند — بسته‌بندی دلخواه'], [rs, 'برنددار — عکس و مشخصات آماده']];
+    if (rs.length && rs[0] === res[0]) groups.reverse();
+    groups.forEach(function (gr) {
+      if (gr[0].length) html += '<div class="gf-group">' + gr[1] + '</div><div>' + gr[0].map(gfRowHtml).join('') + '</div>';
+    });
+    html += '<button class="gf-newcta" type="button" data-gfnew><svg><use href="#i-plus"/></svg> پیدا نکردی؟ ثبت کالای جدید</button>';
+    return html;
+  }
+  function gfRenderRes() {
+    var host = document.getElementById('gf-res');
+    if (host) host.innerHTML = gfResultsHtml(GF.q);
+  }
+
+  /* ── گام ۲: فرم قیمت و شرایط فروش ── */
+  function gfVal(id) { var e = document.getElementById(id); return e ? e.value : ''; }
+  function gfCollect() {
+    var s = GF.sel;
+    if (!s) return;
+    s.price = gfVal('gf-price');
+    s.stock = gfVal('gf-stock');
+    s.min = gfVal('gf-min');
+    s.note = gfVal('gf-note');
+    if (s.type === 'good') {
+      s.title = gfVal('gf-title');
+      s.customQty = gfVal('gf-customqty');
+    } else if (s.type === 'new') {
+      s.name = gfVal('gf-newname') || s.name;
+      s.brand = gfVal('gf-newbrand');
+      s.newPack = gfVal('gf-newpack');
+      s.newQty = gfVal('gf-newqty');
+    }
+  }
+  function gfSel() { return GF.sel || {}; }
+  function gfCurPack(s) {
+    s = s || gfSel();
+    if (s.type === 'ref') { var r = gfRef(s.id); return r ? { l: r.pack, q: r.q } : null; }
+    if (s.type === 'good') {
+      var g = gfGood(s.id);
+      if (!g) return null;
+      if (s.packIdx === -1) return { l: s.customQty ? gfDec(s.customQty) + ' ' + g.unit + 'ی' : 'بسته', q: bkNum(s.customQty) || 0, word: 'بسته' };
+      var p = g.packs[s.packIdx]; return p ? { l: p.l, q: p.q } : null;
+    }
+    return { l: s.newPack || 'بسته', q: bkNum(s.newQty) || 0 };
+  }
+  function gfPackWord(packL) { return (String(packL || 'بسته').split(' ')[0] || 'بسته'); }
+  function gfUnitQty(s) {
+    s = s || gfSel();
+    if (s.type === 'ref') { var r = gfRef(s.id); return r ? r.q : 0; }
+    if (s.type === 'good') { var p = gfCurPack(s); return p ? p.q : 0; }
+    return bkNum(s.newQty) || 0;
+  }
+  function gfGoodOf(s) {
+    s = s || gfSel();
+    if (s.type === 'ref') { var r = gfRef(s.id); return r ? gfGood(r.g) : null; }
+    if (s.type === 'good') return gfGood(s.id);
+    return s.goodId ? gfGood(s.goodId) : null;
+  }
+  function gfFindCard(title, pack) {
+    var found = null;
+    document.querySelectorAll('#scr-01 .pcard').forEach(function (c) {
+      var n = c.querySelector('.n'), u = c.querySelector('.u');
+      if (n && u && n.textContent.trim() === String(title).trim() &&
+        (u.textContent.split('·')[0] || '').trim() === String(pack).trim()) found = c;
+    });
+    return found;
+  }
+  function gfCardPrice(card) {
+    if (!card) return null;
+    var p = card.querySelector('.p');
+    if (!p) return null;
+    var n = bkNum(p.textContent);
+    return n == null ? null : n;
+  }
+  function gfUnitHintHtml() {
+    var s = gfSel(), g = gfGoodOf(s), qty = gfUnitQty(s), price = bkNum(s.price);
+    if (!g || !qty || !price) return '';
+    var per = Math.round((price / qty) * (g.cmpQty || 1));
+    return '<div class="gf-unithint" id="gf-unithint"><svg><use href="#i-compare"/></svg><span>≈ <b>' + faMoney(per) + '</b> تومان هر ' + g.cmp + ' — خریداران همین عدد را مقایسه می‌کنند</span></div>';
+  }
+  function gfMarketHtml(g) {
+    var m = g && GF_MARKET[g.id];
+    if (!m) return '';
+    return '<div class="gf-mkt"><svg><use href="#i-tag"/></svg><span>کمترین قیمت بازار هم‌اکنون: <b>' + faMoney(m.p) + '</b> تومان هر ' + g.cmp + ' · از ' + faNum(m.n) + ' فروشنده</span></div>';
+  }
+  function gfPriceField(label, prefill) {
+    return '<div class="field">' +
+      '<label><span id="gf-plabel">' + label + '</span> <button class="info-i" data-sheet="sheet-priceinfo" title="قیمت پایه چیست؟" type="button"><svg><use href="#i-info-v2"/></svg></button></label>' +
+      '<div class="input gf-num"><input id="gf-price" inputmode="numeric" autocomplete="off" placeholder="۰" value="' + gfEsc(prefill || '') + '"><span class="suffix">تومان</span></div>' +
+      '<div class="hint warn" id="gf-noprice" hidden>تا زمانی که قیمت نگذارید، کالا در نمای عمومی دیده نمی‌شود.</div></div>';
+  }
+  function gfStockMinRow(word) {
+    return '<div style="display:flex;gap:9px">' +
+      '<div class="field" style="flex:1"><label>موجودی</label><div class="input gf-num"><input id="gf-stock" inputmode="numeric" autocomplete="off" placeholder="—"><span class="suffix">' + gfEsc(word) + '</span></div></div>' +
+      '<div class="field" style="flex:1"><label>حداقل سفارش</label><div class="input gf-num"><input id="gf-min" inputmode="numeric" autocomplete="off" placeholder="—"><span class="suffix">' + gfEsc(word) + '</span></div></div></div>';
+  }
+  function gfNoteField() {
+    return '<div class="field"><label>توضیحات <span class="opt">— اختیاری</span></label><textarea class="input" id="gf-note" rows="3" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea></div>';
+  }
+  function gfChipsHtml(items, activeVal, attr) {
+    return '<div class="chips">' + items.map(function (x) {
+      return '<button class="chip' + (x.v === activeVal ? ' active' : '') + '" type="button" data-' + attr + '="' + gfEsc(x.v) + '">' + gfEsc(x.t) + '</button>';
+    }).join('') + '</div>';
+  }
+  function gfForm2() {
+    var s = GF.sel, g = gfGoodOf(s), pack = gfCurPack(s), packWord = gfPackWord(pack && pack.l);
+    var html = '';
+    if (s.type === 'ref') {
+      var r = gfRef(s.id);
+      html += '<div class="gf-selcard"><span class="th"><img src="' + (r.img || (g && g.img)) + '" alt="' + gfEsc(r.name) + '"></span>' +
+        '<span class="tx"><b>' + gfEsc(r.name) + '</b><span>' + gfEsc(r.brand) + ' · ' + gfEsc(r.pack) + '</span>' +
+        '<span class="bd"><span class="badge b-green"><svg style="width:11px;height:11px"><use href="#i-check"/></svg> کالای مرجع آیمچ</span></span></span>' +
+        '<button class="gf-chg" type="button" data-gfreset>تغییر</button></div>';
+      if (s.dupCard) html += '<div class="callout"><svg><use href="#i-info"/></svg><div>این کالا در کاتالوگ شما هست — با ذخیره، قیمتش به‌روز می‌شود.</div></div>';
+      html += gfPriceField('قیمت هر ' + r.pack, s.price);
+    } else if (s.type === 'good') {
+      var gg = gfGood(s.id);
+      html += '<div class="gf-selcard"><span class="th"><img src="' + gg.img + '" alt="' + gfEsc(gg.name) + '"></span>' +
+        '<span class="tx"><b>' + gfEsc(gg.name) + '</b><span>فله / بدون برند · ' + gfEsc(gg.cat) + '</span>' +
+        '<span class="bd"><span class="badge b-green"><svg style="width:11px;height:11px"><use href="#i-check"/></svg> نوع کالای مرجع</span></span></span>' +
+        '<button class="gf-chg" type="button" data-gfreset>تغییر</button></div>';
+      if (s.dupCard) html += '<div class="callout"><svg><use href="#i-info"/></svg><div>این کالا با همین بسته‌بندی در کاتالوگ شما هست — با ذخیره، قیمتش به‌روز می‌شود.</div></div>';
+      html += '<div class="field" style="margin-top:12px"><label>عنوان در کاتالوگ <span class="opt">— همین عنوان را خریداران می‌بینند · اختیاری</span></label>' +
+        '<input class="input" id="gf-title" placeholder="مثلاً ' + gfEsc(gg.name) + ' ممتاز · تازه" value="' + gfEsc(s.title || '') + '">' +
+        '<div class="hint">خالی بگذاری، همان «' + gfEsc(gg.name) + '» با ویژگی‌های انتخابی نمایش داده می‌شود.</div></div>';
+      if (gg.grades.length) {
+        html += '<div class="field"><label>کیفیت <span class="opt">— اختیاری</span></label>' +
+          '<div class="chips">' + gg.grades.map(function (gr) {
+            return '<button class="chip' + (s.grade === gr ? ' active' : '') + '" type="button" data-gfgrade="' + gfEsc(gr) + '">' + gfEsc(gr) + '</button>';
+          }).join('') + '</div></div>';
+      }
+      html += '<div class="field"><label>بسته‌بندی فروش عمده</label><div class="chips">' +
+        gg.packs.map(function (p, i) {
+          return '<button class="chip' + (s.packIdx === i ? ' active' : '') + '" type="button" data-gfpack="' + i + '">' + gfEsc(p.l) + '</button>';
+        }).join('') +
+        '<button class="chip' + (s.packIdx === -1 ? ' active' : '') + '" type="button" data-gfpack="other">سایر…</button></div>' +
+        (s.packIdx === -1 ? '<div class="input gf-num" style="margin-top:8px"><input id="gf-customqty" inputmode="decimal" autocomplete="off" placeholder="چند ' + gg.unit + '؟" value="' + gfEsc(s.customQty || '') + '"><span class="suffix">' + gg.unit + '</span></div>' : '') +
+        '</div>';
+      html += gfPriceField('قیمت هر ' + (pack ? pack.l : 'بسته'), s.price);
+    } else {
+      /* کالای جدید — همچنان به یک «نوع کالا» و مقدار کل بسته وصل می‌شود تا مقایسه ممکن بماند */
+      var guess = gfSearch(s.name || '').filter(function (e) { return e.type === 'good'; });
+      var opts = (s.showAll || !guess.length) ? GF_GOODS : guess.map(function (e) { return e.g; });
+      var ng = s.goodId ? gfGood(s.goodId) : null;
+      html += '<div class="gf-selcard"><span class="th" style="display:grid;place-items:center"><svg style="width:22px;height:22px;color:var(--muted-fg)"><use href="#i-image"/></svg></span>' +
+        '<span class="tx"><b>' + gfEsc(s.name || 'کالای جدید') + '</b><span>ثبت تازه — در جدول مرجع آیمچ نیست</span>' +
+        '<span class="bd"><span class="badge b-amber">در انتظار تأیید</span></span></span>' +
+        '<button class="gf-chg" type="button" data-gfreset>تغییر</button></div>' +
+        '<div class="field" style="margin-top:12px"><label>نام کالا</label><input class="input" id="gf-newname" placeholder="مثلاً رب گوجه‌فرنگی روژین ۸۰۰ گرمی" value="' + gfEsc(s.name || '') + '"></div>' +
+        '<div class="field"><label>این کالا از چه نوعیه؟ <span class="opt">— برای مقایسهٔ قیمت لازم است</span></label>' +
+        '<div class="chips">' + opts.map(function (x) {
+          return '<button class="chip' + (s.goodId === x.id ? ' active' : '') + '" type="button" data-gfnewgood="' + x.id + '">' + gfEsc(x.name) + '</button>';
+        }).join('') +
+        (!s.showAll && guess.length ? '<button class="chip" type="button" data-gfnewall>همه…</button>' : '') + '</div></div>' +
+        '<div class="field"><label>برند <span class="opt">— اگر دارد</span></label><input class="input" id="gf-newbrand" placeholder="مثلاً روژین" value="' + gfEsc(s.brand || '') + '"></div>' +
+        '<div style="display:flex;gap:9px">' +
+        '<div class="field" style="flex:1.3"><label>بسته‌بندی</label><input class="input" id="gf-newpack" placeholder="مثلاً کارتن ۱۲ عددی" value="' + gfEsc(s.newPack || '') + '"></div>' +
+        '<div class="field" style="flex:1"><label>مقدار کل بسته</label><div class="input gf-num"><input id="gf-newqty" inputmode="decimal" autocomplete="off" placeholder="۰" value="' + gfEsc(s.newQty || '') + '"><span class="suffix">' + (ng ? ng.unit : 'واحد') + '</span></div></div></div>' +
+        '<div class="field" style="margin-top:6px"><label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label><div class="gallery-add">' +
+        '<div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>'.repeat(4) + '</div></div>';
+      html += gfPriceField('قیمت هر بسته', s.price);
+    }
+    html += gfUnitHintHtml() + gfMarketHtml(g) + gfStockMinRow(packWord) + gfNoteField();
+    if (s.type === 'new') {
+      html += '<div class="gf-unithint"><svg><use href="#i-info"/></svg><span>بعد از بررسی به کالاهای مرجع اضافه می‌شود. تا آن موقع هم در کاتالوگ شما نمایش داده می‌شود' +
+        (ng ? ' و با بقیهٔ «' + gfEsc(ng.name) + '»ها مقایسه می‌شود' : '') + '.</span></div>';
+    }
+    return html;
+  }
+  function gfRenderStep2() {
+    var host = document.getElementById('gf-step2');
+    if (!host) return;
+    host.innerHTML = gfForm2();
+  }
+  function gfShowStep(n) {
+    var s1 = document.getElementById('gf-step1'), s2 = document.getElementById('gf-step2'), bar = document.getElementById('gf-bar');
+    var sub = document.getElementById('gf-sub');
+    if (s1) s1.hidden = n !== 1;
+    if (s2) s2.hidden = n !== 2;
+    if (bar) bar.hidden = n !== 2;
+    if (sub) sub.textContent = 'به کاتالوگ «پخش برنج پارس» · مرحلهٔ ' + (n === 1 ? '۱ از ۲ — کالا را پیدا کن' : '۲ از ۲ — قیمت و شرایط فروش');
+    var sb = document.querySelector('#scr-04 .screen-body');
+    if (sb) sb.scrollTop = 0;
+  }
+  function gfPick(type, id) {
+    if (type === 'new') return gfNewMode();
+    var sel = { type: type, id: id, price: '', stock: '', min: '', note: '' };
+    var g, pack = null, title = null;
+    if (type === 'ref') {
+      var r = gfRef(id); if (!r) return;
+      g = gfGood(r.g); pack = r.pack; title = r.name;
+    } else {
+      g = gfGood(id); if (!g) return;
+      sel.packIdx = g.packs.length ? 0 : -1; sel.grade = null; sel.title = ''; sel.customQty = '';
+      pack = g.packs.length ? g.packs[0].l : null; title = g.name;
+    }
+    sel.dupCard = (pack && gfFindCard(title, pack)) || null;
+    if (sel.dupCard) {
+      var p = gfCardPrice(sel.dupCard);
+      sel.price = p ? faMoney(p) : '';
+    }
+    GF.sel = sel;
+    gfRenderStep2();
+    gfShowStep(2);
+    var save = document.getElementById('gf-save');
+    if (save) save.textContent = sel.dupCard ? 'به‌روزرسانی قیمت' : 'افزودن به کاتالوگ';
+  }
+  function gfReset() { GF.sel = null; gfShowStep(1); gfRenderRes(); }
+  function gfNewMode() {
+    var q = (GF.q || '').trim();
+    var gq = gfSearch(q).filter(function (e) { return e.type === 'good'; })[0];
+    GF.sel = { type: 'new', name: q, goodId: gq ? gq.id : null, showAll: false, price: '', stock: '', min: '', note: '', brand: '', newPack: '', newQty: '' };
+    gfRenderStep2();
+    gfShowStep(2);
+    var save = document.getElementById('gf-save');
+    if (save) save.textContent = 'افزودن به کاتالوگ';
+  }
+
+  /* ── ذخیرهٔ زنده: کارت کاتالوگ ۰۱ + ردیف ۲۶ + شمارنده — تکراری = به‌روزرسانی قیمت ── */
+  function gfStockBadge(stock) {
+    if (stock == null || stock === '') return '<span class="badge b-green">موجود</span>';
+    if (stock === 0) return '<span class="badge b-muted">تمام شد</span>';
+    if (stock <= 10) return '<span class="badge b-amber">موجودی کم</span>';
+    return '<span class="badge b-green">موجود</span>';
+  }
+  function gfAddListing(o) {
+    var card = gfFindCard(o.title, o.pack);
+    var priceTxt = faMoney(o.price) + ' <small>تومان</small>';
+    if (card) {
+      var pEl = card.querySelector('.p');
+      if (pEl) pEl.innerHTML = priceTxt;
+      var row26 = null;
+      document.querySelectorAll('#scr-26 .row-card').forEach(function (r) {
+        var tEl = r.querySelector('.t');
+        if (tEl && tEl.textContent.replace('موجود', '').replace('موجودی کم', '').replace('تمام شد', '').trim() === o.title) row26 = r;
+      });
+      if (row26) {
+        var sEl = row26.querySelector('.s');
+        if (sEl) sEl.textContent = o.pack + ' · ' + faMoney(o.price) + ' تومان';
+      }
+      return 'updated';
+    }
+    var grid = document.querySelector('#scr-01 .pgrid');
+    if (grid) {
+      var card2 = document.createElement('div');
+      card2.className = 'pcard';
+      card2.setAttribute('data-go', '03');
+      card2.innerHTML =
+        '<div class="ph"><div class="thumb">' + (o.img ? '<img src="' + o.img + '" alt="' + gfEsc(o.title) + '">' : '<span class="glyph">' + gfEsc(o.kind) + '</span>') + '</div>' +
+        '<button class="gear" aria-label="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button></div>' +
+        '<div class="info"><div class="n">' + gfEsc(o.title) + '</div><div class="u">' + gfEsc(o.pack) + ' · ' + gfEsc(o.kind) + '</div>' +
+        '<div class="p">' + priceTxt + '</div>' +
+        '<div class="mini-metrics mm"><span class="m"><svg><use href="#i-eye"/></svg> ' + faNum(0) + '</span>' +
+        '<span class="m" title="در لیست مقایسه قیمت خریداران"><svg><use href="#i-compare"/></svg> ' + faNum(0) + '</span>' +
+        gfStockBadge(o.stock) + (o.pending ? ' <span class="badge b-amber">در انتظار تأیید</span>' : '') + '</div></div>';
+      grid.insertBefore(card2, grid.firstChild);
+    }
+    var first26 = document.querySelector('#scr-26 .row-card');
+    if (first26 && first26.parentElement) {
+      var row = document.createElement('div');
+      row.className = 'row-card';
+      row.setAttribute('data-go', '03');
+      row.innerHTML =
+        '<div class="thumb" style="width:48px;height:48px">' + (o.img ? '<img src="' + o.img + '" alt="' + gfEsc(o.title) + '">' : '<span class="glyph" style="font-size:9.5px">' + gfEsc(o.kind) + '</span>') + '</div>' +
+        '<div class="body"><div class="t" style="font-size:13px">' + gfEsc(o.title) + ' ' + gfStockBadge(o.stock) + (o.pending ? ' <span class="badge b-amber">در انتظار تأیید</span>' : '') + '</div>' +
+        '<div class="s">' + gfEsc(o.pack) + ' · ' + faMoney(o.price) + ' تومان</div>' +
+        '<div class="s" style="margin-top:2px"><span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-eye"/></svg> ' + faNum(0) + ' بازدید</span>' +
+        '<span class="m" style="display:inline-flex;align-items:center;gap:3px"><svg style="width:12px;height:12px"><use href="#i-compare"/></svg> ' + faNum(0) + ' در مقایسه قیمت</span></div></div>' +
+        '<svg class="chev" style="width:16px;height:16px"><use href="#i-chev-v2"/></svg>';
+      first26.parentElement.insertBefore(row, first26.parentElement.firstChild);
+    }
+    var stat = document.querySelector('#scr-01 .stat[data-go="26"] .v');
+    if (stat) {
+      var cnt = document.querySelectorAll('#scr-01 .pcard').length;
+      stat.textContent = faNum(cnt);
+    }
+    return 'added';
+  }
+  function gfBanner(text) {
+    var box = document.getElementById('gf-okbox');
+    if (box) box.innerHTML = '<div class="gf-ok"><svg><use href="#i-check"/></svg><span class="grow">' + text + '</span><button class="lnk" type="button" data-go="01">کاتالوگ</button></div>';
+  }
+  function gfSave() {
+    gfCollect();
+    var s = GF.sel;
+    if (!s) return;
+    var price = bkNum(s.price);
+    if (price == null || price <= 0) {
+      var no = document.getElementById('gf-noprice');
+      if (no) no.hidden = false;
+      var pi = document.getElementById('gf-price');
+      if (pi) pi.focus();
+      return;
+    }
+    var stock = (s.stock == null || s.stock === '') ? null : bkNum(s.stock);
+    var title, pack, img, kind, pending = false;
+    if (s.type === 'ref') {
+      var r = gfRef(s.id), g = gfGood(r.g);
+      title = r.name; pack = r.pack; img = r.img || (g && g.img); kind = r.brand;
+    } else if (s.type === 'good') {
+      var gg = gfGood(s.id), pk = gfCurPack(s);
+      title = (s.title || '').trim() || [gg.name, s.grade].filter(Boolean).join(' ');
+      pack = pk ? pk.l : 'بسته'; img = gg.img; kind = 'فله';
+    } else {
+      title = (s.name || '').trim() || 'کالای جدید';
+      pack = (s.newPack || '').trim() || 'بسته';
+      img = null; kind = (s.brand || '').trim() || 'جدید'; pending = true;
+    }
+    var res = gfAddListing({ title: title, pack: pack, price: price, img: img, stock: stock, kind: kind, pending: pending });
+    GF.last = title;
+    gfBanner(res === 'updated' ? 'قیمت <b>' + gfEsc(title) + '</b> به‌روز شد. کالای بعدی؟' : '<b>' + gfEsc(title) + '</b> اضافه شد. کالای بعدی؟');
+    GF.sel = null;
+    gfShowStep(1);
+    gfRenderRes();
+  }
+
+  /* ── شیت چسباندن لیست قیمت — تطبیق خودکار خط‌ها (الگوی MVP) ── */
+  var GF_SAMPLE = 'برنج هاشمی درجه یک کیسه ۱۰ کیلویی ۵۹۵ هزار\nروغن لادن ۱.۸ لیتری کارتن ۶ تایی ۲,۴۵۰,۰۰۰\nپفک مینو کارتن ۲۴ عددی 590000 تومان\nرب چین چین ۸۰۰ گرمی کارتنی ۱٬۱۵۰٬۰۰۰\nقند کیسه ۱۰ کیلویی ۷۷۰ هزار\nنوشابه کوکا خانواده ۳۸۰۰۰۰';
+  function gfLatin(s) {
+    return String(s || '')
+      .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+      .replace(/[٠-٩]/g, function (d) { return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)); })
+      .replace(/[٫\/]/g, '.').replace(/[٬,]/g, '');
+  }
+  function gfParseLine(line) {
+    var s = gfLatin(line);
+    var nums = [], re = /(\d+(?:\.\d+)?)\s*(هزار|میلیون)?/g, m;
+    while ((m = re.exec(s))) {
+      var v = parseFloat(m[1]);
+      if (m[2] === 'هزار') v *= 1e3; else if (m[2] === 'میلیون') v *= 1e6;
+      nums.push({ v: v });
+    }
+    var price = 0;
+    var cand = nums.filter(function (x) { return x.v >= 1000; });
+    if (cand.length) price = cand.reduce(function (a, c) { return c.v > a.v ? c : a; }).v;
+    var kg = (s.match(/(\d+(?:\.\d+)?)\s*کیلو/) || [])[1];
+    kg = kg ? parseFloat(kg) : null;
+    var grade = null;
+    ['درجه یک', 'درجه ۱', 'ممتاز', 'معمولی'].forEach(function (gr) { if (!grade && s.indexOf(gr) >= 0) grade = gr === 'درجه ۱' ? 'درجه یک' : gr; });
+    var q = s.replace(/تومان|تومن|ریال|کارتنی|کارتن|کیسه|گونی|تایی|عددی|عدد|کیلویی|کیلو|گرمی|لیتری|درجه یک|درجه ۱|ممتاز|معمولی|\d+(\.\d+)?|هزار|میلیون/g, ' ');
+    var hit = gfSearch(q)[0] || null;
+    var row = { src: line, price: price, on: false, conf: 'none', match: null, grade: grade, _open: false, _q: '', _err: false };
+    if (hit) {
+      var nm = gfNorm(hit.name).split(' ').filter(Boolean), qn = gfNorm(q);
+      row.conf = nm.length && nm.every(function (w) { return qn.indexOf(w) >= 0; }) ? 'sure' : 'check';
+      row.match = { type: hit.type, id: hit.id, packIdx: null, customQty: null };
+      if (hit.type === 'good') {
+        var g = hit.g;
+        if (kg) {
+          var pi = -1;
+          g.packs.forEach(function (p, i) { if (p.q === kg) pi = i; });
+          row.match.packIdx = pi;
+          row.match.customQty = pi < 0 ? kg : null;
+        } else row.match.packIdx = g.packs.length ? 0 : -1;
+      }
+      row.on = !!price;
+    }
+    return row;
+  }
+  function gfMatchLabel(mt) {
+    if (mt.type === 'ref') { var r = gfRef(mt.id); return r ? { img: r.img, name: r.name, sub: r.brand + ' · ' + r.pack } : null; }
+    var g = gfGood(mt.id);
+    if (!g) return null;
+    var pk = mt.packIdx != null && mt.packIdx >= 0 ? g.packs[mt.packIdx] : null;
+    if (!pk && mt.customQty) pk = { l: gfDec(mt.customQty) + ' ' + g.unit + 'ی' };
+    return { img: g.img, name: g.name + (mt.grade ? ' ' + mt.grade : ''), sub: (pk ? pk.l : 'بسته‌بندی؟') + ' · فله' };
+  }
+  function gfPasteRowHtml(r, i) {
+    var conf = { sure: '<span class="badge b-green">مطمئن</span>', check: '<span class="badge b-amber">بررسی کن</span>', none: '<span class="badge b-red">پیدا نشد</span>' }[r.conf];
+    var ml = r.match && gfMatchLabel(r.match);
+    var pick = r._open ? '<div class="gf-choosebox"><div class="searchbar"><svg><use href="#i-search"/></svg><input data-gfpsq="' + i + '" placeholder="جستجوی کالا…" value="' + gfEsc(r._q || '') + '"></div><div id="gf-ps-res-' + i + '">' + gfPsRowsHtml(i, r._q) + '</div></div>' : '';
+    return '<div class="gf-prow' + (r.on ? ' on' : '') + '" data-gfprow="' + i + '">' +
+      '<div class="gf-phead"><button class="gf-ptoggle" type="button" data-gfptoggle="' + i + '" aria-label="انتخاب"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>' +
+      '<span class="gf-src">«' + gfEsc(r.src) + '»</span>' + conf + '</div>' +
+      (ml ? '<div class="gf-match"><span class="th"><img src="' + ml.img + '" alt=""></span><span class="tx"><b>' + gfEsc(ml.name) + '</b><span>' + gfEsc(ml.sub) + '</span></span><button class="chg" type="button" data-gfppick="' + i + '">تغییر</button></div>'
+        : '<button class="gf-newcta" type="button" data-gfppick="' + i + '"><svg><use href="#i-search"/></svg> انتخاب کالا</button>') +
+      '<div class="gf-prow-price"><div class="input gf-num"><input data-gfpprice="' + i + '" inputmode="numeric" autocomplete="off" placeholder="قیمت" value="' + (r.price ? faMoney(r.price) : '') + '"></div><span class="sfx">تومان</span></div>' +
+      (r._err ? '<div class="gf-err">اول کالا را انتخاب کن و قیمت را وارد کن.</div>' : '') +
+      pick + '</div>';
+  }
+  function gfPsRowsHtml(i, q) {
+    var res = gfSearch(q || '');
+    if (!res.length) res = gfIndex().slice(0, 6);
+    else res = res.slice(0, 6);
+    return res.map(function (e) {
+      var sub = e.type === 'ref' ? e.r.brand + ' · ' + e.r.pack : 'فله / بدون برند';
+      return '<button class="gf-psrow" type="button" data-gfpchose="' + i + '" data-gfpchose-type="' + e.type + '" data-gfpchose-id="' + e.id + '">' +
+        '<span class="th"><img src="' + (e.type === 'ref' ? e.r.img : e.g.img) + '" alt=""></span>' +
+        '<span class="tx"><b>' + gfEsc(e.type === 'ref' ? e.r.name : e.g.name) + '</b><span>' + gfEsc(sub) + '</span></span></button>';
+    }).join('');
+  }
+  function gfPasteRerenderRow(i) {
+    var el = document.querySelector('.gf-prow[data-gfprow="' + i + '"]');
+    if (el && GF.paste.rows && GF.paste.rows[i]) el.outerHTML = gfPasteRowHtml(GF.paste.rows[i], i);
+  }
+  function gfPasteRun() {
+    var txt = document.getElementById('pasteText');
+    var val = txt ? txt.value : GF.paste.text;
+    if (!val.trim()) {
+      var res = document.getElementById('paste-res');
+      if (res) res.innerHTML = '<div class="gf-err" style="margin-top:11px">اول متن لیست قیمت را بچسبان.</div>';
+      return;
+    }
+    GF.paste.text = val;
+    GF.paste.rows = val.split('\n').map(function (l) { return l.trim(); }).filter(Boolean).map(gfParseLine);
+    var sure = GF.paste.rows.filter(function (r) { return r.conf === 'sure'; }).length;
+    var on = GF.paste.rows.filter(function (r) { return r.on; }).length;
+    var res2 = document.getElementById('paste-res');
+    if (res2) res2.innerHTML =
+      '<div class="gf-psum' + (sure < GF.paste.rows.length ? ' mixed' : '') + '"><svg><use href="#i-check"/></svg><span>' + faNum(sure) + ' از ' + faNum(GF.paste.rows.length) + ' خط با اطمینان به کالای مرجع وصل شد — بقیه را یک نگاه بینداز.</span></div>' +
+      GF.paste.rows.map(gfPasteRowHtml).join('');
+    var run = document.getElementById('paste-run');
+    if (run) { run.dataset.mode = 'commit'; run.textContent = 'افزودن ' + faNum(on) + ' کالا به کاتالوگ'; }
+  }
+  function gfPasteSample() {
+    var txt = document.getElementById('pasteText');
+    if (txt) txt.value = GF_SAMPLE;
+    var res = document.getElementById('paste-res');
+    if (res) res.innerHTML = '';
+    var run = document.getElementById('paste-run');
+    if (run) { delete run.dataset.mode; run.textContent = 'تطبیق خودکار'; }
+  }
+  function gfPasteToggle(i) {
+    var r = GF.paste.rows && GF.paste.rows[i];
+    if (!r) return;
+    if (!r.match || !r.price) {
+      r._err = true;
+      gfPasteRerenderRow(i);
+      setTimeout(function () { r._err = false; gfPasteRerenderRow(i); }, 2200);
+      return;
+    }
+    r.on = !r.on;
+    gfPasteRerenderRow(i);
+    gfPasteCount();
+  }
+  function gfPastePickOpen(i) {
+    var r = GF.paste.rows && GF.paste.rows[i];
+    if (!r) return;
+    r._open = !r._open;
+    gfPasteRerenderRow(i);
+  }
+  function gfPasteChoose(i, type, id) {
+    var r = GF.paste.rows && GF.paste.rows[i];
+    if (!r) return;
+    r.match = { type: type, id: id, packIdx: type === 'good' ? (gfGood(id).packs.length ? 0 : -1) : null, customQty: null };
+    r.conf = 'sure';
+    r._open = false;
+    if (r.price) r.on = true;
+    gfPasteRerenderRow(i);
+    gfPasteCount();
+  }
+  function gfPasteCount() {
+    var on = GF.paste.rows ? GF.paste.rows.filter(function (r) { return r.on; }).length : 0;
+    var run = document.getElementById('paste-run');
+    if (run && run.dataset.mode === 'commit') run.textContent = 'افزودن ' + faNum(on) + ' کالا به کاتالوگ';
+  }
+  function gfPasteCommit() {
+    var rows = (GF.paste.rows || []).filter(function (r) { return r.on && r.match && r.price; });
+    if (!rows.length) return;
+    var added = 0, updated = 0;
+    rows.forEach(function (r) {
+      var title, pack, img, kind, pending = false;
+      if (r.match.type === 'ref') {
+        var rf = gfRef(r.match.id), gg = gfGood(rf.g);
+        title = rf.name; pack = rf.pack; img = rf.img || (gg && gg.img); kind = rf.brand;
+      } else {
+        var g2 = gfGood(r.match.id);
+        var pk = r.match.packIdx != null && r.match.packIdx >= 0 ? g2.packs[r.match.packIdx] : null;
+        if (!pk && r.match.customQty) pk = { l: gfDec(r.match.customQty) + ' ' + g2.unit + 'ی' };
+        title = g2.name + (r.grade ? ' ' + r.grade : '');
+        pack = pk ? pk.l : 'بسته'; img = g2.img; kind = 'فله';
+      }
+      var res = gfAddListing({ title: title, pack: pack, price: r.price, img: img, stock: null, kind: kind, pending: pending });
+      if (res === 'updated') updated++; else added++;
+    });
+    gfBanner('<b>' + faNum(added) + '</b> کالا به کاتالوگ اضافه شد' + (updated ? ' و قیمت <b>' + faNum(updated) + '</b> کالا به‌روز شد' : '') + '.');
+    GF.sel = null;
+    gfShowStep(1);
+    gfRenderRes();
+    GF.paste.rows = null;
+    var res3 = document.getElementById('paste-res');
+    if (res3) res3.innerHTML = '';
+    var txt = document.getElementById('pasteText');
+    if (txt) txt.value = '';
+    var run = document.getElementById('paste-run');
+    if (run) { delete run.dataset.mode; run.textContent = 'تطبیق خودکار'; }
+    closeSheet();
+  }
+  function gfInit() {
+    gfRenderRes();
+  }
+  function gfDupRefresh() {
+    /* با تغییر بسته‌بندی، «تکراری بودن» دوباره محاسبه می‌شود — برچسب دکمهٔ ذخیره هم‌گام می‌ماند */
+    var s = GF.sel;
+    if (!s || s.type !== 'good') return;
+    var gg = gfGood(s.id);
+    var pk = gfCurPack(s);
+    var ttl = (s.title || '').trim() || [gg.name, s.grade].filter(Boolean).join(' ');
+    var wasDup = !!s.dupCard;
+    s.dupCard = pk ? (gfFindCard(ttl, pk.l) || null) : null;
+    if (s.dupCard && !wasDup && !bkNum(s.price)) {
+      var p = gfCardPrice(s.dupCard);
+      if (p) s.price = faMoney(p);
+    }
+  }
+  function gfSaveLabel() {
+    var save = document.getElementById('gf-save');
+    if (save && GF.sel) save.textContent = GF.sel.dupCard ? 'به‌روزرسانی قیمت' : 'افزودن به کاتالوگ';
+  }
+
+  /* ورودی‌های زندهٔ فرم ۰۴ و شیت چسباندن — قیمت نرمال‌شده همان لحظه به‌روز می‌شود */
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    if (t.id === 'gf-q') { GF.q = t.value; gfRenderRes(); return; }
+    if (t.id === 'gf-price' || t.id === 'gf-customqty' || t.id === 'gf-newqty') {
+      gfCollect();
+      var html = gfUnitHintHtml();
+      var cur = document.getElementById('gf-unithint');
+      if (cur) { if (html) cur.outerHTML = html; else cur.hidden = true; }
+      else if (html) {
+        var pf = document.getElementById('gf-price');
+        var fld = pf && pf.closest('.field');
+        if (fld) fld.insertAdjacentHTML('afterend', html);
+      }
+      return;
+    }
+    var d = t.dataset || {};
+    if (d.gfpprice != null) {
+      var r1 = GF.paste.rows && GF.paste.rows[+d.gfpprice];
+      if (r1) { r1.price = bkNum(t.value) || 0; gfPasteCount(); }
+      return;
+    }
+    if (d.gfpsq != null) {
+      var r2 = GF.paste.rows && GF.paste.rows[+d.gfpsq];
+      if (r2) {
+        r2._q = t.value;
+        var host = document.getElementById('gf-ps-res-' + d.gfpsq);
+        if (host) host.innerHTML = gfPsRowsHtml(+d.gfpsq, r2._q);
+      }
+      return;
+    }
+  });
 
   /* ── فاز ۲۲: تاریخچهٔ رویدادهای کالا — «نتایج حضور در آیمچ» ──
      در پیاده‌سازی عملیاتی: لاگ رویدادهای هر کالا (بازدید · افزودن به لیست خرید · افزودن به لیست مقایسه قیمت ·
@@ -11374,61 +11633,48 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (t.closest('#backdrop')) { closeSheet(); return; }
 
     /* ── فاز ۳۵: تیک چندگانهٔ «محصولات برند» — مشخصات فروش زیر همان ردیف باز/بسته می‌شود ── */
-    var bpt = t.closest('[data-bptick]');
-    if (bpt) {
-      var bpItem = bpt.closest('.bp-item');
-      if (bpItem) {
-        var bpOn = bpItem.classList.toggle('on');
-        var bpSpecs = bpItem.querySelector('.bp-specs');
-        if (bpSpecs) bpSpecs.hidden = !bpOn;
+    /* ═══ فاز ۴۳ — فرم افزودن کالا (الگوی MVP): انتخاب نتیجه · تغییر · کالای جدید ·
+       بسته‌بندی/کیفیت · ذخیرهٔ زنده · شیت چسباندن لیست قیمت ═══ */
+    var gfPk = t.closest('[data-gfpick]');
+    if (gfPk) { gfPick(gfPk.dataset.gfpick, gfPk.dataset.gfid); return; }
+    var gfRs = t.closest('[data-gfreset]');
+    if (gfRs) { gfReset(); return; }
+    var gfNw = t.closest('[data-gfnew]');
+    if (gfNw) { gfNewMode(); return; }
+    var gfNG = t.closest('[data-gfnewgood]');
+    if (gfNG) { gfCollect(); if (GF.sel) { GF.sel.goodId = gfNG.dataset.gfnewgood; GF.sel.showAll = false; gfRenderStep2(); } return; }
+    var gfNA = t.closest('[data-gfnewall]');
+    if (gfNA) { gfCollect(); if (GF.sel) { GF.sel.showAll = true; gfRenderStep2(); } return; }
+    var gfPC = t.closest('[data-gfpack]');
+    if (gfPC) {
+      gfCollect();
+      if (GF.sel) {
+        GF.sel.packIdx = gfPC.dataset.gfpack === 'other' ? -1 : +gfPC.dataset.gfpack;
+        gfDupRefresh();
+        gfRenderStep2();
+        gfSaveLabel();
       }
       return;
     }
-
-    /* ── فاز ۳۵: ساخت محصول جدیدِ برند — ردیف تیک‌خورده با فرم کامل به فهرست اضافه می‌شود ──
-       (اشی مشی ۴ نوع پفک دارد و ۲ تای آن در لیست است؛ محصول تازه همین‌جا ساخته و ثبت می‌شود)
-       فاز ۳۶ (مالک): «عنوان در کاتالوگ» جدا از نام محصول گرفته می‌شود — عنوان، متنِ نمایش‌داده‌شده
-       در کاتالوگ فروشنده است؛ اگر خالی بماند همان نام محصول نشان داده می‌شود. */
-    var bpn = t.closest('[data-bpnew]');
-    if (bpn) {
-      var bpInp = document.getElementById('bp-newprod-input');
-      var bpTtl = document.getElementById('bp-newprod-title');
-      var bpVal = bpInp && bpInp.value.trim() ? bpInp.value.trim() : 'پفک اشی مشی · بسته خانواده';
-      var bpTitle = bpTtl && bpTtl.value.trim() ? bpTtl.value.trim() : bpVal;
-      var bpHost = document.getElementById('bp-list');
-      if (bpHost) {
-        var bpItem2 = document.createElement('div');
-        bpItem2.className = 'bp-item on';
-        bpItem2.innerHTML = '<button class="bp-row" data-bptick type="button">' +
-          '<span class="bp-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
-          '<span class="bp-th bp-th-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.2A2.2 2.2 0 015.2 6h1.9l1.4-2h6.9l1.4 2h1.9A2.2 2.2 0 0121 8.2v9.6a2.2 2.2 0 01-2.2 2.2H5.2A2.2 2.2 0 013 17.8z"/><circle cx="12" cy="13" r="3.6"/></svg></span>' +
-          '<span class="bp-meta"><b>' + bpTitle + '</b><small>' + (bpTitle !== bpVal ? 'محصول جدید (' + bpVal + ') — ' : 'محصول جدید — ') + 'عکس و واحد فروش عمده را همین‌جا وارد کن</small></span>' +
-          '</button>' +
-          '<div class="bp-specs">' +
-          '<div class="bp-newhead">عکس، واحد و قیمتِ این محصولِ جدید را همین‌جا کامل کن — همراه بقیهٔ تیک‌خورده‌ها در کاتالوگ ثبت می‌شود.</div>' +
-          '<div class="field" style="margin-top:8px"><label>عکس کالا <span class="opt">— حداکثر ۶ تصویر</span></label><div class="gallery-add">' +
-          '<div class="gslot"><svg style="width:18px;height:18px"><use href="#i-plus"/></svg></div>'.repeat(3) +
-          '</div></div>' +
-          '<div style="display:flex;gap:8px">' +
-          '<div class="field" style="flex:1.3"><label>واحد فروش عمده</label><input class="input" placeholder="مثلاً کارتن ۲۴ عددی"></div>' +
-          '<div class="field" style="flex:1"><label>تعداد در هر واحد</label><input class="input" placeholder="۲۴" inputmode="numeric"></div>' +
-          '</div>' +
-          '<div class="field"><label>قیمت هر واحد فروش عمده <span class="opt">— تومان</span></label><input class="input" placeholder="مثلاً ۳۶۰٬۰۰۰" inputmode="numeric"></div>' +
-          '<div style="display:flex;gap:8px">' +
-          '<div class="field" style="flex:1"><label>حداقل حجم خرید</label><input class="input" placeholder="۲"></div>' +
-          '<div class="field" style="flex:1"><label>موجودی</label><input class="input" placeholder="۵۰"></div>' +
-          '</div>' +
-          '<div class="field"><label>توضیحات <span class="opt">— اختیاری</span></label><textarea class="input" rows="2" placeholder="توضیحات اختیاری در مورد شرایط فروش، پرداخت، مزایا، تحویل و …"></textarea></div>' +
-          '</div>';
-        bpHost.appendChild(bpItem2);
-        if (bpInp) bpInp.value = '';
-        if (bpTtl) bpTtl.value = '';
-        var bpBox = document.getElementById('bp-newprod');
-        if (bpBox) bpBox.hidden = true;
-        bpItem2.scrollIntoView({ block: 'nearest' });
+    var gfGR = t.closest('[data-gfgrade]');
+    if (gfGR) {
+      gfCollect();
+      if (GF.sel) {
+        var grv = gfGR.dataset.gfgrade;
+        GF.sel.grade = GF.sel.grade === grv ? null : grv;
+        gfRenderStep2();
       }
       return;
     }
+    if (t.closest('#gf-save')) { gfSave(); return; }
+    if (t.closest('#paste-sample')) { gfPasteSample(); return; }
+    if (t.closest('#paste-run')) { if ((document.getElementById('paste-run').dataset || {}).mode === 'commit') gfPasteCommit(); else gfPasteRun(); return; }
+    var gfPT = t.closest('[data-gfptoggle]');
+    if (gfPT) { gfPasteToggle(+gfPT.dataset.gfptoggle); return; }
+    var gfPP = t.closest('[data-gfppick]');
+    if (gfPP) { gfPastePickOpen(+gfPP.dataset.gfppick); return; }
+    var gfCH = t.closest('[data-gfpchose]');
+    if (gfCH) { gfPasteChoose(+gfCH.dataset.gfpchose, gfCH.dataset.gfpchoseType, gfCH.dataset.gfpchoseId); return; }
 
     /* ═══ فاز ۳۶+۳۹: به‌روزرسانی گروهی (۴۴) — درصدی (استپر/اعمال) · تخفیف‌ها (بازشو) · بازنشانی · ثبت · اکسل ═══ */
     /* فاز ۳۹ — دکمه‌های طرفین استپر درصدی: هر کلیک ±۰٫۵٪ */
@@ -11530,64 +11776,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }
 
     /* ── فاز ۲۱/۳۵: انتخاب نوع کالا از شیت جستجو — سوال برند از نو پرسیده می‌شود ── */
-    var gp = t.closest('#sheet-goodpick .sheet-row[data-gname]');
-    if (gp) {
-      closeSheet();
-      gfSetGood(gp.dataset.gname, gp.dataset.gpath);
-      return;
-    }
-
-    /* ── فاز ۲۱: انتخاب برند از شیت جستجو ── */
-    var bp = t.closest('[data-brandpick]');
-    if (bp) {
-      closeSheet();
-      gfSetBrand(bp.dataset.bname, bp.dataset.brandpick === '1');
-      return;
-    }
-
-    /* ── فاز ۲۱: فرم بازشو (نوع کالای جدید / برند جدید / واحد جدید) ── */
+    /* ── فرم بازشو (عمومی) — فاز ۴۳: شیت‌های قدیمیِ ۰۴ (نوع کالا/برند/واحد) حذف شدند؛
+       data-reveal برای بخش‌های بازشوی صفحات دیگر (مثل «کاتالوگ‌های بیشتر» در ۱۰) می‌ماند ── */
     var rv = t.closest('[data-reveal]');
     if (rv) {
       var rvT = document.getElementById(rv.dataset.reveal);
       if (rvT) rvT.hidden = !rvT.hidden;
-      return;
-    }
-
-    /* ── فاز ۳۵: انتخاب واحد بسته‌بندی از شیت واحدها ── */
-    var upk = t.closest('[data-unitpick]');
-    if (upk) {
-      closeSheet();
-      gfUnitApply(upk.dataset.unitpick);
-      return;
-    }
-
-    /* ── فاز ۳۵: ثبت و انتخاب واحد جدید ── */
-    var unn = t.closest('[data-unitnew]');
-    if (unn) {
-      closeSheet();
-      var uInp = document.getElementById('up-new-input');
-      var uVal = uInp && uInp.value.trim() ? uInp.value.trim() : 'واحد جدید';
-      gfUnitApply(uVal);
-      return;
-    }
-
-    /* ── فاز ۲۱/۳۵: ثبت و انتخاب نوع کالای جدید ── */
-    var gnn = t.closest('[data-goodnew]');
-    if (gnn) {
-      closeSheet();
-      var gInp = document.getElementById('gp-new-input');
-      var gVal = gInp && gInp.value.trim() ? gInp.value.trim() : 'نوع کالای جدید';
-      gfSetGood(gVal, 'نوع کالای جدید — پس از بازبینی ادمین برای همهٔ کاربران آیمچ عمومی می‌شود');
-      return;
-    }
-
-    /* ── فاز ۲۱: ثبت و انتخاب برند جدید ── */
-    var bnn = t.closest('[data-brandnew]');
-    if (bnn) {
-      closeSheet();
-      var bInp = document.getElementById('bp-new-input');
-      var bVal = bInp && bInp.value.trim() ? bInp.value.trim() : 'برند جدید';
-      gfSetBrand(bVal, false);
       return;
     }
 
@@ -11668,11 +11862,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     var sheetOpen = t.closest('[data-sheet]');
     if (sheetOpen) {
-      /* فاز ۳۵: پیل «سایر…» (بسته‌بندی فروش عمده) هم‌زمان با بازکردن شیت واحدها فعال می‌شود */
-      if (sheetOpen.classList.contains('pill') && sheetOpen.parentElement) {
-        sheetOpen.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
-        sheetOpen.classList.add('active');
-      }
       openSheet(sheetOpen.dataset.sheet);
       /* فاز ۳۹: باز شدن مدال درصدی → پیش‌نمایش با وضعیت فعلی ورودی رندر شود */
       if (sheetOpen.dataset.sheet === 'dlg-pct') pctPreviewRender();
@@ -11818,10 +12007,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         var blk2 = document.getElementById('vol-group-block');
         if (blk2) blk2.style.display = pill.textContent.indexOf('خاص') >= 0 ? 'block' : 'none';
       }
-      /* فاز ۲۱ — فرم افزودن کالا: سوییچ فله / برنددار */
-      if (pill.dataset.gmode) gfSetMode(pill.dataset.gmode);
-      /* فاز ۳۵ — نوع بسته‌بندی فروش عمده: برچسب «تعداد در …» هم‌گام می‌شود */
-      if (pill.dataset.pack && pill.dataset.pack !== 'سایر') gfSetPack(pill.dataset.pack);
       return;
     }
 
@@ -11985,7 +12170,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   vdRender('40'); vdRender('41'); /* فاز ۳۲ — نوار فیلم‌های آموزشی راهنمای دستیارها */
   tsRender(); /* فاز ۳۳ — نوار «نظر خریداران» لندینگ + فهرست سایر نظرات */
   ppSync();   /* فاز ۳۳ — کارت‌های پروفایل شخصی ۰۷/۱۴ + عکس بزرگ ۴۲ */
-  bkInit();   /* فاز ۳۶ — مبنای قیمت/موجودی ردیف‌های گرید ۴۴ + نشان «ویرایش شد» */
+  bkInit();
+  gfInit(); /* فاز ۴۳ — فرم افزودن کالا (MVP): نتایج اولیهٔ جستجوی واحد */   /* فاز ۳۶ — مبنای قیمت/موجودی ردیف‌های گرید ۴۴ + نشان «ویرایش شد» */
   assistSyncToggles(); /* فاز ۳۱ — سوییچ‌های ۲۲ با وضعیت ذخیره‌شده هم‌گام */
   assistChrome();      /* فاز ۳۱ — اگر دستیاری خاموش است، پیل هدر از همان بارگذاری مخفی است */
   var init = (location.hash || '').slice(1);
