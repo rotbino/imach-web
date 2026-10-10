@@ -31,7 +31,10 @@ await shot('45-42-profile', '42');
 await shot('45-42-ppedit', '42', async () => { await page.click('#scr-42 .pp-me'); });
 await shot('45-44-grid', '44');
 await shot('45-44-pctpanel', '44', async () => {
-  await page.click('.bk-pct[data-pcttoggle]');
+  /* فاز ۴۸ — گرید تا «نیاز به آپدیت قیمت» قفل است؛ اول آن، بعد پنل درصد */
+  await page.click('#bk-need');
+  await page.waitForTimeout(200);
+  await page.click('#bk-pcticon');
   await page.waitForTimeout(200);
   await page.click('#bk-pctbar .pct-plus');
   await page.click('#bk-pctbar .pct-plus');

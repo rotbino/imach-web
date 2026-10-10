@@ -57,8 +57,11 @@ ok(await page.evaluate(() => location.hash === '#01'), 'بازگشت ۴۴ → ک
 /* ═══ ۲) تغییر درصدی (فاز ۴۵: پنل اینلاین bk-pctbar — اعمال زنده) + بازنشانی ═══ */
 console.log('— تغییر درصدی (پنل اینلاین فاز ۴۵) و بازنشانی');
 await nav('44');
-/* +۵٪ = ۱۰ کلیک روی دکمهٔ زیاد — هر کلیک همان لحظه روی جدول می‌نشیند */
-await page.click('#scr-44 .bk-pct');
+/* +۵٪ = ۱۰ کلیک روی دکمهٔ زیاد — هر کلیک همان لحظه روی جدول می‌نشیند
+   فاز ۴۸ — گرید تا «نیاز به آپدیت قیمت» قفل است؛ اول آن، بعد آیکون ٪ */
+await page.click('#bk-need');
+await page.waitForTimeout(200);
+await page.click('#bk-pcticon');
 await page.waitForTimeout(280);
 for (let i = 0; i < 10; i++) await page.click('.pct-plus');
 await page.waitForTimeout(200);
@@ -83,7 +86,7 @@ const afterRs = await page.evaluate(() => ({
 ok(afterRs.chg === 0 && afterRs.p1 === '۲٬۸۵۰٬۰۰۰', 'بازنشانی → مقدار اولیه و صفر تغییر');
 
 /* ترکیبی: +۵٪ سپس −۵٪ (فاز ۴۵: پنل اینلاین — بازمحاسبه از مبنا، نه تجمعی) */
-if (await page.locator('#bk-pctbar').isHidden()) { await page.click('#scr-44 .bk-pct'); await page.waitForTimeout(260); }
+if (await page.locator('#bk-pctbar').isHidden()) { await page.click('#bk-need'); await page.waitForTimeout(200); await page.click('#bk-pcticon'); await page.waitForTimeout(260); }
 for (let i = 0; i < 10; i++) await page.click('.pct-plus');
 await page.waitForTimeout(150);
 /* +۵ → صفر → −۵: هر تغییر از مبنا بازمحاسبه می‌شود */

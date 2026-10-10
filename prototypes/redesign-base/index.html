@@ -1488,7 +1488,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #bk-pctbar .bk-pct-head { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
   #bk-pctbar .bk-pct-head > svg { width: 15px; height: 15px; color: var(--primary-strong); flex-shrink: 0; }
   #bk-pctbar .bk-pct-head b { font-size: 12.5px; font-weight: 800; }
-  #bk-pctbar .bk-pct-live { font-size: 9px; font-weight: 800; color: var(--green); background: var(--green-bg); border-radius: 999px; padding: 2px 7px; flex-shrink: 0; }
   #bk-pctbar .bk-pct-x { margin-right: auto; width: 26px; height: 26px; border-radius: 8px; border: 0; background: none; color: var(--muted-fg); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
   #bk-pctbar .bk-pct-x svg { width: 13px; height: 13px; }
   #bk-pctbar .bk-pct-x:active { background: var(--muted); }
@@ -1496,8 +1495,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #bk-pctbar .pct-btn { width: 46px; height: 46px; border-radius: 12px; }
   #bk-pctbar .pct-btn svg { width: 18px; height: 18px; }
   #bk-pctbar .pct-num { height: 46px; font-size: 17px; border-radius: 12px; padding: 0 26px 0 10px; }
-  #bk-pctbar .pct-preview { margin-top: 8px; padding: 7px 10px; }
-  #bk-pctbar .bk-pct-hint { font-size: 10px; color: var(--muted-fg); line-height: 1.9; margin-top: 8px; }
   /* استپر درصدی: [−][عدد][+] — دو دکمهٔ طرفین، گام ۰٫۵٪ */
   .pct-stepper { display: flex; align-items: stretch; gap: 9px; margin-top: 14px; }
   .pct-btn { width: 52px; height: 56px; border-radius: 14px; border: 1.5px solid var(--border-strong); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--foreground); flex-shrink: 0; }
@@ -1509,11 +1506,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .pct-num { width: 100%; height: 56px; box-sizing: border-box; border: 1.5px solid var(--border-strong); border-radius: 14px; background: #fff; text-align: center; font-family: inherit; font-size: 21px; font-weight: 800; color: var(--foreground); padding: 0 30px 0 12px; }
   .pct-num:focus { border-color: var(--arm); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--arm) 14%, transparent); }
   .pct-sign { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 700; color: var(--muted-fg); pointer-events: none; }
-  /* پیش‌نمایش زندهٔ اعمال درصد روی اولین ردیف */
-  .pct-preview { margin-top: 10px; border-radius: 11px; background: var(--muted); padding: 8px 11px; font-size: 11px; font-weight: 700; line-height: 1.9; color: var(--muted-fg); text-align: center; }
-  .pct-preview.up { background: var(--green-bg); color: var(--green); }
-  .pct-preview.down { background: var(--red-bg); color: var(--red); }
-  .pct-preview b { font-weight: 800; }
   /* مدال اکسل — الگوی ورود/ثبت‌نام: آپلود اصلیِ سبز و درشت، دانلود لینک‌وار و کم‌رنگ */
   .xls-up { display: flex; align-items: center; gap: 11px; width: 100%; box-sizing: border-box; text-align: right; background: var(--green-bg); border: 1.5px solid #b6e2c6; border-radius: 14px; padding: 13px 13px; margin-top: 14px; cursor: pointer; font-family: inherit; }
   .xls-up:active { background: #eaf6ef; }
@@ -1528,10 +1520,32 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .xls-dn .tx small { display: block; font-size: 9.5px; font-weight: 500; color: var(--muted-fg); margin-top: 1px; }
   .xls-dn .chev { width: 13px; height: 13px; color: var(--muted-fg); flex-shrink: 0; }
   .xls-dn:active .tx b { color: var(--foreground); }
-  /* بازنشانی — لینک کم‌رنگ زیر گرید */
+  /* بازنشانی — لینک کم‌رنگ زیر گرید؛ فقط با تغییر دیده می‌شود (فاز ۴۸) */
   .bk-reset2 { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; margin-top: 9px; border: 0; background: none; font-family: inherit; font-size: 10.5px; font-weight: 700; color: var(--muted-fg); cursor: pointer; padding: 5px 0; }
   .bk-reset2 svg { width: 13px; height: 13px; }
   .bk-reset2:active { color: var(--red); }
+  .bk-reset2[hidden] { display: none; } /* display:flex اتربیوت hidden را خنثی می‌کند */
+
+  /* ═══ فاز ۴۸ (مالک) — فرم ۴۴: انتخاب نیت در بالا + گرید قفل‌شده تا «نیاز به آپدیت قیمت» ═══ */
+  .bk-choice { display: flex; gap: 9px; }
+  .bk-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 1.5px solid var(--border-strong); border-radius: 13px; background: #fff; padding: 10px 6px 9px; cursor: pointer; font-family: inherit; min-width: 0; }
+  .bk-btn svg { width: 17px; height: 17px; }
+  .bk-btn b { font-size: 11.5px; font-weight: 800; line-height: 1.6; }
+  .bk-btn small { font-size: 9px; font-weight: 600; color: var(--muted-fg); line-height: 1.5; }
+  .bk-btn:active { transform: scale(.98); }
+  .bk-btn[hidden] { display: none; }
+  .bk-btn.renew { border-color: #b6e2c6; background: var(--green-bg); color: var(--green); }
+  .bk-btn.renew small { color: #3d9a67; }
+  .bk-btn.need { border-color: var(--arm); background: var(--arm); color: var(--arm-fg); }
+  .bk-btn.need svg { color: #fff; }
+  .bk-btn.need small { color: rgba(255, 255, 255, .78); }
+  #bk-choice[hidden] { display: none; } /* وقتی هر دو دکمه مخفی‌اند، ردیف هم جمع شود */
+  /* گرید قفل‌شده: مقادیر خوانا می‌مانند ولی معلوم است ویرایش نیازمند «نیاز به آپدیت» است */
+  .bk-row .bk-price:disabled, .bk-row .bk-stock:disabled { color: var(--stone-soft); background: #faf9f5; border-color: var(--border); }
+  /* فوتر فقط «ثبت تغییرات» — تا وقتی چیزی عوض نشده اصلاً دیده نمی‌شود */
+  #bk-actions[hidden] { display: none; }
+  /* آیکون ٪ ساب‌هدر فقط در حالت ویرایش */
+  .bk-pct[hidden] { display: none; }
   /* دکمهٔ بازشوی تخفیف‌ها */
   .disc-toggle { display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; text-align: right; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-top: 11px; cursor: pointer; font-family: inherit; }
   .disc-toggle:active { border-color: var(--border-strong); }
@@ -1877,7 +1891,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="pcard" data-cn="برنج هاشمی" data-cd="کیسه ۵۰ کیلویی">
           <div class="ph">
             <div class="thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی"></div>
-            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج هاشمی" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۸۵۰٬۰۰۰" data-qs="۳۵" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج هاشمی" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۸۵۰٬۰۰۰" data-qs="۳۵" data-qm="۵" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج هاشمی</div>
@@ -1893,7 +1907,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="pcard" data-cn="برنج طارم" data-cd="کیسه ۵۰ کیلویی">
           <div class="ph">
             <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
-            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج طارم" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۷۵۰٬۰۰۰" data-qs="۲۸" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج طارم" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۷۵۰٬۰۰۰" data-qs="۲۸" data-qm="۵" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج طارم</div>
@@ -1909,7 +1923,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="pcard" data-cn="برنج هاشمی" data-cd="کیسه ۱۰ کیلویی">
           <div class="ph">
             <div class="thumb"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی — کیسه ۱۰ کیلویی"></div>
-            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج هاشمی" data-qd="کیسه ۱۰ کیلویی" data-qp="۵۹۵٬۰۰۰" data-qs="۶۰" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج هاشمی" data-qd="کیسه ۱۰ کیلویی" data-qp="۵۹۵٬۰۰۰" data-qs="۶۰" data-qm="۱۰" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج هاشمی</div>
@@ -1925,7 +1939,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="pcard" data-cn="برنج فجر" data-cd="کیسه ۵۰ کیلویی">
           <div class="ph">
             <div class="thumb"><img src="png/goods/fajar-50.jpg" alt="برنج فجر — کیسه ۵۰ کیلویی"></div>
-            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج فجر" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۴۸۰٬۰۰۰" data-qs="۸" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج فجر" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۴۸۰٬۰۰۰" data-qs="۸" data-qm="۵" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج فجر</div>
@@ -4495,19 +4509,37 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">قیمت و موجودی<small>به‌روزرسانی گروهی کالاهای کاتالوگ</small></div>
-      <button class="icon-btn bk-pct" aria-label="تغییر درصدی قیمت‌ها" title="تغییر درصدی قیمت‌ها" data-pcttoggle><svg><use href="#i-percent"/></svg></button>
+      <button class="icon-btn bk-pct" id="bk-pcticon" aria-label="تغییر درصدی قیمت‌ها" title="تغییر درصدی قیمت‌ها" data-pcttoggle hidden><svg><use href="#i-percent"/></svg></button>
     </header>
 
     <main class="screen-body">
 
+      <!-- ═══ فاز ۴۸ (مالک) — انتخاب نیت در بالای فرم، نه فوتر شلوغ:
+           «تمدید همین قیمت‌ها (تازه‌سازی)» مهر تازگی می‌زند و برمی‌گردد؛
+           «نیاز به آپدیت قیمت» گرید را باز می‌کند — تا آن‌ لحظه ورودی‌ها قفل‌اند.
+           با اولین تغییر: تمدید محو می‌شود و «ثبت تغییرات» در فوتر ظاهر می‌شود؛
+           «بازنشانی» هم فقط وقتی چیزی عوض شده دیده می‌شود (خوانایی پیش‌رونده). ═══ -->
+      <div class="bk-choice" id="bk-choice">
+        <button class="bk-btn renew" id="bk-fresh" type="button" title="قیمت‌ها درست است — مهر تازگی همان لحظه در کاتالوگ می‌نشیند">
+          <svg><use href="#i-check"/></svg>
+          <b>تمدید همین قیمت‌ها</b>
+          <small>تازه‌سازی</small>
+        </button>
+        <button class="bk-btn need" id="bk-need" type="button">
+          <svg><use href="#i-pencil"/></svg>
+          <b>نیاز به آپدیت قیمت</b>
+          <small>ویرایش قیمت‌ها و موجودی</small>
+        </button>
+      </div>
+
       <!-- ═══ فاز ۴۵ (مالک) — تغییر درصدی: پنل اینلاین بالای فرم (نه مودال) — با هر تغییرِ درصد،
            قیمت‌های جدول همان لحظه زنده به‌روز می‌شوند و ردیف‌های تغییرکرده سبز می‌شوند؛
-           کاربر قبل از «ثبت تغییرات» نتیجه را می‌بیند، نه بعد از بستن مودال. ═══ -->
+           کاربر قبل از «ثبت تغییرات» نتیجه را می‌بیند، نه بعد از بستن مودال.
+           فاز ۴۸ (مالک) — پیش‌نمایش مثال، بج «زنده» و متن راهنما حذف شدند؛ خودِ جدول زنده است. ═══ -->
       <div id="bk-pctbar" hidden>
         <div class="bk-pct-head">
           <svg><use href="#i-percent"/></svg>
           <b>درصد تغییر همهٔ قیمت‌ها</b>
-          <span class="bk-pct-live">زنده روی جدول اعمال می‌شود</span>
           <button class="bk-pct-x" data-pctclose type="button" aria-label="بستن پنل درصد">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
           </button>
@@ -4517,21 +4549,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
           <div class="pct-val">
-            <input id="pct-input" class="pct-num" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر — مثبت یا منفی، اعشاری هم می‌شود">
+            <input id="pct-input" class="pct-num" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر — مثبت یا منفی، حداکثر ۹۹">
             <span class="pct-sign" aria-hidden="true">٪</span>
           </div>
           <button class="pct-btn pct-plus" data-pctstep="0.5" type="button" aria-label="نیم درصد زیاد کن" title="نیم درصد زیاد کن">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
         </div>
-        <div class="pct-preview" id="pct-preview" dir="rtl"></div>
-        <div class="bk-pct-hint">هر کلیک نیم درصد (۰٫۵٪) کم یا زیاد می‌کند؛ عدد دستی هم می‌توانی بگذاری — مثبت یا منفی، حتی اعشاری. قیمت‌ها همان لحظه در جدول عوض می‌شوند؛ «ثبت تغییرات» آنها را در کاتالوگ می‌نشاند و «بازنشانی همهٔ تغییرات» برمی‌گرداند.</div>
-      </div>
-
-      <!-- فاز ۴۴ — یادآور تازگی قیمت (ایدهٔ MVP): در بازار پرتورم قیمت کهنه یعنی اعتمادِ کم خریدار -->
-      <div class="callout" id="bk-stale" style="margin-top:2px;border-color:#f3ddba;background:linear-gradient(180deg,#fdf8ef,#fff 45%)">
-        <svg><use href="#i-history"/></svg>
-        <div><b>۳ روز است قیمت‌هایتان را به‌روز نکرده‌ای.</b> یک بار مرور کن — چیزی که عوض نشده را با «قیمت‌ها درست است» تأیید کن.</div>
       </div>
 
       <!-- گرید کالاها — قیمت و موجودی قابل ویرایش؛ ردیف تغییرکرده سبز می‌شود -->
@@ -4547,8 +4571,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <img class="bk-th" src="png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی">
             <span class="bk-nm"><b>برنج هاشمی</b><small>کیسه ۵۰ کیلویی</small></span>
           </div>
-          <input class="bk-price" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج هاشمی — کیسه ۵۰ کیلویی">
-          <input class="bk-stock" value="۳۵" inputmode="numeric" aria-label="موجودی برنج هاشمی">
+          <input class="bk-price" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج هاشمی — کیسه ۵۰ کیلویی" disabled>
+          <input class="bk-stock" value="۳۵" inputmode="numeric" aria-label="موجودی برنج هاشمی" disabled>
         </div>
 
         <div class="bk-row" data-bkname="برنج طارم" data-bkdesc="کیسه ۵۰ کیلویی" data-bkunit="کیسه">
@@ -4556,8 +4580,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="bk-th" style="display:grid;place-items:center"><span class="glyph" style="font-size:8.5px">۵۰ کیلو</span></span>
             <span class="bk-nm"><b>برنج طارم</b><small>کیسه ۵۰ کیلویی</small></span>
           </div>
-          <input class="bk-price" value="۲٬۷۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج طارم — کیسه ۵۰ کیلویی">
-          <input class="bk-stock" value="۲۸" inputmode="numeric" aria-label="موجودی برنج طارم">
+          <input class="bk-price" value="۲٬۷۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج طارم — کیسه ۵۰ کیلویی" disabled>
+          <input class="bk-stock" value="۲۸" inputmode="numeric" aria-label="موجودی برنج طارم" disabled>
         </div>
 
         <div class="bk-row" data-bkname="برنج هاشمی" data-bkdesc="کیسه ۱۰ کیلویی" data-bkunit="کیسه">
@@ -4565,8 +4589,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <img class="bk-th" src="png/goods/hashemi-10.png" alt="برنج هاشمی — کیسه ۱۰ کیلویی">
             <span class="bk-nm"><b>برنج هاشمی</b><small>کیسه ۱۰ کیلویی</small></span>
           </div>
-          <input class="bk-price" value="۵۹۵٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج هاشمی — کیسه ۱۰ کیلویی">
-          <input class="bk-stock" value="۶۰" inputmode="numeric" aria-label="موجودی برنج هاشمی ۱۰ کیلویی">
+          <input class="bk-price" value="۵۹۵٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج هاشمی — کیسه ۱۰ کیلویی" disabled>
+          <input class="bk-stock" value="۶۰" inputmode="numeric" aria-label="موجودی برنج هاشمی ۱۰ کیلویی" disabled>
         </div>
 
         <div class="bk-row" data-bkname="برنج فجر" data-bkdesc="کیسه ۵۰ کیلویی" data-bkunit="کیسه">
@@ -4574,8 +4598,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <img class="bk-th" src="png/goods/fajar-50.jpg" alt="برنج فجر — کیسه ۵۰ کیلویی">
             <span class="bk-nm"><b>برنج فجر</b><small>کیسه ۵۰ کیلویی</small></span>
           </div>
-          <input class="bk-price" value="۲٬۴۸۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج فجر — کیسه ۵۰ کیلویی">
-          <input class="bk-stock" value="۸" inputmode="numeric" aria-label="موجودی برنج فجر">
+          <input class="bk-price" value="۲٬۴۸۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج فجر — کیسه ۵۰ کیلویی" disabled>
+          <input class="bk-stock" value="۸" inputmode="numeric" aria-label="موجودی برنج فجر" disabled>
         </div>
 
         <div class="bk-row" data-bkname="برنج صدری" data-bkdesc="کیسه ۵۰ کیلویی" data-bkunit="کیسه">
@@ -4583,25 +4607,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="bk-th" style="display:grid;place-items:center;opacity:.62"><span class="glyph" style="font-size:8.5px">۵۰ کیلو</span></span>
             <span class="bk-nm"><b>برنج صدری</b><small><span class="badge b-muted bk-off">عدم نمایش</span>کیسه ۵۰ کیلویی</small></span>
           </div>
-          <input class="bk-price" value="۲٬۲۰۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج صدری — کیسه ۵۰ کیلویی">
-          <input class="bk-stock" value="۱۵" inputmode="numeric" aria-label="موجودی برنج صدری">
+          <input class="bk-price" value="۲٬۲۰۰٬۰۰۰" inputmode="numeric" aria-label="قیمت برنج صدری — کیسه ۵۰ کیلویی" disabled>
+          <input class="bk-stock" value="۱۵" inputmode="numeric" aria-label="موجودی برنج صدری" disabled>
         </div>
       </div>
 
-      <!-- فاز ۳۹: بازنشانی — لینک کم‌رنگ زیر گرید (چیپ‌ها حذف شدند؛ بازنشانی برای برگرداندن
-           دستی/درصدی/اکسلیِ ردیف‌ها و تخفیف‌ها به حالت اولیه باقی مانده است) -->
-      <button class="bk-reset2" data-bkreset type="button"><svg><use href="#i-history"/></svg> بازنشانی همهٔ تغییرات</button>
-
-<div class="hintnote">کالاهایی با قیمت به‌روز، در نتایج خریداران بالاتر دیده می‌شوند. قیمتِ واردشده همان قیمتی است که خریدار در کاتالوگ عمومی می‌بیند؛ تغییر دستی یا درصدی فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند و ردیف‌های تغییرکرده سبز می‌شوند — و اگر چیزی عوض نشده، با «قیمت‌ها درست است» مهر تازگی می‌گیرند.</div>
+      <!-- فاز ۳۹: بازنشانی — فقط وقتی تغییری هست دیده می‌شود (فاز ۴۸)؛
+           دستی/درصدی را به مبنا برمی‌گرداند و فرم به حالت انتخاب نیت برمی‌گردد -->
+      <button class="bk-reset2" data-bkreset type="button" hidden><svg><use href="#i-history"/></svg> بازنشانی همهٔ تغییرات</button>
 
     </main>
 
-    <div class="action-bar">
-      <button class="btn btn-outline" data-back>انصراف</button>
-      <button class="btn btn-outline" id="bk-fresh" style="flex:1" title="قیمت‌ها را تأیید کن — مهر تازگی همان لحظه در کاتالوگ می‌نشیند">
-        <svg><use href="#i-check"/></svg> قیمت‌ها درست است
-      </button>
-      <button class="btn btn-primary" style="flex:1.2" id="bk-save">ثبت تغییرات <span id="bk-count">(۰)</span></button>
+    <!-- فاز ۴۸ (مالک) — فوتر فقط «ثبت تغییرات» است و تنها وقتی چیزی عوض شده دیده می‌شود -->
+    <div class="action-bar" id="bk-actions" hidden>
+      <button class="btn btn-primary" style="flex:1" id="bk-save">ثبت تغییرات <span id="bk-count">(۰)</span></button>
     </div>
 
     </section>
@@ -5164,7 +5183,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <!-- ═══ فاز ۴۵ (مالک) — تغییر سریع قیمت و موجودی (آیکون روی هر کالای کاتالوگ ۰۱):
      مستقیم مودال با دو تکست‌باکس + تایید/انصراف — نه منو. بقیهٔ گزینه‌ها (ویرایش کامل،
      تخفیف پلکانی، عدم نمایش و…) در «تنظیمات کالا» (sheet-pset) از فرم جزئیات ۰۲ هستند.
-     تایید → قیمت و نشان موجودی همان کارت همان لحظه به‌روز می‌شود. ═══ -->
+     تایید → قیمت و نشان موجودی همان کارت همان لحظه به‌روز می‌شود.
+     فاز ۴۸ (مالک) — «حداقل خرید» هم این‌جا اضافه شد: قیمت بدون حداقل خرید معنی ندارد؛
+     واحدش همان بستهٔ کالا است و روی چرخ‌دندهٔ کارت ذخیره می‌شود (data-qm). ═══ -->
 <div class="sheet" id="sheet-quickps" role="dialog" aria-label="تغییر سریع قیمت و موجودی">
   <div class="grab"></div>
   <h3>تغییر سریع قیمت و موجودی</h3>
@@ -5176,6 +5197,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="field">
     <label>موجودی <span class="opt" id="qp-unit">— کیسه</span></label>
     <input class="input" id="qp-stock" value="۳۵" inputmode="numeric">
+  </div>
+  <div class="field">
+    <label>حداقل خرید <span class="opt" id="qp-munit">— کیسه</span></label>
+    <input class="input" id="qp-min" value="۵" inputmode="numeric">
   </div>
   <div class="hintnote">کالاهایی با قیمت به‌روز، در نتایج خریداران بالاتر دیده می‌شوند.</div>
   <div style="display:flex;gap:8px;margin-top:12px">
@@ -6090,6 +6115,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (id === '12') iqOnShow();
       if (id === '47') of47Ensure();
       if (id === '48') of48Ensure();
+      if (id === '44') bkOnShow(); /* فاز ۴۸ — هر ورود: انتخاب نیت + گرید قفل */
       /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا؛
          فاز ۴۵ — اکشن‌های خریدار (درخواست قیمت/تماس/افزودن به لیست) برای مالک مخفی است */
       var own02 = document.getElementById('own-02');
@@ -6498,7 +6524,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       card2.setAttribute('data-go', '03');
       card2.innerHTML =
         '<div class="ph"><div class="thumb">' + (o.img ? '<img src="' + o.img + '" alt="' + gfEsc(o.title) + '">' : '<span class="glyph">' + gfEsc(o.kind) + '</span>') + '</div>' +
-        '<button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="' + gfEsc(o.title) + '" data-qd="' + gfEsc(o.pack) + '" data-qp="' + faMoney(o.price) + '" data-qs="' + (o.stock != null ? faNum(o.stock) : '') + '" data-qu="بسته"><svg><use href="#i-gear"/></svg></button></div>' +
+        '<button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="' + gfEsc(o.title) + '" data-qd="' + gfEsc(o.pack) + '" data-qp="' + faMoney(o.price) + '" data-qs="' + (o.stock != null ? faNum(o.stock) : '') + '" data-qm="' + (o.min != null ? faNum(o.min) : '') + '" data-qu="بسته"><svg><use href="#i-gear"/></svg></button></div>' +
         '<div class="info"><div class="n">' + gfEsc(o.title) + '</div><div class="u">' + gfEsc(o.pack) + ' · ' + gfEsc(o.kind) + '</div>' +
         '<div class="p">' + priceTxt + '</div>' +
         '<div class="mini-metrics mm"><span class="m"><svg><use href="#i-eye"/></svg> ' + faNum(0) + '</span>' +
@@ -6525,6 +6551,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
     var stock = (s.stock == null || s.stock === '') ? null : bkNum(s.stock);
+    var min = (s.min == null || s.min === '') ? null : bkNum(s.min); /* فاز ۴۸ — حداقل خرید برای چرخ‌دندهٔ کارت */
     var title, pack, img, kind, pending = false;
     if (s.type === 'ref') {
       var r = gfRef(s.id), g = gfGood(r.g);
@@ -6538,7 +6565,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       pack = (s.newPack || '').trim() || 'بسته';
       img = null; kind = (s.brand || '').trim() || 'جدید'; pending = true;
     }
-    var res = gfAddListing({ title: title, pack: pack, price: price, img: img, stock: stock, kind: kind, pending: pending });
+    var res = gfAddListing({ title: title, pack: pack, price: price, img: img, stock: stock, min: min, kind: kind, pending: pending });
     GF.last = title;
     gfBanner(res === 'updated' ? 'قیمت <b>' + gfEsc(title) + '</b> به‌روز شد. کالای بعدی؟' : '<b>' + gfEsc(title) + '</b> اضافه شد. کالای بعدی؟');
     GF.sel = null;
@@ -7281,7 +7308,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
      می‌کند (اگر کاربر مقدار را به حالت اول برگرداند، نشان «ویرایش شد» هم برداشته می‌شود).
      فاز ۳۹: BK.disc درصد اولیهٔ ردیف‌های تخفیف را نگه می‌دارد (همان الگو) و pctParse
      ورودی درصدیِ دستی را می‌خواند — فارسی/لاتین، مثبت/منفی، اعشاری (٫ و .). */
-  var BK = { base: [], disc: [] };
+  var BK = { base: [], disc: [], edit: false, saving: false };
   function bkNum(v) {
     var s = String(v == null ? '' : v)
       .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
@@ -7301,8 +7328,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       .trim();
     if (!s || s === '-' || s === '.') return null;
     var n = parseFloat(s);
-    return isNaN(n) ? null : Math.max(-99.9, Math.min(99.9, n));
+    return isNaN(n) ? null : n; /* کلمپ نیست — سقف ±۹۹ در مصرف‌کننده (فاز ۴۸) */
   }
+  /* فاز ۴۸ (مالک) — داخل کادر درصد نمی‌شود بیشتر از ۹۹ (مثبت یا منفی) گذاشت */
+  function pctClamp(n) { return Math.max(-99, Math.min(99, n)); }
   /* فاز ۳۹ — نمایش فارسی درصد با ممیز فارسی و علامت منفی واقعی */
   function faPct(n) {
     var abs = String(Math.abs(n)).replace('.', '٫');
@@ -7330,7 +7359,59 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var c = document.getElementById('bk-count');
     if (c) c.textContent = '(' + faNum(n) + ')';
   }
-  /* فاز ۳۹ — هم‌گام درصد تخفیف با مبنا (نشان هوشمند، مثل خود گرید) */
+  /* ═══ فاز ۴۸ (مالک) — خوانایی پیش‌روندهٔ فرم ۴۴:
+     «تمدید همین قیمت‌ها» فقط تا وقتی هیچ قیمتی عوض نشده دیده می‌شود؛
+     «ثبت تغییرات» و «بازنشانی» فقط از لحظهٔ اولین تغییر ظاهر می‌شوند؛
+     BK.saving فقط برای نگه‌داشتن فوتر در ۹۰۰ms بازخوردِ «ثبت شد» است. ═══ */
+  function bkVis() {
+    var n = document.querySelectorAll('#scr-44 .bk-row.chg').length;
+    var chgOnly = n > 0;
+    var has = chgOnly || BK.saving;
+    var fresh = document.getElementById('bk-fresh');
+    var need = document.getElementById('bk-need');
+    var row = document.getElementById('bk-choice');
+    var acts = document.getElementById('bk-actions');
+    var rst = document.querySelector('#scr-44 [data-bkreset]');
+    if (fresh) fresh.hidden = chgOnly;
+    if (row && fresh && need) row.hidden = fresh.hidden && need.hidden;
+    if (acts) acts.hidden = !has;
+    if (rst) rst.hidden = !chgOnly;
+  }
+  /* فاز ۴۸ — قفل/بازکردن گرید: تا «نیاز به آپدیت قیمت» زده نشود ورودی‌ها قفل‌اند */
+  function bkMode(on) {
+    BK.edit = !!on;
+    var need = document.getElementById('bk-need');
+    var icon = document.getElementById('bk-pcticon');
+    if (need) need.hidden = BK.edit;
+    if (icon) icon.hidden = !BK.edit;
+    if (!BK.edit) {
+      var pb = document.getElementById('bk-pctbar');
+      if (pb) pb.hidden = true;
+    }
+    bkRows().forEach(function (r) {
+      r.querySelectorAll('.bk-price, .bk-stock').forEach(function (inp) { inp.disabled = !BK.edit; });
+    });
+    bkVis();
+  }
+  /* فاز ۴۸ — بازنشانی همهٔ تغییرات: ردیف‌ها به مبنا + درصد صفر + پنل بسته + بازگشت به انتخاب نیت */
+  function bkResetAll() {
+    bkRows().forEach(function (r, i) {
+      var b = BK.base[i] || {};
+      var pi = r.querySelector('.bk-price'), si = r.querySelector('.bk-stock');
+      if (pi && b.price != null) pi.value = faMoney(b.price);
+      if (si && b.stock != null) si.value = faNum(b.stock);
+      r.classList.remove('chg');
+      var dd = r.querySelector('.bk-dirty');
+      if (dd) dd.hidden = true;
+    });
+    bkCount();
+    var pin = pctInputEl();
+    if (pin) pin.value = '۰';
+    bkMode(false);
+  }
+  /* فاز ۴۸ — هر ورود به صفحهٔ ۴۴ از حالت اولیه شروع می‌شود (انتخاب نیت، گرید قفل) */
+  function bkOnShow() { bkResetAll(); }
+  /* فاز ۳۹ — هم‌گام ردیف با مبنا (نشان هوشمند، مثل خود گرید) */
   function bkSync(r, i) {
     var b = BK.base[i] || {};
     var p = bkNum(r.querySelector('.bk-price').value);
@@ -7340,6 +7421,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var d = r.querySelector('.bk-dirty');
     if (d) d.hidden = same;
     bkCount();
+    bkVis(); /* فاز ۴۸ — دکمه‌ها تابع تغییرند */
   }
   /* نشان موجودی کارت کاتالوگ بر اساس عدد جدید بازسازی می‌شود */
   function bkBadge(bd, stock) {
@@ -7354,42 +7436,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
   function pctInputEl() { return document.getElementById('pct-input'); }
   function pctCur() {
     var v = pctParse(pctInputEl() && pctInputEl().value);
-    return v == null ? 0 : v;
-  }
-  /* پیش‌نمایش: جهت + عدد + مثال واقعی از اولین ردیف گرید (از قیمتِ مبنا) */
-  function pctPreviewRender() {
-    var box = document.getElementById('pct-preview');
-    var inp = pctInputEl();
-    if (!box || !inp) return;
-    var v = pctParse(inp.value);
-    if (v == null) {
-      box.className = 'pct-preview';
-      box.textContent = 'عدد درصد را درست وارد کن — مثلاً ۲٫۵ یا ‎−۱٫۵';
-      return;
-    }
-    var r0 = bkRows()[0];
-    var base = r0 ? (BK.base[0] || {}).price : null;
-    if (base == null) { box.className = 'pct-preview'; box.textContent = ''; return; }
-    var next = Math.max(0, Math.round(base * (1 + v / 100)));
-    var nm = r0 ? (r0.dataset.bkname + ' — ' + r0.dataset.bkdesc) : '';
-    if (v > 0) {
-      box.className = 'pct-preview up';
-      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> بیشتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(base) + ' ← <b>' + faMoney(next) + '</b> تومان';
-    } else if (v < 0) {
-      box.className = 'pct-preview down';
-      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> کمتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(base) + ' ← <b>' + faMoney(next) + '</b> تومان';
-    } else {
-      box.className = 'pct-preview';
-      box.textContent = 'درصد صفر است — با دکمه‌های طرفین یا تایپ دستی کم/زیاد کن.';
-    }
+    return v == null ? 0 : pctClamp(v);
   }
   /* ═══ فاز ۴۵ — اعمال زنده روی جدول: با هر تغییر درصد، قیمت هر ردیف همان لحظه از «مبنا»
-     محاسبه می‌شود (نه تجمعی)؛ ردیف‌های تغییرکرده سبز می‌شوند؛ صفر = برگشت به مبنا. ═══ */
+     محاسبه می‌شود (نه تجمعی)؛ ردیف‌های تغییرکرده سبز می‌شوند؛ صفر = برگشت به مبنا.
+     فاز ۴۸ (مالک) — پیش‌نمایش مثال و متن راهنما حذف شدند؛ خودِ جدول زنده است.
+     سقف ±۹۹: عدد دستی بزرگ‌تر همان لحظه به ۹۹ بریده و در کادر نوشته می‌شود. ═══ */
   function pctLive() {
     var inp = pctInputEl();
     var v = pctParse(inp && inp.value);
-    pctPreviewRender();
     if (v == null) return;
+    if (v > 99 || v < -99) { v = pctClamp(v); if (inp) inp.value = faPct(v); }
     bkRows().forEach(function (r, i) {
       var pi = r.querySelector('.bk-price');
       var base = (BK.base[i] || {}).price;
@@ -7398,12 +7455,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
       bkSync(r, i);
     });
   }
-  /* استپر: ±۰٫۵ — نمایش فارسی با ممیز فارسی + اعمال زنده */
+  /* استپر: ±۰٫۵ — نمایش فارسی با ممیز فارسی + اعمال زنده (سقف ±۹۹) */
   function pctStep(delta) {
     var inp = pctInputEl();
     if (!inp) return;
-    var v = pctCur() + delta;
-    v = Math.max(-99.9, Math.min(99.9, Math.round(v * 10) / 10));
+    var v = Math.round(pctClamp(pctCur() + delta) * 10) / 10;
     inp.value = faPct(v);
     pctLive();
   }
@@ -7716,11 +7772,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       pctStep(parseFloat(pcst.dataset.pctstep) || 0);
       return;
     }
-    /* ═══ فاز ۴۵ — پنل اینلاین درصد: باز/بسته با آیکون ٪ ساب‌هدر (نه مودال) ═══ */
+    /* ═══ فاز ۴۵ — پنل اینلاین درصد: باز/بسته با آیکون ٪ ساب‌هدر (نه مودال)
+       فاز ۴۸ — آیکون فقط در حالت ویرایش دیده می‌شود (bkMode) */
     var pctT = t.closest('[data-pcttoggle]');
     if (pctT) {
       var pbar = document.getElementById('bk-pctbar');
-      if (pbar) { pbar.hidden = !pbar.hidden; if (!pbar.hidden) pctPreviewRender(); }
+      if (pbar) pbar.hidden = !pbar.hidden;
       return;
     }
     var pctX = t.closest('[data-pctclose]');
@@ -7730,20 +7787,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
     var bkrs = t.closest('[data-bkreset]');
-    if (bkrs) {
-      bkRows().forEach(function (r, i) {
-        var b = BK.base[i] || {};
-        var pi = r.querySelector('.bk-price'), si = r.querySelector('.bk-stock');
-        if (pi && b.price != null) pi.value = faMoney(b.price);
-        if (si && b.stock != null) si.value = faNum(b.stock);
-        bkSync(r, i);
-      });
-      /* فاز ۴۵ — درصد هم به صفر برمی‌گردد (پنل اینلاین) */
-      var pin = pctInputEl();
-      if (pin) pin.value = '۰';
-      pctPreviewRender();
-      return;
-    }
+    if (bkrs) { bkResetAll(); return; }
+
+    /* ═══ فاز ۴۸ (مالک) — «نیاز به آپدیت قیمت»: گرید باز می‌شود؛ آیکون ٪ ظاهر می‌شود؛
+       خود دکمه محو می‌شود و «تمدید همین قیمت‌ها» تا اولین تغییر دسترسی باقی می‌ماند ═══ */
+    var bkNeed = t.closest('#bk-need');
+    if (bkNeed) { bkMode(true); return; }
     var bkSave = t.closest('#bk-save');
     if (bkSave) {
       var bkN = 0;
@@ -7771,10 +7820,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
         if (dd) dd.hidden = true;
       });
       bkCount();
+      bkVis();
       if (bkN > 0) {
+        BK.saving = true; /* فاز ۴۸ — فوتر برای بازخورد «ثبت شد» سر جایش می‌ماند */
+        bkVis();
         bkSave.classList.add('bk-saved');
         bkSave.innerHTML = '<svg><use href="#i-check"/></svg> ثبت شد — ' + faNum(bkN) + ' کالا به‌روز شد';
         setTimeout(function () {
+          BK.saving = false;
           bkSave.classList.remove('bk-saved');
           bkSave.innerHTML = 'ثبت تغییرات <span id="bk-count">(۰)</span>';
           go('01', false);
@@ -7915,8 +7968,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (qpp && qpG.dataset.qp) qpp.value = qpG.dataset.qp;
       var qpu = document.getElementById('qp-stock');
       if (qpu && qpG.dataset.qs) qpu.value = qpG.dataset.qs;
+      /* فاز ۴۸ — حداقل خرید: همان واحد بستهٔ کالا */
+      var qpm = document.getElementById('qp-min');
+      if (qpm) qpm.value = qpG.dataset.qm || '';
       var qpu2 = document.getElementById('qp-unit');
       if (qpu2 && qpG.dataset.qu) qpu2.textContent = '— ' + qpG.dataset.qu;
+      var qpm2 = document.getElementById('qp-munit');
+      if (qpm2 && qpG.dataset.qu) qpm2.textContent = '— ' + qpG.dataset.qu;
       openSheet('sheet-quickps');
       return;
     }
@@ -7925,6 +7983,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (qpCard) {
         var price = (document.getElementById('qp-price') || {}).value;
         var stock = bkNum((document.getElementById('qp-stock') || {}).value);
+        var qmin = bkNum((document.getElementById('qp-min') || {}).value);
         var pe = qpCard.querySelector('.info .p');
         if (pe && price) pe.innerHTML = gfEsc(price) + ' <small>تومان</small>';
         var bd = qpCard.querySelector('.mini-metrics .badge');
@@ -7932,6 +7991,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         var ge = qpCard.querySelector('.gear');
         if (ge && price) ge.dataset.qp = price;
         if (ge && stock != null) ge.dataset.qs = faNum(stock);
+        if (ge && qmin != null) ge.dataset.qm = faNum(qmin); /* فاز ۴۸ */
       }
       closeSheet();
       return;
@@ -8046,16 +8106,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* ═══ فاز ۴۴ — «قیمت‌ها درست است» (۴۴): مهر تازگی قیمت‌ها (ایدهٔ MVP «تأیید همه») ═══ */
+    /* ═══ فاز ۴۸ — «تمدید همین قیمت‌ها» (۴۴): مهر تازگی قیمت‌ها (ایدهٔ MVP «تأیید همه»)؛
+       قبلاً «قیمت‌ها درست است» در فوتر بود — طبق حکم مالک بالا آمد و تغییر نام داد ═══ */
     var bkf = t.closest('#bk-fresh');
     if (bkf) {
-      var st44 = document.getElementById('bk-stale');
-      if (st44) st44.hidden = true;
       bkf.classList.add('bk-saved');
-      bkf.innerHTML = '<svg><use href="#i-check"/></svg> مهر تازگی قیمت‌ها ثبت شد';
+      bkf.innerHTML = '<svg><use href="#i-check"/></svg><b>مهر تازگی قیمت‌ها ثبت شد</b><small>تازه‌سازی</small>';
       setTimeout(function () {
         bkf.classList.remove('bk-saved');
-        bkf.innerHTML = '<svg><use href="#i-check"/></svg> قیمت‌ها درست است';
+        bkf.innerHTML = '<svg><use href="#i-check"/></svg><b>تمدید همین قیمت‌ها</b><small>تازه‌سازی</small>';
         go('01', false);
         stack.length = 0;
       }, 900);
