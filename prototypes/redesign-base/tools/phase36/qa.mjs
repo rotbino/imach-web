@@ -54,16 +54,15 @@ await page.click('#scr-44 .subheader .back');
 await page.waitForTimeout(220);
 ok(await page.evaluate(() => location.hash === '#01'), 'بازگشت ۴۴ → کاتالوگ (۰۱)');
 
-/* ═══ ۲) تغییر درصدی (فاز ۳۹: مدال dlg-pct — استپر ۰٫۵٪) + بازنشانی ═══ */
-console.log('— تغییر درصدی (مدال فاز ۳۹) و بازنشانی');
+/* ═══ ۲) تغییر درصدی (فاز ۴۵: پنل اینلاین bk-pctbar — اعمال زنده) + بازنشانی ═══ */
+console.log('— تغییر درصدی (پنل اینلاین فاز ۴۵) و بازنشانی');
 await nav('44');
-/* +۵٪ = ۱۰ کلیک روی دکمهٔ زیاد */
+/* +۵٪ = ۱۰ کلیک روی دکمهٔ زیاد — هر کلیک همان لحظه روی جدول می‌نشیند */
 await page.click('#scr-44 .bk-pct');
 await page.waitForTimeout(280);
 for (let i = 0; i < 10; i++) await page.click('.pct-plus');
 await page.waitForTimeout(200);
 ok(await page.evaluate(() => document.getElementById('pct-input').value === '۵'), '۱۰ کلیک روی + → ورودی ۵٪ (گام ۰٫۵)');
-await page.click('#pct-apply');
 await page.waitForTimeout(250);
 const afterPc = await page.evaluate(() => ({
   chg: document.querySelectorAll('#scr-44 .bk-row.chg').length,
@@ -83,21 +82,15 @@ const afterRs = await page.evaluate(() => ({
 }));
 ok(afterRs.chg === 0 && afterRs.p1 === '۲٬۸۵۰٬۰۰۰', 'بازنشانی → مقدار اولیه و صفر تغییر');
 
-/* ترکیبی: +۵٪ سپس −۵٪ (روی فعلی ضرب می‌شود) — با مدال درصدی */
-await page.click('#scr-44 .bk-pct');
-await page.waitForTimeout(260);
+/* ترکیبی: +۵٪ سپس −۵٪ (فاز ۴۵: پنل اینلاین — بازمحاسبه از مبنا، نه تجمعی) */
+if (await page.locator('#bk-pctbar').isHidden()) { await page.click('#scr-44 .bk-pct'); await page.waitForTimeout(260); }
 for (let i = 0; i < 10; i++) await page.click('.pct-plus');
 await page.waitForTimeout(150);
-await page.click('#pct-apply');
-await page.waitForTimeout(200);
-await page.click('#scr-44 .bk-pct');
-await page.waitForTimeout(260);
-for (let i = 0; i < 10; i++) await page.click('.pct-minus');
-await page.waitForTimeout(150);
-await page.click('#pct-apply');
+/* +۵ → صفر → −۵: هر تغییر از مبنا بازمحاسبه می‌شود */
+for (let i = 0; i < 20; i++) await page.click('.pct-minus');
 await page.waitForTimeout(220);
 const comp = await page.evaluate(() => document.querySelector('#scr-44 .bk-row .bk-price').value);
-ok(comp === '۲٬۸۴۲٬۸۷۵', `درصد ترکیبی: ۲٬۸۵۰٬۰۰۰×۱٫۰۵×۰٫۹۵ = ${comp}`);
+ok(comp === '۲٬۷۰۷٬۵۰۰', `درصد از مبنا: ۲٬۸۵۰٬۰۰۰×۰٫۹۵ = ${comp}`);
 await page.click('.bk-reset2');
 await page.waitForTimeout(120);
 
@@ -264,7 +257,7 @@ ok(newprod.goodChips >= 1, 'کالای جدید: چیپ‌های «نوع کال
 
 /* ═══ ۱۰) e2e — ۴۷ صفحه بدون خطای کنسول ═══ */
 console.log('— e2e همهٔ صفحه‌ها');
-const SCREENS = ['01','02','04','05','07','08','09','10','12','13','14','15','16','17','18','19','22','27','29','30','34','42','44','d3']; /* فاز ۴۴: ۲۳ صفحه + d3 */
+const SCREENS = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','d3']; /* فاز ۴۵: ۲۳ صفحه + d3 (۱۴ حذف، ۴۵ اضافه) */
 let visOk = 0, visFail = 0;
 for (const s of SCREENS) {
   await page.goto(URL + '#' + s);

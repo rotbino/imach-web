@@ -173,6 +173,26 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-05 .match-chip svg { width: 11px; height: 11px; }
 
 
+  /* ═══ فاز ۴۵ — استعلام‌های خریدار (۴۵): کارت جاری + ردیف پایان‌یافته ═══ */
+  #scr-45 .inq-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 11px 12px; cursor: pointer; }
+  #scr-45 .inq-card:active { border-color: var(--border-strong); }
+  #scr-45 .inq-top { display: flex; align-items: center; gap: 10px; }
+  #scr-45 .inq-t { flex: 1; min-width: 0; }
+  #scr-45 .inq-t b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.7; color: var(--foreground); }
+  #scr-45 .inq-t span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  #scr-45 .inq-top > .badge { flex-shrink: 0; }
+  #scr-45 .inq-meta { display: flex; align-items: center; gap: 12px; margin-top: 9px; padding-top: 8px; border-top: 1px solid #f0eee8; }
+  #scr-45 .inq-meta .mm { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--muted-fg); }
+  #scr-45 .inq-meta .mm svg { width: 12px; height: 12px; }
+  #scr-45 .inq-meta .mm.hot { color: var(--red); }
+  #scr-45 .inq-act { margin-right: auto; display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 800; color: var(--primary-strong); flex-shrink: 0; }
+  #scr-45 .inq-act svg { width: 11px; height: 11px; }
+  #scr-45 .inq-done { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 9px 11px; cursor: pointer; }
+  #scr-45 .inq-done .inq-t b { font-size: 11.5px; color: var(--stone-soft); }
+  #scr-45 .inq-done .inq-t span { font-size: 10px; }
+  #scr-45 .inq-done > .badge { flex-shrink: 0; font-size: 9px; }
+
+
 /* ── استایل صفحهٔ 13 (13-catalog-public.html) ── */
 
   /* ═══ دکمهٔ چندانتخابی کنار جستجو ═══ */
@@ -1111,6 +1131,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ۰۸ — کارت‌های افقی «درخواست‌های خرید جاری» (ایدهٔ ۲۳ به لیست خود خریدار) */
   .sec-title .more.morelnk { color: var(--red); font-weight: 800; }
   .sec-title .more.morelnk svg { width: 12px; height: 12px; vertical-align: -1.5px; margin-right: 2px; }
+  #scr-08 .bl-inq-title h2 { font-size: 12.5px; } /* فاز ۴۵: استعلام‌های جاری — فونت ریزتر */
+  #scr-08 .bl-inq-title .more { font-size: 10.5px; }
   #scr-08 .bl-rfq-row { display: flex; gap: 10px; overflow-x: auto; padding: 2px; margin-top: 10px; scrollbar-width: none; -ms-overflow-style: none; }
   #scr-08 .bl-rfq-row::-webkit-scrollbar { display: none; }
   #scr-08 .bl-rfq { flex: 0 0 138px; border: 1px solid var(--border); border-radius: 14px; background: #fff; overflow: hidden; cursor: pointer; }
@@ -1147,7 +1169,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     .sheet::-webkit-scrollbar, .dlg::-webkit-scrollbar { display: none; }
   }
 
-  /* ═══ فاز ۳۰ — تأمین‌کنندگان ویژهٔ این کالا (۰۲): ردیف دوسطحی + دکمهٔ «کاتالوک» هر فروشنده ═══ */
+  /* ═══ فاز ۳۰ — تأمین‌کنندگان ویژهٔ این کالا (۰۲): ردیف دوسطحی + دکمهٔ «کاتالوگ» هر فروشنده ═══ */
   #scr-02 .sp-row { display: flex; align-items: center; gap: 9px; padding: 9px 0; border-bottom: 1px dashed #eee9dd; }
   #scr-02 .sp-row:last-child { border-bottom: 0; }
   #scr-02 .sp-info { flex: 1; min-width: 0; }
@@ -1262,6 +1284,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #sheet-video .vd-learn { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
   #sheet-video .vd-learn .li { display: flex; gap: 7px; font-size: 11px; line-height: 1.95; color: var(--stone-soft); }
   #sheet-video .vd-learn .li svg { width: 12px; height: 12px; color: var(--green); flex-shrink: 0; margin-top: 5px; }
+
+  /* ═══ فاز ۴۵ — کارت شخصیِ هاب پروفایل (۴۲): عکس + نام روی یک کادر؛ لمس → مودال ویرایش ═══ */
+  .pp-me { display: flex; align-items: center; gap: 13px; cursor: pointer; }
+  .pp-me .pp-big { width: 62px; height: 62px; font-size: 22px; }
+  .pp-me .tx { flex: 1; min-width: 0; }
+  .pp-me .tx .nm { font-size: 15px; font-weight: 800; line-height: 1.6; }
+  .pp-me .tx .ph { font-size: 10.5px; color: var(--muted-fg); margin-top: 3px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .pp-me .tx .ed { font-size: 10px; font-weight: 800; color: var(--primary-strong); margin-top: 5px; }
+  .pp-me .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
 
   /* ═══ فاز ۳۳ — ۱) پروفایل شخصی: کارت در ۰۷/۱۴ + صفحهٔ ۴۲ + شیت انتخاب تصویر ═══
      فاز ۳۵: عنوان کارت (pp-cap) حذف شد — عکس خودش گویاست؛ سلکتور مرده پاک شد */
@@ -1423,6 +1454,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .bulk-bar .tx b { display: block; font-size: 12.5px; font-weight: 700; }
   .bulk-bar .tx small { display: block; font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
   .bulk-bar .chev { width: 15px; height: 15px; color: var(--muted-fg); flex-shrink: 0; }
+  /* فاز ۴۵ — نوار «تغییر سریع و گروهی قیمت‌ها»: بدون زیرعنوان، درشت‌تر و روشن‌تر */
+  .bulk-bar-lg { border-color: #e8d9bd; background: linear-gradient(180deg, #fdf8ef, #fff 55%); }
+  .bulk-bar-lg .tx b { font-size: 13.5px; font-weight: 800; color: var(--primary-strong); }
+  .bulk-bar-lg > svg { color: var(--amber); }
   /* فاز ۳۶ — وضعیت اکسل در مدال */
   .xls-status { font-size: 11px; font-weight: 700; line-height: 1.9; margin-top: 10px; border-radius: 10px; padding: 8px 10px; background: var(--green-bg); color: var(--green); }
   .xls-status.err { background: var(--red-bg); color: var(--red); }
@@ -1431,6 +1466,21 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ═══ فاز ۳۹ — صفحهٔ ۴۴: مدال درصدی · اکسل ورود/ثبت‌نامی · بخش تخفیف‌ها ═══ */
   /* آیکون ٪ ساب‌هدر — خنثی و آرام کنار اکسل سبز */
   .bk-pct { background: #fff; color: var(--primary-strong); border-color: var(--border-strong); }
+  /* ═══ فاز ۴۵ — پنل اینلاین درصد (جای مدال حذف‌شده): بالای فرم، اعمال زنده ═══ */
+  #bk-pctbar { margin-top: 8px; border: 1px solid #f3ddba; background: linear-gradient(180deg, #fdf8ef, #fff 55%); border-radius: 12px; padding: 10px 12px 12px; }
+  #bk-pctbar .bk-pct-head { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  #bk-pctbar .bk-pct-head > svg { width: 15px; height: 15px; color: var(--primary-strong); flex-shrink: 0; }
+  #bk-pctbar .bk-pct-head b { font-size: 12.5px; font-weight: 800; }
+  #bk-pctbar .bk-pct-live { font-size: 9px; font-weight: 800; color: var(--green); background: var(--green-bg); border-radius: 999px; padding: 2px 7px; flex-shrink: 0; }
+  #bk-pctbar .bk-pct-x { margin-right: auto; width: 26px; height: 26px; border-radius: 8px; border: 0; background: none; color: var(--muted-fg); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  #bk-pctbar .bk-pct-x svg { width: 13px; height: 13px; }
+  #bk-pctbar .bk-pct-x:active { background: var(--muted); }
+  #bk-pctbar .pct-stepper { margin-top: 10px; }
+  #bk-pctbar .pct-btn { width: 46px; height: 46px; border-radius: 12px; }
+  #bk-pctbar .pct-btn svg { width: 18px; height: 18px; }
+  #bk-pctbar .pct-num { height: 46px; font-size: 17px; border-radius: 12px; padding: 0 26px 0 10px; }
+  #bk-pctbar .pct-preview { margin-top: 8px; padding: 7px 10px; }
+  #bk-pctbar .bk-pct-hint { font-size: 10px; color: var(--muted-fg); line-height: 1.9; margin-top: 8px; }
   /* استپر درصدی: [−][عدد][+] — دو دکمهٔ طرفین، گام ۰٫۵٪ */
   .pct-stepper { display: flex; align-items: stretch; gap: 9px; margin-top: 14px; }
   .pct-btn { width: 52px; height: 56px; border-radius: 14px; border: 1.5px solid var(--border-strong); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--foreground); flex-shrink: 0; }
@@ -1510,6 +1560,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .gf-paste:active { opacity: .75; }
   .gf-group { font-size: 11px; font-weight: 700; color: var(--muted-fg); margin: 14px 2px 0; }
   .gf-row { display: flex; align-items: center; gap: 11px; width: 100%; text-align: right; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; margin-top: 8px; cursor: pointer; font-family: inherit; }
+  .gf-row.picked { border-color: var(--primary); background: var(--accent); }
   .gf-row:active { border-color: var(--border-strong); }
   .gf-row .th { width: 46px; height: 46px; border-radius: 10px; overflow: hidden; flex-shrink: 0; background: var(--muted); display: grid; place-items: center; }
   .gf-row .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -1672,24 +1723,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- ═══ هدر: لوگو + زنگ + پیش‌نمایش عمومی ═══ -->
     <header class="appbar">
-      <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
-      <div class="actions">
-        <button class="arm-pill" aria-label="تعویض دستیار">
-          <svg><use href="#i-store"/></svg> دستیار فروش
+      <div class="brand">
+        <img src="assets/logo3.svg" alt="iMach">
+        <button class="arm-pill" aria-label="تعویض دستیار">دستیار فروش عمده
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
+      </div>
+      <div class="actions">
         <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
-        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
         <button class="avatar" style="width:32px;height:32px;font-size:12px" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ">آ</button>
       </div>
     </header>
 
     <main class="screen-body">
 
-      <!-- هدر ویترین — نمای عمومی + مدیریت یکجا -->
+      <!-- هدر ویترین — فاز ۴۵: چشم «نمای عمومی» از هدر به این‌جا آمد (کنار تنظیمات و اشتراک؛
+           اگر نام کسب‌وکار طولانی شود، با آیکون‌های هدر توداخل نمی‌شود) -->
       <div class="showcase">
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
@@ -1698,6 +1750,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
         <button class="icon-btn" aria-label="تنظیمات کاتالوگ" data-sheet="sheet-cset"><svg><use href="#i-gear"/></svg></button>
         <button class="icon-btn" aria-label="اشتراک کاتالوگ" data-sheet="sheet-share"><svg><use href="#i-share"/></svg></button>
+        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
 
       <!-- جستجو + افزودن کالا -->
@@ -1713,10 +1766,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <!-- ═══ فاز ۳۶ (مالک) — به‌روزرسانی گروهی قیمت و موجودی: کار روزانهٔ فروشنده ═══
            در بازارهای پرتورم قیمت‌ها هر روز عوض می‌شوند؛ ورود سریع این کار روی خود
-           کاتالوگ (نه ته تنظیمات) قرار گرفت. مقصد: صفحهٔ ۴۴ (گرید قیمت/موجودی + اکسل). -->
-      <button class="bulk-bar" data-go="44" aria-label="به‌روزرسانی گروهی قیمت و موجودی">
+           کاتالوگ (نه ته تنظیمات) قرار گرفت. مقصد: صفحهٔ ۴۴ (گرید قیمت/موجودی + اکسل).
+           فاز ۴۵ (مالک): عنوان و زیرعنوان حذف شد — یک جملهٔ روشن: «تغییر سریع و گروهی قیمت‌ها». -->
+      <button class="bulk-bar bulk-bar-lg" data-go="44" aria-label="تغییر سریع و گروهی قیمت‌ها">
         <svg><use href="#i-percent"/></svg>
-        <span class="tx"><b>قیمت و موجودی</b><small>به‌روزرسانی گروهی و سریع — دستی یا درصدی</small></span>
+        <span class="tx"><b>تغییر سریع و گروهی قیمت‌ها</b></span>
         <svg class="chev"><use href="#i-chev"/></svg>
       </button>
 
@@ -1732,10 +1786,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- گرید کالاها — کارت‌های عمومی + شاخص‌های کوچک مالک -->
       <div class="pgrid">
 
-        <div class="pcard">
+        <div class="pcard" data-cn="برنج هاشمی" data-cd="کیسه ۵۰ کیلویی">
           <div class="ph">
             <div class="thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی — کیسه ۵۰ کیلویی"></div>
-            <button class="gear" aria-label="تنظیمات کالا" data-sheet="sheet-pset" title="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج هاشمی" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۸۵۰٬۰۰۰" data-qs="۳۵" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج هاشمی</div>
@@ -1748,10 +1802,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <div class="pcard">
+        <div class="pcard" data-cn="برنج طارم" data-cd="کیسه ۵۰ کیلویی">
           <div class="ph">
             <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
-            <button class="gear" aria-label="تنظیمات کالا" data-sheet="sheet-pset" title="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج طارم" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۷۵۰٬۰۰۰" data-qs="۲۸" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج طارم</div>
@@ -1764,10 +1818,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <div class="pcard">
+        <div class="pcard" data-cn="برنج هاشمی" data-cd="کیسه ۱۰ کیلویی">
           <div class="ph">
             <div class="thumb"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی — کیسه ۱۰ کیلویی"></div>
-            <button class="gear" aria-label="تنظیمات کالا" data-sheet="sheet-pset" title="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج هاشمی" data-qd="کیسه ۱۰ کیلویی" data-qp="۵۹۵٬۰۰۰" data-qs="۶۰" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج هاشمی</div>
@@ -1780,10 +1834,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <div class="pcard">
+        <div class="pcard" data-cn="برنج فجر" data-cd="کیسه ۵۰ کیلویی">
           <div class="ph">
             <div class="thumb"><img src="png/goods/fajar-50.jpg" alt="برنج فجر — کیسه ۵۰ کیلویی"></div>
-            <button class="gear" aria-label="تنظیمات کالا" data-sheet="sheet-pset" title="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button>
+            <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج فجر" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۴۸۰٬۰۰۰" data-qs="۸" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
             <div class="n">برنج فجر</div>
@@ -1900,9 +1954,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <h2>نتایج حضور در آیمچ</h2>
             <span class="more" data-sheet="sheet-events" style="color:var(--primary-strong);font-weight:700;display:inline-flex;align-items:center;gap:4px"><svg style="width:14px;height:14px"><use href="#i-history"/></svg> تاریخچهٔ رویدادها</span>
           </div>
+          <!-- فاز ۴۵ — هم‌گام با MVP: دنبال‌کردن قیمت حذف؛ ذخیره در لیست خرید (خبردار شدن از قیمت)
+               جای آن نشسته است. پیام‌ها هم همان مفاهیم MVP را بازتاب می‌دهند. -->
           <div class="stat-strip" style="margin:0">
             <div class="stat"><div class="v">۲۴۸</div><div class="k">بازدید</div></div>
             <div class="stat hot"><div class="v">۲۲</div><div class="k">درخواست خرید</div></div>
+            <div class="stat"><div class="v">۱۳</div><div class="k">ذخیره در لیست خرید</div></div>
           </div>
           <div style="font-size:10px;color:var(--muted-fg);margin-top:7px">شمارنده‌ها از ابتدای ثبت این کالا جمع شده‌اند — ریز کامل رویدادها در «تاریخچهٔ رویدادها».</div>
         </div>
@@ -1980,8 +2037,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
     </main>
 
-    <!-- اکشن‌های اصلی خریدار — فاز ۲۴: دنبال‌کردن قیمت به‌صورت آیکون + دکمهٔ «درخواست خرید» تک‌خطی (فاز ۲۷: نام جدید) -->
-    <div class="action-bar">
+    <!-- اکشن‌های اصلی خریدار — فاز ۲۴: دنبال‌کردن قیمت به‌صورت آیکون + دکمهٔ «درخواست قیمت» تک‌خطی (فاز ۲۷→۴۵)
+         فاز ۴۵ (مالک): برای مالکِ خودِ کالا مخفی است — مالک از خریدار خودش خرید نمی‌کند؛
+         مدیریت کالا در بخش «مدیریت این کالا» (own-02) است. -->
+    <div class="action-bar" id="buybar-02">
       <button class="icon-btn" style="width:46px;height:46px;border-radius:12px" aria-label="تماس با فروشنده" title="تماس با فروشنده">
         <svg><use href="#i-phone"/></svg>
       </button>
@@ -1991,7 +2050,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <button class="icon-btn" style="width:46px;height:46px;border-radius:12px" aria-label="افزودن به لیست خرید" data-addlist title="افزودن به لیست خرید">
         <svg><use href="#i-bmark-plus"/></svg>
       </button>
-      <button class="btn btn-stone" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-go="12">درخواست خرید</button>
+      <button class="btn btn-stone" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-go="12">درخواست قیمت</button>
     </div>
 
     </section>
@@ -2059,17 +2118,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 
     <header class="appbar">
-      <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
-      <div class="actions">
-        <button class="arm-pill" aria-label="تعویض دستیار">
-          <svg><use href="#i-store"/></svg> دستیار فروش
+      <div class="brand">
+        <img src="assets/logo3.svg" alt="iMach">
+        <button class="arm-pill" aria-label="تعویض دستیار">دستیار فروش عمده
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
+      </div>
+      <div class="actions">
         <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
           <svg><use href="#i-bell"/></svg>
           <span class="dot">۳</span>
         </button>
-        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
         <button class="avatar" style="width:32px;height:32px;font-size:12px" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ">آ</button>
       </div>
     </header>
@@ -2173,14 +2232,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- ═══ فاز ۴۴ — تنظیمات دستیار فروش: پروفایل شخصی/کسب‌وکار/شارژ به هاب ۴۲ (آواتار هدر) رفتند؛
          این صفحه فقط تنظیماتِ همان دستیار است. کمپین/مشتریان من/راهنما حذف شدند. ═══ -->
     <header class="appbar">
-      <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
-      <div class="actions">
-        <button class="arm-pill" aria-label="تعویض دستیار">
-          <svg><use href="#i-store"/></svg> دستیار فروش
+      <div class="brand">
+        <img src="assets/logo3.svg" alt="iMach">
+        <button class="arm-pill" aria-label="تعویض دستیار">دستیار فروش عمده
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
+      </div>
+      <div class="actions">
         <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
-        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
         <button class="avatar" style="width:32px;height:32px;font-size:12px" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ">آ</button>
       </div>
     </header>
@@ -2236,26 +2295,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- حساب کاربری -->
-      <div class="sec-title" style="margin-top:14px"><h2>حساب کاربری</h2></div>
-      <div class="card" style="padding:0 14px">
-        <!-- تم تاریک/روشن — در پروتوتایپ نمایشی است (پیاده‌سازی: data-theme روی <html> + localStorage) -->
-        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
-          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-moon"/></svg>
-          <span style="flex:1">تم تاریک / روشن</span>
-          <div class="toggle" aria-label="تغییر تم"></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
-          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-globe"/></svg>
-          <span style="flex:1">زبان / Language</span>
-          <span style="color:var(--muted-fg);font-size:11.5px">فارسی</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;color:var(--red);cursor:pointer">
-          <svg style="width:16px;height:16px"><use href="#i-logout"/></svg>
-          <span style="flex:1">خروج از حساب</span>
-        </div>
-      </div>
-
     </main>
 
     <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار فروش">
@@ -2279,12 +2318,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
          دنبال‌کردن فقط در کاتالوگ دیگران معنی دارد — روی کارت این‌جا نیست. -->
 
     <header class="appbar">
-      <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
-      <div class="actions">
-        <button class="arm-pill" aria-label="تعویض دستیار">
-          <svg><use href="#i-basket"/></svg> دستیار خرید
+      <div class="brand">
+        <img src="assets/logo3.svg" alt="iMach">
+        <button class="arm-pill" aria-label="تعویض دستیار">دستیار خرید عمده
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
+      </div>
+      <div class="actions">
         <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
         <button class="avatar" style="width:32px;height:32px;font-size:12px" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ">آ</button>
       </div>
@@ -2292,23 +2332,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- نام لیست + اشتراک‌گذاری + تنظیمات (فاز ۲۷) -->
+      <!-- نام لیست + اشتراک‌گذاری + تنظیمات + نمای فروشنده‌ها (فاز ۴۵: چشم از هدر به این‌جا آمد) -->
       <div class="sec-title" style="margin-top:4px">
         <h2><svg><use href="#i-list"/></svg> لیست خرید من</h2>
         <div style="display:flex;align-items:center;gap:7px">
+          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="نمای فروشنده‌ها از لیست شما" data-sheet="sheet-listedit" title="نمای فروشنده‌ها از لیست شما"><svg><use href="#i-eye"/></svg></button>
           <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="اشتراک‌گذاری لیست خرید" data-sheet="sheet-contacts" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg></button>
           <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="تنظیمات لیست خرید" data-sheet="sheet-listset" title="تنظیمات لیست خرید"><svg><use href="#i-gear"/></svg></button>
         </div>
       </div>
 
-      <!-- فاز ۲۹ — «درخواست‌های خرید جاری» (ایدهٔ ۲۳ روی لیست خودِ خریدار):
-           کارت‌های افقی عکس‌دار (عکس + بج مهلت + نیاز + تعداد پیشنهاد) — لمس کارت → پیشنهادات همان
-           درخواست (۳۶)؛ «همه درخواستها» → صفحهٔ ۱۱. جایگزین باکس «درخواست‌های خرید من» شد. -->
-      <div class="sec-title" style="margin-top:12px">
-        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید جاری</h2>
+      <!-- فاز ۴۵ (مالک) — «استعلام‌های جاری»: فونت ریزتر + «مشاهدهٔ همه» روبه‌رویش → صفحهٔ ۴۵.
+           کارت‌های افقی عکس‌دار (عکس + بج مهلت + تعداد پاسخ) — لمس کارت → گفتگوی همان استعلام. -->
+      <div class="sec-title bl-inq-title" style="margin-top:12px">
+        <h2><svg><use href="#i-inbox"/></svg> استعلام‌های جاری</h2>
+        <span class="more" data-go="45" style="color:var(--primary-strong);font-weight:800;display:inline-flex;align-items:center;gap:3px;cursor:pointer">مشاهدهٔ همه<svg style="width:12px;height:12px"><use href="#i-chev"/></svg></span>
       </div>
       <div class="bl-rfq-row">
-        <div class="bl-rfq" data-go="19" title="گفتگوی این درخواست">
+        <div class="bl-rfq" data-go="19" title="گفتگوی این استعلام">
           <div class="bl-rfq-img">
             <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
             <span class="badge b-orange dl">۳ روز مانده</span>
@@ -2317,7 +2358,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <div class="bl-rfq-q">۲۰ کیسهٔ ۵۰ کیلویی</div>
           <div class="bl-rfq-n"><svg><use href="#i-msg"/></svg> ۵ پاسخ</div>
         </div>
-        <div class="bl-rfq" data-go="19" title="گفتگوی این درخواست">
+        <div class="bl-rfq" data-go="19" title="گفتگوی این استعلام">
           <div class="bl-rfq-img">
             <img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی">
             <span class="badge b-rednum dl">امروز آخرین روز</span>
@@ -2339,18 +2380,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </button>
       </div>
 
-      <!-- فاز ۲۷ — گروه‌بندی کالا (مثل کاتالوگ): چیپ گروه‌ها + مدیریت گروه‌ها -->
-      <div class="bl-groups" style="margin-top:10px">
-        <div class="chips">
-          <button class="chip active">همه (۴)</button>
-          <button class="chip">غلات (۲)</button>
-          <button class="chip">روغن (۱)</button>
-          <button class="chip">کنسرو (۱)</button>
-        </div>
-        <button class="chip-manage" data-sheet="sheet-lgroups" title="گروه‌های کالا" aria-label="گروه‌های کالا"><svg><use href="#i-tag"/></svg></button>
-      </div>
-
-      <!-- ردیف‌های لیست — مینیمال و عکس‌دار؛ فراداده: آیکون+عدد -->
+      <!-- فاز ۲۷ — ردیف‌های لیست — مینیمال و عکس‌دار؛ فراداده: آیکون+عدد
+           فاز ۴۵: گروه‌بندی حذف شد — سرچ هست؛ گروه فقط شلوغی و سختی ورود اطلاعات بود. -->
       <div class="rows" style="margin-top:10px">
 
         <div class="bl-card" data-go="09">
@@ -2361,7 +2392,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="bl-fresh"><span class="badge b-green" style="font-size:8.5px;padding:1px 6px">قیمت امروز</span></div>
             <div class="bl-meta">
               <span class="mm" title="تأمین‌کنندگان این کالا"><svg><use href="#i-users"/></svg>۳</span>
-              <span class="mm" title="درخواست خرید جاری"><svg><use href="#i-inbox"/></svg>۱</span>
+              <span class="mm" title="استعلام جاری"><svg><use href="#i-inbox"/></svg>۱</span>
               <span class="mm hot" title="پیشنهادهای جدید"><svg><use href="#i-spark"/></svg>۳</span>
             </div>
           </div>
@@ -2375,7 +2406,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="bl-fresh"><span class="badge b-amber" style="font-size:8.5px;padding:1px 6px">قیمت ۴ روز پیش</span></div>
             <div class="bl-meta">
               <span class="mm" title="تأمین‌کنندگان این کالا"><svg><use href="#i-users"/></svg>۲</span>
-              <span class="mm" title="درخواست خرید جاری"><svg><use href="#i-inbox"/></svg>۱</span>
+              <span class="mm" title="استعلام جاری"><svg><use href="#i-inbox"/></svg>۱</span>
               <span class="mm hot" title="پیشنهادهای جدید"><svg><use href="#i-spark"/></svg>۱</span>
             </div>
           </div>
@@ -2406,19 +2437,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       </div>
 
-      <!-- راهنما: این لیست چطور پر می‌شود -->
+      <!-- راهنما: فاز ۴۵ — متن تازهٔ مالک -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>هر کالایی که از کاتالوگ فروشنده‌ها به لیست اضافه کنید، قیمت‌هایش را در تابلوی تأمین می‌بینید. همچنین می‌توانید کالا را از <b>«افزودن کالا»</b> هم اضافه کنید. در هر دو صورت، می‌توانید قیمت آن کالا را از چند تامین‌کنندهٔ دلخواه مشاهده و مقایسه کنید.</div>
+        <div>کالایی که عمده می‌خرید را به لیست خریدتان اضافه کنید تا بتوانید قیمت آن را از چند تأمین‌کنندهٔ مناسب مقایسه کنید و حتی استعلام قیمت رقابتی ایجاد کنید.</div>
       </div>
 
     </main>
 
-    <nav class="tabbar" data-cols="3" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab active"><svg><use href="#i-list"/></svg>لیست خرید</button>
-        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
+        <button class="tab"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>کاتالوگ‌ها</button>
       </div>
     </nav>
 
@@ -2460,7 +2492,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:11px">
-          <button class="btn btn-stone btn-sm" style="flex:1" data-go="12">درخواست خرید</button>
+          <button class="btn btn-stone btn-sm" style="flex:1" data-go="12">درخواست قیمت</button>
           <button class="btn btn-outline btn-sm" style="flex:1" data-go="13">مشاهده کاتالوگ</button>
         </div>
       </div>
@@ -2488,7 +2520,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cond" style="background:var(--green-bg);color:var(--green)"><svg style="width:11px;height:11px"><use href="#i-history"/></svg> از او خریده‌ام</span>
         </div>
         <div class="sup-actions">
-          <button class="btn btn-stone btn-sm" style="flex:1">درخواست خرید</button>
+          <button class="btn btn-stone btn-sm" style="flex:1">درخواست قیمت</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
           <button class="btn btn-outline btn-sm" style="color:var(--green)"><svg><use href="#i-check"/></svg></button>
         </div>
@@ -2517,7 +2549,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cond">ارسال به همه شهرها</span>
         </div>
         <div class="sup-actions">
-          <button class="btn btn-stone btn-sm" style="flex:1">درخواست خرید</button>
+          <button class="btn btn-stone btn-sm" style="flex:1">درخواست قیمت</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
           <button class="btn btn-outline btn-sm">ذخیره</button>
         </div>
@@ -2544,7 +2576,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cond">حداقل ۲۰ کیسه</span>
         </div>
         <div class="sup-actions">
-          <button class="btn btn-stone btn-sm" style="flex:1">درخواست خرید</button>
+          <button class="btn btn-stone btn-sm" style="flex:1">درخواست قیمت</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
           <button class="btn btn-outline btn-sm">ذخیره</button>
         </div>
@@ -2578,11 +2610,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <!-- اکشن اصلی: درخواست خرید از چند تأمین‌کننده -->
+    <!-- اکشن اصلی: استعلام قیمت از چند تأمین‌کننده -->
     <div class="action-bar">
       <button class="btn btn-stone btn-block" data-go="12">
         <svg><use href="#i-send"/></svg>
-        درخواست خرید از تأمین‌کننده‌های انتخابی
+        استعلام قیمت از تأمین‌کننده‌های انتخابی
       </button>
     </div>
 
@@ -2597,7 +2629,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
          بخش «مشاهده کاتالوگ‌های بیشتر» (نام فاز ۲۸) همان محتوای تب قدیمی «مرتبط با من» است: موتور تطابق +
          جایگاه تبلیغ هدفمندِ کاتالوگ‌های ذخیره‌شده (فروشندهٔ ویژه) — فرصت تبلیغ‌کننده برای قرارگرفتن
          در لیست ذخیرهٔ خریداران مرتبط. تب‌ها حذف شدند؛ فقط کاتالوگ‌های ذخیره‌شده نمایش داده می‌شود.
-         فاز ۴۴: ورودی این صفحه از هاب پروفایل (۴۲) است — کارت «کاتالوک‌های ذخیره‌شدهٔ من». -->
+         فاز ۴۴: ورودی این صفحه از هاب پروفایل (۴۲) است — کارت «کاتالوگ‌های ذخیره‌شدهٔ من». -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">کاتالوگ‌های ذخیره‌شدهٔ من<small id="saved-cats-count">۳ کاتالوگ</small></div>
@@ -2762,11 +2794,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
          هر تعداد را که خواست تیک می‌زند → ارسال. درخواست فقط برای همان تأمین‌کننده‌ها دیده می‌شود
          (صفحهٔ ۰۵ فروشنده) و پاسخ‌ها در گفتگوها می‌نشیند. «تعیین تأمین‌کنندهٔ جدید توسط خریدار»
          و «شبکهٔ iMach» حذف شد — ذخیرهٔ کاتالوگ آن نیاز را برطرف می‌کند.
+         فاز ۴۵ (مالک) — اسم‌گذاری: سمت خریدار «درخواست قیمت» (استعلام)، سمت فروشنده «درخواست خرید».
          IMPLEMENTATION NOTE: هر درخواست دریافتی برای فروشندهٔ ویژه، ۵٬۰۰۰ تومان از شارژ او کم می‌کند؛
-         در پیاده‌سازی عملیاتی: Inquiry { goodId, qty, note, deadline? } + گیرندگانِ تیک‌خورده؛ پاسخ در Thread. -->
+         در پیاده‌سازی عملیاتی: Inquiry { goodId, qty, note, deadline? } + گیرندگانِ تیک‌خورده؛ پاسخ در Thread. ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">درخواست خرید<small>برنج هاشمی · ارسال به تأمین‌کننده‌ها</small></div>
+      <div class="ttl">درخواست قیمت<small>برنج هاشمی · ارسال به تأمین‌کننده‌ها</small></div>
     </header>
 
     <main class="screen-body">
@@ -2972,80 +3005,119 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
-    <section class="scr" id="scr-14" data-arm="buy" hidden>
+    <section class="scr" id="scr-45" data-arm="buy" hidden>
 
-    <!-- ═══ فاز ۴۴ — تنظیمات دستیار خرید: پروفایل شخصی/کسب‌وکار/کاتالوک‌های ذخیره‌شده به هاب ۴۲ (آواتار هدر) رفتند؛
-         تنظیمات اعلان‌ها حذف شد (خواستهٔ مالک). این صفحه فقط تنظیماتِ همان دستیار است. ═══ -->
-    <header class="appbar">
-      <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
-      <div class="actions">
-        <button class="arm-pill" aria-label="تعویض دستیار">
-          <svg><use href="#i-basket"/></svg> دستیار خرید
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
-        </button>
-        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
-        <button class="avatar" style="width:32px;height:32px;font-size:12px" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ">آ</button>
-      </div>
+    <!-- ═══ فاز ۴۵ (مالک) — استعلام‌ها: لیست استعلام‌های قیمتِ کاربر (خریدار).
+         «استعلام» همان «درخواست قیمت» است — سمت خریدار استعلام، سمت فروشنده درخواست خرید.
+         ساختار: بالا «استعلام‌های جاری» (کارت کامل: کالا + مقدار + مهلت + پاسخ‌ها)،
+         پایین «پایان‌یافته» (فشرده: نتیجهٔ نهایی + بهترین پیشنهاد). همین نوارِ جاری،
+         خلاصه‌اش روی لیست خرید (۰۸) به‌صورت نوار افقی هم دیده می‌شود.
+         IMPLEMENTATION NOTE: هر استعلام = Inquiry { goodId, qty, recipients[] }؛
+         پاسخ‌ها در Thread می‌نشیند؛ پایان مهلت یا انتخاب تأمین‌کننده ← آرشیو «پایان‌یافته». ═══ -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">استعلام‌ها<small>استعلام‌های قیمت شما — جاری و پایان‌یافته</small></div>
     </header>
 
     <main class="screen-body">
 
-      <!-- لیست خرید -->
-      <div class="sec-title" style="margin-top:4px"><h2><svg><use href="#i-list"/></svg> لیست خرید</h2></div>
-      <div class="card" style="padding:0 14px">
-        <div data-sheet="sheet-listset" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
-          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-pencil"/></svg>
-          <span style="flex:1">تنظیمات لیست خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">نام، توضیح کوتاه و نقش شما در کسب‌وکار</span></span>
-          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      <!-- استعلام‌های جاری -->
+      <div class="sec-title" style="margin-top:4px">
+        <h2><svg><use href="#i-inbox"/></svg> استعلام‌های جاری <span class="cnt">(۳)</span></h2>
+      </div>
+      <div class="rows">
+
+        <div class="inq-card" data-go="19" title="گفتگوهای این استعلام">
+          <div class="inq-top">
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+            <div class="inq-t">
+              <b>برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی</b>
+              <span>ارسال به ۳ تأمین‌کننده · ۲ روز پیش</span>
+            </div>
+            <span class="badge b-orange">۳ روز مانده</span>
+          </div>
+          <div class="inq-meta">
+            <span class="mm"><svg><use href="#i-msg"/></svg> ۵ پاسخ</span>
+            <span class="mm hot"><svg><use href="#i-spark"/></svg> ۲ پیشنهاد جدید</span>
+            <span class="inq-act">مشاهدهٔ پاسخ‌ها<svg><use href="#i-chev"/></svg></span>
+          </div>
         </div>
-        <div data-sheet="sheet-lgroups" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
-          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-tag"/></svg>
-          <span style="flex:1">گروه‌های کالا<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">۴ گروه: غلات · روغن · کنسرو · شیرینی</span></span>
-          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+
+        <div class="inq-card" data-go="19" title="گفتگوهای این استعلام">
+          <div class="inq-top">
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی"></div>
+            <div class="inq-t">
+              <b>روغن سرخ‌کردنی · ۴۰ عدد ۱۰ لیتری</b>
+              <span>ارسال به ۳ تأمین‌کننده · ۵ روز پیش</span>
+            </div>
+            <span class="badge b-rednum">امروز آخرین روز</span>
+          </div>
+          <div class="inq-meta">
+            <span class="mm"><svg><use href="#i-msg"/></svg> ۳ پاسخ</span>
+            <span class="inq-act">مشاهدهٔ پاسخ‌ها<svg><use href="#i-chev"/></svg></span>
+          </div>
         </div>
+
+        <div class="inq-card" data-go="19" title="گفتگوهای این استعلام">
+          <div class="inq-top">
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/tomato-paste.jpg" alt="رب گوجه‌فرنگی"></div>
+            <div class="inq-t">
+              <b>رب گوجه‌فرنگی · ۶۰ عدد ۵۰۰ گرمی</b>
+              <span>ارسال به ۲ تأمین‌کننده · دیروز</span>
+            </div>
+            <span class="badge b-green">بدون مهلت</span>
+          </div>
+          <div class="inq-meta">
+            <span class="mm"><svg><use href="#i-msg"/></svg> ۱ پاسخ</span>
+            <span class="inq-act">مشاهدهٔ پاسخ‌ها<svg><use href="#i-chev"/></svg></span>
+          </div>
+        </div>
+
       </div>
 
-      <!-- کسب‌وکار -->
-      <div class="sec-title" style="margin-top:14px"><h2>کسب‌وکار</h2></div>
-      <div class="card" style="padding:0 14px">
-        <div data-go="22" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
-          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-store"/></svg>
-          <span style="flex:1">ویرایش کسب‌وکار<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">نام، نوع، صنف، شهر و دستیارهای فعال</span></span>
-          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      <!-- استعلام‌های پایان‌یافته -->
+      <div class="sec-title" style="margin-top:16px">
+        <h2><svg><use href="#i-history"/></svg> پایان‌یافته</h2>
+      </div>
+      <div class="rows">
+
+        <div class="inq-done">
+          <div class="thumb" style="width:40px;height:40px"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
+          <div class="inq-t">
+            <b>قند · ۱۰ کارتن ۱۰ کیلویی</b>
+            <span>بهترین پیشنهاد: ۷۶۰٬۰۰۰ تومان — کیان غلات</span>
+          </div>
+          <span class="badge b-muted">۲ هفته پیش</span>
         </div>
+
+        <div class="inq-done">
+          <div class="thumb" style="width:40px;height:40px"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی"></div>
+          <div class="inq-t">
+            <b>برنج هاشمی · ۳۰ کیسهٔ ۱۰ کیلویی</b>
+            <span>بهترین پیشنهاد: ۵۶۰٬۰۰۰ تومان — پخش سپهر</span>
+          </div>
+          <span class="badge b-muted">۱ ماه پیش</span>
+        </div>
+
       </div>
 
-      <!-- حساب کاربری -->
-      <div class="sec-title" style="margin-top:14px"><h2>حساب کاربری</h2></div>
-      <div class="card" style="padding:0 14px">
-        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
-          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-moon"/></svg>
-          <span style="flex:1">تم تاریک / روشن</span>
-          <div class="toggle" aria-label="تغییر تم"></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
-          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-globe"/></svg>
-          <span style="flex:1">زبان / Language</span>
-          <span style="color:var(--muted-fg);font-size:11.5px">فارسی</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;color:var(--red);cursor:pointer">
-          <svg style="width:16px;height:16px"><use href="#i-logout"/></svg>
-          <span style="flex:1">خروج از حساب</span>
-        </div>
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>استعلام قیمت، درخواست شما از چند تأمین‌کنندهٔ منتخب است — پاسخ‌ها در «پیام‌ها» می‌نشیند و همین‌جا جمع می‌شود.</div>
       </div>
 
     </main>
 
-    <nav class="tabbar" data-cols="3" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
-        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
+        <button class="tab active"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>کاتالوگ‌ها</button>
       </div>
     </nav>
 
     </section>
-
     <section class="scr" id="scr-15" data-arm="sell" hidden>
 
 
@@ -3154,7 +3226,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             </div>
             <div class="ben">
               <span class="b-n">۵</span>
-              <span class="b-tx"><b>درخواست خرید رقابتی</b><span>برای هر کالا درخواست خرید بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
+              <span class="b-tx"><b>استعلام قیمت رقابتی</b><span>برای هر کالا استعلام بساز و قیمت و شرایط رقابتی را از تأمین‌کنندگان دلخواهت بخواه</span></span>
             </div>
           </div>
           </div>
@@ -3389,14 +3461,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- ═══ هدر: لوگو + پیل دستیار + زنگ + آواتار ═══ -->
     <header class="appbar">
-      <div class="brand"><img src="assets/logo3.svg" alt="iMach"></div>
-      <div class="actions">
-        <button class="arm-pill" aria-label="تعویض دستیار">
-          <svg><use href="#i-basket"/></svg> دستیار خرید
+      <div class="brand">
+        <img src="assets/logo3.svg" alt="iMach">
+        <button class="arm-pill" aria-label="تعویض دستیار">دستیار خرید عمده
           <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
         </button>
+      </div>
+      <div class="actions">
         <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
-        <button class="icon-btn eye-preview" aria-label="پیش‌نمایش عمومی" data-go="13" title="پیش‌نمایش عمومی"><svg><use href="#i-eye"/></svg></button>
         <button class="avatar" style="width:32px;height:32px;font-size:12px" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ">آ</button>
       </div>
     </header>
@@ -3967,61 +4039,44 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 
 
+
+
+
+
+
+
+
+
     <section class="scr" id="scr-34" data-arm="buy" hidden>
 
-
-    <!-- فاز ۲۷ — فرم افزودن کالا به لیست خرید:
-         دکمهٔ «افزودن کالا» در ۰۸ این‌جا می‌آید (نه کاتالوگ) — کالا را پیدا می‌کنی/می‌سازی،
-         سپی «حجم خرید» و «دورهٔ خرید» از کاربر گرفته می‌شود (الگوی فرم فاینال). -->
-
+    <!-- ═══ فاز ۴۵ (مالک) — فرم افزودن کالا به لیست خرید، بازسازی‌شده به الگوی MVP (ایده‌های mvp-final):
+         جستجوی واحد روی «کالاهای مرجع + گودها» (نه ساخت کالای جدید) · اسکنر داخل نوار جستجو ·
+         پیشنهاد «پرتکرار در صنف شما» + «در صنف شما» وقتی سرچ خالی است · نتایج در دو گروه مثل کاتالوگ:
+         «هر برندی (مقایسهٔ همه)» = گود/فله — با لمس آن، قیمت همهٔ برندها (مثلاً همهٔ پفک‌ها) کنار هم دیده می‌شود؛
+         «یک برند مشخص» = کالای مرجع برنددار. اگر کالا از قبل در لیست است نشان «در لیست» می‌گیرد.
+         «کالای جدید بساز» حذف شد — از این پس کالاهای لیست خرید مستقیماً از کالاهای مرجع و گودها می‌آید.
+         IMPLEMENTATION NOTE: جستجو همان ایندکس واحد GF (good+ref) است؛ در پیاده‌سازی عملیاتی
+         GET /goods?q= با امتیازدهی مشابه + فیلتر صنف برای «پرتکرار در صنف شما». ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">افزودن کالا<small>به لیست خرید · حجم و دورهٔ خرید</small></div>
+      <div class="ttl">افزودن کالا به لیست خرید<small>از کالاهای مرجع آیمچ</small></div>
     </header>
 
     <main class="screen-body">
 
-      <!-- کالا را پیدا کن یا بساز -->
-      <div class="card">
-        <div class="field" style="margin-bottom:9px">
-          <label>کالا را پیدا کن یا بساز</label>
-          <div class="input">
-            <svg><use href="#i-search"/></svg>
-            <span class="ph">مثلاً: برنج هاشمی…</span>
-          </div>
-        </div>
-        <div class="rows" style="margin-top:2px">
-          <button class="row-card" data-gpick>
-            <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
-            <div class="body">
-              <div class="t" style="font-size:13px">برنج هاشمی</div>
-              <div class="s">غلات و حبوبات · ۴۵ تأمین‌کنندهٔ فعال</div>
-            </div>
-            <span class="badge b-stone">پرطرفدار</span>
-          </button>
-          <button class="row-card" data-gpick>
-            <div class="thumb" style="width:44px;height:44px"><img src="png/goods/tomato-paste.jpg" alt="رب گوجه‌فرنگی"></div>
-            <div class="body">
-              <div class="t" style="font-size:13px">رب گوجه‌فرنگی</div>
-              <div class="s">کنسروسازی · ۱۸ تأمین‌کنندهٔ فعال</div>
-            </div>
-          </button>
-          <button class="row-card" data-gpick>
-            <div class="thumb" style="width:44px;height:44px"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
-            <div class="body">
-              <div class="t" style="font-size:13px">قند</div>
-              <div class="s">قند و شکر · ۲۲ تأمین‌کنندهٔ فعال</div>
-            </div>
-          </button>
-        </div>
-        <button class="row-card" style="border-style:dashed;width:100%;margin-top:9px">
-          <svg style="width:18px;height:18px;color:var(--muted-fg);flex-shrink:0"><use href="#i-plus"/></svg>
-          <div class="body">
-            <div class="t" style="font-size:13px">کالای جدید بساز</div>
-            <div class="s">اگر در فهرست نبود، خودت تعریفش کن</div>
-          </div>
+      <div id="gl-okbox"></div>
+
+      <!-- جستجوی واحد + اسکنر بارکد -->
+      <div class="searchbar gf-search" style="margin-top:2px">
+        <svg><use href="#i-search"/></svg>
+        <input id="gl-q" type="text" placeholder="جستجوی کالا، برند، …" autocomplete="off">
+        <button class="gf-scan" data-sheet="sheet-scan" type="button" aria-label="اسکن بارکد" title="اسکن بارکد">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4v16M8.5 4v16M12.5 4v11M16.5 4v16M20.5 4v16"/></svg>
         </button>
       </div>
+
+      <!-- نتیجه‌ها — پرتکرار در صنف شما / در صنف شما (سرچ خالی) یا دو گروه (سرچ پر) -->
+      <div id="gl-res"></div>
 
       <!-- چقدر و چه دوره‌ای؟ — بعد از انتخاب کالا ظاهر می‌شود -->
       <div id="gqty-34" hidden>
@@ -4055,18 +4110,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
-
-
-
-
-
-
-
     <section class="scr" id="scr-42" data-arm="keep" hidden>
 
-    <!-- ═══ فاز ۴۴ — پروفایل: هابِ حساب از آواتارِ هدر باز می‌شود (فوترها «تنظیمات» دارند).
-         محتوا: مشخصات شخصی (فرم فاز ۳۳) + کسب‌وکارها (تعویض/ایجاد/ویرایش) + شارژ + کاتالوک‌های
-         ذخیره‌شدهٔ من + خروج. هرچه به دستیارها مربوط است در تنظیمات همان دستیار (۰۷/۱۴) است. ═══ -->
+    <!-- ═══ فاز ۴۴ — پروفایل: هابِ حساب از آواتارِ هدر باز می‌شود.
+         فاز ۴۵ (مالک) — صفحهٔ خلوت: کارت شخصی (ویرایش در مودال sheet-ppedit) + کسب‌وکار (دراپ‌داون)
+         + شارژ + کاتالوگ‌های ذخیره‌شده + حساب کاربری (تم/زبان/خروج — از تنظیمات دستیارها آمد).
+         هرچه به دستیارها مربوط است در تنظیمات همان دستیار (۰۷) است. ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">پروفایل<small>حساب، کسب‌وکارها و شارژ</small></div>
@@ -4074,57 +4123,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- تصویر پروفایل -->
-      <div class="card" style="display:flex;align-items:center;gap:13px">
+      <!-- ═══ فاز ۴۵ (مالک) — کارت پروفایل شخصی: عکس + نام روی یک کادر؛ لمس → مودال ویرایش (sheet-ppedit).
+           فیلدهای ویرایش دیگر داخل صفحه نیستند — صفحهٔ پروفایل خلوت است. ═══ -->
+      <div class="card pp-me" data-sheet="sheet-ppedit">
         <span class="pp-big" data-ppbig><img src="png/users/me.jpg" alt="تصویر پروفایل"></span>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13.5px;font-weight:700">تصویر پروفایل</div>
-          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">در گفتگوها و کنار نام‌تان دیده می‌شود</div>
-          <button class="btn btn-sm btn-outline" style="margin-top:9px" data-sheet="sheet-photo"><svg><use href="#i-camera"/></svg> تغییر تصویر</button>
+        <div class="tx">
+          <div class="nm" data-ppname>احمد رضایی</div>
+          <div class="ph">۰۹۱۲ ۳۴۵ ۶۷۸۹ <span class="badge b-answered" style="font-size:8.5px;padding:1px 6px">تاییدشده</span></div>
+          <div class="ed">ویرایش پروفایل</div>
         </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
       </div>
 
-      <!-- نام و مشخصات -->
-      <div class="field" style="margin-top:13px">
-        <label>نام <span class="opt">— همان ثبت‌نام</span></label>
-        <input class="input" id="pp-fn" value="احمد">
-      </div>
-
-      <div class="field">
-        <label>نام خانوادگی</label>
-        <input class="input" id="pp-ln" value="رضایی">
-      </div>
-
-      <div class="field">
-        <label>جنسیت</label>
-        <div class="pillchoice">
-          <button type="button" class="pill active" data-pgender="m">مرد</button>
-          <button type="button" class="pill" data-pgender="f">زن</button>
-        </div>
-        <div class="hint">در پیام‌ها و پشتیبانی درست خطاب شوید — نمایش عمومی ندارد</div>
-      </div>
-
-      <div class="field">
-        <label>تاریخ تولد <span class="opt">— اختیاری</span></label>
-        <input class="input" id="pp-bd" value="۱۳۶۲/۰۴/۱۵" placeholder="مثلاً ۱۳۶۲/۰۴/۱۵ — یا فقط سال: ۱۳۶۲">
-        <div class="hint">عمومی نمایش داده نمی‌شود — فقط برای امنیت حساب و یادآوری سالگرد تولد</div>
-      </div>
-
-      <div class="field">
-        <label>شماره موبایل <span class="opt">— هویت حساب</span></label>
-        <div class="input" style="display:flex;align-items:center;gap:8px">
-          <span>۰۹۱۲ ۳۴۵ ۶۷۸۹</span>
-          <span class="badge b-answered" style="font-size:9px;padding:1.5px 7px;margin-right:auto">تاییدشده</span>
-        </div>
-        <div class="hint">شماره‌ای که با آن ثبت‌نام کردید — برای تغییر از پشتیبانی درخواست دهید</div>
-      </div>
-
-      <!-- کسب‌وکارهای من -->
-      <div class="card biz-card" data-sheet="sheet-biz" style="margin-top:14px">
+      <!-- کسب‌وکارهای من — فاز ۴۵: دراپ‌داون مثل قبل؛ آیکون‌ها جمع‌وجور -->
+      <div class="card biz-card" data-sheet="sheet-biz" style="margin-top:13px">
         <div class="showcase" style="padding:0;margin:0;gap:11px">
-          <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+          <div class="avatar-lg" style="width:44px;height:44px;font-size:17px;background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
           <div class="meta">
-            <div class="name" style="font-size:16.5px;font-weight:800">پخش برنج پارس</div>
+            <div class="name" style="font-size:15px;font-weight:800" data-bizname>پخش برنج پارس</div>
             <div class="sub">احمد رضایی · پخش مواد غذایی · رشت</div>
           </div>
           <span class="biz-acts">
@@ -4134,11 +4150,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- شارژ -->
+      <!-- شارژ — فاز ۴۵: آیکون جمع‌وجور، هم‌قدِ بقیهٔ کادرها -->
       <div class="card wallet-card" data-go="29" style="cursor:pointer">
         <div class="wic"><svg><use href="#i-wallet"/></svg></div>
         <div class="wtx">
-          <div class="wv"><span data-wallet>۸۵٬۰۰۰</span> <small style="font-size:11px;font-weight:500;color:var(--muted-fg)">تومان شارژ</small></div>
+          <div class="wv"><span data-wallet>۸۵٬۰۰۰</span> <small style="font-size:10.5px;font-weight:500;color:var(--muted-fg)">تومان شارژ</small></div>
           <div class="wk">مصرف تبلیغ فقط وقتی نتیجه بگیرید</div>
         </div>
         <button class="btn btn-primary btn-sm" style="flex-shrink:0">افزایش شارژ</button>
@@ -4150,23 +4166,34 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <svg style="width:19px;height:19px"><use href="#i-bookmark"/></svg>
         </div>
         <div style="flex:1">
-          <div style="font-size:13.5px;font-weight:700">کاتالوک‌های ذخیره‌شدهٔ من</div>
+          <div style="font-size:13.5px;font-weight:700">کاتالوگ‌های ذخیره‌شدهٔ من</div>
           <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">۳ کاتالوگ · دفترچهٔ تلفن تأمین‌کننده‌های شما</div>
         </div>
         <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
       </div>
 
-      <!-- خروج از حساب -->
-      <div class="card" style="display:flex;align-items:center;gap:9px;padding:12px 14px;font-size:13px;color:var(--red);cursor:pointer" data-go="15">
-        <svg style="width:16px;height:16px"><use href="#i-logout"/></svg>
-        خروج از حساب
+      <!-- ═══ فاز ۴۵ (مالک) — حساب کاربری به پروفایل آمد (از تنظیمات دستیارها حذف شد):
+           تم تاریک/روشن · زبان · خروج. تنظیمات فقط مالِ دستیارهاست. ═══ -->
+      <div class="sec-title" style="margin-top:14px"><h2>حساب کاربری</h2></div>
+      <div class="card" style="padding:0 14px">
+        <!-- تم تاریک/روشن — در پروتوتایپ نمایشی است (پیاده‌سازی: data-theme روی <html> + localStorage) -->
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-moon"/></svg>
+          <span style="flex:1">تم تاریک / روشن</span>
+          <div class="toggle" aria-label="تغییر تم"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-globe"/></svg>
+          <span style="flex:1">زبان / Language</span>
+          <span style="color:var(--muted-fg);font-size:11.5px">فارسی</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;color:var(--red);cursor:pointer" data-go="15">
+          <svg style="width:16px;height:16px"><use href="#i-logout"/></svg>
+          <span style="flex:1">خروج از حساب</span>
+        </div>
       </div>
 
     </main>
-
-    <div class="action-bar">
-      <button class="btn btn-primary" style="flex:1" id="pp-save"><svg><use href="#i-check"/></svg> ذخیره تغییرات</button>
-    </div>
 
     </section>
 
@@ -4179,10 +4206,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
          ▸ در ایران و کشورهای پرتورم قیمت‌ها حتی روزانه تغییر می‌کنند؛ فروشنده‌ای با کاتالوگِ
            بزرگ بدون ویرایش گروهی احتمالاً آیمچ را کنار می‌گذارد. این صفحه کار روزانهٔ اوست.
          ▸ ورودها: نوار «قیمت و موجودی» بالای کاتالوگ (۰۱) + ردیف اولِ تنظیمات کاتالوگ.
-         ▸ فاز ۳۹ (مالک) — نوار چیپ‌های درصدی حذف شد؛ تغییر درصدی به آیکون ٪ کنار آیکون اکسل
-           منتقل شد که مدال dlg-pct را باز می‌کند: استپر [− | عدد | +] با گام ۰٫۵٪ + ورودی دستی
-           (مثبت/منفی/اعشاری) + پیش‌نمایش زنده روی اولین ردیف. اعمال درصد روی قیمت «فعلی»
-           هر ردیف ضرب می‌شود (ترکیبی: +۲٫۵٪ سپس +۱٪ = ۱٫۰۲۵×۱٫۰۱) و حداقل صفر.
+         ▸ فاز ۳۹ (مالک) — نوار چیپ‌های درصدی حذف شد؛ تغییر درصدی به آیکون ٪ کنار عنوان منتقل شد.
+           فاز ۴۵ (مالک) — مدال حذف شد؛ به‌جایش پنل اینلاین (bk-pctbar) بالای فرم باز می‌شود: استپر
+           [− | عدد | +] با گام ۰٫۵٪ + ورودی دستی (مثبت/منفی/اعشاری)؛ با هر تغییر، قیمت‌های جدول
+           همان لحظه زنده به‌روز می‌شوند (از قیمت مبنا محاسبه می‌شوند، نه تجمعی) و حداقل صفر.
          ▸ فاز ۳۹ (مالک) — مدال اکسل مثل صفحات ورود/ثبت‌نام شد: «آپلود» اکشن اصلی و همیشه
            بالای مدال است (درشت و سبز + توضیح)؛ «دانلود» اکشن ثانویه و کم‌اهمیت زیرش — چون
            دانلود معمولاً فقط بار اول یا بعد از افزودن کالای جدید لازم می‌شود، آپلود همیشه هست.
@@ -4200,10 +4227,38 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">قیمت و موجودی<small>به‌روزرسانی گروهی کالاهای کاتالوگ</small></div>
-      <button class="icon-btn bk-pct" aria-label="تغییر درصدی قیمت‌ها" title="تغییر درصدی قیمت‌ها" data-sheet="dlg-pct"><svg><use href="#i-percent"/></svg></button>
+      <button class="icon-btn bk-pct" aria-label="تغییر درصدی قیمت‌ها" title="تغییر درصدی قیمت‌ها" data-pcttoggle><svg><use href="#i-percent"/></svg></button>
     </header>
 
     <main class="screen-body">
+
+      <!-- ═══ فاز ۴۵ (مالک) — تغییر درصدی: پنل اینلاین بالای فرم (نه مودال) — با هر تغییرِ درصد،
+           قیمت‌های جدول همان لحظه زنده به‌روز می‌شوند و ردیف‌های تغییرکرده سبز می‌شوند؛
+           کاربر قبل از «ثبت تغییرات» نتیجه را می‌بیند، نه بعد از بستن مودال. ═══ -->
+      <div id="bk-pctbar" hidden>
+        <div class="bk-pct-head">
+          <svg><use href="#i-percent"/></svg>
+          <b>درصد تغییر همهٔ قیمت‌ها</b>
+          <span class="bk-pct-live">زنده روی جدول اعمال می‌شود</span>
+          <button class="bk-pct-x" data-pctclose type="button" aria-label="بستن پنل درصد">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <div class="pct-stepper" role="group" aria-label="درصد تغییر قیمت‌ها">
+          <button class="pct-btn pct-minus" data-pctstep="-0.5" type="button" aria-label="نیم درصد کم کن" title="نیم درصد کم کن">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="pct-val">
+            <input id="pct-input" class="pct-num" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر — مثبت یا منفی، اعشاری هم می‌شود">
+            <span class="pct-sign" aria-hidden="true">٪</span>
+          </div>
+          <button class="pct-btn pct-plus" data-pctstep="0.5" type="button" aria-label="نیم درصد زیاد کن" title="نیم درصد زیاد کن">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="pct-preview" id="pct-preview" dir="rtl"></div>
+        <div class="bk-pct-hint">هر کلیک نیم درصد (۰٫۵٪) کم یا زیاد می‌کند؛ عدد دستی هم می‌توانی بگذاری — مثبت یا منفی، حتی اعشاری. قیمت‌ها همان لحظه در جدول عوض می‌شوند؛ «ثبت تغییرات» آنها را در کاتالوگ می‌نشاند و «بازنشانی همهٔ تغییرات» برمی‌گرداند.</div>
+      </div>
 
       <!-- فاز ۴۴ — یادآور تازگی قیمت (ایدهٔ MVP): در بازار پرتورم قیمت کهنه یعنی اعتمادِ کم خریدار -->
       <div class="callout" id="bk-stale" style="margin-top:2px;border-color:#f3ddba;background:linear-gradient(180deg,#fdf8ef,#fff 45%)">
@@ -4269,7 +4324,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
            دستی/درصدی/اکسلیِ ردیف‌ها و تخفیف‌ها به حالت اولیه باقی مانده است) -->
       <button class="bk-reset2" data-bkreset type="button"><svg><use href="#i-history"/></svg> بازنشانی همهٔ تغییرات</button>
 
-<div class="hintnote">قیمتِ واردشده همان قیمتی است که خریدار در کاتالوگ عمومی می‌بیند. تغییر دستی یا درصدی فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند؛ ردیف‌های تغییرکرده سبز می‌شوند — و اگر چیزی عوض نشده، با «قیمت‌ها درست است» مهر تازگی می‌گیرند.</div>
+<div class="hintnote">کالاهایی با قیمت به‌روز، در نتایج خریداران بالاتر دیده می‌شوند. قیمتِ واردشده همان قیمتی است که خریدار در کاتالوگ عمومی می‌بیند؛ تغییر دستی یا درصدی فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند و ردیف‌های تغییرکرده سبز می‌شوند — و اگر چیزی عوض نشده، با «قیمت‌ها درست است» مهر تازگی می‌گیرند.</div>
 
     </main>
 
@@ -4730,10 +4785,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <div class="pctw" style="width:76px;flex-shrink:0"><input class="input" value="۸" inputmode="numeric"><span class="sfx">٪</span></div>
   </div>
   <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن پلهٔ جدید</button>
-  <div class="sheet-row" style="cursor:default">
-    <span class="tx"><b>نمایش نشان تخفیف در کاتالوگ عمومی</b><span>خریداران تخفیف را روی قیمت می‌بینند</span></span>
-    <div class="toggle on"></div>
-  </div>
+  <!-- ═══ فاز ۴۵ (مالک) — «نمایش نشان تخفیف در کاتالوگ عمومی» حذف شد؛ به‌جایش توضیح خودِ مالک: ═══ -->
+  <div class="hintnote" style="margin-top:12px">تخفیف‌های حجمی را می‌توانید در سطح کاتالوگ یک‌باره به همهٔ کالاها اعمال کنید، یا روی تک‌تک کالاها جداگانه. اگر هم روی کاتالوگ تخفیف کلی بگذارید و هم روی یک کالا، برای آن کالا تخفیف مخصوص خودش در نظر گرفته می‌شود و از تخفیف عمومی سطح کاتالوگ تبعیت نمی‌کند.</div>
   <button class="btn btn-primary sheet-cta" data-close>ذخیره تخفیف‌های حجمی</button>
 </div>
 
@@ -4809,41 +4862,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
      در پیاده‌سازی عملیاتی XLSX واقعی سمت سرور parse می‌شود و پیش از اعمال، پیش‌نمایش «قبل/بعد»
      به کاربر نشان داده می‌شود. -->
 
-<!-- ═══ ۸-ه) فاز ۳۹ — مدال تغییر درصدی قیمت‌ها (صفحهٔ ۴۴ — آیکون ٪ ساب‌هدر) ═══ -->
-<!-- IMPLEMENTATION NOTE (خواستهٔ مالک): نوار چیپ‌های ۱۰±٪ حذف شد و جای آن این مدال نشست.
-     استپر [− | عدد | +] هر کلیک ۰٫۵٪ اضافه/کم می‌کند؛ ورودی دستی عدد مثبت/منفی/اعشاری
-     می‌گیرد (۲٫۵ یا ‎−۱٫۵‎ یا -3). «اعمال روی قیمت‌ها» درصد را روی قیمت «فعلی» هر ردیف ضرب
-     می‌کند (ترکیبی با ویرایش‌های دستی/اکسل) و ردیف‌ها را «ویرایش شد» می‌کند — کاتالوگ فقط
-     با «ثبت تغییرات» عوض می‌شود. پیش‌نمایش زیر استپر با هر تغییر، جهت و عدد را روی
-     اولین ردیف گرید زنده نشان می‌دهد تا کاربر قبل از اعمال بداند چه اتفاقی می‌افتد.
-     در پیاده‌سازی عملیاتی: PUT /listings/bulk با deltaPercent + baseSelector،
-     محاسبه سمت سرور و ثبت ListingEventLog برای هر کالا. -->
-<div class="dlg" id="dlg-pct" role="dialog" aria-label="تغییر درصدی قیمت‌ها">
-  <h3>تغییر درصدی قیمت‌ها</h3>
-  <div class="dlg-q">همهٔ قیمت‌های این صفحه را یک‌جا کم یا زیاد کن</div>
-
-  <!-- کامپوننت درصدی: دو دکمهٔ طرفین (کم/زیاد — گام ۰٫۵٪) + ورودی دستی -->
-  <div class="pct-stepper" role="group" aria-label="درصد تغییر قیمت‌ها">
-    <button class="pct-btn pct-minus" data-pctstep="-0.5" type="button" aria-label="نیم درصد کم کن" title="نیم درصد کم کن">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </button>
-    <div class="pct-val">
-      <input id="pct-input" class="pct-num" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر — مثبت یا منفی، اعشاری هم می‌شود">
-      <span class="pct-sign" aria-hidden="true">٪</span>
-    </div>
-    <button class="pct-btn pct-plus" data-pctstep="0.5" type="button" aria-label="نیم درصد زیاد کن" title="نیم درصد زیاد کن">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </button>
-  </div>
-  <div class="pct-preview" id="pct-preview" dir="rtl"></div>
-
-  <div class="hintnote">هر کلیک روی دکمه‌های طرفین نیم درصد (۰٫۵٪) اضافه یا کم می‌کند؛ می‌توانی خودت هم عدد بگذاری — مثبت یا منفی، حتی اعشاری (مثل ۲٫۵ یا ‎−۱٫۵‎). اعمال روی قیمت‌های فعلی ردیف‌ها ضرب می‌شود و فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند.</div>
-
-  <div class="dlg-btns" style="flex-direction:row">
-    <button class="btn btn-outline" data-close type="button" style="flex:1">انصراف</button>
-    <button class="btn btn-primary" id="pct-apply" type="button" style="flex:1.6">اعمال روی قیمت‌ها</button>
-  </div>
-</div>
+<!-- ═══ فاز ۴۵ — مدال dlg-pct حذف شد: تغییر درصدی به پنل اینلاین بالای فرم (bk-pctbar) منتقل شد — با هر تغییر درصد، قیمت‌های جدول همان لحظه زنده عوض می‌شوند. ═══ -->
 
 <!-- ═══ ۹) کمپین جدید — فاز ۲۴: راهنما به صفحهٔ مستقل · فاز ۲۵: جایگاه «تأمین‌کنندگان ویژه» بازگردانده شد ═══ -->
 <!-- IMPLEMENTATION NOTE (فاز ۲۴/۲۵): راهنمای کامل کمپین/تبلیغ به صفحهٔ ۳۲ منتقل شد تا فرم ساده بماند —
@@ -4872,6 +4891,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="dlg-btns">
     <button class="btn btn-primary" data-go="29"><svg><use href="#i-wallet"/></svg> افزایش شارژ</button>
     <button class="btn btn-outline" data-close>با همین شارژ ادامه بده</button>
+  </div>
+</div>
+
+<!-- ═══ فاز ۴۵ (مالک) — تغییر سریع قیمت و موجودی (آیکون روی هر کالای کاتالوگ ۰۱):
+     مستقیم مودال با دو تکست‌باکس + تایید/انصراف — نه منو. بقیهٔ گزینه‌ها (ویرایش کامل،
+     تخفیف پلکانی، عدم نمایش و…) در «تنظیمات کالا» (sheet-pset) از فرم جزئیات ۰۲ هستند.
+     تایید → قیمت و نشان موجودی همان کارت همان لحظه به‌روز می‌شود. ═══ -->
+<div class="sheet" id="sheet-quickps" role="dialog" aria-label="تغییر سریع قیمت و موجودی">
+  <div class="grab"></div>
+  <h3>تغییر سریع قیمت و موجودی</h3>
+  <div class="sub" id="qp-sub">برنج هاشمی · کیسه ۵۰ کیلویی</div>
+  <div class="field">
+    <label>قیمت پایه <span class="opt">— تومان</span></label>
+    <input class="input" id="qp-price" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric">
+  </div>
+  <div class="field">
+    <label>موجودی <span class="opt" id="qp-unit">— کیسه</span></label>
+    <input class="input" id="qp-stock" value="۳۵" inputmode="numeric">
+  </div>
+  <div class="hintnote">کالاهایی با قیمت به‌روز، در نتایج خریداران بالاتر دیده می‌شوند.</div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="btn btn-outline" style="flex:1" data-close>انصراف</button>
+    <button class="btn btn-primary" style="flex:1.6" id="qp-ok" type="button"><svg><use href="#i-check"/></svg> تایید</button>
   </div>
 </div>
 
@@ -5253,6 +5295,52 @@ body > div[id^="scr-d"][hidden] { display: none; }
      (mp4 از سرور). در پروتوتایپ، پخش شبیه‌سازی شده: نوار پیشرفت و زمان با ضریب ~۱۴ برابر سریع‌تر
      جلو می‌رود تا رفتار (پخش/توقف/پایان/دوباره) قابل آزمایش باشد. محتوای شیت از VD_DATA پر می‌شود. -->
 
+<!-- ═══ فاز ۴۵ (مالک) — مودال ویرایش پروفایل: فیلدها از صفحهٔ ۴۲ به این‌جا آمدند.
+     دکمهٔ «ذخیره تغییرات» هم داخل همین مودال است — صفحهٔ پروفایل شلوغ نمی‌شود.
+     عکس از sheet-photo (داخل همین شیت) عوض می‌شود. ═══ -->
+<div class="sheet" id="sheet-ppedit" role="dialog" aria-label="ویرایش پروفایل">
+  <div class="grab"></div>
+  <div class="sheet-hdr">
+    <h3>ویرایش پروفایل</h3>
+    <button class="mg" data-close aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <button class="sheet-row" data-sheet="sheet-photo">
+    <span class="ico"><svg><use href="#i-camera"/></svg></span>
+    <span class="tx"><b>تصویر پروفایل</b><span>در گفتگوها و کنار نام‌تان دیده می‌شود</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <div class="field">
+    <label>نام <span class="opt">— همان ثبت‌نام</span></label>
+    <input class="input" id="pp-fn" value="احمد">
+  </div>
+  <div class="field">
+    <label>نام خانوادگی</label>
+    <input class="input" id="pp-ln" value="رضایی">
+  </div>
+  <div class="field">
+    <label>جنسیت</label>
+    <div class="pillchoice">
+      <button type="button" class="pill active" data-pgender="m">مرد</button>
+      <button type="button" class="pill" data-pgender="f">زن</button>
+    </div>
+    <div class="hint">در پیام‌ها و پشتیبانی درست خطاب شوید — نمایش عمومی ندارد</div>
+  </div>
+  <div class="field">
+    <label>تاریخ تولد <span class="opt">— اختیاری</span></label>
+    <input class="input" id="pp-bd" value="۱۳۶۲/۰۴/۱۵" placeholder="مثلاً ۱۳۶۲/۰۴/۱۵ — یا فقط سال: ۱۳۶۲">
+    <div class="hint">عمومی نمایش داده نمی‌شود — فقط برای امنیت حساب</div>
+  </div>
+  <div class="field">
+    <label>شماره موبایل <span class="opt">— هویت حساب</span></label>
+    <div class="input" style="display:flex;align-items:center;gap:8px;cursor:default">
+      <span>۰۹۱۲ ۳۴۵ ۶۷۸۹</span>
+      <span class="badge b-answered" style="font-size:9px;padding:1.5px 7px;margin-right:auto">تاییدشده</span>
+    </div>
+    <div class="hint">شماره‌ای که با آن ثبت‌نام کردید — برای تغییر از پشتیبانی درخواست دهید</div>
+  </div>
+  <button class="btn btn-primary sheet-cta" id="pp-save"><svg><use href="#i-check"/></svg> ذخیره تغییرات</button>
+</div>
+
 <!-- ═══ فاز ۳۳ — شیت انتخاب تصویر پروفایل (صفحهٔ ۴۲) ═══ -->
 <!-- IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی «گرفتن عکس» دوربینِ دستگاه و «از گالری»
      picker واقعی سیستم است؛ تصویر روی سرور فشرده و ذخیره می‌شود. در پروتوتایپ سه عکس
@@ -5555,9 +5643,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   'use strict';
   /* موتور پروتوتایپ — فقط رفتار؛ هیچ عنصری از دیزاین تغییر نمی‌کند */
   var ARM_HOME = { sell: '01', buy: '08' };
-  /* فاز ۴۴ (مالک) — فوتر MVP: «کارها» و «کمپین‌ها» حذف؛ پروفایل به آواتار هدر رفت؛
-     جای پروفایل در فوتر = «تنظیمات» همان دستیار (۰۷ فروش / ۱۴ خرید). */
-  var TABS = { sell: ['01', '05', '18', '07'], buy: ['08', '18', '14'] };
+  /* فاز ۴۵ (مالک) — فوتر دستیار خرید: «تنظیمات» حذف شد (چیز خاصی نداشت؛ تنظیمات لیست از
+     چرخ‌دندهٔ کنار نام لیست باز می‌شود)؛ به‌جایش «استعلام‌ها» (۴۵) و «کاتالوگ‌ها» (۱۰ — ذخیره‌شده‌ها)
+     آمدند تا جلوی چشم باشند. فوتر فروش بدون تغییر است. */
+  var TABS = { sell: ['01', '05', '18', '07'], buy: ['08', '45', '18', '10'] };
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
@@ -5568,8 +5657,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     ],
     buy: [
       ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
+      ['45', 'استعلام‌ها', '<svg><use href="#i-inbox"/></svg>', ''],
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
-      ['14', 'تنظیمات', '<svg><use href="#i-gear"/></svg>', '']
+      ['10', 'کاتالوگ‌ها', '<svg><use href="#i-bookmark"/></svg>', '']
     ]
   };
   var DEFAULT_BACK = {
@@ -5577,18 +5667,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '22': '01', '27': '01', '34': '08',
     '29': '42', '30': '01', /* فاز ۴۴: شارژ ← پروفایل (۴۲) · تبلیغات ← کاتالوگ */
-    '10': '42', /* فاز ۴۴: کاتالوک‌های ذخیره‌شده ← پروفایل */
+    '10': '42', /* فاز ۴۴: کاتالوگ‌های ذخیره‌شده ← پروفایل؛ فاز ۴۵: از فوتر خرید هم می‌آید */
+    '45': '08', /* فاز ۴۵: استعلام‌ها ← لیست خرید */
     '44': '01' /* فاز ۳۶: به‌روزرسانی گروهی قیمت/موجودی ← کاتالوگ */
   };
   var BTN = {
     '01': [['افزودن کالا', '04']],
-    '02': [['درخواست خرید', '12'], ['مشاهده تابلوی تأمین', '09']],
+    '02': [['درخواست قیمت', '12'], ['مشاهده تابلوی تأمین', '09']],
     '07': [['خروج از حساب', '15']],
     '08': [['افزودن کالا', '34']],
-    '09': [['درخواست خرید', '12'], ['کاتالوگ', '13'], ['درخواست خرید از تأمین‌کننده‌های انتخابی', '12'], ['مشاهده کاتالوگ', '13']],
+    '09': [['درخواست قیمت', '12'], ['کاتالوگ', '13'], ['استعلام قیمت', '12'], ['مشاهده کاتالوگ', '13']],
     '10': [['کاتالوگ', '13'], ['مشاهدهٔ کاتالوگ', '13']],
     '12': [['ارسال به ۳ تأمین‌کننده', '18']], /* فاز ۴۴: پس از ارسال، پاسخ‌ها در پیام‌ها می‌نشیند */
-    '14': [['خروج از حساب', '15']],
     '15': [['ساخت حساب', '16'], ['ورود', '17']],
     '16': [['ساخت حساب و ورود', '01'], ['وارد شوید', '17']],
     '17': [['ورود به ای‌مچ', '01'], ['ساخت حساب', '16']],
@@ -5598,7 +5688,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۴ — ۲۳ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوک‌های ذخیره‌شدهٔ من · پروفایل","12":"۱۲ — درخواست خرید · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","14":"۱۴ — تنظیمات · دستیار خرید","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -5663,9 +5753,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }
     var pill = target.querySelector('.arm-pill');
     if (pill) {
-      var ic = arm === 'sell' ? '#i-store' : '#i-basket';
-      var lb = arm === 'sell' ? 'دستیار فروش' : 'دستیار خرید';
-      pill.innerHTML = '<svg><use href="' + ic + '"/></svg> ' + lb +
+      /* فاز ۴۵: پیل چسبیده به لوگو — بدون آیکون داخلی (خود لوگو هست)؛ فقط برچسب + فلش */
+      var lb = arm === 'sell' ? 'دستیار فروش عمده' : 'دستیار خرید عمده';
+      pill.innerHTML = lb +
         ' <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>';
     }
     var eye = target.querySelector('.eye-preview');
@@ -5693,9 +5783,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var arm = target.dataset.arm;
       if (arm && arm !== 'keep') document.getElementById('phone').dataset.arm = arm;
       renderKeepChrome(target);
-      /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا */
+      /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا؛
+         فاز ۴۵ — اکشن‌های خریدار (درخواست قیمت/تماس/افزودن به لیست) برای مالک مخفی است */
       var own02 = document.getElementById('own-02');
       if (own02) own02.hidden = phoneArm() !== 'sell';
+      var bb02 = document.getElementById('buybar-02');
+      if (bb02) bb02.hidden = phoneArm() === 'sell';
       var sb = target.querySelector('.screen-body');
       if (sb) sb.scrollTop = 0;
     } else {
@@ -6098,11 +6191,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
       card2.setAttribute('data-go', '03');
       card2.innerHTML =
         '<div class="ph"><div class="thumb">' + (o.img ? '<img src="' + o.img + '" alt="' + gfEsc(o.title) + '">' : '<span class="glyph">' + gfEsc(o.kind) + '</span>') + '</div>' +
-        '<button class="gear" aria-label="تنظیمات کالا" data-sheet="sheet-pset" title="تنظیمات کالا"><svg><use href="#i-gear"/></svg></button></div>' +
+        '<button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="' + gfEsc(o.title) + '" data-qd="' + gfEsc(o.pack) + '" data-qp="' + faMoney(o.price) + '" data-qs="' + (o.stock != null ? faNum(o.stock) : '') + '" data-qu="بسته"><svg><use href="#i-gear"/></svg></button></div>' +
         '<div class="info"><div class="n">' + gfEsc(o.title) + '</div><div class="u">' + gfEsc(o.pack) + ' · ' + gfEsc(o.kind) + '</div>' +
         '<div class="p">' + priceTxt + '</div>' +
         '<div class="mini-metrics mm"><span class="m"><svg><use href="#i-eye"/></svg> ' + faNum(0) + '</span>' +
-        '<span class="m" title="در لیست مقایسه قیمت خریداران"><svg><use href="#i-compare"/></svg> ' + faNum(0) + '</span>' +
+        '<span class="m" title="در لیست خرید خریداران"><svg><use href="#i-compare"/></svg> ' + faNum(0) + '</span>' +
         gfStockBadge(o.stock) + (o.pending ? ' <span class="badge b-amber">در انتظار تأیید</span>' : '') + '</div></div>';
       grid.insertBefore(card2, grid.firstChild);
     }
@@ -6144,6 +6237,85 @@ body > div[id^="scr-d"][hidden] { display: none; }
     GF.sel = null;
     gfShowStep(1);
     gfRenderRes();
+  }
+
+  /* ═══ فاز ۴۵ — فرم ۳۴ (افزودن کالا به لیست خرید) — الگوی جستجوی MVP، سمت خریدار ═══
+     همان ایندکس واحد GF (گود + کالای مرجع) ولی با چینش خریدار:
+     ▸ سرچ خالی → «پرتکرار در صنف شما» + «در صنف شما» (خریدارِ فعال: سوپرمارکت آریا).
+     ▸ سرچ پر → دو گروه مثل کاتالوگ: «هر برندی (مقایسهٔ همه)» (گود/فله — همهٔ برندها با هم)
+       و «یک برند مشخص» (کالای مرجع برنددار).
+     ▸ اگر کالا از قبل در لیست خرید (۰۸) است، نشان «در لیست» می‌گیرد.
+     ▸ «کالای جدید بساز» نیست — کالاهای لیست فقط از مرجع/گود می‌آیند.
+     ▸ انتخاب → «چقدر و چه دوره‌ای؟» (gqty-34) → افزودن به لیست. */
+  var GL = { q: '', sel: null };
+  var GL_INLIST = { g1: 1, g4: 1, g6: 1, g7: 1 }; /* کالاهای موجود در لیست خرید (۰۸) */
+  var GL_SUP = { g1: 4, g2: 1, g3: 2, g4: 2, g5: 3, g6: 0, g7: 1 }; /* تأمین‌کننده‌های هر گود */
+  var GL_FREQ = ['r2', 'g1', 'r6', 'g6', 'r4']; /* پرتکرار در صنف: سوپرمارکت */
+  function glRow(e) {
+    var img, name, sub, badge = '';
+    if (e.type === 'ref') {
+      img = e.r.img || (e.g && e.g.img); name = e.r.name; sub = e.r.brand + ' · ' + e.r.pack;
+    } else {
+      img = e.g.img; name = e.g.name;
+      var n = GL_SUP[e.id] || 0;
+      sub = 'هر برند و هر بسته‌بندی · ' + (n ? faNum(n) + ' تأمین‌کننده' : 'هنوز بدون تأمین‌کننده');
+      if (GL_INLIST[e.id]) badge = '<span class="badge b-green">در لیست</span>';
+    }
+    var on = GL.sel && GL.sel.id === e.id;
+    return '<button class="gf-row' + (on ? ' picked' : '') + '" type="button" data-glpick="' + e.type + '" data-gfid="' + e.id + '">' +
+      '<span class="th"><img src="' + img + '" alt="' + gfEsc(name) + '"></span>' +
+      '<span class="tx"><b>' + gfEsc(name) + '</b><span>' + gfEsc(sub) + '</span></span>' +
+      badge + '<svg class="chev"><use href="#i-chev"/></svg></button>';
+  }
+  function glById(id) {
+    return gfIndex().filter(function (e) { return e.id === id; })[0] || null;
+  }
+  function glRenderRes() {
+    var host = document.getElementById('gl-res');
+    if (!host) return;
+    var q = GL.q;
+    if (!q.trim()) {
+      var freq = GL_FREQ.map(glById).filter(Boolean);
+      var freqIds = {}; GL_FREQ.forEach(function (x) { freqIds[x] = 1; });
+      var rest = gfIndex().filter(function (e) { return !freqIds[e.id]; });
+      host.innerHTML = '<div class="gf-group">پرتکرار در صنف شما — سوپرمارکت</div>' +
+        '<div>' + freq.map(glRow).join('') + '</div>' +
+        '<div class="gf-group">در صنف شما</div>' +
+        '<div>' + rest.map(glRow).join('') + '</div>';
+      return;
+    }
+    var res = gfSearch(q);
+    if (!res.length) {
+      host.innerHTML = '<div class="gf-empty"><b>«' + gfEsc(q) + '» پیدا نشد</b><span>املای دیگری امتحان کن — یا کالای مدنظرت را از کاتالوگ فروشنده‌ها به لیست اضافه کن.</span></div>';
+      return;
+    }
+    var gs = res.filter(function (e) { return e.type === 'good'; });
+    var rs = res.filter(function (e) { return e.type === 'ref'; });
+    var groups = [[gs, 'هر برندی (مقایسهٔ همه)'], [rs, 'یک برند مشخص']];
+    if (rs.length && rs[0] === res[0]) groups.reverse();
+    var html = '';
+    groups.forEach(function (gr) {
+      if (gr[0].length) html += '<div class="gf-group">' + gr[1] + '</div><div>' + gr[0].map(glRow).join('') + '</div>';
+    });
+    host.innerHTML = html;
+  }
+  function glPick(type, id) {
+    var e = glById(id);
+    if (!e || (e.type !== type && e.id !== id)) { /* اگر type/id هم‌خوان نبود، اولین تطابق را بردار */ }
+    GL.sel = e;
+    glRenderRes();
+    var gqty = document.getElementById('gqty-34');
+    if (gqty) gqty.hidden = false;
+    var gq = document.getElementById('gl-q');
+    if (gq && gq.value.trim()) { /* انتخاب شد؛ نتیجه‌ها با حالت انتخاب رندر شدند */ }
+  }
+  function glReset() {
+    GL.q = ''; GL.sel = null;
+    var gq = document.getElementById('gl-q');
+    if (gq) gq.value = '';
+    var gqty = document.getElementById('gqty-34');
+    if (gqty) gqty.hidden = true;
+    glRenderRes();
   }
 
   /* ── شیت چسباندن لیست قیمت — تطبیق خودکار خط‌ها (الگوی MVP) ── */
@@ -6345,6 +6517,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var t = e.target;
     if (!t || !t.closest) return;
     if (t.id === 'gf-q') { GF.q = t.value; gfRenderRes(); return; }
+    if (t.id === 'gl-q') { GL.q = t.value; glRenderRes(); return; }
     var d = t.dataset || {};
     if (d.gfpprice != null) {
       var r1 = GF.paste.rows && GF.paste.rows[+d.gfpprice];
@@ -6367,17 +6540,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
      درخواست خرید · شروع گفتگو) با مهر زمانی کامل؛ شمارنده‌های صفحه از ابتدا جمع می‌شوند (نه پنجرهٔ ۳۰ روزه). */
   var ITEM_EVENTS = [
     { ini: 'ع', col: '#b45309', t: 'علی محمدی از سوپرماکت علی از این کالا بازدید کرد', when: '۲ ساعت پیش', d: 0, date: '۱۴۰۵/۰۷/۱۶', ds: '1405/07/16' },
-    { ini: 'ر', col: '#7c3aed', t: 'رضا اکبری این کالا به لیست مقایسه قیمت خود اضافه کرد', when: 'دیروز ساعت ۱۶:۳۰', d: 1, date: '۱۴۰۵/۰۷/۱۵', ds: '1405/07/15' },
+    { ini: 'ر', col: '#7c3aed', t: 'رضا اکبری این کالا را به لیست خرید خود اضافه کرد', when: 'دیروز ساعت ۱۶:۳۰', d: 1, date: '۱۴۰۵/۰۷/۱۵', ds: '1405/07/15' },
     { ini: 'س', col: '#0e7490', t: 'سارا کاظمی از سوپرمارکت الماس این کالا را به لیست خرید خود اضافه کرد', when: 'دیروز ساعت ۱۱:۰۵', d: 1, date: '۱۴۰۵/۰۷/۱۵', ds: '1405/07/15' },
     { ini: 'ه', col: '#0d9488', t: 'هایپر فیروزه درخواست خرید برای ۲۰ کیسه از این کالا فرستاد', when: '۲ روز پیش', d: 2, date: '۱۴۰۵/۰۷/۱۴', ds: '1405/07/14' },
     { ini: 'م', col: '#9333ea', t: 'رستوران مهر گفتگو را دربارهٔ این کالا شروع کرد', when: '۳ روز پیش', d: 3, date: '۱۴۰۵/۰۷/۱۳', ds: '1405/07/13' },
-    { ini: 'ن', col: '#b45309', t: 'پخش نگین این کالا به لیست مقایسه قیمت خود اضافه کرد', when: '۴ روز پیش', d: 4, date: '۱۴۰۵/۰۷/۱۲', ds: '1405/07/12' },
+    { ini: 'ن', col: '#b45309', t: 'پخش نگین این کالا را به لیست خرید خود اضافه کرد', when: '۴ روز پیش', d: 4, date: '۱۴۰۵/۰۷/۱۲', ds: '1405/07/12' },
     { ini: 'آ', col: '#0e7490', t: 'سوپرمارکت آریا از این کالا بازدید کرد', when: '۵ روز پیش', d: 5, date: '۱۴۰۵/۰۷/۱۱', ds: '1405/07/11' },
     { ini: 'ب', col: '#9333ea', t: 'رستوران سنتی بهار درخواست خرید برای ۱۰ کیسه از این کالا فرستاد', when: '۱ هفته پیش', d: 7, date: '۱۴۰۵/۰۷/۰۹', ds: '1405/07/09' },
     { ini: 'ه', col: '#0d9488', t: 'هایپر فیروزه این کالا را به لیست خرید خود اضافه کرد', when: '۱ هفته پیش', d: 8, date: '۱۴۰۵/۰۷/۰۸', ds: '1405/07/08' },
     { ini: 'م', col: '#c2703a', t: 'سوپرمارکت مهدی از این کالا بازدید کرد', when: '۲ هفته پیش', d: 13, date: '۱۴۰۵/۰۷/۰۳', ds: '1405/07/03' },
     { ini: 'ن', col: '#b45309', t: 'پخش نگین از این کالا بازدید کرد', when: '۳ هفته پیش', d: 20, date: '۱۴۰۵/۰۶/۲۷', ds: '1405/06/27' },
-    { ini: 'م', col: '#9333ea', t: 'رستوران مهر این کالا به لیست مقایسه قیمت خود اضافه کرد', when: '۱ ماه پیش', d: 32, date: '۱۴۰۵/۰۶/۱۵', ds: '1405/06/15' },
+    { ini: 'م', col: '#9333ea', t: 'رستوران مهر این کالا را به لیست خرید خود اضافه کرد', when: '۱ ماه پیش', d: 32, date: '۱۴۰۵/۰۶/۱۵', ds: '1405/06/15' },
     { ini: 'ر', col: '#7c3aed', t: 'رضا اکبری از این کالا بازدید کرد', when: '۲ ماه پیش', d: 55, date: '۱۴۰۵/۰۵/۲۲', ds: '1405/05/22' }
   ];
   var evFilter = 'all';
@@ -6499,13 +6672,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
   }
   /* اکسل — خروجی CSV واقعی (UTF-8 BOM تا اکسل فارسی را درست باز کند) */
 
-  /* ═══ فاز ۳۹ — مدال تغییر درصدی (dlg-pct): استپر ۰٫۵٪ + ورودی دستی + پیش‌نمایش زنده ═══ */
+  /* ═══ فاز ۳۹→۴۵ — تغییر درصدی: پنل اینلاین (bk-pctbar) بالای فرم؛ استپر ۰٫۵٪ + ورودی دستی + اعمال زنده ═══ */
   function pctInputEl() { return document.getElementById('pct-input'); }
   function pctCur() {
     var v = pctParse(pctInputEl() && pctInputEl().value);
     return v == null ? 0 : v;
   }
-  /* پیش‌نمایش: جهت + عدد + مثال واقعی از اولین ردیف گرید */
+  /* پیش‌نمایش: جهت + عدد + مثال واقعی از اولین ردیف گرید (از قیمتِ مبنا) */
   function pctPreviewRender() {
     var box = document.getElementById('pct-preview');
     var inp = pctInputEl();
@@ -6517,53 +6690,44 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
     var r0 = bkRows()[0];
-    var cur = r0 ? bkNum(r0.querySelector('.bk-price').value) : null;
-    if (cur == null) { box.className = 'pct-preview'; box.textContent = ''; return; }
-    var next = Math.max(0, Math.round(cur * (1 + v / 100)));
+    var base = r0 ? (BK.base[0] || {}).price : null;
+    if (base == null) { box.className = 'pct-preview'; box.textContent = ''; return; }
+    var next = Math.max(0, Math.round(base * (1 + v / 100)));
     var nm = r0 ? (r0.dataset.bkname + ' — ' + r0.dataset.bkdesc) : '';
     if (v > 0) {
       box.className = 'pct-preview up';
-      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> بیشتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(cur) + ' ← <b>' + faMoney(next) + '</b> تومان';
+      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> بیشتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(base) + ' ← <b>' + faMoney(next) + '</b> تومان';
     } else if (v < 0) {
       box.className = 'pct-preview down';
-      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> کمتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(cur) + ' ← <b>' + faMoney(next) + '</b> تومان';
+      box.innerHTML = 'قیمت‌ها <b>' + faPct(v) + '٪</b> کمتر می‌شوند — مثلاً «' + nm + '»:<br>' + faMoney(base) + ' ← <b>' + faMoney(next) + '</b> تومان';
     } else {
       box.className = 'pct-preview';
       box.textContent = 'درصد صفر است — با دکمه‌های طرفین یا تایپ دستی کم/زیاد کن.';
     }
   }
-  /* استپر: ±۰٫۵ — نمایش فارسی با ممیز فارسی */
+  /* ═══ فاز ۴۵ — اعمال زنده روی جدول: با هر تغییر درصد، قیمت هر ردیف همان لحظه از «مبنا»
+     محاسبه می‌شود (نه تجمعی)؛ ردیف‌های تغییرکرده سبز می‌شوند؛ صفر = برگشت به مبنا. ═══ */
+  function pctLive() {
+    var inp = pctInputEl();
+    var v = pctParse(inp && inp.value);
+    pctPreviewRender();
+    if (v == null) return;
+    bkRows().forEach(function (r, i) {
+      var pi = r.querySelector('.bk-price');
+      var base = (BK.base[i] || {}).price;
+      if (base == null || !pi) return;
+      pi.value = faMoney(Math.max(0, Math.round(base * (1 + v / 100))));
+      bkSync(r, i);
+    });
+  }
+  /* استپر: ±۰٫۵ — نمایش فارسی با ممیز فارسی + اعمال زنده */
   function pctStep(delta) {
     var inp = pctInputEl();
     if (!inp) return;
     var v = pctCur() + delta;
     v = Math.max(-99.9, Math.min(99.9, Math.round(v * 10) / 10));
     inp.value = faPct(v);
-    pctPreviewRender();
-  }
-  /* اعمال روی قیمت‌های فعلیِ ردیف‌ها (ترکیبی) — کاتالوگ فقط با «ثبت تغییرات» عوض می‌شود */
-  function pctApply() {
-    var inp = pctInputEl();
-    var v = pctParse(inp && inp.value);
-    var box = document.getElementById('pct-preview');
-    if (v == null) {
-      if (box) { box.className = 'pct-preview down'; box.textContent = 'عدد درصد را درست وارد کن — مثلاً ۲٫۵ یا ‎−۱٫۵'; }
-      return;
-    }
-    if (v === 0) {
-      if (box) { box.className = 'pct-preview'; box.textContent = 'درصد صفر است — چیزی تغییر نمی‌کند.'; }
-      return;
-    }
-    bkRows().forEach(function (r) {
-      var pi = r.querySelector('.bk-price');
-      var cur = bkNum(pi && pi.value);
-      if (cur == null) return;
-      pi.value = faMoney(Math.max(0, Math.round(cur * (1 + v / 100))));
-      bkSync(r, [].indexOf.call(bkRows(), r));
-    });
-    closeSheet();
-    /* بعد از اعمال، ورودی به صفر برمی‌گردد تا اعمال بعدی از صفر شروع شود */
-    if (inp) inp.value = '۰';
+    pctLive();
   }
 
   /* ═══ فاز ۳۹ — ثبت تخفیف‌ها: هم‌گامی با شیت‌های cgroup/vol/ptier/cowork + خط همکار ۰۲/۱۳ ═══
@@ -6654,6 +6818,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
      انتهای نوار (قبل از کارت دعوت) و بالای فهرست ۴۳، با کارت سبز fresh. */
 
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
+  var qpCard = null; /* فاز ۴۵ — کارتِ در حال ویرایش سریع قیمت/موجودی (۰۱) */
   document.addEventListener('click', function (e) {
     var t = e.target;
     if (!t.closest) return;
@@ -6662,11 +6827,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var bedit = t.closest('.biz-edit');
     if (bedit) { go('22'); return; }
 
-    /* ── فاز ۲۴→۲۸: انتخاب «کسب‌وکار فعال» از شیت — کارت پروفایل فروش (۰۷) و خرید (۱۴) همان لحظه به‌روز می‌شوند ── */
+    /* ── فاز ۲۴→۲۸→۴۵: انتخاب «کسب‌وکار فعال» از شیت — کارت کسب‌وکار هاب پروفایل (۴۲) همان لحظه به‌روز می‌شود ── */
     var bizp = t.closest('#sheet-biz [data-bizpick]');
     if (bizp) {
       document.querySelectorAll('#sheet-biz [data-bizpick]').forEach(function (r) { r.classList.toggle('current', r === bizp); });
-      document.querySelectorAll('#scr-07 .biz-card, #scr-14 .biz-card').forEach(function (bizCard) {
+      document.querySelectorAll('#scr-42 .biz-card').forEach(function (bizCard) {
         var bizNm = bizCard.querySelector('.meta .name');
         var bizSb = bizCard.querySelector('.meta .sub');
         var bizAv = bizCard.querySelector('.avatar-lg');
@@ -6712,7 +6877,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* ═══ فاز ۲۷ — لیست خرید: گروه‌ها · فرم ۳۴ · گوش به زنگ · کارت درخواست خرید · نقش‌ها ═══ */
+    /* ═══ فاز ۴۵ — فرم ۳۴: انتخاب کالا از نتایج (الگوی MVP) → «چقدر و چه دوره‌ای؟» ═══ */
+    var glp = t.closest('[data-glpick]');
+    if (glp) {
+      glPick(glp.dataset.glpick, glp.dataset.gfid);
+      return;
+    }
+
+    /* ═══ فاز ۲۷ — لیست خرید: · فرم ۳۴ · گوش به زنگ · کارت درخواست خرید · نقش‌ها ═══ */
 
     /* انتخاب کالا در فرم ۳۴ — انتخاب تکی + نمایش «چقدر و چه دوره‌ای؟» */
     var gpick = t.closest('[data-gpick]');
@@ -6866,8 +7038,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
       pctStep(parseFloat(pcst.dataset.pctstep) || 0);
       return;
     }
-    /* فاز ۳۹ — «اعمال روی قیمت‌ها» در مدال درصدی */
-    if (t.closest('#pct-apply')) { pctApply(); return; }
+    /* ═══ فاز ۴۵ — پنل اینلاین درصد: باز/بسته با آیکون ٪ ساب‌هدر (نه مودال) ═══ */
+    var pctT = t.closest('[data-pcttoggle]');
+    if (pctT) {
+      var pbar = document.getElementById('bk-pctbar');
+      if (pbar) { pbar.hidden = !pbar.hidden; if (!pbar.hidden) pctPreviewRender(); }
+      return;
+    }
+    var pctX = t.closest('[data-pctclose]');
+    if (pctX) {
+      var pbar2 = document.getElementById('bk-pctbar');
+      if (pbar2) pbar2.hidden = true;
+      return;
+    }
     var bkrs = t.closest('[data-bkreset]');
     if (bkrs) {
       bkRows().forEach(function (r, i) {
@@ -6877,6 +7060,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         if (si && b.stock != null) si.value = faNum(b.stock);
         bkSync(r, i);
       });
+      /* فاز ۴۵ — درصد هم به صفر برمی‌گردد (پنل اینلاین) */
+      var pin = pctInputEl();
+      if (pin) pin.value = '۰';
+      pctPreviewRender();
       return;
     }
     var bkSave = t.closest('#bk-save');
@@ -6988,10 +7175,41 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (closeEl) { closeSheet(); return; }
 
     var sheetOpen = t.closest('[data-sheet]');
-    if (sheetOpen) {
+    if (sheetOpen && sheetOpen.dataset.sheet !== 'sheet-quickps') { /* quickps: هندلر اختصاصی پایین‌تر (فاز ۴۵) */
       openSheet(sheetOpen.dataset.sheet);
-      /* فاز ۳۹: باز شدن مدال درصدی → پیش‌نمایش با وضعیت فعلی ورودی رندر شود */
-      if (sheetOpen.dataset.sheet === 'dlg-pct') pctPreviewRender();
+      return;
+    }
+
+    /* ═══ فاز ۴۵ — تغییر سریع قیمت و موجودی (آیکون روی کارت کالای کاتالوگ ۰۱):
+       باز شدن شیت + پر شدن فیلدها از همان کارت؛ تایید → قیمت و نشان موجودی کارت به‌روز می‌شود ═══ */
+    var qpG = t.closest('[data-sheet="sheet-quickps"]');
+    if (qpG) {
+      qpCard = qpG.closest('.pcard');
+      var qps = document.getElementById('qp-sub');
+      if (qps && qpG.dataset.qn) qps.textContent = qpG.dataset.qn + ' · ' + qpG.dataset.qd;
+      var qpp = document.getElementById('qp-price');
+      if (qpp && qpG.dataset.qp) qpp.value = qpG.dataset.qp;
+      var qpu = document.getElementById('qp-stock');
+      if (qpu && qpG.dataset.qs) qpu.value = qpG.dataset.qs;
+      var qpu2 = document.getElementById('qp-unit');
+      if (qpu2 && qpG.dataset.qu) qpu2.textContent = '— ' + qpG.dataset.qu;
+      openSheet('sheet-quickps');
+      return;
+    }
+    var qpOk = t.closest('#qp-ok');
+    if (qpOk) {
+      if (qpCard) {
+        var price = (document.getElementById('qp-price') || {}).value;
+        var stock = bkNum((document.getElementById('qp-stock') || {}).value);
+        var pe = qpCard.querySelector('.info .p');
+        if (pe && price) pe.innerHTML = gfEsc(price) + ' <small>تومان</small>';
+        var bd = qpCard.querySelector('.mini-metrics .badge');
+        if (bd) bkBadge(bd, stock);
+        var ge = qpCard.querySelector('.gear');
+        if (ge && price) ge.dataset.qp = price;
+        if (ge && stock != null) ge.dataset.qs = faNum(stock);
+      }
+      closeSheet();
       return;
     }
 
@@ -7024,8 +7242,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     /* ═══ فاز ۳۳ — پروفایل شخصی (۴۲) ═══ */
 
-    /* ذخیره: نام از فرم خوانده می‌شود؛ کارت‌های ۰۷/۱۴ و عکس بزرگ همان لحظه به‌روز می‌شوند
-       و به همان پروفایلی برمی‌گردیم که از آن آمده‌ایم (۰۷ یا ۱۴ — از استک). */
+    /* فاز ۴۵ — «ذخیره تغییرات» داخل مودال sheet-ppedit است (نه اکشن‌بار صفحه):
+       نام/عکس همان لحظه سینک می‌شود و مودال بسته می‌شود — کاربر روی همان صفحهٔ پروفایل می‌ماند. */
     var savePP = t.closest('#pp-save');
     if (savePP) {
       var fnEl = document.getElementById('pp-fn');
@@ -7033,7 +7251,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var nm2 = (((fnEl && fnEl.value) || '') + ' ' + ((lnEl && lnEl.value) || '')).trim();
       if (nm2) PP.name = nm2;
       ppSync();
-      back();
+      closeSheet();
       return;
     }
 
@@ -7118,6 +7336,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
+    /* فاز ۴۵ — فرم ۳۴: «افزودن به لیست خرید» → فرم ریست می‌شود و ناوبری به ۰۸ ادامه می‌یابد */
+    var add34 = t.closest('#scr-34 .action-bar [data-go="08"]');
+    if (add34) glReset();
+
     var goEl = t.closest('[data-go]');
     if (goEl) { go(goEl.dataset.go); return; }
 
@@ -7189,14 +7411,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (!t.closest) return;
     var r = t.closest('#scr-44 .bk-row');
     if (r) { bkSync(r, [].indexOf.call(bkRows(), r)); return; }
-    if (t.id === 'pct-input') pctPreviewRender();
+    if (t.id === 'pct-input') pctLive(); /* فاز ۴۵: تایپ دستی درصد → اعمال زنده روی جدول */
   });
 
-  /* فاز ۳۹ — Enter در ورودی درصدی مدال = «اعمال روی قیمت‌ها» */
+  /* فاز ۴۵ — Enter در ورودی درصدی: فقط خروج از فیلد؛ اعمال هم‌اکنون زنده است (پنل اینلاین) */
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter') return;
     var t = e.target;
-    if (t && t.id === 'pct-input') { e.preventDefault(); pctApply(); }
+    if (t && t.id === 'pct-input') { e.preventDefault(); pctLive(); t.blur(); }
   });
 
   /* ═══ فاز ۳۴ — نوارهای افقی اسکرولی: درگ ماوس + چرخ عمودی→افقی + فلش‌های مینیمال ═══
@@ -7298,6 +7520,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   evRender(ITEM_EVENTS);
   walletRender();
   ppSync();   /* فاز ۳۳ — عکس/نام شخصی در هاب پروفایل (۴۲) */
+  glRenderRes(); /* فاز ۴۵ — فرم ۳۴: نتایج اولیه (پرتکرار در صنف شما + در صنف شما) */
   bkInit();
   gfInit(); /* فاز ۴۳ — فرم افزودن کالا (MVP): نتایج اولیهٔ جستجوی واحد */   /* فاز ۳۶ — مبنای قیمت/موجودی ردیف‌های گرید ۴۴ + نشان «ویرایش شد» */
   assistSyncToggles(); /* فاز ۳۱ — سوییچ‌های ۲۲ با وضعیت ذخیره‌شده هم‌گام */
@@ -7309,3 +7532,4 @@ body > div[id^="scr-d"][hidden] { display: none; }
 </script>
 </body>
 </html>
+

@@ -21,8 +21,8 @@ await sleep(250);
 /* ── ۱. ساختار گام ۱ ── */
 ok('صفحهٔ ۰۴ باز است', await page.locator('#scr-04').isVisible());
 ok('جستجوی واحد دیده می‌شود', await page.locator('#gf-q').isVisible());
-ok('دکمهٔ اسکن داخل جستجو', await page.locator('.gf-scan').isVisible());
-ok('کال‌اوت چسباندن لیست قیمت', await page.locator('.gf-paste').isVisible());
+ok('دکمهٔ اسکن داخل جستجو', await page.locator('#scr-04 .gf-scan').isVisible());
+ok('کال‌اوت چسباندن لیست قیمت', await page.locator('#scr-04 .gf-paste').isVisible());
 ok('عنوان مرحله ۱', (await page.locator('#gf-sub').textContent()).includes('مرحلهٔ ۱'));
 ok('گام ۲ مخفی', await page.locator('#gf-step2').isHidden());
 ok('اکشن‌بار مخفی', await page.locator('#gf-bar').isHidden());
@@ -52,7 +52,7 @@ ok('CTA ثبت کالای جدید با نام جستجو', (await page.locator(
 /* ── ۵. انتخاب فله (برنج هاشمی) → گام ۲ ── */
 await page.fill('#gf-q', 'هاشمی');
 await sleep(120);
-await page.locator('.gf-row').first().click(); // good: برنج هاشمی
+await page.locator('#scr-04 .gf-row').first().click(); // good: برنج هاشمی
 await sleep(150);
 ok('گام ۲ دیده می‌شود', await page.locator('#gf-step2').isVisible());
 ok('عنوان مرحله ۲', (await page.locator('#gf-sub').textContent()).includes('مرحلهٔ ۲'));
@@ -108,7 +108,7 @@ ok('شمار کالا همان ۴ ماند (به‌روزرسانی، نه اف�
 /* ── ۹. افزودن کالای تازه (روغن) ── */
 await page.fill('#gf-q', 'روغن لادن');
 await sleep(120);
-await page.locator('.gf-row').first().click(); // ref
+await page.locator('#scr-04 .gf-row').first().click(); // ref
 await sleep(150);
 ok('بج «کالای مرجع آیمچ»', (await page.locator('#gf-step2 .gf-selcard').innerHTML()).includes('کالای مرجع آیمچ'));
 ok('برچسب قیمت هر کارتن', (await page.locator('#gf-plabel').textContent()).includes('کارتن'));
@@ -129,7 +129,7 @@ ok('کارت جدید با قیمت/موجودی کم', newCard.includes('۲٬۴
 /* فاز ۴۴: صفحهٔ ۲۶ حذف شد — لیست کالاها همان گرید ۴۴ است */
 
 /* ── ۱۰. «تغییر» → بازگشت به گام ۱ با حفظ جستجو ── */
-await page.locator('.gf-row').first().click();
+await page.locator('#scr-04 .gf-row').first().click();
 await sleep(150);
 await page.locator('[data-gfreset]').click();
 await sleep(120);
@@ -139,7 +139,7 @@ ok('جستجو حفظ شد', (await page.inputValue('#gf-q')).includes('روغن
 /* ── ۱۱. کالای جدید ── */
 await page.fill('#gf-q', 'رب روژین');
 await sleep(120);
-await page.locator('.gf-newcta').click();
+await page.locator('#scr-04 .gf-newcta').click();
 await sleep(150);
 ok('فرم کالای جدید: نام پیش‌پر', (await page.inputValue('#gf-newname')).includes('روژین'));
 ok('چیپ‌های نوع کالا (حدس: رب)', (await page.locator('[data-gfnewgood]').textContent()).includes('رب'));
@@ -158,7 +158,7 @@ const rozhin = await page.evaluate(() => {
 ok('کالای جدید با بج «در انتظار تأیید»', rozhin.includes('در انتظار تأیید'));
 
 /* ── ۱۲. شیت چسباندن لیست قیمت ── */
-await page.locator('.gf-paste').click();
+await page.locator('#scr-04 .gf-paste').click();
 await sleep(250);
 ok('شیت paste باز شد', await page.locator('#sheet-paste.show').isVisible());
 await page.locator('#paste-sample').click();
@@ -204,12 +204,12 @@ ok('شیت بسته شد', await page.locator('#sheet-paste.show').count() === 0
 ok('بنر موفقیت چسباندن', (await page.locator('#gf-okbox').textContent()).includes('کالا به کاتالوگ اضافه شد'));
 
 /* ── ۱۳. شیت‌های اسکن/اکسل/قیمت پایه ── */
-await page.locator('.gf-scan').click();
+await page.locator('#scr-04 .gf-scan').click();
 await sleep(200);
 ok('شیت اسکنر باز می‌شود', await page.locator('#sheet-scan.show').isVisible());
 await page.locator('#backdrop').click({ position: { x: 200, y: 20 } });
 await sleep(250);
-await page.locator('.gf-row').first().click();
+await page.locator('#scr-04 .gf-row').first().click();
 await sleep(150);
 await page.locator('#gf-step2 .info-i').click();
 await sleep(200);
