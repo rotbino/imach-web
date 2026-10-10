@@ -48,7 +48,6 @@ ok(/کالا/.test(grid.head) && /قیمت/.test(grid.head) && /موجودی/.te
 ok(grid.chips === 0 && grid.reset, 'چیپ‌های درصدی حذف شده + بازنشانی (لینک زیر گرید)');
 ok(grid.save && grid.cnt === '(۰)', 'دکمهٔ «ثبت تغییرات (۰)» از ابتدا');
 ok(grid.dirtyVisible === 0, 'نشان «ویرایش شد» در حالت اولیه پنهان است');
-ok(grid.xlsBtn && String(grid.xlsIcon).includes('i-xls'), 'دکمهٔ اکسل (آیکون i-xls) بالای فرم');
 
 /* بازگشت ۴۴ → ۰۱ */
 await page.click('#scr-44 .subheader .back');
@@ -148,10 +147,6 @@ ok(afterSave.hash === '#01', 'بعد از ثبت به کاتالوگ (۰۱) بر
 ok(afterSave.card1.includes('۳٬۱۰۰٬۰۰۰'), `قیمت کارت اول کاتالوگ به‌روز شد (${afterSave.card1})`);
 ok(afterSave.badge1 === 'تمام شد', `موجودی ۰ → نشان «تمام شد» (${afterSave.badge1} / ${afterSave.badge1Cls})`);
 
-/* ۲۶ — لیست کالاها */
-await nav('26');
-const r26 = await page.evaluate(() => document.querySelector('#scr-26 .row-card .s').textContent.trim());
-ok(r26.includes('۳٬۱۰۰٬۰۰۰'), `لیست کالاها (۲۶) هم به‌روز شد (${r26})`);
 
 /* موجودی کم → amber */
 await nav('44');
@@ -191,74 +186,12 @@ const cset = await page.evaluate(() => {
   const first = rows[0];
   return { n: rows.length, txt: first.textContent.replace(/\s+/g, ' ').trim().slice(0, 40), go: first.dataset.go };
 });
-ok(/به‌روزرسانی گروهی قیمت و موجودی/.test(cset.txt) && cset.go === '44', `ردیف اولِ تنظیمات کاتالوگ = «به‌روزرسانی گروهی…» → ۴۴`);
+/* فاز ۴۴: به‌روزرسانی گروهی به خودِ کاتالوگ رفت (نوار «قیمت و موجودی»)؛ ردیف اول cset = تبلیغات و افزایش فروش */
+ok(/تبلیغات و افزایش فروش/.test(cset.txt) && cset.go === '30', `ردیف اولِ تنظیمات کاتالوگ = «تبلیغات و افزایش فروش» → ۳۰`);
 await page.click('#sheet-cset .sheet-row');
 await page.waitForTimeout(220);
-ok(await page.evaluate(() => location.hash === '#44'), 'کلیک ردیف تنظیمات → صفحهٔ ۴۴');
+ok(await page.evaluate(() => location.hash === '#30'), 'کلیک ردیف تنظیمات → صفحهٔ ۳۰');
 
-/* ═══ ۶) مدال اکسل — متن مالک + خروجی واقعی + ورود فایل ═══ */
-console.log('— مدال اکسل');
-await nav('44');
-await page.click('#scr-44 .bk-xls');
-await page.waitForTimeout(320);
-const modal = await page.evaluate(() => {
-  const d = document.getElementById('dlg-xlsbulk');
-  return {
-    show: d.classList.contains('show'),
-    p: d.querySelector('.dlg-p').textContent.trim(),
-    exp: !!document.getElementById('xls-export'),
-    imp: !!document.getElementById('xls-import'),
-    statusHidden: document.getElementById('xls-status').hidden,
-  };
-});
-ok(modal.show, 'مدال dlg-xlsbulk باز می‌شود');
-ok(modal.p === 'اگر تعداد کالاهاتون زیاد می تونید با آپلود لیست اکسلتون سریع قیمت و موجودی رو در آیمچ آپدیت کنید.', 'متن توضیح عیناً از مالک');
-ok(modal.exp && modal.imp && modal.statusHidden, 'دو دکمهٔ دانلود/بارگذاری + وضعیت پنهان');
-
-/* دانلود واقعی CSV */
-const dlPromise = page.waitForEvent('download', { timeout: 5000 });
-await page.click('#xls-export');
-const dl = await dlPromise;
-const csvPath = '/home/z/my-project/scripts/p36-qa-export.csv';
-await dl.saveAs(csvPath);
-const fs = await import('node:fs');
-const csvTxt = fs.readFileSync(csvPath, 'utf8').replace(/^\uFEFF/, '');
-ok(/^نام کالا,قیمت \(تومان\),موجودی/.test(csvTxt), 'CSV با سرستون فارسی و BOM دانلود می‌شود');
-ok(csvTxt.split('\n').length === 6, `۵ ردیف داده در فایل (${csvTxt.split('\n').length - 1})`);
-ok(/برنج هاشمی — کیسه ۵۰ کیلویی,3100000,0/.test(csvTxt), 'مقادیر جاری (شامل ثبت قبلی) در فایل است');
-
-/* بارگذاری همان فایل با تغییر */
-const modCsv = '\uFEFF' + csvTxt.replace('برنج فجر — کیسه ۵۰ کیلویی,2480000,8', 'برنج فجر — کیسه ۵۰ کیلویی,2600000,20');
-const impRes = await page.evaluate(async (txt) => {
-  const dt = new DataTransfer();
-  dt.items.add(new File([txt], 'imach-price-list.csv', { type: 'text/csv' }));
-  const inp = document.getElementById('xls-file');
-  inp.files = dt.files;
-  inp.dispatchEvent(new Event('change', { bubbles: true }));
-  await new Promise(r => setTimeout(r, 400));
-  const rows = document.querySelectorAll('#scr-44 .bk-row');
-  const fajar = rows[3];
-  return {
-    price: fajar.querySelector('.bk-price').value,
-    stock: fajar.querySelector('.bk-stock').value,
-    chg: document.querySelectorAll('#scr-44 .bk-row.chg').length,
-    status: document.getElementById('xls-status').textContent.trim().slice(0, 40),
-  };
-}, modCsv);
-ok(impRes.price === '۲٬۶۰۰٬۰۰۰' && impRes.stock === '۲۰', `ایمپورت: فجر ۲٬۶۰۰٬۰۰۰ / ۲۰ (${impRes.price} / ${impRes.stock})`);
-ok(impRes.chg === 1 && /۵ کالا از فایل/.test(impRes.status), 'وضعیت: «۵ کالا از فایل خوانده شد — ۱ تغییری» (' + impRes.status.slice(0, 24) + ')');
-
-/* ردیف ناهم‌خوان → خطا */
-const badRes = await page.evaluate(async () => {
-  const dt = new DataTransfer();
-  dt.items.add(new File(['\uFEFFچیز اشتباه,100,2'], 'x.csv', { type: 'text/csv' }));
-  const inp = document.getElementById('xls-file');
-  inp.files = dt.files;
-  inp.dispatchEvent(new Event('change', { bubbles: true }));
-  await new Promise(r => setTimeout(r, 350));
-  return { cls: document.getElementById('xls-status').className, txt: document.getElementById('xls-status').textContent.trim().slice(0, 30) };
-});
-ok(badRes.cls.includes('err'), `ردیف ناهم‌خوان → پیام خطا (${badRes.txt})`);
 
 /* ═══ ۷) متن‌های لندینگ (۱۵ + d3) ═══ */
 console.log('— متن‌های صفحهٔ اول');
@@ -288,11 +221,10 @@ const entries = await page.evaluate(() => {
   return {
     pasteTxt: c ? c.textContent.replace(/\s+/g, ' ').trim() : '',
     scan: !!document.querySelector('#scr-04 .gf-scan[data-sheet="sheet-scan"]'),
-    xls: !!document.querySelector('#scr-04 .gf-alt [data-sheet="sheet-xlsx"]'),
   };
 });
 ok(entries.pasteTxt.includes('بچسبونش') && entries.pasteTxt.includes('واتس‌اپ'), 'کال‌اوت «چسباندن لیست قیمت» با متن مالک‌پسند');
-ok(entries.scan && entries.xls, 'اسکنر داخل نوار جستجو + لینک «بارگذاری اکسل»');
+ok(entries.scan, 'اسکنر داخل نوار جستجو (فاز ۴۴: لینک اکسل حذف شد)');
 
 /* ═══ ۹) فرم کالا — هم‌گام فاز ۴۳: عنوان در کاتالوگ (فله) + نام کالای جدید ═══ */
 console.log('— فرم کالا (۰۴)');
@@ -332,7 +264,7 @@ ok(newprod.goodChips >= 1, 'کالای جدید: چیپ‌های «نوع کال
 
 /* ═══ ۱۰) e2e — ۴۷ صفحه بدون خطای کنسول ═══ */
 console.log('— e2e همهٔ صفحه‌ها');
-const SCREENS = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','d1','d2','d3'];
+const SCREENS = ['01','02','04','05','07','08','09','10','12','13','14','15','16','17','18','19','22','27','29','30','34','42','44','d3']; /* فاز ۴۴: ۲۳ صفحه + d3 */
 let visOk = 0, visFail = 0;
 for (const s of SCREENS) {
   await page.goto(URL + '#' + s);
@@ -340,7 +272,7 @@ for (const s of SCREENS) {
   const vis = await page.evaluate(id => { const el = document.getElementById('scr-' + id); return el && !el.hidden; }, s);
   if (vis) visOk++; else { visFail++; console.log('  NOT VISIBLE:', s); }
 }
-ok(visFail === 0, `e2e: ${visOk}/${SCREENS.length} صفحه نمایان (۴۷ صفحه)`);
+ok(visFail === 0, `e2e: ${visOk}/${SCREENS.length} صفحه نمایان (۲۴ صفحهٔ فاز ۴۴)`);
 ok(errors.length === 0, 'صفر خطای کنسول' + (errors.length ? ' — ' + errors.slice(0, 3).join(' | ') : ''));
 
 console.log('\nRESULT:', pass, 'pass /', fail, 'fail');

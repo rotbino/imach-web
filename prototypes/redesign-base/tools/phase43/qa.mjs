@@ -23,7 +23,6 @@ ok('صفحهٔ ۰۴ باز است', await page.locator('#scr-04').isVisible());
 ok('جستجوی واحد دیده می‌شود', await page.locator('#gf-q').isVisible());
 ok('دکمهٔ اسکن داخل جستجو', await page.locator('.gf-scan').isVisible());
 ok('کال‌اوت چسباندن لیست قیمت', await page.locator('.gf-paste').isVisible());
-ok('دکمهٔ بارگذاری اکسل (لینک ریز)', await page.locator('.gf-alt .qlink').isVisible());
 ok('عنوان مرحله ۱', (await page.locator('#gf-sub').textContent()).includes('مرحلهٔ ۱'));
 ok('گام ۲ مخفی', await page.locator('#gf-step2').isHidden());
 ok('اکشن‌بار مخفی', await page.locator('#gf-bar').isHidden());
@@ -76,14 +75,11 @@ await sleep(120);
 ok('پس از تغییر بسته همچنان گام ۲', await page.locator('#gf-step2').isVisible());
 ok('برچسب قیمت با بستهٔ تازه', (await page.locator('#gf-plabel').textContent()).includes('۵۰ کیلویی'));
 
-/* قیمت + کمترین بازار */
-ok('راهنمای کمترین بازار', (await page.locator('#gf-step2').innerHTML()).includes('کمترین قیمت بازار'));
-
-/* ── ۶. قیمت نرمال‌شده زنده ── */
+/* فاز ۴۴: «کمترین قیمت بازار» و «قیمت نرمال‌شده» از فرم حذف شدند — مقایسه فقط سمت خریدار (تابلو) */
+ok('بدون کمترین بازار (حذف فاز ۴۴)', !(await page.locator('#gf-step2').innerHTML()).includes('کمترین قیمت بازار'));
+ok('بدون خط قیمت نرمال‌شده (حذف فاز ۴۴)', await page.locator('#gf-unithint').count() === 0);
 await page.fill('#gf-price', '۲٬۹۵۰٬۰۰۰');
 await sleep(120);
-const uh = await page.locator('#gf-unithint').textContent();
-ok('قیمت نرمال‌شده (هر کیلو ≈ ۵۹٬۰۰۰)', uh.includes('۵۹٬۰۰۰') && uh.includes('هر کیلوگرم'));
 
 /* ── ۷. ذخیرهٔ بدون قیمت (رَد) ── */
 await page.fill('#gf-price', '');
@@ -116,7 +112,6 @@ await page.locator('.gf-row').first().click(); // ref
 await sleep(150);
 ok('بج «کالای مرجع آیمچ»', (await page.locator('#gf-step2 .gf-selcard').innerHTML()).includes('کالای مرجع آیمچ'));
 ok('برچسب قیمت هر کارتن', (await page.locator('#gf-plabel').textContent()).includes('کارتن'));
-ok('واحد لیتری در نرمال‌سازی', (await page.locator('#gf-step2').innerHTML()).includes('هر لیتر'));
 await page.fill('#gf-price', '۲٬۴۵۰٬۰۰۰');
 await page.fill('#gf-stock', '۸');
 await page.fill('#gf-min', '۱');
@@ -126,17 +121,12 @@ await sleep(200);
 ok('بنر «اضافه شد»', (await page.locator('#gf-okbox').textContent()).includes('اضافه شد'));
 const cnt = await page.locator('#scr-01 .pcard').count();
 ok('کارت جدید در کاتالوگ (۵)', cnt === 5);
-ok('شمارندهٔ کالا ۵ شد', (await page.locator('#scr-01 .stat[data-go="26"] .v').textContent()).includes('۵'));
 const newCard = await page.evaluate(() => {
   const c = [...document.querySelectorAll('#scr-01 .pcard')].find(x => (x.querySelector('.n')||{}).textContent?.includes('لادن'));
   return c ? c.innerHTML : '';
 });
 ok('کارت جدید با قیمت/موجودی کم', newCard.includes('۲٬۴۵۰٬۰۰۰') && newCard.includes('موجودی کم'));
-const row26 = await page.evaluate(() => {
-  const r = [...document.querySelectorAll('#scr-26 .row-card')].find(x => (x.querySelector('.t')||{}).textContent?.includes('لادن'));
-  return r ? r.querySelector('.s').textContent : '';
-});
-ok('ردیف ۲۶ هم ساخت', row26.includes('۲٬۴۵۰٬۰۰۰'));
+/* فاز ۴۴: صفحهٔ ۲۶ حذف شد — لیست کالاها همان گرید ۴۴ است */
 
 /* ── ۱۰. «تغییر» → بازگشت به گام ۱ با حفظ جستجو ── */
 await page.locator('.gf-row').first().click();
@@ -217,11 +207,6 @@ ok('بنر موفقیت چسباندن', (await page.locator('#gf-okbox').textCo
 await page.locator('.gf-scan').click();
 await sleep(200);
 ok('شیت اسکنر باز می‌شود', await page.locator('#sheet-scan.show').isVisible());
-await page.locator('#backdrop').click({ position: { x: 200, y: 20 } });
-await sleep(250);
-await page.locator('.gf-alt .qlink').click();
-await sleep(200);
-ok('شیت اکسل باز می‌شود', await page.locator('#sheet-xlsx.show').isVisible());
 await page.locator('#backdrop').click({ position: { x: 200, y: 20 } });
 await sleep(250);
 await page.locator('.gf-row').first().click();
