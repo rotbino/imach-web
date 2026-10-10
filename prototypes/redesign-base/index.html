@@ -935,6 +935,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .usg-row .utx .s { font-size: 10px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
   .usg-row .cost { font-size: 12px; font-weight: 800; color: var(--red); flex-shrink: 0; white-space: nowrap; }
   .usg-row .cost.plus { color: var(--green); }
+  /* ═══ فاز ۴۶ — فرم سادهٔ تبلیغ (۳۰): کادر راهنما + ردیف گزارش ═══ */
+  .guidebox { display: flex; align-items: center; gap: 11px; cursor: pointer; transition: border-color .15s; }
+  .guidebox:active { border-color: var(--border-strong); }
+  .guidebox .gic { width: 38px; height: 38px; border-radius: 11px; background: var(--muted); color: var(--primary-strong); display: grid; place-items: center; flex-shrink: 0; }
+  .guidebox .gic svg { width: 18px; height: 18px; }
+  .guidebox .gtx { flex: 1; min-width: 0; }
+  .guidebox .gt { font-size: 13.5px; font-weight: 800; }
+  .guidebox .gs { font-size: 11px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .guidebox .chev { width: 15px; height: 15px; color: var(--border-strong); flex-shrink: 0; }
+  /* شیت راهنمای «کاتالوگ ویژه چیست؟» (۳۰) */
+  .sheet .adg-p { font-size: 11.5px; color: var(--stone-soft); line-height: 2.1; margin-top: 11px; }
+  .sheet .adg-p b { color: var(--primary-strong); }
+  .sheet .adg-row { display: flex; gap: 9px; align-items: flex-start; background: var(--muted); border-radius: 11px; padding: 10px 11px; margin-top: 8px; }
+  .sheet .adg-row .n { width: 20px; height: 20px; border-radius: 7px; background: var(--accent); color: var(--primary-strong); font-size: 11px; font-weight: 800; display: grid; place-items: center; flex-shrink: 0; margin-top: 1px; }
+  .sheet .adg-row .tx { flex: 1; min-width: 0; }
+  .sheet .adg-row .tx b { display: block; font-size: 12px; font-weight: 700; }
+  .sheet .adg-row .tx span { display: block; font-size: 10.5px; color: var(--muted-fg); line-height: 1.9; margin-top: 3px; }
   /* جایگاه تبلیغاتی — بلوک توضیح با تصویر (شیت تبلیغات هدفمند) */
   .adslot { border: 1px solid var(--border); border-radius: 14px; background: #fff; padding: 9px; margin-top: 9px; cursor: pointer; position: relative; }
   .adslot.on { border-color: var(--primary); box-shadow: 0 2px 10px rgba(249,115,22,.10); }
@@ -2795,7 +2812,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
          (صفحهٔ ۰۵ فروشنده) و پاسخ‌ها در گفتگوها می‌نشیند. «تعیین تأمین‌کنندهٔ جدید توسط خریدار»
          و «شبکهٔ iMach» حذف شد — ذخیرهٔ کاتالوگ آن نیاز را برطرف می‌کند.
          فاز ۴۵ (مالک) — اسم‌گذاری: سمت خریدار «درخواست قیمت» (استعلام)، سمت فروشنده «درخواست خرید».
-         IMPLEMENTATION NOTE: هر درخواست دریافتی برای فروشندهٔ ویژه، ۵٬۰۰۰ تومان از شارژ او کم می‌کند؛
+         IMPLEMENTATION NOTE (فاز ۴۶): رویدادهای مرتبط با فروشندهٔ ویژه در لیست تأمین (بازدید یونیک ۱٬۰۰۰ ·
+         ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ تومان) از شارژ او کم می‌کنند؛
          در پیاده‌سازی عملیاتی: Inquiry { goodId, qty, note, deadline? } + گیرندگانِ تیک‌خورده؛ پاسخ در Thread. ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
@@ -3783,13 +3801,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <!-- مصرف تبلیغ (فروشنده) -->
+        <!-- ذخیرهٔ کاتالوگ از تبلیغ (فروشنده) — فاز ۴۶: مدل رویداد-محور -->
         <div class="notif sys">
           <span class="nic"><svg><use href="#i-wallet"/></svg></span>
           <div class="ntx">
-            <div class="t">درخواست خرید از تبلیغ شما — مصرف از شارژ <span class="badge b-new">− ۵٬۰۰۰</span></div>
-            <div class="b">«رستوران مهر» در جایگاه «فروشندهٔ ویژه» شما را دید و درخواست فرستاد. موجودی شارژ: <b data-wallet>۸۵٬۰۰۰</b> تومان.</div>
-            <button class="act" data-go="30">گزارش تبلیغ <svg><use href="#i-chev"/></svg></button>
+            <div class="t">ذخیرهٔ کاتالوگ از تبلیغ شما — مصرف از شارژ <span class="badge b-new">− ۳٬۰۰۰</span></div>
+            <div class="b">«سوپرمارکت آریا» کاتالوگ شما را در لیست تأمین ذخیره کرد. موجودی شارژ: <b data-wallet>۸۵٬۰۰۰</b> تومان.</div>
+            <button class="act" data-go="46">گزارش تبلیغ <svg><use href="#i-chev"/></svg></button>
             <div class="tm">۲ روز پیش</div>
           </div>
         </div>
@@ -3829,16 +3847,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- ═══ فاز ۲۳ — ۲۹) کیف پول و شارژ (مدل درآمدی) ═══ -->
     <!-- IMPLEMENTATION NOTE (مدل درآمدی — برای پیاده‌سازی عملیاتی):
-         کیف پول واحدِ مصرف هر دو نوع تبلیغ است (کمپین + تبلیغات هدفمند). شارژ فقط از این صفحه و از درگاه رسمی؛
-         مصرف رویداد-محور است و فقط وقتی کسر می‌شود که اتفاق واقعی بیفتد:
-         هر «مشاهدهٔ» تبلیغ ۱٬۰۰۰ تومان · هر «ذخیرهٔ کاتالوگ» یا «درخواست خرید / گفتگو» ۵٬۰۰۰ تومان.
+         کیف پول واحدِ مصرف «فروشندهٔ ویژه» است. شارژ فقط از این صفحه و از درگاه رسمی؛
+         مصرف رویداد-محور است و فقط وقتی کسر می‌شود که اتفاق واقعی در لیست تأمین بیفتد (فاز ۴۶):
+         هر «بازدید یونیک» ۱٬۰۰۰ تومان · هر «ذخیرهٔ کاتالوگ» ۳٬۰۰۰ تومان · هر «تماس» ۳٬۰۰۰ تومان.
          اگر موجودی تمام شود تبلیغ خودکار متوقف می‌شود (نه حذف) و با شارژ بعدی از همان‌جا ادامه می‌یابد؛
          کاربر از راه‌های «شارژ کافی نیست» (دیالوگ هدایت) و ریز مصرف همیشه در جریان است. -->
     <section class="scr" id="scr-29" data-arm="sell" hidden>
 
-    <!-- ═══ فاز ۴۴ — شارژ (سابقاً «کیف پول»): دو راه شارژ طبق حکم مالک:
+    <!-- ═══ فاز ۴۶ — شارژ (سابقاً «کیف پول»): دو راه شارژ طبق حکم مالک:
          (۱) کارت به کارت + ارسال فیش به مدیر (تأیید دستی) (۲) اشتراک‌گذاری کاتالوگ — هر ثبت‌نام از
-         لینک کاربر، شارژ هدیه. مصرف: فقط هر درخواست خریدِ دریافتی از «فروشندهٔ ویژه» ۵٬۰۰۰ تومان.
+         لینک کاربر، شارژ هدیه. مصرف (فاز ۴۶): بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ تومان.
          IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی، فیش به صف بررسی ادمین می‌رود (Transaction: PENDING → APPROVED)
          و هدیهٔ اشتراک‌گذاری با ثبت‌نامِ کاربرِ معرف‌شده اعمال می‌شود (Referral credit). ═══ -->
     <header class="subheader">
@@ -3857,7 +3875,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
       <div class="price-chips" style="margin-top:9px">
-        <span class="pc2"><svg><use href="#i-inbox"/></svg> هر درخواست خرید دریافتی از تبلیغ <b>۵٬۰۰۰ تومان</b></span>
+        <span class="pc2"><svg><use href="#i-eye"/></svg> هر بازدید یونیک <b>۱٬۰۰۰ تومان</b></span>
+        <span class="pc2"><svg><use href="#i-bookmark"/></svg> هر ذخیرهٔ کاتالوگ <b>۳٬۰۰۰ تومان</b></span>
+        <span class="pc2"><svg><use href="#i-phone"/></svg> هر تماس <b>۳٬۰۰۰ تومان</b></span>
       </div>
 
       <!-- شارژ با کارت به کارت -->
@@ -3910,12 +3930,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
       <div class="card" style="padding:2px 14px">
         <div class="usg-row">
-          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-inbox"/></svg></div>
+          <div class="uic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-eye"/></svg></div>
           <div class="utx">
-            <div class="t">درخواست خرید دریافتی از تبلیغ</div>
-            <div class="s">رستوران مهر · دیروز · فروشندهٔ ویژه</div>
+            <div class="t">بازدید یونیک در لیست تأمین</div>
+            <div class="s">رستوران مهر · امروز · فروشندهٔ ویژه</div>
           </div>
-          <span class="cost">− ۵٬۰۰۰</span>
+          <span class="cost">− ۱٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-bookmark"/></svg></div>
+          <div class="utx">
+            <div class="t">ذخیرهٔ کاتالوگ در لیست تأمین</div>
+            <div class="s">سوپرمارکت آریا · دیروز · فروشندهٔ ویژه</div>
+          </div>
+          <span class="cost">− ۳٬۰۰۰</span>
         </div>
         <div class="usg-row">
           <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-share"/></svg></div>
@@ -3934,12 +3962,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cost plus">+ ۳۰۰٬۰۰۰</span>
         </div>
         <div class="usg-row">
-          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-inbox"/></svg></div>
+          <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-phone"/></svg></div>
           <div class="utx">
-            <div class="t">درخواست خرید دریافتی از تبلیغ</div>
-            <div class="s">سوپرمارکت آریا · ۴ روز پیش · فروشندهٔ ویژه</div>
+            <div class="t">تماس از لیست تأمین</div>
+            <div class="s">هتل سپند · ۴ روز پیش · فروشندهٔ ویژه</div>
           </div>
-          <span class="cost">− ۵٬۰۰۰</span>
+          <span class="cost">− ۳٬۰۰۰</span>
         </div>
       </div>
 
@@ -3947,89 +3975,163 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
-    <!-- ═══ فاز ۲۳ — ۳۰) گزارش تبلیغ‌ها (کمپین + هدفمند) ═══ -->
-    <!-- IMPLEMENTATION NOTE (گزارش تبلیغ — برای پیاده‌سازی عملیاتی):
-         گزارش هر تبلیغ سه لایه دارد: (۱) آمار کلی (مشاهده/ذخیره/تماس) (۲) فهرست دقیق خریداران و کسب‌وکارهایی که
-         هر رویداد را انجام داده‌اند — به‌عنوان مدرک، با امکان بازکردن لیست خرید/گفتگوی همان خریدار (۳) ریز مصرف
-         شارژ به ازای هر نوع رویداد با قیمت واحد و جمع کل. اعداد آمار = جمع واقعی لاگ رویدادهای همان تبلیغ است. -->
+    <!-- ═══ فاز ۴۶ — تبلیغات و افزایش فروش (بازطراحی مالک — ساده و قابل فهم):
+         فرم فقط سه کادر دارد: (۱) سوییچ «کاتالوگ رو ویژه کن» — روی همهٔ کالاهای کاتالوگ اعمال
+         می‌شود، بدون انتخاب تک‌کالا (حکم مالک: این‌طور فروشنده مجبور است کالایی که واقعاً نمی‌فروشد
+         روی کاتالوگ نگذارد) (۲) کادر راهنما «کاتالوگ ویژه چیست؟» → شیت از پایین (۳) مقدار شارژ
+         موجود. «راه رایگان» حذف شد (در فرم شارژ ۲۹ هست) و گزارش تبلیغ به صفحهٔ جداگانهٔ ۴۵ رفت.
+         IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی Promo { type: SPECIAL_SELLER, placement:
+         MATCH_BOOST, billing: PER_EVENT { unique_view: 1000, catalog_save: 3000, call: 3000 } } —
+         کسر فقط برای رویدادهای لیست تأمین؛ بازدید/تماس طبیعی سایر فرم‌ها رایگان است. -->
     <section class="scr" id="scr-30" data-arm="sell" hidden>
-
-    <!-- ═══ فاز ۴۴ — تبلیغ و افزایش فروش: تبلیغِ یک‌کارهٔ MVP (حکم مالک):
-         «فروشندهٔ ویژه» = بالاتر دیده شدن در شرایط مشابه تطبیق + نشان ویژه؛ بدون هزینهٔ نمایش —
-         فقط هر درخواست خرید دریافتی ۵٬۰۰۰ تومان از شارژ کم می‌شود. کمپین/هدفمند/گزارشِ جدا حذف شدند؛
-         گزارشِ همین تبلیغ داخل همین صفحه است.
-         IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی Promo { type: SPECIAL_SELLER, placement: MATCH_BOOST, billing: PER_LEAD }؛
-         جایگاه‌ها: تابلوی تأمین (۰۹) · فهرست تأمین‌کنندگان درخواست خرید (۱۲) · «تأمین‌کنندگان ویژهٔ این کالا» (۰۲). ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">تبلیغات و افزایش فروش<small>فقط یک چیز — فروشندهٔ ویژه</small></div>
-      <button class="icon-btn" aria-label="شارژ" data-go="29" title="شارژ" style="margin-left:auto"><svg><use href="#i-wallet"/></svg></button>
+      <div class="ttl">تبلیغات و افزایش فروش<small>فروشندهٔ ویژه</small></div>
     </header>
 
     <main class="screen-body">
 
-      <!-- محصول تبلیغ -->
+      <!-- ۱ — سوییچ: کاتالوگ رو ویژه کن (روی همهٔ کالاها، بدون انتخاب) -->
       <div class="card" style="border-color:#f3ddba;background:linear-gradient(180deg,#fdf8ef,#fff 45%)">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:42px;height:42px;border-radius:12px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;flex-shrink:0">
             <svg style="width:21px;height:21px"><use href="#i-spark-v2"/></svg>
           </div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:15px;font-weight:800">فروشندهٔ ویژه باش</div>
-            <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">در شرایط مشابه تطبیق، بالاتر از بقیه دیده شو</div>
-          </div>
-          <div class="toggle on" id="ad-toggle" aria-label="فعال‌سازی فروشندهٔ ویژه"></div>
+          <div style="flex:1;min-width:0;font-size:15.5px;font-weight:800">کاتالوگ رو ویژه کن</div>
+          <div class="toggle on" id="ad-toggle" aria-label="کاتالوگ رو ویژه کن"></div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:11.5px;color:var(--stone-soft);line-height:1.8">
-            <svg style="width:14px;height:14px;color:var(--green);flex-shrink:0;margin-top:3px"><use href="#i-check"/></svg>
-            <span>در <b>تابلوی تأمین</b> و فهرست تأمین‌کننده‌های درخواست خرید، بالاتر از نتایج مشابه دیده می‌شوید.</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:11.5px;color:var(--stone-soft);line-height:1.8">
-            <svg style="width:14px;height:14px;color:var(--green);flex-shrink:0;margin-top:3px"><use href="#i-check"/></svg>
-            <span>کنار نامتان نشان <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span> می‌نشیند — هم در کاتالوگ، هم در جزئیات کالا.</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:11.5px;color:var(--stone-soft);line-height:1.8">
-            <svg style="width:14px;height:14px;color:var(--green);flex-shrink:0;margin-top:3px"><use href="#i-check"/></svg>
-            <span>دیده‌شدن <b>هیچ هزینه‌ای ندارد</b> — فقط هر درخواست خریدی که دریافت کنید ۵٬۰۰۰ تومان از شارژ کم می‌شود.</span>
-          </div>
-        </div>
-        <div class="hintnote">شروع و توقف هر لحظه در دست شماست؛ با پایان شارژ، تبلیغ موقتاً متوقف می‌شود (حذف نمی‌شود) و با شارژ بعدی ادامه می‌یابد.</div>
+        <div id="ad-sub" style="font-size:11px;color:var(--stone-soft);line-height:1.9;margin-top:9px">روی همهٔ کالاهای کاتالوگ شما اعمال می‌شود — کالایی که واقعاً نمی‌فروشید را از کاتالوگ بردارید.</div>
       </div>
 
-      <!-- گزارش همین تبلیغ -->
-      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-chart"/></svg> گزارش این تبلیغ</h2><span class="more">این هفته</span></div>
-      <div class="stat-strip" style="margin:0">
-        <div class="stat"><div class="v">۱۲۰</div><div class="k">بالاتر دیده شدید</div></div>
-        <div class="stat hot"><div class="v">۹</div><div class="k">درخواست خرید</div></div>
-        <div class="stat"><div class="v">۴۵٬۰۰۰</div><div class="k">تومان مصرف</div></div>
+      <!-- ۲ — کادر راهنما: کاتالوگ ویژه چیست؟ -->
+      <div class="card guidebox" data-sheet="sheet-adguide" role="button" tabindex="0">
+        <span class="gic"><svg><use href="#i-info-v2"/></svg></span>
+        <div class="gtx">
+          <div class="gt">کاتالوگ ویژه چیست؟</div>
+          <div class="gs">مصرف شارژ به ازای بازدید و درخواست خرید</div>
+        </div>
+        <svg class="chev"><use href="#i-chev"/></svg>
       </div>
-      <div style="font-size:10px;color:var(--muted-fg);margin-top:7px">شمارنده‌ها از ابتدای فعال‌سازی جمع شده‌اند — ریز کامل هر درخواست در «شارژ» شماست.</div>
 
-      <!-- شارژ فعلی -->
-      <div class="card wallet-card" data-go="29" style="cursor:pointer;margin-top:14px">
+      <!-- ۳ — مقدار شارژ موجود -->
+      <div class="card wallet-card" data-go="29" style="cursor:pointer">
         <div class="wic"><svg><use href="#i-wallet"/></svg></div>
         <div class="wtx">
-          <div class="wv"><span data-wallet>۸۵٬۰۰۰</span> <small style="font-size:11px;font-weight:500;color:var(--muted-fg)">تومان شارژ</small></div>
+          <div class="wv"><span data-wallet>۸۵٬۰۰۰</span> <small style="font-size:11px;font-weight:500;color:var(--muted-fg)">تومان شارژ موجود</small></div>
           <div class="wk">مصرف فقط وقتی نتیجه بگیرید</div>
         </div>
         <button class="btn btn-primary btn-sm" style="flex-shrink:0">افزایش شارژ</button>
       </div>
 
-      <!-- راه رایگان -->
-      <div class="callout" style="margin-top:14px">
-        <svg><use href="#i-share"/></svg>
-        <div>
-          <b>راه رایگانِ دیده‌شدن هم هست.</b><br>
-          لینک کاتالوگت را برای خریدارانی که می‌شناسی بفرست — به‌محض ثبت‌نام، کاتالوگت ذخیرهٔ آن‌ها می‌شود و مستقیم دیده می‌شوی.
-          <span style="color:var(--primary-strong);font-weight:700;cursor:pointer;white-space:nowrap" data-sheet="sheet-share"> ارسال لینک کاتالوگ</span>
+      <!-- ۴ — گزارش تبلیغ (فرم جدا) -->
+      <div class="card guidebox" data-go="46" role="button" tabindex="0">
+        <span class="gic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-chart"/></svg></span>
+        <div class="gtx">
+          <div class="gt">گزارش تبلیغ</div>
+          <div class="gs">چه کسایی کالاها را دیدند، ذخیره کردند و تماس گرفتند</div>
         </div>
+        <svg class="chev"><use href="#i-chev"/></svg>
       </div>
 
       <!-- شفافیت -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>«فروشندهٔ ویژه» با پرداختِ خودش بالاتر دیده می‌شود — رتبهٔ بقیهٔ نتایج از موتور تطبیق آیمچ می‌آید و خریدنی نیست.</div>
+        <div>«فروشندهٔ ویژه» در شرایط مساوی یعنی دقیقاً در جلوی خریدار هدف، بالاتر دیده می‌شود و فقط در صورت دیده‌شدن توسط خریدار هدف، از شارژ او کم می‌شود.</div>
+      </div>
+
+    </main>
+
+    </section>
+
+    <!-- ═══ فاز ۴۶ — گزارش تبلیغ (فرم جدا از ۳۰ طبق حکم مالک):
+         گزارشِ افراد و کسب‌وکارهایی که با تبلیغ تعامل داشتند — چه کسایی کدام کالا را دیدند،
+         چه کسایی کاتالوگ را ذخیره کردند، چه کسایی تماس گرفتند و چه کسایی کاتالوگ را دیدند.
+         IMPLEMENTATION NOTE: هر ردیف = یک رویداد واقعیِ لاگ‌شده
+         AdEvent { bizId, type: VIEW | SAVE | CALL | CATALOG_VIEW, goodId?, ts, charge }؛
+         آمار بالای صفحه جمعِ همان لاگ‌هاست و مصرف از شارژ فقط برای سه رویدادِ
+         لیست تأمین (بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰) محاسبه می‌شود. -->
+    <section class="scr" id="scr-46" data-arm="sell" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">گزارش تبلیغ<small>فروشندهٔ ویژه · از ابتدای فعال‌سازی</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- آمار کلی -->
+      <div class="stat-strip" style="margin:0">
+        <div class="stat"><div class="v">۱۲۰</div><div class="k">بازدید یونیک</div></div>
+        <div class="stat"><div class="v">۱۴</div><div class="k">ذخیرهٔ کاتالوگ</div></div>
+        <div class="stat hot"><div class="v">۶</div><div class="k">تماس</div></div>
+      </div>
+      <div class="price-chips" style="margin-top:9px">
+        <span class="pc2"><svg><use href="#i-wallet"/></svg> مصرف از شارژ <b>۱۸۰٬۰۰۰ تومان</b></span>
+      </div>
+
+      <!-- ریز افراد و کسب‌وکارها -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-chart"/></svg> چه کسایی با تبلیغ شما کار کردند</h2></div>
+      <div class="card" style="padding:2px 14px">
+        <div class="usg-row">
+          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-bookmark"/></svg></div>
+          <div class="utx">
+            <div class="t">سوپرمارکت آریا</div>
+            <div class="s">کاتالوگ شما را ذخیره کرد · امروز ۱۱:۴۰</div>
+          </div>
+          <span class="cost">− ۳٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-eye"/></svg></div>
+          <div class="utx">
+            <div class="t">رستوران مهر</div>
+            <div class="s">«برنج هاشمی» را در لیست تأمین دید · امروز ۱۰:۰۵</div>
+          </div>
+          <span class="cost">− ۱٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-phone"/></svg></div>
+          <div class="utx">
+            <div class="t">هتل سپند</div>
+            <div class="s">با شما تماس گرفت · دیروز ۱۶:۲۰</div>
+          </div>
+          <span class="cost">− ۳٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-store"/></svg></div>
+          <div class="utx">
+            <div class="t">سوپرمارکت الماس</div>
+            <div class="s">کاتالوگ شما را دید · دیروز · خارج از لیست تأمین</div>
+          </div>
+          <span class="cost plus">رایگان</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-eye"/></svg></div>
+          <div class="utx">
+            <div class="t">فروشگاه زنجیره‌ای نیلوفر</div>
+            <div class="s">«روغن سرخ‌کردنی لادن» را در لیست تأمین دید · ۲ روز پیش</div>
+          </div>
+          <span class="cost">− ۱٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-bookmark"/></svg></div>
+          <div class="utx">
+            <div class="t">رستوران مام‌لیلی</div>
+            <div class="s">کاتالوگ شما را ذخیره کرد · ۳ روز پیش</div>
+          </div>
+          <span class="cost">− ۳٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-phone"/></svg></div>
+          <div class="utx">
+            <div class="t">سوپرمارکت شهروند</div>
+            <div class="s">با شما تماس گرفت · ۴ روز پیش</div>
+          </div>
+          <span class="cost">− ۳٬۰۰۰</span>
+        </div>
+      </div>
+
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>فقط رویدادهای واقعی هزینه می‌شوند — بازدید تکراریِ همان خریدار رایگان است و بازدید یا تماسِ طبیعیِ خارج از لیست تأمین، هیچ هزینه‌ای ندارد.</div>
       </div>
 
     </main>
@@ -4887,7 +4989,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <div class="dlg" id="dlg-lowcharge" role="dialog" aria-label="شارژ کافی نیست">
   <h3>شارژ کافی نیست</h3>
   <div class="dlg-q">برای فعال‌ماندن «فروشندهٔ ویژه» شارژ بیشتری لازم است</div>
-  <div class="dlg-p">هر درخواست خرید که دریافت کنی <b>۵٬۰۰۰ تومان</b> از شارژ کم می‌شود؛ موجودی شارژ شما <b><span data-wallet>۸۵٬۰۰۰</span> تومان</b> است. اگر همین‌طور ادامه بدهی، با پایان شارژ، تبلیغ موقتاً متوقف می‌شود (حذف نمی‌شود) و با شارژ بعدی از همان‌جا ادامه می‌یابد.</div>
+  <div class="dlg-p">هر بازدید یونیک <b>۱٬۰۰۰ تومان</b>، هر ذخیرهٔ کاتالوگ <b>۳٬۰۰۰ تومان</b> و هر تماس <b>۳٬۰۰۰ تومان</b> از شارژ کم می‌شود؛ موجودی شارژ شما <b><span data-wallet>۸۵٬۰۰۰</span> تومان</b> است. اگر همین‌طور ادامه بدهی، با پایان شارژ، تبلیغ موقتاً متوقف می‌شود (حذف نمی‌شود) و با شارژ بعدی از همان‌جا ادامه می‌یابد.</div>
   <div class="dlg-btns">
     <button class="btn btn-primary" data-go="29"><svg><use href="#i-wallet"/></svg> افزایش شارژ</button>
     <button class="btn btn-outline" data-close>با همین شارژ ادامه بده</button>
@@ -5103,6 +5205,40 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="add-row"><svg><use href="#i-plus"/></svg> افزودن گروه کالا</button>
   <div class="hintnote">گروه کالا برای دسته‌بندی و فیلتر نمایش است؛ گروه تخفیف حجمی چیزی جدا است — چه بسا کاتالوگت گروه نداشته باشد اما گروه تخفیف داشته باشد.</div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۴۶ — شیت راهنمای «کاتالوگ ویژه چیست؟» (فرم ۳۰) ═══ -->
+<!-- IMPLEMENTATION NOTE: متن راهنما طبق دستور مالک (فاز ۴۶) — در پیاده‌سازی عملیاتی همین متن
+     از تنظیمات/CMS خوانده می‌شود تا بدون رلیز قابل ویرایش باشد. قیمت‌ها با مدل PER_EVENT
+     هم‌گام‌اند: بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ تومان. -->
+<div class="sheet" id="sheet-adguide" role="dialog" aria-label="کاتالوگ ویژه چیست؟">
+  <div class="grab"></div>
+  <h3>کاتالوگ ویژه چیست؟</h3>
+  <div class="sub">مصرف شارژ به ازای بازدید و درخواست خرید</div>
+
+  <div class="adg-p">روش کار ای‌مچ به این شکل است که خریداران برای خود لیست خرید می‌سازند. وقتی خریدار روی یکی از کالاهای لیست خریدش — مثلاً برنج هاشمی — بزند، در صفحهٔ تأمینِ آن کالا، به‌صرفه‌ترین تأمین‌کنندگانِ آن کالا که بیشترین مطابقت را از لحاظ نزدیکی، حجم خرید، اعتبار و غیره با نیاز خریدار دارند، به خریدار نمایش داده می‌شود.</div>
+  <div class="adg-p">یعنی سیستم تطابق، بهترین و به‌صرفه‌ترین تأمین‌کنندگان را به خریدارِ آن کالا نمایش می‌دهد. <b>همهٔ این‌ها رایگان است.</b></div>
+  <div class="adg-p">اما اگر تأمین‌کنندهٔ ویژه باشید، غیر از مزایای فوق، کالاهای شما در همین جایگاه، در شرایط مشابه، بالاتر و با برچسبِ «فروشندهٔ ویژه» به خریداران نمایش داده می‌شود. و شارژ هم از شما فقط به شرط یک اتفاق کم می‌شود.</div>
+
+  <div class="grp">اتفاقاتی که هزینه دارند</div>
+  <div class="adg-row">
+    <span class="n">۱</span>
+    <div class="tx"><b>به ازای هر بازدید یونیک — ۱٬۰۰۰ تومان</b><span>یعنی مثلاً فقط با ۱۰۰ هزار تومان، توسط ۱۰۰ خریدارِ هدفمند که از نظر حجم خرید و… با شما هماهنگ‌اند، دیده می‌شوید.</span></div>
+  </div>
+  <div class="adg-row">
+    <span class="n">۲</span>
+    <div class="tx"><b>به ازای ذخیرهٔ کاتالوگ — ۳٬۰۰۰ تومان</b><span>هر خریدار واقعی و متناسب که کاتالوگ شما را ذخیره کند و در لیست دفترچهٔ کاتالوگ خودش داشته باشد.</span></div>
+  </div>
+  <div class="adg-row">
+    <span class="n">۳</span>
+    <div class="tx"><b>به ازای هر تماس — ۳٬۰۰۰ تومان</b><span>اگر خریدار با شما تماس بگیرد.</span></div>
+  </div>
+
+  <div class="adg-p">البته این هزینه‌ها فقط زمانی اعمال می‌شوند که این اتفاقات در <b>لیست تأمین</b> بیفتند؛ به ازای بازدیدها یا تماس‌های طبیعی در سایر فرم‌ها، هزینه‌ای از تأمین‌کنندگان ویژه کم نمی‌شود.</div>
+  <div class="adg-p">یک مزیت دیگر این است که ما به فروشندگان ویژه، تمام گزارشِ اتفاقات و افراد را می‌دهیم: چه کسانی ذخیره کردند، چه کسانی کدام کالا را دیدند، چه کسانی تماس گرفتند و چه کسانی کاتالوگ شما را دیدند.</div>
+
+  <div class="hintnote">با پایان شارژ، ویژه بودن موقتاً متوقف می‌شود (حذف نمی‌شود) و با شارژ بعدی از همان‌جا ادامه می‌یابد.</div>
+  <button class="btn btn-primary sheet-cta" data-close>فهمیدم</button>
 </div>
 
 <!-- ═══ ۱۷) انتخاب شهر ═══ -->
@@ -5667,6 +5803,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
     '22': '01', '27': '01', '34': '08',
     '29': '42', '30': '01', /* فاز ۴۴: شارژ ← پروفایل (۴۲) · تبلیغات ← کاتالوگ */
+    '46': '30', /* فاز ۴۶: گزارش تبلیغ ← فرم تبلیغات */
     '10': '42', /* فاز ۴۴: کاتالوگ‌های ذخیره‌شده ← پروفایل؛ فاز ۴۵: از فوتر خرید هم می‌آید */
     '45': '08', /* فاز ۴۵: استعلام‌ها ← لیست خرید */
     '44': '01' /* فاز ۳۶: به‌روزرسانی گروهی قیمت/موجودی ← کاتالوگ */
@@ -5687,8 +5824,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   };
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
-  /* فاز ۴۴ — ۲۳ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -6585,9 +6722,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     evRender(list);
   }
 
-  /* ── فاز ۲۳: مدل درآمدی — کیف پول · انتخاب چندکالا · گزارش تبلیغ ──
+  /* ── فاز ۲۳: مدل درآمدی — کیف پول · شارژ · گزارش تبلیغ ──
      کیف پول یک وضعیت مشترک است و همهٔ نمایش‌های موجودی (پروفایل، شیت‌ها، دیالوگ، گزارش) با آن به‌روز می‌شوند.
-     قیمت‌گذاری رویداد-محور سراسری: مشاهده ۱٬۰۰۰ تومان · ذخیره/درخواست خرید/گفتگو ۵٬۰۰۰ تومان. */
+     فاز ۴۶ (مالک) — قیمت‌گذاری رویداد-محور سراسری: بازدید یونیک ۱٬۰۰۰ تومان · ذخیرهٔ کاتالوگ ۳٬۰۰۰ تومان · تماس ۳٬۰۰۰ تومان؛
+     فقط برای رویدادهای لیست تأمین (بازدید/تماس طبیعی سایر فرم‌ها رایگان است). */
   var WALLET = 85000;
   function faMoney(n) {
     return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(/,/g, '٬').replace(/\d/g, function (x) { return '۰۱۲۳۴۵۶۷۸۹'.charAt(+x); });
@@ -6596,6 +6734,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
     document.querySelectorAll('[data-wallet]').forEach(function (elm) { elm.textContent = faMoney(WALLET); });
   }
   var WALLET_PACK = 100000;
+
+  /* ═══ فاز ۴۶ — سوییچ «کاتالوگ رو ویژه کن» (۳۰): زیرنویس کارت با وضعیت سوییچ هم‌گام است.
+     حکم مالک: بدون انتخاب تک‌کالا — ویژه شدن روی همهٔ کالاهای کاتالوگ اعمال می‌شود تا
+     فروشنده کالایی که واقعاً نمی‌فروشد روی کاتالوک نگذارد. ═══ */
+  var AD_SUB_ON = 'روی همهٔ کالاهای کاتالوگ شما اعمال می‌شود — کالایی که واقعاً نمی‌فروشید را از کاتالوگ بردارید.';
+  var AD_SUB_OFF = 'کالاهای کاتالوگ، در شرایط مشابه بالاتر و با نشانِ فروشندهٔ ویژه دیده می‌شوند.';
+  function adSubRender() {
+    var tg = document.getElementById('ad-toggle');
+    var sub = document.getElementById('ad-sub');
+    if (tg && sub) sub.textContent = tg.classList.contains('on') ? AD_SUB_ON : AD_SUB_OFF;
+  }
 
   /* ═══ فاز ۳۶ + ۳۹ — به‌روزرسانی گروهی قیمت و موجودی (۴۴) ═══
      BK.base قیمت/موجودی اولیهٔ هر ردیف را نگه می‌دارد تا «بازنشانی» دقیق برگردد.
@@ -7388,7 +7537,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (cr) { var cb = cr.querySelector('.checkbox'); if (cb) cb.classList.toggle('on'); return; }
 
     var tg = t.closest('.toggle');
-    if (tg) { tg.classList.toggle('on'); return; }
+    if (tg) {
+      tg.classList.toggle('on');
+      if (tg.id === 'ad-toggle') adSubRender(); /* فاز ۴۶ — زیرنویس سوییچ کاتالوگ ویژه */
+      return;
+    }
 
     var qq = t.closest('.qq');
     if (qq) {

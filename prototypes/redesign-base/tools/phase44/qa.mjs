@@ -1,6 +1,7 @@
-// فاز ۴۴+۴۵ — QA رفتاری ساده‌سازی MVP + e2e همهٔ صفحه‌ها
+// فاز ۴۴+۴۵+۴۶ — QA رفتاری ساده‌سازی MVP + e2e همهٔ صفحه‌ها
 // فاز ۴۵: پروفایل هاب + مودال ویرایش · فوتر خرید ۴ تبی (استعلام‌ها/کاتالوگ‌ها) · صفحهٔ ۴۵ ·
 // حذف ۱۴ و dlg-pct (پنل اینلاین bk-pctbar) · چرخ‌دندهٔ کارت ← sheet-quickps · فرم ۳۴ الگوی MVP
+// فاز ۴۶: تبلیغ سادهٔ ۳۰ (سه کادر + شیت راهنما sheet-adguide) + گزارش جدا ۴۶ + قیمت‌گذاری PER_EVENT
 import { chromium } from 'playwright';
 
 const FILE = 'file://' + process.cwd() + '/index.html';
@@ -21,14 +22,14 @@ await page.reload();
 await sleep(250);
 
 /* ═══ ۱. ساختار کلی ═══ */
-const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45'];
+const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46'];
 const DEAD = ['03','06','11','14','20','21','23','24','25','26','28','31','32','33','35','36','37','38','39','40','41','43','d1','d2'];
 
 /* ═══ ۰. سلامت درخت DOM — فاز ۴۴-فیکس ═══
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۲۳ صفحه داخل قاب گوشی‌اند', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 23));
+ok('همهٔ ۲۴ صفحه داخل قاب گوشی‌اند', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 24));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -109,14 +110,47 @@ await sleep(2300);
 const w1 = await page.locator('[data-wallet]').first().textContent();
 ok('ارسال فیش → شارژ (ماک تأیید)', w0 !== w1);
 
-/* ═══ ۵. تبلیغات (۳۰) ═══ */
+/* ═══ ۵. تبلیغات (۳۰) — فرم سادهٔ فاز ۴۶ + گزارش جدا (۴۶) ═══ */
 await page.goto(FILE + '#30'); await page.reload(); await sleep(250);
 ok('۳۰: تبلیغات و افزایش فروش', await page.locator('#scr-30').isVisible());
-ok('۳۰: سوییچ فروشندهٔ ویژه', await page.locator('#ad-toggle').isVisible());
-ok('۳۰: گزارش داخلی', (await page.locator('#scr-30').textContent()).includes('گزارش این تبلیغ'));
+ok('۳۰: سوییچ «کاتالوگ رو ویژه کن»', await page.locator('#ad-toggle').isVisible());
+ok('۳۰: عنوان سوییچ (نه «فروشندهٔ ویژه باش»)', (await page.locator('#scr-30').textContent()).includes('کاتالوگ رو ویژه کن'));
+ok('۳۰: کادر راهنما «کاتالوگ ویژه چیست؟»', (await page.locator('#scr-30').textContent()).includes('کاتالوگ ویژه چیست؟'));
+ok('۳۰: کادر شارژ موجود', await page.locator('#scr-30 .wallet-card[data-go="29"]').count() === 1);
+ok('۳۰: بدون گزارش داخلی (جدا شد به ۴۶)', !(await page.locator('#scr-30').textContent()).includes('گزارش این تبلیغ'));
+ok('۳۰: بدون راه رایگان (در ۲۹ هست)', !(await page.locator('#scr-30').textContent()).includes('راه رایگان'));
+ok('۳۰: بدون قیمت قدیمی ۵٬۰۰۰ (به‌ازای درخواست)', !(await page.locator('#scr-30').textContent()).includes('۵٬۰۰۰ تومان از شارژ'));
+ok('۳۰: متن شفافیت جدید', (await page.locator('#scr-30').textContent()).includes('در جلوی خریدار هدف'));
+const adSub0 = await page.locator('#ad-sub').textContent();
+await page.click('#ad-toggle'); await sleep(120);
+ok('۳۰: سوییچ خاموش شد', (await page.locator('#ad-toggle').getAttribute('class') || '').indexOf('on') === -1);
+ok('۳۰: زیرنویس سوییچ عوض شد', (await page.locator('#ad-sub').textContent()) !== adSub0);
+await page.click('#ad-toggle'); await sleep(120);
+ok('۳۰: سوییچ دوباره روشن', (await page.locator('#ad-toggle').getAttribute('class') || '').includes('on'));
+await page.click('#scr-30 .guidebox[data-sheet="sheet-adguide"]');
+await sleep(300);
+ok('۳۰: شیت راهنما از پایین باز شد', await page.locator('#sheet-adguide.show').isVisible());
+const adg = await page.locator('#sheet-adguide').textContent();
+ok('راهنما: متن روش کار ای‌مچ', adg.includes('خریداران برای خود لیست خرید می‌سازند'));
+ok('راهنما: بازدید یونیک ۱٬۰۰۰', adg.includes('هر بازدید یونیک') && adg.includes('۱٬۰۰۰ تومان'));
+ok('راهنما: ذخیرهٔ کاتالوگ ۳٬۰۰۰', adg.includes('ذخیرهٔ کاتالوگ') && adg.includes('۳٬۰۰۰ تومان'));
+ok('راهنما: تماس ۳٬۰۰۰', adg.includes('به ازای هر تماس'));
+ok('راهنما: فقط رویدادهای لیست تأمین', adg.includes('در لیست تأمین'));
+ok('راهنما: گزارش افراد', adg.includes('چه کسانی ذخیره کردند'));
+await page.click('#sheet-adguide .sheet-cta'); await sleep(200);
+ok('۳۰: شیت راهنما بسته شد', !(await page.locator('#sheet-adguide').getAttribute('class') || '').includes('show'));
 ok('۳۰: بدون سوییچ کمپین/هدفمند', await page.locator('#rep-camp').count() === 0 && await page.locator('#rep-target').count() === 0);
-ok('۳۰: هزینه فقط درخواست ۵٬۰۰۰', (await page.locator('#scr-30').textContent()).includes('۵٬۰۰۰ تومان'));
-ok('۳۰: لینک شارژ', await page.locator('#scr-30 .wallet-card[data-go="29"]').count() === 1);
+await page.click('#scr-30 .guidebox[data-go="46"]');
+await sleep(250);
+ok('۳۰ → ۴۶: گزارش تبلیغ باز شد', await page.locator('#scr-46').isVisible());
+ok('۴۶: آمار سه‌گانه', await page.locator('#scr-46 .stat').count() === 3);
+ok('۴۶: ریز افراد و کسب‌وکارها', await page.locator('#scr-46 .usg-row').count() >= 7);
+ok('۴۶: رویداد دیدن کالا', (await page.locator('#scr-46').textContent()).includes('«برنج هاشمی» را در لیست تأمین دید'));
+ok('۴۶: رویداد ذخیرهٔ کاتالوگ', (await page.locator('#scr-46').textContent()).includes('کاتالوگ شما را ذخیره کرد'));
+ok('۴۶: رویداد تماس', (await page.locator('#scr-46').textContent()).includes('تماس گرفت'));
+ok('۴۶: بازدید رایگان خارج از لیست تأمین', (await page.locator('#scr-46').textContent()).includes('رایگان'));
+await page.click('#scr-46 .subheader .back'); await sleep(250);
+ok('۴۶: بازگشت ← ۳۰', await page.locator('#scr-30').isVisible());
 
 /* ═══ ۶. درخواست خرید ساده (۱۲) ═══ */
 await page.goto(FILE + '#12'); await page.reload(); await sleep(250);
@@ -146,7 +180,7 @@ ok('۲۷: درخواست جدید → ۰۵', await page.locator('#scr-27 .notif 
 ok('۲۷: پاسخ → ۱۹', await page.locator('#scr-27 .notif .act[data-go="19"]').count() === 1);
 ok('۲۷: قیمت لیست → ۰۹', await page.locator('#scr-27 .notif .act[data-go="09"]').count() === 1);
 ok('۲۷: یادآور کهنگی → ۴۴', await page.locator('#scr-27 .notif .act[data-go="44"]').count() === 1);
-ok('۲۷: مصرف تبلیغ → ۳۰', await page.locator('#scr-27 .notif .act[data-go="30"]').count() === 1);
+ok('۲۷: ذخیرهٔ کاتالوگ از تبلیغ → ۴۶', await page.locator('#scr-27 .notif .act[data-go="46"]').count() === 1);
 ok('۲۷: بدون «گوش به زنگ/فرصت بازار»', !(await page.locator('#scr-27').textContent()).includes('فرصت‌های بازار'));
 
 /* ═══ ۹. ۰۲ — ادغام مالک + خریدار ═══ */
