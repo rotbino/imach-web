@@ -135,24 +135,25 @@ body {
   cursor: pointer;
 }
 
-/* ── پیل سوییچ دستیارها (فاز ۴۵: چسبیده به لوگوی آیمچ در هدر؛ بدون گردی و بدون آیکون داخلی —
-   «iMach › دستیار خرید عمده»؛ فقط برچسب + فلش کوچک) ── */
+/* ── پیل سوییچ دستیارها (فاز ۴۷: بازگشت به نسخهٔ پس‌زمینه‌دار + فلش رو به پایین —
+   حکم مالک: بدون پس‌زمینه معلوم نبود دراپ‌داون است) ── */
 .arm-pill {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 6px 5px 6px 3px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
+  gap: 6px;
+  padding: 8px 11px 8px 9px;
+  border-radius: 999px;
+  background: var(--arm-tint);
   color: var(--stone-soft);
   font-family: inherit;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
+  border: 1px solid var(--border);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background .15s;
+  transition: border-color .15s;
 }
+.arm-pill:hover { border-color: var(--border-strong); }
 .arm-pill:active { background: var(--muted); }
 .arm-pill .caret { width: 11px; height: 11px; color: var(--muted-fg); flex-shrink: 0; }
 
@@ -197,6 +198,11 @@ body {
 }
 .screen-body::-webkit-scrollbar { display: none; }
 .screen-body.nopad { padding: 0; }
+/* فاز ۴۷ — ریتم عمودی یکنواختِ همهٔ فرم‌ها (قاعدهٔ طلایی مالک: «کادرها بهم نچسبند»):
+   هر عنصر مستقیمِ بعدی در بدنهٔ صفحه حداقل ۱۳px فاصله می‌گیرد؛ margin-collapse
+   فاصله‌های موجودِ بزرگ‌تر را حفظ می‌کند و استایل inline صریحِ هر عنصر مقدار خودش را
+   می‌گیرد. صفحات nopad (کاتالوگ عمومی ۱۳ / لندینگ ۱۵) چیدمان اختصاصی خودشان را دارند. */
+.screen-body:not(.nopad) > * + * { margin-top: 13px; }
 
 /* ═══════════════ نوار تب پایین ═══════════════ */
 .tabbar {

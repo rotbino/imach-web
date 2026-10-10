@@ -29,7 +29,7 @@ const DEAD = ['03','06','11','14','20','21','23','24','25','26','28','31','32','
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۲۴ صفحه داخل قاب گوشی‌اند', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 24));
+ok('همهٔ ۲۶ صفحه داخل قاب گوشی‌اند (فاز ۴۷: +۴۷/+۴۸)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -56,8 +56,8 @@ ok('پیل سوییچ چسبیده به لوگو (فاز ۴۵)', await page.loca
 ok('پیل بدون آیکون داخلی + برچسب عمده', (await page.locator('#scr-01 .arm-pill').textContent()).includes('دستیار فروش عمده') && (await page.locator('#scr-01 .arm-pill > svg:not(.caret)').count()) === 0);
 ok('چشم از هدر ۰۱ حذف شد', await page.locator('#scr-01 .appbar .icon-btn[aria-label="پیش‌نمایش عمومی کاتالوگ"]').count() === 0);
 ok('چشم کنار تنظیمات/اشتراک در ویترین (فاز ۴۵)', await page.locator('#scr-01 .showcase .icon-btn[data-go="13"]').count() === 1);
-ok('آواتار پروفایل در ۰۱', await page.locator('#scr-01 .appbar .avatar[data-go="42"]').count() === 1);
-ok('آواتار پروفایل در ۰۸', await page.locator('#scr-08 .appbar .avatar[data-go="42"]').count() === 1);
+ok('آیکون پروفایل در ۰۱ (فاز ۴۷: آواتار متنی حذف)', await page.locator('#scr-01 .appbar .icon-btn[data-go="42"] svg use[href="#i-user"]').count() === 1);
+ok('آیکون پروفایل در ۰۸ (فاز ۴۷)', await page.locator('#scr-08 .appbar .icon-btn[data-go="42"] svg use[href="#i-user"]').count() === 1);
 ok('نوار «قیمت و موجودی» روی کاتالوگ', await page.locator('#scr-01 .bulk-bar[data-go="44"]').isVisible());
 ok('بدون دکمهٔ selmode (کمپین)', await page.locator('#scr-01 .selmode-btn').count() === 0);
 ok('بدون نوار انتخاب (selbar)', await page.locator('#scr-01 .selbar').count() === 0);
@@ -67,7 +67,7 @@ ok('کارت کالا ← ۰۲ (ادغام ۰۳)', (await page.locator('#scr-01 
 ok('چرخ‌دندهٔ کارت ← sheet-quickps (فاز ۴۵)', (await page.locator('#scr-01 .pcard .gear').first().getAttribute('data-sheet')) === 'sheet-quickps');
 
 /* ═══ ۳. پروفایل هاب (۴۲) — فاز ۴۵ ═══ */
-await page.click('#scr-01 .appbar .avatar');
+await page.click('#scr-01 .appbar .icon-btn[data-go="42"]'); /* فاز ۴۷: آیکون به‌جای آواتار */
 await sleep(250);
 ok('آواتار → ۴۲ باز شد', await page.locator('#scr-42').isVisible());
 ok('۴۲: کارت شخصی (عکس+نام) → مودال ویرایش', await page.locator('#scr-42 .pp-me[data-sheet="sheet-ppedit"]').count() === 1);
@@ -163,16 +163,16 @@ await sleep(120);
 ok('۱۲: استپر مقدار کار می‌کند', (await page.locator('#scr-12 .qty-stepper .val').textContent()).includes('۲۱'));
 await page.click('#rfq-send');
 await sleep(1100);
-ok('۱۲: ارسال → پیام‌ها (۱۸)', await page.locator('#scr-18').isVisible());
+ok('۱۲: ارسال → استعلام‌ها (۴۵ — فاز ۴۷: مقایسهٔ پیشنهادها آن‌جاست)', await page.locator('#scr-45').isVisible());
 
 /* ═══ ۷. درخواست‌های فروشنده (۰۵) + شیت reqview ═══ */
 await page.goto(FILE + '#05'); await page.reload(); await sleep(250);
 ok('۰۵: بدون تب سه‌گانه', await page.locator('#scr-05 .inner-tabs').count() === 0);
-ok('۰۵: کارت درخواست ← شیت', (await page.locator('#scr-05 .req-card').first().getAttribute('data-sheet')) === 'sheet-reqview');
+ok('۰۵: کارت درخواست ← شیت (فاز ۴۷: با data-req)', (await page.locator('#scr-05 .req-card').first().getAttribute('data-req')) === 'rq1');
 await page.click('#scr-05 .req-card');
 await sleep(300);
 ok('شیت reqview باز شد', await page.locator('#sheet-reqview.show').isVisible());
-ok('reqview: پاسخ در گفتگو', (await page.locator('#sheet-reqview .btn-primary').getAttribute('data-go')) === '19');
+ok('reqview: ارسال پیشنهاد قیمت → ۴۷ (فاز ۴۷ — نه گفتگو)', (await page.locator('#sheet-reqview .btn-primary').getAttribute('data-go')) === '47');
 
 /* ═══ ۸. اعلان‌ها (۲۷) ═══ */
 await page.goto(FILE + '#27'); await page.reload(); await sleep(250);
@@ -214,7 +214,7 @@ ok('۰۲: دکمهٔ «درخواست قیمت» (سمت خریدار)', (await 
 /* ═══ ۱۰. لیست خرید (۰۸) → تابلو (۰۹) → استعلام‌ها (۴۵) ═══ */
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
 ok('۰۸: کارت لیست ← تابلوی ۰۹', (await page.locator('#scr-08 .bl-card').first().getAttribute('data-go')) === '09');
-ok('۰۸: کارت استعلام جاری ← گفتگو', (await page.locator('#scr-08 .bl-rfq').first().getAttribute('data-go')) === '19');
+ok('۰۸: کارت استعلام جاری ← استعلام‌ها (۴۵ — فاز ۴۷)', (await page.locator('#scr-08 .bl-rfq').first().getAttribute('data-go')) === '45');
 ok('۰۸: «استعلام‌های جاری» + مشاهدهٔ همه → ۴۵ (فاز ۴۵)', (await page.locator('#scr-08 .bl-inq-title h2').textContent()).includes('استعلام‌های جاری') && (await page.locator('#scr-08 .bl-inq-title .more[data-go="45"]').count()) === 1);
 ok('۰۸: بدون گروه‌بندی (فاز ۴۵)', await page.locator('#scr-08 .bl-groups').count() === 0);
 ok('۰۸: متن راهنمای جدید', (await page.locator('#scr-08 .legend').textContent()).includes('استعلام قیمت رقابتی'));
@@ -224,7 +224,7 @@ await page.click('#scr-08 .bl-inq-title .more');
 await sleep(250);
 ok('۰۸: مشاهدهٔ همه → ۴۵', await page.locator('#scr-45').isVisible());
 ok('۴۵: استعلام‌های جاری + پایان‌یافته', (await page.locator('#scr-45').textContent()).includes('استعلام‌های جاری') && (await page.locator('#scr-45').textContent()).includes('پایان‌یافته'));
-ok('۴۵: کارت جاری ← گفتگو', (await page.locator('#scr-45 .inq-card').first().getAttribute('data-go')) === '19');
+ok('۴۵: کارت جاری ← مقایسهٔ پیشنهادها (۴۸ — فاز ۴۷)', (await page.locator('#scr-45 .inq-card').first().getAttribute('data-inq')) === 'inq1');
 ok('۴۵: فوتر خرید ۴ تبی', await page.locator('#scr-45 .tabbar .tab').count() === 4);
 await page.click('#scr-45 .tab:has-text("کاتالوگ‌ها")');
 await sleep(250);
