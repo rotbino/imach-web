@@ -37,7 +37,7 @@ T('۱۲: ۵ تأمین‌کننده رندر شده', await page.locator('#iq-re
 T('۱۲: اولی بج فروشندهٔ ویژه', (await page.locator('#iq-recips .checkrow').first().textContent()).includes('فروشندهٔ ویژه'));
 T('۱۲: ۳ تیک پیش‌فرض', await page.locator('#iq-recips .checkbox.on').count() === 3);
 T('۱۲: دکمهٔ ارسال = ۳', (await page.locator('#rfq-send').textContent()).includes('۳'));
-T('۱۲: مهلت ۵ پیل پیش‌فرض فعال', await page.locator('#iq-deadline .pill.active').count() === 1 && (await page.locator('#iq-deadline .pill.active').textContent()).includes('۵'));
+T('۱۲ (فاز ۵۱): مهلت ۴ روز پیش‌فرض فعال', await page.locator('#iq-deadline .pill.active').count() === 1 && (await page.locator('#iq-deadline .pill.active').textContent()).includes('۴') && (await page.locator('#iq-dl-more').count() === 1));
 T('۱۲: دکمهٔ تأمین‌کنندگان بیشتر هست', await page.locator('#iq-more').count() === 1);
 T('۱۲: ۱ قلم پیش‌فرض (برنج هاشمی)', (await page.locator('#iq-count').textContent()).includes('۱'));
 

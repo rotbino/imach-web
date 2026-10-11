@@ -1777,6 +1777,68 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #sheet-reqview .of47-item { margin-bottom: 8px; }
   #sheet-reqview .reqv-price { text-align: left; font-weight: 700; }
 
+  /* ═══════════ فاز ۵۱ — ساده‌سازی شرایط پیشنهاد + مقایسهٔ فشرده + تازگی قیمت ═══════════ */
+  /* فرم پیشنهاد (reqview): ردیف سوییچر — لمس کل ردیف همان سوییچر است */
+  #sheet-reqview .sw-row { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 13px; box-shadow: var(--shadow-card); padding: 11px 13px; cursor: pointer; }
+  #sheet-reqview .sw-row .sw-tx { flex: 1; min-width: 0; }
+  #sheet-reqview .sw-row .sw-tx b { display: block; font-size: 13px; }
+  #sheet-reqview .sw-row .sw-tx span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  /* جعبهٔ چک: درصد نقدی/چک مکمل + حداکثر مدت + خلاصهٔ زنده */
+  #sheet-reqview #reqv-cheq-box { margin-top: 10px; background: #fff; border: 1px solid var(--border); border-radius: 13px; box-shadow: var(--shadow-card); padding: 11px 13px; }
+  #sheet-reqview .pay-split { display: flex; gap: 9px; }
+  #sheet-reqview .ps-cell { flex: 1; min-width: 0; }
+  #sheet-reqview .ps-days { margin-top: 10px; }
+  #sheet-reqview .ps-cell label, #sheet-reqview .ps-days label { display: block; font-size: 10.5px; color: var(--muted-fg); margin-bottom: 5px; }
+  #sheet-reqview .paysum { margin-top: 10px; font-size: 11.5px; font-weight: 700; color: var(--arm); background: var(--arm-tint); border-radius: 10px; padding: 7px 11px; line-height: 1.8; }
+
+  /* ۴۸ — کارت خلاصهٔ استعلام: عنوان واضح و درشت (نه ریزِ هدر) */
+  .of48-inq { display: flex; align-items: center; gap: 10px; }
+  .of48-inq .tx { flex: 1; min-width: 0; }
+  .of48-inq .tx b { display: block; font-size: 13.5px; font-weight: 800; line-height: 1.7; }
+  .of48-inq .tx span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  .of48-inq .badge { flex-shrink: 0; }
+
+  /* ۴۸ — کارت فشردهٔ پیشنهاد: فقط مقایسه/انتخاب؛ جزئیات در شیت */
+  .oc-row { cursor: pointer; }
+  .oc-row:active { background: var(--muted); }
+  .oc-row .oc-cond .cond.loc { background: var(--green-bg); color: var(--green); font-weight: 700; }
+  .oc-row .oc-cond .cond.loc svg { width: 11px; height: 11px; }
+  .oc-more { margin-top: 9px; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--primary-strong); }
+  .oc-more svg { width: 12px; height: 12px; }
+
+  /* شیت جزئیات پیشنهاد (خریدار) — همان زبان مودال درخواست */
+  #sheet-ofview .ofv-price { margin-top: 13px; background: var(--arm-tint); border-radius: 13px; padding: 12px 14px; text-align: center; }
+  #sheet-ofview .ofv-price .p { font-size: 19px; font-weight: 800; color: var(--arm); }
+  #sheet-ofview .ofv-price small { font-size: 10.5px; font-weight: 500; color: var(--muted-fg); }
+  #sheet-ofview .ofv-total { background: var(--muted); border-radius: 10px; padding: 8px 12px; margin-top: 10px; }
+  #sheet-ofview .reqv-meta { margin-top: 0; }
+  #sheet-ofview .ofv-acts { display: flex; gap: 8px; margin-top: 14px; position: sticky; bottom: -16px; background: #fff; padding: 10px 16px 8px; border-top: 1px solid var(--border); box-shadow: 0 -8px 12px -8px rgba(42, 39, 35, .14); }
+  #sheet-ofview .ofv-u { display: block; margin-top: 3px; }
+  #sheet-ofview .reqv-buyer { display: flex; align-items: center; gap: 9px; margin-top: 4px; }
+  #sheet-ofview .reqv-buyer .avatar-sm { width: 36px; height: 36px; font-size: 13.5px; flex-shrink: 0; }
+  #sheet-ofview .reqv-buyer b { display: flex; align-items: center; gap: 4px; font-size: 13.5px; }
+  #sheet-ofview .reqv-buyer span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  #sheet-ofview .reqv-note { display: flex; gap: 9px; margin-top: 11px; background: var(--accent); border-radius: 12px; padding: 10px 12px; }
+  #sheet-ofview .reqv-note svg { width: 15px; height: 15px; color: var(--primary-strong); flex-shrink: 0; margin-top: 1px; }
+  #sheet-ofview .reqv-note b { display: block; font-size: 10.5px; color: var(--accent-fg); margin-bottom: 2px; }
+  #sheet-ofview .reqv-note span { font-size: 11.5px; color: var(--foreground); line-height: 1.9; }
+  #sheet-ofview .reqv-meta { display: flex; flex-wrap: wrap; gap: 7px; }
+  #sheet-ofview .reqv-meta .rm { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--muted-fg); background: var(--muted); border-radius: 9px; padding: 5px 9px; }
+  #sheet-ofview .reqv-meta .rm svg { width: 12px; height: 12px; flex-shrink: 0; }
+  #sheet-ofview .reqv-meta .rm b { font-size: 10.5px; color: var(--foreground); font-weight: 700; }
+  #sheet-ofview .ofv-lines { margin-top: 0; border-top: 0; padding-top: 0; }
+
+  /* ۱۲ — ورودی مهلت دلخواه (سایر)؛ [hidden] صریح چون .input فلکس است و گارد UA را می‌شکند (درس فاز ۴۸) */
+  .iq-dl-custom { margin-top: 9px; text-align: center; font-weight: 700; }
+  .iq-dl-custom[hidden] { display: none; }
+
+  /* ۰۹ — کارت شبح قیمت ناتازه: خط‌خورده و خاموش، ولی قابل تماس */
+  .supplier-card.stale { background: var(--muted); border-style: dashed; box-shadow: none; }
+  .supplier-card.stale .n { color: var(--muted-fg); }
+  .supplier-card.stale .price.old { text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 2px; color: var(--muted-fg); }
+  .supplier-card.stale .price.old small { text-decoration: line-through; }
+  .stale-t { color: var(--amber); font-weight: 700; }
+
 </style>
 </head>
 <body>
@@ -2697,30 +2759,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- ═══ تأمین‌کننده ۳ ═══ -->
-      <div class="supplier-card">
+      <!-- ═══ فاز ۵۱ — قیمت ناتازه (۱۱ روز، اعتبار ۵ روزهٔ کاتالوگ): در مقایسه نمی‌نشیند؛
+            کارت شبح فقط می‌گوید هست و قیمتش خط خورده — تماس می‌ماند چون شاید تازه‌اش کند.
+            قانون: قیمت تازه همیشه بالاتر؛ ناتازه فقط وقتی رقیب تازه نماند با قیمت خط‌خورده. ═══ -->
+      <div class="supplier-card stale">
         <div class="sup-head">
           <div class="avatar-sm" style="background:#0e7490">ک</div>
           <div class="nm">
             <div class="n">کیان غلات</div>
             <div class="c">
               <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> قزوین · هم‌استان</span>
-              <span>به‌روزرسانی ۱۱ روز پیش</span>
+              <span class="stale-t">۱۱ روز است قیمتش تازه نشده</span>
             </div>
           </div>
           <div class="sup-price">
-            <div class="price">۳٬۰۰۰٬۰۰۰ <small>تومان</small></div>
-            <span class="trend flat">— بدون تغییر</span>
+            <div class="price old">۳٬۰۰۰٬۰۰۰ <small>تومان</small></div>
+            <span class="trend flat">در مقایسه نیست</span>
           </div>
-        </div>
-        <div class="sup-conditions">
-          <span class="cond">کیسه ۵۰ کیلویی</span>
-          <span class="cond">حداقل ۲۰ کیسه</span>
         </div>
         <div class="sup-actions">
           <button class="btn btn-stone btn-sm" style="flex:1"><svg><use href="#i-phone"/></svg> تماس</button>
           <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
-          <button class="btn btn-outline btn-sm">ذخیره</button>
         </div>
       </div>
 
@@ -2748,6 +2807,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
         <div>«فروشندهٔ ویژه» یعنی این تأمین‌کننده در حال تبلیغ است و با پرداختِ خودش بالاتر از نتایج مشابه دیده می‌شود — پیشنهادهای دیگر از موتور تطبیق iMach می‌آیند و رتبهٔ آن‌ها خریدنی نیست.</div>
+      </div>
+
+      <!-- فاز ۵۱ — قانون تازگی قیمت‌ها (اعتبار قیمتهای کاتالوگ، تنظیم هر فروشنده) -->
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>قیمت‌های به‌روز همیشه در شرایط مشابه بالاتر می‌نشینند؛ قیمتی که اعتبارش گذشته (پیش‌فرض کاتالوگ: ۵ روز) در مقایسه نمی‌آید — مگر رقیب تازه‌ای نماند که آن‌وقت قیمتش خط‌خورده دیده می‌شود.</div>
       </div>
 
     </main>
@@ -2960,16 +3025,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div id="iq-items"></div>
       <button class="iq-add" id="iq-add" type="button"><svg><use href="#i-plus"/></svg><span>افزودن کالا</span></button>
 
-      <!-- فاز ۴۹ — مهلت پاسخ: ۱ تا ۵ روز، پیش‌فرض ۵ (بین «سایر» هم می‌گنجد) -->
+      <!-- فاز ۵۱ — مهلت پاسخ: پیل ۱-۴ روز + «سایر» → ورودی دلخواه (حداکثر دو رقم / ۹۹ روز) -->
       <div class="field">
         <label>مهلت پاسخ</label>
         <div class="pillchoice" id="iq-deadline">
           <button class="pill" type="button">۱ روز</button>
           <button class="pill" type="button">۲ روز</button>
           <button class="pill" type="button">۳ روز</button>
-          <button class="pill" type="button">۴ روز</button>
-          <button class="pill active" type="button">۵ روز</button>
+          <button class="pill active" type="button">۴ روز</button>
+          <button class="pill" type="button" id="iq-dl-more">سایر</button>
         </div>
+        <input class="input iq-dl-custom" id="iq-dl-custom" hidden inputmode="numeric" maxlength="2" autocomplete="off" placeholder="چند روز؟ حداکثر ۹۹">
       </div>
 
       <div class="field">
@@ -3148,7 +3214,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <span class="badge b-orange">۳ روز مانده</span>
           </div>
           <div class="inq-meta">
-            <span class="mm"><svg><use href="#i-inbox"/></svg> ۵ پیشنهاد</span>
+            <span class="mm"><svg><use href="#i-inbox"/></svg> ۳ پیشنهاد</span>
             <span class="mm hot"><svg><use href="#i-spark"/></svg> ۲ پیشنهاد جدید</span>
             <span class="inq-act">مقایسهٔ پیشنهادها<svg><use href="#i-chev"/></svg></span>
           </div>
@@ -4259,14 +4325,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
          IMPLEMENTATION NOTE: offers همان Offerهای متصل به همان Inquiry؛ splitMin/singleMin
          فقط محاسبهٔ نمایشی روی همان داده است. هیچ فروشنده‌ای حذف نمی‌شود — پوشش رتبه‌بندی است. -->
     <section class="scr" id="scr-48" data-arm="buy" hidden>
+    <!-- ═══ فاز ۴۷/۵۱ — مقایسهٔ پیشنهادهای یک استعلام: لیست فقط مقایسه و انتخاب سریع است
+         (کارت فشرده: قیمت/پوشش/پرداخت/تحویل)؛ جزئیات و دکمه‌های تماس/گفتگو/کاتالوگ
+         در شیت «جزئیات پیشنهاد» (sheet-ofview) هستند که با لمس کارت باز می‌شود.
+         کارت خلاصهٔ استعلام بالای صفحه حکم عنوان واضح را دارد. ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl" id="of48-t">پیشنهادهای استعلام<small id="of48-s">برنج هاشمی</small></div>
+      <div class="ttl" id="of48-t">پیشنهادهای استعلام<small id="of48-s">۳ پیشنهاد</small></div>
     </header>
 
     <main class="screen-body">
 
-      <!-- خلاصهٔ استعلام: مهلت + ارسال -->
+      <!-- خلاصهٔ استعلام: عنوان واضح + مهلت + ارسال (فاز ۵۱ — عنوان درشت، نه ریزِ هدر) -->
       <div class="card of48-meta" id="of48-meta"></div>
 
       <!-- دو عدد خلاصه (فقط چندقلمی) -->
@@ -4280,12 +4350,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="chip of48-full" data-offilter type="button" hidden>فقط پوشش کامل</button>
       </div>
 
-      <!-- کارت‌های پیشنهاد -->
+      <!-- کارت‌های پیشنهاد — فاز ۵۱: فشرده برای مقایسه؛ لمس = شیت جزئیات -->
       <div class="rows" id="of48-list"></div>
 
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>«ایمچ» یعنی ترتیب پیشنهادها از موتور تطبیق آیمچ می‌آید — رتبه‌اش خریدنی نیست. برای جواب‌دادن به یک پیشنهاد، «گفتگو» را باز کن؛ مقایسهٔ قیمت‌ها همین‌جاست.</div>
+        <div>لمس هر پیشنهاد، جزئیات و دکمه‌های تماس/گفتگو/کاتالوگ را باز می‌کند. «ایمچ» یعنی ترتیب از موتور تطبیق آیمچ می‌آید — رتبه‌اش خریدنی نیست.</div>
       </div>
 
     </main>
@@ -4819,20 +4889,35 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <!-- فرم پیشنهاد — فاز ۴۹: همان زیر جزئیات -->
   <div class="grp" style="margin-top:14px" id="reqv-offgrp">پیشنهادت برای ۱ قلم</div>
   <div class="rows" id="reqv-offers"></div>
+  <!-- ═══ فاز ۵۱ — شرایط پرداخت/تحویل به سبک سوییچر (حکم مالک):
+       نقدی همیشه هست و نوشته نمی‌شود؛ چک فقط اگر واقعاً قبول می‌کنی روشن می‌شود —
+       درصد نقدی/چک مکمل یکدیگرند (یکی را بنویس، دیگری خودش پر می‌شود) + حداکثر مدت چک.
+       حمل: فقط «تحویل در محل هم دارم» — بقیهٔ حالت‌ها گفتگوی خود طرفین است. ═══ -->
   <div class="field" style="margin-top:12px">
-    <label>شرایط پرداخت</label>
-    <div class="pillchoice" id="reqv-pay">
-      <button class="pill active" type="button">نقدی</button>
-      <button class="pill" type="button">چک صیادی</button>
-      <button class="pill" type="button">عندالتحویل</button>
+    <div class="sw-row">
+      <div class="sw-tx"><b>چک هم قبول می‌کنم</b></div>
+      <div class="toggle" id="reqv-cheque" role="switch" aria-label="چک هم قبول می‌کنم"></div>
+    </div>
+    <div id="reqv-cheq-box" hidden>
+      <div class="pay-split">
+        <div class="ps-cell"><label>درصد نقدی</label>
+          <div class="pctw"><input class="input" id="reqv-cash" inputmode="numeric" maxlength="3" autocomplete="off"><span class="sfx">٪</span></div>
+        </div>
+        <div class="ps-cell"><label>درصد چک</label>
+          <div class="pctw"><input class="input" id="reqv-chq" inputmode="numeric" maxlength="3" autocomplete="off"><span class="sfx">٪</span></div>
+        </div>
+      </div>
+      <div class="ps-days">
+        <label>حداکثر مدت چک</label>
+        <div class="pctw"><input class="input" id="reqv-chqdays" inputmode="numeric" maxlength="3" autocomplete="off"><span class="sfx">روز</span></div>
+      </div>
+      <div class="paysum" id="reqv-paysum" hidden></div>
     </div>
   </div>
   <div class="field">
-    <label>حمل و تحویل</label>
-    <div class="pillchoice" id="reqv-ship">
-      <button class="pill active" type="button">ارسال با ما</button>
-      <button class="pill" type="button">تحویل حضوری</button>
-      <button class="pill" type="button">باربری خریدار</button>
+    <div class="sw-row">
+      <div class="sw-tx"><b>تحویل در محل هم دارم</b><span>بار را تا محل خریدار می‌رسانم</span></div>
+      <div class="toggle" id="reqv-local" role="switch" aria-label="تحویل در محل هم دارم"></div>
     </div>
   </div>
   <div class="field">
@@ -4883,6 +4968,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="iqp-bar">
     <span id="supp-count">۳ تأمین‌کنندهٔ منتخب</span>
     <button class="btn btn-primary btn-sm" data-close type="button"><svg><use href="#i-check"/></svg> تأیید</button>
+  </div>
+</div>
+
+<!-- ═══ فاز ۵۱ — جزئیات پیشنهاد (خریدار، از ۴۸): لیست فقط مقایسه و انتخاب سریع است؛
+     توضیح فروشنده، شرایط پرداخت/تحویل و دکمه‌های تماس/گفتگو/کاتالوگ همه این‌جاست.
+     IMPLEMENTATION NOTE: ofvRender(idx) از OF[cur].offers[idx] پر می‌شود — همان
+     شیءای که کارت فشردهٔ ۴۸ نشان می‌دهد؛ «گفتگو» → ۱۹ · «کاتالوگ» → ۱۳ · تماس شمارهٔ
+     عمومی فروشنده (روی موبایل tel:). ═══ -->
+<div class="sheet tall" id="sheet-ofview" role="dialog" aria-label="جزئیات پیشنهاد">
+  <div class="grab"></div>
+  <div class="sheet-hdr">
+    <h3>جزئیات پیشنهاد</h3>
+    <button class="mg" data-close aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div id="ofv-body"></div>
+  <div class="ofv-acts">
+    <button class="btn btn-primary" style="flex:1.15" type="button"><svg><use href="#i-phone"/></svg> تماس</button>
+    <button class="btn btn-stone" style="flex:1" data-go="19" type="button"><svg><use href="#i-msg"/></svg> گفتگو</button>
+    <button class="btn btn-outline" style="flex:1" data-go="13" type="button"><svg><use href="#i-store"/></svg> کاتالوگ</button>
   </div>
 </div>
 
@@ -5011,6 +5115,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="grab"></div>
   <h3>تنظیمات کاتالوگ</h3>
   <div class="sub">پخش برنج پارس · پخش مواد غذایی — رشت</div>
+  <!-- ═══ فاز ۵۱ — اعتبار قیمتهای کاتالوگ (حکم مالک): به‌جای پرسیدنِ روز اعتبار
+       سرِ هر آپدیت/هر کالا، یک تنظیم کاتالوگ — پیش‌فرض ۵ روز. توضیحِ زیر، متن خودِ مالک
+       است: قیمت ناتازه به خریدار نمایش نمی‌شود و قیمت تازه در شرایط مشابه بالاتر است. ═══ -->
+  <div class="field" style="margin-top:13px">
+    <label>اعتبار قیمتهای کاتالوگ</label>
+    <div class="pillchoice" id="cset-fresh">
+      <button class="pill" type="button">۱ روز</button>
+      <button class="pill" type="button">۲ روز</button>
+      <button class="pill" type="button">۳ روز</button>
+      <button class="pill" type="button">۴ روز</button>
+      <button class="pill active" type="button">۵ روز</button>
+    </div>
+    <div class="hint">اگر قیمت آپدیت نباشه در لیست تأمین‌کنندگان به خریداران نمایش داده نمی‌شه. قیمتهای به‌روز همیشه در شرایط مشابه بالاتر قرار می‌گیرند.</div>
+  </div>
   <!-- فاز ۴۴ — منوی کم‌حجم: به‌روزرسانی گروهی روی خود کاتالوگ است (نوار «قیمت و موجودی»)؛
        کمپین/گزارش/کیف پول/ویرایش کسب‌وکار حذف شدند (تبلیغات ← ۳۰ · شارژ و کسب‌وکار ← پروفایل ۴۲) -->
   <button class="sheet-row" data-go="30">
@@ -6714,7 +6832,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
        سمت فروشنده فقط اقلامِ موجودِ خودش دیده می‌شود (حریم سبد خریدار). */
 
   /* ── سازندهٔ استعلام (۱۲) — IQ ── */
-  var IQ = { q: '', items: [], touched: false, dl: 5, sel: { s1: 1, s2: 1, s3: 1 } };
+  var IQ = { q: '', items: [], touched: false, dl: 4, sel: { s1: 1, s2: 1, s3: 1 } }; /* فاز ۵۱: پیش‌فرض ۴ روز — ۵+ با «سایر» */
   var IQ_UNIT = { g1: 'کیسه', g2: 'کیسه', g3: 'کیسه', g4: 'عدد', g5: 'کارتن', g6: 'کیسه', g7: 'عدد' };
 
   /* لیست خریدِ خریدار (۰۸) — دمو: برنج هاشمی، روغن لادن، قند یکتا، رب چین‌چین.
@@ -6892,15 +7010,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
     iqpRender();
   }
   function iqNew() {
-    IQ.q = ''; IQ.items = []; IQ.touched = true; IQ.dl = 5;
+    IQ.q = ''; IQ.items = []; IQ.touched = true; IQ.dl = 4;
     IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null;
     var q = document.getElementById('iqp-q');
     if (q) q.value = '';
     var note = document.getElementById('iq-note');
     if (note) note.value = '';
     document.querySelectorAll('#iq-deadline .pill').forEach(function (p, i) {
-      p.classList.toggle('active', i === 4); /* پیش‌فرض ۵ روز */
+      p.classList.toggle('active', i === 3); /* فاز ۵۱ — پیش‌فرض ۴ روز */
     });
+    var cid = document.getElementById('iq-dl-custom');
+    if (cid) { cid.hidden = true; cid.value = ''; }
     iqRender();
     iqpRender();
   }
@@ -6972,7 +7092,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
       title: 'برنج فجر · ۱۰ کیسهٔ ۵۰ کیلویی',
       status: 'پاسخ داده‌شده', statusCls: 'b-answered', dl: '۲ روز مانده', period: 'هفتگی', loc: 'رشت، بازار روز',
       note: 'تحویل صبحِ زود — بازار روز.',
-      answered: 1, pay: 1, ship: 0,
+      answered: 1,
+      cheq: { on: 1, cash: 20, days: 30 }, /* فاز ۵۱ — پیشنهاد ارسال‌شده: ۲۰٪ نقدی، بقیه چک ۳۰ روزه */
+      local: 1,
       sentNote: 'برنج تازه‌پاک — ارسال رایگان بالای ۲۰ کیسه.',
       mine: [{ name: 'برنج فجر', sub: '۱۰ کیسهٔ ۵۰ کیلویی', img: 'png/goods/fajar-50.jpg', qty: 10, unit: 'کیسه', price: 2360000 }],
       miss: []
@@ -7035,9 +7157,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
           '</div>';
       }).join('');
     }
-    /* شرایط پیشنهاد ارسال‌شده (rq3) */
-    document.querySelectorAll('#reqv-pay .pill').forEach(function (p, i) { p.classList.toggle('active', i === (d.pay || 0)); });
-    document.querySelectorAll('#reqv-ship .pill').forEach(function (p, i) { p.classList.toggle('active', i === (d.ship || 0)); });
+    /* فاز ۵۱ — شرایط پیشنهاد: سوییچر چک + تحویل در محل (به‌جای پیل‌های پرداخت/حمل) */
+    var ctg = document.getElementById('reqv-cheque');
+    if (ctg) {
+      var chOn = !!(d.cheq && d.cheq.on);
+      ctg.classList.toggle('on', chOn);
+      var cbx = document.getElementById('reqv-cheq-box');
+      if (cbx) cbx.hidden = !chOn;
+      var cash = d.cheq && d.cheq.cash != null ? d.cheq.cash : 20;
+      var days = d.cheq && d.cheq.days ? d.cheq.days : 30;
+      var ci = document.getElementById('reqv-cash');
+      var qi = document.getElementById('reqv-chq');
+      var di = document.getElementById('reqv-chqdays');
+      if (ci) ci.value = chOn ? faNum(cash) : '';
+      if (qi) qi.value = chOn ? faNum(100 - cash) : '';
+      if (di) di.value = chOn ? faNum(days) : '';
+    }
+    var ltg = document.getElementById('reqv-local');
+    if (ltg) ltg.classList.toggle('on', !!d.local);
+    rqvPaySum();
     var n2 = document.getElementById('reqv-note2');
     if (n2) n2.value = d.answered ? (d.sentNote || '') : '';
     var sb = document.getElementById('reqv-send');
@@ -7055,6 +7193,93 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var el = document.getElementById('reqv-sum');
     if (el) el.textContent = any ? faMoney(total) + ' تومان' : '—';
   }
+
+  /* ═══ فاز ۵۱ — چک: سوییچر + درصد مکمل + خلاصهٔ زنده ═══
+     نقدی پیش‌فرضِ همیشگی است و نوشته نمی‌شود؛ چک فقط با روشن‌کردن سوییچر معنا دارد.
+     یکی از دو درصد را که بنویسی، دیگری خودش = ۱۰۰ منهای آن. سقف ۱۰۰. */
+  function rqvCheqSync() {
+    var tg = document.getElementById('reqv-cheque');
+    var box = document.getElementById('reqv-cheq-box');
+    var on = !!(tg && tg.classList.contains('on'));
+    if (box) box.hidden = !on;
+    if (on) {
+      var ci = document.getElementById('reqv-cash');
+      var qi = document.getElementById('reqv-chq');
+      var di = document.getElementById('reqv-chqdays');
+      if (ci && bkNum(ci.value) == null) ci.value = faNum(20);
+      if (qi && bkNum(qi.value) == null) qi.value = faNum(80);
+      if (di && bkNum(di.value) == null) di.value = faNum(30);
+    }
+    rqvPaySum();
+  }
+  function rqvPctInput(which) {
+    var di = document.getElementById('reqv-chqdays');
+    if (which === 'days') {
+      if (di) {
+        if (di.value.length > 3) di.value = di.value.slice(0, 3);
+        if ((bkNum(di.value) || 0) > 365) di.value = faNum(365);
+      }
+      rqvPaySum();
+      return;
+    }
+    var src = document.getElementById(which === 'cash' ? 'reqv-cash' : 'reqv-chq');
+    var dst = document.getElementById(which === 'cash' ? 'reqv-chq' : 'reqv-cash');
+    if (!src || !dst) { rqvPaySum(); return; }
+    if (src.value.length > 3) src.value = src.value.slice(0, 3);
+    var v = bkNum(src.value);
+    if (v != null && v > 100) { v = 100; src.value = faNum(100); }
+    dst.value = faNum(100 - (v || 0));
+    rqvPaySum();
+  }
+  function rqvPaySum() {
+    var el = document.getElementById('reqv-paysum');
+    if (!el) return;
+    var tg = document.getElementById('reqv-cheque');
+    if (!tg || !tg.classList.contains('on')) { el.hidden = true; el.textContent = ''; return; }
+    var c = bkNum((document.getElementById('reqv-cash') || {}).value || '');
+    var dd = bkNum((document.getElementById('reqv-chqdays') || {}).value || '');
+    var txt = '';
+    if (c != null) {
+      if (c >= 100) txt = 'همه نقدی';
+      else if (c <= 0) txt = dd ? 'همه چک · حداکثر ' + faNum(dd) + ' روزه' : 'همه چک';
+      else txt = faNum(c) + '٪ نقدی و بقیه چک' + (dd ? ' · حداکثر ' + faNum(dd) + ' روزه' : '');
+    }
+    el.hidden = !txt;
+    el.textContent = txt;
+  }
+
+  /* فاز ۵۱ — حلقهٔ بستهٔ کامل: پیشنهاد همین فروشنده (پخش برنج پارس) همان لحظه در
+     سمت خریدار (۴۸) هم به‌روز می‌نشیند — قیمت/پرداخت/تحویل/توضیح، همه از همین فرم. */
+  var RQ_OF_MAP = { rq1: 'inq1', rq2: 'inq2' };
+  function rqvSyncBuyerOffer(d) {
+    var key = RQ_OF_MAP[RQ.cur];
+    if (!key || !OF[key]) return;
+    var of = OF[key];
+    var inputs = document.querySelectorAll('#sheet-reqview .reqv-price');
+    var prices = [];
+    inputs.forEach(function (inp) { prices.push(bkNum(inp.value)); });
+    var o = null, i;
+    for (i = 0; i < of.offers.length; i++) if (of.offers[i].seller === 'پخش برنج پارس') { o = of.offers[i]; break; }
+    if (!o) {
+      o = { seller: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 90, pay: { cash: 100 }, local: 0, note: '' };
+      of.offers.push(o);
+    }
+    if (!of.multi) {
+      if (prices[0] != null) o.price = prices[0];
+    } else {
+      o.prices = o.prices || [];
+      var names = of.items.map(function (it) { return it.n; });
+      (d.mine || []).forEach(function (it, i2) {
+        var idx = names.indexOf(it.name);
+        if (idx >= 0) o.prices[idx] = prices[i2] != null ? prices[i2] : null;
+      });
+      for (var j = 0; j < of.items.length; j++) if (o.prices[j] == null) o.prices[j] = null;
+    }
+    o.pay = d.cheq ? { cash: d.cheq.cash, days: d.cheq.days } : { cash: 100 };
+    o.local = d.local ? 1 : 0;
+    if (d.sentNote) o.note = d.sentNote;
+    OF.last = null; /* ۴۸ دوباره رندر شود */
+  }
   function rqvSubmit() {
     var d = RQ[RQ.cur] || RQ.rq1;
     var btn = document.getElementById('reqv-send');
@@ -7062,6 +7287,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var wasAnswered = !!d.answered;
     d.answered = 1;
     d.status = 'پاسخ داده‌شده'; d.statusCls = 'b-answered';
+    /* فاز ۵۱ — شرایط از فرم خوانده می‌شود و روی دیتا می‌نشیند */
+    var ctg = document.getElementById('reqv-cheque');
+    var ltg = document.getElementById('reqv-local');
+    var cheqOn = !!(ctg && ctg.classList.contains('on'));
+    d.cheq = cheqOn
+      ? { on: 1, cash: bkNum((document.getElementById('reqv-cash') || {}).value || '') || 0, days: bkNum((document.getElementById('reqv-chqdays') || {}).value || '') || 0 }
+      : null;
+    d.local = !!(ltg && ltg.classList.contains('on'));
+    var n2v = (document.getElementById('reqv-note2') || {}).value || '';
+    if (n2v.trim()) d.sentNote = n2v.trim();
+    rqvSyncBuyerOffer(d); /* سمت خریدار هم همان لحظه به‌روز می‌شود */
     btn.classList.add('bk-saved');
     btn.innerHTML = '<svg><use href="#i-check"/></svg> ' + (wasAnswered ? 'به‌روزرسانی شد' : 'پیشنهاد ارسال شد');
     /* کارت ۰۵ همان لحظه «پاسخ داده‌شده» می‌شود */
@@ -7081,40 +7317,42 @@ body > div[id^="scr-d"][hidden] { display: none; }
   }
 
 
-  /* ── پیشنهادهای استعلام (۴۸ — خریدار) — OF ── */
+  /* ── پیشنهادهای استعلام (۴۸ — خریدار) — OF ──
+     فاز ۵۱ — شرایط هر پیشنهاد ساخت‌یافته است (نه متن آزاد):
+     pay {cash: ۰-۱۰۰, days؟} → «۲۰٪ نقدی · بقیه چک ۳۰ روزه» / «نقدی» · local: تحویل در محل · min: حداقل سفارش. */
   var OF = {
     cur: 'inq1', sort: 'imch', fullOnly: false, last: null,
     inq1: {
       sub: 'برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی', multi: false, unit: 'کیسه',
       dl: '۳ روز مانده', meta: 'ارسال به ۳ تأمین‌کننده · ۲ روز پیش',
-      items: [{ n: 'برنج هاشمی', q: '۲۰ کیسهٔ ۵۰ کیلویی', qty: 20 }],
+      items: [{ n: 'برنج هاشمی', q: '۲۰ کیسهٔ ۵۰ کیلویی', qty: 20, img: 'png/goods/rice-sack.jpg' }],
       offers: [
-        { seller: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 92, price: 2840000, cond: ['چک ۳۰ روزه', 'ارسال با فروشنده', 'حداقل ۵ کیسه'], note: 'برنج امسال، پاک‌شده — تحویل همان روز' },
-        { seller: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 2, distL: 'دیگر استان', verified: 1, match: 81, price: 2895000, cond: ['نقدی', 'ارسال به همه شهرها'], note: 'ارسال رایگان بالای ۳۰ کیسه' },
-        { seller: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 1, distL: 'هم‌استان', verified: 0, match: 74, price: 2790000, cond: ['نقدی', 'حداقل ۲۰ کیسه'], note: '' }
+        { seller: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 92, price: 2840000, pay: { cash: 30, days: 30 }, local: 1, min: 5, note: 'برنج امسال، پاک‌شده — تحویل همان روز' },
+        { seller: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 2, distL: 'دیگر استان', verified: 1, match: 81, price: 2895000, pay: { cash: 100 }, local: 1, note: 'ارسال رایگان بالای ۳۰ کیسه' },
+        { seller: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 1, distL: 'هم‌استان', verified: 0, match: 74, price: 2790000, pay: { cash: 100 }, local: 0, min: 20, note: '' }
       ]
     },
     inq2: {
       sub: 'استعلام ۳ قلمی — روغن، رب گوجه، قند', multi: true,
       dl: 'امروز آخرین روز', meta: 'ارسال به ۴ تأمین‌کننده · ۵ روز پیش',
       items: [
-        { n: 'روغن سرخ‌کردنی لادن', q: '۴۰ عدد ۱۰ لیتری', qty: 40 },
-        { n: 'رب گوجه‌فرنگی چین‌چین', q: '۶۰ عدد ۵۰۰ گرمی', qty: 60 },
-        { n: 'قند یکتا', q: '۱۰ کیسهٔ ۱۰ کیلویی', qty: 10 }
+        { n: 'روغن سرخ‌کردنی لادن', q: '۴۰ عدد ۱۰ لیتری', qty: 40, img: 'png/goods/oil-bottle.jpg' },
+        { n: 'رب گوجه‌فرنگی چین‌چین', q: '۶۰ عدد ۵۰۰ گرمی', qty: 60, img: 'png/goods/tomato-paste.jpg' },
+        { n: 'قند یکتا', q: '۱۰ کیسهٔ ۱۰ کیلویی', qty: 10, img: 'png/goods/sugar-cubes.jpg' }
       ],
       offers: [
-        { seller: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 88, prices: [2560000, 1140000, 780000], cond: ['چک ۳۰ روزه', 'ارسال با فروشنده'], note: 'همهٔ اقلام از یک فاکتور — ارسال یکجا' },
-        { seller: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 85, prices: [2520000, 1105000, null], cond: ['نقدی', 'تحویل حضوری'], note: 'روغن و رب از امروز آماده' },
-        { seller: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 2, distL: 'دیگر استان', verified: 1, match: 79, prices: [null, 1125000, 765000], cond: ['چک ۶۰ روزه', 'باربری خریدار'], note: '' },
-        { seller: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 1, distL: 'هم‌استان', verified: 0, match: 71, prices: [2545000, null, null], cond: ['نقدی'], note: 'فقط روغن' }
+        { seller: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 88, prices: [2560000, 1140000, 780000], pay: { cash: 30, days: 30 }, local: 1, note: 'همهٔ اقلام از یک فاکتور — ارسال یکجا' },
+        { seller: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 85, prices: [2520000, 1105000, null], pay: { cash: 100 }, local: 0, note: 'روغن و رب از امروز آماده' },
+        { seller: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 2, distL: 'دیگر استان', verified: 1, match: 79, prices: [null, 1125000, 765000], pay: { cash: 40, days: 60 }, local: 0, note: '' },
+        { seller: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 1, distL: 'هم‌استان', verified: 0, match: 71, prices: [2545000, null, null], pay: { cash: 100 }, local: 0, note: 'فقط روغن' }
       ]
     },
     inq3: {
       sub: 'رب گوجه‌فرنگی · ۶۰ عدد ۵۰۰ گرمی', multi: false, unit: 'عدد',
       dl: '۴ روز مانده', meta: 'ارسال به ۲ تأمین‌کننده · دیروز',
-      items: [{ n: 'رب گوجه‌فرنگی چین‌چین', q: '۶۰ عدد ۵۰۰ گرمی', qty: 60 }],
+      items: [{ n: 'رب گوجه‌فرنگی چین‌چین', q: '۶۰ عدد ۵۰۰ گرمی', qty: 60, img: 'png/goods/tomato-paste.jpg' }],
       offers: [
-        { seller: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 86, price: 1150000, cond: ['نقدی', 'ارسال با فروشنده'], note: 'تولید همین هفته' }
+        { seller: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 86, price: 1150000, pay: { cash: 100 }, local: 1, note: 'تولید همین هفته' }
       ]
     },
     /* فاز ۴۹ — استعلام تازهٔ ارسال‌شده از فرم ۱۲: rfqSendCard() همین شیء را از وضعیت زندهٔ
@@ -7122,7 +7360,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     new1: {
       sub: 'برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی', multi: false, unit: 'کیسه',
       dl: '۵ روز مهلت', meta: 'ارسال به ۳ تأمین‌کننده · الان',
-      items: [{ n: 'برنج هاشمی', q: '۲۰ کیسهٔ ۵۰ کیلویی', qty: 20 }],
+      items: [{ n: 'برنج هاشمی', q: '۲۰ کیسهٔ ۵۰ کیلویی', qty: 20, img: 'png/goods/rice-sack.jpg' }],
       offers: []
     }
   };
@@ -7133,14 +7371,21 @@ body > div[id^="scr-d"][hidden] { display: none; }
     return s;
   }
   function ofCover(o, d) { return d.multi ? o.prices.filter(function (p) { return p != null; }).length : 1; }
-  function of48Card(o, d) {
+  /* فاز ۵۱ — متن پرداخت از مدل ساخت‌یافته؛ نقدی وقتی مکتوب می‌شود که کل پیشنهاد نقدی باشد */
+  function ofPayText(p) {
+    if (!p || p.cash == null || p.cash >= 100) return 'نقدی';
+    if (!p.cash) return p.days ? 'همه چک ' + faNum(p.days) + ' روزه' : 'همه چک';
+    return faNum(p.cash) + '٪ نقدی · بقیه چک' + (p.days ? ' ' + faNum(p.days) + ' روزه' : '');
+  }
+  /* فاز ۵۱ — کارت فشرده: فقط آنچه برای مقایسه/انتخاب لازم است؛ جزئیات در شیت ofview */
+  function of48Card(o, d, idx, cheap) {
     var cov = ofCover(o, d), n = d.items.length;
     var covBadge = d.multi ? (cov === n
       ? '<span class="badge b-green">همهٔ ' + faNum(n) + ' قلم</span>'
       : '<span class="badge b-stone">' + faNum(cov) + ' از ' + faNum(n) + ' قلم</span>') : '';
-    var html = '<div class="card">' +
+    var html = '<div class="card oc-row" data-ofv="' + idx + '">' +
       '<div class="oc-head"><div class="avatar-sm" style="background:' + o.av + '">' + o.init + '</div>' +
-      '<div class="nm"><div class="n">' + gfEsc(o.seller) + (o.verified ? ' <svg><use href="#i-verified"/></svg>' : '') + covBadge + '</div>' +
+      '<div class="nm"><div class="n">' + gfEsc(o.seller) + (o.verified ? ' <svg><use href="#i-verified"/></svg>' : '') + (cheap ? '<span class="badge b-green">کمترین مجموع</span>' : '') + covBadge + '</div>' +
       '<div class="c">' + gfEsc(o.city) + ' · ' + gfEsc(o.distL) + '</div></div>';
     if (!d.multi) {
       html += '<div class="oc-price"><div class="p">' + faMoney(o.price) + '</div><span class="u">هر ' + gfEsc(d.unit) + '</span></div>';
@@ -7153,23 +7398,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
           (p != null ? '<b>' + faMoney(p) + '</b>' : '<span class="none">ندارد</span>') + '</div>';
       }).join('') + '</div>';
     }
-    html += '<div class="oc-total"><span>' + (d.multi ? 'مجموع ' + faNum(cov) + ' قلم' : 'مجموع برای ' + gfEsc(d.items[0].q)) + '</span><b>' + faMoney(ofTotal(o, d)) + ' تومان</b></div>';
-    if (o.cond && o.cond.length) html += '<div class="oc-cond">' + o.cond.map(function (c) { return '<span class="cond">' + gfEsc(c) + '</span>'; }).join('') + '</div>';
-    if (o.note) html += '<div class="oc-note">«' + gfEsc(o.note) + '»</div>';
-    html += '<div class="oc-acts">' +
-      '<button class="btn btn-stone btn-sm" style="flex:1" data-go="19"><svg><use href="#i-msg"/></svg> گفتگو</button>' +
-      '<button class="btn btn-outline btn-sm" style="flex:1" data-go="13"><svg><use href="#i-store"/></svg> کاتالوگ</button>' +
-      '<button class="btn btn-outline btn-sm" style="color:var(--green)" aria-label="تماس"><svg><use href="#i-phone"/></svg></button>' +
-      '</div></div>';
+    html += '<div class="oc-total"><span>' + (d.multi ? 'مجموع ' + faNum(cov) + ' قلم' : 'مجموع برای ' + gfEsc(d.items[0].q)) + (o.min ? ' · حداقل ' + faNum(o.min) + ' ' + gfEsc(d.unit) : '') + '</span><b>' + faMoney(ofTotal(o, d)) + ' تومان</b></div>';
+    html += '<div class="oc-cond"><span class="cond">' + ofPayText(o.pay) + '</span>' + (o.local ? '<span class="cond loc"><svg><use href="#i-pin"/></svg> تحویل در محل</span>' : '') + '</div>';
+    html += '<div class="oc-more">جزئیات و تماس<svg><use href="#i-chev"/></svg></div>';
+    html += '</div>';
     return html;
   }
   function of48Render() {
     var d = OF[OF.cur] || OF.inq1;
     OF.last = OF.cur;
     var t = document.getElementById('of48-t');
-    if (t) t.innerHTML = 'پیشنهادهای استعلام<small id="of48-s">' + gfEsc(d.sub) + '</small>';
+    if (t) t.innerHTML = 'پیشنهادهای استعلام<small id="of48-s">' + faNum(d.offers.length) + ' پیشنهاد</small>';
+    /* فاز ۵۱ — کارت خلاصهٔ استعلام: عنوان درشت و واضح تا خریدار بداند پیشنهادهای کدام استعلام را می‌بیند */
     var meta = document.getElementById('of48-meta');
-    if (meta) meta.innerHTML = '<span class="badge ' + (d.dl === 'امروز آخرین روز' ? 'b-rednum' : 'b-orange') + '">' + gfEsc(d.dl) + '</span><span>' + gfEsc(d.meta) + '</span>';
+    if (meta) {
+      var im = d.items[0] && d.items[0].img;
+      meta.innerHTML = '<div class="of48-inq">' +
+        (im ? '<div class="thumb" style="width:44px;height:44px;flex-shrink:0"><img src="' + im + '" alt=""></div>' : '') +
+        '<div class="tx"><b>' + gfEsc(d.sub) + '</b><span>' + gfEsc(d.meta) + '</span></div>' +
+        '<span class="badge ' + (d.dl === 'امروز آخرین روز' ? 'b-rednum' : 'b-orange') + '">' + gfEsc(d.dl) + '</span>' +
+        '</div>';
+    }
     var full = document.querySelector('#of48-sort .of48-full');
     if (full) { full.hidden = !d.multi; full.classList.toggle('on', OF.fullOnly); }
     var sumEl = document.getElementById('of48-sum');
@@ -7192,6 +7441,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
       }
     }
     var list = d.offers.slice();
+    /* فاز ۵۱ — بج «کمترین مجموع» مستقل از سورت فعلی؛ چندقلمی فقط بین پوشش‌های کامل (مقایسهٔ هم‌ارز) */
+    var cheap = null, cheapV = null;
+    var cheapPool = d.multi ? d.offers.filter(function (o) { return ofCover(o, d) === d.items.length; }) : d.offers;
+    if (cheapPool.length > 1 || (!d.multi && cheapPool.length === 1 && d.offers.length > 1)) {
+      cheapPool.forEach(function (o) {
+        var v = ofTotal(o, d);
+        if (cheapV == null || v < cheapV) { cheapV = v; cheap = o; }
+      });
+    }
     if (OF.sort === 'cheap') list.sort(function (a, b) { return ofTotal(a, d) - ofTotal(b, d); });
     else if (OF.sort === 'near') list.sort(function (a, b) { return a.dist - b.dist; });
     else if (d.multi) list.sort(function (a, b) { return (ofCover(b, d) - ofCover(a, d)) || (ofTotal(a, d) - ofTotal(b, d)); });
@@ -7205,7 +7463,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       } else if (!list.length) {
         host.innerHTML = '<div class="of48-empty">هیچ‌کس همهٔ ' + faNum(d.items.length) + ' قلم را با هم ندارد.<br>پوشش جزئی را ببین — از چند نفر بخر یا مذاکره کن.<br><button class="btn btn-outline btn-sm" type="button" data-offilter>نمایش پوشش جزئی</button></div>';
       } else {
-        host.innerHTML = list.map(function (o) { return of48Card(o, d); }).join('');
+        host.innerHTML = list.map(function (o) { return of48Card(o, d, d.offers.indexOf(o), o === cheap); }).join('');
       }
     }
     document.querySelectorAll('#of48-sort [data-ofsort]').forEach(function (c) {
@@ -7218,6 +7476,45 @@ body > div[id^="scr-d"][hidden] { display: none; }
     go('48');
   }
   function of48Ensure() { if (OF.last !== OF.cur) of48Render(); }
+
+  /* ═══ فاز ۵۱ — شیت «جزئیات پیشنهاد» (خریدار): تمام چیزهایی که در کارت فشرده جا نشد ═══
+     توضیح فروشنده، شرایط پرداخت/تحویل/حداقل سفارش + دکمه‌های تماس/گفتگو/کاتالوگ این‌جاست؛
+     idx همان اندیس پیشنهاد در OF[cur].offers است. */
+  function ofvRender(idx) {
+    var d = OF[OF.cur] || OF.inq1;
+    var o = d.offers[idx];
+    var host = document.getElementById('ofv-body');
+    if (!o || !host) return;
+    var cov = ofCover(o, d);
+    var html = '<div class="reqv-buyer" style="margin-top:2px">' +
+      '<div class="avatar-sm" style="background:' + o.av + '">' + o.init + '</div>' +
+      '<div style="flex:1;min-width:0"><b>' + gfEsc(o.seller) + (o.verified ? ' <svg style="width:13px;height:13px;color:#1d5fb8"><use href="#i-verified"/></svg>' : '') + '</b>' +
+      '<span>' + gfEsc(o.city) + ' · ' + gfEsc(o.distL) + (d.multi ? ' · ' + (cov === d.items.length ? 'همهٔ ' + faNum(d.items.length) + ' قلم' : faNum(cov) + ' از ' + faNum(d.items.length) + ' قلم') : '') + '</span></div>' +
+      '</div>';
+    if (!d.multi) {
+      html += '<div class="ofv-price"><div class="p">' + faMoney(o.price) + ' <small>تومان</small></div><small class="ofv-u">' + gfEsc(d.items[0].n) + ' — هر ' + gfEsc(d.unit) + '</small></div>';
+    } else {
+      html += '<div class="grp" style="margin-top:13px">قیمت هر قلم</div>' +
+        '<div class="oc-lines ofv-lines">' + d.items.map(function (it, i) {
+        var p = o.prices[i];
+        return '<div class="l"><span>' + gfEsc(it.n) + ' · ' + gfEsc(it.q) + '</span>' +
+          (p != null ? '<b>' + faMoney(p) + '</b>' : '<span class="none">ندارد</span>') + '</div>';
+      }).join('') + '</div>';
+    }
+    html += '<div class="oc-total ofv-total"><span>' + (d.multi ? 'مجموع ' + faNum(cov) + ' قلم' : 'مجموع برای ' + gfEsc(d.items[0].q)) + '</span><b>' + faMoney(ofTotal(o, d)) + ' تومان</b></div>';
+    html += '<div class="grp" style="margin-top:13px">شرایط پیشنهاد</div>' +
+      '<div class="reqv-meta">' +
+      '<div class="rm"><svg><use href="#i-wallet"/></svg><span>پرداخت</span><b>' + ofPayText(o.pay) + '</b></div>' +
+      '<div class="rm"><svg><use href="#i-pin"/></svg><span>تحویل</span><b>' + (o.local ? 'در محل شما' : 'حضوری — حمل با شما') + '</b></div>' +
+      (o.min ? '<div class="rm"><svg><use href="#i-boxes"/></svg><span>حداقل سفارش</span><b>' + faNum(o.min) + ' ' + gfEsc(d.unit) + '</b></div>' : '') +
+      '</div>';
+    if (o.note) html += '<div class="reqv-note" style="margin-top:12px"><svg><use href="#i-comment"/></svg><div><b>توضیح فروشنده</b><span>' + gfEsc(o.note) + '</span></div></div>';
+    host.innerHTML = html;
+  }
+  function ofvOpen(idx) {
+    ofvRender(idx);
+    openSheet('sheet-ofview');
+  }
 
   /* ── فاز ۴۹ — کارت استعلام تازه در ۴۵: از وضعیت زندهٔ IQ ساخته می‌شود
      (اقلام + مقدار استپرها + مهلت انتخابی + شمار گیرنده‌ها) → data-inq="new1".
@@ -7471,6 +7768,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (t.id === 'gf-q') { GF.q = t.value; gfRenderRes(); return; }
     if (t.id === 'gl-q') { GL.q = t.value; glRenderRes(); return; }
     if (t.id === 'iqp-q') { IQ.q = t.value; iqpRender(); return; } /* فاز ۴۹ — جستجوی مودال افزودن کالا (۱۲) */
+    if (t.id === 'iq-dl-custom') { /* فاز ۵۱ — مهلت دلخواه: حداکثر دو رقم، سقف ۹۹ */
+      if (t.value.length > 2) t.value = t.value.slice(0, 2);
+      var dvc = bkNum(t.value);
+      if (dvc != null && dvc > 99) { t.value = faNum(99); dvc = 99; }
+      if (dvc) IQ.dl = dvc;
+      return;
+    }
+    if (t.id === 'reqv-cash') { rqvPctInput('cash'); return; } /* فاز ۵۱ — درصد مکمل چک */
+    if (t.id === 'reqv-chq') { rqvPctInput('chq'); return; }
+    if (t.id === 'reqv-chqdays') { rqvPctInput('days'); return; }
     if (t.classList && t.classList.contains('reqv-price')) { rqvSum(); return; } /* فاز ۴۹ — مجموع زندهٔ پیشنهاد در مودال درخواست */
     var d = t.dataset || {};
     if (d.gfpprice != null) {
@@ -7554,7 +7861,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   /* ═══ فاز ۴۶ — سوییچ «کاتالوگ رو ویژه کن» (۳۰): زیرنویس کارت با وضعیت سوییچ هم‌گام است.
      حکم مالک: بدون انتخاب تک‌کالا — ویژه شدن روی همهٔ کالاهای کاتالوگ اعمال می‌شود تا
-     فروشنده کالایی که واقعاً نمی‌فروشد روی کاتالوک نگذارد. ═══ */
+     فروشنده کالایی که واقعاً نمی‌فروشد روی کاتالوگ نگذارد. ═══ */
   var AD_SUB_ON = 'روی همهٔ کالاهای کاتالوگ شما اعمال می‌شود — کالایی که واقعاً نمی‌فروشید را از کاتالوگ بردارید.';
   var AD_SUB_OFF = 'کالاهای کاتالوگ، در شرایط مشابه بالاتر و با نشانِ فروشندهٔ ویژه دیده می‌شوند.';
   function adSubRender() {
@@ -8182,6 +8489,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var offl = t.closest('[data-offilter]');
     if (offl) { OF.fullOnly = !OF.fullOnly; of48Render(); return; }
 
+    /* فاز ۵۱ — کارت فشردهٔ پیشنهاد (۴۸): لمس = شیت «جزئیات پیشنهاد» (شرایط + تماس/گفتگو/کاتالوگ) */
+    var ofv = t.closest('[data-ofv]');
+    if (ofv) { ofvOpen(+ofv.dataset.ofv); return; }
+
     /* فاز ۴۹ — ردیف‌های مودال «افزودن کالا»: لمس = افزودن/برداشتن همان لحظه */
     var ipk = t.closest('[data-iqpick]');
     if (ipk) { iqpToggle(ipk.dataset.iqpick, ipk.dataset.iqid); return; }
@@ -8333,10 +8644,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
         rfs.classList.remove('bk-saved');
         rfs.disabled = false;
         rfs.innerHTML = '<svg><use href="#i-send"/></svg> ارسال به ' + faNum(cnt12) + ' تأمین‌کننده';
-        IQ.items = []; IQ.touched = false; IQ.q = ''; IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ.dl = 5; /* دفعهٔ بعد استعلام تازه */
+        IQ.items = []; IQ.touched = false; IQ.q = ''; IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ.dl = 4; /* دفعهٔ بعد استعلام تازه — فاز ۵۱: پیش‌فرض ۴ */
         var nt12 = document.getElementById('iq-note');
         if (nt12) nt12.value = '';
-        document.querySelectorAll('#iq-deadline .pill').forEach(function (p, i) { p.classList.toggle('active', i === 4); });
+        document.querySelectorAll('#iq-deadline .pill').forEach(function (p, i) { p.classList.toggle('active', i === 3); });
+        var dci2 = document.getElementById('iq-dl-custom');
+        if (dci2) { dci2.hidden = true; dci2.value = ''; }
         go('45', false);
         stack.length = 0;
       }, 900);
@@ -8434,12 +8747,33 @@ body > div[id^="scr-d"][hidden] { display: none; }
       chip.classList.add('active'); return;
     }
 
+    /* ═══ فاز ۵۱ — مهلت استعلام (۱۲): پیل ۱-۴ + «سایر» با ورودی دلخواه ═══
+       «سایر» = ورود عدد دستی (حداکثر دو رقم / ۹۹)؛ پیل‌های ۱-۴ ورودی را می‌بندند. */
+    var dlp = t.closest('#iq-deadline .pill');
+    if (dlp) {
+      var dls = dlp.parentElement.querySelectorAll('.pill');
+      dls.forEach(function (p) { p.classList.remove('active'); });
+      dlp.classList.add('active');
+      var dci = document.getElementById('iq-dl-custom');
+      if (dlp.id === 'iq-dl-more') {
+        if (dci) {
+          dci.hidden = false;
+          if (!bkNum(dci.value)) dci.value = faNum(IQ.dl || 4); /* ویرایش درجا از مقدار فعلی */
+          var dv0 = bkNum(dci.value); if (dv0) IQ.dl = dv0;
+          dci.focus();
+        }
+      } else {
+        if (dci) { dci.hidden = true; dci.value = ''; }
+        var dix = Array.prototype.indexOf.call(dls, dlp);
+        if (dix >= 0 && dix < 4) IQ.dl = dix + 1;
+      }
+      return;
+    }
+
     var pill = t.closest('.pill');
     if (pill) {
       pill.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
       pill.classList.add('active');
-      var dlp = pill.closest('#iq-deadline'); /* فاز ۴۹ — مهلت استعلام زنده سینک می‌شود */
-      if (dlp) { var dix = Array.prototype.indexOf.call(dlp.querySelectorAll('.pill'), pill); if (dix >= 0) IQ.dl = dix + 1; }
       return;
     }
 
@@ -8465,6 +8799,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (tg) {
       tg.classList.toggle('on');
       if (tg.id === 'ad-toggle') adSubRender(); /* فاز ۴۶ — زیرنویس سوییچ کاتالوگ ویژه */
+      if (tg.id === 'reqv-cheque') rqvCheqSync(); /* فاز ۵۱ — جعبهٔ درصد چک باز/بسته می‌شود */
+      return;
+    }
+
+    /* فاز ۵۱ — لمس کل ردیف سوییچر (فرم پیشنهاد): همان رفتار خود سوییچر — هدف لمسی بزرگ */
+    var swr = t.closest('#sheet-reqview .sw-row');
+    if (swr) {
+      var stg = swr.querySelector('.toggle');
+      if (stg) {
+        stg.classList.toggle('on');
+        if (stg.id === 'reqv-cheque') rqvCheqSync();
+      }
       return;
     }
 

@@ -49,7 +49,9 @@ ok('۰۹: کارت «۲٫۵٪ ارزان‌تر از تأمین‌کنندگان
 ok('۰۹: هیچ دکمهٔ «درخواست قیمت» روی کارت‌ها نیست', await page.locator('#scr-09 .sup-actions', { hasText: 'درخواست قیمت' }).count() === 0);
 ok('۰۹: سه کارت تأمین‌کننده با ۳ ردیف اکشن', await page.locator('#scr-09 .supplier-card').count() === 3 && await page.locator('#scr-09 .sup-actions').count() === 3);
 const acts9 = await page.locator('#scr-09 .sup-actions').allTextContents();
-ok('۰۹: اکشن‌ها فقط تماس/کاتالوگ/ذخیره‌اند', acts9.every(a => a.includes('تماس') && a.includes('کاتالوگ') && a.includes('ذخیره')));
+const staleActs = await page.locator('#scr-09 .supplier-card.stale .sup-actions').allTextContents();
+ok('09 fresh cards = تماس/کاتالوگ/ذخیره', acts9.filter((a, i) => !staleActs.includes(a)).every(a => a.includes('تماس') && a.includes('کاتالوگ') && a.includes('ذخیره')));
+ok('09 stale ghost (51) = تماس/کاتالوگ بدون ذخیره + قیمت خط‌خورده', staleActs.length === 1 && staleActs[0].includes('تماس') && staleActs[0].includes('کاتالوگ') && !staleActs[0].includes('ذخیره') && await page.locator('#scr-09 .price.old').count() === 1);
 ok('۰۹: سورت «ایمچ» اول لیست و فعال', await page.evaluate(() => {
   const c = document.querySelectorAll('#scr-09 .chips .chip');
   return c[0].textContent.trim() === 'ایمچ' && c[0].classList.contains('active');
@@ -130,11 +132,11 @@ ok('۰۵: کارت استعلام ۳ قلمی هست', (await page.locator('#scr
 ok('۰۵: بج «۲ از ۳ قلم نزد شما»', (await page.locator('#scr-05').textContent()).includes('۲ از ۳ قلم نزد شما'));
 await page.click('#scr-05 .req-card[data-req="rq2"]'); await sleep(400);
 ok('شیت درخواست: اقلام قابل تأمین (روغن+رب)', (await page.locator('#sheet-reqview').textContent()).includes('روغن سرخ‌کردنی لادن') && (await page.locator('#sheet-reqview').textContent()).includes('رب گوجه‌فرنگی'));
-ok('شیت درخواست: قلم غایب فقط شمارش', (await page.locator('#sheet-reqview').textContent()).includes('در کاتالوک شما نیست') || (await page.locator('#sheet-reqview').textContent()).includes('در کاتالوگ شما نیست'));
+ok('شیت درخواست: قلم غایب فقط شمارش', (await page.locator('#sheet-reqview').textContent()).includes('در کاتالوگ شما نیست') || (await page.locator('#sheet-reqview').textContent()).includes('در کاتالوگ شما نیست'));
 ok('مودال (فاز ۴۹): توضیح خریدار دیده می‌شود', (await page.locator('#sheet-reqview .reqv-note').textContent()).includes('توضیح خریدار'));
 ok('مودال (فاز ۴۹): مهلت + دوره + محل تحویل', (await page.locator('#sheet-reqview .reqv-meta').textContent()).includes('امروز آخرین روز'));
 ok('مودال (فاز ۴۹): فرم پیشنهاد همان زیر جزئیات است', await page.locator('#sheet-reqview #reqv-send').count() === 1 && await page.locator('#sheet-reqview .reqv-price').count() === 2 && !(await page.locator('#sheet-reqview .reqv-price').allTextContents()).join(' ').includes('قند'));
-ok('مودال (فاز ۴۹): شرایط پرداخت + حمل + توضیح', await page.locator('#reqv-pay').count() === 1 && await page.locator('#reqv-ship').count() === 1 && await page.locator('#reqv-note2').count() === 1);
+ok('مودال (فاز ۵۱): سوییچر چک + تحویل در محل + توضیح', await page.locator('#reqv-cheque').count() === 1 && await page.locator('#reqv-local').count() === 1 && await page.locator('#reqv-note2').count() === 1 && await page.locator('#reqv-pay').count() === 0);
 await page.fill('#sheet-reqview .reqv-price >> nth=0', '2520000'); await sleep(150);
 await page.fill('#sheet-reqview .reqv-price >> nth=1', '1105000'); await sleep(250);
 ok('مودال (فاز ۴۹): مجموع زنده = ۱۶۷٬۱۰۰٬۰۰۰', (await page.locator('#reqv-sum').textContent()).includes('۱۶۷٬۱۰۰٬۰۰۰'));
