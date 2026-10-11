@@ -29,7 +29,7 @@ const DEAD = ['03','06','11','14','20','21','23','24','25','26','28','31','32','
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۲۶ صفحه داخل قاب گوشی‌اند (فاز ۴۷: +۴۷/+۴۸)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
+ok('همهٔ ۲۵ صفحه داخل قاب گوشی‌اند (فاز ۴۹: ۴۷ جذب مودال شد)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 25));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -154,7 +154,7 @@ ok('۴۶: بازگشت ← ۳۰', await page.locator('#scr-30').isVisible());
 
 /* ═══ ۶. درخواست خرید ساده (۱۲) ═══ */
 await page.goto(FILE + '#12'); await page.reload(); await sleep(250);
-ok('۱۲: تأمین‌کننده‌ها با تیک', await page.locator('#scr-12 .checkrow').count() === 4);
+ok('۱۲: تأمین‌کننده‌ها با تیک (فاز ۴۹: ۵ تأمین‌کننده)', await page.locator('#scr-12 .checkrow').count() === 5);
 ok('۱۲: فروشندهٔ ویژه بالا', (await page.locator('#scr-12 .checkrow').first().textContent()).includes('فروشندهٔ ویژه'));
 ok('۱۲: بدون «شبکه iMach»', !(await page.locator('#scr-12').textContent()).includes('شبکه iMach'));
 ok('۱۲: بدون «افزودن تأمین‌کننده»', !(await page.locator('#scr-12').textContent()).includes('تأمین‌کنندهٔ دیگر'));
@@ -172,7 +172,7 @@ ok('۰۵: کارت درخواست ← شیت (فاز ۴۷: با data-req)', (awa
 await page.click('#scr-05 .req-card');
 await sleep(300);
 ok('شیت reqview باز شد', await page.locator('#sheet-reqview.show').isVisible());
-ok('reqview: ارسال پیشنهاد قیمت → ۴۷ (فاز ۴۷ — نه گفتگو)', (await page.locator('#sheet-reqview .btn-primary').getAttribute('data-go')) === '47');
+ok('reqview (فاز ۴۹): فرم پیشنهاد داخل خود مودال است', await page.locator('#sheet-reqview #reqv-send').count() === 1 && await page.locator('#sheet-reqview [data-go="47"]').count() === 0);
 
 /* ═══ ۸. اعلان‌ها (۲۷) ═══ */
 await page.goto(FILE + '#27'); await page.reload(); await sleep(250);

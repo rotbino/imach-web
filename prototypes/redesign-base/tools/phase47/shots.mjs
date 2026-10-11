@@ -26,8 +26,10 @@ console.log('shot 09-supply-board');
 // ۱۲ — سازندهٔ استعلام چندقلمی (برنج + روغن)
 await page.goto(FILE + '#12'); await page.reload(); await sleep(350);
 await page.click('#iq-add'); await sleep(200);
-await page.fill('#iq-q', 'روغن'); await sleep(250);
-await page.click('#iq-res .gf-row >> nth=0'); await sleep(300);
+/* فاز ۴۹ — از مودال افزودن کالا */
+await page.click('#iq-add'); await sleep(400);
+await page.fill('#iqp-q', 'روغن'); await sleep(250);
+await page.click('#iqp-res [data-iqpick] >> nth=0'); await sleep(300);
 await page.screenshot({ path: OUT + '/12-composer-multi.png' });
 console.log('shot 12-composer-multi');
 
@@ -63,7 +65,7 @@ await page.screenshot({ path: OUT + '/sheet-reqview-multi.png' });
 console.log('shot sheet-reqview-multi');
 
 // ۴۷ — فرم پیشنهاد قیمت (فروشنده، ۲ قلم)
-await page.click('#sheet-reqview .sheet-cta[data-go="47"]'); await sleep(450);
+/* فاز ۴۹ — فرم پیشنهاد همان مودال است */
 await page.screenshot({ path: OUT + '/47-offer-form.png' });
 console.log('shot 47-offer-form');
 

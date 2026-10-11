@@ -21,8 +21,8 @@ await page.reload();
 await sleep(250);
 
 /* ═══ ۱. ساختار کلی ═══ */
-const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46','47','48'];
-ok('همهٔ ۲۶ صفحه داخل قاب گوشی‌اند', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
+const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46','48']; /* فاز ۴۹: ۴۷ جذب مودال sheet-reqview شد */
+ok('همهٔ ۲۵ صفحه داخل قاب گوشی‌اند', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 25));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('ارتفاع سند در محدوده', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
 for (const s of ALIVE) ok('صفحهٔ ' + s + ' موجود است', await page.locator('#scr-' + s).count() === 1);
@@ -63,16 +63,19 @@ ok('۱۲: یک قلم + استپر', await page.locator('#scr-12 .iq-item').coun
 ok('۱۲: بج پوشش در حالت تک‌قلمی مخفی است', await page.evaluate(() => Array.from(document.querySelectorAll('#scr-12 .iq-cov')).every(b => b.hidden)));
 ok('۱۲: دکمهٔ ارسال «۳ تأمین‌کننده»', (await page.locator('#rfq-send').textContent()).includes('۳'));
 
-await page.click('#iq-add'); await sleep(200);
-ok('۱۲: جستجوی افزودن کالا باز شد', await page.locator('#iq-search').isVisible());
-await page.fill('#iq-q', 'روغن'); await sleep(250);
-ok('۱۲: نتایج جستجو آمد', await page.locator('#iq-res .gf-row').count() >= 1);
-await page.click('#iq-res .gf-row >> nth=0'); await sleep(250);
-ok('۱۲: دو قلم شد', await page.locator('#scr-12 .iq-item').count() === 2);
-ok('۱۲: بج پوشش ظاهر شد (n از ۲ قلم)', await page.evaluate(() => Array.from(document.querySelectorAll('#scr-12 .iq-cov')).filter(b => !b.hidden && /از ۲ قلم/.test(b.textContent)).length >= 2));
+/* فاز ۴۹ — «افزودن کالا» مودال کامل: لیست خرید من + پرتکرار صنف + جستجو */
+await page.click('#iq-add'); await sleep(350);
+ok('۱۲: مودال افزودن کالا باز شد', await page.locator('#sheet-iqpick.show').count() === 1);
+ok('۱۲: مودال: «در لیست خرید من» اول است', (await page.locator('#iqp-res').textContent()).includes('در لیست خرید من'));
+await page.fill('#iqp-q', 'روغن'); await sleep(250);
+ok('۱۲: مودال: نتایج جستجو آمد', await page.locator('#iqp-res [data-iqpick]').count() >= 1);
+await page.click('#iqp-res [data-iqpick] >> nth=0'); await sleep(250);
+ok('۱۲: مودال: دو قلم شد', await page.locator('#scr-12 .iq-item').count() === 2);
+await page.click('#sheet-iqpick .iqp-bar .btn'); await sleep(300); /* تأیید و بستن مودال */
+ok('۱۲: بج پوشش ظاهر شد (همه/از ۲ قلم)', await page.evaluate(() => Array.from(document.querySelectorAll('#scr-12 .iq-cov')).filter(b => !b.hidden && /(همهٔ ۲|از ۲) قلم/.test(b.textContent)).length >= 4));
 ok('۱۲: گیرنده‌ها = هر که حداقل یک قلم را دارد', (await page.locator('#iq-recip-more').textContent()).includes('حداقل یک قلم'));
-ok('۱۲: همهٔ گیرنده‌ها تیک خوردند (اجتماع)', await page.evaluate(() => document.querySelectorAll('#scr-12 .checkbox.on').length === 4));
-ok('۱۲: دکمهٔ ارسال ۴ تأمین‌کننده شد', (await page.locator('#rfq-send').textContent()).includes('۴'));
+ok('۱۲: همهٔ گیرنده‌های فرم تیک خوردند (اجتماع)', await page.evaluate(() => document.querySelectorAll('#scr-12 .checkbox.on').length === 5));
+ok('۱۲: دکمهٔ ارسال = اجتماع همهٔ دارندگان', await page.evaluate(() => /ارسال به ۱۲|ارسال به ۱۲/.test(document.getElementById('rfq-send').textContent)));
 await page.click('#scr-12 .iq-rm'); await sleep(200);
 ok('۱۲: حذف قلم کار می‌کند (۱ قلم ماند)', await page.locator('#scr-12 .iq-item').count() === 1);
 
@@ -121,23 +124,22 @@ ok('۴۸: برداشتن فیلتر → ۴ کارت', await page.locator('#scr-4
 await page.click('#of48-sort [data-ofsort="cheap"]'); await sleep(200);
 ok('۴۸: چندقلمی ارزان‌ترین → آریو غلات اول (کوچک‌ترین مجموع)', (await page.locator('#scr-48 .oc-head .n').first().textContent()).includes('آریو غلات'));
 
-/* ═══ ۹. سمت فروشنده: ۰۵ → شیت → ۴۷ ═══ */
+/* ═══ ۹. سمت فروشنده: ۰۵ → مودال درخواست + پیشنهاد (فاز ۴۹: جذب ۴۷) ═══ */
 await page.goto(FILE + '#05'); await page.reload(); await sleep(300);
 ok('۰۵: کارت استعلام ۳ قلمی هست', (await page.locator('#scr-05').textContent()).includes('استعلام ۳ قلمی'));
 ok('۰۵: بج «۲ از ۳ قلم نزد شما»', (await page.locator('#scr-05').textContent()).includes('۲ از ۳ قلم نزد شما'));
 await page.click('#scr-05 .req-card[data-req="rq2"]'); await sleep(400);
 ok('شیت درخواست: اقلام قابل تأمین (روغن+رب)', (await page.locator('#sheet-reqview').textContent()).includes('روغن سرخ‌کردنی لادن') && (await page.locator('#sheet-reqview').textContent()).includes('رب گوجه‌فرنگی'));
 ok('شیت درخواست: قلم غایب فقط شمارش', (await page.locator('#sheet-reqview').textContent()).includes('در کاتالوک شما نیست') || (await page.locator('#sheet-reqview').textContent()).includes('در کاتالوگ شما نیست'));
-ok('شیت: CTA «ارسال پیشنهاد قیمت» (نه گفتگو)', await page.locator('#sheet-reqview .sheet-cta[data-go="47"]').count() === 1);
-await page.click('#sheet-reqview .sheet-cta[data-go="47"]'); await sleep(350);
-ok('۴۷: فرم پیشنهاد باز شد', await page.locator('#scr-47').isVisible());
-ok('۴۷: فقط ۲ قلمِ موجود (قند نیست)', await page.locator('#scr-47 .of47-item').count() === 2 && !(await page.locator('#scr-47 .of47-item').allTextContents()).join(' ').includes('قند'));
-ok('۴۷: شرایط پرداخت + حمل + توضیح', await page.locator('#of47-pay').count() === 1 && await page.locator('#of47-ship').count() === 1 && await page.locator('#of47-note').count() === 1);
-await page.fill('#scr-47 .of47-price >> nth=0', '2520000'); await sleep(150);
-await page.fill('#scr-47 .of47-price >> nth=1', '1105000'); await sleep(250);
-ok('۴۷: مجموع زنده = ۱۶۷٬۱۰۰٬۰۰۰', (await page.locator('#of47-sum').textContent()).includes('۱۶۷٬۱۰۰٬۰۰۰'));
-await page.click('#of47-send'); await sleep(1100);
-ok('۴۷: پس از ارسال به درخواست‌ها (۰۵) برمی‌گردیم', await page.locator('#scr-05').isVisible());
+ok('مودال (فاز ۴۹): توضیح خریدار دیده می‌شود', (await page.locator('#sheet-reqview .reqv-note').textContent()).includes('توضیح خریدار'));
+ok('مودال (فاز ۴۹): مهلت + دوره + محل تحویل', (await page.locator('#sheet-reqview .reqv-meta').textContent()).includes('امروز آخرین روز'));
+ok('مودال (فاز ۴۹): فرم پیشنهاد همان زیر جزئیات است', await page.locator('#sheet-reqview #reqv-send').count() === 1 && await page.locator('#sheet-reqview .reqv-price').count() === 2 && !(await page.locator('#sheet-reqview .reqv-price').allTextContents()).join(' ').includes('قند'));
+ok('مودال (فاز ۴۹): شرایط پرداخت + حمل + توضیح', await page.locator('#reqv-pay').count() === 1 && await page.locator('#reqv-ship').count() === 1 && await page.locator('#reqv-note2').count() === 1);
+await page.fill('#sheet-reqview .reqv-price >> nth=0', '2520000'); await sleep(150);
+await page.fill('#sheet-reqview .reqv-price >> nth=1', '1105000'); await sleep(250);
+ok('مودال (فاز ۴۹): مجموع زنده = ۱۶۷٬۱۰۰٬۰۰۰', (await page.locator('#reqv-sum').textContent()).includes('۱۶۷٬۱۰۰٬۰۰۰'));
+await page.click('#reqv-send'); await sleep(1100);
+ok('مودال (فاز ۴۹): پس از ارسال مودال بسته و کارت ۰۵ «پاسخ داده‌شده»', await page.locator('#scr-05').isVisible() && (await page.locator('#scr-05 .req-card[data-req="rq2"] .req-top .badge').textContent()).includes('پاسخ داده‌شده'));
 
 /* ═══ ۱۰. فاصله‌گذاری فرم‌ها (قاعدهٔ طلایی ۱۳px) ═══ */
 await page.goto(FILE + '#30'); await page.reload(); await sleep(300);
@@ -172,7 +174,7 @@ await page.goto(FILE + '#08'); await page.reload(); await sleep(300);
 ok('۰۸: نوار استعلام‌های جاری → ۴۵', await page.evaluate(() => Array.from(document.querySelectorAll('#scr-08 .bl-rfq')).every(r => r.dataset.go === '45')));
 ok('۰۸: شمار «پیشنهاد» (نه پاسخ)', (await page.locator('#scr-08 .bl-rfq-n').first().textContent()).includes('پیشنهاد'));
 
-/* ═══ ۱۲. e2e — همهٔ ۲۶ صفحه بدون خطای کنسول ═══ */
+/* ═══ ۱۲. e2e — همهٔ ۲۵ صفحه بدون خطای کنسول ═══ */
 for (const s of ALIVE) {
   await page.goto(FILE + '#' + s); await page.reload(); await sleep(150);
 }

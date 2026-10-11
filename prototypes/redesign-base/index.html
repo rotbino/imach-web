@@ -156,21 +156,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 /* ── استایل صفحهٔ 05 (05-sell-requests.html) ── */
 
-  /* ═══ درخواست‌های خرید — کارت‌های خوانا: درخواست بالا، خریدار پایین ═══ */
+  /* ═══ درخواست‌های خرید — فاز ۴۹: کارت کالامحور به زبان فرم ۴۵ (بندانگشتی + بج مهلت) ═══ */
   #scr-05 .inner-tabs button svg { width: 13px; height: 13px; vertical-align: -2px; margin-left: 4px; }
-  #scr-05 .req-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 12px 13px; cursor: pointer; }
+  #scr-05 .req-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 11px 12px; cursor: pointer; }
   #scr-05 .req-card:active { transform: translateY(1px); }
-  #scr-05 .req-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-  #scr-05 .req-t { font-size: 13px; font-weight: 700; line-height: 1.75; color: var(--foreground); }
+  #scr-05 .req-card.answered { opacity: .78; }
+  #scr-05 .req-top { display: flex; align-items: center; gap: 10px; }
+  #scr-05 .req-top > .badge { flex-shrink: 0; }
+  #scr-05 .req-t { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 700; line-height: 1.7; color: var(--foreground); }
   #scr-05 .req-meta { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; font-size: 10.5px; color: var(--muted-fg); margin-top: 6px; line-height: 1.8; }
   #scr-05 .req-meta svg { width: 11px; height: 11px; flex-shrink: 0; }
   #scr-05 .req-meta .sep { color: var(--border-strong); }
-  #scr-05 .req-biz { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border); margin-top: 10px; padding-top: 9px; }
+  #scr-05 .req-biz { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border); margin-top: 9px; padding-top: 8px; }
   #scr-05 .req-biz .avatar-sm { width: 26px; height: 26px; font-size: 11px; }
   #scr-05 .req-biz .bn { font-size: 11.5px; font-weight: 700; }
   #scr-05 .req-biz .bm { font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
   #scr-05 .match-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--green); background: var(--green-bg); border-radius: 999px; padding: 3px 9px; flex-shrink: 0; white-space: nowrap; }
   #scr-05 .match-chip svg { width: 11px; height: 11px; }
+  #scr-05 .req-act { margin-right: auto; display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 800; color: var(--primary-strong); flex-shrink: 0; white-space: nowrap; }
+  #scr-05 .req-act svg { width: 11px; height: 11px; }
 
 
   /* ═══ فاز ۴۵ — استعلام‌های خریدار (۴۵): کارت جاری + ردیف پایان‌یافته ═══ */
@@ -1681,12 +1685,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #sheet-reqview .reqv-miss { margin-top: 9px; font-size: 10.5px; color: var(--muted-fg); background: var(--muted); border-radius: 10px; padding: 8px 11px; line-height: 1.8; }
   #sheet-reqview .reqv-hint { margin-top: 9px; font-size: 10.5px; color: var(--primary-strong); line-height: 1.8; }
   /* ۴۷ — فرم پیشنهاد قیمت فروشنده */
-  .of47-req { display: flex; align-items: center; gap: 10px; }
-  .of47-req .ic { width: 38px; height: 38px; border-radius: 11px; background: var(--stone-tint); color: var(--stone); display: grid; place-items: center; flex-shrink: 0; }
-  .of47-req .ic svg { width: 17px; height: 17px; }
-  .of47-req .tx { flex: 1; min-width: 0; }
-  .of47-req .tx b { display: block; font-size: 13.5px; }
-  .of47-req .tx span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
   .of47-item { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 13px; box-shadow: var(--shadow-card); padding: 10px 11px; }
   .of47-item .tx { flex: 1; min-width: 0; }
   .of47-item .tx b { display: block; font-size: 13px; }
@@ -1728,6 +1726,56 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .oc-acts { display: flex; gap: 8px; margin-top: 11px; }
   .of48-empty { text-align: center; padding: 16px; font-size: 12px; color: var(--muted-fg); background: var(--muted); border-radius: 13px; line-height: 2; }
   .of48-empty button { margin-top: 4px; }
+  .of48-empty b { color: var(--foreground); }
+
+  /* ═══════════ فاز ۴۹ — استعلام و پیشنهاد (تکمیل فرایند) ═══════════ */
+  /* مودال‌های بزرگ کارِ (tall): جزئیات + فرم در یک قاب */
+  .sheet.tall { max-height: 94%; }
+  .btn:disabled { opacity: .55; cursor: not-allowed; filter: none; }
+
+  /* فرم ۱۲ — دکمهٔ «تأمین‌کنندگان بیشتر» */
+  .iq-more { width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px; border: 0; border-radius: 12px; background: var(--stone-tint); color: var(--stone-soft); font-family: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+  .iq-more svg { width: 13px; height: 13px; transform: rotate(-90deg); }
+  .iq-more:active { background: var(--muted); }
+
+  /* ردیف تأمین‌کننده (فرم ۱۲ + مودال بیشتر) — مشترک */
+  .checkrow.iq-recip, .checkrow.supp-row { padding: 10px 11px; }
+  .iq-recip.vip, .supp-row.vip { border-color: #f3ddba; background: linear-gradient(180deg, #fdf8ef, #fff 45%); }
+  .iq-recip .cw2, .supp-row .cw2 { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .iq-recip .cw2 b, .supp-row .cw2 b { font-size: 12.5px; font-weight: 700; }
+  .iq-recip .ver, .supp-row .ver { width: 12px; height: 12px; color: #1d5fb8; flex-shrink: 0; }
+  .iq-recip .vipb, .supp-row .vipb { font-size: 9px; padding: 1px 6px; }
+  .iq-recip .cs, .supp-row .cs { font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .iq-recip .iq-cov, .supp-row .iq-cov { font-size: 9px; padding: 1px 6px; }
+  .supp-row.locked { opacity: .62; cursor: default; }
+  .supp-lock { margin-top: 11px; font-size: 10.5px; color: var(--muted-fg); background: var(--muted); border-radius: 10px; padding: 8px 11px; line-height: 1.8; }
+
+  /* مودال «افزودن کالا» — لمس = افزودن/برداشتن؛ تیک سبز شروعگر است */
+  .iqp-row .iqp-add { font-size: 9px; padding: 1.5px 7px; flex-shrink: 0; }
+  .iqp-row .iqp-tick { width: 20px; height: 20px; border-radius: 7px; border: 1.5px solid var(--border-strong); display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+  .iqp-row .iqp-tick svg { width: 12px; height: 12px; display: none; }
+  .iqp-row.picked { border-color: var(--green); background: #f6fcf8; }
+  .iqp-row.picked .iqp-tick { background: var(--green); border-color: var(--green); }
+  .iqp-row.picked .iqp-tick svg { display: block; }
+  .iqp-bar { position: sticky; bottom: -16px; margin: 12px -16px 0; background: #fff; padding: 10px 16px 8px; border-top: 1px solid var(--border); box-shadow: 0 -8px 12px -8px rgba(42, 39, 35, .14); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .iqp-bar span { font-size: 11.5px; font-weight: 700; color: var(--muted-fg); }
+
+  /* مودال درخواست + پیشنهاد (sheet-reqview) — خریدار، توضیح، شرایط */
+  #sheet-reqview .reqv-buyer { display: flex; align-items: center; gap: 9px; margin-top: 10px; }
+  #sheet-reqview .reqv-buyer .avatar-sm { width: 34px; height: 34px; font-size: 13px; flex-shrink: 0; }
+  #sheet-reqview .reqv-buyer b { display: block; font-size: 13px; }
+  #sheet-reqview .reqv-buyer span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 1px; }
+  #sheet-reqview .reqv-buyer .badge { flex-shrink: 0; }
+  #sheet-reqview .reqv-note { display: flex; gap: 9px; margin-top: 11px; background: var(--accent); border-radius: 12px; padding: 10px 12px; }
+  #sheet-reqview .reqv-note svg { width: 15px; height: 15px; color: var(--primary-strong); flex-shrink: 0; margin-top: 1px; }
+  #sheet-reqview .reqv-note b { display: block; font-size: 10.5px; color: var(--accent-fg); margin-bottom: 2px; }
+  #sheet-reqview .reqv-note span { font-size: 11.5px; color: var(--foreground); line-height: 1.9; }
+  #sheet-reqview .reqv-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
+  #sheet-reqview .reqv-meta .rm { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--muted-fg); background: var(--muted); border-radius: 9px; padding: 5px 9px; }
+  #sheet-reqview .reqv-meta .rm svg { width: 12px; height: 12px; flex-shrink: 0; }
+  #sheet-reqview .reqv-meta .rm b { font-size: 10.5px; color: var(--foreground); font-weight: 700; }
+  #sheet-reqview .of47-item { margin-bottom: 8px; }
+  #sheet-reqview .reqv-price { text-align: left; font-weight: 700; }
 
 </style>
 </head>
@@ -2244,16 +2292,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <div class="rows">
 
-        <div class="req-card" data-req="rq1" style="cursor:pointer">
+        <!-- ═══ فاز ۴۹ — کارت درخواست بازطراحی: خریدار خودش این فروشنده را تیک زده و استعلام
+             مستقیم آمده («تقاضای منطبق با تو» حذف شد — القای تطبیق خودکار در MVP دروغ است).
+             ساختار همان زبان فرم ۴۵: بندانگشتی + عنوان کالامحور + بج مهلت + فراداده + خریدار.
+             «۲ از ۳ قلم نزد شما» ماند — واقعی و مفید است (پوشش چندقلمی). -->
+        <div class="req-card" data-req="rq1">
           <div class="req-top">
-            <div class="req-t">درخواست خرید ۲۰ کیسه برنج هاشمی درجه یک <span class="badge b-new">جدید</span></div>
-            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+            <div class="req-t">برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی</div>
+            <span class="badge b-new">جدید</span>
           </div>
           <div class="req-meta">
             <svg><use href="#i-pin"/></svg>
-            <span>محل تحویل: تهران، بازار تهران</span>
+            <span>تحویل تهران، بازار تهران</span>
             <span class="sep">·</span>
-            <span>دوره خرید: معمولاً هفته‌ای یکبار</span>
+            <span>هفته‌ای یکبار</span>
+            <span class="sep">·</span>
+            <span>۲ روز پیش</span>
           </div>
           <div class="req-biz">
             <div class="avatar-sm" style="background:#7c3aed">م</div>
@@ -2261,20 +2316,21 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div class="bn">رستوران مهر</div>
               <div class="bm">تهران (هم‌شهری) · خریدار تجاری</div>
             </div>
-            <span class="match-chip"><svg><use href="#i-target"/></svg> تقاضای منطبق با تو</span>
+            <span class="req-act">مشاهده و پیشنهاد<svg><use href="#i-chev"/></svg></span>
           </div>
         </div>
 
-        <!-- فاز ۴۷ — استعلام چندقلمی: خرده‌فروش معمولاً چند قلم با هم می‌خواهد؛ درخواست به
+        <!-- استعلام چندقلمی: خرده‌فروش معمولاً چند قلم با هم می‌خواهد؛ درخواست به
              هر فروشنده‌ای می‌رود که حداقل یکی از قلم‌ها را دارد و پوشش در همان کارت اعلام می‌شود -->
-        <div class="req-card" data-req="rq2" style="cursor:pointer">
+        <div class="req-card" data-req="rq2">
           <div class="req-top">
-            <div class="req-t">استعلام ۳ قلمی — روغن لادن، رب چین‌چین، قند یکتا <span class="badge b-new">جدید</span></div>
-            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی"></div>
+            <div class="req-t">استعلام ۳ قلمی — روغن لادن، رب چین‌چین، قند یکتا</div>
+            <span class="badge b-rednum">امروز آخرین روز</span>
           </div>
           <div class="req-meta">
             <svg><use href="#i-pin"/></svg>
-            <span>محل تحویل: قزوین، مرکز شهر</span>
+            <span>تحویل قزوین، مرکز شهر</span>
             <span class="sep">·</span>
             <span>۴۰ عدد ۱۰ لیتری · ۶۰ عدد ۵۰۰ گرمی · ۱۰ کیسهٔ ۱۰ کیلویی</span>
             <span class="sep">·</span>
@@ -2290,16 +2346,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <div class="req-card" style="opacity:.75;cursor:pointer" data-req="rq3">
+        <div class="req-card answered" data-req="rq3">
           <div class="req-top">
-            <div class="req-t">درخواست خرید ۱۰ کیسه برنج فجر درجه یک <span class="badge b-answered">پاسخ داده‌شده</span></div>
-            <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0;margin-top:3px"><use href="#i-chev"/></svg>
+            <div class="thumb" style="width:46px;height:46px"><img src="png/goods/fajar-50.jpg" alt="برنج فجر"></div>
+            <div class="req-t">برنج فجر · ۱۰ کیسهٔ ۵۰ کیلویی</div>
+            <span class="badge b-answered">پاسخ داده‌شده</span>
           </div>
           <div class="req-meta">
             <svg><use href="#i-pin"/></svg>
-            <span>محل تحویل: رشت، بازار روز</span>
+            <span>تحویل رشت، بازار روز</span>
             <span class="sep">·</span>
-            <span>دوره خرید: هفتگی</span>
+            <span>هفتگی</span>
             <span class="sep">·</span>
             <span>۵ روز پیش</span>
           </div>
@@ -2309,7 +2366,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div class="bn">سوپرمارکت سعید</div>
               <div class="bm">رشت (هم‌شهری) · خریدار تجاری</div>
             </div>
-            <span class="match-chip" style="color:var(--muted-fg);background:var(--muted)"><svg><use href="#i-target"/></svg> پیشنهاد شما ارسال شد</span>
+            <span class="req-act">مشاهدهٔ پیشنهادت<svg><use href="#i-chev"/></svg></span>
           </div>
         </div>
 
@@ -2883,6 +2940,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
          IMPLEMENTATION NOTE (فاز ۴۶): رویدادهای مرتبط با فروشندهٔ ویژه در لیست تأمین (بازدید یونیک ۱٬۰۰۰ ·
          ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ تومان) از شارژ او کم می‌کنند؛
          در پیاده‌سازی عملیاتی: Inquiry { goodId, qty, note, deadline? } + گیرندگانِ تیک‌خورده؛ پاسخ در Thread. ═══ -->
+    <!-- ═══ فاز ۴۹ (مالک) — تکمیل فرایند استعلام ═══
+         قانون ۱: استعلام فقط از کالاهای «لیست خرید» — ولی بدون اجبار به رفت‌وآمد:
+         «افزودن کالا» مودال کامل باز می‌کند (اول کالاهای لیست خریدِ خودت — ۹۰٪ استعلام‌ها از
+         همان‌هاست؛ بعد پرتکرار صنفت) و هر کالای تازه که انتخاب شود هم‌زمان به لیست خرید
+         می‌نشیند (بج «+ به لیست خرید») — کاربر از مسائل پشت پرده خبردار نمی‌شود.
+         مهلت پاسخ ۱-۵ روز، پیش‌فرض ۵. تأمین‌کننده‌ها داده‌محور: ۵تای اول در فرم (اولی
+         فروشندهٔ ویژه) + «مشاهدهٔ تأمین‌کنندگان بیشتر» → مودال (سومی فروشندهٔ ویژه).
+         IMPLEMENTATION NOTE: Inquiry { goodId, qty, note, deadlineDays(1-5, def 5) } +
+         recipients[] تیک‌خورده؛ کالای تازه هم‌زمان insert به ShoppingList (idempotent). ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">درخواست قیمت<small id="iq-sub">برنج هاشمی · ارسال به تأمین‌کننده‌ها</small></div>
@@ -2890,77 +2956,34 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- فاز ۴۷ — کالاهای استعلام: با جستجو پر می‌شود؛ تک‌قلمی یا چندقلمی بودن «حالت» جدا
-           ندارد — هر کالایی که اضافه کنی یک قلم است. استعلام چندقلمی به اجتماعِ فروشنده‌هایی
-           می‌رود که حداقل یکی از قلم‌ها را دارند (پوشش = رتبه‌بندی، نه حذف). -->
       <div class="sec-title" style="margin-top:4px"><h2>کالاهای استعلام</h2><span class="more" id="iq-count">۱ قلم</span></div>
       <div id="iq-items"></div>
-      <button class="iq-add" id="iq-add" type="button"><svg><use href="#i-plus"/></svg><span>افزودن کالای دیگر</span></button>
-      <div id="iq-search" hidden>
-        <div class="searchbar" style="margin-top:2px">
-          <svg><use href="#i-search"/></svg>
-          <input id="iq-q" type="text" placeholder="جستجوی کالا، برند، …" autocomplete="off">
+      <button class="iq-add" id="iq-add" type="button"><svg><use href="#i-plus"/></svg><span>افزودن کالا</span></button>
+
+      <!-- فاز ۴۹ — مهلت پاسخ: ۱ تا ۵ روز، پیش‌فرض ۵ (بین «سایر» هم می‌گنجد) -->
+      <div class="field">
+        <label>مهلت پاسخ</label>
+        <div class="pillchoice" id="iq-deadline">
+          <button class="pill" type="button">۱ روز</button>
+          <button class="pill" type="button">۲ روز</button>
+          <button class="pill" type="button">۳ روز</button>
+          <button class="pill" type="button">۴ روز</button>
+          <button class="pill active" type="button">۵ روز</button>
         </div>
-        <div id="iq-res"></div>
       </div>
 
       <div class="field">
         <label>توضیح برای فروشنده <span class="opt">— اختیاری</span></label>
-        <textarea class="input" rows="3" placeholder="مثلاً: تحویل قزوین، لطفاً قیمت و شرایط ارسال را هم بنویسید."></textarea>
+        <textarea class="input" id="iq-note" rows="3" placeholder="مثلاً: تحویل قزوین، لطفاً قیمت و شرایط ارسال را هم بنویسید."></textarea>
       </div>
 
-      <!-- تأمین‌کننده‌های همین کالا -->
-      <div class="sec-title"><h2 id="iq-recip-h">ارسال به چه کسانی؟</h2><span class="more" id="iq-recip-more">۴ تأمین‌کنندهٔ این کالا</span></div>
-
-      <!-- فروشندهٔ ویژه — بالاتر از بقیه در شرایط مشابه تطبیق (فاز ۴۴: تبلیغِ یک‌کاره) -->
-      <div class="checkrow" style="border-color:#f3ddba;background:linear-gradient(180deg,#fdf8ef,#fff 45%)">
-        <div class="avatar-sm" style="background:#7c3aed">آ</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
-            آریو غلات <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg>
-            <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span>
-            <span class="badge b-stone iq-cov" hidden></span>
-          </div>
-          <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">اصفهان · آخرین قیمت ۲٬۹۲۰٬۰۰۰</div>
-        </div>
-        <div class="checkbox on"><svg><use href="#i-check"/></svg></div>
-      </div>
-
-      <div class="checkrow">
-        <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px">
-            پخش برنج پارس <svg style="width:12px;height:12px;color:#1d5fb8"><use href="#i-verified"/></svg>
-            <span class="badge b-stone iq-cov" hidden></span>
-          </div>
-          <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">رشت · هم‌شهری · آخرین قیمت ۲٬۸۵۰٬۰۰۰</div>
-        </div>
-        <div class="checkbox on"><svg><use href="#i-check"/></svg></div>
-      </div>
-
-      <div class="checkrow">
-        <div class="avatar-sm" style="background:#0e7490">ک</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700">کیان غلات <span class="badge b-stone iq-cov" hidden></span></div>
-          <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">قزوین · هم‌استان · آخرین قیمت ۳٬۰۰۰٬۰۰۰</div>
-        </div>
-        <div class="checkbox on"><svg><use href="#i-check"/></svg></div>
-      </div>
-
-      <div class="checkrow">
-        <div class="avatar-sm" style="background:#0d9488">گ</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700">تجارت گیل‌رنج <span class="badge b-stone iq-cov" hidden></span></div>
-          <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">رشت · هم‌شهری · آخرین قیمت ۲٬۷۸۰٬۰۰۰</div>
-        </div>
-        <div class="checkbox"><svg><use href="#i-check"/></svg></div>
-      </div>
-
-      <!-- تمایز از تابلو -->
-      <div class="legend">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>پیشنهادها در «استعلام‌ها» (۴۵) کنار هم و قابل مقایسه می‌نشینند؛ گفتگو فقط وقتی باز می‌شود که به یک پیشنهاد جواب بدهی. «فروشندهٔ ویژه» در حال تبلیغ است و با پرداختِ خودش بالاتر دیده می‌شود؛ رتبهٔ بقیه خریدنی نیست.</div>
-      </div>
+      <!-- تأمین‌کننده‌ها — فاز ۴۹: داده‌محور؛ ۵تای اول این‌جا، بقیه در مودال «بیشتر» -->
+      <div class="sec-title"><h2 id="iq-recip-h">ارسال به چه کسانی؟</h2><span class="more" id="iq-recip-more">۵ تأمین‌کنندهٔ این کالا</span></div>
+      <div id="iq-recips"></div>
+      <button class="iq-more" id="iq-more" type="button">
+        <span>مشاهدهٔ تأمین‌کنندگان بیشتر</span>
+        <svg><use href="#i-chev"/></svg>
+      </button>
 
     </main>
 
@@ -4222,72 +4245,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 
 
-    <!-- ═══ فاز ۴۷ — فرم پیشنهاد قیمت (فروشنده): پاسخ به درخواست/استعلام خرید ═══
-         حکم مالک: پیشنهاد در فرم جدا داده می‌شود نه در پیام — تا خریدار بتواند پیشنهادها را
-         کنار هم مقایسه کند؛ گفتگو فقط برای جواب‌دادن به یک پیشنهاد باز می‌شود.
-         چندقلمی: فروشنده فقط اقلامی را می‌بیند که دارد (حریم سبد خریدار) و برای همان‌ها قیمت
-         می‌زند؛ الزامِ پرکردن همهٔ قلم‌ها نیست. قلم‌های غایب فقط به‌صورت شمارش اعلام می‌شود.
-         IMPLEMENTATION NOTE: Offer { inquiryId, lines:[{listingId, price}], payTerm, shipTerm, note } —
-         همهٔ قلم‌ها به همان Inquiry اصلی می‌چسبند (BUY-Listingهای groupId مشترک) و درخواست به
-         چند درخواست مستقل شکسته نمی‌شود؛ «پوشش» فقط محاسبهٔ نمایشی روی همین داده است. -->
-    <section class="scr" id="scr-47" data-arm="sell" hidden>
-    <header class="subheader">
-      <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">پیشنهاد قیمت<small id="of47-sub">رستوران مهر · تهران</small></div>
-    </header>
-
-    <main class="screen-body">
-
-      <!-- خلاصهٔ درخواستِ خریدار -->
-      <div class="card of47-req" id="of47-req"></div>
-
-      <!-- اقلامی که می‌فروشید -->
-      <div class="sec-title"><h2><svg><use href="#i-tag"/></svg> قیمت بده — اقلامی که داری</h2><span class="more" id="of47-n"></span></div>
-      <div class="rows" id="of47-items"></div>
-
-      <!-- شرایط -->
-      <div class="field">
-        <label>شرایط پرداخت</label>
-        <div class="pillchoice" id="of47-pay">
-          <button class="pill active" type="button">نقدی</button>
-          <button class="pill" type="button">چک صیادی</button>
-          <button class="pill" type="button">عندالتحویل</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>حمل و تحویل</label>
-        <div class="pillchoice" id="of47-ship">
-          <button class="pill active" type="button">ارسال با ما</button>
-          <button class="pill" type="button">تحویل حضوری</button>
-          <button class="pill" type="button">باربری خریدار</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>توضیح و مزایای پیشنهاد <span class="opt">— اختیاری</span></label>
-        <textarea class="input" id="of47-note" rows="3" placeholder="مثلاً: برنج امسال، ارسال رایگان بالای ۳۰ کیسه، تخفیف ۲٪ برای پرداخت نقدی…"></textarea>
-      </div>
-
-      <!-- مجموع زنده -->
-      <div class="card of47-total">
-        <span>مجموع پیشنهاد شما</span>
-        <b id="of47-sum">—</b>
-      </div>
-
-      <div class="legend">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>پیشنهادت در «استعلام‌ها»ی خریدار کنار پیشنهادهای دیگر نشان داده می‌شود تا مقایسه کند؛ اگر جواب بدهد، گفتگو باز می‌شود. سبدِ کامل خریدار را نمی‌بینی — فقط قلم‌هایی که خودت داری.</div>
-      </div>
-
-    </main>
-
-    <div class="action-bar">
-      <button class="btn btn-primary btn-block" id="of47-send" type="button">
-        <svg><use href="#i-send"/></svg>
-        ارسال پیشنهاد
-      </button>
-    </div>
-
-    </section>
+    <!-- ═══ فاز ۴۷ — فرم پیشنهاد قیمت (۴۷) — در فاز ۴۹ جذب مودال sheet-reqview شد ═══
+         (جزئیات کامل درخواست + فرم پیشنهاد همان زیرش؛ صفحهٔ مستقل حذف شد — یک قدم کمتر.) -->
 
     <!-- ═══ فاز ۴۷ — پیشنهادهای یک استعلام (خریدار): مقایسه به‌جای چت ═══
          لمس استعلام در ۴۵ → همین صفحه. سورت پیش‌فرض «ایمچ» (موتور تطابق). استعلام چندقلمی:
@@ -4813,27 +4772,114 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <!-- IMPLEMENTATION NOTE: زنگولهٔ هر کالا در ۲۳ این شیت را باز می‌کند؛ «فعال‌سازی» همان زنگوله را
      سبز می‌کند و درخواست‌های خرید بعدیِ همان خریدار در تب «گوش به زنگ» دستیار فروش (۰۵) می‌نشیند. -->
 
-<!-- ═══ فاز ۲۷ — کارت درخواست خرید (لمس کارت اینستاگرامی در ۲۳) ═══ -->
-<!-- IMPLEMENTATION NOTE: محتوای شیت از data-* همان کارت پر می‌شود (عنوان/مقدار/عکس/مهلت).
-     «ارسال پیشنهاد قیمت» → فرم پیشنهاد قیمت فروشنده (۰۶). -->
 <!-- ═══ فاز ۴۷ — شیت درخواست خرید: اقلام قابل تأمینِ همین فروشنده + قلم‌های غایب (فقط شمارش).
-     پاسخ در «فرم پیشنهاد قیمت» (۴۷) داده می‌شود نه در گفتگو — تا خریدار بتواند پیشنهادها را مقایسه کند. ═══ -->
-<div class="sheet" id="sheet-reqview" role="dialog" aria-label="درخواست خرید">
+     فاز ۴۹ (مالک) — جذب فرم ۴۷ در همین شیت: مودال بزرگ (tall) = جزئیات کامل درخواست
+     (اقلام + توضیح خریدار + مهلت + دوره + محل تحویل) و فرم پیشنهاد همان زیرش:
+     قیمت هر قلم + شرایط پرداخت/حمل + توضیح + مجموع زنده → ارسال. صفحهٔ ۴۷ حذف شد —
+     یک_SCREEN: باز کن، ببین، قیمت بده، بفرست.
+     IMPLEMENTATION NOTE: rqvRender(id) از RQ پر می‌کند؛ پاسخ جزئی فقط برای اقلام mine
+     (حریم سبد خریدار)؛ ارسال/به‌روزرسانی → بج کارت ۰۵ «پاسخ داده‌شده». ═══ -->
+<div class="sheet tall" id="sheet-reqview" role="dialog" aria-label="درخواست خرید و ارسال پیشنهاد">
   <div class="grab"></div>
-  <h3 id="reqv-title">درخواست خرید — برنج هاشمی</h3>
-  <div class="sub" id="reqv-sub">رستوران مهر · <span class="city-chip"><svg><use href="#i-pin"/></svg> تهران</span></div>
+  <div class="sheet-hdr">
+    <h3 id="reqv-title">برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی</h3>
+    <button class="mg" data-close aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="reqv-buyer">
+    <div class="avatar-sm" id="reqv-av">م</div>
+    <div style="flex:1;min-width:0">
+      <b id="reqv-buyer">رستوران مهر</b>
+      <span id="reqv-bmeta">تهران (هم‌شهری) · خریدار تجاری</span>
+    </div>
+    <span class="badge" id="reqv-status">جدید</span>
+  </div>
+
+  <!-- کالاهای درخواست -->
+  <div class="grp" style="margin-top:13px">کالاهای درخواست</div>
   <div id="reqv-items"></div>
-  <div class="sheet-row">
-    <span class="ico"><svg><use href="#i-clock"/></svg></span>
-    <span class="tx"><b>مهلت پاسخ‌گویی</b><span id="reqv-dl">۳ روز مانده</span></span>
+  <div class="reqv-miss" id="reqv-miss" hidden></div>
+
+  <!-- توضیح خریدار -->
+  <div class="reqv-note" id="reqv-note" hidden>
+    <svg><use href="#i-comment"/></svg>
+    <div><b>توضیح خریدار</b><span id="reqv-note-t"></span></div>
   </div>
-  <div class="sheet-row">
-    <span class="ico"><svg><use href="#i-list"/></svg></span>
-    <span class="tx"><b>دورهٔ خرید</b><span id="reqv-period">معمولاً ماهانه</span></span>
+
+  <!-- شرایط درخواست -->
+  <div class="reqv-meta">
+    <div class="rm"><svg><use href="#i-clock"/></svg><span>مهلت پاسخ</span><b id="reqv-dl">۳ روز مانده</b></div>
+    <div class="rm"><svg><use href="#i-list"/></svg><span>دورهٔ خرید</span><b id="reqv-period">هفته‌ای یکبار</b></div>
+    <div class="rm"><svg><use href="#i-pin"/></svg><span>محل تحویل</span><b id="reqv-loc">تهران، بازار تهران</b></div>
   </div>
-  <div class="reqv-hint">پیشنهادت کنار پیشنهادهای دیگر برای خریدار نمایش داده می‌شود تا مقایسه کند — گفتگو فقط وقتی باز می‌شود که او جواب بدهد.</div>
-  <button class="btn btn-primary sheet-cta" data-go="47"><svg><use href="#i-send"/></svg> ارسال پیشنهاد قیمت</button>
-  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+
+  <!-- فرم پیشنهاد — فاز ۴۹: همان زیر جزئیات -->
+  <div class="grp" style="margin-top:14px" id="reqv-offgrp">پیشنهادت برای ۱ قلم</div>
+  <div class="rows" id="reqv-offers"></div>
+  <div class="field" style="margin-top:12px">
+    <label>شرایط پرداخت</label>
+    <div class="pillchoice" id="reqv-pay">
+      <button class="pill active" type="button">نقدی</button>
+      <button class="pill" type="button">چک صیادی</button>
+      <button class="pill" type="button">عندالتحویل</button>
+    </div>
+  </div>
+  <div class="field">
+    <label>حمل و تحویل</label>
+    <div class="pillchoice" id="reqv-ship">
+      <button class="pill active" type="button">ارسال با ما</button>
+      <button class="pill" type="button">تحویل حضوری</button>
+      <button class="pill" type="button">باربری خریدار</button>
+    </div>
+  </div>
+  <div class="field">
+    <label>توضیح و مزایای پیشنهاد <span class="opt">— اختیاری</span></label>
+    <textarea class="input" id="reqv-note2" rows="2" placeholder="مثلاً: برنج امسال، ارسال رایگان بالای ۳۰ کیسه…"></textarea>
+  </div>
+  <div class="card of47-total" style="margin-top:2px">
+    <span>مجموع پیشنهاد شما</span>
+    <b id="reqv-sum">—</b>
+  </div>
+  <button class="btn btn-primary sheet-cta" id="reqv-send"><svg><use href="#i-send"/></svg> ارسال پیشنهاد</button>
+</div>
+
+<!-- ═══ فاز ۴۹ — مودال افزودن کالا به استعلام (۱۲): قانون ۱ بدون پیچیدگی ═══
+     بالای لیست = کالاهای «لیست خرید من» (۹۰٪ استعلام‌ها از همین‌هاست)؛ پایینش پرتکرار صنف.
+     جستجو روی همهٔ کالاها. هر کالای انتخابی که در لیست خرید نباشد هم‌زمان به آن می‌نشیند
+     (بج «+ به لیست خرید») — کاربر فقط استعلام می‌گیرد؛ لیستش خودش کامل‌تر می‌شود.
+     لمس ردیف = افزودن/برداشتن همان لحظه (تیک سبز)؛ فرمِ پشت مودال زنده به‌روز می‌شود. -->
+<div class="sheet tall" id="sheet-iqpick" role="dialog" aria-label="افزودن کالا به استعلام">
+  <div class="grab"></div>
+  <div class="sheet-hdr">
+    <h3>افزودن کالا به استعلام</h3>
+    <button class="mg" data-close aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="searchbar" style="margin-top:11px">
+    <svg><use href="#i-search"/></svg>
+    <input id="iqp-q" type="text" placeholder="جستجوی کالا، برند، …" autocomplete="off">
+  </div>
+  <div id="iqp-res"></div>
+  <div class="iqp-bar">
+    <span id="iqp-count">۱ قلم در استعلام</span>
+    <button class="btn btn-primary btn-sm" data-close type="button"><svg><use href="#i-check"/></svg> تأیید</button>
+  </div>
+</div>
+
+<!-- ═══ فاز ۴۹ — مودال تأمین‌کنندگان بیشتر (۱۲): فهرست کامل‌تر با تیک ═══
+     انتخاب‌ها همان لحظه در فرم اصلی می‌نشینند؛ فرم چیزی را از دست نمی‌دهد.
+     نشان «فروشندهٔ ویژه» = همان کسی که در کاتالوگش خودش را ویژه کرده (در تبلیغ است) —
+     جایگاهش در این دمو (سوم در مودال) فقط برای نمونه‌سازی است؛ در منطق واقعی از داده می‌آید. -->
+<div class="sheet tall" id="sheet-suppick" role="dialog" aria-label="تأمین‌کنندگان بیشتر">
+  <div class="grab"></div>
+  <div class="sheet-hdr">
+    <h3>تأمین‌کنندگان بیشتر</h3>
+    <button class="mg" data-close aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sub" style="margin-top:5px">هر که تیک بزنی، استعلام برایش هم می‌رود — فرم اصلی همان لحظه به‌روز می‌شود.</div>
+  <div id="supp-list"></div>
+  <div class="iqp-bar">
+    <span id="supp-count">۳ تأمین‌کنندهٔ منتخب</span>
+    <button class="btn btn-primary btn-sm" data-close type="button"><svg><use href="#i-check"/></svg> تأیید</button>
+  </div>
 </div>
 
 <!-- ═══ فاز ۲۸ — کارت پیشنهاد (لمس کارت پیشنهاد در ۳۶): دیتای کامل + تماس/پیام/کاتالوگ ═══ -->
@@ -5994,7 +6040,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '22': '01', '27': '01', '34': '08',
     '29': '42', '30': '01', /* فاز ۴۴: شارژ ← پروفایل (۴۲) · تبلیغات ← کاتالوگ */
     '46': '30', /* فاز ۴۶: گزارش تبلیغ ← فرم تبلیغات */
-    '47': '05', '48': '45', /* فاز ۴۷: فرم پیشنهاد ← درخواست‌ها · مقایسهٔ پیشنهادها ← استعلام‌ها */
+    '48': '45', /* فاز ۴۷: مقایسهٔ پیشنهادها ← استعلام‌ها (فرم ۴۷ در فاز ۴۹ جذب مودال شد) */
     '10': '42', /* فاز ۴۴: کاتالوگ‌های ذخیره‌شده ← پروفایل؛ فاز ۴۵: از فوتر خرید هم می‌آید */
     '45': '08', /* فاز ۴۵: استعلام‌ها ← لیست خرید */
     '44': '01' /* فاز ۳۶: به‌روزرسانی گروهی قیمت/موجودی ← کاتالوگ */
@@ -6016,7 +6062,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","47":"۴۷ — پیشنهاد قیمت · فرم فروشنده","48":"۴۸ — پیشنهادهای استعلام · مقایسه","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -6111,9 +6157,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var arm = target.dataset.arm;
       if (arm && arm !== 'keep') document.getElementById('phone').dataset.arm = arm;
       renderKeepChrome(target);
-      /* فاز ۴۷ — رندر اولیهٔ صفحات پویا (۱۲ سازندهٔ استعلام · ۴۷ فرم پیشنهاد · ۴۸ مقایسه) */
+      /* فاز ۴۷/۴۹ — رندر اولیهٔ صفحات پویا (۱۲ سازندهٔ استعلام · ۴۸ مقایسه) */
       if (id === '12') iqOnShow();
-      if (id === '47') of47Ensure();
       if (id === '48') of48Ensure();
       if (id === '44') bkOnShow(); /* فاز ۴۸ — هر ورود: انتخاب نیت + گرید قفل */
       /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا؛
@@ -6653,23 +6698,49 @@ body > div[id^="scr-d"][hidden] { display: none; }
   }
 
 
-  /* ═════════════════════ فاز ۴۷ — استعلام و پیشنهاد ═════════════════════
-     ▸ فروشنده: درخواست‌ها (۰۵) → شیت درخواست → «ارسال پیشنهاد قیمت» → فرم ۴۷
-       (قیمت هر قلم + شرایط پرداخت/حمل + توضیح و مزایا) — نه در پیام.
-     ▸ خریدار: استعلام‌ها (۴۵) → ۴۸ مقایسهٔ پیشنهادها (سورت «ایمچ»/ارزان‌ترین/نزدیک‌ترین؛
-       چندقلمی: بج پوشش + دو عدد خلاصه + فیلتر اختیاری «فقط پوشش کامل» بعد از دیدنِ نتایج).
+  /* ═════════════════════ فاز ۴۹ — استعلام و پیشنهاد (تکمیل فرایند) ═════════════════════
+     ▸ خریدار (۱۲): «افزودن کالا» مودال کامل — اول کالاهای لیست خرید خودش (۹۰٪ استعلام‌ها)،
+       بعد پرتکرار صنف + جستجو؛ کالای تازه هم‌زمان به لیست خرید می‌نشیند (قانون ۱، بی‌سروصدا).
+       مهلت پاسخ ۱-۵ روز (پیش‌فرض ۵). تأمین‌کننده‌ها داده‌محور: ۵ تای اول در فرم + مودال «بیشتر».
+     ▸ فروشنده (۰۵): کارت کالامحور + بج مهلت؛ لمس → مودال بزرگ sheet-reqview = جزئیات کامل
+       (اقلام + توضیح خریدار + مهلت/دوره/محل تحویل) + فرم پیشنهاد همان زیرش (صفحهٔ ۴۷ جذب شد).
+     ▸ خریدار (۴۵/۴۸): استعلام تازه بعد از ارسال همان لحظه در ۴۵ می‌نشیند؛ ۴۸ مقایسه + تماس/پیام.
      ▸ چندقلمی: درخواست به اجتماعِ فروشنده‌هایی می‌رود که حداقل یکی از قلم‌ها را دارند؛
-       پوشش سیگنالِ رتبه‌بندی است نه فیلتر (هیچ‌کس حذف نمی‌شود)؛ درخواست با groupId مشترک
-       می‌ماند و به چند درخواست مستقل شکسته نمی‌شود. سمت فروشنده فقط اقلامِ موجودِ خودش
-       دیده می‌شود (حریم سبد خریدار). */
+       پوشش سیگنالِ رتبه‌بندی است نه فیلتر؛ درخواست با groupId مشترک نمی‌شکند.
+       سمت فروشنده فقط اقلامِ موجودِ خودش دیده می‌شود (حریم سبد خریدار). */
 
   /* ── سازندهٔ استعلام (۱۲) — IQ ── */
-  var IQ = { q: '', items: [], touched: false };
+  var IQ = { q: '', items: [], touched: false, dl: 5, sel: { s1: 1, s2: 1, s3: 1 } };
   var IQ_UNIT = { g1: 'کیسه', g2: 'کیسه', g3: 'کیسه', g4: 'عدد', g5: 'کارتن', g6: 'کیسه', g7: 'عدد' };
-  var IQ_COV = [3, 2, 1, 2]; /* پوششِ ۴ تأمین‌کنندهٔ دمو برای سبد چندقلمی — رتبه‌بندی، نه حذف */
+
+  /* لیست خریدِ خریدار (۰۸) — دمو: برنج هاشمی، روغن لادن، قند یکتا، رب چین‌چین.
+     قانون ۱: استعلام فقط از کالاهای لیست خرید؛ کالای تازه هم‌زمان به همین مجموعه insert می‌شود. */
+  var SL_IDS = ['g1', 'r2', 'r5', 'r6'];
+  /* پرتکرار صنف برای مودال استعلام (فردِ نه‌در-لیست: بج «+ به لیست خرید») */
+  var IQP_FREQ = ['g6', 'r4', 'r3', 'r7'];
+
+  /* تأمین‌کننده‌ها — فاز ۴۹ داده‌محور: ۵ تای اول در فرم ۱۲، بقیه در مودال «بیشتر».
+     vip = فروشندهٔ ویژه (خودش در کاتالوگش تبلیغ کرده) — دمو: اولی در فرم، سومی در مودال.
+     cov = چند قلم از استعلامِ چندقلمی را دارد (پوشش = رتبه‌بندی، نه حذف). */
+  var SUP = [
+    { id: 's1', name: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 'دیگر استان', price: '۲٬۹۲۰٬۰۰۰', verified: 1, vip: 1, cov: 3 },
+    { id: 's2', name: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۵۰٬۰۰۰', verified: 1, cov: 3 },
+    { id: 's3', name: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 'هم‌استان', price: '۳٬۰۰۰٬۰۰۰', verified: 0, cov: 2 },
+    { id: 's4', name: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۷۸۰٬۰۰۰', verified: 0, cov: 3 },
+    { id: 's5', name: 'غلات سبزدشت', init: 'غ', av: '#65a30d', city: 'مشهد', dist: 'دیگر استان', price: '۲٬۹۶۰٬۰۰۰', verified: 0, cov: 1 },
+    { id: 's6', name: 'پخش برنج عطایی', init: 'ع', av: '#b45309', city: 'تبریز', dist: 'دیگر استان', price: '۲٬۹۱۰٬۰۰۰', verified: 0, cov: 1 },
+    { id: 's7', name: 'برنج انار باغ', init: 'ب', av: '#9333ea', city: 'انار', dist: 'دیگر استان', price: '۲٬۸۷۵٬۰۰۰', verified: 0, cov: 2 },
+    { id: 's8', name: 'غلات زرین دشت', init: 'ز', av: '#0284c7', city: 'کرمان', dist: 'دیگر استان', price: '۲٬۹۴۵٬۰۰۰', verified: 1, vip: 1, cov: 2 },
+    { id: 's9', name: 'پخش گیلانه', init: 'گ', av: '#dc2626', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۳۰٬۰۰۰', verified: 0, cov: 3 },
+    { id: 's10', name: 'برنج شمال شرق', init: 'ش', av: '#059669', city: 'ساری', dist: 'هم‌استان', price: '۲٬۸۶۵٬۰۰۰', verified: 0, cov: 1 },
+    { id: 's11', name: 'بازرگانی حاصل سبز', init: 'ح', av: '#d97706', city: 'تهران', dist: 'هم‌استان', price: '۳٬۰۲۰٬۰۰۰', verified: 0, cov: 1 },
+    { id: 's12', name: 'غلات کمالی', init: 'ک', av: '#475569', city: 'خرم‌آباد', dist: 'دیگر استان', price: '۲٬۸۹۰٬۰۰۰', verified: 0, cov: 2 }
+  ];
+  function supById(id) { for (var i = 0; i < SUP.length; i++) if (SUP[i].id === id) return SUP[i]; return null; }
+  function iqSelCount() { var c = 0; for (var k in IQ.sel) if (IQ.sel[k]) c++; return c; }
 
   function iqEntry(e) {
-    var g = e.type === 'ref' ? e.g : e.g;
+    var g = e.g;
     var pack = (g && g.packs && g.packs.length) ? g.packs[0] : null;
     return {
       id: e.id, type: e.type,
@@ -6686,12 +6757,31 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }
     iqRender();
   }
+  function iqRecipRow(s, multi, n) {
+    var cov = '';
+    if (multi) {
+      cov = s.cov >= n
+        ? '<span class="badge b-green iq-cov">همهٔ ' + faNum(n) + ' قلم</span>'
+        : '<span class="badge b-stone iq-cov">' + faNum(s.cov) + ' از ' + faNum(n) + ' قلم</span>';
+    } else cov = '<span class="badge b-stone iq-cov" hidden></span>';
+    var on = multi || IQ.sel[s.id] ? ' on' : '';
+    return '<div class="checkrow iq-recip' + (s.vip ? ' vip' : '') + '" data-sid="' + s.id + '">' +
+      '<div class="avatar-sm" style="background:' + s.av + '">' + s.init + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+      '<div class="cw2"><b>' + gfEsc(s.name) + '</b>' +
+      (s.verified ? ' <svg class="ver"><use href="#i-verified"/></svg>' : '') +
+      (s.vip ? '<span class="badge b-orange vipb">فروشندهٔ ویژه</span>' : '') + cov + '</div>' +
+      '<div class="cs">' + gfEsc(s.city) + ' · ' + gfEsc(s.dist) + ' · آخرین قیمت ' + s.price + '</div>' +
+      '</div>' +
+      '<div class="checkbox' + on + '"><svg><use href="#i-check"/></svg></div>' +
+      '</div>';
+  }
   function iqRender() {
     var host = document.getElementById('iq-items');
     if (!host) return;
     var n = IQ.items.length, html = '';
     if (!n) {
-      html = '<div class="iq-empty">کالای استعلام را با «افزودن کالا» انتخاب کن — یک قلم یا چند قلم، هر طور که خریدت است. چندقلمی که حالتِ پرکار خرده‌فروشی است: همهٔ قلم‌ها در یک استعلام می‌مانند و هر فروشنده برای قلم‌هایی که دارد قیمت می‌دهد.</div>';
+      html = '<div class="iq-empty">کالاهای استعلام از لیست خریدت انتخاب می‌شوند — «افزودن کالا» را بزن.</div>';
     } else {
       IQ.items.forEach(function (it, i) {
         html += '<div class="iq-item">' +
@@ -6712,96 +6802,161 @@ body > div[id^="scr-d"][hidden] { display: none; }
       (n === 1 ? IQ.items[0].name + ' · ارسال به تأمین‌کننده‌ها' : 'استعلام چندقلمی · ' + faNum(n) + ' قلم');
     var addLbl = document.querySelector('#iq-add span');
     if (addLbl) addLbl.textContent = n ? 'افزودن کالای دیگر' : 'افزودن کالا';
+    /* چندقلمی = اجتماع فروشنده‌ها: همه گیرنده‌اند و پوششِ هر کدام اعلام می‌شود */
     var multi = n > 1;
+    if (multi) SUP.forEach(function (s) { IQ.sel[s.id] = 1; });
+    var shown = SUP.filter(function (s, i) { return i < 5 || (IQ._extra && IQ._extra[s.id]); }); /* ۵ تای اول همیشه + انتخاب‌های مودال «بیشتر» */
+    var rec = document.getElementById('iq-recips');
+    if (rec) rec.innerHTML = shown.map(function (s) { return iqRecipRow(s, multi, n); }).join('');
     var rm = document.getElementById('iq-recip-more');
-    if (rm) rm.textContent = multi ? 'هر که حداقل یک قلم را دارد' : '۴ تأمین‌کنندهٔ این کالا';
-    document.querySelectorAll('#scr-12 .checkrow').forEach(function (r, i) {
-      var cov = r.querySelector('.iq-cov');
-      if (cov) {
-        if (multi) { cov.hidden = false; cov.textContent = faNum(IQ_COV[i] || 1) + ' از ' + faNum(n) + ' قلم'; }
-        else cov.hidden = true;
-      }
-      var cb = r.querySelector('.checkbox');
-      if (cb) {
-        if (multi) cb.classList.add('on'); /* اجتماع فروشنده‌ها: همه گیرنده‌اند */
-        else cb.classList.toggle('on', i < 3);
-      }
-    });
+    if (rm) rm.textContent = multi ? 'هر که حداقل یک قلم را دارد' : faNum(shown.length || 5) + ' تأمین‌کنندهٔ این کالا';
     iqSendLabel();
-    iqRenderRes();
   }
   function iqSendLabel() {
-    var on = document.querySelectorAll('#scr-12 .checkrow .checkbox.on').length || 3;
+    var on = iqSelCount();
     var btn = document.getElementById('rfq-send');
-    if (btn && !btn.classList.contains('bk-saved')) {
+    if (!btn || btn.classList.contains('bk-saved')) return;
+    if (on) {
+      btn.disabled = false;
       btn.innerHTML = '<svg><use href="#i-send"/></svg> ارسال به ' + faNum(on) + ' تأمین‌کننده';
+    } else {
+      btn.disabled = true;
+      btn.innerHTML = '<svg><use href="#i-users"/></svg> حداقل یک تأمین‌کننده انتخاب کن';
     }
   }
-  function iqRowHtml(e) {
+
+  /* ── مودال «افزودن کالا» (sheet-iqpick) — قانون ۱ بدون پیچیدگی ── */
+  function iqpInInq(id) { return IQ.items.some(function (x) { return x.id === id; }); }
+  function iqpRowHtml(e) {
     var img, name, sub;
     if (e.type === 'ref') { img = e.r.img || (e.g && e.g.img); name = e.r.name; sub = e.r.brand + ' · ' + e.r.pack; }
     else { img = e.g.img; name = e.g.name; var c = GL_SUP[e.id] || 0; sub = 'هر برند و هر بسته‌بندی · ' + (c ? faNum(c) + ' تأمین‌کننده' : 'بدون تأمین‌کننده'); }
-    return '<button class="gf-row" type="button" data-iqpick="' + e.type + '" data-iqid="' + e.id + '">' +
+    var inq = iqpInInq(e.id);
+    var chip = '';
+    if (!inq && SL_IDS.indexOf(e.id) < 0) chip = '<span class="badge b-stone iqp-add">+ به لیست خرید</span>';
+    var state = inq ? '<span class="badge b-green">در استعلام</span>' : '';
+    return '<button class="gf-row iqp-row' + (inq ? ' picked' : '') + '" type="button" data-iqpick="' + e.type + '" data-iqid="' + e.id + '">' +
       '<span class="th"><img src="' + img + '" alt="' + gfEsc(name) + '"></span>' +
       '<span class="tx"><b>' + gfEsc(name) + '</b><span>' + gfEsc(sub) + '</span></span>' +
-      '<svg class="chev"><use href="#i-chev"/></svg></button>';
+      chip + state +
+      '<span class="iqp-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
+      '</button>';
   }
-  function iqRenderRes() {
-    var host = document.getElementById('iq-res');
-    if (!host || document.getElementById('iq-search').hidden) return;
+  function iqpRender() {
+    var host = document.getElementById('iqp-res');
+    if (!host) return;
     var q = IQ.q;
     if (!q.trim()) {
-      var freq = GL_FREQ.map(glById).filter(Boolean);
-      host.innerHTML = '<div class="gf-group">پرتکرار در صنف شما — سوپرمارکت</div><div>' + freq.map(iqRowHtml).join('') + '</div>';
-      return;
+      var sl = SL_IDS.map(glById).filter(Boolean);
+      var freq = IQP_FREQ.map(glById).filter(Boolean);
+      host.innerHTML = '<div class="gf-group">در لیست خرید من</div><div>' + sl.map(iqpRowHtml).join('') + '</div>' +
+        '<div class="gf-group">پرتکرار در صنف شما — سوپرمارکت</div><div>' + freq.map(iqpRowHtml).join('') + '</div>';
+    } else {
+      var res = gfSearch(q);
+      if (!res.length) {
+        host.innerHTML = '<div class="gf-empty"><b>«' + gfEsc(q) + '» پیدا نشد</b><span>املای دیگری امتحان کن.</span></div>';
+      } else {
+        var gs = res.filter(function (e) { return e.type === 'good'; });
+        var rs = res.filter(function (e) { return e.type === 'ref'; });
+        var groups = [[gs, 'فله / هر برندی'], [rs, 'یک برند مشخص']];
+        if (rs.length && rs[0] === res[0]) groups.reverse();
+        var html = '';
+        groups.forEach(function (gr) { if (gr[0].length) html += '<div class="gf-group">' + gr[1] + '</div><div>' + gr[0].map(iqpRowHtml).join('') + '</div>'; });
+        host.innerHTML = html;
+      }
     }
-    var res = gfSearch(q);
-    if (!res.length) {
-      host.innerHTML = '<div class="gf-empty"><b>«' + gfEsc(q) + '» پیدا نشد</b><span>املای دیگری امتحان کن.</span></div>';
-      return;
-    }
-    var gs = res.filter(function (e) { return e.type === 'good'; });
-    var rs = res.filter(function (e) { return e.type === 'ref'; });
-    var groups = [[gs, 'هر برندی (مقایسهٔ همه)'], [rs, 'یک برند مشخص']];
-    if (rs.length && rs[0] === res[0]) groups.reverse();
-    var html = '';
-    groups.forEach(function (gr) { if (gr[0].length) html += '<div class="gf-group">' + gr[1] + '</div><div>' + gr[0].map(iqRowHtml).join('') + '</div>'; });
-    host.innerHTML = html;
+    iqpCount();
   }
-  function iqPick(type, id) {
+  function iqpCount() {
+    var el = document.getElementById('iqp-count');
+    if (el) el.textContent = faNum(IQ.items.length) + ' قلم در استعلام';
+  }
+  function iqpToggle(type, id) {
     var e = glById(id);
     if (!e) return;
-    if (!IQ.items.some(function (x) { return x.id === e.id; })) IQ.items.push(iqEntry(e));
+    var ix = -1;
+    IQ.items.forEach(function (x, i) { if (x.id === e.id) ix = i; });
+    if (ix >= 0) {
+      IQ.items.splice(ix, 1);
+    } else {
+      IQ.items.push(iqEntry(e));
+      /* قانون ۱ — کالای تازه هم‌زمان به لیست خرید می‌نشیند (بی‌سروصدا) */
+      if (SL_IDS.indexOf(e.id) < 0) SL_IDS.push(e.id);
+    }
     IQ.touched = true;
-    IQ.q = '';
-    var q = document.getElementById('iq-q');
-    if (q) q.value = '';
-    var sr = document.getElementById('iq-search');
-    if (sr) sr.hidden = true;
     iqRender();
+    iqpRender();
   }
-  function iqRemove(i) { IQ.items.splice(i, 1); IQ.touched = true; iqRender(); }
   function iqNew() {
-    IQ.q = ''; IQ.items = []; IQ.touched = true;
-    var q = document.getElementById('iq-q');
+    IQ.q = ''; IQ.items = []; IQ.touched = true; IQ.dl = 5;
+    IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null;
+    var q = document.getElementById('iqp-q');
     if (q) q.value = '';
-    var sr = document.getElementById('iq-search');
-    if (sr) sr.hidden = false;
+    var note = document.getElementById('iq-note');
+    if (note) note.value = '';
+    document.querySelectorAll('#iq-deadline .pill').forEach(function (p, i) {
+      p.classList.toggle('active', i === 4); /* پیش‌فرض ۵ روز */
+    });
     iqRender();
+    iqpRender();
+  }
+
+  /* ── مودال «تأمین‌کنندگان بیشتر» (sheet-suppick) ── */
+  function suppRowHtml(s, locked) {
+    var on = IQ.sel[s.id] || locked ? ' on' : '';
+    return '<div class="checkrow supp-row' + (s.vip ? ' vip' : '') + (locked ? ' locked' : '') + '"' + (locked ? '' : ' data-supp="' + s.id + '"') + '>' +
+      '<div class="avatar-sm" style="background:' + s.av + '">' + s.init + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+      '<div class="cw2"><b>' + gfEsc(s.name) + '</b>' +
+      (s.verified ? ' <svg class="ver"><use href="#i-verified"/></svg>' : '') +
+      (s.vip ? '<span class="badge b-orange vipb">فروشندهٔ ویژه</span>' : '') + '</div>' +
+      '<div class="cs">' + gfEsc(s.city) + ' · ' + gfEsc(s.dist) + ' · آخرین قیمت ' + s.price + '</div>' +
+      '</div>' +
+      '<div class="checkbox' + on + '"><svg><use href="#i-check"/></svg></div>' +
+      '</div>';
+  }
+  function suppRender() {
+    var host = document.getElementById('supp-list');
+    if (!host) return;
+    var multi = IQ.items.length > 1;
+    /* استعلام چندقلمی = اجماع گیرنده‌ها (فاز ۴۷): همهٔ دارندگانِ حداقل یک قلم می‌گیرند —
+       تیک‌ها قفل‌اند و متنِ بالای مودال صادق می‌گوید چرا */
+    host.innerHTML = (multi ? '<div class="supp-lock">استعلام چندقلمی به همهٔ کسانی می‌رود که حداقل یکی از قلم‌ها را دارند — برای همین تیک‌ها قفلند.</div>' : '') +
+      SUP.slice(5).map(function (s) { return suppRowHtml(s, multi); }).join('');
+    suppCount();
+  }
+  function suppCount() {
+    var el = document.getElementById('supp-count');
+    if (!el) return;
+    var multi = IQ.items.length > 1;
+    el.textContent = multi
+      ? faNum(iqSelCount()) + ' تأمین‌کننده — همهٔ دارندگانِ قلم‌ها'
+      : faNum(iqSelCount()) + ' تأمین‌کنندهٔ منتخب';
+  }
+  function suppToggle(id) {
+    if (IQ.items.length > 1) return; /* چندقلمی: اجماع — همه گیرنده‌اند */
+    IQ.sel[id] = IQ.sel[id] ? 0 : 1;
+    if (IQ.sel[id]) IQ._extra = IQ._extra || {}, IQ._extra[id] = 1;
+    iqRender();
+    suppRender();
   }
 
   /* ── درخواست‌های خرید (سمت فروشنده) — RQ: هر درخواست + اقلامِ موجودِ این فروشنده ── */
   var RQ = {
     cur: 'rq1',
     rq1: {
-      buyer: 'رستوران مهر', city: 'تهران', title: 'درخواست خرید — برنج هاشمی',
-      dl: '۳ روز مانده', period: 'هفته‌ای یکبار',
+      buyer: 'رستوران مهر', init: 'م', av: '#7c3aed', bmeta: 'تهران (هم‌شهری) · خریدار تجاری',
+      title: 'برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی',
+      status: 'جدید', statusCls: 'b-new', dl: '۳ روز مانده', period: 'هفته‌ای یکبار', loc: 'تهران، بازار تهران',
+      note: 'برنج درجه یک — اگر ممکن است قیمت ارسال به تهران را هم بنویسید.',
       mine: [{ name: 'برنج هاشمی', sub: '۲۰ کیسهٔ ۵۰ کیلویی', img: 'png/goods/rice-sack.jpg', qty: 20, unit: 'کیسه' }],
       miss: []
     },
     rq2: {
-      buyer: 'پخش نگین', city: 'قزوین', title: 'استعلام ۳ قلمی — روغن، رب، قند',
-      dl: '۵ روز مانده', period: 'ماهانه',
+      buyer: 'پخش نگین', init: 'ن', av: '#0e7490', bmeta: 'قزوین (هم‌شهری) · خریدار تجاری',
+      title: 'استعلام ۳ قلمی — روغن لادن، رب چین‌چین، قند یکتا',
+      status: 'امروز آخرین روز', statusCls: 'b-rednum', dl: 'امروز آخرین روز', period: 'ماهانه', loc: 'قزوین، مرکز شهر',
+      note: 'روغن حتماً لادن باشد؛ رب چین‌چین. پرداخت چک ۳۰ روزه برایم مقدور نیست.',
       mine: [
         { name: 'روغن سرخ‌کردنی لادن', sub: '۴۰ عدد ۱۰ لیتری', img: 'png/goods/oil-bottle.jpg', qty: 40, unit: 'عدد' },
         { name: 'رب گوجه‌فرنگی چین‌چین', sub: '۶۰ عدد ۵۰۰ گرمی', img: 'png/goods/tomato-paste.jpg', qty: 60, unit: 'عدد' }
@@ -6809,78 +6964,118 @@ body > div[id^="scr-d"][hidden] { display: none; }
       miss: ['قند یکتا']
     },
     rq3: {
-      buyer: 'سوپرمارکت سعید', city: 'رشت', title: 'درخواست خرید — برنج فجر',
-      dl: 'پاسخ داده‌شده', period: 'هفتگی',
-      mine: [{ name: 'برنج فجر', sub: '۱۰ کیسهٔ ۵۰ کیلویی', img: 'png/goods/fajar-50.jpg', qty: 10, unit: 'کیسه' }],
+      buyer: 'سوپرمارکت سعید', init: 'س', av: '#c2703a', bmeta: 'رشت (هم‌شهری) · خریدار تجاری',
+      title: 'برنج فجر · ۱۰ کیسهٔ ۵۰ کیلویی',
+      status: 'پاسخ داده‌شده', statusCls: 'b-answered', dl: '۲ روز مانده', period: 'هفتگی', loc: 'رشت، بازار روز',
+      note: 'تحویل صبحِ زود — بازار روز.',
+      answered: 1, pay: 1, ship: 0,
+      sentNote: 'برنج تازه‌پاک — ارسال رایگان بالای ۲۰ کیسه.',
+      mine: [{ name: 'برنج فجر', sub: '۱۰ کیسهٔ ۵۰ کیلویی', img: 'png/goods/fajar-50.jpg', qty: 10, unit: 'کیسه', price: 2360000 }],
       miss: []
     }
   };
-  function rqView(id) {
+
+  /* ── مودال درخواست + ارسال پیشنهاد (sheet-reqview) — فاز ۴۹: جزئیات کامل + فرم همان زیرش ── */
+  function rqvRender(id) {
     var d = RQ[id] || RQ.rq1;
     RQ.cur = id;
     var t = document.getElementById('reqv-title');
     if (t) t.textContent = d.title;
-    var s = document.getElementById('reqv-sub');
-    if (s) s.innerHTML = gfEsc(d.buyer) + ' · <span class="city-chip"><svg><use href="#i-pin"/></svg> ' + gfEsc(d.city) + '</span>';
+    var av = document.getElementById('reqv-av');
+    if (av) { av.textContent = d.init; av.style.background = d.av; }
+    var by = document.getElementById('reqv-buyer');
+    if (by) by.textContent = d.buyer;
+    var bm = document.getElementById('reqv-bmeta');
+    if (bm) bm.textContent = d.bmeta;
+    var st = document.getElementById('reqv-status');
+    if (st) { st.textContent = d.status; st.className = 'badge ' + (d.statusCls || 'b-new'); }
     var dl = document.getElementById('reqv-dl');
     if (dl) dl.textContent = d.dl;
     var pd = document.getElementById('reqv-period');
     if (pd) pd.textContent = d.period;
+    var lc = document.getElementById('reqv-loc');
+    if (lc) lc.textContent = d.loc;
+    var nt = document.getElementById('reqv-note');
+    if (nt) {
+      nt.hidden = !d.note;
+      var ntt = document.getElementById('reqv-note-t');
+      if (ntt && d.note) ntt.textContent = d.note;
+    }
     var host = document.getElementById('reqv-items');
     if (host) {
-      var html = d.mine.map(function (it) {
+      var multi = d.mine.length + d.miss.length > 1;
+      host.innerHTML = d.mine.map(function (it) {
         return '<div class="reqv-item"><div class="thumb" style="width:40px;height:40px"><img src="' + it.img + '" alt="' + gfEsc(it.name) + '"></div>' +
           '<div class="tx"><b>' + gfEsc(it.name) + '</b><span>' + gfEsc(it.sub) + '</span></div>' +
-          (d.mine.length > 1 ? '<span class="badge b-green" style="flex-shrink:0">دارید</span>' : '') +
+          (multi ? '<span class="badge b-green" style="flex-shrink:0">دارید</span>' : '') +
           '</div>';
       }).join('');
+    }
+    var ms = document.getElementById('reqv-miss');
+    if (ms) {
       if (d.miss.length) {
-        html += '<div class="reqv-miss">' + faNum(d.miss.length) + ' قلم دیگرِ این درخواست (' + d.miss.map(gfEsc).join('، ') + ') در کاتالوگ شما نیست — برای همین ' + faNum(d.mine.length) + ' قلم قیمت بده؛ خریدار سبد کاملش را نشان نمی‌دهد.</div>';
-      }
-      host.innerHTML = html;
+        ms.hidden = false;
+        ms.innerHTML = faNum(d.miss.length) + ' قلم دیگرِ این درخواست (' + d.miss.map(gfEsc).join('، ') + ') در کاتالوگ شما نیست — برای همین ' + faNum(d.mine.length) + ' قلم قیمت بده؛ خریدار سبد کاملش را نشان نمی‌دهد.';
+      } else ms.hidden = true;
     }
-  }
-
-  /* ── فرم پیشنهاد قیمت (۴۷ — فروشنده) ── */
-  var OF47 = { last: null };
-  function of47Render(id) {
-    var d = RQ[id] || RQ.rq1;
-    RQ.cur = id;
-    OF47.last = id;
-    var sub = document.getElementById('of47-sub');
-    if (sub) sub.textContent = d.buyer + ' · ' + d.city + ' · ' + d.dl;
-    var req = document.getElementById('of47-req');
-    if (req) {
-      req.innerHTML = '<span class="ic"><svg><use href="#i-inbox"/></svg></span>' +
-        '<div class="tx"><b>' + gfEsc(d.title) + '</b><span>دورهٔ خرید: ' + gfEsc(d.period) + ' · ' + (d.miss.length ? 'شما ' + faNum(d.mine.length) + ' از ' + faNum(d.mine.length + d.miss.length) + ' قلم را دارید' : 'همهٔ قلم‌ها را دارید') + '</span></div>';
-    }
-    var nEl = document.getElementById('of47-n');
-    if (nEl) nEl.textContent = faNum(d.mine.length) + ' قلم';
-    var host = document.getElementById('of47-items');
-    if (host) {
-      host.innerHTML = d.mine.map(function (it) {
+    /* فرم پیشنهاد */
+    var og = document.getElementById('reqv-offgrp');
+    if (og) og.textContent = d.miss.length ? 'پیشنهادت — ' + faNum(d.mine.length) + ' قلمی که داری' : 'پیشنهادت برای ' + faNum(d.mine.length) + ' قلم';
+    var off = document.getElementById('reqv-offers');
+    if (off) {
+      off.innerHTML = d.mine.map(function (it) {
         return '<div class="of47-item">' +
           '<div class="thumb" style="width:42px;height:42px"><img src="' + it.img + '" alt="' + gfEsc(it.name) + '"></div>' +
           '<div class="tx"><b>' + gfEsc(it.name) + '</b><span>' + gfEsc(it.sub) + '</span></div>' +
-          '<div class="of47-pr"><input class="input of47-price" data-qty="' + it.qty + '" inputmode="numeric" placeholder="قیمت هر ' + gfEsc(it.unit) + '"></div>' +
+          '<div class="of47-pr"><input class="input reqv-price" data-qty="' + it.qty + '" inputmode="numeric" placeholder="قیمت هر ' + gfEsc(it.unit) + '"' + (it.price ? ' value="' + faMoney(it.price) + '"' : '') + '></div>' +
           '</div>';
       }).join('');
     }
-    var note = document.getElementById('of47-note');
-    if (note) note.value = '';
-    var sum = document.getElementById('of47-sum');
-    if (sum) sum.textContent = '—';
+    /* شرایط پیشنهاد ارسال‌شده (rq3) */
+    document.querySelectorAll('#reqv-pay .pill').forEach(function (p, i) { p.classList.toggle('active', i === (d.pay || 0)); });
+    document.querySelectorAll('#reqv-ship .pill').forEach(function (p, i) { p.classList.toggle('active', i === (d.ship || 0)); });
+    var n2 = document.getElementById('reqv-note2');
+    if (n2) n2.value = d.answered ? (d.sentNote || '') : '';
+    var sb = document.getElementById('reqv-send');
+    if (sb && !sb.classList.contains('bk-saved')) {
+      sb.innerHTML = '<svg><use href="#i-send"/></svg> ' + (d.answered ? 'به‌روزرسانی پیشنهاد' : 'ارسال پیشنهاد');
+    }
+    rqvSum();
   }
-  function of47Sum() {
+  function rqvSum() {
     var total = 0, any = false;
-    document.querySelectorAll('#scr-47 .of47-price').forEach(function (inp) {
+    document.querySelectorAll('#sheet-reqview .reqv-price').forEach(function (inp) {
       var v = bkNum(inp.value);
       if (v) { any = true; total += v * (+inp.dataset.qty || 1); }
     });
-    var el = document.getElementById('of47-sum');
+    var el = document.getElementById('reqv-sum');
     if (el) el.textContent = any ? faMoney(total) + ' تومان' : '—';
   }
-  function of47Ensure() { if (OF47.last !== RQ.cur) of47Render(RQ.cur); }
+  function rqvSubmit() {
+    var d = RQ[RQ.cur] || RQ.rq1;
+    var btn = document.getElementById('reqv-send');
+    if (!btn) return;
+    var wasAnswered = !!d.answered;
+    d.answered = 1;
+    d.status = 'پاسخ داده‌شده'; d.statusCls = 'b-answered';
+    btn.classList.add('bk-saved');
+    btn.innerHTML = '<svg><use href="#i-check"/></svg> ' + (wasAnswered ? 'به‌روزرسانی شد' : 'پیشنهاد ارسال شد');
+    /* کارت ۰۵ همان لحظه «پاسخ داده‌شده» می‌شود */
+    var card = document.querySelector('#scr-05 .req-card[data-req="' + RQ.cur + '"]');
+    if (card) {
+      card.classList.add('answered');
+      var bd = card.querySelector('.req-top .badge');
+      if (bd) { bd.className = 'badge b-answered'; bd.textContent = 'پاسخ داده‌شده'; }
+      var act = card.querySelector('.req-act');
+      if (act) act.innerHTML = 'مشاهدهٔ پیشنهادت<svg><use href="#i-chev"/></svg>';
+    }
+    setTimeout(function () {
+      btn.classList.remove('bk-saved');
+      btn.innerHTML = '<svg><use href="#i-send"/></svg> به‌روزرسانی پیشنهاد';
+      closeSheet();
+    }, 900);
+  }
+
 
   /* ── پیشنهادهای استعلام (۴۸ — خریدار) — OF ── */
   var OF = {
@@ -6917,6 +7112,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
       offers: [
         { seller: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 86, price: 1150000, cond: ['نقدی', 'ارسال با فروشنده'], note: 'تولید همین هفته' }
       ]
+    },
+    /* فاز ۴۹ — استعلام تازهٔ ارسال‌شده از فرم ۱۲: rfqSendCard() همین شیء را از وضعیت زندهٔ
+       IQ می‌سازد (اقلام/مقدار/مهلت/گیرنده‌ها)؛ پیشنهادها هنوز نرسیده‌اند → ۴۸ empty-state صادق. */
+    new1: {
+      sub: 'برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی', multi: false, unit: 'کیسه',
+      dl: '۵ روز مهلت', meta: 'ارسال به ۳ تأمین‌کننده · الان',
+      items: [{ n: 'برنج هاشمی', q: '۲۰ کیسهٔ ۵۰ کیلویی', qty: 20 }],
+      offers: []
     }
   };
   function ofTotal(o, d) {
@@ -6992,7 +7195,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (d.multi && OF.fullOnly) list = list.filter(function (o) { return ofCover(o, d) === d.items.length; });
     var host = document.getElementById('of48-list');
     if (host) {
-      if (!list.length) {
+      if (!d.offers.length) {
+        /* فاز ۴۹ — استعلام تازه: هنوز هیچ پیشنهادی نرسیده — صادق و آرام */
+        host.innerHTML = '<div class="of48-empty"><b>هنوز پیشنهادی نرسیده</b><br>استعلام برای ' + gfEsc(d.meta.replace(/^ارسال به /, '').replace(/ · الان$/, '')) + ' ارسال شد — پیشنهادها همین‌جا و کنار هم می‌نشینند.</div>';
+      } else if (!list.length) {
         host.innerHTML = '<div class="of48-empty">هیچ‌کس همهٔ ' + faNum(d.items.length) + ' قلم را با هم ندارد.<br>پوشش جزئی را ببین — از چند نفر بخر یا مذاکره کن.<br><button class="btn btn-outline btn-sm" type="button" data-offilter>نمایش پوشش جزئی</button></div>';
       } else {
         host.innerHTML = list.map(function (o) { return of48Card(o, d); }).join('');
@@ -7008,6 +7214,57 @@ body > div[id^="scr-d"][hidden] { display: none; }
     go('48');
   }
   function of48Ensure() { if (OF.last !== OF.cur) of48Render(); }
+
+  /* ── فاز ۴۹ — کارت استعلام تازه در ۴۵: از وضعیت زندهٔ IQ ساخته می‌شود
+     (اقلام + مقدار استپرها + مهلت انتخابی + شمار گیرنده‌ها) → data-inq="new1".
+     OF.new1 هم هم‌زمان سینک می‌شود تا ۴۸ empty-state صادق نشان دهد. ── */
+  function rfqSendCard() {
+    var n = IQ.items.length;
+    if (!n) return;
+    var steps = document.querySelectorAll('#iq-items .qty-stepper');
+    var items = IQ.items.map(function (it, i) {
+      var qv = steps[i] ? (+steps[i].dataset.val || 20) : 20;
+      return { n: it.name, q: faNum(qv) + ' ' + it.unit, qty: qv };
+    });
+    var multi = n > 1;
+    var sub = multi
+      ? 'استعلام ' + faNum(n) + ' قلمی — ' + items.map(function (x) { return x.n; }).join('، ')
+      : items[0].n + ' · ' + items[0].q;
+    var cnt = iqSelCount();
+    OF.new1 = {
+      sub: sub, multi: multi, unit: IQ.items[0].unit,
+      dl: faNum(IQ.dl) + ' روز مهلت',
+      meta: 'ارسال به ' + faNum(cnt) + ' تأمین‌کننده · الان',
+      items: items, offers: []
+    };
+    var rows = document.querySelector('#scr-45 .rows'); /* «استعلام‌های جاری» */
+    if (!rows) return;
+    var img = IQ.items[0].img || 'png/goods/rice-sack.jpg';
+    var card = '<div class="inq-card fresh" data-inq="new1" title="مقایسهٔ پیشنهادهای این استعلام">' +
+      '<div class="inq-top">' +
+      '<div class="thumb" style="width:46px;height:46px"><img src="' + img + '" alt="' + gfEsc(IQ.items[0].name) + '"></div>' +
+      '<div class="inq-t"><b>' + gfEsc(sub) + '</b><span>' + gfEsc(OF.new1.meta) + '</span></div>' +
+      '<span class="badge b-green">' + faNum(IQ.dl) + ' روز مهلت</span>' +
+      '</div>' +
+      '<div class="inq-meta">' +
+      '<span class="mm"><svg><use href="#i-inbox"/></svg> ۰ پیشنهاد</span>' +
+      '<span class="inq-act">مقایسهٔ پیشنهادها<svg><use href="#i-chev"/></svg></span>' +
+      '</div></div>';
+    var old = document.getElementById('inq-newcard');
+    if (old) old.remove();
+    var div = document.createElement('div');
+    div.id = 'inq-newcard';
+    div.innerHTML = card;
+    rows.insertBefore(div.firstChild, rows.firstChild);
+    /* شمار «جاری» یکی بالا می‌رود */
+    var cntEl = document.querySelector('#scr-45 .sec-title .cnt');
+    if (cntEl) {
+      var m = cntEl.textContent.match(/\(([^)]+)\)/);
+      var num = m ? faNumParse(m[1]) : 3;
+      cntEl.textContent = '(' + faNum(num + 1) + ')';
+    }
+  }
+  function faNumParse(s) { return parseInt(String(s).replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); }), 10) || 0; }
 
   /* ── شیت چسباندن لیست قیمت — تطبیق خودکار خط‌ها (الگوی MVP) ── */
   var GF_SAMPLE = 'برنج هاشمی درجه یک کیسه ۱۰ کیلویی ۵۹۵ هزار\nروغن لادن ۱.۸ لیتری کارتن ۶ تایی ۲,۴۵۰,۰۰۰\nپفک مینو کارتن ۲۴ عددی 590000 تومان\nرب چین چین ۸۰۰ گرمی کارتنی ۱٬۱۵۰٬۰۰۰\nقند کیسه ۱۰ کیلویی ۷۷۰ هزار\nنوشابه کوکا خانواده ۳۸۰۰۰۰';
@@ -7209,8 +7466,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (!t || !t.closest) return;
     if (t.id === 'gf-q') { GF.q = t.value; gfRenderRes(); return; }
     if (t.id === 'gl-q') { GL.q = t.value; glRenderRes(); return; }
-    if (t.id === 'iq-q') { IQ.q = t.value; iqRenderRes(); return; } /* فاز ۴۷ — جستجوی کالای استعلام (۱۲) */
-    if (t.classList && t.classList.contains('of47-price')) { of47Sum(); return; } /* فاز ۴۷ — مجموع زندهٔ پیشنهاد (۴۷) */
+    if (t.id === 'iqp-q') { IQ.q = t.value; iqpRender(); return; } /* فاز ۴۹ — جستجوی مودال افزودن کالا (۱۲) */
+    if (t.classList && t.classList.contains('reqv-price')) { rqvSum(); return; } /* فاز ۴۹ — مجموع زندهٔ پیشنهاد در مودال درخواست */
     var d = t.dataset || {};
     if (d.gfpprice != null) {
       var r1 = GF.paste.rows && GF.paste.rows[+d.gfpprice];
@@ -7905,18 +8162,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var closeEl = t.closest('[data-close]');
     if (closeEl) { closeSheet(); return; }
 
-    /* ═══ فاز ۴۷ — استعلام و پیشنهاد (پیش از هندلرهای عمومی) ═══ */
+    /* ═══ فاز ۴۷/۴۹ — استعلام و پیشنهاد (پیش از هندلرهای عمومی) ═══ */
     var inqEl = t.closest('[data-inq]');
     if (inqEl) { of48Open(inqEl.dataset.inq); return; }
 
     var nwq = t.closest('[data-newinq]');
-    if (nwq) { iqNew(); go('12'); return; }
+    if (nwq) { iqNew(); go('12'); iqpRender(); openSheet('sheet-iqpick'); return; } /* فاز ۴۹: استعلام تازه → مستقیم مودال انتخاب کالا */
 
     var rqEl = t.closest('[data-req]');
-    if (rqEl) { rqView(rqEl.dataset.req); openSheet('sheet-reqview'); return; }
-
-    var g47 = t.closest('[data-go="47"]');
-    if (g47) { of47Render(RQ.cur); go('47'); return; }
+    if (rqEl) { rqvRender(rqEl.dataset.req); openSheet('sheet-reqview'); return; }
 
     var ofz = t.closest('[data-ofsort]');
     if (ofz) { OF.sort = ofz.dataset.ofsort; of48Render(); return; }
@@ -7924,32 +8178,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var offl = t.closest('[data-offilter]');
     if (offl) { OF.fullOnly = !OF.fullOnly; of48Render(); return; }
 
+    /* فاز ۴۹ — ردیف‌های مودال «افزودن کالا»: لمس = افزودن/برداشتن همان لحظه */
     var ipk = t.closest('[data-iqpick]');
-    if (ipk) { iqPick(ipk.dataset.iqpick, ipk.dataset.iqid); return; }
+    if (ipk) { iqpToggle(ipk.dataset.iqpick, ipk.dataset.iqid); return; }
 
     var irm = t.closest('[data-iqrm]');
-    if (irm) { iqRemove(+irm.dataset.iqrm); return; }
+    if (irm) { IQ.items.splice(+irm.dataset.iqrm, 1); IQ.touched = true; iqRender(); return; }
 
+    /* فاز ۴۹ — «افزودن کالا» → مودال کامل (لیست خرید من + پرتکرار صنف + جستجو) */
     var iad = t.closest('#iq-add');
-    if (iad) {
-      var sr12 = document.getElementById('iq-search');
-      if (sr12) { sr12.hidden = false; var qi12 = document.getElementById('iq-q'); if (qi12) qi12.focus(); }
-      iqRenderRes();
-      return;
-    }
+    if (iad) { iqpRender(); openSheet('sheet-iqpick'); var iqpq = document.getElementById('iqp-q'); if (iqpq) iqpq.focus(); return; }
 
-    var o4s = t.closest('#of47-send');
-    if (o4s) {
-      o4s.classList.add('bk-saved');
-      o4s.innerHTML = '<svg><use href="#i-check"/></svg> پیشنهاد ارسال شد';
-      setTimeout(function () {
-        o4s.classList.remove('bk-saved');
-        o4s.innerHTML = '<svg><use href="#i-send"/></svg> ارسال پیشنهاد';
-        go('05', false);
-        stack.length = 0;
-      }, 900);
-      return;
-    }
+    /* فاز ۴۹ — «مشاهدهٔ تأمین‌کنندگان بیشتر» → مودال؛ تیک‌ها زنده به فرم برمی‌گردند */
+    var imr = t.closest('#iq-more');
+    if (imr) { suppRender(); openSheet('sheet-suppick'); return; }
+
+    var spr = t.closest('[data-supp]');
+    if (spr) { suppToggle(spr.dataset.supp); return; }
+
+    /* فاز ۴۹ — ارسال/به‌روزرسانی پیشنهاد از خودِ مودال درخواست (جذب صفحهٔ ۴۷) */
+    var rvs = t.closest('#reqv-send');
+    if (rvs) { rqvSubmit(); return; }
 
     var sheetOpen = t.closest('[data-sheet]');
     if (sheetOpen && sheetOpen.dataset.sheet !== 'sheet-quickps') { /* quickps: هندلر اختصاصی پایین‌تر (فاز ۴۵) */
@@ -8067,16 +8316,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* ═══ فاز ۴۷ — ارسال استعلام (۱۲): تأیید → «استعلام‌ها» (۴۵)؛ پیشنهادها آن‌جا جمع و مقایسه می‌شوند ═══ */
+    /* ═══ فاز ۴۷/۴۹ — ارسال استعلام (۱۲): تأیید → «استعلام‌ها» (۴۵)؛ کارت تازه همان لحظه
+       می‌نشیند (اقلام + مهلت انتخابی + گیرنده‌ها) و ۴۸ برایش empty-state صادق دارد ═══ */
     var rfs = t.closest('#rfq-send');
     if (rfs) {
-      var cnt12 = document.querySelectorAll('#scr-12 .checkrow .checkbox.on').length || 3;
+      if (rfs.disabled) return;
+      var cnt12 = iqSelCount();
       rfs.classList.add('bk-saved');
       rfs.innerHTML = '<svg><use href="#i-check"/></svg> برای ' + faNum(cnt12) + ' تأمین‌کننده ارسال شد';
+      rfqSendCard();
       setTimeout(function () {
         rfs.classList.remove('bk-saved');
+        rfs.disabled = false;
         rfs.innerHTML = '<svg><use href="#i-send"/></svg> ارسال به ' + faNum(cnt12) + ' تأمین‌کننده';
-        IQ.items = []; IQ.touched = false; IQ.q = ''; /* دفعهٔ بعد استعلام تازه ساخته می‌شود */
+        IQ.items = []; IQ.touched = false; IQ.q = ''; IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ.dl = 5; /* دفعهٔ بعد استعلام تازه */
+        var nt12 = document.getElementById('iq-note');
+        if (nt12) nt12.value = '';
+        document.querySelectorAll('#iq-deadline .pill').forEach(function (p, i) { p.classList.toggle('active', i === 4); });
         go('45', false);
         stack.length = 0;
       }, 900);
@@ -8160,6 +8416,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (pill) {
       pill.parentElement.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
       pill.classList.add('active');
+      var dlp = pill.closest('#iq-deadline'); /* فاز ۴۹ — مهلت استعلام زنده سینک می‌شود */
+      if (dlp) { var dix = Array.prototype.indexOf.call(dlp.querySelectorAll('.pill'), pill); if (dix >= 0) IQ.dl = dix + 1; }
       return;
     }
 
@@ -8173,7 +8431,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (cr) {
       var cb = cr.querySelector('.checkbox');
       if (cb) cb.classList.toggle('on');
-      if (cr.closest('#scr-12')) iqSendLabel(); /* فاز ۴۷ — «ارسال به n تأمین‌کننده» زنده است */
+      if (cr.closest('#iq-recips')) { /* فاز ۴۹ — تیک تأمین‌کننده در فرم ۱۲ */
+        var sid2 = cr.getAttribute('data-sid');
+        if (sid2 && typeof IQ !== 'undefined') IQ.sel[sid2] = cb && cb.classList.contains('on') ? 1 : 0;
+        iqSendLabel();
+      }
       return;
     }
 
