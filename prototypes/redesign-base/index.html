@@ -3178,7 +3178,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <b>رب گوجه‌فرنگی · ۶۰ عدد ۵۰۰ گرمی</b>
               <span>ارسال به ۲ تأمین‌کننده · دیروز</span>
             </div>
-            <span class="badge b-green">بدون مهلت</span>
+            <span class="badge b-orange">۴ روز مانده</span>
           </div>
           <div class="inq-meta">
             <span class="mm"><svg><use href="#i-inbox"/></svg> ۱ پیشنهاد</span>
@@ -3456,14 +3456,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="field">
           <label>فعالیت شما در بازار</label>
-          <div class="pillchoice">
-            <button class="pill">خرید عمده</button>
-            <button class="pill active">فروش عمده</button>
-            <button class="pill">هر دو</button>
+          <!-- فاز ۵۰ — این انتخاب همان چیزی است که روشن/خاموش شدن دستیارها را تعیین می‌کند:
+               خرید عمده → فقط دستیار خرید · فروش عمده → فقط دستیار فروش · هر دو → هر دو.
+               پس از ثبت‌نام، فرود = خانهٔ همان دستیاری که روشن است و پیل «تعویض دستیار» فقط
+               وقتی دیده می‌شود که هر دو روشن باشند. تغییر بعدی از «ویرایش کسب‌وکار» (۲۲) است. -->
+          <div class="pillchoice" id="su-activity">
+            <button class="pill" data-act="buy" type="button">خرید عمده</button>
+            <button class="pill active" data-act="sell" type="button">فروش عمده</button>
+            <button class="pill" data-act="both" type="button">هر دو</button>
           </div>
           <div class="role-desc">
             <svg><use href="#i-info"/></svg>
-            <span>هر زمان از تنظیمات می‌توانید عوضش کنید — دستیاری که لازم ندارید را خاموش کنید.</span>
+            <span>هر وقت خواستید، از «ویرایش کسب‌وکار» می‌توانید دستیار دیگر را هم روشن کنید.</span>
           </div>
         </div>
 
@@ -7107,7 +7111,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     },
     inq3: {
       sub: 'رب گوجه‌فرنگی · ۶۰ عدد ۵۰۰ گرمی', multi: false, unit: 'عدد',
-      dl: 'بدون مهلت', meta: 'ارسال به ۲ تأمین‌کننده · دیروز',
+      dl: '۴ روز مانده', meta: 'ارسال به ۲ تأمین‌کننده · دیروز',
       items: [{ n: 'رب گوجه‌فرنگی چین‌چین', q: '۶۰ عدد ۵۰۰ گرمی', qty: 60 }],
       offers: [
         { seller: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 0, distL: 'هم‌شهری', verified: 1, match: 86, price: 1150000, cond: ['نقدی', 'ارسال با فروشنده'], note: 'تولید همین هفته' }
@@ -8380,6 +8384,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
     /* فاز ۴۵ — فرم ۳۴: «افزودن به لیست خرید» → فرم ریست می‌شود و ناوبری به ۰۸ ادامه می‌یابد */
     var add34 = t.closest('#scr-34 .action-bar [data-go="08"]');
     if (add34) glReset();
+
+    /* ═══ فاز ۵۰ — ثبت‌نام تک‌بازو (مالک): «فعالیت شما در بازار» تعیین می‌کند فقط کدام دستیار
+       روشن شود تا کاربرِ تک‌نیاز گیج نشود. خرید عمده → فقط خرید · فروش عمده → فقط فروش ·
+       هر دو → هر دو. فرود پس از ثبت‌نام = خانهٔ دستیارِ روشن (نه همیشه ۰۱)؛ پیل «تعویض
+       دستیار» خودکار مخفی می‌شود چون assistChrome فقط با هر دو روشن پیل را نشان می‌دهد.
+       روشن‌کردن دوبارهٔ دستیار دوم: همین پیل‌ها (ثبت‌نام مجدد دمو) یا سوییچ‌های فرم ۲۲. ═══ */
+    var suDone = t.closest('#scr-16 [data-go="01"]');
+    if (suDone) {
+      var suP = document.querySelector('#su-activity .pill.active');
+      var suAct = suP ? (suP.dataset.act || 'both') : 'both';
+      ASSIST.sell = (suAct === 'sell' || suAct === 'both');
+      ASSIST.buy = (suAct === 'buy' || suAct === 'both');
+      assistSave();
+      assistChrome();
+      go(assistHome(), false);
+      stack.length = 0;
+      return;
+    }
 
     var goEl = t.closest('[data-go]');
     if (goEl) { go(goEl.dataset.go); return; }
