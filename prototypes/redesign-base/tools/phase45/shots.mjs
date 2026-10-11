@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const URL = 'file://' + resolve(ROOT, 'index.html');
-const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', 'shots', 'phase45');
+const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'shots', 'phase45');
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 402, height: 874 } });
@@ -34,7 +34,7 @@ await shot('45-44-pctpanel', '44', async () => {
   /* فاز ۴۸ — گرید تا «نیاز به آپدیت قیمت» قفل است؛ اول آن، بعد پنل درصد */
   await page.click('#bk-need');
   await page.waitForTimeout(200);
-  await page.click('#bk-pcticon');
+  await page.click("#bk-editbar .bk-pctbtn");
   await page.waitForTimeout(200);
   await page.click('#bk-pctbar .pct-plus');
   await page.click('#bk-pctbar .pct-plus');

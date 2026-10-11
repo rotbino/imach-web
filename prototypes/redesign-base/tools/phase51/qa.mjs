@@ -1,197 +1,203 @@
-// فاز ۵۱ — QA قطعی: ساده‌سازی شرایط پیشنهاد (سوییچر چک + تحویل در محل) · کارت فشردهٔ ۴۸ +
-// شیت جزئیات پیشنهاد · مهلت ۱-۴ + سایر (۹۹) · اعتبار قیمتهای کاتالوگ · تازگی در تابلوی ۰۹ ·
-// حلقهٔ بستهٔ فروشنده→خریدار · سازگاری شمار ۴۵ · e2e هر ۲۵ صفحه صفر خطا
+// فاز ۵۱ — QA رفتاری: تکمیل استعلام→پیشنهاد (پرداخت نقدی+چک، تحویل در محل، جزئیات پیشنهاد ۴۸)
+// + کاتالوگ (قیمت به‌جای قیمت پایه، پلهٔ حداقل خرید، تعداد تماس، اعتبار قیمت، ردیف ویرایش ۴۴، قیمت منقضی ۰۹)
 import { chromium } from 'playwright';
-import { existsSync } from 'fs';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const FILE = 'file://' + process.cwd() + '/index.html';
-const RB = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const has = (p) => existsSync(resolve(RB, p));
+let pass = 0, fail = 0;
+const ok = (name, cond) => { if (cond) { pass++; } else { fail++; console.log('  ✗ FAIL: ' + name); } };
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 402, height: 874 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
 page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
 
-const shot = async (n) => { await page.screenshot({ path: '/home/z/my-project/shots-p51/' + n + '.png', clip: { x: 34, y: 0, width: 402, height: 874 } }); };
-
-let ok = 0, bad = 0;
-const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗ ' + name); } };
-
-/* ═══ ۰. گاردهای ساختاری ═══ */
-const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46','48'];
 await page.goto(FILE);
-await page.evaluate(() => { localStorage.setItem('imach-assist', JSON.stringify({ sell: true, buy: true })); });
-await page.goto(FILE + '#48'); await page.reload(); await sleep(300);
-T('ساختار: ۲۵ صفحه داخل گوشی', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 25));
-T('ساختار: ۳۷ شیت (۳۶ + ofview)', await page.evaluate(() => document.querySelectorAll('.sheet').length === 37));
-T('ساختار: sheet-ofview موجود', await page.evaluate(() => !!document.getElementById('sheet-ofview')));
-T('ساختار: ارتفاع سند ≤ ۱۰۰۰', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
-T('reqview: پیل‌های پرداخت/حمل حذف شدند', await page.locator('#reqv-pay, #reqv-ship').count() === 0);
-T('reqview: دو ردیف سوییچر (چک/تحویل)', await page.locator('#sheet-reqview .sw-row').count() === 2);
-T('reqview: جعبهٔ چک (درصد نقدی/چک + مدت + خلاصه)', await page.locator('#reqv-cash').count() === 1 && await page.locator('#reqv-chq').count() === 1 && await page.locator('#reqv-chqdays').count() === 1 && await page.locator('#reqv-paysum').count() === 1);
+await page.evaluate(() => localStorage.setItem('imach-assist', JSON.stringify({ sell: true, buy: true })));
 
-/* ═══ ۱. ۴۸ — کارت خلاصهٔ استعلام + کارت‌های فشرده ═══ */
-T('۴۸: هدر کوچک = «۳ پیشنهاد»', (await page.locator('#of48-s').textContent()).includes('۳ پیشنهاد'));
-const metaTxt = await page.locator('#of48-meta').textContent();
-T('۴۸: عنوان استعلام درشت در کارت خلاصه', metaTxt.includes('برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی') && metaTxt.includes('۳ روز مانده') && metaTxt.includes('ارسال به ۳ تأمین‌کننده'));
-T('۴۸: بندانگشتی در کارت خلاصه', await page.locator('#of48-meta .thumb img').count() === 1);
-T('۴۸: سه کارت فشرده با data-ofv', await page.locator('#of48-list .oc-row[data-ofv]').count() === 3);
-T('۴۸: اکشن‌ها از کارت‌ها رفتند (به شیت)', await page.locator('#of48-list .oc-acts').count() === 0);
-T('۴۸: راهنمای «جزئیات و تماس» روی کارت', (await page.locator('#of48-list .oc-row').first().textContent()).includes('جزئیات و تماس'));
-T('۴۸: بج «کمترین مجموع» فقط روی یک کارت', await page.locator('#of48-list .oc-row:has-text("کمترین مجموع")').count() === 1);
-T('۴۸: بج روی کیان غلات (ارزان‌ترین ۵۵٫۸م)', (await page.locator('#of48-list .oc-row:has-text("کمترین مجموع")').textContent()).includes('کیان غلات'));
-const firstCard = await page.locator('#of48-list .oc-row').first().textContent();
-T('۴۸: چیپ پرداخت ساخت‌یافته (پخش: ۳۰٪ نقدی · بقیه چک ۳۰ روزه)', firstCard.includes('۳۰٪ نقدی · بقیه چک ۳۰ روزه'));
-T('۴۸: چیپ «تحویل در محل» روی پخش', (await page.locator('#of48-list .oc-row').first().innerHTML()).includes('cond loc'));
-T('۴۸: چیپ نقدی خالص برای کیان', (await page.locator('#of48-list .oc-row').nth(2).textContent()).includes('نقدی'));
-T('۴۸: حداقل سفارش در ردیف مجموع', firstCard.includes('حداقل ۵ کیسه'));
-await shot('00-48-compact');
-
-/* ═══ ۲. ۴۸ — شیت جزئیات پیشنهاد ═══ */
-await page.click('#of48-list .oc-row[data-ofv="0"]'); await sleep(350);
-T('شیت جزئیات باز شد', await page.locator('#sheet-ofview.show').count() === 1);
-const ofvTxt = await page.locator('#sheet-ofview').textContent();
-T('شیت: نام فروشنده + شهر', ofvTxt.includes('پخش برنج پارس') && ofvTxt.includes('رشت'));
-T('شیت: قیمت واحد درشت', (await page.locator('#sheet-ofview .ofv-price .p').textContent()).includes('۲٬۸۴۰٬۰۰۰'));
-T('شیت: شرایط پرداخت', ofvTxt.includes('پرداخت') && ofvTxt.includes('۳۰٪ نقدی · بقیه چک ۳۰ روزه'));
-T('شیت: تحویل در محل شما', ofvTxt.includes('در محل شما'));
-T('شیت: حداقل سفارش ۵ کیسه', ofvTxt.includes('حداقل سفارش') && ofvTxt.includes('۵ کیسه'));
-T('شیت: توضیح فروشنده', ofvTxt.includes('توضیح فروشنده') && ofvTxt.includes('برنج امسال'));
-T('شیت: سه دکمهٔ تماس/گفتگو/کاتالوگ', await page.locator('#sheet-ofview .ofv-acts .btn').count() === 3 && ofvTxt.includes('تماس') && ofvTxt.includes('گفتگو') && ofvTxt.includes('کاتالوگ'));
-await shot('01-ofview');
-
-/* چندقلمی: پوشش + بدون بج (فقط یک پوشش کامل) */
-await page.click('#sheet-ofview [data-close]'); await sleep(250);
-await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
-await page.click('#scr-45 [data-inq="inq2"]'); await sleep(400);
-T('۴۸ چندقلمی: ۴ کارت فشرده', await page.locator('#of48-list .oc-row').count() === 4);
-T('۴۸ چندقلمی: بدون بج کمترین مجموع (تنها یک پوشش کامل)', await page.locator('#of48-list .oc-row:has-text("کمترین مجموع")').count() === 0);
-const inq2Card1 = await page.locator('#of48-list .oc-row').first().textContent();
-T('۴۸ چندقلمی: بج «همهٔ ۳ قلم» روی تجارت گیل‌رنج', inq2Card1.includes('همهٔ ۳ قلم') && inq2Card1.includes('تجارت گیل'));
-T('۴۸ چندقلمی: ردیف قیمت هر قلم + «ندارد»', inq2Card1.includes('قند یکتا') && (await page.locator('#of48-list .oc-row').nth(1).textContent()).includes('ندارد'));
-T('۴۸ چندقلمی: پرداخت ۴۰٪ نقدی چک ۶۰ روزه (آریو، ردیف دوم)', (await page.locator('#of48-list .oc-row').nth(1).textContent()).includes('۴۰٪ نقدی · بقیه چک ۶۰ روزه'));
-await page.click('#of48-list .oc-row[data-ofv="0"]'); await sleep(350);
-const ofv2 = await page.locator('#sheet-ofview').textContent();
-T('شیت چندقلمی: قیمت هر قلم + مجموع', ofv2.includes('قیمت هر قلم') && ofv2.includes('مجموع ۳ قلم') && ofv2.includes('۱۷۸٬۶۰۰٬۰۰۰'));
-await page.click('#sheet-ofview [data-close]'); await sleep(250);
-
-/* سورت ارزان‌ترین (روی inq1): کیان اول */
-await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
-await page.click('#scr-45 [data-inq="inq1"]'); await sleep(400);
-await page.click('[data-ofsort="cheap"]'); await sleep(250);
-T('۴۸: سورت ارزان‌ترین → کیان اول', (await page.locator('#of48-list .oc-row').first().textContent()).includes('کیان غلات'));
-await page.click('[data-ofsort="imch"]'); await sleep(200);
-
-/* ═══ ۳. ۴۵ — شمار درست پیشنهادها ═══ */
-await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
-T('۴۵: کارت inq1 = «۳ پیشنهاد» (نه ۵)', (await page.locator('#scr-45 [data-inq="inq1"]').textContent()).includes('۳ پیشنهاد') && !(await page.locator('#scr-45 [data-inq="inq1"]').textContent()).includes('۵ پیشنهاد'));
-
-/* ═══ ۴. ۱۲ — مهلت ۱-۴ + سایر ═══ */
-await page.goto(FILE + '#12'); await page.reload(); await sleep(400);
-T('۱۲: ۵ پیل (۱-۴ + سایر)', await page.locator('#iq-deadline .pill').count() === 5);
-T('۱۲: پیش‌فرض ۴ روز فعال', (await page.locator('#iq-deadline .pill.active').textContent()).includes('۴ روز'));
-T('۱۲: ورودی «سایر» در ابتدا مخفی', await page.locator('#iq-dl-custom').isHidden());
-await page.click('#iq-dl-more'); await sleep(250);
-T('۱۲: «سایر» → ورودی نمایان و از ۴ شروع', await page.locator('#iq-dl-custom').isVisible() && (await page.locator('#iq-dl-custom').inputValue()) === '۴');
-await page.fill('#iq-dl-custom', '7'); await sleep(200);
-T('۱۲: ورود ۷ در ورودی', (await page.locator('#iq-dl-custom').inputValue()) === '7');
-await page.fill('#iq-dl-custom', '999'); await sleep(200);
-T('۱۲: سه رقم بریده می‌شود (سقف ۹۹)', (await page.locator('#iq-dl-custom').inputValue()).length === 2);
-await page.click('#iq-deadline .pill:nth-child(2)'); await sleep(200);
-T('۱۲: پیل ۲ روز → ورودی مخفی', await page.locator('#iq-dl-custom').isHidden());
-
-/* رفتار واقعی مهلت دلخواه: قلم پیش‌فرض هست؛ استعلام ۷ روزه → بج کارت ۴۵ */
-await page.click('#iq-dl-more'); await sleep(200);
-await page.fill('#iq-dl-custom', '7'); await sleep(150);
-await page.click('#rfq-send'); await sleep(1300);
-T('۱۲→۴۵: بج «۷ روز مهلت» روی کارت تازه (رفتار سایر)', (await page.locator('#scr-45 [data-inq="new1"] .badge').first().textContent()).includes('۷ روز مهلت'));
-
-/* ═══ ۵. فرم پیشنهاد — سوییچر چک (rq1 تازه) ═══ */
+/* ═══ ۱. فرم پیشنهاد (sheet-reqview) — پرداخت: نقدی ضمنی + سوییچ چک ═══ */
 await page.goto(FILE + '#05'); await page.reload(); await sleep(300);
-await page.click('#scr-05 .req-card[data-req="rq1"]'); await sleep(400);
-T('reqview (rq1): چک خاموش + جعبهٔ مخفی', !(await page.locator('#reqv-cheque').getAttribute('class') || '').includes('on') && await page.locator('#reqv-cheq-box').isHidden());
-T('reqview (rq1): تحویل در محل خاموش', !(await page.locator('#reqv-local').getAttribute('class') || '').includes('on'));
-await page.click('#sheet-reqview .sw-row >> nth=0'); await sleep(250);
-T('لمس ردیف = روشن‌شدن چک + بازشدن جعبه', (await page.locator('#reqv-cheque').getAttribute('class')).includes('on') && await page.locator('#reqv-cheq-box').isVisible());
-T('پیش‌فرض منطقی ۲۰/۸۰/۳۰', (await page.locator('#reqv-cash').inputValue()) === '۲۰' && (await page.locator('#reqv-chq').inputValue()) === '۸۰' && (await page.locator('#reqv-chqdays').inputValue()) === '۳۰');
-T('خلاصهٔ زنده: «۲۰٪ نقدی و بقیه چک · حداکثر ۳۰ روزه»', (await page.locator('#reqv-paysum').textContent()).includes('۲۰٪ نقدی و بقیه چک') && (await page.locator('#reqv-paysum').textContent()).includes('۳۰ روزه'));
-await page.fill('#reqv-cash', '50'); await sleep(200);
-T('درصد مکمل: نقدی ۵۰ → چک ۵۰', (await page.locator('#reqv-chq').inputValue()) === '۵۰' && (await page.locator('#reqv-paysum').textContent()).includes('۵۰٪ نقدی'));
-await page.fill('#reqv-cash', '150'); await sleep(200);
-T('سقف ۱۰۰: تایپ ۱۵۰ → ۱۰۰/۰ + «همه نقدی»', (await page.locator('#reqv-cash').inputValue()) === '۱۰۰' && (await page.locator('#reqv-chq').inputValue()) === '۰' && (await page.locator('#reqv-paysum').textContent()).includes('همه نقدی'));
-await page.fill('#reqv-cash', '20'); await sleep(150);
-await page.click('#sheet-reqview .sw-row >> nth=0'); await sleep(200); /* خاموش */
-T('خاموش‌کردن چک → جعبه جمع + خلاصه پاک', await page.locator('#reqv-cheq-box').isHidden() && await page.locator('#reqv-paysum').isHidden());
-await shot('02-reqview-off');
+await page.click('#scr-05 .req-card[data-req="rq1"]'); await sleep(350);
+ok('reqview: مودال باز شد', await page.locator('#sheet-reqview.show').isVisible());
+ok('reqview: سوییچ «چک هم قبول می‌کنم» هست', await page.locator('#reqv-chk').count() === 1);
+ok('reqview: سوییچ «تحویل در محل» هست', await page.locator('#reqv-dlv').count() === 1);
+ok('reqview: بدون پیل‌های پرداخت قدیمی (نقدی/چک صیادی/عندالتحویل)', (await page.locator('#reqv-pay').count()) === 0 && (await page.locator('#reqv-ship').count()) === 0);
+ok('reqview: بدون «باربری خریدار»', !(await page.locator('#sheet-reqview').textContent()).includes('باربری خریدار'));
+ok('reqview: نقدی چیز دیگری نوشته نشده (ضمنی)', !(await page.locator('#sheet-reqview .reqv-tg').first().textContent()).includes('نقدی'));
+ok('reqview: rq1 چک خاموش → جزئیات چک مخفی', await page.locator('#reqv-chkbox').isHidden());
+await page.click('#reqv-chk'); await sleep(200);
+ok('reqview: روشن‌کردن چک → درصد + سررسید ظاهر شد', await page.locator('#reqv-chkbox').isVisible());
+ok('reqview: درصد نقدی/چک مکمل (۳۰+۷۰)', (await page.locator('#reqv-cash').inputValue()) === '۳۰' && (await page.locator('#reqv-chkpct').inputValue()) === '۷۰');
+await page.fill('#reqv-cash', '۲۰'); await sleep(200);
+ok('reqview: نقدی ۲۰ → چک خودکار ۸۰ (پیوسته)', (await page.locator('#reqv-chkpct').inputValue()) === '۸۰');
+ok('reqview: جمع‌بندی خوانا «۲۰٪ نقدی و بقیه چک تا ۳۰ روز»', (await page.locator('#reqv-paysum-t').textContent()) === '۲۰٪ نقدی و بقیه چک تا ۳۰ روز');
+await page.fill('#reqv-chkpct', '۵۰'); await sleep(200);
+ok('reqview: چک ۵۰ → نقدی خودکار ۵۰', (await page.locator('#reqv-cash').inputValue()) === '۵۰');
+await page.fill('#reqv-days', '۴۵'); await sleep(150);
+ok('reqview: سررسید در جمع‌بندی می‌نشیند', (await page.locator('#reqv-paysum-t').textContent()).includes('تا ۴۵ روز'));
+await page.click('#reqv-chk'); await sleep(150);
+ok('reqview: خاموش‌کردن چک → جزئیات جمع شد', await page.locator('#reqv-chkbox').isHidden());
+await page.click('#reqv-chk'); await sleep(150);
 
-/* rq3 (پاسخ داده‌شده): شرایط قبلی برگشته */
-await page.click('#sheet-reqview [data-close]'); await sleep(250);
-await page.click('#scr-05 .req-card[data-req="rq3"]'); await sleep(400);
-T('reqview (rq3): چک روشن با ۲۰٪ نقدی ۳۰ روزه', (await page.locator('#reqv-cheque').getAttribute('class') || '').includes('on') && (await page.locator('#reqv-cash').inputValue()) === '۲۰' && (await page.locator('#reqv-chqdays').inputValue()) === '۳۰');
-T('reqview (rq3): تحویل در محل روشن', (await page.locator('#reqv-local').getAttribute('class') || '').includes('on'));
-await page.click('#sheet-reqview [data-close]'); await sleep(250);
+/* ═══ ۲. rq3 — پیشنهاد پاسخ‌داده: شرایط از قبل پر ═══ */
+await page.click('#sheet-reqview .mg'); await sleep(250);
+await page.click('#scr-05 .req-card[data-req="rq3"]'); await sleep(350);
+ok('reqview: rq3 چک روشن از دیتا', await page.locator('#reqv-chk.on').count() === 1 && await page.locator('#reqv-chkbox').isVisible());
+ok('reqview: rq3 تحویل در محل روشن', await page.locator('#reqv-dlv.on').count() === 1);
+ok('reqview: rq3 درصد ۳۰/۷۰ + سررسید ۳۰', (await page.locator('#reqv-cash').inputValue()) === '۳۰' && (await page.locator('#reqv-days').inputValue()) === '۳۰');
+ok('reqview: rq3 جمع‌بندی «۳۰٪ نقدی و بقیه چک تا ۳۰ روز»', (await page.locator('#reqv-paysum-t').textContent()) === '۳۰٪ نقدی و بقیه چک تا ۳۰ روز');
+await page.click('#sheet-reqview .mg'); await sleep(250);
 
-/* ═══ ۶. حلقهٔ بسته: فروشنده پیشنهاد می‌دهد → سمت خریدار به‌روز ═══ */
-await page.click('#scr-05 .req-card[data-req="rq1"]'); await sleep(400);
-await page.click('#sheet-reqview .sw-row >> nth=0'); await sleep(250); /* چک روشن */
+/* ═══ ۳. ۴۸ — هدر برجسته + کارت مقایسه‌ای + شیت جزئیات پیشنهاد ═══ */
+await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
+await page.click('#scr-45 .inq-card[data-inq="inq1"]'); await sleep(400);
+ok('۴۸: عنوان استعلام تیتر اصلی است (فاز ۵۱)', (await page.locator('#of48-t').textContent()).includes('برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی'));
+ok('۴۸: زیرنویس «پیشنهادهای استعلام»', (await page.locator('#of48-s').textContent()).includes('پیشنهادهای استعلام'));
+const cards = page.locator('#of48-list .card');
+ok('۴۸: ۳ کارت پیشنهاد', await cards.count() === 3);
+const cardTxt = await cards.first().textContent();
+ok('۴۸: کارت بدون شرایط/توضیح (مقایسهٔ سریع)', !cardTxt.includes('چک') && !cardTxt.includes('برنج امسال'));
+ok('۴۸: کارت بدون دکمه‌های گفتگو/کاتالوگ', !(await cards.first().locator('[data-go="19"]').count()) && !(await cards.first().locator('[data-go="13"]').count()));
+ok('۴۸: کارت لینک «جزئیات، شرایط و تماس» دارد', cardTxt.includes('جزئیات، شرایط و تماس'));
+await page.click('#of48-list .card[data-ofv="0"]'); await sleep(350);
+ok('ofview: شیت جزئیات پیشنهاد باز شد', await page.locator('#sheet-ofview.show').isVisible());
+const ofvTxt = await page.locator('#sheet-ofview').textContent();
+ok('ofview: پرداخت «۲۰٪ نقدی و بقیه چک تا ۳۰ روز»', ofvTxt.includes('۲۰٪ نقدی و بقیه چک تا ۳۰ روز'));
+ok('ofview: تحویل در محل', ofvTxt.includes('تحویل در محل'));
+ok('ofview: حداقل خرید', ofvTxt.includes('حداقل ۵ کیسه'));
+ok('ofview: توضیح فروشنده', ofvTxt.includes('برنج امسال، پاک‌شده'));
+ok('ofview: سه اکشن تماس/کاتالوک/گفتگو', (await page.locator('#sheet-ofview .oc-acts .btn').count()) === 3);
+await page.click('#sheet-ofview .mg'); await sleep(250);
+/* چندقلمی + پیشنهاد بدون چک */
+await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
+await page.click('#scr-45 .inq-card[data-inq="inq2"]'); await sleep(400);
+await page.click('#of48-list .card[data-ofv="1"]'); await sleep(350);
+const ofv2 = await page.locator('#sheet-ofview').textContent();
+ok('ofview: پخش برنج پارس (چندقلمی) پرداخت نقدی', ofv2.includes('پرداخت نقدی'));
+ok('ofview: تحویل حضوری از محل فروشنده', ofv2.includes('تحویل حضوری از محل فروشنده'));
+ok('ofview: پوشش ۲ از ۳ قلم', ofv2.includes('۲ از ۳ قلم'));
+await page.click('#sheet-ofview .mg'); await sleep(250);
+
+/* ═══ ۳-ب. حلقهٔ بستهٔ فروشنده→خریدار (ادغام شاخهٔ موازی: rqvSyncBuyerOffer) ═══ */
+await page.goto(FILE + '#05'); await page.reload(); await sleep(300);
+await page.click('#scr-05 .req-card[data-req="rq1"]'); await sleep(350);
+await page.fill('#sheet-reqview .reqv-price >> nth=0', '2900000'); await sleep(150);
+await page.click('#reqv-chk'); await sleep(200);
 await page.fill('#reqv-cash', '25'); await sleep(150);
-await page.fill('#sheet-reqview .reqv-price', '2900000'); await sleep(250);
-T('مجموع زندهٔ جدید = ۵۸٬۰۰۰٬۰۰۰', (await page.locator('#reqv-sum').textContent()).includes('۵۸٬۰۰۰٬۰۰۰'));
-await page.click('#sheet-reqview .sw-row >> nth=1'); await sleep(150); /* تحویل در محل روشن */
-await page.fill('#reqv-note2', 'برنج امسال — ارسال با ما'); await sleep(150);
+await page.fill('#reqv-days', '45'); await sleep(150);
+await page.click('#reqv-dlv'); await sleep(150);
+await page.fill('#reqv-note2', 'برنج تازه — ارسال همان روز'); await sleep(150);
 await page.click('#reqv-send'); await sleep(1100);
-T('پس از ارسال: کارت ۰۵ «پاسخ داده‌شده»', (await page.locator('#scr-05 .req-card[data-req="rq1"] .req-top .badge').textContent()).includes('پاسخ داده‌شده'));
-/* بدون reload — دادهٔ زندهٔ حافظه باید منتقل شود (رفتار واقعی اپ) */
-await page.evaluate(() => { location.hash = '#45'; }); await sleep(400);
-await page.click('#scr-45 [data-inq="inq1"]'); await sleep(400);
-const parsCard = await page.locator('#of48-list .oc-row:has-text("پخش برنج پارس")').textContent();
-T('حلقهٔ بسته: قیمت ۲٬۹۰۰٬۰۰۰ همین حالا در ۴۸', parsCard.includes('۲٬۹۰۰٬۰۰۰'));
-T('حلقهٔ بسته: پرداخت ۲۵٪ نقدی · بقیه چک ۳۰ روزه', parsCard.includes('۲۵٪ نقدی · بقیه چک ۳۰ روزه'));
-T('حلقهٔ بسته: مجموع ۵۸٬۰۰۰٬۰۰۰', parsCard.includes('۵۸٬۰۰۰٬۰۰۰'));
-T('حلقهٔ بسته: بج کمترین مجموع ماند روی کیان (۵۵٫۸م)', (await page.locator('#of48-list .oc-row:has-text("کمترین مجموع")').textContent()).includes('کیان غلات'));
-await page.click('#of48-list .oc-row:has-text("پخش برنج پارس")'); await sleep(350);
-const ofv3 = await page.locator('#sheet-ofview').textContent();
-T('حلقهٔ بسته: شیت جزئیات هم شرایط تازه را نشان می‌دهد', ofv3.includes('۲۵٪ نقدی · بقیه چک ۳۰ روزه') && ofv3.includes('در محل شما') && ofv3.includes('برنج امسال — ارسال با ما'));
-await shot('03-closed-loop');
-await page.click('#sheet-ofview [data-close]'); await sleep(250);
+ok('حلقه: کارت ۰۵ همان لحظه «پاسخ داده‌شده»', (await page.locator('#scr-05 .req-card[data-req="rq1"] .req-top .badge').textContent()).includes('پاسخ داده‌شده'));
+/* ناوبری بدون reload — دیتای هم‌گام‌شده در حافظه است */
+await page.evaluate(() => { location.hash = '#45'; }); await sleep(350);
+await page.click('#scr-45 .inq-card[data-inq="inq1"]'); await sleep(400);
+const loopCard = await page.locator('#of48-list .card[data-ofv="0"]').textContent();
+ok('حلقه: قیمت تازهٔ فروشنده در کارت ۴۸ (۲٬۹۰۰٬۰۰۰)', loopCard.includes('۲٬۹۰۰٬۰۰۰'));
+await page.click('#of48-list .card[data-ofv="0"]'); await sleep(350);
+const loopOfv = await page.locator('#sheet-ofview').textContent();
+ok('حلقه: ofview پرداخت «۲۵٪ نقدی و بقیه چک تا ۴۵ روز»', loopOfv.includes('۲۵٪ نقدی و بقیه چک تا ۴۵ روز'));
+ok('حلقه: ofview تحویل در محل روشن شد', loopOfv.includes('تحویل در محل') && !loopOfv.includes('تحویل حضوری از محل فروشنده'));
+ok('حلقه: ofview توضیح تازهٔ فروشنده', loopOfv.includes('برنج تازه — ارسال همان روز'));
+await page.click('#sheet-ofview .mg'); await sleep(250);
 
-/* ═══ ۷. تنظیمات کاتالوگ — اعتبار قیمتهای کاتالوگ ═══ */
-await page.goto(FILE + '#01'); await page.reload(); await sleep(400);
-await page.click('[aria-label="تنظیمات کاتالوگ"]'); await sleep(350);
-T('cset: «اعتبار قیمتهای کاتالوگ» موجود', (await page.locator('#sheet-cset').textContent()).includes('اعتبار قیمتهای کاتالوگ'));
-T('cset: ۵ پیل روز (۱-۵)', await page.locator('#cset-fresh .pill').count() === 5);
-T('cset: پیش‌فرض ۵ روز فعال', (await page.locator('#cset-fresh .pill.active').textContent()).includes('۵ روز'));
-const hintTxt = await page.locator('#sheet-cset .hint').textContent();
-T('cset: توضیح مالک (نمایش داده نمی\u200cشه + بالاتر قرار می\u200cگیرند)', hintTxt.includes('نمایش داده نمی\u200cشه') && hintTxt.includes('بالاتر قرار می\u200cگیرند'));
-await page.click('#cset-fresh .pill:nth-child(3)'); await sleep(200);
-T('cset: تعویض به ۳ روز فعال', (await page.locator('#cset-fresh .pill.active').textContent()).includes('۳ روز'));
-await shot('04-cset-fresh');
-await page.click('#sheet-cset [data-close]'); await sleep(250);
+/* ═══ ۴. ۱۲ — مهلت: ۱-۴ روز + «بیشتر» ═══ */
+await page.goto(FILE + '#12'); await page.reload(); await sleep(300);
+ok('۱۲: ۴ دکمهٔ روز + «بیشتر»', (await page.locator('#iq-deadline .pill').count()) === 5 && (await page.locator('#iq-deadline .pill').last().textContent()) === 'بیشتر');
+ok('۱۲: پیش‌فرض «بیشتر» با ۵ روز', (await page.locator('#iq-dlmore.active').count()) === 1 && (await page.locator('#iq-dlnum').inputValue()) === '۵');
+await page.click('#iq-deadline .pill:nth-child(1)'); await sleep(150);
+ok('۱۲: ۱ روز → ورودی جمع شد', (await page.locator('#iq-deadline .pill.active').textContent()).includes('۱ روز') && await page.locator('#iq-dlbox.open').count() === 0);
+await page.click('#iq-dlmore'); await sleep(150);
+ok('۱۲: «بیشتر» → ورودی برگشت', await page.locator('#iq-dlbox.open').count() === 1);
 
-/* ═══ ۸. تابلوی تأمین (۰۹) — قیمت ناتازه خط‌خورده ═══ */
+/* ═══ ۵. کاتالوگ — قیمت (نه قیمت پایه) + پلهٔ حداقل خرید ═══ */
+await page.goto(FILE + '#01'); await page.reload(); await sleep(300);
+await page.click('#scr-01 .pcard .gear'); await sleep(350);
+ok('quickps: برچسب «قیمت» (بدون پایه)', (await page.locator('#sheet-quickps label').first().textContent()).includes('قیمت — تومان'));
+ok('quickps: اعتبار قیمت ۵ پیل پیش‌فرض', (await page.locator('#qp-valid .pill.active').textContent()) === '۵');
+ok('quickps: یادآوری «شرایط مشابه»', (await page.locator('#sheet-quickps .hintnote').textContent()).includes('در شرایط مشابه بالاتر دیده می‌شوند'));
+await page.click('#sheet-quickps .btn[data-close]'); await sleep(250);
+await page.goto(FILE + '#02'); await page.reload(); await sleep(300);
+const tierTxt = await page.locator('#scr-02').textContent();
+ok('۰۲: پلهٔ اول = حداقل خرید بدون تخفیف (۲٬۸۵۰٬۰۰۰)', tierTxt.includes('حداقل خرید — بدون تخفیف') && tierTxt.includes('۵ کیسه به بالا'));
+ok('۰۲: بج «۲ پلهٔ تخفیف»', tierTxt.includes('۲ پلهٔ تخفیف'));
+ok('۰۲: آمار فروشنده «۳۸ تماس» (نه مشتری)', tierTxt.includes('۳۸ تماس') && !tierTxt.includes('۳۸ مشتری'));
+
+/* ═══ ۶. ۱۳ — آمار تماس + قیمت ساده + اشتراک ═══ */
+await page.goto(FILE + '#13'); await page.reload(); await sleep(300);
+const t13 = await page.locator('#scr-13').textContent();
+ok('۱۳: آمار «۱۸ تماس» جایگزین مشتری', t13.includes('۱۸ تماس') && !t13.includes('مشتری'));
+ok('۱۳: قیمت کارت ساده (بدون old-p خط‌خورده)', (await page.locator('#scr-13 .old-p').count()) === 0 && t13.includes('۲٬۸۵۰٬۰۰۰'));
+await page.click('#scr-13 .subheader .icon-btn[aria-label="اشتراک"]'); await sleep(300);
+ok('share: متن جدید «لینک کاتالوگ خودت رو برای مشتریانت ارسال کن»', (await page.locator('#sheet-share .sub').textContent()).includes('لینک کاتالوگ خودت رو برای مشتریانت ارسال کن'));
+await page.click('#sheet-share .btn[data-close]'); await sleep(250);
+
+/* ═══ ۷. ۰۷ — کاتالوگ شما نزد خریداران + شیت کیا ذخیره/تماس ═══ */
+await page.goto(FILE + '#07'); await page.reload(); await sleep(300);
+ok('۰۷: ردیف «کاتالوگ شما نزد خریداران»', (await page.locator('#scr-07').textContent()).includes('کاتالوگ شما نزد خریداران'));
+ok('۰۷: بدون وعدهٔ «مشتری شما می‌شود»', !(await page.locator('#scr-07').textContent()).includes('خودکار مشتری شما'));
+await page.click('#scr-07 [data-sheet="sheet-reach"]'); await sleep(300);
+const reach = await page.locator('#sheet-reach').textContent();
+ok('reach: شیت باز + کیا ذخیره کرده‌اند', await page.locator('#sheet-reach.show').isVisible() && reach.includes('ذخیره کرده‌اند'));
+ok('reach: کیا تماس گرفته‌اند', reach.includes('تماس گرفته‌اند'));
+ok('reach: ردیف رستوران مهر', reach.includes('رستوران مهر'));
+await page.click('#sheet-reach .btn[data-close]'); await sleep(250);
+
+/* ═══ ۸. ۴۴ — اعتبار + ردیف ویرایش (خلاصه؛ جزئیات در p44/p48) ═══ */
+await page.goto(FILE + '#44'); await page.reload(); await sleep(300);
+ok('۴۴: اعتبار قیمت‌ها با یادآوری', (await page.locator('#bk-valid .pill.active').textContent()) === '۵ روز' && (await page.locator('#scr-44 .hint').first().textContent()).includes('شرایط مشابه'));
+await page.click('#bk-need'); await sleep(200);
+ok('۴۴: ردیف [انصراف|٪|ذخیره] + ذخیره دیزیبل', await page.locator('#bk-editbar').isVisible() && await page.locator('#bk-save').isDisabled());
+await page.click('#bk-cancel'); await sleep(200);
+ok('۴۴: انصراف → انتخاب نیت برگشت', await page.locator('#bk-choice').isVisible());
+
+/* ═══ ۹. ۰۹ — قیمت منقضی: حذف از صدر + خط‌خورده ═══ */
 await page.goto(FILE + '#09'); await page.reload(); await sleep(300);
-T('۰۹: کارت شبح stale موجود', await page.locator('#scr-09 .supplier-card.stale').count() === 1);
-const staleTxt = await page.locator('#scr-09 .supplier-card.stale').textContent();
-T('۰۹: قیمت خط‌خورده + «در مقایسه نیست»', await page.locator('#scr-09 .price.old').count() === 1 && staleTxt.includes('در مقایسه نیست'));
-T('۰۹: هشدار «۱۱ روز است قیمتش تازه نشده»', staleTxt.includes('۱۱ روز است قیمتش تازه نشده'));
-T('۰۹: کارت شبح بدون چیپ شرایط/ذخیره', await page.locator('#scr-09 .supplier-card.stale .cond').count() === 0 && !staleTxt.includes('ذخیره'));
-T('۰۹: تماس/کاتالوگ مانده‌اند', staleTxt.includes('تماس') && staleTxt.includes('کاتالوگ'));
-T('۰۹: قانون تازگی در legend', (await page.locator('#scr-09').textContent()).includes('اعتبارش گذشته'));
-const order = await page.locator('#scr-09 .supplier-card .n').allTextContents();
-T('۰۹: ترتیب تازه‌ها بالاتر (پخش/آریو اول، شبح آخر)', order[0].includes('پخش برنج پارس') && order[1].includes('آریو') && order[2].includes('کیان'));
-await shot('05-09-stale');
+ok('۰۹: ردیف «قیمت قدیمی دارد» هست', (await page.locator('#scr-09').textContent()).includes('قیمت قدیمی دارد'));
+ok('۰۹: کیان غلات در صدر تابلو نیست (hidden)', await page.locator('#stale-sup').isHidden());
+await page.click('#scr-09 .stale-bar'); await sleep(200);
+ok('۰۹: گشودن → کارت کیان با قیمت خط‌خورده', (await page.locator('#stale-sup').textContent()).includes('کیان غلات') && (await page.locator('#stale-sup .price-stale').count()) === 1);
+ok('۰۹: بج «قیمت قدیمی — ۱۱ روز»', (await page.locator('#stale-sup').textContent()).includes('قیمت قدیمی — ۱۱ روز'));
 
-/* ═══ ۹. e2e — هر ۲۵ صفحه بدون خطا ═══ */
-for (const id of ALIVE) {
-  await page.goto(FILE + '#' + id); await page.reload(); await sleep(160);
+/* ═══ ۱۰. priceinfo — مفهوم جدید «قیمت و حداقل خرید» ═══ */
+await page.goto(FILE + '#04'); await page.reload(); await sleep(300);
+await page.fill('#gf-q', 'هاشمی'); await sleep(250);
+await page.locator('#scr-04 .gf-row').first().click(); await sleep(300);
+const piBtn = page.locator('#scr-04 [data-sheet="sheet-priceinfo"]');
+ok('۰۴: دکمهٔ ℹ قیمت هست', (await piBtn.count()) >= 1);
+if ((await piBtn.count()) >= 1) {
+  await piBtn.first().click(); await sleep(250);
+  const pi = await page.locator('#sheet-priceinfo').textContent();
+  ok('priceinfo: عنوان «قیمت و حداقل خرید» (نه قیمت پایه)', pi.includes('قیمت و حداقل خرید') && !pi.includes('قیمت پایه چیست'));
+  ok('priceinfo: پلهٔ اول تخفیف صفر توضیح داده شده', pi.includes('تخفیف صفر'));
+  await page.click('#sheet-priceinfo .btn[data-close]'); await sleep(200);
 }
-T('e2e: هر ۲۵ صفحه صفر خطای JS', errors.length === 0);
-if (errors.length) console.log('  errors:', errors.slice(0, 5).join(' | '));
+
+/* ═══ ۱۱. sheet-ptier — پلهٔ حداقل خرید قفل ═══ */
+await page.goto(FILE + '#02'); await page.reload(); await sleep(300);
+await page.evaluate(() => { document.getElementById('phone').dataset.arm = 'sell'; var o = document.getElementById('own-02'); if (o) o.hidden = false; });
+await sleep(150);
+const ptBtn = page.locator('#scr-02 [data-sheet="sheet-ptier"]');
+if ((await ptBtn.count()) >= 1) {
+  await ptBtn.first().click(); await sleep(300);
+  const pt = await page.locator('#sheet-ptier').textContent();
+  ok('ptier: پلهٔ «حداقل خرید» قفل با تخفیف صفر', pt.includes('حداقل خرید') && (await page.locator('#sheet-ptier .pctw input[disabled]').count()) === 1);
+  ok('ptier: پله‌های ۲۰/۵۰ کیلویی editable', (await page.locator('#sheet-ptier .pctw input:not([disabled])').count()) === 2);
+  await page.click('#sheet-ptier .btn[data-close]'); await sleep(200);
+} else {
+  ok('ptier: دکمهٔ تخفیف پلکانی از ۰۲ (بازوی فروش)', false);
+}
+
+/* ═══ ساختار + کنسول ═══ */
+const sheetCount = await page.locator('.sheet').count();
+ok('ساختار: شیت‌ها داخل #phone', (await page.locator('body > .sheet').count()) === 0);
+ok('ساختار: شیت جزئیات پیشنهاد و reach ثبت شدند', (await page.locator('#sheet-ofview').count()) === 1 && (await page.locator('#sheet-reach').count()) === 1);
+console.log('  شیت‌ها: ' + sheetCount);
+ok('کنسول: بدون خطا', errors.length === 0);
+if (errors.length) console.log(errors.slice(0, 5));
 
 await browser.close();
-console.log('\n════ فاز ۵۱ QA: ' + ok + ' PASS / ' + bad + ' FAIL ════');
-process.exit(bad ? 1 : 0);
+console.log('\n═══ فاز ۵۱ ═══');
+console.log('PASS: ' + pass + ' / ' + (pass + fail));
+process.exit(fail ? 1 : 0);

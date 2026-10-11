@@ -32,7 +32,8 @@ const grid = await page.evaluate(() => {
     overflow: body.scrollWidth > body.clientWidth + 1,
     head: document.querySelector('.bk-head').textContent.replace(/\s+/g, ' ').trim(),
     chips: document.querySelectorAll('[data-bkpc]').length,
-    reset: !!document.querySelector('[data-bkreset]'),
+    reset: !!document.getElementById('bk-cancel'),
+    editbar: !!document.getElementById('bk-editbar'),
     save: !!document.getElementById('bk-save'),
     xlsBtn: !!document.querySelector('#scr-44 .bk-xls'),
     xlsIcon: document.querySelector('#scr-44 .bk-xls use') ? document.querySelector('#scr-44 .bk-xls use').getAttribute('href') : null,
@@ -44,8 +45,8 @@ ok(grid.rows === 5, `۵ ردیف کالا در گرید (${grid.rows})`);
 ok(grid.priceX === 1 && grid.stockX === 1, 'ستون قیمت/موجودی در همهٔ ردیف‌ها تراز است');
 ok(!grid.overflow, 'بدون سرریز افقی');
 ok(/کالا/.test(grid.head) && /قیمت/.test(grid.head) && /موجودی/.test(grid.head), 'سرستون‌ها: کالا · قیمت · موجودی');
-/* فاز ۳۹: چیپ‌ها حذف شدند — آیکون ٪ + لینک بازنشانی جایگزین */
-ok(grid.chips === 0 && grid.reset, 'چیپ‌های درصدی حذف شده + بازنشانی (لینک زیر گرید)');
+/* فاز ۵۱: چیپ‌ها حذف شدند — ردیف ویرایش [انصراف|٪|ذخیره] جای فوتر + بازنشانی */
+ok(grid.chips === 0 && grid.editbar, 'چیپ‌های درصدی حذف شده + ردیف ویرایش در فرم (فاز ۵۱)');
 ok(grid.save && grid.cnt === '(۰)', 'دکمهٔ «ثبت تغییرات (۰)» از ابتدا');
 ok(grid.dirtyVisible === 0, 'نشان «ویرایش شد» در حالت اولیه پنهان است');
 
@@ -58,10 +59,10 @@ ok(await page.evaluate(() => location.hash === '#01'), 'بازگشت ۴۴ → ک
 console.log('— تغییر درصدی (پنل اینلاین فاز ۴۵) و بازنشانی');
 await nav('44');
 /* +۵٪ = ۱۰ کلیک روی دکمهٔ زیاد — هر کلیک همان لحظه روی جدول می‌نشیند
-   فاز ۴۸ — گرید تا «نیاز به آپدیت قیمت» قفل است؛ اول آن، بعد آیکون ٪ */
+   فاز ۵۱ — گرید تا «نیاز به تغییر قیمت» قفل است؛ اول آن، بعد دکمهٔ ٪ِ ردیف ویرایش */
 await page.click('#bk-need');
 await page.waitForTimeout(200);
-await page.click('#bk-pcticon');
+await page.click('#bk-editbar .bk-pctbtn');
 await page.waitForTimeout(280);
 for (let i = 0; i < 10; i++) await page.click('.pct-plus');
 await page.waitForTimeout(200);
@@ -77,7 +78,7 @@ ok(afterPc.chg === 5 && afterPc.cnt === '(۵)', `+۵٪ → هر ۵ ردیف تغ
 ok(afterPc.p1 === '۲٬۹۹۲٬۵۰۰', `۲٬۸۵۰٬۰۰۰ × ۱٫۰۵ = ${afterPc.p1}`);
 ok(afterPc.dirty === 5, 'نشان «ویرایش شد» روی ردیف‌های تغییرکرده پیداست');
 
-await page.click('.bk-reset2');
+await page.click('#bk-cancel');
 await page.waitForTimeout(200);
 const afterRs = await page.evaluate(() => ({
   chg: document.querySelectorAll('#scr-44 .bk-row.chg').length,
@@ -86,7 +87,7 @@ const afterRs = await page.evaluate(() => ({
 ok(afterRs.chg === 0 && afterRs.p1 === '۲٬۸۵۰٬۰۰۰', 'بازنشانی → مقدار اولیه و صفر تغییر');
 
 /* ترکیبی: +۵٪ سپس −۵٪ (فاز ۴۵: پنل اینلاین — بازمحاسبه از مبنا، نه تجمعی) */
-if (await page.locator('#bk-pctbar').isHidden()) { await page.click('#bk-need'); await page.waitForTimeout(200); await page.click('#bk-pcticon'); await page.waitForTimeout(260); }
+if (await page.locator('#bk-pctbar').isHidden()) { await page.click('#bk-need'); await page.waitForTimeout(200); await page.click('#bk-editbar .bk-pctbtn'); await page.waitForTimeout(260); }
 for (let i = 0; i < 10; i++) await page.click('.pct-plus');
 await page.waitForTimeout(150);
 /* +۵ → صفر → −۵: هر تغییر از مبنا بازمحاسبه می‌شود */
@@ -94,10 +95,12 @@ for (let i = 0; i < 20; i++) await page.click('.pct-minus');
 await page.waitForTimeout(220);
 const comp = await page.evaluate(() => document.querySelector('#scr-44 .bk-row .bk-price').value);
 ok(comp === '۲٬۷۰۷٬۵۰۰', `درصد از مبنا: ۲٬۸۵۰٬۰۰۰×۰٫۹۵ = ${comp}`);
-await page.click('.bk-reset2');
+await page.click('#bk-cancel');
 await page.waitForTimeout(120);
 
-/* ═══ ۳) ویرایش دستی — نشان هوشمند ═══ */
+/* ═══ ۳) ویرایش دستی — نشان هوشمند (فاز ۵۱: اول حالت ویرایش) ═══ */
+await page.click('#bk-need');
+await page.waitForTimeout(200);
 const manual = await page.evaluate(() => {
   const row = document.querySelectorAll('#scr-44 .bk-row')[1];
   const si = row.querySelector('.bk-stock');
@@ -117,6 +120,8 @@ ok(!back2orig.chg, 'برگشت به مقدار اولیه → نشان «ویر�
 
 /* ═══ ۴) ثبت → به‌روزرسانی زندهٔ کاتالوگ (۰۱) و لیست (۲۶) ═══ */
 console.log('— ثبت تغییرات → کاتالوگ');
+/* فاز ۵۱ — ورودِ تازه به ۴۴ = انتخاب نیت؛ گرید را باز کن */
+if (await page.locator('#bk-choice').isVisible()) { await page.click('#bk-need'); await page.waitForTimeout(200); }
 await page.evaluate(() => {
   const row = document.querySelectorAll('#scr-44 .bk-row')[0];
   const pi = row.querySelector('.bk-price');
@@ -146,6 +151,8 @@ ok(afterSave.badge1 === 'تمام شد', `موجودی ۰ → نشان «تما�
 
 /* موجودی کم → amber */
 await nav('44');
+await page.click('#bk-need');
+await page.waitForTimeout(200);
 await page.evaluate(() => {
   const row = document.querySelectorAll('#scr-44 .bk-row')[1];
   const si = row.querySelector('.bk-stock');

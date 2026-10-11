@@ -51,7 +51,7 @@ ok('۰۹: سه کارت تأمین‌کننده با ۳ ردیف اکشن', awai
 const acts9 = await page.locator('#scr-09 .sup-actions').allTextContents();
 const staleActs = await page.locator('#scr-09 .supplier-card.stale .sup-actions').allTextContents();
 ok('09 fresh cards = تماس/کاتالوگ/ذخیره', acts9.filter((a, i) => !staleActs.includes(a)).every(a => a.includes('تماس') && a.includes('کاتالوگ') && a.includes('ذخیره')));
-ok('09 stale ghost (51) = تماس/کاتالوگ بدون ذخیره + قیمت خط‌خورده', staleActs.length === 1 && staleActs[0].includes('تماس') && staleActs[0].includes('کاتالوگ') && !staleActs[0].includes('ذخیره') && await page.locator('#scr-09 .price.old').count() === 1);
+ok('09 stale (51) = پشت stale-bar مخفی + قیمت خط‌خورده', staleActs.length === 1 && staleActs[0].includes('تماس') && staleActs[0].includes('کاتالوگ') && await page.locator('#scr-09 .price-stale').count() === 1 && await page.locator('#stale-sup').isHidden());
 ok('۰۹: سورت «ایمچ» اول لیست و فعال', await page.evaluate(() => {
   const c = document.querySelectorAll('#scr-09 .chips .chip');
   return c[0].textContent.trim() === 'ایمچ' && c[0].classList.contains('active');
@@ -136,7 +136,7 @@ ok('شیت درخواست: قلم غایب فقط شمارش', (await page.locat
 ok('مودال (فاز ۴۹): توضیح خریدار دیده می‌شود', (await page.locator('#sheet-reqview .reqv-note').textContent()).includes('توضیح خریدار'));
 ok('مودال (فاز ۴۹): مهلت + دوره + محل تحویل', (await page.locator('#sheet-reqview .reqv-meta').textContent()).includes('امروز آخرین روز'));
 ok('مودال (فاز ۴۹): فرم پیشنهاد همان زیر جزئیات است', await page.locator('#sheet-reqview #reqv-send').count() === 1 && await page.locator('#sheet-reqview .reqv-price').count() === 2 && !(await page.locator('#sheet-reqview .reqv-price').allTextContents()).join(' ').includes('قند'));
-ok('مودال (فاز ۵۱): سوییچر چک + تحویل در محل + توضیح', await page.locator('#reqv-cheque').count() === 1 && await page.locator('#reqv-local').count() === 1 && await page.locator('#reqv-note2').count() === 1 && await page.locator('#reqv-pay').count() === 0);
+ok('مودال (فاز ۵۱): سوییچ چک + تحویل در محل + توضیح', await page.locator('#reqv-chk').count() === 1 && await page.locator('#reqv-dlv').count() === 1 && await page.locator('#reqv-note2').count() === 1 && await page.locator('#reqv-pay').count() === 0);
 await page.fill('#sheet-reqview .reqv-price >> nth=0', '2520000'); await sleep(150);
 await page.fill('#sheet-reqview .reqv-price >> nth=1', '1105000'); await sleep(250);
 ok('مودال (فاز ۴۹): مجموع زنده = ۱۶۷٬۱۰۰٬۰۰۰', (await page.locator('#reqv-sum').textContent()).includes('۱۶۷٬۱۰۰٬۰۰۰'));

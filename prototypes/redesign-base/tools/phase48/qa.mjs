@@ -27,30 +27,27 @@ ok('۴۴: بج «زنده روی جدول اعمال می‌شود» حذف', !t
 
 /* ═══ ۲. انتخاب نیت بالا (تمدید همین قیمت‌ها / نیاز به آپدیت قیمت) ═══ */
 ok('۴۴: دکمهٔ «تمدید همین قیمت‌ها» + زیرنویس تازه‌سازی', await page.locator('#bk-fresh b').textContent() === 'تمدید همین قیمت‌ها' && (await page.locator('#bk-fresh small').textContent()) === 'تازه‌سازی');
-ok('۴۴: دکمهٔ «نیاز به آپدیت قیمت»', (await page.locator('#bk-need b').textContent()) === 'نیاز به آپدیت قیمت');
-ok('۴۴: فوتر فقط «ثبت تغییرات» — بدون انصراف و بدون تمدید', (await page.locator('#scr-44 .action-bar button').count()) === 1 && (await page.locator('#bk-save').count()) === 1);
+ok('۴۴: دکمهٔ «نیاز به تغییر قیمت» (فاز ۵۱)', (await page.locator('#bk-need b').textContent()) === 'نیاز به تغییر قیمت');
+ok('۴۴: فوتر و بازنشانی حذف شدند (فاز ۵۱)', (await page.locator('#scr-44 .action-bar button').count()) === 0 && (await page.locator('#scr-44 [data-bkreset]').count()) === 0);
 ok('۴۴: ورودی‌های گرید قفل (disabled ×۱۰)', (await page.locator('#scr-44 .bk-price:disabled, #scr-44 .bk-stock:disabled').count()) === 10);
 
 /* ═══ ۳. «نیاز به آپدیت قیمت» → حالت ویرایش ═══ */
 await page.click('#bk-need'); await sleep(200);
 ok('۴۴: گرید باز شد', (await page.locator('#scr-44 .bk-price:disabled').count()) === 0);
-ok('۴۴: آیکون ٪ ظاهر شد', await page.locator('#bk-pcticon').isVisible());
-ok('۴۴: «تمدید» هنوز دیده می‌شود (چیزی عوض نشده)', await page.locator('#bk-fresh').isVisible());
-ok('۴۴: «ثبت تغییرات» هنوز مخفی', await page.locator('#bk-actions').isHidden());
+ok('۴۴: ردیف ویرایش [انصراف|٪|ذخیره] آمد (فاز ۵۱)', await page.locator('#bk-editbar').isVisible() && await page.locator('#bk-choice').isHidden());
+ok('۴۴: «ثبت تغییرات» دیزیبل تا تغییر (فاز ۵۱)', await page.locator('#bk-save').isDisabled());
 
 /* ═══ ۴. اولین تغییر → جابه‌جایی دکمه‌ها ═══ */
 await page.fill('#scr-44 .bk-row .bk-price', '۲٬۷۰۰٬۰۰۰'); await sleep(200);
-ok('۴۴: با تغییر → «تمدید» محو', await page.locator('#bk-fresh').isHidden());
-ok('۴۴: با تغییر → «ثبت تغییرات» ظاهر', await page.locator('#bk-actions').isVisible());
-ok('۴۴: با تغییر → «بازنشانی» ظاهر', await page.locator('#scr-44 [data-bkreset]').isVisible());
+ok('۴۴: با تغییر → ذخیره انیبل (فاز ۵۱)', !(await page.locator('#bk-save').isDisabled()));
 ok('۴۴: شمارندهٔ تغییرات (۱)', (await page.locator('#bk-count').textContent()) === '(۱)');
 
 /* ═══ ۵. برگرداندن مقدار به مبنا → دکمه‌ها برمی‌گردند ═══ */
 await page.fill('#scr-44 .bk-row .bk-price', '۲٬۸۵۰٬۰۰۰'); await sleep(200);
-ok('۴۴: بازگشت به مبنا → «تمدید» برگشت + «ثبت» محو', await page.locator('#bk-fresh').isVisible() && await page.locator('#bk-actions').isHidden());
+ok('۴۴: بازگشت به مبنا → ذخیره دوباره دیزیبل (فاز ۵۱)', await page.locator('#bk-save').isDisabled());
 
 /* ═══ ۶. سقف ۹۹ در کادر درصد ═══ */
-await page.click('#bk-pcticon'); await sleep(200);
+await page.click('#bk-editbar .bk-pctbtn'); await sleep(200);
 await page.fill('#pct-input', '۱۵۰'); await sleep(250);
 ok('۴۴: ۱۵۰ → ۹۹ (کلمپ مثبت)', (await page.locator('#pct-input').inputValue()) === '۹۹');
 const p99 = await page.locator('#scr-44 .bk-row').first().locator('.bk-price').inputValue();
@@ -64,11 +61,11 @@ await page.fill('#pct-input', '۹۸٫۸'); await sleep(200);
 await page.click('#bk-pctbar .pct-plus'); await sleep(150);
 ok('۴۴: استپر +۰٫۵ روی ۹۸٫۸ → ۹۹ (نه ۹۹٫۳)', (await page.locator('#pct-input').inputValue()) === '۹۹');
 
-/* ═══ ۷. بازنشانی → حالت اولیهٔ کامل ═══ */
-await page.click('#scr-44 [data-bkreset]'); await sleep(250);
-ok('۴۴: بازنشانی → هر دو دکمهٔ نیت برگشتند', await page.locator('#bk-fresh').isVisible() && await page.locator('#bk-need').isVisible());
-ok('۴۴: بازنشانی → گرید قفل', await page.locator('#scr-44 .bk-price').first().isDisabled());
-ok('۴۴: بازنشانی → آیکون ٪ مخفی + پنل بسته', await page.locator('#bk-pcticon').isHidden() && await page.locator('#bk-pctbar').isHidden());
+/* ═══ ۷. انصراف → حالت اولیهٔ کامل (فاز ۵۱) ═══ */
+await page.click('#bk-cancel'); await sleep(250);
+ok('۴۴: انصراف → هر دو دکمهٔ نیت برگشتند', await page.locator('#bk-fresh').isVisible() && await page.locator('#bk-need').isVisible());
+ok('۴۴: انصراف → گرید قفل', await page.locator('#scr-44 .bk-price').first().isDisabled());
+ok('۴۴: انصراف → ردیف ویرایش مخفی + پنل بسته (فاز ۵۱)', await page.locator('#bk-editbar').isHidden() && await page.locator('#bk-pctbar').isHidden());
 ok('۴۴: بازنشانی → درصد صفر', (await page.locator('#pct-input').inputValue()) === '۰');
 ok('۴۴: بازنشانی → قیمت ردیف اول به مبنا', (await page.locator('#scr-44 .bk-row').first().locator('.bk-price').inputValue()) === '۲٬۸۵۰٬۰۰۰');
 

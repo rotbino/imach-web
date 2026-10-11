@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const URL = 'file://' + resolve(ROOT, 'index.html');
-const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', 'shots', 'phase48');
+const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'shots', 'phase48');
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 402, height: 874 } });
@@ -32,7 +32,7 @@ await shot('48-44-unlocked', '44', async () => { await page.click('#bk-need'); }
 await shot('48-44-pct-edit', '44', async () => {
   await page.click('#bk-need');
   await page.waitForTimeout(200);
-  await page.click('#bk-pcticon');
+  await page.click("#bk-editbar .bk-pctbtn");
   await page.waitForTimeout(200);
   for (let i = 0; i < 11; i++) await page.click('#bk-pctbar .pct-plus');
 });
@@ -41,7 +41,7 @@ await shot('48-44-pct-edit', '44', async () => {
 await shot('48-44-cap99', '44', async () => {
   await page.click('#bk-need');
   await page.waitForTimeout(200);
-  await page.click('#bk-pcticon');
+  await page.click("#bk-editbar .bk-pctbtn");
   await page.waitForTimeout(200);
   await page.fill('#pct-input', '۱۵۰');
 });

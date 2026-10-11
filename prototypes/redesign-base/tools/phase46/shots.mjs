@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 import { mkdirSync } from 'fs';
 
 const FILE = 'file://' + process.cwd() + '/index.html';
-const OUT = 'png/p46';
+const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'shots', 'phase46');
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();

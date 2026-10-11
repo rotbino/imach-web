@@ -37,7 +37,7 @@ T('۱۲: ۵ تأمین‌کننده رندر شده', await page.locator('#iq-re
 T('۱۲: اولی بج فروشندهٔ ویژه', (await page.locator('#iq-recips .checkrow').first().textContent()).includes('فروشندهٔ ویژه'));
 T('۱۲: ۳ تیک پیش‌فرض', await page.locator('#iq-recips .checkbox.on').count() === 3);
 T('۱۲: دکمهٔ ارسال = ۳', (await page.locator('#rfq-send').textContent()).includes('۳'));
-T('۱۲ (فاز ۵۱): مهلت ۴ روز پیش‌فرض فعال', await page.locator('#iq-deadline .pill.active').count() === 1 && (await page.locator('#iq-deadline .pill.active').textContent()).includes('۴') && (await page.locator('#iq-dl-more').count() === 1));
+T('۱۲: مهلت «بیشتر» پیش‌فرض + ورودی ۵ (فاز ۵۱)', (await page.locator('#iq-deadline .pill.active').getAttribute('id')) === 'iq-dlmore' && (await page.locator('#iq-dlnum').inputValue()) === '۵' && await page.locator('#iq-dlbox.open').count() === 1);
 T('۱۲: دکمهٔ تأمین‌کنندگان بیشتر هست', await page.locator('#iq-more').count() === 1);
 T('۱۲: ۱ قلم پیش‌فرض (برنج هاشمی)', (await page.locator('#iq-count').textContent()).includes('۱'));
 
@@ -83,6 +83,15 @@ await page.click('#sheet-suppick .iqp-bar .btn'); await sleep(300);
 /* ═══ مهلت + ارسال ═══ */
 await page.click('#iq-deadline .pill:nth-child(2)'); await sleep(150);
 T('۱۲: مهلت ۲ روز انتخاب شد', (await page.locator('#iq-deadline .pill.active').textContent()).includes('۲ روز'));
+T('۱۲: با ۲ روز ورودی «بیشتر» جمع شد (فاز ۵۱)', await page.locator('#iq-dlbox.open').count() === 0);
+await page.click('#iq-dlmore'); await sleep(150);
+T('۱۲: «بیشتر» دوباره ورودی را باز کرد', await page.locator('#iq-dlbox.open').count() === 1);
+await page.fill('#iq-dlnum', '۱۲'); await sleep(200);
+T('۱۲: ورودی دلخواه ۱۲ روز (فاز ۵۱)', (await page.locator('#iq-dlnum').inputValue()) === '۱۲');
+await page.fill('#iq-dlnum', '۱۲۰'); await sleep(200);
+T('۱۲: بیش از ۲ رقم کلمپ (فاز ۵۱)', ((await page.locator('#iq-dlnum').inputValue()).length) <= 2);
+await page.fill('#iq-dlnum', '۲'); await sleep(150);
+T('۱۲: برگشت به ۲ روز', (await page.locator('#iq-dlnum').inputValue()) === '۲');
 await page.click('#rfq-send'); await sleep(400);
 T('۱۲: بازخورد ارسال', (await page.locator('#rfq-send').textContent()).includes('ارسال شد'));
 await shot('03-sent');
