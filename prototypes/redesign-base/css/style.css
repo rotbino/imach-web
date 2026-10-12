@@ -74,7 +74,10 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  /* فاز ۵۴ — clip به‌جای hidden: گوشی دیگر «قابل اسکرول برنامه‌ای» نیست.
+     باگ: focus() روی اینپوتِ مودالِ هنوز-در-حرکت، مرورگر #phone را ۵۴۰px می‌لغزاند و همهٔ
+     شیت‌های مخفی (از جمله فرم پروفایل) داخل قاب می‌آمدند. clip = جعبهٔ غیرقابل‌اسکرول. */
+  overflow: clip;
   box-shadow: var(--shadow-phone);
 }
 @media (min-width: 480px) {
@@ -330,6 +333,10 @@ body {
 }
 .searchbar svg { width: 18px; height: 18px; color: var(--muted-fg); flex-shrink: 0; }
 .searchbar span { font-size: 13px; color: #b0aca1; }
+/* فاز ۵۴ — اینپوت واقعیِ داخل سرچ‌باکس باید کل کادر را بگیرد (باگ مودال افزودن کالای ۱۲).
+   تا حالا فقط .gf-search/.gf-choosebox این قاعده را داشتند و اینپوتِ بدون آن‌ها وسط کادر ریز می‌ماند. */
+.searchbar input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 13px; color: var(--foreground); text-align: right; height: auto; }
+.searchbar input::placeholder { color: #b0aca1; }
 
 .badge {
   display: inline-flex;

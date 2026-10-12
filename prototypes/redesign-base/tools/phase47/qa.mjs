@@ -76,7 +76,7 @@ ok('۱۲: مودال: دو قلم شد', await page.locator('#scr-12 .iq-item').
 await page.click('#sheet-iqpick .iqp-bar .btn'); await sleep(300); /* تأیید و بستن مودال */
 ok('۱۲: بج پوشش ظاهر شد (همه/از ۲ قلم)', await page.evaluate(() => Array.from(document.querySelectorAll('#scr-12 .iq-cov')).filter(b => !b.hidden && /(همهٔ ۲|از ۲) قلم/.test(b.textContent)).length >= 4));
 ok('۱۲: گیرنده‌ها = هر که حداقل یک قلم را دارد', (await page.locator('#iq-recip-more').textContent()).includes('حداقل یک قلم'));
-ok('۱۲: همهٔ گیرنده‌های فرم تیک خوردند (اجتماع)', await page.evaluate(() => document.querySelectorAll('#scr-12 .checkbox.on').length === 5));
+ok('۱۲: همهٔ گیرنده‌های فرم تیک خوردند (اجتماع)', await page.evaluate(() => document.querySelectorAll('#scr-12 .checkbox.on').length === 12 /* فاز ۵۴: اجماع درجا = همهٔ ۱۲ دارندگان رندر می‌شوند */));
 ok('۱۲: دکمهٔ ارسال = اجتماع همهٔ دارندگان', await page.evaluate(() => /ارسال به ۱۲|ارسال به ۱۲/.test(document.getElementById('rfq-send').textContent)));
 await page.click('#scr-12 .iq-rm'); await sleep(200);
 ok('۱۲: حذف قلم کار می‌کند (۱ قلم ماند)', await page.locator('#scr-12 .iq-item').count() === 1);

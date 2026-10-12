@@ -1734,22 +1734,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .sheet.tall { max-height: 94%; }
   .btn:disabled { opacity: .55; cursor: not-allowed; filter: none; }
 
-  /* فرم ۱۲ — دکمهٔ «تأمین‌کنندگان بیشتر» */
+  /* فرم ۱۲ — دکمهٔ «تأمین‌کنندگان بیشتر» (فاز ۵۴: درجا باز/بسته می‌شود، نه مودال) */
   .iq-more { width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px; border: 0; border-radius: 12px; background: var(--stone-tint); color: var(--stone-soft); font-family: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer; }
-  .iq-more svg { width: 13px; height: 13px; transform: rotate(-90deg); }
+  .iq-more svg { width: 13px; height: 13px; }
+  .iq-more.open svg { transform: rotate(180deg); }
   .iq-more:active { background: var(--muted); }
 
-  /* ردیف تأمین‌کننده (فرم ۱۲ + مودال بیشتر) — مشترک */
-  .checkrow.iq-recip, .checkrow.supp-row { padding: 10px 11px; }
-  .iq-recip.vip, .supp-row.vip { border-color: #f3ddba; background: linear-gradient(180deg, #fdf8ef, #fff 45%); }
-  .iq-recip .cw2, .supp-row .cw2 { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-  .iq-recip .cw2 b, .supp-row .cw2 b { font-size: 12.5px; font-weight: 700; }
-  .iq-recip .ver, .supp-row .ver { width: 12px; height: 12px; color: #1d5fb8; flex-shrink: 0; }
-  .iq-recip .vipb, .supp-row .vipb { font-size: 9px; padding: 1px 6px; }
-  .iq-recip .cs, .supp-row .cs { font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
-  .iq-recip .iq-cov, .supp-row .iq-cov { font-size: 9px; padding: 1px 6px; }
-  .supp-row.locked { opacity: .62; cursor: default; }
-  .supp-lock { margin-top: 11px; font-size: 10.5px; color: var(--muted-fg); background: var(--muted); border-radius: 10px; padding: 8px 11px; line-height: 1.8; }
+  /* ردیف تأمین‌کننده (فرم ۱۲) — فاز ۵۴: بج درصد انطباق + توقیح مرتب‌سازی */
+  .checkrow.iq-recip { padding: 10px 11px; }
+  .iq-recip.vip { border-color: #f3ddba; background: linear-gradient(180deg, #fdf8ef, #fff 45%); }
+  .iq-recip .cw2 { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .iq-recip .cw2 b { font-size: 12.5px; font-weight: 700; }
+  .iq-recip .ver { width: 12px; height: 12px; color: #1d5fb8; flex-shrink: 0; }
+  .iq-recip .vipb { font-size: 9px; padding: 1px 6px; }
+  .iq-recip .cs { font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .iq-recip .iq-cov, .iq-recip .iq-match { font-size: 9px; padding: 1px 6px; }
+  .iq-sorthint { margin: -3px 2px 9px; font-size: 10px; color: var(--muted-fg); line-height: 1.8; }
+  .iq-recip.locked { opacity: .62; cursor: default; }
+  .iq-locknote { margin: 0 2px 10px; font-size: 10.5px; color: var(--muted-fg); background: var(--muted); border-radius: 10px; padding: 8px 11px; line-height: 1.8; }
 
   /* مودال «افزودن کالا» — لمس = افزودن/برداشتن؛ تیک سبز شروعگر است */
   .iqp-row .iqp-add { font-size: 9px; padding: 1.5px 7px; flex-shrink: 0; }
@@ -3124,7 +3126,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
          همان‌هاست؛ بعد پرتکرار صنفت) و هر کالای تازه که انتخاب شود هم‌زمان به لیست خرید
          می‌نشیند (بج «+ به لیست خرید») — کاربر از مسائل پشت پرده خبردار نمی‌شود.
          مهلت پاسخ ۱-۵ روز، پیش‌فرض ۵. تأمین‌کننده‌ها داده‌محور: ۵تای اول در فرم (اولی
-         فروشندهٔ ویژه) + «مشاهدهٔ تأمین‌کنندگان بیشتر» → مودال (سومی فروشندهٔ ویژه).
+         فروشندهٔ ویژه) + «مشاهدهٔ تأمین‌کنندگان بیشتر».
+         فاز ۵۴ (مالک) — «بیشتر» به‌جای مودال، همان‌جا تا ۲۰ ردیف لود می‌کند (مودال گیج‌کننده
+         بود) و هر ردیف بج «درصد انطباق» دارد تا دلیلِ ترتیب روشن باشد.
          IMPLEMENTATION NOTE: Inquiry { goodId, qty, note, deadlineDays(1-5, def 5) } +
          recipients[] تیک‌خورده؛ کالای تازه هم‌زمان insert به ShoppingList (idempotent). ═══ -->
     <header class="subheader">
@@ -3160,11 +3164,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <div class="field">
         <label>توضیح برای فروشنده <span class="opt">— اختیاری</span></label>
-        <textarea class="input" id="iq-note" rows="3" placeholder="مثلاً: تحویل قزوین، لطفاً قیمت و شرایط ارسال را هم بنویسید."></textarea>
+        <!-- فاز ۵۴ — پلیس‌هولدر دقیق مالک: به خریدار می‌گوید چه چیزهایی بنویسد تا پیشنهاد دقیق‌تر بگیرد -->
+        <textarea class="input" id="iq-note" rows="3" placeholder="جزئیات درخواست مانند کیفیت، شرایط پرداخت، نحوه تحویل یا هر توضیح یا سوال دیگری را می توانید اینجا اضافه کنید تا پیشنهادات و جوابهای دقیقتری دریافت کنید."></textarea>
       </div>
 
-      <!-- تأمین‌کننده‌ها — فاز ۴۹: داده‌محور؛ ۵تای اول این‌جا، بقیه در مودال «بیشتر» -->
+      <!-- تأمین‌کننده‌ها — فاز ۴۹: داده‌محور؛ ۵تای اول این‌جا؛ فاز ۵۴: «بیشتر» درجا لود می‌شود (نه مودال)
+           + بج درصد انطباق روی هر ردیف تا معنیِ ترتیب برای کاربر روشن باشد -->
       <div class="sec-title"><h2 id="iq-recip-h">ارسال به چه کسانی؟</h2><span class="more" id="iq-recip-more">۵ تأمین‌کنندهٔ این کالا</span></div>
+      <div class="iq-sorthint">مرتب‌شده بر اساس درصد انطباق با درخواست شما</div>
       <div id="iq-recips"></div>
       <button class="iq-more" id="iq-more" type="button">
         <span>مشاهدهٔ تأمین‌کنندگان بیشتر</span>
@@ -5256,23 +5263,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </div>
 </div>
 
-<!-- ═══ فاز ۴۹ — مودال تأمین‌کنندگان بیشتر (۱۲): فهرست کامل‌تر با تیک ═══
-     انتخاب‌ها همان لحظه در فرم اصلی می‌نشینند؛ فرم چیزی را از دست نمی‌دهد.
-     نشان «فروشندهٔ ویژه» = همان کسی که در کاتالوگش خودش را ویژه کرده (در تبلیغ است) —
-     جایگاهش در این دمو (سوم در مودال) فقط برای نمونه‌سازی است؛ در منطق واقعی از داده می‌آید. -->
-<div class="sheet tall" id="sheet-suppick" role="dialog" aria-label="تأمین‌کنندگان بیشتر">
-  <div class="grab"></div>
-  <div class="sheet-hdr">
-    <h3>تأمین‌کنندگان بیشتر</h3>
-    <button class="mg" data-close aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
-  <div class="sub" style="margin-top:5px">هر که تیک بزنی، استعلام برایش هم می‌رود — فرم اصلی همان لحظه به‌روز می‌شود.</div>
-  <div id="supp-list"></div>
-  <div class="iqp-bar">
-    <span id="supp-count">۳ تأمین‌کنندهٔ منتخب</span>
-    <button class="btn btn-primary btn-sm" data-close type="button"><svg><use href="#i-check"/></svg> تأیید</button>
-  </div>
-</div>
+<!-- ═══ فاز ۵۴ (مالک) — مودال «تأمین‌کنندگان بیشتر» حذف شد ═══
+     حکم: «به جای مودال همان‌جا لیست لود بشه (حداکثر تا ۲۰) — مدال باعث گیجی کاربر می‌شود».
+     جایگزین: #iq-more لیست را در خود فرم ۱۲ باز/بسته می‌کند (IQ._all) + بج «درصد انطباق»
+     روی هر ردیف (SUP.match، نزولی = همان ترتیب نمایش) توضیح می‌دهد چرا این‌طور سورت شده.
+     نشان «فروشندهٔ ویژه» = همان که در کاتالوگش خودش را ویژه کرده (در تبلیغ است) —
+     مستقل از درصد انطباق. -->
 
 <!-- ═══ فاز ۲۸ — کارت پیشنهاد (لمس کارت پیشنهاد در ۳۶): دیتای کامل + تماس/پیام/کاتالوگ ═══ -->
 <!-- IMPLEMENTATION NOTE: محتوای شیت از شیء پیشنهاد (PO_DATA) پر می‌شود — قیمت واحد،
@@ -7208,7 +7204,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
        سمت فروشنده فقط اقلامِ موجودِ خودش دیده می‌شود (حریم سبد خریدار). */
 
   /* ── سازندهٔ استعلام (۱۲) — IQ ── */
-  var IQ = { q: '', items: [], touched: false, dl: 5, sel: { s1: 1, s2: 1, s3: 1 } };
+  var IQ = { q: '', items: [], touched: false, dl: 5, sel: { s1: 1, s2: 1, s3: 1 }, _all: 0 }; /* فاز ۵۴: _all = لیستِ «تأمین‌کنندگان بیشتر» باز است */
   var IQ_UNIT = { g1: 'کیسه', g2: 'کیسه', g3: 'کیسه', g4: 'عدد', g5: 'کارتن', g6: 'کیسه', g7: 'عدد' };
 
   /* لیست خریدِ خریدار (۰۸) — دمو: برنج هاشمی، روغن لادن، قند یکتا، رب چین‌چین.
@@ -7217,22 +7213,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* پرتکرار صنف برای مودال استعلام (فردِ نه‌در-لیست: بج «+ به لیست خرید») */
   var IQP_FREQ = ['g6', 'r4', 'r3', 'r7'];
 
-  /* تأمین‌کننده‌ها — فاز ۴۹ داده‌محور: ۵ تای اول در فرم ۱۲، بقیه در مودال «بیشتر».
-     vip = فروشندهٔ ویژه (خودش در کاتالوگش تبلیغ کرده) — دمو: اولی در فرم، سومی در مودال.
+  /* تأمین‌کننده‌ها — فاز ۴۹ داده‌محور؛ فاز ۵۴: همهٔ ردیف‌ها در خودِ فرم ۱۲ (مودال حذف شد).
+     vip = فروشندهٔ ویژه (خودش در کاتالوگش تبلیغ کرده) — دمو: اولی و هشتمی.
      cov = چند قلم از استعلامِ چندقلمی را دارد (پوشش = رتبه‌بندی، نه حذف). */
+  /* فاز ۵۴ — match = درصد انطباق با درخواست (قیمت/پوشش/نزدیکی ترکیبی). نزولی در طول آرایه =
+     همان ترتیب نمایش؛ بج روی هر ردیف به کاربر می‌گوید چرا این‌طور سورت شده. vip مستقل است (تبلیغ). */
   var SUP = [
-    { id: 's1', name: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 'دیگر استان', price: '۲٬۹۲۰٬۰۰۰', verified: 1, vip: 1, cov: 3 },
-    { id: 's2', name: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۵۰٬۰۰۰', verified: 1, cov: 3 },
-    { id: 's3', name: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 'هم‌استان', price: '۳٬۰۰۰٬۰۰۰', verified: 0, cov: 2 },
-    { id: 's4', name: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۷۸۰٬۰۰۰', verified: 0, cov: 3 },
-    { id: 's5', name: 'غلات سبزدشت', init: 'غ', av: '#65a30d', city: 'مشهد', dist: 'دیگر استان', price: '۲٬۹۶۰٬۰۰۰', verified: 0, cov: 1 },
-    { id: 's6', name: 'پخش برنج عطایی', init: 'ع', av: '#b45309', city: 'تبریز', dist: 'دیگر استان', price: '۲٬۹۱۰٬۰۰۰', verified: 0, cov: 1 },
-    { id: 's7', name: 'برنج انار باغ', init: 'ب', av: '#9333ea', city: 'انار', dist: 'دیگر استان', price: '۲٬۸۷۵٬۰۰۰', verified: 0, cov: 2 },
-    { id: 's8', name: 'غلات زرین دشت', init: 'ز', av: '#0284c7', city: 'کرمان', dist: 'دیگر استان', price: '۲٬۹۴۵٬۰۰۰', verified: 1, vip: 1, cov: 2 },
-    { id: 's9', name: 'پخش گیلانه', init: 'گ', av: '#dc2626', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۳۰٬۰۰۰', verified: 0, cov: 3 },
-    { id: 's10', name: 'برنج شمال شرق', init: 'ش', av: '#059669', city: 'ساری', dist: 'هم‌استان', price: '۲٬۸۶۵٬۰۰۰', verified: 0, cov: 1 },
-    { id: 's11', name: 'بازرگانی حاصل سبز', init: 'ح', av: '#d97706', city: 'تهران', dist: 'هم‌استان', price: '۳٬۰۲۰٬۰۰۰', verified: 0, cov: 1 },
-    { id: 's12', name: 'غلات کمالی', init: 'ک', av: '#475569', city: 'خرم‌آباد', dist: 'دیگر استان', price: '۲٬۸۹۰٬۰۰۰', verified: 0, cov: 2 }
+    { id: 's1', name: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 'دیگر استان', price: '۲٬۹۲۰٬۰۰۰', verified: 1, vip: 1, cov: 3, match: 96 },
+    { id: 's2', name: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۵۰٬۰۰۰', verified: 1, cov: 3, match: 93 },
+    { id: 's3', name: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 'هم‌استان', price: '۳٬۰۰۰٬۰۰۰', verified: 0, cov: 2, match: 88 },
+    { id: 's4', name: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۷۸۰٬۰۰۰', verified: 0, cov: 3, match: 86 },
+    { id: 's5', name: 'غلات سبزدشت', init: 'غ', av: '#65a30d', city: 'مشهد', dist: 'دیگر استان', price: '۲٬۹۶۰٬۰۰۰', verified: 0, cov: 1, match: 81 },
+    { id: 's6', name: 'پخش برنج عطایی', init: 'ع', av: '#b45309', city: 'تبریز', dist: 'دیگر استان', price: '۲٬۹۱۰٬۰۰۰', verified: 0, cov: 1, match: 76 },
+    { id: 's7', name: 'برنج انار باغ', init: 'ب', av: '#9333ea', city: 'انار', dist: 'دیگر استان', price: '۲٬۸۷۵٬۰۰۰', verified: 0, cov: 2, match: 72 },
+    { id: 's8', name: 'غلات زرین دشت', init: 'ز', av: '#0284c7', city: 'کرمان', dist: 'دیگر استان', price: '۲٬۹۴۵٬۰۰۰', verified: 1, vip: 1, cov: 2, match: 68 },
+    { id: 's9', name: 'پخش گیلانه', init: 'گ', av: '#dc2626', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۳۰٬۰۰۰', verified: 0, cov: 3, match: 64 },
+    { id: 's10', name: 'برنج شمال شرق', init: 'ش', av: '#059669', city: 'ساری', dist: 'هم‌استان', price: '۲٬۸۶۵٬۰۰۰', verified: 0, cov: 1, match: 60 },
+    { id: 's11', name: 'بازرگانی حاصل سبز', init: 'ح', av: '#d97706', city: 'تهران', dist: 'هم‌استان', price: '۳٬۰۲۰٬۰۰۰', verified: 0, cov: 1, match: 57 },
+    { id: 's12', name: 'غلات کمالی', init: 'ک', av: '#475569', city: 'خرم‌آباد', dist: 'دیگر استان', price: '۲٬۸۹۰٬۰۰۰', verified: 0, cov: 2, match: 53 }
   ];
   function supById(id) { for (var i = 0; i < SUP.length; i++) if (SUP[i].id === id) return SUP[i]; return null; }
   function iqSelCount() { var c = 0; for (var k in IQ.sel) if (IQ.sel[k]) c++; return c; }
@@ -7263,11 +7261,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
         : '<span class="badge b-stone iq-cov">' + faNum(s.cov) + ' از ' + faNum(n) + ' قلم</span>';
     } else cov = '<span class="badge b-stone iq-cov" hidden></span>';
     var on = multi || IQ.sel[s.id] ? ' on' : '';
-    return '<div class="checkrow iq-recip' + (s.vip ? ' vip' : '') + '" data-sid="' + s.id + '">' +
+    /* فاز ۵۴ — بج درصد انطباق (نزولی = ترتیب ردیف‌ها) + data-match برای تست؛
+       چندقلمی = اجماع فاز ۴۷: تیک قفل (data-lock) — همان چیزی که مودال حذف‌شده می‌گفت */
+    var mt = '<span class="badge b-green iq-match">' + faNum(s.match) + '٪ انطباق</span>';
+    return '<div class="checkrow iq-recip' + (s.vip ? ' vip' : '') + (multi ? ' locked' : '') + '" data-sid="' + s.id + '"' + (multi ? ' data-lock' : '') + ' data-match="' + s.match + '">' +
       '<div class="avatar-sm" style="background:' + s.av + '">' + s.init + '</div>' +
       '<div style="flex:1;min-width:0">' +
       '<div class="cw2"><b>' + gfEsc(s.name) + '</b>' +
       (s.verified ? ' <svg class="ver"><use href="#i-verified"/></svg>' : '') +
+      mt +
       (s.vip ? '<span class="badge b-orange vipb">فروشندهٔ ویژه</span>' : '') + cov + '</div>' +
       '<div class="cs">' + gfEsc(s.city) + ' · ' + gfEsc(s.dist) + ' · آخرین قیمت ' + s.price + '</div>' +
       '</div>' +
@@ -7303,11 +7305,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
     /* چندقلمی = اجتماع فروشنده‌ها: همه گیرنده‌اند و پوششِ هر کدام اعلام می‌شود */
     var multi = n > 1;
     if (multi) SUP.forEach(function (s) { IQ.sel[s.id] = 1; });
-    var shown = SUP.filter(function (s, i) { return i < 5 || (IQ._extra && IQ._extra[s.id]); }); /* ۵ تای اول همیشه + انتخاب‌های مودال «بیشتر» */
+    /* فاز ۵۴ — «بیشتر» درجا: ۵تای اول + (باز‌شده = همه تا سقف ۲۰) + تیک‌خورده‌ها می‌مانند
+       (تیکِ ردیفِ باز، بعد از جمع‌کردن لیست هم دیده می‌شود — شمارندهٔ ارسال صادق می‌ماند) */
+    var shown = SUP.filter(function (s, i) {
+      return i < 5 || IQ._all || IQ.sel[s.id] || (IQ._extra && IQ._extra[s.id]);
+    }).slice(0, 20);
     var rec = document.getElementById('iq-recips');
-    if (rec) rec.innerHTML = shown.map(function (s) { return iqRecipRow(s, multi, n); }).join('');
+    if (rec) rec.innerHTML = (multi ? '<div class="iq-locknote">استعلام چندقلمی به همهٔ کسانی می‌رود که حداقل یکی از قلم‌ها را دارند — برای همین تیک‌ها قفلند.</div>' : '') +
+      shown.map(function (s) { return iqRecipRow(s, multi, n); }).join('');
     var rm = document.getElementById('iq-recip-more');
     if (rm) rm.textContent = multi ? 'هر که حداقل یک قلم را دارد' : faNum(shown.length || 5) + ' تأمین‌کنندهٔ این کالا';
+    /* دکمهٔ «بیشتر» — برچسب/جهت فلش همگام با IQ._all */
+    var mbtn = document.getElementById('iq-more');
+    if (mbtn) {
+      mbtn.classList.toggle('open', !!IQ._all);
+      var mspan = mbtn.querySelector('span');
+      if (mspan) mspan.textContent = IQ._all ? 'نمایش کمتر' : 'مشاهدهٔ تأمین‌کنندگان بیشتر';
+    }
     iqSendLabel();
   }
   function iqSendLabel() {
@@ -7406,7 +7420,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   }
   function iqNew() {
     IQ.q = ''; IQ.items = []; IQ.touched = true; IQ.dl = 5;
-    IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null;
+    IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ._all = 0; /* فاز ۵۴: لیستِ «بیشتر» هم جمع می‌شود */
     var q = document.getElementById('iqp-q');
     if (q) q.value = '';
     var note = document.getElementById('iq-note');
@@ -7416,44 +7430,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     iqpRender();
   }
 
-  /* ── مودال «تأمین‌کنندگان بیشتر» (sheet-suppick) ── */
-  function suppRowHtml(s, locked) {
-    var on = IQ.sel[s.id] || locked ? ' on' : '';
-    return '<div class="checkrow supp-row' + (s.vip ? ' vip' : '') + (locked ? ' locked' : '') + '"' + (locked ? '' : ' data-supp="' + s.id + '"') + '>' +
-      '<div class="avatar-sm" style="background:' + s.av + '">' + s.init + '</div>' +
-      '<div style="flex:1;min-width:0">' +
-      '<div class="cw2"><b>' + gfEsc(s.name) + '</b>' +
-      (s.verified ? ' <svg class="ver"><use href="#i-verified"/></svg>' : '') +
-      (s.vip ? '<span class="badge b-orange vipb">فروشندهٔ ویژه</span>' : '') + '</div>' +
-      '<div class="cs">' + gfEsc(s.city) + ' · ' + gfEsc(s.dist) + ' · آخرین قیمت ' + s.price + '</div>' +
-      '</div>' +
-      '<div class="checkbox' + on + '"><svg><use href="#i-check"/></svg></div>' +
-      '</div>';
-  }
-  function suppRender() {
-    var host = document.getElementById('supp-list');
-    if (!host) return;
-    var multi = IQ.items.length > 1;
-    /* استعلام چندقلمی = اجماع گیرنده‌ها (فاز ۴۷): همهٔ دارندگانِ حداقل یک قلم می‌گیرند —
-       تیک‌ها قفل‌اند و متنِ بالای مودال صادق می‌گوید چرا */
-    host.innerHTML = (multi ? '<div class="supp-lock">استعلام چندقلمی به همهٔ کسانی می‌رود که حداقل یکی از قلم‌ها را دارند — برای همین تیک‌ها قفلند.</div>' : '') +
-      SUP.slice(5).map(function (s) { return suppRowHtml(s, multi); }).join('');
-    suppCount();
-  }
-  function suppCount() {
-    var el = document.getElementById('supp-count');
-    if (!el) return;
-    var multi = IQ.items.length > 1;
-    el.textContent = multi
-      ? faNum(iqSelCount()) + ' تأمین‌کننده — همهٔ دارندگانِ قلم‌ها'
-      : faNum(iqSelCount()) + ' تأمین‌کنندهٔ منتخب';
-  }
-  function suppToggle(id) {
-    if (IQ.items.length > 1) return; /* چندقلمی: اجماع — همه گیرنده‌اند */
-    IQ.sel[id] = IQ.sel[id] ? 0 : 1;
-    if (IQ.sel[id]) IQ._extra = IQ._extra || {}, IQ._extra[id] = 1;
+  /* ── فاز ۵۴ — «تأمین‌کنندگان بیشتر» درجا (مودال حذف شد): فقط یک فلگ و رندر مجدد ── */
+  function iqMoreToggle() {
+    IQ._all = IQ._all ? 0 : 1;
     iqRender();
-    suppRender();
   }
 
   /* ── درخواست‌های خرید (سمت فروشنده) — RQ: هر درخواست + اقلامِ موجودِ این فروشنده ── */
@@ -8895,16 +8875,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var irm = t.closest('[data-iqrm]');
     if (irm) { IQ.items.splice(+irm.dataset.iqrm, 1); IQ.touched = true; iqRender(); return; }
 
-    /* فاز ۴۹ — «افزودن کالا» → مودال کامل (لیست خرید من + پرتکرار صنف + جستجو) */
+    /* فاز ۴۹ — «افزودن کالا» → مودال کامل (لیست خرید من + پرتکرار صنف + جستجو)
+       فاز ۵۴ — focus با preventScroll: شیت هنوز در حال بالا آمدن است؛ focus عادی، مرورگر را وادار
+       به اسکرولِ #phone می‌کرد و کل چیدمان را به هم می‌ریخت (شیت‌های مخفی داخل قاب می‌آمدند). */
     var iad = t.closest('#iq-add');
-    if (iad) { iqpRender(); openSheet('sheet-iqpick'); var iqpq = document.getElementById('iqp-q'); if (iqpq) iqpq.focus(); return; }
+    if (iad) {
+      iqpRender(); openSheet('sheet-iqpick');
+      var iqpq = document.getElementById('iqp-q');
+      if (iqpq) { try { iqpq.focus({ preventScroll: true }); } catch (e) { iqpq.focus(); } }
+      return;
+    }
 
-    /* فاز ۴۹ — «مشاهدهٔ تأمین‌کنندگان بیشتر» → مودال؛ تیک‌ها زنده به فرم برمی‌گردند */
+    /* فاز ۵۴ — «مشاهدهٔ تأمین‌کنندگان بیشتر» درجا باز/بسته می‌شود (مودال حذف شد) */
     var imr = t.closest('#iq-more');
-    if (imr) { suppRender(); openSheet('sheet-suppick'); return; }
-
-    var spr = t.closest('[data-supp]');
-    if (spr) { suppToggle(spr.dataset.supp); return; }
+    if (imr) { iqMoreToggle(); return; }
 
     /* فاز ۴۹ — ارسال/به‌روزرسانی پیشنهاد از خودِ مودال درخواست (جذب صفحهٔ ۴۷) */
     var rvs = t.closest('#reqv-send');
@@ -9126,7 +9110,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         rfs.classList.remove('bk-saved');
         rfs.disabled = false;
         rfs.innerHTML = '<svg><use href="#i-send"/></svg> ارسال به ' + faNum(cnt12) + ' تأمین‌کننده';
-        IQ.items = []; IQ.touched = false; IQ.q = ''; IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ.dl = 5; /* دفعهٔ بعد استعلام تازه */
+        IQ.items = []; IQ.touched = false; IQ.q = ''; IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ._all = 0; IQ.dl = 5; /* دفعهٔ بعد استعلام تازه */
         var nt12 = document.getElementById('iq-note');
         if (nt12) nt12.value = '';
         iqDlReset(); /* فاز ۵۱ — پیش‌فرض: «بیشتر» با ۵ روز */
@@ -9250,9 +9234,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
       itab.classList.add('active'); return;
     }
 
+    /* ═══ فاز ۳۴ — مدال «شرایط استفاده» (لینکِ چک‌باکس ثبت‌نام ۱۶) ═══
+       فاز ۵۴ — بازگردانده شد: هندلر در بازنویسی بزرگ فاز ۴۴ جامانده بود (مودال و متن سرِ جای
+       خودشان بودند ولی این بلوک حذف شده بود و لینک مرده بود).
+       این بلوک عمداً قبل از checkrow نشسته: کلیک روی لینک نباید تیک را برگرداند.
+       «مطالعه کردم و می‌پذیرم» = پذیرش صریح → تیک روشن + بستن؛ «×» فقط می‌بندد. */
+    var tmo = t.closest('[data-termsopen]');
+    if (tmo) { openSheet('dlg-terms'); return; }
+    var tmk = t.closest('[data-termsok]');
+    if (tmk) {
+      var tcb = document.querySelector('#scr-16 .checkrow .checkbox');
+      if (tcb) tcb.classList.add('on');
+      closeSheet();
+      return;
+    }
+
     var cr = t.closest('.checkrow');
     if (cr) {
       var cb = cr.querySelector('.checkbox');
+      if (cr.hasAttribute('data-lock')) { /* فاز ۵۴ — اجماع چندقلمی (۱۲): تیک قفل، مثل مودالِ پیشین */
+        if (cb) cb.classList.add('on');
+        return;
+      }
       if (cb) cb.classList.toggle('on');
       if (cr.closest('#iq-recips')) { /* فاز ۴۹ — تیک تأمین‌کننده در فرم ۱۲ */
         var sid2 = cr.getAttribute('data-sid');

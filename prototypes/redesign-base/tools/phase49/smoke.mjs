@@ -29,16 +29,12 @@ T('۱۲: مهلت «بیشتر» پیش‌فرض + ورودی ۵ (فاز ۵۱)',
 T('۱۲: دکمهٔ تأمین‌کنندگان بیشتر هست', await page.locator('#iq-more').count() === 1);
 T('۱۲: ۱ قلم پیش‌فرض (برنج هاشمی)', (await page.locator('#iq-count').textContent()).includes('۱'));
 
-/* ═══ مودال تأمین‌کنندگان بیشتر — در حالت تک‌قلمی (تیک آزاد) ═══ */
 await page.click('#iq-more'); await sleep(350);
-T('مودال تأمین‌کننده باز شد', await page.locator('#sheet-suppick.show').count() === 1);
-T('مودال: ۷ تأمین‌کنندهٔ بیشتر', await page.locator('#supp-list .checkrow').count() === 7);
-T('مودال: سومی فروشندهٔ ویژه (غلات زرین دشت)', (await page.locator('#supp-list .checkrow').nth(2).textContent()).includes('فروشندهٔ ویژه'));
-await page.click('#supp-list .checkrow:nth-child(2)'); await sleep(200);
-T('مودال: تیک زدن شمارنده را بالا برد', (await page.locator('#supp-count').textContent()).includes('۴'));
-await shot('02-suppick');
-await page.click('#sheet-suppick .iqp-bar .btn'); await sleep(300);
-T('۱۲: انتخاب مودال به فرم برگشت (۶ ردیف)', await page.locator('#iq-recips .checkrow').count() === 6);
+T('۱۲: «بیشتر» درجا ۱۲ ردیف لود کرد (فاز ۵۴ — بدون مودال)', await page.locator('#iq-recips .checkrow').count() === 12);
+await page.click('#iq-recips .checkrow:nth-child(6)'); await sleep(200);
+T('۱۲: تیک زدن شمارندهٔ ارسال را بالا برد', (await page.locator('#rfq-send').textContent()).includes('۴'));
+await page.click('#iq-more'); await sleep(300);
+T('۱۲: جمع‌کردن → ۶ ردیف (تیک‌خورده می‌ماند)', await page.locator('#iq-recips .checkrow').count() === 6);
 
 /* ═══ مودال افزودن کالا ═══ */
 await page.click('#iq-add'); await sleep(350);
@@ -59,14 +55,12 @@ await page.fill('#iqp-q', ''); await sleep(250);
 /* بستن با تأیید */
 await page.click('#sheet-iqpick .iqp-bar .btn'); await sleep(300);
 T('۱۲: بعد از تأیید مودال، ۲ قلم در فرم', (await page.locator('#iq-count').textContent()).includes('۲'));
-T('۱۲: چندقلمی → همه تیک + بج پوشش', (await page.locator('#iq-recips .checkbox.on').count()) === 6 && (await page.locator('#iq-recips .iq-cov:not([hidden])').count()) >= 1);
+T('۱۲: چندقلمی → همه تیک + بج پوشش', (await page.locator('#iq-recips .checkbox.on').count()) === 12 && (await page.locator('#iq-recips .iq-cov:not([hidden])').count()) >= 1);
 
-/* ═══ مودال تأمین‌کنندگان در حالت چندقلمی — اجماع: تیک‌ها قفل ═══ */
-await page.click('#iq-more'); await sleep(350);
-T('مودال چندقلمی: پیام اجماع دیده می‌شود', (await page.locator('#supp-list').textContent()).includes('همهٔ کسانی'));
-T('مودال چندقلمی: ردیف‌ها قفل‌اند (بدون data-supp)', await page.locator('#supp-list [data-supp]').count() === 0);
-T('مودال چندقلمی: همه تیک‌دار', await page.locator('#supp-list .checkbox.on').count() === 7);
-await page.click('#sheet-suppick .iqp-bar .btn'); await sleep(300);
+/* ═══ چندقلمی در فرم — اجماع فاز ۴۷ (فاز ۵۴: درجا + data-lock) ═══ */
+T('۱۲: چندقلمی → متن اجماع + ردیف‌های قفل', (await page.locator('#iq-recips').textContent()).includes('استعلام چندقلمی به همهٔ کسانی') && await page.locator('#iq-recips [data-lock]').count() === 12);
+await page.click('#iq-recips .checkrow:nth-child(2)'); await sleep(200);
+T('۱۲: چندقلمی → تیک قفل (کلیک خاموشش نمی‌کند)', await page.locator('#iq-recips .checkbox.on').count() === 12);
 
 /* ═══ مهلت + ارسال ═══ */
 await page.click('#iq-deadline .pill:nth-child(2)'); await sleep(150);
