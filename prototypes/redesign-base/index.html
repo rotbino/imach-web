@@ -1547,7 +1547,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #bk-choice[hidden] { display: none; } /* وقتی هر دو دکمه مخفی‌اند، ردیف هم جمع شود */
   /* گرید قفل‌شده: مقادیر خوانا می‌مانند ولی معلوم است ویرایش نیازمند «نیاز به آپدیت» است */
   .bk-row .bk-price:disabled, .bk-row .bk-stock:disabled { color: var(--stone-soft); background: #faf9f5; border-color: var(--border); }
-  /* فوتر فقط «ثبت تغییرات» — تا وقتی چیزی عوض نشده اصلاً دیده نمی‌شود */
+  /* فوتر فقط «ذخیره» — تا وقتی چیزی عوض نشده اصلاً دیده نمی‌شود */
   #bk-actions[hidden] { display: none; }
   /* آیکون ٪ ساب‌هدر فقط در حالت ویرایش */
   .bk-pct[hidden] { display: none; }
@@ -1820,13 +1820,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .oc-more { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 9px; padding-top: 8px; border-top: 1px dashed #eee9dd; font-size: 10.5px; font-weight: 700; color: var(--primary-strong); }
   .oc-more svg { width: 12px; height: 12px; }
 
-  /* فرم ۴۴ — ردیف ویرایش [انصراف | ٪ | ذخیره] */
+  /* فرم ۴۴ — ردیف ویرایش [انصراف | ذخیره | تغییر درصدی] (فاز ۵۲: درصد دکمه شد، نه آیکون) */
   .bk-editbar { display: flex; align-items: center; gap: 8px; }
   .bk-editbar[hidden] { display: none; }
   .bk-editbar #bk-cancel { flex-shrink: 0; height: 44px; padding: 0 14px; }
-  .bk-editbar .bk-pctbtn { width: 46px; height: 44px; border-radius: 12px; border: 1px solid var(--border-strong); background: #fff; color: var(--primary-strong); flex-shrink: 0; }
-  .bk-editbar .bk-pctbtn svg { width: 19px; height: 19px; }
+  .bk-editbar .bk-pctbtn { height: 44px; padding: 0 13px; border-radius: 12px; border: 1px solid var(--border-strong); background: #fff; color: var(--primary-strong); font-size: 13px; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+  .bk-editbar .bk-pctbtn svg { width: 15px; height: 15px; }
   .bk-editbar .bk-pctbtn:active { transform: scale(.94); }
+
+  /* ═══ فاز ۵۲ (مالک) — کاتالوگ (۰۱): کادر اشتراک + ردیف افزودن/تمدید + بج قیمت منقضی ═══ */
+  .cat-promo { display: flex; flex-direction: column; gap: 11px; margin-top: 12px; padding: 13px 14px 12px; border-radius: 16px; border: 1px solid #e8d9bd; background: linear-gradient(180deg, #fdf8ef, #fff 72%); }
+  .cat-promo .cp-tx b { display: block; font-size: 13.5px; font-weight: 800; line-height: 1.75; }
+  .cat-promo .cp-tx small { display: block; font-size: 11px; color: var(--muted-fg); line-height: 1.95; margin-top: 4px; }
+  .cat-promo .cp-acts { display: flex; gap: 8px; }
+  .cat-promo .cp-acts .btn { height: 40px; font-size: 12.5px; padding: 0 12px; }
+  .cat-addrow { display: flex; gap: 8px; margin-top: 10px; }
+  .cat-addrow .btn { white-space: nowrap; height: 44px; font-size: 12.5px; padding: 0 10px; }
+  .cat-addrow .add-btn { flex: 1.14; }
+  .cat-addrow .add-btn svg { width: 20px; height: 20px; }
+  .cat-addrow .renew-btn { flex: 1; color: var(--primary-strong); }
+  .cat-addrow .renew-btn svg { width: 14px; height: 14px; }
+  .pcard .stale-bdg { position: absolute; top: 7px; left: 40px; display: inline-flex; align-items: center; gap: 4px; padding: 3.5px 8px; border-radius: 8px; background: var(--red-bg); border: 1px solid #f3c6c6; color: var(--red); font-size: 9.5px; font-weight: 800; }
+  .pcard .stale-bdg svg { width: 11px; height: 11px; flex-shrink: 0; }
 
   /* تابلوی تأمین (۰۹) — قیمت منقضی: ردیف جمع‌شونده + کارت خط‌خورده */
   .stale-bar { display: flex; align-items: center; gap: 10px; width: 100%; text-align: right; cursor: pointer; font-family: inherit; }
@@ -1951,39 +1966,44 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- هدر ویترین — فاز ۴۵: چشم «نمای عمومی» از هدر به این‌جا آمد (کنار تنظیمات و اشتراک؛
-           اگر نام کسب‌وکار طولانی شود، با آیکون‌های هدر توداخل نمی‌شود) -->
+      <!-- هدر ویترین — فاز ۵۲ (مالک): آیکون‌ها از ویترین رفتند — تنظیمات کنار جستجو،
+           اشتراک/پیش‌نمایش داخل کادر اشتراک؛ ویترین فقط هویت است، شلوغ نمی‌شود -->
       <div class="showcase">
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
           <div class="sub">پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-orange">عمده‌فروش</span></div>
         </div>
-        <button class="icon-btn" aria-label="تنظیمات کاتالوگ" data-sheet="sheet-cset"><svg><use href="#i-gear"/></svg></button>
-        <button class="icon-btn" aria-label="اشتراک کاتالوگ" data-sheet="sheet-share"><svg><use href="#i-share"/></svg></button>
-        <button class="icon-btn" aria-label="پیش‌نمایش عمومی کاتالوگ" data-go="13" title="پیش‌نمایش عمومی کاتالوگ"><svg><use href="#i-eye"/></svg></button>
       </div>
 
-      <!-- جستجو + افزودن کالا -->
-      <div style="display:flex;gap:8px;margin-top:12px">
+      <!-- ═══ فاز ۵۲ (مالک) — کادر اشتراک کاتالوگ: پیام + اکشن‌های اشتراک/پیش‌نمایش همه این‌جا.
+           متن عنوان و زیرمتن عیناً از مالک. ═══ -->
+      <div class="cat-promo">
+        <div class="cp-tx">
+          <b>کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار</b>
+          <small>با ارسال لینک کاتالوگ به مشتریان خود بگویید با ذخیره کاتالوگ، همیشه قیمتهای زنده شما را در لیست ذخیره خود داشته باشند.</small>
+        </div>
+        <div class="cp-acts">
+          <button class="btn btn-primary" style="flex:1.15" data-sheet="sheet-share" type="button"><svg><use href="#i-share"/></svg> اشتراک‌گذاری</button>
+          <button class="btn btn-outline" style="flex:1" data-go="13" type="button"><svg><use href="#i-eye"/></svg> پیش‌نمایش</button>
+        </div>
+      </div>
+
+      <!-- فاز ۵۲ (مالک) — افزودن کالا و تمدید سریع قیمت‌ها، کنار هم بالای جستجو؛
+           آیکون افزودن بزرگ‌تر، آیکون درصد کوچک‌تر؛ متن‌ها نمی‌شکنند -->
+      <div class="cat-addrow">
+        <button class="btn btn-primary add-btn" type="button"><svg><use href="#i-plus"/></svg> افزودن کالای جدید</button>
+        <button class="btn btn-outline renew-btn" type="button" data-go="44" title="قیمت‌ها را تازه کن یا تغییر بده"><svg><use href="#i-percent"/></svg> تمدید سریع قیمت‌ها</button>
+      </div>
+
+      <!-- جستجو + تنظیمات (آیکون از ویترین به کنار جستجو آمد — فاز ۵۲) -->
+      <div style="display:flex;gap:8px;margin-top:8px">
         <div class="searchbar" style="flex:1">
           <svg><use href="#i-search"/></svg>
           <span>جستجو در کاتالوگ…</span>
         </div>
-        <button class="btn btn-primary" style="height:44px;padding:0 16px">
-          <svg><use href="#i-plus"/></svg> افزودن کالا
-        </button>
+        <button class="icon-btn" aria-label="تنظیمات کاتالوگ" data-sheet="sheet-cset" title="تنظیمات کاتالوگ"><svg><use href="#i-gear"/></svg></button>
       </div>
-
-      <!-- ═══ فاز ۳۶ (مالک) — به‌روزرسانی گروهی قیمت و موجودی: کار روزانهٔ فروشنده ═══
-           در بازارهای پرتورم قیمت‌ها هر روز عوض می‌شوند؛ ورود سریع این کار روی خود
-           کاتالوگ (نه ته تنظیمات) قرار گرفت. مقصد: صفحهٔ ۴۴ (گرید قیمت/موجودی + اکسل).
-           فاز ۴۵ (مالک): عنوان و زیرعنوان حذف شد — یک جملهٔ روشن: «تغییر سریع و گروهی قیمت‌ها». -->
-      <button class="bulk-bar bulk-bar-lg" data-go="44" aria-label="تغییر سریع و گروهی قیمت‌ها">
-        <svg><use href="#i-percent"/></svg>
-        <span class="tx"><b>تغییر سریع و گروهی قیمت‌ها</b></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
-      </button>
 
       <!-- فیلتر دسته -->
       <div class="chips" id="scr-01-chips-x">
@@ -2016,6 +2036,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="pcard" data-cn="برنج طارم" data-cd="کیسه ۵۰ کیلویی">
           <div class="ph">
             <div class="thumb"><span class="glyph">۵۰ کیلو</span></div>
+            <!-- فاز ۵۲ (مالک) — قیمت این کالا منقضی شده: بج کنار آیکون تغییر سریع،
+                 یعنی این کالا نیاز به آپدیت قیمت دارد (نمونه) -->
+            <span class="stale-bdg"><svg><use href="#i-history"/></svg> قیمت منقضی</span>
             <button class="gear" aria-label="تغییر سریع قیمت و موجودی" data-sheet="sheet-quickps" title="تغییر سریع قیمت و موجودی" data-qn="برنج طارم" data-qd="کیسه ۵۰ کیلویی" data-qp="۲٬۷۵۰٬۰۰۰" data-qs="۲۸" data-qm="۵" data-qu="کیسه"><svg><use href="#i-gear"/></svg></button>
           </div>
           <div class="info">
@@ -4553,7 +4576,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
          ▸ فاز ۳۹ (مالک) — بخش بازشوی «تخفیف‌ها و قیمت‌های ویژه»: درصد همکار و گروه‌های مشتری
            و پله‌های تخفیف حجمی (کاتالوگ + گروه‌های تخفیف) همین‌جا سریع عوض می‌شود؛ مدیریت
            گروه‌ها (ساخت/حذف/اعضا) این‌جا نیست — فقط قیمت، درصد و موجودی (خواستهٔ صریح مالک).
-         ▸ «ثبت تغییرات» همه‌چیز را یک‌جا اعمال می‌کند: قیمت/موجودی دستی + درصدی + اکسل +
+         ▸ «ذخیره» (فاز ۵۲) همه‌چیز را یک‌جا اعمال می‌کند: قیمت/موجودی دستی + درصدی + اکسل +
            تخفیف‌ها؛ همان لحظه روی کارت‌های کاتالوگ (۰۱) و لیست کالاهای کاتالوگ (۲۶) و شیت‌های
            تخفیف (cgroup/vol/ptier) و خط «تخفیف همکار» ۰۲/۱۳ می‌نشیند؛ نشان موجودی هم بازسازی
            می‌شود (۰ = تمام شد · ≤۱۰ = موجودی کم · بیشتر = موجود)؛ سپس به کاتالوگ برمی‌گردیم.
@@ -4568,12 +4591,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- ═══ فاز ۴۸ + ۵۱ (مالک) — انتخاب نیت در بالای فرم، نه فوتر شلوغ:
+      <!-- ═══ فاز ۴۸ + ۵۱ + ۵۲ (مالک) — انتخاب نیت در بالای فرم، نه فوتر شلوغ:
            «تمدید همین قیمت‌ها (تازه‌سازی)» مهر تازگی با اعتبارِ انتخابی می‌زند و برمی‌گردد؛
-           «نیاز به تغییر قیمت» گرید را باز می‌کند — تا آن‌ لحظه ورودی‌ها قفل‌اند.
-           فاز ۵۱ — بعد از «نیاز به تغییر قیمت» انتخاب نیت جای خود را به ردیف ویرایش می‌دهد:
-           [انصراف] [٪] [ثبت تغییرات — تا اولین تغییر دیزیبل]؛ آیکون ٪ از هدر به این‌جا آمد.
-           «بازنشانی» حذف شد — همان «انصراف» است. ═══ -->
+           «نیاز به تغییر قیمت» گرید را باز می‌کند — تا آن‌ لحظه ورودی‌ها قفل‌اند. ═══ -->
       <div class="bk-choice" id="bk-choice">
         <button class="bk-btn renew" id="bk-fresh" type="button" title="قیمت‌ها درست است — مهر تازگی با اعتبارِ انتخابی همان لحظه در کاتالوگ می‌نشیند">
           <svg><use href="#i-check"/></svg>
@@ -4587,17 +4607,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </button>
       </div>
 
-      <!-- فاز ۵۱ — ردیف ویرایش: جایگزینِ انتخاب نیت تا وقتی در حال ویرایشی؛
-           ذخیره با اولین تغییر (دستی یا درصدی) انیبل می‌شود -->
+      <!-- فاز ۵۲ (مالک) — بعد از «نیاز به تغییر قیمت» خودش غیب می‌شود و سه دکمه می‌آید:
+           [انصراف] [ذخیره — تا اولین تغییر دیزیبل] [تغییر درصدی — دکمه، نه آیکون]؛
+           به محض هر تغییر (دستی یا درصدی) ذخیره انیبل می‌شود. «بازنشانی» همان «انصراف» است. -->
       <div class="bk-editbar" id="bk-editbar" hidden>
         <button class="btn btn-outline" id="bk-cancel" type="button">انصراف</button>
-        <button class="icon-btn bk-pctbtn" type="button" data-pcttoggle aria-label="تغییر درصدی قیمت‌ها" title="تغییر درصدی قیمت‌ها"><svg><use href="#i-percent"/></svg></button>
-        <button class="btn btn-primary" style="flex:1" id="bk-save" type="button" disabled>ثبت تغییرات <span id="bk-count">(۰)</span></button>
+        <button class="btn btn-primary" style="flex:1" id="bk-save" type="button" disabled>ذخیره <span id="bk-count">(۰)</span></button>
+        <button class="btn btn-outline bk-pctbtn" type="button" data-pcttoggle aria-label="تغییر درصدی قیمت‌ها" title="تغییر درصدی قیمت‌ها"><svg><use href="#i-percent"/></svg> تغییر درصدی</button>
       </div>
 
       <!-- ═══ فاز ۴۵ (مالک) — تغییر درصدی: پنل اینلاین بالای فرم (نه مودال) — با هر تغییرِ درصد،
            قیمت‌های جدول همان لحظه زنده به‌روز می‌شوند و ردیف‌های تغییرکرده سبز می‌شوند؛
-           کاربر قبل از «ثبت تغییرات» نتیجه را می‌بیند، نه بعد از بستن مودال.
+           کاربر قبل از «ذخیره» نتیجه را می‌بیند، نه بعد از بستن مودال.
            فاز ۴۸ (مالک) — پیش‌نمایش مثال، بج «زنده» و متن راهنما حذف شدند؛ خودِ جدول زنده است. ═══ -->
       <div id="bk-pctbar" hidden>
         <div class="bk-pct-head">
@@ -4621,7 +4642,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- فاز ۵۱ — اعتبار قیمت‌ها: همراه همین به‌روزرسانی/تمدید تعیین می‌شود (پیش‌فرض ۵ روز)؛
+      <!-- فاز ۵۲ (مالک) — اعتبار قیمت‌ها فقط این‌جاست (فرم ۴۴، بالای گرید)، نه در مودال تغییر
+           سریع و نه در تنظیمات؛ همراه همین به‌روزرسانی/تمدید تعیین می‌شود (پیش‌فرض ۵ روز) و
            «تمدید» هم با همین اعتبار مهر تازگی می‌زند -->
       <div class="field" style="margin-top:12px">
         <label>اعتبار قیمت‌ها</label>
@@ -5391,7 +5413,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
      کالای جدید لازم می‌شود (فایل آخرین لیست برای ویرایش آفلاین/آرشیو) پس ثانویه شد.
      متن توضیح عیناً از مالک. «دانلود» یک CSV واقعی با BOM می‌سازد (اکسل باز می‌کند)؛
      «آپلود» همان فایل ویرایش‌شده را می‌خواند، ردیف‌ها را با «نام کالا — بسته‌بندی» تطبیق می‌دهد و
-     گرید ۴۴ همان‌جا به‌روز می‌شود — و مثل بقیهٔ تغییرات فقط با «ثبت تغییرات» در کاتالوگ می‌نشیند.
+     گرید ۴۴ همان‌جا به‌روز می‌شود — و مثل بقیهٔ تغییرات فقط با «ذخیره» در کاتالوگ می‌نشیند.
      در پیاده‌سازی عملیاتی XLSX واقعی سمت سرور parse می‌شود و پیش از اعمال، پیش‌نمایش «قبل/بعد»
      به کاربر نشان داده می‌شود. -->
 
@@ -5449,19 +5471,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <label>حداقل خرید <span class="opt" id="qp-munit">— کیسه</span></label>
     <input class="input" id="qp-min" value="۵" inputmode="numeric">
   </div>
-  <!-- فاز ۵۱ (مالک) — اعتبار قیمت این‌جاست، هر بار که قیمت عوض می‌شود همین‌جا تعیین می‌شود؛
-       نه در تنظیمات و نه روی خود کاتالوگ. پیش‌فرض ۵ روز (۱ تا ۵). -->
-  <div class="field">
-    <label>اعتبار این قیمت <span class="opt">— روز</span></label>
-    <div class="pillchoice" id="qp-valid">
-      <button class="pill" type="button">۱</button>
-      <button class="pill" type="button">۲</button>
-      <button class="pill" type="button">۳</button>
-      <button class="pill" type="button">۴</button>
-      <button class="pill active" type="button">۵</button>
-    </div>
-  </div>
-  <div class="hintnote">قیمت‌های آپدیت‌شده در شرایط مشابه بالاتر دیده می‌شوند؛ قیمتِ منقضی از لیست تأمین‌کننده‌های خریدار حذف می‌شود.</div>
+  <!-- فاز ۵۲ (مالک) — اعتبار قیمت این‌جا نیست؛ فقط در فرم ۴۴ (بالای گرید) تعیین می‌شود.
+       مودال تغییر سریع فقط سه چیز است: قیمت، موجودی، حداقل خرید. -->
   <div style="display:flex;gap:8px;margin-top:12px">
     <button class="btn btn-outline" style="flex:1" data-close>انصراف</button>
     <button class="btn btn-primary" style="flex:1.6" id="qp-ok" type="button"><svg><use href="#i-check"/></svg> تایید</button>
@@ -6261,7 +6272,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '44': '01' /* فاز ۳۶: به‌روزرسانی گروهی قیمت/موجودی ← کاتالوگ */
   };
   var BTN = {
-    '01': [['افزودن کالا', '04']],
+    '01': [['افزودن کالای جدید', '04']], /* فاز ۵۲: برچسب جدید مالک؛ مقصد همان فرم افزودن/ویرایش کالا */
     '02': [['درخواست قیمت', '12'], ['مشاهده تابلوی تأمین', '09']],
     '07': [['خروج از حساب', '15']],
     '08': [['افزودن کالا', '34']],
@@ -8017,8 +8028,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (c) c.textContent = '(' + faNum(n) + ')';
   }
   /* ═══ فاز ۵۱ (مالک) — فرم ۴۴ با ردیف ویرایش به‌جای فوتر:
-     در حالت ویرایش، انتخاب نیت مخفی و [انصراف | ٪ | ثبت تغییرات] نمایان است؛
-     «ثبت تغییرات» تا اولین تغییر (دستی یا درصدی) دیزیبل است — به محض هر تغییر انیبل می‌شود.
+     در حالت ویرایش، انتخاب نیت مخفی و [انصراف | ذخیره | تغییر درصدی] نمایان است؛
+     «ذخیره» تا اولین تغییر (دستی یا درصدی) دیزیبل است — به محض هر تغییر انیبل می‌شود.
      «تمدید» فقط در حالت انتخاب نیت دیده می‌شود (خوانایی پیش‌رونده)؛
      BK.saving فقط برای نگه‌داشتن دکمه در ۹۰۰ms بازخوردِ «ثبت شد» است. ═══ */
   function bkVis() {
@@ -8060,7 +8071,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var sv = document.getElementById('bk-save');
     if (sv && sv.classList.contains('bk-saved')) {
       sv.classList.remove('bk-saved');
-      sv.innerHTML = 'ثبت تغییرات <span id="bk-count">(۰)</span>';
+      sv.innerHTML = 'ذخیره <span id="bk-count">(۰)</span>';
     }
     bkMode(false);
   }
@@ -8446,7 +8457,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (bkCancel) { bkResetAll(); return; }
 
     /* ═══ فاز ۵۱ (مالک) — «نیاز به تغییر قیمت»: گرید باز می‌شود؛ انتخاب نیت می‌رود و
-       ردیف [انصراف | ٪ | ثبت تغییرات (دیزیبل)] می‌آید؛ ذخیره با اولین تغییر انیبل می‌شود ═══ */
+       ردیف [انصراف | ذخیره (دیزیبل) | تغییر درصدی] می‌آید؛ ذخیره با اولین تغییر انیبل می‌شود ═══ */
     var bkNeed = t.closest('#bk-need');
     if (bkNeed) { bkMode(true); return; }
     var bkSave = t.closest('#bk-save');
@@ -8485,7 +8496,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         setTimeout(function () {
           BK.saving = false;
           bkSave.classList.remove('bk-saved');
-          bkSave.innerHTML = 'ثبت تغییرات <span id="bk-count">(۰)</span>';
+          bkSave.innerHTML = 'ذخیره <span id="bk-count">(۰)</span>';
           go('01', false);
           stack.length = 0;
         }, 900);

@@ -115,9 +115,20 @@ ok('۱۲: «بیشتر» → ورودی برگشت', await page.locator('#iq-dlb
 await page.goto(FILE + '#01'); await page.reload(); await sleep(300);
 await page.click('#scr-01 .pcard .gear'); await sleep(350);
 ok('quickps: برچسب «قیمت» (بدون پایه)', (await page.locator('#sheet-quickps label').first().textContent()).includes('قیمت — تومان'));
-ok('quickps: اعتبار قیمت ۵ پیل پیش‌فرض', (await page.locator('#qp-valid .pill.active').textContent()) === '۵');
-ok('quickps: یادآوری «شرایط مشابه»', (await page.locator('#sheet-quickps .hintnote').textContent()).includes('در شرایط مشابه بالاتر دیده می‌شوند'));
+ok('quickps: اعتبار این‌جا نیست — فقط در ۴۴ (فاز ۵۲)', (await page.locator('#qp-valid').count()) === 0 && !(await page.locator('#sheet-quickps .hintnote').count()));
+ok('quickps: سه فیلد خالص — قیمت/موجودی/حداقل خرید', (await page.locator('#sheet-quickps .field').count()) === 3);
 await page.click('#sheet-quickps .btn[data-close]'); await sleep(250);
+/* فاز ۵۲ — کادر اشتراک + ردیف افزودن/تمدید + تنظیمات کنار جستجو + بج قیمت منقضی */
+const promoTxt = await page.locator('#scr-01 .cat-promo').textContent();
+ok('کاتالوگ: کادر اشتراک با عنوان مالک', promoTxt.includes('کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار'));
+ok('کاتالوگ: زیرمتن کادر (ذخیره کاتالوگ → قیمتهای زنده)', promoTxt.includes('همیشه قیمتهای زنده شما را در لیست ذخیره خود داشته باشند'));
+ok('کاتالوگ: اشتراک/پیش‌نمایش داخل کادر', (await page.locator('#scr-01 .cat-promo [data-sheet="sheet-share"]').count()) === 1 && (await page.locator('#scr-01 .cat-promo [data-go="13"]').count()) === 1);
+ok('کاتالوگ: ویترین بدون آیکون (سه‌تایی رفتند)', (await page.locator('#scr-01 .showcase .icon-btn').count()) === 0);
+ok('کاتالوگ: افزودن کالای جدید + تمدید سریع کنار هم بالای جستجو', (await page.locator('#scr-01 .cat-addrow .add-btn').isVisible()) && (await page.locator('#scr-01 .cat-addrow .renew-btn[data-go="44"]').isVisible()));
+ok('کاتالوگ: متن دکمه‌ها نمی‌شکند', (await page.evaluate(() => { const b = document.querySelectorAll('#scr-01 .cat-addrow .btn'); return Array.from(b).every(x => x.scrollWidth <= x.clientWidth + 1 && x.scrollHeight <= x.clientHeight + 1); })));
+ok('کاتالوگ: تنظیمات کنار جستجو', (await page.locator('#scr-01 .icon-btn[data-sheet="sheet-cset"]').count()) === 1);
+ok('کاتالوگ: بج «قیمت منقضی» کنار چرخ‌دنده (نمونهٔ طارم)', (await page.locator('#scr-01 .pcard .stale-bdg').count()) === 1 && (await page.locator('#scr-01 .stale-bdg').textContent()).includes('قیمت منقضی'));
+ok('کاتالوگ: نوار تمام‌عرض گروهی حذف شد', (await page.locator('#scr-01 .bulk-bar').count()) === 0);
 await page.goto(FILE + '#02'); await page.reload(); await sleep(300);
 const tierTxt = await page.locator('#scr-02').textContent();
 ok('۰۲: پلهٔ اول = حداقل خرید بدون تخفیف (۲٬۸۵۰٬۰۰۰)', tierTxt.includes('حداقل خرید — بدون تخفیف') && tierTxt.includes('۵ کیسه به بالا'));
@@ -148,7 +159,13 @@ await page.click('#sheet-reach .btn[data-close]'); await sleep(250);
 await page.goto(FILE + '#44'); await page.reload(); await sleep(300);
 ok('۴۴: اعتبار قیمت‌ها با یادآوری', (await page.locator('#bk-valid .pill.active').textContent()) === '۵ روز' && (await page.locator('#scr-44 .hint').first().textContent()).includes('شرایط مشابه'));
 await page.click('#bk-need'); await sleep(200);
-ok('۴۴: ردیف [انصراف|٪|ذخیره] + ذخیره دیزیبل', await page.locator('#bk-editbar').isVisible() && await page.locator('#bk-save').isDisabled());
+ok('۴۴: سه دکمه [انصراف|ذخیره|تغییر درصدی] + ذخیره دیزیبل (فاز ۵۲)', await page.locator('#bk-editbar').isVisible() && await page.locator('#bk-save').isDisabled() && (await page.locator('#bk-save').textContent()).includes('ذخیره') && (await page.locator('#bk-editbar .bk-pctbtn').textContent()).includes('تغییر درصدی'));
+ok('۴۴: «تغییر درصدی» دکمه است نه آیکون', (await page.locator('#bk-editbar .bk-pctbtn.btn').count()) === 1 && (await page.locator('#bk-editbar .icon-btn').count()) === 0);
+await page.click('#bk-editbar .bk-pctbtn'); await sleep(200);
+ok('۴۴: دکمهٔ درصدی پنل را باز می‌کند', await page.locator('#bk-pctbar').isVisible());
+await page.click('#bk-pctbar [data-pctstep="0.5"]'); await sleep(150);
+await page.click('#bk-pctbar [data-pctstep="0.5"]'); await sleep(200);
+ok('۴۴: ذخیره بعد از تغییر درصدی انیبل شد', !(await page.locator('#bk-save').isDisabled()));
 await page.click('#bk-cancel'); await sleep(200);
 ok('۴۴: انصراف → انتخاب نیت برگشت', await page.locator('#bk-choice').isVisible());
 

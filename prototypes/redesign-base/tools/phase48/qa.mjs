@@ -35,7 +35,7 @@ ok('۴۴: ورودی‌های گرید قفل (disabled ×۱۰)', (await page.lo
 await page.click('#bk-need'); await sleep(200);
 ok('۴۴: گرید باز شد', (await page.locator('#scr-44 .bk-price:disabled').count()) === 0);
 ok('۴۴: ردیف ویرایش [انصراف|٪|ذخیره] آمد (فاز ۵۱)', await page.locator('#bk-editbar').isVisible() && await page.locator('#bk-choice').isHidden());
-ok('۴۴: «ثبت تغییرات» دیزیبل تا تغییر (فاز ۵۱)', await page.locator('#bk-save').isDisabled());
+ok('۴۴: «ذخیره» دیزیبل تا تغییر (فاز ۵۲)', await page.locator('#bk-save').isDisabled());
 
 /* ═══ ۴. اولین تغییر → جابه‌جایی دکمه‌ها ═══ */
 await page.fill('#scr-44 .bk-row .bk-price', '۲٬۷۰۰٬۰۰۰'); await sleep(200);

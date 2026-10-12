@@ -55,10 +55,10 @@ ok('فوتر خرید: لیست خرید · استعلام‌ها · پیام‌
 ok('پیل سوییچ چسبیده به لوگو (فاز ۴۵)', await page.locator('#scr-01 .appbar .brand .arm-pill').count() === 1);
 ok('پیل بدون آیکون داخلی + برچسب عمده', (await page.locator('#scr-01 .arm-pill').textContent()).includes('دستیار فروش عمده') && (await page.locator('#scr-01 .arm-pill > svg:not(.caret)').count()) === 0);
 ok('چشم از هدر ۰۱ حذف شد', await page.locator('#scr-01 .appbar .icon-btn[aria-label="پیش‌نمایش عمومی کاتالوگ"]').count() === 0);
-ok('چشم کنار تنظیمات/اشتراک در ویترین (فاز ۴۵)', await page.locator('#scr-01 .showcase .icon-btn[data-go="13"]').count() === 1);
+ok('کادر اشتراک: پیش‌نمایش + اشتراک داخل کادر (فاز ۵۲)', await page.locator('#scr-01 .cat-promo [data-go="13"]').count() === 1 && await page.locator('#scr-01 .cat-promo [data-sheet="sheet-share"]').count() === 1 && await page.locator('#scr-01 .showcase .icon-btn').count() === 0);
 ok('آیکون پروفایل در ۰۱ (فاز ۴۷: آواتار متنی حذف)', await page.locator('#scr-01 .appbar .icon-btn[data-go="42"] svg use[href="#i-user"]').count() === 1);
 ok('آیکون پروفایل در ۰۸ (فاز ۴۷)', await page.locator('#scr-08 .appbar .icon-btn[data-go="42"] svg use[href="#i-user"]').count() === 1);
-ok('نوار «قیمت و موجودی» روی کاتالوگ', await page.locator('#scr-01 .bulk-bar[data-go="44"]').isVisible());
+ok('ردیف افزودن/تمدید بالای جستجو (فاز ۵۲)', await page.locator('#scr-01 .cat-addrow .add-btn').isVisible() && await page.locator('#scr-01 .cat-addrow .renew-btn[data-go="44"]').isVisible() && await page.locator('#scr-01 .bulk-bar').count() === 0);
 ok('بدون دکمهٔ selmode (کمپین)', await page.locator('#scr-01 .selmode-btn').count() === 0);
 ok('بدون نوار انتخاب (selbar)', await page.locator('#scr-01 .selbar').count() === 0);
 ok('بدون stat-strip مرده در ۰۱', await page.locator('#scr-01 .stat-strip').count() === 0);
@@ -298,9 +298,9 @@ ok('۴۴: قیمت روی کارت کاتالوگ نشست', cardP.includes('۲�
 await page.click('#scr-01 .pcard .gear');
 await sleep(300);
 ok('quickps: مودال باز شد', await page.locator('#sheet-quickps.show').isVisible());
-ok('quickps: سه فیلد + اعتبار + تایید (فاز ۵۱: + حداقل خرید و اعتبار)', await page.locator('#qp-price').count() === 1 && await page.locator('#qp-stock').count() === 1 && await page.locator('#qp-min').count() === 1 && await page.locator('#qp-valid .pill.active').count() === 1 && await page.locator('#qp-ok').count() === 1);
+ok('quickps: سه فیلد خالص — اعتبار رفت به ۴۴ (فاز ۵۲)', await page.locator('#qp-price').count() === 1 && await page.locator('#qp-stock').count() === 1 && await page.locator('#qp-min').count() === 1 && await page.locator('#qp-ok').count() === 1 && await page.locator('#qp-valid').count() === 0);
 ok('quickps: بدون «قیمت پایه» (فاز ۵۱)', !(await page.locator('#sheet-quickps').textContent()).includes('قیمت پایه'));
-ok('quickps: یادآوری قیمت آپدیت (فاز ۵۱)', (await page.locator('#sheet-quickps .hintnote').textContent()).includes('شرایط مشابه'));
+ok('quickps: بدون یادآوری — خانهٔ اعتبار ۴۴ است (فاز ۵۲)', (await page.locator('#sheet-quickps .hintnote').count()) === 0);
 const qpP0 = await page.locator('#scr-01 .pcard').first().locator('.p').textContent();
 await page.fill('#qp-price', '۲٬۹۵۰٬۰۰۰');
 await page.fill('#qp-stock', '۲');
@@ -313,7 +313,7 @@ const qpB = await page.locator('#scr-01 .pcard').first().locator('.mini-metrics 
 ok('quickps: تایید → قیمت و نشان موجودی کارت به‌روز', qpP1 !== qpP0 && qpP1.includes('۲٬۹۵۰٬۰۰۰') && qpB.includes('موجودی کم'));
 
 /* ═══ ۱۱-پ. تخفیف حجمی (sheet-vol) — فاز ۴۵ ═══ */
-await page.click('#scr-01 .showcase .icon-btn[data-sheet="sheet-cset"]');
+await page.click('#scr-01 .icon-btn[data-sheet="sheet-cset"]');
 await sleep(300);
 ok('cset: باز شد', await page.locator('#sheet-cset.show').isVisible());
 await page.click('#sheet-cset [data-sheet="sheet-vol"]');
@@ -374,7 +374,7 @@ await page.click('#scr-34 .action-bar [data-go="08"]');
 await sleep(300);
 ok('۳۴: افزودن به لیست خرید → ۰۸', await page.locator('#scr-08').isVisible());
 await page.goto(FILE + '#01'); await page.reload(); await sleep(250);
-await page.click('#scr-01 .showcase .icon-btn[data-sheet="sheet-cset"]');
+await page.click('#scr-01 .icon-btn[data-sheet="sheet-cset"]');
 await sleep(300);
 ok('cset: باز شد', await page.locator('#sheet-cset.show').isVisible());
 const csetTxt = await page.locator('#sheet-cset').textContent();

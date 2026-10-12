@@ -45,9 +45,9 @@ ok(grid.rows === 5, `۵ ردیف کالا در گرید (${grid.rows})`);
 ok(grid.priceX === 1 && grid.stockX === 1, 'ستون قیمت/موجودی در همهٔ ردیف‌ها تراز است');
 ok(!grid.overflow, 'بدون سرریز افقی');
 ok(/کالا/.test(grid.head) && /قیمت/.test(grid.head) && /موجودی/.test(grid.head), 'سرستون‌ها: کالا · قیمت · موجودی');
-/* فاز ۵۱: چیپ‌ها حذف شدند — ردیف ویرایش [انصراف|٪|ذخیره] جای فوتر + بازنشانی */
+/* فاز ۵۲: درصد دکمهٔ متنی «تغییر درصدی» شد کنار ذخیره */
 ok(grid.chips === 0 && grid.editbar, 'چیپ‌های درصدی حذف شده + ردیف ویرایش در فرم (فاز ۵۱)');
-ok(grid.save && grid.cnt === '(۰)', 'دکمهٔ «ثبت تغییرات (۰)» از ابتدا');
+ok(grid.save && grid.cnt === '(۰)', 'دکمهٔ «ذخیره (۰)» از ابتدا (فاز ۵۲)');
 ok(grid.dirtyVisible === 0, 'نشان «ویرایش شد» در حالت اولیه پنهان است');
 
 /* بازگشت ۴۴ → ۰۱ */
@@ -172,17 +172,17 @@ ok(/b-amber\|موجودی کم/.test(badge2), `موجودی ۵ → «موجود�
 console.log('— نقاط ورود');
 await nav('01');
 const bar01 = await page.evaluate(() => {
-  const b = document.querySelector('#scr-01 .bulk-bar');
+  const b = document.querySelector('#scr-01 .cat-addrow .renew-btn[data-go="44"]');
   if (!b) return null;
   return { go: b.dataset.go, vis: b.getClientRects().length > 0, txt: b.textContent.replace(/\s+/g, ' ').trim().slice(0, 30) };
 });
-ok(bar01 && bar01.go === '44' && bar01.vis, `نوار «قیمت و موجودی» روی کاتالوگ → ۴۴ (${bar01 && bar01.txt})`);
-await page.click('#scr-01 .bulk-bar');
+ok(bar01 && bar01.go === '44' && bar01.vis, `دکمهٔ «تمدید سریع قیمت‌ها» بالای جستجو → ۴۴ (فاز ۵۲) (${bar01 && bar01.txt})`);
+await page.click('#scr-01 .cat-addrow .renew-btn');
 await page.waitForTimeout(220);
-ok(await page.evaluate(() => location.hash === '#44'), 'کلیک نوار → صفحهٔ ۴۴');
+ok(await page.evaluate(() => location.hash === '#44'), 'کلیک تمدید سریع → صفحهٔ ۴۴');
 
 await nav('01');
-await page.evaluate(() => { document.querySelector('#scr-01 .showcase [data-sheet="sheet-cset"]').click(); });
+await page.evaluate(() => { document.querySelector('#scr-01 .icon-btn[data-sheet="sheet-cset"]').click(); });
 await page.waitForTimeout(320);
 const cset = await page.evaluate(() => {
   const rows = document.querySelectorAll('#sheet-cset .sheet-row');

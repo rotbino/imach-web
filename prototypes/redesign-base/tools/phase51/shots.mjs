@@ -75,5 +75,11 @@ await shot('51-13-stats', '13');
 /* ۰۲ — پلهٔ حداقل خرید در تخفیف حجمی */
 await shot('51-02-tiers', '02');
 
+/* ═══ فاز ۵۲ — کاتالوگ: کادر اشتراک + ردیف افزودن/تمدید + بج قیمت منقضی + سه‌دکمهٔ ۴۴ ═══ */
+await shot('52-01-catalog-top', '01');
+await shot('52-44-threebuttons', '44', async () => {
+  await page.click('#bk-need'); await sleep(250);
+});
+
 await browser.close();
 console.log('DONE →', OUT);

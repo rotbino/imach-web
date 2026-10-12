@@ -219,9 +219,9 @@ ok('مدال «قیمت پایه چیست؟» باز می‌شود', await page.
 await page.goto(FILE + '#01');
 await page.reload();
 await sleep(250);
-await page.evaluate(() => { document.querySelectorAll('#scr-01 button').forEach(b => { if (b.textContent.trim() === 'افزودن کالا') b.click(); }); });
+await page.evaluate(() => { document.querySelectorAll('#scr-01 button').forEach(b => { if (b.textContent.trim() === 'افزودن کالای جدید') b.click(); }); });
 await sleep(200);
-ok('دکمهٔ «افزودن کالا» ۰۱ → صفحهٔ ۰۴', await page.locator('#scr-04').isVisible());
+ok('دکمهٔ «افزودن کالای جدید» ۰۱ → صفحهٔ ۰۴ (فاز ۵۲)', await page.locator('#scr-04').isVisible());
 
 /* ── ۱۵. e2e همهٔ صفحه‌ها ── */
 const screens = await page.evaluate(() => [...document.querySelectorAll('.scr')].map(s => s.id.slice(4)));
