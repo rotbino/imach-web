@@ -25,16 +25,16 @@ T('۱۲: ۵ تأمین‌کننده رندر شده', await page.locator('#iq-re
 T('۱۲: اولی بج فروشندهٔ ویژه', (await page.locator('#iq-recips .checkrow').first().textContent()).includes('فروشندهٔ ویژه'));
 T('۱۲: ۳ تیک پیش‌فرض', await page.locator('#iq-recips .checkbox.on').count() === 3);
 T('۱۲: دکمهٔ ارسال = ۳', (await page.locator('#rfq-send').textContent()).includes('۳'));
-T('۱۲: مهلت «بیشتر» پیش‌فرض + ورودی ۵ (فاز ۵۱)', (await page.locator('#iq-deadline .pill.active').getAttribute('id')) === 'iq-dlmore' && (await page.locator('#iq-dlnum').inputValue()) === '۵');
+T('۱۲: مهلت پیش‌فرض ۳ روز (فاز ۵۷)', (await page.locator('#iq-deadline .pill.active').textContent()).includes('۳ روز') && await page.locator('#iq-dlbox.open').count() === 0);
 T('۱۲: دکمهٔ تأمین‌کنندگان بیشتر هست', await page.locator('#iq-more').count() === 1);
 T('۱۲: ۱ قلم پیش‌فرض (برنج هاشمی)', (await page.locator('#iq-count').textContent()).includes('۱'));
 
 await page.click('#iq-more'); await sleep(350);
-T('۱۲: «بیشتر» درجا ۱۲ ردیف لود کرد (فاز ۵۴ — بدون مودال)', await page.locator('#iq-recips .checkrow').count() === 12);
+T('۱۲: «بیشتر» +۵ → ۱۰ ردیف (فاز ۵۷)', await page.locator('#iq-recips .checkrow').count() === 10);
 await page.click('#iq-recips .checkrow:nth-child(6)'); await sleep(200);
 T('۱۲: تیک زدن شمارندهٔ ارسال را بالا برد', (await page.locator('#rfq-send').textContent()).includes('۴'));
 await page.click('#iq-more'); await sleep(300);
-T('۱۲: جمع‌کردن → ۶ ردیف (تیک‌خورده می‌ماند)', await page.locator('#iq-recips .checkrow').count() === 6);
+T('۱۲: لمس دوم +۵ → همهٔ ۱۲ ردیف (فاز ۵۷ — جمع‌کردن حذف شد)', await page.locator('#iq-recips .checkrow').count() === 12);
 
 /* ═══ مودال افزودن کالا ═══ */
 await page.click('#iq-add'); await sleep(350);

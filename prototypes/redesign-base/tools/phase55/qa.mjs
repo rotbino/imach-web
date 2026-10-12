@@ -67,7 +67,7 @@ ok('منو: از آیکون کادر اشتراک باز شد', await page.locat
 const shareRows = await page.locator('#sheet-share .sheet-row b').allTextContents();
 ok('منو: «اشتراک با مخاطبین» اول لیست (حکم فاز ۵۵)', shareRows[0] === 'اشتراک با مخاطبین');
 ok('منو: بدون «پیام آماده» (حکم فاز ۵۵)', !(shareRows.join(' ').includes('پیام آماده')));
-ok('منو: کپی لینک و QR و پیام‌های ای‌مچ مانده‌اند', shareRows.includes('کپی لینک کاتالوگ') && shareRows.includes('کد QR کاتالوگ') && shareRows.includes('ارسال در پیام‌های ای‌مچ'));
+ok('منو: کپی لینک و QR و کارت ویزیت (فاز ۵۷ — جای ای‌مچ)', shareRows.includes('کپی لینک کاتالوگ') && shareRows.includes('کد QR کاتالوگ') && shareRows.includes('کارت ویزیت') && !shareRows.includes('ارسال در پیام‌های ای‌مچ'));
 await page.click('#sheet-share .sheet-row[data-sheet="sheet-cshare"]'); await sleep(300);
 ok('منو: مخاطبین → شیت cshare', await page.locator('#sheet-cshare.show').isVisible() && (await page.locator('#sheet-share.show').count()) === 0);
 

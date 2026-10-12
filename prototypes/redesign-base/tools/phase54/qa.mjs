@@ -82,23 +82,23 @@ T('۱۲: اولین ردیف هم بج ویژه دارد و هم ٪۹۶', (await
 
 /* ═══ ۵. «تأمین‌کنندگان بیشتر» درجا (مودال حذف شد) ═══ */
 T('۱۲: مودال suppick از DOM حذف شده', await page.locator('#sheet-suppick').count() === 0);
+T('۱۲: برچسب دکته = «تأمین‌کنندگان بیشتر» (بدون «مشاهدهٔ»)', (await page.locator('#iq-more span').textContent()).trim() === 'تأمین‌کنندگان بیشتر');
 await page.click('#iq-more'); await sleep(320);
-T('۱۲: «بیشتر» درجا ۱۲ ردیف لود کرد (بدون مودال)', await page.locator('#iq-recips .iq-recip').count() === 12);
-T('۱۲: شمارندهٔ سرتیتر = ۱۲ تأمین‌کننده', (await page.locator('#iq-recip-more').textContent()).includes('۱۲'));
-T('۱۲: دکمه به «نمایش کمتر» + حالت open تغییر کرد', (await page.locator('#iq-more span').textContent()).includes('نمایش کمتر') && await page.locator('#iq-more.open').count() === 1);
-T('۱۲: بج انطباق روی هر ۱۲ ردیف', await page.locator('#iq-recips .iq-match').count() === 12);
-T('۱۲: انطباق نزولی در کل ۱۲ ردیف', await page.evaluate(() => {
+T('۱۲: لمس اول +۵ → ۱۰ ردیف', await page.locator('#iq-recips .iq-recip').count() === 10);
+T('۱۲: شمارندهٔ سرتیتر = ۱۰ تأمین‌کننده', (await page.locator('#iq-recip-more').textContent()).includes('۱۰'));
+T('۱۲: دکتهٔ بیشتر هنوز هست (فاز ۵۷: تا آخرِ لیست می‌ماند)', !(await page.locator('#iq-more').evaluate(b => b.hidden)));
+T('۱۲: بج انطباق روی ۱۰ ردیف', await page.locator('#iq-recips .iq-match').count() === 10);
+T('۱۲: انطباق نزولی در ۱۰ ردیف', await page.evaluate(() => {
   const ms = Array.from(document.querySelectorAll('#iq-recips .iq-recip')).map(r => +r.dataset.match);
-  return ms.length === 12 && ms.every((v, i) => i === 0 || ms[i - 1] >= v);
+  return ms.length === 10 && ms.every((v, i) => i === 0 || ms[i - 1] >= v);
 }));
 await shot('02-more-inline');
 /* تیک ردیف ششم (پخش برنج عطایی) */
 await page.click('#iq-recips .iq-recip:nth-child(6)'); await sleep(220);
 T('۱۲: تیک آزاد در تک‌قلمی — ارسال به ۴', (await page.locator('#rfq-send').textContent()).includes('۴'));
-await page.click('#iq-more'); await sleep(320); /* جمع‌کردن */
-T('۱۲: جمع‌کردن → ۵ ردیف + ردیف تیک‌خورده می‌ماند (۶)', await page.locator('#iq-recips .iq-recip').count() === 6);
-T('۱۲: دکمه به «مشاهدهٔ … بیشتر» برگشت', (await page.locator('#iq-more span').textContent()).includes('بیشتر'));
-
+await page.click('#iq-more'); await sleep(320); /* لمس دوم: +۵ دیگر (جمع‌کردن حذف شد) */
+T('۱۲: لمس دوم +۵ → همهٔ ۱۲ ردیف', await page.locator('#iq-recips .iq-recip').count() === 12);
+T('۱۲: آخرِ لیست = دکتهٔ بیشتر مخفی شد', await page.locator('#iq-more').evaluate(b => b.hidden));
 /* ═══ ۶. چندقلمی — اجماع درجا (تیک قفل + متن صادق) ═══ */
 await page.click('#iq-add'); await sleep(320);
 await page.click('[data-iqid="r4"]'); await sleep(220); /* پفک مینو */
@@ -107,8 +107,7 @@ T('۱۲: چندقلمی → متن اجماع دیده می‌شود', (await pa
 T('۱۲: چندقلمی → همهٔ ردیف‌ها data-lock (اجماع = همه گیرنده‌اند)', await page.locator('#iq-recips [data-lock]').count() === 12);
 await page.click('#iq-recips .iq-recip:nth-child(2)'); await sleep(200);
 T('۱۲: چندقلمی → تیک قفل است (کلیک تیک را خاموش نمی‌کند)', await page.locator('#iq-recips .checkbox.on').count() === 12);
-await page.click('#iq-more'); await sleep(300);
-T('۱۲: چندقلمی «بیشتر» → همهٔ ۱۲ دارندگان', await page.locator('#iq-recips .iq-recip').count() === 12 && await page.locator('#iq-recips .checkbox.on').count() === 12);
+T('۱۲: چندقلمی → همهٔ ۱۲ دارندگان بدون «بیشتر» (اجماع = همه گیرنده‌اند)', await page.locator('#iq-recips .iq-recip').count() === 12 && await page.locator('#iq-recips .checkbox.on').count() === 12);
 await shot('03-multi-inline');
 
 /* ═══ ۷. مدال «شرایط استفاده» ثبت‌نام ۱۶ (بازگردانی) ═══ */

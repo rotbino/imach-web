@@ -176,6 +176,26 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-05 .req-act { margin-right: auto; display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 800; color: var(--primary-strong); flex-shrink: 0; white-space: nowrap; }
   #scr-05 .req-act svg { width: 11px; height: 11px; }
 
+  /* ═══ فاز ۵۷ (مالک) — بخش «درخواست‌های آرشیو» (ردیف فشرده مثل پایان‌یافته‌های ۴۵)
+       + کادر راهنمای «بدون شبکه هم درخواست می‌رسد» (زیر لیست) ═══ */
+  #scr-05 .req-done { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 9px 11px; cursor: pointer; }
+  #scr-05 .req-done .rd-t { flex: 1; min-width: 0; }
+  #scr-05 .req-done .rd-t b { display: block; font-size: 11.5px; font-weight: 700; color: var(--stone-soft); line-height: 1.7; }
+  #scr-05 .req-done .rd-t span { display: block; font-size: 10px; color: var(--muted-fg); margin-top: 2px; }
+  #scr-05 .req-done > .badge { flex-shrink: 0; font-size: 9px; }
+  /* کادر راهنمای شبکه‌سازی — مشترک ۰۵ (فروشنده) و ۴۵ (خریدار): هر دو بازو بدون شبکه هم کار می‌کنند */
+  .netguide { display: flex; gap: 11px; align-items: flex-start; margin-top: 16px; padding: 11px 12px 12px; border-radius: 13px; border: 1px solid #eee1c9; background: linear-gradient(180deg, #fdf9f1, #fff 78%); }
+  .netguide .ng-ic { width: 36px; height: 36px; border-radius: 11px; background: var(--accent); color: var(--primary-strong); display: grid; place-items: center; flex-shrink: 0; }
+  .netguide .ng-ic svg { width: 17px; height: 17px; }
+  .netguide .ng-t { font-size: 12px; font-weight: 800; line-height: 1.7; }
+  .netguide .ng-s { font-size: 10.5px; color: var(--stone-soft); line-height: 1.95; margin-top: 3px; }
+
+  /* فاز ۵۷ — دو دکمهٔ کوچک زیر دکمهٔ اصلیِ ارسال پیشنهاد: آرشیو / حذف (مدال reqview) */
+  .reqv-side { display: flex; gap: 7px; margin-top: 8px; }
+  .reqv-side .btn { flex: 1; font-size: 11px; padding: 8px 10px; color: var(--stone-soft); }
+  .reqv-side .btn svg { width: 13px; height: 13px; }
+  .reqv-side .btn:active { background: var(--muted); }
+
 
   /* ═══ فاز ۴۵ — استعلام‌های خریدار (۴۵): کارت جاری + ردیف پایان‌یافته ═══ */
   #scr-45 .inq-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 11px 12px; cursor: pointer; }
@@ -1046,6 +1066,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-08 .bl-t { font-size: 14.5px; font-weight: 800; line-height: 1.6; }
   #scr-08 .bl-q { font-size: 11.5px; color: var(--muted-fg); margin-top: 4px; }
   #scr-08 .bl-meta { display: flex; align-items: center; gap: 13px; margin-top: 11px; flex-wrap: wrap; }
+  /* فاز ۵۷ (مالک) — استعلام تک‌کالایی از خودِ ردیف لیست خرید: همان کالا پیش‌فرض در ۱۲ ادد می‌شود */
+  #scr-08 .bl-inq { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border-strong); border-radius: 9px; background: #fff; color: var(--primary-strong); font-family: inherit; font-size: 10.5px; font-weight: 800; padding: 5px 10px; cursor: pointer; margin-right: auto; flex-shrink: 0; }
+  #scr-08 .bl-inq svg { width: 12px; height: 12px; }
+  #scr-08 .bl-inq:active { background: var(--accent); border-color: var(--primary); }
   #scr-08 .mm { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 800; color: var(--stone-soft); }
   #scr-08 .mm svg { width: 14px; height: 14px; color: var(--muted-fg); }
   #scr-08 .mm.hot { color: var(--red); }
@@ -1060,6 +1084,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* چیپ شهر با آیکون لوکیشن — رنگ متمایز (لیست خرید عمومی + کاتالوگ) */
   .city-chip { display: inline-flex; align-items: center; gap: 4px; color: var(--green); font-weight: 700; }
   .city-chip svg { width: 12.5px; height: 12.5px; }
+  /* فاز ۵۷ (مالک) — چیپ شهر بنر کاتالوگ: دکمه شد (مودال لوکیشن)؛ حالت «انتخاب نشده» =
+     نارنجی خط‌چین تا کاربر بفهمد باید انتخاب کند؛ مخفی‌شدن با سوییچر نمایش لوکیشن */
+  button.city-chip.cat-loc { border: 0; background: none; font-family: inherit; font-size: inherit; padding: 0; cursor: pointer; }
+  button.city-chip.cat-loc:active { opacity: .7; }
+  button.city-chip.cat-loc.unset { color: var(--primary-strong); border: 1px dashed var(--primary); border-radius: 8px; padding: 2px 8px; }
+  button.city-chip.cat-loc.unset svg { color: var(--primary-strong); }
+  #cat-loc-1[hidden] { display: none; } /* display:inline-flex کلاس، attribute را می‌خورد */
+  /* فاز ۵۷ — شیت لوکیشن: تیک ردیفِ انتخاب‌شده (الگوی sheet-biz/snf) */
+  #sheet-locat .sheet-row .check { display: none; color: var(--green); width: 18px; height: 18px; flex-shrink: 0; }
+  #sheet-locat .sheet-row.current .check { display: block; }
   /* کارت اینستاگرامی «درخواست‌های خرید جاری» (۲۳) — عکس بالا، نیاز زیر عکس */
   #scr-23 .rfq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   #scr-23 .rfq-card { border: 1px solid var(--border); border-radius: 15px; overflow: hidden; background: #fff; cursor: pointer; }
@@ -1374,9 +1408,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ═══ فاز ۵۶ — فرم ثبت‌نام (۱۶): «کدام دستیار فعال باشد» — دو سوییچر + آیکون اینفو ═══ */
   #scr-16 .lbl-row { display: flex; align-items: center; gap: 6px; }
   #scr-16 .lbl-row label { margin: 0; }
-  #scr-16 .lbl-row .info-ic { width: 21px; height: 21px; border-radius: 50%; border: 0; background: var(--stone-tint); color: var(--muted-fg); display: grid; place-items: center; cursor: pointer; padding: 0; flex-shrink: 0; }
-  #scr-16 .lbl-row .info-ic svg { width: 12.5px; height: 12.5px; }
-  #scr-16 .lbl-row .info-ic:active { background: var(--accent); color: var(--primary-strong); }
+  /* فاز ۵۷ (مالک) — آیکون اینفورمیشن «کدام دستیار…»: بدون دایرهٔ دور، خودِ آیکون بزرگ‌تر
+     و نارنجی تا به چشم بیاید (قبلاً دایرهٔ خاکستری کوچک بود و گم می‌شد) */
+  #scr-16 .lbl-row .info-ic { width: 26px; height: 26px; border-radius: 0; border: 0; background: transparent; color: var(--primary-strong); display: grid; place-items: center; cursor: pointer; padding: 0; flex-shrink: 0; }
+  #scr-16 .lbl-row .info-ic svg { width: 19px; height: 19px; }
+  #scr-16 .lbl-row .info-ic:active { color: var(--primary); opacity: .7; }
   #scr-16 .su-as { border: 1px solid var(--border); border-radius: 12px; padding: 3px 12px; }
   #scr-16 .su-as .as-row { display: flex; align-items: center; gap: 11px; padding: 11px 0; border-bottom: 1px solid #f0eee8; }
   #scr-16 .su-as .as-row:last-of-type { border-bottom: 0; }
@@ -1772,6 +1808,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .iq-recip .cs { font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
   .iq-recip .iq-cov, .iq-recip .iq-match { font-size: 9px; padding: 1px 6px; }
   .iq-sorthint { margin: -3px 2px 9px; font-size: 10px; color: var(--muted-fg); line-height: 1.8; }
+  /* فاز ۵۷ (مالک) — «توضیح برای فروشنده» دو برابر: ارتفاع ثابتِ ۷۶px (css/style.css) → ۱۵۲px؛
+     rows=6 معنایی است اما height ملاک رندر است — بدون اسکرولِ پیش‌فرض */
+  #scr-12 #iq-note { height: 152px; resize: vertical; }
+  /* فاز ۵۷ (مالک) — نوار فیلتر ظریف روی لیست «ارسال به چه کسانی؟»: مرتب‌سازی زنده */
+  .iq-fbar { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 2px; }
+  .iq-fbar .chip { background: #fff; border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px; font-size: 10.5px; font-weight: 700; color: var(--stone-soft); cursor: pointer; font-family: inherit; }
+  .iq-fbar .chip.active { background: var(--accent); border-color: var(--primary); color: var(--primary-strong); }
+  /* نشان «ذخیره‌شده» روی ردیف تأمین‌کننده — معنا و دلیلِ فیلتر «ذخیره‌شده‌ها» را روشن می‌کند */
+  .iq-recip .iq-sv { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; padding: 2px 7px; background: var(--green-bg); color: var(--green); }
+  .iq-recip .iq-sv svg { width: 10px; height: 10px; }
   .iq-recip.locked { opacity: .62; cursor: default; }
   .iq-locknote { margin: 0 2px 10px; font-size: 10.5px; color: var(--muted-fg); background: var(--muted); border-radius: 10px; padding: 8px 11px; line-height: 1.8; }
 
@@ -1861,14 +1907,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .cat-promo .cp-ic { width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; }
   .cat-promo .cp-ic svg { width: 15px; height: 15px; color: var(--primary-strong); }
   .cat-promo small { display: block; font-size: 10.5px; color: var(--muted-fg); line-height: 1.85; }
-  .cat-addrow { display: flex; gap: 8px; margin-top: 10px; }
-  .cat-addrow .btn { white-space: nowrap; height: 44px; font-size: 12.5px; padding: 0 10px; }
+  .cat-addrow { display: flex; gap: 7px; margin-top: 10px; }
+  /* فاز ۵۷ (مالک) — کلمهٔ «تنظیمات» کنار آیکون چرخ‌دنده؛ هر سه دکته فونت ریزتر تا جا شوند */
+  .cat-addrow .btn { white-space: nowrap; height: 44px; font-size: 11px; padding: 0 8px; }
   .cat-addrow .add-btn { flex: 1.14; }
-  .cat-addrow .add-btn svg { width: 20px; height: 20px; }
+  .cat-addrow .add-btn svg { width: 17px; height: 17px; }
   .cat-addrow .renew-btn { flex: 1; color: var(--primary-strong); }
-  .cat-addrow .renew-btn svg { width: 14px; height: 14px; }
-  .cat-addrow .cat-set { width: 46px; flex: 0 0 46px; height: 44px; border-radius: 10px; }
-  .cat-addrow .cat-set svg { width: 16px; height: 16px; }
+  .cat-addrow .renew-btn svg { width: 13px; height: 13px; }
+  .cat-addrow .cat-set { width: auto; flex: 0 0 auto; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: inherit; font-size: 11px; font-weight: 800; padding: 0 10px; }
+  .cat-addrow .cat-set svg { width: 15px; height: 15px; }
+  .cat-addrow .cat-set .cs-lbl { white-space: nowrap; }
   /* فاز ۵۳ — نوار آمار بالای کاتالوگ (سمت فروشنده): پیش‌نمایش/کالا/ذخیره‌کننده/دعوت — هرکدام لمس‌پذیر */
   .cat-stats { display: flex; gap: 7px; margin-top: 11px; }
   .cat-stats button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 8px 4px 7px; background: #fff; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-family: inherit; min-width: 0; }
@@ -1934,6 +1982,24 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .qr-wrap { position: relative; width: 176px; height: 176px; margin: 14px auto 4px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 11px; }
   .qr-wrap svg { width: 100%; height: 100%; display: block; }
   .qr-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; background: #fff; border-radius: 10px; border: 3px solid #fff; box-shadow: 0 0 0 1.5px rgba(42,39,35,.12); }
+  /* ═══ فاز ۵۷ — کارت ویزیت (شیت bcard): هویت + تماس + QR کاتالوگ در یک کارت ═══ */
+  .bcard { border: 1px solid #eee1c9; border-radius: 16px; background: linear-gradient(160deg,#fdf9f1,#fff 70%); padding: 13px; margin-top: 12px; }
+  .bcard .bc-id { display: flex; gap: 11px; align-items: center; }
+  .bcard .bc-id .avatar-lg { width: 52px; height: 52px; flex-shrink: 0; }
+  .bcard .bc-meta { flex: 1; min-width: 0; }
+  .bcard .bc-meta b { display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 800; line-height: 1.6; }
+  .bcard .bc-meta b svg { width: 14px; height: 14px; color: #1d5fb8; flex-shrink: 0; }
+  .bcard .bc-meta > span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .bcard .bc-ct { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .bcard .bc-ct svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .bcard .bc-ct i { font-style: normal; color: var(--border-strong); }
+  .bcard .bc-qr { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #eadfc4; }
+  .bcard .bc-qr > svg { width: 86px; height: 86px; padding: 6px; background: #fff; border: 1px solid var(--border); border-radius: 10px; flex-shrink: 0; }
+  .bcard .bc-qr-tx { flex: 1; min-width: 0; }
+  .bcard .bc-qr-tx b { display: block; font-size: 12px; font-weight: 800; }
+  .bcard .bc-qr-tx span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 4px; line-height: 1.9; }
+  .bcard .bc-foot { margin-top: 11px; text-align: center; font-size: 9.5px; color: var(--muted-fg); }
+  .bcard .bc-foot b { color: var(--primary-strong); }
 
   /* تابلوی تأمین (۰۹) — قیمت منقضی: ردیف جمع‌شونده + کارت خط‌خورده */
   .stale-bar { display: flex; align-items: center; gap: 10px; width: 100%; text-align: right; cursor: pointer; font-family: inherit; }
@@ -2062,12 +2128,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- هدر ویترین — فاز ۵۲/۵۳ (مالک): ویترین فقط هویت است؛ آمارِ کاتالوگ زیر آن (مثل کاتالوگ عمومی) -->
+      <!-- هدر ویترین — فاز ۵۲/۵۳ (مالک): ویترین فقط هویت است؛ آمارِ کاتالوگ زیر آن (مثل کاتالوگ عمومی)
+           فاز ۵۷ (مالک): چیپ شهر لمس‌پذیر شد — مودال «انتخاب لوکیشن» را باز می‌کند؛ اگر لوکیشن
+           انتخاب نشده باشد چیپ می‌گوید «لوکیشن را انتخاب کنید» (نارنجی و خط‌چین). -->
       <div class="showcase">
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-          <div class="sub">پخش مواد غذایی · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-orange">عمده‌فروش</span></div>
+          <div class="sub">پخش مواد غذایی · <button class="city-chip cat-loc" id="cat-loc-1" type="button" data-sheet="sheet-locat" title="انتخاب لوکیشن کاتالوگ"><svg><use href="#i-pin"/></svg> <span id="cat-loc-name">رشت</span></button> <span class="badge b-orange">عمده‌فروش</span></div>
         </div>
       </div>
 
@@ -2098,7 +2166,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="cat-addrow">
         <button class="btn btn-primary add-btn" type="button"><svg><use href="#i-plus"/></svg> افزودن کالای جدید</button>
         <button class="btn btn-outline renew-btn" type="button" data-go="44" title="قیمت‌ها را تازه کن یا تغییر بده"><svg><use href="#i-percent"/></svg> تمدید سریع قیمت‌ها</button>
-        <button class="icon-btn cat-set" type="button" data-sheet="sheet-cset" aria-label="تنظیمات کاتالوگ" title="تنظیمات کاتالوگ"><svg><use href="#i-gear"/></svg></button>
+        <button class="icon-btn cat-set" type="button" data-sheet="sheet-cset" aria-label="تنظیمات کاتالوگ" title="تنظیمات کاتالوگ"><svg><use href="#i-gear"/></svg><span class="cs-lbl">تنظیمات</span></button>
       </div>
 
       <!-- جستجو — تمام‌عرض (تنظیمات به ردیف بالا رفت — فاز ۵۳) -->
@@ -2488,11 +2556,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body">
 
       <div class="sec-title" style="margin-top:4px">
-        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید <span class="cnt">(۳)</span></h2>
+        <h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید جاری <span class="cnt">(۳)</span></h2>
       </div>
 
 
-      <div class="rows">
+      <div class="rows" id="rq-cur">
 
         <!-- ═══ فاز ۴۹ — کارت درخواست بازطراحی: خریدار خودش این فروشنده را تیک زده و استعلام
              مستقیم آمده («تقاضای منطبق با تو» حذف شد — القای تطبیق خودکار در MVP دروغ است).
@@ -2573,6 +2641,32 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
       </div>
+
+      <!-- ═══ فاز ۵۷ (مالک) — آرشیو درخواست‌ها: فروشنده شاید فعلاً نخواهد قیمت بدهد؛
+           آرشیو = بعداً شاید به درد بخورد (فصل کم‌مشتری). جاری‌ها بالا، آرشیو پایین.
+           آرشیو از خود مودال درخواست (دکمهٔ کوچک «آرشیو») یا این‌جا جمع می‌شود. ═══ -->
+      <div class="sec-title" style="margin-top:16px">
+        <h2><svg><use href="#i-archive"/></svg> درخواست‌های آرشیو</h2>
+      </div>
+      <div class="rows" id="rq-arch">
+        <div class="req-done" style="cursor:default">
+          <div class="thumb" style="width:40px;height:40px"><img src="png/goods/sugar-cubes.jpg" alt="قند یکتا"></div>
+          <div class="rd-t"><b>قند یکتا · ۱۰ کیسهٔ ۱۰ کیلویی</b><span>پخش نگین · ۳ هفته پیش آرشیو شد</span></div>
+          <span class="badge b-muted">آرشیو</span>
+        </div>
+      </div>
+
+      <!-- ═══ فاز ۵۷ (مالک) — کادر راهنمای پایین لیست: پیام ورود فروشنده — هم درخواست‌های
+           ورودی را می‌فهمد و هم می‌داند بدون هیچ شبکه‌ای می‌تواند از مشتریان خودش درخواست
+           بخواهد (کاتالوگ → ثبت‌نام مشتری → ارسال درخواست). متن عیناً از مالک. ═══ -->
+      <div class="netguide" id="rq-guide">
+        <span class="ng-ic"><svg><use href="#i-share"/></svg></span>
+        <div>
+          <div class="ng-t">بدون شبکه هم از مشتریان خودت درخواست خرید بگیر</div>
+          <div class="ng-s">کاتالوگ خود را برای مشتریان خود بفرستید و از آنها بخواهید تا ثبت‌نام کنند تا بتوانند درخواست‌های خرید خود را برای شما ارسال کنند.</div>
+        </div>
+      </div>
+
       <!-- فاز ۴۴-فیکس: یک </div> زائد (باقی‌ماندهٔ پیرایش ۰۵) اینجا بود و #phone را زودتر از موعد
            می‌بست → همهٔ صفحه‌های ۰۷ به بعد بیرون از قاب گوشی رندر می‌شدند و انباشته می‌شدند -->
 
@@ -2769,6 +2863,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <span class="mm" title="تأمین‌کنندگان این کالا"><svg><use href="#i-users"/></svg>۳</span>
               <span class="mm" title="استعلام جاری"><svg><use href="#i-inbox"/></svg>۱</span>
               <span class="mm hot" title="پیشنهادهای جدید"><svg><use href="#i-spark"/></svg>۳</span>
+              <button class="bl-inq" type="button" data-binq="g1" title="استعلام قیمت همین کالا"><svg><use href="#i-send"/></svg> استعلام قیمت</button>
             </div>
           </div>
         </div>
@@ -2783,6 +2878,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <span class="mm" title="تأمین‌کنندگان این کالا"><svg><use href="#i-users"/></svg>۲</span>
               <span class="mm" title="استعلام جاری"><svg><use href="#i-inbox"/></svg>۱</span>
               <span class="mm hot" title="پیشنهادهای جدید"><svg><use href="#i-spark"/></svg>۱</span>
+              <button class="bl-inq" type="button" data-binq="r2" title="استعلام قیمت همین کالا"><svg><use href="#i-send"/></svg> استعلام قیمت</button>
             </div>
           </div>
         </div>
@@ -2794,6 +2890,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="bl-q">۶۰ عدد ۵۰۰ گرمی · هفتگی</div>
             <div class="bl-meta">
               <span class="mm" title="تأمین‌کنندگان این کالا"><svg><use href="#i-users"/></svg>۱</span>
+              <button class="bl-inq" type="button" data-binq="r6" title="استعلام قیمت همین کالا"><svg><use href="#i-send"/></svg> استعلام قیمت</button>
             </div>
           </div>
         </div>
@@ -2806,6 +2903,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="bl-q">۱۰ کارتن ۱۰ کیلویی · ماهانه</div>
             <div class="bl-meta">
               <span class="mm" title="تأمین‌کنندگان این کالا"><svg><use href="#i-users"/></svg>۰</span>
+              <button class="bl-inq" type="button" data-binq="r5" title="استعلام قیمت همین کالا"><svg><use href="#i-send"/></svg> استعلام قیمت</button>
             </div>
           </div>
         </div>
@@ -2976,7 +3074,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- اکشن اصلی: استعلام قیمت از چند تأمین‌کننده -->
     <div class="action-bar">
-      <button class="btn btn-stone btn-block" data-go="12">
+      <!-- فاز ۵۷ (مالک) — استعلام از تابلوی همین کالا: خودِ کالا (g1 = برنج هاشمی)
+           پیش‌فرض در فرم ۱۲ ادد می‌شود (data-iqgood) — کاربر فقط مقدار و تأمین‌کننده را تعیین می‌کند -->
+      <button class="btn btn-stone btn-block" data-go="12" data-iqgood="g1">
         <svg><use href="#i-send"/></svg>
         استعلام قیمت از تأمین‌کننده‌های انتخابی
       </button>
@@ -3167,8 +3267,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
          «افزودن کالا» مودال کامل باز می‌کند (اول کالاهای لیست خریدِ خودت — ۹۰٪ استعلام‌ها از
          همان‌هاست؛ بعد پرتکرار صنفت) و هر کالای تازه که انتخاب شود هم‌زمان به لیست خرید
          می‌نشیند (بج «+ به لیست خرید») — کاربر از مسائل پشت پرده خبردار نمی‌شود.
-         مهلت پاسخ ۱-۵ روز، پیش‌فرض ۵. تأمین‌کننده‌ها داده‌محور: ۵تای اول در فرم (اولی
-         فروشندهٔ ویژه) + «مشاهدهٔ تأمین‌کنندگان بیشتر».
+         مهلت پاسخ ۱-۵ روز، پیش‌فرض ۳ (فاز ۵۷ — مالک). تأمین‌کننده‌ها داده‌محور: ۵تای اول در فرم (اولی
+         فروشندهٔ ویژه) + «تأمین‌کنندگان بیشتر» (+۵ تای دیگر در هر لمس — فاز ۵۷).
          فاز ۵۴ (مالک) — «بیشتر» به‌جای مودال، همان‌جا تا ۲۰ ردیف لود می‌کند (مودال گیج‌کننده
          بود) و هر ردیف بج «درصد انطباق» دارد تا دلیلِ ترتیب روشن باشد.
          IMPLEMENTATION NOTE: Inquiry { goodId, qty, note, deadlineDays(1-5, def 5) } +
@@ -3185,17 +3285,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <button class="iq-add" id="iq-add" type="button"><svg><use href="#i-plus"/></svg><span>افزودن کالا</span></button>
 
       <!-- فاز ۵۱ — مهلت پاسخ: دکمه‌های ۱-۴ روز + «بیشتر» که ورودی عددی دلخواه را باز می‌کند
-           (حداکثر دو رقم، تا ۹۹ روز). پیش‌فرض همچنان ۵ روز است — همان حالتِ «بیشتر» با ورودی ۵. -->
+           (حداکثر دو رقم، تا ۹۹ روز). پیش‌فرض = ۳ روز (فاز ۵۷ — مالک): دکمهٔ «۳ روز» فعال؛ ورودی «بیشتر» فقط با انتخاب خود کاربر باز می‌شود. -->
       <div class="field">
         <label>مهلت پاسخ</label>
         <div class="pillchoice" id="iq-deadline">
           <button class="pill" type="button">۱ روز</button>
           <button class="pill" type="button">۲ روز</button>
-          <button class="pill" type="button">۳ روز</button>
+          <button class="pill active" type="button">۳ روز</button>
           <button class="pill" type="button">۴ روز</button>
-          <button class="pill active" id="iq-dlmore" type="button">بیشتر</button>
+          <button class="pill" id="iq-dlmore" type="button">بیشتر</button>
         </div>
-        <div class="iq-dlmore open" id="iq-dlbox">
+        <div class="iq-dlmore" id="iq-dlbox">
           <div class="input gf-num" style="height:40px">
             <input id="iq-dlnum" inputmode="numeric" autocomplete="off" value="۵" aria-label="مهلت پاسخ به روز — حداکثر ۹۹">
             <span class="suffix">روز</span>
@@ -3206,17 +3306,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <div class="field">
         <label>توضیح برای فروشنده <span class="opt">— اختیاری</span></label>
-        <!-- فاز ۵۴ — پلیس‌هولدر دقیق مالک: به خریدار می‌گوید چه چیزهایی بنویسد تا پیشنهاد دقیق‌تر بگیرد -->
-        <textarea class="input" id="iq-note" rows="3" placeholder="جزئیات درخواست مانند کیفیت، شرایط پرداخت، نحوه تحویل یا هر توضیح یا سوال دیگری را می توانید اینجا اضافه کنید تا پیشنهادات و جوابهای دقیقتری دریافت کنید."></textarea>
+        <!-- فاز ۵۴ — پلیس‌هولدر دقیق مالک: به خریدار می‌گوید چه چیزهایی بنویسد تا پیشنهاد دقیق‌تر بگیرد.
+             فاز ۵۷ (مالک) — ارتفاع دو برابر (۶ سطر) تا متن بلند بدون اسکرولِ پیش‌فرض جا شود -->
+        <textarea class="input" id="iq-note" rows="6" placeholder="جزئیات درخواست مانند کیفیت، شرایط پرداخت، نحوه تحویل یا هر توضیح یا سوال دیگری را می توانید اینجا اضافه کنید تا پیشنهادات و جوابهای دقیقتری دریافت کنید."></textarea>
       </div>
 
-      <!-- تأمین‌کننده‌ها — فاز ۴۹: داده‌محور؛ ۵تای اول این‌جا؛ فاز ۵۴: «بیشتر» درجا لود می‌شود (نه مودال)
-           + بج درصد انطباق روی هر ردیف تا معنیِ ترتیب برای کاربر روشن باشد -->
+      <!-- تأمین‌کننده‌ها — فاز ۴۹: داده‌محور؛ فاز ۵۴: «بیشتر» درجا لود می‌شود (نه مودال)
+           + بج درصد انطباق روی هر ردیف تا معنیِ ترتیب برای کاربر روشن باشد.
+           فاز ۵۷ (مالک) — ۵تای اول به‌صورت پیش‌فرض؛ «تأمین‌کنندگان بیشتر» هر بار ۵ تای دیگر را
+           می‌افزاید (کلمهٔ «مشاهدهٔ» حذف شد) و تا رسیدن به آخر می‌ماند. نوار فیلتر ظریف:
+           منطبق‌ترین / ذخیره‌شده‌ها / نزدیک‌ترین / ارزان‌ترین — مرتب‌سازی زندهٔ همین لیست. -->
       <div class="sec-title"><h2 id="iq-recip-h">ارسال به چه کسانی؟</h2><span class="more" id="iq-recip-more">۵ تأمین‌کنندهٔ این کالا</span></div>
-      <div class="iq-sorthint">مرتب‌شده بر اساس درصد انطباق با درخواست شما</div>
+      <div class="iq-fbar" id="iq-fbar">
+        <button class="chip active" type="button" data-iqf="match">منطبق‌ترین</button>
+        <button class="chip" type="button" data-iqf="saved">ذخیره‌شده‌ها</button>
+        <button class="chip" type="button" data-iqf="near">نزدیک‌ترین</button>
+        <button class="chip" type="button" data-iqf="cheap">ارزان‌ترین</button>
+      </div>
+      <div class="iq-sorthint" id="iq-sorthint">مرتب‌شده بر اساس درصد انطباق با درخواست شما</div>
       <div id="iq-recips"></div>
       <button class="iq-more" id="iq-more" type="button">
-        <span>مشاهدهٔ تأمین‌کنندگان بیشتر</span>
+        <span>تأمین‌کنندگان بیشتر</span>
         <svg><use href="#i-chev"/></svg>
       </button>
 
@@ -3259,7 +3369,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <!-- فاز ۲۲ — IMPLEMENTATION NOTE (Presence): خریدار قبل از شروع چت می‌فهمد فروشنده همین الان آنلاین است.
                  حضورِ لحظه‌ای انگیزهٔ ماندگاری آنلاین کاربران در آیمچ است؛ حالت آفلاین: چیپ خاکستری + «آخرین بازدید …». -->
             <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg> <span class="presence on"><i></i>آنلاین</span></div>
-            <div class="sub">به مدیریت علی امینی · پخش مواد غذایی · رشت · <span class="badge b-orange">عمده‌فروش</span></div>
+            <div class="sub">به مدیریت علی امینی · پخش مواد غذایی · <span id="cat-loc-13">رشت</span> · <span class="badge b-orange">عمده‌فروش</span></div>
           </div>
         </div>
 
@@ -3467,6 +3577,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
         <div>پیشنهادهای هر استعلام همین‌جا کنار هم جمع و قابل مقایسه می‌شوند — «گفتگو» فقط وقتی باز می‌شود که به یک پیشنهاد جواب بدهی. استعلام تک‌قلمی و چندقلمی هر دو با «استعلام جدید» ساخته می‌شوند.</div>
+      </div>
+
+      <!-- ═══ فاز ۵۷ (مالک) — کادر راهنمای پایین لیست استعلام‌ها (سمت خریدار، قرینهٔ ۰۵):
+           پلتفرم بدون شبکه هم برای خریدار کار می‌کند — لیست خرید را با تأمین‌کنندگان خودش
+           به اشتراک بگذارد؛ عضویتشان = کاتالوگشان خودکار ذخیرهٔ او می‌نشیند + استعلام گروهی
+           قیمت رقابتی می‌گیرد. متن عیناً از مالک. ═══ -->
+      <div class="netguide" id="inq-guide">
+        <span class="ng-ic"><svg><use href="#i-share"/></svg></span>
+        <div>
+          <div class="ng-t">بدون شبکه هم از تأمین‌کنندگان خودت قیمت بگیر</div>
+          <div class="ng-s">با اشتراک‌گذاری لیست خریدتان به تأمین‌کنندگان خود و درخواست از آنها برای عضویت و ایجاد کاتالوگ قیمت، هم می‌توانید کاتالوگ قیمت‌های آنها را همیشه داشته باشید و هم می‌توانید با ایجاد استعلام گروهی، از آنها بخواهید قیمت رقابتی برایتان ارسال کنند. اگر از لینک خرید شما ثبت‌نام کنند، کاتالوگشان به‌صورت خودکار در کاتالوگ‌های ذخیره‌شدهٔ شما قرار می‌گیرد.</div>
+        </div>
       </div>
 
     </main>
@@ -5307,6 +5429,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <b id="reqv-sum">—</b>
   </div>
   <button class="btn btn-primary sheet-cta" id="reqv-send"><svg><use href="#i-send"/></svg> ارسال پیشنهاد</button>
+  <!-- ═══ فاز ۵۷ (مالک) — دو دکمهٔ کوچک زیر دکتهٔ اصلی: فروشنده شاید اصلاً نخواهد قیمت بدهد.
+       حذف = کلاً حذف می‌شود · آرشیو = در «درخواست‌های آرشیو» (پایین ۰۵) می‌ماند — بعداً
+       شاید به درد بخورد. دکتهٔ بزرگ = همان ارسال پیشنهاد (اقدام اصلی). ═══ -->
+  <div class="reqv-side" id="reqv-side">
+    <button class="btn btn-outline" type="button" data-rqarch><svg><use href="#i-archive"/></svg> آرشیو درخواست</button>
+    <button class="btn btn-outline" type="button" data-rqdel><svg><use href="#i-trash"/></svg> حذف</button>
+  </div>
 </div>
 
 <!-- ═══ فاز ۵۱ — شیت «جزئیات پیشنهاد» (خریدار، از لیست ۴۸): دیتای کامل همان پیشنهاد —
@@ -5510,9 +5639,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>کد QR کاتالوگ</b><span>چاپ روی فاکتور، پیشخوان و کارت ویزیت</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" data-go="19">
-    <span class="ico"><svg><use href="#i-msg"/></svg></span>
-    <span class="tx"><b>ارسال در پیام‌های ای‌مچ</b><span>فرستادن لینک داخل یکی از گفتگوهایت</span></span>
+  <!-- فاز ۵۷ (مالک) — «ارسال در پیام‌های ای‌مچ» حذف شد؛ به‌جایش کارت ویزیت با کد QR
+       و دکمهٔ «ارسال کارت ویزیت» — همان دعوت است، ولی رودررو و قابل چاپ/ارسال -->
+  <button class="sheet-row" data-sheet="sheet-bcard">
+    <span class="ico"><svg><use href="#i-user"/></svg></span>
+    <span class="tx"><b>کارت ویزیت</b><span>کارت شما با کد QR — ارسال به مشتریان</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
@@ -5604,6 +5735,38 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
+<!-- ═══ فاز ۵۷ (مالک) — کارت ویزیت: جایگزین «ارسال در پیام‌های ای‌مچ» در منوی اشتراک.
+     کارت = هویت + تماس + کد QR کاتالوگ؛ دکتهٔ «ارسال کارت ویزیت» در پیادهٔ عملیاتی کارت را
+     برای مخاطب می‌فرستد (پیامک/اشتراک گوشی). فروشندهٔ عمده رودررو کارت می‌دهد — QR همان
+     دعوت با لینک است (به‌ازای هر عضو ۱۰۰ هزار تومان شارژ). الگوی QR با بذر قطعی (qrPaint). ═══ -->
+<div class="sheet" id="sheet-bcard" role="dialog" aria-label="کارت ویزیت">
+  <div class="grab"></div>
+  <h3>کارت ویزیت شما</h3>
+  <div class="sub">مشتری با یک اسکن، کاتالوگ و تماس شما را در گوشی‌اش دارد</div>
+  <div class="bcard">
+    <div class="bc-id">
+      <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+      <div class="bc-meta">
+        <b>پخش برنج پارس <svg class="ver"><use href="#i-verified"/></svg></b>
+        <span>به مدیریت احمد رضایی</span>
+        <span>پخش مواد غذایی · عمده‌فروش</span>
+        <span class="bc-ct"><svg><use href="#i-phone"/></svg> ۰۹۱۲ ۳۴۵ ۶۷۸۹ <i>·</i> <svg><use href="#i-pin"/></svg> رشت</span>
+      </div>
+    </div>
+    <div class="bc-qr">
+      <svg id="bqr-svg" viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"></svg>
+      <div class="bc-qr-tx">
+        <b dir="ltr">imach.ir/c/pars-rice</b>
+        <span>اسکن = کاتالوگ زندهٔ شما؛ قیمت‌های تازه همیشه همراه مشتری است</span>
+      </div>
+    </div>
+    <div class="bc-foot">ساخته‌شده با <b>iMach</b> — ساخت کاتالوگ رایگان و دستیار خرید و فروش عمده</div>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-bcardsend type="button"><svg><use href="#i-send"/></svg> ارسال کارت ویزیت</button>
+  <div class="hintnote">در پیاده‌سازی عملیاتی، «ارسال کارت ویزیت» کارت را به‌صورت تصویر آماده برای مخاطب می‌فرستد (پیامک یا اشتراک گوشی) — مخاطب با ثبت‌نام از لینک شما، کاتالوگتان خودکار ذخیرهٔ او می‌نشیند.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
 <!-- ═══ ۴) تنظیمات کاتالوگ ═══ -->
 <div class="sheet" id="sheet-cset" role="dialog" aria-label="تنظیمات کاتالوگ">
   <div class="grab"></div>
@@ -5618,7 +5781,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
   <button class="sheet-row" data-sheet="sheet-cedit">
     <span class="ico"><svg><use href="#i-pencil"/></svg></span>
-    <span class="tx"><b>ویرایش کاتالوگ</b><span>نام، عکس، لوکیشن و گروه‌های کالا</span></span>
+    <span class="tx"><b>ویرایش کاتالوگ</b><span>نام، عکس و لوکیشن</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <!-- فاز ۵۷ (مالک) — گروه‌های کالا مستقیم در منوی تنظیمات (قبلاً فقط زیر «ویرایش کاتالوگ») -->
+  <button class="sheet-row" data-sheet="sheet-pgroups">
+    <span class="ico"><svg><use href="#i-tag"/></svg></span>
+    <span class="tx"><b>گروه‌های کالا</b><span>۳ گروه: هاشمی · طارم · فجر — افزودن و مدیریت</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-sheet="sheet-vol">
@@ -6125,6 +6294,35 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </div>
   <div class="sheet-row">
     <span class="tx"><b>کرج</b><span>البرز</span></span>
+  </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۵۷ (مالک) — مودال «انتخاب لوکیشن کاتالوگ»: چیپ شهرِ بنر کاتالوگ (۰۱) این را باز
+     می‌کند. اگر لوکیشن انتخاب نشده باشد چیپ می‌گوید «لوکیشن را انتخاب کنید». پایینِ مودال
+     سوییچر «نمایش لوکیشن» هست (پیش‌فرض روشن) — فروشنده می‌تواند شهرش را از کاتالوگ پنهان کند.
+     IMPLEMENTATION NOTE: انتخاب ردیف = همان لحظه چیپ بنر (۰۱) و کاتالوگ عمومی (۱۳) هم‌گام
+     می‌شوند و شیت بسته می‌شود؛ سوییچر فقط نمایش را کنترل می‌کند (نه داده را). ═══ -->
+<div class="sheet" id="sheet-locat" role="dialog" aria-label="انتخاب لوکیشن کاتالوگ">
+  <div class="grab"></div>
+  <h3>انتخاب لوکیشن</h3>
+  <div class="sub">شهر کاتالوگ — خریداران محل تحویل را همین‌جا می‌بینند</div>
+  <div class="searchbar" style="margin-top:11px">
+    <svg><use href="#i-search"/></svg>
+    <input id="locat-q" type="text" placeholder="جستجوی شهر…" autocomplete="off">
+  </div>
+  <div id="locat-rows">
+    <button class="sheet-row" type="button" data-locat="رشت"><span class="tx"><b>رشت</b><span>گیلان</span></span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg></button>
+    <button class="sheet-row" type="button" data-locat="تهران"><span class="tx"><b>تهران</b><span>تهران</span></span></button>
+    <button class="sheet-row" type="button" data-locat="مشهد"><span class="tx"><b>مشهد</b><span>خراسان رضوی</span></span></button>
+    <button class="sheet-row" type="button" data-locat="اصفهان"><span class="tx"><b>اصفهان</b><span>اصفهان</span></span></button>
+    <button class="sheet-row" type="button" data-locat="شیراز"><span class="tx"><b>شیراز</b><span>فارس</span></span></button>
+    <button class="sheet-row" type="button" data-locat="تبریز"><span class="tx"><b>تبریز</b><span>آذربایجان شرقی</span></span></button>
+    <button class="sheet-row" type="button" data-locat="کرج"><span class="tx"><b>کرج</b><span>البرز</span></span></button>
+  </div>
+  <div class="reqv-tg" style="margin-top:13px">
+    <div class="tg-tx"><b>نمایش لوکیشن در کاتالوگ</b><span>خاموش کنید تا شهر شما از خریداران پنهان بماند</span></div>
+    <div class="toggle on" id="locat-sw" role="switch" aria-label="نمایش لوکیشن در کاتالوگ"></div>
   </div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
@@ -7464,7 +7662,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
        سمت فروشنده فقط اقلامِ موجودِ خودش دیده می‌شود (حریم سبد خریدار). */
 
   /* ── سازندهٔ استعلام (۱۲) — IQ ── */
-  var IQ = { q: '', items: [], touched: false, dl: 5, sel: { s1: 1, s2: 1, s3: 1 }, _all: 0 }; /* فاز ۵۴: _all = لیستِ «تأمین‌کنندگان بیشتر» باز است */
+  var IQ = { q: '', items: [], touched: false, dl: 3, sel: { s1: 1, s2: 1, s3: 1 }, _n: 5, filter: 'match' }; /* فاز ۵۷ (مالک): مهلت پیش‌فرض ۳ · _n = ۵ ردیف اول، «تأمین‌کنندگان بیشتر» هر بار +۵ · filter = نوار فیلتر ظریف */
   var IQ_UNIT = { g1: 'کیسه', g2: 'کیسه', g3: 'کیسه', g4: 'عدد', g5: 'کارتن', g6: 'کیسه', g7: 'عدد' };
 
   /* لیست خریدِ خریدار (۰۸) — دمو: برنج هاشمی، روغن لادن، قند یکتا، رب چین‌چین.
@@ -7479,18 +7677,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۵۴ — match = درصد انطباق با درخواست (قیمت/پوشش/نزدیکی ترکیبی). نزولی در طول آرایه =
      همان ترتیب نمایش؛ بج روی هر ردیف به کاربر می‌گوید چرا این‌طور سورت شده. vip مستقل است (تبلیغ). */
   var SUP = [
-    { id: 's1', name: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 'دیگر استان', price: '۲٬۹۲۰٬۰۰۰', verified: 1, vip: 1, cov: 3, match: 96 },
-    { id: 's2', name: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۵۰٬۰۰۰', verified: 1, cov: 3, match: 93 },
-    { id: 's3', name: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 'هم‌استان', price: '۳٬۰۰۰٬۰۰۰', verified: 0, cov: 2, match: 88 },
-    { id: 's4', name: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۷۸۰٬۰۰۰', verified: 0, cov: 3, match: 86 },
-    { id: 's5', name: 'غلات سبزدشت', init: 'غ', av: '#65a30d', city: 'مشهد', dist: 'دیگر استان', price: '۲٬۹۶۰٬۰۰۰', verified: 0, cov: 1, match: 81 },
-    { id: 's6', name: 'پخش برنج عطایی', init: 'ع', av: '#b45309', city: 'تبریز', dist: 'دیگر استان', price: '۲٬۹۱۰٬۰۰۰', verified: 0, cov: 1, match: 76 },
-    { id: 's7', name: 'برنج انار باغ', init: 'ب', av: '#9333ea', city: 'انار', dist: 'دیگر استان', price: '۲٬۸۷۵٬۰۰۰', verified: 0, cov: 2, match: 72 },
-    { id: 's8', name: 'غلات زرین دشت', init: 'ز', av: '#0284c7', city: 'کرمان', dist: 'دیگر استان', price: '۲٬۹۴۵٬۰۰۰', verified: 1, vip: 1, cov: 2, match: 68 },
-    { id: 's9', name: 'پخش گیلانه', init: 'گ', av: '#dc2626', city: 'رشت', dist: 'هم‌شهری', price: '۲٬۸۳۰٬۰۰۰', verified: 0, cov: 3, match: 64 },
-    { id: 's10', name: 'برنج شمال شرق', init: 'ش', av: '#059669', city: 'ساری', dist: 'هم‌استان', price: '۲٬۸۶۵٬۰۰۰', verified: 0, cov: 1, match: 60 },
-    { id: 's11', name: 'بازرگانی حاصل سبز', init: 'ح', av: '#d97706', city: 'تهران', dist: 'هم‌استان', price: '۳٬۰۲۰٬۰۰۰', verified: 0, cov: 1, match: 57 },
-    { id: 's12', name: 'غلات کمالی', init: 'ک', av: '#475569', city: 'خرم‌آباد', dist: 'دیگر استان', price: '۲٬۸۹۰٬۰۰۰', verified: 0, cov: 2, match: 53 }
+    { id: 's1', name: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 'دیگر استان', distN: 2, price: '۲٬۹۲۰٬۰۰۰', priceN: 2920000, verified: 1, vip: 1, cov: 3, match: 96 },
+    { id: 's2', name: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 'هم‌شهری', distN: 0, price: '۲٬۸۵۰٬۰۰۰', priceN: 2850000, verified: 1, cov: 3, match: 93, saved: 1 },
+    { id: 's3', name: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 'هم‌استان', distN: 1, price: '۳٬۰۰۰٬۰۰۰', priceN: 3000000, verified: 0, cov: 2, match: 88, saved: 1 },
+    { id: 's4', name: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 'هم‌شهری', distN: 0, price: '۲٬۷۸۰٬۰۰۰', priceN: 2780000, verified: 0, cov: 3, match: 86, saved: 1 },
+    { id: 's5', name: 'غلات سبزدشت', init: 'غ', av: '#65a30d', city: 'مشهد', dist: 'دیگر استان', distN: 2, price: '۲٬۹۶۰٬۰۰۰', priceN: 2960000, verified: 0, cov: 1, match: 81 },
+    { id: 's6', name: 'پخش برنج عطایی', init: 'ع', av: '#b45309', city: 'تبریز', dist: 'دیگر استان', distN: 2, price: '۲٬۹۱۰٬۰۰۰', priceN: 2910000, verified: 0, cov: 1, match: 76 },
+    { id: 's7', name: 'برنج انار باغ', init: 'ب', av: '#9333ea', city: 'انار', dist: 'دیگر استان', distN: 2, price: '۲٬۸۷۵٬۰۰۰', priceN: 2875000, verified: 0, cov: 2, match: 72 },
+    { id: 's8', name: 'غلات زرین دشت', init: 'ز', av: '#0284c7', city: 'کرمان', dist: 'دیگر استان', distN: 2, price: '۲٬۹۴۵٬۰۰۰', priceN: 2945000, verified: 1, vip: 1, cov: 2, match: 68 },
+    { id: 's9', name: 'پخش گیلانه', init: 'گ', av: '#dc2626', city: 'رشت', dist: 'هم‌شهری', distN: 0, price: '۲٬۸۳۰٬۰۰۰', priceN: 2830000, verified: 0, cov: 3, match: 64 },
+    { id: 's10', name: 'برنج شمال شرق', init: 'ش', av: '#059669', city: 'ساری', dist: 'هم‌استان', distN: 1, price: '۲٬۸۶۵٬۰۰۰', priceN: 2865000, verified: 0, cov: 1, match: 60 },
+    { id: 's11', name: 'بازرگانی حاصل سبز', init: 'ح', av: '#d97706', city: 'تهران', dist: 'هم‌استان', distN: 1, price: '۳٬۰۲۰٬۰۰۰', priceN: 3020000, verified: 0, cov: 1, match: 57 },
+    { id: 's12', name: 'غلات کمالی', init: 'ک', av: '#475569', city: 'خرم‌آباد', dist: 'دیگر استان', distN: 2, price: '۲٬۸۹۰٬۰۰۰', priceN: 2890000, verified: 0, cov: 2, match: 53 }
   ];
   function supById(id) { for (var i = 0; i < SUP.length; i++) if (SUP[i].id === id) return SUP[i]; return null; }
   function iqSelCount() { var c = 0; for (var k in IQ.sel) if (IQ.sel[k]) c++; return c; }
@@ -7524,12 +7722,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     /* فاز ۵۴ — بج درصد انطباق (نزولی = ترتیب ردیف‌ها) + data-match برای تست؛
        چندقلمی = اجماع فاز ۴۷: تیک قفل (data-lock) — همان چیزی که مودال حذف‌شده می‌گفت */
     var mt = '<span class="badge b-green iq-match">' + faNum(s.match) + '٪ انطباق</span>';
-    return '<div class="checkrow iq-recip' + (s.vip ? ' vip' : '') + (multi ? ' locked' : '') + '" data-sid="' + s.id + '"' + (multi ? ' data-lock' : '') + ' data-match="' + s.match + '">' +
+    /* فاز ۵۷ — نشان «ذخیره‌شده»: کاتالوگِ این تأمین‌کننده در ذخیره‌شده‌های خریدار است */
+    var sv = s.saved ? '<span class="badge b-green iq-sv"><svg><use href="#i-bookmark"/></svg> ذخیره‌شده</span>' : '';
+    return '<div class="checkrow iq-recip' + (s.vip ? ' vip' : '') + (multi ? ' locked' : '') + '" data-sid="' + s.id + '"' + (multi ? ' data-lock' : '') + ' data-match="' + s.match + '"' + (s.saved ? ' data-saved="1"' : '') + '>' +
       '<div class="avatar-sm" style="background:' + s.av + '">' + s.init + '</div>' +
       '<div style="flex:1;min-width:0">' +
       '<div class="cw2"><b>' + gfEsc(s.name) + '</b>' +
       (s.verified ? ' <svg class="ver"><use href="#i-verified"/></svg>' : '') +
-      mt +
+      mt + sv +
       (s.vip ? '<span class="badge b-orange vipb">فروشندهٔ ویژه</span>' : '') + cov + '</div>' +
       '<div class="cs">' + gfEsc(s.city) + ' · ' + gfEsc(s.dist) + ' · آخرین قیمت ' + s.price + '</div>' +
       '</div>' +
@@ -7565,23 +7765,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
     /* چندقلمی = اجتماع فروشنده‌ها: همه گیرنده‌اند و پوششِ هر کدام اعلام می‌شود */
     var multi = n > 1;
     if (multi) SUP.forEach(function (s) { IQ.sel[s.id] = 1; });
-    /* فاز ۵۴ — «بیشتر» درجا: ۵تای اول + (باز‌شده = همه تا سقف ۲۰) + تیک‌خورده‌ها می‌مانند
-       (تیکِ ردیفِ باز، بعد از جمع‌کردن لیست هم دیده می‌شود — شمارندهٔ ارسال صادق می‌ماند) */
-    var shown = SUP.filter(function (s, i) {
-      return i < 5 || IQ._all || IQ.sel[s.id] || (IQ._extra && IQ._extra[s.id]);
+    /* فاز ۵۴ — «بیشتر» درجا؛ فاز ۵۷ (مالک): ۵تای اولِ مرتب‌شده + هر لمسِ «تأمین‌کنندگان بیشتر»
+       ۵ تای دیگر (+۵) + تیک‌خورده‌ها همیشه می‌مانند (شمارندهٔ ارسال صادق می‌ماند) */
+    var sorted = iqSortedSup();
+    var shown = sorted.filter(function (s, i) {
+      return i < IQ._n || IQ.sel[s.id] || (multi);
     }).slice(0, 20);
     var rec = document.getElementById('iq-recips');
     if (rec) rec.innerHTML = (multi ? '<div class="iq-locknote">استعلام چندقلمی به همهٔ کسانی می‌رود که حداقل یکی از قلم‌ها را دارند — برای همین تیک‌ها قفلند.</div>' : '') +
       shown.map(function (s) { return iqRecipRow(s, multi, n); }).join('');
     var rm = document.getElementById('iq-recip-more');
     if (rm) rm.textContent = multi ? 'هر که حداقل یک قلم را دارد' : faNum(shown.length || 5) + ' تأمین‌کنندهٔ این کالا';
-    /* دکمهٔ «بیشتر» — برچسب/جهت فلش همگام با IQ._all */
+    /* دکتهٔ «تأمین‌کنندگان بیشتر» (کلمهٔ «مشاهدهٔ» حذف — فاز ۵۷): تا رسیدن به آخر می‌ماند */
     var mbtn = document.getElementById('iq-more');
     if (mbtn) {
-      mbtn.classList.toggle('open', !!IQ._all);
+      var moreLeft = shown.length < sorted.length;
+      mbtn.hidden = !moreLeft;
+      mbtn.classList.toggle('open', !!moreLeft);
       var mspan = mbtn.querySelector('span');
-      if (mspan) mspan.textContent = IQ._all ? 'نمایش کمتر' : 'مشاهدهٔ تأمین‌کنندگان بیشتر';
+      if (mspan) mspan.textContent = 'تأمین‌کنندگان بیشتر';
     }
+    /* فاز ۵۷ — توضیح مرتب‌سازی با فیلترِ فعال هم‌گام است */
+    var hint = document.getElementById('iq-sorthint');
+    if (hint) hint.textContent = iqSortHint();
     iqSendLabel();
   }
   function iqSendLabel() {
@@ -7672,27 +7878,73 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (box) box.classList.toggle('open', !!on);
   }
   function iqDlReset() {
+    /* فاز ۵۷ (مالک) — پیش‌فرض مهلت = ۳ روز: دکتهٔ «۳ روز» فعال؛ ورودی «بیشتر» بسته می‌ماند */
     var inp = document.getElementById('iq-dlnum');
-    if (inp) inp.value = '۵';
-    document.querySelectorAll('#iq-deadline .pill').forEach(function (p) { p.classList.toggle('active', p.id === 'iq-dlmore'); });
-    iqDlShow(true);
-    IQ.dl = 5;
+    if (inp) inp.value = '۳';
+    document.querySelectorAll('#iq-deadline .pill').forEach(function (p, i) {
+      p.classList.toggle('active', !p.id && i === 2);
+    });
+    iqDlShow(false);
+    IQ.dl = 3;
   }
   function iqNew() {
-    IQ.q = ''; IQ.items = []; IQ.touched = true; IQ.dl = 5;
-    IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ._all = 0; /* فاز ۵۴: لیستِ «بیشتر» هم جمع می‌شود */
+    IQ.q = ''; IQ.items = []; IQ.touched = true; IQ.dl = 3;
+    IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._n = 5; IQ.filter = 'match'; /* فاز ۵۷: بازنشانی — ۵ ردیف + منطبق‌ترین */
     var q = document.getElementById('iqp-q');
     if (q) q.value = '';
     var note = document.getElementById('iq-note');
     if (note) note.value = '';
-    iqDlReset(); /* فاز ۵۱ — پیش‌فرض: «بیشتر» با ۵ روز */
+    iqDlReset(); /* فاز ۵۷ — پیش‌فرض: ۳ روز */
+    iqFbarSync();
     iqRender();
     iqpRender();
   }
 
-  /* ── فاز ۵۴ — «تأمین‌کنندگان بیشتر» درجا (مودال حذف شد): فقط یک فلگ و رندر مجدد ── */
+  /* ── فاز ۵۷ (مالک) — استعلام تک‌کالایی از لیست خرید (۰۸) یا تابلوی تأمین (۰۹):
+       همان کالا پیش‌فرض در ۱۲ ادد می‌شود؛ بقیهٔ فرم حالت نو است (مهلت ۳ · ۵ ردیف · منطبق‌ترین) ── */
+  function iqPreFill(id) {
+    var e = glById(id);
+    if (!e) return;
+    IQ.q = ''; IQ.items = [iqEntry(e)]; IQ.touched = true; IQ.dl = 3;
+    IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._n = 5; IQ.filter = 'match';
+    var q = document.getElementById('iqp-q');
+    if (q) q.value = '';
+    var note = document.getElementById('iq-note');
+    if (note) note.value = '';
+    iqDlReset();
+    iqFbarSync();
+    iqRender();
+    iqpRender();
+  }
+
+  /* ── فاز ۵۷ (مالک) — نوار فیلتر ظریف: منطبق‌ترین / ذخیره‌شده‌ها / نزدیک‌ترین / ارزان‌ترین ── */
+  function iqSortedSup() {
+    var arr = SUP.slice();
+    arr.sort(function (a, b) {
+      var r = 0;
+      if (IQ.filter === 'saved') r = (b.saved ? 1 : 0) - (a.saved ? 1 : 0);
+      else if (IQ.filter === 'near') r = (a.distN || 0) - (b.distN || 0);
+      else if (IQ.filter === 'cheap') r = (a.priceN || 0) - (b.priceN || 0);
+      if (r) return r;
+      return (b.match || 0) - (a.match || 0); /* همیشه: ملاک ثانویه انطباق */
+    });
+    return arr;
+  }
+  function iqSortHint() {
+    if (IQ.filter === 'saved') return 'کاتالوگشان را ذخیره کرده‌اید — اول در لیست';
+    if (IQ.filter === 'near') return 'مرتب‌شده بر اساس نزدیکی به شهر شما';
+    if (IQ.filter === 'cheap') return 'مرتب‌شده بر اساس آخرین قیمت هر تأمین‌کننده';
+    return 'مرتب‌شده بر اساس درصد انطباق با درخواست شما';
+  }
+  function iqFbarSync() {
+    document.querySelectorAll('#iq-fbar .chip').forEach(function (c) {
+      c.classList.toggle('active', c.dataset.iqf === IQ.filter);
+    });
+  }
+
+  /* ── فاز ۵۷ (مالک) — «تأمین‌کنندگان بیشتر»: هر لمس ۵ تای دیگر (تا سقف ۲۰)؛ دکته می‌ماند ── */
   function iqMoreToggle() {
-    IQ._all = IQ._all ? 0 : 1;
+    IQ._n = Math.min((IQ._n || 5) + 5, 20);
     iqRender();
   }
 
@@ -7926,6 +8178,75 @@ body > div[id^="scr-d"][hidden] { display: none; }
       btn.innerHTML = '<svg><use href="#i-send"/></svg> به‌روزرسانی پیشنهاد';
       closeSheet();
     }, 900);
+  }
+
+  /* ═══ فاز ۵۷ (مالک) — آرشیو و حذف درخواست خرید (دکته‌های کوچک مودال پیشنهاد):
+       حذف = کلاً از لیست می‌رود؛ آرشیو = کارت به «درخواست‌های آرشیو» (پایین ۰۵) می‌رود —
+       شاید بعداً به درد فروشنده بخورد. شمار «جاری» هم همان لحظه صادق می‌ماند. ═══ */
+  function rqCountSync() {
+    var n = document.querySelectorAll('#scr-05 #rq-cur > .req-card').length;
+    var cnt = document.querySelector('#scr-05 .sec-title .cnt');
+    if (cnt) cnt.textContent = '(' + faNum(n) + ')';
+  }
+  function rqArchive() {
+    var d = RQ[RQ.cur];
+    if (d) d.arch = 1;
+    var card = document.querySelector('#scr-05 .req-card[data-req="' + RQ.cur + '"]');
+    var arch = document.getElementById('rq-arch');
+    if (card && arch) {
+      arch.appendChild(card);
+      card.classList.add('answered');
+      var bd = card.querySelector('.req-top .badge');
+      if (bd) { bd.className = 'badge b-muted'; bd.textContent = 'آرشیو'; }
+    }
+    rqCountSync();
+    closeSheet();
+  }
+  function rqDelete() {
+    var card = document.querySelector('#scr-05 .req-card[data-req="' + RQ.cur + '"]');
+    if (card) card.remove();
+    delete RQ[RQ.cur];
+    rqCountSync();
+    closeSheet();
+  }
+
+  /* ═══ فاز ۵۷ (مالک) — لوکیشن کاتالوگ: چیپ شهرِ بنر (۰۱) مودال «انتخاب لوکیشن» را باز
+     می‌کند؛ بدون شهر = «لوکیشن را انتخاب کنید» (نارنجی خط‌چین)؛ سوییچر پایین مودال
+     نمایش لوکیشن را کنترل می‌کند (پیش‌فرض روشن) — چیپ ۰۱ و شهر ۱۳ با هم هم‌گام‌اند. ═══ */
+  var CATLOC = { city: 'رشت', show: true };
+  function catLocSync() {
+    var chip = document.getElementById('cat-loc-1');
+    var name = document.getElementById('cat-loc-name');
+    if (chip && name) {
+      chip.classList.toggle('unset', !CATLOC.city);
+      name.textContent = CATLOC.city || 'لوکیشن را انتخاب کنید';
+      chip.hidden = !CATLOC.show;
+    }
+    var pub = document.getElementById('cat-loc-13');
+    if (pub) {
+      pub.hidden = !CATLOC.show || !CATLOC.city;
+      if (CATLOC.city) pub.textContent = CATLOC.city; /* فاز ۵۷ — کاتالوگ عمومی (۱۳) هم شهر تازه را نشان می‌دهد */
+    }
+    document.querySelectorAll('#sheet-locat [data-locat]').forEach(function (r) {
+      var on = r.dataset.locat === CATLOC.city;
+      var ck = r.querySelector('.check');
+      if (ck) ck.remove();
+      r.classList.toggle('current', on);
+      if (on) {
+        var c = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        c.setAttribute('class', 'check');
+        c.setAttribute('viewBox', '0 0 24 24');
+        c.setAttribute('fill', 'none');
+        c.setAttribute('stroke', 'currentColor');
+        c.setAttribute('stroke-width', '2.4');
+        c.setAttribute('stroke-linecap', 'round');
+        c.setAttribute('stroke-linejoin', 'round');
+        c.innerHTML = '<path d="M4.5 12.5l5 5 10-11"/>';
+        r.appendChild(c);
+      }
+    });
+    var sw = document.getElementById('locat-sw');
+    if (sw) sw.classList.toggle('on', !!CATLOC.show);
   }
 
 
@@ -9205,8 +9526,21 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var nwq = t.closest('[data-newinq]');
     if (nwq) { iqNew(); go('12'); iqpRender(); openSheet('sheet-iqpick'); return; } /* فاز ۴۹: استعلام تازه → مستقیم مودال انتخاب کالا */
 
+    /* ═══ فاز ۵۷ (مالک) — استعلام تک‌کالایی: از ردیف لیست خرید (۰۸: data-binq) یا
+       اکشن‌بار تابلوی تأمین (۰۹: data-iqgood) — همان کالا پیش‌فرض در ۱۲ ادد می‌شود ═══ */
+    var binq = t.closest('[data-binq]');
+    if (binq) { iqPreFill(binq.dataset.binq); go('12'); return; }
+    var iqg = t.closest('[data-iqgood]');
+    if (iqg) { iqPreFill(iqg.dataset.iqgood); go(iqg.dataset.go || '12'); return; }
+
     var rqEl = t.closest('[data-req]');
     if (rqEl) { rqvRender(rqEl.dataset.req); openSheet('sheet-reqview'); return; }
+
+    /* ═══ فاز ۵۷ (مالک) — آرشیو/حذف درخواست از مودال پیشنهاد (دکته‌های کوچک زیر ارسال) ═══ */
+    var rqa = t.closest('[data-rqarch]');
+    if (rqa) { rqArchive(); return; }
+    var rqd = t.closest('[data-rqdel]');
+    if (rqd) { rqDelete(); return; }
 
     var ofz = t.closest('[data-ofsort]');
     if (ofz) { OF.sort = ofz.dataset.ofsort; of48Render(); return; }
@@ -9236,9 +9570,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* فاز ۵۴ — «مشاهدهٔ تأمین‌کنندگان بیشتر» درجا باز/بسته می‌شود (مودال حذف شد) */
+    /* فاز ۵۴ — «تأمین‌کنندگان بیشتر» درجا؛ فاز ۵۷: هر لمس +۵ ردیف (مودال حذف شده بود) */
     var imr = t.closest('#iq-more');
     if (imr) { iqMoreToggle(); return; }
+
+    /* فاز ۵۷ (مالک) — نوار فیلتر «ارسال به چه کسانی؟»: مرتب‌سازی زندهٔ لیست */
+    var iqf = t.closest('[data-iqf]');
+    if (iqf) { IQ.filter = iqf.dataset.iqf; iqFbarSync(); iqRender(); return; }
 
     /* فاز ۴۹ — ارسال/به‌روزرسانی پیشنهاد از خودِ مودال درخواست (جذب صفحهٔ ۴۷) */
     var rvs = t.closest('#reqv-send');
@@ -9388,6 +9726,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
+    /* فاز ۵۷ — ارسال کارت ویزیت (شیت bcard): تأیید موقت، الگوی بقیهٔ ارسال‌ها */
+    var bcs = t.closest('[data-bcardsend]');
+    if (bcs) {
+      bcs.classList.add('bk-saved');
+      bcs.innerHTML = '<svg><use href="#i-check"/></svg> کارت ویزیت ارسال شد';
+      setTimeout(function () {
+        bcs.classList.remove('bk-saved');
+        bcs.innerHTML = '<svg><use href="#i-send"/></svg> ارسال کارت ویزیت';
+      }, 1400);
+      return;
+    }
+
     var sendEl = t.closest('[data-send]');
     if (sendEl) {
       sendEl.textContent = 'ارسال شد';
@@ -9461,10 +9811,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         rfs.classList.remove('bk-saved');
         rfs.disabled = false;
         rfs.innerHTML = '<svg><use href="#i-send"/></svg> ارسال به ' + faNum(cnt12) + ' تأمین‌کننده';
-        IQ.items = []; IQ.touched = false; IQ.q = ''; IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._extra = null; IQ._all = 0; IQ.dl = 5; /* دفعهٔ بعد استعلام تازه */
+        IQ.items = []; IQ.touched = false; IQ.q = ''; IQ.sel = { s1: 1, s2: 1, s3: 1 }; IQ._n = 5; IQ.filter = 'match'; IQ.dl = 3; /* دفعهٔ بعد استعلام تازه — فاز ۵۷: ۳ روز + ۵ ردیف + منطبق‌ترین */
         var nt12 = document.getElementById('iq-note');
         if (nt12) nt12.value = '';
-        iqDlReset(); /* فاز ۵۱ — پیش‌فرض: «بیشتر» با ۵ روز */
+        iqDlReset(); iqFbarSync(); /* فاز ۵۷ — پیش‌فرض: ۳ روز + فیلتر منطبق‌ترین */
         go('45', false);
         stack.length = 0;
       }, 900);
@@ -9637,6 +9987,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
+    /* ═══ فاز ۵۷ — شیت لوکیشن: ردیف = انتخاب شهر؛ چیپ بنر ۰۱ و کاتالوگ عمومی ۱۳ هم‌گام ═══ */
+    var locRow = t.closest('[data-locat]');
+    if (locRow) {
+      CATLOC.city = locRow.dataset.locat;
+      catLocSync();
+      setTimeout(closeSheet, 260);
+      return;
+    }
+
     /* ═══ فاز ۵۶ — شیت انتخاب صنف: ردیف = انتخاب و بستن؛ «ایجاد صنف جدید» = ورودی اینلاین ═══ */
     var snfRow = t.closest('[data-snf]');
     if (snfRow) {
@@ -9720,6 +10079,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       tg.classList.toggle('on');
       if (tg.id === 'ad-toggle') adSubRender(); /* فاز ۴۶ — زیرنویس سوییچ کاتالوگ ویژه */
       if (tg.id === 'reqv-chk') rqvChkSync(); /* فاز ۵۱ — جزئیات چک و جمع‌بندی خوانا */
+      if (tg.id === 'locat-sw') { CATLOC.show = tg.classList.contains('on'); catLocSync(); } /* فاز ۵۷ — سوییچر نمایش لوکیشن */
       return;
     }
 
@@ -9863,11 +10223,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   /* ═══ فاز ۵۳ — رندر QR ماک کاتالوگ: الگوی قطعی (بذر ثابت) با سه الگوی جست‌وجوی گوشه‌ها
      و مرکزِ سفید برای لوگو؛ در پیاده‌سازی عملیاتی، QR واقعی از سرور می‌آید (پیوند کاتالوگ). ═══ */
-  (function qrRender() {
-    var svg = document.getElementById('qr-svg');
+  /* فاز ۵۷ — qrPaint پارامتری شد: هم QR کاتالوگ (شیت qr) و هم QR کارت ویزیت (شیت bcard) */
+  function qrPaint(svg, seed0) {
     if (!svg || svg.dataset.done) return;
     svg.dataset.done = '1';
-    var N = 21, seed = 1379;
+    var N = 21, seed = seed0 || 1379;
     function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
     var mods = '';
     for (var y = 0; y < N; y++) {
@@ -9882,9 +10242,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return '<rect x="' + fx + '" y="' + fy + '" width="7" height="7"/><rect x="' + (fx + 1) + '" y="' + (fy + 1) + '" width="5" height="5" fill="#fff"/><rect x="' + (fx + 2) + '" y="' + (fy + 2) + '" width="3" height="3"/>';
     }
     svg.innerHTML = '<g fill="#2a2723">' + mods + finder(0, 0) + finder(14, 0) + finder(0, 14) + '</g>';
-  })();
+  }
+  qrPaint(document.getElementById('qr-svg'), 1379);
+  qrPaint(document.getElementById('bqr-svg'), 7331);
 
   wire();
+  catLocSync(); /* فاز ۵۷ — چیپ لوکیشن بنر کاتالوگ از بارگذاری هم‌گام است */
   evRender(ITEM_EVENTS);
   walletRender();
   tsRender(); /* فاز ۵۶ (بازگشت فاز ۳۳) — نوار «نظر کاربران» لندینگ + فهرست سایر نظرات */

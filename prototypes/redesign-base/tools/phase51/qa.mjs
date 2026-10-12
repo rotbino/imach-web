@@ -105,7 +105,7 @@ await page.click('#sheet-ofview .mg'); await sleep(250);
 /* ═══ ۴. ۱۲ — مهلت: ۱-۴ روز + «بیشتر» ═══ */
 await page.goto(FILE + '#12'); await page.reload(); await sleep(300);
 ok('۱۲: ۴ دکمهٔ روز + «بیشتر»', (await page.locator('#iq-deadline .pill').count()) === 5 && (await page.locator('#iq-deadline .pill').last().textContent()) === 'بیشتر');
-ok('۱۲: پیش‌فرض «بیشتر» با ۵ روز', (await page.locator('#iq-dlmore.active').count()) === 1 && (await page.locator('#iq-dlnum').inputValue()) === '۵');
+ok('۱۲: پیش‌فرض ۳ روز (فاز ۵۷)', (await page.locator('#iq-deadline .pill.active').textContent()).includes('۳ روز') && await page.locator('#iq-dlbox.open').count() === 0);
 await page.click('#iq-deadline .pill:nth-child(1)'); await sleep(150);
 ok('۱۲: ۱ روز → ورودی جمع شد', (await page.locator('#iq-deadline .pill.active').textContent()).includes('۱ روز') && await page.locator('#iq-dlbox.open').count() === 0);
 await page.click('#iq-dlmore'); await sleep(150);
