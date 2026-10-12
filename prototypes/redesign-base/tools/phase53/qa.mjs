@@ -20,14 +20,18 @@ await page.evaluate(() => localStorage.setItem('imach-assist', JSON.stringify({ 
 /* ═══ ۱. سربرگ کاتالوگ (۰۱) — کادر اشتراک ظریف + آیکون‌های «روبرو» ═══ */
 await page.goto(FILE + '#01'); await page.reload(); await sleep(300);
 const promoTxt = await page.locator('#scr-01 .cat-promo').textContent();
-ok('کادر: عنوان و زیرمتن مالک سر جایشان است', promoTxt.includes('کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار') && promoTxt.includes('همیشه قیمتهای زنده شما'));
-ok('کادر: آیکون ظریف چشم (پیش‌نمایش) روبروی عنوان', (await page.locator('#scr-01 .cat-promo .cp-ic[data-go="13"]').count()) === 1);
+ok('کادر: عنوان مالک سر جایش است + زیرمتن جدید (فاز ۵۵)', promoTxt.includes('کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار') && promoTxt.includes('کاتالوگهای مورد علاقه خود ذخیره کنند'));
+ok('کادر: آیکون چشم حذف شد — پیش‌نمایش = آخرین باکس آمار (فاز ۵۵)', (await page.locator('#scr-01 .cat-promo .cp-ic[data-go="13"]').count()) === 0 && (await page.locator('#scr-01 .cat-stats button[data-go="13"]').count()) === 1);
+ok('کادر: آخرین باکس آمار خودِ پیش‌نمایش است', await page.evaluate(() => {
+  const btns = document.querySelectorAll('#scr-01 .cat-stats button');
+  return btns.length === 4 && btns[3].textContent.includes('پیش‌نمایش') && !btns[0].textContent.includes('پیش‌نمایش');
+}));
 ok('کادر: آیکون ظریف اشتراک روبروی عنوان', (await page.locator('#scr-01 .cat-promo .cp-ic[data-sheet="sheet-share"]').count()) === 1);
 ok('کادر: دکمه‌های زمخت حذف شدند (بدون cp-acts/btn)', (await page.locator('#scr-01 .cat-promo .cp-acts').count()) === 0 && (await page.locator('#scr-01 .cat-promo .btn').count()) === 0);
-ok('کادر: آیکون‌ها با عنوان هم‌پوشانی ندارند', await page.evaluate(() => {
+ok('کادر: تک‌آیکون با عنوان هم‌پوشانی ندارد (فاز ۵۵)', await page.evaluate(() => {
   const b = document.querySelector('#scr-01 .cat-promo .cp-head b');
   const ics = document.querySelectorAll('#scr-01 .cat-promo .cp-ic');
-  if (!b || ics.length !== 2) return false;
+  if (!b || ics.length !== 1) return false;
   const br = b.getBoundingClientRect();
   return Array.from(ics).every(ic => { const r = ic.getBoundingClientRect(); return r.left >= br.right - 1 || r.right <= br.left + 1 || r.top >= br.bottom - 1; }) && Array.from(ics).every(ic => ic.getBoundingClientRect().width <= 32);
 }));
@@ -99,7 +103,9 @@ ok('trade: دوباره روشن می‌شود', (await page.locator('#sheet-tra
 await page.click('#sheet-trade .sheet-cta'); await sleep(250);
 
 /* ═══ ۵. کاتالوگ عمومی (۱۳) — آیکون + روی کارت‌ها + مودال تک‌کالا + شیت گروهی ردیفی ═══ */
-await page.goto(FILE + '#13'); await page.reload(); await sleep(300);
+/* فاز ۵۵: ۱۳ «keep» شد (پیش‌نمایش فروشنده) — سفر خریدار از بازوی خرید شروع می‌شود */
+await page.goto(FILE + '#08'); await page.reload(); await sleep(300);
+await page.evaluate(() => { location.hash = '#13'; }); await sleep(350);
 ok('۱۳: آیکون + روی همهٔ کارت‌ها', (await page.locator('#scr-13 .pcard .addls').count()) === 4);
 ok('۱۳: آمار عمومی همان «تماس» ماند', (await page.locator('#scr-13 .pub-stats').textContent()).includes('تماس'));
 await page.click('#scr-13 .pcard:nth-child(1) .addls'); await sleep(300);
@@ -133,19 +139,21 @@ await page.click('#scr-13 .ms-btn'); await sleep(350);
 ok('گروهی: ورود از دکمهٔ انتخاب چند کالا هم کار می‌کند', await page.locator('#sheet-pick.show').isVisible());
 await page.click('#sheet-pick .btn[data-close]'); await sleep(250);
 
-/* ═══ ۶. شیت اشتراک — پیام آماده + QR ═══ */
+/* ═══ ۶. شیت اشتراک — فاز ۵۵: مخاطبین اول، بدون «پیام آماده» (حکم مالک) + QR ═══ */
 await page.goto(FILE + '#01'); await page.reload(); await sleep(300);
 await page.click('#scr-01 .cat-promo .cp-ic[data-sheet="sheet-share"]'); await sleep(300);
-ok('share: ردیف «پیام آماده» بالاتر از کپی لینک', await page.evaluate(() => {
+ok('share: «اشتراک با مخاطبین» اول لیست (فاز ۵۵)', await page.evaluate(() => {
   const rows = Array.from(document.querySelectorAll('#sheet-share .sheet-row'));
-  const iMsg = rows.findIndex(r => r.hasAttribute('data-copymsg'));
+  const iCts = rows.findIndex(r => (r.getAttribute('data-sheet') || '') === 'sheet-cshare');
   const iCopy = rows.findIndex(r => r.hasAttribute('data-copy'));
-  return iMsg === 0 && iCopy === 1;
+  return iCts === 0 && iCopy === 1;
 }));
-ok('share: متن پیام آماده + لینک', (await page.locator('#sheet-share [data-copymsg] .tx span').textContent()).includes('قیمت‌های ما به‌روز شد') && (await page.locator('#sheet-share [data-copymsg] .tx span').textContent()).includes('imach.ir/c/pars-rice'));
-await page.click('#sheet-share [data-copymsg]'); await sleep(250);
-ok('share: یک ضربه → «پیام کپی شد»', (await page.locator('#sheet-share [data-copymsg-label]').textContent()).includes('پیام کپی شد'));
-await sleep(800);
+ok('share: آیتم «پیام آماده» حذف شد (حکم فاز ۵۵)', (await page.locator('#sheet-share [data-copymsg]').count()) === 0 && !(await page.locator('#sheet-share').textContent()).includes('پیام آماده'));
+ok('share: مخاطبین → شیت cshare سه‌حالته', await page.click('#sheet-share [data-sheet="sheet-cshare"]').then(() => true).catch(() => false));
+await sleep(350);
+ok('share: cshare باز — غیرعضو با پیامک', (await page.locator('#sheet-cshare.show').isVisible()) && (await page.locator('#sheet-cshare .cts-out').count()) === 2);
+ok('share: ذخیره‌کرده‌ها نشان سبز دارند', (await page.locator('#sheet-cshare .cts-saved').count()) === 2);
+await page.click('#sheet-cshare .btn[data-close]'); await sleep(250);
 await page.click('#scr-01 .cat-promo .cp-ic[data-sheet="sheet-share"]'); await sleep(300);
 await page.click('#sheet-share [data-sheet="sheet-qr"]'); await sleep(350);
 ok('QR: شیت باز شد + الگو رندر شده', await page.locator('#sheet-qr.show').isVisible() && (await page.locator('#qr-svg rect').count()) > 60);
@@ -176,12 +184,18 @@ await page.fill('#scr-44 .bk-row:nth-child(2) .bk-price', '۲٬۷۶۰٬۰۰۰');
 ok('۴۴: ذخیره بعد از تغییر انیبل', !(await page.locator('#bk-save').isDisabled()));
 await page.click('#bk-save'); await sleep(1100);
 ok('نudge: بعد از ذخیرهٔ ۴۴ روی ۰۱ پیدا است', await page.locator('#cat-fresh').isVisible());
-ok('نudge: متن «قیمت‌ها به‌روز شد — به مشتری‌هات خبر بده»', (await page.locator('#cat-fresh .fn-tx b').textContent()).includes('قیمت‌ها به‌روز شد'));
-ok('نudge: ارزش شبکه (۴۱ ذخیره‌کننده)', (await page.locator('#cat-fresh .fn-tx small').textContent()).includes('۴۱ کسب‌وکار'));
+ok('نudge: متن «قیمت‌ها به‌روز شد — به مشتری‌هات خبر بده»', (await page.locator('#cat-fresh .fn-top b').textContent()).includes('قیمت‌ها به‌روز شد'));
+ok('نudge: متن جدید مالک (فاز ۵۵) — بدون «پیام آماده»', (await page.locator('#cat-fresh .fn-tx').textContent()).includes('۴۱ کسب‌وکار کاتالوگ شما را ذخیره کرده‌اند') && (await page.locator('#cat-fresh .fn-tx').textContent()).includes('این قیمتها را به بقیه مشتریانت هم ارسال کن') && !(await page.locator('#cat-fresh').textContent()).includes('پیام آماده'));
+ok('نudge: دکته زیر متن (فاز ۵۵)', await page.evaluate(() => {
+  const tx = document.querySelector('#cat-fresh .fn-tx');
+  const btn = document.querySelector('#cat-fresh .fn-share');
+  if (!tx || !btn) return false;
+  return btn.getBoundingClientRect().top > tx.getBoundingClientRect().bottom - 4;
+}));
 await page.click('#cat-fresh [data-freshshare]'); await sleep(300);
-ok('نudge: «ارسال برای مشتری‌ها» → شیت اشتراک', await page.locator('#sheet-share.show').isVisible());
+ok('نudge: «اشتراک گذاری برای مشتریان جدید» → شیت مخاطبین (فاز ۵۵)', await page.locator('#sheet-cshare.show').isVisible());
 ok('نudge: پس از ارسال جمع شد', await page.locator('#cat-fresh').isHidden());
-await page.click('#sheet-share .btn[data-close]'); await sleep(250);
+await page.click('#sheet-cshare .btn[data-close]'); await sleep(250);
 await page.goto(FILE + '#44'); await page.reload(); await sleep(300);
 ok('نudge: دفعهٔ بعد (بدون تازه‌سازی) نمی‌آید', await page.locator('#cat-fresh').isHidden());
 /* مسیر quickps */

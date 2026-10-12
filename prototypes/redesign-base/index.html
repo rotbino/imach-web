@@ -1855,16 +1855,32 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .cat-stats button b { font-size: 13px; line-height: 1.5; }
   .cat-stats button span { font-size: 9px; color: var(--muted-fg); white-space: nowrap; }
   /* فاز ۵۳ — نudge «قیمت‌ها به‌روز شد، به مشتری‌هات خبر بده» (لحظهٔ پرانگیزهٔ اشتراک) */
-  .fresh-nudge { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 12px; border-radius: 13px; border: 1px solid #b6e2c6; background: var(--green-bg); }
+  /* فاز ۵۵ (مالک): کادر عمودی شد — متن بالا (تمام‌عرض)، دکته زیر متن تا متن یک‌جا جمع نشود */
+  .fresh-nudge { margin-top: 10px; padding: 10px 12px 12px; border-radius: 13px; border: 1px solid #b6e2c6; background: var(--green-bg); }
   .fresh-nudge[hidden] { display: none; }
-  .fresh-nudge .fn-ic { width: 34px; height: 34px; border-radius: 10px; background: #fff; color: var(--green); display: grid; place-items: center; flex-shrink: 0; }
-  .fresh-nudge .fn-ic svg { width: 17px; height: 17px; }
-  .fresh-nudge .fn-tx { flex: 1; min-width: 0; }
-  .fresh-nudge .fn-tx b { display: block; font-size: 12px; font-weight: 800; color: var(--green); line-height: 1.7; }
-  .fresh-nudge .fn-tx small { display: block; font-size: 10px; color: var(--stone-soft); line-height: 1.75; margin-top: 2px; }
-  .fresh-nudge .fn-go { flex-shrink: 0; height: 34px; font-size: 11px; padding: 0 10px; }
+  .fresh-nudge .fn-top { display: flex; align-items: center; gap: 8px; }
+  .fresh-nudge .fn-ic { width: 26px; height: 26px; border-radius: 8px; background: #fff; color: var(--green); display: grid; place-items: center; flex-shrink: 0; }
+  .fresh-nudge .fn-ic svg { width: 14px; height: 14px; }
+  .fresh-nudge .fn-top b { flex: 1; min-width: 0; font-size: 12px; font-weight: 800; color: var(--green); line-height: 1.6; }
   .fresh-nudge .fn-x { width: 24px; height: 24px; border: 0; background: none; color: var(--muted-fg); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; padding: 0; }
   .fresh-nudge .fn-x svg { width: 13px; height: 13px; }
+  .fresh-nudge .fn-x:active { background: rgba(22, 163, 74, .12); border-radius: 8px; }
+  .fresh-nudge .fn-tx { font-size: 11px; color: var(--foreground); line-height: 1.95; margin-top: 6px; }
+  .fresh-nudge .fn-share { width: 100%; margin-top: 9px; font-size: 12.5px; padding: 9px 12px; }
+  /* ═══ فاز ۵۵ — شیت اشتراک کاتالوگ با مخاطبین: نشان «ذخیره کرده» + ردیف متمایز غیرعضو + دکمهٔ پیامکی ═══ */
+  .sheet .cts-saved { flex-shrink: 0; font-size: 10px; padding: 3px 8px; }
+  .sheet .cts-saved svg { width: 11px; height: 11px; }
+  .sheet-row.cts-out { background: #faf9f5; border: 1.5px dashed var(--border-strong); }
+  .sheet-row.cts-out .avatar-sm { opacity: .75; }
+  .sheet .btn.cts-sms { font-size: 10.5px; padding: 7px 10px; white-space: nowrap; }
+  /* فاز ۵۵ — کاتالوگ عمومی (۱۳): حالت پیش‌نمایشِ فروشنده؛ درس فاز ۴۴/۴۸: display:flex اینلاین
+     اتریبیوت hidden را خنثی می‌کند → قاعدهٔ صریح [hidden] لازم است */
+  #own-13 { display: flex; align-items: center; gap: 8px; margin: 12px 16px 0; font-size: 11px; font-weight: 700; color: var(--primary-strong); background: var(--accent); border: 1px solid #efc98a; border-radius: 11px; padding: 8px 11px; }
+  #own-13 svg { width: 15px; height: 15px; flex-shrink: 0; }
+  #own-13[hidden] { display: none; }
+  #buybar-13 { display: flex; gap: 7px; padding-bottom: 10px; }
+  #buybar-13[hidden] { display: none; }
+  #scr-13.ownerview .pcard .addls { display: none; }
   .pcard .stale-bdg { position: absolute; top: 7px; left: 40px; display: inline-flex; align-items: center; gap: 4px; padding: 3.5px 8px; border-radius: 8px; background: var(--red-bg); border: 1px solid #f3c6c6; color: var(--red); font-size: 9.5px; font-weight: 800; }
   .pcard .stale-bdg svg { width: 11px; height: 11px; flex-shrink: 0; }
   /* فاز ۵۳ — کاتالوگ عمومی (۱۳): آیکون «+ افزودن به لیست خرید» روی تک‌تک کارت‌ها */
@@ -2035,23 +2051,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <!-- ═══ فاز ۵۳ (مالک) — آمار بالای کاتالوگ، از دید تأمین‌کننده: مثل کاتالوگ عمومی، ولی
            به‌جای «تماس»، «دعوت» (ثبت‌نام از لینک شما) — روی کاتالوگ عمومی همان تماس می‌ماند.
-           لمس هرکدام لیستش را باز می‌کند: پیش‌نمایش (۱۳) · کالا (خود کاتالوگ) · ذخیره‌کنندگان (شیت reach) · دعوت‌شدگان (۵۳) ═══ -->
+           لمس هرکدام لیستش را باز می‌کند: کالا (خود کاتالوگ) · ذخیره‌کنندگان (شیت reach) · دعوت‌شدگان (۵۳)
+           فاز ۵۵ (مالک): باکس پیش‌نمایش «از کنار باکس‌های آمار» رفت و خودش آخرین باکس ردیف شد. ═══ -->
       <div class="cat-stats">
-        <button type="button" data-go="13" aria-label="پیش‌نمایش کاتالوگ" title="دیدن کاتالوگ مثل یک خریدار"><svg><use href="#i-eye"/></svg><span>پیش‌نمایش</span></button>
         <button type="button" data-catcount="1" aria-label="۱۲ کالا — رفتن به فهرست کالاها" title="فهرست کالاهای کاتالوگ"><b>۱۲</b><span>کالا</span></button>
         <button type="button" data-sheet="sheet-reach" aria-label="۴۱ ذخیره‌کننده" title="کسانی که کاتالوگ شما را ذخیره کرده‌اند"><b>۴۱</b><span>ذخیره‌کننده</span></button>
         <button type="button" data-go="53" aria-label="۱۲ دعوت‌شده" title="کسانی که با لینک شما عضو شده‌اند"><b>۱۲</b><span>دعوت</span></button>
+        <button type="button" data-go="13" aria-label="پیش‌نمایش کاتالوگ" title="دیدن کاتالوگ مثل یک خریدار"><svg><use href="#i-eye"/></svg><span>پیش‌نمایش</span></button>
       </div>
 
       <!-- ═══ فاز ۵۳ (مالک) — کادر اشتراک ظریف‌تر: به‌جای دکمه‌های زمختِ پایین کادر، همان
-           آیکون‌های ظریف چشم و اشتراک‌گذاری «روبرو»ی عنوان؛ متن‌ها عیناً از مالک (فاز ۵۲) ═══ -->
+           آیکون‌های ظریف «روبرو»ی عنوان.
+           فاز ۵۵ (مالک): آیکون چشم حذف شد — پیش‌نمایش حالا آخرین باکس ردیف آمار است؛
+           متن زیر کادر عیناً از مالک (فاز ۵۵ — ذخیره در «کاتالوگ‌های مورد علاقه»). ═══ -->
       <div class="cat-promo">
         <div class="cp-head">
           <b>کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار</b>
-          <button class="icon-btn cp-ic" data-go="13" type="button" aria-label="پیش‌نمایش کاتالوگ" title="پیش‌نمایش کاتالوگ"><svg><use href="#i-eye"/></svg></button>
           <button class="icon-btn cp-ic" data-sheet="sheet-share" type="button" aria-label="اشتراک‌گذاری کاتالوگ" title="اشتراک‌گذاری کاتالوگ"><svg><use href="#i-share"/></svg></button>
         </div>
-        <small>با ارسال لینک کاتالوگ به مشتریان خود بگویید با ذخیره کاتالوگ، همیشه قیمتهای زنده شما را در لیست ذخیره خود داشته باشند.</small>
+        <small>با ارسال لینک کاتالوگ به مشتریان خود، از آنها بخواهید تا برای داشتن قیمتهای زنده شما، کاتالوگ شما را در لیست کاتالوگهای مورد علاقه خود ذخیره کنند.</small>
       </div>
 
       <!-- فاز ۵۳ (مالک) — دکمهٔ تنظیمات آمد پیشِ دو دکمهٔ «کالای جدید» و «تغییر قیمت‌ها» -->
@@ -2068,15 +2086,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- فاز ۵۳ — نudge اشتراک پس از تازه‌سازی قیمت: پرانگیزه‌ترین لحظهٔ اشتراک است
-           (فروشنده هر روز عکس لیست قیمت را در تلگرام می‌فرستد؛ لینک جای همان کار را می‌گیرد) -->
+           (فروشنده هر روز عکس لیست قیمت را در تلگرام می‌فرستد؛ لینک جای همان کار را می‌گیرد).
+           فاز ۵۵ (مالک) — طراحی عمودی شد: دکته زیر متن (نه کنارش تا متن یک‌جا جمع نشود)؛
+           عنوان دکمه «اشتراک گذاری برای مشتریان جدید» + آیکون اشتراک؛ متن عیناً از مالک. -->
       <div class="fresh-nudge" id="cat-fresh" hidden>
-        <span class="fn-ic"><svg><use href="#i-share"/></svg></span>
-        <div class="fn-tx">
+        <div class="fn-top">
+          <span class="fn-ic"><svg><use href="#i-share"/></svg></span>
           <b>قیمت‌ها به‌روز شد — به مشتری‌هات خبر بده</b>
-          <small>۴۱ کسب‌وکار کاتالوگ شما را ذخیره کرده‌اند و قیمت تازه را همان لحظه می‌بینند؛ با یک پیام آماده، بقیه را هم بیاور.</small>
+          <button class="fn-x" data-freshx type="button" aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
-        <button class="btn btn-primary btn-sm fn-go" data-freshshare type="button">ارسال برای مشتری‌ها</button>
-        <button class="fn-x" data-freshx type="button" aria-label="بستن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        <div class="fn-tx">۴۱ کسب‌وکار کاتالوگ شما را ذخیره کرده‌اند و قیمت تازه را همان لحظه می‌بینند؛ این قیمتها را به بقیه مشتریانت هم ارسال کن.</div>
+        <button class="btn btn-primary fn-share" data-freshshare type="button"><svg><use href="#i-share"/></svg> اشتراک گذاری برای مشتریان جدید</button>
       </div>
 
       <!-- فیلتر دسته -->
@@ -3189,7 +3209,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
-    <section class="scr" id="scr-13" data-arm="buy" hidden>
+    <section class="scr" id="scr-13" data-arm="keep" hidden>
 
 
     <header class="subheader">
@@ -3199,6 +3219,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </header>
 
     <main class="screen-body nopad">
+
+      <!-- فاز ۵۵ — نوار «پیش‌نمایش خریدار»: فقط وقتی خودِ فروشنده از باکس پیش‌نمایش (۰۱) یا
+           نمای عمومی (۰۷) وارد شده است دیده می‌شود؛ برای خریدار واقعی مخفی است.
+           data-arm از buy به keep تغییر کرد تا فروشندهٔ تک‌بازو (فاز ۵۰) هم بتواند کاتالوگش را
+           از دید خریدار ببیند — الگوی همان scr-02 (بخش‌های مالک/خریدار بر اساس بازوی فعال). -->
+      <div id="own-13" hidden>
+        <svg><use href="#i-eye"/></svg>
+        پیش‌نمایش — کاتالوگ شما را همین‌طور می‌بینند
+      </div>
 
       <!-- هدر فروشگاه — نام و عکس فروشنده، بدون تداخل با لوگو -->
       <div style="padding:14px 16px 4px;background:linear-gradient(180deg,var(--stone-tint),transparent)">
@@ -3213,7 +3242,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
 
-        <div style="display:flex;gap:7px;padding-bottom:10px">
+        <!-- فاز ۵۵ — اکشن‌های خریدار (buybar-13): برای خودِ فروشنده (پیش‌نمایش) مخفی می‌شود -->
+        <div id="buybar-13">
           <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)"><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
           <button class="btn btn-stone btn-sm" style="flex:1.1" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
           <button class="btn btn-outline btn-sm" style="flex:.66;color:var(--stone)"><svg><use href="#i-phone"/></svg> تماس</button>
@@ -5379,15 +5409,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۲) اشتراک‌گذاری کاتالوگ — فاز ۵۳: «پیام آماده» بالاترین ردیف است (لحظهٔ به‌روزرسانی
-     قیمت، پرانگیزه‌ترین لحظهٔ اشتراک است) + ردیف QR برای چاپ روی فاکتور/پیشخوان/کارت ویزیت ═══ -->
+<!-- ═══ ۲) اشتراک‌گذاری کاتالوگ — فاز ۵۳: ردیف QR برای چاپ روی فاکتور/پیشخوان/کارت ویزیت
+     + فاز ۵۵ (مالک): «اشتراک با مخاطبین» اول لیست؛ آیتم «پیام آماده قیمت‌ها به‌روز شد» حذف شد —
+     در پیاده‌سازی عملیاتی متن آماده هنگام به‌روز شدن قیمت‌ها خودکار روی کلیپ‌بورد کپی می‌شود و
+     کادر اعلانِ روی کاتالوگ (cat-fresh) همان کار را انجام می‌دهد. ═══ -->
 <div class="sheet" id="sheet-share" role="dialog" aria-label="اشتراک‌گذاری کاتالوگ">
   <div class="grab"></div>
   <h3>اشتراک‌گذاری کاتالوگ</h3>
   <div class="sub">لینک کاتالوگ خودت رو برای مشتریانت ارسال کن</div>
-  <button class="sheet-row" data-copymsg>
-    <span class="ico" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-send"/></svg></span>
-    <span class="tx"><b data-copymsg-label>پیام آماده: «قیمت‌ها به‌روز شد»</b><span>قیمت‌های ما به‌روز شد — همیشه تازه، همین‌جا: imach.ir/c/pars-rice</span></span>
+  <button class="sheet-row" data-sheet="sheet-cshare">
+    <span class="ico"><svg><use href="#i-users-v2"/></svg></span>
+    <span class="tx"><b>اشتراک با مخاطبین</b><span>اعضای ای‌مچ در پیام‌های ای‌مچ؛ بقیه با پیامک</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-copy>
@@ -5400,11 +5432,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>کد QR کاتالوگ</b><span>چاپ روی فاکتور، پیشخوان و کارت ویزیت</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <button class="sheet-row" data-sheet="sheet-contacts">
-    <span class="ico"><svg><use href="#i-users-v2"/></svg></span>
-    <span class="tx"><b>اشتراک با مخاطبین</b><span>انتخاب از مخاطبین گوشی و ارسال لینک</span></span>
-    <svg class="chev"><use href="#i-chev"/></svg>
-  </button>
   <button class="sheet-row" data-go="19">
     <span class="ico"><svg><use href="#i-msg"/></svg></span>
     <span class="tx"><b>ارسال در پیام‌های ای‌مچ</b><span>فرستادن لینک داخل یکی از گفتگوهایت</span></span>
@@ -5413,7 +5440,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۳) اشتراک با مخاطبین ═══ -->
+<!-- ═══ ۳) اشتراک با مخاطبین — فقط جریان «لیست خرید» (۰۸)؛ کاتالوگ شیت مخصوص خودش را دارد (فاز ۵۵) ═══ -->
 <div class="sheet" id="sheet-contacts" role="dialog" aria-label="اشتراک با مخاطبین">
   <div class="grab"></div>
   <h3>اشتراک با مخاطبین</h3>
@@ -5433,6 +5460,53 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>آرش محمدی</b><span>۰۹۱۱ ··· ۸۸۰ · رشت</span></span>
     <button class="btn btn-sm btn-outline" data-send>ارسال</button>
   </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۳-ب) فاز ۵۵ — اشتراک کاتالوگ با مخاطبین: سه حالت ردیف ═══ -->
+<!-- IMPLEMENTATION NOTE (فاز ۵۵ — مالک): مخاطبین گوشیِ کاربر سه حالت دارند —
+     ۱) عضوِ ای‌مچ که کاتالوگ را ذخیره کرده: نشان سبز «کاتالوگ را ذخیره کرده» — همین الان
+        قیمت‌های زنده را می‌بیند (همان ردیف‌های شیت reach)؛ دکمه‌ای ندارد.
+     ۲) عضوِ ای‌مچ که ذخیره نکرده: «ارسال کاتالوگ» — لینک در پیام‌های ای‌مچ خودش می‌رسد.
+     ۳) غیرعضو: ردیف متمایز (خط‌چین + آواتار خاکستری) + «اشتراک گذاری کاتالوگ» — در
+        پیاده‌سازی عملیاتی مستقیم به پیامک گوشی می‌رود (متن آماده + لینک کاتالوگ). -->
+<div class="sheet" id="sheet-cshare" role="dialog" aria-label="اشتراک کاتالوگ با مخاطبین">
+  <div class="grab"></div>
+  <h3>اشتراک با مخاطبین</h3>
+  <div class="sub">اعضای ای‌مچ کاتالوگ را در پیام‌های ای‌مچ می‌گیرند؛ مخاطب غیرعضو با پیامک</div>
+  <div class="grp">عضو ای‌مچ</div>
+  <div class="sheet-row" style="cursor:default">
+    <div class="avatar-sm" style="background:#0e7490">ر</div>
+    <span class="tx"><b>رستوران مهر</b><span>۰۹۱۲ ··· ۴۱۰ · تهران · رستوران</span></span>
+    <span class="badge b-green cts-saved"><svg><use href="#i-check"/></svg> کاتالوگ را ذخیره کرده</span>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <div class="avatar-sm" style="background:#7c3aed">ن</div>
+    <span class="tx"><b>سوپرمارکت نگین</b><span>۰۹۳۵ ··· ۲۱۲ · قزوین</span></span>
+    <span class="badge b-green cts-saved"><svg><use href="#i-check"/></svg> کاتالوگ را ذخیره کرده</span>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <div class="avatar-sm" style="background:#0e7490">ع</div>
+    <span class="tx"><b>علی اکبری</b><span>۰۹۱۲ ··· ۳۴۵ · سوپرمارکت</span></span>
+    <button class="btn btn-sm btn-outline" data-send>ارسال کاتالوگ</button>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <div class="avatar-sm" style="background:#7c3aed">م</div>
+    <span class="tx"><b>مجید توکلی</b><span>۰۹۳۵ ··· ۱۲۱ · پخش</span></span>
+    <button class="btn btn-sm btn-outline" data-send>ارسال کاتالوگ</button>
+  </div>
+  <div class="grp">عضو ای‌مچ نیستند — با پیامک</div>
+  <div class="sheet-row cts-out" style="cursor:default">
+    <div class="avatar-sm" style="background:#a8a29a">آ</div>
+    <span class="tx"><b>آرش محمدی</b><span>۰۹۱۱ ··· ۸۸۰ · رشت</span></span>
+    <button class="btn btn-sm btn-outline cts-sms" data-smssend>اشتراک گذاری کاتالوگ</button>
+  </div>
+  <div class="sheet-row cts-out" style="cursor:default">
+    <div class="avatar-sm" style="background:#a8a29a">ن</div>
+    <span class="tx"><b>نادر رستمی</b><span>۰۹۳۰ ··· ۵۴۲ · عمده‌فروشی</span></span>
+    <button class="btn btn-sm btn-outline cts-sms" data-smssend>اشتراک گذاری کاتالوگ</button>
+  </div>
+  <div class="hintnote">در پیاده‌سازی عملیاتی، «اشتراک گذاری کاتالوگ» پیامک گوشی را با متن آماده و لینک کاتالوگ باز می‌کند — مخاطب با ثبت‌نام از لینک شما، کاتالوگتان خودکار ذخیرهٔ او می‌نشیند.</div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
@@ -6661,6 +6735,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (own02) own02.hidden = phoneArm() !== 'sell';
       var bb02 = document.getElementById('buybar-02');
       if (bb02) bb02.hidden = phoneArm() === 'sell';
+      /* فاز ۵۵ — کاتالوگ عمومی (۱۳) برای فروشنده = پیش‌نمایش: نوار خریدار مخفی + نوار «پیش‌نمایش» */
+      var own13 = document.getElementById('own-13');
+      if (own13) own13.hidden = phoneArm() !== 'sell';
+      var bb13 = document.getElementById('buybar-13');
+      if (bb13) bb13.hidden = phoneArm() === 'sell';
+      /* فاز ۵۵ — آیکون‌های «+ افزودن به لیست» کارت‌های ۱۳ هم برای پیش‌نمایشِ فروشنده مخفی می‌شوند */
+      target.classList.toggle('ownerview', id === '13' && phoneArm() === 'sell');
       var sb = target.querySelector('.screen-body');
       if (sb) sb.scrollTop = 0;
     } else {
@@ -8988,14 +9069,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* فاز ۵۳ — پیام آمادهٔ «قیمت‌ها به‌روز شد»: یک ضربه، کپی و ارسال */
-    var cmsg = t.closest('[data-copymsg]');
-    if (cmsg) {
-      var cmr = cmsg.closest('.sheet-row');
-      if (cmr) cmr.classList.add('done');
-      var cml = cmsg.querySelector('[data-copymsg-label]');
-      if (cml) cml.textContent = 'پیام کپی شد — بفرست!';
-      setTimeout(closeSheet, 900);
+    /* فاز ۵۳ — پیام آماده حذف شد (حکم مالک فاز ۵۵): متن در پیاده‌سازی عملیاتی خودکار
+       روی کلیپ‌بورد کپی می‌شود؛ کادر اعلان کاتالوگ همان کار را می‌کند — ردیف و هندلر رفتند */
+
+    /* فاز ۵۵ — مخاطب غیرعضو: «اشتراک گذاری کاتالوگ» → پیامک (در پیاده‌سازی عملیاتی) */
+    var smsEl = t.closest('[data-smssend]');
+    if (smsEl) {
+      smsEl.textContent = 'پیامک شد ✓';
+      smsEl.classList.add('done-send');
       return;
     }
 
@@ -9010,13 +9091,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
-    /* فاز ۵۳ — نudge تازه‌سازی: ارسال برای مشتری‌ها (شیت اشتراک) یا بستن */
+    /* فاز ۵۳/۵۵ — نudge تازه‌سازی: «اشتراک گذاری برای مشتریان جدید» → مستقیم شیت مخاطبین
+       (دکته برای مشتریان جدید است — غیرعضوها با پیامک می‌گیرند)؛ بستن ✕ */
     var fsh = t.closest('[data-freshshare]');
     if (fsh) {
       SHARE.fresh = false;
       var fnc = document.getElementById('cat-fresh');
       if (fnc) fnc.hidden = true;
-      openSheet('sheet-share');
+      openSheet('sheet-cshare');
       return;
     }
     var fx = t.closest('[data-freshx]');

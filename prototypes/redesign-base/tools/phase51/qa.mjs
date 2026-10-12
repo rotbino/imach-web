@@ -121,8 +121,8 @@ await page.click('#sheet-quickps .btn[data-close]'); await sleep(250);
 /* فاز ۵۲ — کادر اشتراک + ردیف افزودن/تمدید + تنظیمات کنار جستجو + بج قیمت منقضی */
 const promoTxt = await page.locator('#scr-01 .cat-promo').textContent();
 ok('کاتالوگ: کادر اشتراک با عنوان مالک', promoTxt.includes('کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار'));
-ok('کاتالوگ: زیرمتن کادر (ذخیره کاتالوگ → قیمتهای زنده)', promoTxt.includes('همیشه قیمتهای زنده شما را در لیست ذخیره خود داشته باشند'));
-ok('کاتالوگ: اشتراک/پیش‌نمایش داخل کادر', (await page.locator('#scr-01 .cat-promo [data-sheet="sheet-share"]').count()) === 1 && (await page.locator('#scr-01 .cat-promo [data-go="13"]').count()) === 1);
+ok('کاتالوگ: زیرمتن جدید مالک (فاز ۵۵ — مورد علاقه)', promoTxt.includes('کاتالوگ شما را در لیست کاتالوگهای مورد علاقه خود ذخیره کنند'));
+ok('کاتالوگ: فقط اشتراک داخل کادر — چشم به باکس آمار رفت (فاز ۵۵)', (await page.locator('#scr-01 .cat-promo [data-sheet="sheet-share"]').count()) === 1 && (await page.locator('#scr-01 .cat-promo [data-go="13"]').count()) === 0 && (await page.locator('#scr-01 .cat-stats button[data-go="13"]').count()) === 1);
 ok('کاتالوگ: ویترین بدون آیکون (سه‌تایی رفتند)', (await page.locator('#scr-01 .showcase .icon-btn').count()) === 0);
 ok('کاتالوگ: افزودن کالای جدید + تمدید سریع کنار هم بالای جستجو', (await page.locator('#scr-01 .cat-addrow .add-btn').isVisible()) && (await page.locator('#scr-01 .cat-addrow .renew-btn[data-go="44"]').isVisible()));
 ok('کاتالوگ: متن دکمه‌ها نمی‌شکند', (await page.evaluate(() => { const b = document.querySelectorAll('#scr-01 .cat-addrow .btn'); return Array.from(b).every(x => x.scrollWidth <= x.clientWidth + 1 && x.scrollHeight <= x.clientHeight + 1); })));

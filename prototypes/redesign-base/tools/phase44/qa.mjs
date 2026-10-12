@@ -55,7 +55,7 @@ ok('فوتر خرید: لیست خرید · استعلام‌ها · پیام‌
 ok('پیل سوییچ چسبیده به لوگو (فاز ۴۵)', await page.locator('#scr-01 .appbar .brand .arm-pill').count() === 1);
 ok('پیل بدون آیکون داخلی + برچسب عمده', (await page.locator('#scr-01 .arm-pill').textContent()).includes('دستیار فروش عمده') && (await page.locator('#scr-01 .arm-pill > svg:not(.caret)').count()) === 0);
 ok('چشم از هدر ۰۱ حذف شد', await page.locator('#scr-01 .appbar .icon-btn[aria-label="پیش‌نمایش عمومی کاتالوگ"]').count() === 0);
-ok('کادر اشتراک: پیش‌نمایش + اشتراک داخل کادر (فاز ۵۲)', await page.locator('#scr-01 .cat-promo [data-go="13"]').count() === 1 && await page.locator('#scr-01 .cat-promo [data-sheet="sheet-share"]').count() === 1 && await page.locator('#scr-01 .showcase .icon-btn').count() === 0);
+ok('کادر اشتراک: فقط اشتراک داخل کادر — چشم به باکس آمار رفت (فاز ۵۵)', await page.locator('#scr-01 .cat-promo [data-sheet="sheet-share"]').count() === 1 && (await page.locator('#scr-01 .cat-promo [data-go="13"]').count()) === 0 && (await page.locator('#scr-01 .cat-stats button[data-go="13"]').count()) === 1 && await page.locator('#scr-01 .showcase .icon-btn').count() === 0);
 ok('آیکون پروفایل در ۰۱ (فاز ۴۷: آواتار متنی حذف)', await page.locator('#scr-01 .appbar .icon-btn[data-go="42"] svg use[href="#i-user"]').count() === 1);
 ok('آیکون پروفایل در ۰۸ (فاز ۴۷)', await page.locator('#scr-08 .appbar .icon-btn[data-go="42"] svg use[href="#i-user"]').count() === 1);
 ok('ردیف افزودن/تمدید بالای جستجو (فاز ۵۲)', await page.locator('#scr-01 .cat-addrow .add-btn').isVisible() && await page.locator('#scr-01 .cat-addrow .renew-btn[data-go="44"]').isVisible() && await page.locator('#scr-01 .bulk-bar').count() === 0);
@@ -184,7 +184,9 @@ ok('۲۷: ذخیرهٔ کاتالوگ از تبلیغ → ۴۶', await page.loca
 ok('۲۷: بدون «گوش به زنگ/فرصت بازار»', !(await page.locator('#scr-27').textContent()).includes('فرصت‌های بازار'));
 
 /* ═══ ۹. ۰۲ — ادغام مالک + خریدار ═══ */
-await page.goto(FILE + '#13'); await page.reload(); await sleep(250);
+/* فاز ۵۵: ۱۳ «keep» شد (پیش‌نمایش فروشنده) — سفر خریدار از بازوی خرید شروع می‌شود */
+await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
+await page.evaluate(() => { location.hash = '#13'; }); await sleep(300);
 ok('۱۳: بدون خط تخفیف همکار', await page.locator('#scr-13 .cowork-line').count() === 0);
 ok('۱۳: بدون آیکون دنبال‌کردن روی کارت', await page.locator('#scr-13 .pcard .gear[data-sheet="sheet-follow"]').count() === 0);
 ok('۱۳: بدون آیکون نظرات', await page.locator('#scr-13 .icon-btn[data-sheet="sheet-cmnts"]').count() === 0);
@@ -205,7 +207,8 @@ ok('۰۲: اکشن‌های خریدار برای مالک مخفی (فاز ۴۵
 ok('۰۲: نتایج حضور — ذخیره در لیست خرید (فاز ۴۵)', (await page.locator('#own-02 .stat-strip').textContent()).includes('ذخیره در لیست خرید'));
 ok('۰۲: مدیریت — تغییر قیمت', (await page.locator('#own-02').textContent()).includes('تغییر قیمت'));
 ok('۰۲: بدون خط همکار', await page.locator('#cw-02').count() === 0);
-await page.goto(FILE + '#13'); await page.reload(); await sleep(250);
+await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
+await page.evaluate(() => { location.hash = '#13'; }); await sleep(300);
 await page.click('#scr-13 .pcard');
 await sleep(250);
 ok('۰۲: اکشن‌های خریدار برای خریدار پیداست (فاز ۴۵)', await page.locator('#buybar-02').isVisible());
