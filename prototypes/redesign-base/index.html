@@ -1371,6 +1371,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .dlg textarea.input { height: 64px; }
   .rvw-err { font-size: 10.5px; font-weight: 700; color: var(--red); margin-top: 8px; }
 
+  /* ═══ فاز ۵۶ — فرم ثبت‌نام (۱۶): «کدام دستیار فعال باشد» — دو سوییچر + آیکون اینفو ═══ */
+  #scr-16 .lbl-row { display: flex; align-items: center; gap: 6px; }
+  #scr-16 .lbl-row label { margin: 0; }
+  #scr-16 .lbl-row .info-ic { width: 21px; height: 21px; border-radius: 50%; border: 0; background: var(--stone-tint); color: var(--muted-fg); display: grid; place-items: center; cursor: pointer; padding: 0; flex-shrink: 0; }
+  #scr-16 .lbl-row .info-ic svg { width: 12.5px; height: 12.5px; }
+  #scr-16 .lbl-row .info-ic:active { background: var(--accent); color: var(--primary-strong); }
+  #scr-16 .su-as { border: 1px solid var(--border); border-radius: 12px; padding: 3px 12px; }
+  #scr-16 .su-as .as-row { display: flex; align-items: center; gap: 11px; padding: 11px 0; border-bottom: 1px solid #f0eee8; }
+  #scr-16 .su-as .as-row:last-of-type { border-bottom: 0; }
+  #scr-16 .su-as .as-row .ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; flex-shrink: 0; }
+  #scr-16 .su-as .as-row .ico svg { width: 18px; height: 18px; }
+  #scr-16 .su-as .as-row .ico.sell { background: var(--accent); color: var(--primary-strong); }
+  #scr-16 .su-as .as-row .ico.buy { background: var(--stone-tint); color: var(--stone); }
+  #scr-16 .su-as .as-row .tx { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; }
+  #scr-16 .su-as .as-row .tx small { display: block; font-size: 10px; font-weight: 500; color: var(--muted-fg); margin-top: 2px; }
+  #scr-16 .su-err { font-size: 11px; font-weight: 700; color: var(--red); background: #fdf1f1; border: 1px solid #f3c1c1; border-radius: 9px; padding: 7px 10px; margin-top: 8px; }
+
+  /* فاز ۵۶ — شیت انتخاب صنف: حالت «ایجاد صنف جدید» (ورودی اینلاین زیر دکمه) */
+  #sheet-snf .snf-newbox { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+  #sheet-snf .snf-newbox .input { flex: 1; }
+  #sheet-snf .hintnote { margin-top: 8px; }
+
   /* ═══ فاز ۳۴ — نوارهای افقی: درگ ماوس + چرخ عمودی→افقی + فلش‌های مینیمال ═══
      ریشهٔ «اسکرول نمی‌خورد»: اسکرول‌بار مخفی بود و روی دسکتاپ نه لمس هست نه درگ بومی؛
      حالا با ماوس درگ می‌شود، چرخِ عمودی نوار را می‌چرخاند (تا انتها؛ بعدش صفحه) و دو فلش
@@ -3506,6 +3528,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <img src="png/d3-desktop-landing.jpg" alt="آی‌مچ روی دسکتاپ">
         </div>
 
+        <!-- ═══ فاز ۳۳ — نظر خریداران (فاز ۵۶: بازگردانده شد — حذفِ فاز ۴۴ بدون هماهنگی مالک بود)
+             نوار افقی اسکرولی قبل از «آی‌مچ چیست؟»: هر نظر یک قابلیت آیمچ را از زبان یک کاربر
+             واقعی روایت می‌کند. بالای نوار لینک «سایر نظرات» (صفحهٔ ۴۳)؛ آخر آیتم‌ها کارت دعوت:
+             اگر آیمچ به شما هم کمک کرده نظرتان را ثبت کنید (مدال dlg-rvw) — هم دیگران می‌دانند
+             آیمچ چه کمکی می‌کند، هم نام کسب‌وکار شما دیده می‌شود (تبلیغ رایگان).
+             کارت‌ها را TS_DATA در JS می‌سازد؛ برای هر کاربر فقط «یک» دکمه:
+             فروشنده → مشاهده کاتالوگ (۱۳) · خریدار → مشاهده لیست خرید (۲۳). -->
+        <div class="ts-head">
+          <b>نظر کاربران</b>
+          <button type="button" class="ts-morelnk" data-go="43">سایر نظرات <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        </div>
+        <div class="ts-row" id="ts-row-15"></div>
 
         <!-- ═══ آی‌مچ چیست؟ ═══ -->
         <div class="land-sec">
@@ -3683,20 +3717,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
         <div class="field">
-          <label>فعالیت شما در بازار</label>
-          <!-- فاز ۵۰ — این انتخاب همان چیزی است که روشن/خاموش شدن دستیارها را تعیین می‌کند:
-               خرید عمده → فقط دستیار خرید · فروش عمده → فقط دستیار فروش · هر دو → هر دو.
+          <div class="lbl-row">
+            <label>کدام دستیار برای کسب و کار شما فعال باشد</label>
+            <button type="button" class="info-ic" data-sheet="dlg-suinfo" aria-label="توضیح کوتاه: کدام دستیار را فعال کنم؟" title="کدام دستیار را فعال کنم؟"><svg><use href="#i-info"/></svg></button>
+          </div>
+          <!-- فاز ۵۶ (مالک) — به‌جای سه پیلِ «فعالیت شما در بازار»: دو سوییچر.
+               حداقل یکی باید فعال بماند (مثل سوییچ‌های «ویرایش کسب‌وکار» ۲۲).
+               توضیح ریز، به‌جای متن زیر فرم، در مودالِ آیکون اینفورمیشن است (متن عیناً از مالک).
                پس از ثبت‌نام، فرود = خانهٔ همان دستیاری که روشن است و پیل «تعویض دستیار» فقط
                وقتی دیده می‌شود که هر دو روشن باشند. تغییر بعدی از «ویرایش کسب‌وکار» (۲۲) است. -->
-          <div class="pillchoice" id="su-activity">
-            <button class="pill" data-act="buy" type="button">خرید عمده</button>
-            <button class="pill active" data-act="sell" type="button">فروش عمده</button>
-            <button class="pill" data-act="both" type="button">هر دو</button>
+          <div class="su-as" id="su-assist">
+            <div class="as-row">
+              <span class="ico buy"><svg><use href="#i-basket"/></svg></span>
+              <div class="tx">دستیار خرید عمده</div>
+              <div class="toggle" data-suarm="buy" role="switch" aria-label="دستیار خرید عمده"></div>
+            </div>
+            <div class="as-row">
+              <span class="ico sell"><svg><use href="#i-store"/></svg></span>
+              <div class="tx">دستیار فروش عمده</div>
+              <div class="toggle on" data-suarm="sell" role="switch" aria-label="دستیار فروش عمده"></div>
+            </div>
           </div>
-          <div class="role-desc">
-            <svg><use href="#i-info"/></svg>
-            <span>هر وقت خواستید، از «ویرایش کسب‌وکار» می‌توانید دستیار دیگر را هم روشن کنید.</span>
-          </div>
+          <div class="su-err" id="su-err" hidden>حداقل یکی از دستیارها باید فعال باشد</div>
         </div>
 
         <div class="field">
@@ -3709,10 +3751,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <div class="field">
           <label>صنف</label>
-          <div class="input sel-input">
-            <span>مواد غذایی — پخش برنج</span>
-            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></span>
-          </div>
+          <!-- فاز ۵۶ (مالک) — انتخاب صنف: مودال از زیر باز می‌شود؛ جستجو + «ایجاد صنف جدید» -->
+          <button class="input sel" data-sheet="sheet-snf" type="button">
+            <span style="color:var(--foreground);font-weight:700" class="snf-chosen" id="snf-field-16">مواد غذایی — پخش برنج</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
+          </button>
+          <div class="hint">صنف خود را جستجو و انتخاب کنید</div>
         </div>
 
         <div class="checkrow" style="margin-top:2px">
@@ -3991,8 +4035,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <div class="field">
         <label>صنف <span class="opt">— با جستجو</span></label>
-        <button class="input sel" data-sheet="sheet-trade">
-          <span style="color:var(--foreground);font-weight:700">پخش مواد غذایی</span>
+        <!-- فاز ۵۶ (مالک) — همان شیت سادهٔ انتخاب صنف ثبت‌نام: جستجو + «ایجاد صنف جدید»
+             (قبلاً به‌اشتباه به شیتِ «چه اصنافی قیمت‌ها را ببینند» لینک بود) -->
+        <button class="input sel" data-sheet="sheet-snf">
+          <span style="color:var(--foreground);font-weight:700" class="snf-chosen">پخش مواد غذایی</span>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
         </button>
         <div class="hint">از میان اصناف ای‌مچ جستجو و انتخاب می‌شود</div>
@@ -4697,6 +4743,38 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
     </main>
+
+    </section>
+
+
+    <!-- ═══ فاز ۳۳ — سایر نظرات خریداران (فاز ۵۶: بازگردانده شد — حذفِ فاز ۴۴ بدون هماهنگی مالک بود)
+         مقصدِ لینک «سایر نظرات» بالای نوار لندینگ (۱۵). همهٔ نظرات به‌صورت عمودی —
+         شش نظر نمونهٔ نوار + نظرات بیشتر + نظراتی که همین‌جا ثبت می‌شود (بالای لیست).
+         هر کاربر همان «یک» دکمه را دارد: فروشنده/تأمین‌کننده → مشاهده کاتالوگ (۱۳) ·
+         خریدار → مشاهده لیست خرید (۲۳). مثل ۱۵/۱۶/۱۷ از گارد بازوها مستقل است (ARM_FREE) —
+         محتوای عمومی پیش از ورود. ثبت نظر = همان مدال dlg-rvw نوار. -->
+    <section class="scr" id="scr-43" data-arm="sell" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">سایر نظرات<small>تجربهٔ کاربران آیمچ از قابلیت‌ها</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- نظرات (JS رندر می‌کند — تازه‌ها اول) -->
+      <div style="display:flex;flex-direction:column;gap:10px" id="ts-list-43"></div>
+
+      <!-- دعوت به ثبت نظر — همان ایدهٔ کارت آخر نوار -->
+      <div class="card gd-ask" style="margin-top:12px;padding:11px 13px">
+        <svg><use href="#i-info"/></svg>
+        <p>اگر آیمچ به کسب‌وکار شما هم کمک کرده، نظرتان را ثبت کنید تا دیگران هم بدانند آیمچ چه کمکی می‌کند — و نام کسب‌وکار شما هم بین خریداران دیده شود.</p>
+      </div>
+
+    </main>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" style="flex:1" data-rvwopen><svg><use href="#i-comment"/></svg> ثبت نظر شما</button>
+    </div>
 
     </section>
 
@@ -6051,6 +6129,57 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
+<!-- ═══ فاز ۵۶ (مالک) — انتخاب صنف: مودال از زیر باز می‌شود؛ کاربر جستجو می‌کند و
+     صنفش را پیدا می‌کند؛ زیرش «ایجاد صنف جدید». ساده و بی‌دردسر — کاربر نباید گیج شود.
+     IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی، جستجو از GET /trades?q= می‌آید و
+     «ایجاد صنف جدید» درخواست ساخت صنف را برای ادمین می‌فرستد (پس از تأیید، به فهرست
+     همه اضافه می‌شود). انتخاب ردیف = همان لحظه فیلدِ فرم هم‌گام و شیت بسته می‌شود. ═══ -->
+<div class="sheet" id="sheet-snf" role="dialog" aria-label="انتخاب صنف">
+  <div class="grab"></div>
+  <h3>انتخاب صنف</h3>
+  <div class="sub">صنف کسب‌وکارت را جستجو و انتخاب کن</div>
+  <div class="field sheet-search">
+    <div class="input">
+      <svg><use href="#i-search"/></svg>
+      <span class="ph">جستجوی صنف…</span>
+    </div>
+  </div>
+  <div class="sheet-row" data-snf="پخش مواد غذایی">
+    <span class="tx"><b>پخش مواد غذایی</b><span>۴۲۱ کسب‌وکار</span></span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+  </div>
+  <div class="sheet-row" data-snf="سوپرمارکت">
+    <span class="tx"><b>سوپرمارکت</b><span>۱٬۲۰۴ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="رستوران و فست‌فود">
+    <span class="tx"><b>رستوران و فست‌فود</b><span>۸۵۰ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="حبوبات و غلات">
+    <span class="tx"><b>حبوبات و غلات</b><span>۹۸ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="لبنیات">
+    <span class="tx"><b>لبنیات</b><span>۷۶ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="قصابی تجاری">
+    <span class="tx"><b>قصابی تجاری</b><span>۶۳ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="قنادی">
+    <span class="tx"><b>قنادی</b><span>۵۷ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="لوازم ساختمانی">
+    <span class="tx"><b>لوازم ساختمانی</b><span>۳۱۲ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="لوازم خودرو">
+    <span class="tx"><b>لوازم خودرو</b><span>۲۶۵ کسب‌وکار</span></span>
+  </div>
+  <div class="sheet-row" data-snf="میوه و تره‌بار">
+    <span class="tx"><b>میوه و تره‌بار</b><span>۱۸۹ کسب‌وکار</span></span>
+  </div>
+  <!-- فاز ۵۶ (مالک) — «ایجاد صنف جدید» زیر فهرست؛ صنفِ کاربر نبود؟ همین‌جا درخواستش را ثبت کن -->
+  <button class="add-row" data-snfnew type="button"><svg><use href="#i-plus"/></svg> ایجاد صنف جدید</button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
 <!-- ═══ ۱۸) انتخاب صنف ═══ -->
 <!-- ═══ فاز ۵۳ (مالک) — چه اصنافی قیمت‌ها را ببینند: خود کاربر اصناف را سوییچ می‌زند؛
      تیک نیست، سوییچر است و پیش‌فرض همهٔ اصناف روشن‌اند. سوییچِ کلیِ «همه ببینند» حذف شد —
@@ -6305,10 +6434,59 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ فاز ۳۳ — مدال سادهٔ ثبت نظر (نوار «نظر خریداران» لندینگ ۱۵ + سایر نظرات ۴۳) ═══ -->
+<!-- ═══ فاز ۳۳ — مدال سادهٔ ثبت نظر (نوار «نظر خریداران» لندینگ ۱۵ + سایر نظرات ۴۳)
+     فاز ۵۶ (مالک): بازگردانده شد + «تأمین‌کننده» صریح شد — فروشنده/تأمین‌کننده هم نظر
+     ثبت می‌کند و نظرش در «سایر نظرات» (۴۳) هم به نمایش می‌آید. ═══ -->
 <!-- IMPLEMENTATION NOTE: نظر ثبت‌شده همان لحظه به انتهای نوار (قبل از کارت دعوت) و
      بالای فهرست «سایر نظرات» اضافه می‌شود. انتخاب فروشنده/خریدار تعیین می‌کند دکمهٔ کارت
      کاربر «مشاهده کاتالوگ» باشد یا «مشاهده لیست خرید» — هر کاربر فقط یکی. -->
+<div class="dlg" id="dlg-rvw" role="dialog" aria-label="ثبت نظر شما">
+  <h3>ثبت نظر شما</h3>
+  <div class="dlg-q">آیمچ چه کمکی به کسب‌وکار شما کرده؟</div>
+  <div class="dlg-p">نظر شما با نام و کسب‌وکارتان برای همه نمایش داده می‌شود — هم دیگران می‌دانند آیمچ چه می‌کند، هم کسب‌وکار شما دیده می‌شود.</div>
+  <div class="field">
+    <label>نام و نام خانوادگی</label>
+    <input class="input" id="rvw-name" placeholder="مثلاً: رضا کریمی">
+  </div>
+  <div class="field">
+    <label>کسب‌وکار شما</label>
+    <input class="input" id="rvw-biz" placeholder="مثلاً: تولیدکننده محصولات شوینده">
+  </div>
+  <div class="field">
+    <label>شما در آیمچ</label>
+    <div class="pillchoice">
+      <button type="button" class="pill active" data-rrole="sell">فروشنده / تأمین‌کننده‌ام</button>
+      <button type="button" class="pill" data-rrole="buy">خریدارم</button>
+    </div>
+  </div>
+  <div class="field">
+    <label>نظر شما</label>
+    <textarea class="input" id="rvw-text" rows="3" placeholder="آیمچ چه کمکی به کار شما کرده؟"></textarea>
+  </div>
+  <div class="rvw-err" id="rvw-err" hidden>نام، کسب‌وکار و متن نظر را کامل کنید</div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-rvwsend><svg><use href="#i-send"/></svg> ثبت نظر</button>
+    <button class="btn btn-outline" data-close>انصراف</button>
+  </div>
+</div>
+
+<!-- ═══ فاز ۵۶ (مالک) — مدال توضیح ریز «کدام دستیار فعال باشد» (فرم ثبت‌نام ۱۶):
+     آیکون اینفورمیشن کنار عنوان بازش می‌کند؛ متن عیناً از مالک. ═══ -->
+<div class="dlg" id="dlg-suinfo" role="dialog" aria-label="کدام دستیار برای کسب و کار شما فعال باشد">
+  <h3>کدام دستیار را فعال کنم؟</h3>
+  <div class="dlg-p" style="margin-top:4px">
+    اگر در کسب و کار خودم هم خرید عمده دارید و هم فروش عمده. مثل عمده فروشها، تولید کننده ها هر دو را فعال کنید.
+  </div>
+  <div class="dlg-p" style="margin-top:6px">
+    اگر فقط فروش عمده دارید مثل بازاریابها فقط دستیار فروش را فعال کنید.
+  </div>
+  <div class="dlg-p" style="margin-top:6px">
+    اگر فقط خرید عمده دارید مثل خرده فروش ها و کسب و کارهای خدماتی فقط دستیار خرید را فعال کنید.
+  </div>
+  <div class="dlg-btns">
+    <button class="btn btn-primary" data-close>ممنون، فهمیدم</button>
+  </div>
+</div>
 
 <!-- ═══ فاز ۳۴ — مدال «شرایط استفاده از آیمچ» (لینکِ داخل چک‌باکس ثبت‌نام ۱۶) ═══ -->
 <!-- IMPLEMENTATION NOTE: سربرگ/پاص ثابت + بدنهٔ اسکرولی. دکمهٔ پایین «مطالعه کردم و می‌پذیرم»
@@ -6610,7 +6788,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '10': '42', /* فاز ۴۴: کاتالوگ‌های ذخیره‌شده ← پروفایل؛ فاز ۴۵: از فوتر خرید هم می‌آید */
     '45': '08', /* فاز ۴۵: استعلام‌ها ← لیست خرید */
     '44': '01', /* فاز ۳۶: به‌روزرسانی گروهی قیمت/موجودی ← کاتالوگ */
-    '53': '01' /* فاز ۵۳: دعوت‌شدگان ← کاتالوگ (ورود از نوار آمار/تنظیمات/کیف پول/اعلان) */
+    '53': '01', /* فاز ۵۳: دعوت‌شدگان ← کاتالوگ (ورود از نوار آمار/تنظیمات/کیف پول/اعلان) */
+    '43': '15' /* فاز ۵۶ (بازگشت فاز ۳۳): سایر نظرات ← لندینگ */
   };
   var BTN = {
     '01': [['افزودن کالای جدید', '04']], /* فاز ۵۲: برچسب جدید مالک؛ مقصد همان فرم افزودن/ویرایش کالا */
@@ -6629,7 +6808,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -6710,7 +6889,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
        صفحات ورود/ثبت‌نام/لندینگ (۱۵/۱۶/۱۷) و دسکتاپ مستقل از این گارد‌اند؛
        فرم ویرایش کسب‌وکار (۲۲) «keep» است تا با هر دستیاری باز شود و بتوان دستیار خاموش را دوباره روشن کرد.
        فاز ۳۳: «سایر نظرات» (۴۳) هم محتوای عمومی پیش از ورود است — مثل لندینگ. */
-    var ARM_FREE = { '15': 1, '16': 1, '17': 1 };
+    var ARM_FREE = { '15': 1, '16': 1, '17': 1, '43': 1 }; /* فاز ۵۶: ۴۳ = سایر نظرات، محتوای عمومی مثل لندینگ */
     if (!isDesk(id) && !ARM_FREE[id]) {
       var tArm = target.dataset.arm;
       if (tArm && tArm !== 'keep' && !ASSIST[tArm]) { show(assistHome()); return; }
@@ -8546,9 +8725,78 @@ body > div[id^="scr-d"][hidden] { display: none; }
   }
 
   /* ═══ فاز ۳۳ — ۲) نظرات خریداران: نوار لندینگ (۱۵) + سایر نظرات (۴۳) + مدال ثبت ═══
+     فاز ۵۶ (مالک) — بازگردانده شد (حذفِ فاز ۴۴ بدون هماهنگی مالک بود).
      شش نظر اول عین متن مالک؛ چهار نظر more فقط در «سایر نظرات». هر کاربر فقط «یک» دکمه دارد:
-     فروشنده → مشاهده کاتالوگ (۱۳) · خریدار → مشاهده لیست خرید (۲۳). نظر تازه = live:
+     فروشنده/تأمین‌کننده → مشاهده کاتالوگ (۱۳) · خریدار → مشاهده لیست خرید (۲۳). نظر تازه = live:
      انتهای نوار (قبل از کارت دعوت) و بالای فهرست ۴۳، با کارت سبز fresh. */
+  var TS_DATA = [
+    { n: 'علی محمدی', biz: 'پخش لوازم خودرو', av: '#b45309', role: 'sell', cap: 'کاتالوگ با قیمت همیشه به‌روز', when: '۳ روز پیش',
+      tx: 'با ساخت کاتالوگ محصولات و ارسال لینک اون به خریداران همکار، دیگه دغدغه ارسال قیمت هر روزه به همکارانم رو ندارم. یک‌بار قیمت‌ها رو به‌روز می‌کنم و همه می‌بینن.' },
+    { n: 'صادق اکبری', biz: 'ویزیتور مواد غذایی', av: '#0d9488', role: 'sell', cap: 'سفارش بدون حضور در محل', when: '۱ هفتهٔ پیش',
+      tx: 'با ساخت کاتالوگ محصولاتم و ارسال اون به سوپرمارکت‌ها، حالا حتی بدون حضور در محل هم می‌تونم سفارش‌های جدید بگیرم. ممنون از آیمچ!' },
+    { n: 'مهدی رضایی', biz: 'خریدار عمده مواد اولیه', av: '#7c3aed', role: 'buy', cap: 'مقایسهٔ قیمت تأمین‌کنندگان', when: '۲ هفتهٔ پیش',
+      tx: 'قبلاً برای پیدا کردن فروشنده و گرفتن قیمت باید با چند نفر تماس می‌گرفتم. حالا می‌تونم قیمت تأمین‌کننده‌های مختلف رو کنار هم دنبال کنم و راحت‌تر مقایسه کنم.' },
+    { n: 'رضا کریمی', biz: 'تولیدکننده محصولات شوینده', av: '#c2703a', role: 'sell', cap: 'معرفی محصولات به مشتریان', when: '۳ هفتهٔ پیش',
+      tx: 'با کاتالوگ آیمچ، محصولاتم رو یک‌جا به مشتریان معرفی می‌کنم و هر وقت محصول یا قیمت جدیدی داشته باشم، کاتالوگم رو به‌روز می‌کنم.' },
+    { n: 'حسین مرادی', biz: 'عمده‌فروش لوازم ساختمانی', av: '#0e7490', role: 'sell', cap: 'دنبال‌کردن درخواست‌های خرید', when: '۱ ماه پیش',
+      tx: 'لازم نیست منتظر تماس مشتری بمونم تا بفهمم چه کالایی می‌خواد. با دنبال کردن درخواست‌های خرید مرتبط، می‌تونم زودتر از نیاز خریدارها باخبر بشم و قیمت بدم.' },
+    { n: 'امیرحسین احمدی', biz: 'توزیع‌کننده محصولات کشاورزی', av: '#9333ea', role: 'sell', cap: 'قیمت و موجودی به‌روز', when: '۱ ماه پیش',
+      tx: 'قیمت و موجودی محصولات مدام تغییر می‌کنه. حالا می‌تونم اطلاعات کالاهای قابل عرضه‌ام رو در کاتالوگ به‌روز نگه دارم تا خریدارها قبل از تماس، اطلاعات بهتری داشته باشن.' },
+    /* چهار نظر دیگر — فقط در صفحهٔ «سایر نظرات» (۴۳) */
+    { n: 'مریم قاسمی', biz: 'سوپرمارکت قاصدک', av: '#0e7490', role: 'buy', cap: 'گوش به زنگ قیمت', when: '۲ هفتهٔ پیش', more: true,
+      tx: 'زنگولهٔ «گوش به زنگ» رو روی برنج و روغن روشن می‌کنم و قیمت هدف می‌دم؛ همون‌طور که قیمت به هدفم رسید پیام اومد. دیگه هر روز چند بار کاتالوگ‌ها رو چک نمی‌کنم.' },
+    { n: 'کریم دهقان', biz: 'پخش لبنیات مهرگان', av: '#b45309', role: 'sell', cap: 'درخواست‌های خرید مرتبط', when: '۳ هفتهٔ پیش', more: true,
+      tx: 'به‌جای اینکه منتظر بمونم مشتری زنگ بزنه، درخواست‌های خرید مرتبط با لبنیات رو می‌بینم و همون روز براشون قیمت می‌دم. فروش هفتگی‌ام منظم‌تر شده.' },
+    { n: 'الهام صادقی', biz: 'رستوران خانهٔ سبز', av: '#0d9488', role: 'buy', cap: 'یک فرم به چند تأمین‌کننده', when: '۱ ماه پیش', more: true,
+      tx: 'یک فرم درخواست خرید می‌فرستم برای چند تأمین‌کننده با هم و مهلت سه‌روزه می‌ذارم؛ روز سوم بهترین قیمت و شرایط جلوی چشممه. بعد فقط تماس نهایی رو می‌گیرم.' },
+    { n: 'بهرام نیک‌پور', biz: 'تولیدکننده زعفران و خشکبار', av: '#7c3aed', role: 'sell', cap: 'تبلیغ هدفمند کم‌هزینه', when: '۱ ماه پیش', more: true,
+      tx: 'با تبلیغ هدفمند، کالای من دقیقاً جلوی چشم خریدارِ همون کالا می‌ره — نه همه‌جا. هزینه‌ش هم فقط وقتی از کیف پول کم می‌شه که واقعاً دیده بشم.' }
+  ];
+  function tsCard(r, mode) {
+    var item = mode === 'item';
+    var btn = r.role === 'buy'
+      ? '<button type="button" class="ts-btn" data-go="23"><svg><use href="#i-list"/></svg> مشاهده لیست خرید</button>'
+      : '<button type="button" class="ts-btn" data-go="13"><svg><use href="#i-store"/></svg> مشاهده کاتالوگ</button>';
+    return '<div class="ts-card' + (item ? ' ts-item' : '') + (r.live ? ' fresh' : '') + '">' +
+      '<span class="ts-cap"><svg><use href="#i-spark"/></svg> ' + r.cap + '</span>' +
+      '<div class="ts-who">' +
+        '<span class="ts-av" style="background:' + r.av + '">' + r.n.charAt(0) + '</span>' +
+        '<div style="min-width:0"><div class="ts-n">' + r.n + '</div><div class="ts-role">' + r.biz + '</div></div>' +
+      '</div>' +
+      '<div class="ts-tx">' + r.tx + '</div>' +
+      (item ? '<div class="ts-when">' + r.when + '</div>' : '') +
+      btn +
+    '</div>';
+  }
+  function tsCta() {
+    return '<div class="ts-cta">' +
+      '<b>آیمچ به شما هم کمک کرده؟</b>' +
+      '<p>نظرتون رو ثبت کنید تا دیگران هم بدونند آیمچ چه کمکی به کسب‌وکارها می‌کنه — و کسب‌وکار شما هم بین خریدارها دیده بشه.</p>' +
+      '<button type="button" class="ts-btn" data-rvwopen><svg><use href="#i-comment"/></svg> ثبت نظر شما</button>' +
+    '</div>';
+  }
+  function tsRender() {
+    var bar = document.getElementById('ts-row-15');
+    if (bar) {
+      var base = TS_DATA.filter(function (r) { return !r.more; }); /* شش نظر مالک + نظرات تازه */
+      bar.innerHTML = base.map(function (r) { return tsCard(r, 'card'); }).join('') + tsCta();
+    }
+    var list = document.getElementById('ts-list-43');
+    if (list) {
+      var live = TS_DATA.filter(function (r) { return r.live; });
+      var rest = TS_DATA.filter(function (r) { return !r.live; });
+      list.innerHTML = live.concat(rest).map(function (r) { return tsCard(r, 'item'); }).join('');
+    }
+  }
+  function tsBarToEnd() {
+    var bar = document.getElementById('ts-row-15');
+    if (!bar) return;
+    /* بعد از ثبت، نوار می‌رود سراغ کارت تازه (وسط قاب) تا هم کارت جدید دیده شود هم کارت دعوت
+       بعد از آن. scrollIntoView با مختصات منطقی (center/end) مستقل از علامتِ RTL است. */
+    var cards = bar.querySelectorAll('.ts-card');
+    var last = cards[cards.length - 1] || bar.querySelector('.ts-cta');
+    if (last && last.scrollIntoView) last.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }
 
   /* ── تعامل‌های ریز — فقط کلاس‌های موجود خود دیزاین ── */
   var qpCard = null; /* فاز ۴۵ — کارتِ در حال ویرایش سریع قیمت/موجودی (۰۱) */
@@ -8720,6 +8968,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
       assistSave();
       assistChrome();
       if (!ASSIST[phoneArm()]) { go(assistHome(), false); stack.length = 0; }
+      return;
+    }
+
+    /* ═══ فاز ۵۶ — سوییچ‌های «کدام دستیار فعال باشد» در ثبت‌نام (۱۶): هر دو نمی‌توانند
+       همزمان خاموش باشند (حداقل یکی — خواستهٔ مالک). خطا همین‌جا نشان داده می‌شود؛
+       دکمهٔ «ساخت حساب» هم دوباره چک می‌کند. ═══ */
+    var suTg = t.closest('[data-suarm]');
+    if (suTg) {
+      var suOn = suTg.classList.contains('on');
+      var suOther = document.querySelector('#su-assist .toggle[data-suarm="' + (suTg.dataset.suarm === 'sell' ? 'buy' : 'sell') + '"]');
+      if (suOn && suOther && !suOther.classList.contains('on')) {
+        var suErrEl = document.getElementById('su-err');
+        if (suErrEl) {
+          suErrEl.hidden = false;
+          setTimeout(function () { suErrEl.hidden = true; }, 2400);
+        }
+        return; /* آخرین دستیارِ فعال خاموش نمی‌شود */
+      }
+      suTg.classList.toggle('on', !suOn);
+      var suErrEl2 = document.getElementById('su-err');
+      if (suErrEl2) suErrEl2.hidden = true;
       return;
     }
 
@@ -9245,17 +9514,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var add34 = t.closest('#scr-34 .action-bar [data-go="08"]');
     if (add34) glReset();
 
-    /* ═══ فاز ۵۰ — ثبت‌نام تک‌بازو (مالک): «فعالیت شما در بازار» تعیین می‌کند فقط کدام دستیار
-       روشن شود تا کاربرِ تک‌نیاز گیج نشود. خرید عمده → فقط خرید · فروش عمده → فقط فروش ·
-       هر دو → هر دو. فرود پس از ثبت‌نام = خانهٔ دستیارِ روشن (نه همیشه ۰۱)؛ پیل «تعویض
-       دستیار» خودکار مخفی می‌شود چون assistChrome فقط با هر دو روشن پیل را نشان می‌دهد.
-       روشن‌کردن دوبارهٔ دستیار دوم: همین پیل‌ها (ثبت‌نام مجدد دمو) یا سوییچ‌های فرم ۲۲. ═══ */
+    /* ═══ فاز ۵۰ → ۵۶ — ثبت‌نام تک‌بازو (مالک): دو سوییچرِ «کدام دستیار برای کسب و کار شما
+       فعال باشد» تعیین می‌کنند فقط کدام دستیار روشن شود تا کاربرِ تک‌نیاز گیج نشود.
+       حداقل یکی باید فعال باشد (خواستهٔ مالک) — دکمه هم چک می‌کند.
+       فرود پس از ثبت‌نام = خانهٔ دستیارِ روشن (نه همیشه ۰۱)؛ پیل «تعویض دستیار»
+       خودکار مخفی می‌شود چون assistChrome فقط با هر دو روشن پیل را نشان می‌دهد.
+       روشن‌کردن دوبارهٔ دستیار دوم: همین سوییچ‌ها یا سوییچ‌های فرم ۲۲. ═══ */
     var suDone = t.closest('#scr-16 [data-go="01"]');
     if (suDone) {
-      var suP = document.querySelector('#su-activity .pill.active');
-      var suAct = suP ? (suP.dataset.act || 'both') : 'both';
-      ASSIST.sell = (suAct === 'sell' || suAct === 'both');
-      ASSIST.buy = (suAct === 'buy' || suAct === 'both');
+      var suSellTg = document.querySelector('#su-assist .toggle[data-suarm="sell"]');
+      var suBuyTg = document.querySelector('#su-assist .toggle[data-suarm="buy"]');
+      ASSIST.sell = !!(suSellTg && suSellTg.classList.contains('on'));
+      ASSIST.buy = !!(suBuyTg && suBuyTg.classList.contains('on'));
+      if (!ASSIST.sell && !ASSIST.buy) {
+        var suErrEl3 = document.getElementById('su-err');
+        if (suErrEl3) suErrEl3.hidden = false;
+        return; /* حداقل یکی از دستیارها باید فعال باشد */
+      }
       assistSave();
       assistChrome();
       go(assistHome(), false);
@@ -9316,6 +9591,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       itab.classList.add('active'); return;
     }
 
+    /* ═══ فاز ۳۳ — مدال سادهٔ ثبت نظر (نوار ۱۵ / سایر نظرات ۴۳) — فاز ۵۶: بازگردانده شد ═══ */
+    var rvo = t.closest('[data-rvwopen]');
+    if (rvo) { openSheet('dlg-rvw'); return; }
+
     /* ═══ فاز ۳۴ — مدال «شرایط استفاده» (لینکِ چک‌باکس ثبت‌نام ۱۶) ═══
        فاز ۵۴ — بازگردانده شد: هندلر در بازنویسی بزرگ فاز ۴۴ جامانده بود (مودال و متن سرِ جای
        خودشان بودند ولی این بلوک حذف شده بود و لینک مرده بود).
@@ -9328,6 +9607,95 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var tcb = document.querySelector('#scr-16 .checkrow .checkbox');
       if (tcb) tcb.classList.add('on');
       closeSheet();
+      return;
+    }
+
+    /* ═══ فاز ۳۳ — ثبت نظر: نام + کسب‌وکار + متن لازم؛ نقش (فروشنده/تأمین‌کننده یا خریدار)
+       دکمهٔ کارت را تعیین می‌کند. نظر تازه همان لحظه در انتهای نوار (قبل از کارت دعوت) و
+       بالای فهرست «سایر نظرات» (۴۳) می‌نشیند — نظر تأمین‌کننده هم در ۴۳ نمایش داده می‌شود
+       (فاز ۵۶، خواستهٔ مالک). ═══ */
+    var rvs = t.closest('[data-rvwsend]');
+    if (rvs) {
+      var rnm = document.getElementById('rvw-name');
+      var rbz = document.getElementById('rvw-biz');
+      var rtx = document.getElementById('rvw-text');
+      var rvn = rnm ? rnm.value.trim() : '';
+      var rvb = rbz ? rbz.value.trim() : '';
+      var rvt = rtx ? rtx.value.trim() : '';
+      var rerr = document.getElementById('rvw-err');
+      if (!rvn || !rvb || !rvt) { if (rerr) rerr.hidden = false; return; }
+      var rpl = document.querySelector('#dlg-rvw .pillchoice .pill.active');
+      var rrole = rpl && rpl.dataset.rrole === 'buy' ? 'buy' : 'sell';
+      TS_DATA.push({ n: rvn, biz: rvb, av: rrole === 'buy' ? '#0e7490' : '#b45309', role: rrole, cap: 'تجربهٔ کاربر', when: 'همین حالا', tx: rvt, live: true });
+      tsRender();
+      if (rnm) rnm.value = '';
+      if (rbz) rbz.value = '';
+      if (rtx) rtx.value = '';
+      if (rerr) rerr.hidden = true;
+      closeSheet();
+      tsBarToEnd(); /* نوار به انتها می‌رود تا کارت تازه + دعوت دیده شود */
+      return;
+    }
+
+    /* ═══ فاز ۵۶ — شیت انتخاب صنف: ردیف = انتخاب و بستن؛ «ایجاد صنف جدید» = ورودی اینلاین ═══ */
+    var snfRow = t.closest('[data-snf]');
+    if (snfRow) {
+      document.querySelectorAll('#sheet-snf [data-snf]').forEach(function (r) {
+        r.classList.toggle('current', r === snfRow);
+        var ck = r.querySelector('.check');
+        if (ck) ck.remove();
+      });
+      var ckNew = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      ckNew.setAttribute('class', 'check');
+      ckNew.setAttribute('viewBox', '0 0 24 24');
+      ckNew.setAttribute('fill', 'none');
+      ckNew.setAttribute('stroke', 'currentColor');
+      ckNew.setAttribute('stroke-width', '2.4');
+      ckNew.setAttribute('stroke-linecap', 'round');
+        ckNew.setAttribute('stroke-linejoin', 'round');
+      ckNew.innerHTML = '<path d="M4.5 12.5l5 5 10-11"/>';
+      snfRow.appendChild(ckNew);
+      document.querySelectorAll('.snf-chosen').forEach(function (f) { f.textContent = snfRow.dataset.snf; });
+      setTimeout(closeSheet, 260);
+      return;
+    }
+    var snfNew = t.closest('[data-snfnew]');
+    if (snfNew) {
+      if (!document.getElementById('snf-newbox')) {
+        var nb = document.createElement('div');
+        nb.className = 'snf-newbox';
+        nb.id = 'snf-newbox';
+        nb.innerHTML = '<div class="input"><input id="snf-newname" placeholder="نام صنف شما؛ مثلاً: پخش شوینده" style="border:0;outline:0;background:transparent;width:100%;font:inherit;font-size:12.5px"></div>' +
+          '<button class="btn btn-sm btn-primary" type="button" data-snfadd>ثبت</button>';
+        snfNew.insertAdjacentElement('afterend', nb);
+        var ni = nb.querySelector('input');
+        if (ni) ni.focus();
+      }
+      return;
+    }
+    var snfAdd = t.closest('[data-snfadd]');
+    if (snfAdd) {
+      var nnEl = document.getElementById('snf-newname');
+      var nn = nnEl ? nnEl.value.trim() : '';
+      if (nn) {
+        document.querySelectorAll('.snf-chosen').forEach(function (f) { f.textContent = nn; });
+        var box0 = document.getElementById('snf-newbox');
+        if (box0) box0.remove();
+        var nbRow = document.createElement('div');
+        nbRow.className = 'sheet-row';
+        nbRow.setAttribute('data-snf', nn);
+        nbRow.innerHTML = '<span class="tx"><b>' + nn + '</b><span>صنف جدید — در انتظار تأیید</span></span>' +
+          '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="visibility:visible"><path d="M4.5 12.5l5 5 10-11"/></svg>';
+        document.querySelectorAll('#sheet-snf [data-snf]').forEach(function (r) {
+          var ck0 = r.querySelector('.check');
+          if (ck0) ck0.remove();
+          r.classList.remove('current');
+        });
+        nbRow.classList.add('current');
+        var addBtn = document.querySelector('#sheet-snf [data-snfnew]');
+        if (addBtn) addBtn.insertAdjacentElement('beforebegin', nbRow);
+        setTimeout(closeSheet, 260);
+      }
       return;
     }
 
@@ -9491,7 +9859,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     sync();
   }
-  document.querySelectorAll('#scr-08 .bl-rfq-row').forEach(hsInit);
+  document.querySelectorAll('#ts-row-15, #scr-08 .bl-rfq-row').forEach(hsInit);
 
   /* ═══ فاز ۵۳ — رندر QR ماک کاتالوگ: الگوی قطعی (بذر ثابت) با سه الگوی جست‌وجوی گوشه‌ها
      و مرکزِ سفید برای لوگو؛ در پیاده‌سازی عملیاتی، QR واقعی از سرور می‌آید (پیوند کاتالوگ). ═══ */
@@ -9519,6 +9887,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   wire();
   evRender(ITEM_EVENTS);
   walletRender();
+  tsRender(); /* فاز ۵۶ (بازگشت فاز ۳۳) — نوار «نظر کاربران» لندینگ + فهرست سایر نظرات */
   ppSync();   /* فاز ۳۳ — عکس/نام شخصی در هاب پروفایل (۴۲) */
   glRenderRes(); /* فاز ۴۵ — فرم ۳۴: نتایج اولیه (پرتکرار در صنف شما + در صنف شما) */
   bkInit();

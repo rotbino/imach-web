@@ -22,7 +22,7 @@ await sleep(250);
 
 /* ═══ ۱. ساختار کلی ═══ */
 const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46','48']; /* فاز ۴۹: ۴۷ جذب مودال sheet-reqview شد */
-ok('همهٔ ۲۶ صفحه داخل قاب گوشی‌اند (فاز ۵۳)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
+ok('همهٔ ۲۷ صفحه داخل قاب گوشی‌اند (فاز ۵۶: +۴۳ سایر نظرات)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 27));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('ارتفاع سند در محدوده', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
 for (const s of ALIVE) ok('صفحهٔ ' + s + ' موجود است', await page.locator('#scr-' + s).count() === 1);

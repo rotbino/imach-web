@@ -22,14 +22,14 @@ await page.reload();
 await sleep(250);
 
 /* ═══ ۱. ساختار کلی ═══ */
-const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46'];
-const DEAD = ['03','06','11','14','20','21','23','24','25','26','28','31','32','33','35','36','37','38','39','40','41','43','d1','d2'];
+const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','43','44','45','46'];
+const DEAD = ['03','06','11','14','20','21','23','24','25','26','28','31','32','33','35','36','37','38','39','40','41','d1','d2'];
 
 /* ═══ ۰. سلامت درخت DOM — فاز ۴۴-فیکس ═══
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۲۶ صفحه داخل قاب گوشی‌اند (فاز ۵۳: +۵۳ دعوت‌شدگان)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
+ok('همهٔ ۲۷ صفحه داخل قاب گوشی‌اند (فاز ۵۶: +۴۳ سایر نظرات بازگشت)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 27));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -40,7 +40,7 @@ ok('ارتفاع سند = ارتفاع ویوپورت (صفحه‌ها انبا�
 for (const s of ALIVE) ok('صفحهٔ ' + s + ' موجود است', await page.locator('#scr-' + s).count() === 1);
 for (const s of DEAD) ok('صفحهٔ ' + s + ' حذف شده', await page.locator('#scr-' + s).count() === 0);
 ok('لندینگ دسکتاپ (d3) موجود', await page.locator('#scr-d3').count() === 1);
-const DEAD_SHEETS = ['sheet-campaign','sheet-target','sheet-cgnew','sheet-cgroup','sheet-cmnts','sheet-cowork','sheet-follow','sheet-pdiscount','sheet-vgedit','sheet-vgpick','sheet-vgroups','sheet-video','sheet-xlsx','sheet-offerview','sheet-alertinfo','dlg-xlsbulk','dlg-campok','dlg-rvw'];
+const DEAD_SHEETS = ['sheet-campaign','sheet-target','sheet-cgnew','sheet-cgroup','sheet-cmnts','sheet-cowork','sheet-follow','sheet-pdiscount','sheet-vgedit','sheet-vgpick','sheet-vgroups','sheet-video','sheet-xlsx','sheet-offerview','sheet-alertinfo','dlg-xlsbulk','dlg-campok']; /* فاز ۵۶: dlg-rvw بازگشت — حکم مالک */
 for (const s of DEAD_SHEETS) ok('شیت/دیالوگ ' + s + ' حذف شده', await page.locator('#' + s).count() === 0);
 ok('dlg-pct حذف شد (فاز ۴۵: پنل اینلاین)', await page.locator('#dlg-pct').count() === 0);
 ok('dlg-terms مانده', await page.locator('#dlg-terms').count() === 1);

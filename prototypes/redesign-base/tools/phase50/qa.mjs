@@ -1,7 +1,8 @@
 // فاز ۵۰ — QA قطعی: ثبت‌نام تک‌بازو + پنهان‌شدن سوییچر + گارد بازوی خاموش + سازگاری مهلت
+// فاز ۵۶: پیل‌های «فعالیت شما در بازار» → دو سوییچر «کدام دستیار فعال باشد» + حداقل یکی + مودال اینفو
 // سناریوها: فروش عمده → فرود ۰۱ بدون پیل · خرید عمده → فرود ۰۸ بدون پیل · هر دو → ۰۱ با پیل ·
 // خاموش‌کردن از ۲۲ + گارد صفحات بازوی خاموش + روشن‌کردن دوباره از ۲۲ · ورود (۱۷) احترام به ASSIST ·
-// کارت inq3 «۴ روز مانده» (رفع «بدون مهلت») + e2e هر ۲۵ صفحه صفر خطا
+// کارت inq3 «۴ روز مانده» (رفع «بدون مهلت») + e2e هر ۲۷ صفحه صفر خطا
 import { chromium } from 'playwright';
 import { existsSync } from 'fs';
 import { resolve, dirname } from 'node:path';
@@ -24,19 +25,19 @@ const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗
 const assist = () => page.evaluate(() => JSON.parse(localStorage.getItem('imach-assist') || 'null'));
 
 /* ═══ ۰. گاردهای ساختاری ═══ */
-const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46','48'];
+const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','43','44','45','46','48','53'];
 await page.goto(FILE);
 await page.evaluate(() => { localStorage.setItem('imach-assist', JSON.stringify({ sell: true, buy: true })); });
 await page.goto(FILE + '#16');
 await page.reload();
 await sleep(300);
-T('ساختار: ۲۶ صفحه داخل گوشی (فاز ۵۳)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
+T('ساختار: ۲۷ صفحه داخل گوشی (فاز ۵۶: +۴۳)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 27));
 T('ساختار: هیچ scr بیرون از گوشی/استیج', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 T('ساختار: ارتفاع سند ≤ ۱۰۰۰', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
-T('۱۶: پیل‌چویس فعالیت موجود', await page.locator('#su-activity').count() === 1);
-T('۱۶: سه گزینه buy/sell/both', await page.locator('#su-activity .pill[data-act]').count() === 3);
-T('۱۶: پیش‌فرض فروش عمده فعال', await page.locator('#su-activity .pill[data-act="sell"].active').count() === 1);
-T('۱۶: متن راهنما به «ویرایش کسب‌وکار» اشاره می‌کند', (await page.locator('#scr-16 .role-desc').textContent()).includes('ویرایش کسب‌وکار'));
+T('۱۶: عنوان «کدام دستیار برای کسب و کار شما فعال باشد»', (await page.locator('#scr-16 .lbl-row label').textContent()) === 'کدام دستیار برای کسب و کار شما فعال باشد');
+T('۱۶: دو سوییچر خرید/فروش (فاز ۵۶)', await page.locator('#su-assist .toggle[data-suarm]').count() === 2);
+T('۱۶: پیش‌فرض فروش روشن، خرید خاموش', await page.locator('#su-assist .toggle[data-suarm="sell"].on').count() === 1 && await page.locator('#su-assist .toggle[data-suarm="buy"]:not(.on)').count() === 1);
+T('۱۶: آیکون اینفو → مودال توضیح (فاز ۵۶)', await page.locator('#scr-16 .info-ic[data-sheet="dlg-suinfo"]').count() === 1 && await page.locator('#dlg-suinfo').count() === 1);
 T('۱۶: دکمهٔ «ساخت حساب و ورود» → ۰۱ سیم‌شده', await page.locator('#scr-16 [data-go="01"]').count() === 1);
 await shot('00-signup');
 
@@ -49,9 +50,10 @@ T('فروش: ASSIST = فقط sell', (await assist()).sell === true && (await ass
 T('فروش: پیل تعویض دستیار مخفی', await page.locator('#scr-01 .arm-pill').isHidden());
 await shot('01-sell-only');
 
-/* ═══ ۲. ثبت‌نام تک‌بازو — خرید عمده ═══ */
+/* ═══ ۲. ثبت‌نام تک‌بازو — خرید عمده (سوییچر: خرید روشن، بعد فروش خاموش) ═══ */
 await page.goto(FILE + '#16'); await page.reload(); await sleep(300);
-await page.click('#su-activity .pill[data-act="buy"]'); await sleep(150);
+await page.click('#su-assist .toggle[data-suarm="buy"]'); await sleep(150);
+await page.click('#su-assist .toggle[data-suarm="sell"]'); await sleep(150);
 await page.click('#scr-16 [data-go="01"]'); await sleep(300);
 T('خرید: فرود روی ۰۸', await page.evaluate(() => location.hash === '#08' && !document.getElementById('scr-08').hidden));
 T('خرید: ASSIST = فقط buy', (await assist()).buy === true && (await assist()).sell === false);
@@ -66,14 +68,20 @@ T('گارد: تلاش برای ۰۵ (فروش) → بازگشت به ۰۸', awai
 await page.evaluate(() => location.hash = '#09'); await sleep(400);
 T('گارد: تلاش برای ۰۹ (خرید) مجاز', await page.evaluate(() => location.hash === '#09'));
 
-/* ═══ ۴. ثبت‌نام — هر دو ═══ */
+/* ═══ ۴. ثبت‌نام — هر دو (سوییچر خرید را هم روشن کن) ═══ */
 await page.goto(FILE + '#16'); await page.reload(); await sleep(300);
-await page.click('#su-activity .pill[data-act="both"]'); await sleep(150);
+await page.click('#su-assist .toggle[data-suarm="buy"]'); await sleep(150);
 await page.click('#scr-16 [data-go="01"]'); await sleep(300);
 T('هر دو: فرود روی ۰۱', await page.evaluate(() => location.hash === '#01'));
 T('هر دو: ASSIST هر دو روشن', (await assist()).sell === true && (await assist()).buy === true);
 T('هر دو: پیل تعویض دستیار نمایان', await page.locator('#scr-01 .arm-pill').isVisible());
 await shot('03-both-pill');
+
+/* ═══ ۴-ب. حداقل یکی — خاموش‌کردن آخرین دستیار در ۱۶ رد می‌شود (فاز ۵۶) ═══ */
+await page.goto(FILE + '#16'); await page.reload(); await sleep(300);
+await page.click('#su-assist .toggle[data-suarm="sell"]'); await sleep(250);
+T('۱۶: آخرین دستیار روشن می‌ماند', await page.locator('#su-assist .toggle[data-suarm="sell"].on').count() === 1);
+T('۱۶: پیام خطا دیده شد (su-err)', await page.evaluate(() => { var e = document.getElementById('su-err'); return e && e.hidden === false; }));
 
 /* ═══ ۵. خاموش/روشن از فرم ۲۲ (ویرایش کسب‌وکار) ═══ */
 await page.goto(FILE + '#22'); await page.reload(); await sleep(300);
@@ -129,7 +137,7 @@ T('پاکسازی: فقط تصاویر مرجع‌شده مانده‌اند', [
 for (const s of ALIVE) {
   await page.goto(FILE + '#' + s); await page.reload(); await sleep(260);
 }
-T('e2e: صفر خطای کنسول در ۲۵ صفحه', errors.length === 0);
+T('e2e: صفر خطای کنسول در ۲۷ صفحه', errors.length === 0);
 if (errors.length) console.log('  errors:', errors.slice(0, 5));
 
 await browser.close();
