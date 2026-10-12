@@ -29,7 +29,7 @@ const DEAD = ['03','06','11','14','20','21','23','24','25','26','28','31','32','
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۲۵ صفحه داخل قاب گوشی‌اند (فاز ۴۹: ۴۷ جذب مودال شد)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 25));
+ok('همهٔ ۲۶ صفحه داخل قاب گوشی‌اند (فاز ۵۳: +۵۳ دعوت‌شدگان)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -379,7 +379,7 @@ await sleep(300);
 ok('cset: باز شد', await page.locator('#sheet-cset.show').isVisible());
 const csetTxt = await page.locator('#sheet-cset').textContent();
 ok('cset: تبلیغات و افزایش فروش', csetTxt.includes('تبلیغات و افزایش فروش'));
-ok('cset: قیمت‌ها را کی ببیند', csetTxt.includes('قیمت‌های من را کی ببیند'));
+ok('cset: چه اصنافی قیمت‌ها را ببینند (فاز ۵۳)', csetTxt.includes('چه اصنافی قیمت‌ها را ببینند'));
 ok('cset: بدون کمپین/گزارش/کیف پول', !csetTxt.includes('کمپین') && !csetTxt.includes('گزارش تبلیغ') && !csetTxt.includes('کیف پول'));
 
 /* ═══ ۱۵. e2e — همهٔ صفحه‌ها بدون خطای کنسول ═══ */

@@ -30,7 +30,7 @@ await page.evaluate(() => { localStorage.setItem('imach-assist', JSON.stringify(
 await page.goto(FILE + '#16');
 await page.reload();
 await sleep(300);
-T('ساختار: ۲۵ صفحه داخل گوشی', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 25));
+T('ساختار: ۲۶ صفحه داخل گوشی (فاز ۵۳)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 26));
 T('ساختار: هیچ scr بیرون از گوشی/استیج', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 T('ساختار: ارتفاع سند ≤ ۱۰۰۰', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
 T('۱۶: پیل‌چویس فعالیت موجود', await page.locator('#su-activity').count() === 1);
