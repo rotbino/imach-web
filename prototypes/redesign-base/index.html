@@ -201,23 +201,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 
   /* ═══ فاز ۴۵ — استعلام‌های خریدار (۴۵): کارت جاری + ردیف پایان‌یافته ═══ */
-  #scr-45 .inq-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 11px 12px; cursor: pointer; }
-  #scr-45 .inq-card:active { border-color: var(--border-strong); }
-  #scr-45 .inq-top { display: flex; align-items: center; gap: 10px; }
-  #scr-45 .inq-t { flex: 1; min-width: 0; }
-  #scr-45 .inq-t b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.7; color: var(--foreground); }
-  #scr-45 .inq-t span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
-  #scr-45 .inq-top > .badge { flex-shrink: 0; }
-  #scr-45 .inq-meta { display: flex; align-items: center; gap: 12px; margin-top: 9px; padding-top: 8px; border-top: 1px solid #f0eee8; }
-  #scr-45 .inq-meta .mm { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--muted-fg); }
-  #scr-45 .inq-meta .mm svg { width: 12px; height: 12px; }
-  #scr-45 .inq-meta .mm.hot { color: var(--red); }
-  #scr-45 .inq-act { margin-right: auto; display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 800; color: var(--primary-strong); flex-shrink: 0; }
-  #scr-45 .inq-act svg { width: 11px; height: 11px; }
-  #scr-45 .inq-done { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 9px 11px; cursor: pointer; }
-  #scr-45 .inq-done .inq-t b { font-size: 11.5px; color: var(--stone-soft); }
-  #scr-45 .inq-done .inq-t span { font-size: 10px; }
-  #scr-45 .inq-done > .badge { flex-shrink: 0; font-size: 9px; }
+  .inq-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); padding: 11px 12px; cursor: pointer; }
+  .inq-card:active { border-color: var(--border-strong); }
+  .inq-top { display: flex; align-items: center; gap: 10px; }
+  .inq-t { flex: 1; min-width: 0; }
+  .inq-t b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.7; color: var(--foreground); }
+  .inq-t span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  .inq-top > .badge { flex-shrink: 0; }
+  .inq-meta { display: flex; align-items: center; gap: 12px; margin-top: 9px; padding-top: 8px; border-top: 1px solid #f0eee8; }
+  .inq-meta .mm { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--muted-fg); }
+  .inq-meta .mm svg { width: 12px; height: 12px; }
+  .inq-meta .mm.hot { color: var(--red); }
+  .inq-act { margin-right: auto; display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 800; color: var(--primary-strong); flex-shrink: 0; }
+  .inq-act svg { width: 11px; height: 11px; }
+  .inq-done { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 9px 11px; cursor: pointer; }
+  .inq-done .inq-t b { font-size: 11.5px; color: var(--stone-soft); }
+  .inq-done .inq-t span { font-size: 10px; }
+  .inq-done > .badge { flex-shrink: 0; font-size: 9px; }
 
 
 /* ── استایل صفحهٔ 13 (13-catalog-public.html) ── */
@@ -2036,6 +2036,55 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .price-stale { text-decoration: line-through; color: var(--muted-fg); font-weight: 600; }
   .supplier-card.stale { border-style: dashed; }
 
+
+  /* ═══ فاز ۶۵ (پورت فاز ۶۲ محلی روی مبنای ریموت) — شبکهٔ باز + گروه‌های مشتری ═══
+     هر svg تازه در قلمرو سایزدار — .tab (۲۲) · .btn (۱۳-۱۵) · .sheet-row .ico (۱۸). */
+  /* قیمت گروهی خریدار روی کارت ۱۳ و جزئیات ۰۲ */
+  .grp-price { display: block; font-size: 10px; color: var(--green); font-weight: 700; margin-top: 3px; line-height: 1.7; }
+  .grp-price s { color: var(--muted-fg); font-weight: 500; margin-right: 5px; }
+  .grp-price small { color: var(--muted-fg); font-weight: 500; }
+  .price-lg s { font-size: 13px; color: var(--muted-fg); font-weight: 500; }
+  /* گروه‌های مشتری روی ۶۲ — نوار چیپ + بج گروه در ردیف */
+  #scr-62 .cg-bar { display: flex; gap: 6px; align-items: center; margin: 10px 0 0; flex-wrap: wrap; }
+  #scr-62 .cg-bar .chip { flex: 0 0 auto; }
+  #scr-62 .cg-add { width: 30px; height: 26px; border-radius: 999px; border: 1.5px dashed var(--border-strong); background: none; color: var(--primary-strong); display: grid; place-items: center; cursor: pointer; padding: 0; }
+  #scr-62 .cg-add svg { width: 13px; height: 13px; }
+  .row-card .t .cg-tag { font-size: 9px; padding: 1.5px 7px; margin-right: 2px; background: #e8f1fd; color: #1d5fb8; font-weight: 700; }
+  /* شیت شبکهٔ باز — شرایط با نوار پیشرفت + مسیر پرداخت */
+  .net-req { margin-top: 11px; border: 1px solid var(--border); border-radius: 12px; padding: 10px 11px 11px; background: var(--bg); }
+  .net-req[hidden] { display: none; }
+  .net-req .net-req-h { font-size: 12px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .net-req .net-req-h svg { width: 14px; height: 14px; color: var(--primary-strong); flex-shrink: 0; }
+  .net-r { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px dashed var(--border); }
+  .net-r:last-of-type { border-bottom: 0; }
+  .net-r .net-ic { width: 30px; height: 30px; border-radius: 9px; background: #fff; border: 1px solid var(--border); display: grid; place-items: center; color: var(--muted-fg); flex-shrink: 0; }
+  .net-r .net-ic svg { width: 15px; height: 15px; }
+  .net-r .net-tx { flex: 1; min-width: 0; }
+  .net-r .net-tx b { display: block; font-size: 11.5px; }
+  .net-r .net-tx small { display: block; font-size: 9.5px; color: var(--muted-fg); margin-top: 1px; }
+  .net-r .net-bar { width: 74px; height: 6px; border-radius: 3px; background: var(--muted); overflow: hidden; flex-shrink: 0; }
+  .net-r .net-bar i { display: block; height: 100%; background: var(--amber); border-radius: 3px; }
+  .net-r.net-ok .net-bar i { background: var(--green); }
+  .net-r .net-done { color: var(--green); display: grid; place-items: center; flex-shrink: 0; }
+  .net-r .net-done svg { width: 14px; height: 14px; }
+  .net-pay { display: flex; align-items: center; gap: 9px; margin-top: 9px; padding: 9px 10px; border: 1.5px dashed var(--border-strong); border-radius: 11px; background: #fffdf8; }
+  .net-pay > svg { width: 15px; height: 15px; color: var(--amber); flex-shrink: 0; }
+  .net-pay .net-tx { flex: 1; min-width: 0; font-size: 10.5px; color: var(--muted-fg); line-height: 1.7; }
+  .net-pay .net-tx b { display: block; font-size: 11.5px; color: var(--foreground); }
+  /* ردیف‌های شبکهٔ باز در تابلوی تأمین ۰۹ */
+  #net-rows-09[hidden] { display: none; }
+  .net-legend { display: flex; align-items: center; gap: 7px; margin-top: 12px; font-size: 10.5px; color: var(--primary-strong); font-weight: 700; }
+  .net-legend svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .supplier-card.net-open { border-color: #bcd7f0; background: #fbfdff; }
+  .badge.b-net { background: #e8f1fd; color: #1d5fb8; }
+  /* شیت تخفیف گروهی — ردیف گروه + درصد */
+  .cg-disc-row { display: flex; align-items: center; gap: 9px; margin-top: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 11px; padding: 8px 10px; }
+  .cg-disc-row .cg-dn { flex: 1; font-size: 12.5px; font-weight: 700; }
+  .cg-disc-row .cg-dn small { display: block; font-weight: 400; color: var(--muted-fg); font-size: 9.5px; margin-top: 1px; }
+  .cg-disc-row .input { width: 64px; text-align: center; flex: 0 0 auto; }
+  /* درگاه خصوصی: دکتهٔ «ثبت سفارش» هم قفل می‌شود (ذخیره = مسیر بازگشتی می‌ماند) */
+  #scr-13.priv-gate #buybar-13 [data-order] { display: none; }
+
 </style>
 </head>
 <body>
@@ -2160,7 +2209,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-          <div class="sub">پخش مواد غذایی · <button class="city-chip cat-loc" id="cat-loc-1" type="button" data-sheet="sheet-locat" title="انتخاب لوکیشن کاتالوگ"><svg><use href="#i-pin"/></svg> <span id="cat-loc-name">رشت</span></button> <span class="badge b-orange">عمده‌فروش</span> <span class="badge b-amber" id="cat-priv-chip" hidden title="قیمت‌ها فقط برای مشتریان شما دیده می‌شود">کاتالوگ خصوصی</span></div>
+          <div class="sub">پخش مواد غذایی · <button class="city-chip cat-loc" id="cat-loc-1" type="button" data-sheet="sheet-locat" title="انتخاب لوکیشن کاتالوگ"><svg><use href="#i-pin"/></svg> <span id="cat-loc-name">رشت</span></button> <span class="badge b-orange">عمده‌فروش</span> <span class="badge b-amber" id="cat-priv-chip" hidden title="قیمت‌ها فقط برای مشتریان شما دیده می‌شود">کاتالوگ خصوصی</span> <span class="badge b-net" id="net-chip" hidden title="قیمت‌های شما در مقایسهٔ شبکهٔ باز دیده می‌شود">شبکه باز</span></div>
         </div>
       </div>
 
@@ -2314,7 +2363,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
              استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
         <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
-        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
     </nav>
@@ -2352,7 +2401,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div style="font-size:11.5px;color:var(--muted-fg);margin-top:4px">غلات و حبوبات · فله (بدون برند)</div>
           </div>
           <div style="text-align:left">
-            <div class="price-lg">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+            <div class="price-lg" id="plg-02">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+            <div class="grp-price" id="grp-02" hidden style="text-align:left"></div>
             <div style="font-size:10.5px;color:var(--muted-fg);margin-top:3px">هر کیسه ۵۰ کیلویی</div>
           </div>
         </div>
@@ -2836,7 +2886,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
              استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
         <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
-        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
     </nav>
@@ -3020,7 +3070,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <!-- فاز ۶۳ (مالک) — «مدل اینستاگرام»: تابلوی تأمین خصوصی است — شمار، تأمین‌کنندگانِ خودِ خریدار -->
-      <div class="ttl">برنج هاشمی<small>تابلوی تأمین · ۳ تأمین‌کنندهٔ شما</small></div>
+      <div class="ttl">برنج هاشمی<small id="sup-count-09">تابلوی تأمین · ۳ تأمین‌کنندهٔ شما</small></div>
       <button class="icon-btn" aria-label="ذخیره کاتالوگ"><svg><use href="#i-bookmark"/></svg></button>
     </header>
 
@@ -3199,6 +3249,65 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
         <div>قیمت‌های این تابلو از تأمین‌کنندگان خودتان می‌آید. «فروشندهٔ ویژه» در حال تبلیغ است و فقط وقتی این‌جا دیده می‌شود که قیمتش از همهٔ تأمین‌کنندگان شما کمتر باشد — پیشنهادهای دیگر از موتور تطبیق iMach می‌آیند و رتبهٔ آن‌ها خریدنی نیست.</div>
+      </div>
+
+      <!-- ═══ فاز ۶۵ (مالک) — «شبکهٔ باز»: ردیف‌های تأمین‌کنندگانِ شبکهٔ بازِ دیگر، فقط وقتی
+           شبکهٔ پخش برنج پارس باز باشد و خریدارِ مشتریِ او باشد (چیزی می‌دهید، چیزی می‌گیرید).
+           قیمت‌ها مرجع مقایسه‌اند؛ «کاتالوگ» به همان قواعد کاتالوگ می‌رود (خصوصی = درگاه). ═══ -->
+      <div id="net-rows-09" hidden>
+        <div class="net-legend"><svg><use href="#i-globe"/></svg>قیمت‌های شبکهٔ باز — تأمین‌کنندگانی که شبکه‌شان را باز کرده‌اند</div>
+        <div class="supplier-card net-open">
+          <div class="sup-head">
+            <div class="avatar-sm" style="background:#0d9488">گ</div>
+            <div class="nm">
+              <div class="n">پخش برنج گلستان <svg><use href="#i-verified"/></svg> <span class="badge b-net">شبکه باز</span></div>
+              <div class="c">
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · هم‌شهری</span>
+                <span>به‌روزرسانی امروز</span>
+              </div>
+            </div>
+            <div class="sup-price">
+              <div class="price">۲٬۷۸۰٬۰۰۰ <small>تومان</small></div>
+              <span class="trend down">▼ از ۲٬۸۱۰٬۰۰۰</span>
+            </div>
+          </div>
+          <div class="sup-conditions">
+            <span class="cond">کیسه ۵۰ کیلویی</span>
+            <span class="cond">حداقل ۱۰ کیسه</span>
+            <span class="cond">موجود</span>
+          </div>
+          <div class="sup-actions">
+            <button class="btn btn-stone btn-sm" style="flex:1"><svg><use href="#i-phone"/></svg> تماس</button>
+            <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
+            <button class="btn btn-outline btn-sm">ذخیره</button>
+          </div>
+        </div>
+        <div class="supplier-card net-open">
+          <div class="sup-head">
+            <div class="avatar-sm" style="background:#65a30d">س</div>
+            <div class="nm">
+              <div class="n">غلات سبز <svg><use href="#i-verified"/></svg> <span class="badge b-net">شبکه باز</span></div>
+              <div class="c">
+                <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> لاهیجان · هم‌استان</span>
+                <span>به‌روزرسانی دیروز</span>
+              </div>
+            </div>
+            <div class="sup-price">
+              <div class="price">۲٬۹۸۰٬۰۰۰ <small>تومان</small></div>
+              <span class="trend flat">— بدون تغییر</span>
+            </div>
+          </div>
+          <div class="sup-conditions">
+            <span class="cond">کیسه ۵۰ کیلویی</span>
+            <span class="cond">حداقل ۵ کیسه</span>
+            <span class="cond">ارسال از انبار</span>
+          </div>
+          <div class="sup-actions">
+            <button class="btn btn-stone btn-sm" style="flex:1"><svg><use href="#i-phone"/></svg> تماس</button>
+            <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
+            <button class="btn btn-outline btn-sm">ذخیره</button>
+          </div>
+        </div>
       </div>
 
     </main>
@@ -3596,7 +3705,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="info">
               <div class="n">برنج هاشمی</div>
               <div class="u">کیسه ۵۰ کیلویی · فله</div>
-              <div class="p">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+              <div class="p" id="p13-hash">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+              <div class="grp-price" id="grp-13" hidden></div>
             </div>
           </div>
 
@@ -5552,6 +5662,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span><b>۱۲۰</b> بازدید ماه</span>
       </div>
 
+      <!-- ═══ فاز ۶۵ (مالک) — گروه‌های مشتری همین‌جا ساخته و مدیریت می‌شوند (حکم مالک)؛
+           تخفیف هر گروه از کاتالوگ (تنظیمات کالا) داده می‌شود. چیپ = فیلتر لیست؛ + = گروه جدید؛
+           گروهِ هر مشتری از منوی سه‌نقطه. رندر JS با شمار زنده. ═══ -->
+      <div class="cg-bar" id="cg-bar"></div>
+
       <!-- قاعدهٔ سادهٔ شبکهٔ خصوصی — همان زبان پیام‌های تازه -->
       <div class="hintnote" style="margin-top:0">هر خریداری که کاتالوگ شما را ذخیره کند، این‌جا با نشان «جدید» ظاهر می‌شود. لازم نیست کسی را تأیید کنید؛ مشتری‌هایی را که نمی‌خواهید حذف می‌کنید — مشتریِ حذف‌شده دیگر قیمت‌های شما را نمی‌بیند، اما اگر دوباره کاتالوگ‌تان را ذخیره کند، دوباره برمی‌گردد.</div>
 
@@ -5583,7 +5698,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
              استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
         <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
-        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
     </nav>
@@ -5695,7 +5810,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
         <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <button class="tab active"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
-        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
     </nav>
@@ -5925,6 +6040,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="sheet-row" data-go="19">
     <span class="ico"><svg><use href="#i-msg"/></svg></span>
     <span class="tx"><b>گفتگو</b><span>پیام در پیام‌های آیمچ</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <!-- فاز ۶۵ (مالک) — گروه مشتری: انتساب از منوی هر مشتری؛ تخفیف گروهی در کاتالوگ -->
+  <button class="sheet-row" data-cgset>
+    <span class="ico"><svg><use href="#i-users"/></svg></span>
+    <span class="tx"><b>گروه مشتری</b><span id="custmenu-grp">بدون گروه — تعیین کنید</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row danger" data-custdel>
@@ -6672,6 +6793,63 @@ body > div[id^="scr-d"][hidden] { display: none; }
 </div>
 
 <!-- ═══ ۴) تنظیمات کاتالوگ ═══ -->
+<!-- ═══ فاز ۶۵ (مالک) — گروه‌های مشتری: ساخت گروه روی صفحهٔ ۶۲ (حکم مالک)؛
+     تخفیف هر گروه از کاتالوگ (شیت تنظیمات کالا) داده می‌شود. ═══ -->
+<div class="sheet" id="sheet-cgnew" role="dialog" aria-label="گروه مشتری جدید">
+  <div class="grab"></div>
+  <h3>گروه مشتری جدید</h3>
+  <div class="sub">مثلاً: خرده‌فروشی · رستوران‌ها · همکار — بعداً به هر گروه تخفیف کاتالوگ بدهید</div>
+  <div class="field">
+    <label>نام گروه</label>
+    <input class="input" id="cgn-name" placeholder="مثلاً: قنادی‌ها">
+  </div>
+  <div class="su-err" id="cgn-err" hidden>نام گروه را وارد کنید</div>
+  <button class="btn btn-primary sheet-cta" data-cgnewok type="button"><svg><use href="#i-plus"/></svg> ساخت گروه</button>
+</div>
+
+<!-- ═══ فاز ۶۵ — گروهِ این مشتری: انتساب از منوی سه‌نقطهٔ هر مشتری (۶۲) ═══ -->
+<div class="sheet" id="sheet-cgassign" role="dialog" aria-label="گروه مشتری">
+  <div class="grab"></div>
+  <h3>گروه مشتری</h3>
+  <div class="sub" id="cga-sub">سوپرمارکت آریا</div>
+  <div class="rows" id="cga-rows" style="margin-top:4px"></div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۶۵ (مالک) — «تخفیف گروه‌های مشتری» روی کالای کاتالوگ — بازگشت مفهوم
+     تخفیف گروهی («مثل قبل»). درصد هر گروه برای همین کالا؛ مشتریِ هر گروه قیمت خودش را
+     در کاتالوگ می‌بیند. پله‌های حجمی جدا اعمال می‌شوند و بهترین ترکیب خودکار انتخاب
+     می‌شود (قرارداد صفحهٔ ۰۲). ورود: تنظیمات کالا (sheet-pset). ═══ -->
+<div class="sheet" id="sheet-cgdisc" role="dialog" aria-label="تخفیف گروه‌های مشتری">
+  <div class="grab"></div>
+  <h3>تخفیف گروه‌های مشتری</h3>
+  <div class="sub">برنج هاشمی · کیسه ۵۰ کیلویی — قیمت پایه: ۲٬۸۵۰٬۰۰۰ تومان</div>
+  <div id="cgdisc-rows"></div>
+  <div class="hintnote">مشتریِ هر گروه، قیمت مخصوص همان گروه را در کاتالوگ شما می‌بیند — بدون داد‌و‌ستد اضافه. پله‌های حجمی جدا از این تخفیف اعمال می‌شوند و بهترین ترکیب برای خریدار انتخاب می‌شود.</div>
+  <button class="btn btn-primary sheet-cta" data-cgdiscok type="button"><svg><use href="#i-check"/></svg> ذخیره تخفیف‌ها</button>
+</div>
+
+<!-- ═══ فاز ۶۵ (مالک) — «شبکهٔ باز و بسته»: کاملاً اختیاری. چیزی می‌دهید چیزی می‌گیرید —
+     قیمت‌های شما برای مشتریانِ سایر تأمین‌کنندگانِ شبکهٔ باز در مقایسهٔ قیمت‌ها دیده می‌شود و
+     مشتریان شما هم آن‌ها را می‌بینند. ورود آزاد نیست: مسیر فعالیت (مشتری‌های واقعی +
+     کاتالوگ کامل + تعاملات) یا مسیر پرداخت (به‌زودی). متن‌های رابط فقط منفعت دوطرفه را
+     می‌گویند — استراتژی داخلی هرگز در UI باز نمی‌شود (حکم مالک). شرایط با JS رندر
+     می‌شوند تا با دادهٔ زنده (مشتری/کالا/تعامل) هم‌قدم باشند. ═══ -->
+<div class="sheet" id="sheet-netopen" role="dialog" aria-label="شبکه باز و بسته">
+  <div class="grab"></div>
+  <h3>شبکه باز و بسته</h3>
+  <div class="sub">کالاها و قیمت‌های شما برای چه کسانی دیده می‌شود</div>
+  <div class="hintnote" id="net-explain" style="margin-top:8px">شبکهٔ شما بسته است: کالاها و قیمت‌های شما فقط برای مشتریان خودتان دیده می‌شود.</div>
+  <div class="net-req" id="net-req"></div>
+  <button class="sheet-row" style="cursor:default" id="net-swrow" hidden>
+    <span class="ico"><svg><use href="#i-globe"/></svg></span>
+    <span class="tx"><b>شبکهٔ باز</b><span id="netopen-sub">شبکهٔ شما بسته است — فقط مشتریان خودتان</span></span>
+    <div class="toggle" id="netopen-sw" role="switch" aria-label="شبکه باز"></div>
+  </button>
+  <div class="hintnote" id="net-privnote" hidden>کاتالوگ شما خصوصی است — در شبکهٔ باز فقط قیمتِ کالا در مقایسهٔ قیمت‌ها دیده می‌شود؛ دیدن کاتالوگ کامل همچنان به مشتری‌شدن نیاز دارد.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
 <div class="sheet" id="sheet-cset" role="dialog" aria-label="تنظیمات کاتالوگ">
   <div class="grab"></div>
   <h3>تنظیمات کاتالوگ</h3>
@@ -6708,6 +6886,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="ico"><svg><use href="#i-shield"/></svg></span>
     <span class="tx"><b>کاتالوگ خصوصی</b><span id="catpriv-sub">قیمت‌ها برای همهٔ خریداران دیده می‌شود</span></span>
     <div class="toggle" id="catpriv-sw" role="switch" aria-label="کاتالوگ خصوصی — فقط مشتریان قیمت‌ها را ببینند"></div>
+  </button>
+  <!-- ═══ فاز ۶۵ (مالک) — «شبکهٔ باز و بسته»: اختیاری + با شرایط — ورود از تنظیمات کاتالوگ.
+           چیزی می‌دهید چیزی می‌گیرید: قیمت‌های شما برای مشتریانِ سایر تأمین‌کنندگانِ شبکهٔ باز
+           در مقایسه دیده می‌شود و مشتریان شما هم آن‌ها را. ورود آزاد نیست: مسیر فعالیت
+           (مشتریان واقعی + کاتالوگ کامل + تعاملات) یا مسیر پرداخت (به‌زودی). ═══ -->
+  <button class="sheet-row" data-sheet="sheet-netopen">
+    <span class="ico"><svg><use href="#i-globe"/></svg></span>
+    <span class="tx"><b>شبکه باز و بسته</b><span id="netopen-cset-sub">بسته — فقط مشتریان خودتان</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <!-- فاز ۵۳ (مالک) — «قیمتهای من را کی می‌بیند» → «چه اصنافی قیمت‌ها را ببینند» (سوییچر اصناف)؛
        ردیف تازهٔ دعوت‌شدگان: آمار ثبت‌نام از لینک + لیست نام/کسب‌وکار (صفحهٔ ۵۳) -->
@@ -6996,6 +7183,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="sheet-row" data-sheet="sheet-ptier">
     <span class="ico"><svg><use href="#i-stairs"/></svg></span>
     <span class="tx"><b>تخفیف پلکانی این کالا</b><span>هرچه حجم خرید بیشتر، ارزان‌تر</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <!-- فاز ۶۵ (مالک) — تخفیف گروه‌های مشتری: «مثل قبل» — با گروه‌های ساخته‌شده در ۶۲ -->
+  <button class="sheet-row" data-sheet="sheet-cgdisc">
+    <span class="ico"><svg><use href="#i-users"/></svg></span>
+    <span class="tx"><b>تخفیف گروه‌های مشتری</b><span id="cgdisc-sub">قیمت مخصوص هر گروه مشتری برای این کالا</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-sheet="sheet-eos">
@@ -8115,13 +8308,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (id === '01') catFreshSync(); /* فاز ۵۳ — نudge «به مشتری‌هات خبر بده» فقط بعد از تازه‌سازی قیمت */
       /* فاز ۶۰ — مشتریان من (۶۲): ورود = رندر ردیف‌ها؛ ترک صفحه = «دیده‌شدن» مشتری‌های جدید
          (مثل پیام‌ها: بج فوتر می‌رود، دفعهٔ بعد بج «جدید» ردیف‌ها نیست) */
-      if (id === '62') custRender();
+      if (id === '62') { custRender(); cgChipsRender(); }
       /* فاز ۶۱ — کاتالوگ عمومی (۱۳): هر ورود تازه در بازوی فروش، قیف مهمان را از ابتدا شروع
          می‌کند (CATPRIV.reg ریست) تا فروشنده تجربهٔ مشتریِ ثبت‌نام‌نشده را دوباره ببیند؛
          در بازوی خرید درگاه فقط به لبهٔ ذخیره (SUPSAVED) وابسته است. */
       if (id === '13') {
         if (phoneArm() === 'sell') CATPRIV.reg = false;
         catPrivSync();
+        grpSync(); /* فاز ۶۵ — قیمت گروهی خریدار روی کارت اول */
       }
       if (current === '62' && id !== '62') {
         CUST.forEach(function (c) { c.nw = false; });
@@ -8139,6 +8333,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         ORD.forEach(function (o) { o.nw = false; });
         ordBadgeSync();
       }
+      /* فاز ۶۵ — ۰۹: ردیف‌های شبکهٔ باز؛ ۰۲/۱۳: قیمت گروهی خریدار */
+      if (id === '09') netOpenSync();
+      if (id === '02') grpSync();
       /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا؛
          فاز ۴۵ — اکشن‌های خریدار (درخواست قیمت/تماس/افزودن به لیست) برای مالک مخفی است */
       var own02 = document.getElementById('own-02');
@@ -10022,12 +10219,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
      (ترک صفحهٔ ۶۲) بج را برمی‌دارد و مشتری عادی می‌شود؛ حذف = قطع دسترسی او به قیمت‌ها/استعلام؛
      ذخیرهٔ دوبارهٔ کاتالوگ = بازگشت او. بج فوتر (مشتریان) تعداد «جدید»های دیده‌نشده است. */
   var CUST = [
-    { n: 'رستوران مهر', p: 'مهدی کاظمی', c: 'تهران', tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', when: 'امروز', inq: '۱ استعلام جاری', nw: true, av: '#0e7490' },
-    { n: 'سوپرمارکت آریا', p: 'نیما فاضلی', c: 'رشت', tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', when: 'امروز', via: 'از لینک شما', nw: true, av: '#059669' },
+    { n: 'رستوران مهر', p: 'مهدی کاظمی', c: 'تهران', tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', when: 'امروز', inq: '۱ استعلام جاری', nw: true, av: '#0e7490', g: 'رستوران‌ها' },
+    { n: 'سوپرمارکت آریا', p: 'نیما فاضلی', c: 'رشت', tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', when: 'امروز', via: 'از لینک شما', nw: true, av: '#059669', g: 'خرده‌فروشی' },
     { n: 'سوپرمارکت سعید', p: 'سعید کریمی', c: 'رشت', tel: '۰۹۳۵ ۴۴۸ ۸۸۲۳', when: '۳ روز پیش', call: '۲ تماس', av: '#c2703a' },
-    { n: 'سوپرمارکت الماس', p: 'سارا رحیمی', c: 'قزوین', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', when: 'هفتهٔ پیش', av: '#7c3aed' },
+    { n: 'سوپرمارکت الماس', p: 'سارا رحیمی', c: 'قزوین', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', when: 'هفتهٔ پیش', av: '#7c3aed', g: 'خرده‌فروشی' },
     { n: 'خواروبار امید', p: 'علی مرادی', c: 'مشهد', tel: '۰۹۱۵ ۲۲۰ ۳۳۶۱', when: '۲ هفته پیش', via: 'از لینک شما', av: '#0e7490' },
-    { n: 'کترینگ بهار', p: 'بتا موسوی', c: 'تبریز', tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', when: 'ماه پیش', av: '#a8a29a' }
+    { n: 'کترینگ بهار', p: 'بتا موسوی', c: 'تبریز', tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', when: 'ماه پیش', av: '#a8a29a', g: 'رستوران‌ها' }
   ];
   var CUST_OTHER = 35; /* مشتری‌های خارج از نمونهٔ نمایشی — مجموع با CUST_TOTAL هم‌خوانِ ۴۱ آمار reach */
   var custRow = null;  /* ردیفِ در انتظار حذف (۶۲) */
@@ -10060,6 +10257,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var box = document.getElementById('cust-rows');
     if (!box) return;
     box.innerHTML = CUST.map(function (c, i) {
+      /* فاز ۶۵ — فیلتر گروه: ایندکس‌ها اصلی می‌مانند (data-cust) تا منو/حذف سالم بمانند */
+      if (CGFLT && c.g !== CGFLT) return '';
       var act = c.inq || c.call || c.via || '';
       /* فاز ۶۱ — ردیف «در انتظار عضویت»: مشتریِ پیش‌افزوده با شماره (دashed قرینهٔ sup-wait سمت خریدار) */
       if (c.wait) {
@@ -10077,7 +10276,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return '<div class="row-card" style="align-items:center" data-cust="' + i + '">' +
         '<div class="avatar-sm" style="background:' + c.av + '">' + c.n.charAt(0) + '</div>' +
         '<div class="body">' +
-          '<div class="t" style="font-size:13.5px">' + c.n + (c.nw ? ' <span class="badge b-amber cust-new">جدید</span>' : '') + '</div>' +
+          '<div class="t" style="font-size:13.5px">' + c.n + (c.nw ? ' <span class="badge b-amber cust-new">جدید</span>' : '') + (c.g ? ' <span class="cg-tag">' + gfEsc(c.g) + '</span>' : '') + '</div>' +
           '<div class="s"><span>' + c.p + ' · ' + c.c + '</span><span>' + c.when + ' مشتری شد' + (act ? ' · ' + act : '') + '</span></div>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' +
@@ -10338,6 +10537,154 @@ body > div[id^="scr-d"][hidden] { display: none; }
     prqCountSaved();
   }
 
+
+  /* ═══ فاز ۶۵ (مالک) — گروه‌های مشتری (۶۲) + تخفیف گروهی کاتالوگ + شبکهٔ باز ═══
+     گروه‌ها همین‌جا ساخته می‌شوند (چیپ‌بار)؛ تخفیف هر گروه برای هر کالا از «تنظیمات کالا».
+     خریدارِ عضوِ گروه، قیمت خودش را در کاتالوگ می‌بیند — دمو: سوپرمارکت آریا (خریدار نمونه)
+     در گروه «خرده‌فروشی» است و تخفیفش روی برنج هاشمی ۵۰کیلو زنده دیده می‌شود.
+     شبکهٔ باز: اختیاری و با شرایط — مشتری‌های واقعی (۱۰+) · کاتالوگ کامل (۱۰+) · تعاملات (۵+)
+     یا مسیر پرداخت (به‌زودی). اثرش: تابلوی تأمین (۰۹) خریدارِ مشتریِ یک تأمین‌کنندهٔ باز،
+     ردیف‌های شبکهٔ باز را می‌بیند (قیمت مرجع در مقایسه). کاتالوگ خصوصی + شبکهٔ باز = فقط
+     قیمت در مقایسه؛ کاتالوگ کامل همچنان پشت درگاه مشتری‌شدن. */
+  var CGRP = [
+    { n: 'خرده‌فروشی', disc: 5 },
+    { n: 'رستوران‌ها', disc: 8 },
+    { n: 'همکار', disc: 0 }
+  ];
+  var CGFLT = null; /* فیلتر گروهی ۶۲ */
+  function cgChipsRender() {
+    var bar = document.getElementById('cg-bar');
+    if (!bar) return;
+    var counts = {};
+    CUST.forEach(function (c) { if (c.g && !c.wait) counts[c.g] = (counts[c.g] || 0) + 1; });
+    var html = '<button type="button" class="chip' + (CGFLT ? '' : ' active') + '" data-cgchip="">همه</button>';
+    CGRP.forEach(function (g) {
+      html += '<button type="button" class="chip' + (CGFLT === g.n ? ' active' : '') + '" data-cgchip="' + gfEsc(g.n) + '">' + gfEsc(g.n) + ' ' + faNum(counts[g.n] || 0) + '</button>';
+    });
+    html += '<button type="button" class="cg-add" data-cgnew aria-label="گروه مشتری جدید" title="گروه مشتری جدید"><svg><use href="#i-plus"/></svg></button>';
+    bar.innerHTML = html;
+  }
+  function buyerGroup() {
+    var a = null;
+    CUST.forEach(function (c) { if (c.n === 'سوپرمارکت آریا') a = c; });
+    return a && a.g ? a.g : null;
+  }
+  function buyerGrpDisc(prod, pack) {
+    var g = buyerGroup();
+    if (!g) return 0;
+    if (prod !== 'برنج هاشمی' || pack !== 'کیسه ۵۰ کیلویی') return 0; /* دموی تک‌کالا؛ بقیه با دادهٔ واقعی */
+    var gg = null;
+    CGRP.forEach(function (x) { if (x.n === g) gg = x; });
+    return gg ? (gg.disc || 0) : 0;
+  }
+  var GRP_BASE13 = '۲٬۸۵۰٬۰۰۰ <small>تومان</small>';
+  function grpSync() {
+    var disc = (phoneArm() === 'buy' && SUPSAVED) ? buyerGrpDisc('برنج هاشمی', 'کیسه ۵۰ کیلویی') : 0;
+    var g = buyerGroup();
+    var p13 = document.getElementById('p13-hash');
+    var g13 = document.getElementById('grp-13');
+    if (p13 && g13) {
+      if (disc) {
+        p13.innerHTML = '<s>' + faMoney(2850000) + '</s> ' + faMoney(Math.round(2850000 * (1 - disc / 100))) + ' <small>تومان</small>';
+        g13.hidden = false;
+        g13.innerHTML = 'قیمت شما با تخفیف ٪' + faNum(disc) + ' گروه «' + gfEsc(g) + '»';
+      } else {
+        p13.innerHTML = GRP_BASE13;
+        g13.hidden = true;
+        g13.innerHTML = '';
+      }
+    }
+    var plg = document.getElementById('plg-02');
+    var g02 = document.getElementById('grp-02');
+    if (plg && g02) {
+      if (disc) {
+        plg.innerHTML = '<s>' + faMoney(2850000) + '</s> ' + faMoney(Math.round(2850000 * (1 - disc / 100))) + ' <small>تومان</small>';
+        g02.hidden = false;
+        g02.innerHTML = 'قیمت شما با تخفیف ٪' + faNum(disc) + ' گروه «' + gfEsc(g) + '» — به‌محض پذیرش فروشنده، نسخهٔ نهایی در سفارش می‌نشیند';
+      } else {
+        plg.innerHTML = GRP_BASE13;
+        g02.hidden = true;
+        g02.innerHTML = '';
+      }
+    }
+  }
+  function ordParse(s) { /* عدد فارسی با جداکننده — مقدار/قیمت/درصد */
+    return parseInt(String(s == null ? '' : s)
+      .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+      .replace(/[٬,.\s]/g, ''), 10) || 0;
+  }
+  function cgDiscRender() {
+    var box = document.getElementById('cgdisc-rows');
+    if (!box) return;
+    box.innerHTML = CGRP.map(function (g, gi) {
+      return '<div class="cg-disc-row"><span class="cg-dn">' + gfEsc(g.n) +
+        '<small>قیمت گروه: ' + faMoney(Math.round(2850000 * (1 - (g.disc || 0) / 100))) + ' تومان</small></span>' +
+        '<input class="input" id="cgd-' + gi + '" inputmode="numeric" value="' + faNum(g.disc || 0) + '">' +
+        '<span style="font-size:11px;color:var(--muted-fg);flex-shrink:0">٪</span></div>';
+    }).join('');
+  }
+  var NETOPEN = { on: false };
+  function netCatCount() {
+    var b = document.querySelector('#scr-01 .cat-stats button b');
+    return b ? faNumParse(b.textContent) : 12;
+  }
+  function netInterCount() {
+    var n = ORD.filter(function (o) {
+      return o.sup === ORD_SELLER && (o.st === 'ok' || o.st === 'ship' || o.st === 'done');
+    }).length;
+    return n + 1; /* + یک استعلام پاسخ‌داده‌شده (rq3 در ۰۵) */
+  }
+  function netEligible() { return custTotal() >= 10 && netCatCount() >= 10 && netInterCount() >= 5; }
+  function netReqRender() {
+    var box = document.getElementById('net-req');
+    if (!box) return;
+    var cust = custTotal(), cat = netCatCount(), inter = netInterCount();
+    var okC = cust >= 10, okK = cat >= 10, okI = inter >= 5;
+    function row(icon, t, sub, cur, max, ok) {
+      var pct = Math.min(100, Math.round(cur / max * 100));
+      return '<div class="net-r' + (ok ? ' net-ok' : '') + '">' +
+        '<span class="net-ic"><svg><use href="#' + icon + '"/></svg></span>' +
+        '<span class="net-tx"><b>' + t + '</b><small>' + sub + '</small></span>' +
+        (ok ? '<span class="net-done"><svg><use href="#i-check"/></svg></span>'
+            : '<span class="net-bar"><i style="width:' + pct + '%"></i></span>') +
+        '</div>';
+    }
+    box.innerHTML = '<div class="net-req-h"><svg><use href="#i-target"/></svg>شرایط فعال‌سازی شبکهٔ باز</div>' +
+      row('i-users', 'مشتریان واقعی', faNum(cust) + ' مشتری — حداقل ۱۰', Math.min(cust, 10), 10, okC) +
+      row('i-store', 'کاتالوگ کامل', faNum(cat) + ' کالا با قیمت — حداقل ۱۰', Math.min(cat, 10), 10, okK) +
+      row('i-tasks', 'تعاملات', faNum(inter) + ' سفارش و استعلام رسیدگی‌شده — حداقل ۵', Math.min(inter, 5), 5, okI) +
+      '<div class="net-pay"><svg><use href="#i-bolt"/></svg><span class="net-tx"><b>مسیر سریع: فعال‌سازی با پرداخت</b><span>بدون انتظار برای شرایط فعالیت — در نسخهٔ بعد</span></span><span class="badge b-amber">به‌زودی</span></div>';
+    box.hidden = !!NETOPEN.on; /* وقتی باز است، شرایط دیگر دیده نمی‌شود */
+  }
+  function netOpenSync() {
+    var elig = netEligible();
+    var sw = document.getElementById('netopen-sw');
+    if (sw) sw.classList.toggle('on', NETOPEN.on);
+    var subEl = document.getElementById('netopen-sub');
+    if (subEl) subEl.textContent = NETOPEN.on
+      ? 'شبکهٔ شما باز است — قیمت‌ها در مقایسهٔ خریداران شبکه دیده می‌شود'
+      : (elig ? 'واجد شرایطید — می‌توانید شبکه را باز کنید' : 'شبکهٔ شما بسته است — فقط مشتریان خودتان');
+    var swrow = document.getElementById('net-swrow');
+    if (swrow) swrow.hidden = !elig && !NETOPEN.on; /* سوییچر فقط بعد از طی شرایط (یا اگر باز است) */
+    var ex = document.getElementById('net-explain');
+    if (ex) ex.textContent = NETOPEN.on
+      ? 'شبکهٔ شما باز است: مشتریانِ سایر تأمین‌کنندگانِ شبکهٔ باز، قیمت‌های شما را هنگام مقایسهٔ قیمت‌ها می‌بینند و مشتریان شما هم قیمت‌های آن‌ها را. هر زمان بخواهید می‌توانید شبکه را دوباره ببندید — کاتالوگ شما در هر حال برای مشتریان خودتان کار می‌کند.'
+      : 'شبکهٔ شما بسته است: کالاها و قیمت‌های شما فقط برای مشتریان خودتان دیده می‌شود. اگر شبکه را باز کنید، مشتریانِ سایر تأمین‌کنندگانِ شبکهٔ باز هم قیمت‌های شما را هنگام مقایسهٔ قیمت‌ها می‌بینند و در عوض مشتریان شما هم قیمت‌های آن‌ها را می‌بینند — چیزی می‌دهید، چیزی می‌گیرید. کاملاً اختیاری است.';
+    var pn = document.getElementById('net-privnote');
+    if (pn) pn.hidden = !(NETOPEN.on && CATPRIV.on);
+    var csub = document.getElementById('netopen-cset-sub');
+    if (csub) csub.textContent = NETOPEN.on ? 'باز — قیمت‌ها در مقایسهٔ شبکهٔ باز دیده می‌شود' : 'بسته — فقط مشتریان خودتان';
+    var chip = document.getElementById('net-chip');
+    if (chip) chip.hidden = !NETOPEN.on;
+    /* تابلوی تأمین (۰۹): ردیف‌های شبکهٔ باز فقط برای خریدارِ مشتریِ یک تأمین‌کنندهٔ باز */
+    var show = NETOPEN.on && phoneArm() === 'buy' && SUPSAVED;
+    var nr = document.getElementById('net-rows-09');
+    if (nr) nr.hidden = !show;
+    var cnt = document.getElementById('sup-count-09');
+    if (cnt) cnt.textContent = show ? 'تابلوی تأمین · ۳ تأمین‌کنندهٔ شما + ۲ شبکهٔ باز' : 'تابلوی تأمین · ۳ تأمین‌کنندهٔ شما';
+    netReqRender();
+  }
+
   /* ═══ فاز ۲۸ — صفحهٔ ۳۶ «پیشنهادات درخواست»: لیست ۱۱ فقط لیست است؛ جزئیات و پیشنهادها این‌جا ═══
      هر درخواست یک کلید دارد (rice/oil/rice2/paste/oil2)؛ کارت‌های ۱۱ با data-reqkey همین‌جا را باز می‌کنند.
      پیشنهادها: قیمت + شهر + هم‌شهری + خرید قبلی + احراز + زمان. «بهترین آیمچ» = امتیاز ترکیبی
@@ -10583,6 +10930,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
         if (ct) ct.textContent = cc.n;
         if (ctl) ctl.textContent = cc.tel;
         if (cq) cq.textContent = '«' + cc.n + '» دیگر کاتالوگ شما را نمی‌بیند';
+        /* فاز ۶۵ — زیرنویس ردیف گروه مشتری در منو */
+        var cgr = document.getElementById('custmenu-grp');
+        if (cgr) cgr.textContent = cc.g ? 'گروه فعلی: ' + cc.g + ' — تخفیف کاتالوگ مخصوص گروه' : 'بدون گروه — تعیین کنید';
       }
       openSheet('sheet-custmenu');
       return;
@@ -10745,6 +11095,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       closeSheet();
       ordRender('sell');
       ordOk('sell', 'سفارش پذیرفته شد — قیمت و مقدار نهایی برای مشتری ثبت شد.');
+      netReqRender(); /* فاز ۶۵ — تعاملات تازه ممکن است شرایط شبکهٔ باز را کامل کند */
       return;
     }
     /* ۵) فروشنده: اعلام ارسال */
@@ -10755,6 +11106,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       closeSheet();
       ordRender('sell');
       ordOk('sell', 'ارسال اعلام شد — خریدار با دریافت کالا، تحویل را تأیید می‌کند.');
+      netReqRender();
       return;
     }
     /* ۶) خریدار: تأیید تحویل (اختیاری — از «ارسال شده») */
@@ -10765,6 +11117,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       closeSheet();
       ordRender('buy');
       ordOk('buy', 'تحویل تأیید شد — سفارش کامل شد و به بایگانی رفت.');
+      netReqRender();
       return;
     }
     /* ۷) لغو/رد (هر دو طرف) — دیالوگ تأیید با فعلِ هم‌گام نقش */
@@ -11160,6 +11513,103 @@ body > div[id^="scr-d"][hidden] { display: none; }
     /* فاز ۴۹ — ارسال/به‌روزرسانی پیشنهاد از خودِ مودال درخواست (جذب صفحهٔ ۴۷) */
     var rvs = t.closest('#reqv-send');
     if (rvs) { rqvSubmit(); return; }
+
+    /* ═══ فاز ۶۵ (مالک) — گروه‌های مشتری + شبکهٔ باز: هندلرها ═══ */
+    var cgChip = t.closest('[data-cgchip]');
+    if (cgChip) {
+      CGFLT = cgChip.dataset.cgchip || null;
+      cgChipsRender();
+      custRender();
+      return;
+    }
+    var cgNewOpen = t.closest('[data-cgnew]');
+    if (cgNewOpen) {
+      var cgnE = document.getElementById('cgn-err'); if (cgnE) cgnE.hidden = true;
+      openSheet('sheet-cgnew');
+      return;
+    }
+    var cgNewOk = t.closest('[data-cgnewok]');
+    if (cgNewOk) {
+      var cgnNm = (((document.getElementById('cgn-name') || {}).value) || '').trim();
+      if (!cgnNm) {
+        var cgnE2 = document.getElementById('cgn-err'); if (cgnE2) cgnE2.hidden = false;
+        return;
+      }
+      CGRP.push({ n: cgnNm, disc: 0 });
+      var cgnIn = document.getElementById('cgn-name'); if (cgnIn) cgnIn.value = '';
+      closeSheet();
+      cgChipsRender();
+      return;
+    }
+    /* گروهِ این مشتری — از منوی سه‌نقطه (custRow همان ردیف است) */
+    var cgSetOpen = t.closest('[data-cgset]');
+    if (cgSetOpen) {
+      var cgIdx = custRow ? +custRow.dataset.cust : -1;
+      var cgC = CUST[cgIdx];
+      var cgRows = document.getElementById('cga-rows');
+      var cgSubEl = document.getElementById('cga-sub');
+      if (cgC && cgRows && cgSubEl) {
+        cgSubEl.textContent = cgC.n + (cgC.g ? ' — گروه فعلی: ' + cgC.g : ' — بدون گروه');
+        var cgH = '<button type="button" class="pk-row' + (!cgC.g ? ' on' : '') + '" data-cgap="-1">' +
+          '<span class="pk-tx"><b>بدون گروه</b><small>قیمت عمومی کاتالوگ</small></span>' +
+          '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+        CGRP.forEach(function (g, gi) {
+          cgH += '<button type="button" class="pk-row' + (cgC.g === g.n ? ' on' : '') + '" data-cgap="' + gi + '">' +
+            '<span class="pk-tx"><b>' + gfEsc(g.n) + '</b><small>تخفیف کاتالوگ: ' + (g.disc ? '٪' + faNum(g.disc) : 'ندارد') + '</small></span>' +
+            '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+        });
+        cgRows.innerHTML = cgH;
+      }
+      openSheet('sheet-cgassign');
+      return;
+    }
+    var cgAp = t.closest('[data-cgap]');
+    if (cgAp) {
+      var cgIdx2 = custRow ? +custRow.dataset.cust : -1;
+      if (CUST[cgIdx2]) {
+        var cgGi = +cgAp.dataset.cgap;
+        CUST[cgIdx2].g = (cgGi >= 0 && CGRP[cgGi]) ? CGRP[cgGi].n : null;
+      }
+      closeSheet();
+      custRender();
+      cgChipsRender();
+      grpSync();
+      return;
+    }
+    /* تخفیف گروهی کالا (شیت cgdisc): رندر زنده قبل از باز شدن */
+    var cgDiscOpen = t.closest('[data-sheet="sheet-cgdisc"]');
+    if (cgDiscOpen) {
+      cgDiscRender();
+      openSheet('sheet-cgdisc');
+      return;
+    }
+    var cgDiscOk = t.closest('[data-cgdiscok]');
+    if (cgDiscOk) {
+      CGRP.forEach(function (g, gi) {
+        var cgIn = document.getElementById('cgd-' + gi);
+        if (cgIn) g.disc = Math.max(0, Math.min(30, ordParse(cgIn.value)));
+      });
+      closeSheet();
+      grpSync();
+      cgChipsRender();
+      var cgDSub = document.getElementById('cgdisc-sub');
+      var cgN = CGRP.filter(function (g) { return g.disc > 0; }).length;
+      if (cgDSub) cgDSub.textContent = cgN ? 'قیمت مخصوص ' + faNum(cgN) + ' گروه برای این کالا' : 'قیمت مخصوص هر گروه مشتری برای این کالا';
+      return;
+    }
+    /* ═══ فاز ۶۵ — «شبکهٔ باز و بسته» (شیت): رندر زنده + سوییچر ═══ */
+    var netOpenSheet = t.closest('[data-sheet="sheet-netopen"]');
+    if (netOpenSheet) {
+      netOpenSync();
+      openSheet('sheet-netopen');
+      return;
+    }
+    var netSw = t.closest('#netopen-sw');
+    if (netSw) {
+      NETOPEN.on = !NETOPEN.on;
+      netOpenSync();
+      return;
+    }
 
     var sheetOpen = t.closest('[data-sheet]');
     if (sheetOpen && sheetOpen.dataset.sheet !== 'sheet-quickps' && sheetOpen.dataset.sheet !== 'dlg-addls') { /* quickps/dlg-addls: هندلر اختصاصی پایین‌تر (فاز ۴۵/۵۳) */

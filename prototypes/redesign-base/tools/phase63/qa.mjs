@@ -75,7 +75,7 @@ T('۰۹: شرط هوشمندی — قیمت اسپانسری < بهترینِ خ
   }));
 T('۰۹: سازگاری حجم — «حداقل ۵ کیسه» (خریدار ۲۰ کیسه ماهانه می‌خرد)', spTxt.includes('حداقل ۵ کیسه'));
 T('۰۹: آریو غلات = کارت عادیِ تأمین‌کنندهٔ خودِ خریدار (بدون تگ اسپانسری)',
-  (await page.locator('#scr-09 .supplier-card:not(.sponsored):not(.stale)').count()) === 2
+  (await page.locator('#scr-09 .supplier-card:not(.sponsored):not(.stale):not(.net-open)').count()) === 2 /* فاز ۶۵: +۲ کارت شبکهٔ باز جدا */
   && (await page.locator('#scr-09 .supplier-card').nth(2).textContent()).includes('آریو غلات')
   && (await page.locator('#scr-09 .supplier-card').nth(2).locator('.sponsor-tag').count()) === 0);
 T('۰۹: چیپ «تأمین‌کنندهٔ من» روی کارت آریو', (await page.locator('#scr-09 .supplier-card').nth(2).textContent()).includes('تأمین‌کنندهٔ من'));

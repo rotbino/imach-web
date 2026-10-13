@@ -47,7 +47,8 @@ ok('هیچ آواتار متنی در هدرها نمانده', await page.evalu
 await page.goto(FILE + '#09'); await page.reload(); await sleep(250);
 ok('۰۹: کارت «۲٫۵٪ ارزان‌تر از تأمین‌کنندگان فعلی» حذف شد', !(await page.locator('#scr-09').textContent()).includes('تأمین‌کنندگان فعلی'));
 ok('۰۹: هیچ دکمهٔ «درخواست قیمت» روی کارت‌ها نیست', await page.locator('#scr-09 .sup-actions', { hasText: 'درخواست قیمت' }).count() === 0);
-ok('۰۹: چهار کارت تأمین‌کننده با ۴ ردیف اکشن (فاز ۶۳: ۳ تأمین‌کنندهٔ خودِ خریدار + ۱ فروشندهٔ ویژهٔ شالی‌زار طالب)', await page.locator('#scr-09 .supplier-card').count() === 4 && await page.locator('#scr-09 .sup-actions').count() === 4);
+ok('۰۹: چهار کارت تأمین‌کننده با ۴ ردیف اکشن (فاز ۶۳: ۳ خودِ خریدار + ۱ فروشندهٔ ویژه — کارت‌های شبکهٔ باز جدا)', await page.locator('#scr-09 .supplier-card:not(.net-open)').count() === 4 && await page.locator('#scr-09 .supplier-card:not(.net-open) .sup-actions').count() === 4);
+ok('۰۹: ردیف‌های شبکهٔ باز پیش‌فرض مخفی‌اند (فاز ۶۵)', await page.locator('#net-rows-09').isHidden() && await page.locator('#scr-09 .supplier-card.net-open').count() === 2);
 const acts9 = await page.locator('#scr-09 .sup-actions').allTextContents();
 const staleActs = await page.locator('#scr-09 .supplier-card.stale .sup-actions').allTextContents();
 ok('09 fresh cards = تماس/کاتالوگ/ذخیره', acts9.filter((a, i) => !staleActs.includes(a)).every(a => a.includes('تماس') && a.includes('کاتالوگ') && a.includes('ذخیره')));

@@ -40,7 +40,7 @@ ok('ارتفاع سند = ارتفاع ویوپورت (صفحه‌ها انبا�
 for (const s of ALIVE) ok('صفحهٔ ' + s + ' موجود است', await page.locator('#scr-' + s).count() === 1);
 for (const s of DEAD) ok('صفحهٔ ' + s + ' حذف شده', await page.locator('#scr-' + s).count() === 0);
 ok('لندینگ دسکتاپ (d3) موجود', await page.locator('#scr-d3').count() === 1);
-const DEAD_SHEETS = ['sheet-campaign','sheet-target','sheet-cgnew','sheet-cgroup','sheet-cmnts','sheet-cowork','sheet-follow','sheet-pdiscount','sheet-vgedit','sheet-vgpick','sheet-vgroups','sheet-video','sheet-xlsx','sheet-offerview','sheet-alertinfo','dlg-xlsbulk','dlg-campok']; /* فاز ۵۶: dlg-rvw بازگشت — حکم مالک */
+const DEAD_SHEETS = ['sheet-campaign','sheet-target','sheet-cgroup','sheet-cmnts','sheet-cowork','sheet-follow','sheet-pdiscount','sheet-vgedit','sheet-vgpick','sheet-vgroups','sheet-video','sheet-xlsx','sheet-offerview','sheet-alertinfo','dlg-xlsbulk','dlg-campok']; /* فاز ۵۶: dlg-rvw بازگشت — حکم مالک · فاز ۶۵: sheet-cgnew بازگشت (گروه‌های مشتری) */
 for (const s of DEAD_SHEETS) ok('شیت/دیالوگ ' + s + ' حذف شده', await page.locator('#' + s).count() === 0);
 ok('dlg-pct حذف شد (فاز ۴۵: پنل اینلاین)', await page.locator('#dlg-pct').count() === 0);
 ok('dlg-terms مانده', await page.locator('#dlg-terms').count() === 1);
