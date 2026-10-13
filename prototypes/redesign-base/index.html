@@ -2479,6 +2479,16 @@ body > div[id^="scr-d"][hidden] { display: none; }
               </div>
               <button class="btn btn-outline btn-sm" data-go="13" title="مشاهدهٔ کاتالوگ کیان غلات"><svg><use href="#i-store"/></svg> کاتالوگ</button>
             </div>
+            <!-- فاز ۶۳ — سومین فروشندهٔ ویژهٔ همین کالا: شالی‌زار طالب (همان جایگاه اسپانسری که
+                 خریدارِ غیرمشتری در تابلوی تأمین ۰۹ و «کاتالوگ‌های بیشتر» ۱۰ می‌بیند) — بج «۳ مورد»
+                 حالا واقعی شد. قیمتش از تأمین‌کنندگانِ خریدارانِ هدف کمتر است → دیده‌شدن هوشمند. -->
+            <div class="sp-row">
+              <div class="sp-info">
+                <div class="sp-t">شالی‌زار طالب — رشت <span class="badge b-orange" style="font-size:9px;padding:1px 6px">فروشندهٔ ویژه</span></div>
+                <div class="sp-p"><b>۲٬۷۸۰٬۰۰۰</b> <small>تومان</small></div>
+              </div>
+              <button class="btn btn-outline btn-sm" data-go="13" title="مشاهدهٔ کاتالوگ شالی‌زار طالب"><svg><use href="#i-store"/></svg> کاتالوگ</button>
+            </div>
           </div>
         </div>
 
@@ -2982,11 +2992,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </main>
 
     <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
+      <!-- فاز ۶۳ (مالک) — «تأمین‌کنندگان» بلافاصله بعد از «لیست خرید»:
+           دو ستون اصلی شبکهٔ خرید خریدار کنار هم؛ استعلام‌ها و پیام‌ها بعدتر. -->
       <div class="tabs">
         <button class="tab active"><svg><use href="#i-list"/></svg>لیست خرید</button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
         <button class="tab"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
       </div>
     </nav>
 
@@ -2997,7 +3009,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">برنج هاشمی<small>تابلوی تأمین · ۳ تأمین‌کننده</small></div>
+      <!-- فاز ۶۳ (مالک) — «مدل اینستاگرام»: تابلوی تأمین خصوصی است — شمار، تأمین‌کنندگانِ خودِ خریدار -->
+      <div class="ttl">برنج هاشمی<small>تابلوی تأمین · ۳ تأمین‌کنندهٔ شما</small></div>
       <button class="icon-btn" aria-label="ذخیره کاتالوگ"><svg><use href="#i-bookmark"/></svg></button>
     </header>
 
@@ -3043,10 +3056,52 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- ═══ تأمین‌کننده ۲ — تبلیغ هدفمند: جایگاه تابلوی تأمین (فاز ۲۶: نشان یکدست «فروشندهٔ ویژه» با ۰۲) ═══ -->
+      <!-- ═══ فاز ۶۳ (مالک) — «مدل اینستاگرام» در تابلوی تأمین:
+           قاعدهٔ پایه: تابلو قیمت‌های تأمین‌کنندگانِ خودِ خریدار را نشان می‌دهد (خصوصی).
+           حالت ویژه: کالای فروشندهٔ ویژهٔ شارژی به خریدارِ غیرمشتری هم در همان لحظه/مکان
+           دیده می‌شود — فقط وقتی قیمتش واقعاً کمتر از بهترینِ تأمین‌کنندگانِ خریدار باشد،
+           با بج «قیمت کمتر از تأمین‌کنندگان شما» (متن همیشه منفعت‌محور — قاعدهٔ فاز ۶۲).
+           IMPLEMENTATION NOTE (پیادهٔ عملیاتی): دیده‌شدن ویژه کالا-محور است نه کاتالوگ-محور
+           (مثل یک پست اسپانسرشده، نه کل فید)؛ سقف بسامد نمایش برای هر خریدار (فرسودگی
+           تبلیغ)؛ شرط هوشمندی = قیمت ≤ بهترین قیمت خریدار + سازگاری نزدیکی/حجم. شارژ همان
+           PER_EVENT چهاررویدادی (بازدید یونیک ۱٬۰۰۰) — رویداد جدیدی نیست؛ گزارش ۴۶ می‌شمارد.
+           شالی‌زار طالب در «تأمین‌کنندگان من» (۱۰) خریدار نیست → تبلیغ او این‌جا دیده می‌شود
+           (قرینهٔ ۰۲: همان فروشنده در «تأمین‌کنندگان ویژهٔ این کالا» از دید فروشنده). -->
       <div class="supplier-card sponsored">
         <span class="sponsor-tag"><svg><use href="#i-spark-v2"/></svg> فروشندهٔ ویژه</span>
         <div class="sup-head" style="margin-top:4px">
+          <div class="avatar-sm" style="background:#0d9488">ش</div>
+          <div class="nm">
+            <div class="n">شالی‌زار طالب</div>
+            <div class="c">
+              <span style="display:inline-flex;align-items:center;gap:3px"><svg style="width:11px;height:11px"><use href="#i-pin"/></svg> رشت · هم‌شهری</span>
+              <span>به‌روزرسانی امروز</span>
+            </div>
+          </div>
+          <div class="sup-price">
+            <div class="price">۲٬۷۸۰٬۰۰۰ <small>تومان</small></div>
+            <span class="trend down">▼ از ۲٬۸۳۰٬۰۰۰</span>
+          </div>
+        </div>
+        <div class="sup-conditions">
+          <span class="cond" style="background:var(--green-bg);color:var(--green)"><svg style="width:11px;height:11px"><use href="#i-spark-v2"/></svg> قیمت کمتر از تأمین‌کنندگان شما</span>
+          <span class="cond">کیسه ۵۰ کیلویی</span>
+          <span class="cond">حداقل ۵ کیسه</span>
+          <span class="cond">موجود</span>
+        </div>
+        <div class="sup-actions">
+          <button class="btn btn-stone btn-sm" style="flex:1"><svg><use href="#i-phone"/></svg> تماس</button>
+          <button class="btn btn-outline btn-sm" style="flex:1"><svg><use href="#i-store"/></svg> کاتالوگ</button>
+          <button class="btn btn-outline btn-sm">ذخیره</button>
+        </div>
+      </div>
+
+      <!-- ═══ تأمین‌کننده ۲ — آریو غلات: تأمین‌کنندهٔ خودِ خریدار (کاتالوگش در «تأمین‌کنندگان من» ۱۰
+           ذخیره است — فاز ۶۰: لبهٔ دوطرفه). فاز ۶۳: کارت از حالت اسپانسری خارج شد — تبلیغِ فروشندهٔ
+           ویژه فقط برای غیرمشتری‌ها معنا دارد؛ این‌جا او تأمین‌کنندهٔ خودِ خریدار است و قیمتش همیشه
+           دیده می‌شود. تبلیغِ او روی تابلوی خریدارانِ دیگرِ همین کالا اثر دارد (جعبهٔ ۰۲). -->
+      <div class="supplier-card">
+        <div class="sup-head">
           <div class="avatar-sm" style="background:#7c3aed">آ</div>
           <div class="nm">
             <div class="n">آریو غلات <svg><use href="#i-verified"/></svg></div>
@@ -3064,6 +3119,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span class="cond">کیسه ۵۰ کیلویی</span>
           <span class="cond">حداقل ۱۰ کیسه</span>
           <span class="cond">ارسال به همه شهرها</span>
+          <span class="cond" style="background:var(--green-bg);color:var(--green)"><svg style="width:11px;height:11px"><use href="#i-check"/></svg> تأمین‌کنندهٔ من</span>
         </div>
         <div class="sup-actions">
           <button class="btn btn-stone btn-sm" style="flex:1"><svg><use href="#i-phone"/></svg> تماس</button>
@@ -3127,10 +3183,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
 
-      <!-- شفافیت معرفی‌ها — جدایی کامل از تطبیق -->
+      <!-- شفافیت معرفی‌ها — جدایی کامل از تطبیق
+           فاز ۶۳: تابلو خصوصی شد + شرط هوشمندِ دیده‌شدن فروشندهٔ ویژه (متن منفعت‌محور)؛
+           مکانیک «رتبهٔ پیشنهادهای دیگر خریدنی نیست» (حکم فاز ۳۳) دست‌نخورده ماند. -->
       <div class="legend">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>«فروشندهٔ ویژه» یعنی این تأمین‌کننده در حال تبلیغ است و با پرداختِ خودش بالاتر از نتایج مشابه دیده می‌شود — پیشنهادهای دیگر از موتور تطبیق iMach می‌آیند و رتبهٔ آن‌ها خریدنی نیست.</div>
+        <div>قیمت‌های این تابلو از تأمین‌کنندگان خودتان می‌آید. «فروشندهٔ ویژه» در حال تبلیغ است و فقط وقتی این‌جا دیده می‌شود که قیمتش از همهٔ تأمین‌کنندگان شما کمتر باشد — پیشنهادهای دیگر از موتور تطبیق iMach می‌آیند و رتبهٔ آن‌ها خریدنی نیست.</div>
       </div>
 
     </main>
@@ -3260,7 +3318,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div id="rel-cats" hidden>
         <div class="rows" style="margin-top:10px">
 
-          <!-- جایگاه تبلیغ هدفمند: کاتالوگ‌های ذخیره‌شدهٔ خریدار — فروشندهٔ ویژه (در حال تبلیغ) بالاتر -->
+          <!-- جایگاه تبلیغ هدفمند: کاتالوگ‌های ذخیره‌شدهٔ خریدار — فروشندهٔ ویژه (در حال تبلیغ) بالاتر
+               فاز ۶۳ (مالک) — «مدل اینستاگرام»: همان فروشندهٔ ویژهٔ تابلوی تأمین ۰۹ این‌جا هم هست؛
+               بج «قیمت کمتر از تأمین‌کنندگان شما» (متن منفعت‌محور — قاعدهٔ فاز ۶۲) هم‌زبان ۰۹. -->
           <div class="row-card" style="align-items:flex-start;border-style:dashed;border-color:#f3c99a;background:#fffdf8">
             <div class="avatar-sm" style="background:#0d9488;margin-top:2px">ش</div>
             <div class="body">
@@ -3274,6 +3334,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
                 <span class="badge b-stone">برنج هاشمی</span>
                 <span class="badge b-orange">۲٬۷۸۰٬۰۰۰ تومان</span>
+                <span class="badge b-green"><svg style="width:10px;height:10px"><use href="#i-spark-v2"/></svg> قیمت کمتر از تأمین‌کنندگان شما</span>
               </div>
               <div style="font-size:10.5px;color:var(--muted-fg);margin-top:5px;line-height:1.8">چون «برنج هاشمی» در لیست خرید شماست</div>
             </div>
@@ -3687,11 +3748,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </main>
 
     <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
+      <!-- فاز ۶۳ (مالک) — همان ترتیب ۰۸: تأمین‌کنندگان بلافاصله بعد از لیست خرید -->
       <div class="tabs">
         <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
         <button class="tab active"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
       </div>
     </nav>
 
@@ -4463,7 +4525,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
          قیمتِ لیست من پایین آمد (خریدار) · یادآور به‌روزرسانی قیمت‌ها (فروشنده) · مصرف تبلیغ (فروشنده). ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">اعلان‌ها<small>۳ اعلان خوانده‌نشده</small></div>
+      <!-- فاز ۶۳: +۱ خوانده‌نشده (نotif تازه‌سازی کاتالوگ ذخیره‌شده) -->
+      <div class="ttl">اعلان‌ها<small>۴ اعلان خوانده‌نشده</small></div>
       <button class="icon-btn" aria-label="همه را خوانده‌شده کن" title="همه را خوانده‌شده کن"><svg><use href="#i-check"/></svg></button>
     </header>
 
@@ -4505,12 +4568,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
-        <!-- قیمت لیست من پایین آمد (خریدار) -->
+        <!-- ═══ فاز ۶۳ — تپ قلب ماندگاری خریدار: قیمت کاتالوگ ذخیره‌شده به‌روز شد.
+             هر تغییر قیمتِ کاتالوگِ ذخیره‌شده همان لحظه به خریدار خبر می‌رسد — همان وعدهٔ
+             «قیمت‌های همیشه تازه» راهنمای ۶۰/شیت درباره. متن منفعت‌محور (قاعدهٔ فاز ۶۲):
+             فقط خبرِ تازه‌شدن و راحتی، بدون هیچ مکانیک/سیاستی. لمس «مشاهدهٔ کاتالوگ» → ۱۳. ═══ -->
+        <div class="notif ok">
+          <span class="nic"><svg><use href="#i-history"/></svg></span>
+          <div class="ntx">
+            <div class="t">قیمت کاتالوگ ذخیره‌شده به‌روز شد <span class="badge b-new">جدید</span></div>
+            <div class="b">«آریو غلات» قیمت «برنج هاشمی» را به‌روز کرد — ۲٬۹۲۰٬۰۰۰ تومان؛ قیمت تازه همان لحظه در کاتالوگ ذخیره‌شدهٔ شما نشست.</div>
+            <button class="act" data-go="13">مشاهدهٔ کاتالوگ <svg><use href="#i-chev"/></svg></button>
+            <div class="tm">امروز · ۱۲:۱۰</div>
+          </div>
+        </div>
+
+        <!-- قیمت لیست من پایین آمد (خریدار) — فاز ۶۳: انسجام شبکهٔ خصوصی: ارزان‌ترینِ
+             «تأمین‌کنندگان شما» (پارس — همان کاهش ۲٬۹۰۰→۲٬۸۵۰ روی کارت ۰۹)، نه فروشندهٔ غریبه -->
         <div class="notif warn">
           <span class="nic"><svg><use href="#i-trend"/></svg></span>
           <div class="ntx">
             <div class="t">قیمت لیست خریدتان پایین آمد</div>
-            <div class="b">برنج هاشمی ۲٪ ارزان‌تر شد — «تجارت گیل‌رنج» حالا ارزان‌ترین پیشنهادِ لیست شماست.</div>
+            <div class="b">برنج هاشمی ۲٪ ارزان‌تر شد — «پخش برنج پارس» حالا ارزان‌ترینِ تأمین‌کنندگان شماست.</div>
             <button class="act" data-go="09">مشاهدهٔ تابلوی تأمین <svg><use href="#i-chev"/></svg></button>
             <div class="tm">دیروز · ۱۶:۲۰</div>
           </div>
@@ -5497,7 +5575,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-60" data-arm="keep" hidden>
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">راهنمای دستیار خرید<small>لیست خرید · استعلام قیمت · کاتالوگ‌های ذخیره‌شده</small></div>
+      <!-- فاز ۶۳: زیرعنوان با واژگان فاز ۶۰ + ترتیب مالک: تأمین‌کنندگان بعد از لیست خرید -->
+      <div class="ttl">راهنمای دستیار خرید<small>لیست خرید · تأمین‌کنندگان · استعلام قیمت</small></div>
     </header>
 
     <main class="screen-body">
@@ -7640,7 +7719,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۵ (مالک) — فوتر دستیار خرید: «تنظیمات» حذف شد (چیز خاصی نداشت؛ تنظیمات لیست از
      چرخ‌دندهٔ کنار نام لیست باز می‌شود)؛ به‌جایش «استعلام‌ها» (۴۵) و «کاتالوگ‌ها» (۱۰ — ذخیره‌شده‌ها)
      آمدند تا جلوی چشم باشند. فوتر فروش بدون تغییر است. */
-  var TABS = { sell: ['01', '62', '05', '18', '07'], buy: ['08', '45', '18', '10'] };
+  var TABS = { sell: ['01', '62', '05', '18', '07'], buy: ['08', '10', '45', '18'] }; /* فاز ۶۳ (مالک): تب تأمین‌کنندگان بلافاصله بعد از لیست خرید */
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
@@ -7652,9 +7731,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     ],
     buy: [
       ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
+      ['10', 'تأمین‌کنندگان', '<svg><use href="#i-bookmark"/></svg>', ''], /* فاز ۶۳ (مالک): بعد از لیست خرید */
       ['45', 'استعلام‌ها', '<svg><use href="#i-inbox"/></svg>', ''],
-      ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
-      ['10', 'تأمین‌کنندگان', '<svg><use href="#i-bookmark"/></svg>', '']
+      ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>']
     ]
   };
   var DEFAULT_BACK = {
@@ -8375,10 +8454,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۵۴ — match = درصد انطباق با درخواست (قیمت/پوشش/نزدیکی ترکیبی). نزولی در طول آرایه =
      همان ترتیب نمایش؛ بج روی هر ردیف به کاربر می‌گوید چرا این‌طور سورت شده. vip مستقل است (تبلیغ). */
   var SUP = [
-    { id: 's1', name: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 'دیگر استان', distN: 2, price: '۲٬۹۲۰٬۰۰۰', priceN: 2920000, verified: 1, vip: 1, cov: 3, match: 96 },
+    { id: 's1', name: 'آریو غلات', init: 'آ', av: '#7c3aed', city: 'اصفهان', dist: 'دیگر استان', distN: 2, price: '۲٬۹۲۰٬۰۰۰', priceN: 2920000, verified: 1, vip: 1, cov: 3, match: 96, saved: 1 }, /* فاز ۶۳: در «تأمین‌کنندگان من» (۱۰) ذخیره است — هم‌تراز صفحهٔ ۱۰ */
     { id: 's2', name: 'پخش برنج پارس', init: 'پ', av: 'linear-gradient(135deg,#c2703a,#ea580c)', city: 'رشت', dist: 'هم‌شهری', distN: 0, price: '۲٬۸۵۰٬۰۰۰', priceN: 2850000, verified: 1, cov: 3, match: 93, saved: 1 },
     { id: 's3', name: 'کیان غلات', init: 'ک', av: '#0e7490', city: 'قزوین', dist: 'هم‌استان', distN: 1, price: '۳٬۰۰۰٬۰۰۰', priceN: 3000000, verified: 0, cov: 2, match: 88, saved: 1 },
-    { id: 's4', name: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 'هم‌شهری', distN: 0, price: '۲٬۷۸۰٬۰۰۰', priceN: 2780000, verified: 0, cov: 3, match: 86, saved: 1 },
+    { id: 's4', name: 'تجارت گیل‌رنج', init: 'گ', av: '#0d9488', city: 'رشت', dist: 'هم‌شهری', distN: 0, price: '۲٬۷۸۰٬۰۰۰', priceN: 2780000, verified: 0, cov: 3, match: 86 }, /* فاز ۶۳: ذخیره نیست — فقط معرفی iMach در «کاتالوگ‌های بیشتر» (۱۰)؛ saved = همان ۳ تأمین‌کنندهٔ صفحهٔ ۱۰ */
     { id: 's5', name: 'غلات سبزدشت', init: 'غ', av: '#65a30d', city: 'مشهد', dist: 'دیگر استان', distN: 2, price: '۲٬۹۶۰٬۰۰۰', priceN: 2960000, verified: 0, cov: 1, match: 81 },
     { id: 's6', name: 'پخش برنج عطایی', init: 'ع', av: '#b45309', city: 'تبریز', dist: 'دیگر استان', distN: 2, price: '۲٬۹۱۰٬۰۰۰', priceN: 2910000, verified: 0, cov: 1, match: 76 },
     { id: 's7', name: 'برنج انار باغ', init: 'ب', av: '#9333ea', city: 'انار', dist: 'دیگر استان', distN: 2, price: '۲٬۸۷۵٬۰۰۰', priceN: 2875000, verified: 0, cov: 2, match: 72 },
