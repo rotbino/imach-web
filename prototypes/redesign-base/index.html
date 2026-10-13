@@ -2159,7 +2159,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div class="avatar-lg" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="meta">
           <div class="name">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
-          <div class="sub">پخش مواد غذایی · <button class="city-chip cat-loc" id="cat-loc-1" type="button" data-sheet="sheet-locat" title="انتخاب لوکیشن کاتالوگ"><svg><use href="#i-pin"/></svg> <span id="cat-loc-name">رشت</span></button> <span class="badge b-orange">عمده‌فروش</span></div>
+          <div class="sub">پخش مواد غذایی · <button class="city-chip cat-loc" id="cat-loc-1" type="button" data-sheet="sheet-locat" title="انتخاب لوکیشن کاتالوگ"><svg><use href="#i-pin"/></svg> <span id="cat-loc-name">رشت</span></button> <span class="badge b-orange">عمده‌فروش</span> <span class="badge b-amber" id="cat-priv-chip" hidden title="قیمت‌ها فقط برای مشتریان شما دیده می‌شود">کاتالوگ خصوصی</span></div>
         </div>
       </div>
 
@@ -3446,6 +3446,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
         پیش‌نمایش — کاتالوگ شما را همین‌طور می‌بینند
       </div>
 
+      <!-- ═══ فاز ۶۱ (مالک) — «کاتالوگ خصوصی»: درگاه مشاهده قیمت‌ها. حکم مالک: همهٔ فروشنده‌ها
+           دوست ندارند قیمت‌هایشان را همه ببینند — مگر مشتریانشان. در کاتالوگ خصوصی، خارج از
+           شبکه کسی قیمت‌ها را نمی‌بیند مگر آنکه عضو آیمچ و مشتریِ فروشنده باشد. مهمان با لمس
+           «مشاهده قیمت‌ها» شماره و نامش را وارد می‌کند — همان لحظه هم ثبت‌نام می‌شود هم قیمت‌ها
+           را می‌بیند (بی‌چالش و بی‌انتظار — حکم مالک). دو حالت داریم:
+           · پیش‌نمایش مالک (بازوی فروش): خودِ فروشنده قیفِ مهمان را از ابتدا تا انتها تجربه می‌کند.
+           · خریدارِ عضوِ غیرمشتری (بازوی خرید): پیام «کاتالوگ را ذخیره کنید تا مشتری شوید» + ذخیره.
+           قیمت‌ها در حالت درگاه با بلور CSS پوشیده می‌شوند و لمس کارت به‌جای جزئیات (۰۲) بنر را
+           نشان می‌دهد — مهمان کالا و بسته‌بندی را می‌بیند، قیمت را نه. -->
+      <div class="priv13" id="priv-13" hidden>
+        <div class="pv13-h"><svg><use href="#i-shield"/></svg><b>قیمت‌ها فقط برای مشتریان این فروشنده</b></div>
+        <div class="pv13-t" id="priv13-t">این کاتالوگ خصوصی است — قیمت‌ها فقط برای مشتریان «پخش برنج پارس» دیده می‌شود. با ثبت‌نام سریع، شماره موبایل و نام، هم عضو آیمچ شوید هم همین حالا قیمت‌ها را ببینید.</div>
+        <button class="btn btn-primary" id="priv13-reg" type="button" data-privopen><svg><use href="#i-eye"/></svg> مشاهده قیمت‌ها</button>
+        <button class="btn btn-primary" id="priv13-save" type="button" data-catsave hidden><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
+      </div>
+
+      <!-- فاز ۶۱ — پیام خوش‌آمد پس از ثبت‌نام سریع / ذخیرهٔ دوباره: حلقهٔ بستهٔ مشتری‌شدن -->
+      <div class="hintnote priv-ok" id="priv-ok" hidden></div>
+
       <!-- هدر فروشگاه — نام و عکس فروشنده، بدون تداخل با لوگو -->
       <div style="padding:14px 16px 4px;background:linear-gradient(180deg,var(--stone-tint),transparent)">
         <div class="showcase" style="padding-bottom:8px">
@@ -3461,7 +3480,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
         <!-- فاز ۵۵ — اکشن‌های خریدار (buybar-13): برای خودِ فروشنده (پیش‌نمایش) مخفی می‌شود -->
         <div id="buybar-13">
-          <button class="btn btn-outline btn-sm" style="flex:1;color:var(--stone)"><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
+          <button class="btn btn-outline btn-sm catsave" id="catsave-13" style="flex:1;color:var(--stone)" type="button" data-catsave title="کاتالوگ را در «تأمین‌کنندگان من» ذخیره کنید — قیمت‌های زنده همیشه در دسترس"><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
           <button class="btn btn-stone btn-sm" style="flex:1.1" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
           <button class="btn btn-outline btn-sm" style="flex:.66;color:var(--stone)"><svg><use href="#i-phone"/></svg> تماس</button>
         </div>
@@ -5437,6 +5456,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- قاعدهٔ سادهٔ شبکهٔ خصوصی — همان زبان پیام‌های تازه -->
       <div class="hintnote" style="margin-top:0">هر خریداری که کاتالوگ شما را ذخیره کند، این‌جا با نشان «جدید» ظاهر می‌شود. لازم نیست کسی را تأیید کنید؛ مشتری‌هایی را که نمی‌خواهید حذف می‌کنید — مشتریِ حذف‌شده دیگر قیمت‌های شما را نمی‌بیند، اما اگر دوباره کاتالوگ‌تان را ذخیره کند، دوباره برمی‌گردد.</div>
 
+      <!-- ═══ فاز ۶۱ (مالک) — «افزودن مشتری با شماره موبایل»: حکم مالک — فروشنده شمارهٔ مشتری‌ِ
+           دنیای واقعی‌اش را از قبل به فهرست مشتریانش اضافه می‌کند و بعد لینک کاتالوگ را برایش
+           می‌فرستد؛ مخاطب با ثبت‌نام از همان لینک، بی‌درنگ قیمت‌ها را می‌بیند (در کاتالوگ خصوصی).
+           ردیفش تا قبل از عضویت «در انتظار عضویت» می‌ماند — قرینهٔ ردیف مشابه سمت خریدار (۱۰). ═══ -->
+      <button class="add-row" id="cust-add" type="button" data-sheet="sheet-custadd" title="شماره و نام مشتری‌تان را اضافه کنید و لینک کاتالوگ را بفرستید"><svg><use href="#i-userplus"/></svg> افزودن مشتری — با شماره موبایل</button>
+
       <!-- ردیف‌های مشتری — رندر JS -->
       <div class="rows" id="cust-rows"></div>
 
@@ -5456,7 +5481,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
         <button class="tab active"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <button class="tab"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
         <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
@@ -5669,6 +5693,67 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="sheet-row danger" data-custdel>
     <span class="ico"><svg><use href="#i-trash"/></svg></span>
     <span class="tx"><b>حذف از مشتریان</b><span>او دیگر قیمت‌های شما را نمی‌بیند و استعلام نمی‌دهد</span></span>
+  </button>
+</div>
+
+<!-- ═══ فاز ۶۱ (مالک) — ثبت‌نام سریعِ «مشاهده قیمت‌ها» (درگاه کاتالوگ خصوصی در ۱۳).
+     حکم مالک: وقتی مهمان دکمهٔ «مشاهده قیمت» را می‌زند از او شماره خواسته می‌شود؛ به‌محض
+     وارد کردن شماره و نام و نام خانوادگی، هم در آیمچ ثبت‌نام می‌شود و هم قیمت‌ها را می‌بیند —
+     بدون چالش و بدون انتظار. در پیادهٔ عملیاتی همین ثبت‌نام، کاتالوگ به‌صورت خودکار در
+     «تأمین‌کنندگان من» او ذخیره می‌شود (لبهٔ دوطرفه: فروشنده او را در «مشتریان من» می‌بیند). ═══ -->
+<div class="sheet" id="sheet-privreg" role="dialog" aria-label="ثبت‌نام سریع برای مشاهده قیمت‌ها">
+  <div class="grab"></div>
+  <h3>مشاهده قیمت‌ها</h3>
+  <div class="sub">کاتالوگ خصوصی است — قیمت‌ها فقط برای مشتریان «پخش برنج پارس»</div>
+  <div class="field">
+    <label>شماره موبایل</label>
+    <input class="input" id="priv-tel" inputmode="tel" dir="ltr" placeholder="۰۹۱۲ ··· ···">
+  </div>
+  <div class="field">
+    <label>نام و نام خانوادگی</label>
+    <input class="input" id="priv-name" placeholder="مثلاً: رضا محمدی">
+  </div>
+  <div class="su-err" id="priv-err" hidden>شماره موبایل و نام را وارد کنید</div>
+  <button class="btn btn-primary sheet-cta" data-privreg type="button"><svg><use href="#i-check"/></svg> ثبت‌نام و مشاهده قیمت‌ها</button>
+  <div class="hintnote">با همین ثبت‌نام، کاتالوگ خودکار در «تأمین‌کنندگان من» شما ذخیره می‌شود و «پخش برنج پارس» شما را در «مشتریان من» خود می‌بیند — بدون هیچ منتظری.</div>
+</div>
+
+<!-- ═══ فاز ۶۱ (مالک) — «افزودن مشتری» (۶۲): فروشنده شمارهٔ مشتریِ دنیای واقعی‌اش را از قبل
+     به فهرست مشتریان اضافه می‌کند و بعد لینک کاتالوگ را برایش می‌فرستد. تا وقتی مخاطب از
+     لینک ثبت‌نام نکرده، ردیفش «در انتظار عضویت» می‌ماند (قرینهٔ ردیف سمت خریدار ۱۰) و در
+     شمار مشتریان نمی‌نشیند — چون هنوز لبهٔ دوطرفه ساخته نشده است. ═══ -->
+<div class="sheet" id="sheet-custadd" role="dialog" aria-label="افزودن مشتری">
+  <div class="grab"></div>
+  <h3>افزودن مشتری</h3>
+  <div class="sub">شماره و نام مشتری‌تان را وارد کنید — لینک کاتالوگ برایش پیامک می‌شود</div>
+  <div class="field">
+    <label>شماره موبایل مشتری</label>
+    <input class="input" id="cua-tel" inputmode="tel" dir="ltr" placeholder="۰۹۱۲ ··· ···">
+  </div>
+  <div class="field">
+    <label>نام و نام خانوادگی</label>
+    <input class="input" id="cua-name" placeholder="مثلاً: رضا محمدی">
+  </div>
+  <div class="su-err" id="cua-err" hidden>شماره موبایل و نام را وارد کنید</div>
+  <button class="btn btn-primary sheet-cta" data-custadd type="button"><svg><use href="#i-userplus"/></svg> افزودن و ارسال لینک کاتالوگ</button>
+  <div class="hintnote">مشتریِ پیش‌افزوده تا وقتی از لینک شما ثبت‌نام نکند قیمت‌ها را نمی‌بیند — ردیفش تا آن زمان «در انتظار عضویت» می‌ماند و در شمار مشتریان نمی‌نشیند.</div>
+</div>
+
+<!-- ═══ فاز ۶۱ — منوی ردیف «در انتظار عضویت» (۶۲): قرینهٔ sheet-supwait سمت خریدار.
+     ارسال دوبارهٔ لینک / حذف از مشتریان — عنوان با ردیف لمس‌شده هم‌گام می‌شود (custDots). ═══ -->
+<div class="sheet" id="sheet-custwait" role="dialog" aria-label="مشتری در انتظار عضویت">
+  <div class="grab"></div>
+  <h3 id="custwait-title">رضا محمدی</h3>
+  <div class="sub">در انتظار عضویت در آیمچ</div>
+  <div class="hintnote">با شمارهٔ خود به فهرست مشتریان شما اضافه شده است؛ به‌محض ثبت‌نام از لینک کاتالوگ شما، قیمت‌ها را می‌بیند و کاتالوگ شما به‌صورت خودکار در «تأمین‌کنندگان من» او ذخیره می‌شود.</div>
+  <button class="sheet-row" data-smssend>
+    <span class="ico"><svg><use href="#i-share"/></svg></span>
+    <span class="tx"><b>ارسال دوبارهٔ لینک کاتالوگ</b><span>یادآوری پیامک با لینک کاتالوگ شما</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row danger" data-custwaitdel>
+    <span class="ico"><svg><use href="#i-trash"/></svg></span>
+    <span class="tx"><b>حذف از مشتریان</b><span>ردیف از فهرست مشتریان برداشته می‌شود</span></span>
   </button>
 </div>
 
@@ -6110,7 +6195,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <div class="sheet" id="sheet-share" role="dialog" aria-label="اشتراک‌گذاری کاتالوگ">
   <div class="grab"></div>
   <h3>اشتراک‌گذاری کاتالوگ</h3>
-  <div class="sub">لینک کاتالوگ خودت رو برای مشتریانت ارسال کن</div>
+  <div class="sub" id="share-sub">لینک کاتالوگ خودت رو برای مشتریانت ارسال کن</div>
   <button class="sheet-row" data-sheet="sheet-cshare">
     <span class="ico"><svg><use href="#i-users-v2"/></svg></span>
     <span class="tx"><b>اشتراک با مخاطبین</b><span>اعضای ای‌مچ در پیام‌های ای‌مچ؛ بقیه با پیامک</span></span>
@@ -6225,7 +6310,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>نادر رستمی</b><span>۰۹۳۰ ··· ۵۴۲ · عمده‌فروشی</span></span>
     <button class="btn btn-sm btn-outline cts-sms" data-smssend>اشتراک گذاری کاتالوگ</button>
   </div>
-  <div class="hintnote">در پیاده‌سازی عملیاتی، «اشتراک گذاری کاتالوگ» پیامک گوشی را با متن آماده و لینک کاتالوگ باز می‌کند — مخاطب با ثبت‌نام از لینک شما، کاتالوگتان خودکار ذخیرهٔ او می‌نشیند.</div>
+  <div class="hintnote" id="cshare-note">در پیاده‌سازی عملیاتی، «اشتراک گذاری کاتالوگ» پیامک گوشی را با متن آماده و لینک کاتالوگ باز می‌کند — مخاطب با ثبت‌نام از لینک شما، کاتالوگتان خودکار ذخیرهٔ او می‌نشیند.</div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
@@ -6305,11 +6390,21 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>تخفیف‌های حجمی</b><span>پله‌ای بر اساس حجم خرید هر مشتری</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
+  <!-- ═══ فاز ۶۱ (مالک) — «کاتالوگ خصوصی»: سوییچر اصلی دیده‌شدن قیمت‌ها. حکم مالک:
+           همهٔ فروشنده‌ها دوست ندارند قیمت‌هایشان را همه ببینند مگر مشتریانشان. روشن = خصوصی:
+           فقط مشتریان شما قیمت‌ها را می‌بینند؛ مهمان با ثبت‌نام سریع (شماره + نام) از لینک شما
+           مشتری می‌شود و قیمت‌ها را می‌بیند. خاموش = عمومی: همهٔ خریداران قیمت‌ها را می‌بینند
+           (سوئیچر اصناف فقط در حالت عمومی مؤثر است). الگوی سوییچر: sheet-locat (locat-sw). -->
+  <button class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-shield"/></svg></span>
+    <span class="tx"><b>کاتالوگ خصوصی</b><span id="catpriv-sub">قیمت‌ها برای همهٔ خریداران دیده می‌شود</span></span>
+    <div class="toggle" id="catpriv-sw" role="switch" aria-label="کاتالوگ خصوصی — فقط مشتریان قیمت‌ها را ببینند"></div>
+  </button>
   <!-- فاز ۵۳ (مالک) — «قیمتهای من را کی می‌بیند» → «چه اصنافی قیمت‌ها را ببینند» (سوییچر اصناف)؛
        ردیف تازهٔ دعوت‌شدگان: آمار ثبت‌نام از لینک + لیست نام/کسب‌وکار (صفحهٔ ۵۳) -->
   <button class="sheet-row" data-sheet="sheet-trade">
     <span class="ico"><svg><use href="#i-eye"/></svg></span>
-    <span class="tx"><b>چه اصنافی قیمت‌ها را ببینند</b><span>صنف‌های روشن قیمت‌ها را می‌بینند — پیش‌فرض: همه</span></span>
+    <span class="tx"><b>چه اصنافی قیمت‌ها را ببینند</b><span id="trade-sub">صنف‌های روشن قیمت‌ها را می‌بینند — پیش‌فرض: همه</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row" data-go="53">
@@ -7697,6 +7792,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       /* فاز ۶۰ — مشتریان من (۶۲): ورود = رندر ردیف‌ها؛ ترک صفحه = «دیده‌شدن» مشتری‌های جدید
          (مثل پیام‌ها: بج فوتر می‌رود، دفعهٔ بعد بج «جدید» ردیف‌ها نیست) */
       if (id === '62') custRender();
+      /* فاز ۶۱ — کاتالوگ عمومی (۱۳): هر ورود تازه در بازوی فروش، قیف مهمان را از ابتدا شروع
+         می‌کند (CATPRIV.reg ریست) تا فروشنده تجربهٔ مشتریِ ثبت‌نام‌نشده را دوباره ببیند؛
+         در بازوی خرید درگاه فقط به لبهٔ ذخیره (SUPSAVED) وابسته است. */
+      if (id === '13') {
+        if (phoneArm() === 'sell') CATPRIV.reg = false;
+        catPrivSync();
+      }
       if (current === '62' && id !== '62') {
         CUST.forEach(function (c) { c.nw = false; });
         custBadgeSync();
@@ -9593,7 +9695,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
   ];
   var CUST_OTHER = 35; /* مشتری‌های خارج از نمونهٔ نمایشی — مجموع با CUST_TOTAL هم‌خوانِ ۴۱ آمار reach */
   var custRow = null;  /* ردیفِ در انتظار حذف (۶۲) */
-  function custTotal() { return CUST.length + CUST_OTHER; }
+  /* فاز ۶۱: ردیف‌های «در انتظار عضویت» (wait) مشتری نیستند هنوز — لبهٔ دوطرفه با ثبت‌نام ساخته
+     می‌شود؛ پس نه در شمار مشتریان می‌نشینند و نه بج «جدید» می‌گیرند (خود فروشنده ساخته‌اش). */
+  function custTotal() { return CUST.filter(function (c) { return !c.wait; }).length + CUST_OTHER; }
   function custNewCount() { return CUST.filter(function (c) { return c.nw; }).length; }
   function custBadgeSync() {
     var n = custNewCount();
@@ -9621,6 +9725,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (!box) return;
     box.innerHTML = CUST.map(function (c, i) {
       var act = c.inq || c.call || c.via || '';
+      /* فاز ۶۱ — ردیف «در انتظار عضویت»: مشتریِ پیش‌افزوده با شماره (دashed قرینهٔ sup-wait سمت خریدار) */
+      if (c.wait) {
+        return '<div class="row-card cust-wait" style="align-items:center" data-cust="' + i + '">' +
+          '<div class="avatar-sm" style="background:' + (c.av || '#a8a29a') + '">' + c.n.charAt(0) + '</div>' +
+          '<div class="body">' +
+              '<div class="t" style="font-size:13.5px">' + c.n + ' <span class="badge b-amber">در انتظار عضویت</span></div>' +
+              '<div class="s"><span dir="ltr">' + c.tel + '</span><span>' + c.when + ' اضافه شد — با ثبت‌نام از لینک شما، قیمت‌ها را می‌بیند</span></div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' +
+              '<button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های مشتری" data-cdots title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>' +
+          '</div>' +
+        '</div>';
+      }
       return '<div class="row-card" style="align-items:center" data-cust="' + i + '">' +
         '<div class="avatar-sm" style="background:' + c.av + '">' + c.n.charAt(0) + '</div>' +
         '<div class="body">' +
@@ -9633,6 +9750,98 @@ body > div[id^="scr-d"][hidden] { display: none; }
       '</div>';
     }).join('');
     custCountSync();
+  }
+
+  /* ═══ فاز ۶۱ (مالک) — «کاتالوگ خصوصی»: قیمت‌ها فقط برای مشتریان ═══
+     حکم مالک: همهٔ فروشنده‌ها دوست ندارند قیمت‌هایشان را همه ببینند — مگر مشتریانشان.
+     در کاتالوگ خصوصی، خارج از شبکه کسی قیمت‌ها را نمی‌بیند مگر آنکه عضو آیمچ و مشتریِ
+     فروشنده باشد. مهمان دکمهٔ «مشاهده قیمت» را می‌زند، شماره و نام و نام خانوادگی را وارد
+     می‌کند — همان لحظه هم در آیمچ ثبت‌نام می‌شود هم قیمت‌ها را می‌بیند.
+
+     CATPRIV.on  = سوییچر «کاتالوگ خصوصی» در تنظیمات کاتالوگ (sheet-cset).
+     CATPRIV.reg = مهمانِ پیش‌نمایشِ مالک، ثبت‌نام سریع کرده و قیمت‌ها را می‌بیند. هر ورودِ
+                   تازه به ۱۳ در بازوی فروش ریست می‌شود تا فروشنده قیف مهمان را دوباره تجربه کند.
+     SUPSAVED    = خریدارِ نمونه (سوپرمارکت آریا) کاتالوگ «پخش برنج پارس» را ذخیره دارد —
+                   لبهٔ دوطرفه برقرار است. حذف از «تأمین‌کنندگان من» (۱۰) لبه را می‌کُشد و قیمت‌ها
+                   در حالت خصوصی قفل می‌شوند؛ ذخیرهٔ دوباره بازش می‌گرداند (قرینهٔ حذف مشتری ۶۲). */
+  var CATPRIV = { on: false, reg: false };
+  var SUPSAVED = true;
+  var SUPROW_PARS = '<div class="row-card" style="align-items:center">' +
+    '<div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>' +
+    '<div class="body">' +
+      '<div class="t" style="font-size:13.5px">پخش برنج پارس <svg style="width:13px;height:13px;color:#1d5fb8"><use href="#i-verified"/></svg></div>' +
+      '<div class="s"><span>مرتضی رضایی · رشت</span><span dir="ltr">۰۹۱۱ ۲۳۴ ۵۶۷۸</span></div>' +
+    '</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' +
+      '<button class="icon-btn" style="width:38px;height:38px;border-radius:10px;color:var(--green)" aria-label="تماس" title="تماس"><svg><use href="#i-phone"/></svg></button>' +
+      '<button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>' +
+      '<button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های بیشتر" data-sheet="sheet-catmenu" title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>' +
+    '</div>' +
+  '</div>';
+  /* درگاه ۱۳: پیش‌نمایش مالک (بازوی فروش) = قیف مهمان؛ خریدارِ عضوِ غیرمشتری (بازوی خرید) = دعوت به ذخیره */
+  function catPrivGated() {
+    if (!CATPRIV.on) return false;
+    return phoneArm() === 'sell' ? !CATPRIV.reg : !SUPSAVED;
+  }
+  /* هم‌گام‌سازی همهٔ سطوح: بنر ۱۳ + بلور قیمت‌ها + چیپ ۰۱ + سوییچر/زیرنویس‌های cset + share + cshare + دکتهٔ ذخیره */
+  function catPrivSync() {
+    var gated = catPrivGated();
+    var s13 = document.getElementById('scr-13');
+    if (s13) s13.classList.toggle('priv-gate', gated);
+    var bnr = document.getElementById('priv-13');
+    if (bnr) {
+      bnr.hidden = !gated;
+      var sell = phoneArm() === 'sell';
+      var tx = document.getElementById('priv13-t');
+      if (tx) tx.textContent = sell
+        ? 'این کاتالوگ خصوصی است — قیمت‌ها فقط برای مشتریان «پخش برنج پارس» دیده می‌شود. با ثبت‌نام سریع، شماره موبایل و نام، هم عضو آیمچ شوید هم همین حالا قیمت‌ها را ببینید.'
+        : 'قیمت‌های این کاتالوگ فقط برای مشتریان است — کاتالوگ را ذخیره کنید تا مشتری شوید و قیمت‌های زنده را همیشه در دسترس داشته باشید.';
+      var br = document.getElementById('priv13-reg'); if (br) br.hidden = !sell;
+      var bs = document.getElementById('priv13-save'); if (bs) bs.hidden = sell;
+    }
+    var chip = document.getElementById('cat-priv-chip'); if (chip) chip.hidden = !CATPRIV.on;
+    var sw = document.getElementById('catpriv-sw'); if (sw) sw.classList.toggle('on', CATPRIV.on);
+    var sub = document.getElementById('catpriv-sub');
+    if (sub) sub.textContent = CATPRIV.on ? 'فقط مشتریان شما قیمت‌ها را می‌بینند' : 'قیمت‌ها برای همهٔ خریداران دیده می‌شود';
+    var tr = document.getElementById('trade-sub');
+    if (tr) tr.textContent = CATPRIV.on ? 'در حالت خصوصی مؤثر نیست — فقط مشتریان شما می‌بینند' : 'صنف‌های روشن قیمت‌ها را می‌بینند — پیش‌فرض: همه';
+    var sh = document.getElementById('share-sub');
+    if (sh) sh.textContent = CATPRIV.on ? 'کاتالوگ خصوصی است — ثبت‌نام از لینک شما یعنی مشتری شدن و دیدن قیمت‌ها' : 'لینک کاتالوگ خودت رو برای مشتریانت ارسال کن';
+    var cn = document.getElementById('cshare-note');
+    if (cn) cn.textContent = CATPRIV.on
+      ? 'در پیاده‌سازی عملیاتی، «اشتراک گذاری کاتالوگ» پیامک گوشی را با متن آماده و لینک کاتالوگ باز می‌کند — مخاطب با ثبت‌نام از لینک شما، مشتری شما می‌شود و قیمت‌ها را می‌بیند.'
+      : 'در پیاده‌سازی عملیاتی، «اشتراک گذاری کاتالوگ» پیامک گوشی را با متن آماده و لینک کاتالوگ باز می‌کند — مخاطب با ثبت‌نام از لینک شما، کاتالوگتان خودکار ذخیرهٔ او می‌نشیند.';
+    /* دکتهٔ ذخیرهٔ buybar-13: حالت «مشتری هستید» = ذخیره شد (سبز) */
+    var cb = document.getElementById('catsave-13');
+    if (cb) {
+      cb.classList.toggle('catsave-on', SUPSAVED);
+      cb.innerHTML = SUPSAVED ? '<svg><use href="#i-check"/></svg> ذخیره شد' : '<svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ';
+    }
+    var ok = document.getElementById('priv-ok'); if (ok && gated) ok.hidden = true;
+  }
+  /* پیام حلقهٔ بسته (خوش‌آمد/ذخیره/حذف) بالای کاتالوگ ۱۳ */
+  function catPrivOk(html) {
+    var ok = document.getElementById('priv-ok');
+    if (ok) { ok.innerHTML = html; ok.hidden = false; }
+  }
+  /* ردیف «پخش برنج پارس» را در تأمین‌کنندگان من (۱۰) برمی‌گرداند — ذخیرهٔ دوباره = بازگشت لبه */
+  function supRowEnsure() {
+    var box = document.getElementById('saved-cats');
+    if (!box) return;
+    var has = Array.prototype.some.call(box.querySelectorAll('.row-card:not(.sup-wait)'), function (r) {
+      return r.textContent.indexOf('پخش برنج پارس') > -1;
+    });
+    if (!has) box.insertAdjacentHTML('afterbegin', SUPROW_PARS);
+    prqCountSaved();
+  }
+  /* و برمی‌دارد (حذف از ۱۰ یا ذخیرهٔ دوباره در buybar-13) */
+  function supRowRemove() {
+    var box = document.getElementById('saved-cats');
+    if (!box) return;
+    Array.prototype.forEach.call(box.querySelectorAll('.row-card:not(.sup-wait)'), function (r) {
+      if (r.textContent.indexOf('پخش برنج پارس') > -1) r.remove();
+    });
+    prqCountSaved();
   }
 
   /* ═══ فاز ۲۸ — صفحهٔ ۳۶ «پیشنهادات درخواست»: لیست ۱۱ فقط لیست است؛ جزئیات و پیشنهادها این‌جا ═══
@@ -9850,6 +10059,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (catDel) {
       closeSheet();
       if (catRow && catRow.parentElement) {
+        /* فاز ۶۱ — حذف تأمین‌کننده = کشتن لبهٔ دوطرفه: خریدار دیگر مشتری نیست؛ در کاتالوگ
+           خصوصی قیمت‌ها برایش قفل می‌شود (قرینهٔ حذف مشتری سمت فروشنده) */
+        if (catRow.textContent.indexOf('پخش برنج پارس') > -1) { SUPSAVED = false; catPrivSync(); }
         catRow.remove();
         catRow = null;
         prqCountSaved();
@@ -9864,6 +10076,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var ci = custRow ? +custRow.dataset.cust : -1;
       var cc = CUST[ci];
       if (cc) {
+        /* فاز ۶۱ — ردیف «در انتظار عضویت» منوی خودش را دارد (قرینهٔ supwait سمت خریدار) */
+        if (cc.wait) {
+          var cwt = document.getElementById('custwait-title');
+          if (cwt) cwt.textContent = cc.n;
+          openSheet('sheet-custwait');
+          return;
+        }
         var ct = document.getElementById('custmenu-title');
         var ctl = document.getElementById('custmenu-tel');
         var cq = document.getElementById('custdel-q');
@@ -9897,6 +10116,74 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var sw = document.querySelector('#saved-cats .sup-wait');
       if (sw) sw.remove();
       prqCountSaved();
+      return;
+    }
+
+    /* ═══ فاز ۶۱ — «کاتالوگ خصوصی»: قیف مهمان + لبهٔ دوطرفهٔ ذخیره + افزودن مشتری ═══ */
+    /* درگاه ۱۳ (مهمان): «مشاهده قیمت‌ها» → شیت ثبت‌نام سریع — شماره + نام و نام خانوادگی */
+    var privOpen = t.closest('[data-privopen]');
+    if (privOpen) {
+      var pe = document.getElementById('priv-err'); if (pe) pe.hidden = true;
+      openSheet('sheet-privreg');
+      return;
+    }
+    /* ثبت‌نام سریع (شیت): به‌محض شماره + نام — هم عضو آیمچ هم دیدن قیمت‌ها (حکم مالک) */
+    var privReg = t.closest('[data-privreg]');
+    if (privReg) {
+      var pTel = (document.getElementById('priv-tel') || {}).value || '';
+      var pNam = (document.getElementById('priv-name') || {}).value || '';
+      if (!pTel.trim() || !pNam.trim()) {
+        var pe2 = document.getElementById('priv-err'); if (pe2) pe2.hidden = false;
+        return;
+      }
+      CATPRIV.reg = true;
+      closeSheet();
+      catPrivSync();
+      catPrivOk('<b>' + pNam.trim() + '</b> عزیز، خوش آمدید! ثبت‌نام انجام شد و کاتالوگ به‌صورت خودکار در «تأمین‌کنندگان من» شما ذخیره شد — قیمت‌های زندهٔ پخش برنج پارس از این پس همیشه در دسترس شماست.');
+      return;
+    }
+    /* ذخیره/حذف کاتالوگ (buybar-13 + دکتهٔ بنر درگاه برای عضوِ غیرمشتری): لبهٔ دوطرفه */
+    var catSave = t.closest('[data-catsave]');
+    if (catSave) {
+      SUPSAVED = !SUPSAVED;
+      if (SUPSAVED) {
+        supRowEnsure();
+        catPrivSync();
+        catPrivOk('کاتالوگ در «<b>تأمین‌کنندگان من</b>» ذخیره شد — قیمت‌های زندهٔ پخش برنج پارس همیشه در دسترس شماست.');
+      } else {
+        supRowRemove();
+        catPrivSync();
+        catPrivOk('کاتالوگ از «<b>تأمین‌کنندگان من</b>» حذف شد — در کاتالوگ خصوصی دیگر قیمت‌ها را نمی‌بینید؛ هر زمان دوباره ذخیره کنید.');
+      }
+      return;
+    }
+    /* افزودن مشتری با شماره (۶۲): ردیف «در انتظار عضویت» + ارسال لینک */
+    var custAdd = t.closest('[data-custadd]');
+    if (custAdd) {
+      var aTel = (document.getElementById('cua-tel') || {}).value || '';
+      var aNam = (document.getElementById('cua-name') || {}).value || '';
+      if (!aTel.trim() || !aNam.trim()) {
+        var ae = document.getElementById('cua-err'); if (ae) ae.hidden = false;
+        return;
+      }
+      CUST.unshift({ n: aNam.trim(), tel: aTel.trim(), when: 'امروز', wait: true, nw: false, av: '#a8a29a' });
+      closeSheet();
+      var aTelIn = document.getElementById('cua-tel'); if (aTelIn) aTelIn.value = '';
+      var aNamIn = document.getElementById('cua-name'); if (aNamIn) aNamIn.value = '';
+      var ae2 = document.getElementById('cua-err'); if (ae2) ae2.hidden = true;
+      custRender();
+      return;
+    }
+    /* حذف ردیف «در انتظار عضویت» (شیت custwait) */
+    var custWaitDel = t.closest('[data-custwaitdel]');
+    if (custWaitDel) {
+      closeSheet();
+      if (custRow) {
+        var wi = +custRow.dataset.cust;
+        if (!isNaN(wi) && CUST[wi] && CUST[wi].wait) CUST.splice(wi, 1);
+        custRow = null;
+        custRender();
+      }
       return;
     }
 
@@ -10630,6 +10917,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return;
     }
 
+    /* ═══ فاز ۶۱ — کارت‌های ۱۳ در حالت درگاه: لمس کارت به‌جای جزئیات (۰۲) بنر درگاه را نشان
+     می‌دهد — مهمان کالا و بسته‌بندی را می‌بیند، اما برای قیمت و جزئیات باید ثبت‌نام کند.
+     (برای خریدارِ عضوِ غیرمشتری هم همین‌طور — ذخیرهٔ کاتالوک مسیر بازکردن قفل است) ═══ */
+    var privCard = t.closest('#scr-13 .pcard[data-go]');
+    if (privCard && catPrivGated()) {
+      var pb = document.getElementById('priv-13');
+      if (pb && !pb.hidden) {
+        pb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        pb.classList.add('flash');
+        setTimeout(function () { pb.classList.remove('flash'); }, 1200);
+      }
+      return;
+    }
+
     var goEl = t.closest('[data-go]');
     if (goEl) { go(goEl.dataset.go); return; }
 
@@ -10822,6 +11123,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (tg.id === 'ad-toggle') adSubRender(); /* فاز ۴۶ — زیرنویس سوییچ کاتالوگ ویژه */
       if (tg.id === 'reqv-chk') rqvChkSync(); /* فاز ۵۱ — جزئیات چک و جمع‌بندی خوانا */
       if (tg.id === 'locat-sw') { CATLOC.show = tg.classList.contains('on'); catLocSync(); } /* فاز ۵۷ — سوییچر نمایش لوکیشن */
+      if (tg.id === 'catpriv-sw') { CATPRIV.on = tg.classList.contains('on'); catPrivSync(); } /* فاز ۶۱ — کاتالوگ خصوصی: قیمت‌ها فقط برای مشتریان */
       return;
     }
 
@@ -10990,6 +11292,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
   wire();
   custRender();   /* فاز ۶۰ — مشتریان من (۶۲): ردیف‌ها + شمارنده‌های ۶۲/۰۱/reach از بارگذاری */
+  catPrivSync();  /* فاز ۶۱ — کاتالوگ خصوصی: چیپ ۰۱ + سوییچر/زیرنویس‌های cset + دکتهٔ ذخیرهٔ ۱۳ از بارگذاری */
   custBadgeSync();/* فاز ۶۰ — بج «۲ جدید» روی تب مشتریان (پس از wire که data-go می‌نشانَد) */
   prqCountSaved();/* فاز ۶۰ — «۳ تأمین‌کننده» زیر عنوان ۱۰ (بدون ردیف در انتظار عضویت) */
   catLocSync(); /* فاز ۵۷ — چیپ لوکیشن بنر کاتالوگ از بارگذاری هم‌گام است */

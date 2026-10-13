@@ -138,7 +138,9 @@ ok('۰۲: آمار فروشنده «۳۸ تماس» (نه مشتری)', tierTxt.
 /* ═══ ۶. ۱۳ — آمار تماس + قیمت ساده + اشتراک ═══ */
 await page.goto(FILE + '#13'); await page.reload(); await sleep(300);
 const t13 = await page.locator('#scr-13').textContent();
-ok('۱۳: آمار «۱۸ تماس» جایگزین مشتری', t13.includes('۱۸ تماس') && !t13.includes('مشتری'));
+/* فاز ۶۱-همگام: دامنهٔ چک به نوار pub-stats تنگ شد — بنر درگاه کاتالوگ خصوصی واژگان «مشتریان» را برمی‌گرداند (حکم فاز ۶۰/۶۱) */
+const ps13 = await page.locator('#scr-13 .pub-stats').textContent();
+ok('۱۳: آمار «۱۸ تماس» جایگزین مشتری (نوار pub-stats)', ps13.includes('۱۸ تماس') && !ps13.includes('مشتری'));
 ok('۱۳: قیمت کارت ساده (بدون old-p خط‌خورده)', (await page.locator('#scr-13 .old-p').count()) === 0 && t13.includes('۲٬۸۵۰٬۰۰۰'));
 await page.click('#scr-13 .subheader .icon-btn[aria-label="اشتراک"]'); await sleep(300);
 ok('share: متن جدید «لینک کاتالوگ خودت رو برای مشتریانت ارسال کن»', (await page.locator('#sheet-share .sub').textContent()).includes('لینک کاتالوگ خودت رو برای مشتریانت ارسال کن'));

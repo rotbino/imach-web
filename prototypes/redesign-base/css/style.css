@@ -988,3 +988,59 @@ textarea.input { height: 76px; padding: 11px 13px; display: block; }
 
 /* ردیف «در انتظار عضویت» (۱۰) — قرینهٔ ردیف تبلیغ خط‌چین، ولی خاکستری‌تر (انتظار، نه تبلیغ) */
 .row-card.sup-wait .avatar-sm { opacity: .85; }
+
+/* ═══ فاز ۶۱ — «کاتالوگ خصوصی»: درگاه مشاهده قیمت‌ها (۱۳) + افزودن مشتری (۶۲) ═══ */
+
+/* بنر درگاه قیمت — هم‌خانوادهٔ نوار پیش‌نمایش (own-13) و nudge کهربایی fresh: خط‌چین کهربایی = محافظت‌شده */
+.priv13 {
+  margin: 10px 16px 0;
+  border: 1.5px dashed #efc98a;
+  background: #fffaf1;
+  border-radius: 13px;
+  padding: 12px 13px 13px;
+}
+.priv13 .pv13-h { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: var(--amber); }
+.priv13 .pv13-h svg { width: 17px; height: 17px; flex-shrink: 0; }
+.priv13 .pv13-t { font-size: 11px; color: var(--muted-fg); line-height: 1.9; margin: 7px 0 10px; }
+.priv13 .btn { width: 100%; }
+.priv13 .btn + .btn { margin-top: 0; }
+
+/* حالت درگاه: قیمت کارت‌های ۱۳ با بلور پوشیده می‌شود — کالا و بسته‌بندی پیداست، قیمت نه */
+#scr-13.priv-gate .pcard .p { filter: blur(6px); opacity: .65; }
+
+/* پیام خوش‌آمد پس از ثبت‌نام سریع / ذخیره — hintnote سبز‌شده (حلقهٔ بستهٔ مشتری‌شدن) */
+.hintnote.priv-ok {
+  margin: 10px 16px 0;
+  background: #f4fcf7;
+  border: 1px solid #cdebd8;
+  color: #15803d;
+  font-weight: 600;
+}
+
+/* دکتهٔ «ذخیره شد» در buybar-13 — حالتِ «مشتری هستید» (لبهٔ ذخیره برقرار است) */
+#buybar-13 .catsave.catsave-on {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+/* ردیف «در انتظار عضویت» مشتری (۶۲) — قرینهٔ sup-wait سمت خریدار (۱۰) */
+.row-card.cust-wait { border-style: dashed; border-color: #f3c99a; background: #fffdf8; }
+.row-card.cust-wait .avatar-sm { opacity: .85; }
+
+/* دکتهٔ «افزودن مشتری» (۶۲) — هم‌قوارهٔ نوار آمار بالای لیست */
+#scr-62 .add-row { margin: 10px 0 2px; }
+
+/* فلش کوتاه بنر درگاه وقتی مهمان کارت را لمس می‌کند — «قیمت‌ها این‌جاست» */
+.priv13.flash { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(234,179,8,.35); }
+
+/* فاز ۶۱ — hidden قطعی برای عناصر جدیدی که کلاس‌شان display دارد (الگوی #cat-loc-1[hidden]) */
+#priv-13[hidden], #priv-ok[hidden], #priv13-reg[hidden], #priv13-save[hidden],
+#cat-priv-chip[hidden], #priv-err[hidden], #cua-err[hidden] { display: none !important; }
+
+/* فاز ۶۱ — خطای اعتبارسنجی شیت‌های خصوصی (کلاس su-err به ۱۶ اسکوپ است — این‌جا مستقل) */
+#priv-err, #cua-err {
+  font-size: 11px; font-weight: 700; color: var(--red);
+  background: #fdf1f1; border: 1px solid #f3c1c1; border-radius: 9px;
+  padding: 7px 10px; margin-top: 8px;
+}
