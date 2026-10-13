@@ -116,7 +116,7 @@ T('۶: باکس «تماس با آیمچ»', (await page.locator('#scr-42 [data-
 T('۶: باکس «راهنما»', (await page.locator('#scr-42 [data-sheet="sheet-guides"]').count()) === 1);
 await shot('04-profile-boxes');
 await page.click('#scr-42 [data-sheet="sheet-about"]'); await sleep(300);
-T('۶: شیت درباره — فلسفهٔ بدون شبکه', await page.locator('#sheet-about.show').isVisible() && (await page.locator('#sheet-about .adg-p').nth(1).textContent()).includes('بدون شبکه'));
+T('۶: شیت درباره — پیام منفعت‌محور (همگام فاز ۶۲)', await page.locator('#sheet-about.show').isVisible() && (await page.locator('#sheet-about .adg-p').nth(1).textContent()).includes('لیست مشتریانش') && !(await page.locator('#sheet-about').textContent()).includes('بدون شبکه'));
 await page.click('#sheet-about .btn[data-close]'); await sleep(250);
 await page.click('#scr-42 [data-sheet="sheet-contact"]'); await sleep(300);
 T('۶: شیت تماس — تلفن/ایمیل/سایت', (await page.locator('#sheet-contact .sheet-row').count()) === 3 && (await page.locator('#sheet-contact').textContent()).includes('۰۲۱'));
@@ -132,7 +132,7 @@ T('۶: راهنمای خرید از شیت → صفحهٔ ۶۰', await page.loca
 /* ═══ ۷. صفحات راهنما ۶۰/۶۱ + ورود از تنظیمات ۰۷ ═══ */
 T('۷: ۶۰ شش گام دارد', (await page.locator('#scr-60 .gd-row').count()) === 6);
 T('۷: ۶۰ کارت آغاز + قانون رایگان', (await page.locator('#scr-60 .gd-lead').count()) === 1 && (await page.locator('#scr-60 .legend').textContent()).includes('رایگان'));
-T('۷: ۶۰ گام «بدون شبکه هم کار می‌کند»', (await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('بدون شبکه'));
+T('۷: ۶۰ گام ششم — قیمت‌های همیشه تازه (همگام فاز ۶۲)', (await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('قیمت‌های همیشه تازه') && !(await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('بدون شبکه'));
 await shot('06-guide60');
 await page.click('#scr-60 .subheader .back'); await sleep(300);
 T('۷: back از ۶۰ (ورود از ۴۲) → پروفایل', await page.locator('#scr-42').isVisible());

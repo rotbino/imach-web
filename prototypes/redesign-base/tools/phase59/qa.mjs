@@ -38,7 +38,7 @@ T('۱: پاراگراف زیر لیست‌ها (بعد از «پایان‌یا�
   const done = document.querySelector('#scr-45 .inq-done'), n = document.getElementById('inq-note');
   return !!(done && n && done.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING);
 }));
-T('۱: قرینهٔ فروشنده (۰۵ netguide) دست‌نخورده ماند', (await page.locator('#rq-guide').count()) === 1);
+T('۱: قرینهٔ فروشنده (۰۵ netguide) موجود ماند — متنش در فاز ۶۲ منفعت‌محور شد', (await page.locator('#rq-guide').count()) === 1);
 await shot('01-45-note');
 
 /* ═══ ۲. فرم ۴۸ — هدر ثابت + بنر خلاصه + «پیشنهاد» جلوی عنوان‌ها ═══ */
