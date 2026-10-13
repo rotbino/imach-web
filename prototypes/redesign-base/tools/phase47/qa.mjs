@@ -99,7 +99,7 @@ await page.click('#scr-45 .inq-card[data-inq="inq1"]'); await sleep(350);
 ok('۴۵ → ۴۸: صفحهٔ مقایسه باز شد', await page.locator('#scr-48').isVisible());
 ok('۴۸: ۳ پیشنهاد برنج', await page.locator('#scr-48 #of48-list .card').count() === 3);
 ok('۴۸: سورت «ایمچ» فعال', await page.evaluate(() => document.querySelector('#of48-sort [data-ofsort="imch"]').classList.contains('active')));
-ok('۴۸: ترتیب ایمچ = پارس، آریو، کیان', (await page.locator('#scr-48 .oc-head .n').allTextContents()).map(t => t.trim()).join('|').startsWith('پخش برنج پارس'));
+ok('۴۸: ترتیب ایمچ = پارس، آریو، کیان (با پیشوند «پیشنهاد»)', (await page.locator('#scr-48 .oc-head .n').allTextContents()).map(t => t.trim()).join('|').startsWith('پیشنهاد پخش برنج پارس'));
 ok('۴۸: مجموع برای ۲۰ کیسه (۵۶٬۸۰۰٬۰۰۰)', (await page.locator('#scr-48').textContent()).includes('۵۶٬۸۰۰٬۰۰۰'));
 ok('۴۸: چیپ «فقط پوشش کامل» در حالت تک‌قلمی مخفی', await page.evaluate(() => document.querySelector('#of48-sort .of48-full').hidden));
 await page.click('#of48-sort [data-ofsort="cheap"]'); await sleep(200);

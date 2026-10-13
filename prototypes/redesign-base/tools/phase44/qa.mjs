@@ -222,7 +222,7 @@ ok('۰۸: «استعلام‌های جاری» + مشاهدهٔ همه → ۴۵ 
 ok('۰۸: بدون گروه‌بندی (فاز ۴۵)', await page.locator('#scr-08 .bl-groups').count() === 0);
 ok('۰۸: متن راهنمای جدید', (await page.locator('#scr-08 .legend').textContent()).includes('استعلام قیمت رقابتی'));
 ok('۰۸: مهر تازگی روی ردیف', (await page.locator('#scr-08 .bl-fresh').first().textContent()).length > 3);
-ok('۰۸: چشم کنار اشتراک/تنظیمات → صفحهٔ عمومی ۲۳ (فاز ۵۸)', (await page.locator('#scr-08 .sec-title .icon-btn[data-go="23"]').count()) === 1);
+ok('۰۸: پیشنمایش در کادر اشتراک → صفحهٔ عمومی ۲۳ (فاز ۵۹)', (await page.locator('#scr-08 .cat-promo .cp-acts .btn[data-go="23"]').count()) === 1);
 await page.click('#scr-08 .bl-inq-title .more');
 await sleep(250);
 ok('۰۸: مشاهدهٔ همه → ۴۵', await page.locator('#scr-45').isVisible());

@@ -52,8 +52,8 @@ await page.click('#sheet-reqview .mg'); await sleep(250);
 /* ═══ ۳. ۴۸ — هدر برجسته + کارت مقایسه‌ای + شیت جزئیات پیشنهاد ═══ */
 await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
 await page.click('#scr-45 .inq-card[data-inq="inq1"]'); await sleep(400);
-ok('۴۸: عنوان استعلام تیتر اصلی است (فاز ۵۱)', (await page.locator('#of48-t').textContent()).includes('برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی'));
-ok('۴۸: زیرنویس «پیشنهادهای استعلام»', (await page.locator('#of48-s').textContent()).includes('پیشنهادهای استعلام'));
+ok('۴۸: هدر ثابت «پیشنهادات برای استعلام» (فاز ۵۹)', (await page.locator('#of48-t').textContent()).trim().startsWith('پیشنهادات برای استعلام') && !(await page.locator('#of48-t').textContent()).includes('برنج هاشمی'));
+ok('۴۸: بنر بدنه شناسهٔ استعلام را دارد (فاز ۵۹)', (await page.locator('#of48-meta').textContent()).includes('برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی') && (await page.locator('#of48-meta').textContent()).includes('۳ روز مانده'));
 const cards = page.locator('#of48-list .card');
 ok('۴۸: ۳ کارت پیشنهاد', await cards.count() === 3);
 const cardTxt = await cards.first().textContent();

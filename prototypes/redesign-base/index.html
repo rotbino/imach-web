@@ -183,12 +183,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-05 .req-done .rd-t b { display: block; font-size: 11.5px; font-weight: 700; color: var(--stone-soft); line-height: 1.7; }
   #scr-05 .req-done .rd-t span { display: block; font-size: 10px; color: var(--muted-fg); margin-top: 2px; }
   #scr-05 .req-done > .badge { flex-shrink: 0; font-size: 9px; }
-  /* کادر راهنمای شبکه‌سازی — مشترک ۰۵ (فروشنده) و ۴۵ (خریدار): هر دو بازو بدون شبکه هم کار می‌کنند */
+  /* کادر راهنمای شبکه‌سازی — ۰۵ (فروشنده)؛ فاز ۵۹: قرینهٔ ۴۵ با پاراگراف کوتاه جایگزین شد */
   .netguide { display: flex; gap: 11px; align-items: flex-start; margin-top: 16px; padding: 11px 12px 12px; border-radius: 13px; border: 1px solid #eee1c9; background: linear-gradient(180deg, #fdf9f1, #fff 78%); }
   .netguide .ng-ic { width: 36px; height: 36px; border-radius: 11px; background: var(--accent); color: var(--primary-strong); display: grid; place-items: center; flex-shrink: 0; }
   .netguide .ng-ic svg { width: 17px; height: 17px; }
   .netguide .ng-t { font-size: 12px; font-weight: 800; line-height: 1.7; }
   .netguide .ng-s { font-size: 10.5px; color: var(--stone-soft); line-height: 1.95; margin-top: 3px; }
+  /* فاز ۵۹ (مالک) — ۴۵: دو کادر راهنما (legend + netguide) یکی شد؛ فقط یک پاراگراف کوتاه زیر لیست */
+  .inq-note { margin: 14px 2px 2px; font-size: 10.5px; color: var(--stone-soft); line-height: 2.05; }
 
   /* فاز ۵۷ — دو دکمهٔ کوچک زیر دکمهٔ اصلیِ ارسال پیشنهاد: آرشیو / حذف (مدال reqview) */
   .reqv-side { display: flex; gap: 7px; margin-top: 8px; }
@@ -1768,6 +1770,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ۴۸ — مقایسهٔ پیشنهادها (خریدار) */
   .of48-meta { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted-fg); flex-wrap: wrap; padding: 10px 12px; }
   .of48-meta .badge { flex-shrink: 0; }
+  /* فاز ۵۹ (مالک) — ۴۸: بنر خلاصهٔ استعلام در بدنه؛ هدر ثابت «پیشنهادات برای استعلام» */
+  .of48-bnr { display: flex; flex-direction: column; gap: 5px; }
+  .of48-bnr .ob-t { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; font-weight: 800; line-height: 1.7; }
+  .of48-bnr .ob-t .badge { flex-shrink: 0; }
+  .of48-bnr .ob-m { font-size: 10.5px; color: var(--muted-fg); }
   .of48-sum { display: flex; gap: 8px; }
   .of48-sum .s { flex: 1; background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 10px 12px; box-shadow: var(--shadow-card); }
   .of48-sum .s .k { font-size: 10px; color: var(--muted-fg); line-height: 1.7; }
@@ -1920,6 +1927,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .cat-promo .cp-ic { width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; }
   .cat-promo .cp-ic svg { width: 15px; height: 15px; color: var(--primary-strong); }
   .cat-promo small { display: block; font-size: 10.5px; color: var(--muted-fg); line-height: 1.85; }
+  /* فاز ۵۹ (مالک) — ۰۸: کادر اشتراک لیست خرید — دو دکتهٔ [پیشنمایش | اشتراک] داخل کادر */
+  .cat-promo .cp-acts { display: flex; gap: 8px; margin-top: 9px; }
+  .cat-promo .cp-acts .btn { flex: 1; font-size: 12px; padding: 10px 6px; }
+  .cat-promo .cp-acts .btn svg { width: 14px; height: 14px; }
   .cat-addrow { display: flex; gap: 7px; margin-top: 10px; }
   /* فاز ۵۷ (مالک) — کلمهٔ «تنظیمات» کنار آیکون چرخ‌دنده؛ هر سه دکته فونت ریزتر تا جا شوند */
   .cat-addrow .btn { white-space: nowrap; height: 44px; font-size: 11px; padding: 0 8px; }
@@ -2830,26 +2841,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- نام لیست + پیش‌نمایش عمومی + اشتراک‌گذاری + تنظیمات
-           فاز ۵۸ (مالک): چشم = رفتن به صفحهٔ خرید از دید عمومی (۲۳) — قبلاً به‌اشتباه شیت ویرایش
-           (تنظیمات لیست) را باز می‌کرد؛ اشتراک حالا شیت دوگزینه‌ای sheet-lshare را باز می‌کند -->
+      <!-- نام لیست + تنظیمات — فاز ۵۹ (مالک): چشم (پیشنمایش) و اشتراک از سربرگ رفتند
+           داخل کادر «اشتراک گذاری لیست خرید» (پایین‌تر)؛ فقط تنظیمات ماند -->
       <div class="sec-title" style="margin-top:4px">
         <h2><svg><use href="#i-list"/></svg> لیست خرید من</h2>
         <div style="display:flex;align-items:center;gap:7px">
-          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="صفحه خرید از دید عمومی" data-go="23" title="صفحه خرید از دید عمومی — این‌طور تأمین‌کنندگان لیست شما را می‌بینند"><svg><use href="#i-eye"/></svg></button>
-          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="اشتراک‌گذاری لیست خرید" data-sheet="sheet-lshare" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg></button>
           <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="تنظیمات لیست خرید" data-sheet="sheet-listset" title="تنظیمات لیست خرید"><svg><use href="#i-gear"/></svg></button>
         </div>
       </div>
 
-      <!-- ═══ فاز ۵۸ (مالک) — کادر تشویق به اشتراک‌گذاری لیست خرید برای تأمین‌کنندگان
-           (قرینهٔ cat-promo کاتالوگ ۰۱، همان موتور رشد ولی به سود خریدار) ═══ -->
-      <div class="cat-promo">
+      <!-- ═══ فاز ۵۹ (مالک) — دکته‌های اشتراک و پیشنمایش لیست خرید در یک کادر:
+           عنوان «اشتراک گذاری لیست خرید» روبه‌رویش آیکون اشتراک، زیرعنوان شبکهٔ خرید،
+           و دو دکتهٔ [پیشنمایش لیست خرید | اشتراک گذاری] — قبلاً چشم و اشتراکِ آیکونی
+           بالا کنار نام لیست بودند. متن‌ها عیناً از مالک. ═══ -->
+      <div class="cat-promo" id="ls-promo">
         <div class="cp-head">
-          <b>لیست خرید ویترین نیازهای شماست، به اشتراکش بگذار</b>
+          <b>اشتراک گذاری لیست خرید</b>
           <button class="icon-btn cp-ic" data-sheet="sheet-lshare" type="button" aria-label="اشتراک‌گذاری لیست خرید" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg></button>
         </div>
-        <small>با ارسال لینک لیست خرید به تأمین‌کنندگان خود، از آنها بخواهید تا با ساخت کاتالوگ قیمت، قیمتهای زندهٔ خود را همیشه در اختیارتان بگذارند — کاتالوگشان خودکار در کاتالوگهای ذخیره‌شدهٔ شما می‌نشیند.</small>
+        <small>لیست خرید ابزار دریافت قیمت های رقابتی است با تامین کنندگان خود به اشتراکش بگذار و شبکه خرید تشکیل بده</small>
+        <div class="cp-acts">
+          <button class="btn btn-outline" type="button" data-go="23" title="صفحه خرید از دید عمومی — این‌طور تأمین‌کنندگان لیست شما را می‌بینند"><svg><use href="#i-eye"/></svg> پیشنمایش لیست خرید</button>
+          <button class="btn btn-primary" type="button" data-sheet="sheet-lshare" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg> اشتراک گذاری</button>
+        </div>
       </div>
 
       <!-- فاز ۴۵ (مالک) — «استعلام‌های جاری»: فونت ریزتر + «مشاهدهٔ همه» روبه‌رویش → صفحهٔ ۴۵.
@@ -3615,22 +3629,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       </div>
 
-      <div class="legend">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-        <div>پیشنهادهای هر استعلام همین‌جا کنار هم جمع و قابل مقایسه می‌شوند — «گفتگو» فقط وقتی باز می‌شود که به یک پیشنهاد جواب بدهی. استعلام تک‌قلمی و چندقلمی هر دو با «استعلام جدید» ساخته می‌شوند.</div>
-      </div>
-
-      <!-- ═══ فاز ۵۷ (مالک) — کادر راهنمای پایین لیست استعلام‌ها (سمت خریدار، قرینهٔ ۰۵):
-           پلتفرم بدون شبکه هم برای خریدار کار می‌کند — لیست خرید را با تأمین‌کنندگان خودش
-           به اشتراک بگذارد؛ عضویتشان = کاتالوگشان خودکار ذخیرهٔ او می‌نشیند + استعلام گروهی
-           قیمت رقابتی می‌گیرد. متن عیناً از مالک. ═══ -->
-      <div class="netguide" id="inq-guide">
-        <span class="ng-ic"><svg><use href="#i-share"/></svg></span>
-        <div>
-          <div class="ng-t">بدون شبکه هم از تأمین‌کنندگان خودت قیمت بگیر</div>
-          <div class="ng-s">با اشتراک‌گذاری لیست خریدتان به تأمین‌کنندگان خود و درخواست از آنها برای عضویت و ایجاد کاتالوگ قیمت، هم می‌توانید کاتالوگ قیمت‌های آنها را همیشه داشته باشید و هم می‌توانید با ایجاد استعلام گروهی، از آنها بخواهید قیمت رقابتی برایتان ارسال کنند. اگر از لینک خرید شما ثبت‌نام کنند، کاتالوگشان به‌صورت خودکار در کاتالوگ‌های ذخیره‌شدهٔ شما قرار می‌گیرد.</div>
-        </div>
-      </div>
+      <!-- ═══ فاز ۵۹ (مالک) — دو کادر پایین ۴۵ یکی شد: legend «پیشنهادهای هر استعلام…»
+           + netguide «بدون شبکه هم از تأمین‌کنندگان خودت قیمت بگیر…» حذف؛ به‌جای آنها
+           فقط همین پاراگراف کوتاه زیر لیست. متن عیناً از مالک. ═══ -->
+      <p class="inq-note" id="inq-note">با اشتراک گذاری لیست خرید خود ، تامین کنندگان خود را به آیمچ دعوت کنید سپس در اینجا می توانید از آنها استعلام قیمت گروهی بگیرید تا آنها قیمتهای رقابتی خود را برای شما ارسال کنند.</p>
 
     </main>
 
@@ -4868,13 +4870,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-48" data-arm="buy" hidden>
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl" id="of48-t">پیشنهادهای استعلام<small id="of48-s">برنج هاشمی</small></div>
+      <!-- فاز ۵۹ (مالک) — هدر ثابت: عنوان کالاها در هدر نمی‌آید (با قلم زیاد هدر به هم
+           می‌ریخت)؛ شناسهٔ استعلام خیلی خلاصه در بنرِ بدنه می‌نشیند -->
+      <div class="ttl" id="of48-t">پیشنهادات برای استعلام<small id="of48-s"></small></div>
     </header>
 
     <main class="screen-body">
 
-      <!-- خلاصهٔ استعلام: مهلت + ارسال -->
-      <div class="card of48-meta" id="of48-meta"></div>
+      <!-- فاز ۵۹ (مالک) — بنر خیلی خلاصهٔ استعلام (اقلام + مهلت + ارسال)؛ زیرش پیشنهادات می‌آیند -->
+      <div class="card of48-bnr" id="of48-meta"></div>
 
       <!-- دو عدد خلاصه (فقط چندقلمی) -->
       <div id="of48-sum"></div>
@@ -8768,7 +8772,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       : '<span class="badge b-stone">' + faNum(cov) + ' از ' + faNum(n) + ' قلم</span>') : '';
     var html = '<div class="card of48-c" data-ofv="' + ix + '" title="جزئیات پیشنهاد، شرایط و تماس" role="button" tabindex="0">' +
       '<div class="oc-head"><div class="avatar-sm" style="background:' + o.av + '">' + o.init + '</div>' +
-      '<div class="nm"><div class="n">' + gfEsc(o.seller) + (o.verified ? ' <svg><use href="#i-verified"/></svg>' : '') + covBadge + '</div>' +
+      '<div class="nm"><div class="n">پیشنهاد ' + gfEsc(o.seller) + (o.verified ? ' <svg><use href="#i-verified"/></svg>' : '') + covBadge + '</div>' +
       '<div class="c">' + gfEsc(o.city) + ' · ' + gfEsc(o.distL) + '</div></div>';
     if (!d.multi) {
       html += '<div class="oc-price"><div class="p">' + faMoney(o.price) + '</div><span class="u">هر ' + gfEsc(d.unit) + '</span></div>';
@@ -8790,10 +8794,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var d = OF[OF.cur] || OF.inq1;
     OF.last = OF.cur;
     var t = document.getElementById('of48-t');
-    /* فاز ۵۱ (مالک) — عنوان استعلام خودِ تیتر است تا خریدار بداند پیشنهادهای کدام استعلام را می‌بیند */
-    if (t) t.innerHTML = gfEsc(d.sub) + '<small id="of48-s">پیشنهادهای استعلام · ' + faNum(d.offers.length) + ' پیشنهاد</small>';
+    /* فاز ۵۹ (مالک) — هدر ثابت «پیشنهادات برای استعلام»: عنوان کالاها دیگر در هدر نیست
+       (با قلم زیاد هدر به هم می‌ریخت)؛ زیرنویس فقط شمار پیشنهاد. شناسهٔ استعلام در بنرِ بدنه. */
+    if (t) t.innerHTML = 'پیشنهادات برای استعلام<small id="of48-s">' + faNum(d.offers.length) + ' پیشنهاد</small>';
     var meta = document.getElementById('of48-meta');
-    if (meta) meta.innerHTML = '<span class="badge ' + (d.dl === 'امروز آخرین روز' ? 'b-rednum' : 'b-orange') + '">' + gfEsc(d.dl) + '</span><span>' + gfEsc(d.meta) + '</span>';
+    /* فاز ۵۹ (مالک) — بنر خیلی خلاصهٔ استعلام: اقلام + بج مهلت + ارسال به چند نفر؛ زیرش پیشنهادات */
+    if (meta) meta.innerHTML = '<div class="ob-t">' + gfEsc(d.sub) + '<span class="badge ' + (d.dl === 'امروز آخرین روز' ? 'b-rednum' : 'b-orange') + '">' + gfEsc(d.dl) + '</span></div><div class="ob-m">' + gfEsc(d.meta) + '</div>';
     var full = document.querySelector('#of48-sort .of48-full');
     if (full) { full.hidden = !d.multi; full.classList.toggle('on', OF.fullOnly); }
     var sumEl = document.getElementById('of48-sum');

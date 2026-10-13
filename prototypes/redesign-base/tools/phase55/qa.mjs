@@ -88,7 +88,7 @@ await page.click('#sheet-cshare .btn[data-close]'); await sleep(250);
 
 /* ═══ ۶. جریان لیست خرید (۰۸) — فاز ۵۸: دکتهٔ اشتراک شیت دوگزینه‌ای lshare را باز می‌کند ═══ */
 await page.goto(FILE + '#08'); await page.reload(); await sleep(300);
-await page.click('#scr-08 .sec-title [data-sheet="sheet-lshare"]'); await sleep(300);
+await page.click('#scr-08 .cat-promo .cp-acts [data-sheet="sheet-lshare"]'); await sleep(300);
 ok('۰۸: شیت دوگزینه‌ای اشتراک لیست (فاز ۵۸)', await page.locator('#sheet-lshare.show').isVisible() && (await page.locator('#sheet-lshare .sheet-row').count()) === 2);
 await page.click('#sheet-lshare [data-sheet="sheet-contacts"]'); await sleep(300);
 ok('۰۸: مخاطبین از گزینهٔ اول — همان شیت قدیمی', await page.locator('#sheet-contacts.show').isVisible() && (await page.locator('#sheet-contacts .sub').textContent()).includes('لینک لیست خرید'));

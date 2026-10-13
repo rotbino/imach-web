@@ -66,17 +66,17 @@ T('حذف: شمار جاری ۱ شد', (await page.locator('#rq-cur > .req-card'
 await page.reload(); await sleep(400); /* بازنشانی دمو برای شات */
 await shot('03-sell05-after');
 
-/* ═══ ۲. ۴۵ — کادر راهنمای خریدار ═══ */
+/* ═══ ۲. ۴۵ — پاراگراف راهنمای خریدار (فاز ۵۹: دو کادر legend+netguide یکی شد) ═══ */
 await page.goto(FILE + '#45'); await page.reload(); await sleep(400);
-T('۴۵: کادر راهنمای خریدار هست', await page.locator('#inq-guide').count() === 1);
-T('۴۵: متن عین مالک (اشتراک لیست خرید + استعلام گروهی + ذخیرهٔ خودکار)', await page.evaluate(() => {
-  const g = document.getElementById('inq-guide');
-  return !!g && g.textContent.includes('با اشتراک‌گذاری لیست خریدتان به تأمین‌کنندگان خود') &&
-    g.textContent.includes('قیمت رقابتی برایتان ارسال کنند') &&
-    g.textContent.includes('کاتالوگشان به‌صورت خودکار در کاتالوگ‌های ذخیره‌شدهٔ شما قرار می‌گیرد');
+T('۴۵: پاراگراف راهنمای خریدار هست (دو کادر قبلی حذف)', await page.locator('#inq-note').count() === 1 && await page.locator('#scr-45 .netguide, #scr-45 .legend').count() === 0);
+T('۴۵: متن عین مالک (دعوت تأمین‌کنندگان + استعلام گروهی + قیمت‌های رقابتی)', await page.evaluate(() => {
+  const g = document.getElementById('inq-note');
+  return !!g && g.textContent.includes('با اشتراک گذاری لیست خرید خود') &&
+    g.textContent.includes('استعلام قیمت گروهی بگیرید') &&
+    g.textContent.includes('قیمتهای رقابتی خود را برای شما ارسال کنند');
 }));
-T('۴۵: کادر بعد از «پایان‌یافته» در DOM است', await page.evaluate(() => {
-  const done = document.querySelector('#scr-45 .inq-done'), g = document.getElementById('inq-guide');
+T('۴۵: پاراگراف بعد از «پایان‌یافته» در DOM است', await page.evaluate(() => {
+  const done = document.querySelector('#scr-45 .inq-done'), g = document.getElementById('inq-note');
   return !!(done && g && done.compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING);
 }));
 await shot('04-inq45-guide');

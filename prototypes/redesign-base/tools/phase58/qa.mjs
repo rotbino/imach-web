@@ -1,7 +1,7 @@
 // فاز ۵۸ — QA قطعی، هشت حکم مالک:
 //  ۱) ۰۸: عنوان «استعلام‌های جاری» ریزتر (۱۱px) و کمرنگ‌تر (muted) — متمایز از عنوان اصلی
-//  ۲) ۰۸: چشم → صفحهٔ خرید از دید عمومی (۲۳) — نه شیت تنظیمات لیست
-//  ۳) ۰۸: کادر تشویق به اشتراک‌گذاری لیست برای تأمین‌کنندگان (cat-promo)
+//  ۲) ۰۸: پیشنمایش → صفحهٔ خرید از دید عمومی (۲۳) — نه شیت تنظیمات لیست (فاز ۵۹: دکته داخل کادر اشتراک)
+//  ۳) ۰۸: کادر اشتراک لیست خرید — عنوان/زیرعنوان مالک + دو دکتهٔ [پیشنمایش | اشتراک] (فاز ۵۹)
 //  ۴) ۰۸: دکتهٔ اشتراک → شیت دوگزینه‌ای sheet-lshare (مخاطبین + شبکه‌های اجتماعی)
 //  ۵) ۲۳: صفحهٔ عمومی بازگشت — هویت/تماس/آمار/درخواست‌ها/زنگوله‌ها + ذخیرهٔ لیست + پیام
 //  ۶) ۴۲: سه باکس درباره آیمچ / تماس با آیمچ / راهنما + شیت‌هایشان
@@ -47,10 +47,10 @@ T('۱: رنگ muted — متفاوت از عنوان اصلی', inqStyle && inqS
 T('۱: عنوان اصلی ۱۵px ماند (کاتالوک‌گونه)', inqStyle && inqStyle.msize === '15px');
 await shot('01-list-title');
 
-/* ═══ ۲. ۰۸ — چشم → صفحهٔ ۲۳ (نه شیت تنظیمات) ═══ */
-T('۲: چشم data-go="23" دارد (نه data-sheet)', (await page.locator('#scr-08 .sec-title .icon-btn[data-go="23"]').count()) === 1 && (await page.locator('#scr-08 .sec-title .icon-btn[data-sheet="sheet-listedit"]').count()) === 0);
-await page.click('#scr-08 .sec-title .icon-btn[data-go="23"]'); await sleep(350);
-T('۲: کلیک چشم → صفحهٔ ۲۳ باز شد', await page.locator('#scr-23').isVisible() && (await page.evaluate(() => location.hash)) === '#23');
+/* ═══ ۲. ۰۸ — پیشنمایش → صفحهٔ ۲۳ (فاز ۵۹: دکته داخل کادر اشتراک، نه سربرگ) ═══ */
+T('۲: پیشنمایش data-go="23" دارد (نه شیت)', (await page.locator('#scr-08 .cat-promo .cp-acts [data-go="23"]').count()) === 1 && (await page.locator('#scr-08 .sec-title .icon-btn').count()) === 1);
+await page.click('#scr-08 .cat-promo .cp-acts [data-go="23"]'); await sleep(350);
+T('۲: کلیک پیشنمایش → صفحهٔ ۲۳ باز شد', await page.locator('#scr-23').isVisible() && (await page.evaluate(() => location.hash)) === '#23');
 T('۲: هیچ شیتی باز نشد', !(await page.locator('.sheet.show').count()));
 await shot('02-public23');
 
@@ -78,12 +78,13 @@ await page.click('#sheet-lshare .btn[data-close]'); await sleep(250);
 await page.click('#scr-23 .subheader .back'); await sleep(300);
 T('۵: back از ۲۳ → ۰۸', await page.locator('#scr-08').isVisible());
 
-/* ═══ ۳+۴. ۰۸ — کادر تشویق + شیت دوگزینه‌ای ═══ */
+/* ═══ ۳+۴. ۰۸ — کادر اشتراک لیست خرید (فاز ۵۹: عنوان/زیرعنوان مالک + دو دکته) + شیت دوگزینه‌ای ═══ */
 T('۳: کادر cat-promo روی ۰۸ هست', (await page.locator('#scr-08 .cat-promo').count()) === 1);
-T('۳: متن کادر دربارهٔ تأمین‌کنندگان', (await page.locator('#scr-08 .cat-promo small').textContent()).includes('تأمین‌کنندگان'));
-T('۳: کادر دکتهٔ share → lshare دارد', (await page.locator('#scr-08 .cat-promo [data-sheet="sheet-lshare"]').count()) === 1);
-T('۴: دکتهٔ اشتراک هدر → lshare (نه مستقیم مخاطبین)', (await page.locator('#scr-08 .sec-title [data-sheet="sheet-lshare"]').count()) === 1 && (await page.locator('#scr-08 .sec-title [data-sheet="sheet-contacts"]').count()) === 0);
-await page.click('#scr-08 .sec-title [data-sheet="sheet-lshare"]'); await sleep(300);
+T('۳: عنوان کادر «اشتراک گذاری لیست خرید» + آیکون روبه‌رو', (await page.locator('#scr-08 .cat-promo .cp-head b').textContent()).includes('اشتراک گذاری لیست خرید') && (await page.locator('#scr-08 .cat-promo .cp-ic').count()) === 1);
+T('۳: زیرعنوان شبکهٔ خرید (متن مالک فاز ۵۹)', (await page.locator('#scr-08 .cat-promo small').textContent()).includes('شبکه خرید') && (await page.locator('#scr-08 .cat-promo small').textContent()).includes('قیمت های رقابتی'));
+T('۳: دو دکتهٔ پیشنمایش/اشتراک داخل کادر (فاز ۵۹)', (await page.locator('#scr-08 .cat-promo .cp-acts .btn').count()) === 2);
+T('۴: دکتهٔ اشتراک کادر → lshare (نه مستقیم مخاطبین)', (await page.locator('#scr-08 .cat-promo .cp-acts [data-sheet="sheet-lshare"]').count()) === 1 && (await page.locator('#scr-08 .cat-promo [data-sheet="sheet-contacts"]').count()) === 0);
+await page.click('#scr-08 .cat-promo .cp-acts [data-sheet="sheet-lshare"]'); await sleep(300);
 T('۴: شیت lshare باز شد — دو گزینه دقیقاً', await page.locator('#sheet-lshare.show').isVisible() && (await page.locator('#sheet-lshare .sheet-row').count()) === 2);
 T('۴: گزینهٔ اول «اشتراک گذاری با مخاطبین»', (await page.locator('#sheet-lshare .sheet-row').first().textContent()).includes('اشتراک گذاری با مخاطبین'));
 T('۴: گزینهٔ دوم «اشتراک گذاری در شبکه‌های اجتماعی»', (await page.locator('#sheet-lshare .sheet-row').nth(1).textContent()).includes('اشتراک گذاری در شبکه\u200cهای اجتماعی'));
@@ -98,7 +99,7 @@ if (!hasNative) {
   T('۴: nativeshare (مرورگر پشتیبان دارد — بررسی ساختاری)', (await page.locator('#sheet-lshare [data-nativeshare]').count()) === 1);
   await page.click('#sheet-lshare .btn[data-close]'); await sleep(250);
 }
-await page.click('#scr-08 .sec-title [data-sheet="sheet-lshare"]'); await sleep(300);
+await page.click('#scr-08 .cat-promo .cp-acts [data-sheet="sheet-lshare"]'); await sleep(300);
 await page.click('#sheet-lshare [data-sheet="sheet-contacts"]'); await sleep(300);
 T('۴: مخاطبین از گزینهٔ اول باز می‌شود', await page.locator('#sheet-contacts.show').isVisible());
 await page.click('#sheet-contacts .btn[data-close]'); await sleep(250);
