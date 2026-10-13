@@ -31,7 +31,7 @@ await page.evaluate(() => { localStorage.setItem('imach-assist', JSON.stringify(
 await page.goto(FILE + '#16');
 await page.reload();
 await sleep(300);
-T('ساختار: ۳۰ صفحه داخل گوشی (فاز ۵۸: +۲۳ +۶۰/۶۱)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 30));
+T('ساختار: ۳۱ صفحه داخل گوشی (فاز ۶۰: +۶۲ مشتریان من)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 31));
 T('ساختار: هیچ scr بیرون از گوشی/استیج', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 T('ساختار: ارتفاع سند ≤ ۱۰۰۰', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
 T('۱۶: عنوان «کدام دستیار برای کسب و کار شما فعال باشد»', (await page.locator('#scr-16 .lbl-row label').textContent()) === 'کدام دستیار برای کسب و کار شما فعال باشد');

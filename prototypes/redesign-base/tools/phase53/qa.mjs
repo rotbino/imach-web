@@ -20,7 +20,7 @@ await page.evaluate(() => localStorage.setItem('imach-assist', JSON.stringify({ 
 /* ═══ ۱. سربرگ کاتالوگ (۰۱) — کادر اشتراک ظریف + آیکون‌های «روبرو» ═══ */
 await page.goto(FILE + '#01'); await page.reload(); await sleep(300);
 const promoTxt = await page.locator('#scr-01 .cat-promo').textContent();
-ok('کادر: عنوان مالک سر جایش است + زیرمتن جدید (فاز ۵۵)', promoTxt.includes('کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار') && promoTxt.includes('کاتالوگهای مورد علاقه خود ذخیره کنند'));
+ok('کادر: عنوان مالک سر جایش است + زیرمتن (فاز ۶۰ — تأمین‌کنندگان من)', promoTxt.includes('کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار') && promoTxt.includes('تأمین‌کنندگان من'));
 ok('کادر: آیکون چشم حذف شد — پیش‌نمایش = آخرین باکس آمار (فاز ۵۵)', (await page.locator('#scr-01 .cat-promo .cp-ic[data-go="13"]').count()) === 0 && (await page.locator('#scr-01 .cat-stats button[data-go="13"]').count()) === 1);
 ok('کادر: آخرین باکس آمار خودِ پیش‌نمایش است', await page.evaluate(() => {
   const btns = document.querySelectorAll('#scr-01 .cat-stats button');
@@ -51,10 +51,10 @@ ok('جستجو: تمام‌عرض — بدون آیکون هم‌ردیف (خو�
 
 /* ═══ ۲. نوار آمار بالای کاتالوگ — با «دعوت» به‌جای «تماس» (سمت فروشنده) ═══ */
 const stats = await page.locator('#scr-01 .cat-stats').textContent();
-ok('آمار: چهار چیپ پیش‌نمایش/کالا/ذخیره‌کننده/دعوت', stats.includes('پیش‌نمایش') && stats.includes('کالا') && stats.includes('ذخیره‌کننده') && stats.includes('دعوت'));
+ok('آمار: چهار چیپ پیش‌نمایش/کالا/مشتری/دعوت (فاز ۶۰)', stats.includes('پیش‌نمایش') && stats.includes('کالا') && stats.includes('مشتری') && stats.includes('دعوت'));
 ok('آمار: سمت فروشنده «تماس» نیست (فقط کاتالوگ عمومی)', !stats.includes('تماس'));
 ok('آمار: چیپ دعوت → صفحهٔ ۵۳', (await page.locator('#scr-01 .cat-stats [data-go="53"]').count()) === 1);
-ok('آمار: چیپ ذخیره‌کننده → شیت reach', (await page.locator('#scr-01 .cat-stats [data-sheet="sheet-reach"]').count()) === 1);
+ok('آمار: چیپ مشتری → صفحهٔ ۶۲ (فاز ۶۰)', (await page.locator('#scr-01 .cat-stats [data-go="62"]').count()) === 1);
 ok('آمار: چیپ پیش‌نمایش → ۱۳', (await page.locator('#scr-01 .cat-stats [data-go="13"]').count()) === 1);
 ok('آمار: چیپ کالا = اسکرول تا گرید (نه ناوبری)', (await page.locator('#scr-01 .cat-stats [data-catcount]').count()) === 1 && (await page.locator('#scr-01 .cat-stats [data-go="02"]').count()) === 0);
 ok('آمار: چیپ‌ها داخل قاب می‌گنجند', await page.evaluate(() => {
@@ -62,9 +62,9 @@ ok('آمار: چیپ‌ها داخل قاب می‌گنجند', await page.evalu
   const body = document.querySelector('#scr-01 .screen-body');
   return !!cs && cs.scrollWidth <= body.clientWidth + 1;
 }));
-await page.click('#scr-01 .cat-stats [data-sheet="sheet-reach"]'); await sleep(300);
-ok('آمار: لمس ذخیره‌کننده → شیت «کیا ذخیره کرده‌اند»', await page.locator('#sheet-reach.show').isVisible());
-await page.click('#sheet-reach .btn[data-close]'); await sleep(250);
+await page.click('#scr-01 .cat-stats [data-go="62"]'); await sleep(300);
+ok('آمار: لمس مشتری → صفحهٔ ۶۲ «مشتریان من»', await page.locator('#scr-62').isVisible() && (await page.evaluate(() => location.hash)) === '#62');
+await page.goto(FILE + '#01'); await page.reload(); await sleep(250);
 
 /* ═══ ۳. صفحهٔ ۵۳ — دعوت‌شدگان (سه‌نشان + آمار + هدف + لیست) ═══ */
 await page.goto(FILE + '#53'); await page.reload(); await sleep(300);
@@ -207,9 +207,9 @@ await page.click('#cat-fresh [data-freshx]'); await sleep(150);
 ok('نudge: بستن با × کار می‌کند', await page.locator('#cat-fresh').isHidden());
 
 /* ═══ ۱۰. ساختار + کنسول ═══ */
-ok('ساختار: همهٔ scr داخل #phone (۳۰ صفحه — فاز ۵۸: +۲۳ +۶۰/۶۱)', await page.evaluate(() => {
+ok('ساختار: همهٔ scr داخل #phone (۳۱ صفحه — فاز ۶۰: +۶۲ مشتریان)', await page.evaluate(() => {
   const phone = document.getElementById('phone');
-  return Array.from(document.querySelectorAll('.scr')).every(s => phone.contains(s)) && document.querySelectorAll('.scr').length === 30;
+  return Array.from(document.querySelectorAll('.scr')).every(s => phone.contains(s)) && document.querySelectorAll('.scr').length === 31;
 }));
 ok('ساختار: شیت/دیالوگ جدید داخل #phone', await page.evaluate(() => {
   const phone = document.getElementById('phone');

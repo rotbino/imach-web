@@ -2165,11 +2165,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       <!-- ═══ فاز ۵۳ (مالک) — آمار بالای کاتالوگ، از دید تأمین‌کننده: مثل کاتالوگ عمومی، ولی
            به‌جای «تماس»، «دعوت» (ثبت‌نام از لینک شما) — روی کاتالوگ عمومی همان تماس می‌ماند.
-           لمس هرکدام لیستش را باز می‌کند: کالا (خود کاتالوگ) · ذخیره‌کنندگان (شیت reach) · دعوت‌شدگان (۵۳)
-           فاز ۵۵ (مالک): باکس پیش‌نمایش «از کنار باکس‌های آمار» رفت و خودش آخرین باکس ردیف شد. ═══ -->
+           لمس هرکدام لیستش را باز می‌کند: کالا (خود کاتالوگ) · مشتری‌ها (صفحهٔ ۶۲ — فاز ۶۰) · دعوت‌شدگان (۵۳)
+           فاز ۵۵ (مالک): باکس پیش‌نمایش «از کنار باکس‌های آمار» رفت و خودش آخرین باکس ردیف شد.
+           فاز ۶۰ (مالک): «ذخیره‌کننده» → «مشتری» — ذخیره‌کننده‌های کاتالوگ همان مشتریان شما هستند؛
+           باکس آمار صفحهٔ کامل «مشتریان من» (۶۲) را باز می‌کند (شیت reach فقط از تنظیمات ۰۷). ═══ -->
       <div class="cat-stats">
         <button type="button" data-catcount="1" aria-label="۱۲ کالا — رفتن به فهرست کالاها" title="فهرست کالاهای کاتالوگ"><b>۱۲</b><span>کالا</span></button>
-        <button type="button" data-sheet="sheet-reach" aria-label="۴۱ ذخیره‌کننده" title="کسانی که کاتالوگ شما را ذخیره کرده‌اند"><b>۴۱</b><span>ذخیره‌کننده</span></button>
+        <button type="button" data-go="62" aria-label="۴۱ مشتری" title="کسانی که کاتالوگ شما را ذخیره کرده‌اند — مشتریان شما"><b id="cat-cust-n">۴۱</b><span>مشتری</span></button>
         <button type="button" data-go="53" aria-label="۱۲ دعوت‌شده" title="کسانی که با لینک شما عضو شده‌اند"><b>۱۲</b><span>دعوت</span></button>
         <button type="button" data-go="13" aria-label="پیش‌نمایش کاتالوگ" title="دیدن کاتالوگ مثل یک خریدار"><svg><use href="#i-eye"/></svg><span>پیش‌نمایش</span></button>
       </div>
@@ -2183,7 +2185,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <b>کاتالوگ ویترین قیمتهای زنده شماست، به اشتراکش بگذار</b>
           <button class="icon-btn cp-ic" data-sheet="sheet-share" type="button" aria-label="اشتراک‌گذاری کاتالوگ" title="اشتراک‌گذاری کاتالوگ"><svg><use href="#i-share"/></svg></button>
         </div>
-        <small>با ارسال لینک کاتالوگ به مشتریان خود، از آنها بخواهید تا برای داشتن قیمتهای زنده شما، کاتالوگ شما را در لیست کاتالوگهای مورد علاقه خود ذخیره کنند.</small>
+        <small>با ارسال لینک کاتالوگ به مشتریان خود، از آنها بخواهید تا برای داشتن قیمتهای زنده شما، کاتالوگ شما را ذخیره کنند و در «تأمین‌کنندگان من» خود نگه دارند.</small>
       </div>
 
       <!-- فاز ۵۳ (مالک) — دکمهٔ تنظیمات آمد پیشِ دو دکمهٔ «کالای جدید» و «تغییر قیمت‌ها» -->
@@ -2304,9 +2306,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار فروش">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
       <div class="tabs">
         <button class="tab active"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
+        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <button class="tab"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
         <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
@@ -2696,9 +2699,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار فروش">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
       <div class="tabs">
         <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
+        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <button class="tab active"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
         <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
@@ -2728,11 +2732,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <main class="screen-body">
 
       <!-- ابزار رشد: حلقهٔ اشتراک‌گذاری — موتور رشد رایگان مالک
-           فاز ۵۱ — وعدهٔ «مشتری شما می‌شود» حذف شد: چیزی به اسم مشتری در آیمچ نیست؛
-           آنچه واقعاً اتفاق می‌افتد ذخیره‌شدن کاتالوگ شما در دفترچهٔ تلفن او است. -->
+           فاز ۵۱ — «مشتری شما می‌شود» حذف شد: چیزی به اسم مشتری در آیمچ نبود.
+           فاز ۶۰ (مالک) — واژگون شد: ذخیره‌کننده‌های کاتالوگ همان مشتریان شما هستند (شبکهٔ تجاری خصوصی).
+           آنچه واقعاً اتفاق می‌افتد ذخیره‌شدن کاتالوگ شما در «تأمین‌کنندگان من» اوست و قرینه‌اش
+           در «مشتریان من» شما دیده می‌شود. -->
       <div class="card">
         <div style="font-size:13px;font-weight:700;margin-bottom:3px">ابزار رشد کاتالوگ</div>
-        <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin-bottom:10px">لینک کاتالوگتان را برای مشتری‌ها بفرستید — هر ثبت‌نام از لینک شما، کاتالوگتان خودکار ذخیرهٔ او می‌نشیند و در دفترچهٔ تلفنش می‌ماند.</div>
+        <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin-bottom:10px">لینک کاتالوگتان را برای مشتری‌ها بفرستید — هر ثبت‌نام از لینک شما، کاتالوگتان خودکار ذخیرهٔ او می‌نشیند، مشتری شما می‌شود و در «مشتریان من»‌تان دیده می‌شود.</div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-primary btn-sm" style="flex:1" data-sheet="sheet-share"><svg><use href="#i-share"/></svg> اشتراک کاتالوگ</button>
           <button class="btn btn-outline btn-sm" style="flex:1" data-sheet="sheet-pubview"><svg><use href="#i-eye"/></svg> نمای عمومی</button>
@@ -2740,11 +2746,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- ═══ فاز ۵۱ — کاتالوگ شما نزد خریداران: همان آماری که خریدار بالای کاتالوگ عمومی
-           می‌بیند (ذخیره/تماس/بازدید)؛ لمس → شیت «کیا ذخیره کرده‌اند / کیا تماس گرفته‌اند». ═══ -->
+           می‌بیند (ذخیره/تماس/بازدید)؛ فاز ۶۰ — «مشتریان شما»؛ لمس → شیت «مشتریان شما / کیا تماس گرفته‌اند». ═══ -->
       <div class="card" style="margin-top:10px;padding:0 14px">
         <div data-sheet="sheet-reach" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-eye"/></svg>
-          <span style="flex:1">کاتالوگ شما نزد خریداران<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">۴۱ ذخیره · ۱۸ تماس · ۱۲۰ بازدید ماه — کیا ذخیره/تماس کرده‌اند</span></span>
+          <span style="flex:1">مشتریان شما<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">۴۱ مشتری · ۱۸ تماس · ۱۲۰ بازدید ماه — کیا ذخیره/تماس کرده‌اند</span></span>
           <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
       </div>
@@ -2794,7 +2800,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="card" style="padding:0 14px">
         <div data-go="60" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-list"/></svg>
-          <span style="flex:1">راهنمای دستیار خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">لیست خرید، استعلام قیمت و کاتالوگ‌های ذخیره‌شده</span></span>
+          <span style="flex:1">راهنمای دستیار خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">لیست خرید، استعلام قیمت و تأمین‌کنندگان شما</span></span>
           <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
         <div data-go="61" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
@@ -2806,9 +2812,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار فروش">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
       <div class="tabs">
         <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
+        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <button class="tab"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
         <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
@@ -2978,7 +2985,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab active"><svg><use href="#i-list"/></svg>لیست خرید</button>
         <button class="tab"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>کاتالوگ‌ها</button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
       </div>
     </nav>
 
@@ -3143,15 +3150,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 
     <!-- فاز ۲۶ — «کاتالوگ‌های ذخیره‌شدهٔ من»: دفترچهٔ تلفن خریدار
+         فاز ۶۰ (مالک) — «شبکهٔ تجاری خصوصی»: اسم این صفحه «تأمین‌کنندگان من» شد — هر کاتالوگی که
+         ذخیره می‌کنید یک تأمین‌کنندهٔ خصوصی به شبکهٔ شما اضافه می‌کند؛ فروشنده هم او را در «مشتریان من»
+         خود می‌بیند (ارتباط دوطرفه با ذخیرهٔ کاتالوگ ساخته می‌شود).
          IMPLEMENTATION NOTE: هر ردیف = یک کاتالوگ ذخیره‌شده (دکمهٔ ذخیره در کاتالوگ عمومی ۱۳).
          جستجو روی نام شخص / کسب‌وکار؛ تماس و کاتالوگ در دسترس؛ سه‌نقطه → شیت منو (sheet-catmenu) با حذف.
+         فاز ۶۰: ردیف خط‌چین «در انتظار عضویت» = تأمین‌کنندهٔ دعوت‌شده از مسیر لیست خرید (فرم ۰۸/۴۵)
+         که هنوز عضو نشده — شیت sheet-supwait (ارسال دوبارهٔ دعوت / حذف دعوت).
          بخش «مشاهده کاتالوگ‌های بیشتر» (نام فاز ۲۸) همان محتوای تب قدیمی «مرتبط با من» است: موتور تطابق +
          جایگاه تبلیغ هدفمندِ کاتالوگ‌های ذخیره‌شده (فروشندهٔ ویژه) — فرصت تبلیغ‌کننده برای قرارگرفتن
          در لیست ذخیرهٔ خریداران مرتبط. تب‌ها حذف شدند؛ فقط کاتالوگ‌های ذخیره‌شده نمایش داده می‌شود.
-         فاز ۴۴: ورودی این صفحه از هاب پروفایل (۴۲) است — کارت «کاتالوگ‌های ذخیره‌شدهٔ من». -->
+         فاز ۴۴: ورودی این صفحه از هاب پروفایل (۴۲) است — کارت «تأمین‌کنندگان من». -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">کاتالوگ‌های ذخیره‌شدهٔ من<small id="saved-cats-count">۳ کاتالوگ</small></div>
+      <div class="ttl">تأمین‌کنندگان من<small id="saved-cats-count">۳ تأمین‌کننده</small></div>
     </header>
 
     <main class="screen-body">
@@ -3210,6 +3222,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <button class="icon-btn" style="width:38px;height:38px;border-radius:10px;color:var(--green)" aria-label="تماس" title="تماس"><svg><use href="#i-phone"/></svg></button>
             <button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>
             <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های بیشتر" data-sheet="sheet-catmenu" title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>
+          </div>
+        </div>
+
+        <!-- فاز ۶۰ — تأمین‌کنندهٔ دعوت‌شده از مسیر لیست خرید (فرم ۰۸/۴۵): هنوز عضو نشده.
+             شمارندهٔ «۳ تأمین‌کننده» این ردیف را نمی‌شمارد (prqCountSaved با :not(.sup-wait)).
+             شیت مخصوص: sheet-supwait — «ارسال دوبارهٔ دعوت» / «حذف دعوت» (حکم مالک: حذف همیشه ممکن است). -->
+        <div class="row-card sup-wait" style="align-items:center;border-style:dashed;border-color:#f3c99a;background:#fffdf8">
+          <div class="avatar-sm" style="background:#a8a29a">ح</div>
+          <div class="body">
+            <div class="t" style="font-size:13.5px">حسین فرزاد — پخش روغن آرین <span class="badge b-amber">در انتظار عضویت</span></div>
+            <div class="s">
+              <span>دعوت‌شده با لینک لیست خرید شما</span>
+              <span>۳ روز پیش</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های دعوت" data-supdots title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>
           </div>
         </div>
 
@@ -3297,7 +3326,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
       <!-- فاز ۲۸ (یادداشت پیاده‌سازی — متن مالک، از فرم حذف و به کد منتقل شد):
-           کاتالوگ‌های ذخیره‌شدهٔ شما مثل دفترچهٔ تلفن عمل می‌کنند — جستجو، تماس و کاتالوگ همیشه در دسترس.
+           تأمین‌کنندگان شما با ذخیرهٔ کاتالوگ‌شان ساخته می‌شوند — جستجو، تماس و قیمت زنده همیشه در دسترس.
+           فاز ۶۰: هر ذخیره = یک تأمین‌کنندهٔ خصوصی؛ فروشنده هم شما را در «مشتریان من» خود می‌بیند.
            کارت‌های خط‌چینِ «فروشندهٔ ویژه» تبلیغِ هدفمند است: دقیقاً برای کالای موجود در لیست خرید شما، با پرداختِ خودِ فروشنده. -->
 
     </main>
@@ -3641,7 +3671,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
         <button class="tab active"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>کاتالوگ‌ها</button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
       </div>
     </nav>
 
@@ -4326,7 +4356,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- آمار لیست -->
       <div class="insight-strip">
         <span><svg><use href="#i-list"/></svg> <b>۴</b> کالا</span>
-        <span><svg><use href="#i-bookmark"/></svg> <b>۱۲</b> ذخیره‌کننده</span>
+        <span><svg><use href="#i-bookmark"/></svg> <b>۱۲</b> تأمین‌کننده</span>
         <span><svg><use href="#i-eye"/></svg> <b>۸۶</b> بازدید</span>
       </div>
 
@@ -4596,7 +4626,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
         <div class="ih-row" style="margin-top:12px">
           <span class="n">۱</span>
-          <div><b>حل مشکل تغییرات قیمت</b><small>مشتریِ ذخیره‌کنندهٔ کاتالوگ، همیشه به قیمت‌های به‌روزتان دسترسی دارد.</small></div>
+          <div><b>حل مشکل تغییرات قیمت</b><small>مشتری که کاتالوگ شما را ذخیره کرده، همیشه به قیمت‌های به‌روزتان دسترسی دارد.</small></div>
         </div>
         <div class="ih-row">
           <span class="n">۲</span>
@@ -5016,14 +5046,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="btn btn-primary btn-sm" style="flex-shrink:0">افزایش شارژ</button>
       </div>
 
-      <!-- کاتالوگ‌های ذخیره‌شدهٔ من -->
+      <!-- فاز ۶۰: «کاتالوک‌های ذخیره‌شدهٔ من» → «تأمین‌کنندگان من» — شبکهٔ تأمین خصوصی خریدار -->
       <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer" data-go="10">
         <div style="width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:var(--primary-strong)">
           <svg style="width:19px;height:19px"><use href="#i-bookmark"/></svg>
         </div>
         <div style="flex:1">
-          <div style="font-size:13.5px;font-weight:700">کاتالوگ‌های ذخیره‌شدهٔ من</div>
-          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">۳ کاتالوگ · دفترچهٔ تلفن تأمین‌کننده‌های شما</div>
+          <div style="font-size:13.5px;font-weight:700">تأمین‌کنندگان من</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">۳ تأمین‌کننده · با ذخیرهٔ هر کاتالوگ ساخته می‌شود</div>
         </div>
         <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
       </div>
@@ -5380,6 +5410,61 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <!-- ═══ فاز ۶۰ (مالک) — «شبکهٔ تجاری خصوصی» گام ۱: مشتریان من (۶۲).
+         حکم مالک: ذخیره‌کننده‌های کاتالوگ = مشتریان. هر خریداری که کاتالوگ شما را ذخیره کند
+         مشتری شماست — بدون تأیید، مثل پیام‌های تازه: مشتری جدید با بج «جدید» می‌آید؛ وقتی
+         او را دیدید (صفحه را ترک کنید) بج می‌رود و مشتری عادی می‌شود؛ هرکدام را نخواستید
+         حذف می‌کنید — مشتریِ حذف‌شده دیگر قیمت‌های شما را نمی‌بیند و نمی‌تواند از شما استعلام
+         بگیرد؛ اگر دوباره کاتالوگ‌تان را ذخیره کند، دوباره مشتری شما می‌شود.
+         ورود: فوتر دستیار فروش (تب دوم) + باکس «مشتری» در نوار آمار کاتالوگ (۰۱).
+         ردیف‌ها با JS رندر می‌شوند (custRender) تا حذف/بج زنده باشد — الگوی PO_DATA. ═══ -->
+    <section class="scr" id="scr-62" data-arm="sell" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">مشتریان من<small>کسانی که کاتالوگ شما را ذخیره کرده‌اند</small></div>
+      <button class="icon-btn" aria-label="اشتراک‌گذاری کاتالوگ" data-sheet="sheet-share" title="ارسال لینک کاتالوگ به مشتری‌ها"><svg><use href="#i-share"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- آمار دسترسی کاتالوگ — همان اعداد شیت reach (تنها مقصد کاملش این صفحه است) -->
+      <div class="cust-stats">
+        <span><b id="cust-n">۴۱</b> مشتری</span>
+        <span><b>۱۸</b> تماس</span>
+        <span><b>۱۲۰</b> بازدید ماه</span>
+      </div>
+
+      <!-- قاعدهٔ سادهٔ شبکهٔ خصوصی — همان زبان پیام‌های تازه -->
+      <div class="hintnote" style="margin-top:0">هر خریداری که کاتالوگ شما را ذخیره کند، این‌جا با نشان «جدید» ظاهر می‌شود. لازم نیست کسی را تأیید کنید؛ مشتری‌هایی را که نمی‌خواهید حذف می‌کنید — مشتریِ حذف‌شده دیگر قیمت‌های شما را نمی‌بیند، اما اگر دوباره کاتالوگ‌تان را ذخیره کند، دوباره برمی‌گردد.</div>
+
+      <!-- ردیف‌های مشتری — رندر JS -->
+      <div class="rows" id="cust-rows"></div>
+
+      <!-- حالت خالی: موتور رشد — کاتالوگ را به اشتراک بگذار تا اولین مشتری ذخیره کند -->
+      <div class="card" id="cust-empty" hidden style="text-align:center;padding:26px 18px">
+        <div style="width:52px;height:52px;border-radius:16px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;margin:0 auto 10px"><svg style="width:24px;height:24px"><use href="#i-users"/></svg></div>
+        <div style="font-size:14px;font-weight:800">هنوز مشتریای ندارید</div>
+        <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin:6px 0 12px">لینک کاتالوگ‌تان را برای مشتری‌های خود بفرستید — هرکس ذخیره کند، مشتری شما می‌شود و قیمت‌های تازهٔ شما همیشه جلوی چشمش می‌ماند.</div>
+        <button class="btn btn-primary btn-sm" data-sheet="sheet-share"><svg><use href="#i-share"/></svg> اشتراک کاتالوگ</button>
+      </div>
+
+      <div class="hintnote" id="cust-more">۳۵ کسب‌وکار دیگر هم کاتالوگ شما را ذخیره کرده‌اند — با هر به‌روزرسانی قیمت، کاتالوگ شما دوباره جلوی چشم همهٔ مشتری‌ها می‌آید.</div>
+
+    </main>
+
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
+      <div class="tabs">
+        <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
+        <button class="tab active"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
+        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
+        <button class="tab"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
+        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
+      </div>
+    </nav>
+
+    </section>
+
     <!-- ═══ فاز ۵۸ (مالک) — صفحات راهنما: «و براشون صفحات راهنما درست کنیم».
          ۶۰ = راهنمای دستیار خرید · ۶۱ = راهنمای دستیار فروش. ورود: تنظیمات (۰۷) هر دو لینک
          + باکس «راهنما»ی پروفایل (۴۲) شیت انتخاب را باز می‌کند. keep است تا با هر دستیاری
@@ -5562,6 +5647,47 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="sheet-row danger" data-catdel>
     <span class="ico"><svg><use href="#i-trash"/></svg></span>
     <span class="tx"><b>حذف از کاتالوگ‌های ذخیره‌شده</b><span>کاتالوگ هر زمان دوباره قابل ذخیره است</span></span>
+  </button>
+</div>
+
+<!-- ═══ فاز ۶۰ — منوی مشتری (۶۲): قرینهٔ sheet-catmenu در سمت فروشنده.
+     عنوان/زیرنویس/شماره با ردیف لمس‌شده هم‌گام می‌شود (custDots). حذف با تأیید (dlg-custdel). ═══ -->
+<div class="sheet" id="sheet-custmenu" role="dialog" aria-label="گزینه‌های مشتری">
+  <div class="grab"></div>
+  <h3 id="custmenu-title">رستوران مهر</h3>
+  <div class="sub">مشتری شما — کاتالوگ شما را ذخیره کرده</div>
+  <button class="sheet-row" data-dial>
+    <span class="ico buy"><svg><use href="#i-phone"/></svg></span>
+    <span class="tx"><b>تماس</b><span dir="ltr" id="custmenu-tel">۰۹۱۲ ۳۳۴ ۴۱۰۸</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-go="19">
+    <span class="ico"><svg><use href="#i-msg"/></svg></span>
+    <span class="tx"><b>گفتگو</b><span>پیام در پیام‌های آیمچ</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row danger" data-custdel>
+    <span class="ico"><svg><use href="#i-trash"/></svg></span>
+    <span class="tx"><b>حذف از مشتریان</b><span>او دیگر قیمت‌های شما را نمی‌بیند و استعلام نمی‌دهد</span></span>
+  </button>
+</div>
+
+<!-- ═══ فاز ۶۰ — تأمین‌کنندهٔ دعوت‌شده (۱۰): ردیف «در انتظار عضویت» این شیت را باز می‌کند.
+     دعوت از مسیر اشتراک لیست خرید (فرم ۰۸) آمده؛ با عضویت، کاتالوگش خودکار در
+     «تأمین‌کنندگان من» ذخیره می‌شود (فرم ۴۵). حذف دعوت همیشه ممکن است. ═══ -->
+<div class="sheet" id="sheet-supwait" role="dialog" aria-label="دعوت به آیمچ">
+  <div class="grab"></div>
+  <h3 id="supwait-title">حسین فرزاد — پخش روغن آرین</h3>
+  <div class="sub">در انتظار عضویت در آیمچ</div>
+  <div class="hintnote">با لینک لیست خرید شما دعوت شده است؛ به‌محض عضویت، کاتالوگ او به‌صورت خودکار در «تأمین‌کنندگان من» شما ذخیره می‌شود و می‌توانید از او استعلام گروهی بگیرید.</div>
+  <button class="sheet-row" data-smssend>
+    <span class="ico"><svg><use href="#i-share"/></svg></span>
+    <span class="tx"><b>ارسال دوبارهٔ دعوت</b><span>یادآوری پیامک با لینک لیست خرید</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row danger" data-supdel>
+    <span class="ico"><svg><use href="#i-trash"/></svg></span>
+    <span class="tx"><b>حذف دعوت</b><span>ردیف از فهرست تأمین‌کنندگان برداشته می‌شود</span></span>
   </button>
 </div>
 
@@ -5916,11 +6042,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <!-- IMPLEMENTATION NOTE: فروشنده با لمس «کاتالوگ شما نزد خریداران» (۰۷) این شیت را باز می‌کند؛
      ردیف‌ها = همان آماری که خریدار بالای کاتالوگ عمومی (۱۳) می‌بیند، ولی با نام کسب‌وکارها.
      در پیاده‌سازی عملیاتی: CatalogSave{businessId, at} + CallEvent{businessId, at} به تفکیک کاتالوگ. -->
-<div class="sheet" id="sheet-reach" role="dialog" aria-label="کاتالوگ شما نزد خریداران">
+<div class="sheet" id="sheet-reach" role="dialog" aria-label="مشتریان شما">
   <div class="grab"></div>
-  <h3>کاتالوگ شما نزد خریداران</h3>
-  <div class="sub">۴۱ کسب‌وکار ذخیره کرده‌اند · ۱۸ تماس گرفته‌اند</div>
-  <div class="grp">ذخیره کرده‌اند</div>
+  <h3>مشتریان شما</h3>
+  <div class="sub" id="reach-sub">۴۱ مشتری · ۱۸ تماس گرفته‌اند</div>
+  <div class="grp">مشتریان شما</div>
   <div class="sheet-row" style="cursor:default">
     <div class="avatar-sm" style="background:#0e7490">ر</div>
     <span class="tx"><b>رستوران مهر</b><span>تهران · امروز</span></span>
@@ -5933,7 +6059,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <div class="avatar-sm" style="background:#c2703a">س</div>
     <span class="tx"><b>سوپرمارکت سعید</b><span>رشت · هفتهٔ پیش</span></span>
   </div>
-  <div class="hintnote">۳۸ کسب‌وکار دیگر هم کاتالوگ شما را ذخیره کرده‌اند — ذخیره‌ها با هر به‌روزرسانی قیمت، دوباره به چشم می‌آیند.</div>
+  <div class="hintnote">۳۸ مشتری دیگر هم کاتالوگ شما را ذخیره کرده‌اند — ذخیره‌ها با هر به‌روزرسانی قیمت، دوباره به چشم می‌آیند. مدیریت کامل مشتری‌ها در صفحهٔ «مشتریان من».</div>
   <div class="grp" style="margin-top:12px">تماس گرفته‌اند</div>
   <div class="sheet-row" style="cursor:default">
     <div class="avatar-sm" style="background:#0e7490">ر</div>
@@ -6058,7 +6184,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 <!-- ═══ ۳-ب) فاز ۵۵ — اشتراک کاتالوگ با مخاطبین: سه حالت ردیف ═══ -->
 <!-- IMPLEMENTATION NOTE (فاز ۵۵ — مالک): مخاطبین گوشیِ کاربر سه حالت دارند —
-     ۱) عضوِ ای‌مچ که کاتالوگ را ذخیره کرده: نشان سبز «کاتالوگ را ذخیره کرده» — همین الان
+     ۱) عضوِ ای‌مچ که کاتالوگ را ذخیره کرده: نشان سبز «مشتری شماست» — همین الان
         قیمت‌های زنده را می‌بیند (همان ردیف‌های شیت reach)؛ دکمه‌ای ندارد.
      ۲) عضوِ ای‌مچ که ذخیره نکرده: «ارسال کاتالوگ» — لینک در پیام‌های ای‌مچ خودش می‌رسد.
      ۳) غیرعضو: ردیف متمایز (خط‌چین + آواتار خاکستری) + «اشتراک گذاری کاتالوگ» — در
@@ -6071,12 +6197,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="sheet-row" style="cursor:default">
     <div class="avatar-sm" style="background:#0e7490">ر</div>
     <span class="tx"><b>رستوران مهر</b><span>۰۹۱۲ ··· ۴۱۰ · تهران · رستوران</span></span>
-    <span class="badge b-green cts-saved"><svg><use href="#i-check"/></svg> کاتالوگ را ذخیره کرده</span>
+    <span class="badge b-green cts-saved"><svg><use href="#i-check"/></svg> مشتری شماست</span>
   </div>
   <div class="sheet-row" style="cursor:default">
     <div class="avatar-sm" style="background:#7c3aed">ن</div>
     <span class="tx"><b>سوپرمارکت نگین</b><span>۰۹۳۵ ··· ۲۱۲ · قزوین</span></span>
-    <span class="badge b-green cts-saved"><svg><use href="#i-check"/></svg> کاتالوگ را ذخیره کرده</span>
+    <span class="badge b-green cts-saved"><svg><use href="#i-check"/></svg> مشتری شماست</span>
   </div>
   <div class="sheet-row" style="cursor:default">
     <div class="avatar-sm" style="background:#0e7490">ع</div>
@@ -6386,6 +6512,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="dlg-btns">
     <button class="btn btn-primary" data-go="29"><svg><use href="#i-wallet"/></svg> افزایش شارژ</button>
     <button class="btn btn-outline" data-close>با همین شارژ ادامه بده</button>
+  </div>
+</div>
+
+<!-- ═══ فاز ۶۰ — تأیید حذف مشتری (۶۲): حذف یعنی قطع دسترسی — متن پیامد صریح است.
+     مشتریِ حذف‌شده دیگر قیمت‌ها را نمی‌بیند/استعلام نمی‌دهد؛ ذخیرهٔ دوباره = بازگشت. ═══ -->
+<div class="dlg" id="dlg-custdel" role="dialog" aria-label="حذف از مشتریان">
+  <h3>حذف از مشتریان</h3>
+  <div class="dlg-q" id="custdel-q">«رستوران مهر» دیگر کاتالوگ شما را نمی‌بیند</div>
+  <div class="dlg-p">این کسب‌وکار دیگر به قیمت‌های زندهٔ شما دسترسی ندارد و نمی‌تواند از شما استعلام بگیرد. اگر بعداً دوباره کاتالوگ شما را ذخیره کند، دوباره مشتری شما می‌شود.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-outline" data-close>انصراف</button>
+    <button class="btn btn-primary" style="background:var(--red)" data-custdelok><svg><use href="#i-trash"/></svg> حذف مشتری</button>
   </div>
 </div>
 
@@ -7406,11 +7544,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۵ (مالک) — فوتر دستیار خرید: «تنظیمات» حذف شد (چیز خاصی نداشت؛ تنظیمات لیست از
      چرخ‌دندهٔ کنار نام لیست باز می‌شود)؛ به‌جایش «استعلام‌ها» (۴۵) و «کاتالوگ‌ها» (۱۰ — ذخیره‌شده‌ها)
      آمدند تا جلوی چشم باشند. فوتر فروش بدون تغییر است. */
-  var TABS = { sell: ['01', '05', '18', '07'], buy: ['08', '45', '18', '10'] };
+  var TABS = { sell: ['01', '62', '05', '18', '07'], buy: ['08', '45', '18', '10'] };
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
       ['01', 'کاتالوگ من', '<svg><use href="#i-store"/></svg>', ''],
+      ['62', 'مشتریان', '<svg><use href="#i-users"/></svg>', '<span class="badge">۲</span>'],
       ['05', 'درخواست‌ها', '<svg><use href="#i-inbox"/></svg>', '<span class="badge">۳</span>'],
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
       ['07', 'تنظیمات', '<svg><use href="#i-gear"/></svg>', '']
@@ -7419,7 +7558,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
       ['45', 'استعلام‌ها', '<svg><use href="#i-inbox"/></svg>', ''],
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
-      ['10', 'کاتالوگ‌ها', '<svg><use href="#i-bookmark"/></svg>', '']
+      ['10', 'تأمین‌کنندگان', '<svg><use href="#i-bookmark"/></svg>', '']
     ]
   };
   var DEFAULT_BACK = {
@@ -7435,6 +7574,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '53': '01', /* فاز ۵۳: دعوت‌شدگان ← کاتالوگ (ورود از نوار آمار/تنظیمات/کیف پول/اعلان) */
     '43': '15', /* فاز ۵۶ (بازگشت فاز ۳۳): سایر نظرات ← لندینگ */
     '23': '08', /* فاز ۵۸ (بازگشت فاز ۲۷): صفحهٔ خرید از دید عمومی ← لیست خرید (ورود با چشم ۰۸) */
+    '62': '01', /* فاز ۶۰: مشتریان من ← کاتالوگ (ورود از فوتر/آمار) */
     '60': '42', '61': '42' /* فاز ۵۸: صفحات راهنما ← پروفایل (ورود از تنظیمات ۰۷ و شیت راهنما) */
   };
   var BTN = {
@@ -7454,7 +7594,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -7554,6 +7694,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (id === '48') of48Ensure();
       if (id === '44') bkOnShow(); /* فاز ۴۸ — هر ورود: انتخاب نیت + گرید قفل */
       if (id === '01') catFreshSync(); /* فاز ۵۳ — نudge «به مشتری‌هات خبر بده» فقط بعد از تازه‌سازی قیمت */
+      /* فاز ۶۰ — مشتریان من (۶۲): ورود = رندر ردیف‌ها؛ ترک صفحه = «دیده‌شدن» مشتری‌های جدید
+         (مثل پیام‌ها: بج فوتر می‌رود، دفعهٔ بعد بج «جدید» ردیف‌ها نیست) */
+      if (id === '62') custRender();
+      if (current === '62' && id !== '62') {
+        CUST.forEach(function (c) { c.nw = false; });
+        custBadgeSync();
+      }
       /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا؛
          فاز ۴۵ — اکشن‌های خریدار (درخواست قیمت/تماس/افزودن به لیست) برای مالک مخفی است */
       var own02 = document.getElementById('own-02');
@@ -9426,8 +9573,66 @@ body > div[id^="scr-d"][hidden] { display: none; }
   var roleFrom = null;     /* فاز ۲۷: شیت والدِ انتخاب نقش */
   function prqCountSaved() {
     var cnt = document.getElementById('saved-cats-count');
-    var rows = document.querySelectorAll('#saved-cats > .row-card').length;
-    if (cnt) cnt.textContent = faNum(rows) + ' کاتالوگ';
+    /* فاز ۶۰: «تأمین‌کنندگان من» — ردیف خط‌چین «در انتظار عضویت» (sup-wait) شمرده نمی‌شود */
+    var rows = document.querySelectorAll('#saved-cats > .row-card:not(.sup-wait)').length;
+    if (cnt) cnt.textContent = faNum(rows) + ' تأمین‌کننده';
+  }
+
+  /* ═══ فاز ۶۰ — «شبکهٔ تجاری خصوصی»: مشتریان من (۶۲) ═══
+     حکم مالک: ذخیره‌کننده‌های کاتالوگ = مشتریان؛ ارتباط دوطرفه با ذخیرهٔ کاتالوگ ساخته می‌شود.
+     بدون تأیید — دقیقاً مثل پیام‌های تازه: مشتری تازه با بج «جدید» بالا می‌آید؛ دیدنِ او
+     (ترک صفحهٔ ۶۲) بج را برمی‌دارد و مشتری عادی می‌شود؛ حذف = قطع دسترسی او به قیمت‌ها/استعلام؛
+     ذخیرهٔ دوبارهٔ کاتالوگ = بازگشت او. بج فوتر (مشتریان) تعداد «جدید»های دیده‌نشده است. */
+  var CUST = [
+    { n: 'رستوران مهر', p: 'مهدی کاظمی', c: 'تهران', tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', when: 'امروز', inq: '۱ استعلام جاری', nw: true, av: '#0e7490' },
+    { n: 'سوپرمارکت آریا', p: 'نیما فاضلی', c: 'رشت', tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', when: 'امروز', via: 'از لینک شما', nw: true, av: '#059669' },
+    { n: 'سوپرمارکت سعید', p: 'سعید کریمی', c: 'رشت', tel: '۰۹۳۵ ۴۴۸ ۸۸۲۳', when: '۳ روز پیش', call: '۲ تماس', av: '#c2703a' },
+    { n: 'سوپرمارکت الماس', p: 'سارا رحیمی', c: 'قزوین', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', when: 'هفتهٔ پیش', av: '#7c3aed' },
+    { n: 'خواروبار امید', p: 'علی مرادی', c: 'مشهد', tel: '۰۹۱۵ ۲۲۰ ۳۳۶۱', when: '۲ هفته پیش', via: 'از لینک شما', av: '#0e7490' },
+    { n: 'کترینگ بهار', p: 'بتا موسوی', c: 'تبریز', tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', when: 'ماه پیش', av: '#a8a29a' }
+  ];
+  var CUST_OTHER = 35; /* مشتری‌های خارج از نمونهٔ نمایشی — مجموع با CUST_TOTAL هم‌خوانِ ۴۱ آمار reach */
+  var custRow = null;  /* ردیفِ در انتظار حذف (۶۲) */
+  function custTotal() { return CUST.length + CUST_OTHER; }
+  function custNewCount() { return CUST.filter(function (c) { return c.nw; }).length; }
+  function custBadgeSync() {
+    var n = custNewCount();
+    document.querySelectorAll('.tabbar .tab[data-go="62"]').forEach(function (tb) {
+      var b = tb.querySelector('.badge');
+      if (n > 0) {
+        if (!b) { b = document.createElement('span'); b.className = 'badge'; tb.appendChild(b); }
+        b.textContent = faNum(n);
+      } else if (b) b.remove();
+    });
+    /* صفحهٔ ۱۸ (keep): ست تب‌ها در هر ورود از TABSET رندر می‌شود — هم‌زمان نگه می‌داریم */
+    if (TABSET.sell[1] && TABSET.sell[1][0] === '62') TABSET.sell[1][3] = n > 0 ? '<span class="badge">' + faNum(n) + '</span>' : '';
+  }
+  function custCountSync() {
+    var total = custTotal();
+    var a = document.getElementById('cust-n'); if (a) a.textContent = faNum(total);
+    var b = document.getElementById('cat-cust-n'); if (b) b.textContent = faNum(total);
+    var r = document.getElementById('reach-sub'); if (r) r.textContent = faNum(total) + ' مشتری · ۱۸ تماس گرفته‌اند';
+    var more = document.getElementById('cust-more');
+    if (more) more.textContent = faNum(CUST_OTHER) + ' کسب‌وکار دیگر هم کاتالوگ شما را ذخیره کرده‌اند — با هر به‌روزرسانی قیمت، کاتالوگ شما دوباره جلوی چشم همهٔ مشتری‌ها می‌آید.';
+    var empty = document.getElementById('cust-empty'); if (empty) empty.hidden = CUST.length > 0;
+  }
+  function custRender() {
+    var box = document.getElementById('cust-rows');
+    if (!box) return;
+    box.innerHTML = CUST.map(function (c, i) {
+      var act = c.inq || c.call || c.via || '';
+      return '<div class="row-card" style="align-items:center" data-cust="' + i + '">' +
+        '<div class="avatar-sm" style="background:' + c.av + '">' + c.n.charAt(0) + '</div>' +
+        '<div class="body">' +
+          '<div class="t" style="font-size:13.5px">' + c.n + (c.nw ? ' <span class="badge b-amber cust-new">جدید</span>' : '') + '</div>' +
+          '<div class="s"><span>' + c.p + ' · ' + c.c + '</span><span>' + c.when + ' مشتری شد' + (act ? ' · ' + act : '') + '</span></div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' +
+          '<button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های مشتری" data-cdots title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    custCountSync();
   }
 
   /* ═══ فاز ۲۸ — صفحهٔ ۳۶ «پیشنهادات درخواست»: لیست ۱۱ فقط لیست است؛ جزئیات و پیشنهادها این‌جا ═══
@@ -9649,6 +9854,49 @@ body > div[id^="scr-d"][hidden] { display: none; }
         catRow = null;
         prqCountSaved();
       }
+      return;
+    }
+
+    /* ═══ فاز ۶۰ — «مشتریان من» (۶۲): منوی سه‌نقطه + حذف با تأیید + شمارندهٔ زنده ═══ */
+    var custDots = t.closest('[data-cdots]');
+    if (custDots) {
+      custRow = custDots.closest('.row-card');
+      var ci = custRow ? +custRow.dataset.cust : -1;
+      var cc = CUST[ci];
+      if (cc) {
+        var ct = document.getElementById('custmenu-title');
+        var ctl = document.getElementById('custmenu-tel');
+        var cq = document.getElementById('custdel-q');
+        if (ct) ct.textContent = cc.n;
+        if (ctl) ctl.textContent = cc.tel;
+        if (cq) cq.textContent = '«' + cc.n + '» دیگر کاتالوگ شما را نمی‌بیند';
+      }
+      openSheet('sheet-custmenu');
+      return;
+    }
+    var custDel = t.closest('[data-custdel]');
+    if (custDel) { openSheet('dlg-custdel'); return; }
+    var custDelOk = t.closest('[data-custdelok]');
+    if (custDelOk) {
+      closeSheet();
+      if (custRow) {
+        var di = +custRow.dataset.cust;
+        if (!isNaN(di) && CUST[di]) CUST.splice(di, 1);
+        custRow = null;
+        custRender(); /* رندر دوباره: ایندکس‌ها سالم می‌مانند + آمار ۶۲/۰۱/reach هم‌گام */
+      }
+      return;
+    }
+
+    /* ═══ فاز ۶۰ — تأمین‌کنندهٔ «در انتظار عضویت» (۱۰): دعوت دوباره / حذف دعوت ═══ */
+    var supDots = t.closest('[data-supdots]');
+    if (supDots) { openSheet('sheet-supwait'); return; }
+    var supDel = t.closest('[data-supdel]');
+    if (supDel) {
+      closeSheet();
+      var sw = document.querySelector('#saved-cats .sup-wait');
+      if (sw) sw.remove();
+      prqCountSaved();
       return;
     }
 
@@ -10741,6 +10989,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
   qrPaint(document.getElementById('bqr-svg'), 7331);
 
   wire();
+  custRender();   /* فاز ۶۰ — مشتریان من (۶۲): ردیف‌ها + شمارنده‌های ۶۲/۰۱/reach از بارگذاری */
+  custBadgeSync();/* فاز ۶۰ — بج «۲ جدید» روی تب مشتریان (پس از wire که data-go می‌نشانَد) */
+  prqCountSaved();/* فاز ۶۰ — «۳ تأمین‌کننده» زیر عنوان ۱۰ (بدون ردیف در انتظار عضویت) */
   catLocSync(); /* فاز ۵۷ — چیپ لوکیشن بنر کاتالوگ از بارگذاری هم‌گام است */
   evRender(ITEM_EVENTS);
   walletRender();

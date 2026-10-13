@@ -59,7 +59,7 @@ T('۵: ۲۳ عنوان لیست خرید سوپرمارکت آریا', (await pa
 T('۵: هویت خریدار + آنلاین', (await page.locator('#scr-23 .biz-head .biz-name').textContent()).includes('سوپرمارکت آریا') && (await page.locator('#scr-23 .presence.on').count()) === 1);
 T('۵: نقش «مسئول خرید» نمایش داده می‌شود', (await page.locator('#scr-23 .biz-meta .owner').textContent()).includes('مسئول خرید'));
 T('۵: نوار سه‌اکشنی تماس/پیام/ذخیره', (await page.locator('#scr-23 .contact-row .btn').count()) === 3);
-T('۵: آمار ۴ کالا · ۱۲ ذخیره‌کننده · ۸۶ بازدید', (await page.locator('#scr-23 .insight-strip').textContent()).includes('۴') && (await page.locator('#scr-23 .insight-strip').textContent()).includes('۱۲') && (await page.locator('#scr-23 .insight-strip').textContent()).includes('۸۶'));
+T('۵: آمار ۴ کالا · ۱۲ تأمین‌کننده (فاز ۶۰) · ۸۶ بازدید', (await page.locator('#scr-23 .insight-strip').textContent()).includes('۴') && (await page.locator('#scr-23 .insight-strip').textContent()).includes('۱۲') && (await page.locator('#scr-23 .insight-strip').textContent()).includes('۸۶'));
 T('۵: دو کارت درخواست خرید جاری', (await page.locator('#scr-23 .rfq-card').count()) === 2);
 T('۵: چهار ردیف لیست با زنگوله', (await page.locator('#scr-23 .row-card').count()) === 4 && (await page.locator('#scr-23 .alert-bell').count()) === 4);
 T('۵: راهنمای زنگولهٔ گوش به زنگ (متن مالک فاز ۲۸)', (await page.locator('#scr-23 .legend').textContent()).includes('زنگوله') && (await page.locator('#scr-23 .legend').textContent()).includes('باخبر شوید'));

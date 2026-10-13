@@ -29,7 +29,7 @@ const DEAD = ['03','06','11','14','20','21','24','25','26','28','31','32','33','
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۳۰ صفحه داخل قاب گوشی‌اند (فاز ۵۸: +۲۳ عمومی بازگشت +۶۰/۶۱ راهنما)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 30));
+ok('همهٔ ۳۱ صفحه داخل قاب گوشی‌اند (فاز ۶۰: +۶۲ مشتریان من)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 31));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -47,11 +47,12 @@ ok('dlg-terms مانده', await page.locator('#dlg-terms').count() === 1);
 ok('dlg-lowcharge مانده', await page.locator('#dlg-lowcharge').count() === 1);
 
 /* ═══ ۲. فوترها و هدر ═══ */
-ok('فوتر فروش ۴ تب', await page.locator('#scr-01 .tabbar .tab').count() === 4);
-ok('فوتر فروش: تنظیمات (نه پروفایل)', (await page.locator('#scr-01 .tab').nth(3).textContent()).includes('تنظیمات'));
+ok('فوتر فروش ۵ تبی (فاز ۶۰: +مشتریان)', await page.locator('#scr-01 .tabbar .tab').count() === 5);
+ok('فوتر فروش: مشتریان تب دوم + بج جدید', (await page.locator('#scr-01 .tab').nth(1).textContent()).includes('مشتریان'));
+ok('فوتر فروش: تنظیمات (نه پروفایل)', (await page.locator('#scr-01 .tab').nth(4).textContent()).includes('تنظیمات'));
 ok('فوتر فروش بدون «کارها»', !(await page.locator('#scr-01 .tabbar').textContent()).includes('کارها'));
 ok('فوتر خرید ۴ تب (فاز ۴۵)', await page.locator('#scr-08 .tabbar .tab').count() === 4);
-ok('فوتر خرید: لیست خرید · استعلام‌ها · پیام‌ها · کاتالوگ‌ها', (await page.locator('#scr-08 .tabbar').textContent()).includes('استعلام‌ها') && (await page.locator('#scr-08 .tabbar').textContent()).includes('کاتالوگ‌ها'));
+ok('فوتر خرید: لیست خرید · استعلام‌ها · پیام‌ها · تأمین‌کنندگان (فاز ۶۰)', (await page.locator('#scr-08 .tabbar').textContent()).includes('استعلام‌ها') && (await page.locator('#scr-08 .tabbar').textContent()).includes('تأمین‌کنندگان') && !(await page.locator('#scr-08 .tabbar').textContent()).includes('کاتالوگ‌ها'));
 ok('پیل سوییچ چسبیده به لوگو (فاز ۴۵)', await page.locator('#scr-01 .appbar .brand .arm-pill').count() === 1);
 ok('پیل بدون آیکون داخلی + برچسب عمده', (await page.locator('#scr-01 .arm-pill').textContent()).includes('دستیار فروش عمده') && (await page.locator('#scr-01 .arm-pill > svg:not(.caret)').count()) === 0);
 ok('چشم از هدر ۰۱ حذف شد', await page.locator('#scr-01 .appbar .icon-btn[aria-label="پیش‌نمایش عمومی کاتالوگ"]').count() === 0);
@@ -229,9 +230,9 @@ ok('۰۸: مشاهدهٔ همه → ۴۵', await page.locator('#scr-45').isVisib
 ok('۴۵: استعلام‌های جاری + پایان‌یافته', (await page.locator('#scr-45').textContent()).includes('استعلام‌های جاری') && (await page.locator('#scr-45').textContent()).includes('پایان‌یافته'));
 ok('۴۵: کارت جاری ← مقایسهٔ پیشنهادها (۴۸ — فاز ۴۷)', (await page.locator('#scr-45 .inq-card').first().getAttribute('data-inq')) === 'inq1');
 ok('۴۵: فوتر خرید ۴ تبی', await page.locator('#scr-45 .tabbar .tab').count() === 4);
-await page.click('#scr-45 .tab:has-text("کاتالوگ‌ها")');
+await page.click('#scr-45 .tab:has-text("تأمین‌کنندگان")');
 await sleep(250);
-ok('۴۵: تب کاتالوگ‌ها ← ۱۰', await page.locator('#scr-10').isVisible());
+ok('۴۵: تب تأمین‌کنندگان ← ۱۰', await page.locator('#scr-10').isVisible());
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
 await page.click('#scr-08 .bl-card');
 await sleep(250);
@@ -352,7 +353,7 @@ ok('۰۴: ریتم عمودی یکنواخت (۱۳px)', tops.length >= 3 && tops
 /* ═══ ۱۳. تنظیمات دستیارها — فاز ۴۵: حساب کاربری به پروفایل رفت ═══ */
 await page.goto(FILE + '#07'); await page.reload(); await sleep(250);
 ok('۰۷: تبلیغات و افزایش فروش', await page.locator('#scr-07 [data-go="30"]').count() === 1);
-ok('۰۷: بدون کمپین/مشتریان من', !(await page.locator('#scr-07').textContent()).includes('کمپین') && !(await page.locator('#scr-07').textContent()).includes('مشتریان من'));
+ok('۰۷: بدون کمپین (فاز ۶۰: «مشتریان» تب فوتر است)', !(await page.locator('#scr-07').textContent()).includes('کمپین') && (await page.locator('#scr-07 .tabbar .tab[data-go="62"]').count()) === 1);
 ok('۰۷: تنظیمات کاتالوگ (cset)', await page.locator('#scr-07 [data-sheet="sheet-cset"]').count() === 1);
 ok('۰۷: بدون حساب کاربری (رفت به ۴۲ — فاز ۴۵)', !(await page.locator('#scr-07').textContent()).includes('تم تاریک') && !(await page.locator('#scr-07').textContent()).includes('خروج از حساب'));
 ok('۱۴: صفحه حذف شد (تنظیمات خرید — فاز ۴۵)', await page.locator('#scr-14').count() === 0);

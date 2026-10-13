@@ -25,11 +25,11 @@ ok('۰۱: نوار آمار ۴ باکس', (await statBtns.count()) === 4);
 const lastStat = await statBtns.nth(3).textContent();
 const firstStat = await statBtns.nth(0).textContent();
 ok('۰۱: پیش‌نمایش = آخرین باکس ردیف آمار (حکم فاز ۵۵)', lastStat.includes('پیش‌نمایش') && !firstStat.includes('پیش‌نمایش'));
-ok('۰۱: ترتیب کالا/ذخیره‌کننده/دعوت/پیش‌نمایش', firstStat.includes('کالا') && (await statBtns.nth(1).textContent()).includes('ذخیره') && (await statBtns.nth(2).textContent()).includes('دعوت'));
+ok('۰۱: ترتیب کالا/مشتری/دعوت/پیش‌نمایش (فاز ۶۰)', firstStat.includes('کالا') && (await statBtns.nth(1).textContent()).includes('مشتری') && (await statBtns.nth(2).textContent()).includes('دعوت'));
 ok('۰۱: باکس پیش‌نمایش دکمهٔ چشمی به ۱۳', (await statBtns.nth(3).getAttribute('data-go')) === '13' && (await statBtns.nth(3).locator('svg use[href="#i-eye"]').count()) === 1);
 const promo = await page.locator('#scr-01 .cat-promo').textContent();
 ok('۰۱: کادر اشتراک بدون آیکون چشم (حکم فاز ۵۵)', (await page.locator('#scr-01 .cat-promo svg use[href="#i-eye"]').count()) === 0 && (await page.locator('#scr-01 .cat-promo .cp-ic[data-sheet="sheet-share"]').count()) === 1);
-ok('۰۱: متن جدید کادر اشتراک عیناً از مالک', promo.includes('از آنها بخواهید تا برای داشتن قیمتهای زنده شما') && promo.includes('کاتالوگهای مورد علاقه خود ذخیره کنند') && !promo.includes('لیست ذخیره خود داشته باشند'));
+ok('۰۱: متن کادر اشتراک (فاز ۶۰ — ذخیره + «تأمین‌کنندگان من»)', promo.includes('از آنها بخواهید تا برای داشتن قیمتهای زنده شما') && promo.includes('کاتالوگ شما را ذخیره کنند') && promo.includes('تأمین‌کنندگان من'));
 ok('۰۱: کادر تازگی در حالت عادی مخفی', await page.locator('#cat-fresh').isHidden());
 
 /* ═══ ۲. کادر تازگی — طراحی عمودی (حکم فاز ۵۵: دکته زیر متن) ═══ */

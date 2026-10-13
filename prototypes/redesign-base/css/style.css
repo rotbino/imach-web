@@ -973,3 +973,18 @@ textarea.input { height: 76px; padding: 11px 13px; display: block; }
 .row-act svg { width: 15px; height: 15px; }
 .row-act.warn { color: var(--red); }
 .row-act:hover { background: var(--muted); }
+
+/* ═══ فاز ۶۰ — «شبکهٔ تجاری خصوصی»: مشتریان من (۶۲) + تأمین‌کنندگان من (۱۰) ═══ */
+/* نوار آمار دسترسی کاتالوگ در ۶۲ — هم‌خانوادهٔ pub-stats کاتالوگ عمومی (۱۳) */
+.cust-stats { display: flex; gap: 7px; margin: 0 0 10px; }
+.cust-stats span {
+  flex: 1; text-align: center; font-size: 9.5px; color: var(--muted-fg);
+  background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 7px 4px 6px;
+}
+.cust-stats b { display: block; font-size: 14px; color: var(--foreground); line-height: 1.5; }
+
+/* بج «جدید» کنار نام مشتری — باریک‌تر و آرام‌تر از بج عمومی تا ردیف شلوغ نشود */
+.row-card .t .cust-new { font-size: 9px; padding: 1.5px 7px; margin-right: 2px; font-weight: 700; }
+
+/* ردیف «در انتظار عضویت» (۱۰) — قرینهٔ ردیف تبلیغ خط‌چین، ولی خاکستری‌تر (انتظار، نه تبلیغ) */
+.row-card.sup-wait .avatar-sm { opacity: .85; }
