@@ -29,7 +29,7 @@ const DEAD = ['03','06','11','14','20','21','24','25','26','28','31','32','33','
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۳۱ صفحه داخل قاب گوشی‌اند (فاز ۶۰: +۶۲ مشتریان من)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 31));
+ok('همهٔ ۳۳ صفحه داخل قاب گوشی‌اند (فاز ۶۰: +۶۲ · فاز ۶۴: +۶۴/۶۵ سفارش‌ها)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 33));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -52,7 +52,7 @@ ok('فوتر فروش: مشتریان تب دوم + بج جدید', (await page.
 ok('فوتر فروش: تنظیمات (نه پروفایل)', (await page.locator('#scr-01 .tab').nth(4).textContent()).includes('تنظیمات'));
 ok('فوتر فروش بدون «کارها»', !(await page.locator('#scr-01 .tabbar').textContent()).includes('کارها'));
 ok('فوتر خرید ۴ تب (فاز ۴۵)', await page.locator('#scr-08 .tabbar .tab').count() === 4);
-ok('فوتر خرید: لیست خرید · استعلام‌ها · پیام‌ها · تأمین‌کنندگان (فاز ۶۰)', (await page.locator('#scr-08 .tabbar').textContent()).includes('استعلام‌ها') && (await page.locator('#scr-08 .tabbar').textContent()).includes('تأمین‌کنندگان') && !(await page.locator('#scr-08 .tabbar').textContent()).includes('کاتالوگ‌ها'));
+ok('فوتر خرید: لیست خرید · سفارش‌های من · پیام‌ها · تأمین‌کنندگان (فاز ۶۰/۶۴)', (await page.locator('#scr-08 .tabbar').textContent()).includes('سفارش‌های من') && (await page.locator('#scr-08 .tabbar').textContent()).includes('تأمین‌کنندگان') && !(await page.locator('#scr-08 .tabbar').textContent()).includes('کاتالوگ‌ها') && !(await page.locator('#scr-08 .tabbar').textContent()).includes('استعلام'));
 ok('پیل سوییچ چسبیده به لوگو (فاز ۴۵)', await page.locator('#scr-01 .appbar .brand .arm-pill').count() === 1);
 ok('پیل بدون آیکون داخلی + برچسب عمده', (await page.locator('#scr-01 .arm-pill').textContent()).includes('دستیار فروش عمده') && (await page.locator('#scr-01 .arm-pill > svg:not(.caret)').count()) === 0);
 ok('چشم از هدر ۰۱ حذف شد', await page.locator('#scr-01 .appbar .icon-btn[aria-label="پیش‌نمایش عمومی کاتالوگ"]').count() === 0);
@@ -213,7 +213,7 @@ await page.evaluate(() => { location.hash = '#13'; }); await sleep(300);
 await page.click('#scr-13 .pcard');
 await sleep(250);
 ok('۰۲: اکشن‌های خریدار برای خریدار پیداست (فاز ۴۵)', await page.locator('#buybar-02').isVisible());
-ok('۰۲: دکمهٔ «درخواست قیمت» (سمت خریدار)', (await page.locator('#buybar-02 .btn').textContent()).includes('درخواست قیمت'));
+ok('۰۲: دکمهٔ «ثبت سفارش» (فاز ۶۴ — CTA اصلی؛ استعلام فرعی شد)', (await page.locator('#buybar-02 .btn').textContent()).includes('ثبت سفارش'));
 
 /* ═══ ۱۰. لیست خرید (۰۸) → تابلو (۰۹) → استعلام‌ها (۴۵) ═══ */
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
@@ -229,10 +229,11 @@ await sleep(250);
 ok('۰۸: مشاهدهٔ همه → ۴۵', await page.locator('#scr-45').isVisible());
 ok('۴۵: استعلام‌های جاری + پایان‌یافته', (await page.locator('#scr-45').textContent()).includes('استعلام‌های جاری') && (await page.locator('#scr-45').textContent()).includes('پایان‌یافته'));
 ok('۴۵: کارت جاری ← مقایسهٔ پیشنهادها (۴۸ — فاز ۴۷)', (await page.locator('#scr-45 .inq-card').first().getAttribute('data-inq')) === 'inq1');
-ok('۴۵: فوتر خرید ۴ تبی', await page.locator('#scr-45 .tabbar .tab').count() === 4);
-await page.click('#scr-45 .tab:has-text("تأمین‌کنندگان")');
+ok('۴۵: بدون تب‌بار (فاز ۶۴ — استعلام فرایند فرعی شد؛ ورود از ۰۸/تنظیمات)', await page.locator('#scr-45 .tabbar').count() === 0);
+await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
+await page.click('#scr-08 .tab:has-text("تأمین‌کنندگان")');
 await sleep(250);
-ok('۴۵: تب تأمین‌کنندگان ← ۱۰', await page.locator('#scr-10').isVisible());
+ok('۰۸: تب تأمین‌کنندگان ← ۱۰', await page.locator('#scr-10').isVisible());
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
 await page.click('#scr-08 .bl-card');
 await sleep(250);

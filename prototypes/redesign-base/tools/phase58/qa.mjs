@@ -130,9 +130,10 @@ await page.click('#sheet-guides .sheet-row[data-go="60"]'); await sleep(400);
 T('۶: راهنمای خرید از شیت → صفحهٔ ۶۰', await page.locator('#scr-60').isVisible() && (await page.evaluate(() => location.hash)) === '#60');
 
 /* ═══ ۷. صفحات راهنما ۶۰/۶۱ + ورود از تنظیمات ۰۷ ═══ */
-T('۷: ۶۰ شش گام دارد', (await page.locator('#scr-60 .gd-row').count()) === 6);
+T('۷: ۶۰ هفت گام دارد (فاز ۶۴: +گام «سفارش بده»)', (await page.locator('#scr-60 .gd-row').count()) === 7);
 T('۷: ۶۰ کارت آغاز + قانون رایگان', (await page.locator('#scr-60 .gd-lead').count()) === 1 && (await page.locator('#scr-60 .legend').textContent()).includes('رایگان'));
-T('۷: ۶۰ گام ششم — قیمت‌های همیشه تازه (همگام فاز ۶۲)', (await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('قیمت‌های همیشه تازه') && !(await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('بدون شبکه'));
+T('۷: ۶۰ گام چهارم «سفارش بده» (فاز ۶۴)', (await page.locator('#scr-60 .gd-row').nth(3).textContent()).includes('سفارش بده'));
+T('۷: ۶۰ گام هفتم — قیمت‌های همیشه تازه (همگام فاز ۶۲؛ جابه‌جا شد)', (await page.locator('#scr-60 .gd-row').nth(6).textContent()).includes('قیمت‌های همیشه تازه') && !(await page.locator('#scr-60 .gd-row').nth(6).textContent()).includes('بدون شبکه'));
 await shot('06-guide60');
 await page.click('#scr-60 .subheader .back'); await sleep(300);
 T('۷: back از ۶۰ (ورود از ۴۲) → پروفایل', await page.locator('#scr-42').isVisible());
@@ -141,8 +142,9 @@ await page.goto(FILE + '#07'); await page.reload(); await sleep(400);
 T('۷: ۰۷ دو لینک راهنما', (await page.locator('#scr-07 [data-go="60"]').count()) === 1 && (await page.locator('#scr-07 [data-go="61"]').count()) === 1);
 await page.click('#scr-07 [data-go="61"]'); await sleep(350);
 T('۷: راهنمای فروش → صفحهٔ ۶۱', await page.locator('#scr-61').isVisible());
-T('۷: ۶۱ شش گام دارد', (await page.locator('#scr-61 .gd-row').count()) === 6);
-T('۷: ۶۱ گام تبلیغ با چهار قیمت (۴٬۰۰۰ درخواست)', (await page.locator('#scr-61 .gd-row').nth(4).textContent()).includes('۴٬۰۰۰'));
+T('۷: ۶۱ هفت گام دارد (فاز ۶۴: +گام «سفارش‌های مشتریانت را بپذیر»)', (await page.locator('#scr-61 .gd-row').count()) === 7);
+T('۷: ۶۱ گام سوم سفارش‌ها (فاز ۶۴)', (await page.locator('#scr-61 .gd-row').nth(2).textContent()).includes('سفارش‌های مشتریانت را بپذیر'));
+T('۷: ۶۱ گام تبلیغ با چهار قیمت (۴٬۰۰۰ درخواست؛ جابه‌جا شد)', (await page.locator('#scr-61 .gd-row').nth(5).textContent()).includes('۴٬۰۰۰'));
 await shot('07-guide61');
 await page.click('#scr-61 .subheader .back'); await sleep(300);
 T('۷: back از ۶۱ (ورود از ۰۷) → تنظیمات', await page.locator('#scr-07').isVisible());

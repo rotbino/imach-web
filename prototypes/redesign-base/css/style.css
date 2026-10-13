@@ -1044,3 +1044,26 @@ textarea.input { height: 76px; padding: 11px 13px; display: block; }
   background: #fdf1f1; border: 1px solid #f3c1c1; border-radius: 9px;
   padding: 7px 10px; margin-top: 8px;
 }
+
+/* ═══ فاز ۶۴ — «سفارش»: وضعیت‌های عملیاتی (بدون وضعیت مالی) ═══ */
+/* بج نهایی «تحویل شده» — پرپر سبز، متمایز از «ارسال شده» (b-green کم‌رنگ) */
+.badge.b-done { background: var(--green); color: #fff; font-weight: 800; }
+
+/* ردیف‌های واقعیت شیت‌های جزئیات سفارش (sheet-ordview / sheet-ordmgr) */
+.ord-facts { margin: 4px 0 2px; }
+.ord-facts .ord-frow {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 9px 2px; border-bottom: 1px solid #f0eee8; font-size: 12px;
+}
+.ord-facts .ord-frow:last-child { border-bottom: 0; }
+.ord-facts .ord-frow .k { color: var(--muted-fg); flex-shrink: 0; font-weight: 600; }
+.ord-facts .ord-frow .v { font-weight: 700; text-align: left; flex: 1; line-height: 1.9; word-break: break-word; }
+
+/* فیلدهای پذیرش (sheet-ordmgr) — فقط برای سفارش «ثبت شده» */
+#ordm-accept { margin-top: 4px; }
+#ordm-accept[hidden], #ordm-ok[hidden], #ordm-ship[hidden], #ordm-cancel[hidden],
+#ordv-done[hidden], #ordv-cancel[hidden], #ord-ok-buy[hidden], #ord-ok-sell[hidden],
+#ord-err[hidden], #ord-empty-buy[hidden], #ord-empty-sell[hidden] { display: none !important; }
+
+/* دو CTA پایین شیت جزئیات خریدار — کنار هم وقتی هر دوvisible */
+#sheet-ordview .sheet-cta + .btn { margin-top: 8px; }

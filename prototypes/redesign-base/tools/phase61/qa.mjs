@@ -29,13 +29,13 @@ const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗
 await page.goto(FILE + '#62'); await page.reload(); await sleep(400);
 const tabs62 = await page.locator('#scr-62 .tabbar .tab');
 T('۶۲: فوتر ۵ تبی (رفع تب تکراری)', (await tabs62.count()) === 5);
-T('۶۲: ترتیب برچسب‌ها کاتالوگ من/مشتریان/درخواست‌ها/پیام‌ها/تنظیمات', await page.evaluate(() => {
+T('۶۲: ترتیب برچسب‌ها کاتالوگ من/مشتریان/سفارشات/پیام‌ها/تنظیمات (فاز ۶۴)', await page.evaluate(() => {
   const t = [...document.querySelectorAll('#scr-62 .tabbar .tab')].map(x => x.textContent.trim());
-  return t[0].startsWith('کاتالوگ من') && t[1].startsWith('مشتریان') && t[2].startsWith('درخواست‌ها') && t[3].startsWith('پیام‌ها') && t[4].startsWith('تنظیمات');
+  return t[0].startsWith('کاتالوگ من') && t[1].startsWith('مشتریان') && t[2].startsWith('سفارشات') && t[3].startsWith('پیام‌ها') && t[4].startsWith('تنظیمات');
 }));
-T('۶۲: نگاشت data-go درست (تب سوم = ۰۵ درخواست‌ها)', await page.evaluate(() => {
+T('۶۲: نگاشت data-go درست (تب سوم = ۶۵ سفارشات — فاز ۶۴)', await page.evaluate(() => {
   const t = [...document.querySelectorAll('#scr-62 .tabbar .tab')];
-  return t[0].dataset.go === '01' && t[1].dataset.go === '62' && t[2].dataset.go === '05' && t[3].dataset.go === '18' && t[4].dataset.go === '07';
+  return t[0].dataset.go === '01' && t[1].dataset.go === '62' && t[2].dataset.go === '65' && t[3].dataset.go === '18' && t[4].dataset.go === '07';
 }));
 T('۶۲: تب «مشتریان» فعال است و کاتالوگ من نه', await page.evaluate(() => {
   const t = [...document.querySelectorAll('#scr-62 .tabbar .tab')];

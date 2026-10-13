@@ -2311,7 +2311,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab active"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
         <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
+        <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
+             استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
+        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
         <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
@@ -2508,7 +2510,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <button class="icon-btn" style="width:46px;height:46px;border-radius:12px" aria-label="افزودن به لیست خرید" data-addlist title="افزودن به لیست خرید">
         <svg><use href="#i-bmark-plus"/></svg>
       </button>
-      <button class="btn btn-stone" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-go="12">درخواست قیمت</button>
+      <!-- فاز ۶۴ (مالک): CTA اصلی صفحهٔ کالا = «ثبت سفارش» (فرایند اصلی خرید) — کالا از همین
+           صفحه پیش‌پر می‌شود. استعلام فرایند فرعی است و در زمینهٔ چند-تأمین‌کننده‌ای انجام می‌شود:
+           تابلوی تأمین (۰۹) و کارت‌های لیست خرید (۰۸). -->
+      <button class="btn btn-primary" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-order data-og="برنج هاشمی — کیسه ۵۰ کیلویی" type="button" title="کالا و مقدار را مشخص کنید و برای فروشنده بفرستید"><svg><use href="#i-send"/></svg> ثبت سفارش</button>
     </div>
 
     </section>
@@ -2710,15 +2715,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
-      <div class="tabs">
-        <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
-        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <button class="tab active"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
-        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
+    <!-- فاز ۶۴ (مالک): استعلام = فرایند فرعی (خریدارانی که چند تأمین‌کننده از یک کالا دارند).
+         تب «درخواست‌ها» از فوتر حذف شد — ورود: ردیف «درخواست‌های خرید» در تنظیمات ۰۷ + اعلان‌ها.
+         صفحه پشته‌ای شد (مثل قرینه‌اش ۴۵ سمت خریدار) — خروج با دکمهٔ بازگشت. -->
 
     </section>
 
@@ -2769,6 +2768,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- دیده‌شدن و فروش -->
       <div class="sec-title" style="margin-top:14px"><h2><svg><use href="#i-spark"/></svg> دیده‌شدن و فروش</h2></div>
       <div class="card" style="padding:0 14px">
+        <!-- فاز ۶۴ (مالک): استعلام = فرایند فرعی — ورودش از فوتر به تنظیمات آمد (پنهان). -->
+        <div data-go="05" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-inbox"/></svg>
+          <span style="flex:1">درخواست‌های خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">استعلام‌های قیمت خریداران — پاسخ و مقایسه</span></span>
+          <span class="badge b-new">۳</span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
         <div data-go="30" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-spark"/></svg>
           <span style="flex:1">تبلیغات و افزایش فروش<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">بالاتر دیده شدن با نشان «فروشندهٔ ویژه»</span></span>
@@ -2811,12 +2817,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="card" style="padding:0 14px">
         <div data-go="60" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-list"/></svg>
-          <span style="flex:1">راهنمای دستیار خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">لیست خرید، استعلام قیمت و تأمین‌کنندگان شما</span></span>
+          <span style="flex:1">راهنمای دستیار خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">لیست خرید، سفارش و تأمین‌کنندگان شما</span></span>
           <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
         <div data-go="61" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-store"/></svg>
-          <span style="flex:1">راهنمای دستیار فروش<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">کاتالوگ، درخواست‌های خرید و تبلیغ ویژه</span></span>
+          <span style="flex:1">راهنمای دستیار فروش<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">کاتالوگ، سفارشات و تبلیغ ویژه</span></span>
           <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
       </div>
@@ -2827,7 +2833,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
         <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
+        <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
+             استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
+        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
         <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
@@ -2997,7 +3005,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab active"><svg><use href="#i-list"/></svg>لیست خرید</button>
         <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
-        <button class="tab"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
+        <!-- فاز ۶۴ (مالک): تب سوم فوتر خرید = «سفارش‌های من» — سفارش‌های ثبت‌شدهٔ شما به تأمین‌کنندگان.
+             استعلام فرایند فرعی است و از فوتر رفت — ورود: نوار «استعلام‌های جاری» همین صفحه + تنظیمات -->
+        <button class="tab"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
       </div>
     </nav>
@@ -3540,11 +3550,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
 
-        <!-- فاز ۵۵ — اکشن‌های خریدار (buybar-13): برای خودِ فروشنده (پیش‌نمایش) مخفی می‌شود -->
+        <!-- فاز ۶۴ (مالک): «ثبت سفارش» دکتهٔ اصلی خریدار در کاتالوگ — سفارش یعنی کالا و مقدار؛
+             پرداخت بیرون از سیستم، مستقیم بین طرفین. ذخیره/پیام/تماس کنارش ماندند. -->
         <div id="buybar-13">
-          <button class="btn btn-outline btn-sm catsave" id="catsave-13" style="flex:1;color:var(--stone)" type="button" data-catsave title="کاتالوگ را در «تأمین‌کنندگان من» ذخیره کنید — قیمت‌های زنده همیشه در دسترس"><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
-          <button class="btn btn-stone btn-sm" style="flex:1.1" data-go="19"><svg><use href="#i-msg"/></svg> ارسال پیام</button>
-          <button class="btn btn-outline btn-sm" style="flex:.66;color:var(--stone)"><svg><use href="#i-phone"/></svg> تماس</button>
+          <button class="btn btn-outline btn-sm catsave" id="catsave-13" style="flex:.85;color:var(--stone)" type="button" data-catsave title="کاتالوگ را در «تأمین‌کنندگان من» ذخیره کنید — قیمت‌های زنده همیشه در دسترس"><svg><use href="#i-bookmark"/></svg> ذخیره</button>
+          <button class="btn btn-primary btn-sm" style="flex:1.15" data-order type="button" title="کالا و مقدار را مشخص کنید و سفارش را برای «پخش برنج پارس» بفرستید"><svg><use href="#i-send"/></svg> ثبت سفارش</button>
+          <button class="btn btn-stone btn-sm" style="flex:.6" data-go="19" title="ارسال پیام"><svg><use href="#i-msg"/></svg> پیام</button>
+          <button class="btn btn-outline btn-sm" style="flex:.5;color:var(--stone)" title="تماس"><svg><use href="#i-phone"/></svg> تماس</button>
         </div>
 
         <!-- فاز ۲۱ + ۵۱ — آمار کاتالوگ نزد خریداران: «تعداد تماس» جایگزین «تعداد مشتری» شد
@@ -3747,15 +3759,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
-      <!-- فاز ۶۳ (مالک) — همان ترتیب ۰۸: تأمین‌کنندگان بلافاصله بعد از لیست خرید -->
-      <div class="tabs">
-        <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
-        <button class="tab active"><svg><use href="#i-inbox"/></svg>استعلام‌ها</button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-      </div>
-    </nav>
+    <!-- فاز ۶۴ (مالک): استعلام = فرایند فرعی. تب «استعلام‌ها» از فوتر حذف شد —
+         ورود: نوار «استعلام‌های جاری» لیست خرید (۰۸) + ردیف «استعلام‌های قیمت» در تنظیمات لیست (sheet-listset)
+         + پایان فرم ۱۲. صفحه پشته‌ای شد (مثل ۰۹/۱۲) — خروج با دکتهٔ بازگشت. -->
 
     </section>
     <section class="scr" id="scr-15" data-arm="sell" hidden>
@@ -4525,8 +4531,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
          قیمتِ لیست من پایین آمد (خریدار) · یادآور به‌روزرسانی قیمت‌ها (فروشنده) · مصرف تبلیغ (فروشنده). ═══ -->
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <!-- فاز ۶۳: +۱ خوانده‌نشده (نotif تازه‌سازی کاتالوگ ذخیره‌شده) -->
-      <div class="ttl">اعلان‌ها<small>۴ اعلان خوانده‌نشده</small></div>
+      <!-- فاز ۶۴: +۱ خوانده‌نشده (نotif پذیرش سفارش) -->
+      <div class="ttl">اعلان‌ها<small>۵ اعلان خوانده‌نشده</small></div>
       <button class="icon-btn" aria-label="همه را خوانده‌شده کن" title="همه را خوانده‌شده کن"><svg><use href="#i-check"/></svg></button>
     </header>
 
@@ -4565,6 +4571,20 @@ body > div[id^="scr-d"][hidden] { display: none; }
             <div class="b">«پخش برنج پارس» به درخواست ۲۰ کیسه برنج هاشمی پاسخ داد — قیمت و شرایط ارسال در گفتگو آمده است.</div>
             <button class="act" data-go="19">رفتن به گفتگو <svg><use href="#i-chev"/></svg></button>
             <div class="tm">امروز · ۱۰:۰۵</div>
+          </div>
+        </div>
+
+        <!-- ═══ فاز ۶۴ — سفارش شما پذیرفته شد (خریدار): تپ قلب چرخهٔ سفارش.
+             متن عین حکم مالک — پیام انتظار را درست تنظیم می‌کند (پرداخت/تحویل مستقیم با
+             تامین‌کننده؛ نه از پلتفرم). لمس «مشاهدهٔ سفارش» → ۶۴. هم‌ساز با ORD (برنج طارم ·
+             ۱۰ کیسه · پذیرفته‌شده · ۲٬۷۵۰٬۰۰۰). ═══ -->
+        <div class="notif ok">
+          <span class="nic"><svg><use href="#i-receipt"/></svg></span>
+          <div class="ntx">
+            <div class="t">سفارش شما پذیرفته شد <span class="badge b-new">جدید</span></div>
+            <div class="b">«پخش برنج پارس» سفارش «برنج طارم · ۱۰ کیسهٔ ۵۰ کیلویی» را با قیمت ۲٬۷۵۰٬۰۰۰ تومان پذیرفت — شرایط پرداخت و تحویل را مستقیماً با او هماهنگ کنید.</div>
+            <button class="act" data-go="64">مشاهدهٔ سفارش <svg><use href="#i-chev"/></svg></button>
+            <div class="tm">امروز · ۱۲:۴۵</div>
           </div>
         </div>
 
@@ -5560,7 +5580,121 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
         <button class="tab active"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-inbox"/></svg>درخواست‌ها<span class="badge">۳</span></button>
+        <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
+             استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
+        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
+        <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
+      </div>
+    </nav>
+
+    </section>
+
+    <!-- ═══ فاز ۶۴ (مالک) — «سفارش»: فرایند اصلی خرید از تأمین‌کننده (جایگزین جایگاه استعلام در فوتر).
+         حکم مالک: سفارش یعنی خریدار کالا و مقدار را مشخص کرده و فروشنده آن را پذیرفته — پرداخت
+         جزء تعریف آن نیست و بیرون از سیستم، مستقیم بین طرفین انجام می‌شود (نقد، چک، پیش‌پرداخت،
+         پس از تحویل). پیام پس از ثبت (عین متن مالک): «سفارش شما برای … ارسال شد. شرایط پرداخت
+         و تحویل را مستقیماً با تامین‌کننده هماهنگ کنید.»
+         وضعیت‌های عملیاتی MVP (بدون وضعیت مالی): ثبت شده → پذیرفته شده (با امکان اصلاح مقدار/قیمت
+         توسط فروشنده) → ارسال شده → تحویل شده (تأیید اختیاری خریدار) · لغو/رد = هر دو طرف.
+         وضعیت «پرداخت شده» عمداً وجود ندارد — اختلاف پرداخت بین طرفین است، نه پلتفرم.
+         ورود: تب سوم فوتر دستیار خرید. ردیف‌ها با JS رندر می‌شوند (ordRender) — الگوی ۶۲. ═══ -->
+    <section class="scr" id="scr-64" data-arm="buy" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">سفارش‌های من<small>سفارش‌های شما به تأمین‌کنندگان — جاری و تحویل‌شده</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- پیام پس از ثبت موفق سفارش (عین متن مالک) — فقط بعد از «ارسال سفارش» دیده می‌شود -->
+      <div class="hintnote priv-ok" id="ord-ok-buy" hidden></div>
+
+      <button class="btn btn-stone btn-block" id="ord-new" data-order type="button">
+        <svg><use href="#i-plus"/></svg>
+        ثبت سفارش جدید
+      </button>
+
+      <!-- سفارش‌های جاری -->
+      <div class="sec-title" style="margin-top:4px">
+        <h2><svg><use href="#i-boxes"/></svg> سفارش‌های جاری <span class="cnt" id="ord-cnt-buy"></span></h2>
+      </div>
+      <div class="rows" id="ord-rows-buy"></div>
+
+      <!-- بایگانی: تحویل‌شده و لغو‌شده -->
+      <div class="sec-title" style="margin-top:16px">
+        <h2><svg><use href="#i-history"/></svg> بایگانی</h2>
+      </div>
+      <div class="rows" id="ord-done-buy"></div>
+
+      <!-- حالت خالی -->
+      <div class="card" id="ord-empty-buy" hidden style="text-align:center;padding:26px 18px">
+        <div style="width:52px;height:52px;border-radius:16px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;margin:0 auto 10px"><svg style="width:24px;height:24px"><use href="#i-boxes"/></svg></div>
+        <div style="font-size:14px;font-weight:800">هنوز سفارشی ثبت نکرده‌اید</div>
+        <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin:6px 0 12px">کالا و مقدار را مشخص کنید و برای تأمین‌کننده‌تان بفرستید — او سفارش را می‌پذیرد و ارسال را اعلام می‌کند.</div>
+        <button class="btn btn-primary btn-sm" data-order><svg><use href="#i-send"/></svg> ثبت سفارش</button>
+      </div>
+
+      <div class="hintnote">وضعیت هر سفارش همین‌جا به‌روز می‌شود؛ پرداخت و تحویل مستقیماً با تامین‌کننده‌تان هماهنگ می‌شود — شرایط توافق‌تان را در توضیحات سفارش بنویسید تا هر دو طرف آن را ببینند.</div>
+
+    </main>
+
+    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
+      <div class="tabs">
+        <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
+        <button class="tab active"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+      </div>
+    </nav>
+
+    </section>
+
+    <!-- ═══ فاز ۶۴ (مالک) — «سفارشات» (سمت فروشنده): سفارش‌هایی که مشتریان شما ثبت کرده‌اند.
+         قرینهٔ ۶۴ سمت خریدار — همان دادهٔ مشترک ORD از دو سو دیده می‌شود (انسجام شبکه).
+         الگوی «مثل پیام‌ها» (فاز ۶۰): سفارش تازه با بج «جدید» بالا می‌آید و بج فوتر تعداد
+         دیده‌نشده‌هاست؛ دیدن صفحه (ترک ۶۵) بج‌ها را برمی‌دارد. پذیرش = با امکان اصلاح مقدار و
+         قیمت؛ سپس اعلام ارسال؛ تحویل را خریدار تأیید می‌کند (اختیاری). لغو/رد = هر دو طرف. ═══ -->
+    <section class="scr" id="scr-65" data-arm="sell" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">سفارشات<small>سفارش‌های ثبت‌شدهٔ مشتریان شما</small></div>
+      <button class="icon-btn" aria-label="اشتراک‌گذاری کاتالوگ" data-sheet="sheet-share" title="ارسال لینک کاتالوگ به مشتری‌ها"><svg><use href="#i-share"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="hintnote priv-ok" id="ord-ok-sell" hidden></div>
+
+      <!-- سفارش‌های جاری -->
+      <div class="sec-title" style="margin-top:4px">
+        <h2><svg><use href="#i-receipt"/></svg> سفارش‌های جاری <span class="cnt" id="ord-cnt-sell"></span></h2>
+      </div>
+      <div class="rows" id="ord-rows-sell"></div>
+
+      <!-- بایگانی: تحویل‌شده و لغو‌شده -->
+      <div class="sec-title" style="margin-top:16px">
+        <h2><svg><use href="#i-history"/></svg> بایگانی</h2>
+      </div>
+      <div class="rows" id="ord-done-sell"></div>
+
+      <!-- حالت خالی -->
+      <div class="card" id="ord-empty-sell" hidden style="text-align:center;padding:26px 18px">
+        <div style="width:52px;height:52px;border-radius:16px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;margin:0 auto 10px"><svg style="width:24px;height:24px"><use href="#i-receipt"/></svg></div>
+        <div style="font-size:14px;font-weight:800">هنوز سفارشی نرسیده</div>
+        <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin:6px 0 12px">لینک کاتالوگ‌تان را برای مشتری‌ها بفرستید — هر مشتری که کاتالوگ شما را ذخیره کند، سفارشش همین‌جا می‌رسد.</div>
+        <button class="btn btn-primary btn-sm" data-sheet="sheet-share"><svg><use href="#i-share"/></svg> اشتراک کاتالوگ</button>
+      </div>
+
+      <div class="hintnote">سفارش مشتری را با مقدار و قیمت نهایی بپذیرید و ارسال را اعلام کنید — هماهنگی پرداخت و تحویل مستقیماً با خودِ مشتری است.</div>
+
+    </main>
+
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
+      <div class="tabs">
+        <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
+        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
+        <button class="tab active"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
         <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4z"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
@@ -5575,8 +5709,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-60" data-arm="keep" hidden>
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <!-- فاز ۶۳: زیرعنوان با واژگان فاز ۶۰ + ترتیب مالک: تأمین‌کنندگان بعد از لیست خرید -->
-      <div class="ttl">راهنمای دستیار خرید<small>لیست خرید · تأمین‌کنندگان · استعلام قیمت</small></div>
+      <!-- فاز ۶۴: زیرعنوان هم‌زبان فوتر تازه — سفارش فرایند اصلی است -->
+      <div class="ttl">راهنمای دستیار خرید<small>لیست خرید · تأمین‌کنندگان · سفارش</small></div>
     </header>
 
     <main class="screen-body">
@@ -5610,22 +5744,30 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span>با لمس هر کالا، تأمین‌کنندگانِ همان کالا را ببین — مرتب‌شده بر اساس نزدیکی، هم‌خوانی با حجم خریدت و اعتبار. فروشندهٔ ویژه‌ها بالاتر و با برچسب دیده می‌شوند.</span>
         </div>
       </div>
+      <!-- فاز ۶۴ (مالک): سفارش = فرایند اصلی خرید — کالا و مقدار؛ پرداخت/تحویل مستقیم با تامین‌کننده -->
       <div class="gd-row">
         <span class="n">۴</span>
         <div class="tx">
-          <b>استعلام قیمت رقابتی</b>
-          <span>یک فرم استعلام به چند تأمین‌کننده بفرست و مهلت بگذار؛ پیشنهادها با قیمت و شرایط (نقدی/چک، تحویل) کنار هم مقایسه می‌شوند و بهترین را انتخاب می‌کنی. استعلام تک‌قلمی و چندقلمی دارد.</span>
+          <b>سفارش بده</b>
+          <span>کالا و مقدار را مشخص کن و سفارش را برای تأمین‌کننده‌ات بفرست؛ او با قیمت و مقدار نهایی می‌پذیرد و ارسالش را اعلام می‌کند — پرداخت و تحویل مستقیماً با خودش هماهنگ می‌شود و توافق‌تان در توضیحات سفارش ثبت می‌ماند.</span>
         </div>
       </div>
       <div class="gd-row">
         <span class="n">۵</span>
+        <div class="tx">
+          <b>استعلام قیمت رقابتی</b>
+          <span>چند تأمین‌کننده از یک کالا داری؟ یک فرم استعلام به چندتای آن‌ها بفرست و مهلت بگذار؛ پیشنهادها با قیمت و شرایط (نقدی/چک، تحویل) کنار هم مقایسه می‌شوند و بهترین را انتخاب می‌کنی.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۶</span>
         <div class="tx">
           <b>گوش به زنگ</b>
           <span>روی کالای موردنظر زنگوله را روشن کن و قیمت هدف بده؛ به محض رسیدن قیمتِ هر تأمین‌کننده به هدف‌ات، اعلان می‌گیری — لازم نیست هر روز چک کنی.</span>
         </div>
       </div>
       <div class="gd-row">
-        <span class="n">۶</span>
+        <span class="n">۷</span>
         <div class="tx">
           <b>قیمت‌های همیشه تازه بگیر</b>
           <span>لینک لیست خریدت را برای تأمین‌کنندگان خودت بفرست؛ کاتالوگشان در «تأمین‌کنندگان من» می‌نشیند و با هر تغییر قیمت، همان لحظه جلوی چشم‌ات است — استعلام گروهی و رقابتی هم از همان‌جا.</span>
@@ -5644,7 +5786,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-61" data-arm="keep" hidden>
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">راهنمای دستیار فروش<small>کاتالوگ · درخواست‌های خرید · تبلیغ ویژه</small></div>
+      <!-- فاز ۶۴: زیرعنوان هم‌زبان فوتر تازه — سفارشات فرایند اصلی است -->
+      <div class="ttl">راهنمای دستیار فروش<small>کاتالوگ · سفارشات مشتریان · تبلیغ ویژه</small></div>
     </header>
 
     <main class="screen-body">
@@ -5671,29 +5814,37 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span>هر تغییر قیمت، «اعتبار» ۱ تا ۵ روز هم می‌گیرد؛ قیمت تازه در نتایج تطابق بالاتر دیده می‌شود و قیمت منقضی به خریدار سیگنال بدی می‌دهد. تمدید سریع یا به‌روزرسانی گروهی هر دو یک‌کلیکی است.</span>
         </div>
       </div>
+      <!-- فاز ۶۴ (مالک): سفارش = فرایند اصلی فروش — مشتری کالا و مقدار را می‌فرستد، تو می‌پذیری -->
       <div class="gd-row">
         <span class="n">۳</span>
+        <div class="tx">
+          <b>سفارش‌های مشتریانت را بپذیر</b>
+          <span>مشتری که کاتالوگ‌ت را ذخیره کند، سفارشش در «سفارشات» می‌نشیند؛ با مقدار و قیمت نهایی بپذیر و ارسال را اعلام کن — هماهنگی پرداخت و تحویل مستقیم با خودِ مشتری است و توافق‌تان در سفارش ثبت می‌ماند.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۴</span>
         <div class="tx">
           <b>درخواست‌های خرید را دنبال کن</b>
           <span>خریدارانی که کالای تو را در لیست خریدشان دارند، استعلام می‌فرستند؛ با شرایط پرداخت (نقدی/چک) و تحویل پیشنهاد بده — بهترین پیشنهادِ او همان لحظه در مقایسه‌اش کنار بقیه است.</span>
         </div>
       </div>
       <div class="gd-row">
-        <span class="n">۴</span>
+        <span class="n">۵</span>
         <div class="tx">
           <b>کاتالوگت را به اشتراک بگذار</b>
           <span>لینک، کد QR یا کارت ویزیت — هر مشتری که از لینک تو عضو شود، کاتالوگت خودکار در ذخیره‌شده‌هایش می‌نشیند و با هر به‌روزرسانی قیمت دوباره جلوی چشمش می‌آید.</span>
         </div>
       </div>
       <div class="gd-row">
-        <span class="n">۵</span>
+        <span class="n">۶</span>
         <div class="tx">
           <b>تبلیغ ویژه — فقط وقتی نتیجه بگیری</b>
           <span>کالاهایت در شرایط مساوی بالاتر و با برچسب «فروشندهٔ ویژه» دیده می‌شوند؛ مصرف شارژ فقط با اتفاق واقعی: بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ · ارسال درخواست خرید ۴٬۰۰۰ تومان.</span>
         </div>
       </div>
       <div class="gd-row">
-        <span class="n">۶</span>
+        <span class="n">۷</span>
         <div class="tx">
           <b>با دعوت از مشتریانت بفروش</b>
           <span>لیست مشتریانت را بساز و فروشت را بالا ببر؛ قیمت‌های همیشه تازه به مشتریانت بده — با هر به‌روزرسانی قیمت، کاتالوگت دوباره جلوی چشمشان می‌آید.</span>
@@ -5719,12 +5870,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="sub">هر دو روی حساب تو فعال‌اند — فقط انتخاب کن الان کدام را ببینی</div>
   <button class="sheet-row" data-arm-go="buy">
     <span class="ico buy"><svg><use href="#i-basket"/></svg></span>
-    <span class="tx"><b>دستیار خرید</b><span>کارها · لیست خرید · درخواست‌های خرید</span></span>
+    <span class="tx"><b>دستیار خرید</b><span>لیست خرید · تأمین‌کنندگان · سفارش‌های من</span></span>
     <svg class="check" data-check="buy" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <button class="sheet-row" data-arm-go="sell">
     <span class="ico sell"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · درخواست‌ها · پیام‌ها</span></span>
+    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · سفارشات · پیام‌ها</span></span>
     <svg class="check" data-check="sell" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <div class="sub" style="margin:10px 0 2px">نقش تو ثابت نیست — عمده‌فروش می‌تواند همزمان از هر دو دستیار استفاده کند.</div>
@@ -5746,6 +5897,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="sheet-row" data-go="13">
     <span class="ico buy"><svg><use href="#i-store"/></svg></span>
     <span class="tx"><b>مشاهدهٔ کاتالوگ</b><span>کالاها، قیمت‌ها و شرایط</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <!-- فاز ۶۴ (مالک): سفارش مستقیم به همین تأمین‌کننده — از دفترچهٔ تلفن (۱۰) -->
+  <button class="sheet-row" data-order>
+    <span class="ico buy"><svg><use href="#i-send"/></svg></span>
+    <span class="tx"><b>ثبت سفارش</b><span>کالا و مقدار را برای این تأمین‌کننده بفرستید</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row danger" data-catdel>
@@ -5856,6 +6013,71 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
 </div>
 
+<!-- ═══ فاز ۶۴ (مالک) — «ثبت سفارش» (خریدار): کالا + مقدار + توضیحات/شرایط پرداخت (اختیاری).
+     حکم مالک: «سفارش» یعنی خریدار کالا و مقدار را مشخص کرده و فروشنده آن را پذیرفته؛
+     پرداخت بیرون از سیستم است — پس پیام‌ها انتظار را درست تنظیم می‌کنند: پس از ثبت، متن عین
+     مالک نشان داده می‌شود («سفارش شما برای … ارسال شد. شرایط پرداخت و تحویل را مستقیماً با
+     تامین‌کننده هماهنگ کنید.»). فیلد اختیاری «توضیحات / شرایط پرداخت» توافق طرفین را ثبت
+     می‌کند (مثلاً «پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل») — بدون دخالت پلتفرم.
+     ورود: CTA صفحهٔ کالا (۰۲) · buybar کاتالوگ (۱۳) · ردیف «ثبت سفارش» sheet-catmenu (۱۰) ·
+     دکتهٔ «ثبت سفارش جدید» (۶۴). کالا از ۰۲ پیش‌پر می‌شود (data-og). ═══ -->
+<div class="sheet" id="sheet-order" role="dialog" aria-label="ثبت سفارش">
+  <div class="grab"></div>
+  <h3>ثبت سفارش</h3>
+  <div class="sub" id="ord-sub">پخش برنج پارس</div>
+  <div class="field">
+    <label>کالا</label>
+    <input class="input" id="ord-good" placeholder="مثلاً: برنج هاشمی — کیسه ۵۰ کیلویی">
+  </div>
+  <div class="field">
+    <label>مقدار</label>
+    <input class="input" id="ord-qty" placeholder="مثلاً: ۲۰ کیسه">
+  </div>
+  <div class="field">
+    <label>توضیحات / شرایط پرداخت <span class="opt">— اختیاری</span></label>
+    <input class="input" id="ord-note" placeholder="مثلاً: پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل">
+  </div>
+  <div class="su-err" id="ord-err" hidden>کالا و مقدار را وارد کنید</div>
+  <button class="btn btn-primary sheet-cta" data-ordsend type="button"><svg><use href="#i-send"/></svg> ارسال سفارش</button>
+  <div class="hintnote">پرداخت و تحویل مستقیماً بین شما و تامین‌کننده انجام می‌شود — شرایط توافق‌تان را در توضیحات بنویسید تا هر دو طرف آن را ببینند.</div>
+</div>
+
+<!-- ═══ فاز ۶۴ — جزئیات سفارش (دید خریدار · ۶۴): وضعیت + اقدام‌های خریدار.
+     تأیید تحویل = اختیاری، فقط از «ارسال شده» · لغو سفارش = تا قبل از ارسال. ═══ -->
+<div class="sheet" id="sheet-ordview" role="dialog" aria-label="جزئیات سفارش">
+  <div class="grab"></div>
+  <h3 id="ordv-title">برنج طارم · ۱۰ کیسهٔ ۵۰ کیلویی</h3>
+  <div class="sub" id="ordv-sub">پخش برنج پارس</div>
+  <div class="ord-facts" id="ordv-facts"></div>
+  <button class="btn btn-primary sheet-cta" id="ordv-done" data-orddone type="button" hidden><svg><use href="#i-check"/></svg> تأیید تحویل</button>
+  <button class="btn btn-outline" id="ordv-cancel" data-ordcancel type="button" hidden>لغو سفارش</button>
+  <div class="hintnote">پرداخت و تحویل مستقیماً با تامین‌کننده‌تان هماهنگ می‌شود — وضعیت‌ها همین‌جا به‌روز می‌شوند.</div>
+</div>
+
+<!-- ═══ فاز ۶۴ — مدیریت سفارش (دید فروشنده · ۶۵): پذیرش با مقدار/قیمت نهایی · اعلام ارسال · رد.
+     حکم مالک: پذیرفته‌شده = فروشنده تایید کرد (با امکان اصلاح مقدار یا قیمت). ═══ -->
+<div class="sheet" id="sheet-ordmgr" role="dialog" aria-label="مدیریت سفارش">
+  <div class="grab"></div>
+  <h3 id="ordm-title">برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی</h3>
+  <div class="sub" id="ordm-sub">رستوران مهر</div>
+  <div class="ord-facts" id="ordm-facts"></div>
+  <!-- فیلدهای پذیرش — فقط وقتی سفارش «ثبت شده» است -->
+  <div id="ordm-accept" hidden>
+    <div class="field">
+      <label>مقدار نهایی <span class="opt">— در صورت توافق قابل اصلاح</span></label>
+      <input class="input" id="ordm-qty">
+    </div>
+    <div class="field">
+      <label>قیمت هر بسته <span class="opt">— تومان · اختیاری</span></label>
+      <input class="input" id="ordm-price" inputmode="numeric" placeholder="مثلاً: ۲٬۸۵۰٬۰۰۰">
+    </div>
+  </div>
+  <button class="btn btn-primary sheet-cta" id="ordm-ok" data-ordok type="button" hidden><svg><use href="#i-check"/></svg> پذیرفتن سفارش</button>
+  <button class="btn btn-primary sheet-cta" id="ordm-ship" data-ordship type="button" hidden><svg><use href="#i-send"/></svg> اعلام ارسال</button>
+  <button class="btn btn-outline" id="ordm-cancel" data-ordcancel type="button" hidden>رد سفارش</button>
+  <div class="hintnote">پرداخت و تحویل مستقیماً با مشتری هماهنگ می‌شود — قیمت و مقدار نهایی برای او ثبت می‌شود.</div>
+</div>
+
 <!-- ═══ فاز ۲۷ — تنظیمات لیست خرید (۰۸): تنظیمات · گروه‌های کالا · پیش‌نمایش عمومی ═══ -->
 <!-- IMPLEMENTATION NOTE: دکمهٔ چرخ‌دندهٔ کنار نام لیست خرید (۰۸) این شیت را باز می‌کند.
      «پیش‌نمایش عمومی» همان صفحهٔ ۲۳ است — همان که آیکون چشمِ هدر هم می‌رود. -->
@@ -5871,6 +6093,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="sheet-row" data-sheet="sheet-lgroups">
     <span class="ico"><svg><use href="#i-tag"/></svg></span>
     <span class="tx"><b>گروه‌های کالا</b><span>۴ گروه: غلات · روغن · کنسرو · شیرینی — افزودن و مدیریت</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <!-- فاز ۶۴ (مالک): استعلام = فرایند فرعی — ورودی پنهان در تنظیمات لیست خرید.
+       نوار «استعلام‌های جاری» در ۰۸ و پایان فرم ۱۲ هم همان‌جا می‌رسد. -->
+  <button class="sheet-row" data-go="45">
+    <span class="ico"><svg><use href="#i-inbox"/></svg></span>
+    <span class="tx"><b>استعلام‌های قیمت</b><span>جاری و پایان‌یافته — مقایسهٔ پیشنهادها</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
@@ -6699,6 +6928,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <div class="dlg-btns">
     <button class="btn btn-outline" data-close>انصراف</button>
     <button class="btn btn-primary" style="background:var(--red)" data-custdelok><svg><use href="#i-trash"/></svg> حذف مشتری</button>
+  </div>
+</div>
+
+<!-- ═══ فاز ۶۴ — تأیید لغو/رد سفارش (هر دو طرف): لغو = هر یک از طرفین، با اعلام به طرف مقابل.
+     عنوان/متن/برچسب دکته با نقش و سفارش لمس‌شده هم‌گام می‌شود (ordCancelAsk). ═══ -->
+<div class="dlg" id="dlg-ordcancel" role="dialog" aria-label="لغو سفارش">
+  <h3 id="ordc-h">لغو سفارش</h3>
+  <div class="dlg-q" id="ordc-q">سفارش «برنج هاشمی · ۲۰ کیسه» لغو شود؟</div>
+  <div class="dlg-p" id="ordc-p">لغو سفارش همان‌جا برای طرف مقابل ثبت و اعلام می‌شود.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-outline" data-close>انصراف</button>
+    <button class="btn btn-primary" style="background:var(--red)" id="ordc-ok" data-ordcancelok>لغو سفارش</button>
   </div>
 </div>
 
@@ -7719,20 +7960,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۵ (مالک) — فوتر دستیار خرید: «تنظیمات» حذف شد (چیز خاصی نداشت؛ تنظیمات لیست از
      چرخ‌دندهٔ کنار نام لیست باز می‌شود)؛ به‌جایش «استعلام‌ها» (۴۵) و «کاتالوگ‌ها» (۱۰ — ذخیره‌شده‌ها)
      آمدند تا جلوی چشم باشند. فوتر فروش بدون تغییر است. */
-  var TABS = { sell: ['01', '62', '05', '18', '07'], buy: ['08', '10', '45', '18'] }; /* فاز ۶۳ (مالک): تب تأمین‌کنندگان بلافاصله بعد از لیست خرید */
+  /* فاز ۶۴ (مالک): سفارش = فرایند اصلی — تب سوم هر دو فوتر «سفارش» شد؛ استعلام فرایند
+     فرعی است و از فوتر رفت (ورود ۴۵: نوار ۰۸ + تنظیمات لیست؛ ورود ۰۵: تنظیمات ۰۷ + اعلان). */
+  var TABS = { sell: ['01', '62', '65', '18', '07'], buy: ['08', '10', '64', '18'] };
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
       ['01', 'کاتالوگ من', '<svg><use href="#i-store"/></svg>', ''],
       ['62', 'مشتریان', '<svg><use href="#i-users"/></svg>', '<span class="badge">۲</span>'],
-      ['05', 'درخواست‌ها', '<svg><use href="#i-inbox"/></svg>', '<span class="badge">۳</span>'],
+      ['65', 'سفارشات', '<svg><use href="#i-receipt"/></svg>', '<span class="badge">۲</span>'], /* فاز ۶۴: سفارش‌های مشتریان */
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
       ['07', 'تنظیمات', '<svg><use href="#i-gear"/></svg>', '']
     ],
     buy: [
       ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
       ['10', 'تأمین‌کنندگان', '<svg><use href="#i-bookmark"/></svg>', ''], /* فاز ۶۳ (مالک): بعد از لیست خرید */
-      ['45', 'استعلام‌ها', '<svg><use href="#i-inbox"/></svg>', ''],
+      ['64', 'سفارش‌های من', '<svg><use href="#i-boxes"/></svg>', ''], /* فاز ۶۴: سفارش‌های من */
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>']
     ]
   };
@@ -7750,11 +7993,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '43': '15', /* فاز ۵۶ (بازگشت فاز ۳۳): سایر نظرات ← لندینگ */
     '23': '08', /* فاز ۵۸ (بازگشت فاز ۲۷): صفحهٔ خرید از دید عمومی ← لیست خرید (ورود با چشم ۰۸) */
     '62': '01', /* فاز ۶۰: مشتریان من ← کاتالوگ (ورود از فوتر/آمار) */
-    '60': '42', '61': '42' /* فاز ۵۸: صفحات راهنما ← پروفایل (ورود از تنظیمات ۰۷ و شیت راهنما) */
+    '60': '42', '61': '42', /* فاز ۵۸: صفحات راهنما ← پروفایل (ورود از تنظیمات ۰۷ و شیت راهنما) */
+    '64': '08', '65': '01' /* فاز ۶۴: سفارش‌های من ← لیست خرید · سفارشات ← کاتالوگ */
   };
   var BTN = {
     '01': [['افزودن کالای جدید', '04']], /* فاز ۵۲: برچسب جدید مالک؛ مقصد همان فرم افزودن/ویرایش کالا */
-    '02': [['درخواست قیمت', '12'], ['مشاهده تابلوی تأمین', '09']],
+    '02': [['مشاهده تابلوی تأمین', '09']], /* فاز ۶۴: CTA «درخواست قیمت» ← «ثبت سفارش» (data-order) شد؛ استعلام از ۰۹/۰۸ */
     '07': [['خروج از حساب', '15']],
     '08': [['افزودن کالا', '34']],
     '09': [['درخواست قیمت', '12'], ['کاتالوگ', '13'], ['استعلام قیمت', '12'], ['مشاهده کاتالوگ', '13']],
@@ -7769,7 +8013,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","64":"۶۴ — سفارش‌های من · دستیار خرید","65":"۶۵ — سفارشات · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -7882,6 +8126,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (current === '62' && id !== '62') {
         CUST.forEach(function (c) { c.nw = false; });
         custBadgeSync();
+      }
+      /* ═══ فاز ۶۴ — سفارش‌ها: ورود ۶۴/۶۵ = رندر ردیف‌ها؛ ترک ۶۵ = «دیده‌شدن» سفارش‌های جدید
+         (مثل پیام‌ها/۶۲: بج فوتر فروش می‌رود، دفعهٔ بعد بج «جدید» ردیف‌ها نیست) */
+      if (id === '64') ordRender('buy');
+      if (id === '65') ordRender('sell');
+      if (id === '64' || id === '65') {
+        var ordOkB = document.getElementById(id === '64' ? 'ord-ok-buy' : 'ord-ok-sell');
+        if (ordOkB) ordOkB.hidden = true; /* پیام موفقیت فقط بعد از اقدام تازه دیده می‌شود */
+      }
+      if (current === '65' && id !== '65') {
+        ORD.forEach(function (o) { o.nw = false; });
+        ordBadgeSync();
       }
       /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا؛
          فاز ۴۵ — اکشن‌های خریدار (درخواست قیمت/تماس/افزودن به لیست) برای مالک مخفی است */
@@ -9832,6 +10088,164 @@ body > div[id^="scr-d"][hidden] { display: none; }
     custCountSync();
   }
 
+  /* ═══ فاز ۶۴ (مالک) — «سفارش»: فرایند اصلی خرید/فروش در شبکهٔ خصوصی ═══
+     حکم مالک: سفارش یعنی خریدار کالا و مقدار را مشخص کرده و فروشنده آن را پذیرفته — پرداخت
+     جزء تعریف آن نیست و بیرون از سیستم، مستقیم بین طرفین انجام می‌شود (نقد/چک/پیش‌پرداخت/
+     پس از تحویل). وضعیت‌های عملیاتی MVP — بدون وضعیت مالی:
+       sent = ثبت شده (خریدار فرستاد) · ok = پذیرفته شده (فروشنده تأیید کرد — با امکان اصلاح
+       مقدار/قیمت) · ship = ارسال شده (فروشنده اعلام کرد) · done = تحویل شده (خریدار تأیید
+       کرد — اختیاری) · cancel = لغو/رد شده (هر یک از طرفین).
+     وضعیت «پرداخت شده» عمداً وجود ندارد — اختلاف پرداخت بین طرفین است، نه پلتفرم.
+     ORD مشترک است: ۶۴ سفارش‌های خریدارِ نمونه (سوپرمارکت آریا) و ۶۵ سفارش‌های فروشندهٔ نمونه
+     (پخش برنج پارس) را از همان داده نشان می‌دهد — انسجام شبکه (الگوی فاز ۶۳). سفارش تازه با
+     بج «جدید» بالا می‌آید؛ ترک ۶۵ بج فوتر را برمی‌دارد (الگوی «مثل پیام‌ها» فاز ۶۰). */
+  var ORD = [
+    { g: 'برنج هاشمی', q: '۲۰ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'رستوران مهر', st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-sack.jpg', note: '' },
+    { g: 'برنج طارم', q: '۶ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت الماس', st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-grains.jpg', note: 'چک ۳۰ روزه' },
+    { g: 'روغن سرخ‌کردنی لادن', q: '۴ کارتن ۶ عددی', sup: 'آریو غلات', buyer: 'سوپرمارکت آریا', st: 'sent', when: 'دیروز', img: 'png/goods/oil-carton.jpg', note: 'تحویل پنجشنبه صبح' },
+    { g: 'برنج طارم', q: '۱۰ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'ok', when: '۲ روز پیش', price: '۲٬۷۵۰٬۰۰۰', img: 'png/goods/rice-grains.jpg', note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل' },
+    { g: 'برنج فجر', q: '۸ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'ship', when: '۳ روز پیش', price: '۲٬۴۸۰٬۰۰۰', img: 'png/goods/fajar-50.jpg', note: '' },
+    { g: 'برنج هاشمی', q: '۳۰ کیسهٔ ۱۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'done', when: 'هفتهٔ پیش', price: '۵۹۵٬۰۰۰', img: 'png/goods/hashemi-10.png', note: '' },
+    { g: 'قند یکتا', q: '۱۰ کیسهٔ ۱۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت سعید', st: 'cancel', when: '۲ هفته پیش', img: 'png/goods/sugar-cubes.jpg', note: '' }
+  ];
+  var ORD_ST = {
+    sent:   ['ثبت شده', 'b-orange'],
+    ok:     ['پذیرفته شده', 'b-new'],
+    ship:   ['ارسال شده', 'b-green'],
+    done:   ['تحویل شده', 'b-done'],
+    cancel: ['لغو شده', 'b-muted']
+  };
+  var ORD_BUYER = 'سوپرمارکت آریا';  /* خریدارِ نمونه — صفحهٔ ۶۴ */
+  var ORD_SELLER = 'پخش برنج پارس';  /* فروشندهٔ نمونه — صفحهٔ ۶۵ */
+  var ordRow = null;  /* اندیس سفارشِ در جریان (شیت/دیالوگ) */
+  var ordSide = null; /* 'buy' | 'sell' — شیت از کدام سمت باز شد */
+  function ordNewCount() { return ORD.filter(function (o) { return o.nw; }).length; }
+  function ordBadgeSync() {
+    var n = ordNewCount();
+    document.querySelectorAll('.tabbar .tab[data-go="65"]').forEach(function (tb) {
+      var b = tb.querySelector('.badge');
+      if (n > 0) {
+        if (!b) { b = document.createElement('span'); b.className = 'badge'; tb.appendChild(b); }
+        b.textContent = faNum(n);
+      } else if (b) b.remove();
+    });
+    /* صفحهٔ ۱۸ (keep): ست تب‌ها در هر ورود از TABSET رندر می‌شود — هم‌زمان نگه می‌داریم */
+    if (TABSET.sell[2] && TABSET.sell[2][0] === '65') TABSET.sell[2][3] = n > 0 ? '<span class="badge">' + faNum(n) + '</span>' : '';
+  }
+  function ordCard(o, i, side) {
+    var st = ORD_ST[o.st];
+    var meta = '';
+    if (o.price) meta += '<span class="mm" title="قیمت توافقی"><svg><use href="#i-tag"/></svg> ' + o.price + ' تومان</span>';
+    if (o.note) meta += '<span class="mm" title="توضیحات / شرایط پرداخت"><svg><use href="#i-comment"/></svg> ' + o.note + '</span>';
+    meta += '<span class="inq-act">جزئیات سفارش<svg><use href="#i-chev"/></svg></span>';
+    return '<div class="inq-card" data-ordrow="' + i + '" data-ordside="' + side + '" title="جزئیات و وضعیت سفارش">' +
+      '<div class="inq-top">' +
+        '<div class="thumb" style="width:46px;height:46px"><img src="' + o.img + '" alt="' + o.g + '"></div>' +
+        '<div class="inq-t"><b>' + o.g + ' · ' + o.q + '</b><span>' + (side === 'buy' ? o.sup : o.buyer) + ' · ' + o.when + (o.nw && side === 'sell' ? ' · <span class="badge b-amber cust-new">جدید</span>' : '') + '</span></div>' +
+        '<span class="badge ' + st[1] + '">' + st[0] + '</span>' +
+      '</div>' +
+      '<div class="inq-meta">' + meta + '</div>' +
+    '</div>';
+  }
+  function ordDoneRow(o) {
+    return '<div class="inq-done">' +
+      '<div class="thumb" style="width:40px;height:40px"><img src="' + o.img + '" alt="' + o.g + '"></div>' +
+      '<div class="inq-t"><b>' + o.g + ' · ' + o.q + '</b><span>' + (o.st === 'done' ? 'تحویل شد' : 'لغو شد') + (o.price ? ' — ' + o.price + ' تومان' : '') + '</span></div>' +
+      '<span class="badge ' + ORD_ST[o.st][1] + '">' + ORD_ST[o.st][0] + '</span>' +
+    '</div>';
+  }
+  function ordRender(side) {
+    var mine = ORD.map(function (o, i) { return { o: o, i: i }; })
+      .filter(function (x) { return side === 'buy' ? x.o.buyer === ORD_BUYER : x.o.sup === ORD_SELLER; });
+    var cur = mine.filter(function (x) { return x.o.st === 'sent' || x.o.st === 'ok' || x.o.st === 'ship'; });
+    var fin = mine.filter(function (x) { return x.o.st === 'done' || x.o.st === 'cancel'; });
+    var box = document.getElementById(side === 'buy' ? 'ord-rows-buy' : 'ord-rows-sell');
+    var finBox = document.getElementById(side === 'buy' ? 'ord-done-buy' : 'ord-done-sell');
+    var cnt = document.getElementById(side === 'buy' ? 'ord-cnt-buy' : 'ord-cnt-sell');
+    var empty = document.getElementById(side === 'buy' ? 'ord-empty-buy' : 'ord-empty-sell');
+    if (box) box.innerHTML = cur.map(function (x) { return ordCard(x.o, x.i, side); }).join('');
+    if (finBox) finBox.innerHTML = fin.map(function (x) { return ordDoneRow(x.o); }).join('');
+    if (cnt) cnt.textContent = '(' + faNum(cur.length) + ')';
+    if (empty) empty.hidden = mine.length > 0;
+    ordBadgeSync();
+  }
+  /* ردیف‌های واقعیتِ شیت‌های جزئیات (هر دو سمت) */
+  function ordFacts(o, side) {
+    var st = ORD_ST[o.st];
+    var rows = [
+      ['وضعیت', '<span class="badge ' + st[1] + '">' + st[0] + '</span>'],
+      [side === 'buy' ? 'تأمین‌کننده' : 'مشتری', side === 'buy' ? o.sup : o.buyer],
+      ['تاریخ سفارش', o.when]
+    ];
+    if (o.price) rows.push(['قیمت توافقی', o.price + ' تومان']);
+    if (o.note) rows.push(['توضیحات / شرایط پرداخت', o.note]);
+    return rows.map(function (r) {
+      return '<div class="ord-frow"><span class="k">' + r[0] + '</span><span class="v">' + r[1] + '</span></div>';
+    }).join('');
+  }
+  /* شیت جزئیات (خریدار) / مدیریت (فروشنده) — محتوا و اقدام‌ها با وضعیت هم‌گام */
+  function ordSheetFill(o, i, side) {
+    ordRow = i;
+    ordSide = side;
+    if (side === 'buy') {
+      var vt = document.getElementById('ordv-title');
+      if (vt) vt.textContent = o.g + ' · ' + o.q;
+      var vs = document.getElementById('ordv-sub');
+      if (vs) vs.textContent = o.sup + ' — ثبت‌شدهٔ شما';
+      var vf = document.getElementById('ordv-facts');
+      if (vf) vf.innerHTML = ordFacts(o, side);
+      var vd = document.getElementById('ordv-done');
+      if (vd) vd.hidden = o.st !== 'ship';
+      var vc = document.getElementById('ordv-cancel');
+      if (vc) vc.hidden = !(o.st === 'sent' || o.st === 'ok');
+      openSheet('sheet-ordview');
+    } else {
+      var mt = document.getElementById('ordm-title');
+      if (mt) mt.textContent = o.g + ' · ' + o.q;
+      var ms = document.getElementById('ordm-sub');
+      if (ms) ms.textContent = o.buyer + ' — مشتری شما';
+      var mf = document.getElementById('ordm-facts');
+      if (mf) mf.innerHTML = ordFacts(o, side);
+      var acc = document.getElementById('ordm-accept');
+      var qIn = document.getElementById('ordm-qty');
+      var pIn = document.getElementById('ordm-price');
+      if (qIn) qIn.value = o.q;
+      if (pIn) pIn.value = o.price || '';
+      if (acc) acc.hidden = o.st !== 'sent';
+      var okB = document.getElementById('ordm-ok');
+      if (okB) okB.hidden = o.st !== 'sent';
+      var shipB = document.getElementById('ordm-ship');
+      if (shipB) shipB.hidden = o.st !== 'ok';
+      var cxlB = document.getElementById('ordm-cancel');
+      if (cxlB) {
+        cxlB.hidden = !(o.st === 'sent' || o.st === 'ok');
+        cxlB.textContent = o.st === 'sent' ? 'رد سفارش' : 'لغو سفارش';
+      }
+      openSheet('sheet-ordmgr');
+    }
+  }
+  /* دیالوگ تأیید لغو/رد — مشترک دو سمت؛ فعل و متن با نقش هم‌گام */
+  function ordCancelAsk() {
+    var o = ORD[ordRow];
+    if (!o) return;
+    var sell = ordSide === 'sell';
+    var verb = sell ? (o.st === 'sent' ? 'رد' : 'لغو') : 'لغو';
+    var h = document.getElementById('ordc-h');
+    var q = document.getElementById('ordc-q');
+    var p = document.getElementById('ordc-p');
+    var okB = document.getElementById('ordc-ok');
+    if (h) h.textContent = verb + ' سفارش';
+    if (q) q.textContent = 'سفارش «' + o.g + ' · ' + o.q + '» ' + verb + ' شود؟';
+    if (p) p.textContent = verb + ' سفارش همان‌جا برای ' + (sell ? 'مشتری' : 'تأمین‌کننده') + ' ثبت و اعلام می‌شود.';
+    if (okB) okB.textContent = verb + ' سفارش';
+    openSheet('dlg-ordcancel');
+  }
+  /* پیام موفقیت بالای ۶۴/۶۵ — الگوی priv-ok (فاز ۶۱) */
+  function ordOk(side, html) {
+    var okB = document.getElementById(side === 'buy' ? 'ord-ok-buy' : 'ord-ok-sell');
+    if (okB) { okB.innerHTML = html; okB.hidden = false; }
+  }
+
   /* ═══ فاز ۶۱ (مالک) — «کاتالوگ خصوصی»: قیمت‌ها فقط برای مشتریان ═══
      حکم مالک: همهٔ فروشنده‌ها دوست ندارند قیمت‌هایشان را همه ببینند — مگر مشتریانشان.
      در کاتالوگ خصوصی، خارج از شبکه کسی قیمت‌ها را نمی‌بیند مگر آنکه عضو آیمچ و مشتریِ
@@ -9895,7 +10309,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var cb = document.getElementById('catsave-13');
     if (cb) {
       cb.classList.toggle('catsave-on', SUPSAVED);
-      cb.innerHTML = SUPSAVED ? '<svg><use href="#i-check"/></svg> ذخیره شد' : '<svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ';
+      cb.innerHTML = SUPSAVED ? '<svg><use href="#i-check"/></svg> ذخیره شد' : '<svg><use href="#i-bookmark"/></svg> ذخیره'; /* فاز ۶۴: برچسب کوتاه — buybar چهاردکته‌ای شد */
     }
     var ok = document.getElementById('priv-ok'); if (ok && gated) ok.hidden = true;
   }
@@ -10264,6 +10678,106 @@ body > div[id^="scr-d"][hidden] { display: none; }
         custRow = null;
         custRender();
       }
+      return;
+    }
+
+    /* ═══ فاز ۶۴ (مالک) — «سفارش»: شیت ثبت + ارسال + جزئیات/مدیریت + وضعیت‌ها ═══ */
+    /* ۱) باز کردن شیت ثبت سفارش — از ۰۲ (کالا پیش‌پر) · ۱۳ · ۶۴ · ردیف sheet-catmenu (۱۰) */
+    var ordOpen = t.closest('[data-order]');
+    if (ordOpen) {
+      var ogIn = document.getElementById('ord-good');
+      var oqIn = document.getElementById('ord-qty');
+      var onIn = document.getElementById('ord-note');
+      var oe = document.getElementById('ord-err'); if (oe) oe.hidden = true;
+      if (ogIn) ogIn.value = ordOpen.dataset.og || '';
+      if (oqIn) oqIn.value = '';
+      if (onIn) onIn.value = '';
+      /* مقصد سفارش: از منوی ردیف (۱۰) نام همان تأمین‌کننده؛ وگرنه کاتالوگ/کالای جاری = پارس */
+      var osEl = document.getElementById('ord-sub');
+      if (osEl) {
+        var rowSup = (ordOpen.closest('#sheet-catmenu') && catRow && catRow.querySelector('.t'))
+          ? catRow.querySelector('.t').textContent.replace(/\s+/g, ' ').trim() : 'پخش برنج پارس';
+        osEl.textContent = rowSup;
+      }
+      ordSide = 'buy';
+      openSheet('sheet-order');
+      return;
+    }
+    /* ۲) ارسال سفارش — اعتبار + ثبت در ORD + پیام عین متن مالک + رفتن به ۶۴ */
+    var ordSend = t.closest('[data-ordsend]');
+    if (ordSend) {
+      var sG = (document.getElementById('ord-good') || {}).value || '';
+      var sQ = (document.getElementById('ord-qty') || {}).value || '';
+      var sN = (document.getElementById('ord-note') || {}).value || '';
+      if (!sG.trim() || !sQ.trim()) {
+        var seEl = document.getElementById('ord-err'); if (seEl) seEl.hidden = false;
+        return;
+      }
+      var sS = (document.getElementById('ord-sub') || {}).textContent || 'پخش برنج پارس';
+      ORD.unshift({ g: sG.trim(), q: sQ.trim(), sup: sS.trim(), buyer: ORD_BUYER, st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-sack.jpg', note: sN.trim() });
+      closeSheet();
+      go('64');
+      /* حکم مالک (عین متن): انتظار پرداخت/تحویل درست تنظیم می‌شود */
+      ordOk('buy', 'سفارش شما برای «' + sS.trim() + '» ارسال شد. شرایط پرداخت و تحویل را مستقیماً با تامین‌کننده هماهنگ کنید.');
+      return;
+    }
+    /* ۳) کارت سفارش (۶۴/۶۵) → شیت جزئیات (خریدار) / مدیریت (فروشنده) */
+    var ordR = t.closest('[data-ordrow]');
+    if (ordR) {
+      var oi = +ordR.dataset.ordrow;
+      var osd = ordR.dataset.ordside;
+      if (!isNaN(oi) && ORD[oi]) ordSheetFill(ORD[oi], oi, osd);
+      return;
+    }
+    /* ۴) فروشنده: پذیرفتن — مقدار/قیمت نهایی اختیاری، سپس ok */
+    var ordAccept = t.closest('[data-ordok]');
+    if (ordAccept) {
+      var ao = ORD[ordRow];
+      if (ao) {
+        var aq = ((document.getElementById('ordm-qty') || {}).value || '').trim();
+        var ap = ((document.getElementById('ordm-price') || {}).value || '').trim();
+        if (aq) ao.q = aq;
+        if (ap) ao.price = ap;
+        ao.st = 'ok';
+        ao.nw = false;
+        ao.when = 'امروز';
+      }
+      closeSheet();
+      ordRender('sell');
+      ordOk('sell', 'سفارش پذیرفته شد — قیمت و مقدار نهایی برای مشتری ثبت شد.');
+      return;
+    }
+    /* ۵) فروشنده: اعلام ارسال */
+    var ordShip = t.closest('[data-ordship]');
+    if (ordShip) {
+      var so = ORD[ordRow];
+      if (so) { so.st = 'ship'; so.nw = false; }
+      closeSheet();
+      ordRender('sell');
+      ordOk('sell', 'ارسال اعلام شد — خریدار با دریافت کالا، تحویل را تأیید می‌کند.');
+      return;
+    }
+    /* ۶) خریدار: تأیید تحویل (اختیاری — از «ارسال شده») */
+    var ordDone = t.closest('[data-orddone]');
+    if (ordDone) {
+      var dop = ORD[ordRow];
+      if (dop) dop.st = 'done';
+      closeSheet();
+      ordRender('buy');
+      ordOk('buy', 'تحویل تأیید شد — سفارش کامل شد و به بایگانی رفت.');
+      return;
+    }
+    /* ۷) لغو/رد (هر دو طرف) — دیالوگ تأیید با فعلِ هم‌گام نقش */
+    var ordCxl = t.closest('[data-ordcancel]');
+    if (ordCxl) { ordCancelAsk(); return; }
+    var ordCxlOk = t.closest('[data-ordcancelok]');
+    if (ordCxlOk) {
+      var co = ORD[ordRow];
+      if (co) { co.st = 'cancel'; co.nw = false; }
+      var cSide = ordSide;
+      closeSheet();
+      ordRender(cSide);
+      ordOk(cSide, 'سفارش لغو شد و برای طرف مقابل ثبت و اعلام شد.');
       return;
     }
 
@@ -11374,6 +11888,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   custRender();   /* فاز ۶۰ — مشتریان من (۶۲): ردیف‌ها + شمارنده‌های ۶۲/۰۱/reach از بارگذاری */
   catPrivSync();  /* فاز ۶۱ — کاتالوگ خصوصی: چیپ ۰۱ + سوییچر/زیرنویس‌های cset + دکتهٔ ذخیرهٔ ۱۳ از بارگذاری */
   custBadgeSync();/* فاز ۶۰ — بج «۲ جدید» روی تب مشتریان (پس از wire که data-go می‌نشانَد) */
+  ordBadgeSync(); /* فاز ۶۴ — بج «۲ جدید» روی تب سفارشات (۶۵) + ست TABSET صفحهٔ ۱۸ از بارگذاری */
   prqCountSaved();/* فاز ۶۰ — «۳ تأمین‌کننده» زیر عنوان ۱۰ (بدون ردیف در انتظار عضویت) */
   catLocSync(); /* فاز ۵۷ — چیپ لوکیشن بنر کاتالوگ از بارگذاری هم‌گام است */
   evRender(ITEM_EVENTS);

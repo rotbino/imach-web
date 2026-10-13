@@ -46,22 +46,22 @@ await shot('01-sell05-guide');
 
 /* ═══ ۲. راهنمای خریدار (۶۰) — گام ۶ منفعت‌محور ═══ */
 await page.goto(FILE + '#60'); await page.reload(); await sleep(400);
-T('۶۰: شش گام + کارت آغاز + قانون — ساختار دست‌نخورده', (await page.locator('#scr-60 .gd-row').count()) === 6 && (await page.locator('#scr-60 .gd-lead').count()) === 1 && (await page.locator('#scr-60 .legend').count()) === 1);
-T('۶۰: گام ۶ «قیمت\u200cهای همیشه تازه بگیر»', (await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('قیمت\u200cهای همیشه تازه بگیر'));
-T('۶۰: گام ۶ به «تأمین\u200cکنندگان من» اشاره می\u200cکند (هم\u200cزبان فاز ۶۰)', (await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('تأمین\u200cکنندگان من'));
-T('۶۰: گام ۶ بدون افشا', !(await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('بدون شبکه'));
-T('۶۰: گام\u200cهای ۱ تا ۵ دست\u200cنخورده', (await page.locator('#scr-60 .gd-row').nth(0).textContent()).includes('لیست خریدت را بساز') && (await page.locator('#scr-60 .gd-row').nth(4).textContent()).includes('زنگوله'));
-await page.evaluate(() => { const r = document.querySelectorAll('#scr-60 .gd-row')[5]; r?.scrollIntoView({ block: 'center' }); });
+T('۶۰: هفت گام + کارت آغاز + قانون — ساختار سالم (فاز ۶۴: +گام سفارش)', (await page.locator('#scr-60 .gd-row').count()) === 7 && (await page.locator('#scr-60 .gd-lead').count()) === 1 && (await page.locator('#scr-60 .legend').count()) === 1);
+T('۶۰: گام ۷ «قیمت\u200cهای همیشه تازه بگیر» (جابه‌جا شد)', (await page.locator('#scr-60 .gd-row').nth(6).textContent()).includes('قیمت\u200cهای همیشه تازه بگیر'));
+T('۶۰: گام ۷ به «تأمین\u200cکنندگان من» اشاره می\u200cکند (هم\u200cزبان فاز ۶۰)', (await page.locator('#scr-60 .gd-row').nth(6).textContent()).includes('تأمین\u200cکنندگان من'));
+T('۶۰: گام ۷ بدون افشا', !(await page.locator('#scr-60 .gd-row').nth(6).textContent()).includes('بدون شبکه'));
+T('۶۰: گام‌های اصلی دست‌نخورده + گام ۴ «سفارش بده» تازه (فاز ۶۴)', (await page.locator('#scr-60 .gd-row').nth(0).textContent()).includes('لیست خریدت را بساز') && (await page.locator('#scr-60 .gd-row').nth(3).textContent()).includes('سفارش بده') && (await page.locator('#scr-60 .gd-row').nth(5).textContent()).includes('زنگوله'));
+await page.evaluate(() => { const r = document.querySelectorAll('#scr-60 .gd-row')[6]; r?.scrollIntoView({ block: 'center' }); });
 await shot('02-guide60-step6');
 
 /* ═══ ۳. راهنمای فروشنده (۶۱) — گام ۶ منفعت‌محور ═══ */
 await page.goto(FILE + '#61'); await page.reload(); await sleep(400);
-T('۶۱: شش گام + کارت آغاز + قانون — ساختار دست‌نخورده', (await page.locator('#scr-61 .gd-row').count()) === 6 && (await page.locator('#scr-61 .gd-lead').count()) === 1 && (await page.locator('#scr-61 .legend').count()) === 1);
-T('۶۱: گام ۶ «با دعوت از مشتریانت بفروش»', (await page.locator('#scr-61 .gd-row').nth(5).textContent()).includes('با دعوت از مشتریانت بفروش'));
-T('۶۱: گام ۶ — فروش بالاتر + قیمت تازه', (await page.locator('#scr-61 .gd-row').nth(5).textContent()).includes('فروشت را بالا ببر') && (await page.locator('#scr-61 .gd-row').nth(5).textContent()).includes('همیشه تازه'));
-T('۶۱: حذف افشای cold-start («هزار خریدار» / «لازم نیست اول»)', !(await page.locator('#scr-61 .gd-row').nth(5).textContent()).includes('هزار خریدار') && !(await page.locator('#scr-61 .gd-row').nth(5).textContent()).includes('لازم نیست اول'));
-T('۶۱: گام\u200cهای ۱ تا ۵ دست\u200cنخورده (گام ۵ = تبلیغ با ۴\u200c٬۰۰۰)', (await page.locator('#scr-61 .gd-row').nth(0).textContent()).includes('کاتالوگت را بساز') && (await page.locator('#scr-61 .gd-row').nth(4).textContent()).includes('۴٬۰۰۰'));
-await page.evaluate(() => { const r = document.querySelectorAll('#scr-61 .gd-row')[5]; r?.scrollIntoView({ block: 'center' }); });
+T('۶۱: هفت گام + کارت آغاز + قانون — ساختار سالم (فاز ۶۴: +گام سفارش)', (await page.locator('#scr-61 .gd-row').count()) === 7 && (await page.locator('#scr-61 .gd-lead').count()) === 1 && (await page.locator('#scr-61 .legend').count()) === 1);
+T('۶۱: گام ۷ «با دعوت از مشتریانت بفروش» (جابه‌جا شد)', (await page.locator('#scr-61 .gd-row').nth(6).textContent()).includes('با دعوت از مشتریانت بفروش'));
+T('۶۱: گام ۷ — فروش بالاتر + قیمت تازه', (await page.locator('#scr-61 .gd-row').nth(6).textContent()).includes('فروشت را بالا ببر') && (await page.locator('#scr-61 .gd-row').nth(6).textContent()).includes('همیشه تازه'));
+T('۶۱: حذف افشای cold-start («هزار خریدار» / «لازم نیست اول»)', !(await page.locator('#scr-61 .gd-row').nth(6).textContent()).includes('هزار خریدار') && !(await page.locator('#scr-61 .gd-row').nth(6).textContent()).includes('لازم نیست اول'));
+T('۶۱: گام\u200cهای ۱ تا ۵ دست\u200cنخورده (گام ۵ = تبلیغ با ۴\u200c٬۰۰۰)', (await page.locator('#scr-61 .gd-row').nth(0).textContent()).includes('کاتالوگت را بساز') && (await page.locator('#scr-61 .gd-row').nth(2).textContent()).includes('سفارش‌های مشتریانت را بپذیر') && (await page.locator('#scr-61 .gd-row').nth(5).textContent()).includes('۴٬۰۰۰'));
+await page.evaluate(() => { const r = document.querySelectorAll('#scr-61 .gd-row')[6]; r?.scrollIntoView({ block: 'center' }); });
 await shot('03-guide61-step6');
 
 /* ═══ ۴. دربارهٔ آیمچ (۴۲ → sheet-about) ═══ */

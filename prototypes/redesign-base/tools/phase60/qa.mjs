@@ -28,15 +28,15 @@ const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗
 await page.goto(FILE + '#01'); await page.reload(); await sleep(400);
 T('فوتر ۰۱: ۵ تبی', (await page.locator('#scr-01 .tabbar .tab').count()) === 5);
 T('فوتر ۰۱: تب دوم «مشتریان» + بج ۲', (await page.locator('#scr-01 .tab').nth(1).textContent()).includes('مشتریان') && (await page.locator('#scr-01 .tab').nth(1).textContent()).includes('۲'));
-T('فوتر ۰۱/۰۵/۰۷: هر سه data-cols=5', (await page.locator('#scr-01 .tabbar').getAttribute('data-cols')) === '5'
-  && await page.evaluate(() => ['scr-05', 'scr-07'].every(id => document.getElementById(id).querySelector('.tabbar').dataset.cols === '5')));
-T('فوتر ۰۵/۰۷: تب مشتریان و بج دارند', await page.evaluate(() => ['scr-05', 'scr-07'].every(id => {
+T('فوتر ۰۱/۰۷/۶۲: هر سه data-cols=5 (فاز ۶۴: ۰۵ بدون تب‌بار شد)', (await page.locator('#scr-01 .tabbar').getAttribute('data-cols')) === '5'
+  && await page.evaluate(() => ['scr-07', 'scr-62'].every(id => document.getElementById(id).querySelector('.tabbar').dataset.cols === '5')));
+T('فوتر ۰۷/۶۲: تب مشتریان و بج دارند', await page.evaluate(() => ['scr-07', 'scr-62'].every(id => {
   const tb = document.getElementById(id).querySelectorAll('.tabbar .tab');
   return tb.length === 5 && tb[1].dataset.go === '62' && !!tb[1].querySelector('.badge');
 })));
-await page.goto(FILE + '#05'); await page.reload(); await sleep(300);
-await page.click('#scr-05 .tab[data-go="62"]'); await sleep(350);
-T('تب مشتریان (۰۵) ← صفحهٔ ۶۲', await page.locator('#scr-62').isVisible() && (await page.evaluate(() => location.hash)) === '#62');
+await page.goto(FILE + '#07'); await page.reload(); await sleep(300);
+await page.click('#scr-07 .tab[data-go="62"]'); await sleep(350);
+T('تب مشتریان (۰۷) ← صفحهٔ ۶۲', await page.locator('#scr-62').isVisible() && (await page.evaluate(() => location.hash)) === '#62');
 await page.goto(FILE + '#18'); await page.reload(); await sleep(350);
 T('صفحهٔ ۱۸ (بازوی فروش): ۵ تب با مشتریان', (await page.locator('#scr-18 .tabbar .tab').count()) === 5 && (await page.locator('#scr-18 .tabbar').textContent()).includes('مشتریان'));
 await shot('01-18-keep-footer');
@@ -48,7 +48,7 @@ T('فوتر ۰۸: «تأمین‌کنندگان» جای «کاتالوک‌ها
 await page.click('#scr-08 .tab:has-text("تأمین‌کنندگان")'); await sleep(300);
 T('تب تأمین‌کنندگان ← صفحهٔ ۱۰', await page.locator('#scr-10').isVisible());
 await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
-T('فوتر ۴۵: «تأمین‌کنندگان»', (await page.locator('#scr-45 .tabbar').textContent()).includes('تأمین‌کنندگان'));
+T('فوتر ۴۵: بدون تب‌بار (فاز ۶۴ — استعلام فرایند فرعی؛ ورود از ۰۸/تنظیمات لیست)', (await page.locator('#scr-45 .tabbar').count()) === 0);
 
 /* ═══ ۲. صفحهٔ ۶۲ — مشتریان من ═══ */
 await page.goto(FILE + '#62'); await page.reload(); await sleep(400);

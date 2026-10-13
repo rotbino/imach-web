@@ -36,20 +36,18 @@ const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗
 await page.goto(FILE + '#08'); await page.reload(); await sleep(400);
 const t08 = await page.locator('#scr-08 .tabbar .tab').allTextContents();
 T('فوتر ۰۸: ۴ تب ماند', t08.length === 4);
-T('فوتر ۰۸: ترتیب مالک — لیست خرید · تأمین‌کنندگان · استعلام‌ها · پیام‌ها',
-  t08[0].includes('لیست خرید') && t08[1].includes('تأمین‌کنندگان') && t08[2].includes('استعلام‌ها') && t08[3].includes('پیام‌ها'));
+T('فوتر ۰۸: ترتیب مالک — لیست خرید · تأمین‌کنندگان · سفارش‌های من · پیام‌ها (فاز ۶۴)',
+  t08[0].includes('لیست خرید') && t08[1].includes('تأمین‌کنندگان') && t08[2].includes('سفارش‌های من') && t08[3].includes('پیام‌ها'));
 T('فوتر ۰۸: تب فعال = لیست خرید', (await page.locator('#scr-08 .tab.active').textContent()).includes('لیست خرید'));
 await shot('01-footer08');
 await page.click('#scr-08 .tab:has-text("تأمین‌کنندگان")'); await sleep(300);
 T('تب تأمین‌کنندگان (جای دوم) ← صفحهٔ ۱۰', await page.locator('#scr-10').isVisible());
 await page.goto(FILE + '#08'); await sleep(250);
-await page.click('#scr-08 .tab:has-text("استعلام‌ها")'); await sleep(300);
-T('تب استعلام‌ها (جای سوم) ← صفحهٔ ۴۵', await page.locator('#scr-45').isVisible());
+await page.click('#scr-08 .tab:has-text("سفارش‌های من")'); await sleep(300);
+T('تب «سفارش‌های من» (جای سوم) ← صفحهٔ ۶۴ (فاز ۶۴)', await page.locator('#scr-64').isVisible());
 
 await page.goto(FILE + '#45'); await page.reload(); await sleep(400);
-const t45 = await page.locator('#scr-45 .tabbar .tab').allTextContents();
-T('فوتر ۴۵: همان ترتیب ۰۸', t45[1].includes('تأمین‌کنندگان') && t45[2].includes('استعلام‌ها'));
-T('فوتر ۴۵: تب فعال = استعلام‌ها', (await page.locator('#scr-45 .tab.active').textContent()).includes('استعلام‌ها'));
+T('فوتر ۴۵: بدون تب‌بار (فاز ۶۴ — استعلام فرایند فرعی شد)', (await page.locator('#scr-45 .tabbar').count()) === 0);
 await shot('02-footer45');
 
 /* صفحهٔ ۱۸ (پیام‌ها) در بازوی خرید — TABSET همان ترتیب را می‌سازد
@@ -121,8 +119,8 @@ await shot('06-suppliers10-sponsor');
 
 /* ═══ ۴. اعلان‌ها (۲۷) — تپ قلب ماندگاری خریدار ═══ */
 await page.goto(FILE + '#27'); await page.reload(); await sleep(400);
-T('۲۷: شمار خوانده‌نشده ۳→۴', (await page.locator('#scr-27 .ttl small').textContent()).includes('۴ اعلان خوانده‌نشده'));
-T('۲۷: ۹ نوتیف (۸ قبلی + ۱ تازه)', (await page.locator('#scr-27 .notif').count()) === 9);
+T('۲۷: شمار خوانده‌نشده ۴→۵ (فاز ۶۴: +نوتیف پذیرش سفارش)', (await page.locator('#scr-27 .ttl small').textContent()).includes('۵ اعلان خوانده‌نشده'));
+T('۲۷: ۱۰ نوتیف (۹ قبلی + ۱ تازهٔ سفارش — فاز ۶۴)', (await page.locator('#scr-27 .notif').count()) === 10);
 const nt = await page.locator('#scr-27 .notif').allTextContents();
 const fresh = nt.find(x => x.includes('قیمت کاتالوگ ذخیره‌شده به‌روز شد'));
 T('۲۷: نوتیف تازه — «قیمت کاتالوگ ذخیره‌شده به‌روز شد» + بج «جدید»',
@@ -162,12 +160,12 @@ T('۱۲: برچسب ارسال «۳ تأمین‌کننده»', (await page.loca
 await page.evaluate(() => { document.querySelector('#iq-recips')?.scrollIntoView({ block: 'center' }); });
 await shot('08-form12-recips');
 
-/* ═══ ۶. گشت ایمن — همهٔ ۳۱ صفحه بدون خطا ═══ */
-const PAGES = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','23','27','29','30','34','42','43','44','45','46','48','53','60','61','62'];
+/* ═══ ۶. گشت ایمن — همهٔ ۳۳ صفحه بدون خطا (فاز ۶۴: +۶۴/۶۵ سفارش‌ها) ═══ */
+const PAGES = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','23','27','29','30','34','42','43','44','45','46','48','53','60','61','62','64','65'];
 for (const h of PAGES) {
   await page.goto(FILE + '#' + h); await sleep(180);
 }
-T('گشت: ۳۱ صفحه بدون هیچ خطای JS', errors.length === 0);
+T('گشت: ۳۳ صفحه بدون هیچ خطای JS', errors.length === 0);
 
 /* ═══ ۷. سرریز افقی — نقاط تغییر قطعی (جایگزین VLM) ═══ */
 const ovf = async (sel, label) => {
