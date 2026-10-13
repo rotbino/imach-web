@@ -31,7 +31,7 @@ await page.evaluate(() => { localStorage.setItem('imach-assist', JSON.stringify(
 await page.goto(FILE + '#16');
 await page.reload();
 await sleep(300);
-T('ساختار: ۲۷ صفحه داخل گوشی (فاز ۵۶: +۴۳)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 27));
+T('ساختار: ۳۰ صفحه داخل گوشی (فاز ۵۸: +۲۳ +۶۰/۶۱)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 30));
 T('ساختار: هیچ scr بیرون از گوشی/استیج', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 T('ساختار: ارتفاع سند ≤ ۱۰۰۰', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
 T('۱۶: عنوان «کدام دستیار برای کسب و کار شما فعال باشد»', (await page.locator('#scr-16 .lbl-row label').textContent()) === 'کدام دستیار برای کسب و کار شما فعال باشد');
@@ -137,7 +137,7 @@ T('پاکسازی: فقط تصاویر مرجع‌شده مانده‌اند', [
 for (const s of ALIVE) {
   await page.goto(FILE + '#' + s); await page.reload(); await sleep(260);
 }
-T('e2e: صفر خطای کنسول در ۲۷ صفحه', errors.length === 0);
+T('e2e: صفر خطای کنسول در ۳۰ صفحه', errors.length === 0);
 if (errors.length) console.log('  errors:', errors.slice(0, 5));
 
 await browser.close();

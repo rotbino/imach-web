@@ -23,13 +23,13 @@ await sleep(250);
 
 /* ═══ ۱. ساختار کلی ═══ */
 const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','43','44','45','46'];
-const DEAD = ['03','06','11','14','20','21','23','24','25','26','28','31','32','33','35','36','37','38','39','40','41','d1','d2'];
+const DEAD = ['03','06','11','14','20','21','24','25','26','28','31','32','33','35','36','37','38','39','40','41','d1','d2']; /* فاز ۵۸: ۲۳ بازگشت (چشم ۰۸ → دید عمومی) */
 
 /* ═══ ۰. سلامت درخت DOM — فاز ۴۴-فیکس ═══
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۲۷ صفحه داخل قاب گوشی‌اند (فاز ۵۶: +۴۳ سایر نظرات بازگشت)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 27));
+ok('همهٔ ۳۰ صفحه داخل قاب گوشی‌اند (فاز ۵۸: +۲۳ عمومی بازگشت +۶۰/۶۱ راهنما)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 30));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -143,7 +143,7 @@ ok('۳۰: بدون سوییچ کمپین/هدفمند', await page.locator('#rep
 await page.click('#scr-30 .guidebox[data-go="46"]');
 await sleep(250);
 ok('۳۰ → ۴۶: گزارش تبلیغ باز شد', await page.locator('#scr-46').isVisible());
-ok('۴۶: آمار سه‌گانه', await page.locator('#scr-46 .stat').count() === 3);
+ok('۴۶: آمار چهارگانه (فاز ۵۸: +ارسال درخواست خرید)', await page.locator('#scr-46 .stat').count() === 4);
 ok('۴۶: ریز افراد و کسب‌وکارها', await page.locator('#scr-46 .usg-row').count() >= 7);
 ok('۴۶: رویداد دیدن کالا', (await page.locator('#scr-46').textContent()).includes('«برنج هاشمی» را در لیست تأمین دید'));
 ok('۴۶: رویداد ذخیرهٔ کاتالوگ', (await page.locator('#scr-46').textContent()).includes('کاتالوگ شما را ذخیره کرد'));
@@ -222,7 +222,7 @@ ok('۰۸: «استعلام‌های جاری» + مشاهدهٔ همه → ۴۵ 
 ok('۰۸: بدون گروه‌بندی (فاز ۴۵)', await page.locator('#scr-08 .bl-groups').count() === 0);
 ok('۰۸: متن راهنمای جدید', (await page.locator('#scr-08 .legend').textContent()).includes('استعلام قیمت رقابتی'));
 ok('۰۸: مهر تازگی روی ردیف', (await page.locator('#scr-08 .bl-fresh').first().textContent()).length > 3);
-ok('۰۸: چشم کنار اشتراک/تنظیمات (فاز ۴۵)', await page.locator('#scr-08 .sec-title .icon-btn[data-sheet="sheet-listedit"]').count() === 1);
+ok('۰۸: چشم کنار اشتراک/تنظیمات → صفحهٔ عمومی ۲۳ (فاز ۵۸)', (await page.locator('#scr-08 .sec-title .icon-btn[data-go="23"]').count()) === 1);
 await page.click('#scr-08 .bl-inq-title .more');
 await sleep(250);
 ok('۰۸: مشاهدهٔ همه → ۴۵', await page.locator('#scr-45').isVisible());

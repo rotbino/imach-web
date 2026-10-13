@@ -207,9 +207,9 @@ await page.click('#cat-fresh [data-freshx]'); await sleep(150);
 ok('نudge: بستن با × کار می‌کند', await page.locator('#cat-fresh').isHidden());
 
 /* ═══ ۱۰. ساختار + کنسول ═══ */
-ok('ساختار: همهٔ scr داخل #phone (۲۷ صفحه)', await page.evaluate(() => {
+ok('ساختار: همهٔ scr داخل #phone (۳۰ صفحه — فاز ۵۸: +۲۳ +۶۰/۶۱)', await page.evaluate(() => {
   const phone = document.getElementById('phone');
-  return Array.from(document.querySelectorAll('.scr')).every(s => phone.contains(s)) && document.querySelectorAll('.scr').length === 27;
+  return Array.from(document.querySelectorAll('.scr')).every(s => phone.contains(s)) && document.querySelectorAll('.scr').length === 30;
 }));
 ok('ساختار: شیت/دیالوگ جدید داخل #phone', await page.evaluate(() => {
   const phone = document.getElementById('phone');

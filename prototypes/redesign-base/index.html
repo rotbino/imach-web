@@ -1188,8 +1188,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ۰۸ — کارت‌های افقی «درخواست‌های خرید جاری» (ایدهٔ ۲۳ به لیست خود خریدار) */
   .sec-title .more.morelnk { color: var(--red); font-weight: 800; }
   .sec-title .more.morelnk svg { width: 12px; height: 12px; vertical-align: -1.5px; margin-right: 2px; }
-  #scr-08 .bl-inq-title h2 { font-size: 12.5px; } /* فاز ۴۵: استعلام‌های جاری — فونت ریزتر */
-  #scr-08 .bl-inq-title .more { font-size: 10.5px; }
+  #scr-08 .bl-inq-title h2 { font-size: 11px; font-weight: 600; color: var(--muted-fg); } /* فاز ۵۸ (مالک): ریزتر + کمرنگ‌تر — متمایز از عنوان اصلی/کاتالوگ */
+  #scr-08 .bl-inq-title h2 svg { width: 13px; height: 13px; color: var(--muted-fg); }
+  #scr-08 .bl-inq-title .more { font-size: 10px; }
   #scr-08 .bl-rfq-row { display: flex; gap: 10px; overflow-x: auto; padding: 2px; margin-top: 10px; scrollbar-width: none; -ms-overflow-style: none; }
   #scr-08 .bl-rfq-row::-webkit-scrollbar { display: none; }
   #scr-08 .bl-rfq { flex: 0 0 138px; border: 1px solid var(--border); border-radius: 14px; background: #fff; overflow: hidden; cursor: pointer; }
@@ -1212,6 +1213,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۳۰ — نوار آمار (۲۳): مارجین‌تاپ از نوار تماس + وسط‌چین‌بودن آیتم‌ها */
   #scr-23 .insight-strip { margin-top: 13px; justify-content: center; }
   #scr-23 .insight-strip > span { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+  /* ═══ فاز ۵۸ — صفحات راهنما (۶۰ خرید / ۶۱ فروش): گام‌های شماره‌دار (قرینهٔ adg-row شیت‌ها،
+         ولی با نفس بازتر برای خواندن طولانی) + کارت آغاز ═══ */
+  .gd-lead { display: flex; gap: 10px; align-items: flex-start; }
+  .gd-lead .ic { width: 38px; height: 38px; border-radius: 11px; background: var(--accent); color: var(--primary-strong); display: grid; place-items: center; flex-shrink: 0; }
+  .gd-lead .ic svg { width: 18px; height: 18px; }
+  .gd-lead .tx { flex: 1; min-width: 0; font-size: 11.5px; color: var(--stone-soft); line-height: 2; }
+  .gd-lead .tx b { display: block; font-size: 13px; font-weight: 800; color: var(--foreground); line-height: 1.7; margin-bottom: 3px; }
+  .gd-row { display: flex; gap: 10px; align-items: flex-start; background: var(--muted); border-radius: 12px; padding: 11px 12px; margin-top: 9px; }
+  .gd-row .n { width: 22px; height: 22px; border-radius: 8px; background: var(--accent); color: var(--primary-strong); font-size: 11.5px; font-weight: 800; display: grid; place-items: center; flex-shrink: 0; margin-top: 2px; }
+  .gd-row .tx { flex: 1; min-width: 0; }
+  .gd-row .tx b { display: block; font-size: 12.5px; font-weight: 800; line-height: 1.7; }
+  .gd-row .tx span { display: block; font-size: 11px; color: var(--muted-fg); line-height: 2; margin-top: 4px; }
 
   /* ═══ فاز ۳۰ — اسکرول‌بار باریک/مخفی ═══ */
   /* عرض اسکرول‌بار خیلی کم می‌شود (دسکتاپ) و در موبایل اصلاً دیده نمی‌شود — شیت‌ها و دیالوگ‌ها تمیز می‌مانند */
@@ -2764,6 +2777,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
+      <!-- ═══ فاز ۵۸ (مالک) — راهنما: هر دستیار راهنمای خودش (صفحات ۶۰/۶۱)؛
+           هر دو لینک این‌جاست — کاربر مستقل از بازوی فعال می‌تواند راهنمای هر دو را بخواند ═══ -->
+      <div class="sec-title" style="margin-top:14px"><h2><svg><use href="#i-checklist"/></svg> راهنما</h2></div>
+      <div class="card" style="padding:0 14px">
+        <div data-go="60" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-list"/></svg>
+          <span style="flex:1">راهنمای دستیار خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">لیست خرید، استعلام قیمت و کاتالوگ‌های ذخیره‌شده</span></span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
+        <div data-go="61" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-store"/></svg>
+          <span style="flex:1">راهنمای دستیار فروش<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">کاتالوگ، درخواست‌های خرید و تبلیغ ویژه</span></span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
+      </div>
+
     </main>
 
     <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار فروش">
@@ -2801,14 +2830,26 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- نام لیست + اشتراک‌گذاری + تنظیمات + نمای فروشنده‌ها (فاز ۴۵: چشم از هدر به این‌جا آمد) -->
+      <!-- نام لیست + پیش‌نمایش عمومی + اشتراک‌گذاری + تنظیمات
+           فاز ۵۸ (مالک): چشم = رفتن به صفحهٔ خرید از دید عمومی (۲۳) — قبلاً به‌اشتباه شیت ویرایش
+           (تنظیمات لیست) را باز می‌کرد؛ اشتراک حالا شیت دوگزینه‌ای sheet-lshare را باز می‌کند -->
       <div class="sec-title" style="margin-top:4px">
         <h2><svg><use href="#i-list"/></svg> لیست خرید من</h2>
         <div style="display:flex;align-items:center;gap:7px">
-          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="نمای فروشنده‌ها از لیست شما" data-sheet="sheet-listedit" title="نمای فروشنده‌ها از لیست شما"><svg><use href="#i-eye"/></svg></button>
-          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="اشتراک‌گذاری لیست خرید" data-sheet="sheet-contacts" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg></button>
+          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="صفحه خرید از دید عمومی" data-go="23" title="صفحه خرید از دید عمومی — این‌طور تأمین‌کنندگان لیست شما را می‌بینند"><svg><use href="#i-eye"/></svg></button>
+          <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="اشتراک‌گذاری لیست خرید" data-sheet="sheet-lshare" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg></button>
           <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="تنظیمات لیست خرید" data-sheet="sheet-listset" title="تنظیمات لیست خرید"><svg><use href="#i-gear"/></svg></button>
         </div>
+      </div>
+
+      <!-- ═══ فاز ۵۸ (مالک) — کادر تشویق به اشتراک‌گذاری لیست خرید برای تأمین‌کنندگان
+           (قرینهٔ cat-promo کاتالوگ ۰۱، همان موتور رشد ولی به سود خریدار) ═══ -->
+      <div class="cat-promo">
+        <div class="cp-head">
+          <b>لیست خرید ویترین نیازهای شماست، به اشتراکش بگذار</b>
+          <button class="icon-btn cp-ic" data-sheet="sheet-lshare" type="button" aria-label="اشتراک‌گذاری لیست خرید" title="اشتراک‌گذاری لیست خرید"><svg><use href="#i-share"/></svg></button>
+        </div>
+        <small>با ارسال لینک لیست خرید به تأمین‌کنندگان خود، از آنها بخواهید تا با ساخت کاتالوگ قیمت، قیمتهای زندهٔ خود را همیشه در اختیارتان بگذارند — کاتالوگشان خودکار در کاتالوگهای ذخیره‌شدهٔ شما می‌نشیند.</small>
       </div>
 
       <!-- فاز ۴۵ (مالک) — «استعلام‌های جاری»: فونت ریزتر + «مشاهدهٔ همه» روبه‌رویش → صفحهٔ ۴۵.
@@ -4233,6 +4274,132 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </section>
 
+    <!-- ═══ فاز ۵۸ (مالک) — صفحهٔ خرید از دید عمومی (۲۳) بازگشت:
+         حذفِ فاز ۴۴ (c8da180) بدون هماهنگی مالک بود — همان درس نظراتِ فاز ۵۶. چشمِ کنار نام
+         لیست (۰۸) دوباره به همین‌جا می‌آید. این همان صفحه‌ای است که خریدار لینکش را برای
+         فروشنده‌ها می‌فرستد تا تامین‌کنندگانِ بیشتری او را بشناسند و لیست خریدش را «ذخیره»
+         کنند یا کالاهایش را «گوش به زنگ» شوند. دو بخش دارد: «درخواست‌های خرید جاری»
+         (کارت‌های اینستاگرامی — عکس بالا، نیاز زیر عکس) + «لیست خرید» (ردیف‌های معمول
+         با زنگولهٔ گوش به زنگ). فاز ۵۸: اشتراک‌گذاری هدر → شیت دوگزینه‌ای sheet-lshare. ═══ -->
+    <section class="scr" id="scr-23" data-arm="keep" hidden>
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">لیست خرید سوپرمارکت آریا<small>imach.ir/b/arya — از لینک رسیده‌ای</small></div>
+      <button class="icon-btn" aria-label="اشتراک‌گذاری لیست" data-sheet="sheet-lshare" title="اشتراک‌گذاری لیست" style="margin-left:auto"><svg><use href="#i-share"/></svg></button>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- هویت خریدار — این‌طور فروشنده‌ها او را می‌بینند -->
+      <div class="biz-head" style="margin-top:10px">
+        <div class="row1">
+          <div class="avatar-lg" style="background:#0e7490">آ</div>
+          <div style="flex:1;min-width:0">
+            <!-- فاز ۲۲ — IMPLEMENTATION NOTE (Presence): فروشنده‌ای که این لیست را می‌بیند، وضعیت آنلاینِ خریدار را می‌فهمد
+                 (مهم برای شروع گفتگو) — همان منطق کاتالوگ، این‌بار به سود خریدار. -->
+            <div class="biz-name">سوپرمارکت آریا <svg><use href="#i-verified"/></svg> <span class="presence on"><i></i>آنلاین</span></div>
+            <div class="biz-meta" style="margin-top:5px">
+              سوپرمارکت · <span class="city-chip"><svg><use href="#i-pin"/></svg> رشت</span> <span class="badge b-stone">خریدار عمده</span>
+            </div>
+          </div>
+        </div>
+        <div class="biz-bio">خرید هفتگی غلات، شکر و روغن برای دو شعبه — پرداخت نقدی، تحویل از انبار.</div>
+        <div class="biz-meta">
+          <span class="owner"><svg><use href="#i-user"/></svg> آرش محمدی · مسئول خرید</span>
+          <span>·</span>
+          <span>به‌روزرسانی: امروز</span>
+        </div>
+      </div>
+
+      <!-- فاز ۲۹ — تماس + پیام + ذخیرهٔ لیست: سه‌تایی در یک ردیف؛ هر کدام رنگ خودش، فشرده‌تر.
+           فاز ۵۸: نقشِ خریدار (sheet-listedit) حالا زیر نام مالک نمایش داده می‌شود؛
+           تماس مثل بقیهٔ فرم‌ها دکمهٔ نمایشی است، پیام → گفتگو (۱۹)، ذخیره → حالت ذخیره‌شده. -->
+      <div class="contact-row">
+        <button class="btn btn-outline" data-contactbtn title="تماس با خریدار" aria-label="تماس با خریدار"><svg><use href="#i-phone"/></svg> تماس</button>
+        <button class="btn btn-primary" data-go="19" data-msgbtn title="ارسال پیام به خریدار"><svg><use href="#i-msg"/></svg> پیام</button>
+        <button class="btn btn-save" data-savelist title="ذخیرهٔ لیست خریدار"><svg><use href="#i-bmark-plus"/></svg> ذخیرهٔ لیست</button>
+      </div>
+
+      <!-- آمار لیست -->
+      <div class="insight-strip">
+        <span><svg><use href="#i-list"/></svg> <b>۴</b> کالا</span>
+        <span><svg><use href="#i-bookmark"/></svg> <b>۱۲</b> ذخیره‌کننده</span>
+        <span><svg><use href="#i-eye"/></svg> <b>۸۶</b> بازدید</span>
+      </div>
+
+      <!-- ═══ درخواست‌های خرید جاری — کارت‌های اینستاگرامی (عکس بالا + مقدار مورد نیاز زیر عکس) ═══ -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-inbox"/></svg> درخواست‌های خرید جاری</h2><span class="more">۲ درخواست</span></div>
+      <div class="rfq-grid">
+        <div class="rfq-card" data-rt="برنج هاشمی" data-rq="۲۰ کیسهٔ ۵۰ کیلویی" data-rimg="png/goods/rice-grains.jpg" data-rdl="۳ روز مانده" data-rdlc="b-orange">
+          <div class="rfq-img">
+            <img src="png/goods/rice-grains.jpg" alt="برنج هاشمی">
+            <span class="badge b-orange dl">۳ روز مانده</span>
+          </div>
+          <div class="rfq-bd">
+            <div class="rfq-t">برنج هاشمی</div>
+            <div class="rfq-q">نیاز: ۲۰ کیسهٔ ۵۰ کیلویی</div>
+          </div>
+        </div>
+        <div class="rfq-card" data-rt="روغن سرخ‌کردنی" data-rq="۴۰ عدد ۱۰ لیتری" data-rimg="png/goods/oil-bottle.jpg" data-rdl="امروز آخرین روز" data-rdlc="b-rednum">
+          <div class="rfq-img">
+            <img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی">
+            <span class="badge b-rednum dl">امروز آخرین روز</span>
+          </div>
+          <div class="rfq-bd">
+            <div class="rfq-t">روغن سرخ‌کردنی</div>
+            <div class="rfq-q">نیاز: ۴۰ عدد ۱۰ لیتری</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ لیست خرید معمول — ردیف‌ها با زنگولهٔ گوش به زنگ ═══ -->
+      <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-list"/></svg> لیست خرید معمول</h2><span class="more">۴ کالا</span></div>
+      <div class="rows">
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج هاشمی</div>
+            <div class="s">۲۰ کیسهٔ ۵۰ کیلویی · هفتگی · قیمت هدف: ۲٬۷۰۰٬۰۰۰</div>
+          </div>
+          <button class="alert-bell on" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">برنج طارم</div>
+            <div class="s">۱۰ کیسهٔ ۵۰ کیلویی · دوهفتگی</div>
+          </div>
+          <button class="alert-bell" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/sugar-cubes.jpg" alt="شکر سفید"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">شکر سفید</div>
+            <div class="s">۱۰ کارتن ۱۰ کیلویی · ماهانه</div>
+          </div>
+          <button class="alert-bell" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
+        </div>
+        <div class="row-card">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/oil-bottle.jpg" alt="روغن مایع"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">روغن مایع</div>
+            <div class="s">۶ کارتن · ماهانه</div>
+          </div>
+          <button class="alert-bell" title="گوش به زنگ" aria-label="گوش به زنگ"><svg><use href="#i-bell"/></svg></button>
+        </div>
+      </div>
+
+      <!-- فاز ۲۸ — کادر راهنمای گوش به زنگ (متن دقیق مالک) -->
+      <div class="legend" style="margin-top:14px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 01-3.4 0"/></svg>
+        <div>اگر تأمین‌کننده عمده هرکدام از کالاهای موردنیاز این خریدار هستید و می‌خواهید از درخواست‌های خرید او باخبر شوید، روی آیکون زنگولهٔ کنار کالا بزنید. در این صورت، درخواست‌های خرید این کالا در بخش درخواست‌های قیمت دستیار خرید آیمچ به شما اطلاع داده می‌شود تا قیمت خود را برای این خریدار ارسال کنید.</div>
+      </div>
+
+    </main>
+
+    </section>
+
 
 
 
@@ -4506,8 +4673,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
          روی کاتالوگ نگذارد) (۲) کادر راهنما «کاتالوگ ویژه چیست؟» → شیت از پایین (۳) مقدار شارژ
          موجود. «راه رایگان» حذف شد (در فرم شارژ ۲۹ هست) و گزارش تبلیغ به صفحهٔ جداگانهٔ ۴۵ رفت.
          IMPLEMENTATION NOTE: در پیاده‌سازی عملیاتی Promo { type: SPECIAL_SELLER, placement:
-         MATCH_BOOST, billing: PER_EVENT { unique_view: 1000, catalog_save: 3000, call: 3000 } } —
-         کسر فقط برای رویدادهای لیست تأمین؛ بازدید/تماس طبیعی سایر فرم‌ها رایگان است. -->
+         MATCH_BOOST, billing: PER_EVENT { unique_view: 1000, catalog_save: 3000, call: 3000, rq_send: 4000 } } —
+         (فاز ۵۸ مالک: هر ارسال درخواست خرید ۴٬۰۰۰ تومان)؛ کسر فقط برای رویدادهای لیست تأمین
+         و استعلام‌ها؛ بازدید/تماس طبیعی سایر فرم‌ها رایگان است. -->
     <section class="scr" id="scr-30" data-arm="sell" hidden>
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
@@ -4570,11 +4738,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <!-- ═══ فاز ۴۶ — گزارش تبلیغ (فرم جدا از ۳۰ طبق حکم مالک):
          گزارشِ افراد و کسب‌وکارهایی که با تبلیغ تعامل داشتند — چه کسایی کدام کالا را دیدند،
-         چه کسایی کاتالوگ را ذخیره کردند، چه کسایی تماس گرفتند و چه کسایی کاتالوگ را دیدند.
+         چه کسایی کاتالوگ را ذخیره کردند، چه کسایی تماس گرفتند، چه کسایی درخواست خرید فرستادند
+         و چه کسایی کاتالوگ را دیدند.
          IMPLEMENTATION NOTE: هر ردیف = یک رویداد واقعیِ لاگ‌شده
-         AdEvent { bizId, type: VIEW | SAVE | CALL | CATALOG_VIEW, goodId?, ts, charge }؛
-         آمار بالای صفحه جمعِ همان لاگ‌هاست و مصرف از شارژ فقط برای سه رویدادِ
-         لیست تأمین (بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰) محاسبه می‌شود. -->
+         AdEvent { bizId, type: VIEW | SAVE | CALL | RQ_SEND | CATALOG_VIEW, goodId?, ts, charge }؛
+         آمار بالای صفحه جمعِ همان لاگ‌هاست و مصرف از شارژ فقط برای چهار رویدادِ
+         لیست تأمین و استعلام (بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ ·
+         ارسال درخواست خرید ۴٬۰۰۰ — فاز ۵۸ مالک) محاسبه می‌شود. -->
     <section class="scr" id="scr-46" data-arm="sell" hidden>
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
@@ -4583,19 +4753,30 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- آمار کلی -->
+      <!-- آمار کلی — فاز ۵۸: رویداد چهارم «ارسال درخواست خرید» (۴٬۰۰۰ تومان) اضافه شد:
+           ۱۲۰×۱٬۰۰۰ + ۱۴×۳٬۰۰۰ + ۶×۳٬۰۰۰ + ۳×۴٬۰۰۰ = ۱۹۲٬۰۰۰ -->
       <div class="stat-strip" style="margin:0">
         <div class="stat"><div class="v">۱۲۰</div><div class="k">بازدید یونیک</div></div>
         <div class="stat"><div class="v">۱۴</div><div class="k">ذخیرهٔ کاتالوگ</div></div>
-        <div class="stat hot"><div class="v">۶</div><div class="k">تماس</div></div>
+        <div class="stat"><div class="v">۶</div><div class="k">تماس</div></div>
+        <div class="stat hot"><div class="v">۳</div><div class="k">درخواست خرید</div></div>
       </div>
       <div class="price-chips" style="margin-top:9px">
-        <span class="pc2"><svg><use href="#i-wallet"/></svg> مصرف از شارژ <b>۱۸۰٬۰۰۰ تومان</b></span>
+        <span class="pc2"><svg><use href="#i-wallet"/></svg> مصرف از شارژ <b>۱۹۲٬۰۰۰ تومان</b></span>
       </div>
 
       <!-- ریز افراد و کسب‌وکارها -->
       <div class="sec-title" style="margin-top:16px"><h2><svg><use href="#i-chart"/></svg> چه کسایی با تبلیغ شما کار کردند</h2></div>
       <div class="card" style="padding:2px 14px">
+        <!-- فاز ۵۸ — نمونهٔ رویداد «ارسال درخواست خرید» (۴٬۰۰۰ تومان) -->
+        <div class="usg-row">
+          <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-send"/></svg></div>
+          <div class="utx">
+            <div class="t">سوپرمارکت آریا</div>
+            <div class="s">درخواست خرید فرستاد · «برنج هاشمی · ۲۰ کیسه» · امروز ۰۹:۱۵</div>
+          </div>
+          <span class="cost">− ۴٬۰۰۰</span>
+        </div>
         <div class="usg-row">
           <div class="uic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-bookmark"/></svg></div>
           <div class="utx">
@@ -4839,6 +5020,42 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div style="flex:1">
           <div style="font-size:13.5px;font-weight:700">کاتالوگ‌های ذخیره‌شدهٔ من</div>
           <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">۳ کاتالوگ · دفترچهٔ تلفن تأمین‌کننده‌های شما</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      </div>
+
+      <!-- ═══ فاز ۵۸ (مالک) — سه باکس: درباره آیمچ · تماس با آیمچ · راهنما.
+           درباره/تماس شیت خودشان را باز می‌کنند؛ راهنما → شیت انتخاب راهنمای دستیار خرید/فروش
+           (صفحات ۶۰/۶۱). این‌ها «بخش خیلی مهم نرم‌افزار»‌اند — هویت و پشتیبانی همیشه در دسترس. ═══ -->
+      <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer" data-sheet="sheet-about">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:var(--primary-strong)">
+          <svg style="width:19px;height:19px"><use href="#i-info"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:700">درباره آیمچ</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">آیمچ چیست و چه کمکی به کسب‌وکار شما می‌کند</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      </div>
+
+      <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer" data-sheet="sheet-contact">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--green-bg);display:grid;place-items:center;color:var(--green)">
+          <svg style="width:19px;height:19px"><use href="#i-phone"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:700">تماس با آیمچ</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">پشتیبانی، تلفن و ایمیل — شنبه تا پنجشنبه ۹ تا ۱۸</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+      </div>
+
+      <div class="card" style="display:flex;align-items:center;gap:11px;cursor:pointer" data-sheet="sheet-guides">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--muted);display:grid;place-items:center;color:var(--primary-strong)">
+          <svg style="width:19px;height:19px"><use href="#i-checklist"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:700">راهنما</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">راهنمای دستیار خرید و راهنمای دستیار فروش</div>
         </div>
         <svg class="chev" style="width:15px;height:15px;color:var(--border-strong)"><use href="#i-chev"/></svg>
       </div>
@@ -5154,6 +5371,146 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
       <div class="hintnote">۷ کسب‌وکار دیگر هم با لینک شما عضو شده‌اند — مجموع ۱۲ دعوت و ۱٬۲۰۰٬۰۰۰ تومان شارژ. با هر به‌روزرسانی قیمت، کاتالوگ شما دوباره جلوی چشم همهٔ آن‌ها می‌آید.</div>
+
+    </main>
+
+    </section>
+
+    <!-- ═══ فاز ۵۸ (مالک) — صفحات راهنما: «و براشون صفحات راهنما درست کنیم».
+         ۶۰ = راهنمای دستیار خرید · ۶۱ = راهنمای دستیار فروش. ورود: تنظیمات (۰۷) هر دو لینک
+         + باکس «راهنما»ی پروفایل (۴۲) شیت انتخاب را باز می‌کند. keep است تا با هر دستیاری
+         باز شود — خواندن راهنمای بازوی دیگر اشکالی ندارد. گام‌ها = gd-row شماره‌دار. ═══ -->
+    <section class="scr" id="scr-60" data-arm="keep" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">راهنمای دستیار خرید<small>لیست خرید · استعلام قیمت · کاتالوگ‌های ذخیره‌شده</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="card gd-lead">
+        <span class="ic"><svg><use href="#i-basket"/></svg></span>
+        <div class="tx">
+          <b>دستیار خرید آیمچ چی‌کار می‌کند؟</b>
+          کالاهایی که عمده می‌خرید را یک‌بار معرفی می‌کنید؛ از آن به بعد قیمت‌ها، تأمین‌کنندگان و استعلام‌های شما همه یک‌جا و همیشه به‌روز می‌مانند — بدون زنگ‌زدن به این و آن.
+        </div>
+      </div>
+
+      <div class="gd-row">
+        <span class="n">۱</span>
+        <div class="tx">
+          <b>لیست خریدت را بساز</b>
+          <span>کالاهای عمدهٔ خودت را با حجم و دورهٔ خرید (مثلاً «۲۰ کیسه برنج، ماهانه») به لیست اضافه کن. از این به بعد قیمت و تأمین‌کنندهٔ همان کالاها خودشان جلوی چشم‌ات جمع می‌شوند.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۲</span>
+        <div class="tx">
+          <b>کاتالوگ‌های ذخیره‌شده = دفترچهٔ تلفن تو</b>
+          <span>کاتالوگ هر تأمین‌کننده‌ای را که ذخیره کنی، قیمت زندهٔ او همیشه در دسترس‌ات است؛ قیمت که عوض شود همان لحظه در همان لیست می‌بینی — بدون تماس و بدون عکس‌های تکراری در پیام‌ها.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۳</span>
+        <div class="tx">
+          <b>تابلوی تأمین هر کالا</b>
+          <span>با لمس هر کالا، تأمین‌کنندگانِ همان کالا را ببین — مرتب‌شده بر اساس نزدیکی، هم‌خوانی با حجم خریدت و اعتبار. فروشندهٔ ویژه‌ها بالاتر و با برچسب دیده می‌شوند.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۴</span>
+        <div class="tx">
+          <b>استعلام قیمت رقابتی</b>
+          <span>یک فرم استعلام به چند تأمین‌کننده بفرست و مهلت بگذار؛ پیشنهادها با قیمت و شرایط (نقدی/چک، تحویل) کنار هم مقایسه می‌شوند و بهترین را انتخاب می‌کنی. استعلام تک‌قلمی و چندقلمی دارد.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۵</span>
+        <div class="tx">
+          <b>گوش به زنگ</b>
+          <span>روی کالای موردنظر زنگوله را روشن کن و قیمت هدف بده؛ به محض رسیدن قیمتِ هر تأمین‌کننده به هدف‌ات، اعلان می‌گیری — لازم نیست هر روز چک کنی.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۶</span>
+        <div class="tx">
+          <b>بدون شبکه هم کار می‌کند</b>
+          <span>لینک لیست خریدت را برای تأمین‌کنندگان خودت بفرست؛ با عضویتشان، کاتالوگشان خودکار در کاتالوگ‌های ذخیره‌شدهٔ تو می‌نشیند و می‌توانی از همان‌ها استعلام گروهی و رقابتی بگیری.</span>
+        </div>
+      </div>
+
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>همهٔ امکانات خرید آیمچ رایگان است — هزینه‌ای فقط از فروشنده‌ها برای دیده‌شدنِ هدفمند گرفته می‌شود، نه از خریداران.</div>
+      </div>
+
+    </main>
+
+    </section>
+
+    <section class="scr" id="scr-61" data-arm="keep" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">راهنمای دستیار فروش<small>کاتالوگ · درخواست‌های خرید · تبلیغ ویژه</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="card gd-lead">
+        <span class="ic"><svg><use href="#i-store"/></svg></span>
+        <div class="tx">
+          <b>دستیار فروش آیمچ چی‌کار می‌کند؟</b>
+          یک‌بار کاتالوگ می‌سازی؛ از آن به بعد قیمت‌های زندهٔ تو همیشه جلوی چشم خریداران است — جای عکس‌های روزانه در پیام‌ها و تماس‌های «قیمت چند شد؟».
+        </div>
+      </div>
+
+      <div class="gd-row">
+        <span class="n">۱</span>
+        <div class="tx">
+          <b>کاتالوگت را بساز</b>
+          <span>کالاهایت را با قیمت و موجودی بگذار؛ قیمت هر کالا یعنی قیمتِ پلهٔ حداقل خرید — با تخفیف حجمی برای خرید بزرگ‌تر. ساخت کاتالوگ رایگان است.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۲</span>
+        <div class="tx">
+          <b>قیمت‌ها را تازه نگه دار</b>
+          <span>هر تغییر قیمت، «اعتبار» ۱ تا ۵ روز هم می‌گیرد؛ قیمت تازه در نتایج تطابق بالاتر دیده می‌شود و قیمت منقضی به خریدار سیگنال بدی می‌دهد. تمدید سریع یا به‌روزرسانی گروهی هر دو یک‌کلیکی است.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۳</span>
+        <div class="tx">
+          <b>درخواست‌های خرید را دنبال کن</b>
+          <span>خریدارانی که کالای تو را در لیست خریدشان دارند، استعلام می‌فرستند؛ با شرایط پرداخت (نقدی/چک) و تحویل پیشنهاد بده — بهترین پیشنهادِ او همان لحظه در مقایسه‌اش کنار بقیه است.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۴</span>
+        <div class="tx">
+          <b>کاتالوگت را به اشتراک بگذار</b>
+          <span>لینک، کد QR یا کارت ویزیت — هر مشتری که از لینک تو عضو شود، کاتالوگت خودکار در ذخیره‌شده‌هایش می‌نشیند و با هر به‌روزرسانی قیمت دوباره جلوی چشمش می‌آید.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۵</span>
+        <div class="tx">
+          <b>تبلیغ ویژه — فقط وقتی نتیجه بگیری</b>
+          <span>کالاهایت در شرایط مساوی بالاتر و با برچسب «فروشندهٔ ویژه» دیده می‌شوند؛ مصرف شارژ فقط با اتفاق واقعی: بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ · ارسال درخواست خرید ۴٬۰۰۰ تومان.</span>
+        </div>
+      </div>
+      <div class="gd-row">
+        <span class="n">۶</span>
+        <div class="tx">
+          <b>بدون شبکه هم می‌فروشی</b>
+          <span>لینک کاتالوگت را برای مشتریان فعلی‌ات بفرست — لازم نیست اول هزار خریدار در آیمچ عضو باشند؛ از همان مشتریان خودت شروع کن، بقیه‌اش با تطابق و تبلیغ هدفمند می‌آید.</span>
+        </div>
+      </div>
+
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <div>ساخت کاتالوگ و دریافت درخواست‌های خرید رایگان است — شارژ فقط برای دیده‌شدنِ ویژه و هدفمند مصرف می‌شود و گزارش کاملِ همان رویدادها در اختیارت است.</div>
+      </div>
 
     </main>
 
@@ -5649,7 +6006,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
-<!-- ═══ ۳) اشتراک با مخاطبین — فقط جریان «لیست خرید» (۰۸)؛ کاتالوگ شیت مخصوص خودش را دارد (فاز ۵۵) ═══ -->
+<!-- ═══ ۳) اشتراک با مخاطبین — جریان «لیست خرید» (۰۸/۲۳)؛ فاز ۵۸: از شیت sheet-lshare
+     می‌آید (یکی از دو گزینه)؛ کاتالوگ شیت مخصوص خودش را دارد (فاز ۵۵) ═══ -->
 <div class="sheet" id="sheet-contacts" role="dialog" aria-label="اشتراک با مخاطبین">
   <div class="grab"></div>
   <h3>اشتراک با مخاطبین</h3>
@@ -5669,6 +6027,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>آرش محمدی</b><span>۰۹۱۱ ··· ۸۸۰ · رشت</span></span>
     <button class="btn btn-sm btn-outline" data-send>ارسال</button>
   </div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ ۳-الف) فاز ۵۸ (مالک) — اشتراک‌گذاری لیست خرید: مدالی شبیه مدال کاتالوگ،
+     ولی فقط دو گزینه: «اشتراک گذاری با مخاطبین» (همین شیت بالا) و «اشتراک گذاری در
+     شبکه‌های اجتماعی» — که در پیاده‌سازی عملیاتی منوی اشتراک‌گذاری خود گوشی
+     (تلگرام/واتساپ/…) را با لینک لیست باز می‌کند (navigator.share). ═══ -->
+<div class="sheet" id="sheet-lshare" role="dialog" aria-label="اشتراک‌گذاری لیست خرید">
+  <div class="grab"></div>
+  <h3>اشتراک‌گذاری لیست خرید</h3>
+  <div class="sub">لینک لیست خریدت را برای تأمین‌کنندگانت بفرست</div>
+  <button class="sheet-row" data-sheet="sheet-contacts">
+    <span class="ico"><svg><use href="#i-users-v2"/></svg></span>
+    <span class="tx"><b>اشتراک گذاری با مخاطبین</b><span>اعضای ای‌مچ در پیام‌های ای‌مچ؛ بقیه با پیامک</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-nativeshare>
+    <span class="ico"><svg><use href="#i-share"/></svg></span>
+    <span class="tx"><b>اشتراک گذاری در شبکه‌های اجتماعی</b><span>تلگرام، واتساپ و… — منوی اشتراک‌گذاری گوشی</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <div class="hintnote">در پیاده‌سازی عملیاتی، «اشتراک گذاری در شبکه‌های اجتماعی» برنامه‌های اشتراک‌گذاری خود گوشی را با لینک لیست خرید و یک پیام آماده باز می‌کند.</div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
@@ -6228,7 +6608,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <!-- ═══ فاز ۴۶ — شیت راهنمای «کاتالوگ ویژه چیست؟» (فرم ۳۰) ═══ -->
 <!-- IMPLEMENTATION NOTE: متن راهنما طبق دستور مالک (فاز ۴۶) — در پیاده‌سازی عملیاتی همین متن
      از تنظیمات/CMS خوانده می‌شود تا بدون رلیز قابل ویرایش باشد. قیمت‌ها با مدل PER_EVENT
-     هم‌گام‌اند: بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ تومان. -->
+     هم‌گام‌اند: بازدید یونیک ۱٬۰۰۰ · ذخیرهٔ کاتالوگ ۳٬۰۰۰ · تماس ۳٬۰۰۰ · ارسال درخواست خرید ۴٬۰۰۰
+     تومان (فاز ۵۸ — مالک: هر درخواست خرید ۴٬۰۰۰ تومان). -->
 <div class="sheet" id="sheet-adguide" role="dialog" aria-label="کاتالوگ ویژه چیست؟">
   <div class="grab"></div>
   <h3>کاتالوگ ویژه چیست؟</h3>
@@ -6251,9 +6632,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="n">۳</span>
     <div class="tx"><b>به ازای هر تماس — ۳٬۰۰۰ تومان</b><span>اگر خریدار با شما تماس بگیرد.</span></div>
   </div>
+  <!-- فاز ۵۸ (مالک) — رویداد چهارم: ارسال درخواست خرید — هر درخواست ۴٬۰۰۰ تومان -->
+  <div class="adg-row">
+    <span class="n">۴</span>
+    <div class="tx"><b>به ازای هر ارسال درخواست خرید — ۴٬۰۰۰ تومان</b><span>هر خریدارِ هدفمند که برای کالای شما درخواست قیمت بفرستد — درخواستش با حجم و مهلت، مستقیم به دست شما می‌رسد تا پیشنهاد بدهید.</span></div>
+  </div>
 
-  <div class="adg-p">البته این هزینه‌ها فقط زمانی اعمال می‌شوند که این اتفاقات در <b>لیست تأمین</b> بیفتند؛ به ازای بازدیدها یا تماس‌های طبیعی در سایر فرم‌ها، هزینه‌ای از تأمین‌کنندگان ویژه کم نمی‌شود.</div>
-  <div class="adg-p">یک مزیت دیگر این است که ما به فروشندگان ویژه، تمام گزارشِ اتفاقات و افراد را می‌دهیم: چه کسانی ذخیره کردند، چه کسانی کدام کالا را دیدند، چه کسانی تماس گرفتند و چه کسانی کاتالوگ شما را دیدند.</div>
+  <div class="adg-p">البته این هزینه‌ها فقط زمانی اعمال می‌شوند که این اتفاقات در <b>لیست تأمین و استعلام‌های خرید</b> بیفتند؛ به ازای بازدیدها یا تماس‌های طبیعی در سایر فرم‌ها، هزینه‌ای از تأمین‌کنندگان ویژه کم نمی‌شود.</div>
+  <div class="adg-p">یک مزیت دیگر این است که ما به فروشندگان ویژه، تمام گزارشِ اتفاقات و افراد را می‌دهیم: چه کسانی ذخیره کردند، چه کسانی کدام کالا را دیدند، چه کسانی تماس گرفتند، چه کسانی کاتالوگ شما را دیدند و چه کسانی درخواست خرید فرستادند.</div>
 
   <div class="hintnote">با پایان شارژ، ویژه بودن موقتاً متوقف می‌شود (حذف نمی‌شود) و با شارژ بعدی از همان‌جا ادامه می‌یابد.</div>
   <button class="btn btn-primary sheet-cta" data-close>فهمیدم</button>
@@ -6632,6 +7018,62 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
+<!-- ═══ فاز ۵۸ (مالک) — سه باکس پروفایل (۴۲): درباره آیمچ · تماس با آیمچ · راهنما.
+     متن‌ها در پیاده‌سازی عملیاتی از تنظیمات/CMS خوانده می‌شوند تا بدون رلیز قابل ویرایش باشند. ═══ -->
+<div class="sheet" id="sheet-about" role="dialog" aria-label="درباره آیمچ">
+  <div class="grab"></div>
+  <h3>درباره آیمچ</h3>
+  <div class="sub">دستیار خرید و فروش عمده برای کسب‌وکارهای ایران</div>
+  <div class="adg-p">آیمچ جایگزینِ کارِ روزمرهٔ خرید و فروش عمده است: عکس‌های قیمت که هر روز در پیام‌ها می‌چرخند، تماس‌های «قیمت چند شد؟» و دفترچه‌هایی که همیشه ناقص‌اند. فروشنده یک‌بار کاتالوگ می‌سازد و قیمت‌های زنده‌اش همیشه جلوی چشم خریداران است؛ خریدار لیست خریدش را می‌سازد و با یک استعلام، از چند تأمین‌کننده قیمت رقابتی می‌گیرد.</div>
+  <div class="adg-p">آیمچ حتی <b>بدون شبکه</b> برای شما کار می‌کند: فروشنده لینک کاتالوگش را برای مشتریان خودش می‌فرستد و خریدار لیست خریدش را برای تأمین‌کنندگان خودش — عضویت هر طرف، ارتباط را برای همیشه در آیمچ ماندگار می‌کند.</div>
+  <div class="adg-p">همهٔ امکانات پایه رایگان است — ساخت کاتالوگ، لیست خرید و استعلام قیمت. فروشنده‌ها فقط برای دیده‌شدنِ هدفمند (تبلیغ ویژه) شارژ مصرف می‌کنند و فقط وقتی که واقعاً نتیجه بگیرند.</div>
+  <div class="grp">نسخه</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-spark"/></svg></span>
+    <span class="tx"><b>پروتوتایپ تعاملی</b><span>فاز ۵۸ · اکتبر ۲۰۲۶</span></span>
+  </div>
+  <button class="btn btn-primary sheet-cta" data-close>فهمیدم</button>
+</div>
+
+<div class="sheet" id="sheet-contact" role="dialog" aria-label="تماس با آیمچ">
+  <div class="grab"></div>
+  <h3>تماس با آیمچ</h3>
+  <div class="sub">پشتیبانی — شنبه تا پنجشنبه، ۹ تا ۱۸</div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-phone"/></svg></span>
+    <span class="tx"><b>تلفن پشتیبانی</b><span>۰۲۱ - ۹۱۰۰ ۹۱۰۰</span></span>
+    <button class="btn btn-sm btn-outline" data-dial>تماس</button>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-msg"/></svg></span>
+    <span class="tx"><b>ایمیل</b><span>support@imach.ir</span></span>
+    <button class="btn btn-sm btn-outline" data-send>ارسال</button>
+  </div>
+  <div class="sheet-row" style="cursor:default">
+    <span class="ico"><svg><use href="#i-globe"/></svg></span>
+    <span class="tx"><b>وب‌سایت</b><span>imach.ir</span></span>
+  </div>
+  <div class="hintnote">در پیاده‌سازی عملیاتی «تماس» شماره‌گیر گوشی و «ارسال» برنامهٔ ایمیل را باز می‌کند؛ پاسخ‌های پرتکرار هم در راهنمای هر دستیار آمده است.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<div class="sheet" id="sheet-guides" role="dialog" aria-label="راهنما">
+  <div class="grab"></div>
+  <h3>راهنما</h3>
+  <div class="sub">راهنمای هر دستیار — قدم‌به‌قدم با مثال</div>
+  <button class="sheet-row" data-go="60">
+    <span class="ico buy"><svg><use href="#i-list"/></svg></span>
+    <span class="tx"><b>راهنمای دستیار خرید</b><span>لیست خرید · استعلام قیمت · کاتالوگ‌های ذخیره‌شده</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="sheet-row" data-go="61">
+    <span class="ico sell"><svg><use href="#i-store"/></svg></span>
+    <span class="tx"><b>راهنمای دستیار فروش</b><span>کاتالوگ · درخواست‌های خرید · تبلیغ ویژه</span></span>
+    <svg class="chev"><use href="#i-chev"/></svg>
+  </button>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
 <!-- ═══ فاز ۳۳ — مدال سادهٔ ثبت نظر (نوار «نظر خریداران» لندینگ ۱۵ + سایر نظرات ۴۳)
      فاز ۵۶ (مالک): بازگردانده شد + «تأمین‌کننده» صریح شد — فروشنده/تأمین‌کننده هم نظر
      ثبت می‌کند و نظرش در «سایر نظرات» (۴۳) هم به نمایش می‌آید. ═══ -->
@@ -6987,7 +7429,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '45': '08', /* فاز ۴۵: استعلام‌ها ← لیست خرید */
     '44': '01', /* فاز ۳۶: به‌روزرسانی گروهی قیمت/موجودی ← کاتالوگ */
     '53': '01', /* فاز ۵۳: دعوت‌شدگان ← کاتالوگ (ورود از نوار آمار/تنظیمات/کیف پول/اعلان) */
-    '43': '15' /* فاز ۵۶ (بازگشت فاز ۳۳): سایر نظرات ← لندینگ */
+    '43': '15', /* فاز ۵۶ (بازگشت فاز ۳۳): سایر نظرات ← لندینگ */
+    '23': '08', /* فاز ۵۸ (بازگشت فاز ۲۷): صفحهٔ خرید از دید عمومی ← لیست خرید (ورود با چشم ۰۸) */
+    '60': '42', '61': '42' /* فاز ۵۸: صفحات راهنما ← پروفایل (ورود از تنظیمات ۰۷ و شیت راهنما) */
   };
   var BTN = {
     '01': [['افزودن کالای جدید', '04']], /* فاز ۵۲: برچسب جدید مالک؛ مقصد همان فرم افزودن/ویرایش کالا */
@@ -7006,7 +7450,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — کاتالوگ‌های ذخیره‌شدهٔ من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -9684,6 +10128,50 @@ body > div[id^="scr-d"][hidden] { display: none; }
     if (smsEl) {
       smsEl.textContent = 'پیامک شد ✓';
       smsEl.classList.add('done-send');
+      return;
+    }
+
+    /* ═══ فاز ۵۸ — «اشتراک گذاری در شبکه‌های اجتماعی» (شیت lshare): در پیاده‌سازی عملیاتی
+       منوی اشتراک‌گذاری خود گوشی (تلگرام/واتساپ/…) با لینک لیست باز می‌شود — navigator.share؛
+       در ماک/مرورگر بدون پشتیبانی، همان تأیید موقت الگوی data-copy نشان داده می‌شود ═══ */
+    var nsEl = t.closest('[data-nativeshare]');
+    if (nsEl) {
+      if (navigator.share) {
+        navigator.share({
+          title: 'لیست خرید سوپرمارکت آریا',
+          text: 'لیست خرید ما — قیمتهای خودتان را برایمان بفرستید:',
+          url: 'https://imach.ir/b/arya'
+        }).catch(function () {}); /* لغو کاربر طبیعی است */
+      } else {
+        var nsRow = nsEl.closest('.sheet-row');
+        var nsB = nsEl.querySelector('b');
+        if (nsRow) nsRow.classList.add('done');
+        if (nsB) nsB.textContent = 'منوی اشتراک‌گذاری گوشی باز شد';
+        setTimeout(function () {
+          if (nsB) nsB.textContent = 'اشتراک گذاری در شبکه‌های اجتماعی';
+          closeSheet();
+        }, 1100);
+      }
+      return;
+    }
+
+    /* فاز ۵۸ — «ذخیرهٔ لیست» (۲۳ بازگشته): فروشنده لیست این خریدار را ذخیره می‌کند
+       تا کالاهایش و درخواست‌های خریدش برایش زنده بماند (الگوی فاز ۲۹) */
+    var sl = t.closest('[data-savelist]');
+    if (sl) {
+      if (!sl.classList.contains('saved')) {
+        sl.classList.add('saved');
+        sl.innerHTML = '<svg><use href="#i-check"/></svg> ذخیره شد';
+        sl.title = 'در فهرست خریداران ذخیره‌شدهٔ شما';
+      }
+      return;
+    }
+
+    /* فاز ۵۸ — «تماس» (شیت تماس با آیمچ): در پیاده‌سازی عملیاتی شماره‌گیر گوشی باز می‌شود */
+    var dl = t.closest('[data-dial]');
+    if (dl) {
+      dl.textContent = 'در حال تماس…';
+      dl.classList.add('done-send');
       return;
     }
 
