@@ -1,0 +1,127 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>۲۲ — ویرایش کسب‌وکار · دستیار فروش</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  /* ═══ کارت تیک اعتماد (فاز ۲۰) ═══ */
+  .trust-card{display:flex;align-items:center;gap:12px;margin-top:12px;background:linear-gradient(180deg,#f5faff,#fff);border:1px solid #cfe0f4;border-radius:var(--radius);box-shadow:var(--shadow-card);padding:13px 14px}
+  .trust-card .tc-ic{width:44px;height:44px;border-radius:13px;background:#e8f1fd;color:#1d5fb8;display:grid;place-items:center;flex-shrink:0}
+  .trust-card .tc-ic svg{width:21px;height:21px}
+  .trust-card .tc-tx{flex:1;min-width:0}
+  .trust-card .tc-tx b{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .trust-card .tc-tx span{display:block;font-size:10.5px;color:var(--muted-fg);margin-top:4px;line-height:1.8}
+</style>
+</head>
+<body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-verified" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.9 8.6a4 4 0 014.7-4.7 4 4 0 016.8 0 4 4 0 014.7 4.7 4 4 0 010 6.8 4 4 0 01-4.7 4.7 4 4 0 01-6.8 0 4 4 0 01-4.7-4.7 4 4 0 010-6.8z"/><path d="M9 12l2 2 4-4"/></symbol>
+</svg>
+
+<div class="stage">
+  <div class="phone" data-arm="sell">
+
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">ویرایش کسب‌وکار<small>پخش برنج پارس · رشت</small></div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- هویت کسب‌وکار -->
+      <div class="card" style="display:flex;align-items:center;gap:12px">
+        <div class="avatar-lg" style="padding:0"><img src="../png/goods/catalog-logo.png" alt="لوگوی کسب‌وکار"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:700">لوگوی کسب‌وکار</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">کنار نامت در کاتالوگ عمومی و پیام‌ها دیده می‌شود</div>
+        </div>
+        <button class="btn btn-sm btn-outline">تعویض لوگو</button>
+      </div>
+
+      <!-- تیک اعتماد — ارسال مدارک هویتی برای ادمین -->
+      <div class="trust-card">
+        <div class="tc-ic"><svg><use href="#i-verified"/></svg></div>
+        <div class="tc-tx">
+          <b>تیک اعتماد iMach <span class="badge b-verified">اختیاری</span></b>
+          <span>برای اعتمادسازی بیشتر، تیک اعتماد بگیر تا خریداران با خیال راحت‌تر از تو خرید کنند — فقط به صاحب اصلی کسب‌وکار داده می‌شود.</span>
+        </div>
+        <button class="btn btn-sm btn-outline" data-sheet="sheet-trust">ارسال مدارک</button>
+      </div>
+
+      <!-- فرم ویرایش -->
+      <div class="field" style="margin-top:12px">
+        <label>نام کسب‌وکار</label>
+        <input class="input" value="پخش برنج پارس">
+      </div>
+
+      <div class="field">
+        <label>نوع کسب‌وکار <span class="opt">— خریداران می‌بینند</span></label>
+        <button class="input sel" data-sheet="sheet-biztype">
+          <span style="color:var(--foreground);font-weight:700">عمده‌فروش</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="hint">خریدار از همان اول می‌داند از تولیدکننده می‌خرد یا از عمده‌فروش — روی کاتالوگت هم نمایش داده می‌شود</div>
+      </div>
+
+      <div class="field">
+        <label>صنف <span class="opt">— با جستجو</span></label>
+        <button class="input sel" data-sheet="sheet-trade">
+          <span style="color:var(--foreground);font-weight:700">پخش مواد غذایی</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="hint">از میان اصناف ای‌مچ جستجو و انتخاب می‌شود</div>
+      </div>
+
+      <div class="field">
+        <label>شهر</label>
+        <div class="pillchoice">
+          <button class="pill active">رشت</button>
+          <button class="pill">تهران</button>
+          <button class="pill">اصفهان</button>
+          <button class="pill">همدان</button>
+          <button class="pill" data-sheet="sheet-city">سایر…</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>لوکیشن روی نقشه</label>
+        <div class="loc-box">
+          <div class="loc-map">
+            <img src="../png/map-flat.jpg" alt="نقشهٔ لوکیشن">
+            <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          </div>
+          <div class="loc-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.1-7-11a7 7 0 1114 0c0 5.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <span>رشت — جادهٔ فومن، انبار مرکزی</span>
+            <button class="btn btn-sm btn-outline">انتخاب از نقشه</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>آدرس <span class="opt">— اختیاری</span></label>
+        <input class="input" value="رشت، خیابان معلم، جنب پمپ بنزین، انبار برنج پارس">
+        <div class="hint">برای مراجعهٔ خریداران محلی — نمایش آن اختیاری است</div>
+      </div>
+
+      <div class="field">
+        <label>معرفی کوتاه</label>
+        <textarea class="input">فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان</textarea>
+        <div class="hint" style="text-align:left">۴۲ / ۱۶۰</div>
+      </div>
+
+    </main>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" style="flex:1">ذخیره تغییرات</button>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

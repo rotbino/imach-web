@@ -1,0 +1,267 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>۰۰ — معماری جدید iMach</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-switch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="8" cy="12" r="2.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-5.5h13.6L20 9"/><path d="M4 9v10.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5V9"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.7-6.2a1.6 1.6 0 013 .3L10.5 8h3l.8-2.9a1.6 1.6 0 013-.3L19 11"/><path d="M4 11h16l-1.4 8.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.5-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.7 1.1z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0115 0"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8z"/><path d="M19 4.5l.7 2 .2.3M19 17.5l-.7-2"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<div class="arch-wrap" style="background:#fff">
+
+  <div style="display:flex;align-items:center;gap:14px">
+    <img src="assets/logo3.svg" style="height:34px">
+    <div>
+      <h1 style="font-size:22px;font-weight:700">معماری جدید iMach — دو دستیار، یک شل</h1>
+      <div style="font-size:12px;color:var(--muted-fg);margin-top:4px">
+        سوییچ بالای اپ بین «دستیار فروش» و «دستیار خرید» — کاتالوگ قلبِ دستیار فروش، لیست خرید و تابلوی تأمین قلبِ دستیار خرید
+      </div>
+    </div>
+  </div>
+
+  <!-- صفحات عمومی (قیف ورود) -->
+  <div style="margin-top:18px;border:1.5px solid var(--border-strong);border-radius:16px;padding:14px 16px;background:#fcfbf7">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:11px">
+      <div style="width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center">
+        <svg style="width:18px;height:18px"><use href="#i-switch"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13.5px;font-weight:700">صفحات عمومی — مسیر ورود (قبل از لاگین)</div>
+        <div style="font-size:11px;color:var(--muted-fg);margin-top:3px">لندینگ معرفی از app/page.tsx فعلی بازطراحی می‌شود · نقش انتخابی در ثبت‌نام فقط پیش‌فرضِ فعال‌بودن دستیارهاست — هر دستیار بعداً از تنظیمات روشن/خاموش می‌شود</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div class="arch-page" style="margin-bottom:0">
+        <div class="ic" style="background:var(--muted);color:var(--stone-soft)"><svg><use href="#i-sparkles"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۱۵. صفحه اصلی (لندینگ)</div>
+          <div class="ds">هیرو + کروسل اسکرین‌شات‌های واقعی + دو دستیار + نظرات + FAQ</div>
+        </div>
+        <span class="q">ای‌مچ چیست؟</span>
+      </div>
+      <div class="arch-page" style="margin-bottom:0">
+        <div class="ic" style="background:var(--muted);color:var(--stone-soft)"><svg><use href="#i-user"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۱۶. ثبت‌نام (دو گام)</div>
+          <div class="ds">گام ۱ شماره+کد · گام ۲ کسب‌وکار: نام، نقش، شهر، صنف</div>
+        </div>
+        <span class="q">چطور شروع کنم؟</span>
+      </div>
+      <div class="arch-page" style="margin-bottom:0">
+        <div class="ic" style="background:var(--muted);color:var(--stone-soft)"><svg><use href="#i-switch"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۱۷. ورود</div>
+          <div class="ds">شماره + کد پیامکی (یا رمز عبور) — مستقیم به آخرین دستیار</div>
+        </div>
+        <span class="q">چطور برگردم؟</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- شل -->
+  <div style="margin-top:18px;display:flex;align-items:center;gap:12px;background:#f7f6f2;border:1.5px solid var(--border-strong);border-radius:16px;padding:13px 18px">
+    <div style="width:34px;height:34px;border-radius:10px;background:var(--foreground);color:#fff;display:grid;place-items:center">
+      <svg style="width:18px;height:18px"><use href="#i-switch"/></svg>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:700">شل مشترک (AppHeader + سوییچ اصلی + تب‌بار پایین)</div>
+      <div style="font-size:11px;color:var(--muted-fg);margin-top:3px">سوییچ: <span class="badge b-orange">دستیار فروش</span> <span class="badge b-stone">دستیار خرید</span> — رنگ فعالِ فروش = نارنجی، رنگ فعالِ خرید = سنگی (زبان رنگ فعلی حفظ می‌شود)</div>
+    </div>
+    <svg style="width:26px;height:26px;color:var(--border-strong);transform:rotate(90deg)"><use href="#i-arrow"/></svg>
+  </div>
+
+  <div class="arch-cols">
+
+    <!-- ═══ دستیار فروش ═══ -->
+    <div class="arch-box sell">
+      <div class="arch-h">
+        <span style="width:30px;height:30px;border-radius:9px;background:var(--primary);color:#fff;display:grid;place-items:center"><svg style="width:17px;height:17px"><use href="#i-store"/></svg></span>
+        دستیار فروش
+      </div>
+      <div class="arch-sub">«من چه می‌فروشم و چه خریدارانی پشتش هستند؟» — تب‌های پایین: ۳ مورد</div>
+
+      <div class="arch-page">
+        <div class="ic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-store"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۱. کاتالوگ من <span style="font-size:9.5px;color:var(--muted-fg)">(= /sell فعلی)</span></div>
+          <div class="ds">نمای عمومی + مدیریتِ مالک در یک صفحه (WYSIWYG موجود حفظ می‌شود) · کارت‌ها با شاخص کوچک بازدید/دنبال‌کننده · افزودن کالا (فرم/اسکنر/اکسل/کپی/مرجع)</div>
+        </div>
+        <span class="q">من چه می‌فروشم؟</span>
+      </div>
+
+      <div class="arch-page">
+        <div class="ic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-inbox"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۲. درخواست‌های قیمت</div>
+          <div class="ds">تب «به من» (Inquiryهای مستقیم) + تب «فرصت‌های بازار» (تقاضای منطبق با کاتالوگ) · جزئیات + فرم پیشنهاد</div>
+        </div>
+        <span class="q">چه کسی از من قیمت خواست؟</span>
+      </div>
+
+      <div class="arch-page">
+        <div class="ic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-user"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۳. پروفایل</div>
+          <div class="ds">تنظیمات فروشگاه + مشتریان من (دنبال‌کنندگان) + اشتراک لینک/QR + نمای عمومی کاتالوگ</div>
+        </div>
+        <span class="q">فروشگاهم چطور دیده می‌شود؟</span>
+      </div>
+
+      <div class="arch-page" style="background:#fffdf9">
+        <div class="ic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-box"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">جزئیات کالا (زیرمجموعه ۱)</div>
+          <div class="ds">عمومی: قیمت + مشخصات + «دنبال کردن قیمت» · مالک: پنل مدیریت (ویرایش/قیمت/موجودی/غیرفعال) + عملکرد ۳۰ روز + خریداران علاقه‌مند + درخواست‌های مرتبط</div>
+        </div>
+        <span class="q">این کالا چطور می‌رود؟</span>
+      </div>
+
+      <div class="arch-note">
+        <b>حذف می‌شود:</b> تب «داشبورد» (/sell/panel) — محتوایش بین «درخواست‌ها» و «پروفایل» و کارت‌ها پخش می‌شود · «مشتریان من» به داخل پروفایل می‌رود · «خریدارها» (/market سمت فروش) به تب «فرصت‌های بازار».
+      </div>
+    </div>
+
+    <!-- ═══ دستیار خرید ═══ -->
+    <div class="arch-box buy">
+      <div class="arch-h">
+        <span style="width:30px;height:30px;border-radius:9px;background:var(--stone);color:#fff;display:grid;place-items:center"><svg style="width:17px;height:17px"><use href="#i-basket"/></svg></span>
+        دستیار خرید
+      </div>
+      <div class="arch-sub">«من چه می‌خرم، از چه کسی و با چه شرایطی؟» — تب‌های پایین: ۴ مورد</div>
+
+      <div class="arch-page">
+        <div class="ic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-list"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۱. لیست خرید <span style="font-size:9.5px;color:var(--muted-fg)">(= /buy فعلی)</span></div>
+          <div class="ds">کالاهای دنبال‌شده + بهترین قیمت هر کالا + تعداد تأمین‌کننده + روند ▼▲ · ورودی «درخواست‌های من»</div>
+        </div>
+        <span class="q">من چه می‌خرم؟</span>
+      </div>
+
+      <div class="arch-page" style="border-color:#c9c5bd;background:#fcfcfa">
+        <div class="ic" style="background:var(--stone);color:#fff"><svg><use href="#i-box"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">تابلوی تأمین (زیرمجموعه ۱ — صفحه کالا)</div>
+          <div class="ds">همه تأمین‌کننده‌های یک کالا: قیمت، روند، تازگی، شرایط، رابطه من با او · «معرفی iMach» برچسب جدا و شفاف · اکشن: درخواست قیمت / کاتالوگ / دنبال کردن</div>
+        </div>
+        <span class="q">چه کسی، چه شرایطی؟</span>
+      </div>
+
+      <div class="arch-page">
+        <div class="ic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-building"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۲. تأمین‌کنندگان <span style="font-size:9.5px;color:var(--muted-fg)">(= /buy/suppliers + پیشنهادها ادغام جزئی)</span></div>
+          <div class="ds">فقط «مرتبط با لیست من» و «دنبال‌شده» — بدون دایرکتوری کل بازار · شامل «خودش آمد» و «معرفی iMach» با برچسب جدا</div>
+        </div>
+        <span class="q">می‌توانم از چه کسی بخرم؟</span>
+      </div>
+
+      <div class="arch-page">
+        <div class="ic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-sparkles"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۳. پیشنهادها</div>
+          <div class="ds">یافته‌های موتور تطبیق: قیمت بهتر / تأمین‌کننده جدید / جایگزین مشابه · با MatchRing و دلیل پیشنهاد</div>
+        </div>
+        <span class="q">iMach چه چیزی برایم پیدا کرد؟</span>
+      </div>
+
+      <div class="arch-page">
+        <div class="ic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-user"/></svg></div>
+        <div style="flex:1">
+          <div class="nm">۴. پروفایل</div>
+          <div class="ds">تنظیمات اعلان (تغییر قیمت تابلوها / پیشنهادها / پاسخ‌ها) + تنظیمات کسب‌وکار + میان‌برها</div>
+        </div>
+        <span class="q">خرید من چطور مدیریت شود؟</span>
+      </div>
+
+      <div class="arch-note">
+        <b>حذف می‌شود:</b> «داشبورد خرید» (/buy/panel) — «تابلوهای دنبال‌شده» به تابلوی تأمینِ هر کالا می‌رود، «پیشنهادهای تامین‌کننده» به پیشنهادها، «تامین‌کننده‌های پیشنهادی» به تأمین‌کنندگان · «فروشنده‌ها» (/market سمت خرید) به پیشنهادها.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ جریان‌های کلیدی ═══ -->
+  <div style="margin-top:26px;background:#f7f6f2;border:1.5px solid var(--border-strong);border-radius:18px;padding:18px 20px">
+    <div style="font-size:16px;font-weight:700;margin-bottom:14px">جریان‌های کلیدی — چطور صفحات به هم وصل می‌شوند</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px">
+        <div style="font-size:13px;font-weight:700;color:var(--stone);margin-bottom:8px">جریان ۱ — دنبال کردن قیمت (خریدار)</div>
+        <div style="font-size:11.5px;color:var(--stone-soft);line-height:2.2;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span class="badge b-stone">کاتالوگ عمومی فروشنده</span>
+          <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-arrow"/></svg>
+          <span class="badge b-orange">دنبال کردن قیمت</span>
+          <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-arrow"/></svg>
+          <span class="badge b-stone">می‌نشیند در لیست خرید</span>
+          <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-arrow"/></svg>
+          <span class="badge b-stone">تابلوی تأمین ساخته می‌شود</span>
+        </div>
+        <div style="font-size:10.5px;color:var(--muted-fg);margin-top:8px;line-height:1.9">
+          دنبال‌کردن آیتمِ مستقل از فالوی فروشنده است: با هر تغییر قیمتِ هر تأمین‌کننده، ردیف تابلو تازه می‌شود (شکاف بک‌اند: مدل Follow فعلی سطح کسب‌وکار است — مدل «دنبال‌کردن کالا» باید اضافه شود).
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px">
+        <div style="font-size:13px;font-weight:700;color:var(--primary-strong);margin-bottom:8px">جریان ۲ — درخواست قیمت (دوطرفه)</div>
+        <div style="font-size:11.5px;color:var(--stone-soft);line-height:2.2;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span class="badge b-stone">تابلوی تأمین</span>
+          <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-arrow"/></svg>
+          <span class="badge b-stone">انتخاب تأمین‌کننده‌ها + مقدار</span>
+          <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-arrow"/></svg>
+          <span class="badge b-orange">Inquiry در «درخواست‌های قیمت» فروشنده</span>
+          <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-arrow"/></svg>
+          <span class="badge b-orange">پیشنهاد (Offer)</span>
+          <svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#i-arrow"/></svg>
+          <span class="badge b-stone">پاسخ در «درخواست‌های من» خریدار</span>
+        </div>
+        <div style="font-size:10.5px;color:var(--muted-fg);margin-top:8px;line-height:1.9">
+          زیرساخت موجود (Inquiry/Offer/requestQuote) دقیقاً همین است — فقط گیرنده‌ها به‌جای «۵ موردِ خودکار موتور» انتخابی می‌شوند.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- قواعد ساده‌سازی -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:13px 15px">
+        <div style="font-size:12.5px;font-weight:700;margin-bottom:7px">هر صفحه فقط یک پرسش</div>
+        <div style="font-size:10.5px;color:var(--muted-fg);line-height:2">
+          کاتالوگ: «چه می‌فروشم؟» · لیست: «چه می‌خرم؟» · تابلو: «چه کسی، چه شرایطی؟» · درخواست‌ها: «چه کسی پرسید؟» · تأمین‌کنندگان: «از چه کسی؟» · پیشنهادها: «iMach چه یافت؟»
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:13px 15px">
+        <div style="font-size:12.5px;font-weight:700;margin-bottom:7px">تمایز تابلو ↔ درخواست</div>
+        <div style="font-size:10.5px;color:var(--muted-fg);line-height:2">
+          تابلوی تأمین = نیازِ دائمی و رصد پیوسته قیمت‌ها · درخواست قیمت = نیازِ مقطعی و مشخص («این ماه ۲۰ کیسه») — این دو در UI هیچ‌جا مخلوط نمی‌شوند.
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:13px 15px">
+        <div style="font-size:12.5px;font-weight:700;margin-bottom:7px">آینده درآمدی — بدون شکستن اعتماد</div>
+        <div style="font-size:10.5px;color:var(--muted-fg);line-height:2">
+          جای تبلیغِ آینده فقط قالب «معرفی iMach» است: برچسب جدا، چینش بی‌تعارض، تأثیری روی رتبه تطبیق. رتبه‌بندی همیشه از موتور تطبیق می‌آید.
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;font-size:11px;color:var(--muted-fg);line-height:2;background:#fff;border:1px dashed var(--border-strong);border-radius:10px;padding:10px 14px">
+      <b>خارج از دامنهٔ این فاز:</b> مارکت (تا زمان هزاران کاتالوگ) · پیام‌رسان داخلی · پرداخت. <b>باقی می‌ماند:</b> ثبت‌نام/ورود، پنل ادمین، پنل برند (/brand — از ناوبری اصلی خارج می‌شود و از پروفایل/کاتالوگ لینک می‌خورد).
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
