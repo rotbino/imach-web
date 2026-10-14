@@ -25,7 +25,7 @@ const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗
 
 /* ═══ ۰. گاردهای ساختاری ═══ */
 const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','44','45','46','48'];
-T('ساختار: ۳۳ صفحه داخل گوشی (فاز ۶۰: +۶۲ · فاز ۶۴: +۶۴/۶۵ سفارش‌ها)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 33));
+T('ساختار: ۳۴ صفحه داخل گوشی (فاز ۶۰: +۶۲ · فاز ۶۴: +۶۴/۶۵ · فاز ۶۷: +۱۴)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 34));
 T('ساختار: هیچ scr بیرون از گوشی/استیج', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 T('ساختار: ارتفاع سند ≤ ۱۰۰۰', await page.evaluate(() => document.documentElement.scrollHeight <= 1000));
 T('ساختار: صفحهٔ ۴۷ حذف شده (جذب مودال)', await page.locator('#scr-47').count() === 0);

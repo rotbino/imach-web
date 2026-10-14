@@ -1,5 +1,5 @@
 // فاز ۶۶ (قدم نهایی) — راستی‌آزمایی جامع بستن مهاجرت:
-//  ۱) جاروی همهٔ ۳۳ صفحه: صفر خطای کنسول/صفحه + صفر سرریز افقی
+//  ۱) جاروی همهٔ ۳۴ صفحه (فاز ۶۷: +۱۴ تنظیمات خرید): صفر خطای کنسول/صفحه + صفر سرریز افقی
 //  ۲) باگ‌های صف قدیمی: ۵۴۶ (مدال شرایط ۱۶ باز می‌شود؟) · ۵۸۲ (چشم ۰۸ → ۲۳)
 //  ۳) انسجام اسکلت: شمار صفحات/شیت‌ها/دیالوگ‌ها + فوترهای اصلی
 import { chromium } from 'playwright';
@@ -21,12 +21,12 @@ page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.
 let ok = 0, bad = 0;
 const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗ ' + name); } };
 
-/* ═══ ۱. جاروی کامل ۳۳ صفحه ═══ */
+/* ═══ ۱. جاروی کامل ۳۴ صفحه ═══ */
 const ids = await (async () => {
   await page.goto(FILE + '#01'); await page.reload(); await sleep(300);
   return await page.evaluate(() => [...document.querySelectorAll('#phone > section.scr')].map(s => s.id.slice(4)));
 })();
-T('۳۳ صفحه در گوشی', ids.length === 33);
+T('۳۴ صفحه در گوشی (فاز ۶۷: +۱۴)', ids.length === 34);
 const overflowPages = [];
 for (const id of ids) {
   await page.goto(FILE + '#' + id); await sleep(220);
@@ -36,9 +36,9 @@ for (const id of ids) {
   });
   if (of) overflowPages.push(id);
 }
-T('صفر سرریز افقی در همهٔ ۳۳ صفحه', overflowPages.length === 0);
+T('صفر سرریز افقی در همهٔ ۳۴ صفحه', overflowPages.length === 0);
 console.log(overflowPages.length ? '  overflow on: ' + overflowPages.join(',') : '  all pages fit');
-T('جاروی ۳۳ صفحه: صفر خطای کنسول/صفحه', errors.length === 0);
+T('جاروی ۳۴ صفحه: صفر خطای کنسول/صفحه', errors.length === 0);
 if (errors.length) console.log('  ' + errors.slice(0, 5).join('\n  '));
 
 await page.screenshot({ path: SHOTS + '/01-sweep-01.png', clip: { x: 34, y: 0, width: 402, height: 874 } });
@@ -70,15 +70,15 @@ const counts = await page.evaluate(() => ({
   dlgs: new Set([...document.querySelectorAll('.dlg')].map(s => s.id)).size,
   pages: document.querySelectorAll('#phone > section.scr').length
 }));
-T('اسکلت: ۳۳ صفحه · ۵۹ شیت · ۸ دیالوگ (شمار با کلاس — یکی sheet-priceinfo با نام قدیمی)', counts.pages === 33 && counts.sheets === 59 && counts.dlgs === 8);
+T('اسکلت: ۳۴ صفحه · ۶۱ شیت · ۸ دیالوگ (فاز ۶۷: +۱۴ · +سبد/گروه‌من · −سفارش متنی)', counts.pages === 34 && counts.sheets === 61 && counts.dlgs === 8);
 T('فوتر فروش ۰۱: ۵ تب (کاتالوک/مشتریان/سفارشات/پیام/تنظیم)', await page.evaluate(() => {
   const t = [...document.querySelectorAll('#scr-01 .tabbar .tab')];
   return t.length === 5 && t[2].textContent.includes('سفارشات');
 }));
 await page.goto(FILE + '#08'); await sleep(300);
-T('فوتر خرید ۰۸: ۴ تب (لیست/تأمین‌کنندگان/سفارش‌های من/پیام)', await page.evaluate(() => {
+T('فوتر خرید ۰۸: ۵ تب (لیست/تأمین‌کنندگان/سفارش‌های من/پیام/تنظیمات — فاز ۶۷)', await page.evaluate(() => {
   const t = [...document.querySelectorAll('#scr-08 .tabbar .tab')];
-  return t.length === 4 && t.some(x => x.textContent.includes('سفارش\u200cهای من')) && t.some(x => x.textContent.includes('تأمین\u200cکنندگان'));
+  return t.length === 5 && t.some(x => x.textContent.includes('سفارش\u200cهای من')) && t.some(x => x.textContent.includes('تأمین\u200cکنندگان')) && t[4].textContent.includes('تنظیمات');
 }));
 T('۰۵/۴۵ بدون فوتر (تنزل استعلام)', await page.evaluate(async () => {
   const r = [];

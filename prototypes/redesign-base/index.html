@@ -1976,6 +1976,63 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #buybar-13 { display: flex; gap: 7px; padding-bottom: 10px; }
   #buybar-13[hidden] { display: none; }
   #scr-13.ownerview .pcard .addls { display: none; }
+  #scr-13.ownerview .pcard .addcart { display: none; }
+
+  /* ═══ فاز ۶۷ (مالک) — «سبد سفارش»: سفارش از کاتالوگ مثل فروشگاه اینترنتی ═══ */
+  #scr-13 .pcard .addcart { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 27px; margin-top: 7px; border-radius: 9px; border: 1px solid var(--border); background: var(--stone-tint); color: var(--primary-strong); font-size: 10.5px; font-weight: 700; cursor: pointer; padding: 0 4px; }
+  #scr-13 .pcard .addcart svg { width: 13px; height: 13px; flex-shrink: 0; }
+  #scr-13 .pcard .addcart .cart-n { background: var(--green); color: #fff; border-radius: 999px; min-width: 16px; height: 16px; display: grid; place-items: center; font-size: 9px; padding: 0 4px; font-weight: 800; }
+  #scr-13 .pcard .addcart.on { background: var(--green); border-color: var(--green); color: #fff; }
+  #buybar-13 [data-cartopen] { position: relative; }
+  #buybar-13 [data-cartopen] .badge { position: absolute; top: -7px; left: -7px; min-width: 17px; height: 17px; padding: 0 4px; }
+  /* «گروه خرید من» — خودانتسابی مشتری روی کاتالوگ */
+  .mygrp-row { display: flex; align-items: center; gap: 6px; width: 100%; margin-top: 9px; padding: 9px 12px; border-radius: 12px; border: 1px dashed var(--border-strong); background: #fff; color: var(--foreground); font-size: 11.5px; font-weight: 700; cursor: pointer; }
+  .mygrp-row svg { width: 14px; height: 14px; color: var(--primary-strong); flex-shrink: 0; }
+  .mygrp-row .chev { margin-inline-start: auto; color: var(--border-strong); width: 13px; height: 13px; }
+  /* شیت «افزودن به سبد» — هدر کالا + استپر + جمع قلم */
+  .cart-prod { display: flex; align-items: center; gap: 10px; }
+  .cart-prod .thumb { width: 46px; height: 46px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); flex-shrink: 0; }
+  .cart-prod b { display: block; font-size: 14px; }
+  .cart-prod span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  .cart-qty { display: flex; align-items: center; justify-content: space-between; margin-top: 13px; }
+  .cart-qty .k { font-size: 12px; font-weight: 800; }
+  .stepper { display: flex; align-items: center; gap: 7px; }
+  .stepper .input { width: 72px; text-align: center; }
+  .st-btn { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--primary-strong); display: grid; place-items: center; cursor: pointer; padding: 0; }
+  .st-btn svg { width: 15px; height: 15px; }
+  .cart-line { margin-top: 10px; font-size: 12px; color: var(--muted-fg); text-align: center; }
+  .cart-line b { color: var(--foreground); }
+  /* شیت سبد — ردیف‌ها + استپرهای فشرده + جمع + حالت خالی */
+  .cart-row { display: flex; align-items: center; gap: 9px; padding: 10px 0; border-bottom: 1px solid #f0eee8; }
+  .cart-row .thumb { width: 44px; height: 44px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); flex-shrink: 0; }
+  .cart-row .crt { flex: 1; min-width: 0; }
+  .cart-row .crt .t { font-size: 12.5px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cart-row .crt .t span { font-weight: 400; color: var(--muted-fg); font-size: 10.5px; }
+  .cart-row .crt .p { font-size: 11px; margin-top: 2px; }
+  .cart-row .crt .p s { color: var(--muted-fg); margin-inline-end: 3px; }
+  .cart-row .cst { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .cart-row .cst b { min-width: 20px; text-align: center; font-size: 13px; }
+  .cart-row .cst .st-btn { width: 27px; height: 27px; border-radius: 8px; }
+  .cart-row .cst .st-btn svg { width: 11px; height: 11px; }
+  .st-del { width: 27px; height: 27px; border-radius: 8px; border: none; background: none; color: var(--red); cursor: pointer; display: grid; place-items: center; padding: 0; }
+  .st-del svg { width: 13px; height: 13px; }
+  .cart-sum { display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0 4px; }
+  .cart-sum span { color: var(--muted-fg); font-size: 11px; }
+  .cart-sum small { font-size: 9.5px; }
+  .cart-sum b { font-size: 15px; }
+  .cart-empty { text-align: center; font-size: 11.5px; color: var(--muted-fg); padding: 18px 8px; line-height: 1.9; }
+  /* ویرایش هر قلم در شیت پذیرش فروشنده */
+  .ord-edit { padding: 8px 0; border-bottom: 1px dashed var(--border); }
+  .ord-edit .k { display: block; font-size: 11.5px; font-weight: 700; margin-bottom: 6px; }
+  .ord-edit .oe-in { display: flex; gap: 7px; }
+  .ord-edit .oe-in .input { flex: 1; min-width: 0; font-size: 12px; }
+  .ord-items-h .k { font-weight: 800; }
+  .ord-irow .k { font-size: 11px; color: var(--stone-soft); }
+  /* فاز ۶۷ — hidden قطعی برای عناصر نو (کلاس‌های displayدار attribute را می‌خورند — درس فاز ۶۱) */
+  #buybar-13 [data-cartopen] .badge[hidden],
+  #scr-13 .pcard .addcart .cart-n[hidden],
+  .mygrp-row[hidden],
+  #cart-foot[hidden] { display: none !important; }
   .pcard .stale-bdg { position: absolute; top: 7px; left: 40px; display: inline-flex; align-items: center; gap: 4px; padding: 3.5px 8px; border-radius: 8px; background: var(--red-bg); border: 1px solid #f3c6c6; color: var(--red); font-size: 9.5px; font-weight: 800; }
   .pcard .stale-bdg svg { width: 11px; height: 11px; flex-shrink: 0; }
   /* فاز ۵۳ — کاتالوگ عمومی (۱۳): آیکون «+ افزودن به لیست خرید» روی تک‌تک کارت‌ها */
@@ -2045,10 +2102,19 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .grp-price small { color: var(--muted-fg); font-weight: 500; }
   .price-lg s { font-size: 13px; color: var(--muted-fg); font-weight: 500; }
   /* گروه‌های مشتری روی ۶۲ — نوار چیپ + بج گروه در ردیف */
-  #scr-62 .cg-bar { display: flex; gap: 6px; align-items: center; margin: 10px 0 0; flex-wrap: wrap; }
-  #scr-62 .cg-bar .chip { flex: 0 0 auto; }
-  #scr-62 .cg-add { width: 30px; height: 26px; border-radius: 999px; border: 1.5px dashed var(--border-strong); background: none; color: var(--primary-strong); display: grid; place-items: center; cursor: pointer; padding: 0; }
+  /* ═══ فاز ۶۷ — نوار فیلتر ۶۲ (الگوی دیوار): نوار افقی چسبانِ قابل اسکرول؛ فیلترهای
+       تازه (مشتریان بدهکار و…) بعداً به همین نوار اضافه می‌شوند. ═══ */
+  #scr-62 .flbar { display: flex; gap: 6px; align-items: center; margin: 10px 0 0; overflow-x: auto; padding: 4px 2px 6px; scrollbar-width: none; position: sticky; top: 0; z-index: 6; background: var(--bg); }
+  #scr-62 .flbar::-webkit-scrollbar { display: none; }
+  #scr-62 .flbar .chip { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; padding: 6px 11px; }
+  #scr-62 .flbar .chip svg { width: 11px; height: 11px; flex-shrink: 0; }
+  #scr-62 .cg-add { width: 30px; height: 28px; border-radius: 999px; border: 1.5px dashed var(--border-strong); background: #fff; color: var(--primary-strong); display: grid; place-items: center; cursor: pointer; padding: 0; flex: 0 0 auto; }
   #scr-62 .cg-add svg { width: 13px; height: 13px; }
+  /* سطوح مشتری ۱..۵ — بج ردیف + پیل‌های انتخاب شیت گروه */
+  .lv-b { display: inline-block; font-size: 9px; font-weight: 800; color: #92400e; background: #fef3c7; border-radius: 6px; padding: 1.5px 6px; vertical-align: middle; }
+  .lv-pill { display: flex; gap: 6px; margin-top: 4px; }
+  .lv-pill .lv-p { flex: 1; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: #fff; font-size: 13.5px; font-weight: 800; color: var(--foreground); cursor: pointer; padding: 0; }
+  .lv-pill .lv-p.on { border-color: var(--green); color: #166534; background: #f0fdf4; }
   .row-card .t .cg-tag { font-size: 9px; padding: 1.5px 7px; margin-right: 2px; background: #e8f1fd; color: #1d5fb8; font-weight: 700; }
   /* شیت شبکهٔ باز — شرایط با نوار پیشرفت + مسیر پرداخت */
   .net-req { margin-top: 11px; border: 1px solid var(--border); border-radius: 12px; padding: 10px 11px 11px; background: var(--bg); }
@@ -2082,8 +2148,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .cg-disc-row .cg-dn { flex: 1; font-size: 12.5px; font-weight: 700; }
   .cg-disc-row .cg-dn small { display: block; font-weight: 400; color: var(--muted-fg); font-size: 9.5px; margin-top: 1px; }
   .cg-disc-row .input { width: 64px; text-align: center; flex: 0 0 auto; }
-  /* درگاه خصوصی: دکتهٔ «ثبت سفارش» هم قفل می‌شود (ذخیره = مسیر بازگشتی می‌ماند) */
-  #scr-13.priv-gate #buybar-13 [data-order] { display: none; }
+  /* درگاه خصوصی: دکتهٔ «سبد سفارش» و افزودن‌ها هم قفل می‌شود (ذخیره = مسیر بازگشتی می‌ماند) */
+  #scr-13.priv-gate #buybar-13 [data-cartopen] { display: none; }
+  #scr-13.priv-gate .pcard .addcart { display: none; }
 
 </style>
 </head>
@@ -2147,6 +2214,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-users-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
 <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
 <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.2" cy="20" r="1.3"/><circle cx="17.6" cy="20" r="1.3"/><path d="M3 4h2.2l2.4 11.1a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 8H6.1"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5.5 12h13"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></symbol>
 <symbol id="i-dots" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></symbol>
 <symbol id="i-info-v2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></symbol>
@@ -2560,10 +2629,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <button class="icon-btn" style="width:46px;height:46px;border-radius:12px" aria-label="افزودن به لیست خرید" data-addlist title="افزودن به لیست خرید">
         <svg><use href="#i-bmark-plus"/></svg>
       </button>
-      <!-- فاز ۶۴ (مالک): CTA اصلی صفحهٔ کالا = «ثبت سفارش» (فرایند اصلی خرید) — کالا از همین
-           صفحه پیش‌پر می‌شود. استعلام فرایند فرعی است و در زمینهٔ چند-تأمین‌کننده‌ای انجام می‌شود:
-           تابلوی تأمین (۰۹) و کارت‌های لیست خرید (۰۸). -->
-      <button class="btn btn-primary" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-order data-og="برنج هاشمی — کیسه ۵۰ کیلویی" type="button" title="کالا و مقدار را مشخص کنید و برای فروشنده بفرستید"><svg><use href="#i-send"/></svg> ثبت سفارش</button>
+      <!-- فاز ۶۷ (مالک): CTA اصلی صفحهٔ کالا = «افزودن به سبد سفارش» — سفارش مثل فروشگاه
+           اینترنتی از کاتالوگ پر می‌شود. استعلام فرایند فرعی است و در زمینهٔ چند-تأمین‌کننده‌ای
+           انجام می‌شود: تابلوی تأمین (۰۹) و کارت‌های لیست خرید (۰۸). -->
+      <button class="btn btn-primary" style="flex:1;height:46px;font-size:13px;white-space:nowrap" data-addcart data-pid="hash50" type="button" title="این کالا را با تعداد دلخواه به سبد سفارش اضافه کنید"><svg><use href="#i-cart"/></svg> افزودن به سبد سفارش</button>
     </div>
 
     </section>
@@ -3049,7 +3118,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <!-- فاز ۶۳ (مالک) — «تأمین‌کنندگان» بلافاصله بعد از «لیست خرید»:
            دو ستون اصلی شبکهٔ خرید خریدار کنار هم؛ استعلام‌ها و پیام‌ها بعدتر. -->
       <div class="tabs">
@@ -3059,6 +3128,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
              استعلام فرایند فرعی است و از فوتر رفت — ورود: نوار «استعلام‌های جاری» همین صفحه + تنظیمات -->
         <button class="tab"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <!-- فاز ۶۷ (مالک): «تنظیمات خرید» (۱۴) بازگشت — پنجمین تب، قرینهٔ فوتر فروش -->
+        <button class="tab" data-go="14"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
     </nav>
 
@@ -3659,11 +3730,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
 
-        <!-- فاز ۶۴ (مالک): «ثبت سفارش» دکتهٔ اصلی خریدار در کاتالوگ — سفارش یعنی کالا و مقدار؛
-             پرداخت بیرون از سیستم، مستقیم بین طرفین. ذخیره/پیام/تماس کنارش ماندند. -->
+        <!-- فاز ۶۷ (مالک): «سبد سفارش» دکتهٔ اصلی خریدار در کاتالوگ — سفارش مثل فروشگاه
+             اینترنتی: کالاها با تعداد به سبد می‌روند و یک‌جا ارسال می‌شوند؛ پرداخت بیرون از
+             سیستم، مستقیم بین طرفین. ذخیره/پیام/تماس کنارش ماندند. -->
         <div id="buybar-13">
           <button class="btn btn-outline btn-sm catsave" id="catsave-13" style="flex:.85;color:var(--stone)" type="button" data-catsave title="کاتالوگ را در «تأمین‌کنندگان من» ذخیره کنید — قیمت‌های زنده همیشه در دسترس"><svg><use href="#i-bookmark"/></svg> ذخیره</button>
-          <button class="btn btn-primary btn-sm" style="flex:1.15" data-order type="button" title="کالا و مقدار را مشخص کنید و سفارش را برای «پخش برنج پارس» بفرستید"><svg><use href="#i-send"/></svg> ثبت سفارش</button>
+          <button class="btn btn-primary btn-sm" style="flex:1.15" data-cartopen type="button" title="سبد سفارش شما از «پخش برنج پارس» را ببینید و سفارش را بفرستید"><svg><use href="#i-cart"/></svg> سبد سفارش <span class="badge b-new" id="cart-badge-13" hidden></span></button>
           <button class="btn btn-stone btn-sm" style="flex:.6" data-go="19" title="ارسال پیام"><svg><use href="#i-msg"/></svg> پیام</button>
           <button class="btn btn-outline btn-sm" style="flex:.5;color:var(--stone)" title="تماس"><svg><use href="#i-phone"/></svg> تماس</button>
         </div>
@@ -3675,6 +3747,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <span><b>۴۱</b> ذخیره‌شده</span>
           <span><b>۱۸</b> تماس</span>
         </div>
+
+        <!-- فاز ۶۷ (مالک) — «گروه خرید من»: مشتری خودش گروهش را با این فروشنده انتخاب
+             می‌کند (خودانتسابی)؛ قیمت گروه همان لحظه روی کاتالوگ اعمال می‌شود. فقط برای
+             مشتری (ذخیره‌کردهٔ کاتالوگ) دیده می‌شود. -->
+        <button class="mygrp-row" id="mygrp-13" type="button" data-mygrp hidden title="گروه خریداری خودتان را انتخاب کنید — قیمت گروه همان لحظه اعمال می‌شود"><svg><use href="#i-users"/></svg> <span id="mygrp-t">گروه خرید من را انتخاب کنید</span> <svg class="chev"><use href="#i-chev"/></svg></button>
       </div>
 
       <div style="padding:6px 16px 16px">
@@ -3707,6 +3784,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div class="u">کیسه ۵۰ کیلویی · فله</div>
               <div class="p" id="p13-hash">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
               <div class="grp-price" id="grp-13" hidden></div>
+              <button class="addcart" type="button" data-addcart data-pid="hash50" aria-label="افزودن برنج هاشمی به سبد سفارش" title="افزودن به سبد سفارش"><svg><use href="#i-cart"/></svg> افزودن به سبد <span class="cart-n" hidden></span></button>
             </div>
           </div>
 
@@ -3719,6 +3797,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div class="n">برنج طارم</div>
               <div class="u">کیسه ۵۰ کیلویی · فله</div>
               <div class="p">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
+              <button class="addcart" type="button" data-addcart data-pid="tar50" aria-label="افزودن برنج طارم به سبد سفارش" title="افزودن به سبد سفارش"><svg><use href="#i-cart"/></svg> افزودن به سبد <span class="cart-n" hidden></span></button>
             </div>
           </div>
 
@@ -3731,6 +3810,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div class="n">برنج هاشمی</div>
               <div class="u">کیسه ۱۰ کیلویی · فله</div>
               <div class="p">۵۹۵٬۰۰۰ <small>تومان</small></div>
+              <button class="addcart" type="button" data-addcart data-pid="hash10" aria-label="افزودن برنج هاشمی ۱۰ کیلویی به سبد سفارش" title="افزودن به سبد سفارش"><svg><use href="#i-cart"/></svg> افزودن به سبد <span class="cart-n" hidden></span></button>
             </div>
           </div>
 
@@ -3743,6 +3823,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               <div class="n">برنج فجر</div>
               <div class="u">کیسه ۵۰ کیلویی · فله</div>
               <div class="p">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
+              <button class="addcart" type="button" data-addcart data-pid="faj50" aria-label="افزودن برنج فجر به سبد سفارش" title="افزودن به سبد سفارش"><svg><use href="#i-cart"/></svg> افزودن به سبد <span class="cart-n" hidden></span></button>
             </div>
           </div>
 
@@ -3755,6 +3836,84 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
       </div>
     </main>
+
+    </section>
+
+    <!-- ═══ فاز ۶۷ (مالک) — «تنظیمات خرید» (۱۴) بازگشت: حذفِ فاز ۴۵ اشتباه بود (حکم مالک).
+         تنظیمات دستیار خرید — لیست خرید (تنظیمات/گروه‌های کالا) · کسب‌وکار · حساب کاربری.
+         ورود: تب پنجم فوتر خرید (قرینهٔ «تنظیمات» فوتر پنج‌تبی فروش). ═══ -->
+    <section class="scr" id="scr-14" data-arm="buy" hidden>
+    <header class="appbar">
+      <div class="brand">
+        <img src="assets/logo3.svg" alt="iMach">
+        <button class="arm-pill" aria-label="تعویض دستیار">دستیار خرید عمده
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="actions">
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ"><svg><use href="#i-user"/></svg></button>
+      </div>
+    </header>
+
+    <main class="screen-body">
+
+      <!-- لیست خرید -->
+      <div class="sec-title" style="margin-top:4px"><h2><svg><use href="#i-list"/></svg> لیست خرید</h2></div>
+      <div class="card" style="padding:0 14px">
+        <div data-sheet="sheet-listset" style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-pencil"/></svg>
+          <span style="flex:1">تنظیمات لیست خرید<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">نام، توضیح کوتاه و نقش شما در کسب‌وکار</span></span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
+        <div data-sheet="sheet-lgroups" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-tag"/></svg>
+          <span style="flex:1">گروه‌های کالا<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">۴ گروه: غلات · روغن · کنسرو · شیرینی</span></span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
+      </div>
+
+      <!-- کسب‌وکار -->
+      <div class="sec-title" style="margin-top:14px"><h2>کسب‌وکار</h2></div>
+      <div class="card" style="padding:0 14px">
+        <div data-go="22" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-store"/></svg>
+          <span style="flex:1">ویرایش کسب‌وکار<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">نام، نوع، صنف، شهر و دستیارهای فعال</span></span>
+          <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
+        </div>
+      </div>
+
+      <!-- حساب کاربری -->
+      <div class="sec-title" style="margin-top:14px"><h2>حساب کاربری</h2></div>
+      <div class="card" style="padding:0 14px">
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px;cursor:pointer">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-moon"/></svg>
+          <span style="flex:1">تم تاریک / روشن</span>
+          <div class="toggle" aria-label="تغییر تم"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-globe"/></svg>
+          <span style="flex:1">زبان / Language</span>
+          <span style="color:var(--muted-fg);font-size:11.5px">فارسی</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;color:var(--red);cursor:pointer" data-go="15">
+          <svg style="width:16px;height:16px"><use href="#i-logout"/></svg>
+          <span style="flex:1">خروج از حساب</span>
+        </div>
+      </div>
+
+    </main>
+
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
+      <div class="tabs">
+        <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
+        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
+        <button class="tab"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
+        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <!-- فاز ۶۷ (مالک): «تنظیمات خرید» (۱۴) بازگشت — پنجمین تب فوتر خرید، قرینهٔ فروش -->
+        <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
+      </div>
+    </nav>
 
     </section>
 
@@ -5662,10 +5821,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span><b>۱۲۰</b> بازدید ماه</span>
       </div>
 
-      <!-- ═══ فاز ۶۵ (مالک) — گروه‌های مشتری همین‌جا ساخته و مدیریت می‌شوند (حکم مالک)؛
-           تخفیف هر گروه از کاتالوگ (تنظیمات کالا) داده می‌شود. چیپ = فیلتر لیست؛ + = گروه جدید؛
-           گروهِ هر مشتری از منوی سه‌نقطه. رندر JS با شمار زنده. ═══ -->
-      <div class="cg-bar" id="cg-bar"></div>
+      <!-- ═══ فاز ۶۷ (مالک) — نوار فیلتر (الگوی دیوار): فیلترها به‌صورت نوار افقیِ قابل
+           اسکرول کنار هم می‌نشینند تا بعداً فیلترهای تازه (مثل مشتریان بدهکار) به همان
+           اضافه شوند. فعلاً: گروه مشتری + صنف مشتری؛ «همه» همه را پاک می‌کند؛ گروه‌ها
+           همین‌جا ساخته می‌شوند (+). رندر JS با شمار زنده. ═══ -->
+      <div class="flbar" id="flbar-62"></div>
 
       <!-- قاعدهٔ سادهٔ شبکهٔ خصوصی — همان زبان پیام‌های تازه -->
       <div class="hintnote" style="margin-top:0">هر خریداری که کاتالوگ شما را ذخیره کند، این‌جا با نشان «جدید» ظاهر می‌شود. لازم نیست کسی را تأیید کنید؛ مشتری‌هایی را که نمی‌خواهید حذف می‌کنید — مشتریِ حذف‌شده دیگر قیمت‌های شما را نمی‌بیند، اما اگر دوباره کاتالوگ‌تان را ذخیره کند، دوباره برمی‌گردد.</div>
@@ -5725,9 +5885,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <!-- پیام پس از ثبت موفق سفارش (عین متن مالک) — فقط بعد از «ارسال سفارش» دیده می‌شود -->
       <div class="hintnote priv-ok" id="ord-ok-buy" hidden></div>
 
-      <button class="btn btn-stone btn-block" id="ord-new" data-order type="button">
-        <svg><use href="#i-plus"/></svg>
-        ثبت سفارش جدید
+      <button class="btn btn-stone btn-block" id="ord-new" data-go="10" type="button">
+        <svg><use href="#i-cart"/></svg>
+        سفارش جدید از کاتالوگ تأمین‌کننده
       </button>
 
       <!-- سفارش‌های جاری -->
@@ -5746,20 +5906,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="card" id="ord-empty-buy" hidden style="text-align:center;padding:26px 18px">
         <div style="width:52px;height:52px;border-radius:16px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;margin:0 auto 10px"><svg style="width:24px;height:24px"><use href="#i-boxes"/></svg></div>
         <div style="font-size:14px;font-weight:800">هنوز سفارشی ثبت نکرده‌اید</div>
-        <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin:6px 0 12px">کالا و مقدار را مشخص کنید و برای تأمین‌کننده‌تان بفرستید — او سفارش را می‌پذیرد و ارسال را اعلام می‌کند.</div>
-        <button class="btn btn-primary btn-sm" data-order><svg><use href="#i-send"/></svg> ثبت سفارش</button>
+        <div style="font-size:11px;color:var(--muted-fg);line-height:1.9;margin:6px 0 12px">از کاتالوگ تأمین‌کننده‌تان، کالاها را با تعداد به سبد سفارش اضافه کنید و سفارش را بفرستید — او آن را می‌پذیرد و ارسال را اعلام می‌کند.</div>
+        <button class="btn btn-primary btn-sm" data-go="10"><svg><use href="#i-cart"/></svg> سفارش از کاتالوگ</button>
       </div>
 
       <div class="hintnote">وضعیت هر سفارش همین‌جا به‌روز می‌شود؛ پرداخت و تحویل مستقیماً با تامین‌کننده‌تان هماهنگ می‌شود — شرایط توافق‌تان را در توضیحات سفارش بنویسید تا هر دو طرف آن را ببینند.</div>
 
     </main>
 
-    <nav class="tabbar" data-cols="4" aria-label="ناوبری دستیار خرید">
+    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
       <div class="tabs">
         <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
         <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
         <button class="tab active"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <!-- فاز ۶۷ (مالک): «تنظیمات خرید» (۱۴) بازگشت — پنجمین تب، قرینهٔ فوتر فروش -->
+        <button class="tab" data-go="14"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
     </nav>
 
@@ -6014,10 +6176,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <span class="tx"><b>مشاهدهٔ کاتالوگ</b><span>کالاها، قیمت‌ها و شرایط</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
-  <!-- فاز ۶۴ (مالک): سفارش مستقیم به همین تأمین‌کننده — از دفترچهٔ تلفن (۱۰) -->
-  <button class="sheet-row" data-order>
-    <span class="ico buy"><svg><use href="#i-send"/></svg></span>
-    <span class="tx"><b>ثبت سفارش</b><span>کالا و مقدار را برای این تأمین‌کننده بفرستید</span></span>
+  <!-- فاز ۶۷ (مالک): سفارش از کاتالوگ — سبد سفارش روی کاتالوگ (۱۳) پر می‌شود -->
+  <button class="sheet-row" data-go="13">
+    <span class="ico buy"><svg><use href="#i-cart"/></svg></span>
+    <span class="tx"><b>سفارش از کاتالوگ</b><span>کالاها را با تعداد به سبد اضافه کنید و سفارش را بفرستید</span></span>
     <svg class="chev"><use href="#i-chev"/></svg>
   </button>
   <button class="sheet-row danger" data-catdel>
@@ -6134,33 +6296,55 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
 </div>
 
-<!-- ═══ فاز ۶۴ (مالک) — «ثبت سفارش» (خریدار): کالا + مقدار + توضیحات/شرایط پرداخت (اختیاری).
-     حکم مالک: «سفارش» یعنی خریدار کالا و مقدار را مشخص کرده و فروشنده آن را پذیرفته؛
-     پرداخت بیرون از سیستم است — پس پیام‌ها انتظار را درست تنظیم می‌کنند: پس از ثبت، متن عین
-     مالک نشان داده می‌شود («سفارش شما برای … ارسال شد. شرایط پرداخت و تحویل را مستقیماً با
-     تامین‌کننده هماهنگ کنید.»). فیلد اختیاری «توضیحات / شرایط پرداخت» توافق طرفین را ثبت
-     می‌کند (مثلاً «پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل») — بدون دخالت پلتفرم.
-     ورود: CTA صفحهٔ کالا (۰۲) · buybar کاتالوگ (۱۳) · ردیف «ثبت سفارش» sheet-catmenu (۱۰) ·
-     دکتهٔ «ثبت سفارش جدید» (۶۴). کالا از ۰۲ پیش‌پر می‌شود (data-og). ═══ -->
-<div class="sheet" id="sheet-order" role="dialog" aria-label="ثبت سفارش">
+<!-- ═══ فاز ۶۷ (مالک) — «سبد سفارش»: سفارش مثل فروشگاه اینترنتی. کالاها با تعداد به سبد
+     می‌روند و سفارش یک‌جا برای تأمین‌کننده ارسال می‌شود. پرداخت در سیستم نیست — بنا به توافق
+     طرفین و بیرون از سایت؛ فیلد اختیاری «توضیحات / شرایط پرداخت» توافق را ثبت می‌کند
+     (مثلاً «پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل»). پس از ارسال، متن عین مالک نشان داده می‌شود.
+     شیت تعداد (sheet-addcart): ورود از کارت‌های کاتالوگ (۱۳) و CTA صفحهٔ کالا (۰۲). ═══ -->
+<div class="sheet" id="sheet-addcart" role="dialog" aria-label="افزودن به سبد سفارش">
   <div class="grab"></div>
-  <h3>ثبت سفارش</h3>
-  <div class="sub" id="ord-sub">پخش برنج پارس</div>
-  <div class="field">
-    <label>کالا</label>
-    <input class="input" id="ord-good" placeholder="مثلاً: برنج هاشمی — کیسه ۵۰ کیلویی">
+  <h3>افزودن به سبد سفارش</h3>
+  <div class="sub">پخش برنج پارس</div>
+  <div class="cart-prod" id="ac-prod"></div>
+  <div class="cart-qty">
+    <span class="k">تعداد / مقدار</span>
+    <div class="stepper">
+      <button type="button" class="st-btn" data-acdec aria-label="کاهش تعداد" title="کاهش"><svg><use href="#i-minus"/></svg></button>
+      <input class="input" id="ac-qty" inputmode="numeric" value="۱" aria-label="تعداد">
+      <button type="button" class="st-btn" data-acinc aria-label="افزایش تعداد" title="افزایش"><svg><use href="#i-plus"/></svg></button>
+    </div>
   </div>
-  <div class="field">
-    <label>مقدار</label>
-    <input class="input" id="ord-qty" placeholder="مثلاً: ۲۰ کیسه">
+  <div class="cart-line" id="ac-line"></div>
+  <button class="btn btn-primary sheet-cta" data-acadd type="button"><svg><use href="#i-cart"/></svg> افزودن به سبد سفارش</button>
+</div>
+
+<!-- ═══ فاز ۶۷ — بازبینی سبد و ارسال سفارش: استپر تعداد + جمع برآوردی (با قیمت گروه
+     خریدار) + توضیحات/شرایط پرداخت + «ارسال سفارش». ورود: دکتهٔ «سبد سفارش» buybar-13. ═══ -->
+<div class="sheet" id="sheet-cart" role="dialog" aria-label="سبد سفارش">
+  <div class="grab"></div>
+  <h3>سبد سفارش</h3>
+  <div class="sub">پخش برنج پارس</div>
+  <div class="rows" id="cart-rows"></div>
+  <div id="cart-foot" hidden>
+    <div class="cart-sum"><span>مجموع برآوردی <small>— با قیمت گروه شما</small></span><b id="cart-total">۰ تومان</b></div>
+    <div class="field">
+      <label>توضیحات / شرایط پرداخت <span class="opt">— اختیاری</span></label>
+      <input class="input" id="cart-note" placeholder="مثلاً: پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل">
+    </div>
+    <button class="btn btn-primary sheet-cta" data-cartsend type="button"><svg><use href="#i-send"/></svg> ارسال سفارش</button>
   </div>
-  <div class="field">
-    <label>توضیحات / شرایط پرداخت <span class="opt">— اختیاری</span></label>
-    <input class="input" id="ord-note" placeholder="مثلاً: پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل">
-  </div>
-  <div class="su-err" id="ord-err" hidden>کالا و مقدار را وارد کنید</div>
-  <button class="btn btn-primary sheet-cta" data-ordsend type="button"><svg><use href="#i-send"/></svg> ارسال سفارش</button>
-  <div class="hintnote">پرداخت و تحویل مستقیماً بین شما و تامین‌کننده انجام می‌شود — شرایط توافق‌تان را در توضیحات بنویسید تا هر دو طرف آن را ببینند.</div>
+  <div class="hintnote">پرداخت و تحویل مستقیماً بین شما و تامین‌کننده انجام می‌شود — شرایط توافق‌تان را در توضیحات بنویسید تا هر دو طرف آن را ببینند. قیمت نهایی را فروشنده هنگام پذیرش سفارش ثبت می‌کند.</div>
+</div>
+
+<!-- ═══ فاز ۶۷ (مالک) — «گروه خرید من»: مشتری خودش را به گروه خریداریِ این فروشنده
+     اضافه می‌کند (خودانتسابی)؛ تخفیف گروه همان لحظه روی قیمت‌ها می‌نشیند. فروشنده هم
+     می‌تواند از «مشتریان من» (۶۲) گروه هر مشتری را عوض کند. ═══ -->
+<div class="sheet" id="sheet-mygrp" role="dialog" aria-label="گروه خرید من">
+  <div class="grab"></div>
+  <h3>گروه خرید من</h3>
+  <div class="sub" id="mygrp-sub">پخش برنج پارس</div>
+  <div class="rows" id="mygrp-rows" style="margin-top:4px"></div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
 <!-- ═══ فاز ۶۴ — جزئیات سفارش (دید خریدار · ۶۴): وضعیت + اقدام‌های خریدار.
@@ -6182,16 +6366,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <h3 id="ordm-title">برنج هاشمی · ۲۰ کیسهٔ ۵۰ کیلویی</h3>
   <div class="sub" id="ordm-sub">رستوران مهر</div>
   <div class="ord-facts" id="ordm-facts"></div>
-  <!-- فیلدهای پذیرش — فقط وقتی سفارش «ثبت شده» است -->
+  <!-- فیلدهای پذیرش — فقط وقتی سفارش «ثبت شده» است؛ هر قلم جداگانه مقدار/قیمت دارد (فاز ۶۷) -->
   <div id="ordm-accept" hidden>
-    <div class="field">
-      <label>مقدار نهایی <span class="opt">— در صورت توافق قابل اصلاح</span></label>
-      <input class="input" id="ordm-qty">
-    </div>
-    <div class="field">
-      <label>قیمت هر بسته <span class="opt">— تومان · اختیاری</span></label>
-      <input class="input" id="ordm-price" inputmode="numeric" placeholder="مثلاً: ۲٬۸۵۰٬۰۰۰">
-    </div>
+    <div class="grp" style="margin-top:2px">مقدار نهایی و قیمت هر قلم <span style="font-weight:400;color:var(--muted-fg);font-size:10px">— قیمت به تومان · اختیاری</span></div>
+    <div id="ordm-items"></div>
   </div>
   <button class="btn btn-primary sheet-cta" id="ordm-ok" data-ordok type="button" hidden><svg><use href="#i-check"/></svg> پذیرفتن سفارش</button>
   <button class="btn btn-primary sheet-cta" id="ordm-ship" data-ordship type="button" hidden><svg><use href="#i-send"/></svg> اعلام ارسال</button>
@@ -6813,6 +6991,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <h3>گروه مشتری</h3>
   <div class="sub" id="cga-sub">سوپرمارکت آریا</div>
   <div class="rows" id="cga-rows" style="margin-top:4px"></div>
+  <!-- فاز ۶۷ (مالک) — سطوح مشتری ۱ تا ۵ (مثل قبل): سطح فقط برچسب دستی فروشنده است؛
+       تخفیف مال گروه است، نه سطح. -->
+  <div class="grp" style="margin-top:10px">سطح مشتری <span style="font-weight:400;color:var(--muted-fg);font-size:10px">— ۱ تا ۵</span></div>
+  <div class="lv-pill" id="cga-lv"></div>
   <button class="btn btn-outline sheet-cta" data-close>بستن</button>
 </div>
 
@@ -8155,7 +8337,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
      آمدند تا جلوی چشم باشند. فوتر فروش بدون تغییر است. */
   /* فاز ۶۴ (مالک): سفارش = فرایند اصلی — تب سوم هر دو فوتر «سفارش» شد؛ استعلام فرایند
      فرعی است و از فوتر رفت (ورود ۴۵: نوار ۰۸ + تنظیمات لیست؛ ورود ۰۵: تنظیمات ۰۷ + اعلان). */
-  var TABS = { sell: ['01', '62', '65', '18', '07'], buy: ['08', '10', '64', '18'] };
+  var TABS = { sell: ['01', '62', '65', '18', '07'], buy: ['08', '10', '64', '18', '14'] }; /* فاز ۶۷: +۱۴ تنظیمات خرید */
   /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
   var TABSET = {
     sell: [
@@ -8169,7 +8351,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
       ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
       ['10', 'تأمین‌کنندگان', '<svg><use href="#i-bookmark"/></svg>', ''], /* فاز ۶۳ (مالک): بعد از لیست خرید */
       ['64', 'سفارش‌های من', '<svg><use href="#i-boxes"/></svg>', ''], /* فاز ۶۴: سفارش‌های من */
-      ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>']
+      ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
+      ['14', 'تنظیمات', '<svg><use href="#i-gear"/></svg>', ''] /* فاز ۶۷: تنظیمات خرید بازگشت */
     ]
   };
   var DEFAULT_BACK = {
@@ -8187,7 +8370,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '23': '08', /* فاز ۵۸ (بازگشت فاز ۲۷): صفحهٔ خرید از دید عمومی ← لیست خرید (ورود با چشم ۰۸) */
     '62': '01', /* فاز ۶۰: مشتریان من ← کاتالوگ (ورود از فوتر/آمار) */
     '60': '42', '61': '42', /* فاز ۵۸: صفحات راهنما ← پروفایل (ورود از تنظیمات ۰۷ و شیت راهنما) */
-    '64': '08', '65': '01' /* فاز ۶۴: سفارش‌های من ← لیست خرید · سفارشات ← کاتالوگ */
+    '64': '08', '65': '01', /* فاز ۶۴: سفارش‌های من ← لیست خرید · سفارشات ← کاتالوگ */
+    '14': '08' /* فاز ۶۷: تنظیمات خرید ← لیست خرید */
   };
   var BTN = {
     '01': [['افزودن کالای جدید', '04']], /* فاز ۵۲: برچسب جدید مالک؛ مقصد همان فرم افزودن/ویرایش کالا */
@@ -8206,7 +8390,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","64":"۶۴ — سفارش‌های من · دستیار خرید","65":"۶۵ — سفارشات · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","14":"۱۴ — تنظیمات خرید · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","64":"۶۴ — سفارش‌های من · دستیار خرید","65":"۶۵ — سفارشات · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -8316,6 +8500,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         if (phoneArm() === 'sell') CATPRIV.reg = false;
         catPrivSync();
         grpSync(); /* فاز ۶۵ — قیمت گروهی خریدار روی کارت اول */
+        cartSync(); /* فاز ۶۷ — بج‌های سبد سفارش روی کارت‌ها و buybar */
       }
       if (current === '62' && id !== '62') {
         CUST.forEach(function (c) { c.nw = false; });
@@ -10219,12 +10404,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
      (ترک صفحهٔ ۶۲) بج را برمی‌دارد و مشتری عادی می‌شود؛ حذف = قطع دسترسی او به قیمت‌ها/استعلام؛
      ذخیرهٔ دوبارهٔ کاتالوگ = بازگشت او. بج فوتر (مشتریان) تعداد «جدید»های دیده‌نشده است. */
   var CUST = [
-    { n: 'رستوران مهر', p: 'مهدی کاظمی', c: 'تهران', tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', when: 'امروز', inq: '۱ استعلام جاری', nw: true, av: '#0e7490', g: 'رستوران‌ها' },
-    { n: 'سوپرمارکت آریا', p: 'نیما فاضلی', c: 'رشت', tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', when: 'امروز', via: 'از لینک شما', nw: true, av: '#059669', g: 'خرده‌فروشی' },
-    { n: 'سوپرمارکت سعید', p: 'سعید کریمی', c: 'رشت', tel: '۰۹۳۵ ۴۴۸ ۸۸۲۳', when: '۳ روز پیش', call: '۲ تماس', av: '#c2703a' },
-    { n: 'سوپرمارکت الماس', p: 'سارا رحیمی', c: 'قزوین', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', when: 'هفتهٔ پیش', av: '#7c3aed', g: 'خرده‌فروشی' },
-    { n: 'خواروبار امید', p: 'علی مرادی', c: 'مشهد', tel: '۰۹۱۵ ۲۲۰ ۳۳۶۱', when: '۲ هفته پیش', via: 'از لینک شما', av: '#0e7490' },
-    { n: 'کترینگ بهار', p: 'بتا موسوی', c: 'تبریز', tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', when: 'ماه پیش', av: '#a8a29a', g: 'رستوران‌ها' }
+    { n: 'رستوران مهر', p: 'مهدی کاظمی', c: 'تهران', tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', when: 'امروز', inq: '۱ استعلام جاری', nw: true, av: '#0e7490', g: 'رستوران‌ها', tc: 'رستوران', lv: 2 },
+    { n: 'سوپرمارکت آریا', p: 'نیما فاضلی', c: 'رشت', tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', when: 'امروز', via: 'از لینک شما', nw: true, av: '#059669', g: 'خرده‌فروشی', tc: 'سوپرمارکت', lv: 3 },
+    { n: 'سوپرمارکت سعید', p: 'سعید کریمی', c: 'رشت', tel: '۰۹۳۵ ۴۴۸ ۸۸۲۳', when: '۳ روز پیش', call: '۲ تماس', av: '#c2703a', tc: 'سوپرمارکت', lv: 1 },
+    { n: 'سوپرمارکت الماس', p: 'سارا رحیمی', c: 'قزوین', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', when: 'هفتهٔ پیش', av: '#7c3aed', g: 'خرده‌فروشی', tc: 'سوپرمارکت', lv: 2 },
+    { n: 'خواروبار امید', p: 'علی مرادی', c: 'مشهد', tel: '۰۹۱۵ ۲۲۰ ۳۳۶۱', when: '۲ هفته پیش', via: 'از لینک شما', av: '#0e7490', tc: 'خواروبار', lv: 4 },
+    { n: 'کترینگ بهار', p: 'بتا موسوی', c: 'تبریز', tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', when: 'ماه پیش', av: '#a8a29a', g: 'رستوران‌ها', tc: 'کترینگ', lv: 1 }
   ];
   var CUST_OTHER = 35; /* مشتری‌های خارج از نمونهٔ نمایشی — مجموع با CUST_TOTAL هم‌خوانِ ۴۱ آمار reach */
   var custRow = null;  /* ردیفِ در انتظار حذف (۶۲) */
@@ -10257,8 +10442,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var box = document.getElementById('cust-rows');
     if (!box) return;
     box.innerHTML = CUST.map(function (c, i) {
-      /* فاز ۶۵ — فیلتر گروه: ایندکس‌ها اصلی می‌مانند (data-cust) تا منو/حذف سالم بمانند */
+      /* فاز ۶۵/۶۷ — فیلتر گروه + صنف: ایندکس‌ها اصلی می‌مانند (data-cust) تا منو/حذف سالم بمانند */
       if (CGFLT && c.g !== CGFLT) return '';
+      if (CGTC && c.tc !== CGTC) return '';
       var act = c.inq || c.call || c.via || '';
       /* فاز ۶۱ — ردیف «در انتظار عضویت»: مشتریِ پیش‌افزوده با شماره (دashed قرینهٔ sup-wait سمت خریدار) */
       if (c.wait) {
@@ -10276,7 +10462,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       return '<div class="row-card" style="align-items:center" data-cust="' + i + '">' +
         '<div class="avatar-sm" style="background:' + c.av + '">' + c.n.charAt(0) + '</div>' +
         '<div class="body">' +
-          '<div class="t" style="font-size:13.5px">' + c.n + (c.nw ? ' <span class="badge b-amber cust-new">جدید</span>' : '') + (c.g ? ' <span class="cg-tag">' + gfEsc(c.g) + '</span>' : '') + '</div>' +
+          '<div class="t" style="font-size:13.5px">' + c.n + (c.nw ? ' <span class="badge b-amber cust-new">جدید</span>' : '') + (c.g ? ' <span class="cg-tag">' + gfEsc(c.g) + '</span>' : '') + (c.lv ? ' <span class="lv-b">سطح ' + faNum(c.lv) + '</span>' : '') + '</div>' +
           '<div class="s"><span>' + c.p + ' · ' + c.c + '</span><span>' + c.when + ' مشتری شد' + (act ? ' · ' + act : '') + '</span></div>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' +
@@ -10299,13 +10485,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
      (پخش برنج پارس) را از همان داده نشان می‌دهد — انسجام شبکه (الگوی فاز ۶۳). سفارش تازه با
      بج «جدید» بالا می‌آید؛ ترک ۶۵ بج فوتر را برمی‌دارد (الگوی «مثل پیام‌ها» فاز ۶۰). */
   var ORD = [
-    { g: 'برنج هاشمی', q: '۲۰ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'رستوران مهر', st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-sack.jpg', note: '' },
-    { g: 'برنج طارم', q: '۶ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت الماس', st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-grains.jpg', note: 'چک ۳۰ روزه' },
-    { g: 'روغن سرخ‌کردنی لادن', q: '۴ کارتن ۶ عددی', sup: 'آریو غلات', buyer: 'سوپرمارکت آریا', st: 'sent', when: 'دیروز', img: 'png/goods/oil-carton.jpg', note: 'تحویل پنجشنبه صبح' },
-    { g: 'برنج طارم', q: '۱۰ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'ok', when: '۲ روز پیش', price: '۲٬۷۵۰٬۰۰۰', img: 'png/goods/rice-grains.jpg', note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل' },
-    { g: 'برنج فجر', q: '۸ کیسهٔ ۵۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'ship', when: '۳ روز پیش', price: '۲٬۴۸۰٬۰۰۰', img: 'png/goods/fajar-50.jpg', note: '' },
-    { g: 'برنج هاشمی', q: '۳۰ کیسهٔ ۱۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'done', when: 'هفتهٔ پیش', price: '۵۹۵٬۰۰۰', img: 'png/goods/hashemi-10.png', note: '' },
-    { g: 'قند یکتا', q: '۱۰ کیسهٔ ۱۰ کیلویی', sup: 'پخش برنج پارس', buyer: 'سوپرمارکت سعید', st: 'cancel', when: '۲ هفته پیش', img: 'png/goods/sugar-cubes.jpg', note: '' }
+    /* فاز ۶۷ — سفارش = سبد کاتالوگ: اقلام با تعداد؛ unit = قیمت کاتالوگ، price = قیمت
+       نهاییِ پذیرش فروشنده (فقط بعد از ok). سفارش اول دو-قلمی است تا چندقلمی دیده شود. */
+    { its: [
+        { n: 'برنج هاشمی', pack: 'کیسه ۵۰ کیلویی', qty: '۲۰', unit: 2850000 },
+        { n: 'برنج فجر', pack: 'کیسه ۵۰ کیلویی', qty: '۱۰', unit: 2480000 }
+      ], sup: 'پخش برنج پارس', buyer: 'رستوران مهر', st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-sack.jpg', note: '' },
+    { its: [ { n: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی', qty: '۶', unit: 2750000 } ], sup: 'پخش برنج پارس', buyer: 'سوپرمارکت الماس', st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-grains.jpg', note: 'چک ۳۰ روزه' },
+    { its: [ { n: 'روغن سرخ‌کردنی لادن', pack: 'کارتن ۶ عددی', qty: '۴' } ], sup: 'آریو غلات', buyer: 'سوپرمارکت آریا', st: 'sent', when: 'دیروز', img: 'png/goods/oil-carton.jpg', note: 'تحویل پنجشنبه صبح' },
+    { its: [ { n: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی', qty: '۱۰', unit: 2750000, price: 2750000 } ], sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'ok', when: '۲ روز پیش', img: 'png/goods/rice-grains.jpg', note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل' },
+    { its: [ { n: 'برنج فجر', pack: 'کیسه ۵۰ کیلویی', qty: '۸', unit: 2480000, price: 2480000 } ], sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'ship', when: '۳ روز پیش', img: 'png/goods/fajar-50.jpg', note: '' },
+    { its: [ { n: 'برنج هاشمی', pack: 'کیسه ۱۰ کیلویی', qty: '۳۰', unit: 595000, price: 595000 } ], sup: 'پخش برنج پارس', buyer: 'سوپرمارکت آریا', st: 'done', when: 'هفتهٔ پیش', img: 'png/goods/hashemi-10.png', note: '' },
+    { its: [ { n: 'قند یکتا', pack: 'کیسه ۱۰ کیلویی', qty: '۱۰' } ], sup: 'پخش برنج پارس', buyer: 'سوپرمارکت سعید', st: 'cancel', when: '۲ هفته پیش', img: 'png/goods/sugar-cubes.jpg', note: '' }
   ];
   var ORD_ST = {
     sent:   ['ثبت شده', 'b-orange'],
@@ -10331,25 +10522,42 @@ body > div[id^="scr-d"][hidden] { display: none; }
     /* صفحهٔ ۱۸ (keep): ست تب‌ها در هر ورود از TABSET رندر می‌شود — هم‌زمان نگه می‌داریم */
     if (TABSET.sell[2] && TABSET.sell[2][0] === '65') TABSET.sell[2][3] = n > 0 ? '<span class="badge">' + faNum(n) + '</span>' : '';
   }
+  /* فاز ۶۷ — عنوان سفارش: تک‌قلمی «کالا · تعداد بسته»؛ چندقلمی «N قلم — … و M کالای دیگر» */
+  function ordTitle(o) {
+    if (o.its && o.its.length === 1) { var x = o.its[0]; return x.n + ' · ' + x.qty + ' ' + x.pack; }
+    if (o.its && o.its.length > 1) return faNum(o.its.length) + ' قلم کالا — ' + o.its[0].n + ' و ' + faNum(o.its.length - 1) + ' کالای دیگر';
+    return o.g + ' · ' + o.q;
+  }
+  /* مجموع قیمت توافقی — فقط وقتی همهٔ قلم‌ها قیمت نهاییِ پذیرش دارند */
+  function ordTotal(o) {
+    var t = 0, has = false, all = true;
+    (o.its || []).forEach(function (it) {
+      if (it.price != null) { t += it.price * (ordParse(it.qty) || 0); has = true; }
+      else all = false;
+    });
+    return has && all ? t : null;
+  }
   function ordCard(o, i, side) {
     var st = ORD_ST[o.st];
     var meta = '';
-    if (o.price) meta += '<span class="mm" title="قیمت توافقی"><svg><use href="#i-tag"/></svg> ' + o.price + ' تومان</span>';
+    var tot = ordTotal(o);
+    if (tot != null) meta += '<span class="mm" title="مجموع قیمت توافقی"><svg><use href="#i-tag"/></svg> ' + faMoney(tot) + ' تومان</span>';
     if (o.note) meta += '<span class="mm" title="توضیحات / شرایط پرداخت"><svg><use href="#i-comment"/></svg> ' + o.note + '</span>';
     meta += '<span class="inq-act">جزئیات سفارش<svg><use href="#i-chev"/></svg></span>';
     return '<div class="inq-card" data-ordrow="' + i + '" data-ordside="' + side + '" title="جزئیات و وضعیت سفارش">' +
       '<div class="inq-top">' +
-        '<div class="thumb" style="width:46px;height:46px"><img src="' + o.img + '" alt="' + o.g + '"></div>' +
-        '<div class="inq-t"><b>' + o.g + ' · ' + o.q + '</b><span>' + (side === 'buy' ? o.sup : o.buyer) + ' · ' + o.when + (o.nw && side === 'sell' ? ' · <span class="badge b-amber cust-new">جدید</span>' : '') + '</span></div>' +
+        '<div class="thumb" style="width:46px;height:46px"><img src="' + o.img + '" alt=""></div>' +
+        '<div class="inq-t"><b>' + ordTitle(o) + '</b><span>' + (side === 'buy' ? o.sup : o.buyer) + ' · ' + o.when + (o.nw && side === 'sell' ? ' · <span class="badge b-amber cust-new">جدید</span>' : '') + '</span></div>' +
         '<span class="badge ' + st[1] + '">' + st[0] + '</span>' +
       '</div>' +
       '<div class="inq-meta">' + meta + '</div>' +
     '</div>';
   }
   function ordDoneRow(o) {
+    var tot = ordTotal(o);
     return '<div class="inq-done">' +
-      '<div class="thumb" style="width:40px;height:40px"><img src="' + o.img + '" alt="' + o.g + '"></div>' +
-      '<div class="inq-t"><b>' + o.g + ' · ' + o.q + '</b><span>' + (o.st === 'done' ? 'تحویل شد' : 'لغو شد') + (o.price ? ' — ' + o.price + ' تومان' : '') + '</span></div>' +
+      '<div class="thumb" style="width:40px;height:40px"><img src="' + o.img + '" alt=""></div>' +
+      '<div class="inq-t"><b>' + ordTitle(o) + '</b><span>' + (o.st === 'done' ? 'تحویل شد' : 'لغو شد') + (tot != null ? ' — ' + faMoney(tot) + ' تومان' : '') + '</span></div>' +
       '<span class="badge ' + ORD_ST[o.st][1] + '">' + ORD_ST[o.st][0] + '</span>' +
     '</div>';
   }
@@ -10376,11 +10584,26 @@ body > div[id^="scr-d"][hidden] { display: none; }
       [side === 'buy' ? 'تأمین‌کننده' : 'مشتری', side === 'buy' ? o.sup : o.buyer],
       ['تاریخ سفارش', o.when]
     ];
-    if (o.price) rows.push(['قیمت توافقی', o.price + ' تومان']);
+    var tot = ordTotal(o);
+    if (tot != null) rows.push(['مجموع قیمت توافقی', faMoney(tot) + ' تومان']);
     if (o.note) rows.push(['توضیحات / شرایط پرداخت', o.note]);
-    return rows.map(function (r) {
+    var h = rows.map(function (r) {
       return '<div class="ord-frow"><span class="k">' + r[0] + '</span><span class="v">' + r[1] + '</span></div>';
     }).join('');
+    /* فاز ۶۷ — اقلام سفارش: تعداد × قیمت (سمت خریدار: با تخفیف گروه او؛ قیمت نهایی فقط با پذیرش) */
+    if (o.its && o.its.length) {
+      h += '<div class="ord-frow ord-items-h"><span class="k">اقلام سفارش</span><span class="v"></span></div>';
+      h += o.its.map(function (it) {
+        var p = null;
+        if (it.price != null) p = it.price;
+        else if (it.unit != null) {
+          var d = side === 'buy' ? buyerGrpDisc(it.n, it.pack) : 0;
+          p = Math.round(it.unit * (1 - d / 100));
+        }
+        return '<div class="ord-frow ord-irow"><span class="k">' + gfEsc(it.n) + ' · ' + gfEsc(it.pack) + '</span><span class="v">' + gfEsc(it.qty) + ' × ' + (p != null ? faMoney(p) + ' تومان' : 'توافقی') + '</span></div>';
+      }).join('');
+    }
+    return h;
   }
   /* شیت جزئیات (خریدار) / مدیریت (فروشنده) — محتوا و اقدام‌ها با وضعیت هم‌گام */
   function ordSheetFill(o, i, side) {
@@ -10388,7 +10611,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     ordSide = side;
     if (side === 'buy') {
       var vt = document.getElementById('ordv-title');
-      if (vt) vt.textContent = o.g + ' · ' + o.q;
+      if (vt) vt.textContent = ordTitle(o);
       var vs = document.getElementById('ordv-sub');
       if (vs) vs.textContent = o.sup + ' — ثبت‌شدهٔ شما';
       var vf = document.getElementById('ordv-facts');
@@ -10400,16 +10623,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
       openSheet('sheet-ordview');
     } else {
       var mt = document.getElementById('ordm-title');
-      if (mt) mt.textContent = o.g + ' · ' + o.q;
+      if (mt) mt.textContent = ordTitle(o);
       var ms = document.getElementById('ordm-sub');
       if (ms) ms.textContent = o.buyer + ' — مشتری شما';
       var mf = document.getElementById('ordm-facts');
       if (mf) mf.innerHTML = ordFacts(o, side);
       var acc = document.getElementById('ordm-accept');
-      var qIn = document.getElementById('ordm-qty');
-      var pIn = document.getElementById('ordm-price');
-      if (qIn) qIn.value = o.q;
-      if (pIn) pIn.value = o.price || '';
+      var itemsBox = document.getElementById('ordm-items');
+      if (itemsBox && o.its) {
+        itemsBox.innerHTML = o.its.map(function (it, ii) {
+          return '<div class="ord-edit">' +
+            '<span class="k">' + gfEsc(it.n) + ' · ' + gfEsc(it.pack) + ' · سفارش مشتری: ' + gfEsc(it.qty) + '</span>' +
+            '<div class="oe-in">' +
+              '<input class="input" data-oeqty="' + ii + '" inputmode="numeric" value="' + gfEsc(it.qty) + '" aria-label="مقدار نهایی" title="مقدار نهایی — در صورت توافق قابل اصلاح">' +
+              '<input class="input" data-oeprice="' + ii + '" inputmode="numeric" placeholder="قیمت هر ' + gfEsc(it.pack) + '" value="' + (it.price != null ? faMoney(it.price) : '') + '" aria-label="قیمت هر قلم" title="قیمت هر قلم — تومان · اختیاری">' +
+            '</div></div>';
+        }).join('');
+      }
       if (acc) acc.hidden = o.st !== 'sent';
       var okB = document.getElementById('ordm-ok');
       if (okB) okB.hidden = o.st !== 'sent';
@@ -10434,7 +10664,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var p = document.getElementById('ordc-p');
     var okB = document.getElementById('ordc-ok');
     if (h) h.textContent = verb + ' سفارش';
-    if (q) q.textContent = 'سفارش «' + o.g + ' · ' + o.q + '» ' + verb + ' شود؟';
+    if (q) q.textContent = 'سفارش «' + ordTitle(o) + '» ' + verb + ' شود؟';
     if (p) p.textContent = verb + ' سفارش همان‌جا برای ' + (sell ? 'مشتری' : 'تأمین‌کننده') + ' ثبت و اعلام می‌شود.';
     if (okB) okB.textContent = verb + ' سفارش';
     openSheet('dlg-ordcancel');
@@ -10443,6 +10673,108 @@ body > div[id^="scr-d"][hidden] { display: none; }
   function ordOk(side, html) {
     var okB = document.getElementById(side === 'buy' ? 'ord-ok-buy' : 'ord-ok-sell');
     if (okB) { okB.innerHTML = html; okB.hidden = false; }
+  }
+
+  /* ═══ فاز ۶۷ (مالک) — «سبد سفارش»: سفارش از کاتالوگ مثل فروشگاه اینترنتی ═══
+     کالاها با تعداد به سبد می‌روند؛ سبد مال همین کاتالوگ (این تأمین‌کننده) است؛ «ارسال
+     سفارش» = سفارش چندقلمی با اقلام و تعداد برای تأمین‌کننده. پرداخت بیرون از سیستم است
+     (حکم مالک). قیمت هر قلم در سبد با تخفیف گروهِ خریدار دیده می‌شود (cartUnit)؛ قیمت
+     نهایی را فروشنده هنگام پذیرش ثبت می‌کند. */
+  var CAT13 = [
+    { id: 'hash50', n: 'برنج هاشمی', pack: 'کیسه ۵۰ کیلویی', price: 2850000, img: 'png/goods/rice-sack.jpg' },
+    { id: 'tar50',  n: 'برنج طارم',  pack: 'کیسه ۵۰ کیلویی', price: 2750000, img: 'png/goods/sack-scoop.jpg' },
+    { id: 'hash10', n: 'برنج هاشمی', pack: 'کیسه ۱۰ کیلویی', price: 595000,  img: 'png/goods/hashemi-10.png' },
+    { id: 'faj50',  n: 'برنج فجر',   pack: 'کیسه ۵۰ کیلویی', price: 2480000, img: 'png/goods/fajar-50.jpg' }
+  ];
+  var CART = {};  /* id کالا → تعداد */
+  var acPid = null; /* کالای شیت «افزودن به سبد» */
+  function cat13Find(id) { var o = null; CAT13.forEach(function (p) { if (p.id === id) o = p; }); return o; }
+  function cartCount() { var n = 0; Object.keys(CART).forEach(function (k) { n += CART[k]; }); return n; }
+  /* قیمت هر واحد برای خریدار — با تخفیف گروه او (دمو: تخفیف روی برنج هاشمی ۵۰کیلو) */
+  function cartUnit(p) {
+    var d = (phoneArm() === 'buy' && SUPSAVED) ? buyerGrpDisc(p.n, p.pack) : 0;
+    return Math.round(p.price * (1 - d / 100));
+  }
+  function cartSync() {
+    document.querySelectorAll('#scr-13 .pcard .addcart').forEach(function (b) {
+      var q = CART[b.dataset.pid] || 0;
+      b.classList.toggle('on', q > 0);
+      var nEl = b.querySelector('.cart-n');
+      if (nEl) { nEl.hidden = !q; nEl.textContent = faNum(q); }
+    });
+    var bd = document.getElementById('cart-badge-13');
+    var n = cartCount();
+    if (bd) { bd.hidden = !n; bd.textContent = faNum(n); }
+  }
+  function cartAcLine(p) {
+    var qIn = document.getElementById('ac-qty');
+    var q = ordParse(qIn ? qIn.value : 1) || 1;
+    if (q < 1) q = 1;
+    if (qIn) qIn.value = faNum(q);
+    var ln = document.getElementById('ac-line');
+    if (ln && p) ln.innerHTML = faNum(q) + ' × ' + faMoney(cartUnit(p)) + ' = <b>' + faMoney(cartUnit(p) * q) + ' تومان</b>';
+  }
+  function acQtyStep(d) {
+    var qIn = document.getElementById('ac-qty');
+    var p = cat13Find(acPid);
+    var q = Math.max(1, (ordParse(qIn ? qIn.value : 1) || 1) + d);
+    if (qIn) qIn.value = faNum(q);
+    if (p) cartAcLine(p);
+  }
+  function cartStep(btn, d) {
+    var row = btn.closest('[data-cartrow]');
+    if (!row) return;
+    var k = row.dataset.cartrow;
+    CART[k] = Math.max(0, (CART[k] || 0) + d);
+    if (!CART[k]) delete CART[k];
+    cartRender();
+    cartSync();
+  }
+  function cartLineHtml(p, qty, unit) {
+    return '<div class="cart-row" data-cartrow="' + p.id + '">' +
+      '<div class="thumb"><img src="' + p.img + '" alt=""></div>' +
+      '<div class="crt">' +
+        '<div class="t">' + gfEsc(p.n) + ' <span>' + gfEsc(p.pack) + '</span></div>' +
+        '<div class="p">' + (unit < p.price ? '<s>' + faMoney(p.price) + '</s> ' : '') + faMoney(unit) + ' <small>تومان</small></div>' +
+      '</div>' +
+      '<div class="cst">' +
+        '<button type="button" class="st-btn" data-cartdec aria-label="کاهش تعداد" title="کاهش"><svg><use href="#i-minus"/></svg></button>' +
+        '<b>' + faNum(qty) + '</b>' +
+        '<button type="button" class="st-btn" data-cartinc aria-label="افزایش تعداد" title="افزایش"><svg><use href="#i-plus"/></svg></button>' +
+        '<button type="button" class="st-del" data-cartdel aria-label="حذف از سبد" title="حذف از سبد"><svg><use href="#i-trash"/></svg></button>' +
+      '</div>' +
+    '</div>';
+  }
+  function cartRender() {
+    var box = document.getElementById('cart-rows');
+    var foot = document.getElementById('cart-foot');
+    if (!box) return;
+    var keys = Object.keys(CART);
+    if (!keys.length) {
+      box.innerHTML = '<div class="cart-empty">سبد سفارش خالی است — از کاتالوگ، کالاها را با تعداد به سبد اضافه کنید.</div>';
+      if (foot) foot.hidden = true;
+      return;
+    }
+    var total = 0;
+    box.innerHTML = keys.map(function (k) {
+      var p = cat13Find(k);
+      if (!p) return '';
+      var u = cartUnit(p);
+      total += u * CART[k];
+      return cartLineHtml(p, CART[k], u);
+    }).join('');
+    if (foot) foot.hidden = false;
+    var tt = document.getElementById('cart-total');
+    if (tt) tt.textContent = faMoney(total) + ' تومان';
+  }
+  /* فاز ۶۷ — «گروه خرید من» (خودانتسابی مشتری روی کاتالوگ ۱۳): فقط برای مشتریِ ذخیره‌کرده */
+  function myGrpSync() {
+    var row = document.getElementById('mygrp-13');
+    if (!row) return;
+    row.hidden = !(phoneArm() === 'buy' && !catPrivGated() && SUPSAVED);
+    var tEl = document.getElementById('mygrp-t');
+    var g = buyerGroup();
+    if (tEl) tEl.textContent = g ? 'گروه خرید من: ' + g : 'گروه خرید من را انتخاب کنید';
   }
 
   /* ═══ فاز ۶۱ (مالک) — «کاتالوگ خصوصی»: قیمت‌ها فقط برای مشتریان ═══
@@ -10511,6 +10843,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       cb.innerHTML = SUPSAVED ? '<svg><use href="#i-check"/></svg> ذخیره شد' : '<svg><use href="#i-bookmark"/></svg> ذخیره'; /* فاز ۶۴: برچسب کوتاه — buybar چهاردکته‌ای شد */
     }
     var ok = document.getElementById('priv-ok'); if (ok && gated) ok.hidden = true;
+    myGrpSync(); /* فاز ۶۷ — ردیف «گروه خرید من» با درگاه/ذخیره هم‌گام */
   }
   /* پیام حلقهٔ بسته (خوش‌آمد/ذخیره/حذف) بالای کاتالوگ ۱۳ */
   function catPrivOk(html) {
@@ -10551,15 +10884,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
     { n: 'رستوران‌ها', disc: 8 },
     { n: 'همکار', disc: 0 }
   ];
-  var CGFLT = null; /* فیلتر گروهی ۶۲ */
+  var CGFLT = null; /* فیلتر گروه ۶۲ */
+  var CGTC = null;  /* فیلتر صنف ۶۲ (فاز ۶۷ — نوار فیلتر دیواری: فیلترهای تازه بعداً همین‌جا می‌نشینند) */
   function cgChipsRender() {
-    var bar = document.getElementById('cg-bar');
+    var bar = document.getElementById('flbar-62');
     if (!bar) return;
-    var counts = {};
-    CUST.forEach(function (c) { if (c.g && !c.wait) counts[c.g] = (counts[c.g] || 0) + 1; });
-    var html = '<button type="button" class="chip' + (CGFLT ? '' : ' active') + '" data-cgchip="">همه</button>';
+    var counts = {}, tcs = {};
+    CUST.forEach(function (c) {
+      if (c.wait) return;
+      if (c.g) counts[c.g] = (counts[c.g] || 0) + 1;
+      if (c.tc) tcs[c.tc] = (tcs[c.tc] || 0) + 1;
+    });
+    var html = '<button type="button" class="chip' + (!CGFLT && !CGTC ? ' active' : '') + '" data-cgchip="">همه</button>';
     CGRP.forEach(function (g) {
-      html += '<button type="button" class="chip' + (CGFLT === g.n ? ' active' : '') + '" data-cgchip="' + gfEsc(g.n) + '">' + gfEsc(g.n) + ' ' + faNum(counts[g.n] || 0) + '</button>';
+      html += '<button type="button" class="chip' + (CGFLT === g.n ? ' active' : '') + '" data-cgchip="' + gfEsc(g.n) + '"><svg><use href="#i-users"/></svg> ' + gfEsc(g.n) + ' ' + faNum(counts[g.n] || 0) + '</button>';
+    });
+    Object.keys(tcs).forEach(function (k) {
+      html += '<button type="button" class="chip' + (CGTC === k ? ' active' : '') + '" data-cgtc="' + gfEsc(k) + '"><svg><use href="#i-store"/></svg> ' + gfEsc(k) + ' ' + faNum(tcs[k]) + '</button>';
     });
     html += '<button type="button" class="cg-add" data-cgnew aria-label="گروه مشتری جدید" title="گروه مشتری جدید"><svg><use href="#i-plus"/></svg></button>';
     bar.innerHTML = html;
@@ -10607,6 +10948,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         g02.innerHTML = '';
       }
     }
+    myGrpSync(); /* فاز ۶۷ — ردیف «گروه خرید من» هم‌گام (نمایش/برچسب) */
   }
   function ordParse(s) { /* عدد فارسی با جداکننده — مقدار/قیمت/درصد */
     return parseInt(String(s == null ? '' : s)
@@ -10932,7 +11274,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         if (cq) cq.textContent = '«' + cc.n + '» دیگر کاتالوگ شما را نمی‌بیند';
         /* فاز ۶۵ — زیرنویس ردیف گروه مشتری در منو */
         var cgr = document.getElementById('custmenu-grp');
-        if (cgr) cgr.textContent = cc.g ? 'گروه فعلی: ' + cc.g + ' — تخفیف کاتالوگ مخصوص گروه' : 'بدون گروه — تعیین کنید';
+        if (cgr) cgr.textContent = (cc.g ? 'گروه فعلی: ' + cc.g : 'بدون گروه') + ' · سطح ' + (cc.lv ? faNum(cc.lv) : '—') + ' — تخفیف کاتالوگ مخصوص گروه';
       }
       openSheet('sheet-custmenu');
       return;
@@ -11033,42 +11375,71 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     /* ═══ فاز ۶۴ (مالک) — «سفارش»: شیت ثبت + ارسال + جزئیات/مدیریت + وضعیت‌ها ═══ */
     /* ۱) باز کردن شیت ثبت سفارش — از ۰۲ (کالا پیش‌پر) · ۱۳ · ۶۴ · ردیف sheet-catmenu (۱۰) */
-    var ordOpen = t.closest('[data-order]');
-    if (ordOpen) {
-      var ogIn = document.getElementById('ord-good');
-      var oqIn = document.getElementById('ord-qty');
-      var onIn = document.getElementById('ord-note');
-      var oe = document.getElementById('ord-err'); if (oe) oe.hidden = true;
-      if (ogIn) ogIn.value = ordOpen.dataset.og || '';
-      if (oqIn) oqIn.value = '';
-      if (onIn) onIn.value = '';
-      /* مقصد سفارش: از منوی ردیف (۱۰) نام همان تأمین‌کننده؛ وگرنه کاتالوگ/کالای جاری = پارس */
-      var osEl = document.getElementById('ord-sub');
-      if (osEl) {
-        var rowSup = (ordOpen.closest('#sheet-catmenu') && catRow && catRow.querySelector('.t'))
-          ? catRow.querySelector('.t').textContent.replace(/\s+/g, ' ').trim() : 'پخش برنج پارس';
-        osEl.textContent = rowSup;
+    /* ═══ فاز ۶۷ — «سبد سفارش»: شیت تعداد (افزودن کالا به سبد) ═══ */
+    var acOpen = t.closest('[data-addcart]');
+    if (acOpen) {
+      acPid = acOpen.dataset.pid || '';
+      var acP = cat13Find(acPid);
+      if (acP) {
+        var acBox = document.getElementById('ac-prod');
+        if (acBox) {
+          var acU = cartUnit(acP);
+          acBox.innerHTML = '<span class="thumb"><img src="' + acP.img + '" alt="' + gfEsc(acP.n) + '"></span>' +
+            '<div><b>' + gfEsc(acP.n) + '</b><span>' + gfEsc(acP.pack) + ' · ' + faMoney(acU) + ' تومان' + (acU < acP.price ? ' — با تخفیف گروه شما' : '') + '</span></div>';
+        }
+        var acQ = document.getElementById('ac-qty');
+        if (acQ) acQ.value = faNum(CART[acPid] || 1);
+        cartAcLine(acP);
       }
-      ordSide = 'buy';
-      openSheet('sheet-order');
+      openSheet('sheet-addcart');
       return;
     }
-    /* ۲) ارسال سفارش — اعتبار + ثبت در ORD + پیام عین متن مالک + رفتن به ۶۴ */
-    var ordSend = t.closest('[data-ordsend]');
-    if (ordSend) {
-      var sG = (document.getElementById('ord-good') || {}).value || '';
-      var sQ = (document.getElementById('ord-qty') || {}).value || '';
-      var sN = (document.getElementById('ord-note') || {}).value || '';
-      if (!sG.trim() || !sQ.trim()) {
-        var seEl = document.getElementById('ord-err'); if (seEl) seEl.hidden = false;
-        return;
-      }
-      var sS = (document.getElementById('ord-sub') || {}).textContent || 'پخش برنج پارس';
-      ORD.unshift({ g: sG.trim(), q: sQ.trim(), sup: sS.trim(), buyer: ORD_BUYER, st: 'sent', when: 'امروز', nw: true, img: 'png/goods/rice-sack.jpg', note: sN.trim() });
+    var acInc = t.closest('[data-acinc]');
+    if (acInc) { acQtyStep(1); return; }
+    var acDec = t.closest('[data-acdec]');
+    if (acDec) { acQtyStep(-1); return; }
+    var acAdd = t.closest('[data-acadd]');
+    if (acAdd) {
+      var aaP = cat13Find(acPid);
+      var aaQ = Math.max(1, ordParse((document.getElementById('ac-qty') || {}).value) || 1);
+      if (aaP) CART[aaP.id] = aaQ;
       closeSheet();
+      if (current !== '13') go('13');
+      cartSync();
+      if (aaP) catPrivOk(gfEsc(aaP.n) + ' به سبد سفارش اضافه شد — «سبد سفارش» را ببینید و سفارش را بفرستید.');
+      return;
+    }
+    /* سبد سفارش: بازبینی + استپرها + حذف + ارسال */
+    var cartOpenB = t.closest('[data-cartopen]');
+    if (cartOpenB) { cartRender(); openSheet('sheet-cart'); return; }
+    var cartInc = t.closest('[data-cartinc]');
+    if (cartInc) { cartStep(cartInc, 1); return; }
+    var cartDec = t.closest('[data-cartdec]');
+    if (cartDec) { cartStep(cartDec, -1); return; }
+    var cartDel = t.closest('[data-cartdel]');
+    if (cartDel) {
+      var dlRow = cartDel.closest('[data-cartrow]');
+      if (dlRow) { delete CART[dlRow.dataset.cartrow]; cartRender(); cartSync(); }
+      return;
+    }
+    var cartSend = t.closest('[data-cartsend]');
+    if (cartSend) {
+      var cIds = Object.keys(CART);
+      if (!cIds.length) return;
+      var cIts = [];
+      cIds.forEach(function (k) {
+        var cp = cat13Find(k);
+        if (cp) cIts.push({ n: cp.n, pack: cp.pack, qty: faNum(CART[k]), unit: cp.price });
+      });
+      var cFirst = cat13Find(cIds[0]);
+      var cNote = ((document.getElementById('cart-note') || {}).value || '').trim();
+      CART = {};
+      cartSync();
+      closeSheet();
+      ORD.unshift({ its: cIts, sup: 'پخش برنج پارس', buyer: ORD_BUYER, st: 'sent', when: 'امروز', nw: true, img: cFirst ? cFirst.img : 'png/goods/rice-sack.jpg', note: cNote });
       go('64');
       /* حکم مالک (عین متن): انتظار پرداخت/تحویل درست تنظیم می‌شود */
-      ordOk('buy', 'سفارش شما برای «' + sS.trim() + '» ارسال شد. شرایط پرداخت و تحویل را مستقیماً با تامین‌کننده هماهنگ کنید.');
+      ordOk('buy', 'سفارش شما برای «پخش برنج پارس» ارسال شد. شرایط پرداخت و تحویل را مستقیماً با تامین‌کننده هماهنگ کنید.');
       return;
     }
     /* ۳) کارت سفارش (۶۴/۶۵) → شیت جزئیات (خریدار) / مدیریت (فروشنده) */
@@ -11079,15 +11450,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (!isNaN(oi) && ORD[oi]) ordSheetFill(ORD[oi], oi, osd);
       return;
     }
-    /* ۴) فروشنده: پذیرفتن — مقدار/قیمت نهایی اختیاری، سپس ok */
+    /* ۴) فروشنده: پذیرفتن — مقدار/قیمت نهایی هر قلم (اختیاری)، سپس ok */
     var ordAccept = t.closest('[data-ordok]');
     if (ordAccept) {
       var ao = ORD[ordRow];
       if (ao) {
-        var aq = ((document.getElementById('ordm-qty') || {}).value || '').trim();
-        var ap = ((document.getElementById('ordm-price') || {}).value || '').trim();
-        if (aq) ao.q = aq;
-        if (ap) ao.price = ap;
+        (ao.its || []).forEach(function (it, ii) {
+          var qE = document.querySelector('[data-oeqty="' + ii + '"]');
+          var pE = document.querySelector('[data-oeprice="' + ii + '"]');
+          if (qE && qE.value.trim()) it.qty = qE.value.trim();
+          var pv = pE ? ordParse(pE.value) : 0;
+          it.price = pv > 0 ? pv : null;
+        });
         ao.st = 'ok';
         ao.nw = false;
         ao.when = 'امروز';
@@ -11518,6 +11892,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var cgChip = t.closest('[data-cgchip]');
     if (cgChip) {
       CGFLT = cgChip.dataset.cgchip || null;
+      if (!CGFLT) CGTC = null; /* «همه» همهٔ فیلترها را پاک می‌کند */
+      cgChipsRender();
+      custRender();
+      return;
+    }
+    /* فاز ۶۷ — فیلتر صنف (نوار فیلتر ۶۲): با فیلتر گروه ترکیب می‌شود */
+    var cgTc = t.closest('[data-cgtc]');
+    if (cgTc) {
+      CGTC = cgTc.dataset.cgtc || null;
       cgChipsRender();
       custRender();
       return;
@@ -11559,6 +11942,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
             '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
         });
         cgRows.innerHTML = cgH;
+        /* فاز ۶۷ — سطوح مشتری ۱..۵ (پیل‌های انتخاب) */
+        var lvBox = document.getElementById('cga-lv');
+        if (lvBox) {
+          var lvH = '';
+          for (var li = 1; li <= 5; li++) lvH += '<button type="button" class="lv-p' + (cgC.lv === li ? ' on' : '') + '" data-cglvl="' + li + '">' + faNum(li) + '</button>';
+          lvBox.innerHTML = lvH;
+        }
       }
       openSheet('sheet-cgassign');
       return;
@@ -11574,6 +11964,49 @@ body > div[id^="scr-d"][hidden] { display: none; }
       custRender();
       cgChipsRender();
       grpSync();
+      return;
+    }
+    /* فاز ۶۷ — سطح مشتری (۱..۵) از همان شیت؛ شیت باز می‌ماند تا گروه و سطح با هم تنظیم شوند */
+    var cgLv = t.closest('[data-cglvl]');
+    if (cgLv) {
+      var lvIdx = custRow ? +custRow.dataset.cust : -1;
+      if (CUST[lvIdx]) {
+        CUST[lvIdx].lv = +cgLv.dataset.cglvl;
+        var lvBox2 = document.getElementById('cga-lv');
+        if (lvBox2) Array.prototype.forEach.call(lvBox2.children, function (b) {
+          b.classList.toggle('on', +b.dataset.cglvl === CUST[lvIdx].lv);
+        });
+        custRender();
+      }
+      return;
+    }
+    /* ═══ فاز ۶۷ — «گروه خرید من» (خودانتسابی مشتری روی کاتالوگ ۱۳) ═══ */
+    var myGrpOpen = t.closest('[data-mygrp]');
+    if (myGrpOpen) {
+      var mRows = document.getElementById('mygrp-rows');
+      var g0 = buyerGroup();
+      if (mRows) {
+        var mH = '<button type="button" class="pk-row' + (!g0 ? ' on' : '') + '" data-mygrppick="-1">' +
+          '<span class="pk-tx"><b>بدون گروه</b><small>قیمت عمومی کاتالوگ</small></span>' +
+          '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+        CGRP.forEach(function (g, gi) {
+          mH += '<button type="button" class="pk-row' + (g0 === g.n ? ' on' : '') + '" data-mygrppick="' + gi + '">' +
+            '<span class="pk-tx"><b>' + gfEsc(g.n) + '</b><small>' + (g.disc ? 'تخفیف کاتالوگ: ٪' + faNum(g.disc) : 'قیمت عمومی کاتالوگ') + '</small></span>' +
+            '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+        });
+        mRows.innerHTML = mH;
+      }
+      openSheet('sheet-mygrp');
+      return;
+    }
+    var myGrpPick = t.closest('[data-mygrppick]');
+    if (myGrpPick) {
+      var mgI = +myGrpPick.dataset.mygrppick;
+      var mgN = (mgI >= 0 && CGRP[mgI]) ? CGRP[mgI].n : null;
+      CUST.forEach(function (c) { if (c.n === ORD_BUYER) c.g = mgN; });
+      closeSheet();
+      grpSync();
+      catPrivOk(mgN ? 'قیمت‌های گروه «' + gfEsc(mgN) + '» برای شما اعمال شد.' : 'گروه شما برداشته شد — قیمت عمومی کاتالوگ را می‌بینید.');
       return;
     }
     /* تخفیف گروهی کالا (شیت cgdisc): رندر زنده قبل از باز شدن */

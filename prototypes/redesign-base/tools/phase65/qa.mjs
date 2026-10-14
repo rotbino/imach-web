@@ -49,23 +49,23 @@ await shot('02-65-icons-fixed');
 
 /* ═══ ۱. گروه‌های مشتری روی ۶۲ ═══ */
 await page.goto(FILE + '#62'); await page.reload(); await sleep(450);
-T('۶۲: چیپ‌بار (همه + ۳ گروه با شمار + +)', await page.evaluate(() => {
-  const chips = [...document.querySelectorAll('#cg-bar .chip')];
-  return chips.length === 4 && chips[1].textContent.includes('خرده‌فروشی') && chips[1].textContent.includes('۲') && document.querySelectorAll('#cg-bar .cg-add').length === 1;
+T('۶۲: نوار فیلتر (همه + ۳ گروه + ۴ صنف + + — فاز ۶۷)', await page.evaluate(() => {
+  const chips = [...document.querySelectorAll('#flbar-62 .chip')];
+  return chips.length === 8 && chips[1].textContent.includes('خرده‌فروشی') && chips[1].textContent.includes('۲') && document.querySelectorAll('#flbar-62 .cg-add').length === 1;
 }));
 T('۶۲: بج گروه روی ردیف آریا (خرده‌فروشی)', (await page.locator('#cust-rows .row-card').nth(1).textContent()).includes('خرده‌فروشی'));
 await shot('04-62-groups');
-await page.locator('#cg-bar .chip').nth(2).click(); await sleep(250);
+await page.locator('#flbar-62 .chip').nth(2).click(); await sleep(250);
 T('فیلتر رستوران‌ها = ۲', (await page.locator('#cust-rows .row-card').count()) === 2);
-await page.locator('#cg-bar .chip').nth(1).click(); await sleep(250);
+await page.locator('#flbar-62 .chip').nth(1).click(); await sleep(250);
 T('فیلتر خرده‌فروشی = ۲', (await page.locator('#cust-rows .row-card').count()) === 2);
-await page.locator('#cg-bar .chip').nth(0).click(); await sleep(250);
+await page.locator('#flbar-62 .chip').nth(0).click(); await sleep(250);
 T('همه = ۶', (await page.locator('#cust-rows .row-card').count()) === 6);
 /* گروه جدید */
-await page.click('#cg-bar .cg-add'); await sleep(300);
+await page.click('#flbar-62 .cg-add'); await sleep(300);
 await page.fill('#cgn-name', 'قنادی‌ها');
 await page.click('[data-cgnewok]'); await sleep(300);
-T('گروه جدید در چیپ‌بار (۵ چیپ)', (await page.locator('#cg-bar .chip').count()) === 5 && (await page.locator('#cg-bar').textContent()).includes('قنادی\u200cها'));
+T('گروه جدید در نوار فیلتر (۹ چیپ)', (await page.locator('#flbar-62 .chip').count()) === 9 && (await page.locator('#flbar-62').textContent()).includes('قنادی\u200cها'));
 /* انتساب گروه از منو */
 await page.locator('#cust-rows .row-card [data-cdots]').nth(1).click(); await sleep(300);
 T('منو: ردیف «گروه مشتری» + گروه فعلی', (await page.locator('#custmenu-grp').textContent()).includes('خرده‌فروشی'));
@@ -161,13 +161,13 @@ await page.goto(FILE + '#10'); await sleep(400);
 await page.click('#saved-cats .row-card [data-sheet="sheet-catmenu"] >> nth=0'); await sleep(300);
 await page.click('#sheet-catmenu [data-catdel]'); await sleep(350);
 await page.goto(FILE + '#13'); await sleep(400);
-T('درگاه: دکتهٔ «ثبت سفارش» مخفی (قیمت قفل)', await page.evaluate(() =>
-  getComputedStyle(document.querySelector('#buybar-13 [data-order]')).display === 'none'));
+T('درگاه: دکتهٔ «سبد سفارش» مخفی (قیمت قفل)', await page.evaluate(() =>
+  getComputedStyle(document.querySelector('#buybar-13 [data-cartopen]')).display === 'none'));
 T('درگاه: دکتهٔ «ذخیره» می‌ماند (مسیر بازگشت)', await page.evaluate(() =>
   getComputedStyle(document.querySelector('#buybar-13 [data-catsave]')).display !== 'none'));
 await page.click('#priv13-save'); await sleep(450);
-T('ذخیره از درگاه: دکتهٔ سفارش برگشت', await page.evaluate(() =>
-  getComputedStyle(document.querySelector('#buybar-13 [data-order]')).display !== 'none'));
+T('ذخیره از درگاه: دکتهٔ سبد سفارش برگشت', await page.evaluate(() =>
+  getComputedStyle(document.querySelector('#buybar-13 [data-cartopen]')).display !== 'none'));
 
 console.log('\nRESULT: ' + ok + '/' + (ok + bad));
 console.log(errors.length ? 'ERRORS:\n' + errors.join('\n') : 'NO CONSOLE/PAGE ERRORS');

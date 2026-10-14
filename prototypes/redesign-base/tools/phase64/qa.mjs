@@ -36,8 +36,8 @@ const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗
 /* ═══ ۰. فوترها — سفارش جایگزین استعلام/درخواست‌ها ═══ */
 await page.goto(FILE + '#08'); await page.reload(); await sleep(400);
 const t08 = await page.locator('#scr-08 .tabbar .tab').allTextContents();
-T('فوتر ۰۸: ۴ تب — لیست خرید · تأمین‌کنندگان · سفارش‌های من · پیام‌ها',
-  t08.length === 4 && t08[0].includes('لیست خرید') && t08[1].includes('تأمین‌کنندگان') && t08[2].includes('سفارش‌های من') && t08[3].includes('پیام‌ها'));
+T('فوتر ۰۸: ۵ تب — لیست خرید · تأمین‌کنندگان · سفارش‌های من · پیام‌ها · تنظیمات (فاز ۶۷)',
+  t08.length === 5 && t08[0].includes('لیست خرید') && t08[1].includes('تأمین‌کنندگان') && t08[2].includes('سفارش‌های من') && t08[3].includes('پیام‌ها') && t08[4].includes('تنظیمات'));
 T('فوتر ۰۸: استعلام در فوتر نیست (حکم مالک: فرایند فرعی)', !(await page.locator('#scr-08 .tabbar').textContent()).includes('استعلام'));
 await shot('01-footer08');
 await page.click('#scr-08 .tab:has-text("سفارش‌های من")'); await sleep(300);
@@ -61,7 +61,7 @@ T('فوتر ۱۸ (فروش): ۵ تب با «سفارشات» بج ۲', t18s.leng
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
 await page.evaluate(() => { location.hash = '#18'; }); await sleep(350);
 const t18b = await page.locator('#scr-18 .tabbar .tab').allTextContents();
-T('فوتر ۱۸ (خرید): ۴ تب — تب سوم «سفارش‌های من»', t18b.length === 4 && t18b[2].includes('سفارش‌های من'));
+T('فوتر ۱۸ (خرید): ۵ تب — تب سوم «سفارش‌های من» + تنظیمات پنجم (فاز ۶۷)', t18b.length === 5 && t18b[2].includes('سفارش‌های من') && t18b[4].includes('تنظیمات'));
 
 /* ۰۵/۴۵ = صفحهٔ فرعی پشته‌ای — بدون تب‌بار */
 await page.goto(FILE + '#45'); await page.reload(); await sleep(300);
@@ -82,9 +82,9 @@ T('۶۴: سه وضعیت جاری دیده می‌شوند (ثبت/پذیرفت�
   tx64.includes('ثبت شده') && tx64.includes('پذیرفته شده') && tx64.includes('ارسال شده'));
 T('۶۴: «تحویل شده» بایگانی (b-done)', (await page.locator('#ord-done-buy .badge.b-done').count()) === 1);
 T('۶۴: توضیحات/شرایط پرداخت روی کارت طارم', tx64.includes('پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل'));
-T('۶۴: قیمت توافتی روی کارت', tx64.includes('۲٬۷۵۰٬۰۰۰'));
+T('۶۴: مجموع توافتی روی کارت (فاز ۶۷: چندقلمی — ۱۰×۲٬۷۵۰٬۰۰۰)', tx64.includes('۲۷٬۵۰۰٬۰۰۰'));
 T('۶۴: هیچ «پرداخت شده» وجود ندارد (حکم مالک: وضعیت مالی ممنوع)', !tx64.includes('پرداخت شده'));
-T('۶۴: دکتهٔ «ثبت سفارش جدید»', (await page.locator('#ord-new[data-order]').count()) === 1);
+T('۶۴: دکتهٔ «سفارش جدید از کاتالوک تأمین‌کننده» → ۱۰', (await page.locator('#ord-new[data-go="10"]').count()) === 1);
 await page.evaluate(() => { document.querySelector('#ord-rows-buy').scrollIntoView(); });
 await shot('03-page64');
 
@@ -108,45 +108,48 @@ await shot('04-page65');
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
 await page.evaluate(() => { location.hash = '#13'; }); await sleep(300);
 await page.click('#scr-13 .pcard'); await sleep(300);
-T('۰۲: CTA اصلی «ثبت سفارش» (جایگزین درخواست قیمت)',
-  (await page.locator('#buybar-02 [data-order]').count()) === 1 && (await page.locator('#buybar-02').textContent()).includes('ثبت سفارش'));
-await page.click('#buybar-02 [data-order]'); await sleep(300);
-T('شیت ثبت سفارش باز شد', await page.locator('#sheet-order.show').count() === 1);
-T('شیت: فیلد «توضیحات / شرایط پرداخت» (اختیاری — حکم مالک)', (await page.locator('#sheet-order').textContent()).includes('توضیحات / شرایط پرداخت'));
-T('شیت: کالا از ۰۲ پیش‌پر شد', (await page.locator('#ord-good').inputValue()).includes('برنج هاشمی'));
-/* اعتبارسنجی: بدون مقدار خطا */
-await page.click('[data-ordsend]'); await sleep(200);
-T('اعتبارسنجی: بدون مقدار، خطا + شیت می‌ماند', await page.locator('#ord-err').isVisible());
-await page.fill('#ord-qty', '۲۰ کیسه');
-await page.fill('#ord-note', 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل');
-await page.click('[data-ordsend]'); await sleep(400);
+T('۰۲: CTA اصلی «افزودن به سبد سفارش» (فاز ۶۷ — سبد خرید کاتالوگ)',
+  (await page.locator('#buybar-02 [data-addcart]').count()) === 1 && (await page.locator('#buybar-02').textContent()).includes('افزودن به سبد سفارش'));
+await page.click('#buybar-02 [data-addcart]'); await sleep(300);
+T('شیت «افزودن به سبد» باز شد', await page.locator('#sheet-addcart.show').count() === 1);
+T('شیت: کالا از ۰۲ پیش‌آمد', (await page.locator('#ac-prod').textContent()).includes('برنج هاشمی'));
+await page.fill('#ac-qty', '۲۰');
+await page.click('[data-acadd]'); await sleep(400);
+T('افزودن → کاتالوگ ۱۳ + بج سبد ۲۰', (await page.locator('#cart-badge-13').textContent()) === '۲۰');
+await page.click('#buybar-13 [data-cartopen]'); await sleep(300);
+T('سبد سفارش: فیلد «توضیحات / شرایط پرداخت» (اختیاری — حکم مالک)', (await page.locator('#sheet-cart').textContent()).includes('توضیحات / شرایط پرداخت'));
+await page.fill('#cart-note', 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل');
+await page.click('[data-cartsend]'); await sleep(400);
 T('ارسال → صفحهٔ ۶۴ (سفارش‌های من)', await page.locator('#scr-64').isVisible());
 const okMsg = await page.locator('#ord-ok-buy').textContent();
 T('پیام عین متن مالک — «سفارش شما برای … ارسال شد. شرایط پرداخت و تحویل را مستقیماً با تامین‌کننده هماهنگ کنید.»',
   okMsg.includes('سفارش شما برای «پخش برنج پارس» ارسال شد') && okMsg.includes('شرایط پرداخت و تحویل را مستقیماً با تامین‌کننده هماهنگ کنید'));
 const first64 = await page.locator('#ord-rows-buy .inq-card').first().textContent();
-T('سفارش تازه بالای ۶۴ — «ثبت شده» + مقدار + توضیحات',
-  first64.includes('۲۰ کیسه') && first64.includes('ثبت شده') && first64.includes('پیش‌پرداخت ۳۰٪'));
+T('سفارش تازه بالای ۶۴ — «ثبت شده» + تعداد + توضیحات',
+  first64.includes('۲۰') && first64.includes('ثبت شده') && first64.includes('پیش‌پرداخت ۳۰٪'));
 await page.evaluate(() => { document.querySelector('#ord-ok-buy').scrollIntoView(); });
 await shot('05-sent64');
 
 /* buybar-13 چهاردکته‌ای + ردیف sheet-catmenu */
 await page.goto(FILE + '#13'); await page.reload(); await sleep(400);
 const bb13 = await page.locator('#buybar-13').textContent();
-T('۱۳: buybar چهاردکته‌ای — ذخیره | ثبت سفارش | پیام | تماس',
-  (await page.locator('#buybar-13 .btn').count()) === 4 && bb13.includes('ثبت سفارش') && bb13.includes('ذخیره') && bb13.includes('پیام') && bb13.includes('تماس'));
-T('۱۳: «ثبت سفارش» دکتهٔ اصلی (primary)', (await page.locator('#buybar-13 .btn-primary[data-order]').count()) === 1);
+T('۱۳: buybar چهاردکته‌ای — ذخیره | سبد سفارش | پیام | تماس (فاز ۶۷)',
+  (await page.locator('#buybar-13 .btn').count()) === 4 && bb13.includes('سبد سفارش') && bb13.includes('ذخیره') && bb13.includes('پیام') && bb13.includes('تماس'));
+T('۱۳: «سبد سفارش» دکتهٔ اصلی (primary) با بج شمار', (await page.locator('#buybar-13 .btn-primary[data-cartopen]').count()) === 1);
 await page.goto(FILE + '#10'); await page.reload(); await sleep(400);
 await page.click('#saved-cats .row-card [data-sheet="sheet-catmenu"]'); await sleep(250);
-T('منوی تأمین‌کننده (۱۰): ردیف «ثبت سفارش» دارد', (await page.locator('#sheet-catmenu [data-order]').count()) === 1);
+T('منوی تأمین‌کننده (۱۰): ردیف «سفارش از کاتالوگ» → ۱۳', await page.evaluate(() => {
+  const r = [...document.querySelectorAll('#sheet-catmenu .sheet-row')].find(x => x.textContent.includes('سفارش از کاتالوگ'));
+  return !!r && r.dataset.go === '13';
+}));
 await shot('06-catmenu-order');
 
 /* ═══ ۴. وضعیت‌ها — فروشنده: پذیرش با مقدار/قیمت → اعلام ارسال ═══ */
 await page.goto(FILE + '#65'); await page.reload(); await sleep(400);
 await page.click('#ord-rows-sell .inq-card:first-child'); await sleep(300);
 T('شیت مدیریت فروشنده باز شد', await page.locator('#sheet-ordmgr.show').count() === 1);
-T('فیلدهای پذیرش: مقدار نهایی + قیمت هر بسته', await page.locator('#ordm-accept').isVisible() && (await page.locator('#ordm-qty').inputValue()).length > 0);
-await page.fill('#ordm-price', '۲٬۸۵۰٬۰۰۰');
+T('فیلدهای پذیرش: مقدار و قیمت هر قلم (فاز ۶۷)', await page.locator('#ordm-accept').isVisible() && await page.locator('#ordm-items [data-oeqty]').count() >= 1);
+await page.fill('[data-oeprice="0"]', '۲٬۸۵۰٬۰۰۰');
 await page.click('[data-ordok]'); await sleep(300);
 T('پذیرش → پیام سبز + کارت «پذیرفته شده» با قیمت',
   (await page.locator('#ord-ok-sell').textContent()).includes('پذیرفته شد')
@@ -232,8 +235,8 @@ const PAGES = ['01','02','04','05','07','08','09','10','12','13','15','16','17',
 for (const h of PAGES) {
   await page.goto(FILE + '#' + h); await sleep(150);
 }
-T('گشت: ۳۳ صفحه بدون هیچ خطای JS', errors.length === 0);
-T('ساختار: ۳۳ صفحه داخل گوشی', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 33));
+T('گشت: ۳۴ صفحه بدون هیچ خطای JS', errors.length === 0);
+T('ساختار: ۳۴ صفحه داخل گوشی (فاز ۶۷: +۱۴)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 34));
 
 /* ═══ ۱۰. سرریز افقی — نقاط تازهٔ قطعی ═══ */
 const ovf = async (sel, label) => {

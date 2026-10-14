@@ -23,13 +23,13 @@ await sleep(250);
 
 /* ═══ ۱. ساختار کلی ═══ */
 const ALIVE = ['01','02','04','05','07','08','09','10','12','13','15','16','17','18','19','22','27','29','30','34','42','43','44','45','46'];
-const DEAD = ['03','06','11','14','20','21','24','25','26','28','31','32','33','35','36','37','38','39','40','41','d1','d2']; /* فاز ۵۸: ۲۳ بازگشت (چشم ۰۸ → دید عمومی) */
+const DEAD = ['03','06','11','20','21','24','25','26','28','31','32','33','35','36','37','38','39','40','41','d1','d2']; /* فاز ۵۸: ۲۳ بازگشت (چشم ۰۸ → دید عمومی) · فاز ۶۷: ۱۴ تنظیمات خرید بازگشت */
 
 /* ═══ ۰. سلامت درخت DOM — فاز ۴۴-فیکس ═══
    دو </div> زائد (خط ۲۱۵۵ و ۴۵۴۷ قدیم) قاب #phone را زودتر از موعد می‌بستند:
    ۱۹ صفحه بیرون از گوشی رندر می‌شدند، ارتفاع سند تا ۴۰۰۰+ می‌رفت و شیت‌ها لنگر
    پوزیشن خود را از دست می‌دادند. این چک‌ها آن کلاس خرابی را برای همیشه قفل می‌کنند. */
-ok('همهٔ ۳۳ صفحه داخل قاب گوشی‌اند (فاز ۶۰: +۶۲ · فاز ۶۴: +۶۴/۶۵ سفارش‌ها)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 33));
+ok('همهٔ ۳۴ صفحه داخل قاب گوشی‌اند (فاز ۶۰: +۶۲ · فاز ۶۴: +۶۴/۶۵ · فاز ۶۷: +۱۴ تنظیمات خرید)', await page.evaluate(() => document.querySelectorAll('#phone > section.scr').length === 34));
 ok('هیچ صفحه‌ای بیرون از گوشی نیست', await page.evaluate(() => document.querySelectorAll('#stage > .scr, body > .scr').length === 0));
 ok('همهٔ شیت/دیالوگ‌ها داخل گوشی‌اند (لنگر position:absolute)', await page.evaluate(() => {
   const sheets = document.querySelectorAll('.sheet, .dlg');
@@ -51,7 +51,7 @@ ok('فوتر فروش ۵ تبی (فاز ۶۰: +مشتریان)', await page.loca
 ok('فوتر فروش: مشتریان تب دوم + بج جدید', (await page.locator('#scr-01 .tab').nth(1).textContent()).includes('مشتریان'));
 ok('فوتر فروش: تنظیمات (نه پروفایل)', (await page.locator('#scr-01 .tab').nth(4).textContent()).includes('تنظیمات'));
 ok('فوتر فروش بدون «کارها»', !(await page.locator('#scr-01 .tabbar').textContent()).includes('کارها'));
-ok('فوتر خرید ۴ تب (فاز ۴۵)', await page.locator('#scr-08 .tabbar .tab').count() === 4);
+ok('فوتر خرید ۵ تب (فاز ۶۷: +تنظیمات خرید — بازگشت صفحهٔ ۱۴)', await page.locator('#scr-08 .tabbar .tab').count() === 5);
 ok('فوتر خرید: لیست خرید · سفارش‌های من · پیام‌ها · تأمین‌کنندگان (فاز ۶۰/۶۴)', (await page.locator('#scr-08 .tabbar').textContent()).includes('سفارش‌های من') && (await page.locator('#scr-08 .tabbar').textContent()).includes('تأمین‌کنندگان') && !(await page.locator('#scr-08 .tabbar').textContent()).includes('کاتالوگ‌ها') && !(await page.locator('#scr-08 .tabbar').textContent()).includes('استعلام'));
 ok('پیل سوییچ چسبیده به لوگو (فاز ۴۵)', await page.locator('#scr-01 .appbar .brand .arm-pill').count() === 1);
 ok('پیل بدون آیکون داخلی + برچسب عمده', (await page.locator('#scr-01 .arm-pill').textContent()).includes('دستیار فروش عمده') && (await page.locator('#scr-01 .arm-pill > svg:not(.caret)').count()) === 0);
@@ -213,7 +213,7 @@ await page.evaluate(() => { location.hash = '#13'; }); await sleep(300);
 await page.click('#scr-13 .pcard');
 await sleep(250);
 ok('۰۲: اکشن‌های خریدار برای خریدار پیداست (فاز ۴۵)', await page.locator('#buybar-02').isVisible());
-ok('۰۲: دکمهٔ «ثبت سفارش» (فاز ۶۴ — CTA اصلی؛ استعلام فرعی شد)', (await page.locator('#buybar-02 .btn').textContent()).includes('ثبت سفارش'));
+ok('۰۲: CTA «افزودن به سبد سفارش» (فاز ۶۷ — سبد خرید کاتالوگ؛ استعلام فرعی)', (await page.locator('#buybar-02 .btn').textContent()).includes('افزودن به سبد سفارش'));
 
 /* ═══ ۱۰. لیست خرید (۰۸) → تابلو (۰۹) → استعلام‌ها (۴۵) ═══ */
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
@@ -357,7 +357,7 @@ ok('۰۷: تبلیغات و افزایش فروش', await page.locator('#scr-07 
 ok('۰۷: بدون کمپین (فاز ۶۰: «مشتریان» تب فوتر است)', !(await page.locator('#scr-07').textContent()).includes('کمپین') && (await page.locator('#scr-07 .tabbar .tab[data-go="62"]').count()) === 1);
 ok('۰۷: تنظیمات کاتالوگ (cset)', await page.locator('#scr-07 [data-sheet="sheet-cset"]').count() === 1);
 ok('۰۷: بدون حساب کاربری (رفت به ۴۲ — فاز ۴۵)', !(await page.locator('#scr-07').textContent()).includes('تم تاریک') && !(await page.locator('#scr-07').textContent()).includes('خروج از حساب'));
-ok('۱۴: صفحه حذف شد (تنظیمات خرید — فاز ۴۵)', await page.locator('#scr-14').count() === 0);
+ok('۱۴: «تنظیمات خرید» بازگشت (فاز ۶۷ — حذف فاز ۴۵ اشتباه بود؛ حکم مالک)', await page.locator('#scr-14').count() === 1 && (await page.locator('#scr-14 .tabbar').textContent()).includes('تنظیمات'));
 
 /* ═══ ۱۳-ب. فرم ۳۴ — الگوی MVP (فاز ۴۵) ═══ */
 await page.goto(FILE + '#34'); await page.reload(); await sleep(300);

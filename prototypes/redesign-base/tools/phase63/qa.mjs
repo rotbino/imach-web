@@ -35,7 +35,7 @@ const T = (name, cond) => { if (cond) { ok++; } else { bad++; console.log('  ✗
 /* ═══ ۰. فوتر دستیار خرید — «تأمین‌کنندگان» بلافاصله بعد از «لیست خرید» ═══ */
 await page.goto(FILE + '#08'); await page.reload(); await sleep(400);
 const t08 = await page.locator('#scr-08 .tabbar .tab').allTextContents();
-T('فوتر ۰۸: ۴ تب ماند', t08.length === 4);
+T('فوتر ۰۸: ۵ تب ماند (فاز ۶۷: +تنظیمات خرید)', t08.length === 5);
 T('فوتر ۰۸: ترتیب مالک — لیست خرید · تأمین‌کنندگان · سفارش‌های من · پیام‌ها (فاز ۶۴)',
   t08[0].includes('لیست خرید') && t08[1].includes('تأمین‌کنندگان') && t08[2].includes('سفارش‌های من') && t08[3].includes('پیام‌ها'));
 T('فوتر ۰۸: تب فعال = لیست خرید', (await page.locator('#scr-08 .tab.active').textContent()).includes('لیست خرید'));
@@ -55,7 +55,7 @@ await shot('02-footer45');
 await page.goto(FILE + '#45'); await sleep(250);
 await page.goto(FILE + '#18'); await sleep(350);
 const t18 = await page.locator('#scr-18 .tabbar .tab').allTextContents();
-T('فوتر ۱۸ (بازوی خرید): تأمین‌کنندگان جای دوم', t18.length === 4 && t18[1].includes('تأمین‌کنندگان'));
+T('فوتر ۱۸ (بازوی خرید): تأمین‌کنندگان جای دوم + تنظیمات پنجم (فاز ۶۷)', t18.length === 5 && t18[1].includes('تأمین‌کنندگان') && t18[4].includes('تنظیمات'));
 
 /* ═══ ۱. مدل اینستاگرام — تابلوی تأمین ۰۹ ═══ */
 await page.goto(FILE + '#09'); await page.reload(); await sleep(400);
