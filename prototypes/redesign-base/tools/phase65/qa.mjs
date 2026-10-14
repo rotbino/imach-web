@@ -47,32 +47,44 @@ T('۶۵: تب پیام‌ها از symbol آمده (نه svg اینلاین)', a
   [...document.querySelectorAll('#scr-65 .tabbar .tab svg use')].every(u => !!u.getAttribute('href'))));
 await shot('02-65-icons-fixed');
 
-/* ═══ ۱. گروه‌های مشتری روی ۶۲ ═══ */
+/* ═══ ۱. گروه‌های مشتری روی ۶۲ — فاز ۶۸: دو دکمهٔ فیلتر + آیکون تنظیمات هدر ═══ */
 await page.goto(FILE + '#62'); await page.reload(); await sleep(450);
-T('۶۲: نوار فیلتر (همه + ۳ گروه + ۴ صنف + + — فاز ۶۷)', await page.evaluate(() => {
-  const chips = [...document.querySelectorAll('#flbar-62 .chip')];
-  return chips.length === 8 && chips[1].textContent.includes('خرده‌فروشی') && chips[1].textContent.includes('۲') && document.querySelectorAll('#flbar-62 .cg-add').length === 1;
-}));
-T('۶۲: بج گروه روی ردیف آریا (خرده‌فروشی)', (await page.locator('#cust-rows .row-card').nth(1).textContent()).includes('خرده‌فروشی'));
+T('۶۲: نوار فیلتر دو دکمه دارد (گروه + صنف — فاز ۶۸)', await page.evaluate(() =>
+  document.querySelectorAll('#flbar-62 .fl-b').length === 2 && !!document.querySelector('#flbar-62 .fl-b[data-flg]') && !!document.querySelector('#flbar-62 .fl-b[data-fltc]')));
+T('۶۲: آیکون تنظیمات (مدیریت گروه‌ها) در هدر', await page.evaluate(() => !!document.querySelector('#scr-62 .subheader [data-cgmopen]')));
+T('۶۲: بج گروه روی ردیف آریا (همکاران)', (await page.locator('#cust-rows .row-card').nth(1).textContent()).includes('همکاران'));
 await shot('04-62-groups');
-await page.locator('#flbar-62 .chip').nth(2).click(); await sleep(250);
-T('فیلتر رستوران‌ها = ۲', (await page.locator('#cust-rows .row-card').count()) === 2);
-await page.locator('#flbar-62 .chip').nth(1).click(); await sleep(250);
-T('فیلتر خرده‌فروشی = ۲', (await page.locator('#cust-rows .row-card').count()) === 2);
-await page.locator('#flbar-62 .chip').nth(0).click(); await sleep(250);
-T('همه = ۶', (await page.locator('#cust-rows .row-card').count()) === 6);
-/* گروه جدید */
-await page.click('#flbar-62 .cg-add'); await sleep(300);
+/* فیلتر گروه از شیت انتخاب */
+await page.click('#flbar-62 .fl-b[data-flg]'); await sleep(300);
+await page.evaluate(() => { [...document.querySelectorAll('#cgf-rows .pk-row')].find(x => x.textContent.includes('مشتریان جدید')).click(); });
+await sleep(250);
+T('فیلتر مشتریان جدید = ۱', (await page.locator('#cust-rows .row-card').count()) === 1);
+await page.click('#flbar-62 .fl-b[data-flg]'); await sleep(300);
+await page.evaluate(() => { [...document.querySelectorAll('#cgf-rows .pk-row')].find(x => x.textContent.includes('همکاران')).click(); });
+await sleep(250);
+T('فیلتر همکاران = ۲', (await page.locator('#cust-rows .row-card').count()) === 2);
+await page.click('#flbar-62 [data-flgx]');
+await sleep(250);
+T('✕ پاک‌کردن گروه = ۶', (await page.locator('#cust-rows .row-card').count()) === 6);
+/* گروه جدید — از شیت مدیریت (آیکون تنظیمات هدر) */
+await page.click('#scr-62 .subheader [data-cgmopen]'); await sleep(300);
+T('شیت مدیریت گروه‌ها باز شد', await page.locator('#sheet-cgmgr').isVisible());
+T('مدیریت: ۳ کارت گروه + بدون گروه', (await page.locator('#cgm-rows .cgm-g').count()) === 4 && (await page.locator('#cgm-rows').textContent()).includes('بدون گروه'));
+await shot('04-62-cgmgr');
+await page.click('#sheet-cgmgr [data-cgnew]'); await sleep(300);
 await page.fill('#cgn-name', 'قنادی‌ها');
 await page.click('[data-cgnewok]'); await sleep(300);
-T('گروه جدید در نوار فیلتر (۹ چیپ)', (await page.locator('#flbar-62 .chip').count()) === 9 && (await page.locator('#flbar-62').textContent()).includes('قنادی\u200cها'));
+T('گروه جدید ساخته شد (پیام)', (await page.locator('#priv-ok').textContent()).includes('قنادی'));
+await page.click('#scr-62 .subheader [data-cgmopen]'); await sleep(300);
+T('مدیریت: کارت قنادی‌ها با «بدون تخفیف»', (await page.locator('#cgm-rows').textContent()).includes('قنادی‌ها') && (await page.locator('#cgm-rows').textContent()).includes('بدون تخفیف'));
+await page.evaluate(() => document.getElementById('backdrop').click()); await sleep(250);
 /* انتساب گروه از منو */
 await page.locator('#cust-rows .row-card [data-cdots]').nth(1).click(); await sleep(300);
-T('منو: ردیف «گروه مشتری» + گروه فعلی', (await page.locator('#custmenu-grp').textContent()).includes('خرده‌فروشی'));
+T('منو: ردیف «گروه مشتری» + گروه فعلی', (await page.locator('#custmenu-grp').textContent()).includes('همکاران'));
 await page.click('#sheet-custmenu [data-cgset]'); await sleep(300);
 T('شیت انتساب: بدون گروه + ۴ گروه', (await page.locator('#cga-rows .pk-row').count()) === 5);
 await page.locator('#cga-rows .pk-row[data-cgap="3"]').click(); await sleep(300);
-T('انتساب قنادی‌ها → بج روی ردیف', (await page.locator('#cust-rows .row-card').nth(1).textContent()).includes('قنادی\u200cها'));
+T('انتساب قنادی‌ها → بج روی ردیف', (await page.locator('#cust-rows .row-card').nth(1).textContent()).includes('قنادی'));
 
 /* ═══ ۲. تخفیف گروهی — از تنظیمات کالا (۰۲ بازوی فروش) ═══ */
 await page.goto(FILE + '#02'); await sleep(350);
@@ -83,7 +95,7 @@ T('۰۲: دکتهٔ «تنظیمات کالا» هست', (await page.locator('#s
 await page.locator('#scr-02 [data-sheet="sheet-pset"]').first().click(); await sleep(300);
 T('pset: ردیف «تخفیف گروه‌های مشتری»', (await page.locator('#sheet-pset [data-sheet="sheet-cgdisc"]').count()) === 1);
 await page.click('#sheet-pset [data-sheet="sheet-cgdisc"]'); await sleep(300);
-T('شیت تخفیف: ردیف هر گروه + قیمت گروهی', (await page.locator('#cgdisc-rows .cg-disc-row').count()) === 4 && (await page.locator('#cgdisc-rows').textContent()).includes('۲٬۶۲۲٬۰۰۰'));
+T('شیت تخفیف: ردیف هر گروه + قیمت گروهی', (await page.locator('#cgdisc-rows .cg-disc-row').count()) === 4 && (await page.locator('#cgdisc-rows').textContent()).includes('۲٬۵۶۵٬۰۰۰'));
 await page.fill('#cgd-3', '10'); /* قنادی‌ها — گروه تازهٔ آریا */
 await page.click('[data-cgdiscok]'); await sleep(300);
 T('ذخیره: زیرنویس pset هم‌گام', (await page.locator('#cgdisc-sub').textContent()).includes('قیمت مخصوص'));
@@ -161,13 +173,13 @@ await page.goto(FILE + '#10'); await sleep(400);
 await page.click('#saved-cats .row-card [data-sheet="sheet-catmenu"] >> nth=0'); await sleep(300);
 await page.click('#sheet-catmenu [data-catdel]'); await sleep(350);
 await page.goto(FILE + '#13'); await sleep(400);
-T('درگاه: دکتهٔ «سبد سفارش» مخفی (قیمت قفل)', await page.evaluate(() =>
-  getComputedStyle(document.querySelector('#buybar-13 [data-cartopen]')).display === 'none'));
+T('درگاه: آیکون سبد هدر مخفی (قیمت قفل)', await page.evaluate(() =>
+  getComputedStyle(document.querySelector('#scr-13 .subheader [data-cartopen]')).display === 'none'));
 T('درگاه: دکتهٔ «ذخیره» می‌ماند (مسیر بازگشت)', await page.evaluate(() =>
   getComputedStyle(document.querySelector('#buybar-13 [data-catsave]')).display !== 'none'));
 await page.click('#priv13-save'); await sleep(450);
-T('ذخیره از درگاه: دکتهٔ سبد سفارش برگشت', await page.evaluate(() =>
-  getComputedStyle(document.querySelector('#buybar-13 [data-cartopen]')).display !== 'none'));
+T('ذخیره از درگاه: آیکون سبد برگشت', await page.evaluate(() =>
+  getComputedStyle(document.querySelector('#scr-13 .subheader [data-cartopen]')).display !== 'none'));
 
 console.log('\nRESULT: ' + ok + '/' + (ok + bad));
 console.log(errors.length ? 'ERRORS:\n' + errors.join('\n') : 'NO CONSOLE/PAGE ERRORS');

@@ -1983,8 +1983,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-13 .pcard .addcart svg { width: 13px; height: 13px; flex-shrink: 0; }
   #scr-13 .pcard .addcart .cart-n { background: var(--green); color: #fff; border-radius: 999px; min-width: 16px; height: 16px; display: grid; place-items: center; font-size: 9px; padding: 0 4px; font-weight: 800; }
   #scr-13 .pcard .addcart.on { background: var(--green); border-color: var(--green); color: #fff; }
-  #buybar-13 [data-cartopen] { position: relative; }
-  #buybar-13 [data-cartopen] .badge { position: absolute; top: -7px; left: -7px; min-width: 17px; height: 17px; padding: 0 4px; }
+  /* فاز ۶۸ (مالک) — سبد خرید به آیکون جمع‌وجور در هدر ۱۳ رفت (کنار اشتراک‌گذاری):
+     کاتالوگ از هر جا (پیش‌نمایش مالک / دید مشتری) یک شکل دیده می‌شود؛ بج شمار اقلام روی خود آیکون */
+  #scr-13 .icon-btn[data-cartopen] { position: relative; color: var(--primary-strong); }
+  #scr-13 .icon-btn[data-cartopen] .badge { position: absolute; top: -5px; left: -5px; min-width: 16px; height: 16px; padding: 0 4px; justify-content: center; font-weight: 800; }
   /* «گروه خرید من» — خودانتسابی مشتری روی کاتالوگ */
   .mygrp-row { display: flex; align-items: center; gap: 6px; width: 100%; margin-top: 9px; padding: 9px 12px; border-radius: 12px; border: 1px dashed var(--border-strong); background: #fff; color: var(--foreground); font-size: 11.5px; font-weight: 700; cursor: pointer; }
   .mygrp-row svg { width: 14px; height: 14px; color: var(--primary-strong); flex-shrink: 0; }
@@ -2029,7 +2031,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .ord-items-h .k { font-weight: 800; }
   .ord-irow .k { font-size: 11px; color: var(--stone-soft); }
   /* فاز ۶۷ — hidden قطعی برای عناصر نو (کلاس‌های displayدار attribute را می‌خورند — درس فاز ۶۱) */
-  #buybar-13 [data-cartopen] .badge[hidden],
+  #scr-13 .icon-btn[data-cartopen] .badge[hidden],
   #scr-13 .pcard .addcart .cart-n[hidden],
   .mygrp-row[hidden],
   #cart-foot[hidden] { display: none !important; }
@@ -2101,15 +2103,18 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .grp-price s { color: var(--muted-fg); font-weight: 500; margin-right: 5px; }
   .grp-price small { color: var(--muted-fg); font-weight: 500; }
   .price-lg s { font-size: 13px; color: var(--muted-fg); font-weight: 500; }
-  /* گروه‌های مشتری روی ۶۲ — نوار چیپ + بج گروه در ردیف */
-  /* ═══ فاز ۶۷ — نوار فیلتر ۶۲ (الگوی دیوار): نوار افقی چسبانِ قابل اسکرول؛ فیلترهای
-       تازه (مشتریان بدهکار و…) بعداً به همین نوار اضافه می‌شوند. ═══ */
-  #scr-62 .flbar { display: flex; gap: 6px; align-items: center; margin: 10px 0 0; overflow-x: auto; padding: 4px 2px 6px; scrollbar-width: none; position: sticky; top: 0; z-index: 6; background: var(--bg); }
+  /* ═══ فاز ۶۸ (مالک) — نوار فیلتر دیواری ۶۲: هر فیلتر یک دکمهٔ خودش را دارد (الگوی دیوار).
+     صنف (ویژگی کسب‌وکار مشتری، از پروفایل خود او) و گروه مشتری (دسته‌بندی خودتان برای
+     تخفیف) دو مفهوم جدایند — حکم مالک. دکمهٔ فعال = سبز + ✕ برای پاک‌کردن؛ فیلترهای
+     تازه (مثل مشتریان بدهکار) بعداً به همین نوار اضافه می‌شوند. ═══ */
+  #scr-62 .flbar { display: flex; gap: 7px; align-items: center; margin: 10px 0 0; overflow-x: auto; padding: 4px 2px 6px; scrollbar-width: none; position: sticky; top: 0; z-index: 6; background: var(--bg); }
   #scr-62 .flbar::-webkit-scrollbar { display: none; }
-  #scr-62 .flbar .chip { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; padding: 6px 11px; }
-  #scr-62 .flbar .chip svg { width: 11px; height: 11px; flex-shrink: 0; }
-  #scr-62 .cg-add { width: 30px; height: 28px; border-radius: 999px; border: 1.5px dashed var(--border-strong); background: #fff; color: var(--primary-strong); display: grid; place-items: center; cursor: pointer; padding: 0; flex: 0 0 auto; }
-  #scr-62 .cg-add svg { width: 13px; height: 13px; }
+  #scr-62 .fl-b { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--border-strong); background: #fff; color: var(--stone-soft); font-size: 11.5px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  #scr-62 .fl-b svg { width: 12px; height: 12px; flex-shrink: 0; }
+  #scr-62 .fl-b .fl-chev { color: var(--muted-fg); width: 11px; height: 11px; }
+  #scr-62 .fl-b.on { border-color: var(--green); color: #166534; background: #f0fdf4; }
+  #scr-62 .fl-b .fl-x { width: 16px; height: 16px; border-radius: 999px; background: rgba(22,101,52,.14); display: grid; place-items: center; color: #166534; padding: 1px; }
+  #scr-62 .fl-b .fl-x svg { width: 9px; height: 9px; }
   /* سطوح مشتری ۱..۵ — بج ردیف + پیل‌های انتخاب شیت گروه */
   .lv-b { display: inline-block; font-size: 9px; font-weight: 800; color: #92400e; background: #fef3c7; border-radius: 6px; padding: 1.5px 6px; vertical-align: middle; }
   .lv-pill { display: flex; gap: 6px; margin-top: 4px; }
@@ -2148,8 +2153,30 @@ body > div[id^="scr-d"][hidden] { display: none; }
   .cg-disc-row .cg-dn { flex: 1; font-size: 12.5px; font-weight: 700; }
   .cg-disc-row .cg-dn small { display: block; font-weight: 400; color: var(--muted-fg); font-size: 9.5px; margin-top: 1px; }
   .cg-disc-row .input { width: 64px; text-align: center; flex: 0 0 auto; }
-  /* درگاه خصوصی: دکتهٔ «سبد سفارش» و افزودن‌ها هم قفل می‌شود (ذخیره = مسیر بازگشتی می‌ماند) */
-  #scr-13.priv-gate #buybar-13 [data-cartopen] { display: none; }
+  /* ═══ فاز ۶۸ — شیت «مدیریت گروه‌های مشتری» (آیکون تنظیمات هدر ۶۲): کارت هر گروه +
+     اعضایش؛ لمس عضو = تغییر گروه/سطح همان مشتری (شیت cgassign) ═══ */
+  .cgm-g { margin-top: 10px; border: 1px solid var(--border); border-radius: 13px; background: #fff; overflow: hidden; }
+  .cgm-g .cgm-h { display: flex; align-items: center; gap: 6px; padding: 9px 11px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .cgm-h > svg { width: 14px; height: 14px; color: var(--primary-strong); flex-shrink: 0; }
+  .cgm-h b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cgm-h .badge { flex-shrink: 0; }
+  .cgm-h .cgm-n { font-size: 10px; color: var(--muted-fg); margin-inline-start: auto; flex-shrink: 0; }
+  .cgm-ic { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--stone-soft); display: grid; place-items: center; cursor: pointer; padding: 0; flex-shrink: 0; }
+  .cgm-ic svg { width: 13px; height: 13px; }
+  .cgm-ic.cgm-del { color: var(--red); border-color: #f3c8c8; }
+  .cgm-m { display: flex; align-items: center; gap: 9px; width: 100%; text-align: right; background: #fff; border: 0; border-bottom: 1px solid #f0eee8; padding: 8px 11px; cursor: pointer; font-family: inherit; }
+  .cgm-m:last-child { border-bottom: 0; }
+  .cgm-m .cgm-mt { flex: 1; min-width: 0; }
+  .cgm-m .cgm-mt b { display: block; font-size: 12.5px; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cgm-m .cgm-mt small { display: block; font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
+  .cgm-m .chev { width: 13px; height: 13px; color: var(--border-strong); flex-shrink: 0; }
+  .cgm-empty { padding: 10px 12px; font-size: 10.5px; color: var(--muted-fg); line-height: 1.8; }
+  .cgm-none .cgm-h { background: transparent; }
+  /* فاز ۶۸ — شیت‌های کوتاه (فیلتر/تغییرنام): ۱۰۵٪ برای پنهان‌شدن کامل کافی نیست و
+     لبهٔ بالای شیت ۱px بیرون قاب می‌ماند (درس p54) — جابه‌جایی قطعی‌تر */
+  #sheet-cgflt:not(.show), #sheet-cgrename:not(.show) { transform: translateY(220%); }
+  /* درگاه خصوصی: آیکون سبد هدر و افزودن‌ها هم قفل می‌شود (ذخیره = مسیر بازگشتی می‌ماند) */
+  #scr-13.priv-gate [data-cartopen] { display: none !important; }
   #scr-13.priv-gate .pcard .addcart { display: none; }
 
 </style>
@@ -2175,6 +2202,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
 <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 2 .7 2.9a2 2 0 01-.5 2.1L8 10a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5c.9.3 1.9.6 2.9.7a2 2 0 011.7 2z"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
+<symbol id="i-chevd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
 <symbol id="i-bmark-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18.5 21l-6.5-4.6L5.5 21V5.2A2.2 2.2 0 017.7 3h8.6a2.2 2.2 0 012.2 2.2z"/><path d="M12 8.2v4.6M9.7 10.5h4.6"/></symbol>
 <symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
 <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
@@ -2431,7 +2459,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
              استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
-        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
+        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
@@ -2941,7 +2969,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
         <div data-go="61" style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;cursor:pointer">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-store"/></svg>
-          <span style="flex:1">راهنمای دستیار فروش<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">کاتالوگ، سفارشات و تبلیغ ویژه</span></span>
+          <span style="flex:1">راهنمای دستیار فروش<span style="display:block;font-size:10.5px;color:var(--muted-fg);margin-top:2px">کاتالوگ، سفارش‌ها و تبلیغ ویژه</span></span>
           <svg style="width:13px;height:13px;color:var(--border-strong)"><use href="#i-chev"/></svg>
         </div>
       </div>
@@ -2954,7 +2982,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
              استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
-        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
+        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
@@ -3684,6 +3712,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">پخش برنج پارس<small>کاتالوگ فروش</small></div>
+      <!-- فاز ۶۸ (مالک) — آیکون سبد در هدر (کنار اشتراک‌گذاری): جمع‌وجور و زیبا به‌جای
+           دکتهٔ بزرگ؛ از هر جا (پیش‌نمایش مالک / دید مشتری / لیست تأمین‌کنندگان) کاتالوگ
+           یک شکل دیده می‌شود. بج شمار اقلام روی خود آیکون می‌نشیند. -->
+      <button class="icon-btn" data-cartopen aria-label="سبد سفارش" title="سبد سفارش — بازبینی اقلام و ارسال سفارش (پرداخت و تحویل مستقیم با تأمین‌کننده)"><svg><use href="#i-cart"/></svg><span class="badge b-new" id="cart-badge-13" hidden></span></button>
       <button class="icon-btn" aria-label="اشتراک" data-sheet="sheet-share" title="اشتراک‌گذاری کاتالوگ"><svg><use href="#i-share"/></svg></button>
     </header>
 
@@ -3730,14 +3762,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
 
 
-        <!-- فاز ۶۷ (مالک): «سبد سفارش» دکتهٔ اصلی خریدار در کاتالوگ — سفارش مثل فروشگاه
-             اینترنتی: کالاها با تعداد به سبد می‌روند و یک‌جا ارسال می‌شوند؛ پرداخت بیرون از
-             سیستم، مستقیم بین طرفین. ذخیره/پیام/تماس کنارش ماندند. -->
+        <!-- فاز ۶۷ (مالک): سفارش مثل فروشگاه اینترنتی — کالاها با تعداد به سبد می‌روند و
+             یک‌جا ارسال می‌شوند؛ پرداخت بیرون از سیستم، مستقیم بین طرفین.
+             فاز ۶۸ (مالک): سبد از دکتهٔ بزرگ به آیکون جمع‌وجور در هدر رفت (کنار اشتراک‌گذاری) —
+             buybar سبک‌ شد: ذخیره / پیام / تماس. -->
         <div id="buybar-13">
-          <button class="btn btn-outline btn-sm catsave" id="catsave-13" style="flex:.85;color:var(--stone)" type="button" data-catsave title="کاتالوگ را در «تأمین‌کنندگان من» ذخیره کنید — قیمت‌های زنده همیشه در دسترس"><svg><use href="#i-bookmark"/></svg> ذخیره</button>
-          <button class="btn btn-primary btn-sm" style="flex:1.15" data-cartopen type="button" title="سبد سفارش شما از «پخش برنج پارس» را ببینید و سفارش را بفرستید"><svg><use href="#i-cart"/></svg> سبد سفارش <span class="badge b-new" id="cart-badge-13" hidden></span></button>
-          <button class="btn btn-stone btn-sm" style="flex:.6" data-go="19" title="ارسال پیام"><svg><use href="#i-msg"/></svg> پیام</button>
-          <button class="btn btn-outline btn-sm" style="flex:.5;color:var(--stone)" title="تماس"><svg><use href="#i-phone"/></svg> تماس</button>
+          <button class="btn btn-outline btn-sm catsave" id="catsave-13" style="flex:1.05;color:var(--stone)" type="button" data-catsave title="کاتالوگ را در «تأمین‌کنندگان من» ذخیره کنید — قیمت‌های زنده همیشه در دسترس"><svg><use href="#i-bookmark"/></svg> ذخیره</button>
+          <button class="btn btn-stone btn-sm" style="flex:.72" data-go="19" title="ارسال پیام"><svg><use href="#i-msg"/></svg> پیام</button>
+          <button class="btn btn-outline btn-sm" style="flex:.58;color:var(--stone)" title="تماس"><svg><use href="#i-phone"/></svg> تماس</button>
         </div>
 
         <!-- فاز ۲۱ + ۵۱ — آمار کاتالوگ نزد خریداران: «تعداد تماس» جایگزین «تعداد مشتری» شد
@@ -5809,6 +5841,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <div class="ttl">مشتریان من<small>کسانی که کاتالوگ شما را ذخیره کرده‌اند</small></div>
+      <!-- فاز ۶۸ (مالک) — آیکون تنظیمات هدر ۶۲: «مدیریت گروه‌های مشتری» — ساخت، تغییر نام،
+           حذف گروه‌ها و جابه‌جایی مشتری‌ها بین‌شان، همه از یک‌جا (شیت cgmgr). -->
+      <button class="icon-btn" data-cgmopen aria-label="مدیریت گروه‌های مشتری" title="مدیریت گروه‌های مشتری — ساخت، تغییر نام، حذف و جابه‌جایی مشتری‌ها"><svg><use href="#i-gear"/></svg></button>
       <button class="icon-btn" aria-label="اشتراک‌گذاری کاتالوگ" data-sheet="sheet-share" title="ارسال لینک کاتالوگ به مشتری‌ها"><svg><use href="#i-share"/></svg></button>
     </header>
 
@@ -5821,10 +5856,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span><b>۱۲۰</b> بازدید ماه</span>
       </div>
 
-      <!-- ═══ فاز ۶۷ (مالک) — نوار فیلتر (الگوی دیوار): فیلترها به‌صورت نوار افقیِ قابل
-           اسکرول کنار هم می‌نشینند تا بعداً فیلترهای تازه (مثل مشتریان بدهکار) به همان
-           اضافه شوند. فعلاً: گروه مشتری + صنف مشتری؛ «همه» همه را پاک می‌کند؛ گروه‌ها
-           همین‌جا ساخته می‌شوند (+). رندر JS با شمار زنده. ═══ -->
+      <!-- ═══ فاز ۶۸ (مالک) — نوار فیلتر (الگوی دیوار): هر فیلتر یک دکمهٔ خودش را دارد.
+           صنف (نوع کسب‌وکار مشتری — از پروفایل خود او) و گروه مشتری (دسته‌بندی خودتان
+           برای تخفیف) دو مفهوم جدایند؛ هر کدام دکمه‌ایست که شیت انتخاب باز می‌کند.
+           فیلترهای تازه (مثل مشتریان بدهکار) بعداً به همین نوار اضافه می‌شوند. رندر JS. ═══ -->
       <div class="flbar" id="flbar-62"></div>
 
       <!-- قاعدهٔ سادهٔ شبکهٔ خصوصی — همان زبان پیام‌های تازه -->
@@ -5857,7 +5892,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <button class="tab active"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
         <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
              استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
-        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
+        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
@@ -5935,7 +5970,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-65" data-arm="sell" hidden>
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">سفارشات<small>سفارش‌های ثبت‌شدهٔ مشتریان شما</small></div>
+      <div class="ttl">سفارش‌ها<small>سفارش‌های ثبت‌شدهٔ مشتریان شما</small></div>
       <button class="icon-btn" aria-label="اشتراک‌گذاری کاتالوگ" data-sheet="sheet-share" title="ارسال لینک کاتالوگ به مشتری‌ها"><svg><use href="#i-share"/></svg></button>
     </header>
 
@@ -5971,7 +6006,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="tabs">
         <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
         <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <button class="tab active"><svg><use href="#i-receipt"/></svg>سفارشات<span class="badge">۲</span></button>
+        <button class="tab active"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
         <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
         <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
       </div>
@@ -6064,7 +6099,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <header class="subheader">
       <button class="back"><svg><use href="#i-back"/></svg></button>
       <!-- فاز ۶۴: زیرعنوان هم‌زبان فوتر تازه — سفارشات فرایند اصلی است -->
-      <div class="ttl">راهنمای دستیار فروش<small>کاتالوگ · سفارشات مشتریان · تبلیغ ویژه</small></div>
+      <div class="ttl">راهنمای دستیار فروش<small>کاتالوگ · سفارش‌های مشتریان · تبلیغ ویژه</small></div>
     </header>
 
     <main class="screen-body">
@@ -6096,7 +6131,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span class="n">۳</span>
         <div class="tx">
           <b>سفارش‌های مشتریانت را بپذیر</b>
-          <span>مشتری که کاتالوگ‌ت را ذخیره کند، سفارشش در «سفارشات» می‌نشیند؛ با مقدار و قیمت نهایی بپذیر و ارسال را اعلام کن — هماهنگی پرداخت و تحویل مستقیم با خودِ مشتری است و توافق‌تان در سفارش ثبت می‌ماند.</span>
+          <span>مشتری که کاتالوگ‌ت را ذخیره کند، سفارشش در «سفارش‌ها» می‌نشیند؛ با مقدار و قیمت نهایی بپذیر و ارسال را اعلام کن — هماهنگی پرداخت و تحویل مستقیم با خودِ مشتری است و توافق‌تان در سفارش ثبت می‌ماند.</span>
         </div>
       </div>
       <div class="gd-row">
@@ -6152,7 +6187,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </button>
   <button class="sheet-row" data-arm-go="sell">
     <span class="ico sell"><svg><use href="#i-store"/></svg></span>
-    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · سفارشات · پیام‌ها</span></span>
+    <span class="tx"><b>دستیار فروش</b><span>کاتالوگ من · سفارش‌ها · پیام‌ها</span></span>
     <svg class="check" data-check="sell" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
   </button>
   <div class="sub" style="margin:10px 0 2px">نقش تو ثابت نیست — عمده‌فروش می‌تواند همزمان از هر دو دستیار استفاده کند.</div>
@@ -6972,17 +7007,68 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 <!-- ═══ ۴) تنظیمات کاتالوگ ═══ -->
 <!-- ═══ فاز ۶۵ (مالک) — گروه‌های مشتری: ساخت گروه روی صفحهٔ ۶۲ (حکم مالک)؛
-     تخفیف هر گروه از کاتالوگ (شیت تنظیمات کالا) داده می‌شود. ═══ -->
+     تخفیف هر گروه از کاتالوگ (شیت تنظیمات کالا) داده می‌شود.
+     فاز ۶۸ (مالک): گروه = دسته‌بندی رابطه‌ای خودتان (همکاران، ویژه…) — نه صنفِ مشتری؛
+     ساخت از شیت «مدیریت گروه‌های مشتری» (آیکون تنظیمات هدر ۶۲). ═══ -->
 <div class="sheet" id="sheet-cgnew" role="dialog" aria-label="گروه مشتری جدید">
   <div class="grab"></div>
   <h3>گروه مشتری جدید</h3>
-  <div class="sub">مثلاً: خرده‌فروشی · رستوران‌ها · همکار — بعداً به هر گروه تخفیف کاتالوگ بدهید</div>
+  <div class="sub">دسته‌بندی خودتان از مشتری‌ها — مثلاً: همکاران · مشتریان ویژه · مشتریان جدید. تخفیف هر گروه را روی کالاهای کاتالوگ می‌دهید؛ صنفِ مشتری (رستوران، سوپرمارکت…) جداست و از پروفایل خود او می‌آید.</div>
   <div class="field">
     <label>نام گروه</label>
-    <input class="input" id="cgn-name" placeholder="مثلاً: قنادی‌ها">
+    <input class="input" id="cgn-name" placeholder="مثلاً: همکاران شهرستان">
   </div>
   <div class="su-err" id="cgn-err" hidden>نام گروه را وارد کنید</div>
   <button class="btn btn-primary sheet-cta" data-cgnewok type="button"><svg><use href="#i-plus"/></svg> ساخت گروه</button>
+</div>
+
+<!-- ═══ فاز ۶۸ (مالک) — شیت انتخاب فیلتر (نوار دیواری ۶۲): هر دکمهٔ فیلتر این شیت را
+     باز می‌کند — گزینه‌ها با شمار زنده؛ «همه» فیلتر همان را پاک می‌کند. صنف و گروه
+     مشتری دو مفهوم جدایند و هر کدام شیت خودشان را با همین قالب باز می‌کنند. ═══ -->
+<div class="sheet" id="sheet-cgflt" role="dialog" aria-label="فیلتر لیست مشتریان">
+  <div class="grab"></div>
+  <h3 id="cgf-title">گروه مشتری</h3>
+  <div class="sub" id="cgf-sub"></div>
+  <div class="rows" id="cgf-rows" style="margin-top:4px"></div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۶۸ (مالک) — «مدیریت گروه‌های مشتری» (آیکون تنظیمات هدر ۶۲): ساخت گروه،
+     تغییر نام، حذف، دیدن مشتری‌های هر گروه و جابه‌جایی‌شان — همه از یک‌جا. لمس هر
+     مشتری = شیت گروه/سطح همان مشتری. تخفیف هر گروه روی کالاهای کاتالوگ (تنظیمات
+     کالا) داده می‌شود. رندر JS (cgmRender) تا همیشه با دادهٔ زنده هم‌قدم باشد. ═══ -->
+<div class="sheet" id="sheet-cgmgr" role="dialog" aria-label="مدیریت گروه‌های مشتری">
+  <div class="grab"></div>
+  <h3>مدیریت گروه‌های مشتری</h3>
+  <div class="sub">گروه‌ها دسته‌بندی خودتان برای تخفیف‌اند — صنفِ مشتری جداست و از کسب‌وکار خود او می‌آید. لمس هر مشتری: تغییر گروه و سطح همان‌جا.</div>
+  <button class="add-row" data-cgnew type="button" title="گروه تازه بسازید و بعداً به مشتری‌ها بدهید"><svg><use href="#i-plus"/></svg> ساخت گروه جدید</button>
+  <div class="rows" id="cgm-rows" style="margin-top:2px"></div>
+  <div class="hintnote">تخفیف هر گروه را از «تنظیمات کالا»ی کاتالوگ بدهید (تخفیف گروه‌های مشتری) — مشتریِ هر گروه، قیمت خودش را همان لحظه در کاتالوگ می‌بیند.</div>
+  <button class="btn btn-outline sheet-cta" data-close>بستن</button>
+</div>
+
+<!-- ═══ فاز ۶۸ — تغییر نام گروه: مشتری‌های گروه هم‌زمان با نام تازه می‌آیند ═══ -->
+<div class="sheet" id="sheet-cgrename" role="dialog" aria-label="تغییر نام گروه">
+  <div class="grab"></div>
+  <h3>تغییر نام گروه</h3>
+  <div class="sub" id="cgr-sub"></div>
+  <div class="field">
+    <label>نام گروه</label>
+    <input class="input" id="cgr-name" placeholder="مثلاً: همکاران شهرستان">
+  </div>
+  <div class="su-err" id="cgr-err" hidden>نام گروه را وارد کنید</div>
+  <button class="btn btn-primary sheet-cta" data-cgrok type="button"><svg><use href="#i-check"/></svg> ذخیره نام</button>
+</div>
+
+<!-- ═══ فاز ۶۸ — حذف گروه (تأیید): مشتری‌هایش «بدون گروه» می‌شوند و قیمت عمومی می‌بینند ═══ -->
+<div class="dlg" id="dlg-cgdel" role="dialog" aria-label="حذف گروه مشتری">
+  <h3>حذف گروه مشتری</h3>
+  <div class="dlg-q" id="cgdel-q">گروه «همکاران» حذف شود؟</div>
+  <div class="dlg-p">مشتری‌های این گروه «بدون گروه» می‌شوند و قیمت عمومی کاتالوگ را می‌بینند. ساخت دوبارهٔ گروه، تخفیف‌هایش را از نو تنظیم می‌کند.</div>
+  <div class="dlg-btns">
+    <button class="btn btn-outline" data-close>انصراف</button>
+    <button class="btn btn-primary" style="background:var(--red)" data-cgdelok><svg><use href="#i-trash"/></svg> حذف گروه</button>
+  </div>
 </div>
 
 <!-- ═══ فاز ۶۵ — گروهِ این مشتری: انتساب از منوی سه‌نقطهٔ هر مشتری (۶۲) ═══ -->
@@ -8343,7 +8429,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     sell: [
       ['01', 'کاتالوگ من', '<svg><use href="#i-store"/></svg>', ''],
       ['62', 'مشتریان', '<svg><use href="#i-users"/></svg>', '<span class="badge">۲</span>'],
-      ['65', 'سفارشات', '<svg><use href="#i-receipt"/></svg>', '<span class="badge">۲</span>'], /* فاز ۶۴: سفارش‌های مشتریان */
+      ['65', 'سفارش‌ها', '<svg><use href="#i-receipt"/></svg>', '<span class="badge">۲</span>'], /* فاز ۶۴: سفارش‌های مشتریان — فاز ۶۸: املای واحد سفارش‌ها */
       ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
       ['07', 'تنظیمات', '<svg><use href="#i-gear"/></svg>', '']
     ],
@@ -8390,7 +8476,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","14":"۱۴ — تنظیمات خرید · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","64":"۶۴ — سفارش‌های من · دستیار خرید","65":"۶۵ — سفارشات · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","14":"۱۴ — تنظیمات خرید · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","64":"۶۴ — سفارش‌های من · دستیار خرید","65":"۶۵ — سفارش‌ها · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -10404,12 +10490,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
      (ترک صفحهٔ ۶۲) بج را برمی‌دارد و مشتری عادی می‌شود؛ حذف = قطع دسترسی او به قیمت‌ها/استعلام؛
      ذخیرهٔ دوبارهٔ کاتالوگ = بازگشت او. بج فوتر (مشتریان) تعداد «جدید»های دیده‌نشده است. */
   var CUST = [
-    { n: 'رستوران مهر', p: 'مهدی کاظمی', c: 'تهران', tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', when: 'امروز', inq: '۱ استعلام جاری', nw: true, av: '#0e7490', g: 'رستوران‌ها', tc: 'رستوران', lv: 2 },
-    { n: 'سوپرمارکت آریا', p: 'نیما فاضلی', c: 'رشت', tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', when: 'امروز', via: 'از لینک شما', nw: true, av: '#059669', g: 'خرده‌فروشی', tc: 'سوپرمارکت', lv: 3 },
+    { n: 'رستوران مهر', p: 'مهدی کاظمی', c: 'تهران', tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', when: 'امروز', inq: '۱ استعلام جاری', nw: true, av: '#0e7490', g: 'مشتریان جدید', tc: 'رستوران', lv: 2 },
+    { n: 'سوپرمارکت آریا', p: 'نیما فاضلی', c: 'رشت', tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', when: 'امروز', via: 'از لینک شما', nw: true, av: '#059669', g: 'همکاران', tc: 'سوپرمارکت', lv: 3 },
     { n: 'سوپرمارکت سعید', p: 'سعید کریمی', c: 'رشت', tel: '۰۹۳۵ ۴۴۸ ۸۸۲۳', when: '۳ روز پیش', call: '۲ تماس', av: '#c2703a', tc: 'سوپرمارکت', lv: 1 },
-    { n: 'سوپرمارکت الماس', p: 'سارا رحیمی', c: 'قزوین', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', when: 'هفتهٔ پیش', av: '#7c3aed', g: 'خرده‌فروشی', tc: 'سوپرمارکت', lv: 2 },
+    { n: 'سوپرمارکت الماس', p: 'سارا رحیمی', c: 'قزوین', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', when: 'هفتهٔ پیش', av: '#7c3aed', g: 'همکاران', tc: 'سوپرمارکت', lv: 2 },
     { n: 'خواروبار امید', p: 'علی مرادی', c: 'مشهد', tel: '۰۹۱۵ ۲۲۰ ۳۳۶۱', when: '۲ هفته پیش', via: 'از لینک شما', av: '#0e7490', tc: 'خواروبار', lv: 4 },
-    { n: 'کترینگ بهار', p: 'بتا موسوی', c: 'تبریز', tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', when: 'ماه پیش', av: '#a8a29a', g: 'رستوران‌ها', tc: 'کترینگ', lv: 1 }
+    { n: 'کترینگ بهار', p: 'بتا موسوی', c: 'تبریز', tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', when: 'ماه پیش', av: '#a8a29a', g: 'مشتریان ویژه', tc: 'کترینگ', lv: 1 }
   ];
   var CUST_OTHER = 35; /* مشتری‌های خارج از نمونهٔ نمایشی — مجموع با CUST_TOTAL هم‌خوانِ ۴۱ آمار reach */
   var custRow = null;  /* ردیفِ در انتظار حذف (۶۲) */
@@ -10879,31 +10965,127 @@ body > div[id^="scr-d"][hidden] { display: none; }
      یا مسیر پرداخت (به‌زودی). اثرش: تابلوی تأمین (۰۹) خریدارِ مشتریِ یک تأمین‌کنندهٔ باز،
      ردیف‌های شبکهٔ باز را می‌بیند (قیمت مرجع در مقایسه). کاتالوگ خصوصی + شبکهٔ باز = فقط
      قیمت در مقایسه؛ کاتالوگ کامل همچنان پشت درگاه مشتری‌شدن. */
+  /* ═══ فاز ۶۸ (مالک) — گروه‌های مشتری ≠ صنف: این دو هیچ ربطی به هم ندارند (حکم مالک).
+     گروه مشتری = دسته‌بندی رابطه‌ای خودتان (همکاران/ویژه/…) که تخفیف کاتالوگ به آن
+     وصل می‌شود؛ صنف (CUST.tc) = نوع کسب‌وکار مشتری، از پروفایل خود او — فقط فیلتر و
+     قواعد دسترسی. نام‌های قدیمی دمو (رستوران‌ها/خرده‌فروشی) صنف‌مانند بودند و همین
+     آمیزگی را می‌ساختند — با نام‌های رابطه‌ای جایگزین شدند. ═══ */
   var CGRP = [
-    { n: 'خرده‌فروشی', disc: 5 },
-    { n: 'رستوران‌ها', disc: 8 },
-    { n: 'همکار', disc: 0 }
+    { n: 'همکاران', disc: 5 },
+    { n: 'مشتریان ویژه', disc: 10 },
+    { n: 'مشتریان جدید', disc: 0 }
   ];
   var CGFLT = null; /* فیلتر گروه ۶۲ */
-  var CGTC = null;  /* فیلتر صنف ۶۲ (فاز ۶۷ — نوار فیلتر دیواری: فیلترهای تازه بعداً همین‌جا می‌نشینند) */
+  var CGTC = null;  /* فیلتر صنف ۶۲ — جدا از گروه؛ شیت انتخاب هر کدام از دکمهٔ خودش در نوار فیلتر دیواری */
+  /* ═══ فاز ۶۸ (مالک) — نوار فیلتر دیواری ۶۲: هر فیلتر یک دکمه (نه چیپ‌های تخت قاطی).
+       دکمه = آیکون + برچسب + مقدار فعلی؛ فعال = سبز با ✕ پاک‌کردن؛ لمس = شیت انتخاب
+       (cgFltRender). صنف و گروه مشتری دو مفهوم جدایند و هر کدام دکمهٔ خودش را دارد —
+       فیلترهای تازه (بدهکار و…) بعداً به همین الگو اضافه می‌شوند. ═══ */
   function cgChipsRender() {
     var bar = document.getElementById('flbar-62');
     if (!bar) return;
-    var counts = {}, tcs = {};
-    CUST.forEach(function (c) {
-      if (c.wait) return;
-      if (c.g) counts[c.g] = (counts[c.g] || 0) + 1;
-      if (c.tc) tcs[c.tc] = (tcs[c.tc] || 0) + 1;
-    });
-    var html = '<button type="button" class="chip' + (!CGFLT && !CGTC ? ' active' : '') + '" data-cgchip="">همه</button>';
-    CGRP.forEach(function (g) {
-      html += '<button type="button" class="chip' + (CGFLT === g.n ? ' active' : '') + '" data-cgchip="' + gfEsc(g.n) + '"><svg><use href="#i-users"/></svg> ' + gfEsc(g.n) + ' ' + faNum(counts[g.n] || 0) + '</button>';
-    });
-    Object.keys(tcs).forEach(function (k) {
-      html += '<button type="button" class="chip' + (CGTC === k ? ' active' : '') + '" data-cgtc="' + gfEsc(k) + '"><svg><use href="#i-store"/></svg> ' + gfEsc(k) + ' ' + faNum(tcs[k]) + '</button>';
-    });
-    html += '<button type="button" class="cg-add" data-cgnew aria-label="گروه مشتری جدید" title="گروه مشتری جدید"><svg><use href="#i-plus"/></svg></button>';
+    var html = '<button type="button" class="fl-b' + (CGFLT ? ' on' : '') + '" data-flg title="فیلتر بر اساس گروه مشتری — دسته‌بندی خودتان از مشتری‌ها">' +
+      '<svg><use href="#i-users"/></svg><span>گروه مشتری: ' + (CGFLT ? gfEsc(CGFLT) : 'همه') + '</span>' +
+      (CGFLT ? '<svg class="fl-x" data-flgx><use href="#i-x"/></svg>' : '<svg class="fl-chev"><use href="#i-chevd"/></svg>') + '</button>';
+    html += '<button type="button" class="fl-b' + (CGTC ? ' on' : '') + '" data-fltc title="فیلتر بر اساس صنف — نوع کسب‌وکار مشتری، از پروفایل خود او">' +
+      '<svg><use href="#i-store"/></svg><span>صنف: ' + (CGTC ? gfEsc(CGTC) : 'همه') + '</span>' +
+      (CGTC ? '<svg class="fl-x" data-fltcx><use href="#i-x"/></svg>' : '<svg class="fl-chev"><use href="#i-chevd"/></svg>') + '</button>';
     bar.innerHTML = html;
+  }
+  /* شیت انتخاب فیلتر — kind: 'g' (گروه) | 'tc' (صنف)؛ گزینه‌ها با شمار زنده */
+  var FLT_KIND = null;
+  function cgFltRender(kind) {
+    FLT_KIND = kind;
+    var title = document.getElementById('cgf-title');
+    var sub = document.getElementById('cgf-sub');
+    var box = document.getElementById('cgf-rows');
+    if (!box) return;
+    var isG = kind === 'g';
+    if (title) title.textContent = isG ? 'گروه مشتری' : 'صنف مشتری';
+    if (sub) sub.textContent = isG
+      ? 'دسته‌بندی خودتان از مشتری‌ها — برای تخفیف گروهی. با صنفِ مشتری اشتباه نشود.'
+      : 'نوع کسب‌وکار مشتری — از پروفایل خود او می‌آید (رستوران، سوپرمارکت…).';
+    var opts = [];
+    if (isG) {
+      var gcs = {};
+      CUST.forEach(function (c) { if (!c.wait && c.g) gcs[c.g] = (gcs[c.g] || 0) + 1; });
+      CGRP.forEach(function (g) { opts.push({ k: g.n, s: faNum(gcs[g.n] || 0) + ' مشتری' }); });
+    } else {
+      var tcs = {};
+      CUST.forEach(function (c) { if (!c.wait && c.tc) tcs[c.tc] = (tcs[c.tc] || 0) + 1; });
+      Object.keys(tcs).forEach(function (k) { opts.push({ k: k, s: faNum(tcs[k]) + ' مشتری' }); });
+    }
+    var cur = isG ? CGFLT : CGTC;
+    var h = '<button type="button" class="pk-row' + (!cur ? ' on' : '') + '" data-cgfpick="">' +
+      '<span class="pk-tx"><b>همه ' + (isG ? 'گروه‌ها' : 'صنف‌ها') + '</b><small>بدون فیلتر ' + (isG ? 'گروه' : 'صنف') + '</small></span>' +
+      '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+    opts.forEach(function (o) {
+      h += '<button type="button" class="pk-row' + (cur === o.k ? ' on' : '') + '" data-cgfpick="' + gfEsc(o.k) + '">' +
+        '<span class="pk-tx"><b>' + gfEsc(o.k) + '</b><small>' + o.s + '</small></span>' +
+        '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+    });
+    box.innerHTML = h;
+  }
+  /* ═══ فاز ۶۸ (مالک) — شیت «مدیریت گروه‌های مشتری» (آیکون تنظیمات هدر ۶۲):
+       کارت هر گروه (نام + تخفیف + شمار + ویرایش/حذف) + اعضایش؛ لمس عضو = شیت
+       گروه/سطح همان مشتری (cgassign). «بدون گروه» پایین فهرست — جابه‌جایی آسان. ═══ */
+  var cgMgrGi = -1; /* گروهِ در جریان (ویرایش نام / حذف) */
+  var cgFromMgr = false; /* شیت انتساب از داخل مدیریت گروه‌ها باز شده؟ — بعد از انتخاب، مدیریت برگردد */
+  function cgmCount(gn) { return CUST.filter(function (c) { return !c.wait && (gn ? c.g === gn : !c.g); }).length; }
+  function cgmMembers(gn) {
+    var h = '';
+    CUST.forEach(function (c, i) {
+      if (c.wait) return;
+      if (gn ? c.g !== gn : c.g) return;
+      h += '<button type="button" class="cgm-m" data-cgmem="' + i + '" data-cust="' + i + '" title="تغییر گروه و سطح این مشتری">' +
+        '<span class="avatar-sm" style="background:' + c.av + '">' + c.n.charAt(0) + '</span>' +
+        '<span class="cgm-mt"><b>' + gfEsc(c.n) + '</b><small>' + gfEsc(c.p) + (c.tc ? ' · ' + gfEsc(c.tc) : '') + (c.lv ? ' · سطح ' + faNum(c.lv) : '') + '</small></span>' +
+        '<svg class="chev"><use href="#i-chev"/></svg></button>';
+    });
+    if (!h) h = '<div class="cgm-empty">' + (gn ? 'هنوز مشتری‌ای در این گروه نیست — از «بدون گروه» یا منوی ⋮ هر مشتری اضافه کنید' : 'همهٔ مشتری‌ها گروه دارند') + '</div>';
+    return h;
+  }
+  function cgmRender() {
+    var box = document.getElementById('cgm-rows');
+    if (!box) return;
+    var html = '';
+    CGRP.forEach(function (g, gi) {
+      html += '<div class="cgm-g">' +
+        '<div class="cgm-h"><svg><use href="#i-users"/></svg><b>' + gfEsc(g.n) + '</b>' +
+        '<span class="badge ' + (g.disc ? 'b-amber' : 'b-muted') + '">' + (g.disc ? 'تخفیف ٪' + faNum(g.disc) : 'بدون تخفیف') + '</span>' +
+        '<span class="cgm-n">' + faNum(cgmCount(g.n)) + ' مشتری</span>' +
+        '<button type="button" class="cgm-ic" data-cgpen="' + gi + '" aria-label="تغییر نام گروه" title="تغییر نام"><svg><use href="#i-pencil"/></svg></button>' +
+        '<button type="button" class="cgm-ic cgm-del" data-cgdel="' + gi + '" aria-label="حذف گروه" title="حذف گروه"><svg><use href="#i-trash"/></svg></button></div>' +
+        cgmMembers(g.n) + '</div>';
+    });
+    html += '<div class="cgm-g cgm-none"><div class="cgm-h"><svg><use href="#i-dots"/></svg><b>بدون گروه</b>' +
+      '<span class="cgm-n">' + faNum(cgmCount(null)) + ' مشتری</span></div>' + cgmMembers(null) + '</div>';
+    box.innerHTML = html;
+  }
+  /* پر کردن شیت گروه/سطح مشتری — مشترک بین منوی ⋮ ردیف‌ها و شیت مدیریت گروه‌ها */
+  function cgAssignFill() {
+    var cgIdx = custRow ? +custRow.dataset.cust : -1;
+    var cgC = CUST[cgIdx];
+    var cgRows = document.getElementById('cga-rows');
+    var cgSubEl = document.getElementById('cga-sub');
+    if (cgC && cgRows && cgSubEl) {
+      cgSubEl.textContent = cgC.n + (cgC.g ? ' — گروه فعلی: ' + cgC.g : ' — بدون گروه');
+      var cgH = '<button type="button" class="pk-row' + (!cgC.g ? ' on' : '') + '" data-cgap="-1">' +
+        '<span class="pk-tx"><b>بدون گروه</b><small>قیمت عمومی کاتالوگ</small></span>' +
+        '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+      CGRP.forEach(function (g, gi) {
+        cgH += '<button type="button" class="pk-row' + (cgC.g === g.n ? ' on' : '') + '" data-cgap="' + gi + '">' +
+          '<span class="pk-tx"><b>' + gfEsc(g.n) + '</b><small>تخفیف کاتالوگ: ' + (g.disc ? '٪' + faNum(g.disc) : 'ندارد') + '</small></span>' +
+          '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+      });
+      cgRows.innerHTML = cgH;
+      var lvBox = document.getElementById('cga-lv');
+      if (lvBox) {
+        var lvH = '';
+        for (var li = 1; li <= 5; li++) lvH += '<button type="button" class="lv-p' + (cgC.lv === li ? ' on' : '') + '" data-cglvl="' + li + '">' + faNum(li) + '</button>';
+        lvBox.innerHTML = lvH;
+      }
+    }
   }
   function buyerGroup() {
     var a = null;
@@ -11406,7 +11588,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       closeSheet();
       if (current !== '13') go('13');
       cartSync();
-      if (aaP) catPrivOk(gfEsc(aaP.n) + ' به سبد سفارش اضافه شد — «سبد سفارش» را ببینید و سفارش را بفرستید.');
+      if (aaP) catPrivOk(gfEsc(aaP.n) + ' به سبد اضافه شد — از آیکون سبد در بالای صفحه، سفارش را ببینید و بفرستید.');
       return;
     }
     /* سبد سفارش: بازبینی + استپرها + حذف + ارسال */
@@ -11888,19 +12070,22 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var rvs = t.closest('#reqv-send');
     if (rvs) { rqvSubmit(); return; }
 
-    /* ═══ فاز ۶۵ (مالک) — گروه‌های مشتری + شبکهٔ باز: هندلرها ═══ */
-    var cgChip = t.closest('[data-cgchip]');
-    if (cgChip) {
-      CGFLT = cgChip.dataset.cgchip || null;
-      if (!CGFLT) CGTC = null; /* «همه» همهٔ فیلترها را پاک می‌کند */
-      cgChipsRender();
-      custRender();
-      return;
-    }
-    /* فاز ۶۷ — فیلتر صنف (نوار فیلتر ۶۲): با فیلتر گروه ترکیب می‌شود */
-    var cgTc = t.closest('[data-cgtc]');
-    if (cgTc) {
-      CGTC = cgTc.dataset.cgtc || null;
+    /* ═══ فاز ۶۵/۶۷/۶۸ — گروه‌های مشتری + فیلترهای ۶۲ + مدیریت گروه‌ها: هندلرها ═══ */
+    /* فاز ۶۸ — نوار فیلتر دیواری: ✕ پاک‌کردن جدا از لمس دکمه (شیت انتخاب) */
+    var flXG = t.closest('[data-flgx]');
+    if (flXG) { CGFLT = null; cgChipsRender(); custRender(); return; }
+    var flXTC = t.closest('[data-fltcx]');
+    if (flXTC) { CGTC = null; cgChipsRender(); custRender(); return; }
+    var flG = t.closest('[data-flg]');
+    if (flG) { cgFltRender('g'); openSheet('sheet-cgflt'); return; }
+    var flTC = t.closest('[data-fltc]');
+    if (flTC) { cgFltRender('tc'); openSheet('sheet-cgflt'); return; }
+    var cgFPick = t.closest('[data-cgfpick]');
+    if (cgFPick) {
+      var fk = cgFPick.dataset.cgfpick || null;
+      if (FLT_KIND === 'g') CGFLT = fk;
+      else if (FLT_KIND === 'tc') CGTC = fk;
+      closeSheet();
       cgChipsRender();
       custRender();
       return;
@@ -11922,34 +12107,78 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var cgnIn = document.getElementById('cgn-name'); if (cgnIn) cgnIn.value = '';
       closeSheet();
       cgChipsRender();
+      cgmRender();
+      catPrivOk('گروه «' + gfEsc(cgnNm) + '» ساخته شد — حالا از ⋮ هر مشتری یا شیت مدیریت، مشتری‌ها را به آن بدهید؛ تخفیفش را از «تنظیمات کالا».');
       return;
     }
-    /* گروهِ این مشتری — از منوی سه‌نقطه (custRow همان ردیف است) */
+    /* ═══ فاز ۶۸ — شیت «مدیریت گروه‌های مشتری» (آیکون تنظیمات هدر ۶۲) ═══ */
+    var cgMOpen = t.closest('[data-cgmopen]');
+    if (cgMOpen) { cgmRender(); openSheet('sheet-cgmgr'); return; }
+    var cgMem = t.closest('[data-cgmem]');
+    if (cgMem) {
+      custRow = cgMem; /* الگوی مشترک با منوی ⋮: شیت گروه/سطح همان مشتری */
+      cgFromMgr = true;
+      cgAssignFill();
+      openSheet('sheet-cgassign');
+      return;
+    }
+    var cgPen = t.closest('[data-cgpen]');
+    if (cgPen) {
+      cgMgrGi = +cgPen.dataset.cgpen;
+      var cgrS = document.getElementById('cgr-sub');
+      var cgrN = document.getElementById('cgr-name');
+      if (CGRP[cgMgrGi]) {
+        if (cgrS) cgrS.textContent = 'گروه فعلی: ' + CGRP[cgMgrGi].n + ' — با تغییر نام، مشتری‌های گروه هم‌زمان می‌آیند';
+        if (cgrN) cgrN.value = CGRP[cgMgrGi].n;
+      }
+      var cgrE = document.getElementById('cgr-err'); if (cgrE) cgrE.hidden = true;
+      openSheet('sheet-cgrename');
+      return;
+    }
+    var cgROk = t.closest('[data-cgrok]');
+    if (cgROk) {
+      var cgrNm = (((document.getElementById('cgr-name') || {}).value) || '').trim();
+      if (!CGRP[cgMgrGi] || !cgrNm) {
+        var cgrE2 = document.getElementById('cgr-err'); if (cgrE2) cgrE2.hidden = false;
+        return;
+      }
+      var oldNm = CGRP[cgMgrGi].n;
+      if (cgrNm !== oldNm) {
+        CGRP[cgMgrGi].n = cgrNm;
+        CUST.forEach(function (c) { if (c.g === oldNm) c.g = cgrNm; });
+        if (CGFLT === oldNm) CGFLT = cgrNm;
+      }
+      closeSheet();
+      custRender(); cgChipsRender(); grpSync(); cgmRender();
+      catPrivOk('نام گروه به «' + gfEsc(cgrNm) + '» تغییر کرد — مشتری‌های گروه هم‌زمان آمدند.');
+      return;
+    }
+    var cgDel = t.closest('[data-cgdel]');
+    if (cgDel) {
+      cgMgrGi = +cgDel.dataset.cgdel;
+      var cdQ = document.getElementById('cgdel-q');
+      if (cdQ && CGRP[cgMgrGi]) cdQ.textContent = 'گروه «' + gfEsc(CGRP[cgMgrGi].n) + '» حذف شود؟';
+      openSheet('dlg-cgdel');
+      return;
+    }
+    var cgDelOk = t.closest('[data-cgdelok]');
+    if (cgDelOk) {
+      if (CGRP[cgMgrGi]) {
+        var delNm = CGRP[cgMgrGi].n;
+        CGRP.splice(cgMgrGi, 1);
+        CUST.forEach(function (c) { if (c.g === delNm) c.g = null; });
+        if (CGFLT === delNm) CGFLT = null;
+      }
+      cgMgrGi = -1;
+      closeSheet();
+      custRender(); cgChipsRender(); grpSync(); cgmRender();
+      return;
+    }
+    /* گروهِ این مشتری — از منوی سه‌نقطه (custRow همان ردیف است) یا شیت مدیریت گروه‌ها */
     var cgSetOpen = t.closest('[data-cgset]');
     if (cgSetOpen) {
-      var cgIdx = custRow ? +custRow.dataset.cust : -1;
-      var cgC = CUST[cgIdx];
-      var cgRows = document.getElementById('cga-rows');
-      var cgSubEl = document.getElementById('cga-sub');
-      if (cgC && cgRows && cgSubEl) {
-        cgSubEl.textContent = cgC.n + (cgC.g ? ' — گروه فعلی: ' + cgC.g : ' — بدون گروه');
-        var cgH = '<button type="button" class="pk-row' + (!cgC.g ? ' on' : '') + '" data-cgap="-1">' +
-          '<span class="pk-tx"><b>بدون گروه</b><small>قیمت عمومی کاتالوگ</small></span>' +
-          '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
-        CGRP.forEach(function (g, gi) {
-          cgH += '<button type="button" class="pk-row' + (cgC.g === g.n ? ' on' : '') + '" data-cgap="' + gi + '">' +
-            '<span class="pk-tx"><b>' + gfEsc(g.n) + '</b><small>تخفیف کاتالوگ: ' + (g.disc ? '٪' + faNum(g.disc) : 'ندارد') + '</small></span>' +
-            '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
-        });
-        cgRows.innerHTML = cgH;
-        /* فاز ۶۷ — سطوح مشتری ۱..۵ (پیل‌های انتخاب) */
-        var lvBox = document.getElementById('cga-lv');
-        if (lvBox) {
-          var lvH = '';
-          for (var li = 1; li <= 5; li++) lvH += '<button type="button" class="lv-p' + (cgC.lv === li ? ' on' : '') + '" data-cglvl="' + li + '">' + faNum(li) + '</button>';
-          lvBox.innerHTML = lvH;
-        }
-      }
+      cgFromMgr = false;
+      cgAssignFill();
       openSheet('sheet-cgassign');
       return;
     }
@@ -11960,10 +12189,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
         var cgGi = +cgAp.dataset.cgap;
         CUST[cgIdx2].g = (cgGi >= 0 && CGRP[cgGi]) ? CGRP[cgGi].n : null;
       }
-      closeSheet();
       custRender();
       cgChipsRender();
       grpSync();
+      /* فاز ۶۸ — اگر از داخل «مدیریت گروه‌ها» باز شده بود، مدیریت برگردد تا جابه‌جایی ادامه یابد */
+      if (cgFromMgr) { cgmRender(); openSheet('sheet-cgmgr'); } else { closeSheet(); }
       return;
     }
     /* فاز ۶۷ — سطح مشتری (۱..۵) از همان شیت؛ شیت باز می‌ماند تا گروه و سطح با هم تنظیم شوند */
@@ -12396,7 +12626,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     /* ═══ فاز ۶۱ — کارت‌های ۱۳ در حالت درگاه: لمس کارت به‌جای جزئیات (۰۲) بنر درگاه را نشان
      می‌دهد — مهمان کالا و بسته‌بندی را می‌بیند، اما برای قیمت و جزئیات باید ثبت‌نام کند.
-     (برای خریدارِ عضوِ غیرمشتری هم همین‌طور — ذخیرهٔ کاتالوک مسیر بازکردن قفل است) ═══ */
+     (برای خریدارِ عضوِ غیرمشتری هم همین‌طور — ذخیرهٔ کاتالوگ مسیر بازکردن قفل است) ═══ */
     var privCard = t.closest('#scr-13 .pcard[data-go]');
     if (privCard && catPrivGated()) {
       var pb = document.getElementById('priv-13');

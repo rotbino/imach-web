@@ -3,6 +3,7 @@
 //  ۱) سفارش = فروشگاه اینترنتی: سبد خرید روی کاتالوگ، کالا با تعداد، ارسال یکجا به تأمین‌کننده؛ پرداخت بیرون
 //  ۲) صفحهٔ ۱۴ «تنظیمات خرید» که در فاز ۴۵ حذف شده بود بازگشت (تب پنجم فوتر خرید)
 //  ۳) گروه‌های مشتری: سطوح ۱..۵ · خودانتسابی گروه توسط مشتری · فیلتر گروه+صنف در نوار فیلتر (الگوی دیوار)
+// فاز ۶۸: سبد = آیکون هدر (نه buybar) · نوار فیلتر = دو دکتهٔ مجزا با شیت انتخاب · گروه‌های دمو رابطه‌ای شدند
 // درس‌های QA: بدون reload که state زنده را می‌شوید؛ مسیرهای UIمحور؛ سلکتورهای فارسی با includes
 import { chromium } from 'playwright';
 import { fileURLToPath } from 'node:url';
@@ -29,13 +30,14 @@ const vis = async (sel) => await page.locator(sel).first().isVisible().catch(() 
 /* ═══ ۱. سبد سفارش روی کاتالوگ (۱۳) — بازوی خرید ═══ */
 await page.goto(FILE + '#08'); await page.reload(); await sleep(450);
 await page.goto(FILE + '#13'); await sleep(450);
-T('۱۳: دکتهٔ «سبد سفارش» در buybar', await vis('#buybar-13 [data-cartopen]'));
+T('۱۳: آیکون سبد در هدر (کنار اشتراک)', await vis('#scr-13 .subheader [data-cartopen]'));
+T('۱۳: buybar دیگر دکتهٔ سبد ندارد', await page.locator('#buybar-13 [data-cartopen]').count() === 0);
 T('۱۳: چهار دکتهٔ «افزودن به سبد» روی کارت‌ها', await page.locator('#scr-13 .pcard .addcart').count() === 4);
 T('۱۳: بج سبد در حالت خالی مخفی است', await page.evaluate(() => getComputedStyle(document.getElementById('cart-badge-13')).display === 'none'));
 T('۱۳: شمار کارت‌ها در حالت خالی مخفی', await page.evaluate(() => getComputedStyle(document.querySelector('.addcart .cart-n')).display === 'none'));
 T('۱۳: شیت سفارش متنی قدیمی حذف شد', await page.locator('#sheet-order').count() === 0);
 T('۱۳: ردیف «گروه خرید من» برای مشتری دیده می‌شود', await vis('#mygrp-13'));
-T('۱۳: قیمت گروهی خط‌خورده (خرده‌فروشی ٪۵)', await page.evaluate(() => document.getElementById('p13-hash').innerHTML.includes('<s>')));
+T('۱۳: قیمت گروهی خط‌خورده (همکاران ٪۵)', await page.evaluate(() => document.getElementById('p13-hash').innerHTML.includes('<s>')));
 
 /* افزودن قلم اول: برنج هاشمی × ۲ */
 await page.click('.addcart[data-pid="hash50"]'); await sleep(300);
@@ -46,14 +48,14 @@ await page.click('[data-acinc]'); await sleep(150);
 T('استپر+: مقدار ۲', (await page.inputValue('#ac-qty')) === '۲');
 await page.click('[data-acadd]'); await sleep(400);
 T('بج شمار روی کارت هاشمی', (await page.locator('.addcart[data-pid="hash50"] .cart-n').textContent()) === '۲');
-T('بج buybar = ۲', (await page.locator('#cart-badge-13').textContent()) === '۲');
+T('بج آیکون هدر = ۲', (await page.locator('#cart-badge-13').textContent()) === '۲');
 T('پیام «اضافه شد»', (await page.locator('#priv-ok').textContent()).includes('اضافه شد'));
 await shot('01-cart-added');
 
 /* قلم دوم: برنج فجر × ۱ و بازبینی سبد */
 await page.click('.addcart[data-pid="faj50"]'); await sleep(250);
 await page.click('[data-acadd]'); await sleep(300);
-await page.click('#buybar-13 [data-cartopen]'); await sleep(300);
+await page.click('#scr-13 .subheader [data-cartopen]'); await sleep(300);
 T('شیت سبد باز شد', await page.evaluate(() => document.getElementById('sheet-cart').classList.contains('show')));
 T('سبد: ۲ ردیف', await page.locator('#sheet-cart .cart-row').count() === 2);
 T('سبد: جمع برآوردی با تخفیف گروه (۷٬۸۹۵٬۰۰۰)', (await page.locator('#cart-total').textContent()).includes('۷٬۸۹۵٬۰۰۰'));
@@ -71,7 +73,7 @@ await page.evaluate(() => document.getElementById('backdrop').click()); await sl
 await page.click('.addcart[data-pid="hash50"]'); await sleep(250);
 await page.click('[data-acinc]'); await sleep(150);
 await page.click('[data-acadd]'); await sleep(300);
-await page.click('#buybar-13 [data-cartopen]'); await sleep(250);
+await page.click('#scr-13 .subheader [data-cartopen]'); await sleep(250);
 T('سبد دوباره ۲ ردیف شد', await page.locator('#sheet-cart .cart-row').count() === 2);
 
 /* ارسال سفارش — متن عین مالک */
@@ -127,7 +129,7 @@ await page.evaluate(() => document.getElementById('backdrop').click()); await sl
 await page.evaluate(() => {
   document.getElementById('scr-13').classList.add('priv-gate');
 });
-T('درگاه: دکتهٔ سبد قفل', await page.evaluate(() => getComputedStyle(document.querySelector('#buybar-13 [data-cartopen]')).display === 'none'));
+T('درگاه: آیکون سبد هدر قفل', await page.evaluate(() => getComputedStyle(document.querySelector('#scr-13 .subheader [data-cartopen]')).display === 'none'));
 T('درگاه: افزودن‌های کارت قفل', await page.evaluate(() => getComputedStyle(document.querySelector('#scr-13 .pcard .addcart')).display === 'none'));
 await page.evaluate(() => {
   document.getElementById('scr-13').classList.remove('priv-gate');
@@ -176,48 +178,59 @@ T('۱۸ (خرید): تب تنظیمات آخرین', (await page.locator('#scr-1
 /* ═══ ۸. گروه خرید من — خودانتسابی مشتری (۱۳) ═══ */
 await page.goto(FILE + '#08'); await sleep(300);
 await page.goto(FILE + '#13'); await sleep(400);
-T('۱۳: برچسب گروه فعلی (خرده‌فروشی)', (await page.locator('#mygrp-t').textContent()).includes('خرده‌فروشی'));
+T('۱۳: برچسب گروه فعلی (همکاران)', (await page.locator('#mygrp-t').textContent()).includes('همکاران'));
 await page.click('#mygrp-13'); await sleep(300);
 T('شیت «گروه خرید من» باز شد', await page.evaluate(() => document.getElementById('sheet-mygrp').classList.contains('show')));
 T('شیت: گروه‌های فروشنده فهرست شد', await page.locator('#mygrp-rows .pk-row').count() === 4);
 await shot('06-mygrp');
-await page.evaluate(() => { [...document.querySelectorAll('#mygrp-rows .pk-row')].find(x => x.textContent.includes('رستوران‌ها')).click(); });
+await page.evaluate(() => { [...document.querySelectorAll('#mygrp-rows .pk-row')].find(x => x.textContent.includes('مشتریان ویژه')).click(); });
 await sleep(300);
-T('خودانتسابی: قیمت با ٪۸ گروه جدید', await page.evaluate(() => document.getElementById('p13-hash').innerHTML.includes('۲٬۶۲۲٬۰۰۰')));
-T('برچسب گروه به‌روز', (await page.locator('#mygrp-t').textContent()).includes('رستوران‌ها'));
+T('خودانتسابی: قیمت با ٪۱۰ گروه جدید', await page.evaluate(() => document.getElementById('p13-hash').innerHTML.includes('۲٬۵۶۵٬۰۰۰')));
+T('برچسب گروه به‌روز', (await page.locator('#mygrp-t').textContent()).includes('مشتریان ویژه'));
 /* سبد هم قیمت تازه می‌گیرد */
 await page.click('.addcart[data-pid="hash50"]'); await sleep(250);
-T('شیت تعداد: قیمت گروه جدید (۲٬۶۲۲٬۰۰۰)', (await page.locator('#ac-prod').textContent()).includes('۲٬۶۲۲٬۰۰۰'));
+T('شیت تعداد: قیمت گروه جدید (۲٬۵۶۵٬۰۰۰)', (await page.locator('#ac-prod').textContent()).includes('۲٬۵۶۵٬۰۰۰'));
 await page.evaluate(() => document.getElementById('backdrop').click()); await sleep(200);
 
-/* ═══ ۹. نوار فیلتر ۶۲ (الگوی دیوار): گروه + صنف ═══ */
+/* ═══ ۹. نوار فیلتر ۶۲ (الگوی دیوار — فاز ۶۸): دو دکمهٔ مجزا [گروه مشتری][صنف] ═══ */
 await page.goto(FILE + '#62'); await page.reload(); await sleep(450);
 T('۶۲: نوار فیلتر رندر شد', await vis('#flbar-62'));
 T('۶۲: چیپ‌بار قدیمی حذف شد', await page.locator('#cg-bar').count() === 0);
-T('۶۲: همه + ۳ گروه + ۴ صنف + دکمهٔ +', await page.locator('#flbar-62 .chip').count() === 8 && await page.locator('#flbar-62 .cg-add').count() === 1);
-T('۶۲: چیپ گروه با آیکون users', await page.evaluate(() => !!document.querySelector('#flbar-62 .chip svg use[href="#i-users"]')));
-T('۶۲: چیپ صنف با آیکون store', await page.evaluate(() => !!document.querySelector('#flbar-62 .chip svg use[href="#i-store"]')));
-T('۶۲: چیپ‌بار اسکرول افقی دارد (نوار)', await page.evaluate(() => {
+T('۶۲: دو دکمهٔ فیلتر (گروه + صنف)', await page.locator('#flbar-62 .fl-b').count() === 2);
+T('۶۲: دکمهٔ گروه با آیکون users', await page.evaluate(() => !!document.querySelector('#flbar-62 .fl-b[data-flg] svg use[href="#i-users"]')));
+T('۶۲: دکمهٔ صنف با آیکون store', await page.evaluate(() => !!document.querySelector('#flbar-62 .fl-b[data-fltc] svg use[href="#i-store"]')));
+T('۶۲: هر دو دکمه مقدار پیش‌فرض «همه»', (await page.locator('#flbar-62 .fl-b').first().textContent()).includes('همه') && (await page.locator('#flbar-62 .fl-b').last().textContent()).includes('همه'));
+T('۶۲: نوار اسکرول افقی دارد', await page.evaluate(() => {
   const b = document.getElementById('flbar-62');
   return getComputedStyle(b).overflowX === 'auto' || b.scrollWidth > b.clientWidth;
 }));
 await shot('07-62-flbar');
-/* فیلتر صنف */
-await page.evaluate(() => { [...document.querySelectorAll('#flbar-62 .chip')].find(c => c.dataset.cgtc === 'سوپرمارکت').click(); });
+/* فیلتر صنف: دکمه → شیت انتخاب → گزینه */
+await page.click('#flbar-62 .fl-b[data-fltc]'); await sleep(300);
+T('شیت فیلتر صنف باز شد', await page.evaluate(() => document.getElementById('sheet-cgflt').classList.contains('show') && document.getElementById('cgf-title').textContent.includes('صنف')));
+T('شیت صنف: همه + ۴ گزینه', await page.locator('#cgf-rows .pk-row').count() === 5);
+await page.evaluate(() => { [...document.querySelectorAll('#cgf-rows .pk-row')].find(x => x.textContent.includes('سوپرمارکت')).click(); });
 await sleep(250);
 T('فیلتر صنف سوپرمارکت = ۳ ردیف', await page.locator('#cust-rows .row-card').count() === 3);
+T('دکمهٔ صنف فعال: مقدار + ✕', (await page.locator('#flbar-62 .fl-b[data-fltc]').textContent()).includes('سوپرمارکت') && await page.locator('#flbar-62 [data-fltcx]').count() === 1);
+await shot('07-62-fltc-on');
 /* ترکیب گروه + صنف */
-await page.evaluate(() => { [...document.querySelectorAll('#flbar-62 .chip')].find(c => c.dataset.cgchip && c.dataset.cgchip.includes('خرده')).click(); });
+await page.click('#flbar-62 .fl-b[data-flg]'); await sleep(300);
+T('شیت فیلتر گروه باز شد', await page.evaluate(() => document.getElementById('sheet-cgflt').classList.contains('show') && document.getElementById('cgf-title').textContent.includes('گروه')));
+await page.evaluate(() => { [...document.querySelectorAll('#cgf-rows .pk-row')].find(x => x.textContent.includes('همکاران')).click(); });
 await sleep(250);
 T('ترکیب گروه+صنف = ۲ ردیف', await page.locator('#cust-rows .row-card').count() === 2);
-T('چیپ گروه فعال شد', await page.evaluate(() => {
-  const c = [...document.querySelectorAll('#flbar-62 .chip')].find(x => x.dataset.cgchip && x.dataset.cgchip.includes('خرده'));
-  return c && c.classList.contains('active');
-}));
-/* همه: پاک‌سازی */
-await page.evaluate(() => { document.querySelector('#flbar-62 .chip').click(); });
+T('دکمهٔ گروه فعال شد', await page.evaluate(() => document.querySelector('#flbar-62 .fl-b[data-flg]').classList.contains('on')));
+/* ✕: پاک‌کردن فقط گروه */
+await page.click('#flbar-62 [data-flgx]');
 await sleep(250);
-T('«همه»: هر دو فیلتر پاک شد (۶ ردیف)', await page.locator('#cust-rows .row-card').count() === 6);
+T('✕ گروه: صنف ماند (۳ ردیف)', await page.locator('#cust-rows .row-card').count() === 3);
+T('✕ گروه: دکمهٔ گروه به «همه»', (await page.locator('#flbar-62 .fl-b[data-flg]').textContent()).includes('همه'));
+/* شیت: «همه» = پاک‌کردن صنف */
+await page.click('#flbar-62 .fl-b[data-fltc]'); await sleep(300);
+await page.evaluate(() => { document.querySelector('#cgf-rows .pk-row').click(); });
+await sleep(250);
+T('«همه»: فیلتر پاک شد (۶ ردیف)', await page.locator('#cust-rows .row-card').count() === 6);
 
 /* ═══ ۱۰. سطوح مشتری ۱..۵ ═══ */
 T('۶۲: بج سطح در ردیف‌ها', (await page.locator('#cust-rows').innerHTML()).includes('lv-b'));
@@ -254,7 +267,7 @@ const counts = await page.evaluate(() => ({
   sheets: document.querySelectorAll('.sheet').length,
   dlgs: document.querySelectorAll('.dlg').length
 }));
-T('اسکلت: ۳۴ صفحه · ۶۱ شیت · ۸ دیالوگ', counts.pages === 34 && counts.sheets === 61 && counts.dlgs === 8);
+T('اسکلت: ۳۴ صفحه · ۶۴ شیت · ۹ دیالوگ (فاز ۶۸: +فیلتر/مدیریت/تغییرنام +دیالوگ حذف گروه)', counts.pages === 34 && counts.sheets === 64 && counts.dlgs === 9);
 const arms = await page.evaluate(() => ({
   sellTabs: document.querySelectorAll('#scr-62 .tabbar .tab').length,
   buyTabs: document.querySelectorAll('#scr-64 .tabbar .tab').length

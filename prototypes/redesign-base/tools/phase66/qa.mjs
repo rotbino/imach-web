@@ -70,10 +70,10 @@ const counts = await page.evaluate(() => ({
   dlgs: new Set([...document.querySelectorAll('.dlg')].map(s => s.id)).size,
   pages: document.querySelectorAll('#phone > section.scr').length
 }));
-T('اسکلت: ۳۴ صفحه · ۶۱ شیت · ۸ دیالوگ (فاز ۶۷: +۱۴ · +سبد/گروه‌من · −سفارش متنی)', counts.pages === 34 && counts.sheets === 61 && counts.dlgs === 8);
-T('فوتر فروش ۰۱: ۵ تب (کاتالوک/مشتریان/سفارشات/پیام/تنظیم)', await page.evaluate(() => {
+T('اسکلت: ۳۴ صفحه · ۶۴ شیت · ۹ دیالوگ (فاز ۶۸: +فیلتر/مدیریت/تغییرنام +دیالوگ حذف گروه)', counts.pages === 34 && counts.sheets === 64 && counts.dlgs === 9);
+T('فوتر فروش ۰۱: ۵ تب (کاتالوک/مشتریان/سفارش‌ها/پیام/تنظیم)', await page.evaluate(() => {
   const t = [...document.querySelectorAll('#scr-01 .tabbar .tab')];
-  return t.length === 5 && t[2].textContent.includes('سفارشات');
+  return t.length === 5 && t[2].textContent.includes('سفارش‌ها');
 }));
 await page.goto(FILE + '#08'); await sleep(300);
 T('فوتر خرید ۰۸: ۵ تب (لیست/تأمین‌کنندگان/سفارش‌های من/پیام/تنظیمات — فاز ۶۷)', await page.evaluate(() => {

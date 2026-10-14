@@ -1,5 +1,5 @@
 // فاز ۶۴ — QA قطعی «سفارش» (فرایند اصلی) + پنهان‌سازی استعلام — حکم‌های مالک:
-//  ۱) فوتر فروش: تب سوم «سفارشات» (سفارش‌های مشتریان) · فوتر خرید: تب سوم «سفارش‌های من»
+//  ۱) فوتر فروش: تب سوم «سفارش‌ها» (سفارش‌های مشتریان) · فوتر خرید: تب سوم «سفارش‌های من»
 //     — استعلام از فوتر رفت: ۰۵/۴۵ بدون تب‌بار (صفحهٔ پشته‌ای فرعی)
 //  ۲) ورودهای پنهان استعلام: ردیف «درخواست‌های خرید» در تنظیمات ۰۷ (بج ۳) +
 //     ردیف «استعلام‌های قیمت» در sheet-listset (۰۸) + نوار جاری ۰۸ (ماندگار)
@@ -45,19 +45,19 @@ T('تب «سفارش‌های من» (جای سوم) ← صفحهٔ ۶۴', await
 
 await page.goto(FILE + '#01'); await page.reload(); await sleep(400);
 const t01 = await page.locator('#scr-01 .tabbar .tab').allTextContents();
-T('فوتر ۰۱: ۵ تب — کاتالوگ من · مشتریان · سفارشات · پیام‌ها · تنظیمات',
-  t01.length === 5 && t01[0].includes('کاتالوگ من') && t01[1].includes('مشتریان') && t01[2].includes('سفارشات') && t01[4].includes('تنظیمات'));
-T('فوتر ۰۱: تب سفارشات بج ۲ دارد (مهر + الماس)', t01[2].includes('۲'));
+T('فوتر ۰۱: ۵ تب — کاتالوگ من · مشتریان · سفارش‌ها · پیام‌ها · تنظیمات',
+  t01.length === 5 && t01[0].includes('کاتالوگ من') && t01[1].includes('مشتریان') && t01[2].includes('سفارش‌ها') && t01[4].includes('تنظیمات'));
+T('فوتر ۰۱: تب سفارش‌ها بج ۲ دارد (مهر + الماس)', t01[2].includes('۲'));
 T('فوتر ۰۱: «درخواست‌ها» در فوتر نیست', !(await page.locator('#scr-01 .tabbar').textContent()).includes('درخواست'));
 await shot('02-footer01');
-await page.click('#scr-01 .tab:has-text("سفارشات")'); await sleep(300);
-T('تب «سفارشات» (جای سوم) ← صفحهٔ ۶۵', await page.locator('#scr-65').isVisible());
+await page.click('#scr-01 .tab:has-text("سفارش‌ها")'); await sleep(300);
+T('تب «سفارش‌ها» (جای سوم) ← صفحهٔ ۶۵', await page.locator('#scr-65').isVisible());
 
 /* ۱۸ (keep) — ست TABSET هر دو بازو */
 await page.goto(FILE + '#01'); await page.reload(); await sleep(250);
 await page.evaluate(() => { location.hash = '#18'; }); await sleep(350);
 const t18s = await page.locator('#scr-18 .tabbar .tab').allTextContents();
-T('فوتر ۱۸ (فروش): ۵ تب با «سفارشات» بج ۲', t18s.length === 5 && t18s[2].includes('سفارشات') && t18s[2].includes('۲'));
+T('فوتر ۱۸ (فروش): ۵ تب با «سفارش‌ها» بج ۲', t18s.length === 5 && t18s[2].includes('سفارش‌ها') && t18s[2].includes('۲'));
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
 await page.evaluate(() => { location.hash = '#18'; }); await sleep(350);
 const t18b = await page.locator('#scr-18 .tabbar .tab').allTextContents();
@@ -88,9 +88,9 @@ T('۶۴: دکتهٔ «سفارش جدید از کاتالوک تأمین‌کن�
 await page.evaluate(() => { document.querySelector('#ord-rows-buy').scrollIntoView(); });
 await shot('03-page64');
 
-/* ═══ ۲. صفحهٔ ۶۵ — سفارشات (فروشندهٔ نمونه = پخش برنج پارس) ═══ */
+/* ═══ ۲. صفحهٔ ۶۵ — سفارش‌ها (فروشندهٔ نمونه = پخش برنج پارس) ═══ */
 await page.goto(FILE + '#65'); await page.reload(); await sleep(400);
-T('۶۵: عنوان + زیرعنوان «مشتریان شما»', (await page.locator('#scr-65 .ttl').textContent()).includes('سفارشات'));
+T('۶۵: عنوان + زیرعنوان «مشتریان شما»', (await page.locator('#scr-65 .ttl').textContent()).includes('سفارش‌ها'));
 T('۶۵: ۴ سفارش جاری (مهر + الماس + آریا طارم + آریا فجر)', (await page.locator('#ord-rows-sell .inq-card').count()) === 4);
 T('۶۵: ۲ بایگانی (تحویل‌شده + لغو‌شده)', (await page.locator('#ord-done-sell .inq-done').count()) === 2);
 const tx65 = await page.locator('#ord-rows-sell').textContent();
@@ -116,7 +116,7 @@ T('شیت: کالا از ۰۲ پیش‌آمد', (await page.locator('#ac-prod').
 await page.fill('#ac-qty', '۲۰');
 await page.click('[data-acadd]'); await sleep(400);
 T('افزودن → کاتالوگ ۱۳ + بج سبد ۲۰', (await page.locator('#cart-badge-13').textContent()) === '۲۰');
-await page.click('#buybar-13 [data-cartopen]'); await sleep(300);
+await page.click('#scr-13 .subheader [data-cartopen]'); await sleep(300);
 T('سبد سفارش: فیلد «توضیحات / شرایط پرداخت» (اختیاری — حکم مالک)', (await page.locator('#sheet-cart').textContent()).includes('توضیحات / شرایط پرداخت'));
 await page.fill('#cart-note', 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل');
 await page.click('[data-cartsend]'); await sleep(400);
@@ -133,9 +133,9 @@ await shot('05-sent64');
 /* buybar-13 چهاردکته‌ای + ردیف sheet-catmenu */
 await page.goto(FILE + '#13'); await page.reload(); await sleep(400);
 const bb13 = await page.locator('#buybar-13').textContent();
-T('۱۳: buybar چهاردکته‌ای — ذخیره | سبد سفارش | پیام | تماس (فاز ۶۷)',
-  (await page.locator('#buybar-13 .btn').count()) === 4 && bb13.includes('سبد سفارش') && bb13.includes('ذخیره') && bb13.includes('پیام') && bb13.includes('تماس'));
-T('۱۳: «سبد سفارش» دکتهٔ اصلی (primary) با بج شمار', (await page.locator('#buybar-13 .btn-primary[data-cartopen]').count()) === 1);
+T('۱۳: buybar سه‌دکته‌ای — ذخیره | پیام | تماس (فاز ۶۸: سبد به آیکون هدر رفت)',
+  (await page.locator('#buybar-13 .btn').count()) === 3 && bb13.includes('ذخیره') && bb13.includes('پیام') && bb13.includes('تماس') && !bb13.includes('سبد'));
+T('۱۳: آیکون سبد در هدر کنار اشتراک‌گذاری (primary) با بج شمار', (await page.locator('#scr-13 .subheader [data-cartopen]').count()) === 1 && (await page.locator('#scr-13 .subheader [data-sheet="sheet-share"]').count()) === 1);
 await page.goto(FILE + '#10'); await page.reload(); await sleep(400);
 await page.click('#saved-cats .row-card [data-sheet="sheet-catmenu"]'); await sleep(250);
 T('منوی تأمین‌کننده (۱۰): ردیف «سفارش از کاتالوگ» → ۱۳', await page.evaluate(() => {
@@ -224,9 +224,9 @@ T('۶۰: زیرعنوان «لیست خرید · تأمین‌کنندگان · 
 await page.goto(FILE + '#61'); await page.reload(); await sleep(350);
 T('۶۱: ۷ گام (گام تازهٔ «سفارش‌های مشتریانت را بپذیر»)', (await page.locator('#scr-61 .gd-row').count()) === 7);
 const g61 = await page.locator('#scr-61 .gd-row').allTextContents();
-T('۶۱: گام ۳ «سفارش‌های مشتریانت را بپذیر»', g61[2].includes('سفارش‌های مشتریانت را بپذیر') && g61[2].includes('«سفارشات»'));
+T('۶۱: گام ۳ «سفارش‌های مشتریانت را بپذیر»', g61[2].includes('سفارش‌های مشتریانت را بپذیر') && g61[2].includes('«سفارش‌ها»'));
 T('۶۱: گام ۴ درخواست‌های خرید ماند (فرعی)', g61[3].includes('درخواست‌های خرید را دنبال کن'));
-T('۶۱: زیرعنوان «کاتالوگ · سفارشات مشتریان · تبلیغ ویژه»', (await page.locator('#scr-61 .ttl small').textContent()).includes('سفارشات مشتریان'));
+T('۶۱: زیرعنوان «کاتالوگ · سفارش‌های مشتریان · تبلیغ ویژه»', (await page.locator('#scr-61 .ttl small').textContent()).includes('سفارش‌های مشتریان'));
 await page.evaluate(() => { document.querySelectorAll('#scr-61 .gd-row')[2]?.scrollIntoView({ block: 'center' }); });
 await shot('09-guide61-order');
 
@@ -255,7 +255,7 @@ await ovf('#ord-rows-sell .inq-card', 'کارت سفارش ۶۵ (بج جدید +
 await ovf('#scr-65 .tabbar', 'فوتر ۵ تبی ۶۵');
 await page.goto(FILE + '#08'); await page.reload(); await sleep(250);
 await page.evaluate(() => { location.hash = '#13'; }); await sleep(300);
-await ovf('#buybar-13', 'buybar-13 چهاردکته‌ای');
+await ovf('#buybar-13', 'buybar-13 سه‌دکته‌ای');
 await page.goto(FILE + '#64'); await page.reload(); await sleep(300);
 await page.click('#ord-rows-buy .inq-card:first-child'); await sleep(250);
 await ovf('#ordv-facts .ord-frow', 'ردیف واقعیت شیت جزئیات');
