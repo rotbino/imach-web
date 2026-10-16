@@ -1,0 +1,76 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۱۰: جزئیات سفارش (فروشنده)
+     فرم پذیرش با امکان اصلاح مقدار و قیمت + رد.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-sell-order-view" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">جزئیات سفارش<small>برنج هاشمی · ۲۰ کیسه</small></div>
+    </div>
+
+    <div class="body">
+        <div class="card" style="display: flex; gap: 12px; align-items: center;">
+            <div class="thumb thumb-md"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 700;">برنج هاشمی</div>
+                <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">کیسه ۵۰ کیلویی</div>
+                <div style="font-size: 13px; font-weight: 700; margin-top: 6px;">۲٬۸۵۰٬۰۰۰ <small style="font-size: 10px; color: var(--text-3); font-weight: 400;">تومان / هر کیسه</small></div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 4px 14px;">
+            <div class="fact-row">
+                <span class="k">مشتری</span><span class="v">رستوران مهر</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">مقدار سفارش</span><span class="v">۲۰ کیسهٔ ۵۰ کیلویی</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">جمع کل</span><span class="v" style="color: var(--primary-strong);">۵۷٬۰۰۰٬۰۰۰ تومان</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">زمان ثبت</span><span class="v">امروز · ۱۱:۴۰</span>
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <svg><use href="#i-msg"/></svg>
+            <div>
+                <b>توضیحات مشتری:</b>
+                <div style="margin-top: 4px;">تحویل صبح زود — بازار روز. پرداخت نقدی.</div>
+            </div>
+        </div>
+
+        <div class="section-title"><h2>پذیرش سفارش</h2></div>
+
+        <div class="field">
+            <label>مقدار نهایی <span class="opt">— اگر توافق متفاوتی داری</span></label>
+            <div class="input" style="display: flex; align-items: center; gap: 8px;">
+                <span style="flex: 1; font-weight: 700;">۲۰</span>
+                <span style="font-size: 11px; color: var(--text-3);">کیسه</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>قیمت هر کیسه <span class="opt">— تومان · اگر تخفیف می‌دهی</span></label>
+            <div class="input" style="display: flex; align-items: center; gap: 8px;">
+                <span style="flex: 1; font-weight: 700;">۲٬۸۵۰٬۰۰۰</span>
+                <span style="font-size: 11px; color: var(--text-3);">تومان</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>یادداشت برای مشتری <span class="opt">— اختیاری</span></label>
+            <textarea class="input" placeholder="مثلاً: ارسال فردا صبح، راننده آقای محمدی"></textarea>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-outline" style="flex: .65;" data-order-reject>
+            <svg><use href="#i-trash"/></svg> رد
+        </button>
+        <button class="btn btn-primary" style="flex: 1.35;" data-order-accept>
+            <svg><use href="#i-check"/></svg> پذیرش سفارش
+        </button>
+    </div>
+</section>

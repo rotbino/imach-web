@@ -1,0 +1,181 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۱۸: پروفایل
+     هویت + کسب‌وکار + شارژ + دستیارها + خروج.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-profile" data-arm="keep">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">پروفایل<small>حساب، کسب‌وکار و تنظیمات</small></div>
+        <div style="position: relative;">
+            <button class="icon-btn" data-profile-menu aria-label="گزینه‌های بیشتر"><svg><use href="#i-dots"/></svg></button>
+            <div class="dropdown" id="profile-menu" hidden>
+                <button class="dropdown-item danger" data-logout>
+                    <svg><use href="#i-power"/></svg> خروج از حساب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <!-- کارت هویت کاربر -->
+        <div class="card" id="profile-edit-open" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+            <div class="avatar avatar-lg" style="padding: 0;" data-profile-photo>
+                <img src="png/users/me.jpg" alt="احمد رضایی">
+            </div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 15px; font-weight: 700;" data-profile-name>احمد رضایی</div>
+                <div style="font-size: 11px; color: var(--text-3); margin-top: 3px; direction: ltr; text-align: right;">۰۹۱۲ ۳۴۵ ۶۷۸۹</div>
+            </div>
+            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+        </div>
+
+        <!-- کسب‌وکار -->
+        <div class="card" style="display: flex; align-items: center; gap: 12px; cursor: pointer;" data-go="s-edit-business">
+            <div class="avatar" style="background: linear-gradient(135deg,#c2703a,#ea580c); font-size: 15px;">پ</div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 700;">پخش برنج پارس</div>
+                <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">پخش مواد غذایی · رشت</div>
+            </div>
+            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+        </div>
+
+        <!-- کارت شارژ -->
+        <div class="wallet-mini" data-go="s-charge">
+            <span class="wm-ic"><svg><use href="#i-wallet"/></svg></span>
+            <span class="wm-tx">
+                <b><span data-wallet>۸۵٬۰۰۰</span> تومان</b>
+                <span>موجودی شارژ — برای تبلیغات</span>
+            </span>
+            <span class="wm-act">افزایش</span>
+        </div>
+
+        <!-- دستیارهای فعال -->
+        <div class="section-title"><h2>دستیارهای فعال</h2></div>
+        <div class="rows">
+            <div class="row static">
+                <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-store"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">فروش عمده</div>
+                    <div class="row-sub">کاتالوگ، مشتریان، سفارش‌ها</div>
+                </div>
+                <div class="switch on" data-arm-switch="sell" role="switch" aria-label="دستیار فروش"></div>
+            </div>
+            <div class="row static">
+                <div class="thumb thumb-sm" style="background: var(--stone-tint); color: var(--stone); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-basket"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">خرید عمده</div>
+                    <div class="row-sub">لیست خرید، تأمین‌کنندگان، استعلام</div>
+                </div>
+                <div class="switch on" data-arm-switch="buy" role="switch" aria-label="دستیار خرید"></div>
+            </div>
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>اگر فقط یکی از این دو را لازم داری، دیگری را خاموش کن — تب‌های پایین ساده‌تر می‌شوند.</span>
+        </div>
+
+        <div style="text-align: center; padding: 8px 0 4px; font-size: 10.5px; color: var(--text-3); line-height: 1.9;">
+            نسخهٔ نهایی — فاز چهارم
+        </div>
+    </div>
+
+
+    <!-- شیت ویرایش پروفایل -->
+    <div class="sheet" id="sheet-profile-edit" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>ویرایش پروفایل</h3>
+            <button class="mg" data-sheet-close="sheet-profile-edit" aria-label="بستن">
+                <svg><use href="#i-x"/></svg>
+            </button>
+        </div>
+
+        <button class="sheet-row" id="profile-photo-pick" type="button">
+            <div class="avatar" style="width:44px;height:44px;padding:0;background:var(--primary-soft);color:var(--primary-strong);" id="profile-photo-wrap">
+                <img src="png/users/me.jpg" alt="" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <span class="tx">
+                <b>تصویر پروفایل</b>
+                <span>در گفتگوها و کنار نام‌تان دیده می‌شود</span>
+            </span>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <div class="field" style="margin-top:12px">
+            <label>نام</label>
+            <input class="input" id="profile-firstname" value="احمد">
+        </div>
+
+        <div class="field">
+            <label>نام خانوادگی</label>
+            <input class="input" id="profile-lastname" value="رضایی">
+        </div>
+
+        <div class="field">
+            <label>شماره موبایل <span class="opt">— هویت حساب</span></label>
+            <div class="input static" style="display:flex;align-items:center;gap:8px;">
+                <span style="flex:1;direction:ltr;text-align:right;">۰۹۱۲ ۳۴۵ ۶۷۸۹</span>
+                <span class="badge b-green" style="font-size:9px;padding:1.5px 7px;">تاییدشده</span>
+            </div>
+            <div class="hint">شماره‌ای که با آن ثبت‌نام کردید</div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="profile-save" style="margin-top:16px;">
+            <svg><use href="#i-check"/></svg> ذخیره تغییرات
+        </button>
+    </div>
+
+
+    <!-- شیت انتخاب تصویر -->
+    <div class="sheet" id="sheet-photo-pick" hidden>
+        <div class="grab"></div>
+        <h3>انتخاب تصویر</h3>
+        <div class="sub">عکس پروفایل شما در گفتگوها و کنار نام‌تان دیده می‌شود</div>
+
+        <div class="ph-grid">
+            <button type="button" class="ph-opt on" data-pphoto="png/users/me.jpg">
+                <img src="png/users/me.jpg" alt="">
+                <span>عکس فعلی</span>
+            </button>
+            <button type="button" class="ph-opt" data-pphoto="png/users/alt-1.jpg">
+                <img src="png/users/alt-1.jpg" alt="">
+                <span>گالری</span>
+            </button>
+            <button type="button" class="ph-opt" data-pphoto="png/users/alt-2.jpg">
+                <img src="png/users/alt-2.jpg" alt="">
+                <span>گالری</span>
+            </button>
+        </div>
+
+        <div class="rows" style="margin-top:14px">
+            <button class="row static" style="cursor:pointer" data-pphoto="camera" type="button">
+                <div class="thumb thumb-sm" style="background:var(--primary-soft);color:var(--primary-strong);display:grid;place-items:center;">
+                    <svg style="width:18px;height:18px;"><use href="#i-image"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">گرفتن عکس با دوربین</div>
+                    <div class="row-sub">عکس جدید — همان لحظه استفاده می‌شود</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </button>
+
+            <button class="row static" style="cursor:pointer" data-pphoto="remove" type="button">
+                <div class="thumb thumb-sm" style="background:var(--red-soft);color:var(--red);display:grid;place-items:center;">
+                    <svg style="width:18px;height:18px;"><use href="#i-trash"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title" style="color:var(--red)">حذف تصویر</div>
+                    <div class="row-sub">به‌جای عکس، حرف اول نام‌تان نشان داده می‌شود</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </button>
+        </div>
+
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-photo-pick" style="margin-top:16px">بستن</button>
+    </div>
+</section>

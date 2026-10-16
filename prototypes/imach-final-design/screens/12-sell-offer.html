@@ -1,0 +1,69 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۱۲: ارسال پیشنهاد (فروشنده)
+     قیمت + شرایط پرداخت + روش تحویل + توضیح.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-sell-offer" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">ارسال پیشنهاد<small>برنج هاشمی · ۲۰ کیسه</small></div>
+    </div>
+
+    <div class="body">
+        <div class="card" style="display: flex; gap: 12px; align-items: center;">
+            <div class="thumb thumb-md"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 700;">برنج هاشمی · ۲۰ کیسه</div>
+                <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">رستوران مهر · تهران</div>
+                <div style="margin-top: 6px;">
+                    <span class="badge b-amber"><svg><use href="#i-clock"/></svg> ۲ روز مهلت</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <svg><use href="#i-msg"/></svg>
+            <div>
+                <b>توضیحات خریدار:</b>
+                <div style="margin-top: 4px;">برنج درجه یک — قیمت ارسال به تهران را هم بنویسید.</div>
+            </div>
+        </div>
+
+        <div class="section-title"><h2>قیمت پیشنهادی</h2></div>
+
+        <div class="field price-field">
+            <label>قیمت هر کیسه <span class="opt">— تومان</span></label>
+            <input class="input" type="tel" id="offer-price" placeholder="۲٬۸۲۰٬۰۰۰" inputmode="numeric">
+            <div class="unit-hint" id="offer-unit-hint">
+                <svg><use href="#i-info"/></svg>
+                <span id="offer-unit-hint-tx">قیمت را وارد کن تا معادلش را ببینی</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>شرایط پرداخت</label>
+            <div class="pills">
+                <button class="pill active" type="button">نقدی</button>
+                <button class="pill" type="button">چک</button>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>روش تحویل</label>
+            <div class="pills">
+                <button class="pill active" type="button">ارسال در محل</button>
+                <button class="pill" type="button">تحویل حضوری</button>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>توضیح برای خریدار <span class="opt">— اختیاری</span></label>
+            <textarea class="input" placeholder="مثلاً: برنج امسال، ارسال رایگان بالای ۳۰ کیسه…"></textarea>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-primary btn-block" data-offer-send>
+            <svg><use href="#i-send"/></svg> ارسال پیشنهاد
+        </button>
+    </div>
+</section>

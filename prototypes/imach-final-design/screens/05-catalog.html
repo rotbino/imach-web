@@ -1,0 +1,183 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۰۵: کاتالوگ من
+     هدر: بازگشت + عنوان + ⚙ (شیت تنظیمات) + اشتراک‌گذاری
+     باکس ۴ دکمهٔ ظریف → تبلیغات → سرچ → چیپ → گرید
+     ═════════════════════════════════════════════════════════════ -->
+
+<section class="screen" id="s-catalog" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">کاتالوگ من<small>۴ کالا</small></div>
+        <button class="icon-btn" data-sheet="sheet-cat-settings" aria-label="تنظیمات کاتالوگ">
+            <svg><use href="#i-gear"/></svg>
+        </button>
+        <button class="icon-btn" data-sheet="sheet-share-cat" aria-label="اشتراک‌گذاری کاتالوگ">
+            <svg><use href="#i-share"/></svg>
+        </button>
+    </div>
+
+    <div class="body">
+
+        <!-- باکس ۴ دکمهٔ ظریف -->
+        <div class="cat-actions">
+            <button class="cat-act primary" data-go="s-sell-add">
+                <span class="ca-ic"><svg><use href="#i-plus"/></svg></span>
+                <span class="ca-tx">کالای جدید</span>
+            </button>
+            <button class="cat-act" data-go="s-sell-bulk">
+                <span class="ca-ic"><svg><use href="#i-percent"/></svg></span>
+                <span class="ca-tx">تغییر قیمت‌ها</span>
+            </button>
+            <button class="cat-act" id="catalog-preview">
+                <span class="ca-ic"><svg><use href="#i-eye"/></svg></span>
+                <span class="ca-tx">پیش‌نمایش</span>
+            </button>
+            <button class="cat-act" data-sheet="sheet-share-cat">
+                <span class="ca-ic"><svg><use href="#i-share"/></svg></span>
+                <span class="ca-tx">اشتراک‌گذاری</span>
+            </button>
+        </div>
+
+        <!-- باکس ویژه: تبلیغات -->
+        <button class="promo-box" id="promo-box" type="button" data-go="s-sell-promo">
+            <span class="pb-ic" id="promo-ic"><svg><use href="#i-sparkles"/></svg></span>
+            <span class="pb-tx">
+                <b id="promo-t">کالاهایت را ویژه کن</b>
+                <span id="promo-s">در شرایط مشابه، بالاتر دیده می‌شوند</span>
+            </span>
+            <svg class="pb-chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <!-- سرچ -->
+        <div class="search-row" style="height: 44px;">
+            <svg><use href="#i-search"/></svg>
+            <input type="text" id="cat-search" placeholder="جستجو در کاتالوگ…" autocomplete="off">
+        </div>
+
+        <!-- چیپ گروه -->
+        <div class="chips" id="cat-groups">
+            <button class="chip active">همه</button>
+            <button class="chip">برنج هاشمی</button>
+            <button class="chip">برنج طارم</button>
+            <button class="chip">برنج فجر</button>
+        </div>
+
+        <!-- گرید کالا -->
+        <div class="pgrid" id="cat-grid">
+            <div class="pcard" data-go="s-sell-edit">
+                <div class="ph">
+                    <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
+                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                </div>
+                <div class="info">
+                    <div class="pname">برنج هاشمی</div>
+                    <div class="ppack">کیسه ۵۰ کیلویی</div>
+                    <div class="pprice">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+                    <div class="pmeta"><span class="badge b-green">موجود</span></div>
+                </div>
+            </div>
+
+            <div class="pcard" data-go="s-sell-edit">
+                <div class="ph">
+                    <img src="png/goods/rice-grains.jpg" alt="برنج طارم">
+                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                </div>
+                <div class="info">
+                    <div class="pname">برنج طارم</div>
+                    <div class="ppack">کیسه ۵۰ کیلویی</div>
+                    <div class="pprice">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
+                    <div class="pmeta"><span class="badge b-green">موجود</span></div>
+                </div>
+            </div>
+
+            <div class="pcard" data-go="s-sell-edit">
+                <div class="ph">
+                    <img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی">
+                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                </div>
+                <div class="info">
+                    <div class="pname">برنج هاشمی</div>
+                    <div class="ppack">کیسه ۱۰ کیلویی</div>
+                    <div class="pprice">۵۹۵٬۰۰۰ <small>تومان</small></div>
+                    <div class="pmeta"><span class="badge b-green">موجود</span></div>
+                </div>
+            </div>
+
+            <div class="pcard" data-go="s-sell-edit">
+                <div class="ph">
+                    <img src="png/goods/fajar-50.jpg" alt="برنج فجر">
+                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                </div>
+                <div class="info">
+                    <div class="pname">برنج فجر</div>
+                    <div class="ppack">کیسه ۵۰ کیلویی</div>
+                    <div class="pprice">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
+                    <div class="pmeta"><span class="badge b-amber">موجودی کم</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ═════════════════════════════════════════════════════════════
+         شیت تنظیمات کاتالوگ (منوی ⚙)
+         ═════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-cat-settings" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>تنظیمات کاتالوگ</h3>
+            <button class="mg" data-sheet-close="sheet-cat-settings" aria-label="بستن">
+                <svg><use href="#i-x"/></svg>
+            </button>
+        </div>
+        <div class="sub">پخش برنج پارس · پخش مواد غذایی — رشت</div>
+
+        <button class="sheet-row" data-go="s-cat-edit">
+            <span class="ico"><svg><use href="#i-pencil"/></svg></span>
+            <span class="tx">
+                <b>ویرایش کاتالوگ</b>
+                <span>نام، لوگو، لوکیشن و توضیح کوتاه</span>
+            </span>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="sheet-row" data-sheet="sheet-vol">
+            <span class="ico"><svg><use href="#i-tag"/></svg></span>
+            <span class="tx">
+                <b>تخفیفات حجمی</b>
+                <span>پله‌ای بر اساس حجم خرید</span>
+            </span>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="sheet-row" data-sheet="sheet-cg-disc">
+            <span class="ico"><svg><use href="#i-users"/></svg></span>
+            <span class="tx">
+                <b>تخفیفات گروه مشتری</b>
+                <span>قیمت مخصوص هر گروه مشتری</span>
+            </span>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="sheet-row" data-go="s-sell-bulk">
+            <span class="ico"><svg><use href="#i-percent"/></svg></span>
+            <span class="tx">
+                <b>تغییر گروهی قیمت‌ها</b>
+                <span>درصدی یا دستی — روی کل کاتالوگ</span>
+            </span>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="sheet-row" data-sheet="sheet-groups">
+            <span class="ico"><svg><use href="#i-tag"/></svg></span>
+            <span class="tx">
+                <b>گروه‌های کالا</b>
+                <span>دسته‌بندی کالاهای کاتالوگ</span>
+            </span>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="btn btn-outline sheet-cta" data-sheet-close="sheet-cat-settings">بستن</button>
+    </div>
+</section>

@@ -1,0 +1,58 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۲۲: تأمین‌کنندگان من
+     لیست تأمین‌کنندگان ذخیره‌شده + منوی سه‌نقطه برای حذف.
+     بج «جدید» برای تازه‌ها.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-buy-suppliers" data-arm="buy">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">تأمین‌کنندگان من<small>۳ تأمین‌کننده</small></div>
+    </div>
+
+    <div class="body">
+        <div class="callout callout-info">
+            <svg><use href="#i-bookmark"/></svg>
+            <div>هر کاتالوگی که ذخیره می‌کنی، یک <b>تأمین‌کننده</b> به فهرست تأمین‌کنندگانت اضافه می‌شود و همیشه قیمت‌های زنده‌اش را داری.</div>
+        </div>
+
+        <div class="rows">
+            <div class="row static" data-go="s-buy-supplier-view">
+                <div class="avatar" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+                <div class="row-body">
+                    <div class="row-title">پخش برنج پارس <svg style="width: 14px; height: 14px; color: var(--blue);"><use href="#i-verified"/></svg></div>
+                    <div class="row-sub">مرتضی رضایی <span class="dot">·</span> رشت</div>
+                </div>
+                <button class="icon-btn plain" data-sup-menu="پخش برنج پارس" aria-label="گزینه‌ها">
+                    <svg><use href="#i-dots"/></svg>
+                </button>
+            </div>
+
+            <div class="row static" data-go="s-buy-supplier-view">
+                <div class="avatar" style="background: #7c3aed;">آ</div>
+                <div class="row-body">
+                    <div class="row-title">آریو غلات <svg style="width: 14px; height: 14px; color: var(--blue);"><use href="#i-verified"/></svg></div>
+                    <div class="row-sub">امیر قاسمی <span class="dot">·</span> اصفهان</div>
+                </div>
+                <button class="icon-btn plain" data-sup-menu="آریو غلات" aria-label="گزینه‌ها">
+                    <svg><use href="#i-dots"/></svg>
+                </button>
+            </div>
+
+            <div class="row static" data-go="s-buy-supplier-view">
+                <div class="avatar" style="background: #0e7490;">ک</div>
+                <div class="row-body">
+                    <div class="row-title">کیان غلات <span class="badge b-primary">جدید</span></div>
+                    <div class="row-sub">کیان رستمی <span class="dot">·</span> قزوین</div>
+                </div>
+                <button class="icon-btn plain" data-sup-menu="کیان غلات" aria-label="گزینه‌ها">
+                    <svg><use href="#i-dots"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-sparkles"/></svg>
+            <span>می‌خواهی تأمین‌کننده‌های بیشتری داشته باشی؟ موتور تطابق آی‌مچ می‌تواند تأمین‌کننده‌های مرتبط با کالاهای لیست خریدت را پیشنهاد بدهد.</span>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,109 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۱۹: میز خرید
+     کارت امتیاز خرید + کارت لیست خرید + KPI + استعلام‌های جاری
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-home-buy" data-arm="buy">
+    <div class="appbar">
+        <div class="brand">
+            <div class="brand-logo" style="background: var(--stone);">آ</div>
+            <div class="title">سوپرمارکت آریا</div>
+        </div>
+        <div class="actions">
+            <button class="icon-btn" data-go="s-notifs" aria-label="اعلان‌ها">
+                <svg><use href="#i-bell"/></svg>
+            </button>
+            <button class="icon-btn" data-go="s-profile" aria-label="پروفایل">
+                <svg><use href="#i-user"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="body">
+
+        <!-- کارت امتیاز فعالیت خرید -->
+        <button class="score-status" id="buy-score-card" type="button" data-score-arm="buy">
+            <div class="ss-ring">
+                <svg viewBox="0 0 44 44">
+                    <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
+                    <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="buy-score-ring"></circle>
+                </svg>
+                <span class="ss-num" id="buy-score-num">۰</span>
+            </div>
+            <div class="ss-tx">
+                <b id="buy-score-title">امتیاز فعالیت خرید</b>
+                <span id="buy-score-sub">شبکه‌ات را بساز — با ۱۰۰ امتیاز، موتور شتاب‌دهنده فعال می‌شود</span>
+            </div>
+            <svg class="ss-chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <!-- کارت بزرگ لیست خرید -->
+        <div class="card" style="background: linear-gradient(135deg, var(--stone-tint), #FFF 70%); border-color: #D8D4CA; cursor: pointer;" data-go="s-buy-list">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 46px; height: 46px; border-radius: 13px; background: var(--stone); color: #FFF; display: grid; place-items: center; flex-shrink: 0;">
+                    <svg style="width: 24px; height: 24px;"><use href="#i-basket"/></svg>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 15.5px; font-weight: 700; color: var(--stone);">لیست خرید من</div>
+                    <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">۴ کالا · برای هر کالا استعلام بگیر</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="kpis">
+            <div class="kpi hot" data-go="s-buy-rfqs">
+                <div class="k"><svg><use href="#i-inbox"/></svg> استعلام باز</div>
+                <div class="v">۲</div>
+            </div>
+            <div class="kpi" data-go="s-buy-suppliers">
+                <div class="k"><svg><use href="#i-users"/></svg> تأمین‌کننده</div>
+                <div class="v">۳</div>
+            </div>
+            <div class="kpi" data-go="s-buy-orders">
+                <div class="k"><svg><use href="#i-receipt"/></svg> سفارش جاری</div>
+                <div class="v">۱</div>
+            </div>
+            <div class="kpi" data-go="s-buy-list">
+                <div class="k"><svg><use href="#i-basket"/></svg> کالا در لیست</div>
+                <div class="v">۴</div>
+            </div>
+        </div>
+
+        <!-- استعلام‌های جاری -->
+        <div class="section-title">
+            <h2><svg><use href="#i-inbox"/></svg> استعلام‌های جاری</h2>
+            <span class="more" data-go="s-buy-rfqs">مشاهدهٔ همه <svg><use href="#i-chev"/></svg></span>
+        </div>
+        <div class="rows">
+            <div class="row" data-go="s-buy-offers">
+                <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt="برنج"></div>
+                <div class="row-body">
+                    <div class="row-title">برنج هاشمی گلستان · ۲۰ کیسه</div>
+                    <div class="row-sub">۵ پیشنهاد <span class="dot">·</span> <span style="color: var(--amber); font-weight: 700;">۳ روز مانده</span></div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-sparkles"/></svg>
+            <span>۳ تأمین‌کنندهٔ جدید برای کالاهای لیست خریدت پیدا شد.</span>
+        </div>
+    </div>
+
+    <nav class="tabbar">
+        <button class="tab" data-tab-arm="sell" data-tab-home="s-home-sell">
+            <svg><use href="#i-store"/></svg> فروش
+        </button>
+        <button class="tab active" data-tab-arm="buy" data-tab-home="s-home-buy">
+            <svg><use href="#i-basket"/></svg> خرید
+        </button>
+        <button class="tab" data-tab-home="s-msgs">
+            <svg><use href="#i-msg"/></svg> پیام‌ها
+        </button>
+        <button class="tab" data-tab-home="s-profile">
+            <svg><use href="#i-user"/></svg> پروفایل
+        </button>
+    </nav>
+</section>

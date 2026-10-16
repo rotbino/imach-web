@@ -1,0 +1,36 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۰۳: ورود
+     شماره + کد تأیید ۵ رقمی.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-login" data-arm="keep">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">ورود<small>یک قدم تا دفتر کارت</small></div>
+    </div>
+
+    <div class="body">
+        <div class="field">
+            <label>شماره موبایل</label>
+            <input class="input" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" value="09123456789" inputmode="tel">
+        </div>
+        <div class="field">
+            <label>کد تأیید ۵ رقمی</label>
+            <div class="hint" style="margin: 0 0 10px;">پیامک‌شده به ۰۹۱۲***۶۷۸۹</div>
+            <div style="display: flex; gap: 8px; direction: ltr; justify-content: center;">
+                <div style="width: 48px; height: 54px; border: 1.5px solid var(--border-2); border-radius: 12px; display: grid; place-items: center; font-size: 20px; font-weight: 700; background: var(--surface-2);">۴</div>
+                <div style="width: 48px; height: 54px; border: 1.5px solid var(--border-2); border-radius: 12px; display: grid; place-items: center; font-size: 20px; font-weight: 700; background: var(--surface-2);">۷</div>
+                <div style="width: 48px; height: 54px; border: 1.5px solid var(--border-2); border-radius: 12px; display: grid; place-items: center; font-size: 20px; font-weight: 700; background: var(--surface-2);">۲</div>
+                <div style="width: 48px; height: 54px; border: 1.5px solid var(--primary); border-radius: 12px; display: grid; place-items: center; font-size: 20px; font-weight: 700; box-shadow: 0 0 0 3px rgba(249,115,22,.14);"></div>
+                <div style="width: 48px; height: 54px; border: 1.5px solid var(--border-2); border-radius: 12px; display: grid; place-items: center; font-size: 20px; font-weight: 700;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 11px; color: var(--text-3);">
+                <span style="display: inline-flex; align-items: center; gap: 5px;"><svg style="width: 13px; height: 13px;"><use href="#i-clock"/></svg> ۰۱:۱۲</span>
+                <span>ارسال مجدد کد تا <b style="color: var(--primary-strong);">۱ دقیقه</b> دیگر</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-primary btn-block" data-login>ورود به آی‌مچ</button>
+    </div>
+</section>

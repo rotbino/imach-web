@@ -1,0 +1,81 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۳۴: تبلیغات و افزایش فروش
+     ─────────────────────────────────────────────────────────────
+     سوییچ ویژه کردن کالاها + وضعیت شارژ + ریز مصرف.
+     ═════════════════════════════════════════════════════════════ -->
+
+<section class="screen" id="s-sell-promo" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">تبلیغات و افزایش فروش<small>کالاهایت را ویژه کن</small></div>
+    </div>
+
+    <div class="body">
+
+        <!-- ═══ توضیح ═══ -->
+        <div class="callout callout-accent">
+            <svg><use href="#i-sparkles"/></svg>
+            <div>
+                <b>کالاهای ویژه، در شرایط مشابه بالاتر دیده می‌شوند.</b><br>
+                وقتی خریدارِ هدف در شبکهٔ باز آی‌مچ به دنبال کالایی مثل کالای توست، کالای تو بالاتر نشان داده می‌شود — فقط وقتی از شارژت نتیجه گرفت، شارژ کم می‌شود.
+            </div>
+        </div>
+
+        <!-- ═══ سوییچ اصلی ═══ -->
+        <div class="promo-toggle-card" id="promo-toggle-card">
+            <div class="ptc-tx">
+                <b>کالاها را ویژه کن</b>
+                <span id="promo-toggle-sub">روی همهٔ کالاهای کاتالوگ اعمال می‌شود</span>
+            </div>
+            <div class="switch" id="promo-switch" role="switch" aria-label="کالاها را ویژه کن"></div>
+        </div>
+
+        <!-- ═══ وضعیت شارژ ═══ -->
+        <div class="wallet-mini" id="wallet-mini" data-go="s-charge">
+            <span class="wm-ic"><svg><use href="#i-wallet"/></svg></span>
+            <span class="wm-tx">
+                <b><span data-wallet>۸۵٬۰۰۰</span> تومان</b>
+                <span>موجودی شارژ</span>
+            </span>
+            <span class="wm-act">افزایش</span>
+        </div>
+
+        <!-- ═══ ریز مصرف ═══ -->
+        <div class="section-title" style="margin-top: 12px;">
+            <h2>آخرین ریز مصرف</h2>
+        </div>
+        <div class="card" style="padding: 2px 14px;">
+            <div class="usg-row">
+                <div class="uic" style="background: var(--stone-tint); color: var(--stone);">
+                    <svg><use href="#i-eye"/></svg>
+                </div>
+                <div class="utx">
+                    <div class="t">بازدید یونیک در لیست تأمین</div>
+                    <div class="s">رستوران مهر · امروز</div>
+                </div>
+                <span class="cost">− ۱٬۰۰۰</span>
+            </div>
+            <div class="usg-row">
+                <div class="uic" style="background: var(--green-bg); color: var(--green);">
+                    <svg><use href="#i-phone"/></svg>
+                </div>
+                <div class="utx">
+                    <div class="t">تماس از لیست تأمین</div>
+                    <div class="s">هتل سپند · دیروز</div>
+                </div>
+                <span class="cost">− ۳٬۰۰۰</span>
+            </div>
+            <div class="usg-row">
+                <div class="uic" style="background: var(--green-bg); color: var(--green);">
+                    <svg><use href="#i-share"/></svg>
+                </div>
+                <div class="utx">
+                    <div class="t">هدیهٔ ثبت‌نام از لینک شما</div>
+                    <div class="s">خواروبار امید · امروز</div>
+                </div>
+                <span class="cost plus">+ ۱۰۰٬۰۰۰</span>
+            </div>
+        </div>
+
+    </div>
+</section>

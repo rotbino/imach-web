@@ -1,0 +1,171 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۰۷: مخاطبین
+     دو حالت:
+       عادی — جستجو + بج عضو/دعوت + دکمهٔ ارسال یا دعوت
+       pick — چک‌باکس انتخاب چندنفره + نوار پایین ارسال
+     اعضا با عکس واقعی · آواتار ۳۲px · بدون فیلتر چیپ.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-contacts" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">مخاطبین<small>۶ از ۱۲ نفر عضو آی‌مچ هستند</small></div>
+    </div>
+
+    <div class="body">
+        <div class="field" style="margin-bottom: 10px;">
+            <div class="input" style="gap: 10px;">
+                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-search"/></svg>
+                <input type="text" id="contact-search" placeholder="جستجوی نام یا کسب‌وکار…">
+            </div>
+        </div>
+
+        <div class="contact-list" id="contact-list">
+
+            <div class="contact-row" data-contact="ct1">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="padding: 0;">
+                    <img src="png/users/me.jpg" alt="">
+                </div>
+                <div class="contact-body">
+                    <div class="contact-name">علی اکبری <span class="contact-badge member"><svg><use href="#i-check"/></svg> عضو</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۲ ۳۴۵ ۶۷۸۹</span><span class="dot">·</span><span>سوپرمارکت</span></div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-send-contact>ارسال</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct2">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="padding: 0;">
+                    <img src="png/users/alt-1.jpg" alt="">
+                </div>
+                <div class="contact-body">
+                    <div class="contact-name">سارا رحیمی <span class="contact-badge member"><svg><use href="#i-check"/></svg> عضو</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۲ ۷۷۶ ۹۱۰۴</span><span class="dot">·</span><span>سوپرمارکت الماس</span></div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-send-contact>ارسال</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct3">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="padding: 0;">
+                    <img src="png/users/alt-2.jpg" alt="">
+                </div>
+                <div class="contact-body">
+                    <div class="contact-name">نیما فاضلی <span class="contact-badge member"><svg><use href="#i-check"/></svg> عضو</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۱ ۵۵۲ ۲۰۷۴</span><span class="dot">·</span><span>سوپرمارکت آریا</span></div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-send-contact>ارسال</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct4">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="padding: 0;">
+                    <img src="png/users/me.jpg" alt="">
+                </div>
+                <div class="contact-body">
+                    <div class="contact-name">مهدی کاظمی <span class="contact-badge member"><svg><use href="#i-check"/></svg> عضو</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۲ ۳۳۴ ۴۱۰۸</span><span class="dot">·</span><span>رستوران مهر</span></div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-send-contact>ارسال</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct5">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="padding: 0;">
+                    <img src="png/users/alt-1.jpg" alt="">
+                </div>
+                <div class="contact-body">
+                    <div class="contact-name">رضا کریمی <span class="contact-badge member"><svg><use href="#i-check"/></svg> عضو</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۲ ۲۲۰ ۳۳۶۱</span><span class="dot">·</span><span>پخش مواد غذایی</span></div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-send-contact>ارسال</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct6">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="padding: 0;">
+                    <img src="png/users/alt-2.jpg" alt="">
+                </div>
+                <div class="contact-body">
+                    <div class="contact-name">مریم اسدی <span class="contact-badge member"><svg><use href="#i-check"/></svg> عضو</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۴ ۶۶۳ ۱۵۸۰</span><span class="dot">·</span><span>کترینگ بهار</span></div>
+                </div>
+                <button class="btn btn-sm btn-primary" data-send-contact>ارسال</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct7">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="background: #7c3aed;">م</div>
+                <div class="contact-body">
+                    <div class="contact-name">مجید توکلی <span class="contact-badge invite">دعوت‌نشده</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۳۵ ۱۲۱ ۴۵۶۷</span><span class="dot">·</span><span>پخش مواد غذایی</span></div>
+                </div>
+                <button class="btn btn-sm btn-outline" data-invite-sms>دعوت</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct8">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="background: #b45309;">آ</div>
+                <div class="contact-body">
+                    <div class="contact-name">آرش محمدی <span class="contact-badge invite">دعوت‌نشده</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۱ ۸۸۰ ۵۵۲۰</span><span class="dot">·</span><span>رستوران</span></div>
+                </div>
+                <button class="btn btn-sm btn-outline" data-invite-sms>دعوت</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct9">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="background: #a8a29a;">ن</div>
+                <div class="contact-body">
+                    <div class="contact-name">نادر رستمی <span class="contact-badge invite">دعوت‌نشده</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۳۰ ۵۴۲ ۱۱۸۸</span><span class="dot">·</span><span>عمده‌فروشی</span></div>
+                </div>
+                <button class="btn btn-sm btn-outline" data-invite-sms>دعوت</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct10">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="background: #0284c7;">ف</div>
+                <div class="contact-body">
+                    <div class="contact-name">فاطمه رستمی <span class="contact-badge invite">دعوت‌نشده</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۸ ۲۲۳ ۷۷۱۹</span><span class="dot">·</span><span>قنادی</span></div>
+                </div>
+                <button class="btn btn-sm btn-outline" data-invite-sms>دعوت</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct11">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="background: #dc2626;">ب</div>
+                <div class="contact-body">
+                    <div class="contact-name">بابک نیک‌پور <span class="contact-badge invite">دعوت‌نشده</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۲ ۵۵۶ ۸۸۴۲</span><span class="dot">·</span><span>پخش لبنیات</span></div>
+                </div>
+                <button class="btn btn-sm btn-outline" data-invite-sms>دعوت</button>
+            </div>
+
+            <div class="contact-row" data-contact="ct12">
+                <div class="contact-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="avatar avatar-sm" style="background: #65a30d;">ز</div>
+                <div class="contact-body">
+                    <div class="contact-name">زهرا حسینی <span class="contact-badge invite">دعوت‌نشده</span></div>
+                    <div class="contact-meta"><span dir="ltr">۰۹۱۳ ۴۴۲ ۱۱۷۷</span><span class="dot">·</span><span>سوپرمارکت</span></div>
+                </div>
+                <button class="btn btn-sm btn-outline" data-invite-sms>دعوت</button>
+            </div>
+
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>اعضای آی‌مچ کاتالوگ را در پیام‌رسان آی‌مچ می‌گیرند؛ بقیه با پیامک دعوت می‌شوند.</span>
+        </div>
+    </div>
+
+    <!-- نوار پایین — فقط در حالت pick دیده می‌شود -->
+    <div class="pick-bar">
+        <span class="pick-count" id="pick-count">۰ نفر انتخاب شده</span>
+        <button class="btn btn-primary" style="flex: 1;" id="pick-send">
+            <svg><use href="#i-send"/></svg> ارسال
+        </button>
+    </div>
+</section>

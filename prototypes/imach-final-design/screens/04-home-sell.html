@@ -1,0 +1,119 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۰۴: میز فروش
+     کارت امتیاز فروش + KPI + نیازمند اقدام
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-home-sell" data-arm="sell">
+    <div class="appbar">
+        <div class="brand">
+            <div class="brand-logo">پ</div>
+            <div class="title">پخش برنج پارس</div>
+        </div>
+        <div class="actions">
+            <button class="icon-btn" data-go="s-notifs" aria-label="اعلان‌ها">
+                <svg><use href="#i-bell"/></svg>
+                <span class="dot">۳</span>
+            </button>
+            <button class="icon-btn" data-go="s-profile" aria-label="پروفایل">
+                <svg><use href="#i-user"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="body">
+
+        <!-- کارت امتیاز فعالیت فروش -->
+        <button class="score-status" id="cat-score-card" type="button" data-score-arm="sell">
+            <div class="ss-ring">
+                <svg viewBox="0 0 44 44">
+                    <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
+                    <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="cat-score-ring"></circle>
+                </svg>
+                <span class="ss-num" id="cat-score-num">۰</span>
+            </div>
+            <div class="ss-tx">
+                <b id="cat-score-title">امتیاز فعالیت فروش</b>
+                <span id="cat-score-sub">شبکه‌ات را بساز — با ۱۰۰ امتیاز، موتور شتاب‌دهنده فعال می‌شود</span>
+            </div>
+            <svg class="ss-chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <!-- کارت بزرگ کاتالوگ -->
+        <div class="card" style="background: linear-gradient(135deg, var(--primary-soft), #FFF 70%); border-color: #F3DDBA; cursor: pointer;" data-go="s-catalog">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 46px; height: 46px; border-radius: 13px; background: var(--primary); color: #FFF; display: grid; place-items: center; flex-shrink: 0;">
+                    <svg style="width: 24px; height: 24px;"><use href="#i-store"/></svg>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 15.5px; font-weight: 700; color: var(--primary-strong);">کاتالوگ من</div>
+                    <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">۴ کالا · آمادهٔ اشتراک با مشتریان</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="kpis">
+            <div class="kpi hot" data-go="s-sell-orders">
+                <div class="k"><svg><use href="#i-receipt"/></svg> سفارش جدید</div>
+                <div class="v">۲</div>
+            </div>
+            <div class="kpi hot" data-go="s-sell-rfqs">
+                <div class="k"><svg><use href="#i-inbox"/></svg> درخواست قیمت</div>
+                <div class="v">۲</div>
+            </div>
+            <div class="kpi" data-go="s-customers">
+                <div class="k"><svg><use href="#i-users"/></svg> مشتری</div>
+                <div class="v">۳</div>
+            </div>
+            <div class="kpi" data-go="s-charge">
+                <div class="k"><svg><use href="#i-wallet"/></svg> شارژ</div>
+                <div class="v"><span data-wallet>۸۵٬۰۰۰</span></div>
+            </div>
+        </div>
+
+        <!-- نیازمند اقدام -->
+        <div class="section-title"><h2>نیازمند اقدام</h2></div>
+        <div class="rows">
+            <div class="row" data-go="s-sell-orders">
+                <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-receipt"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">۲ سفارش جدید</div>
+                    <div class="row-sub">رستوران مهر <span class="dot">·</span> سوپرمارکت الماس</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+            <div class="row" data-go="s-sell-rfqs">
+                <div class="thumb thumb-sm" style="background: var(--amber-soft); color: var(--amber); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-inbox"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">۲ درخواست قیمت</div>
+                    <div class="row-sub">هنوز پاسخ نداده‌ای</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-sparkles"/></svg>
+            <span>۳ خریدار عمدهٔ جدید با کالاهای کاتالوگ شما هم‌خوانی دارند.</span>
+        </div>
+    </div>
+
+    <nav class="tabbar">
+        <button class="tab active" data-tab-arm="sell" data-tab-home="s-home-sell">
+            <svg><use href="#i-store"/></svg> فروش
+        </button>
+        <button class="tab" data-tab-arm="buy" data-tab-home="s-home-buy">
+            <svg><use href="#i-basket"/></svg> خرید
+        </button>
+        <button class="tab" data-tab-home="s-msgs">
+            <svg><use href="#i-msg"/></svg> پیام‌ها
+        </button>
+        <button class="tab" data-tab-home="s-profile">
+            <svg><use href="#i-user"/></svg> پروفایل
+        </button>
+    </nav>
+</section>

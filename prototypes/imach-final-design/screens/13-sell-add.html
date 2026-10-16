@@ -1,0 +1,287 @@
+<!-- ═════════════════════════════════════════════════════════════
+     فایل ۱۳ — جریان «افزودن محصول به کاتالوگ»
+
+     سه گام:
+       ۱) دو لیست موازی — محصولات بالا، کالاها پایین
+       ۲) محصولات یک کالا با فیلتر برند
+       ۳) بسته‌بندی (چیپ + سایر) + قیمت بسته + قیمت واحد + موجودی
+
+     شیت‌های همراه:
+       sheet-new-good   — ثبت کالای جدید
+       sheet-pick-brand — انتخاب برند
+       sheet-new-brand  — ثبت برند جدید
+     ═════════════════════════════════════════════════════════════ -->
+
+<section class="screen" id="s-sell-add" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">افزودن محصول<small id="add-sub">چی می‌فروشی؟</small></div>
+    </div>
+
+    <div class="body">
+
+        <!-- ═══ گام ۱ ═══ -->
+        <div id="add-step-1">
+            <div class="field" style="margin-bottom: 0;">
+                <div class="search-row">
+                    <svg><use href="#i-search"/></svg>
+                    <input type="text" id="add-q" placeholder="جستجو — مثلاً پفک، برنج، روغن" autocomplete="off">
+                </div>
+            </div>
+            <div id="add-results" style="margin-top: 10px;"></div>
+        </div>
+
+        <!-- ═══ گام ۲ ═══ -->
+        <div id="add-step-2" hidden>
+            <div class="picked-card">
+                <div class="thumb" id="add-type-thumb"></div>
+                <div class="info">
+                    <div class="nm" id="add-type-name">—</div>
+                    <div class="sub">کالا</div>
+                </div>
+                <button class="chg" type="button" id="add-change-type">تغییر</button>
+            </div>
+
+            <div class="chips" id="add-brand-chips" style="margin-top: 14px;"></div>
+
+            <div id="add-refs" style="margin-top: 10px;"></div>
+
+            <button class="pick-row new" id="add-new-product" type="button" style="margin-top: 12px;">
+                <div class="thumb" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-plus"/></svg>
+                </div>
+                <div class="info">
+                    <div class="nm">محصول من در این لیست نیست</div>
+                    <div class="sub">با عنوان و برند خودت ثبتش کن</div>
+                </div>
+                <div class="chev"><svg><use href="#i-chev"/></svg></div>
+            </button>
+        </div>
+
+        <!-- ═══ گام ۳ ═══ -->
+        <div id="add-step-3" hidden>
+            <div class="picked-card" id="add-final-card"></div>
+
+            <div id="add-new-form" hidden>
+                <div class="field" style="margin-top: 14px;">
+                    <label>عنوان محصول <span class="opt">— همین را خریداران می‌بینند</span></label>
+                    <input class="input" id="add-title" type="text" placeholder="مثلاً پفک اشی مشی ۱۰۰ گرمی" autocomplete="off">
+                </div>
+
+                <div class="field">
+                    <label>عکس محصول</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                        <button class="img-slot-btn" type="button" data-addphoto aria-label="افزودن عکس">
+                            <svg><use href="#i-image"/></svg>
+                        </button>
+                        <button class="img-slot-btn" type="button" data-addphoto aria-label="افزودن عکس">
+                            <svg><use href="#i-image"/></svg>
+                        </button>
+                        <button class="img-slot-btn" type="button" data-addphoto aria-label="افزودن عکس">
+                            <svg><use href="#i-image"/></svg>
+                        </button>
+                    </div>
+                    <div class="hint">تا ۵ عکس — عکس واضح و از زاویهٔ روبه‌رو، شانس دیده‌شدن محصول را بیشتر می‌کند.</div>
+                </div>
+
+                <div class="field">
+                    <label>برند</label>
+                    <button class="input sel" type="button" id="add-brand-pick">
+                        <span id="add-brand-label">انتخاب برند</span>
+                        <svg style="width:16px;height:16px;color:var(--text-3);flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+                    </button>
+                    <div class="hint">اگر محصولت برند ندارد، در شیت بعدی «بدون برند» را انتخاب کن.</div>
+                </div>
+            </div>
+
+            <!-- ═══ بسته‌بندی فروش عمده ═══ -->
+            <div class="field" style="margin-top: 14px;">
+                <label>بسته‌بندی فروش عمده</label>
+                <div class="chips" id="add-pack-chips"></div>
+                <div id="add-pack-custom" hidden style="margin-top: 10px;">
+                    <div class="field" style="margin-bottom: 10px;">
+                        <label>بسته‌بندی</label>
+                        <input class="input" id="add-pack-label" type="text" placeholder="مثلاً کارتن ۶۰ عددی" autocomplete="off">
+                    </div>
+                    <div class="field">
+                        <label>تعداد در بسته</label>
+                        <input class="input" id="add-pack-qty" type="tel" inputmode="numeric" placeholder="۶۰">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ قیمت بسته + قیمت واحد (هم‌گام) ═══ -->
+            <div class="field" style="margin-top: 12px;">
+                <label>قیمت هر بسته <span class="opt">— تومان</span></label>
+                <input class="input" id="add-price" type="tel" inputmode="numeric" placeholder="۰">
+            </div>
+
+            <div class="field">
+                <label><span id="add-unit-price-label">قیمت هر واحد</span> <span class="opt">— تومان</span></label>
+                <input class="input" id="add-unit-price" type="tel" inputmode="numeric" placeholder="—">
+                <div class="hint" id="add-unit-hint">قیمت هر واحد خودکار محاسبه می‌شود.</div>
+            </div>
+
+            <div style="display: flex; gap: 9px;">
+                <div class="field" style="flex: 1;">
+                    <label>موجودی</label>
+                    <input class="input" id="add-stock" type="tel" inputmode="numeric" placeholder="—">
+                </div>
+                <div class="field" style="flex: 1;">
+                    <label>حداقل سفارش</label>
+                    <input class="input" id="add-min" type="tel" inputmode="numeric" placeholder="۱">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>توضیحات <span class="opt">— اختیاری</span></label>
+                <textarea class="input" id="add-note" placeholder="شرایط فروش، پرداخت، تحویل…"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="sticky-bar" id="add-bar" hidden>
+        <button class="btn btn-primary btn-block" id="add-save">
+            <svg><use href="#i-check"/></svg> افزودن به کاتالوگ
+        </button>
+    </div>
+
+
+    <!-- شیت: ثبت کالای جدید -->
+    <div class="sheet" id="sheet-new-good" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>ثبت کالای جدید</h3>
+            <button class="mg" data-sheet-close="sheet-new-good" aria-label="بستن">
+                <svg><use href="#i-x"/></svg>
+            </button>
+        </div>
+        <div class="sub">نام کالا را وارد کن — مثلاً «پفک». بعد از تأیید، همهٔ فروشنده‌های این کالا کنار هم مقایسه می‌شوند.</div>
+        <div class="field">
+            <label>نام کالا</label>
+            <input class="input" id="new-good-name" type="text" placeholder="مثلاً پفک" autocomplete="off">
+        </div>
+        <button class="btn btn-primary btn-block" id="new-good-save" style="margin-top: 8px;">
+            <svg><use href="#i-check"/></svg> ثبت کالا
+        </button>
+    </div>
+
+    <!-- شیت: انتخاب برند -->
+    <div class="sheet" id="sheet-pick-brand" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>انتخاب برند</h3>
+            <button class="mg" data-sheet-close="sheet-pick-brand" aria-label="بستن">
+                <svg><use href="#i-x"/></svg>
+            </button>
+        </div>
+        <div class="sub">هزاران برند — با جستجو پیدا کن یا برند جدید بساز.</div>
+
+        <div class="field" style="margin-bottom: 0;">
+            <div class="input" style="gap: 10px;">
+                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-search"/></svg>
+                <input type="text" id="brand-q" placeholder="جستجوی برند…" autocomplete="off">
+            </div>
+        </div>
+
+        <div id="brand-list" style="margin-top: 12px;"></div>
+    </div>
+
+    <!-- شیت: ثبت برند جدید -->
+    <div class="sheet" id="sheet-new-brand" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>ثبت برند جدید</h3>
+            <button class="mg" data-sheet-close="sheet-new-brand" aria-label="بستن">
+                <svg><use href="#i-x"/></svg>
+            </button>
+        </div>
+        <div class="sub">نام برند را وارد کن — مثلاً «اشی مشی». بعد از تأیید، در فهرست همه نمایش داده می‌شود.</div>
+        <div class="field">
+            <label>نام برند</label>
+            <input class="input" id="new-brand-name" type="text" placeholder="مثلاً اشی مشی" autocomplete="off">
+        </div>
+        <button class="btn btn-primary btn-block" id="new-brand-save" style="margin-top: 8px;">
+            <svg><use href="#i-check"/></svg> ثبت برند
+        </button>
+    </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════════════════════
+     اسکرین ویرایش محصول — مستقل.
+     ═════════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-sell-edit" data-arm="sell" hidden>
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">ویرایش محصول<small>برنج هاشمی گلستان · کیسه ۵۰ کیلویی</small></div>
+    </div>
+
+    <div class="body">
+        <div class="picked-card" style="background: linear-gradient(135deg, #F7F6F2, #FFF); border-color: var(--border);">
+            <div class="thumb">
+                <img src="png/goods/rice-sack.jpg" alt="">
+            </div>
+            <div class="info">
+                <div class="nm">برنج هاشمی گلستان</div>
+                <div class="sub">گلستان · کیسه ۵۰ کیلویی · کیفیت درجه یک</div>
+            </div>
+        </div>
+
+        <div class="field price-field">
+            <label>قیمت هر کیسه <span class="opt">— تومان</span></label>
+            <input class="input" type="tel" id="edit-price" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric">
+        </div>
+
+        <div style="display: flex; gap: 9px;">
+            <div class="field" style="flex: 1;">
+                <label>موجودی</label>
+                <input class="input" type="tel" value="۳۵" inputmode="numeric">
+            </div>
+            <div class="field" style="flex: 1;">
+                <label>حداقل سفارش</label>
+                <input class="input" type="tel" value="۵" inputmode="numeric">
+            </div>
+        </div>
+
+        <div class="field">
+            <label>عکس محصول</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                <button class="img-slot-btn has-img" type="button">
+                    <img src="png/goods/rice-sack.jpg" alt="">
+                </button>
+                <button class="img-slot-btn" type="button" data-addphoto aria-label="افزودن عکس">
+                    <svg><use href="#i-image"/></svg>
+                </button>
+                <button class="img-slot-btn" type="button" data-addphoto aria-label="افزودن عکس">
+                    <svg><use href="#i-image"/></svg>
+                </button>
+            </div>
+            <div class="hint">تا ۵ عکس — عکس واضح و از زاویهٔ روبه‌رو، شانس دیده‌شدن محصول را بیشتر می‌کند.</div>
+        </div>
+
+        <div class="field">
+            <label>توضیحات <span class="opt">— اختیاری</span></label>
+            <textarea class="input" placeholder="شرایط فروش، پرداخت، تحویل…"></textarea>
+        </div>
+
+        <div class="section-title" style="margin-top: 8px;">
+            <h2 style="color: var(--red);"><svg style="color: var(--red);"><use href="#i-trash"/></svg> حذف محصول</h2>
+        </div>
+
+        <div class="card" style="border-color: #F3C1C1; background: #FDF6F6;">
+            <div style="font-size: 12px; color: var(--text-2); line-height: 1.9; margin-bottom: 12px;">
+                اگر این محصول را دیگر نمی‌فروشی، حذفش کن. حذف محصول قابل بازگشت است — فقط از کاتالوگ عمومی پنهان می‌شود.
+            </div>
+            <button class="btn btn-outline btn-block" style="color: var(--red); border-color: #F3C1C1;" data-delete-item>
+                <svg><use href="#i-trash"/></svg> حذف این محصول از کاتالوگ
+            </button>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-primary btn-block" data-edit-save>
+            <svg><use href="#i-check"/></svg> ذخیرهٔ تغییرات
+        </button>
+    </div>
+</section>

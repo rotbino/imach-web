@@ -1,0 +1,70 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۰۲: ثبت‌نام
+     سؤال کلیدی: کاربر خودش را در مثال‌ها پیدا کند.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-signup" data-arm="keep">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">ساخت حساب<small>کمتر از ۲ دقیقه</small></div>
+    </div>
+
+    <div class="body">
+        <div class="field">
+            <label>شماره موبایل</label>
+            <input class="input" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" value="09123456789" inputmode="tel">
+        </div>
+
+        <div class="field">
+            <label>نام و نام خانوادگی</label>
+            <input class="input" placeholder="مثلاً: احمد رضایی" value="احمد رضایی">
+        </div>
+
+        <div class="field">
+            <label>نام کسب‌وکار</label>
+            <input class="input" placeholder="مثلاً: پخش برنج پارس" value="پخش برنج پارس">
+            <div class="hint">این نام روی کاتالوگ و پروفایل شما دیده می‌شود</div>
+        </div>
+
+        <div class="field">
+            <label>با آی‌مچ می‌خواهی چه کاری انجام بدهی؟</label>
+            <div class="role-cards" id="role-cards">
+                <button class="role-card" type="button" data-role="buy">
+                    <span class="role-ic"><svg><use href="#i-basket"/></svg></span>
+                    <span class="role-tx">
+            <b>جنس عمده می‌خرم</b>
+            <small>برای خرده‌فروشی، رستوران، تعویض روغنی، کسب‌وکار خدماتی</small>
+          </span>
+                    <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                </button>
+                <button class="role-card" type="button" data-role="sell">
+                    <span class="role-ic"><svg><use href="#i-store"/></svg></span>
+                    <span class="role-tx">
+            <b>جنس عمده می‌فروشم</b>
+            <small>برای بازاریاب، ویزیتور، پخش، پرسنل فروش شرکت</small>
+          </span>
+                    <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                </button>
+                <button class="role-card active" type="button" data-role="both">
+                    <span class="role-ic"><svg><use href="#i-home"/></svg></span>
+                    <span class="role-tx">
+            <b>هر دو را انجام می‌دهم</b>
+            <small>برای تولیدکننده، عمده‌فروش بازار، کسب‌وکارهای بزرگ</small>
+          </span>
+                    <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="callout callout-accent">
+            <svg><use href="#i-sparkles"/></svg>
+            <div>
+                <b>آی‌مچ برای خرید و فروش عمده است</b> — نه فروش تکی به مشتری.<br>
+                این‌جا از تأمین‌کننده‌ها جنس عمده می‌خری، یا به مشتری‌های عمده‌ات جنس عمده می‌فروشی. هر وقت خواستی می‌توانی از پروفایل عوضش کنی.
+            </div>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-primary btn-block" id="signup-submit">ساخت حساب و ورود</button>
+    </div>
+</section>

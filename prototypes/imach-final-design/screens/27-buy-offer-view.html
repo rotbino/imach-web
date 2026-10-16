@@ -1,0 +1,106 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۲۷: جزئیات پیشنهاد
+     کارت فروشنده + قیمت با معادل واحد + شرایط + راه‌های ارتباط.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-buy-offer-view" data-arm="buy">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">جزئیات پیشنهاد<small>شالی‌زار طالب</small></div>
+    </div>
+
+    <div class="body">
+        <div class="card" style="display: flex; gap: 12px; align-items: center;">
+            <div class="avatar avatar-lg" style="background: #0d9488;">ش</div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 15px; font-weight: 700;">شالی‌زار طالب</div>
+                <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">شالی‌زار و برداشت برنج · رشت</div>
+                <div style="margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap;">
+                    <span class="badge b-green">کمترین قیمت</span>
+                    <span class="badge b-gray">هم‌شهری</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="offer-summary">
+            <div style="font-size: 11.5px; color: var(--text-3); margin-bottom: 4px;">قیمت هر کیسهٔ ۵۰ کیلویی</div>
+            <div class="big-price">۲٬۷۸۰٬۰۰۰ <small>تومان</small></div>
+            <div class="unit-price">
+                <svg><use href="#i-info"/></svg>
+                <span>هر کیلوگرم ≈ ۵۵٬۶۰۰ تومان — قابل‌مقایسه با بسته‌بندی‌های دیگر</span>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 4px 14px;">
+            <div class="fact-row">
+                <span class="k">کالای درخواستی</span><span class="v">برنج هاشمی</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">مقدار درخواست</span><span class="v">۲۰ کیسهٔ ۵۰ کیلویی</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">جمع کل</span><span class="v" style="color: var(--primary-strong);">۵۵٬۶۰۰٬۰۰۰ تومان</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">شرایط پرداخت</span><span class="v">نقدی</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">روش تحویل</span><span class="v">تحویل در محل</span>
+            </div>
+            <div class="fact-row">
+                <span class="k">مهلت پیشنهاد</span><span class="v">۲ روز مانده</span>
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <svg><use href="#i-msg"/></svg>
+            <div>
+                <b>یادداشت فروشنده:</b>
+                <div style="margin-top: 4px;">برنج امسال، پاک‌شده و آمادهٔ ارسال. کیفیت تضمینی.</div>
+            </div>
+        </div>
+
+        <div class="section-title"><h2>راه‌های ارتباط</h2></div>
+
+        <div class="rows">
+            <div class="row" data-go="s-chat">
+                <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-msg"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">پیام در آی‌مچ</div>
+                    <div class="row-sub">سریع‌ترین راه — پاسخ فروشنده در همان گفتگو</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+            <div class="row" data-dial>
+                <div class="thumb thumb-sm" style="background: var(--green-soft); color: var(--green); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-phone"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">تماس تلفنی</div>
+                    <div class="row-sub" dir="ltr" style="justify-content: flex-end;">۰۹۱۱ ۲۳۴ ۵۶۷۸</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+            <div class="row" data-go="s-buy-supplier-view">
+                <div class="thumb thumb-sm" style="background: var(--surface-2); color: var(--text-2); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-store"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">کاتالوگ فروشنده</div>
+                    <div class="row-sub">کالاهای دیگر را ببین</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-outline" style="flex: .7;" data-go="s-chat">
+            <svg><use href="#i-msg"/></svg> پیام
+        </button>
+        <button class="btn btn-primary" style="flex: 1.3;" data-accept-offer>
+            <svg><use href="#i-check"/></svg> پذیرش پیشنهاد
+        </button>
+    </div>
+</section>

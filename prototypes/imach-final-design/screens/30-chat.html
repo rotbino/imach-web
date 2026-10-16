@@ -1,0 +1,42 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۳۰: گفتگو
+     حباب‌های پیام + پاسخ‌های سریع + نوار تایپ.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-chat" data-arm="keep">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="avatar avatar-sm" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+        <div class="ttl">پخش برنج پارس<small>رشت</small></div>
+        <button class="icon-btn" aria-label="تماس"><svg><use href="#i-phone"/></svg></button>
+    </div>
+
+    <div class="body" id="chat-body" style="padding-bottom: 8px;">
+        <div class="chat-day">امروز</div>
+        <div class="msg in">
+            <div class="bub">سلام — قیمت امروز برنج درجه یک چنده؟ برای ۵۰ کیسه</div>
+            <span class="tm">۱۰:۱۲</span>
+        </div>
+        <div class="msg out">
+            <div class="bub">سلام. ۸۹٬۵۰۰ کیلو — کیسهٔ ۱۰ کیلویی ۸۹۵٬۰۰۰. موجودی دارم، ارسال امروز.</div>
+            <span class="tm">۱۰:۱۴</span>
+        </div>
+        <div class="msg in">
+            <div class="bub">عالی — ۵۰ کیسه رزرو کنید، فردا صبح می‌آیم</div>
+            <span class="tm">۱۰:۱۶</span>
+        </div>
+    </div>
+
+    <div class="chat-foot">
+        <div class="quick-chips">
+            <button class="chip" data-quick-msg="سلام، وقت به خیر">سلام، وقت به خیر</button>
+            <button class="chip" data-quick-msg="قیمت امروز؟">قیمت امروز؟</button>
+            <button class="chip" data-quick-msg="موجودی دارید؟">موجودی دارید؟</button>
+            <button class="chip" data-quick-msg="شرایط پرداخت؟">شرایط پرداخت؟</button>
+        </div>
+        <div class="composer">
+            <button class="c-ico" aria-label="ارسال عکس"><svg><use href="#i-image"/></svg></button>
+            <input type="text" id="chat-input" class="input" style="flex: 1;" placeholder="پیام…">
+            <button class="c-send" aria-label="ارسال پیام" data-chat-send><svg><use href="#i-send"/></svg></button>
+        </div>
+    </div>
+</section>

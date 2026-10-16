@@ -1,0 +1,236 @@
+<!-- ═════════════════════════════════════════════════════════════
+     فایل ۲۰ — لیست خرید و تأمین‌کنندگان یک کالا
+     ═════════════════════════════════════════════════════════════ -->
+
+<section class="screen" id="s-buy-list" data-arm="buy">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">لیست خرید من<small>۴ کالا</small></div>
+        <button class="icon-btn" id="buylist-preview" aria-label="پیش‌نمایش"><svg><use href="#i-eye"/></svg></button>
+        <button class="icon-btn" data-go="s-buy-list-add" aria-label="افزودن کالا"><svg><use href="#i-plus"/></svg></button>
+    </div>
+
+    <div class="body">
+
+        <!-- کارت امتیاز فعالیت خرید -->
+        <button class="score-status" id="buy-score-card" type="button" data-score-arm="buy">
+            <div class="ss-ring">
+                <svg viewBox="0 0 44 44">
+                    <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
+                    <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="buy-score-ring"></circle>
+                </svg>
+                <span class="ss-num" id="buy-score-num">۰</span>
+            </div>
+            <div class="ss-tx">
+                <b id="buy-score-title">امتیاز فعالیت خرید</b>
+                <span id="buy-score-sub">شبکه‌ات را بساز — با ۱۰۰ امتیاز، تأمین‌کنندگان تازه بهت پیشنهاد می‌شود</span>
+            </div>
+            <svg class="ss-chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <div class="callout callout-info">
+            <svg><use href="#i-info"/></svg>
+            <div>کالاهایی که عمده می‌خری را این‌جا نگه دار. روی هر کالا بزن تا قیمت‌های تأمین‌کنندگانت را ببینی.</div>
+        </div>
+
+        <div class="rows">
+
+            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="برنج هاشمی گلستان">
+                <div class="bl-thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی گلستان"></div>
+                <div class="bl-body">
+                    <div class="bl-title">برنج هاشمی گلستان</div>
+                    <div class="bl-q">۲۰ کیسهٔ ۵۰ کیلویی · ماهانه</div>
+                    <div class="bl-meta">
+                        <span class="bl-chip fresh"><svg><use href="#i-check"/></svg> قیمت امروز</span>
+                        <span class="bl-chip"><svg><use href="#i-users"/></svg> ۳ تأمین‌کننده</span>
+                        <span class="bl-chip hot"><svg><use href="#i-sparkles"/></svg> ۲ پیشنهاد</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="روغن سرخ‌کردنی">
+                <div class="bl-thumb"><img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی"></div>
+                <div class="bl-body">
+                    <div class="bl-title">روغن سرخ‌کردنی</div>
+                    <div class="bl-q">۴۰ عدد ۱۰ لیتری · ماهانه</div>
+                    <div class="bl-meta">
+                        <span class="bl-chip warn"><svg><use href="#i-clock"/></svg> قیمت ۴ روز پیش</span>
+                        <span class="bl-chip"><svg><use href="#i-users"/></svg> ۲ تأمین‌کننده</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="رب گوجه‌فرنگی">
+                <div class="bl-thumb"><img src="png/goods/tomato-paste.jpg" alt="رب گوجه‌فرنگی"></div>
+                <div class="bl-body">
+                    <div class="bl-title">رب گوجه‌فرنگی</div>
+                    <div class="bl-q">۶۰ عدد ۵۰۰ گرمی · هفتگی</div>
+                    <div class="bl-meta">
+                        <span class="bl-chip fresh"><svg><use href="#i-check"/></svg> قیمت دیروز</span>
+                        <span class="bl-chip"><svg><use href="#i-users"/></svg> ۱ تأمین‌کننده</span>
+                        <span class="bl-chip hot"><svg><use href="#i-inbox"/></svg> استعلام در جریان</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="قند">
+                <div class="bl-thumb"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
+                <div class="bl-body">
+                    <div class="bl-title">قند</div>
+                    <div class="bl-q">۱۰ کارتن ۱۰ کیلویی · ماهانه</div>
+                    <div class="bl-meta">
+                        <span class="bl-chip muted"><svg><use href="#i-info"/></svg> تأمین‌کننده‌ای ثبت نشده</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-sparkles"/></svg>
+            <span>می‌خواهی تأمین‌کننده‌های بیشتری داشته باشی؟ لینک لیست خریدت را برایشان بفرست تا کاتالوگشان را ذخیره کنی.</span>
+        </div>
+    </div>
+</section>
+
+
+<section class="screen" id="s-buy-list-add" data-arm="buy" hidden>
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">افزودن به لیست<small>کالای موردنیازت را انتخاب کن</small></div>
+    </div>
+
+    <div class="body">
+        <div class="field" style="margin-bottom: 6px;">
+            <div class="input" style="gap: 10px;">
+                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-search"/></svg>
+                <input type="text" placeholder="جستجوی کالا…">
+            </div>
+        </div>
+
+        <div class="section-title"><h2>پرتکرار در صنف شما</h2></div>
+
+        <div class="rows">
+            <div class="row static">
+                <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt=""></div>
+                <div class="row-body">
+                    <div class="row-title">برنج هاشمی گلستان</div>
+                    <div class="row-sub">در لیست شما هست</div>
+                </div>
+                <span class="badge b-green">افزوده شده</span>
+            </div>
+            <div class="row" data-go="s-buy-list">
+                <div class="thumb thumb-sm"><img src="png/goods/sugar-cubes.jpg" alt=""></div>
+                <div class="row-body">
+                    <div class="row-title">قند و شکر</div>
+                    <div class="row-sub">۲ تأمین‌کننده</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-plus"/></svg></div>
+            </div>
+            <div class="row" data-go="s-buy-list">
+                <div class="thumb thumb-sm"><img src="png/goods/oil-bottle.jpg" alt=""></div>
+                <div class="row-body">
+                    <div class="row-title">روغن سرخ‌کردنی</div>
+                    <div class="row-sub">۳ تأمین‌کننده</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-plus"/></svg></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="screen" id="s-buy-product-suppliers" data-arm="buy" hidden>
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl" id="bps-title">برنج هاشمی گلستان<small>۳ تأمین‌کننده · قیمت زنده</small></div>
+    </div>
+
+    <div class="body">
+
+        <div class="picked-card">
+            <div class="thumb"><img src="png/goods/rice-sack.jpg" alt=""></div>
+            <div class="info">
+                <div class="nm">برنج هاشمی گلستان</div>
+                <div class="sub">کیسه ۵۰ کیلویی · خرید ماهانه</div>
+            </div>
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>این‌ها تأمین‌کنندگانِ ذخیره‌شدهٔ شما هستند که این کالا را دارند. با هر تغییر قیمتِ آن‌ها، همین‌جا به‌روز می‌شود.</span>
+        </div>
+
+        <div class="rows">
+
+            <div class="sup-p-card" data-go="s-buy-supplier-view">
+                <div class="avatar" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+                <div class="info">
+                    <div class="nm">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
+                    <div class="sub">
+                        <span>رشت · هم‌شهری</span>
+                        <span class="dot">·</span>
+                        <span style="color: var(--green); font-weight: 700;">امروز</span>
+                    </div>
+                </div>
+                <div class="price">
+                    <div class="v">۲٬۸۵۰٬۰۰۰</div>
+                    <div class="u">هر کیسه</div>
+                </div>
+            </div>
+
+            <div class="sup-p-card" data-go="s-buy-supplier-view">
+                <div class="avatar" style="background: #7c3aed;">آ</div>
+                <div class="info">
+                    <div class="nm">آریو غلات <svg><use href="#i-verified"/></svg></div>
+                    <div class="sub">
+                        <span>اصفهان · غیرهم‌شهری</span>
+                        <span class="dot">·</span>
+                        <span>۳ روز پیش</span>
+                    </div>
+                </div>
+                <div class="price">
+                    <div class="v">۲٬۹۲۰٬۰۰۰</div>
+                    <div class="u">هر کیسه</div>
+                </div>
+            </div>
+
+            <div class="sup-p-card" data-go="s-buy-supplier-view">
+                <div class="avatar" style="background: #0e7490;">ک</div>
+                <div class="info">
+                    <div class="nm">کیان غلات</div>
+                    <div class="sub">
+                        <span>قزوین · هم‌استان</span>
+                        <span class="dot">·</span>
+                        <span>۵ روز پیش</span>
+                    </div>
+                </div>
+                <div class="price">
+                    <div class="v">۳٬۰۰۰٬۰۰۰</div>
+                    <div class="u">هر کیسه</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- تأمین‌کنندگان بیشتر — قفل تا امتیاز خرید ۱۰۰ -->
+        <button class="locked-cta" type="button" data-locked-more>
+            <span class="lc-ic"><svg><use href="#i-lock"/></svg></span>
+            <span class="lc-tx">
+                <b>تأمین‌کنندگان بیشتر</b>
+                <span>برای دیدن تأمین‌کنندگان فراتر از شبکهٔ خصوصیات، امتیاز فعالیت خریدت را به ۱۰۰ برسان</span>
+            </span>
+            <svg class="lc-chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <!-- پیام تشویق اشتراک لیست (bpsRenderCta پر می‌کند) -->
+        <div id="bps-cta"></div>
+
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-arm btn-block" data-go="s-buy-rfq-new">
+            <svg><use href="#i-send"/></svg> استعلام قیمت سفارشی
+        </button>
+    </div>
+</section>

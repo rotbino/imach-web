@@ -1,0 +1,115 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۰۶: اشتراک کاتالوگ
+     یک search-cta برای انتخاب مخاطبین (می‌رود به s-contacts با pick).
+     بعد شش پیام‌رسان: پیامک، واتس‌اپ، تلگرام، روبیکا، ایتا، بله.
+     در انتها لینک کاتالوگ + کپی.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-catalog-share" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">اشتراک کاتالوگ<small>لینک را برای مشتریانت بفرست</small></div>
+    </div>
+
+    <div class="body">
+        <div class="callout callout-accent">
+            <svg><use href="#i-sparkles"/></svg>
+            <div>هر کس لینک را بگیرد و کاتالوگ را ذخیره کند، <b>مشتری شما می‌شود</b> و هر تغییر قیمت را همان لحظه می‌بیند.</div>
+        </div>
+
+        <div id="share-success" hidden></div>
+
+        <div class="section-title">
+            <h2><svg><use href="#i-users"/></svg> اشتراک با مخاطبین</h2>
+            <span class="more" data-go="s-contacts">همهٔ مخاطبین <svg><use href="#i-chev"/></svg></span>
+        </div>
+
+        <button class="search-cta" id="share-pick" type="button">
+            <svg><use href="#i-search"/></svg>
+            <div class="tx">
+                <b>جستجو و انتخاب مخاطب</b>
+                <span>از ۱۲ مخاطب · ۶ نفر عضو آی‌مچ</span>
+            </div>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+
+        <div class="section-title" style="margin-top: 12px;">
+            <h2><svg><use href="#i-share"/></svg> اشتراک با پیام‌رسان</h2>
+        </div>
+
+        <div class="rows">
+            <div class="row" data-share-app="sms">
+                <div class="messenger-avatar" style="background: #F97316;">
+                    <svg><use href="#i-msg"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">پیامک</div>
+                    <div class="row-sub">برای مخاطبینی که در آی‌مچ نیستند</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+
+            <div class="row" data-share-app="whatsapp">
+                <div class="messenger-avatar" style="background: #25D366;">
+                    <svg><use href="#i-whatsapp"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">واتس‌اپ</div>
+                    <div class="row-sub">ارسال به مخاطبین و گروه‌ها</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+
+            <div class="row" data-share-app="telegram">
+                <div class="messenger-avatar" style="background: #229ED9;">
+                    <svg><use href="#i-telegram"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">تلگرام</div>
+                    <div class="row-sub">ارسال به مخاطبین و کانال</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+
+            <div class="row" data-share-app="rubika">
+                <div class="messenger-avatar" style="background: #6C22A6;">ر</div>
+                <div class="row-body">
+                    <div class="row-title">روبیکا</div>
+                    <div class="row-sub">ارسال به مخاطبین و کانال</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+
+            <div class="row" data-share-app="eita">
+                <div class="messenger-avatar" style="background: #E11D48;">ا</div>
+                <div class="row-body">
+                    <div class="row-title">ایتا</div>
+                    <div class="row-sub">ارسال به مخاطبین</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+
+            <div class="row" data-share-app="bale">
+                <div class="messenger-avatar" style="background: #0284C7;">ب</div>
+                <div class="row-body">
+                    <div class="row-title">بله</div>
+                    <div class="row-sub">ارسال به مخاطبین</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 12px;">
+            <h2>لینک کاتالوگ</h2>
+        </div>
+
+        <div class="card" style="padding: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; direction: ltr; background: var(--surface-2); padding: 10px 12px; border-radius: 10px; margin-bottom: 10px;">
+                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-link"/></svg>
+                <span style="font-size: 12.5px; color: var(--text); flex: 1; text-align: left;">imach.ir/c/pars-rice</span>
+            </div>
+            <button class="btn btn-outline btn-block btn-sm" data-copy>
+                <svg><use href="#i-copy"/></svg> کپی لینک کاتالوگ
+            </button>
+        </div>
+    </div>
+</section>

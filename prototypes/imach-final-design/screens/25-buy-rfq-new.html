@@ -1,0 +1,90 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۲۵: استعلام قیمت سفارشی
+     ─────────────────────────────────────────────────────────────
+     چرا سفارشی؟ چون قیمت کاتالوگ برای همه شفاف است. این‌جا
+     خریدار حجم و شرایط خودش را می‌گوید تا قیمت مخصوص بگیرد.
+     حجم خرید + مهلت + شرایط خاص + گیرندگان.
+     ═════════════════════════════════════════════════════════════ -->
+
+<section class="screen" id="s-buy-rfq-new" data-arm="buy">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">استعلام قیمت سفارشی<small>حجم و شرایطت را بگو</small></div>
+    </div>
+
+    <div class="body">
+
+        <div class="card" style="display: flex; gap: 10px; align-items: center;">
+            <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt=""></div>
+            <div style="flex: 1;">
+                <div style="font-size: 13.5px; font-weight: 700;">برنج هاشمی گلستان</div>
+                <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">کیسه ۵۰ کیلویی</div>
+            </div>
+        </div>
+
+        <!-- حجم خرید -->
+        <div class="field">
+            <label>حجم خرید <span class="opt">— مقدار موردنیازت</span></label>
+            <div class="input" style="display: flex; align-items: center; gap: 8px;">
+                <input id="rfq-qty" type="tel" inputmode="numeric" placeholder="مثلاً ۲۰" value="۲۰"
+                       style="flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 14px; font-weight: 700; text-align: right;">
+                <span style="font-size: 11px; color: var(--text-3); flex-shrink: 0;">کیسه</span>
+            </div>
+            <div class="hint">حجم بزرگ‌تر = شانس گرفتن تخفیف بیشتر.</div>
+        </div>
+
+        <!-- مهلت پاسخ -->
+        <div class="field">
+            <label>مهلت پاسخ <span class="opt">— فروشنده تا این مدت فرصت دارد</span></label>
+            <div class="pills" id="rfq-deadline">
+                <button class="pill" type="button" data-deadline="1">۱ روز</button>
+                <button class="pill" type="button" data-deadline="2">۲ روز</button>
+                <button class="pill active" type="button" data-deadline="3">۳ روز</button>
+                <button class="pill" type="button" data-deadline="4">۴ روز</button>
+                <button class="pill" type="button" data-deadline="5">۵ روز</button>
+            </div>
+        </div>
+
+        <!-- شرایط خاص -->
+        <div class="field">
+            <label>شرایط خاص یا قیمت سفارشی <span class="opt">— اختیاری</span></label>
+            <textarea class="input" id="rfq-note" placeholder="اگر شرایط پرداخت خاصی داری، یا برای حجم بالا تخفیف می‌خواهی، اینجا بنویس…"></textarea>
+        </div>
+
+        <!-- گیرندگان -->
+        <div class="section-title"><h2>ارسال به چه کسانی؟</h2></div>
+
+        <div class="rows">
+            <div class="checkrow">
+                <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 13px; font-weight: 700;">پخش برنج پارس</div>
+                    <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">رشت · آخرین قیمت ۲٬۸۵۰٬۰۰۰</div>
+                </div>
+            </div>
+            <div class="checkrow">
+                <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 13px; font-weight: 700;">آریو غلات</div>
+                    <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">اصفهان · آخرین قیمت ۲٬۹۲۰٬۰۰۰</div>
+                </div>
+            </div>
+            <div class="checkrow">
+                <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 13px; font-weight: 700;">کیان غلات</div>
+                    <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">قزوین · آخرین قیمت ۳٬۰۰۰٬۰۰۰</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>استعلام به‌خودی‌خود سفارش نیست؛ هر تأمین‌کننده قیمت سفارشی برای حجم و شرایط تو می‌فرستد و تو انتخاب می‌کنی.</span>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-arm btn-block" data-rfq-send>ارسال به ۳ تأمین‌کننده</button>
+    </div>
+</section>

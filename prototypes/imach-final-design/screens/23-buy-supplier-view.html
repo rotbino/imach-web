@@ -1,0 +1,82 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۲۳: کاتالوگ تأمین‌کننده (دید خریدار)
+     هویت + دکمهٔ ذخیره کاتالوگ + گرید کالاها با دکمهٔ استعلام.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-buy-supplier-view" data-arm="buy">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">آریو غلات<small>کاتالوگ · اصفهان</small></div>
+        <button class="icon-btn" data-go="s-chat" aria-label="پیام"><svg><use href="#i-msg"/></svg></button>
+    </div>
+
+    <div class="body">
+        <div class="card">
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="avatar avatar-lg" style="background: #7c3aed;">آ</div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                        آریو غلات <svg style="width: 16px; height: 16px; color: var(--blue);"><use href="#i-verified"/></svg>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--text-3); margin-top: 4px;">امیر قاسمی · پخش غلات · اصفهان</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button class="btn btn-primary btn-sm" style="flex: 1;" data-save-catalog>
+                    <svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ
+                </button>
+                <button class="btn btn-outline btn-sm" style="flex: 1;" data-go="s-chat">
+                    <svg><use href="#i-msg"/></svg> پیام
+                </button>
+            </div>
+        </div>
+
+        <div class="section-title"><h2><svg><use href="#i-store"/></svg> کالاها</h2></div>
+
+        <div class="pgrid">
+            <div class="pcard">
+                <div class="ph"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+                <div class="info">
+                    <div class="pname">برنج هاشمی</div>
+                    <div class="ppack">کیسه ۵۰ کیلویی</div>
+                    <div class="pprice">۲٬۹۲۰٬۰۰۰ <small>تومان</small></div>
+                    <div class="pmeta" style="padding-top:4px">
+                        <button class="btn btn-primary btn-sm btn-block" data-go="s-buy-rfq-new" style="width:100%">
+                            <svg><use href="#i-send"/></svg> استعلام
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="pcard">
+                <div class="ph"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
+                <div class="info">
+                    <div class="pname">برنج طارم</div>
+                    <div class="ppack">کیسه ۵۰ کیلویی</div>
+                    <div class="pprice">۲٬۸۱۰٬۰۰۰ <small>تومان</small></div>
+                    <div class="pmeta" style="padding-top:4px">
+                        <button class="btn btn-primary btn-sm btn-block" data-go="s-buy-rfq-new" style="width:100%">
+                            <svg><use href="#i-send"/></svg> استعلام
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="pcard">
+                <div class="ph"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
+                <div class="info">
+                    <div class="pname">قند</div>
+                    <div class="ppack">کیسه ۱۰ کیلویی</div>
+                    <div class="pprice">۷۶۰٬۰۰۰ <small>تومان</small></div>
+                    <div class="pmeta" style="padding-top:4px">
+                        <button class="btn btn-primary btn-sm btn-block" data-go="s-buy-rfq-new" style="width:100%">
+                            <svg><use href="#i-send"/></svg> استعلام
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>با ذخیره کاتالوگ، قیمت‌های آریو غلات همیشه دستت می‌ماند و هر تغییر قیمت را همان لحظه می‌بینی.</span>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,90 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۳۵: شارژ
+     ─────────────────────────────────────────────────────────────
+     کارت به کارت + اشتراک‌گذاری برای شارژ رایگان.
+     ═════════════════════════════════════════════════════════════ -->
+
+<section class="screen" id="s-charge" data-arm="sell">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">شارژ<small>برای فعالیت‌های تبلیغاتی</small></div>
+    </div>
+
+    <div class="body">
+
+        <!-- ═══ موجودی ═══ -->
+        <div class="wallet-hero">
+            <span class="wh-ic"><svg><use href="#i-wallet"/></svg></span>
+            <div>
+                <div class="wh-v"><span data-wallet>۸۵٬۰۰۰</span> <small>تومان</small></div>
+                <div class="wh-k">موجودی شارژ فعلی</div>
+            </div>
+        </div>
+
+        <!-- ═══ کارت به کارت ═══ -->
+        <div class="section-title" style="margin-top: 12px;">
+            <h2>افزایش شارژ</h2>
+        </div>
+        <div class="card">
+            <div style="font-size: 12.5px; font-weight: 700; margin-bottom: 4px;">کارت به کارت</div>
+            <div style="font-size: 11px; color: var(--text-3); line-height: 1.9;">
+                به شمارهٔ کارت زیر واریز کن و رسید را برای تأیید بفرست — معمولاً چند ساعت طول می‌کشد.
+            </div>
+            <div class="card-num">
+                <svg><use href="#i-wallet"/></svg>
+                <span dir="ltr">6037-9911-****-****</span>
+                <small>به نام آی‌مچ</small>
+            </div>
+
+            <div class="field" style="margin-top: 12px;">
+                <label>مبلغ (تومان)</label>
+                <div class="input gf-num">
+                    <input id="ch-amt" inputmode="numeric" autocomplete="off" placeholder="مثلاً ۱۰۰٬۰۰۰" value="۱۰۰٬۰۰۰">
+                    <span class="suffix">تومان</span>
+                </div>
+            </div>
+
+            <button class="up-box" id="ch-receipt" type="button" style="margin-top: 4px;">
+                <span class="uic"><svg><use href="#i-upload"/></svg></span>
+                <span class="tx">
+                    <b>عکس فیش واریزی</b>
+                    <span>رسید را انتخاب یا عکس بگیر</span>
+                </span>
+                <span class="pick">انتخاب فایل</span>
+            </button>
+
+            <button class="btn btn-primary btn-block" id="ch-send" type="button" style="margin-top: 12px;">
+                <svg><use href="#i-send"/></svg> ارسال فیش برای تأیید
+            </button>
+            <div class="hintnote" id="ch-ok" hidden style="margin-top: 9px; background: var(--green-bg); color: var(--green); font-weight: 700;">
+                فیش ارسال شد — پس از تأیید مدیر، شارژ حساب می‌شود.
+            </div>
+        </div>
+
+        <!-- ═══ شارژ رایگان با اشتراک‌گذاری ═══ -->
+        <div class="section-title" style="margin-top: 16px;">
+            <h2>شارژ رایگان</h2>
+        </div>
+        <div class="card" style="background: linear-gradient(135deg, #F0FDF4, #FFF 60%); border-color: #B6DFC5;">
+            <div style="display: flex; align-items: center; gap: 11px;">
+                <div style="width: 38px; height: 38px; border-radius: 11px; background: var(--green-bg); color: var(--green); display: grid; place-items: center; flex-shrink: 0;">
+                    <svg style="width: 19px; height: 19px;"><use href="#i-share"/></svg>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 13px; font-weight: 700;">لینک کاتالوگت را بفرست</div>
+                    <div style="font-size: 11px; color: var(--text-3); margin-top: 2px; line-height: 1.8;">
+                        هر کس با لینک تو عضو آی‌مچ شود، <b style="color: var(--green);">۱۰۰٬۰۰۰ تومان شارژ</b> می‌گیری.
+                    </div>
+                </div>
+            </div>
+            <div class="pub-stats" style="margin-top: 12px;">
+                <span><b>۱۲</b> ثبت‌نام از لینک شما</span>
+                <span><b style="color: var(--green);">۱٬۲۰۰٬۰۰۰</b> تومان شارژ</span>
+            </div>
+            <button class="btn btn-outline btn-block btn-sm" style="margin-top: 10px;" data-sheet="sheet-share-cat">
+                <svg><use href="#i-share"/></svg> اشتراک کاتالوگ
+            </button>
+        </div>
+
+    </div>
+</section>

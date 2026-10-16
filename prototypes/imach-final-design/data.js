@@ -1,0 +1,437 @@
+/* ═════════════════════════════════════════════════════════════════
+   iMach — داده‌های نمونه (v5 — بسته‌بندی روی محصول)
+
+   ساختار سطوح:
+     دسته (category)  → برنج، حبوبات، روغن
+     کالا (good)      → برنج هاشمی، نخود سیاه، پفک
+     محصول (reference)→ برنج هاشمی گلستان · پفک اشی مشی ۱۰۰ گرمی
+                         + packs: [{ label: 'کارتن ۵۰ عددی', count: 50 }, …]
+     فروش (listing)   → محصول + بستهٔ انتخاب‌شده + قیمت
+
+   قاعده: بسته‌بندی روی محصول است، نه روی کالا. هر محصول
+   می‌تواند چند بسته داشته باشد؛ کاربر یکی را برای فروش انتخاب می‌کند.
+   ═════════════════════════════════════════════════════════════════ */
+
+const DATA = {
+
+    /* ═══════════════════════════════════════════════════════════
+       کاربر جاری
+       ═══════════════════════════════════════════════════════════ */
+    user: {
+        id: 'u1',
+        firstName: 'احمد',
+        lastName: 'رضایی',
+        phone: '۰۹۱۲ ۳۴۵ ۶۷۸۹',
+        photo: 'png/users/me.jpg',
+        activeBusinessId: 'b1',
+        arm: { sell: true, buy: true },
+        wallet: 85000,
+        catalogPromo: false,   // آیا کاتالوگ فعلاً ویژه است
+    },
+
+
+    /* ═══════════════════════════════════════════════════════════
+       کسب‌وکارهای کاربر
+       ═══════════════════════════════════════════════════════════ */
+    businesses: [
+        {
+            id: 'b1', name: 'پخش برنج پارس', owner: 'احمد رضایی',
+            type: 'عمده‌فروش', industry: 'پخش مواد غذایی', city: 'رشت',
+            logo: 'پ', logoColor: 'linear-gradient(135deg,#c2703a,#ea580c)'
+        },
+        {
+            id: 'b2', name: 'سوپرمارکت آریا', owner: 'احمد رضایی',
+            type: 'خرده‌فروش', industry: 'سوپرمارکت', city: 'رشت',
+            logo: 'آ', logoColor: 'var(--stone)'
+        }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       کالاها (نوع کالا — بدون بسته، بدون قیمت)
+       ═══════════════════════════════════════════════════════════ */
+    goods: [
+        {
+            id: 'g1', name: 'برنج', emoji: '🌾',
+            baseUnit: 'کیلوگرم', consumerUnit: 'کیلوگرم',
+            attrs: [{ id: 'quality', label: 'کیفیت', values: ['درجه یک', 'ممتاز', 'معمولی'] }]
+        },
+        {
+            id: 'g2', name: 'روغن', emoji: '🛢️',
+            baseUnit: 'لیتر', consumerUnit: 'بطری',
+            attrs: []
+        },
+        {
+            id: 'g3', name: 'پفک', emoji: '🥨',
+            baseUnit: 'گرم', consumerUnit: 'عدد',
+            attrs: [{ id: 'flavor', label: 'طعم', values: ['نمکی', 'پنیری', 'کچاپ'] }]
+        },
+        {
+            id: 'g4', name: 'قند و شکر', emoji: '🍬',
+            baseUnit: 'کیلوگرم', consumerUnit: 'کیلوگرم',
+            attrs: []
+        },
+        {
+            id: 'g5', name: 'رب و کنسرو', emoji: '🥫',
+            baseUnit: 'گرم', consumerUnit: 'قوطی',
+            attrs: []
+        },
+        {
+            id: 'g6', name: 'ماکارونی', emoji: '🍝',
+            baseUnit: 'گرم', consumerUnit: 'بسته',
+            attrs: []
+        }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       برندها
+       ═══════════════════════════════════════════════════════════ */
+    brands: [
+        { id: 'br1', name: 'اشی مشی' },
+        { id: 'br2', name: 'مینو' },
+        { id: 'br3', name: 'گلستان' },
+        { id: 'br4', name: 'زر ماکارون' },
+        { id: 'br5', name: 'چین‌چین' },
+        { id: 'br6', name: 'لادن' }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       محصولات (کالای مرجع) — هر محصول بسته‌های خودش را دارد
+       ═══════════════════════════════════════════════════════════ */
+    references: [
+        {
+            id: 'r1', goodId: 'g3', brandId: 'br1',
+            name: 'پفک اشی مشی ۱۰۰ گرمی', brand: 'اشی مشی',
+            consumerUnit: 'عدد', consumerWeight: 100,
+            packs: [
+                { id: 'r1p1', label: 'کارتن ۲۰ عددی', count: 20 },
+                { id: 'r1p2', label: 'کارتن ۵۰ عددی', count: 50 }
+            ],
+            img: 'png/goods/pofak-big.jpg',
+            attrs: { flavor: 'نمکی' }
+        },
+        {
+            id: 'r2', goodId: 'g3', brandId: 'br2',
+            name: 'پفک مینو ۱۰۰ گرمی', brand: 'مینو',
+            consumerUnit: 'عدد', consumerWeight: 100,
+            packs: [
+                { id: 'r2p1', label: 'کارتن ۲۴ عددی', count: 24 },
+                { id: 'r2p2', label: 'کارتن ۴۸ عددی', count: 48 }
+            ],
+            img: 'png/goods/pofak-small.jpg',
+            attrs: { flavor: 'نمکی' }
+        },
+        {
+            id: 'r3', goodId: 'g1', brandId: 'br3',
+            name: 'برنج هاشمی گلستان', brand: 'گلستان',
+            consumerUnit: 'کیلوگرم',
+            packs: [
+                { id: 'r3p1', label: 'کیسه ۱۰ کیلویی', count: 10 },
+                { id: 'r3p2', label: 'کیسه ۵۰ کیلویی', count: 50 }
+            ],
+            img: 'png/goods/hashemi-10.png',
+            attrs: { quality: 'درجه یک' }
+        },
+        {
+            id: 'r4', goodId: 'g6', brandId: 'br4',
+            name: 'ماکارونی زر ماکارون ۷۰۰ گرمی', brand: 'زر ماکارون',
+            consumerUnit: 'بسته', consumerWeight: 700,
+            packs: [
+                { id: 'r4p1', label: 'کارتن ۲۰ بسته‌ای', count: 20 }
+            ],
+            img: null, attrs: {}
+        },
+        {
+            id: 'r5', goodId: 'g5', brandId: 'br5',
+            name: 'رب چین‌چین ۸۰۰ گرمی', brand: 'چین‌چین',
+            consumerUnit: 'قوطی', consumerWeight: 800,
+            packs: [
+                { id: 'r5p1', label: 'کارتن ۲۴ قوطی', count: 24 }
+            ],
+            img: 'png/goods/tomato-paste.jpg',
+            attrs: {}
+        },
+        {
+            id: 'r6', goodId: 'g2', brandId: 'br6',
+            name: 'روغن سرخ‌کردنی لادن ۱.۸ لیتری', brand: 'لادن',
+            consumerUnit: 'بطری', consumerWeight: 1.8,
+            packs: [
+                { id: 'r6p1', label: 'کارتن ۶ بطری', count: 6 }
+            ],
+            img: 'png/goods/oil-carton.jpg',
+            attrs: {}
+        }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       فروش‌های کاتالوگ فروشندهٔ نمونه (پخش برنج پارس)
+       هر فروش = محصول + بستهٔ انتخاب‌شده + قیمت
+       ═══════════════════════════════════════════════════════════ */
+    listings: [
+        {
+            id: 'l1', businessId: 'b1',
+            goodId: 'g1', refId: 'r3',
+            packId: 'r3p2',
+            name: 'برنج هاشمی گلستان', brand: 'گلستان',
+            pack: 'کیسه ۵۰ کیلویی', packCount: 50,
+            baseUnit: 'کیلوگرم',
+            price: 2850000,
+            pricePerUnit: 57000,
+            stock: 35, min: 5,
+            img: 'png/goods/rice-sack.jpg',
+            status: 'in-stock'
+        },
+        {
+            id: 'l2', businessId: 'b1',
+            goodId: 'g1', refId: null,
+            packId: 'tar50',
+            name: 'برنج طارم', brand: '',
+            pack: 'کیسه ۵۰ کیلویی', packCount: 50,
+            baseUnit: 'کیلوگرم',
+            price: 2750000, pricePerUnit: 55000,
+            stock: 28, min: 5,
+            img: 'png/goods/rice-grains.jpg',
+            status: 'in-stock'
+        },
+        {
+            id: 'l3', businessId: 'b1',
+            goodId: 'g1', refId: 'r3',
+            packId: 'r3p1',
+            name: 'برنج هاشمی گلستان', brand: 'گلستان',
+            pack: 'کیسه ۱۰ کیلویی', packCount: 10,
+            baseUnit: 'کیلوگرم',
+            price: 595000, pricePerUnit: 59500,
+            stock: 60, min: 10,
+            img: 'png/goods/hashemi-10.png',
+            status: 'in-stock'
+        },
+        {
+            id: 'l4', businessId: 'b1',
+            goodId: 'g1', refId: null,
+            packId: 'faj50',
+            name: 'برنج فجر', brand: '',
+            pack: 'کیسه ۵۰ کیلویی', packCount: 50,
+            baseUnit: 'کیلوگرم',
+            price: 2480000, pricePerUnit: 49600,
+            stock: 8, min: 5,
+            img: 'png/goods/fajar-50.jpg',
+            status: 'low'
+        }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       پیشنهادهای پرتکرار
+       ═══════════════════════════════════════════════════════════ */
+    suggested: ['r1', 'r3', 'r5', 'r6', 'r2'],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       مخاطبین تلفن کاربر
+       ═══════════════════════════════════════════════════════════ */
+    contacts: [
+        { id: 'ct1',  name: 'علی اکبری',    biz: 'سوپرمارکت',       tel: '۰۹۱۲ ۳۴۵ ۶۷۸۹', isMember: true,  photo: 'png/users/me.jpg' },
+        { id: 'ct2',  name: 'سارا رحیمی',   biz: 'سوپرمارکت الماس', tel: '۰۹۱۲ ۷۷۶ ۹۱۰۴', isMember: true,  photo: 'png/users/alt-1.jpg' },
+        { id: 'ct3',  name: 'نیما فاضلی',   biz: 'سوپرمارکت آریا',  tel: '۰۹۱۱ ۵۵۲ ۲۰۷۴', isMember: true,  photo: 'png/users/alt-2.jpg' },
+        { id: 'ct4',  name: 'مهدی کاظمی',   biz: 'رستوران مهر',     tel: '۰۹۱۲ ۳۳۴ ۴۱۰۸', isMember: true,  photo: 'png/users/me.jpg' },
+        { id: 'ct5',  name: 'رضا کریمی',    biz: 'پخش مواد غذایی',  tel: '۰۹۱۲ ۲۲۰ ۳۳۶۱', isMember: true,  photo: 'png/users/alt-1.jpg' },
+        { id: 'ct6',  name: 'مریم اسدی',    biz: 'کترینگ بهار',     tel: '۰۹۱۴ ۶۶۳ ۱۵۸۰', isMember: true,  photo: 'png/users/alt-2.jpg' },
+        { id: 'ct7',  name: 'مجید توکلی',   biz: 'پخش مواد غذایی',  tel: '۰۹۳۵ ۱۲۱ ۴۵۶۷', isMember: false, color: '#7c3aed' },
+        { id: 'ct8',  name: 'آرش محمدی',    biz: 'رستوران',         tel: '۰۹۱۱ ۸۸۰ ۵۵۲۰', isMember: false, color: '#b45309' },
+        { id: 'ct9',  name: 'نادر رستمی',   biz: 'عمده‌فروشی',       tel: '۰۹۳۰ ۵۴۲ ۱۱۸۸', isMember: false, color: '#a8a29a' },
+        { id: 'ct10', name: 'فاطمه رستمی',  biz: 'قنادی',           tel: '۰۹۱۸ ۲۲۳ ۷۷۱۹', isMember: false, color: '#0284c7' },
+        { id: 'ct11', name: 'بابک نیک‌پور', biz: 'پخش لبنیات',      tel: '۰۹۱۲ ۵۵۶ ۸۸۴۲', isMember: false, color: '#dc2626' },
+        { id: 'ct12', name: 'زهرا حسینی',   biz: 'سوپرمارکت',       tel: '۰۹۱۳ ۴۴۲ ۱۱۷۷', isMember: false, color: '#65a30d' }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       مشتریان فروشنده
+       ═══════════════════════════════════════════════════════════ */
+    customers: [
+        { id: 'cu1', businessId: 'b1', name: 'رستوران مهر',     person: 'مهدی کاظمی', city: 'تهران', since: 'امروز',     avatar: 'م', color: '#7c3aed', contactId: 'ct4', isNew: true },
+        { id: 'cu2', businessId: 'b1', name: 'سوپرمارکت الماس', person: 'سارا رحیمی', city: 'قزوین', since: '۳ روز پیش', avatar: 'س', color: '#c2703a', contactId: 'ct2' },
+        { id: 'cu3', businessId: 'b1', name: 'سوپرمارکت آریا',  person: 'نیما فاضلی', city: 'رشت',  since: 'هفتهٔ پیش', avatar: 'ن', color: '#059669', contactId: 'ct3' }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       تأمین‌کنندگان خریدار
+       ═══════════════════════════════════════════════════════════ */
+    suppliers: [
+        { id: 'su1', businessId: 'b2', name: 'پخش برنج پارس', person: 'مرتضی رضایی', city: 'رشت',   avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', verified: true,  contactId: 'ct5' },
+        { id: 'su2', businessId: 'b2', name: 'آریو غلات',      person: 'امیر قاسمی',  city: 'اصفهان', avatar: 'آ', color: '#7c3aed', verified: true },
+        { id: 'su3', businessId: 'b2', name: 'کیان غلات',      person: 'کیان رستمی',  city: 'قزوین',  avatar: 'ک', color: '#0e7490', verified: false }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       سفارش‌های دریافتی / ارسالی
+       ═══════════════════════════════════════════════════════════ */
+    ordersIn: [
+        {
+            id: 'oi1', businessId: 'b1', customerId: 'cu1', buyer: 'رستوران مهر',
+            buyerAvatar: 'م', buyerColor: '#7c3aed',
+            listingId: 'l1', itemName: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی',
+            img: 'png/goods/rice-sack.jpg',
+            qty: 20, unitPrice: 2850000, when: 'امروز', status: 'new',
+            note: 'تحویل صبح زود — بازار روز. پرداخت نقدی.'
+        },
+        {
+            id: 'oi2', businessId: 'b1', customerId: 'cu2', buyer: 'سوپرمارکت الماس',
+            buyerAvatar: 'س', buyerColor: '#c2703a',
+            listingId: 'l2', itemName: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی',
+            img: 'png/goods/rice-grains.jpg',
+            qty: 6, unitPrice: 2750000, when: 'امروز', status: 'new', note: ''
+        },
+        {
+            id: 'oi3', businessId: 'b1', customerId: 'cu3', buyer: 'سوپرمارکت آریا',
+            buyerAvatar: 'ن', buyerColor: '#059669',
+            listingId: 'l2', itemName: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی',
+            img: 'png/goods/rice-grains.jpg',
+            qty: 10, unitPrice: 2750000, when: '۲ روز پیش', status: 'accepted',
+            note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل.'
+        }
+    ],
+
+    ordersOut: [
+        {
+            id: 'oo1', businessId: 'b2', supplierId: 'su1', supplier: 'پخش برنج پارس',
+            supAvatar: 'پ', supColor: 'linear-gradient(135deg,#c2703a,#ea580c)',
+            itemName: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی',
+            img: 'png/goods/rice-grains.jpg',
+            qty: 10, unitPrice: 2750000, when: '۲ روز پیش', status: 'accepted',
+            note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل.'
+        }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       درخواست‌های قیمت دریافتی / ارسالی
+       ═══════════════════════════════════════════════════════════ */
+    rfqsIn: [
+        {
+            id: 'ri1', businessId: 'b1', customerId: 'cu1', buyer: 'رستوران مهر',
+            buyerAvatar: 'م', buyerColor: '#7c3aed',
+            itemName: 'برنج هاشمی گلستان', pack: '۲۰ کیسهٔ ۵۰ کیلویی',
+            img: 'png/goods/rice-sack.jpg',
+            daysLeft: 2, when: 'دیروز',
+            note: 'برنج درجه یک — قیمت ارسال به تهران را هم بنویسید.'
+        },
+        {
+            id: 'ri2', businessId: 'b1', buyer: 'پخش نگین',
+            buyerAvatar: 'ن', buyerColor: '#0e7490',
+            itemName: 'درخواست ۳ قلمی', pack: 'روغن، رب، قند',
+            img: 'png/goods/oil-bottle.jpg',
+            daysLeft: 0, when: '۲ روز پیش',
+            note: 'روغن حتماً لادن باشد.'
+        }
+    ],
+
+    rfqsOut: [
+        {
+            id: 'ro1', businessId: 'b2', listingId: 'l1',
+            itemName: 'برنج هاشمی گلستان · ۲۰ کیسه', img: 'png/goods/rice-sack.jpg',
+            sentTo: 3, offersCount: 5, newOffers: 2, daysLeft: 3, status: 'current'
+        },
+        {
+            id: 'ro2', businessId: 'b2',
+            itemName: 'رب گوجه‌فرنگی · ۶۰ عدد', img: 'png/goods/tomato-paste.jpg',
+            sentTo: 2, offersCount: 1, newOffers: 1, daysLeft: 0, status: 'current'
+        },
+        {
+            id: 'ro3', businessId: 'b2',
+            itemName: 'قند · ۱۰ کارتن', img: 'png/goods/sugar-cubes.jpg',
+            bestOffer: '۷۶۰٬۰۰۰ ت — کیان غلات', when: '۲ هفته پیش', status: 'done'
+        }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       پیشنهادهای رسیده
+       ═══════════════════════════════════════════════════════════ */
+    offers: [
+        { id: 'of1', rfqId: 'ro1', supplierId: 'su1', seller: 'پخش برنج پارس', city: 'رشت', avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', price: 2840000, pricePerUnit: 56800, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: 'نقدی', dlv: 'تحویل در محل', note: 'برنج امسال، پاک‌شده.', isKnown: true },
+        { id: 'of2', rfqId: 'ro1', supplierId: 'su2', seller: 'آریو غلات', city: 'اصفهان', avatar: 'آ', color: '#7c3aed', price: 2895000, pricePerUnit: 57900, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: 'نقدی', dlv: 'ارسال رایگان بالای ۳۰ کیسه', note: '' },
+        { id: 'of3', rfqId: 'ro1', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 2790000, pricePerUnit: 55800, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: 'چک ۳۰ روزه', dlv: 'تحویل حضوری', note: '' },
+        { id: 'of4', rfqId: 'ro1', seller: 'شالی‌زار طالب', city: 'رشت', avatar: 'ش', color: '#0d9488', price: 2780000, pricePerUnit: 55600, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: 'نقدی', dlv: 'تحویل در محل', note: '' },
+        { id: 'of5', rfqId: 'ro1', seller: 'غلات سبزدشت', city: 'مشهد', avatar: 'غ', color: '#65a30d', price: 2960000, pricePerUnit: 59200, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: 'نقدی', dlv: 'ارسال از انبار', note: '' }
+    ],
+
+
+    /* ═══════════════════════════════════════════════════════════
+       گفتگوها / اعلان‌ها / لیست خرید / امتیاز
+       ═══════════════════════════════════════════════════════════ */
+    conversations: [
+        { id: 'cv1', userId: 'u1', businessId: 'b1', name: 'پخش برنج پارس', avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', lastMsg: 'عالی — ۵۰ کیسه رزرو کنید', time: '۱۰:۱۶', unread: 1 },
+        { id: 'cv2', userId: 'u1', businessId: 'su3', name: 'کیان غلات', avatar: 'ک', color: '#0e7490', lastMsg: 'قیمت امروز را فرستادم', time: '۹:۴۲', unread: 0 },
+        { id: 'cv3', userId: 'u1', businessId: 'cu1', name: 'رستوران مهر', avatar: 'م', color: '#7c3aed', lastMsg: 'فردا ۱۰ صبح تحویل می‌دهم', time: 'دیروز', unread: 0 }
+    ],
+
+    chatMessages: {
+        cv1: [
+            { id: 'm1', from: 'in',  text: 'سلام — قیمت امروز برنج درجه یک چنده؟ برای ۵۰ کیسه', time: '۱۰:۱۲' },
+            { id: 'm2', from: 'out', text: 'سلام. ۸۹٬۵۰۰ کیلو — کیسهٔ ۱۰ کیلویی ۸۹۵٬۰۰۰. موجودی دارم، ارسال امروز.', time: '۱۰:۱۴' },
+            { id: 'm3', from: 'in',  text: 'عالی — ۵۰ کیسه رزرو کنید، فردا صبح می‌آیم', time: '۱۰:۱۶' }
+        ],
+        cv2: [], cv3: []
+    },
+
+    notifications: [
+        { id: 'n1', type: 'order',   title: 'سفارش جدید',            body: 'رستوران مهر برای ۲۰ کیسه برنج هاشمی گلستان سفارش داد.', time: 'امروز', isNew: true, link: 's-sell-orders' },
+        { id: 'n2', type: 'offer',   title: 'پاسخ به درخواست قیمت',  body: 'پخش برنج پارس پیشنهاد خود را فرستاد.',           time: 'امروز', isNew: true, link: 's-buy-offers' },
+        { id: 'n3', type: 'suggest', title: 'پیشنهاد آی‌مچ',          body: '۳ تأمین‌کنندهٔ جدید با کالاهای لیست خریدت هم‌خوانی دارند.', time: 'امروز', isNew: true, link: 's-buy-suppliers' }
+    ],
+
+    shoppingList: [
+        { id: 'sl1', businessId: 'b2', listingId: 'l1', name: 'برنج هاشمی گلستان', pack: '۲۰ کیسهٔ ۵۰ کیلویی · ماهانه', img: 'png/goods/rice-sack.jpg',    suppliersCount: 3 },
+        { id: 'sl2', businessId: 'b2', name: 'روغن سرخ‌کردنی', pack: '۴۰ بطری ۱۰ لیتری · ماهانه',  img: 'png/goods/oil-bottle.jpg',   suppliersCount: 2 },
+        { id: 'sl3', businessId: 'b2', name: 'رب گوجه‌فرنگی',  pack: '۶۰ قوطی ۵۰۰ گرمی · هفتگی',  img: 'png/goods/tomato-paste.jpg', suppliersCount: 1 }
+    ],
+
+    scoreItems: [
+        { id: 'sc1', title: 'اطلاعات کسب‌وکار کامل', sub: 'نام، شهر و صنف',           pts: 5,  done: true },
+        { id: 'sc2', title: 'کاتالوگ ساخته‌شده',     sub: 'کاتالوگ با حداقل ۱ کالا', pts: 15, done: true },
+        { id: 'sc3', title: 'حداقل ۳ کالا',          sub: 'کالاهای متنوع',            pts: 10, done: true },
+        { id: 'sc4', title: 'حداقل ۵ کالا',          sub: 'شانس دیده‌شدن بیشتر',      pts: 5,  done: false },
+        { id: 'sc5', title: 'حداقل ۳ مشتری',         sub: 'شبکه مشتریان',             pts: 15, done: true },
+        { id: 'sc6', title: 'حداقل ۵ مشتری',         sub: 'شبکه گسترده‌تر',           pts: 10, done: false },
+        { id: 'sc7', title: 'اولین سفارش موفق',      sub: 'اولین فروش در آی‌مچ',      pts: 20, done: false },
+        { id: 'sc8', title: 'پاسخ به اولین درخواست',  sub: 'پاسخ به خریداران',         pts: 10, done: false },
+        { id: 'sc9', title: '۲ هفته فعالیت منظم',    sub: 'قیمت‌های به‌روز',           pts: 10, done: false }
+    ],
+    /* ═══════════════════════════════════════════════════════════
+   امتیاز فعالیت فروش — ۱۰۰ امتیاز
+   کلید عمومی کردن کاتالوگ
+   ═══════════════════════════════════════════════════════════ */
+    scoreItemsSell: [
+        { id: 'sc1', title: 'اطلاعات کسب‌وکار کامل', sub: 'نام، شهر و صنف',           pts: 5,  done: true },
+        { id: 'sc2', title: 'کاتالوگ ساخته‌شده',     sub: 'کاتالوگ با حداقل ۱ کالا', pts: 15, done: true },
+        { id: 'sc3', title: 'حداقل ۳ کالا',          sub: 'کالاهای متنوع',            pts: 10, done: true },
+        { id: 'sc4', title: 'حداقل ۵ کالا',          sub: 'شانس دیده‌شدن بیشتر',      pts: 5,  done: false },
+        { id: 'sc5', title: 'حداقل ۳ مشتری',         sub: 'شبکه مشتریان',             pts: 15, done: true },
+        { id: 'sc6', title: 'حداقل ۵ مشتری',         sub: 'شبکه گسترده‌تر',           pts: 10, done: false },
+        { id: 'sc7', title: 'اولین سفارش فروش',      sub: 'اولین فروش در آی‌مچ',      pts: 20, done: false },
+        { id: 'sc8', title: 'پاسخ به اولین درخواست',  sub: 'پاسخ به خریداران',         pts: 10, done: false },
+        { id: 'sc9', title: '۲ هفته فعالیت منظم',    sub: 'قیمت‌های به‌روز',           pts: 10, done: false }
+    ],
+
+    /* ═══════════════════════════════════════════════════════════
+       امتیاز فعالیت خرید — ۱۰۰ امتیاز
+       کلید دیدن تأمین‌کنندگان فراتر از شبکهٔ خصوصی
+       ═══════════════════════════════════════════════════════════ */
+    scoreItemsBuy: [
+        { id: 'sb1', title: 'اطلاعات کسب‌وکار کامل', sub: 'نام، شهر و صنف',           pts: 5,  done: true },
+        { id: 'sb2', title: 'لیست خرید ساخته‌شده',   sub: 'لیست با حداقل ۱ کالا',     pts: 15, done: true },
+        { id: 'sb3', title: 'حداقل ۳ کالا در لیست',  sub: 'نیازهای متنوع',            pts: 10, done: true },
+        { id: 'sb4', title: 'حداقل ۵ کالا در لیست',  sub: 'برنامه‌ریزی کامل‌تر',       pts: 5,  done: false },
+        { id: 'sb5', title: 'حداقل ۳ تأمین‌کننده',   sub: 'شبکه تأمین',               pts: 15, done: true },
+        { id: 'sb6', title: 'حداقل ۵ تأمین‌کننده',   sub: 'شبکه گسترده‌تر',           pts: 10, done: false },
+        { id: 'sb7', title: 'اولین سفارش خرید',      sub: 'اولین خرید در آی‌مچ',      pts: 20, done: false },
+        { id: 'sb8', title: 'اولین استعلام قیمت',    sub: 'درخواست از تأمین‌کنندگان', pts: 10, done: false },
+        { id: 'sb9', title: '۲ هفته فعالیت منظم',    sub: 'لیست و قیمت‌ها به‌روز',     pts: 10, done: false }
+    ],
+};

@@ -1,0 +1,43 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۱۶: ویرایش کسب‌وکار
+     فرم ساده — نام، شهر، صنف (اختیاری)، توضیح.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-edit-business" data-arm="keep">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">ویرایش کسب‌وکار<small>اطلاعاتی که خریداران می‌بینند</small></div>
+    </div>
+
+    <div class="body">
+        <div class="field">
+            <label>نام کسب‌وکار</label>
+            <input class="input" value="پخش برنج پارس">
+            <div class="hint">این نام روی کاتالوگ و پیام‌های شما دیده می‌شود</div>
+        </div>
+
+        <div class="field">
+            <label>شهر</label>
+            <input class="input" value="رشت">
+        </div>
+
+        <div class="field">
+            <label>صنف <span class="opt">— اختیاری</span></label>
+            <div class="input" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <span style="color: var(--text); font-weight: 700;">پخش مواد غذایی</span>
+                <svg style="width: 16px; height: 16px; color: var(--text-3);"><use href="#i-chev"/></svg>
+            </div>
+            <div class="hint">در نسخه‌های بعدی برای فیلتر قیمت و تبلیغ هدفمند استفاده می‌شود — در حال حاضر اختیاری است.</div>
+        </div>
+
+        <div class="field">
+            <label>توضیح کوتاه <span class="opt">— اختیاری</span></label>
+            <textarea class="input" placeholder="مثلاً: فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان"></textarea>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-primary btn-block" data-save-business>
+            <svg><use href="#i-check"/></svg> ذخیره تغییرات
+        </button>
+    </div>
+</section>
