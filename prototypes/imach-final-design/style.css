@@ -2488,3 +2488,41 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .accel-shot { width: 100%; border-radius: 12px; border: 1px solid var(--border-2); display: block; }
 .accel-cap { font-size: 10.5px; color: var(--text-3); line-height: 1.9; margin: 6px 2px 2px; }
 .accel-cap b { color: var(--text-2); }
+
+/* ═══ ۳۳-ث. «مسیر امتیاز» — صفحهٔ امتیاز (FD-7) ═══
+   کل سیستم امتیاز در دو ایستگاه:
+     ایستگاه ۱ — ۱۰۰ امتیاز = بلیت ورود به شبکه (شتابدهی)
+     ایستگاه ۲ — بعد از ۱۰۰، هر امتیاز = شارژ تبلیغات
+   حکم مالک FD-7: روش واحد؛ روش ترکیبی (امتیاز→رتبه + امتیاز→شارژ
+   با هم) پیچیدگی می‌آورد و مردود است. حالت‌های done/live را
+   scoreRender() از امتیاز واقعی می‌گذارد — عدد ثابت نیست.
+   همین قاب .sp-row داخل شیت «شتابدهی یعنی چه؟» هم استفاده می‌شود
+   (بلوک «بعد از ۱۰۰ چه می‌شود؟») تا دو جا یک زبان باشند. */
+.score-path { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.sp-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-lg);
+    padding: 11px 12px;
+    text-align: right;
+}
+.sp-row .sp-ic {
+    width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--arm-soft); color: var(--arm-strong);
+}
+.sp-row .sp-ic svg { width: 18px; height: 18px; }
+.sp-row .sp-tx { flex: 1; min-width: 0; }
+.sp-row .sp-tx b { font-size: 13px; font-weight: 700; line-height: 1.6; display: block; }
+.sp-row .sp-tx span { font-size: 11px; color: var(--text-3); line-height: 1.8; display: block; margin-top: 2px; }
+/* تیک ایستگاه ۱ — فقط وقتی به ۱۰۰ رسیده (سبز، هم‌خانوادهٔ score-row.done) */
+.sp-row .sp-state { display: none; width: 20px; flex-shrink: 0; align-self: center; }
+.sp-row .sp-state svg { width: 17px; height: 17px; color: var(--green); }
+.sp-row.done .sp-state { display: block; }
+/* ایستگاه ۱ انجام‌شده — قاب سبز */
+.sp-row.done { border-color: #B6DFC5; background: linear-gradient(180deg, #F4FCF6, #FFF 72%); }
+.sp-row.done .sp-ic { background: var(--green-soft); color: var(--green); }
+/* ایستگاه ۲ «زنده» — از وقتی کاربر از ۱۰۰ گذشته (امبر، هم‌خانوادهٔ desk-step) */
+.sp-row.live { border-color: #EFDFB8; background: linear-gradient(180deg, var(--amber-bg), #FFF 72%); }
+.sp-row.live .sp-ic { background: var(--amber-soft); color: var(--amber); }

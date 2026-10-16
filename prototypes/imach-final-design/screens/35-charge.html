@@ -5,6 +5,9 @@
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-charge" data-arm="sell">
+    <!-- FD-7: کارت «امتیاز به شارژ» در همین صفحه — پلِ طرح امتیاز با شارژ:
+         بعد از ۱۰۰ امتیاز (ورود به شبکه) هر امتیازِ اضافه قابل تبدیل به
+         شارژ تبلیغات است؛ روش واحد (حکم مالک — ترکیب ممنوع). -->
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
         <div class="ttl">شارژ<small>برای فعالیت‌های تبلیغاتی</small></div>
@@ -84,6 +87,24 @@
             <button class="btn btn-outline btn-block btn-sm" style="margin-top: 10px;" data-sheet="sheet-share-cat">
                 <svg><use href="#i-share"/></svg> اشتراک کاتالوگ
             </button>
+        </div>
+
+        <!-- ═══ FD-7: امتیاز به شارژ — سومین راه شارژ (رایگان، از فعالیت) ═══
+             داستان: ۱۰۰ امتیاز = بلیت ورود به شبکه؛ بعد از آن هر امتیازِ
+             اضافه = شارژ تبلیغات. فعلاً اطلاع‌رسانی است (بدون دکمه) چون دمو
+             ۴۵ امتیاز دارد و جریان تبدیل بعد از ۱۰۰ معنا پیدا می‌کند —
+             دکمهٔ تبدیل در فاز پیاده‌سازی واقعی اضافه می‌شود.
+             متن با chargeSync() سینک می‌شود (#ch-score-note). -->
+        <div class="card" style="margin-top: 10px; background: linear-gradient(135deg, var(--amber-bg), #FFF 60%); border-color: #EFDFB8;">
+            <div style="display: flex; align-items: center; gap: 11px;">
+                <div style="width: 38px; height: 38px; border-radius: 11px; background: var(--amber-soft); color: var(--amber); display: grid; place-items: center; flex-shrink: 0;">
+                    <svg style="width: 19px; height: 19px;"><use href="#i-rocket"/></svg>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 13px; font-weight: 700;">امتیاز به شارژ</div>
+                    <div id="ch-score-note" style="font-size: 11px; color: var(--text-3); margin-top: 2px; line-height: 1.8;"></div>
+                </div>
+            </div>
         </div>
 
     </div>
