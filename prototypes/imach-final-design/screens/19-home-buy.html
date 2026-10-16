@@ -1,6 +1,18 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۱۹: میز خرید
-     کارت امتیاز خرید + کارت لیست خرید + KPI + استعلام‌های جاری
+     اسکرین ۱۹: میز خرید — کارتابل خرید
+     ─────────────────────────────────────────────────────────────
+     FD-6 (گام پیشنهادی خودم که مالک تأیید کرد): همان کارتابل‌سازیِ
+     میز فروش (۰۴) روی میز خرید هم اعمال شد — قرینه و همگن:
+     • دایرهٔ امتیاز خرید در اپ‌بار (score-chip، data-score-arm="buy")
+       — کلیک → صفحهٔ «امتیاز فعالیت خرید». (کارت امتیازِ داخل صفحه و
+       KPI چهارتایی حذف شدند؛ آیکون پروفایل هم رفت چون در تب‌بار هست.)
+     • دو کادر تمام‌عرض: لیست خرید من + تأمین‌کننده‌های من.
+     • «نیازمند اقدام»: ردیف‌های زنده (پیشنهاد جدید / سفارش جاری).
+     • کارت «گام بعدی فعالیت»: «۵۵ امتیاز تا شتابدهی» + موشک +
+       نوار پیشرفت «۴۵/۱۰۰» + دکمه — از scoreItemsBuy[].desk.
+     • واژگان (قانون FD-5): سمت خریدار «کالا» است (نوعِ نیاز) —
+       «افزودن کالا» این‌جا درست است؛ سمت فروش «محصول».
+     منطق: buyDeskSync() در app-forms.js + scoreItemsBuy در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-buy" data-arm="buy">
     <div class="appbar">
@@ -9,81 +21,80 @@
             <div class="title">سوپرمارکت آریا</div>
         </div>
         <div class="actions">
+            <!-- FD-6: دایرهٔ امتیاز خرید در اپ‌بار — همگن با میز فروش.
+                 کلیک → صفحهٔ امتیازها (بازوی خرید). -->
+            <button class="score-chip" id="buy-chip" data-score-arm="buy" aria-label="امتیاز فعالیت خرید — دیدن جزئیات" type="button">
+                <svg class="ring" viewBox="0 0 44 44" aria-hidden="true">
+                    <circle class="rc-bg" cx="22" cy="22" r="18"></circle>
+                    <circle class="rc-fill" id="buy-chip-ring" cx="22" cy="22" r="18"></circle>
+                </svg>
+                <b id="buy-chip-num">۰</b>
+            </button>
             <button class="icon-btn" data-go="s-notifs" aria-label="اعلان‌ها">
                 <svg><use href="#i-bell"/></svg>
-            </button>
-            <button class="icon-btn" data-go="s-profile" aria-label="پروفایل">
-                <svg><use href="#i-user"/></svg>
             </button>
         </div>
     </div>
 
     <div class="body">
 
-        <!-- کارت امتیاز فعالیت خرید -->
-        <button class="score-status" id="buy-score-card" type="button" data-score-arm="buy">
-            <div class="ss-ring">
-                <svg viewBox="0 0 44 44">
-                    <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
-                    <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="buy-score-ring"></circle>
-                </svg>
-                <span class="ss-num" id="buy-score-num">۰</span>
+        <!-- دو کادر تمام‌عرض زیر هم (حکم مالک FD-6) — همگن با میز فروش -->
+        <div class="desk-card" data-go="s-buy-list">
+            <div class="dc-ic"><svg><use href="#i-basket"/></svg></div>
+            <div class="dc-tx">
+                <div class="dc-t">لیست خرید من</div>
+                <div class="dc-s">۴ کالا · برای هر کالا استعلام بگیر</div>
             </div>
-            <div class="ss-tx">
-                <b id="buy-score-title">امتیاز فعالیت خرید</b>
-                <span id="buy-score-sub">شبکه‌ات را بساز — با ۱۰۰ امتیاز، موتور شتاب‌دهنده فعال می‌شود</span>
+            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+        </div>
+        <div class="desk-card" data-go="s-buy-suppliers">
+            <div class="dc-ic"><svg><use href="#i-users"/></svg></div>
+            <div class="dc-tx">
+                <div class="dc-t">تأمین‌کننده‌های من</div>
+                <div class="dc-s">۳ تأمین‌کننده · قیمت زندهٔ کاتالوگ‌شان</div>
             </div>
-            <svg class="ss-chev"><use href="#i-chev"/></svg>
-        </button>
-
-        <!-- کارت بزرگ لیست خرید -->
-        <div class="card" style="background: linear-gradient(135deg, var(--stone-tint), #FFF 70%); border-color: #D8D4CA; cursor: pointer;" data-go="s-buy-list">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 46px; height: 46px; border-radius: 13px; background: var(--stone); color: #FFF; display: grid; place-items: center; flex-shrink: 0;">
-                    <svg style="width: 24px; height: 24px;"><use href="#i-basket"/></svg>
-                </div>
-                <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: 15.5px; font-weight: 700; color: var(--stone);">لیست خرید من</div>
-                    <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">۴ کالا · برای هر کالا استعلام بگیر</div>
-                </div>
-                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-            </div>
+            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
         </div>
 
-        <!-- KPI -->
-        <div class="kpis">
-            <div class="kpi hot" data-go="s-buy-rfqs">
-                <div class="k"><svg><use href="#i-inbox"/></svg> استعلام باز</div>
-                <div class="v">۲</div>
-            </div>
-            <div class="kpi" data-go="s-buy-suppliers">
-                <div class="k"><svg><use href="#i-users"/></svg> تأمین‌کننده</div>
-                <div class="v">۳</div>
-            </div>
-            <div class="kpi" data-go="s-buy-orders">
-                <div class="k"><svg><use href="#i-receipt"/></svg> سفارش جاری</div>
-                <div class="v">۱</div>
-            </div>
-            <div class="kpi" data-go="s-buy-list">
-                <div class="k"><svg><use href="#i-basket"/></svg> کالا در لیست</div>
-                <div class="v">۴</div>
-            </div>
-        </div>
-
-        <!-- استعلام‌های جاری -->
-        <div class="section-title">
-            <h2><svg><use href="#i-inbox"/></svg> استعلام‌های جاری</h2>
-            <span class="more" data-go="s-buy-rfqs">مشاهدهٔ همه <svg><use href="#i-chev"/></svg></span>
-        </div>
+        <!-- ═══ کارتابل: نیازمند اقدام ═══
+             KPI چهارتایی قدیمی (استعلام باز/سفارش جاری/…) حذف شد —
+             حکم مالک FD-4: اعدادِ ایستا کار اعلام کار نمی‌کنند؛
+             ردیف زنده با مقصد و توضیح همان کار را بهتر می‌کند. -->
+        <div class="section-title"><h2>نیازمند اقدام</h2></div>
         <div class="rows">
             <div class="row" data-go="s-buy-offers">
                 <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt="برنج"></div>
                 <div class="row-body">
-                    <div class="row-title">برنج هاشمی گلستان · ۲۰ کیسه</div>
-                    <div class="row-sub">۵ پیشنهاد <span class="dot">·</span> <span style="color: var(--amber); font-weight: 700;">۳ روز مانده</span></div>
+                    <div class="row-title">۲ پیشنهاد جدید رسیده</div>
+                    <div class="row-sub">برنج هاشمی · ۵ پیشنهاد <span class="dot">·</span> <span style="color: var(--amber); font-weight: 700;">۳ روز مانده</span></div>
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
+            <div class="row" data-go="s-buy-orders">
+                <div class="thumb thumb-sm"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
+                <div class="row-body">
+                    <div class="row-title">۱ سفارش جاری</div>
+                    <div class="row-sub">برنج طارم · ۱۰ کیسه — پخش برنج پارس</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+        </div>
+
+        <!-- گام بعدی فعالیت (FD-6) — قرینهٔ میز فروش؛ متن و مقصد دکمه را
+             buyDeskSync() از scoreItemsBuy[].desk می‌گذارد. -->
+        <div class="desk-step" id="buy-desk-step" hidden>
+            <span class="ds-badge">گام بعدی فعالیت</span>
+            <div class="ds-goal">
+                <b id="bds-goal">۰ امتیاز تا شتابدهی</b>
+                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
+            </div>
+            <b class="ds-title" id="bds-title"></b>
+            <div class="ds-bar">
+                <div class="track"><i id="bds-bar-fill"></i></div>
+                <span class="num" id="bds-bar-num">۰ / ۱۰۰</span>
+                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
+            </div>
+            <button class="btn btn-arm btn-block ds-btn" id="bds-btn" type="button"></button>
         </div>
 
         <div class="hint-line">
