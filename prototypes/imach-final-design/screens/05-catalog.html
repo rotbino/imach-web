@@ -1,7 +1,8 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۰۵: کاتالوگ من
-     هدر: بازگشت + عنوان + ⚙ (شیت تنظیمات) + اشتراک‌گذاری
-     باکس ۴ دکمهٔ ظریف → تبلیغات → سرچ → چیپ → گرید
+     هدر: بازگشت + عنوان + ⚙ + اشتراک‌گذاری
+     باکس ۴ دکمه → باکس تبلیغات → سرچ → چیپ → گرید
+     شیت‌ها: تنظیمات · اشتراک · تخفیف حجمی · تخفیف گروه · گروه‌ها
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-catalog" data-arm="sell">
@@ -18,7 +19,6 @@
 
     <div class="body">
 
-        <!-- باکس ۴ دکمهٔ ظریف -->
         <div class="cat-actions">
             <button class="cat-act primary" data-go="s-sell-add">
                 <span class="ca-ic"><svg><use href="#i-plus"/></svg></span>
@@ -38,7 +38,6 @@
             </button>
         </div>
 
-        <!-- باکس ویژه: تبلیغات -->
         <button class="promo-box" id="promo-box" type="button" data-go="s-sell-promo">
             <span class="pb-ic" id="promo-ic"><svg><use href="#i-sparkles"/></svg></span>
             <span class="pb-tx">
@@ -48,13 +47,11 @@
             <svg class="pb-chev"><use href="#i-chev"/></svg>
         </button>
 
-        <!-- سرچ -->
         <div class="search-row" style="height: 44px;">
             <svg><use href="#i-search"/></svg>
             <input type="text" id="cat-search" placeholder="جستجو در کاتالوگ…" autocomplete="off">
         </div>
 
-        <!-- چیپ گروه -->
         <div class="chips" id="cat-groups">
             <button class="chip active">همه</button>
             <button class="chip">برنج هاشمی</button>
@@ -62,7 +59,6 @@
             <button class="chip">برنج فجر</button>
         </div>
 
-        <!-- گرید کالا -->
         <div class="pgrid" id="cat-grid">
             <div class="pcard" data-go="s-sell-edit">
                 <div class="ph">
@@ -128,56 +124,195 @@
         <div class="sheet-hdr">
             <h3>تنظیمات کاتالوگ</h3>
             <button class="mg" data-sheet-close="sheet-cat-settings" aria-label="بستن">
-                <svg><use href="#i-x"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
         </div>
         <div class="sub">پخش برنج پارس · پخش مواد غذایی — رشت</div>
 
         <button class="sheet-row" data-go="s-cat-edit">
-            <span class="ico"><svg><use href="#i-pencil"/></svg></span>
-            <span class="tx">
-                <b>ویرایش کاتالوگ</b>
-                <span>نام، لوگو، لوکیشن و توضیح کوتاه</span>
-            </span>
-            <svg class="chev"><use href="#i-chev"/></svg>
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pencil"/></svg></span>
+            <span class="tx"><b>ویرایش کاتالوگ</b><span>نام، لوگو، لوکیشن و توضیح کوتاه</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
         </button>
 
         <button class="sheet-row" data-sheet="sheet-vol">
-            <span class="ico"><svg><use href="#i-tag"/></svg></span>
-            <span class="tx">
-                <b>تخفیفات حجمی</b>
-                <span>پله‌ای بر اساس حجم خرید</span>
-            </span>
-            <svg class="chev"><use href="#i-chev"/></svg>
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-tag"/></svg></span>
+            <span class="tx"><b>تخفیفات حجمی</b><span>پله‌ای بر اساس حجم خرید</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
         </button>
 
         <button class="sheet-row" data-sheet="sheet-cg-disc">
-            <span class="ico"><svg><use href="#i-users"/></svg></span>
-            <span class="tx">
-                <b>تخفیفات گروه مشتری</b>
-                <span>قیمت مخصوص هر گروه مشتری</span>
-            </span>
-            <svg class="chev"><use href="#i-chev"/></svg>
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-users"/></svg></span>
+            <span class="tx"><b>تخفیفات گروه مشتری</b><span>قیمت مخصوص هر گروه مشتری</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
         </button>
 
         <button class="sheet-row" data-go="s-sell-bulk">
-            <span class="ico"><svg><use href="#i-percent"/></svg></span>
-            <span class="tx">
-                <b>تغییر گروهی قیمت‌ها</b>
-                <span>درصدی یا دستی — روی کل کاتالوگ</span>
-            </span>
-            <svg class="chev"><use href="#i-chev"/></svg>
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-percent"/></svg></span>
+            <span class="tx"><b>تغییر گروهی قیمت‌ها</b><span>درصدی یا دستی — روی کل کاتالوگ</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
         </button>
 
         <button class="sheet-row" data-sheet="sheet-groups">
-            <span class="ico"><svg><use href="#i-tag"/></svg></span>
-            <span class="tx">
-                <b>گروه‌های کالا</b>
-                <span>دسته‌بندی کالاهای کاتالوگ</span>
-            </span>
-            <svg class="chev"><use href="#i-chev"/></svg>
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-tag"/></svg></span>
+            <span class="tx"><b>گروه‌های کالا</b><span>دسته‌بندی کالاهای کاتالوگ</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
         </button>
 
         <button class="btn btn-outline sheet-cta" data-sheet-close="sheet-cat-settings">بستن</button>
+    </div>
+
+
+    <!-- ═════════════════════════════════════════════════════════════
+         شیت تخفیفات حجمی
+         ═════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-vol" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>تخفیفات حجمی</h3>
+            <button class="mg" data-sheet-close="sheet-vol" aria-label="بستن">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="sub">پله‌ای بر اساس حجم خرید — روی همهٔ کالاهای کاتالوگ</div>
+
+        <div class="sheet-row" style="cursor:default">
+            <span class="tx"><b>تخفیف حجمی فعال باشد</b><span>هرچه حجم خرید بیشتر، تخفیف بیشتر</span></span>
+            <div class="switch on"></div>
+        </div>
+
+        <div class="grp">پله‌های تخفیف</div>
+
+        <div class="sheet-row" style="cursor:default">
+            <span class="tx"><b>از ۵ کیسه به بالا</b></span>
+            <div class="pctw"><input class="input" value="۳" inputmode="numeric"><span class="sfx">٪</span></div>
+        </div>
+
+        <div class="sheet-row" style="cursor:default">
+            <span class="tx"><b>از ۲۰ کیسه به بالا</b></span>
+            <div class="pctw"><input class="input" value="۵" inputmode="numeric"><span class="sfx">٪</span></div>
+        </div>
+
+        <div class="sheet-row" style="cursor:default">
+            <span class="tx"><b>از ۵۰ کیسه به بالا</b></span>
+            <div class="pctw"><input class="input" value="۸" inputmode="numeric"><span class="sfx">٪</span></div>
+        </div>
+
+        <button class="add-row" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> افزودن پلهٔ جدید</button>
+
+        <div class="hintnote">تخفیف‌های حجمی را می‌توانی در سطح کاتالوگ یک‌باره به همهٔ کالاها اعمال کنی، یا روی تک‌تک کالاها جداگانه. اگر هم روی کاتالوگ تخفیف کلی بگذاری و هم روی یک کالا، برای آن کالا تخفیف مخصوص خودش در نظر گرفته می‌شود.</div>
+        <button class="btn btn-primary sheet-cta" data-sheet-close="sheet-vol">ذخیره تخفیف‌های حجمی</button>
+    </div>
+
+
+    <!-- ═════════════════════════════════════════════════════════════
+         شیت تخفیفات گروه مشتری
+         ═════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-cg-disc" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>تخفیفات گروه مشتری</h3>
+            <button class="mg" data-sheet-close="sheet-cg-disc" aria-label="بستن">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="sub">قیمت مخصوص هر گروه مشتری — در همهٔ کالاهای کاتالوگ</div>
+
+        <div class="sheet-row" style="cursor:default">
+            <span class="tx"><b>مشتریان ویژه</b><span>مشتریانی که مکرر از شما خرید می‌کنند</span></span>
+            <div class="pctw"><input class="input" value="۵" inputmode="numeric"><span class="sfx">٪</span></div>
+        </div>
+
+        <div class="sheet-row" style="cursor:default">
+            <span class="tx"><b>همکاران</b><span>پخش‌کننده‌ها و همکاران تجاری</span></span>
+            <div class="pctw"><input class="input" value="۱۰" inputmode="numeric"><span class="sfx">٪</span></div>
+        </div>
+
+        <div class="sheet-row" style="cursor:default">
+            <span class="tx"><b>مشتریان عمده</b><span>خریداران با حجم بالا</span></span>
+            <div class="pctw"><input class="input" value="۷" inputmode="numeric"><span class="sfx">٪</span></div>
+        </div>
+
+        <button class="add-row" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> ساخت گروه مشتری جدید</button>
+
+        <div class="hintnote">مشتری هر گروه، قیمت خودش را در کاتالوگ شما می‌بیند. گروه‌های مشتری را می‌توانی از «ویرایش کاتالوگ» هم مدیریت کنی.</div>
+        <button class="btn btn-primary sheet-cta" data-sheet-close="sheet-cg-disc">ذخیره تخفیف‌ها</button>
+    </div>
+
+
+    <!-- ═════════════════════════════════════════════════════════════
+         شیت گروه‌های کالا
+         ═════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-groups" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>گروه‌های کالا</h3>
+            <button class="mg" data-sheet-close="sheet-groups" aria-label="بستن">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="sub">دسته‌بندی کالاهای کاتالوگ — برای فیلتر نمایش به خریداران</div>
+
+        <div class="grp-row">
+            <span class="tx"><b>هاشمی</b><span>۲ کالا</span></span>
+            <button class="row-act" title="ویرایش" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pencil"/></svg></button>
+            <button class="row-act warn" title="حذف" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trash"/></svg></button>
+        </div>
+
+        <div class="grp-row">
+            <span class="tx"><b>طارم</b><span>۱ کالا</span></span>
+            <button class="row-act" title="ویرایش" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pencil"/></svg></button>
+            <button class="row-act warn" title="حذف" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trash"/></svg></button>
+        </div>
+
+        <div class="grp-row">
+            <span class="tx"><b>فجر</b><span>۱ کالا</span></span>
+            <button class="row-act" title="ویرایش" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pencil"/></svg></button>
+            <button class="row-act warn" title="حذف" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trash"/></svg></button>
+        </div>
+
+        <div class="field">
+            <label>گروه جدید</label>
+            <input class="input" placeholder="مثلاً صدری">
+        </div>
+        <button class="add-row" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> افزودن گروه کالا</button>
+
+        <div class="hintnote">گروه کالا برای دسته‌بندی و فیلتر نمایش است؛ گروه تخفیف حجمی چیزی جدا است — چه بسا کاتالوگت گروه نداشته باشد اما گروه تخفیف داشته باشد.</div>
+        <button class="btn btn-outline sheet-cta" data-sheet-close="sheet-groups">بستن</button>
+    </div>
+
+
+    <!-- ═════════════════════════════════════════════════════════════
+         شیت اشتراک‌گذاری کاتالوگ
+         ═════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-share-cat" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>اشتراک‌گذاری کاتالوگ</h3>
+            <button class="mg" data-sheet-close="sheet-share-cat" aria-label="بستن">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="sub">لینک کاتالوگ را برای مشتریانت بفرست</div>
+
+        <button class="sheet-row" data-go="s-contacts">
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-users-v2"/></svg></span>
+            <span class="tx"><b>اشتراک با مخاطبین</b><span>اعضای آی‌مچ در پیام‌رسان؛ بقیه با پیامک</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="sheet-row" data-copy>
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-link"/></svg></span>
+            <span class="tx"><b data-copy-label>کپی لینک کاتالوگ</b><span>imach.ir/c/pars-rice</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="sheet-row" data-sheet="sheet-qr">
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-qr"/></svg></span>
+            <span class="tx"><b>کد QR کاتالوگ</b><span>چاپ روی فاکتور، پیشخوان و کارت ویزیت</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="btn btn-outline sheet-cta" data-sheet-close="sheet-share-cat">بستن</button>
     </div>
 </section>

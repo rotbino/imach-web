@@ -1,5 +1,6 @@
 /* ═════════════════════════════════════════════════════════════════
    iMach — Core
+   ناوبری · Sheet · Dialog · Toast · بازوها · helpers
    ═════════════════════════════════════════════════════════════════ */
 
 window.iMach = (function () {
@@ -13,7 +14,7 @@ window.iMach = (function () {
     var SCREEN_CACHE = {};
     var SCREEN_PARAMS = {};
     var onShowHooks = {};
-    var lastRealArm = 'sell';   /* آخرین بازوی واقعی (sell/buy) — برای صفحات keep */
+    var lastRealArm = 'sell';
 
     function $(sel, root) { return (root || document).querySelector(sel); }
     function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
@@ -27,6 +28,7 @@ window.iMach = (function () {
         return isNaN(n) ? 0 : n;
     }
 
+    /* ═══ نگاشت شناسه ← فایل ═══ */
     var SCREEN_FILES = {
         's-landing':              '01-landing',
         's-signup':               '02-signup',
@@ -61,12 +63,13 @@ window.iMach = (function () {
         's-chat':                 '30-chat',
         's-catalog-guest':        '31-catalog-guest',
         's-buy-list-guest':       '32-buy-list-guest',
-        's-sell-bulk':     '33-sell-bulk',
-        's-sell-promo':    '34-sell-promo',
-        's-charge':        '35-charge',
-        's-cat-edit':   '36-cat-edit',
+        's-sell-bulk':            '33-sell-bulk',
+        's-sell-promo':           '34-sell-promo',
+        's-charge':               '35-charge',
+        's-cat-edit':             '36-cat-edit'
     };
 
+    /* ═══ لود اسکرین ═══ */
     function loadScreen(id) {
         var filename = SCREEN_FILES[id] || id;
         if (SCREEN_CACHE[filename]) return Promise.resolve(SCREEN_CACHE[filename]);
@@ -102,6 +105,7 @@ window.iMach = (function () {
             (err && err.message ? err.message : String(err)) + '</pre></details></div>';
     }
 
+    /* ═══ نمایش صفحه ═══ */
     function show(id, push, params) {
         return loadScreen(id).then(function (html) {
             var host = $('#screen-host');
@@ -124,7 +128,6 @@ window.iMach = (function () {
             if (tArm === 'sell' && !ASSIST.sell) { return show('s-home-buy', push); }
             if (tArm === 'buy'  && !ASSIST.buy)  { return show('s-home-sell', push); }
 
-            /* بازوی واقعی را ذخیره کن — صفحات keep از آن استفاده می‌کنند */
             if (tArm === 'sell' || tArm === 'buy') lastRealArm = tArm;
 
             if (params) SCREEN_PARAMS[id] = params;
@@ -136,7 +139,9 @@ window.iMach = (function () {
             if (id === 's-contacts' && params && params.mode === 'pick') {
                 section.classList.add('pick-mode');
             }
-            if (params && params.preview) { injectPreviewBar(section, id); }
+            if (params && params.preview) {
+                injectPreviewBar(section, id);
+            }
 
             if (push !== false && current && current !== id) stack.push(current);
             current = id;
@@ -157,6 +162,7 @@ window.iMach = (function () {
     }
     function goHome(id) { stack.length = 0; return show(id, false); }
 
+    /* ═══ Sheet — باز/بسته کردن ایمن ═══ */
     function openSheet(id) {
         closeAllSheets();
         var sheet = document.getElementById(id);
@@ -164,9 +170,10 @@ window.iMach = (function () {
         var bd = $('#dialog-backdrop');
         if (bd) bd.classList.add('show');
         sheet.hidden = false;
-        void sheet.offsetHeight;
+        void sheet.offsetHeight; /* force reflow برای انیمیشن */
         sheet.classList.add('show');
     }
+
     function closeSheet(id) {
         if (id) {
             var sheet = document.getElementById(id);
@@ -174,14 +181,34 @@ window.iMach = (function () {
                 sheet.classList.remove('show');
                 setTimeout(function () { sheet.hidden = true; }, 300);
             }
-        } else closeAllSheets();
-        var anyOpen = $$('.sheet.show').length > 0;
-        if (!anyOpen) { var bd = $('#dialog-backdrop'); if (bd) bd.classList.remove('show'); }
-    }
-    function closeAllSheets() {
-        $$('.sheet').forEach(function (s) { s.classList.remove('show'); s.hidden = true; });
+        } else {
+            closeAllSheets();
+        }
+        /* اگر هیچ شیت/دیالوگی باز نیست، backdrop را بردار — با تأخیر کوچک */
+        setTimeout(function () {
+            var anySheet = $$('.sheet.show').length > 0;
+            var anyDialog = $$('.dialog.show').length > 0;
+            if (!anySheet && !anyDialog) {
+                var bd = $('#dialog-backdrop');
+                if (bd) bd.classList.remove('show');
+            }
+        }, 320);
     }
 
+    function closeAllSheets() {
+        $$('.sheet').forEach(function (s) {
+            s.classList.remove('show');
+            s.hidden = true;
+        });
+        /* اگر دیالوگ باز نیست، backdrop را فوراً بردار */
+        var anyDialog = $$('.dialog.show').length > 0;
+        if (!anyDialog) {
+            var bd = $('#dialog-backdrop');
+            if (bd) bd.classList.remove('show');
+        }
+    }
+
+    /* ═══ نوار پیش‌نمایش — با دکمهٔ بازگشت ═══ */
     function injectPreviewBar(section, id) {
         var body = section.querySelector('.body');
         if (!body) return;
@@ -190,10 +217,17 @@ window.iMach = (function () {
         var label = (id === 's-buy-list-guest')
             ? 'پیش‌نمایش — تأمین‌کننده‌ها این‌طور می‌بینند'
             : 'پیش‌نمایش — این‌طور مشتریانت می‌بینند';
-        bar.innerHTML = '<svg><use href="#i-eye"/></svg><span>' + label + '</span>';
+        bar.innerHTML =
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-eye"/></svg>' +
+            '<span>' + label + '</span>' +
+            '<button class="preview-back" type="button" data-preview-back>' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-back"/></svg>' +
+            ' بازگشت به پنل' +
+            '</button>';
         body.parentNode.insertBefore(bar, body);
     }
 
+    /* ═══ بازوها ═══ */
     function applyArms() {
         $$('.tab[data-tab-arm]').forEach(function (tab) {
             var arm = tab.dataset.tabArm;
@@ -204,6 +238,7 @@ window.iMach = (function () {
         });
     }
 
+    /* ═══ Toast ═══ */
     function toast(msg, type) {
         var host = $('#toast-host');
         if (!host) return;
@@ -218,6 +253,7 @@ window.iMach = (function () {
         }, 2200);
     }
 
+    /* ═══ Dialog ═══ */
     function confirmDialog(opts) {
         opts = opts || {};
         var dlg = $('#dialog'), bd = $('#dialog-backdrop');
@@ -256,11 +292,14 @@ window.iMach = (function () {
     function closeDialog(value) {
         var dlg = $('#dialog'), bd = $('#dialog-backdrop');
         if (dlg) { dlg.classList.remove('show'); dlg.setAttribute('aria-hidden', 'true'); }
-        if (bd) bd.classList.remove('show');
+        /* اگر شیتی باز نیست، backdrop را بردار */
+        var anySheet = $$('.sheet.show').length > 0;
+        if (!anySheet && bd) bd.classList.remove('show');
         pendingActions = null;
         if (dialogResolve) { dialogResolve(value); dialogResolve = null; }
     }
 
+    /* ═══ هوک‌ها ═══ */
     function registerShowHook(id, fn) { onShowHooks[id] = fn; }
     function getSCREENParams() { return SCREEN_PARAMS; }
     function setSCREENParams(id, params) { SCREEN_PARAMS[id] = params; }
