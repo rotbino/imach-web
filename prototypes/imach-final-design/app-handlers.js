@@ -164,53 +164,25 @@
             return;
         }
 
-        /* ─── منوی تأمین‌کننده ─── */
+        /* ─── منوی تأمین‌کننده — شیت از پایین (قانون همیشگی موبایل) ─── */
         var supMenu = t.closest('[data-sup-menu]');
         if (supMenu) {
             e.stopPropagation();
-            var supName = supMenu.dataset.supMenu;
-            var supRow = supMenu.closest('.row');
-            core.actions('گزینه‌های ' + supName, [
-                { label: 'گفتگو', onClick: function () { go('s-chat'); } },
-                { label: 'حذف از تأمین‌کنندگان', danger: true, onClick: function () {
-                        core.confirm({
-                            title: 'حذف از تأمین‌کنندگان',
-                            text: '«' + supName + '» از فهرست تأمین‌کنندگانت حذف می‌شود.',
-                            ok: 'حذف تأمین‌کننده', cancel: 'انصراف', danger: true
-                        }).then(function (ok) {
-                            if (ok) {
-                                if (supRow) supRow.remove();
-                                toast('تأمین‌کننده از فهرست حذف شد', 'success');
-                            }
-                        });
-                    }}
-            ]);
+            supMenuOpen(supMenu.dataset.supMenu, supMenu.closest('.row'));
             return;
         }
+        var scmAct = t.closest('[data-scm-act]');
+        if (scmAct) { scmRun(scmAct.dataset.scmAct); return; }
 
-        /* ─── منوی سفارش خرید (لغو) ─── */
+        /* ─── منوی سفارش خرید (لغو) — شیت از پایین ─── */
         var ordCancel = t.closest('[data-order-cancel]');
         if (ordCancel) {
             e.stopPropagation();
-            var ordName = ordCancel.dataset.orderCancel;
-            var ordRow = ordCancel.closest('.row');
-            core.actions('گزینه‌های ' + ordName, [
-                { label: 'گفتگو با تأمین‌کننده', onClick: function () { go('s-chat'); } },
-                { label: 'لغو سفارش', danger: true, onClick: function () {
-                        core.confirm({
-                            title: 'لغو سفارش',
-                            text: 'سفارش «' + ordName + '» لغو می‌شود و تأمین‌کننده خبردار می‌شود.',
-                            ok: 'لغو سفارش', cancel: 'انصراف', danger: true
-                        }).then(function (ok) {
-                            if (ok) {
-                                if (ordRow) ordRow.remove();
-                                toast('سفارش لغو شد', 'error');
-                            }
-                        });
-                    }}
-            ]);
+            ordMenuOpen(ordCancel.dataset.orderCancel, ordCancel.closest('.row'));
             return;
         }
+        var ocmAct = t.closest('[data-ocm-act]');
+        if (ocmAct) { ocmRun(ocmAct.dataset.ocmAct); return; }
 
         /* ─── ناوبری عمومی ─── */
         var goEl = t.closest('[data-go]');
@@ -604,6 +576,93 @@
            ═══════════════════════════════════════════════════════════ */
         if (t.closest('#ch-send')) { core.forms.chargeSend(); return; }
     });
+
+    /* ═══════════════════════════════════════════════════════════════
+       منوی سه‌نقطهٔ تأمین‌کننده و سفارش خرید — شیت از پایین
+       ─────────────────────────────────────────────────────────────
+       قانون همیشگی موبایل: هیچ منویی معلق باز نمی‌شود؛ همه از پایین.
+       (قبلاً core.actions دیالوگ معلق بود — طبق حکم مالک تبدیل به شیت شد)
+       الگو همان sheet-cust-menu است: ردیف‌های sheet-row با آیکون و زیرمتن.
+       ═══════════════════════════════════════════════════════════════ */
+    var SUP = { name: null, row: null };
+    var ORD = { name: null, row: null };
+
+    /* رندر ردیف‌های شیت منو — مشترک بین هر دو منو */
+    function menuSheetRowHtml(it, actAttr) {
+        var bSt = it.danger ? ' style="color:var(--red)"' : '';
+        var icSt = it.danger ? ' style="background:var(--red-soft);color:var(--red)"' : '';
+        var sSt = it.danger ? ' style="color:#B91C1C;opacity:.75"' : '';
+        return '<button class="sheet-row" type="button" ' + actAttr + '="' + it.act + '">' +
+            '<span class="ico"' + icSt + '><svg><use href="#i-' + it.ic + '"/></svg></span>' +
+            '<span class="tx"><b' + bSt + '>' + it.t + '</b><span' + sSt + '>' + it.s + '</span></span>' +
+            '</button>';
+    }
+
+    function supMenuOpen(name, row) {
+        SUP.name = name;
+        SUP.row = row;
+        var ttl = $('#scm-ttl');
+        if (ttl) ttl.textContent = 'گزینه‌های ' + (name || 'تأمین‌کننده');
+        var host = $('#scm-list');
+        if (!host) return;
+        var items = [
+            { ic: 'msg',   t: 'گفتگو',                    s: 'پیام در آی‌مچ',                            act: 'chat' },
+            { ic: 'trash', t: 'حذف از تأمین‌کنندگان',     s: '«' + (name || '') + '» از فهرست حذف می‌شود', act: 'delete', danger: true }
+        ];
+        host.innerHTML = items.map(function (it) { return menuSheetRowHtml(it, 'data-scm-act'); }).join('');
+        core.openSheet('sheet-sup-menu');
+    }
+
+    function scmRun(act) {
+        var name = SUP.name, row = SUP.row;
+        core.closeSheet('sheet-sup-menu');
+        if (act === 'chat') { go('s-chat'); return; }
+        if (act === 'delete') {
+            core.confirm({
+                title: 'حذف از تأمین‌کنندگان',
+                text: '«' + (name || '') + '» از فهرست تأمین‌کنندگانت حذف می‌شود.',
+                ok: 'حذف تأمین‌کننده', cancel: 'انصراف', danger: true
+            }).then(function (ok) {
+                if (ok) {
+                    if (row) row.remove();
+                    toast('تأمین‌کننده از فهرست حذف شد', 'success');
+                }
+            });
+        }
+    }
+
+    function ordMenuOpen(name, row) {
+        ORD.name = name;
+        ORD.row = row;
+        var ttl = $('#ocm-ttl');
+        if (ttl) ttl.textContent = 'گزینه‌های ' + (name || 'سفارش');
+        var host = $('#ocm-list');
+        if (!host) return;
+        var items = [
+            { ic: 'msg',   t: 'گفتگو با تأمین‌کننده',     s: 'پیام در آی‌مچ',                                          act: 'chat' },
+            { ic: 'trash', t: 'لغو سفارش',                s: 'سفارش لغو می‌شود و تأمین‌کننده خبردار می‌شود',           act: 'cancel', danger: true }
+        ];
+        host.innerHTML = items.map(function (it) { return menuSheetRowHtml(it, 'data-ocm-act'); }).join('');
+        core.openSheet('sheet-ord-menu');
+    }
+
+    function ocmRun(act) {
+        var name = ORD.name, row = ORD.row;
+        core.closeSheet('sheet-ord-menu');
+        if (act === 'chat') { go('s-chat'); return; }
+        if (act === 'cancel') {
+            core.confirm({
+                title: 'لغو سفارش',
+                text: 'سفارش «' + (name || '') + '» لغو می‌شود و تأمین‌کننده خبردار می‌شود.',
+                ok: 'لغو سفارش', cancel: 'انصراف', danger: true
+            }).then(function (ok) {
+                if (ok) {
+                    if (row) row.remove();
+                    toast('سفارش لغو شد', 'error');
+                }
+            });
+        }
+    }
 
 
     /* ═══════════════════════════════════════════════════════════════

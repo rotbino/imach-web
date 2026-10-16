@@ -1,77 +1,76 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۰۴: میز فروش
-     کارت امتیاز فروش + KPI + نیازمند اقدام
+     اسکرین ۰۴: میز فروش — کارتابل فروش
+     ─────────────────────────────────────────────────────────────
+     فلسفه (حکم مالک، فاز FD-4): میز فروش در واقع «کارتابل فروش» است.
+     • بالای صفحه فقط ۲-۳ لینک مهم: کاتالوگ / مشتریان من / امتیاز من
+     • بقیهٔ صفحه = اعلام کارهای نیازمند اقدام:
+         ۱) ردیف‌های زندهٔ ارتباطی (سفارش جدید، درخواست قیمت)
+         ۲) کارت «گام بعدی» — راهنمای گام‌به‌گامِ راه‌اندازی، پیوسته با امتیاز
+     • عنوان صفحه «میز فروش من» است (نه نام کسب‌وکار)
+     • دایرهٔ امتیاز در اپ‌بارنشسته جای آیکون پروفایل — پروفایل در فوتر هست
+     • شارژ و «سفارش جدید/درخواست قیمت» از KPI حذف شدند (حکم مالک):
+       شارژ این‌جا لازم نیست؛ سفارش/درخواست در بخش نیازمند اقدام هستند.
+     داده و منطق: deskHomeSync() در app-forms.js + scoreItemsSell در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-sell" data-arm="sell">
     <div class="appbar">
         <div class="brand">
             <div class="brand-logo">پ</div>
-            <div class="title">پخش برنج پارس</div>
+            <div class="title">میز فروش من</div>
         </div>
         <div class="actions">
             <button class="icon-btn" data-go="s-notifs" aria-label="اعلان‌ها">
                 <svg><use href="#i-bell"/></svg>
                 <span class="dot">۳</span>
             </button>
-            <button class="icon-btn" data-go="s-profile" aria-label="پروفایل">
-                <svg><use href="#i-user"/></svg>
+            <!-- دایرهٔ امتیاز — به‌جای آیکون پروفایل (پروفایل در فوتر هست، این‌جا اضافه بود).
+                 عدد داخل دایره = امتیاز فعالیت فروش؛ با deskHomeSync سینک می‌شود.
+                 تا ۱۰۰ که برسد دورش سبز می‌شود. کلیک → صفحهٔ امتیاز فعالیت‌ها. -->
+            <button class="score-chip" id="app-score-chip" type="button" data-score-arm="sell" aria-label="امتیاز فعالیت فروش">
+                <svg viewBox="0 0 44 44">
+                    <circle cx="22" cy="22" r="18" class="sc-chip-bg"></circle>
+                    <circle cx="22" cy="22" r="18" class="sc-chip-fill" id="app-score-ring"></circle>
+                </svg>
+                <b id="app-score-num">۰</b>
             </button>
         </div>
     </div>
 
     <div class="body">
 
-        <!-- کارت امتیاز فعالیت فروش -->
-        <button class="score-status" id="cat-score-card" type="button" data-score-arm="sell">
-            <div class="ss-ring">
-                <svg viewBox="0 0 44 44">
-                    <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
-                    <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="cat-score-ring"></circle>
-                </svg>
-                <span class="ss-num" id="cat-score-num">۰</span>
-            </div>
-            <div class="ss-tx">
-                <b id="cat-score-title">امتیاز فعالیت فروش</b>
-                <span id="cat-score-sub">شبکه‌ات را بساز — با ۱۰۰ امتیاز، موتور شتاب‌دهنده فعال می‌شود</span>
-            </div>
-            <svg class="ss-chev"><use href="#i-chev"/></svg>
+        <!-- کاتالوگ من — پررنگ‌ترین کار صفحه (حکم مالک: «کاملاً توی چشم باشه») -->
+        <button class="desk-catalog" type="button" data-go="s-catalog">
+            <span class="dc-ic"><svg><use href="#i-store"/></svg></span>
+            <span class="dc-tx">
+                <b>کاتالوگ من</b>
+                <span>۴ کالا · آمادهٔ اشتراک با مشتریان</span>
+            </span>
+            <svg class="dc-chev"><use href="#i-chev"/></svg>
         </button>
 
-        <!-- کارت بزرگ کاتالوگ -->
-        <div class="card" style="background: linear-gradient(135deg, var(--primary-soft), #FFF 70%); border-color: #F3DDBA; cursor: pointer;" data-go="s-catalog">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 46px; height: 46px; border-radius: 13px; background: var(--primary); color: #FFF; display: grid; place-items: center; flex-shrink: 0;">
-                    <svg style="width: 24px; height: 24px;"><use href="#i-store"/></svg>
-                </div>
-                <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: 15.5px; font-weight: 700; color: var(--primary-strong);">کاتالوگ من</div>
-                    <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">۴ کالا · آمادهٔ اشتراک با مشتریان</div>
-                </div>
-                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-            </div>
-        </div>
-
-        <!-- KPI -->
+        <!-- فقط دو کادر: مشتریان من + امتیاز من
+             (شارژ حذف شد — این‌جا لازم نیست؛ به‌جایش امتیاز آمد
+              تا دایرهٔ امتیاز بزرگ‌تر دیده شود و به ۱۰۰ سبز شود) -->
         <div class="kpis">
-            <div class="kpi hot" data-go="s-sell-orders">
-                <div class="k"><svg><use href="#i-receipt"/></svg> سفارش جدید</div>
-                <div class="v">۲</div>
-            </div>
-            <div class="kpi hot" data-go="s-sell-rfqs">
-                <div class="k"><svg><use href="#i-inbox"/></svg> درخواست قیمت</div>
-                <div class="v">۲</div>
-            </div>
             <div class="kpi" data-go="s-customers">
-                <div class="k"><svg><use href="#i-users"/></svg> مشتری</div>
+                <div class="k"><svg><use href="#i-users"/></svg> مشتریان من</div>
                 <div class="v">۵</div>
             </div>
-            <div class="kpi" data-go="s-charge">
-                <div class="k"><svg><use href="#i-wallet"/></svg> شارژ</div>
-                <div class="v"><span data-wallet>۸۵٬۰۰۰</span></div>
+            <div class="kpi desk-score" id="desk-score-box" data-score-arm="sell">
+                <div class="k"><svg><use href="#i-sparkles"/></svg> امتیاز من</div>
+                <div class="desk-ring">
+                    <svg viewBox="0 0 44 44">
+                        <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
+                        <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="desk-score-ring"></circle>
+                    </svg>
+                    <b id="desk-score-num">۰</b>
+                </div>
             </div>
         </div>
 
-        <!-- نیازمند اقدام -->
+        <!-- ═══ کارتابل: نیازمند اقدام ═══
+             ۱) ردیف‌های زندهٔ ارتباطی — سفارش/درخواست (اقدام‌های فوری)
+             ۲) کارت «گام بعدی» — راهنمای راه‌اندازی، گام‌به‌گام با امتیاز -->
         <div class="section-title"><h2>نیازمند اقدام</h2></div>
         <div class="rows">
             <div class="row" data-go="s-sell-orders">
@@ -94,6 +93,20 @@
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
+        </div>
+
+        <!-- گام بعدی راه‌اندازی — همیشه فقط یک گام (گام‌به‌گام، حکم مالک).
+             متن ساده + امتیاز همان گام + دکمهٔ اقدام.
+             محتوایش با deskHomeSync() از scoreItemsSell[].desk پر می‌شود. -->
+        <div class="desk-step" id="desk-step" hidden>
+            <div class="ds-head">
+                <span class="ds-badge">گام بعدی</span>
+                <span class="ds-pts" id="ds-pts"></span>
+            </div>
+            <b class="ds-title" id="ds-title"></b>
+            <span class="ds-sub" id="ds-sub"></span>
+            <button class="btn btn-arm btn-block" id="ds-cta" type="button"></button>
+            <span class="ds-progress" id="ds-progress"></span>
         </div>
 
         <div class="hint-line">

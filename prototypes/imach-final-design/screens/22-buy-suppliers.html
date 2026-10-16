@@ -55,4 +55,17 @@
             <span>می‌خواهی تأمین‌کننده‌های بیشتری داشته باشی؟ موتور تطابق آی‌مچ می‌تواند تأمین‌کننده‌های مرتبط با کالاهای لیست خریدت را پیشنهاد بدهد.</span>
         </div>
     </div>
+
+    <!-- ═══ شیت: گزینه‌های تأمین‌کننده ═══
+         قانون همیشگی موبایل: همهٔ منوها/مدال‌ها از پایین باز می‌شوند، معلق ممنوع.
+         محتوای ردیف‌ها با supMenuOpen() در app-handlers.js پر می‌شود. -->
+    <div class="sheet" id="sheet-sup-menu" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3 id="scm-ttl">گزینه‌های تأمین‌کننده</h3>
+            <button class="mg" data-sheet-close="sheet-sup-menu" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div id="scm-list"></div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-sup-menu" style="margin-top: 8px;">بستن</button>
+    </div>
 </section>

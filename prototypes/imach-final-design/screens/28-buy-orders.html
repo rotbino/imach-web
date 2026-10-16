@@ -39,4 +39,17 @@
             <span>وضعیت هر سفارش همین‌جا به‌روز می‌شود؛ پرداخت و تحویل مستقیماً با تأمین‌کننده هماهنگ می‌شود.</span>
         </div>
     </div>
+
+    <!-- ═══ شیت: گزینه‌های سفارش خرید ═══
+         قانون همیشگی موبایل: همهٔ منوها/مدال‌ها از پایین باز می‌شوند، معلق ممنوع.
+         محتوای ردیف‌ها با ordMenuOpen() در app-handlers.js پر می‌شود. -->
+    <div class="sheet" id="sheet-ord-menu" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3 id="ocm-ttl">گزینه‌های سفارش</h3>
+            <button class="mg" data-sheet-close="sheet-ord-menu" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div id="ocm-list"></div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-ord-menu" style="margin-top: 8px;">بستن</button>
+    </div>
 </section>

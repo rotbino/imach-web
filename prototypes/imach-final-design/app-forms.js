@@ -184,6 +184,76 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
+       میز فروش (۰۴) — کارتابل فروش
+       ─────────────────────────────────────────────────────────────
+       حکم مالک (FD-4): میز فروش = کارتابل. کار اصلی‌اش اعلام
+       کارهای نیازمند اقدام است؛ بالای صفحه فقط ۲-۳ لینک مهم.
+
+       deskHomeSync سه چیز را سینک می‌کند:
+         ۱) دایرهٔ امتیاز اپ‌بار (جای آیکون پروفایل — پروفایل در فوتر)
+         ۲) کادر «امتیاز من» با دایرهٔ بزرگ‌تر (KPI دوم)
+         ۳) کارت «گام بعدی» — اولین گام ناقصِ قابل‌اقدام از
+            scoreItemsSell[].desk؛ گام‌به‌گام (همیشه فقط یک گام)
+       نکته: قبلاً کارت امتیاز ۰۴ هیچ‌وقت سینک نمی‌شد چون هوک
+       اشتباهاً روی s-catalog ثبت شده بود — این ساختار آن باگ را رفع می‌کند.
+       ═══════════════════════════════════════════════════════════════ */
+    function deskHomeSync() {
+        var sell = scoreCalc(core.data.scoreItemsSell);
+        var isOn = sell >= 100;
+
+        /* ۱) دایرهٔ امتیاز اپ‌بار */
+        _scoreRingSync(sell, '#app-score-ring', '#app-score-num');
+        var chip = $('#app-score-chip');
+        if (chip) chip.classList.toggle('on', isOn);
+
+        /* ۲) کادر «امتیاز من» با دایرهٔ بزرگ‌تر */
+        _scoreRingSync(sell, '#desk-score-ring', '#desk-score-num');
+        var box = $('#desk-score-box');
+        if (box) box.classList.toggle('on', isOn);
+
+        /* ۳) کارت «گام بعدی» — همیشه فقط اولین گامِ ناقص */
+        var items = (core.data.scoreItemsSell || []).filter(function (it) { return it.desk; });
+        var next = null;
+        for (var i = 0; i < items.length; i++) {
+            if (!items[i].done) { next = items[i]; break; }
+        }
+        var card = $('#desk-step');
+        if (!card) return;
+        if (!next) { card.hidden = true; return; }
+
+        var doneCount = 0;
+        items.forEach(function (it) { if (it.done) doneCount++; });
+
+        card.hidden = false;
+        var elPts = $('#ds-pts');
+        if (elPts) elPts.textContent = '+' + faNum(next.pts) + ' امتیاز';
+        var elTitle = $('#ds-title');
+        if (elTitle) elTitle.textContent = next.desk.t;
+        var elSub = $('#ds-sub');
+        if (elSub) elSub.textContent = next.desk.s;
+
+        /* دکمهٔ اقدام: گام‌های دعوت، مستقیم جریان «ارسال به مخاطبین» را باز می‌کنند
+           (مخاطبین گوشی = مهم‌ترین ابزار دعوت — شمارهٔ مشتریان معمولاً آنجاست) */
+        var cta = $('#ds-cta');
+        if (cta) {
+            cta.textContent = next.desk.cta || 'شروع';
+            if (next.desk.pick) {
+                cta.removeAttribute('data-go');
+                cta.setAttribute('data-contacts-pick', 's-home-sell');
+            } else {
+                cta.removeAttribute('data-contacts-pick');
+                cta.setAttribute('data-go', next.desk.go || 's-catalog');
+            }
+        }
+
+        var elProg = $('#ds-progress');
+        if (elProg) {
+            elProg.textContent = faNum(doneCount) + ' گام انجام شد · ' +
+                faNum(items.length - doneCount) + ' گام مانده';
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
        پیام تشویق در صفحهٔ تأمین‌کنندگان یک کالا
        ═══════════════════════════════════════════════════════════════ */
     function bpsRenderCta() {
@@ -795,6 +865,8 @@
     core.registerShowHook('s-cat-edit', catEditLoad);
     core.registerShowHook('s-sell-edit', gdEditRender);
     core.registerShowHook('s-home-sell', chargeSync);
+    /* میز فروش — کارتابل: دایره‌های امتیاز + کارت «گام بعدی» */
+    core.registerShowHook('s-home-sell', deskHomeSync);
     core.registerShowHook('s-profile', chargeSync);
 
     /* ═══════════════════════════════════════════════════════════════
@@ -830,6 +902,7 @@
         profileSync: profileSync, profileOpenEdit: profileOpenEdit,
         profileSave: profileSave, profilePickPhoto: profilePickPhoto,
         scoreRender: scoreRender,
+        deskHomeSync: deskHomeSync,
 
         bpsRenderCta: bpsRenderCta,
 
