@@ -286,6 +286,20 @@ const DATA = {
     ],
 
     /* ═══════════════════════════════════════════════════════════
+       سفارش‌ها و درخواست‌های قیمتِ مشتریان — صفحهٔ جزئیات مشتری
+       (فیلتر «فقط همین مشتری» روی دفتر سفارش/درخواست فروشنده
+       هم از روی همین نام‌ها عمل می‌کند)
+       ═══════════════════════════════════════════════════════════ */
+    customerOrders: [
+        { id: 'co1', customerId: 'cu1', title: 'برنج هاشمی · ۲۰ کیسه', status: 'new',      date: 'امروز',     img: 'png/goods/rice-sack.jpg',   go: 's-sell-order-view' },
+        { id: 'co2', customerId: 'cu2', title: 'برنج طارم · ۶ کیسه',   status: 'new',      date: 'امروز',     img: 'png/goods/rice-grains.jpg', go: 's-sell-order-view' },
+        { id: 'co3', customerId: 'cu3', title: 'برنج طارم · ۱۰ کیسه',  status: 'accepted', date: '۲ روز پیش', img: 'png/goods/rice-grains.jpg', go: 's-sell-order-view' }
+    ],
+    customerRfqs: [
+        { id: 'cr1', customerId: 'cu1', title: 'برنج هاشمی · ۲۰ کیسه', left: '۲ روز مانده', leftHot: false, date: 'امروز', img: 'png/goods/rice-sack.jpg', go: 's-sell-offer' }
+    ],
+
+    /* ═══════════════════════════════════════════════════════════
        تخفیفات حجمی کاتالوگ — پله‌ای بر اساس تعداد سفارش
        ═══════════════════════════════════════════════════════════ */
     volumeTiersOn: true,

@@ -2134,6 +2134,55 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     margin-top: 7px;
 }
 
+/* ─── کارت مشتری جدید — درخواست تایید (مثل اینستاگرام) ─── */
+.cust-req {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+}
+.cust-req > .row {
+    border: 0;
+    border-radius: 0;
+    background: none;
+}
+.cust-req-act {
+    display: flex;
+    gap: 8px;
+    padding: 0 12px 12px;
+}
+.cust-req-act .btn { flex: 1; }
+
+/* ─── صفحهٔ جزئیات مشتری — بلوک «در انتظار تایید» ─── */
+.cv-pending {
+    background: var(--amber-soft);
+    border: 1px solid #FDE68A;
+    border-radius: var(--r-md);
+    padding: 14px;
+}
+.cv-pending-tx { display: flex; gap: 10px; align-items: flex-start; }
+.cv-pending-tx > svg {
+    width: 20px; height: 20px;
+    color: var(--amber); flex-shrink: 0; margin-top: 2px;
+}
+.cv-pending-tx b {
+    display: block; font-size: 13.5px; font-weight: 800; color: #92400E;
+}
+.cv-pending-tx span {
+    display: block; font-size: 11.5px; color: #92400E; opacity: .85;
+    margin-top: 2px; line-height: 1.8;
+}
+.cv-pending-act { display: flex; gap: 8px; margin-top: 12px; }
+.cv-pending-act .btn { flex: 1; }
+
+/* ─── صفحهٔ جزئیات مشتری — شناسنامه ─── */
+#cv-identity .gd-row { cursor: default; }
+#cv-identity .gd-row[data-dial],
+#cv-identity .gd-row[data-cv-group] { cursor: pointer; }
+#cv-identity .gd-row[data-dial]:active,
+#cv-identity .gd-row[data-cv-group]:active { background: var(--surface-2); border-radius: 8px; }
+#cv-identity .gd-row:last-child { border-bottom: 0; }
+
 /* ─── خلاصهٔ دفتر مشتری ─── */
 .cust-summary {
     display: flex;

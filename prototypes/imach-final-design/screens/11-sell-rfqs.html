@@ -5,7 +5,7 @@
 <section class="screen" id="s-sell-rfqs" data-arm="sell">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">درخواست‌های قیمت<small>۲ مورد در انتظار پاسخ</small></div>
+        <div class="ttl">درخواست‌های قیمت<small id="sell-rfqs-sub">۲ مورد در انتظار پاسخ</small></div>
     </div>
 
     <div class="body">
@@ -41,6 +41,15 @@
                     <div class="row-title">برنج فجر · ۱۰ کیسه <span class="badge b-green">پاسخ داده‌شده</span></div>
                     <div class="row-sub">سوپرمارکت سعید <span class="dot">·</span> ۵ روز پیش</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- حالت خالی — وقتی دفتر برحسب یک مشتری فیلتر شده باشد -->
+        <div id="sell-rfqs-empty" hidden>
+            <div class="empty">
+                <div class="empty-ic"><svg><use href="#i-inbox"/></svg></div>
+                <h3>درخواستی از این مشتری پیدا نشد</h3>
+                <p>وقتی این مشتری از تو استعلام قیمت بگیرد، همین‌جا می‌آید.</p>
             </div>
         </div>
     </div>

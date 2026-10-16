@@ -343,10 +343,16 @@
             return;
         }
 
+        /* ─── ارسال به مخاطبین (دکمهٔ بالای شیت اشتراک) ─── */
+        var cpick = t.closest('[data-contacts-pick]');
+        if (cpick) {
+            go('s-contacts', { mode: 'pick', back: cpick.dataset.contactsPick || 's-catalog-share' });
+            return;
+        }
+
         /* ─── جستجو و انتخاب مخاطبین ─── */
         if (t.closest('#share-pick')) {
-            core.setSCREENParams('s-contacts', { mode: 'pick', back: 's-catalog-share' });
-            go('s-contacts');
+            go('s-contacts', { mode: 'pick', back: 's-catalog-share' });
             return;
         }
 
@@ -366,6 +372,9 @@
                 if (banner) {
                     banner.innerHTML = '<div class="success-banner"><svg><use href="#i-check"/></svg><span>کاتالوگ برای ' + faNum(n) + ' نفر ارسال شد</span></div>';
                     banner.hidden = false;
+                } else {
+                    /* صفحه‌ای که بنر موفقیت ندارد (مثل دفتر مشتری) — توست کافی است */
+                    toast('کاتالوگ برای ' + faNum(n) + ' مخاطب ارسال شد', 'success');
                 }
             });
             return;

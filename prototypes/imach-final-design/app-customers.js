@@ -2,16 +2,19 @@
    iMach — Customers (دفتر مشتری)
    ─────────────────────────────────────────────────────────────────
    مسئول:
-     • مشتری = کسی که کاتالوگ را ذخیره کرده (یا خریدش ذخیره شده)
-       — فرم ثبت دستی مشتری وجود ندارد.
-     • رندر دیتامحور لیست مشتریان (با گروه، صنف، شهر)
+     • مشتری = کسی که کاتالوگ را ذخیره کرده — فرم ثبت دستی نیست
+     • رندر دیتامحور لیست مشتریان (گروه، صنف، شهر)
        — مشتریان جدید (isNew) با برچسب «جدید» بالاتر از همه
-     • نوار فیلتر دیوارگونه: صنف / گروه مشتری / شهر (با جستجو)
-     • دعوت مشتری جدید = شیت اشتراک‌گذاری کاتالوگ
-     • مدیریت گروه‌های مشتری (نام + تخفیف مستقیم) داخل شیت فیلتر گروه
-     • تغییر گروه یک مشتری (شیت انتخاب گروه از منوی سه‌نقطه)
-     • منوی سه‌نقطهٔ مشتری (گفتگو / گروه مشتری / حذف)
-     • بدون بدهی — MVP ساده می‌ماند
+       — روی کارتِ مشتریِ جدید: دکمه‌های «تایید / حذف»
+         (تا تکلیف روشن نشود، بالای دفتر می‌ماند)
+     • لمس کارت مشتری → صفحهٔ جزئیات مشتری (s-customer-view):
+       شناسنامه + یادداشت + سفارش/درخواست‌های او + لیست خرید او
+     • منوی سه‌نقطهٔ مشتری = شیت از پایین (قانون همیشگی موبایل):
+       گفتگو · لیست خرید او · سفارش‌های او · درخواست‌های او ·
+       گروه مشتری · حذف
+     • فیلتر «فقط همین مشتری» روی دفتر سفارش/درخواست فروشنده
+     • دعوت مشتری جدید = شیت اشتراک‌گذاری (مخاطبین بالا)
+     • مدیریت گروه‌ها داخل شیت فیلتر گروه
    ═════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -31,10 +34,13 @@
         industry: null,     /* null = همه */
         group: null,        /* null = همه · '' = بدون گروه · 'cgX' = گروه مشخص */
         city: null,         /* null = همه · 'رشت' = شهر مشخص */
-        pickId: null        /* id مشتریِ در حال تغییر گروه */
+        pickId: null,       /* id مشتریِ در حال تغییر گروه */
+        viewId: null,       /* id مشتریِ صفحهٔ جزئیات */
+        menuId: null        /* id مشتریِ منوی سه‌نقطه */
     };
     var CGROUP = { editing: null, returnTo: 'manage' };
-    var FBCITY = { q: '' };   /* جستجوی داخل شیت فیلتر شهر */
+    var FBCITY = { q: '' };        /* جستجوی داخل شیت فیلتر شهر */
+    var CUSTVIEW = { orders: null, rfqs: null };  /* فیلتر یک‌بارمصرف دفتر سفارش/درخواست */
 
     /* ═══ Helpers ═══ */
     function esc(s) {
@@ -79,7 +85,7 @@
 
     function rowHtml(c) {
         var isNew = !!c.isNew;
-        return '<div class="row static" data-go="s-chat" data-cu-id="' + esc(c.id) + '">' +
+        var row = '<div class="row static" data-go="s-customer-view" data-cu-id="' + esc(c.id) + '">' +
             '<div class="avatar" style="background:' + (c.color || '#7c3aed') + '">' + esc(c.avatar || (c.name || '؟').charAt(0)) + '</div>' +
             '<div class="row-body">' +
                 '<div class="row-title">' + esc(c.name) + (isNew ? ' <span class="badge b-primary">جدید</span>' : '') + '</div>' +
@@ -89,10 +95,20 @@
             '<button class="icon-btn plain" data-cust-menu="' + esc(c.name) + '" data-cu-id="' + esc(c.id) + '" aria-label="گزینه‌ها">' +
                 '<svg><use href="#i-dots"/></svg></button>' +
         '</div>';
+        if (!isNew) return row;
+        /* مشتری جدید — کارت با دکمه‌های تایید/حذف (مثل درخواست‌های اینستاگرام) */
+        return '<div class="cust-req">' + row +
+            '<div class="cust-req-act">' +
+                '<button class="btn btn-primary btn-sm" type="button" data-cust-accept="' + esc(c.id) + '">' +
+                    '<svg><use href="#i-check"/></svg> تایید</button>' +
+                '<button class="btn btn-outline btn-sm" type="button" data-cust-reject="' + esc(c.id) + '" style="color: var(--red); border-color: #F3C1C1;">' +
+                    '<svg><use href="#i-x"/></svg> حذف</button>' +
+            '</div>' +
+        '</div>';
     }
 
     function visibleCustomers() {
-        /* جدیدترین‌ها (isNew) همیشه بالاتر از همه */
+        /* جدیدترین‌ها (isNew) همیشه بالاتر از همه — تا تایید یا حذف شوند */
         var arr = customers().slice().sort(function (a, b) {
             return ((b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
         });
@@ -245,6 +261,166 @@
         core.openSheet('sheet-share-cat');
     }
 
+    /* ═══ تایید / حذف مشتری جدید ═══ */
+    function custAccept(id) {
+        var c = customerById(id);
+        if (!c) return;
+        c.isNew = false;
+        customersRender();
+        cvSyncIfVisible();
+        toast('«' + c.name + '» تایید شد — از مشتریان دفترت است', 'success');
+    }
+
+    function custReject(id) {
+        var c = customerById(id);
+        if (!c) return;
+        core.confirm({
+            title: 'حذف از مشتریان',
+            text: '«' + c.name + '» از دفتر مشتریانت حذف می‌شود. دیگر قیمت‌های تو را نمی‌بیند.',
+            ok: 'حذف مشتری', cancel: 'انصراف', danger: true
+        }).then(function (ok) {
+            if (!ok) return;
+            core.data.customers = core.data.customers.filter(function (x) { return x.id !== id; });
+            customersRender();
+            toast('مشتری از دفتر حذف شد', 'success');
+            /* اگر همین مشتری در صفحهٔ جزئیات باز است، به دفتر برگرد */
+            if (core.getCurrentScreen() === 's-customer-view' && CUST.viewId === id) {
+                core.back();
+            }
+        });
+    }
+
+    /* ═══ صفحهٔ جزئیات مشتری (s-customer-view) ═══ */
+    function cvRow(ic, val, label, action) {
+        var attr = '';
+        if (action === 'dial') attr = ' data-dial style="cursor:pointer"';
+        if (action === 'group') attr = ' data-cv-group style="cursor:pointer"';
+        var chev = action
+            ? '<svg style="width:15px;height:15px;color:var(--text-4);flex-shrink:0;margin-inline-start:auto"><use href="#i-chev"/></svg>'
+            : '';
+        return '<div class="gd-row"' + attr + '>' +
+            '<div class="gd-ic"><svg><use href="#i-' + ic + '"/></svg></div>' +
+            '<div class="gd-tx"><b>' + val + '</b><span>' + label + '</span></div>' +
+            chev +
+        '</div>';
+    }
+
+    function cvActRow(o, kind) {
+        var badge = '';
+        if (kind === 'order') {
+            badge = (o.status === 'accepted')
+                ? '<span class="badge b-green">پذیرفته</span>'
+                : '<span class="badge b-primary">در انتظار پاسخ</span>';
+        }
+        var left = '';
+        if (kind === 'rfq' && o.left) {
+            var col = o.leftHot ? 'var(--red)' : 'var(--amber)';
+            left = ' <span class="dot">·</span> <span style="color:' + col + ';font-weight:700">' + esc(o.left) + '</span>';
+        }
+        var kindTx = (kind === 'rfq') ? 'درخواست قیمت' : 'سفارش';
+        return '<div class="row" data-go="' + esc(o.go || 's-sell-order-view') + '">' +
+            '<div class="thumb thumb-sm"><img src="' + esc(o.img) + '" alt=""></div>' +
+            '<div class="row-body">' +
+                '<div class="row-title">' + esc(o.title) + ' ' + badge + '</div>' +
+                '<div class="row-sub">' + kindTx + ' <span class="dot">·</span> ' + esc(o.date || '') + left + '</div>' +
+            '</div>' +
+            '<div class="row-chev"><svg><use href="#i-chev"/></svg></div>' +
+        '</div>';
+    }
+
+    function cvRender() {
+        var sec = $('#s-customer-view');
+        if (!sec) return;
+
+        var c = customerById(CUST.viewId);
+        if (!c) {
+            var all = customers();
+            c = all[0] || null;
+            if (c) CUST.viewId = c.id;
+        }
+        if (!c) { core.back(); return; }
+
+        /* هدر */
+        var av = $('#cv-avatar');
+        if (av) {
+            av.textContent = c.avatar || (c.name || '؟').charAt(0);
+            av.style.background = c.color || '#7c3aed';
+        }
+        var nm = $('#cv-name'); if (nm) nm.textContent = c.name;
+        var sub = $('#cv-sub');
+        if (sub) sub.textContent = [c.person, c.city].filter(Boolean).join(' · ');
+
+        /* در انتظار تایید — فقط مشتری جدید */
+        var pend = $('#cv-pending');
+        if (pend) {
+            if (c.isNew) {
+                pend.hidden = false;
+                pend.innerHTML =
+                    '<div class="cv-pending">' +
+                        '<div class="cv-pending-tx">' +
+                            '<svg><use href="#i-user-plus"/></svg>' +
+                            '<div><b>در انتظار تایید تو</b><span>کاتالوگ تو را ذخیره کرده</span></div>' +
+                        '</div>' +
+                        '<div class="cv-pending-act">' +
+                            '<button class="btn btn-primary" type="button" data-cust-accept="' + esc(c.id) + '">' +
+                                '<svg><use href="#i-check"/></svg> تایید مشتری</button>' +
+                            '<button class="btn btn-outline" type="button" data-cust-reject="' + esc(c.id) + '" style="color: var(--red); border-color: #F3C1C1;">' +
+                                '<svg><use href="#i-x"/></svg> حذف</button>' +
+                        '</div>' +
+                    '</div>';
+            } else {
+                pend.hidden = true;
+                pend.innerHTML = '';
+            }
+        }
+
+        /* شناسنامه */
+        var idn = $('#cv-identity');
+        if (idn) {
+            var g = groupById(c.groupId);
+            var gTx = g ? (esc(g.name) + ' · ٪' + faNum(g.discount) + ' تخفیف') : 'بدون گروه';
+            idn.innerHTML =
+                cvRow('user', esc(c.person || '—'), 'نام مشتری', null) +
+                cvRow('store', esc(c.industry || 'بدون صنف'), 'صنف', null) +
+                cvRow('pin', esc(c.city || '—'), 'شهر', null) +
+                cvRow('phone', '<span dir="ltr">' + esc(c.phone || '—') + '</span>', 'تلفن — لمس کن تا بگیری', 'dial') +
+                cvRow('tag', gTx, 'گروه مشتری — لمس کن تا عوض شود', 'group') +
+                cvRow('clock', esc(c.since || '—'), 'مشتری از', null);
+        }
+
+        /* یادداشت */
+        var note = $('#cv-note');
+        if (note) note.value = c.note || '';
+
+        /* سفارش‌ها و درخواست‌های او */
+        var act = $('#cv-activity');
+        if (act) {
+            var ords = (core.data.customerOrders || []).filter(function (o) { return o.customerId === c.id; });
+            var rfqs = (core.data.customerRfqs || []).filter(function (r) { return r.customerId === c.id; });
+            var html = '';
+            ords.forEach(function (o) { html += cvActRow(o, 'order'); });
+            rfqs.forEach(function (r) { html += cvActRow(r, 'rfq'); });
+            if (!html) {
+                html = '<div class="empty" style="padding: 16px 12px;">' +
+                    '<h3 style="margin-bottom:4px">هنوز سفارش یا درخواستی ندارد</h3>' +
+                    '<p style="margin:0">وقتی این مشتری از تو سفارش یا استعلام قیمت بدهد، همین‌جا می‌آید.</p></div>';
+            }
+            act.innerHTML = html;
+        }
+    }
+
+    function cvSyncIfVisible() {
+        if (core.getCurrentScreen() === 's-customer-view') cvRender();
+    }
+
+    function cvNoteSave() {
+        var c = customerById(CUST.viewId);
+        var note = $('#cv-note');
+        if (!c || !note) return;
+        c.note = note.value.trim();
+        toast('یادداشت ذخیره شد', 'success');
+    }
+
     /* ═══ گروه‌ها — مدیریت ═══ */
     function cgListRender() {
         var host = $('#cg-list');
@@ -314,6 +490,7 @@
             toast('گروه ذخیره شد', 'success');
         }
         customersRender();
+        cvSyncIfVisible();
     }
 
     function cgeDelete() {
@@ -332,6 +509,7 @@
             customers().forEach(function (c) { if (c.groupId === g.id) c.groupId = ''; });
             if (CUST.group === g.id) CUST.group = null;
             customersRender();
+            cvSyncIfVisible();
             toast('گروه حذف شد', 'success');
         });
     }
@@ -368,31 +546,124 @@
         }
         core.closeSheet('sheet-pick-cgroup');
         customersRender();
+        cvSyncIfVisible();
     }
 
-    /* ═══ منوی سه‌نقطهٔ مشتری ═══ */
+    /* ═══ منوی گزینه‌های مشتری — شیت از پایین ═══ */
     function custMenu(name, btn, row) {
         var id = (btn && btn.dataset.cuId) || (row && row.dataset.cuId) || null;
-        core.actions('گزینه‌های ' + name, [
-            { label: 'گفتگو', onClick: function () { core.go('s-chat'); } },
-            { label: 'گروه مشتری (تخفیف)', onClick: function () {
-                    CUST.pickId = id;
-                    pcgListRender();
-                    core.openSheet('sheet-pick-cgroup');
-                }},
-            { label: 'حذف از مشتریان', danger: true, onClick: function () {
-                    core.confirm({
-                        title: 'حذف از مشتریان',
-                        text: '«' + name + '» از دفتر مشتریانت حذف می‌شود. دیگر قیمت‌های شما را نمی‌بیند.',
-                        ok: 'حذف مشتری', cancel: 'انصراف', danger: true
-                    }).then(function (ok) {
-                        if (!ok) return;
-                        core.data.customers = core.data.customers.filter(function (x) { return x.id !== id; });
-                        customersRender();
-                        toast('مشتری از دفتر حذف شد', 'success');
-                    });
-                }}
-        ]);
+        CUST.menuId = id;
+        var c = customerById(id);
+        var g = c ? groupById(c.groupId) : null;
+
+        var ttl = $('#ccm-ttl');
+        if (ttl) ttl.textContent = 'گزینه‌های ' + (name || (c ? c.name : 'مشتری'));
+        var host = $('#ccm-list');
+        if (!host) return;
+
+        var items = [
+            { ic: 'msg',     t: 'گفتگو',                s: 'پیام در آی‌مچ',                                  act: 'chat' },
+            { ic: 'basket',  t: 'لیست خرید او',         s: 'چه چیزهایی می‌خرد',                              act: 'buylist' },
+            { ic: 'receipt', t: 'سفارش‌های او',          s: 'سفارش‌هایی که از تو ثبت کرده',                   act: 'orders' },
+            { ic: 'inbox',   t: 'درخواست‌های قیمت او',   s: 'استعلام‌های قیمت این مشتری',                     act: 'rfqs' },
+            { ic: 'tag',     t: 'گروه مشتری (تخفیف)',   s: g ? (esc(g.name) + ' · ٪' + faNum(g.discount)) : 'بدون گروه', act: 'group' },
+            { ic: 'trash',   t: 'حذف از مشتریان',       s: 'از دفتر مشتریانت حذف می‌شود',                    act: 'delete', danger: true }
+        ];
+
+        host.innerHTML = items.map(function (it) {
+            var bSt = it.danger ? ' style="color:var(--red)"' : '';
+            var icSt = it.danger ? ' style="background:var(--red-soft);color:var(--red)"' : '';
+            var sSt = it.danger ? ' style="color:#B91C1C;opacity:.75"' : '';
+            return '<button class="sheet-row" type="button" data-ccm="' + it.act + '">' +
+                '<span class="ico"' + icSt + '><svg><use href="#i-' + it.ic + '"/></svg></span>' +
+                '<span class="tx"><b' + bSt + '>' + it.t + '</b><span' + sSt + '>' + it.s + '</span></span>' +
+            '</button>';
+        }).join('');
+
+        core.openSheet('sheet-cust-menu');
+    }
+
+    function ccmRun(act) {
+        var id = CUST.menuId;
+        var c = customerById(id);
+        core.closeSheet('sheet-cust-menu');
+
+        if (act === 'chat') { core.go('s-chat'); return; }
+        if (act === 'buylist') { core.go('s-buy-list-guest'); return; }
+        if (act === 'orders') {
+            if (c) CUSTVIEW.orders = c.name;
+            core.go('s-sell-orders');
+            return;
+        }
+        if (act === 'rfqs') {
+            if (c) CUSTVIEW.rfqs = c.name;
+            core.go('s-sell-rfqs');
+            return;
+        }
+        if (act === 'group') {
+            CUST.pickId = id;
+            pcgListRender();
+            core.openSheet('sheet-pick-cgroup');
+            return;
+        }
+        if (act === 'delete') { custReject(id); return; }
+    }
+
+    /* ═══ فیلتر «فقط همین مشتری» — دفتر سفارش/درخواست فروشنده ═══ */
+    function ordersFilterApply() {
+        var sec = $('#s-sell-orders');
+        if (!sec) return;
+        var name = CUSTVIEW.orders;
+        CUSTVIEW.orders = null;               /* یک‌بارمصرف */
+        if (!name) return;                    /* ورود عادی — بدون فیلتر */
+
+        var small = $('#sell-orders-sub');
+        if (small) small.textContent = 'فقط ' + name;
+
+        var any = false;
+        $$('.rows .row', sec).forEach(function (row) {
+            var subEl = row.querySelector('.row-sub');
+            var isHis = !!(subEl && subEl.textContent.indexOf(name) > -1);
+            row.hidden = !isHis;
+            if (isHis) any = true;
+        });
+        var empty = $('#sell-orders-empty');
+        if (empty) empty.hidden = any;
+        if (!any) {
+            $$('.body > *', sec).forEach(function (el) {
+                if (el.id !== 'sell-orders-empty') el.hidden = true;
+            });
+            var h3 = empty && empty.querySelector('h3');
+            if (h3) h3.textContent = 'سفارشی از «' + name + '» پیدا نشد';
+        }
+    }
+
+    function rfqsFilterApply() {
+        var sec = $('#s-sell-rfqs');
+        if (!sec) return;
+        var name = CUSTVIEW.rfqs;
+        CUSTVIEW.rfqs = null;                 /* یک‌بارمصرف */
+        if (!name) return;
+
+        var small = $('#sell-rfqs-sub');
+        if (small) small.textContent = 'فقط ' + name;
+
+        var any = false;
+        $$('.rows .row', sec).forEach(function (row) {
+            var subEl = row.querySelector('.row-sub');
+            var isHis = !!(subEl && subEl.textContent.indexOf(name) > -1);
+            row.hidden = !isHis;
+            if (isHis) any = true;
+        });
+        var empty = $('#sell-rfqs-empty');
+        if (empty) empty.hidden = any;
+        if (!any) {
+            $$('.body > *', sec).forEach(function (el) {
+                if (el.id !== 'sell-rfqs-empty') el.hidden = true;
+            });
+            var h3 = empty && empty.querySelector('h3');
+            if (h3) h3.textContent = 'درخواستی از «' + name + '» پیدا نشد';
+        }
     }
 
     /* ═══ حلقهٔ کلیک ═══ */
@@ -419,12 +690,33 @@
         /* دعوت مشتری جدید — شیت اشتراک کاتالوگ */
         if (t.closest('#cust-invite') || t.closest('#cust-invite-2')) { shareOpen(); return; }
 
-        /* لمس ردیف مشتری = دیده‌شدن برچسب «جدید» */
-        var cuRow = t.closest('[data-cu-id]');
-        if (cuRow) {
-            var seen = customerById(cuRow.dataset.cuId);
-            if (seen && seen.isNew) seen.isNew = false;
+        /* تایید / حذف مشتری جدید — روی کارت یا در جزئیات */
+        var acc = t.closest('[data-cust-accept]');
+        if (acc) { custAccept(acc.dataset.custAccept); return; }
+        var rej = t.closest('[data-cust-reject]');
+        if (rej) { custReject(rej.dataset.custReject); return; }
+
+        /* گزینه‌های منوی شیت مشتری */
+        var ccm = t.closest('[data-ccm]');
+        if (ccm) { ccmRun(ccm.dataset.ccm); return; }
+
+        /* ذخیرهٔ یادداشت مشتری */
+        if (t.closest('#cv-note-save')) { cvNoteSave(); return; }
+
+        /* لیست خرید او — از صفحهٔ جزئیات */
+        if (t.closest('[data-cv-buylist]')) { core.go('s-buy-list-guest'); return; }
+
+        /* گروه مشتری — از شناسنامهٔ جزئیات */
+        if (t.closest('[data-cv-group]')) {
+            CUST.pickId = CUST.viewId;
+            pcgListRender();
+            core.openSheet('sheet-pick-cgroup');
+            return;
         }
+
+        /* لمس کارت مشتری → صفحهٔ جزئیات (id را ثبت کن؛ ناوبری با data-go) */
+        var cuRow = t.closest('.row[data-cu-id]');
+        if (cuRow) CUST.viewId = cuRow.dataset.cuId;
 
         /* رندر محتوای شیت‌ها هنگام باز شدن (بازکردن توسط هندلر عمومی انجام می‌شود) */
         if (t.closest('[data-sheet="sheet-cust-groups"]')) { cgListRender(); }
@@ -469,12 +761,17 @@
 
     /* ═══ Hooks ═══ */
     core.registerShowHook('s-customers', customersOnShow);
+    core.registerShowHook('s-customer-view', cvRender);
+    core.registerShowHook('s-sell-orders', ordersFilterApply);
+    core.registerShowHook('s-sell-rfqs', rfqsFilterApply);
 
     /* ═══ Expose ═══ */
     core.customers = {
         CUST: CUST,
         render: customersRender,
         menu: custMenu,
+        accept: custAccept,
+        reject: custReject,
         groupsRender: cgListRender,
         pickRender: pcgListRender,
         shareOpen: shareOpen
