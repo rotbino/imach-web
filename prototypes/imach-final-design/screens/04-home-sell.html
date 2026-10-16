@@ -1,15 +1,22 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۰۴: میز فروش — کارتابل فروش
      ─────────────────────────────────────────────────────────────
-     فلسفه (حکم مالک، فاز FD-4): میز فروش در واقع «کارتابل فروش» است.
-     • بالای صفحه فقط ۲-۳ لینک مهم: کاتالوگ / مشتریان من / امتیاز من
-     • بقیهٔ صفحه = اعلام کارهای نیازمند اقدام:
-         ۱) ردیف‌های زندهٔ ارتباطی (سفارش جدید، درخواست قیمت)
-         ۲) کارت «گام بعدی» — راهنمای گام‌به‌گامِ راه‌اندازی، پیوسته با امتیاز
-     • عنوان صفحه «میز فروش من» است (نه نام کسب‌وکار)
-     • دایرهٔ امتیاز در اپ‌بارنشسته جای آیکون پروفایل — پروفایل در فوتر هست
-     • شارژ و «سفارش جدید/درخواست قیمت» از KPI حذف شدند (حکم مالک):
-       شارژ این‌جا لازم نیست؛ سفارش/درخواست در بخش نیازمند اقدام هستند.
+     فلسفه (حکم مالک، FD-4): میز فروش = «کارتابل فروش».
+     بالای صفحه فقط ۲-۳ لینک مهم؛ بقیهٔ صفحه = اعلام کارهای نیازمند اقدام.
+
+     بازبینی مالک (FD-5):
+     • صفحه «همگن و مینیمال اما گویا»: سه کادر هم‌شکل —
+       کاتالوگ من + مشتریان من + امتیاز فعالیت.
+       کاتالوگ دیگر پررنگ/اشباع نیست («مثل اون دو تا») تا مشتریان و
+       امتیاز هم به چشم بیایند.
+     • امتیاز از اپ‌بار حذف شد — اپ‌بار فقط اعلان‌ها.
+       امتیاز فقط در کادر «امتیاز فعالیت» (دایرهٔ ۵۶px، تا ۱۰۰ سبز).
+     • نام کادر: «امتیاز فعالیت» (نه «امتیاز من»).
+     • کارت «گام بعدی»: بدون دکمه — کل کادر کلیک‌پذیر است (کادر کوچک‌تر).
+     • واژگان (قانون FD-5): چیزی که در کاتالوگ می‌فروشی «محصول» است نه
+       «کالا». گروه کالا > کالا > محصول — مثال مالک: برنج / برنج هاشمی /
+       برنج هاشمی برند طبیعت ۱۰ کیلویی. لیست خرید خریدار «کالا» دارد.
+
      داده و منطق: deskHomeSync() در app-forms.js + scoreItemsSell در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-sell" data-arm="sell">
@@ -19,45 +26,32 @@
             <div class="title">میز فروش من</div>
         </div>
         <div class="actions">
+            <!-- FD-5: دایرهٔ امتیاز از اپ‌بار حذف شد — امتیاز فقط در کادر
+                 «امتیاز فعالیت» زیر همین صفحه است (کلیک → صفحهٔ امتیازها) -->
             <button class="icon-btn" data-go="s-notifs" aria-label="اعلان‌ها">
                 <svg><use href="#i-bell"/></svg>
                 <span class="dot">۳</span>
-            </button>
-            <!-- دایرهٔ امتیاز — به‌جای آیکون پروفایل (پروفایل در فوتر هست، این‌جا اضافه بود).
-                 عدد داخل دایره = امتیاز فعالیت فروش؛ با deskHomeSync سینک می‌شود.
-                 تا ۱۰۰ که برسد دورش سبز می‌شود. کلیک → صفحهٔ امتیاز فعالیت‌ها. -->
-            <button class="score-chip" id="app-score-chip" type="button" data-score-arm="sell" aria-label="امتیاز فعالیت فروش">
-                <svg viewBox="0 0 44 44">
-                    <circle cx="22" cy="22" r="18" class="sc-chip-bg"></circle>
-                    <circle cx="22" cy="22" r="18" class="sc-chip-fill" id="app-score-ring"></circle>
-                </svg>
-                <b id="app-score-num">۰</b>
             </button>
         </div>
     </div>
 
     <div class="body">
 
-        <!-- کاتالوگ من — پررنگ‌ترین کار صفحه (حکم مالک: «کاملاً توی چشم باشه») -->
-        <button class="desk-catalog" type="button" data-go="s-catalog">
-            <span class="dc-ic"><svg><use href="#i-store"/></svg></span>
-            <span class="dc-tx">
-                <b>کاتالوگ من</b>
-                <span>۴ کالا · آمادهٔ اشتراک با مشتریان</span>
-            </span>
-            <svg class="dc-chev"><use href="#i-chev"/></svg>
-        </button>
-
-        <!-- فقط دو کادر: مشتریان من + امتیاز من
-             (شارژ حذف شد — این‌جا لازم نیست؛ به‌جایش امتیاز آمد
-              تا دایرهٔ امتیاز بزرگ‌تر دیده شود و به ۱۰۰ سبز شود) -->
-        <div class="kpis">
+        <!-- سه کادر هم‌شکل و همگن (حکم مالک FD-5) — همگن و مینیمال اما گویا.
+             ترتیب از راست: کاتالوگ (کار اصلی) → مشتریان → امتیاز فعالیت. -->
+        <div class="kpis kpis-3">
+            <div class="kpi" data-go="s-catalog">
+                <div class="k"><svg><use href="#i-store"/></svg> کاتالوگ من</div>
+                <div class="v">۴ <small>محصول</small></div>
+            </div>
             <div class="kpi" data-go="s-customers">
                 <div class="k"><svg><use href="#i-users"/></svg> مشتریان من</div>
-                <div class="v">۵</div>
+                <div class="v">۵ <small>مشتری</small></div>
             </div>
+            <!-- «امتیاز فعالیت» (FD-5: نام جدید) — تنها جای امتیاز در این صفحه.
+                 کلیک → صفحهٔ امتیاز فعالیت‌ها (data-score-arm). -->
             <div class="kpi desk-score" id="desk-score-box" data-score-arm="sell">
-                <div class="k"><svg><use href="#i-sparkles"/></svg> امتیاز من</div>
+                <div class="k"><svg><use href="#i-sparkles"/></svg> امتیاز فعالیت</div>
                 <div class="desk-ring">
                     <svg viewBox="0 0 44 44">
                         <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
@@ -96,22 +90,24 @@
         </div>
 
         <!-- گام بعدی راه‌اندازی — همیشه فقط یک گام (گام‌به‌گام، حکم مالک).
-             متن ساده + امتیاز همان گام + دکمهٔ اقدام.
-             محتوایش با deskHomeSync() از scoreItemsSell[].desk پر می‌شود. -->
+             FD-5: دکمهٔ «افزودن محصول» حذف شد؛ کل کادر کلیک‌پذیر است و
+             کادر کوچک‌تر شده. مقصد کلیک را deskHomeSync() از
+             scoreItemsSell[].desk روی خود کادر می‌گذارد:
+             گام افزودن → s-sell-add · گام دعوت → مستقیم «ارسال به مخاطبین». -->
         <div class="desk-step" id="desk-step" hidden>
             <div class="ds-head">
                 <span class="ds-badge">گام بعدی</span>
                 <span class="ds-pts" id="ds-pts"></span>
+                <svg class="ds-chev"><use href="#i-chev"/></svg>
             </div>
             <b class="ds-title" id="ds-title"></b>
             <span class="ds-sub" id="ds-sub"></span>
-            <button class="btn btn-arm btn-block" id="ds-cta" type="button"></button>
             <span class="ds-progress" id="ds-progress"></span>
         </div>
 
         <div class="hint-line">
             <svg><use href="#i-sparkles"/></svg>
-            <span>۳ خریدار عمدهٔ جدید با کالاهای کاتالوگ شما هم‌خوانی دارند.</span>
+            <span>۳ خریدار عمدهٔ جدید با محصولات کاتالوگ شما هم‌خوانی دارند.</span>
         </div>
     </div>
 

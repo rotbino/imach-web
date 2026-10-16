@@ -100,7 +100,7 @@
         if (heroP) {
             if (score >= 100) {
                 heroP.textContent = isSell
-                    ? '🎉 موتور شتاب‌دهنده آیمچ فعال شده! کالاهایت به خریداران هدف معرفی می‌شوند تا مشتریان تازه‌ای پیدا کنی و شبکه فروشت را گسترش بدهی.'
+                    ? '🎉 موتور شتاب‌دهنده آیمچ فعال شد! محصولاتت به خریداران هدف معرفی می‌شوند تا مشتریان تازه‌ای پیدا کنی و شبکه فروشت را گسترش بدهی.'
                     : '🎉 موتور شتاب‌دهنده آیمچ فعال شده! تأمین‌کنندگان مناسب بیشتری به تو معرفی می‌شوند تا انتخاب‌های بیشتری داشته باشی و راحت‌تر خرید کنی.';
             } else {
                 heroP.textContent = isSell
@@ -157,7 +157,7 @@
 
         if (sell >= 100) {
             if (title) title.textContent = '🎉 شبکهٔ بازت فعال شد';
-            if (sub) sub.textContent = 'کالاهایت الان به خریداران هدف نشان داده می‌شود';
+            if (sub) sub.textContent = 'محصولاتت الان به خریداران هدف نشان داده می‌شود';
         } else {
             if (title) title.textContent = 'امتیاز فعالیت فروش';
             if (sub) sub.textContent = 'شبکه‌ات را بساز — ' + faNum(100 - sell) + ' امتیاز تا شتاب گرفتن';
@@ -189,10 +189,14 @@
        حکم مالک (FD-4): میز فروش = کارتابل. کار اصلی‌اش اعلام
        کارهای نیازمند اقدام است؛ بالای صفحه فقط ۲-۳ لینک مهم.
 
-       deskHomeSync سه چیز را سینک می‌کند:
-         ۱) دایرهٔ امتیاز اپ‌بار (جای آیکون پروفایل — پروفایل در فوتر)
-         ۲) کادر «امتیاز من» با دایرهٔ بزرگ‌تر (KPI دوم)
-         ۳) کارت «گام بعدی» — اولین گام ناقصِ قابل‌اقدام از
+       بازبینی مالک (FD-5):
+         • سه کادر هم‌شکل: کاتالوگ من / مشتریان من / «امتیاز فعالیت»
+           (نام جدید — قبلاً «امتیاز من»)؛ چیپ امتیاز اپ‌بار حذف شد.
+         • کارت «گام بعدی» بدون دکمه — مقصد روی خود کارد می‌نشیند.
+
+       deskHomeSync دو چیز را سینک می‌کند:
+         ۱) کادر «امتیاز فعالیت» با دایرهٔ ۵۶px (تنها جای امتیاز در صفحه)
+         ۲) کارت «گام بعدی» — اولین گام ناقصِ قابل‌اقدام از
             scoreItemsSell[].desk؛ گام‌به‌گام (همیشه فقط یک گام)
        نکته: قبلاً کارت امتیاز ۰۴ هیچ‌وقت سینک نمی‌شد چون هوک
        اشتباهاً روی s-catalog ثبت شده بود — این ساختار آن باگ را رفع می‌کند.
@@ -201,17 +205,16 @@
         var sell = scoreCalc(core.data.scoreItemsSell);
         var isOn = sell >= 100;
 
-        /* ۱) دایرهٔ امتیاز اپ‌بار */
-        _scoreRingSync(sell, '#app-score-ring', '#app-score-num');
-        var chip = $('#app-score-chip');
-        if (chip) chip.classList.toggle('on', isOn);
-
-        /* ۲) کادر «امتیاز من» با دایرهٔ بزرگ‌تر */
+        /* ۱) کادر «امتیاز فعالیت» — دایرهٔ بزرگ؛ تا ۱۰۰ سبز */
         _scoreRingSync(sell, '#desk-score-ring', '#desk-score-num');
         var box = $('#desk-score-box');
         if (box) box.classList.toggle('on', isOn);
 
-        /* ۳) کارت «گام بعدی» — همیشه فقط اولین گامِ ناقص */
+        /* ۲) کارت «گام بعدی» — همیشه فقط اولین گامِ ناقص.
+           FD-5: دکمهٔ اقدام حذف شد؛ کل کارد کلیک‌پذیر است —
+           گام افزودن محصول → s-sell-add؛ گام‌های دعوت مستقیلاً جریان
+           «ارسال به مخاطبین» را باز می‌کنند (مخاطبین گوشی =
+           مهم‌ترین ابزار دعوت — شمارهٔ مشتریان معمولاً آنجاست) */
         var items = (core.data.scoreItemsSell || []).filter(function (it) { return it.desk; });
         var next = null;
         for (var i = 0; i < items.length; i++) {
@@ -219,7 +222,12 @@
         }
         var card = $('#desk-step');
         if (!card) return;
-        if (!next) { card.hidden = true; return; }
+        if (!next) {
+            card.hidden = true;
+            card.removeAttribute('data-go');
+            card.removeAttribute('data-contacts-pick');
+            return;
+        }
 
         var doneCount = 0;
         items.forEach(function (it) { if (it.done) doneCount++; });
@@ -232,18 +240,13 @@
         var elSub = $('#ds-sub');
         if (elSub) elSub.textContent = next.desk.s;
 
-        /* دکمهٔ اقدام: گام‌های دعوت، مستقیم جریان «ارسال به مخاطبین» را باز می‌کنند
-           (مخاطبین گوشی = مهم‌ترین ابزار دعوت — شمارهٔ مشتریان معمولاً آنجاست) */
-        var cta = $('#ds-cta');
-        if (cta) {
-            cta.textContent = next.desk.cta || 'شروع';
-            if (next.desk.pick) {
-                cta.removeAttribute('data-go');
-                cta.setAttribute('data-contacts-pick', 's-home-sell');
-            } else {
-                cta.removeAttribute('data-contacts-pick');
-                cta.setAttribute('data-go', next.desk.go || 's-catalog');
-            }
+        /* مقصد کلیک روی خود کارد (به‌جای دکمه — حکم مالک FD-5) */
+        if (next.desk.pick) {
+            card.removeAttribute('data-go');
+            card.setAttribute('data-contacts-pick', 's-home-sell');
+        } else {
+            card.removeAttribute('data-contacts-pick');
+            card.setAttribute('data-go', next.desk.go || 's-catalog');
         }
 
         var elProg = $('#ds-progress');
@@ -938,7 +941,7 @@
         var s = $('#promo-s');
         var ic = $('#promo-ic');
         if (box) box.classList.toggle('on', on);
-        if (t) t.textContent = on ? 'کالاهایت ویژه‌اند' : 'کالاهایت را ویژه کن';
+        if (t) t.textContent = on ? 'محصولاتت ویژه‌اند' : 'محصولاتت را ویژه کن';
         if (s) {
             if (sell < 100) {
                 s.textContent = 'ابتدا به ۱۰۰ امتیاز فعالیت فروش برس';
@@ -950,7 +953,7 @@
         }
         if (ic) ic.classList.toggle('on', on);
 
-        /* بج ویژه روی کارت‌های کالا */
+        /* بج ویژه روی کارت‌های محصول */
         $$('#s-catalog .promo-badge').forEach(function (b) { b.hidden = !on; });
 
         /* صفحهٔ تبلیغات */
@@ -964,7 +967,7 @@
         if (sub) {
             if (sell < 100) sub.textContent = 'ابتدا به ۱۰۰ امتیاز فعالیت فروش برس';
             else if (wallet <= 0) sub.textContent = 'موجودی شارژ صفر است — ابتدا شارژ کن';
-            else sub.textContent = 'روی همهٔ کالاهای کاتالوگ اعمال می‌شود';
+            else sub.textContent = 'روی همهٔ محصولات کاتالوگ اعمال می‌شود';
         }
     }
 
@@ -1156,7 +1159,7 @@
         }
         core.data.user.catalogPromo = !core.data.user.catalogPromo;
         catPromoSync();
-        core.toast(core.data.user.catalogPromo ? 'کالاها ویژه شدند' : 'ویژه‌سازی خاموش شد', 'success');
+        core.toast(core.data.user.catalogPromo ? 'محصولات ویژه شدند' : 'ویژه‌سازی خاموش شد', 'success');
     }
 
 
@@ -1165,7 +1168,7 @@
        ═════════════════════════════════════════════════════════════ */
 
     var CATF = { q: '', group: null };   /* فیلتر کاتالوگ: جستجو + گروه کالا */
-    var gdEditListing = null;             /* کالای در حال ویرایش (s-sell-edit) */
+    var gdEditListing = null;             /* محصول در حال ویرایش (s-sell-edit) */
 
     function _pctClamp(v) { v = parseInt(v, 10); if (isNaN(v)) v = 0; return Math.max(0, Math.min(50, v)); }
 
@@ -1284,7 +1287,7 @@
             var cnt = $$('#cat-grid .pcard[data-gid="' + g.id + '"]').length;
             return '<div class="gd-row">' +
                 '<input class="input catgr-name-input" data-catgr-name="' + g.id + '" value="' + esc(g.name) + '">' +
-                '<span style="font-size:10.5px;color:var(--text-3);flex-shrink:0;">' + faNum(cnt) + ' کالا</span>' +
+                '<span style="font-size:10.5px;color:var(--text-3);flex-shrink:0;">' + faNum(cnt) + ' محصول</span>' +
                 '<button class="icon-btn plain" type="button" data-catgr-del="' + g.id + '" aria-label="حذف گروه"><svg style="color:var(--red)"><use href="#i-trash"/></svg></button>' +
             '</div>';
         }).join('');
@@ -1306,7 +1309,7 @@
         if (cnt > 0) {
             core.confirm({
                 title: 'حذف گروه کالا',
-                text: '«' + g.name + '» حذف می‌شود. کالاهای این گروه در «همه» می‌مانند.',
+                text: '«' + g.name + '» حذف می‌شود. محصولات این گروه در «همه» می‌مانند.',
                 ok: 'حذف گروه', cancel: 'انصراف', danger: true
             }).then(function (ok) { if (ok) doDel(); });
         } else doDel();
@@ -1385,7 +1388,7 @@
         setTimeout(function () { core.back(); }, 550);
     }
 
-    /* ─── تخفیف گروه مشتری روی تک‌کالا (s-sell-edit) ─── */
+    /* ─── تخفیف گروه مشتری روی تک‌محصول (s-sell-edit) ─── */
     function gdEditRender() {
         var host = $('#egd-list');
         if (!host) return;
@@ -1399,7 +1402,7 @@
             var has = gdEditListing.groupDiscounts[g.id] !== undefined;
             var v = has ? gdEditListing.groupDiscounts[g.id] : g.discount;
             var sub = has && v !== g.discount
-                ? 'پیش‌فرض گروه ٪' + faNum(g.discount) + ' — برای این کالا تغییر کرده'
+                ? 'پیش‌فرض گروه ٪' + faNum(g.discount) + ' — برای این محصول تغییر کرده'
                 : 'تخفیف پیش‌فرض گروه';
             return '<div class="gd-row">' +
                 '<div class="gd-ic"><svg><use href="#i-users"/></svg></div>' +
@@ -1517,7 +1520,7 @@
         }
         if (t.closest('#cat-edit-save')) { catEditSave(); return; }
 
-        /* تخفیف گروه روی تک‌کالا */
+        /* تخفیف گروه روی تک‌محصول */
         var estep = t.closest('[data-egd-step]');
         if (estep) {
             var egid = estep.dataset.egdId;
