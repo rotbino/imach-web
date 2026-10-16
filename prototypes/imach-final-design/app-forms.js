@@ -184,76 +184,133 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
-       میز فروش (۰۴) — کارتابل فروش
+       میز فروش (۰۴) / میز خرید (۱۹) — کارتابل
        ─────────────────────────────────────────────────────────────
-       حکم مالک (FD-4): میز فروش = کارتابل. کار اصلی‌اش اعلام
-       کارهای نیازمند اقدام است؛ بالای صفحه فقط ۲-۳ لینک مهم.
+       حکم مالک (FD-4): میز = کارتابل؛ بالای صفحه فقط چند لینک مهم،
+       بقیهٔ صفحه = اعلام کارهای نیازمند اقدام.
 
-       بازبینی مالک (FD-5):
-         • سه کادر هم‌شکل: کاتالوگ من / مشتریان من / «امتیاز فعالیت»
-           (نام جدید — قبلاً «امتیاز من»)؛ چیپ امتیاز اپ‌بار حذف شد.
-         • کارت «گام بعدی» بدون دکمه — مقصد روی خود کارد می‌نشیند.
+       بازبینی مالک (FD-6):
+         • دایرهٔ امتیاز به اپ‌بار برگشت (score-chip) — کلیک → صفحهٔ
+           امتیازها (تصمیم FD-5 «امتیاز فقط در کادر صفحه» لغو شد).
+         • روی میز فقط دو کادر تمام‌عرض (کاتالوگ من / مشتریان من —
+           و در میز خرید: لیست خرید من / تأمین‌کننده‌های من).
+         • کارت «گام بعدی فعالیت» با دکمهٔ اقدام (بازگشت از تصمیم FD-5):
+           «۵۵ امتیاز تا شتابدهی» + موشک · جملهٔ گام ·
+           نوار پیشرفت «۴۵/۱۰۰» + موشک · دکمه («افزودن محصول» و…)
 
-       deskHomeSync دو چیز را سینک می‌کند:
-         ۱) کادر «امتیاز فعالیت» با دایرهٔ ۵۶px (تنها جای امتیاز در صفحه)
-         ۲) کارت «گام بعدی» — اولین گام ناقصِ قابل‌اقدام از
-            scoreItemsSell[].desk؛ گام‌به‌گام (همیشه فقط یک گام)
+       sync چه چیزی؟
+         ۱) چیپ امتیاز اپ‌بار (حلقه + عدد + حالت سبز ۱۰۰+)
+         ۲) شمارنده‌های دو کادر (فروش: از دیتای واقعی listings/customers)
+         ۳) کارت «گام بعدی فعالیت» — اولین گام ناقصِ قابل‌اقدام از
+            scoreItems*.desk؛ گام‌به‌گام (همیشه فقط یک گام).
+            عدد «۴۵/۱۰۰» و «۵۵ امتیاز تا شتابدهی» محاسبه‌اند، نه متن ثابت —
+            همیشه با scoreCalc و صفحهٔ امتیاز سینک می‌مانند.
        نکته: قبلاً کارت امتیاز ۰۴ هیچ‌وقت سینک نمی‌شد چون هوک
-       اشتباهاً روی s-catalog ثبت شده بود — این ساختار آن باگ را رفع می‌کند.
+       اشتباهاً روی s-catalog ثبت شده بود — ساختار زیر آن باگ را رفع می‌کند.
        ═══════════════════════════════════════════════════════════════ */
-    function deskHomeSync() {
-        var sell = scoreCalc(core.data.scoreItemsSell);
-        var isOn = sell >= 100;
 
-        /* ۱) کادر «امتیاز فعالیت» — دایرهٔ بزرگ؛ تا ۱۰۰ سبز */
-        _scoreRingSync(sell, '#desk-score-ring', '#desk-score-num');
-        var box = $('#desk-score-box');
-        if (box) box.classList.toggle('on', isOn);
-
-        /* ۲) کارت «گام بعدی» — همیشه فقط اولین گامِ ناقص.
-           FD-5: دکمهٔ اقدام حذف شد؛ کل کارد کلیک‌پذیر است —
-           گام افزودن محصول → s-sell-add؛ گام‌های دعوت مستقیلاً جریان
-           «ارسال به مخاطبین» را باز می‌کنند (مخاطبین گوشی =
-           مهم‌ترین ابزار دعوت — شمارهٔ مشتریان معمولاً آنجاست) */
-        var items = (core.data.scoreItemsSell || []).filter(function (it) { return it.desk; });
-        var next = null;
-        for (var i = 0; i < items.length; i++) {
-            if (!items[i].done) { next = items[i]; break; }
+    /* چیپ امتیاز اپ‌بار — حلقهٔ ۳۶px با عدد (مشترک فروش/خرید) */
+    function _chipRingSync(score, ringSel, numSel, chipSel) {
+        var pct = Math.min(100, score) / 100;
+        var ring = $(ringSel);
+        if (ring) {
+            /* circumference = 2 * π * 18 ≈ 113.1 */
+            ring.style.strokeDashoffset = String(113.1 * (1 - pct));
         }
-        var card = $('#desk-step');
+        var num = $(numSel);
+        if (num) num.textContent = faNum(score);
+        var chip = $(chipSel);
+        if (chip) chip.classList.toggle('on', score >= 100);
+    }
+
+    /* کارت «گام بعدی فعالیت» — مشترک فروش/خرید.
+       p = پیشوند id ها (فروش: ds · خرید: bds) */
+    function _deskStepSync(cardId, p, items, score, arm, homeId) {
+        var card = $('#' + cardId);
         if (!card) return;
-        if (!next) {
-            card.hidden = true;
-            card.removeAttribute('data-go');
-            card.removeAttribute('data-contacts-pick');
+
+        /* نوار پیشرفت و فاصله تا شتابدهی — همیشه از امتیاز واقعی */
+        var goal = $('#' + p + '-goal');
+        if (goal) goal.textContent = faNum(Math.max(0, 100 - score)) + ' امتیاز تا شتابدهی';
+        var fill = $('#' + p + '-bar-fill');
+        if (fill) fill.style.width = Math.min(100, score) + '%';
+        var bnum = $('#' + p + '-bar-num');
+        if (bnum) bnum.textContent = faNum(Math.min(100, score)) + ' / ' + faNum(100);
+
+        var title = $('#' + p + '-title');
+        var btn = $('#' + p + '-btn');
+
+        /* حالت ۱۰۰+ — شتابدهی فعال: کارت سبز راهنما می‌شود */
+        if (score >= 100) {
+            card.hidden = false;
+            card.classList.add('on');
+            if (title) title.textContent = 'موتور شتاب‌دهنده فعال شد';
+            if (btn) {
+                btn.textContent = 'کجا دیده می‌شوم؟';
+                btn.removeAttribute('data-contacts-pick');
+                btn.setAttribute('data-score-arm', arm);
+            }
             return;
         }
+        card.classList.remove('on');
+        if (btn) btn.removeAttribute('data-score-arm');
 
-        var doneCount = 0;
-        items.forEach(function (it) { if (it.done) doneCount++; });
+        /* اولین گام ناقصِ قابل‌اقدام — همیشه فقط یک گام */
+        var next = null, i;
+        for (i = 0; i < (items || []).length; i++) {
+            if (items[i].desk && !items[i].done) { next = items[i]; break; }
+        }
+        if (!next) { card.hidden = true; return; }
 
         card.hidden = false;
-        var elPts = $('#ds-pts');
-        if (elPts) elPts.textContent = '+' + faNum(next.pts) + ' امتیاز';
-        var elTitle = $('#ds-title');
-        if (elTitle) elTitle.textContent = next.desk.t;
-        var elSub = $('#ds-sub');
-        if (elSub) elSub.textContent = next.desk.s;
+        if (title) title.textContent = next.desk.t;
+        if (btn) {
+            btn.textContent = next.desk.btn || 'شروع';
+            /* مقصد روی خود دکمه می‌نشند (نه کل کارد — حکم FD-6):
+               گام افزودن محصول → s-sell-add · گام‌های دعوت مستقیماً
+               جریان «ارسال به مخاطبین» را باز می‌کنند */
+            if (next.desk.pick) {
+                btn.removeAttribute('data-go');
+                btn.setAttribute('data-contacts-pick', homeId);
+            } else {
+                btn.removeAttribute('data-contacts-pick');
+                btn.setAttribute('data-go', next.desk.go || 's-catalog');
+            }
+        }
+    }
 
-        /* مقصد کلیک روی خود کارد (به‌جای دکمه — حکم مالک FD-5) */
-        if (next.desk.pick) {
-            card.removeAttribute('data-go');
-            card.setAttribute('data-contacts-pick', 's-home-sell');
-        } else {
-            card.removeAttribute('data-contacts-pick');
-            card.setAttribute('data-go', next.desk.go || 's-catalog');
+    function deskHomeSync() {
+        var sell = scoreCalc(core.data.scoreItemsSell);
+
+        /* ۱) چیپ امتیاز اپ‌بار (FD-6) */
+        _chipRingSync(sell, '#desk-chip-ring', '#desk-chip-num', '#desk-chip');
+
+        /* ۲) دو کادر تمام‌عرض — شمارنده از دیتای واقعی */
+        var el = $('#desk-cat-s');
+        if (el) el.textContent = faNum((core.data.listings || []).length) + ' محصول در ویترین تو';
+        el = $('#desk-cust-s');
+        if (el) {
+            var custs = (core.data.customers || []).filter(function (c) { return c.businessId === 'b1'; });
+            var newN = custs.filter(function (c) { return c.isNew; }).length;
+            el.textContent = faNum(custs.length) + ' مشتری' +
+                (newN ? ' · ' + faNum(newN) + ' در انتظار تایید' : '');
         }
 
-        var elProg = $('#ds-progress');
-        if (elProg) {
-            elProg.textContent = faNum(doneCount) + ' گام انجام شد · ' +
-                faNum(items.length - doneCount) + ' گام مانده';
-        }
+        /* ۳) کارت «گام بعدی فعالیت» */
+        _deskStepSync('desk-step', 'ds', core.data.scoreItemsSell, sell, 'sell', 's-home-sell');
+    }
+
+    /* میز خرید (۱۹) — FD-6: همان کارتابل، قرینهٔ فروش.
+       شمارنده‌های کادرهای خرید عمداً ثابت‌اند (صفحات لیست/تأمین‌کنندهٔ
+       دمو هم استاتیک‌اند)؛ فقط امتیاز و کارت گام از دیتا سینک می‌شوند. */
+    function buyDeskSync() {
+        var buy = scoreCalc(core.data.scoreItemsBuy);
+
+        /* ۱) چیپ امتیاز خرید اپ‌بار */
+        _chipRingSync(buy, '#buy-chip-ring', '#buy-chip-num', '#buy-chip');
+
+        /* ۲) کارت «گام بعدی فعالیت» — از scoreItemsBuy[].desk */
+        _deskStepSync('buy-desk-step', 'bds', core.data.scoreItemsBuy, buy, 'buy', 's-home-buy');
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -868,8 +925,9 @@
     core.registerShowHook('s-cat-edit', catEditLoad);
     core.registerShowHook('s-sell-edit', gdEditRender);
     core.registerShowHook('s-home-sell', chargeSync);
-    /* میز فروش — کارتابل: دایره‌های امتیاز + کارت «گام بعدی» */
+    /* میز فروش/خرید — کارتابل (FD-6): چیپ امتیاز اپ‌بار + کارت «گام بعدی فعالیت» */
     core.registerShowHook('s-home-sell', deskHomeSync);
+    core.registerShowHook('s-home-buy', buyDeskSync);
     core.registerShowHook('s-profile', chargeSync);
 
     /* ═══════════════════════════════════════════════════════════════
@@ -906,6 +964,7 @@
         profileSave: profileSave, profilePickPhoto: profilePickPhoto,
         scoreRender: scoreRender,
         deskHomeSync: deskHomeSync,
+        buyDeskSync: buyDeskSync,
 
         bpsRenderCta: bpsRenderCta,
 

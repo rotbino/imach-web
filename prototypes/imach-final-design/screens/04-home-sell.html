@@ -2,17 +2,17 @@
      اسکرین ۰۴: میز فروش — کارتابل فروش
      ─────────────────────────────────────────────────────────────
      فلسفه (حکم مالک، FD-4): میز فروش = «کارتابل فروش».
-     بالای صفحه فقط ۲-۳ لینک مهم؛ بقیهٔ صفحه = اعلام کارهای نیازمند اقدام.
+     بالای صفحه فقط چند لینک مهم؛ بقیهٔ صفحه = اعلام کارهای نیازمند اقدام.
 
-     بازبینی مالک (FD-5):
-     • صفحه «همگن و مینیمال اما گویا»: سه کادر هم‌شکل —
-       کاتالوگ من + مشتریان من + امتیاز فعالیت.
-       کاتالوگ دیگر پررنگ/اشباع نیست («مثل اون دو تا») تا مشتریان و
-       امتیاز هم به چشم بیایند.
-     • امتیاز از اپ‌بار حذف شد — اپ‌بار فقط اعلان‌ها.
-       امتیاز فقط در کادر «امتیاز فعالیت» (دایرهٔ ۵۶px، تا ۱۰۰ سبز).
-     • نام کادر: «امتیاز فعالیت» (نه «امتیاز من»).
-     • کارت «گام بعدی»: بدون دکمه — کل کادر کلیک‌پذیر است (کادر کوچک‌تر).
+     بازبینی مالک (FD-6):
+     • دایرهٔ امتیاز از صفحه برداشته شد و به اپ‌بار برگشت (score-chip)
+       — کلیک روی دایره → صفحهٔ «امتیاز فعالیت». (تصمیم FD-5 لغو شد.)
+     • روی صفحه فقط دو کادر تمام‌عرض زیر هم:
+       کاتالوگ من + مشتریان من (کادر «امتیاز فعالیت» حذف شد).
+     • زیر اقدام‌ها، کارت «گام بعدی فعالیت»:
+       «۵۵ امتیاز تا شتابدهی» + موشک روبه‌رو · جملهٔ گام ·
+       نوار پیشرفت «۴۵/۱۰۰» + موشک در انتها · دکمهٔ اقدام.
+       (دکمه به حکم FD-6 برگشت — «افزودن محصول»؛ اعداد از دیتا محاسبه می‌شوند.)
      • واژگان (قانون FD-5): چیزی که در کاتالوگ می‌فروشی «محصول» است نه
        «کالا». گروه کالا > کالا > محصول — مثال مالک: برنج / برنج هاشمی /
        برنج هاشمی برند طبیعت ۱۰ کیلویی. لیست خرید خریدار «کالا» دارد.
@@ -26,8 +26,16 @@
             <div class="title">میز فروش من</div>
         </div>
         <div class="actions">
-            <!-- FD-5: دایرهٔ امتیاز از اپ‌بار حذف شد — امتیاز فقط در کادر
-                 «امتیاز فعالیت» زیر همین صفحه است (کلیک → صفحهٔ امتیازها) -->
+            <!-- FD-6: دایرهٔ امتیاز در اپ‌بار — تنها جای امتیاز در این صفحه.
+                 کلیک → صفحهٔ امتیازها (data-score-arm در app-handlers.js).
+                 حلقه و عدد با deskHomeSync() سینک می‌شوند. -->
+            <button class="score-chip" id="desk-chip" data-score-arm="sell" aria-label="امتیاز فعالیت — دیدن جزئیات" type="button">
+                <svg class="ring" viewBox="0 0 44 44" aria-hidden="true">
+                    <circle class="rc-bg" cx="22" cy="22" r="18"></circle>
+                    <circle class="rc-fill" id="desk-chip-ring" cx="22" cy="22" r="18"></circle>
+                </svg>
+                <b id="desk-chip-num">۰</b>
+            </button>
             <button class="icon-btn" data-go="s-notifs" aria-label="اعلان‌ها">
                 <svg><use href="#i-bell"/></svg>
                 <span class="dot">۳</span>
@@ -37,34 +45,29 @@
 
     <div class="body">
 
-        <!-- سه کادر هم‌شکل و همگن (حکم مالک FD-5) — همگن و مینیمال اما گویا.
-             ترتیب از راست: کاتالوگ (کار اصلی) → مشتریان → امتیاز فعالیت. -->
-        <div class="kpis kpis-3">
-            <div class="kpi" data-go="s-catalog">
-                <div class="k"><svg><use href="#i-store"/></svg> کاتالوگ من</div>
-                <div class="v">۴ <small>محصول</small></div>
+        <!-- دو کادر تمام‌عرض زیر هم (حکم مالک FD-6) — همگن و مینیمال اما گویا.
+             شمارنده‌ها (محصول/مشتری/در انتظار تایید) با deskHomeSync()
+             از دیتای واقعی پر می‌شوند، نه متن ثابت. -->
+        <div class="desk-card" data-go="s-catalog">
+            <div class="dc-ic"><svg><use href="#i-store"/></svg></div>
+            <div class="dc-tx">
+                <div class="dc-t">کاتالوگ من</div>
+                <div class="dc-s" id="desk-cat-s">۰ محصول در ویترین تو</div>
             </div>
-            <div class="kpi" data-go="s-customers">
-                <div class="k"><svg><use href="#i-users"/></svg> مشتریان من</div>
-                <div class="v">۵ <small>مشتری</small></div>
+            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+        </div>
+        <div class="desk-card" data-go="s-customers">
+            <div class="dc-ic"><svg><use href="#i-users"/></svg></div>
+            <div class="dc-tx">
+                <div class="dc-t">مشتریان من</div>
+                <div class="dc-s" id="desk-cust-s">۰ مشتری</div>
             </div>
-            <!-- «امتیاز فعالیت» (FD-5: نام جدید) — تنها جای امتیاز در این صفحه.
-                 کلیک → صفحهٔ امتیاز فعالیت‌ها (data-score-arm). -->
-            <div class="kpi desk-score" id="desk-score-box" data-score-arm="sell">
-                <div class="k"><svg><use href="#i-sparkles"/></svg> امتیاز فعالیت</div>
-                <div class="desk-ring">
-                    <svg viewBox="0 0 44 44">
-                        <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
-                        <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="desk-score-ring"></circle>
-                    </svg>
-                    <b id="desk-score-num">۰</b>
-                </div>
-            </div>
+            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
         </div>
 
         <!-- ═══ کارتابل: نیازمند اقدام ═══
              ۱) ردیف‌های زندهٔ ارتباطی — سفارش/درخواست (اقدام‌های فوری)
-             ۲) کارت «گام بعدی» — راهنمای راه‌اندازی، گام‌به‌گام با امتیاز -->
+             ۲) کارت «گام بعدی فعالیت» — راهنمای راه‌اندازی، گام‌به‌گام با امتیاز -->
         <div class="section-title"><h2>نیازمند اقدام</h2></div>
         <div class="rows">
             <div class="row" data-go="s-sell-orders">
@@ -89,20 +92,25 @@
             </div>
         </div>
 
-        <!-- گام بعدی راه‌اندازی — همیشه فقط یک گام (گام‌به‌گام، حکم مالک).
-             FD-5: دکمهٔ «افزودن محصول» حذف شد؛ کل کادر کلیک‌پذیر است و
-             کادر کوچک‌تر شده. مقصد کلیک را deskHomeSync() از
-             scoreItemsSell[].desk روی خود کادر می‌گذارد:
-             گام افزودن → s-sell-add · گام دعوت → مستقیم «ارسال به مخاطبین». -->
+        <!-- گام بعدی فعالیت (حکم مالک FD-6) — همیشه فقط یک گام.
+             ساختار: عنوان → «۵۵ امتیاز تا شتابدهی» + موشک → جملهٔ گام →
+             نوار پیشرفت «۴۵/۱۰۰» + موشکِ مقصد → دکمهٔ اقدام.
+             متن‌ها و مقصد دکمه را deskHomeSync() از scoreItemsSell[].desk
+             می‌گذارد: افزودن محصول → s-sell-add · دعوت مشتری → مخاطبین (pick).
+             حالت ۱۰۰+ : کارت سبز «موتور شتاب‌دهنده فعال شد» می‌شود. -->
         <div class="desk-step" id="desk-step" hidden>
-            <div class="ds-head">
-                <span class="ds-badge">گام بعدی</span>
-                <span class="ds-pts" id="ds-pts"></span>
-                <svg class="ds-chev"><use href="#i-chev"/></svg>
+            <span class="ds-badge">گام بعدی فعالیت</span>
+            <div class="ds-goal">
+                <b id="ds-goal">۰ امتیاز تا شتابدهی</b>
+                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
             </div>
             <b class="ds-title" id="ds-title"></b>
-            <span class="ds-sub" id="ds-sub"></span>
-            <span class="ds-progress" id="ds-progress"></span>
+            <div class="ds-bar">
+                <div class="track"><i id="ds-bar-fill"></i></div>
+                <span class="num" id="ds-bar-num">۰ / ۱۰۰</span>
+                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
+            </div>
+            <button class="btn btn-arm btn-block ds-btn" id="ds-btn" type="button"></button>
         </div>
 
         <div class="hint-line">

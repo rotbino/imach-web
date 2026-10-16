@@ -2369,57 +2369,122 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .loc-row svg { flex-shrink: 0; color: var(--text-3); }
 .loc-row span { flex: 1; min-width: 0; }
 
-/* ═══ ۳۳-پ. میز فروش — کارتابل فروش (FD-4 + بازبینی FD-5) ═══
-   حکم مالک: میز فروش = کارتابل؛ صفحه «همگن و مینیمال اما گویا».
-   • FD-5: سه کادر هم‌شکل — کاتالوگ من / مشتریان من / امتیاز فعالیت
-     (کاتالوگ دیگر اشباع/پررنگ نیست؛ امتیاز از اپ‌بار حذف شد و فقط این‌جاست)
-   • FD-5: کارت «گام بعدی» بدون دکمه — کل کادر کلیک‌پذیر
-   منطق: deskHomeSync() در app-forms.js؛ داده: scoreItemsSell[].desk */
+/* ═══ ۳۳-پ. میز فروش / میز خرید — کارتابل (FD-4 → FD-5 → FD-6) ═══
+   حکم مالک FD-6 (بازبینی کارتابل):
+   • دایرهٔ امتیاز به اپ‌بار برگشت (score-chip) — کلیک → صفحهٔ امتیازها.
+     (تصمیم FD-5 «امتیاز فقط در کادر صفحه» لغو شد؛ تاریخ تصمیم‌ها در سند.)
+   • روی میز فقط دو کادر تمام‌عرض زیر هم: کاتالوگ من / مشتریان من
+     (و در میز خرید: لیست خرید من / تأمین‌کننده‌های من).
+   • کارت «گام بعدی فعالیت»: «۵۵ امتیاز تا شتابدهی» + موشک روبه‌رو ·
+     جملهٔ گام · نوار پیشرفت «۴۵/۱۰۰» + موشک در انتها · دکمهٔ اقدام.
+     اعداد از scoreCalc محاسبه می‌شوند (سینک با صفحهٔ امتیاز) — نه متن ثابت.
+   منطق: deskHomeSync()/buyDeskSync() در app-forms.js؛ داده: scoreItems*.desk */
 
-/* ردیف سه‌تایی همگن — مخصوص میز فروش */
-.kpis.kpis-3 { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.kpis-3 .kpi { padding: 12px 10px; }
-.kpi .v small { font-size: 11px; font-weight: 600; color: var(--text-3); margin-right: 3px; }
-
-/* کادر «امتیاز فعالیت» — دایرهٔ ۵۶px؛ تا ۱۰۰ سبز می‌شود */
-.kpi.desk-score { gap: 2px; }
-.desk-score .desk-ring {
-    position: relative;
-    width: 56px; height: 56px;
-    margin-top: 4px;
-}
-.desk-score .desk-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
-.desk-score .desk-ring b {
-    position: absolute; inset: 0;
+/* چیپ امتیاز اپ‌بار — دایرهٔ ۳۶px با حلقه و عدد؛ تا ۱۰۰ سبز می‌شود */
+.score-chip {
+    width: 36px; height: 36px; border-radius: 50%;
+    position: relative; flex-shrink: 0;
     display: grid; place-items: center;
-    font-size: 15px; font-weight: 800;
-    color: var(--primary-strong);
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 0;
+    transition: border-color .15s, transform .1s;
 }
-.desk-score.on { border-color: #B6DFC5; background: linear-gradient(180deg, #F4FCF6, #FFF 60%); }
-.desk-score.on .desk-ring b { color: var(--green); }
-.desk-score.on .ss-ring-fill { stroke: var(--green); }
+.score-chip:active { transform: scale(.93); }
+.score-chip svg.ring { position: absolute; inset: 3px; transform: rotate(-90deg); }
+.score-chip .rc-bg { fill: none; stroke: var(--surface-3); stroke-width: 4; }
+.score-chip .rc-fill {
+    fill: none; stroke: var(--arm); stroke-width: 4; stroke-linecap: round;
+    stroke-dasharray: 113.1; stroke-dashoffset: 113.1;
+    transition: stroke-dashoffset .4s;
+}
+.score-chip b { font-size: 10.5px; font-weight: 800; color: var(--arm-strong); line-height: 1; }
+.score-chip.on { border-color: #B6DFC5; background: var(--green-bg); }
+.score-chip.on .rc-fill { stroke: var(--green); }
+.score-chip.on b { color: var(--green); }
 
-/* کارت «گام بعدی» — FD-5: بدون دکمه؛ کل کادر کلیک‌پذیر و جمع‌وجور */
+/* دو کادر تمام‌عرض میز (FD-6) — کاتالوگ من / مشتریان من و قرینهٔ خرید */
+.desk-card {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; text-align: right;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-lg);
+    padding: 13px 14px;
+    cursor: pointer;
+    transition: border-color .15s, transform .12s;
+}
+.desk-card:active { transform: scale(.99); }
+.desk-card .dc-ic {
+    width: 46px; height: 46px; border-radius: 13px;
+    display: grid; place-items: center; flex-shrink: 0;
+    background: var(--arm-soft); color: var(--arm-strong);
+}
+.desk-card .dc-ic svg { width: 23px; height: 23px; }
+.desk-card .dc-tx { flex: 1; min-width: 0; }
+.desk-card .dc-t { font-size: 15px; font-weight: 700; line-height: 1.5; }
+.desk-card .dc-s { font-size: 11.5px; color: var(--text-3); margin-top: 2px; line-height: 1.7; }
+
+/* کارت «گام بعدی فعالیت» — FD-6: عنوان + فاصله تا شتابدهی + نوار + دکمه.
+   دکمهٔ اقدام داخل کارت است (بازگشت از تصمیم FD-5 «کارد بدون دکمه»)؛
+   خود کارت دیگر کلیک‌پذیر نیست تا لمس تصادفی صفحات را باز نکند. */
 .desk-step {
-    padding: 12px 14px;
-    background: linear-gradient(180deg, var(--amber-bg), #FFF 70%);
+    padding: 13px 14px;
+    background: linear-gradient(180deg, var(--amber-bg), #FFF 72%);
     border: 1px solid #EFDFB8;
     border-radius: var(--r-lg);
-    display: flex; flex-direction: column; gap: 6px;
-    cursor: pointer; text-align: right;
-    transition: transform .12s, border-color .15s;
+    display: flex; flex-direction: column; gap: 9px;
+    text-align: right;
 }
-.desk-step:active { transform: scale(.985); }
-.desk-step .ds-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .desk-step .ds-badge {
+    align-self: flex-start;
     font-size: 10.5px; font-weight: 700;
     color: var(--amber);
     background: var(--amber-soft);
     padding: 3px 10px;
     border-radius: 999px;
 }
-.desk-step .ds-pts { font-size: 11.5px; font-weight: 800; color: var(--amber); margin-right: auto; }
-.desk-step .ds-chev { width: 14px; height: 14px; color: var(--text-4); flex-shrink: 0; }
-.desk-step .ds-title { font-size: 13.5px; font-weight: 700; line-height: 1.75; }
-.desk-step .ds-sub { font-size: 11px; color: var(--text-3); line-height: 1.8; }
-.desk-step .ds-progress { font-size: 10.5px; color: var(--text-4); }
+/* «۵۵ امتیاز تا شتابدهی» + موشک روبه‌رو (سمت چپ در RTL) */
+.desk-step .ds-goal { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.desk-step .ds-goal b { font-size: 12.5px; font-weight: 800; color: var(--amber); }
+.desk-step .ds-goal svg { width: 20px; height: 20px; color: var(--amber); flex-shrink: 0; }
+.desk-step .ds-title { font-size: 14px; font-weight: 700; line-height: 1.75; }
+/* نوار پیشرفت «۴۵/۱۰۰» + موشکِ مقصد در انتها */
+.desk-step .ds-bar { display: flex; align-items: center; gap: 8px; }
+.desk-step .ds-bar .track { flex: 1; height: 8px; border-radius: 99px; background: #F1E4C3; overflow: hidden; }
+.desk-step .ds-bar .track i {
+    display: block; height: 100%; border-radius: 99px; width: 0;
+    background: linear-gradient(90deg, var(--amber), #F59E0B);
+    transition: width .4s;
+}
+.desk-step .ds-bar .num { font-size: 11px; font-weight: 800; color: var(--amber); white-space: nowrap; }
+.desk-step .ds-bar svg { width: 15px; height: 15px; color: var(--amber); flex-shrink: 0; }
+.desk-step .ds-btn { margin-top: 2px; }
+
+/* حالت ۱۰۰+ — شتابدهی فعال: کارت سبز، دکمه → صفحهٔ امتیازها/شیت توضیح */
+.desk-step.on { background: linear-gradient(180deg, #F0FDF4, #FFF 72%); border-color: #B6DFC5; }
+.desk-step.on .ds-goal b, .desk-step.on .ds-bar .num { color: var(--green); }
+.desk-step.on .ds-goal svg, .desk-step.on .ds-bar svg { color: var(--green); }
+.desk-step.on .ds-badge { color: var(--green); background: var(--green-soft); }
+.desk-step.on .ds-bar .track { background: #D3EEDD; }
+.desk-step.on .ds-bar .track i { background: var(--green); }
+
+/* ═══ ۳۳-ت. «شتابدهی یعنی چه؟» — صفحهٔ امتیاز (FD-6) ═══
+   لینک زیر قهرمان صفحه + شیت از پایین با عکس‌های واقعی صفحات مقایسه.
+   عکس‌ها اسکرین‌شات خود پروتوتایپ هستند (png/accel/) — ردیف کسب‌وکارِ
+   کاربر («پخش برنج پارس») هایلایت شده تا «کجا دیده می‌شوم» ملموس شود. */
+.accel-link {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--amber-bg);
+    border: 1px solid #EFDFB8;
+    border-radius: 12px;
+    color: var(--amber); font-weight: 700; font-size: 12.5px;
+    cursor: pointer;
+    transition: border-color .15s;
+}
+.accel-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+.accel-link .chev { margin-right: auto; }
+.accel-shot { width: 100%; border-radius: 12px; border: 1px solid var(--border-2); display: block; }
+.accel-cap { font-size: 10.5px; color: var(--text-3); line-height: 1.9; margin: 6px 2px 2px; }
+.accel-cap b { color: var(--text-2); }
