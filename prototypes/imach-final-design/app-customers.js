@@ -2,12 +2,16 @@
    iMach — Customers (دفتر مشتری)
    ─────────────────────────────────────────────────────────────────
    مسئول:
-     • رندر دیتامحور لیست مشتریان (با گروه، صنف، بدهی)
-     • نوار فیلتر دیوارگونه: صنف / گروه مشتری / بدهی + جستجو
-     • خلاصهٔ دفتر (تعداد + مجموع بدهی)
-     • مدیریت گروه‌های مشتری (نام + تخفیف مستقیم)
-     • فرم افزودن/ویرایش مشتری (s-customer-edit)
-     • منوی سه‌نقطهٔ مشتری (گفتگو / ویرایش / حذف)
+     • مشتری = کسی که کاتالوگ را ذخیره کرده (یا خریدش ذخیره شده)
+       — فرم ثبت دستی مشتری وجود ندارد.
+     • رندر دیتامحور لیست مشتریان (با گروه، صنف، شهر)
+       — مشتریان جدید (isNew) با برچسب «جدید» بالاتر از همه
+     • نوار فیلتر دیوارگونه: صنف / گروه مشتری / شهر (با جستجو)
+     • دعوت مشتری جدید = شیت اشتراک‌گذاری کاتالوگ
+     • مدیریت گروه‌های مشتری (نام + تخفیف مستقیم) داخل شیت فیلتر گروه
+     • تغییر گروه یک مشتری (شیت انتخاب گروه از منوی سه‌نقطه)
+     • منوی سه‌نقطهٔ مشتری (گفتگو / گروه مشتری / حذف)
+     • بدون بدهی — MVP ساده می‌ماند
    ═════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -19,8 +23,6 @@
     var $ = core.$;
     var $$ = core.$$;
     var faNum = core.faNum;
-    var faMoney = core.faMoney;
-    var parseNum = core.parseNum;
     var toast = core.toast;
 
     /* ═══ State ═══ */
@@ -28,14 +30,11 @@
         q: '',
         industry: null,     /* null = همه */
         group: null,        /* null = همه · '' = بدون گروه · 'cgX' = گروه مشخص */
-        debt: null,         /* null = همه · 'debt' = بدهکار · 'none' = بدون بدهی */
-        seen: false,        /* بج «جدید» فقط بار اول */
-        editId: null,       /* id مشتری در حال ویرایش */
-        pickGroup: ''       /* گروه انتخاب‌شده در فرم مشتری */
+        city: null,         /* null = همه · 'رشت' = شهر مشخص */
+        pickId: null        /* id مشتریِ در حال تغییر گروه */
     };
     var CGROUP = { editing: null, returnTo: 'manage' };
-    var COLOR_POOL = ['#7c3aed', '#c2703a', '#059669', '#0e7490', '#b45309', '#dc2626', '#2563EB', '#65a30d'];
-    var colorIdx = 0;
+    var FBCITY = { q: '' };   /* جستجوی داخل شیت فیلتر شهر */
 
     /* ═══ Helpers ═══ */
     function esc(s) {
@@ -53,6 +52,11 @@
         var bid = core.data.user.activeBusinessId || 'b1';
         return core.data.customers.filter(function (c) { return c.businessId === bid; });
     }
+    function customerById(id) {
+        var found = null;
+        core.data.customers.forEach(function (c) { if (c.id === id) found = c; });
+        return found;
+    }
     function customersInGroup(gid) {
         return customers().filter(function (c) { return (c.groupId || '') === gid; });
     }
@@ -64,22 +68,17 @@
     /* ═══ رندر لیست ═══ */
     function badgesHtml(c) {
         var g = groupById(c.groupId);
-        var h = '';
         if (g && g.discount > 0) {
-            h += '<span class="badge b-primary"><svg><use href="#i-tag"/></svg>' + esc(g.name) + ' · ٪' + faNum(g.discount) + '</span>';
-        } else if (g) {
-            h += '<span class="badge b-gray">' + esc(g.name) + '</span>';
-        } else {
-            h += '<span class="badge b-gray">بدون گروه</span>';
+            return '<span class="badge b-primary"><svg><use href="#i-tag"/></svg>' + esc(g.name) + ' · ٪' + faNum(g.discount) + '</span>';
         }
-        h += (c.debt > 0)
-            ? '<span class="badge b-red"><svg><use href="#i-wallet"/></svg>' + faMoney(c.debt) + ' بدهی</span>'
-            : '<span class="badge b-green">بدون بدهی</span>';
-        return h;
+        if (g) {
+            return '<span class="badge b-gray"><svg><use href="#i-tag"/></svg>' + esc(g.name) + '</span>';
+        }
+        return '<span class="badge b-gray">بدون گروه</span>';
     }
 
     function rowHtml(c) {
-        var isNew = c.isNew && !CUST.seen;
+        var isNew = !!c.isNew;
         return '<div class="row static" data-go="s-chat" data-cu-id="' + esc(c.id) + '">' +
             '<div class="avatar" style="background:' + (c.color || '#7c3aed') + '">' + esc(c.avatar || (c.name || '؟').charAt(0)) + '</div>' +
             '<div class="row-body">' +
@@ -93,15 +92,18 @@
     }
 
     function visibleCustomers() {
-        return customers().filter(function (c) {
+        /* جدیدترین‌ها (isNew) همیشه بالاتر از همه */
+        var arr = customers().slice().sort(function (a, b) {
+            return ((b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        });
+        return arr.filter(function (c) {
             if (CUST.q) {
-                var hay = (c.name || '') + ' ' + (c.person || '') + ' ' + (c.city || '');
+                var hay = (c.name || '') + ' ' + (c.person || '') + ' ' + (c.city || '') + ' ' + (c.industry || '');
                 if (hay.indexOf(CUST.q.trim()) === -1) return false;
             }
             if (CUST.industry && (c.industry || '') !== CUST.industry) return false;
             if (CUST.group !== null && (c.groupId || '') !== CUST.group) return false;
-            if (CUST.debt === 'debt' && !(c.debt > 0)) return false;
-            if (CUST.debt === 'none' && (c.debt > 0)) return false;
+            if (CUST.city && (c.city || '') !== CUST.city) return false;
             return true;
         });
     }
@@ -121,17 +123,6 @@
             ? faNum(all) + ' مشتری'
             : faNum(vis.length) + ' از ' + faNum(all) + ' مشتری';
 
-        var debtSum = 0;
-        vis.forEach(function (c) { debtSum += (c.debt || 0); });
-        var sm = $('#cust-summary');
-        if (sm) {
-            sm.innerHTML =
-                '<svg><use href="#i-bookmark"/></svg>' +
-                '<span><b>' + faNum(vis.length) + '</b> مشتری</span>' +
-                '<span class="dot">·</span>' +
-                '<span>مجموع بدهی: <b style="color:' + (debtSum > 0 ? 'var(--red)' : 'var(--text)') + '">' + faMoney(debtSum) + '</b> تومان</span>';
-        }
-
         cgSummarySync();
         fbSyncButtons();
     }
@@ -148,7 +139,6 @@
     }
 
     function customersOnShow() {
-        CUST.seen = true;
         customersRender();
     }
 
@@ -166,11 +156,11 @@
             sg.textContent = (CUST.group === null) ? 'گروه مشتری' : groupName(CUST.group);
             bg.classList.toggle('active', CUST.group !== null);
         }
-        var bd = $('.fb-btn[data-fb="debt"]');
-        if (bd) {
-            var sd = bd.querySelector('span');
-            sd.textContent = CUST.debt === 'debt' ? 'بدهکار' : (CUST.debt === 'none' ? 'بدون بدهی' : 'بدهی');
-            bd.classList.toggle('active', !!CUST.debt);
+        var bc = $('.fb-btn[data-fb="city"]');
+        if (bc) {
+            var sc = bc.querySelector('span');
+            sc.textContent = CUST.city || 'شهر';
+            bc.classList.toggle('active', !!CUST.city);
         }
     }
 
@@ -210,14 +200,28 @@
             var noG = all.filter(function (c) { return !c.groupId; }).length;
             if (noG) html += fbOptionRow('group', '__none__', 'بدون گروه', faNum(noG) + ' مشتری', CUST.group === '__none__');
 
-        } else if (kind === 'debt') {
-            host = $('#fb-debt-list');
-            var debtors = all.filter(function (c) { return c.debt > 0; });
-            var sum = 0;
-            debtors.forEach(function (c) { sum += c.debt; });
-            html += fbOptionRow('debt', '', 'همه', faNum(all.length) + ' مشتری', !CUST.debt);
-            html += fbOptionRow('debt', 'debt', 'بدهکار', faNum(debtors.length) + ' مشتری · ' + faMoney(sum) + ' تومان', CUST.debt === 'debt');
-            html += fbOptionRow('debt', 'none', 'بدون بدهی', faNum(all.length - debtors.length) + ' مشتری', CUST.debt === 'none');
+        } else if (kind === 'city') {
+            host = $('#fb-city-list');
+            var seenC = {}, cities = [];
+            all.forEach(function (c) {
+                var ci = c.city || '';
+                if (!ci) return;
+                if (!seenC[ci]) { seenC[ci] = 0; cities.push(ci); }
+                seenC[ci]++;
+            });
+            cities.sort(function (a, b) { return a.localeCompare(b, 'fa'); });
+            var q = FBCITY.q.trim();
+            var shown = q
+                ? cities.filter(function (ci) { return ci.indexOf(q) !== -1; })
+                : cities;
+            html += fbOptionRow('city', '', 'همهٔ شهرها', faNum(all.length) + ' مشتری', !CUST.city);
+            if (q && !shown.length) {
+                html += '<div class="empty" style="padding:14px 12px;margin-bottom:4px">' +
+                    '<p style="margin:0;font-size:12px;color:var(--text-3)">شهری از مشتریانت با «' + esc(q) + '» پیدا نشد.</p></div>';
+            }
+            shown.forEach(function (ci) {
+                html += fbOptionRow('city', ci, esc(ci), faNum(seenC[ci]) + ' مشتری', CUST.city === ci);
+            });
         }
         if (host) host.innerHTML = html;
     }
@@ -225,15 +229,20 @@
     function fbSet(kind, val) {
         if (kind === 'industry') CUST.industry = val || null;
         if (kind === 'group') CUST.group = (val === '' || val === undefined) ? null : (val === '__none__' ? '' : val);
-        if (kind === 'debt') CUST.debt = val || null;
+        if (kind === 'city') CUST.city = val || null;
         core.closeSheet('sheet-fb-' + kind);
         customersRender();
     }
 
     function fbClearAll() {
-        CUST.industry = null; CUST.group = null; CUST.debt = null;
+        CUST.industry = null; CUST.group = null; CUST.city = null;
         customersRender();
         toast('فیلترها پاک شد', 'success');
+    }
+
+    /* ═══ دعوت مشتری — شیت اشتراک کاتالوگ ═══ */
+    function shareOpen() {
+        core.openSheet('sheet-share-cat');
     }
 
     /* ═══ گروه‌ها — مدیریت ═══ */
@@ -284,7 +293,7 @@
         var nm = $('#cge-name');
         var name = nm ? nm.value.trim() : '';
         if (!name) { toast('نام گروه را وارد کن', 'error'); return; }
-        var disc = Math.max(0, Math.min(50, parseNum(($('#cge-disc') || {}).value)));
+        var disc = Math.max(0, Math.min(50, core.parseNum(($('#cge-disc') || {}).value)));
 
         var g;
         if (CGROUP.editing) {
@@ -298,10 +307,8 @@
         core.closeSheet('sheet-cgroup-edit');
 
         if (CGROUP.returnTo === 'pick') {
-            CUST.pickGroup = g.id;
-            ceGroupLabelSync();
             setTimeout(function () { pcgListRender(); core.openSheet('sheet-pick-cgroup'); }, 320);
-            toast('گروه ساخته شد و انتخاب شد', 'success');
+            toast('گروه ساخته شد — برای این مشتری انتخابش کن', 'success');
         } else {
             setTimeout(function () { cgListRender(); core.openSheet('sheet-cust-groups'); }, 320);
             toast('گروه ذخیره شد', 'success');
@@ -329,98 +336,38 @@
         });
     }
 
-    /* ═══ گروه‌ها — انتخاب در فرم مشتری ═══ */
+    /* ═══ انتخاب گروه — تغییر گروه یک مشتری ═══ */
     function pcgListRender() {
         var host = $('#pcg-list');
+        var sub = $('#pcg-sub');
+        var c = customerById(CUST.pickId);
+        var cur = c ? (c.groupId || '') : '';
+
+        if (sub) {
+            sub.textContent = c
+                ? 'گروهِ «' + c.name + '» — تخفیف همین گروه برای خریدهای این مشتری اعمال می‌شود.'
+                : 'تخفیف همین گروه برای این مشتری اعمال می‌شود.';
+        }
         if (!host) return;
-        var html = fbOptionRow('', '', 'بدون گروه', 'بدون تخفیف گروهی', CUST.pickGroup === '');
+
+        var html = fbOptionRow('', '', 'بدون گروه', 'بدون تخفیف گروهی', cur === '');
         html = html.replace('data-fbset="" data-val=""', 'data-pick-cgroup=""');
         groups().forEach(function (g) {
-            var row = fbOptionRow('', g.id, esc(g.name) + ' · ٪' + faNum(g.discount), '', CUST.pickGroup === g.id);
+            var row = fbOptionRow('', g.id, esc(g.name) + ' · ٪' + faNum(g.discount), '', cur === g.id);
             row = row.replace('data-fbset="" data-val="' + g.id + '"', 'data-pick-cgroup="' + g.id + '"');
             html += row;
         });
         host.innerHTML = html;
     }
 
-    function ceGroupLabelSync() {
-        var el = $('#ce-group-label');
-        if (el) el.textContent = groupName(CUST.pickGroup);
-    }
-
-    /* ═══ فرم مشتری ═══ */
-    function ceIndustriesRender(active) {
-        var host = $('#ce-industry');
-        if (!host) return;
-        host.innerHTML = core.data.customerIndustries.map(function (i) {
-            return '<button class="pill' + (i === active ? ' active' : '') + '" type="button">' + esc(i) + '</button>';
-        }).join('');
-    }
-
-    function ceLoad() {
-        var p = core.getSCREENParams()['s-customer-edit'] || {};
-        var c = null;
-        core.data.customers.forEach(function (x) { if (x.id === p.id) c = x; });
-
-        CUST.editId = c ? c.id : null;
-        CUST.pickGroup = c ? (c.groupId || '') : '';
-
-        var ttl = $('#ce-ttl');
-        if (ttl) {
-            ttl.innerHTML = (c ? 'ویرایش مشتری' : 'مشتری جدید') + '<small>دفتر مشتری</small>';
+    function pcgPick(gid) {
+        var c = customerById(CUST.pickId);
+        if (c) {
+            c.groupId = gid || '';
+            toast('گروه «' + groupName(gid) + '» برای «' + c.name + '» ثبت شد', 'success');
         }
-        var set = function (id, v) { var el = $(id); if (el) el.value = v || ''; };
-        set('#ce-name', c ? c.name : '');
-        set('#ce-person', c ? c.person : '');
-        set('#ce-phone', c ? c.phone : '');
-        set('#ce-city', c ? c.city : '');
-        set('#ce-note', c ? c.note : '');
-        var debt = $('#ce-debt');
-        if (debt) debt.value = c && c.debt ? faMoney(c.debt) : '';
-
-        ceIndustriesRender(c ? c.industry : null);
-        ceGroupLabelSync();
-    }
-
-    function ceOpen(id) {
-        core.setSCREENParams('s-customer-edit', { id: id || null });
-        core.go('s-customer-edit');
-    }
-
-    function ceSave() {
-        var name = (($('#ce-name') || {}).value || '').trim();
-        if (!name) { toast('نام مشتری را وارد کن', 'error'); return; }
-
-        var activePill = $('#ce-industry .pill.active');
-        var industry = activePill ? activePill.textContent.trim() : '';
-
-        var c = null;
-        if (CUST.editId) {
-            core.data.customers.forEach(function (x) { if (x.id === CUST.editId) c = x; });
-        }
-        if (!c) {
-            c = {
-                id: 'cu_' + Date.now(),
-                businessId: core.data.user.activeBusinessId || 'b1',
-                since: 'همین حالا',
-                isNew: false,
-                avatar: name.charAt(0),
-                color: COLOR_POOL[colorIdx++ % COLOR_POOL.length],
-                contactId: null
-            };
-            core.data.customers.push(c);
-        }
-        c.name = name;
-        c.person = (($('#ce-person') || {}).value || '').trim();
-        c.phone = (($('#ce-phone') || {}).value || '').trim();
-        c.city = (($('#ce-city') || {}).value || '').trim();
-        c.industry = industry;
-        c.groupId = CUST.pickGroup || '';
-        c.debt = parseNum(($('#ce-debt') || {}).value);
-        c.note = (($('#ce-note') || {}).value || '').trim();
-
-        toast(CUST.editId ? 'مشتری به‌روز شد' : 'مشتری به دفتر اضافه شد', 'success');
-        setTimeout(function () { core.back(); }, 550);
+        core.closeSheet('sheet-pick-cgroup');
+        customersRender();
     }
 
     /* ═══ منوی سه‌نقطهٔ مشتری ═══ */
@@ -428,7 +375,11 @@
         var id = (btn && btn.dataset.cuId) || (row && row.dataset.cuId) || null;
         core.actions('گزینه‌های ' + name, [
             { label: 'گفتگو', onClick: function () { core.go('s-chat'); } },
-            { label: 'ویرایش مشتری', onClick: function () { ceOpen(id); } },
+            { label: 'گروه مشتری (تخفیف)', onClick: function () {
+                    CUST.pickId = id;
+                    pcgListRender();
+                    core.openSheet('sheet-pick-cgroup');
+                }},
             { label: 'حذف از مشتریان', danger: true, onClick: function () {
                     core.confirm({
                         title: 'حذف از مشتریان',
@@ -452,6 +403,9 @@
         var fbBtn = t.closest('.fb-btn[data-fb]');
         if (fbBtn) {
             var kind = fbBtn.dataset.fb;
+            if (kind === 'city') FBCITY.q = '';
+            var cs = $('#fb-city-search');
+            if (cs) cs.value = '';
             fbRender(kind);
             core.openSheet('sheet-fb-' + kind);
             return;
@@ -462,7 +416,15 @@
 
         if (t.closest('#cust-clear-filters')) { fbClearAll(); return; }
 
-        if (t.closest('#cust-add')) { ceOpen(null); return; }
+        /* دعوت مشتری جدید — شیت اشتراک کاتالوگ */
+        if (t.closest('#cust-invite') || t.closest('#cust-invite-2')) { shareOpen(); return; }
+
+        /* لمس ردیف مشتری = دیده‌شدن برچسب «جدید» */
+        var cuRow = t.closest('[data-cu-id]');
+        if (cuRow) {
+            var seen = customerById(cuRow.dataset.cuId);
+            if (seen && seen.isNew) seen.isNew = false;
+        }
 
         /* رندر محتوای شیت‌ها هنگام باز شدن (بازکردن توسط هندلر عمومی انجام می‌شود) */
         if (t.closest('[data-sheet="sheet-cust-groups"]')) { cgListRender(); }
@@ -481,21 +443,14 @@
             var dir = parseFloat(gdStep.dataset.gdStep) || 0;
             var inp = $('#cge-disc');
             if (inp) {
-                var v = Math.max(0, Math.min(50, parseNum(inp.value) + dir));
+                var v = Math.max(0, Math.min(50, core.parseNum(inp.value) + dir));
                 inp.value = faNum(v);
             }
             return;
         }
 
         var pick = t.closest('[data-pick-cgroup]');
-        if (pick) {
-            CUST.pickGroup = pick.dataset.pickCgroup || '';
-            ceGroupLabelSync();
-            core.closeSheet('sheet-pick-cgroup');
-            return;
-        }
-
-        if (t.closest('#ce-save')) { ceSave(); return; }
+        if (pick) { pcgPick(pick.dataset.pickCgroup || ''); return; }
     });
 
     /* ═══ حلقهٔ input ═══ */
@@ -506,19 +461,22 @@
             CUST.q = t.value;
             customersRender();
         }
+        if (t.id === 'fb-city-search') {
+            FBCITY.q = t.value;
+            fbRender('city');
+        }
     });
 
     /* ═══ Hooks ═══ */
     core.registerShowHook('s-customers', customersOnShow);
-    core.registerShowHook('s-customer-edit', ceLoad);
 
     /* ═══ Expose ═══ */
     core.customers = {
         CUST: CUST,
         render: customersRender,
         menu: custMenu,
-        ceOpen: ceOpen,
         groupsRender: cgListRender,
-        pickRender: pcgListRender
+        pickRender: pcgListRender,
+        shareOpen: shareOpen
     };
 })();

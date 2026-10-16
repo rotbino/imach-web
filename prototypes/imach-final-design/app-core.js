@@ -38,7 +38,6 @@ window.iMach = (function () {
         's-catalog-share':        '06-catalog-share',
         's-contacts':             '07-contacts',
         's-customers':            '08-customers',
-        's-customer-edit':        '08-customers',
         's-sell-orders':          '09-sell-orders',
         's-sell-order-view':      '10-sell-order-view',
         's-sell-rfqs':            '11-sell-rfqs',

@@ -267,19 +267,22 @@ const DATA = {
 
     /* ═══════════════════════════════════════════════════════════
        مشتریان فروشنده — دفتر مشتری
-       groupId → customerGroups · debt = بدهی فعلی (تومان)
+       groupId → customerGroups
+       مشتری = کسی که کاتالوگ را ذخیره کرده (یا خریدش ذخیره شده)؛
+       isNew → برچسب «جدید» و بالاتر از همه · note → یادداشت شخصی
+       (بدون مفهوم بدهی در MVP — اگر لازم شد در یادداشت می‌نویسد)
        ═══════════════════════════════════════════════════════════ */
     customers: [
         { id: 'cu1', businessId: 'b1', name: 'رستوران مهر',       person: 'مهدی کاظمی',  city: 'تهران', since: 'امروز',     avatar: 'م', color: '#7c3aed', contactId: 'ct4', isNew: true,
-          industry: 'رستوران',      groupId: 'cg2', debt: 2400000, phone: '۰۹۱۲ ۳۳۴ ۴۱۰۸', note: 'تحویل صبح زود — بازار روز' },
+          industry: 'رستوران',      groupId: 'cg2', phone: '۰۹۱۲ ۳۳۴ ۴۱۰۸', note: 'تحویل صبح زود — بازار روز' },
         { id: 'cu2', businessId: 'b1', name: 'سوپرمارکت الماس',   person: 'سارا رحیمی',   city: 'قزوین', since: '۳ روز پیش', avatar: 'س', color: '#c2703a', contactId: 'ct2',
-          industry: 'سوپرمارکت',    groupId: 'cg1', debt: 0,        phone: '۰۹۱۲ ۷۷۶ ۹۱۰۴', note: '' },
+          industry: 'سوپرمارکت',    groupId: 'cg1', phone: '۰۹۱۲ ۷۷۶ ۹۱۰۴', note: '' },
         { id: 'cu3', businessId: 'b1', name: 'سوپرمارکت آریا',    person: 'نیما فاضلی',   city: 'رشت',  since: 'هفتهٔ پیش', avatar: 'ن', color: '#059669', contactId: 'ct3',
-          industry: 'سوپرمارکت',    groupId: 'cg3', debt: 7800000, phone: '۰۹۱۱ ۵۵۲ ۲۰۷۴', note: 'پیش‌پرداخت ۳۰٪' },
+          industry: 'سوپرمارکت',    groupId: 'cg3', phone: '۰۹۱۱ ۵۵۲ ۲۰۷۴', note: 'پیش‌پرداخت ۳۰٪' },
         { id: 'cu4', businessId: 'b1', name: 'کترینگ بهار',       person: 'مریم اسدی',    city: 'رشت',  since: '۲ هفته پیش', avatar: 'ک', color: '#0e7490', contactId: 'ct6',
-          industry: 'کترینگ',       groupId: 'cg2', debt: 1200000, phone: '۰۹۱۴ ۶۶۳ ۱۵۸۰', note: 'پرداخت آخر ماه' },
+          industry: 'کترینگ',       groupId: 'cg2', phone: '۰۹۱۴ ۶۶۳ ۱۵۸۰', note: 'پرداخت آخر ماه' },
         { id: 'cu5', businessId: 'b1', name: 'تعویض روغنی پیروز', person: 'سامان پیروز',  city: 'تهران', since: 'ماه پیش',   avatar: 'ت', color: '#b45309', contactId: 'ct8',
-          industry: 'تعویض روغنی',  groupId: 'cg1', debt: 0,        phone: '۰۹۱۱ ۸۸۰ ۵۵۲۰', note: '' }
+          industry: 'تعویض روغنی',  groupId: 'cg1', phone: '۰۹۱۱ ۸۸۰ ۵۵۲۰', note: '' }
     ],
 
     /* ═══════════════════════════════════════════════════════════

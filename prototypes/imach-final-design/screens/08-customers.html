@@ -2,34 +2,36 @@
      فایل ۰۸ — دفتر مشتری
      ─────────────────────────────────────────────────────────────
      اسکرین ۰۸: مشتریان من
-       • جستجو + نوار فیلتر (صنف / گروه مشتری / بدهی) — مثل دیوار
-       • خلاصهٔ دفتر (تعداد + مجموع بدهی)
-       • مدیریت گروه‌های مشتری (هر گروه تخفیف مستقیم)
-       • لیست دیتامحور — با app-customers.js رندر می‌شود
+       • مشتری = کسی که کاتالوگ شما را ذخیره کرده (یا خریدش ذخیره
+         شده) — فرم ثبت دستی مشتری وجود ندارد.
+       • دعوت مشتری جدید = شیت اشتراک‌گذاری کاتالوگ (از پایین)
+       • جستجو + نوار فیلتر (صنف / گروه مشتری / شهر) — مثل دیوار
+       • مشتریان جدید با برچسب «جدید» بالاتر از همه
+       • مدیریت گروه‌ها داخل شیت فیلتر گروه (فیلتر و مدیریت یکی)
+       • بدون بدهی — MVP ساده می‌ماند (یادداشت آزاد در دیتا)
 
-     اسکرین s-customer-edit: افزودن/ویرایش مشتری (فرم دفتر)
-
-     شیت‌ها: ۳ شیت فیلتر · مدیریت گروه‌ها · ساخت/ویرایش گروه · انتخاب گروه
+     شیت‌ها: ۳ شیت فیلتر (شهر با جستجو) · مدیریت گروه‌ها ·
+     ساخت/ویرایش گروه · انتخاب گروه مشتری · اشتراک کاتالوگ · QR
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-customers" data-arm="sell">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
         <div class="ttl">مشتریان من<small id="cust-count">۵ مشتری</small></div>
-        <button class="icon-btn" id="cust-add" aria-label="افزودن مشتری"><svg><use href="#i-plus"/></svg></button>
-        <button class="icon-btn" data-go="s-catalog-share" aria-label="اشتراک کاتالوگ"><svg><use href="#i-share"/></svg></button>
+        <button class="icon-btn" id="cust-invite" aria-label="دعوت مشتری جدید"><svg><use href="#i-user-plus"/></svg></button>
+        <button class="icon-btn" data-sheet="sheet-share-cat" aria-label="اشتراک کاتالوگ"><svg><use href="#i-share"/></svg></button>
     </div>
 
     <div class="body">
         <div class="callout callout-info">
             <svg><use href="#i-bookmark"/></svg>
-            <div>هر کس کاتالوگ شما را ذخیره کند <b>مشتری شما می‌شود</b> — یا خودت مشتری‌ات را این‌جا در دفترت ثبت کن.</div>
+            <div>مشتریِ تو کسی است که <b>کاتالوگ تو را ذخیره کرده</b> یا از تو خریده است — قیمت‌های تازه را همیشه می‌بیند و تو می‌توانی گروهش را عوض کنی.</div>
         </div>
 
         <!-- جستجو -->
         <div class="search-row" style="height: 44px;">
             <svg><use href="#i-search"/></svg>
-            <input type="text" id="cust-search" placeholder="جستجوی نام مشتری…" autocomplete="off">
+            <input type="text" id="cust-search" placeholder="جستجوی نام مشتری یا شهر…" autocomplete="off">
         </div>
 
         <!-- نوار فیلتر — مثل دیوار -->
@@ -40,34 +42,25 @@
             <button class="fb-btn" type="button" data-fb="group">
                 <svg><use href="#i-users"/></svg><span>گروه مشتری</span><svg class="fb-chev"><use href="#i-chevd"/></svg>
             </button>
-            <button class="fb-btn" type="button" data-fb="debt">
-                <svg><use href="#i-wallet"/></svg><span>بدهی</span><svg class="fb-chev"><use href="#i-chevd"/></svg>
+            <button class="fb-btn" type="button" data-fb="city">
+                <svg><use href="#i-pin"/></svg><span>شهر</span><svg class="fb-chev"><use href="#i-chevd"/></svg>
             </button>
         </div>
 
-        <!-- خلاصهٔ دفتر -->
-        <div class="cust-summary" id="cust-summary"></div>
-
-        <!-- گروه‌های مشتری -->
-        <div class="card" style="padding: 2px 14px;">
-            <button class="sheet-row" data-sheet="sheet-cust-groups" type="button">
-                <span class="ico"><svg><use href="#i-tag"/></svg></span>
-                <span class="tx">
-                    <b>گروه‌های مشتری</b>
-                    <span id="cg-summary">هر گروه تخفیف مخصوص خودش را دارد</span>
-                </span>
-                <svg class="chev"><use href="#i-chev"/></svg>
-            </button>
-        </div>
+        <!-- دعوت مشتری جدید — از طریق اشتراک کاتالوگ -->
+        <button class="btn btn-arm btn-block" id="cust-invite-2" type="button" style="margin-top: 10px;">
+            <svg><use href="#i-user-plus"/></svg> دعوت مشتری جدید
+        </button>
+        <div class="hint" style="text-align: center; margin-top: 6px;">لینک کاتالوگت را بفرست — هر کس ذخیره کند، مشتری تو می‌شود.</div>
 
         <!-- لیست مشتریان — دیتامحور -->
-        <div class="rows" id="cust-list"></div>
+        <div class="rows" id="cust-list" style="margin-top: 12px;"></div>
 
         <div id="cust-empty" hidden>
             <div class="empty">
                 <div class="empty-ic"><svg><use href="#i-search"/></svg></div>
                 <h3>با این فیلترها مشتری‌ای پیدا نشد</h3>
-                <p>فیلترها را ساده‌تر کن یا مشتری جدید به دفترت اضافه کن.</p>
+                <p>فیلترها را ساده‌تر کن یا لینک کاتالوگ را برای مشتریان قدیمی‌ات بفرست.</p>
                 <button class="btn btn-outline btn-sm" id="cust-clear-filters" type="button">
                     <svg><use href="#i-x"/></svg> حذف فیلترها
                 </button>
@@ -76,7 +69,7 @@
 
         <div class="hint-line">
             <svg><use href="#i-sparkles"/></svg>
-            <span>می‌خواهی مشتری بیشتری داشته باشی؟ لینک کاتالوگ را برای مشتریان قدیمی‌ات بفرست.</span>
+            <span>مشتری که کاتالوگ را ذخیره کند خودش به دفترت می‌آید — دعوتش کن.</span>
         </div>
     </div>
 
@@ -93,7 +86,7 @@
         <button class="btn btn-outline btn-block" data-sheet-close="sheet-fb-industry" style="margin-top: 8px;">بستن</button>
     </div>
 
-    <!-- ═══ شیت فیلتر گروه مشتری ═══ -->
+    <!-- ═══ شیت فیلتر گروه مشتری — مدیریت هم همین‌جاست ═══ -->
     <div class="sheet" id="sheet-fb-group" hidden>
         <div class="grab"></div>
         <div class="sheet-hdr">
@@ -102,19 +95,31 @@
         </div>
         <div class="sub">گروه‌ها تخفیف مخصوص خودشان را دارند.</div>
         <div id="fb-group-list"></div>
+        <button class="sheet-row" data-sheet="sheet-cust-groups" type="button" style="margin-top: 10px; border-top: 1px solid var(--border-2); border-bottom: 0;">
+            <span class="ico"><svg><use href="#i-gear"/></svg></span>
+            <span class="tx">
+                <b>مدیریت گروه‌های مشتری</b>
+                <span id="cg-summary">ساخت، تغییر نام یا حذف گروه — تخفیف هر گروه</span>
+            </span>
+            <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
         <button class="btn btn-outline btn-block" data-sheet-close="sheet-fb-group" style="margin-top: 8px;">بستن</button>
     </div>
 
-    <!-- ═══ شیت فیلتر بدهی ═══ -->
-    <div class="sheet" id="sheet-fb-debt" hidden>
+    <!-- ═══ شیت فیلتر شهر — با جستجو ═══ -->
+    <div class="sheet" id="sheet-fb-city" hidden>
         <div class="grab"></div>
         <div class="sheet-hdr">
-            <h3>فیلتر بدهی</h3>
-            <button class="mg" data-sheet-close="sheet-fb-debt" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+            <h3>فیلتر شهر</h3>
+            <button class="mg" data-sheet-close="sheet-fb-city" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
         </div>
-        <div class="sub">طلب‌هایت را یک‌جا ببین.</div>
-        <div id="fb-debt-list"></div>
-        <button class="btn btn-outline btn-block" data-sheet-close="sheet-fb-debt" style="margin-top: 8px;">بستن</button>
+        <div class="sub">مشتریان یک شهر را ببین.</div>
+        <div class="search-row" style="height: 40px; margin-bottom: 8px;">
+            <svg><use href="#i-search"/></svg>
+            <input type="text" id="fb-city-search" placeholder="جستجوی شهر…" autocomplete="off">
+        </div>
+        <div id="fb-city-list"></div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-fb-city" style="margin-top: 8px;">بستن</button>
     </div>
 
     <!-- ═══ شیت مدیریت گروه‌های مشتری ═══ -->
@@ -172,14 +177,14 @@
         </button>
     </div>
 
-    <!-- ═══ شیت انتخاب گروه (فرم مشتری) ═══ -->
+    <!-- ═══ شیت انتخاب گروه — تغییر گروه یک مشتری ═══ -->
     <div class="sheet" id="sheet-pick-cgroup" hidden>
         <div class="grab"></div>
         <div class="sheet-hdr">
             <h3>گروه مشتری</h3>
             <button class="mg" data-sheet-close="sheet-pick-cgroup" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
         </div>
-        <div class="sub">تخفیف همین گروه برای این مشتری اعمال می‌شود.</div>
+        <div class="sub" id="pcg-sub">تخفیف همین گروه برای این مشتری اعمال می‌شود.</div>
         <div id="pcg-list"></div>
         <button class="pick-row new" id="pcg-new" type="button" style="margin-top: 10px;">
             <div class="thumb" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
@@ -192,70 +197,83 @@
             <div class="chev"><svg><use href="#i-chev"/></svg></div>
         </button>
     </div>
-</section>
 
-
-<!-- ═════════════════════════════════════════════════════════════
-     اسکرین: افزودن / ویرایش مشتری — فرم دفتر مشتری
-     ═════════════════════════════════════════════════════════════ -->
-<section class="screen" id="s-customer-edit" data-arm="sell" hidden>
-    <div class="subheader">
-        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl" id="ce-ttl">مشتری جدید<small>دفتر مشتری</small></div>
-    </div>
-
-    <div class="body">
-        <div class="field">
-            <label>نام کسب‌وکار مشتری</label>
-            <input class="input" id="ce-name" type="text" placeholder="مثلاً: سوپرمارکت الماس" autocomplete="off">
-            <div class="hint">همان نامی که در دفترت می‌نویسی</div>
+    <!-- ═══ شیت: اشتراک‌گذاری کاتالوگ — دعوت مشتری ═══ -->
+    <div class="sheet" id="sheet-share-cat" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>دعوت مشتری جدید</h3>
+            <button class="mg" data-sheet-close="sheet-share-cat" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
         </div>
+        <div class="sub">لینک را بفرست — هر کس ذخیره کند، مشتری تو می‌شود و قیمت‌های تازه را همان لحظه می‌بیند.</div>
 
-        <div style="display: flex; gap: 9px;">
-            <div class="field" style="flex: 1;">
-                <label>نام رابط <span class="opt">— اختیاری</span></label>
-                <input class="input" id="ce-person" type="text" placeholder="مثلاً: سارا رحیمی" autocomplete="off">
+        <div class="card" style="padding: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; direction: ltr; background: var(--surface-2); padding: 10px 12px; border-radius: 10px; margin-bottom: 10px;">
+                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-link"/></svg>
+                <span style="font-size: 12.5px; color: var(--text); flex: 1; text-align: left;">imach.ir/c/pars-rice</span>
             </div>
-            <div class="field" style="flex: 1;">
-                <label>شماره تماس</label>
-                <input class="input" id="ce-phone" type="tel" placeholder="۰۹۱۲…" autocomplete="off">
-            </div>
-        </div>
-
-        <div class="field">
-            <label>شهر</label>
-            <input class="input" id="ce-city" type="text" placeholder="مثلاً: رشت" autocomplete="off">
-        </div>
-
-        <div class="field">
-            <label>صنف مشتری</label>
-            <div class="pills" id="ce-industry"></div>
-            <div class="hint">صنف برای فیلتر کردن دفترت استفاده می‌شود.</div>
-        </div>
-
-        <div class="field">
-            <label>گروه مشتری <span class="opt">— تخفیف گروه این‌جا اعمال می‌شود</span></label>
-            <button class="input sel" type="button" data-sheet="sheet-pick-cgroup">
-                <span id="ce-group-label">بدون گروه</span>
-                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-chev"/></svg>
+            <button class="btn btn-outline btn-block btn-sm" data-copy>
+                <svg><use href="#i-copy"/></svg> کپی لینک کاتالوگ
             </button>
         </div>
 
-        <div class="field">
-            <label>بدهی فعلی <span class="opt">— تومان</span></label>
-            <input class="input" id="ce-debt" type="tel" inputmode="numeric" placeholder="۰" autocomplete="off">
-            <div class="hint">اگر مشتری نزد تو بدهی دارد، رقمش را بنویس — هر وقت طلب را گرفتی، صفرش کن.</div>
+        <div class="share-grid">
+            <button class="share-opt" type="button" data-share-app="whatsapp">
+                <span class="messenger-avatar" style="background: #25D366;"><svg><use href="#i-whatsapp"/></svg></span>
+                <span>واتس‌اپ</span>
+            </button>
+            <button class="share-opt" type="button" data-share-app="telegram">
+                <span class="messenger-avatar" style="background: #229ED9;"><svg><use href="#i-telegram"/></svg></span>
+                <span>تلگرام</span>
+            </button>
+            <button class="share-opt" type="button" data-share-app="sms">
+                <span class="messenger-avatar" style="background: #F97316;"><svg><use href="#i-msg"/></svg></span>
+                <span>پیامک</span>
+            </button>
+            <button class="share-opt" type="button" data-share-app="rubika">
+                <span class="messenger-avatar" style="background: #6C22A6;">ر</span>
+                <span>روبیکا</span>
+            </button>
+            <button class="share-opt" type="button" data-share-app="eita">
+                <span class="messenger-avatar" style="background: #E11D48;">ا</span>
+                <span>ایتا</span>
+            </button>
+            <button class="share-opt" type="button" data-share-app="bale">
+                <span class="messenger-avatar" style="background: #0284C7;">ب</span>
+                <span>بله</span>
+            </button>
         </div>
 
-        <div class="field">
-            <label>یادداشت <span class="opt">— اختیاری</span></label>
-            <textarea class="input" id="ce-note" placeholder="مثلاً: پرداخت آخر ماه، تحویل بازار روز…"></textarea>
-        </div>
+        <button class="sheet-row" data-sheet="sheet-qr" style="margin-top: 10px;">
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-qr"/></svg></span>
+            <span class="tx"><b>کد QR کاتالوگ</b><span>چاپ روی فاکتور، پیشخوان و کارت ویزیت</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="btn btn-arm btn-block" data-go="s-catalog-share" style="margin-top: 10px;">
+            <svg><use href="#i-users"/></svg> اشتراک با مخاطبین آی‌مچ
+        </button>
     </div>
 
-    <div class="sticky-bar">
-        <button class="btn btn-primary btn-block" id="ce-save" type="button">
-            <svg><use href="#i-check"/></svg> ذخیرهٔ مشتری
+    <!-- ═══ شیت: کد QR کاتالوگ ═══ -->
+    <div class="sheet" id="sheet-qr" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>کد QR کاتالوگ</h3>
+            <button class="mg" data-sheet-close="sheet-qr" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">خریدار با دوربین گوشی مستقیم به کاتالوگ‌ات می‌رسد.</div>
+
+        <div class="card" style="display: grid; place-items: center; padding: 18px;">
+            <svg width="150" height="150" viewBox="0 0 29 29" shape-rendering="crispEdges" aria-label="کد QR کاتالوگ">
+                <rect width="29" height="29" fill="#ffffff"/>
+                <path fill="#1c1917" d="M1 1h7v7H1zM3 3h3v3H3zM21 1h7v7h-7zM23 3h3v3h-3zM1 21h7v7H1zM3 23h3v3H3zM10 1h2v2h-2zM14 1h2v3h-2zM17 2h2v2h-2zM10 4h3v2h-3zM15 4h1v2h-1zM17 5h2v2h-2zM1 10h2v3H1zM4 10h2v2H4zM7 10h2v3H7zM1 14h3v2H1zM5 14h2v2H5zM8 15h2v2H8zM11 10h3v3h-3zM15 10h2v2h-2zM18 11h3v2h-3zM22 10h2v3h-2zM26 10h2v2h-2zM11 14h2v2h-2zM14 15h3v2h-3zM18 14h2v3h-2zM22 14h3v2h-3zM26 15h2v2h-2zM10 18h2v2h-2zM13 18h3v2h-3zM17 19h2v2h-2zM20 18h3v3h-3zM25 18h2v2h-2zM10 21h2v3h-2zM14 21h2v2h-2zM17 22h3v2h-3zM21 21h2v2h-2zM24 21h3v3h-3zM10 25h3v2h-3zM15 25h2v3h-2zM18 25h2v2h-2zM21 26h3v2h-3zM25 25h2v2h-2z"/>
+            </svg>
+            <div style="font-size: 11px; color: var(--text-3); margin-top: 10px; direction: ltr;">imach.ir/c/pars-rice</div>
+        </div>
+
+        <button class="btn btn-outline btn-block" data-copy style="margin-top: 10px;">
+            <svg><use href="#i-copy"/></svg> کپی لینک کاتالوگ
         </button>
     </div>
 </section>
