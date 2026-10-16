@@ -1474,7 +1474,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     transform: translateY(-50%);
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted-fg);
+    color: var(--text-3);
     pointer-events: none;
 }
 
@@ -2083,3 +2083,236 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     height: 12px;
     display: block;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   فاز دفتر مشتری — کامپوننت‌های جدید
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── نوار فیلتر (سبک دیوار) ─── */
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 1px 0;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+.fb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 13px;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-2);
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all .15s;
+}
+.fb-btn:hover { border-color: var(--border-3); }
+.fb-btn:active { background: var(--surface-2); }
+.fb-btn svg:first-child { width: 13px; height: 13px; color: var(--text-3); flex-shrink: 0; }
+.fb-btn .fb-chev { width: 11px; height: 11px; color: var(--text-4); flex-shrink: 0; }
+.fb-btn.active {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    color: var(--primary-strong);
+}
+.fb-btn.active svg:first-child { color: var(--primary-strong); }
+
+/* ─── بج‌های مشتری در ردیف ─── */
+.cust-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 7px;
+}
+
+/* ─── خلاصهٔ دفتر مشتری ─── */
+.cust-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    font-size: 11.5px;
+    color: var(--text-3);
+    flex-wrap: wrap;
+}
+.cust-summary svg { width: 15px; height: 15px; color: var(--text-4); flex-shrink: 0; }
+.cust-summary .dot { color: var(--text-4); }
+.cust-summary b { color: var(--text); font-size: 12px; font-weight: 800; }
+
+/* ─── ردیف تخفیف/گروه در شیت‌ها ─── */
+.gd-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--surface-3);
+}
+.gd-row:last-child { border-bottom: 0; }
+.gd-ic {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    color: var(--primary-strong);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+}
+.gd-ic svg { width: 17px; height: 17px; }
+.gd-tx { flex: 1; min-width: 0; }
+.gd-tx b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.5; }
+.gd-tx span { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; line-height: 1.7; }
+
+/* ─── استپر درصد (− عدد ٪ +) ─── */
+.gd-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.gd-step .bk-step { width: 30px; height: 30px; font-size: 15px; }
+.gd-pct {
+    width: 56px;
+    height: 34px;
+    border: 1.5px solid var(--border-2);
+    border-radius: 9px;
+    background: #FFF;
+    text-align: center;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    padding: 0 4px;
+    box-sizing: border-box;
+}
+.gd-pct:focus {
+    outline: 0;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(249,115,22,.14);
+}
+.gd-sign { font-size: 12px; font-weight: 700; color: var(--text-3); flex-shrink: 0; }
+
+/* ─── پلهٔ تخفیف حجمی ─── */
+.tier-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--surface-3);
+}
+.tier-row:last-child { border-bottom: 0; }
+.tier-min-tx {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-2);
+    min-width: 0;
+}
+.tier-min {
+    width: 64px;
+    height: 34px;
+    border: 1.5px solid var(--border-2);
+    border-radius: 9px;
+    background: #FFF;
+    text-align: center;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    padding: 0 4px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+.tier-min:focus {
+    outline: 0;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(249,115,22,.14);
+}
+
+/* ورودی نام گروه کالا در شیت */
+.catgr-name-input { min-height: 40px; font-size: 13px; font-weight: 700; }
+
+/* ─── گرید اشتراک سریع ─── */
+.share-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+}
+.share-opt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    padding: 12px 6px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color .15s, background .15s;
+}
+.share-opt:hover { border-color: var(--border-2); }
+.share-opt:active { background: var(--surface-2); }
+.share-opt .messenger-avatar { width: 38px; height: 38px; }
+.share-opt span { font-size: 10.5px; font-weight: 700; color: var(--text-2); }
+
+/* ─── رنگ‌های لوگو (ویرایش کاتالوگ) ─── */
+.logo-colors {
+    display: flex;
+    gap: 11px;
+    flex-wrap: wrap;
+    padding: 8px 0 4px;
+}
+.logo-opt {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: #FFF;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    border: 2.5px solid transparent;
+    transition: transform .1s, border-color .15s;
+    font-family: inherit;
+    padding: 0;
+}
+.logo-opt:active { transform: scale(.94); }
+.logo-opt.on { border-color: var(--text); }
+
+/* ─── دکمهٔ ورودی به‌شکل فیلد انتخابی ─── */
+.input.sel { cursor: pointer; text-align: right; }
+.input.sel span { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; color: var(--text); }
+
+/* ─── لوکیشن روی نقشه (36-cat-edit) ─── */
+.loc-box { border: 1px solid var(--border-2); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.loc-map { position: relative; height: 120px; }
+.loc-map img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.loc-map .pin {
+    position: absolute; top: 50%; left: 50%;
+    width: 26px; height: 26px;
+    transform: translate(-50%, -100%);
+    color: var(--red);
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.25));
+}
+.loc-row {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 11px;
+    font-size: 11.5px; color: var(--text-2);
+    border-top: 1px solid var(--border-2);
+}
+.loc-row svg { flex-shrink: 0; color: var(--text-3); }
+.loc-row span { flex: 1; min-width: 0; }

@@ -38,6 +38,7 @@ window.iMach = (function () {
         's-catalog-share':        '06-catalog-share',
         's-contacts':             '07-contacts',
         's-customers':            '08-customers',
+        's-customer-edit':        '08-customers',
         's-sell-orders':          '09-sell-orders',
         's-sell-order-view':      '10-sell-order-view',
         's-sell-rfqs':            '11-sell-rfqs',
@@ -147,7 +148,10 @@ window.iMach = (function () {
             current = id;
             try { history.replaceState(null, '', '#' + id); } catch (e) {}
 
-            if (onShowHooks[id]) setTimeout(function () { onShowHooks[id](); }, 0);
+            var hooks = onShowHooks[id];
+            if (hooks) setTimeout(function () {
+                (Array.isArray(hooks) ? hooks : [hooks]).forEach(function (fn) { fn(); });
+            }, 0);
 
             closeAllSheets();
             applyArms();
@@ -300,7 +304,12 @@ window.iMach = (function () {
     }
 
     /* ═══ هوک‌ها ═══ */
-    function registerShowHook(id, fn) { onShowHooks[id] = fn; }
+    function registerShowHook(id, fn) {
+        /* چند هوک برای هر صفحه مجاز است — ترتیب ثبت = ترتیب اجرا */
+        if (!onShowHooks[id]) onShowHooks[id] = [];
+        if (!Array.isArray(onShowHooks[id])) onShowHooks[id] = [onShowHooks[id]];
+        onShowHooks[id].push(fn);
+    }
     function getSCREENParams() { return SCREEN_PARAMS; }
     function setSCREENParams(id, params) { SCREEN_PARAMS[id] = params; }
     function resetStack() { stack.length = 0; }

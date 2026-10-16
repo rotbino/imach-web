@@ -1,52 +1,75 @@
 <!-- ═════════════════════════════════════════════════════════════
+     فایل ۰۸ — دفتر مشتری
+     ─────────────────────────────────────────────────────────────
      اسکرین ۰۸: مشتریان من
-     لیست مشتریان + منوی سه‌نقطه برای حذف.
-     مشتریان تازه با بج «جدید» — بعد از دیدن صفحه می‌رود.
+       • جستجو + نوار فیلتر (صنف / گروه مشتری / بدهی) — مثل دیوار
+       • خلاصهٔ دفتر (تعداد + مجموع بدهی)
+       • مدیریت گروه‌های مشتری (هر گروه تخفیف مستقیم)
+       • لیست دیتامحور — با app-customers.js رندر می‌شود
+
+     اسکرین s-customer-edit: افزودن/ویرایش مشتری (فرم دفتر)
+
+     شیت‌ها: ۳ شیت فیلتر · مدیریت گروه‌ها · ساخت/ویرایش گروه · انتخاب گروه
      ═════════════════════════════════════════════════════════════ -->
+
 <section class="screen" id="s-customers" data-arm="sell">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">مشتریان من<small>۳ مشتری</small></div>
+        <div class="ttl">مشتریان من<small id="cust-count">۵ مشتری</small></div>
+        <button class="icon-btn" id="cust-add" aria-label="افزودن مشتری"><svg><use href="#i-plus"/></svg></button>
         <button class="icon-btn" data-go="s-catalog-share" aria-label="اشتراک کاتالوگ"><svg><use href="#i-share"/></svg></button>
     </div>
 
     <div class="body">
         <div class="callout callout-info">
             <svg><use href="#i-bookmark"/></svg>
-            <div>هر کس کاتالوگ شما را ذخیره کند، <b>مشتری شما می‌شود</b> و قیمت‌های تازه را همان لحظه می‌بیند.</div>
+            <div>هر کس کاتالوگ شما را ذخیره کند <b>مشتری شما می‌شود</b> — یا خودت مشتری‌ات را این‌جا در دفترت ثبت کن.</div>
         </div>
 
-        <div class="rows">
-            <div class="row static" data-go="s-chat">
-                <div class="avatar" style="background: #7c3aed;">م</div>
-                <div class="row-body">
-                    <div class="row-title">رستوران مهر <span class="badge b-primary">جدید</span></div>
-                    <div class="row-sub">مهدی کاظمی <span class="dot">·</span> تهران <span class="dot">·</span> امروز مشتری شد</div>
-                </div>
-                <button class="icon-btn plain" data-cust-menu="رستوران مهر" aria-label="گزینه‌ها">
-                    <svg><use href="#i-dots"/></svg>
-                </button>
-            </div>
+        <!-- جستجو -->
+        <div class="search-row" style="height: 44px;">
+            <svg><use href="#i-search"/></svg>
+            <input type="text" id="cust-search" placeholder="جستجوی نام مشتری…" autocomplete="off">
+        </div>
 
-            <div class="row static" data-go="s-chat">
-                <div class="avatar" style="background: #c2703a;">س</div>
-                <div class="row-body">
-                    <div class="row-title">سوپرمارکت الماس</div>
-                    <div class="row-sub">سارا رحیمی <span class="dot">·</span> قزوین <span class="dot">·</span> ۳ روز پیش</div>
-                </div>
-                <button class="icon-btn plain" data-cust-menu="سوپرمارکت الماس" aria-label="گزینه‌ها">
-                    <svg><use href="#i-dots"/></svg>
-                </button>
-            </div>
+        <!-- نوار فیلتر — مثل دیوار -->
+        <div class="filter-bar" id="cust-fbar">
+            <button class="fb-btn" type="button" data-fb="industry">
+                <svg><use href="#i-store"/></svg><span>صنف</span><svg class="fb-chev"><use href="#i-chevd"/></svg>
+            </button>
+            <button class="fb-btn" type="button" data-fb="group">
+                <svg><use href="#i-users"/></svg><span>گروه مشتری</span><svg class="fb-chev"><use href="#i-chevd"/></svg>
+            </button>
+            <button class="fb-btn" type="button" data-fb="debt">
+                <svg><use href="#i-wallet"/></svg><span>بدهی</span><svg class="fb-chev"><use href="#i-chevd"/></svg>
+            </button>
+        </div>
 
-            <div class="row static" data-go="s-chat">
-                <div class="avatar" style="background: #059669;">ن</div>
-                <div class="row-body">
-                    <div class="row-title">سوپرمارکت آریا</div>
-                    <div class="row-sub">نیما فاضلی <span class="dot">·</span> رشت <span class="dot">·</span> هفتهٔ پیش</div>
-                </div>
-                <button class="icon-btn plain" data-cust-menu="سوپرمارکت آریا" aria-label="گزینه‌ها">
-                    <svg><use href="#i-dots"/></svg>
+        <!-- خلاصهٔ دفتر -->
+        <div class="cust-summary" id="cust-summary"></div>
+
+        <!-- گروه‌های مشتری -->
+        <div class="card" style="padding: 2px 14px;">
+            <button class="sheet-row" data-sheet="sheet-cust-groups" type="button">
+                <span class="ico"><svg><use href="#i-tag"/></svg></span>
+                <span class="tx">
+                    <b>گروه‌های مشتری</b>
+                    <span id="cg-summary">هر گروه تخفیف مخصوص خودش را دارد</span>
+                </span>
+                <svg class="chev"><use href="#i-chev"/></svg>
+            </button>
+        </div>
+
+        <!-- لیست مشتریان — دیتامحور -->
+        <div class="rows" id="cust-list"></div>
+
+        <div id="cust-empty" hidden>
+            <div class="empty">
+                <div class="empty-ic"><svg><use href="#i-search"/></svg></div>
+                <h3>با این فیلترها مشتری‌ای پیدا نشد</h3>
+                <p>فیلترها را ساده‌تر کن یا مشتری جدید به دفترت اضافه کن.</p>
+                <button class="btn btn-outline btn-sm" id="cust-clear-filters" type="button">
+                    <svg><use href="#i-x"/></svg> حذف فیلترها
                 </button>
             </div>
         </div>
@@ -55,5 +78,184 @@
             <svg><use href="#i-sparkles"/></svg>
             <span>می‌خواهی مشتری بیشتری داشته باشی؟ لینک کاتالوگ را برای مشتریان قدیمی‌ات بفرست.</span>
         </div>
+    </div>
+
+
+    <!-- ═══ شیت فیلتر صنف ═══ -->
+    <div class="sheet" id="sheet-fb-industry" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>فیلتر صنف</h3>
+            <button class="mg" data-sheet-close="sheet-fb-industry" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">فقط مشتریان یک صنف را ببین.</div>
+        <div id="fb-industry-list"></div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-fb-industry" style="margin-top: 8px;">بستن</button>
+    </div>
+
+    <!-- ═══ شیت فیلتر گروه مشتری ═══ -->
+    <div class="sheet" id="sheet-fb-group" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>فیلتر گروه مشتری</h3>
+            <button class="mg" data-sheet-close="sheet-fb-group" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">گروه‌ها تخفیف مخصوص خودشان را دارند.</div>
+        <div id="fb-group-list"></div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-fb-group" style="margin-top: 8px;">بستن</button>
+    </div>
+
+    <!-- ═══ شیت فیلتر بدهی ═══ -->
+    <div class="sheet" id="sheet-fb-debt" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>فیلتر بدهی</h3>
+            <button class="mg" data-sheet-close="sheet-fb-debt" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">طلب‌هایت را یک‌جا ببین.</div>
+        <div id="fb-debt-list"></div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-fb-debt" style="margin-top: 8px;">بستن</button>
+    </div>
+
+    <!-- ═══ شیت مدیریت گروه‌های مشتری ═══ -->
+    <div class="sheet" id="sheet-cust-groups" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>گروه‌های مشتری</h3>
+            <button class="mg" data-sheet-close="sheet-cust-groups" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">هر گروه تخفیف مخصوص خودش را دارد — وقتی مشتریِ این گروه سفارش می‌دهد، قیمت را با تخفیف می‌بیند.</div>
+        <div id="cg-list"></div>
+        <button class="pick-row new" id="cg-new" type="button" style="margin-top: 10px;">
+            <div class="thumb" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                <svg style="width: 20px; height: 20px;"><use href="#i-plus"/></svg>
+            </div>
+            <div class="info">
+                <div class="nm">ساخت گروه جدید</div>
+                <div class="sub">مثلاً: همکار، ویژه، رستوران‌ها…</div>
+            </div>
+            <div class="chev"><svg><use href="#i-chev"/></svg></div>
+        </button>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-cust-groups" style="margin-top: 8px;">بستن</button>
+    </div>
+
+    <!-- ═══ شیت ساخت/ویرایش گروه ═══ -->
+    <div class="sheet" id="sheet-cgroup-edit" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3 id="cge-ttl">گروه جدید</h3>
+            <button class="mg" data-sheet-close="sheet-cgroup-edit" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">نام گروه و تخفیفش را تعیین کن — تخفیف روی همهٔ کالاهای کاتالوگ اعمال می‌شود.</div>
+
+        <div class="field">
+            <label>نام گروه</label>
+            <input class="input" id="cge-name" type="text" placeholder="مثلاً: همکار" autocomplete="off">
+        </div>
+
+        <div class="field">
+            <label>تخفیف گروه <span class="opt">— درصد</span></label>
+            <div class="gd-step">
+                <button class="bk-step pct-minus-style" type="button" data-gd-step="-1" aria-label="کاهش">−</button>
+                <input class="gd-pct" id="cge-disc" value="۵" inputmode="numeric" aria-label="درصد تخفیف">
+                <span class="gd-sign">٪</span>
+                <button class="bk-step" type="button" data-gd-step="1" aria-label="افزایش">+</button>
+            </div>
+            <div class="hint" id="cge-hint">مشتریان این گروه این‌قدر درصد ارزان‌تر از شما می‌خرند. صفر یعنی بدون تخفیف.</div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="cge-save" style="margin-top: 8px;">
+            <svg><use href="#i-check"/></svg> ذخیرهٔ گروه
+        </button>
+        <button class="btn btn-outline btn-block" id="cge-del" hidden style="margin-top: 8px; color: var(--red); border-color: #F3C1C1;">
+            <svg><use href="#i-trash"/></svg> حذف گروه
+        </button>
+    </div>
+
+    <!-- ═══ شیت انتخاب گروه (فرم مشتری) ═══ -->
+    <div class="sheet" id="sheet-pick-cgroup" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>گروه مشتری</h3>
+            <button class="mg" data-sheet-close="sheet-pick-cgroup" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">تخفیف همین گروه برای این مشتری اعمال می‌شود.</div>
+        <div id="pcg-list"></div>
+        <button class="pick-row new" id="pcg-new" type="button" style="margin-top: 10px;">
+            <div class="thumb" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                <svg style="width: 20px; height: 20px;"><use href="#i-plus"/></svg>
+            </div>
+            <div class="info">
+                <div class="nm">ساخت گروه جدید</div>
+                <div class="sub">همین‌جا گروه تازه بساز</div>
+            </div>
+            <div class="chev"><svg><use href="#i-chev"/></svg></div>
+        </button>
+    </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین: افزودن / ویرایش مشتری — فرم دفتر مشتری
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-customer-edit" data-arm="sell" hidden>
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl" id="ce-ttl">مشتری جدید<small>دفتر مشتری</small></div>
+    </div>
+
+    <div class="body">
+        <div class="field">
+            <label>نام کسب‌وکار مشتری</label>
+            <input class="input" id="ce-name" type="text" placeholder="مثلاً: سوپرمارکت الماس" autocomplete="off">
+            <div class="hint">همان نامی که در دفترت می‌نویسی</div>
+        </div>
+
+        <div style="display: flex; gap: 9px;">
+            <div class="field" style="flex: 1;">
+                <label>نام رابط <span class="opt">— اختیاری</span></label>
+                <input class="input" id="ce-person" type="text" placeholder="مثلاً: سارا رحیمی" autocomplete="off">
+            </div>
+            <div class="field" style="flex: 1;">
+                <label>شماره تماس</label>
+                <input class="input" id="ce-phone" type="tel" placeholder="۰۹۱۲…" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="field">
+            <label>شهر</label>
+            <input class="input" id="ce-city" type="text" placeholder="مثلاً: رشت" autocomplete="off">
+        </div>
+
+        <div class="field">
+            <label>صنف مشتری</label>
+            <div class="pills" id="ce-industry"></div>
+            <div class="hint">صنف برای فیلتر کردن دفترت استفاده می‌شود.</div>
+        </div>
+
+        <div class="field">
+            <label>گروه مشتری <span class="opt">— تخفیف گروه این‌جا اعمال می‌شود</span></label>
+            <button class="input sel" type="button" data-sheet="sheet-pick-cgroup">
+                <span id="ce-group-label">بدون گروه</span>
+                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-chev"/></svg>
+            </button>
+        </div>
+
+        <div class="field">
+            <label>بدهی فعلی <span class="opt">— تومان</span></label>
+            <input class="input" id="ce-debt" type="tel" inputmode="numeric" placeholder="۰" autocomplete="off">
+            <div class="hint">اگر مشتری نزد تو بدهی دارد، رقمش را بنویس — هر وقت طلب را گرفتی، صفرش کن.</div>
+        </div>
+
+        <div class="field">
+            <label>یادداشت <span class="opt">— اختیاری</span></label>
+            <textarea class="input" id="ce-note" placeholder="مثلاً: پرداخت آخر ماه، تحویل بازار روز…"></textarea>
+        </div>
+    </div>
+
+    <div class="sticky-bar">
+        <button class="btn btn-primary btn-block" id="ce-save" type="button">
+            <svg><use href="#i-check"/></svg> ذخیرهٔ مشتری
+        </button>
     </div>
 </section>

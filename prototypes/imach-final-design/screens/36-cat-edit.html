@@ -1,6 +1,9 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۳۶: ویرایش کاتالوگ
-     نام، لوگو، شهر، لوکیشن و توضیح کوتاه
+     ─────────────────────────────────────────────────────────────
+     اطلاعاتی که مشتریان بالای کاتالوگ می‌بینند:
+     نام، لوگو (حرف اول + رنگ)، شهر، لوکیشن، آدرس،
+     نوع کسب‌وکار و توضیح کوتاه — با پیش‌نمایش زنده.
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-cat-edit" data-arm="sell">
@@ -11,36 +14,35 @@
 
     <div class="body">
 
-        <!-- لوگو -->
+        <!-- پیش‌نمایش زنده -->
         <div class="card" style="display: flex; align-items: center; gap: 12px;">
-            <div class="avatar avatar-lg" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+            <div class="avatar avatar-lg" id="cate-logo">پ</div>
             <div style="flex: 1; min-width: 0;">
-                <div style="font-size: 13.5px; font-weight: 700;">لوگوی کاتالوگ</div>
-                <div style="font-size: 11px; color: var(--text-3); margin-top: 2px; line-height: 1.8;">کنار نامت در کاتالوگ عمومی و پیام‌ها دیده می‌شود</div>
+                <div style="font-size: 15px; font-weight: 700;" id="cate-pv-name">پخش برنج پارس</div>
+                <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">
+                    <span id="cate-pv-city">رشت</span> · پخش مواد غذایی
+                </div>
             </div>
-            <button class="btn btn-sm btn-outline" type="button">تعویض</button>
         </div>
 
-        <!-- نام کاتالوگ -->
-        <div class="field" style="margin-top: 12px;">
-            <label>نام کاتالوگ</label>
-            <input class="input" value="پخش برنج پارس">
-            <div class="hint">این نام روی کاتالوگ و پیام‌های شما دیده می‌شود</div>
-        </div>
-
-        <!-- توضیح کوتاه -->
         <div class="field">
-            <label>توضیح کوتاه <span class="opt">— اختیاری</span></label>
-            <textarea class="input" placeholder="مثلاً: فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان"></textarea>
+            <label>نام کاتالوگ</label>
+            <input class="input" id="cate-name" type="text" value="پخش برنج پارس" autocomplete="off">
+            <div class="hint">این نام بالای کاتالوگ و روی لینک اشتراک‌شده دیده می‌شود</div>
         </div>
 
-        <!-- شهر -->
+        <div class="field">
+            <label>لوگوی کاتالوگ</label>
+            <button class="input sel" type="button" data-sheet="sheet-cat-logo">
+                <span id="cate-logo-label">تغییر رنگ لوگو</span>
+                <svg style="width: 16px; height: 16px; color: var(--text-3); flex-shrink: 0;"><use href="#i-chev"/></svg>
+            </button>
+            <div class="hint">لوگو همان حرف اول نام‌تان با رنگ انتخابی است — کنار نامت در کاتالوگ عمومی و پیام‌ها دیده می‌شود</div>
+        </div>
+
         <div class="field">
             <label>شهر</label>
-            <button class="input sel" type="button">
-                <span style="color: var(--foreground); font-weight: 700;">رشت</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-3);flex-shrink:0"><path d="M15 6l-6 6 6 6"/></svg>
-            </button>
+            <input class="input" id="cate-city" type="text" value="رشت" autocomplete="off">
         </div>
 
         <!-- لوکیشن روی نقشه -->
@@ -62,26 +64,67 @@
         <!-- آدرس -->
         <div class="field">
             <label>آدرس <span class="opt">— اختیاری</span></label>
-            <input class="input" value="رشت، خیابان معلم، جنب پمپ بنزین، انبار برنج پارس">
+            <input class="input" id="cate-addr" type="text" value="رشت، خیابان معلم، جنب پمپ بنزین، انبار برنج پارس" autocomplete="off">
             <div class="hint">برای مراجعهٔ خریداران محلی — نمایش آن اختیاری است</div>
         </div>
 
         <!-- نوع کسب‌وکار -->
         <div class="field">
             <label>نوع کسب‌وکار</label>
-            <button class="input sel" type="button">
-                <span style="color: var(--foreground); font-weight: 700;">عمده‌فروش</span>
+            <button class="input sel" type="button" data-sheet="sheet-cat-type" id="cate-type-btn">
+                <span id="cate-type-val" style="color: var(--foreground); font-weight: 700;">عمده‌فروش</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-3);flex-shrink:0"><path d="M15 6l-6 6 6 6"/></svg>
             </button>
             <div class="hint">خریدار از همان اول می‌داند از تولیدکننده می‌خرد یا از عمده‌فروش</div>
         </div>
 
+        <!-- توضیح کوتاه -->
+        <div class="field">
+            <label>توضیح کوتاه <span class="opt">— اختیاری</span></label>
+            <textarea class="input" id="cate-desc" placeholder="مثلاً: فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان"></textarea>
+            <div class="hint">زیر نام کاتالوگ دیده می‌شود — در یک خط بگو چه می‌فروشی</div>
+        </div>
     </div>
 
     <div class="sticky-bar">
-        <button class="btn btn-primary btn-block" data-edit-save>
+        <button class="btn btn-primary btn-block" id="cat-edit-save" type="button">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>
             ذخیره تغییرات
         </button>
+    </div>
+
+    <!-- شیت: انتخاب رنگ لوگو -->
+    <div class="sheet" id="sheet-cat-logo" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>رنگ لوگو</h3>
+            <button class="mg" data-sheet-close="sheet-cat-logo" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">رنگی که با نام و شعار مغازه‌ات می‌خواند را انتخاب کن.</div>
+        <div class="logo-colors" id="cate-colors"></div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-cat-logo" style="margin-top: 10px;">بستن</button>
+    </div>
+
+    <!-- شیت: نوع کسب‌وکار -->
+    <div class="sheet" id="sheet-cat-type" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>نوع کسب‌وکار</h3>
+            <button class="mg" data-sheet-close="sheet-cat-type" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">خریدار از همان اول می‌داند با چه کسی طرف است.</div>
+        <button class="sheet-row" data-biz-type="عمده‌فروش" type="button">
+            <span class="ico"><svg><use href="#i-store"/></svg></span>
+            <span class="tx"><b>عمده‌فروش</b><span>از تولیدکننده یا واردکننده می‌خرد و به‌صورت عمده می‌فروشد</span></span>
+        </button>
+        <button class="sheet-row" data-biz-type="تولیدکننده" type="button">
+            <span class="ico"><svg><use href="#i-boxes"/></svg></span>
+            <span class="tx"><b>تولیدکننده</b><span>خودش تولید می‌کند — کارخانه، شالی‌زار، کارگاه</span></span>
+        </button>
+        <button class="sheet-row" data-biz-type="پخش‌کننده" type="button">
+            <span class="ico"><svg><use href="#i-send"/></svg></span>
+            <span class="tx"><b>پخش‌کننده</b><span>با وسیلهٔ نقلیه کالا را بین مغازه‌ها پخش می‌کند</span></span>
+        </button>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-cat-type" style="margin-top: 10px;">بستن</button>
     </div>
 </section>

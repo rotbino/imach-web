@@ -37,6 +37,8 @@ const DATA = {
         {
             id: 'b1', name: 'پخش برنج پارس', owner: 'احمد رضایی',
             type: 'عمده‌فروش', industry: 'پخش مواد غذایی', city: 'رشت',
+            desc: 'فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان',
+            addr: 'رشت، خیابان معلم، جنب پمپ بنزین، انبار برنج پارس',
             logo: 'پ', logoColor: 'linear-gradient(135deg,#c2703a,#ea580c)'
         },
         {
@@ -182,7 +184,9 @@ const DATA = {
             pricePerUnit: 57000,
             stock: 35, min: 5,
             img: 'png/goods/rice-sack.jpg',
-            status: 'in-stock'
+            status: 'in-stock',
+            /* تخفیف گروه مشتری مخصوص همین کالا — پیش‌فرض از گروه */
+            groupDiscounts: { cg1: 7, cg3: 10 }
         },
         {
             id: 'l2', businessId: 'b1',
@@ -249,12 +253,49 @@ const DATA = {
 
 
     /* ═══════════════════════════════════════════════════════════
-       مشتریان فروشنده
+       گروه‌های مشتری — هر گروه یک تخفیف مستقیم (٪)
+       (بدون مفهوم «سطح» — تخفیف روی خود گروه اعمال می‌شود)
+       ═══════════════════════════════════════════════════════════ */
+    customerGroups: [
+        { id: 'cg1', name: 'همکار',   discount: 5 },
+        { id: 'cg2', name: 'معمولی', discount: 0 },
+        { id: 'cg3', name: 'ویژه',    discount: 8 }
+    ],
+
+    /* صنف‌های مشتری — برای فیلتر دفتر مشتری */
+    customerIndustries: ['سوپرمارکت', 'رستوران', 'کترینگ', 'تعویض روغنی', 'قنادی', 'پخش مواد غذایی', 'عمده‌فروشی', 'سایر'],
+
+    /* ═══════════════════════════════════════════════════════════
+       مشتریان فروشنده — دفتر مشتری
+       groupId → customerGroups · debt = بدهی فعلی (تومان)
        ═══════════════════════════════════════════════════════════ */
     customers: [
-        { id: 'cu1', businessId: 'b1', name: 'رستوران مهر',     person: 'مهدی کاظمی', city: 'تهران', since: 'امروز',     avatar: 'م', color: '#7c3aed', contactId: 'ct4', isNew: true },
-        { id: 'cu2', businessId: 'b1', name: 'سوپرمارکت الماس', person: 'سارا رحیمی', city: 'قزوین', since: '۳ روز پیش', avatar: 'س', color: '#c2703a', contactId: 'ct2' },
-        { id: 'cu3', businessId: 'b1', name: 'سوپرمارکت آریا',  person: 'نیما فاضلی', city: 'رشت',  since: 'هفتهٔ پیش', avatar: 'ن', color: '#059669', contactId: 'ct3' }
+        { id: 'cu1', businessId: 'b1', name: 'رستوران مهر',       person: 'مهدی کاظمی',  city: 'تهران', since: 'امروز',     avatar: 'م', color: '#7c3aed', contactId: 'ct4', isNew: true,
+          industry: 'رستوران',      groupId: 'cg2', debt: 2400000, phone: '۰۹۱۲ ۳۳۴ ۴۱۰۸', note: 'تحویل صبح زود — بازار روز' },
+        { id: 'cu2', businessId: 'b1', name: 'سوپرمارکت الماس',   person: 'سارا رحیمی',   city: 'قزوین', since: '۳ روز پیش', avatar: 'س', color: '#c2703a', contactId: 'ct2',
+          industry: 'سوپرمارکت',    groupId: 'cg1', debt: 0,        phone: '۰۹۱۲ ۷۷۶ ۹۱۰۴', note: '' },
+        { id: 'cu3', businessId: 'b1', name: 'سوپرمارکت آریا',    person: 'نیما فاضلی',   city: 'رشت',  since: 'هفتهٔ پیش', avatar: 'ن', color: '#059669', contactId: 'ct3',
+          industry: 'سوپرمارکت',    groupId: 'cg3', debt: 7800000, phone: '۰۹۱۱ ۵۵۲ ۲۰۷۴', note: 'پیش‌پرداخت ۳۰٪' },
+        { id: 'cu4', businessId: 'b1', name: 'کترینگ بهار',       person: 'مریم اسدی',    city: 'رشت',  since: '۲ هفته پیش', avatar: 'ک', color: '#0e7490', contactId: 'ct6',
+          industry: 'کترینگ',       groupId: 'cg2', debt: 1200000, phone: '۰۹۱۴ ۶۶۳ ۱۵۸۰', note: 'پرداخت آخر ماه' },
+        { id: 'cu5', businessId: 'b1', name: 'تعویض روغنی پیروز', person: 'سامان پیروز',  city: 'تهران', since: 'ماه پیش',   avatar: 'ت', color: '#b45309', contactId: 'ct8',
+          industry: 'تعویض روغنی',  groupId: 'cg1', debt: 0,        phone: '۰۹۱۱ ۸۸۰ ۵۵۲۰', note: '' }
+    ],
+
+    /* ═══════════════════════════════════════════════════════════
+       تخفیفات حجمی کاتالوگ — پله‌ای بر اساس تعداد سفارش
+       ═══════════════════════════════════════════════════════════ */
+    volumeTiersOn: true,
+    volumeTiers: [
+        { min: 10, pct: 2 },
+        { min: 20, pct: 5 }
+    ],
+
+    /* گروه‌های کالا — همان چیپ‌های بالای کاتالوگ */
+    catalogGroups: [
+        { id: 'cgr1', name: 'برنج هاشمی' },
+        { id: 'cgr2', name: 'برنج طارم' },
+        { id: 'cgr3', name: 'برنج فجر' }
     ],
 
 

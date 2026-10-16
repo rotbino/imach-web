@@ -136,9 +136,87 @@
             return;
         }
 
+        /* ─── منوی مشتری — قبل از ناوبری عمومی تا سه‌نقطه کار کند ─── */
+        var custMenu = t.closest('[data-cust-menu]');
+        if (custMenu) {
+            e.stopPropagation();
+            var custName = custMenu.dataset.custMenu;
+            var custRow = custMenu.closest('.row');
+            if (core.customers && typeof core.customers.menu === 'function') {
+                core.customers.menu(custName, custMenu, custRow);
+                return;
+            }
+            core.actions('گزینه‌های ' + custName, [
+                { label: 'گفتگو', onClick: function () { go('s-chat'); } },
+                { label: 'حذف از مشتریان', danger: true, onClick: function () {
+                        core.confirm({
+                            title: 'حذف از مشتریان',
+                            text: '«' + custName + '» از فهرست مشتریانت حذف می‌شود. دیگر قیمت‌های شما را نمی‌بیند.',
+                            ok: 'حذف مشتری', cancel: 'انصراف', danger: true
+                        }).then(function (ok) {
+                            if (ok) {
+                                if (custRow) custRow.remove();
+                                toast('مشتری از فهرست حذف شد', 'success');
+                            }
+                        });
+                    }}
+            ]);
+            return;
+        }
+
+        /* ─── منوی تأمین‌کننده ─── */
+        var supMenu = t.closest('[data-sup-menu]');
+        if (supMenu) {
+            e.stopPropagation();
+            var supName = supMenu.dataset.supMenu;
+            var supRow = supMenu.closest('.row');
+            core.actions('گزینه‌های ' + supName, [
+                { label: 'گفتگو', onClick: function () { go('s-chat'); } },
+                { label: 'حذف از تأمین‌کنندگان', danger: true, onClick: function () {
+                        core.confirm({
+                            title: 'حذف از تأمین‌کنندگان',
+                            text: '«' + supName + '» از فهرست تأمین‌کنندگانت حذف می‌شود.',
+                            ok: 'حذف تأمین‌کننده', cancel: 'انصراف', danger: true
+                        }).then(function (ok) {
+                            if (ok) {
+                                if (supRow) supRow.remove();
+                                toast('تأمین‌کننده از فهرست حذف شد', 'success');
+                            }
+                        });
+                    }}
+            ]);
+            return;
+        }
+
+        /* ─── منوی سفارش خرید (لغو) ─── */
+        var ordCancel = t.closest('[data-order-cancel]');
+        if (ordCancel) {
+            e.stopPropagation();
+            var ordName = ordCancel.dataset.orderCancel;
+            var ordRow = ordCancel.closest('.row');
+            core.actions('گزینه‌های ' + ordName, [
+                { label: 'گفتگو با تأمین‌کننده', onClick: function () { go('s-chat'); } },
+                { label: 'لغو سفارش', danger: true, onClick: function () {
+                        core.confirm({
+                            title: 'لغو سفارش',
+                            text: 'سفارش «' + ordName + '» لغو می‌شود و تأمین‌کننده خبردار می‌شود.',
+                            ok: 'لغو سفارش', cancel: 'انصراف', danger: true
+                        }).then(function (ok) {
+                            if (ok) {
+                                if (ordRow) ordRow.remove();
+                                toast('سفارش لغو شد', 'error');
+                            }
+                        });
+                    }}
+            ]);
+            return;
+        }
+
         /* ─── ناوبری عمومی ─── */
         var goEl = t.closest('[data-go]');
         if (goEl) { e.preventDefault(); go(goEl.dataset.go); return; }
+        var pvBack = t.closest('[data-preview-back]');
+        if (pvBack) { e.preventDefault(); back(); return; }
         var backEl = t.closest('[data-back]');
         if (backEl) { e.preventDefault(); back(); return; }
 
@@ -182,6 +260,7 @@
 
         /* ─── سوییچ عمومی ─── */
         var sw = t.closest('.switch');
+        if (sw && sw.id === 'vol-on') sw = null; /* سوییچ تخفیف حجمی را شیت خودش مدیریت می‌کند */
         if (sw) {
             if (sw.classList.contains('locked')) {
                 toast('ابتدا به ۱۰۰ امتیاز فعالیت برس', 'error');
@@ -370,54 +449,6 @@
                     setTimeout(function () { core.resetStack(); show('s-catalog', false); }, 500);
                 }
             });
-            return;
-        }
-
-        /* ─── منوی مشتری ─── */
-        var custMenu = t.closest('[data-cust-menu]');
-        if (custMenu) {
-            e.stopPropagation();
-            var custName = custMenu.dataset.custMenu;
-            var custRow = custMenu.closest('.row');
-            core.actions('گزینه‌های ' + custName, [
-                { label: 'گفتگو', onClick: function () { go('s-chat'); } },
-                { label: 'حذف از مشتریان', danger: true, onClick: function () {
-                        core.confirm({
-                            title: 'حذف از مشتریان',
-                            text: '«' + custName + '» از فهرست مشتریانت حذف می‌شود. دیگر قیمت‌های شما را نمی‌بیند.',
-                            ok: 'حذف مشتری', cancel: 'انصراف', danger: true
-                        }).then(function (ok) {
-                            if (ok) {
-                                if (custRow) custRow.remove();
-                                toast('مشتری از فهرست حذف شد', 'success');
-                            }
-                        });
-                    }}
-            ]);
-            return;
-        }
-
-        /* ─── منوی تأمین‌کننده ─── */
-        var supMenu = t.closest('[data-sup-menu]');
-        if (supMenu) {
-            e.stopPropagation();
-            var supName = supMenu.dataset.supMenu;
-            var supRow = supMenu.closest('.row');
-            core.actions('گزینه‌های ' + supName, [
-                { label: 'گفتگو', onClick: function () { go('s-chat'); } },
-                { label: 'حذف از تأمین‌کنندگان', danger: true, onClick: function () {
-                        core.confirm({
-                            title: 'حذف از تأمین‌کنندگان',
-                            text: '«' + supName + '» از فهرست تأمین‌کنندگانت حذف می‌شود.',
-                            ok: 'حذف تأمین‌کننده', cancel: 'انصراف', danger: true
-                        }).then(function (ok) {
-                            if (ok) {
-                                if (supRow) supRow.remove();
-                                toast('تأمین‌کننده از فهرست حذف شد', 'success');
-                            }
-                        });
-                    }}
-            ]);
             return;
         }
 

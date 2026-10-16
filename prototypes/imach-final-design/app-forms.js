@@ -780,7 +780,6 @@
     core.registerShowHook('s-sell-add', addReset);
     core.registerShowHook('s-catalog-guest', applyGuestMode);
     core.registerShowHook('s-contacts', applyContactsMode);
-    core.registerShowHook('s-customers', markNewItemsSeen);
     core.registerShowHook('s-buy-suppliers', markNewItemsSeen);
     core.registerShowHook('s-profile', profileSync);
     core.registerShowHook('s-network-score', scoreRender);
@@ -791,6 +790,12 @@
     core.registerShowHook('s-sell-promo', catPromoSync);
     core.registerShowHook('s-sell-bulk', bulkReset);
     core.registerShowHook('s-charge', chargeSync);
+    /* فاز دفتر مشتری — شیت‌های کاتالوگ و تخفیف‌ها */
+    core.registerShowHook('s-catalog', catSheetsSync);
+    core.registerShowHook('s-cat-edit', catEditLoad);
+    core.registerShowHook('s-sell-edit', gdEditRender);
+    core.registerShowHook('s-home-sell', chargeSync);
+    core.registerShowHook('s-profile', chargeSync);
 
     /* ═══════════════════════════════════════════════════════════════
        Expose
@@ -841,6 +846,9 @@
         chargeSync: chargeSync,
         chargeSend: chargeSend,
         promoSwitchToggle: promoSwitchToggle,
+        catSheetsSync: catSheetsSync,
+        catEditLoad: catEditLoad,
+        gdEditRender: gdEditRender,
     };
 
     /* ═══════════════════════════════════════════════════════════════
@@ -1077,4 +1085,427 @@
         catPromoSync();
         core.toast(core.data.user.catalogPromo ? 'کالاها ویژه شدند' : 'ویژه‌سازی خاموش شد', 'success');
     }
+
+
+    /* ═════════════════════════════════════════════════════════════
+       فاز دفتر مشتری — شیت‌های تنظیمات کاتالوگ
+       ═════════════════════════════════════════════════════════════ */
+
+    var CATF = { q: '', group: null };   /* فیلتر کاتالوگ: جستجو + گروه کالا */
+    var gdEditListing = null;             /* کالای در حال ویرایش (s-sell-edit) */
+
+    function _pctClamp(v) { v = parseInt(v, 10); if (isNaN(v)) v = 0; return Math.max(0, Math.min(50, v)); }
+
+    /* ─── چیپ‌های گروه کالا + فیلتر گرید ─── */
+    function catChipsRender() {
+        var host = $('#cat-groups');
+        if (!host) return;
+        var h = '<button class="chip' + (CATF.group ? '' : ' active') + '" data-gid="" type="button">همه</button>';
+        core.data.catalogGroups.forEach(function (g) {
+            h += '<button class="chip' + (CATF.group === g.id ? ' active' : '') + '" data-gid="' + g.id + '" type="button">' + esc(g.name) + '</button>';
+        });
+        host.innerHTML = h;
+    }
+
+    function catFilterApply() {
+        $$('#cat-grid .pcard').forEach(function (p) {
+            var okG = !CATF.group || p.dataset.gid === CATF.group;
+            var nmEl = p.querySelector('.pname');
+            var nm = nmEl ? nmEl.textContent : '';
+            var okQ = !CATF.q || nm.indexOf(CATF.q.trim()) > -1;
+            p.style.display = (okG && okQ) ? '' : 'none';
+        });
+    }
+
+    /* ─── تخفیفات حجمی (پله‌ای) ─── */
+    function volSync() {
+        var sw = $('#vol-on'); if (!sw) return;
+        var on = !!core.data.volumeTiersOn;
+        sw.classList.toggle('on', on);
+        var list = $('#vol-list');
+        if (list) { list.style.opacity = on ? '' : '.45'; list.style.pointerEvents = on ? '' : 'none'; }
+        var add = $('#vol-add');
+        if (add) add.style.display = on ? '' : 'none';
+    }
+
+    function volRender() {
+        var host = $('#vol-list');
+        if (!host) return;
+        volSync();
+        var tiers = core.data.volumeTiers;        var host = $('#vol-list');
+        if (!host) return;
+        var tiers = core.data.volumeTiers;
+        if (!tiers.length) {
+            host.innerHTML = '<div class="empty" style="padding:16px 12px;margin-bottom:6px">' +
+                '<h3 style="margin-bottom:4px">هنوز پله‌ای نساخته‌ای</h3>' +
+                '<p style="margin-bottom:0">مثلاً: از ۱۰ عدد به بالا ٪۲، از ۲۰ عدد به بالا ٪۵.</p></div>';
+            return;
+        }
+        host.innerHTML = tiers.map(function (t, i) {
+            return '<div class="tier-row">' +
+                '<div class="tier-min-tx">از <input class="tier-min" data-vol-min="' + i + '" value="' + faNum(t.min) + '" inputmode="numeric"> عدد بالا</div>' +
+                '<div class="gd-step">' +
+                    '<button class="bk-step" type="button" data-vol-step="-1" data-vol-i="' + i + '" aria-label="کاهش">−</button>' +
+                    '<input class="gd-pct" data-vol-val="' + i + '" value="' + faNum(t.pct) + '" inputmode="numeric">' +
+                    '<span class="gd-sign">٪</span>' +
+                    '<button class="bk-step" type="button" data-vol-step="1" data-vol-i="' + i + '" aria-label="افزایش">+</button>' +
+                '</div>' +
+                '<button class="icon-btn plain" type="button" data-vol-del="' + i + '" aria-label="حذف پله"><svg style="color:var(--red)"><use href="#i-trash"/></svg></button>' +
+            '</div>';
+        }).join('');
+    }
+
+    function volAdd() {
+        var tiers = core.data.volumeTiers;
+        var maxMin = 0, maxPct = 0;
+        tiers.forEach(function (t) { if (t.min > maxMin) maxMin = t.min; if (t.pct > maxPct) maxPct = t.pct; });
+        tiers.push({ min: maxMin ? maxMin + 10 : 5, pct: _pctClamp(maxPct + 1 || 2) });
+        tiers.sort(function (a, b) { return a.min - b.min; });
+        volRender();
+    }
+
+    /* ─── تخفیفات گروه مشتری ─── */
+    function cgdiscRender() {
+        var host = $('#cgdisc-list');
+        if (!host) return;
+        var gs = core.data.customerGroups;
+        if (!gs.length) {
+            host.innerHTML = '<div class="empty" style="padding:16px 12px;margin-bottom:6px">' +
+                '<h3 style="margin-bottom:4px">هنوز گروهی نداری</h3>' +
+                '<p style="margin-bottom:0">اول از صفحهٔ «مشتریان من ← گروه‌های مشتری» گروه بساز.</p></div>';
+            return;
+        }
+        host.innerHTML = gs.map(function (g) {
+            var n = core.data.customers.filter(function (c) { return c.groupId === g.id; }).length;
+            return '<div class="gd-row">' +
+                '<div class="gd-ic"><svg><use href="#i-users"/></svg></div>' +
+                '<div class="gd-tx"><b>' + esc(g.name) + '</b><span>' + faNum(n) + ' مشتری در این گروه</span></div>' +
+                '<div class="gd-step">' +
+                    '<button class="bk-step" type="button" data-cgd-step="-1" data-cgd-id="' + g.id + '" aria-label="کاهش">−</button>' +
+                    '<input class="gd-pct" data-cgd-val="' + g.id + '" value="' + faNum(g.discount) + '" inputmode="numeric">' +
+                    '<span class="gd-sign">٪</span>' +
+                    '<button class="bk-step" type="button" data-cgd-step="1" data-cgd-id="' + g.id + '" aria-label="افزایش">+</button>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    function cgdSet(id, val) {
+        core.data.customerGroups.forEach(function (g) {
+            if (g.id === id) g.discount = _pctClamp(val);
+        });
+    }
+
+    /* ─── گروه‌های کالا ─── */
+    function catgrRender() {
+        var host = $('#catgr-list');
+        if (!host) return;
+        var gs = core.data.catalogGroups;
+        if (!gs.length) {
+            host.innerHTML = '<div class="empty" style="padding:16px 12px;margin-bottom:6px">' +
+                '<h3 style="margin-bottom:4px">هنوز گروه کالایی نداری</h3>' +
+                '<p style="margin-bottom:0">گروه بساز تا کاتالوگت دسته‌بندی شود.</p></div>';
+            return;
+        }
+        host.innerHTML = gs.map(function (g) {
+            var cnt = $$('#cat-grid .pcard[data-gid="' + g.id + '"]').length;
+            return '<div class="gd-row">' +
+                '<input class="input catgr-name-input" data-catgr-name="' + g.id + '" value="' + esc(g.name) + '">' +
+                '<span style="font-size:10.5px;color:var(--text-3);flex-shrink:0;">' + faNum(cnt) + ' کالا</span>' +
+                '<button class="icon-btn plain" type="button" data-catgr-del="' + g.id + '" aria-label="حذف گروه"><svg style="color:var(--red)"><use href="#i-trash"/></svg></button>' +
+            '</div>';
+        }).join('');
+    }
+
+    function catgrDelete(id) {
+        var g = null;
+        core.data.catalogGroups.forEach(function (x) { if (x.id === id) g = x; });
+        if (!g) return;
+        var cnt = $$('#cat-grid .pcard[data-gid="' + id + '"]').length;
+        var doDel = function () {
+            core.data.catalogGroups = core.data.catalogGroups.filter(function (x) { return x.id !== id; });
+            if (CATF.group === id) CATF.group = null;
+            catgrRender();
+            catChipsRender();
+            catFilterApply();
+            toast('گروه کالا حذف شد', 'success');
+        };
+        if (cnt > 0) {
+            core.confirm({
+                title: 'حذف گروه کالا',
+                text: '«' + g.name + '» حذف می‌شود. کالاهای این گروه در «همه» می‌مانند.',
+                ok: 'حذف گروه', cancel: 'انصراف', danger: true
+            }).then(function (ok) { if (ok) doDel(); });
+        } else doDel();
+    }
+
+    /* ─── سینک کلی کاتالوگ ─── */
+    function catSheetsSync() {
+        catChipsRender();
+        catFilterApply();
+        volRender();
+        cgdiscRender();
+        catgrRender();
+    }
+
+    /* ─── ویرایش کاتالوگ (36) ─── */
+    var LOGO_COLORS = [
+        'linear-gradient(135deg,#c2703a,#ea580c)',
+        'var(--stone)', '#7c3aed', '#0e7490', '#2563EB', '#16A34A', '#DC2626'
+    ];
+
+    function activeBusiness() {
+        var b = null;
+        core.data.businesses.forEach(function (x) { if (x.id === core.data.user.activeBusinessId) b = x; });
+        return b || core.data.businesses[0];
+    }
+
+    function cateLogoSync() {
+        var b = activeBusiness();
+        var av = $('#cate-logo');
+        if (av) {
+            av.textContent = (b.name || '؟').charAt(0);
+            av.style.background = b.logoColor;
+        }
+        var pn = $('#cate-pv-name'); if (pn) pn.textContent = b.name;
+        var pc = $('#cate-pv-city'); if (pc) pc.textContent = b.city;
+    }
+
+    function catLogoColorsRender() {
+        var host = $('#cate-colors');
+        if (!host) return;
+        var b = activeBusiness();
+        host.innerHTML = LOGO_COLORS.map(function (c) {
+            return '<button class="logo-opt' + (b.logoColor === c ? ' on' : '') + '" type="button" data-logo-color="' + c + '" style="background:' + c + '" aria-label="رنگ لوگو">' +
+                esc((b.name || '؟').charAt(0)) + '</button>';
+        }).join('');
+    }
+
+    function catEditLoad() {
+        var b = activeBusiness();
+        if (!b) return;
+        var set = function (id, v) { var el = $(id); if (el) el.value = v || ''; };
+        set('#cate-name', b.name);
+        set('#cate-city', b.city);
+        set('#cate-desc', b.desc);
+        set('#cate-addr', b.addr);
+        var tEl = $('#cate-type-val');
+        if (tEl) tEl.textContent = b.type || 'عمده‌فروش';
+        cateLogoSync();        set('#cate-desc', b.desc);
+        cateLogoSync();
+        catLogoColorsRender();
+    }
+
+    function catEditSave() {
+        var b = activeBusiness();
+        if (!b) return;
+        var name = (($('#cate-name') || {}).value || '').trim();
+        if (!name) { toast('نام کاتالوگ را وارد کن', 'error'); return; }
+        b.name = name;
+        b.city = (($('#cate-city') || {}).value || '').trim();
+        b.desc = (($('#cate-desc') || {}).value || '').trim();
+        b.addr = (($('#cate-addr') || {}).value || '').trim();
+        var tEl2 = $('#cate-type-val');
+        if (tEl2 && tEl2.textContent.trim()) b.type = tEl2.textContent.trim();
+        toast('کاتالوگ ذخیره شد', 'success');        b.desc = (($('#cate-desc') || {}).value || '').trim();
+        toast('کاتالوگ ذخیره شد', 'success');
+        setTimeout(function () { core.back(); }, 550);
+    }
+
+    /* ─── تخفیف گروه مشتری روی تک‌کالا (s-sell-edit) ─── */
+    function gdEditRender() {
+        var host = $('#egd-list');
+        if (!host) return;
+        var p = core.getSCREENParams()['s-sell-edit'] || {};
+        gdEditListing = null;
+        core.data.listings.forEach(function (l) { if (l.id === (p.id || 'l1')) gdEditListing = l; });
+        if (!gdEditListing) return;
+        if (!gdEditListing.groupDiscounts) gdEditListing.groupDiscounts = {};
+
+        host.innerHTML = core.data.customerGroups.map(function (g) {
+            var has = gdEditListing.groupDiscounts[g.id] !== undefined;
+            var v = has ? gdEditListing.groupDiscounts[g.id] : g.discount;
+            var sub = has && v !== g.discount
+                ? 'پیش‌فرض گروه ٪' + faNum(g.discount) + ' — برای این کالا تغییر کرده'
+                : 'تخفیف پیش‌فرض گروه';
+            return '<div class="gd-row">' +
+                '<div class="gd-ic"><svg><use href="#i-users"/></svg></div>' +
+                '<div class="gd-tx"><b>' + esc(g.name) + '</b><span>' + sub + '</span></div>' +
+                '<div class="gd-step">' +
+                    '<button class="bk-step" type="button" data-egd-step="-1" data-egd-id="' + g.id + '" aria-label="کاهش">−</button>' +
+                    '<input class="gd-pct" data-egd-val="' + g.id + '" value="' + faNum(v) + '" inputmode="numeric">' +
+                    '<span class="gd-sign">٪</span>' +
+                    '<button class="bk-step" type="button" data-egd-step="1" data-egd-id="' + g.id + '" aria-label="افزایش">+</button>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    function egdSet(gid, val) {
+        if (!gdEditListing) return;
+        var g = null;
+        core.data.customerGroups.forEach(function (x) { if (x.id === gid) g = x; });
+        var v = _pctClamp(val);
+        if (g && v === g.discount) delete gdEditListing.groupDiscounts[gid];
+        else gdEditListing.groupDiscounts[gid] = v;
+    }
+
+    /* ─── حلقهٔ کلیک شیت‌های کاتالوگ ─── */
+    document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!t.closest) return;
+
+        /* چیپ گروه کالا — فیلتر */
+        var gchip = t.closest('#cat-groups .chip[data-gid]');
+        if (gchip) {
+            CATF.group = gchip.dataset.gid || null;
+            catFilterApply();
+            return;
+        }
+
+        /* تخفیف حجمی */
+        var vstep = t.closest('[data-vol-step]');
+        if (vstep) {
+            var i = parseInt(vstep.dataset.volI, 10);
+            var tEl = document.querySelector('[data-vol-val="' + i + '"]');
+            if (tEl && core.data.volumeTiers[i] !== undefined) {
+                var nv = _pctClamp(parseNum(tEl.value) + (parseFloat(vstep.dataset.volStep) || 0));
+                core.data.volumeTiers[i].pct = nv;
+                tEl.value = faNum(nv);
+            }
+            return;
+        }
+        var vdel = t.closest('[data-vol-del]');
+        if (vdel) {
+            core.data.volumeTiers.splice(parseInt(vdel.dataset.volDel, 10), 1);
+            volRender();
+            toast('پله حذف شد', 'success');
+            return;
+        }
+        if (t.closest('#vol-on')) {
+            core.data.volumeTiersOn = !core.data.volumeTiersOn;
+            volSync();
+            toast(core.data.volumeTiersOn ? 'تخفیف حجمی روشن شد' : 'تخفیف حجمی خاموش شد', 'success');
+            return;
+        }
+        if (t.closest('#vol-add')) { volAdd(); return; }
+        if (t.closest('#vol-save')) {
+            core.data.volumeTiers.sort(function (a, b) { return a.min - b.min; });
+            core.closeSheet('sheet-vol');
+            toast('تخفیفات حجمی ذخیره شد', 'success');
+            return;
+        }
+
+        /* تخفیف گروه مشتری (کاتالوگ) */
+        var cstep = t.closest('[data-cgd-step]');
+        if (cstep) {
+            var gid = cstep.dataset.cgdId;
+            var cEl = document.querySelector('[data-cgd-val="' + gid + '"]');
+            if (cEl) {
+                var cv = _pctClamp(parseNum(cEl.value) + (parseFloat(cstep.dataset.cgdStep) || 0));
+                cgdSet(gid, cv);
+                cEl.value = faNum(cv);
+            }
+            return;
+        }
+        if (t.closest('#cgdisc-save')) {
+            core.closeSheet('sheet-cg-disc');
+            toast('تخفیف گروه‌ها ذخیره شد', 'success');
+            return;
+        }
+
+        /* گروه‌های کالا */
+        var gdel = t.closest('[data-catgr-del]');
+        if (gdel) { catgrDelete(gdel.dataset.catgrDel); return; }
+        if (t.closest('#catgr-add')) {
+            core.data.catalogGroups.push({ id: 'cgr_' + Date.now(), name: 'گروه جدید' });
+            catgrRender();
+            catChipsRender();
+            return;
+        }
+
+        /* ویرایش کاتالوگ */
+        var lopt = t.closest('[data-logo-color]');
+        if (lopt) {
+            var b = activeBusiness();
+            if (b) b.logoColor = lopt.dataset.logoColor;
+            cateLogoSync();
+            catLogoColorsRender();
+            return;
+        }
+        var bopt = t.closest('[data-biz-type]');
+        if (bopt) {
+            var bb = activeBusiness();
+            if (bb) bb.type = bopt.dataset.bizType;
+            var tv = $('#cate-type-val');
+            if (tv) tv.textContent = bopt.dataset.bizType;
+            core.closeSheet('sheet-cat-type');
+            return;
+        }
+        if (t.closest('#cat-edit-save')) { catEditSave(); return; }
+
+        /* تخفیف گروه روی تک‌کالا */
+        var estep = t.closest('[data-egd-step]');
+        if (estep) {
+            var egid = estep.dataset.egdId;
+            var eEl = document.querySelector('[data-egd-val="' + egid + '"]');
+            if (eEl) {
+                var ev = _pctClamp(parseNum(eEl.value) + (parseFloat(estep.dataset.egdStep) || 0));
+                egdSet(egid, ev);
+                eEl.value = faNum(ev);
+                /* زیرنویس را تازه کن */
+                gdEditRender();
+            }
+            return;
+        }
+    });
+
+    /* ─── حلقهٔ input شیت‌های کاتالوگ ─── */
+    document.addEventListener('input', function (e) {
+        var t = e.target;
+        if (!t) return;
+
+        if (t.id === 'cat-search') {
+            CATF.q = t.value;
+            catFilterApply();
+            return;
+        }
+        if (t.id === 'cate-name' || t.id === 'cate-city') {
+            var b = activeBusiness();
+            if (b) {
+                if (t.id === 'cate-name') b.name = t.value.trim() || b.name;
+                if (t.id === 'cate-city') b.city = t.value.trim();
+            }
+            cateLogoSync();
+            return;
+        }
+
+        if (t.classList && t.classList.contains('tier-min')) {
+            var i1 = parseInt(t.dataset.volMin, 10);
+            if (core.data.volumeTiers[i1] !== undefined) core.data.volumeTiers[i1].min = Math.max(1, parseNum(t.value));
+            return;
+        }
+        if (t.dataset && t.dataset.volVal !== undefined) {
+            var i2 = parseInt(t.dataset.volVal, 10);
+            var tv = _pctClamp(parseNum(t.value));
+            if (core.data.volumeTiers[i2] !== undefined) core.data.volumeTiers[i2].pct = tv;
+            return;
+        }
+        if (t.dataset && t.dataset.cgdVal !== undefined) {
+            cgdSet(t.dataset.cgdVal, parseNum(t.value));
+            return;
+        }
+        if (t.dataset && t.dataset.egdVal !== undefined) {
+            egdSet(t.dataset.egdVal, parseNum(t.value));
+            return;
+        }
+        if (t.dataset && t.dataset.catgrName !== undefined) {
+            var gid2 = t.dataset.catgrName;
+            core.data.catalogGroups.forEach(function (g) {
+                if (g.id === gid2) g.name = t.value.trim() || g.name;
+            });
+            catChipsRender();
+            return;
+        }
+    });
 })();
