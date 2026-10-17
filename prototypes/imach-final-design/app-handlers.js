@@ -424,6 +424,10 @@
            FD-9 — کاتالوگ مهمان (۳۱): سبد خرید + جریان ذخیره/حساب
            ═══════════════════════════════════════════════════════════ */
         if (t.closest('#guest-cart-btn')) { core.forms.guestCartOpen(); return; }
+        /* FD-11: «ورود» اپ‌بار کاتالوگ عمومی — اکشن پلتفرم، جدا از
+           دکمه‌های صاحب کاتالوگ (نوار پایین). نمای ورودِ شیت حساب؛
+           ctx='price' ⇒ بعد از ورود همان‌جا می‌ماند و قیمت‌ها باز می‌شود */
+        if (t.closest('#guest-login-btn')) { core.forms.guestAccountOpen('login', 'price'); return; }
         var cStep = t.closest('[data-cart-step]');
         if (cStep) { core.forms.guestCartStep(cStep.dataset.cartId, parseFloat(cStep.dataset.cartStep) || 0); return; }
         var cDel = t.closest('[data-cart-del]');
@@ -434,7 +438,7 @@
         /* جریان ذخیره: مزایا (آکاردئون FD-10) → حساب → پنل */
         if (t.closest('#bene-toggle')) { core.forms.guestBeneToggle(); return; }
         if (t.closest('[data-save-flow]')) { core.forms.guestSaveFlow(); return; }
-        if (t.closest('#bf-continue')) { core.forms.guestAccountOpen('signup'); return; }
+        if (t.closest('#bf-continue')) { core.forms.guestAccountOpen('signup', 'save'); return; }
         if (t.closest('#acc-goto-login')) { core.forms.guestAccountOpen('login'); return; }
         if (t.closest('#acc-goto-signup')) { core.forms.guestAccountOpen('signup'); return; }
         if (t.closest('#acc-submit')) { core.forms.guestAccountSubmit('signup'); return; }

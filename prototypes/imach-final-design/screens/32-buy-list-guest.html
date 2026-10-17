@@ -9,7 +9,12 @@
                 <div class="brand-logo">آ</div>
                 <div class="title">آی‌مچ</div>
             </div>
-            <button class="btn btn-ghost btn-sm" data-go="s-signup">ساخت حساب</button>
+            <!-- FD-11: «ورود» به‌جای «ساخت حساب» — هماهنگ با کاتالوگ عمومی (۳۱)
+                 و قاعدهٔ FD-10: فرمان مستقیم ثبت‌نام روی دید عمومی نیست -->
+            <button class="login-pill" data-go="s-login" type="button">
+                <svg><use href="#i-login"/></svg>
+                ورود
+            </button>
         </div>
 
         <div class="guest-hero-inner">

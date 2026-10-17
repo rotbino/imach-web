@@ -15,8 +15,17 @@
          جا قیمت باز می‌شود (کاربر از هدفش جابه‌جا نمی‌شود).
        · + (افزودن به سبد) برای مهمان فقط پیام می‌دهد: «اول کاتالوگ را
          ذخیره کن تا مشتری او بشوی»؛ برای مشتری، به سبد اضافه می‌کند.
-       · تماس و گفتگو و وضعیت آنلاین — مینیمال (حکم مالک): دو آیکون ریز
-         در اپ‌بار + نقطهٔ سبز «آنلاین» کنار نام فروشنده؛ نه بیشتر.
+     ▸ FD-11 (بازخورد مالک — جدا کردن هویت‌ها):
+       · تماس/گفتگو/سبد مال صاحبِ کاتالوگ‌اند، نه آی‌مچ — از اپ‌بار
+         حذف شدند و به «نوار پایین» چسبان رفتند: سه دکمهٔ برچسب‌دار
+         (تماس · گفتگو · سبد خرید) که همیشه جلوی چشم است و با دکمهٔ
+         ذخیره (بالای صفحه) قاطی نمی‌شود (حکم مالک: «فوتر جای بهتریه»).
+       · روبه‌روی آی‌مچ حالا «ورود» است — اکشنِ پلتفرم، جدا از فروشنده.
+         ورود ⇒ همان‌جا می‌مانی، قیمت‌ها باز می‌شود و کاتالوگ ذخیره
+         می‌شود؛ بعد از ورود، دکمهٔ «ورود» پنهان می‌شود.
+       · آیکون «افزودن به سبد» عوض شد: چرخ‌دستی + بعلاوهٔ پررنگ
+         (i-cart-add) — سبد پیچ‌درپیچ قبلی «خوب نبود» (حکم مالک).
+       · وضعیت آنلاین همچنان مینیمال: نقطهٔ سبز کنار نام فروشنده.
      ▸ لمس هر محصول → صفحهٔ جزئیات کالا (۳۷) — مثل طراحی قبلی.
      ▸ شیت‌های «ذخیره کاتالوگ» و «ساخت حساب» به index.html منتقل شدند
        تا از صفحهٔ ۳۷ هم باز شوند؛ شیت سبد همین‌جا ماند.
@@ -30,18 +39,14 @@
                 <div class="title">آی‌مچ</div>
             </div>
             <div class="actions">
-                <!-- FD-10: تماس و گفتگو — مینیمال، بخشی از دید عمومی
-                     (در پیش‌نمایش فروشنده هم دیده می‌شوند) -->
-                <button class="icon-btn" data-dial aria-label="تماس با فروشنده">
-                    <svg><use href="#i-phone"/></svg>
-                </button>
-                <button class="icon-btn" data-go="s-chat" aria-label="گفتگو با فروشنده">
-                    <svg><use href="#i-msg"/></svg>
-                </button>
-                <!-- سبد خرید (FD-9) — شمارندهٔ زنده؛ فقط برای مهمان/مشتری -->
-                <button class="icon-btn cart-btn guest-only" id="guest-cart-btn" aria-label="سبد خرید">
-                    <svg><use href="#i-basket"/></svg>
-                    <span class="cart-badge" id="guest-cart-badge" hidden>۰</span>
+                <!-- FD-11 (حکم مالک): روبه‌روی آی‌مچ فقط «ورود» — اکشن پلتفرم؛
+                     تماس/گفتگو/سبد مالِ صاحب کاتالوگ‌اند و به نوار پایین رفتند.
+                     ورود ⇒ شیت حساب در نمای ورود؛ بعدش همان‌جا می‌مانی و
+                     قیمت‌ها باز می‌شود. در پیش‌نمایش فروشنده هم دیده می‌شود
+                     (همان چیزی که مشتری می‌بیند)؛ بعد از ورود پنهان می‌شود. -->
+                <button class="login-pill" id="guest-login-btn" type="button">
+                    <svg><use href="#i-login"/></svg>
+                    ورود
                 </button>
             </div>
         </div>
@@ -94,7 +99,7 @@
                 <div class="ph">
                     <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l1" aria-label="افزودن به سبد خرید">
-                        <svg><use href="#i-cart-plus"/></svg>
+                        <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
                 <div class="info">
@@ -111,7 +116,7 @@
                 <div class="ph">
                     <img src="png/goods/rice-grains.jpg" alt="برنج طارم">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l2" aria-label="افزودن به سبد خرید">
-                        <svg><use href="#i-cart-plus"/></svg>
+                        <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
                 <div class="info">
@@ -128,7 +133,7 @@
                 <div class="ph">
                     <img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l3" aria-label="افزودن به سبد خرید">
-                        <svg><use href="#i-cart-plus"/></svg>
+                        <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
                 <div class="info">
@@ -145,7 +150,7 @@
                 <div class="ph">
                     <img src="png/goods/fajar-50.jpg" alt="برنج فجر">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l4" aria-label="افزودن به سبد خرید">
-                        <svg><use href="#i-cart-plus"/></svg>
+                        <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
                 <div class="info">
@@ -171,6 +176,32 @@
         <div style="text-align: center; padding: 8px 0 4px; font-size: 10.5px; color: var(--text-3); line-height: 1.9;">
             ساخته‌شده با <b style="color: var(--primary-strong);">آی‌مچ</b> — دفتر خرید و فروش عمدهٔ شما
         </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FD-11 (حکم مالک): نوار پایینِ کاتالوگ عمومی — دکمه‌های واضحِ
+         صاحبِ کاتالوگ، نه آی‌مچ. چسبان به پایین صفحه (خارج از .body
+         که اسکرول می‌شود) پس همیشه جلوی چشم است و با دکمهٔ «ذخیره»
+         بالای صفحه نه قاطی می‌شود نه شلوغش می‌کند.
+         · تماس / گفتگو — برای همه (در پیش‌نمایش فروشنده هم پیداست).
+         · سبد خرید — فقط مهمان/مشتری (guest-only؛ در پیش‌نمایش فروشنده
+           مخفی، مثل قبلاً). نشان زندهٔ تعداد کنار برچسب.
+         · ترتیب = الگوی اکشن‌بار ۳۷: تماس · گفتگو · سبد (پهناور).
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="gbar">
+        <button class="gbar-btn" type="button" data-dial>
+            <span class="gb-ic"><svg><use href="#i-phone"/></svg></span>
+            <span class="gb-tx">تماس</span>
+        </button>
+        <button class="gbar-btn" type="button" data-go="s-chat">
+            <span class="gb-ic"><svg><use href="#i-msg"/></svg></span>
+            <span class="gb-tx">گفتگو</span>
+        </button>
+        <button class="gbar-btn gbar-cart guest-only" id="guest-cart-btn" type="button" aria-label="سبد خرید">
+            <span class="gb-ic"><svg><use href="#i-basket"/></svg></span>
+            <span class="gb-tx">سبد خرید</span>
+            <span class="gb-badge" id="guest-cart-badge" hidden>۰</span>
+        </button>
     </div>
 
 

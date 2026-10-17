@@ -1152,7 +1152,9 @@
     }
 
     function guestAccountOpen(mode, ctx) {
-        GUEST_ACCT_CTX = ctx || 'save';
+        /* FD-11: زمینه فقط وقتی صریحاً داده شود عوض می‌شود — تعویض نمای
+           ورود/ثبت‌نام داخلِ همان شیت، قصدِ قبلی کاربر را حفظ می‌کند */
+        if (ctx) GUEST_ACCT_CTX = ctx;
         var su = $('#acc-signup'), lg = $('#acc-login');
         if (su) su.hidden = mode !== 'signup';
         if (lg) lg.hidden = mode !== 'login';
@@ -1167,12 +1169,16 @@
     }
 
     /* اعمال دوبارهٔ وضعیت ذخیره روی دامِ تازه (show() قالب را دوباره می‌سازد)
-       FD-10: «ذخیره‌شده» علاوه بر دکمه/کادر، گیت قیمت را هم برمی‌دارد. */
+       FD-10: «ذخیره‌شده» علاوه بر دکمه/کادر، گیت قیمت را هم برمی‌دارد.
+       FD-11: «ورود» اپ‌بار فقط برای مهمانِ واردنشده است — بعد از
+       ورود/ذخیره پنهان می‌شود (کاربر دیگر لازمش ندارد). */
     function guestSavedSync() {
         var section = $('#s-catalog-guest');
         if (section) {
             section.classList.toggle('gated', !GUEST_SAVED && !section.classList.contains('preview-mode'));
         }
+        var lb = $('#guest-login-btn');
+        if (lb) lb.hidden = GUEST_SAVED;
         if (!GUEST_SAVED) return;
         var btn = $('#guest-save-btn');
         if (btn && !btn.classList.contains('bk-saved')) {
