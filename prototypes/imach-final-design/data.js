@@ -176,6 +176,17 @@ const DATA = {
     /* ═══════════════════════════════════════════════════════════
        فروش‌های کاتالوگ فروشندهٔ نمونه (پخش برنج پارس)
        هر فروش = محصول + بستهٔ انتخاب‌شده + قیمت
+
+       FD-9 — اعتبار قیمت (حکم مالک):
+       ▸ priceValidDays: هر قیمت «اعتبار» ۱ تا ۵ روزه دارد (پیش‌فرض ۳).
+         یادآوری آپدیت قیمت در فرم افزودن/ویرایش محصول و در به‌روزرسانی
+         گروهی (۳۳) انتخاب می‌شود؛ تمدید سریع هم با همین اعتبار مهر می‌خورد.
+       ▸ priceStale: وقتی یادآوریِ قیمت رسیده باشد، کاتالوگ (۰۵) قیمت آن
+         کالا را «منقضی» نشان می‌دهد و لمس کارت، شیتِ آپدیت سریعِ همان یک
+         کالا را باز می‌کند (نه صفحهٔ ویرایش کامل). قیمت منقضی در پیاده‌سازی
+         عملیاتی از نتایج تطابق/تأمین‌کننده‌های خریدار حذف می‌شود.
+       ▸ تخفیف حجمی و تخفیف گروه هر محصول می‌تواند مخصوص خودش باشد
+         (volumeTiers/groupDiscounts)؛ پیش‌فرض از تنظیمات کاتالوگ می‌آید.
        ═══════════════════════════════════════════════════════════ */
     listings: [
         {
@@ -190,6 +201,7 @@ const DATA = {
             stock: 35, min: 5,
             img: 'png/goods/rice-sack.jpg',
             status: 'in-stock',
+            priceValidDays: 3,   /* FD-9: اعتبار قیمت — ۳ روز */
             /* تخفیف گروه مشتری مخصوص همین محصول — پیش‌فرض از گروه */
             groupDiscounts: { cg1: 7, cg3: 10 }
         },
@@ -203,7 +215,9 @@ const DATA = {
             price: 2750000, pricePerUnit: 55000,
             stock: 28, min: 5,
             img: 'png/goods/rice-grains.jpg',
-            status: 'in-stock'
+            status: 'in-stock',
+            priceValidDays: 3,
+            priceStale: true    /* FD-9 دمو: یادآوری قیمت رسیده — کاتالوگ «قیمت منقضی» نشان می‌دهد */
         },
         {
             id: 'l3', businessId: 'b1',
@@ -215,7 +229,8 @@ const DATA = {
             price: 595000, pricePerUnit: 59500,
             stock: 60, min: 10,
             img: 'png/goods/hashemi-10.png',
-            status: 'in-stock'
+            status: 'in-stock',
+            priceValidDays: 3
         },
         {
             id: 'l4', businessId: 'b1',
@@ -227,7 +242,8 @@ const DATA = {
             price: 2480000, pricePerUnit: 49600,
             stock: 8, min: 5,
             img: 'png/goods/fajar-50.jpg',
-            status: 'low'
+            status: 'low',
+            priceValidDays: 3
         }
     ],
 

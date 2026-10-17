@@ -2537,3 +2537,279 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 /* ایستگاه ۲ «زنده» — از وقتی کاربر از ۱۰۰ گذشته (امبر، هم‌خانوادهٔ desk-step) */
 .sp-row.live { border-color: #EFDFB8; background: linear-gradient(180deg, var(--amber-bg), #FFF 72%); }
 .sp-row.live .sp-ic { background: var(--amber-soft); color: var(--amber); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   بخش ۳۳-ی — FD-9: اعتبار قیمت · تخفیف‌های دوگانهٔ محصول ·
+   تغییر قیمت‌های دو-نیت · کاتالوگ مهمان (ذخیره + سبد خرید)
+
+   قواعد این بخش (حکم مالک FD-9):
+   ▸ ورودی دوگانهٔ «درصد ⇄ مبلغ» همه‌جا یکی است: .bk-gc-row
+   ▸ یادآوری آپدیت قیمت = چیپ‌های ۱ تا ۵ روز (.days-pills) — پیش‌فرض ۳
+   ▸ همهٔ مدال‌های جدید از پایین باز می‌شوند (شیت، قانون همیشگی)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── چیپ‌های روزِ اعتبار — پهنای مساوی، خوانا ─── */
+.days-pills .pill { flex: 1; min-width: 0; justify-content: center; }
+
+/* ─── بلوک تخفیف محصول (۱۴: حجمی + گروه) — زیر توضیحات ─── */
+.disc-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+    margin-top: 14px;
+}
+.disc-head {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--surface-3);
+}
+.disc-ttl { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+.disc-ic {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--primary-soft); color: var(--primary-strong);
+}
+.disc-ic svg { width: 17px; height: 17px; }
+.disc-ttl b { display: block; font-size: 13px; font-weight: 700; line-height: 1.5; }
+.disc-ttl small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+/* خاموش: لیست مات و غیرقابل‌لمس (الگوی volSync شیت کاتالوگ) */
+.disc-block.off .disc-list,
+.disc-block.off .add-mini { opacity: .45; pointer-events: none; }
+.disc-block.off .add-mini { display: none; }
+.disc-block.off .disc-ic { background: var(--surface-2); color: var(--text-3); }
+
+/* ردیف آیتم تخفیف — دو خط: شناسه + ورودی دوگانه */
+.ed-item { padding: 11px 0; border-bottom: 1px solid var(--surface-3); }
+.ed-item:last-child { border-bottom: 0; }
+.ed-item .ed-line1 {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+}
+.ed-item .ed-line1 b { font-size: 12.5px; font-weight: 700; flex: 1; min-width: 0; }
+.ed-item .ed-line1 small { display: block; font-size: 10px; color: var(--text-3); margin-top: 2px; }
+.ed-item .ed-del {
+    width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+    border: 1px solid #F3C1C1; background: #FDF6F6; color: var(--red);
+    display: grid; place-items: center; cursor: pointer; padding: 0;
+}
+.ed-item .ed-del svg { width: 14px; height: 14px; }
+.ed-item .ed-del:active { transform: scale(.94); }
+
+/* ─── ردیف دوگانهٔ درصد ⇄ مبلغ (قانون همیشگی FD-9) ───
+   ۳۳ (تغییر گروهی) · شیت آپدیت سریع (۰۵) · تخفیف‌های محصول (۱۴) */
+.bk-gc-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 0;
+}
+.bk-gc-lbl {
+    font-size: 12px; font-weight: 700; color: var(--text-2);
+    flex: 1; min-width: 0; line-height: 1.6;
+}
+.bk-gc-amt {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.bk-gc-amt small { font-size: 10.5px; color: var(--text-3); font-weight: 600; }
+.bk-amt-in {
+    width: 130px; height: 36px;
+    border: 1.5px solid var(--border-2);
+    border-radius: 9px; background: #FFF;
+    text-align: center; font-family: inherit;
+    font-size: 13.5px; font-weight: 800; color: var(--text);
+    padding: 0 6px; box-sizing: border-box;
+}
+.bk-amt-in:focus {
+    outline: 0; border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(249,115,22,.14);
+}
+/* نسخهٔ فشردهٔ ورودی مبلغ داخل ردیف آیتم تخفیف (۱۴) */
+.ed-item .bk-gc-amt .bk-amt-in { width: 112px; height: 34px; font-size: 12.5px; }
+.dual-eq {
+    font-size: 11px; font-weight: 800; color: var(--text-4);
+    flex-shrink: 0; padding: 0 2px;
+}
+
+/* کارت تغییر گروهی (۳۳) و کارت قیمت شیت آپدیت سریع (۰۵) */
+.bk-gc { padding: 12px 14px; }
+.bk-gc-ttl { font-size: 12.5px; font-weight: 800; margin-bottom: 4px; }
+.qp-card { padding: 8px 14px; }
+
+/* ─── دکمهٔ افزودنِ کوچک (پلهٔ تخفیف محصول) ─── */
+.add-mini {
+    display: flex; align-items: center; gap: 9px; width: 100%;
+    margin-top: 10px; padding: 9px 12px;
+    background: none; border: 1.5px dashed var(--border-3);
+    border-radius: var(--r-md); cursor: pointer; font-family: inherit;
+    text-align: right; color: var(--primary-strong);
+    transition: border-color .15s, background .15s;
+}
+.add-mini:hover { border-color: var(--primary); background: var(--primary-soft); }
+.add-mini .am-ic {
+    width: 28px; height: 28px; border-radius: 9px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--primary-soft); color: var(--primary-strong);
+}
+.add-mini .am-ic svg { width: 15px; height: 15px; }
+.add-mini b { font-size: 12.5px; font-weight: 700; }
+.add-mini small { font-size: 10.5px; color: var(--text-3); margin-right: auto; }
+
+/* ─── دو نیتِ تغییر قیمت‌ها (۳۳) — «آپدیت سریع» / «تغییر» ───
+   الگوی bk-choice طرح قبلی، بهترشده: دو کارت هم‌ارز نه ردیفی؛
+   پیرمرد ۷۰ ساله = دو درِ کنار هم («قیمت‌ها درست‌اند» / «می‌خواهم عوض کنم») */
+.bk-choice {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 14px;
+}
+.bk-btn {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
+    padding: 13px 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--border-2);
+    border-radius: var(--r-lg);
+    cursor: pointer; font-family: inherit; text-align: right;
+    transition: border-color .15s, background .15s, transform .12s;
+}
+.bk-btn:active { transform: scale(.98); }
+.bk-btn svg { width: 19px; height: 19px; }
+.bk-btn b { font-size: 12.5px; font-weight: 800; line-height: 1.55; }
+.bk-btn small { font-size: 10px; color: var(--text-3); line-height: 1.7; }
+.bk-btn.renew { border-color: #B6DFC5; background: linear-gradient(180deg, #F4FCF6, #FFF 70%); }
+.bk-btn.renew svg, .bk-btn.renew b { color: var(--green); }
+.bk-btn.need { border-color: #F3DDBA; background: linear-gradient(180deg, #FFF7EC, #FFF 70%); }
+.bk-btn.need svg, .bk-btn.need b { color: var(--primary-strong); }
+
+/* ─── نشان «قیمت منقضی» روی کارت کاتالوگ (۰۵) ─── */
+.pcard .stale-badge {
+    position: absolute;
+    top: 7px; right: 7px;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px;
+    background: rgba(255, 255, 255, .96);
+    border-radius: 8px;
+    font-size: 9.5px; font-weight: 800;
+    color: #B45309;
+    border: 1px solid #EFDFB8;
+}
+.pcard .stale-badge svg { width: 11px; height: 11px; }
+.pcard .stale-badge[hidden] { display: none; }
+.pcard.stale { border-color: #EFDFB8; }
+.pcard.stale .pprice { color: #B45309; }
+.pcard.stale:active { background: #FFFBF2; }
+
+/* ─── کاتالوگ مهمان (۳۱) — سبد خرید و عناصر مهمان ─── */
+.cart-btn { position: relative; }
+.cart-btn .cart-badge {
+    position: absolute;
+    top: -3px; left: -3px;
+    min-width: 17px; height: 17px;
+    padding: 0 4px;
+    border-radius: 99px;
+    background: var(--primary-strong); color: #FFF;
+    font-size: 10px; font-weight: 800;
+    display: grid; place-items: center;
+    line-height: 1;
+    border: 1.5px solid #FFF;
+    box-sizing: content-box;
+}
+.cart-btn .cart-badge[hidden] { display: none; }
+/* دکمهٔ گرد «افزودن به سبد» روی عکس کارت */
+.addcart-btn {
+    position: absolute;
+    top: 7px; left: 7px;
+    width: 34px; height: 34px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.96);
+    border: 1.5px solid var(--border-2);
+    color: var(--primary-strong);
+    display: grid; place-items: center;
+    cursor: pointer; padding: 0;
+    box-shadow: 0 2px 8px rgba(31,29,26,.10);
+    transition: transform .12s, border-color .15s, background .15s;
+}
+.addcart-btn svg { width: 18px; height: 18px; }
+.addcart-btn:active { transform: scale(.92); }
+.addcart-btn.added { border-color: var(--green); color: var(--green); background: #F4FCF6; }
+/* حالت پیش‌نمایش فروشنده: عناصر مهمان پنهان */
+#s-catalog-guest.preview-mode .guest-only { display: none !important; }
+
+/* ─── شیت مزایای ذخیره (۳۱) — بلوک‌های نتیجه‌محور ─── */
+.benefit-list { display: flex; flex-direction: column; gap: 4px; }
+.benefit {
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--surface-3);
+}
+.benefit:last-child { border-bottom: 0; }
+.benefit .bf-ic {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--primary-soft); color: var(--primary-strong);
+}
+.benefit .bf-ic svg { width: 18px; height: 18px; }
+.benefit .bf-tx { flex: 1; min-width: 0; }
+.benefit .bf-tx b { display: block; font-size: 12.5px; font-weight: 800; line-height: 1.6; }
+.benefit .bf-tx span { display: block; font-size: 11px; color: var(--text-3); line-height: 1.8; margin-top: 3px; }
+
+/* ─── لینک‌وار (دکمهٔ ثانویهٔ آرام — الگوی xls-dn) ─── */
+.linklike {
+    display: block; width: 100%;
+    margin-top: 10px; padding: 8px;
+    background: none; border: 0; cursor: pointer; font-family: inherit;
+    font-size: 12px; font-weight: 700; color: var(--primary-strong);
+    text-decoration: underline; text-decoration-style: dashed;
+    text-underline-offset: 4px;
+}
+.linklike:active { opacity: .7; }
+.linklike.linklike-white { color: #FFF; }
+
+/* ─── شیت سبد خرید (۳۱) ─── */
+.cart-it {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--surface-3);
+}
+.cart-it .ci-th {
+    width: 46px; height: 46px; border-radius: 10px; overflow: hidden;
+    flex-shrink: 0; background: var(--surface-2);
+}
+.cart-it .ci-th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cart-it .ci-tx { flex: 1; min-width: 0; }
+.cart-it .ci-tx b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.5; }
+.cart-it .ci-tx small { display: block; font-size: 10px; color: var(--text-3); margin-top: 2px; }
+.cart-it .ci-qty {
+    display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+}
+.cart-it .ci-qty .bk-step { width: 28px; height: 28px; font-size: 14px; }
+.cart-it .ci-qty .ci-n {
+    min-width: 26px; text-align: center;
+    font-size: 13px; font-weight: 800;
+}
+.cart-it .ci-price {
+    font-size: 11px; color: var(--text-3); flex-shrink: 0;
+    text-align: left; line-height: 1.5;
+}
+.cart-it .ci-price b { display: block; font-size: 12px; color: var(--text); font-weight: 800; }
+.cart-total { padding: 12px 14px; margin-top: 4px; background: var(--surface-2); }
+.cart-total .ct-row {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px;
+}
+.cart-total .ct-row span { color: var(--text-2); font-weight: 600; }
+.cart-total .ct-row b { font-size: 15px; font-weight: 800; color: var(--primary-strong); }
+.cart-total .ct-row b small { font-size: 10px; font-weight: 400; color: var(--text-3); }
+/* نمای موفقیت سفارش */
+.ok-pill {
+    width: 58px; height: 58px; border-radius: 99px;
+    margin: 14px auto 0;
+    background: var(--green-soft); color: var(--green);
+    display: grid; place-items: center;
+}
+.ok-pill svg { width: 27px; height: 27px; }
+.ok-ttl { text-align: center; font-size: 15.5px; font-weight: 800; margin-top: 10px; }
+.ok-sub { text-align: center; font-size: 11.5px; color: var(--text-3); line-height: 1.9; margin-top: 5px; }
+
+/* ─── شیت ساخت حساب (۳۱) — فشرده‌تر از صفحهٔ ۰۲ ─── */
+#sheet-account .role-cards { gap: 7px; }
+#sheet-account .role-card { padding: 10px 11px; }
+#sheet-account .role-tx b { font-size: 12.5px; }
+#sheet-account .role-tx small { font-size: 10px; }

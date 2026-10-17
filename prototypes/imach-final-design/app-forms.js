@@ -858,6 +858,8 @@
         var min = parseNum(($('#add-min') || {}).value) || 1;
         var note = ($('#add-note') || {}).value || '';
         var pricePerUnit = Math.round(price / packQty);
+        /* FD-9: اعتبار قیمت — یادآوری آپدیت ۱ تا ۵ روز (پیش‌فرض ۳) */
+        var validDays = readDaysPills('#add-valid');
 
         if (ADD.mode === 'ref' && ADD.selectedPackId === 'custom') {
             var r0 = findRef(ADD.refId);
@@ -881,7 +883,9 @@
                 pack: packLabel, packCount: packQty,
                 price: price, pricePerUnit: pricePerUnit,
                 stock: stock || 0, min: min, note: note,
-                img: r.img || null
+                img: r.img || null,
+                priceValidDays: validDays,   /* FD-9 */
+                groupDiscounts: {}
             });
         } else if (ADD.mode === 'new') {
             var title = ($('#add-title') || {}).value || g.name;
@@ -906,7 +910,9 @@
                 pack: packLabel, packCount: packQty,
                 price: price, pricePerUnit: pricePerUnit,
                 stock: stock || 0, min: min, note: note,
-                img: null
+                img: null,
+                priceValidDays: validDays,   /* FD-9 */
+                groupDiscounts: {}
             });
         } else {
             toast('محصول انتخاب نشده', 'error');
@@ -972,11 +978,14 @@
     /* ═══════════════════════════════════════════════════════════════
        Guest / contacts
        ═══════════════════════════════════════════════════════════════ */
+    /* ─── FD-9: حالت مهمان/پیش‌نمایش کاتالوگ (۳۱) ───
+       پیش‌نمایش فروشنده: عناصر مهمان (سبد خرید، ذخیره) پنهان می‌شوند. */
     function applyGuestMode() {
         var params = core.getSCREENParams()['s-catalog-guest'] || {};
         var section = $('#s-catalog-guest');
         if (!section) return;
         var isPreview = !!params.preview;
+        section.classList.toggle('preview-mode', isPreview);
         var banner = section.querySelector('#guest-priv');
         var cards = $$('.pcard.gated', section);
         if (isPreview) {
@@ -986,6 +995,190 @@
             if (banner) banner.hidden = false;
             cards.forEach(function (c) { c.classList.add('gated'); });
         }
+        guestCartSync();
+        /* وضعیت «ذخیره شده» باید بعد از هر re-show دوباره بنشیند —
+           چون show() دام را از قالب کش‌شده می‌سازد و تغییرات DOM می‌روند */
+        guestSavedSync();
+    }
+
+    /* ─── FD-9: سبد خرید کاتالوگ مهمان ───
+       lid → تعداد؛ مقدار اولیه = حداقل سفارش همان محصول. */
+    var GUEST_CART = {};
+
+    function _findListing(id) {
+        var out = null;
+        core.data.listings.forEach(function (l) { if (l.id === id) out = l; });
+        return out;
+    }
+
+    function guestCartSync() {
+        var n = 0;
+        Object.keys(GUEST_CART).forEach(function (k) { n += GUEST_CART[k]; });
+        var badge = $('#guest-cart-badge');
+        if (badge) { badge.hidden = n === 0; badge.textContent = faNum(n); }
+        $$('#guest-grid .addcart-btn').forEach(function (b) {
+            b.classList.toggle('added', !!GUEST_CART[b.dataset.addCart]);
+        });
+    }
+
+    function guestCartAdd(lid) {
+        var l = _findListing(lid);
+        if (!l) return;
+        GUEST_CART[lid] = GUEST_CART[lid] || (l.min || 1);
+        guestCartSync();
+        toast('به سبد خرید اضافه شد', 'success');
+    }
+
+    function guestCartRender() {
+        var host = $('#cart-list');
+        if (!host) return;
+        var keys = Object.keys(GUEST_CART);
+        var view = $('#cart-view'), ok = $('#cart-success');
+        if (view) view.hidden = false;
+        if (ok) ok.hidden = true;
+
+        if (!keys.length) {
+            host.innerHTML = '<div class="empty" style="padding:18px 12px">' +
+                '<h3 style="margin-bottom:4px">سبدت خالی است</h3>' +
+                '<p style="margin-bottom:0">روی عکس هر کالا، دکمهٔ + را بزن تا به سبد بیاید.</p></div>';
+        } else {
+            host.innerHTML = keys.map(function (lid) {
+                var l = _findListing(lid);
+                if (!l) return '';
+                var qty = GUEST_CART[lid];
+                return '<div class="cart-it">' +
+                    '<div class="ci-th"><img src="' + l.img + '" alt=""></div>' +
+                    '<div class="ci-tx"><b>' + esc(l.name) + '</b><small>' + esc(l.pack) + ' · حداقل ' + faNum(l.min || 1) + ' عدد</small></div>' +
+                    '<div class="ci-qty">' +
+                        '<button class="bk-step" type="button" data-cart-step="-1" data-cart-id="' + lid + '" aria-label="کاهش">−</button>' +
+                        '<span class="ci-n">' + faNum(qty) + '</span>' +
+                        '<button class="bk-step" type="button" data-cart-step="1" data-cart-id="' + lid + '" aria-label="افزایش">+</button>' +
+                    '</div>' +
+                    '<div class="ci-price"><b>' + faMoney(l.price * qty) + '</b>تومان</div>' +
+                    '<button class="ed-del" type="button" data-cart-del="' + lid + '" aria-label="حذف از سبد"><svg><use href="#i-trash"/></svg></button>' +
+                '</div>';
+            }).join('');
+        }
+
+        var total = 0;
+        keys.forEach(function (lid) {
+            var l = _findListing(lid);
+            if (l) total += l.price * GUEST_CART[lid];
+        });
+        var tc = $('#cart-total-card'), tb = $('#cart-order');
+        if (tc) { tc.hidden = keys.length === 0; }
+        if (tb) { tb.hidden = keys.length === 0; tb.disabled = false; }
+        var tEl = $('#cart-total');
+        if (tEl) tEl.innerHTML = faMoney(total) + ' <small>تومان</small>';
+    }
+
+    function guestCartStep(lid, dir) {
+        var l = _findListing(lid);
+        if (!l || !GUEST_CART[lid]) return;
+        var min = l.min || 1;
+        GUEST_CART[lid] = Math.max(min, GUEST_CART[lid] + dir);
+        guestCartRender();
+    }
+
+    function guestCartDel(lid) {
+        delete GUEST_CART[lid];
+        guestCartSync();
+        guestCartRender();
+    }
+
+    function guestCartOpen() {
+        guestCartRender();
+        core.openSheet('sheet-cart');
+    }
+
+    /* ثبت سفارش آنلاین — نمای موفقیت + دعوت به ذخیرهٔ کاتالوگ.
+       (در پیاده‌سازی عملیاتی، سفارش مهمان هم به گیت حساب/ثبت‌نام نیاز
+       دارد؛ در ماک برای نمایش جریان، مستقیم ثبت می‌شود.) */
+    function guestOrderSubmit() {
+        var n = 0;
+        Object.keys(GUEST_CART).forEach(function (k) { n += GUEST_CART[k]; });
+        GUEST_CART = {};
+        guestCartSync();
+        var view = $('#cart-view'), ok = $('#cart-success');
+        if (view) view.hidden = true;
+        if (ok) ok.hidden = false;
+        var btn = $('#cart-order');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<svg><use href="#i-check"/></svg> ثبت سفارش'; }
+        toast(faNum(n) + ' قلم سفارش برای فروشنده ارسال شد', 'success');
+    }
+
+    function guestCartContinue() {
+        core.closeSheet('sheet-cart');
+        setTimeout(function () {
+            var view = $('#cart-view'), ok = $('#cart-success');
+            if (view) view.hidden = false;
+            if (ok) ok.hidden = true;
+            var btn = $('#cart-order');
+            if (btn) btn.disabled = false;
+            guestCartRender();
+        }, 350);
+    }
+
+    /* ─── FD-9: جریان ذخیرهٔ کاتالوگ مهمان ───
+       دکمهٔ ذخیره → شیت مزایا → شیت ساخت حساب/ورود → پنل آی‌مچ.
+       ساخت حساب هیچ‌وقت ذخیرهٔ کاتالوگ را قربانی نمی‌کند. */
+    var GUEST_SAVED = false;
+
+    function guestSaveFlow() {
+        if (GUEST_SAVED) { toast('این کاتالوگ ذخیره شده است', 'success'); return; }
+        core.openSheet('sheet-save-benefits');
+    }
+
+    function guestAccountOpen(mode) {
+        var su = $('#acc-signup'), lg = $('#acc-login');
+        if (su) su.hidden = mode !== 'signup';
+        if (lg) lg.hidden = mode !== 'login';
+        var tt = $('#acc-title');
+        if (tt) tt.textContent = (mode === 'login') ? 'ورود و ذخیره کاتالوگ' : 'ساخت حساب و ذخیره کاتالوگ';
+        core.openSheet('sheet-account');
+    }
+
+    function guestMarkSaved() {
+        GUEST_SAVED = true;
+        guestSavedSync();
+    }
+
+    /* اعمال دوبارهٔ وضعیت ذخیره روی دامِ تازه (show() قالب را دوباره می‌سازد) */
+    function guestSavedSync() {
+        if (!GUEST_SAVED) return;
+        var btn = $('#guest-save-btn');
+        if (btn && !btn.classList.contains('bk-saved')) {
+            btn.classList.add('bk-saved');
+            btn.innerHTML = '<svg><use href="#i-check"/></svg> کاتالوگ ذخیره شد';
+            var cnt = $('#guest-saved-count');
+            if (cnt) cnt.textContent = faNum(parseNum(cnt.textContent) + 1);
+        }
+        var box = $('#guest-save-box');
+        if (box && box.textContent.indexOf('ذخیره شد') === -1) {
+            box.innerHTML = '<div style="font-size:12.5px;font-weight:700;">این کاتالوگ در فهرست تأمین‌کنندگان تو ذخیره شد</div>' +
+                '<div style="font-size:11px;opacity:.9;margin-top:4px;line-height:1.9;">قیمت‌های زندهٔ این فروشنده همیشه دم دستت است.</div>';
+        }
+    }
+
+    function guestAccountSubmit(kind) {
+        if (kind === 'signup') {
+            var phone = (($('#acc-phone') || {}).value || '').trim();
+            if (!phone) { toast('شماره موبایل را وارد کن', 'error'); return; }
+            var name = (($('#acc-name') || {}).value || '').trim();
+            if (!name) { toast('نام را وارد کن', 'error'); return; }
+            var rc = $('#acc-signup .role-card.active');
+            var role = rc ? rc.dataset.role : 'buy';
+            core.assist.sell = (role === 'sell' || role === 'both');
+            core.assist.buy = (role === 'buy' || role === 'both');
+        }
+        core.applyArms();
+        core.closeSheet('sheet-account');
+        guestMarkSaved();
+        toast('کاتالوگ ذخیره شد — خوش آمدی به آی‌مچ', 'success');
+        setTimeout(function () {
+            core.resetStack();
+            core.show(core.assist.sell ? 's-home-sell' : 's-home-buy', false);
+        }, 650);
     }
 
     function applyContactsMode() { updatePickCount(); }
@@ -1025,6 +1218,8 @@
     core.registerShowHook('s-charge', chargeSync);
     /* فاز دفتر مشتری — شیت‌های کاتالوگ و تخفیف‌ها */
     core.registerShowHook('s-catalog', catSheetsSync);
+    /* FD-9: سینک زندهٔ قیمت/منقضی روی کارت‌های کاتالوگ */
+    core.registerShowHook('s-catalog', catGridSync);
     core.registerShowHook('s-cat-edit', catEditLoad);
     core.registerShowHook('s-sell-edit', gdEditRender);
     core.registerShowHook('s-home-sell', chargeSync);
@@ -1079,9 +1274,29 @@
         catPromoSync: catPromoSync,
         bulkReset: bulkReset,
         bulkSetPct: bulkSetPct,
+        bulkSetAmt: bulkSetAmt,
         bulkStep: bulkStep,
         bulkManual: bulkManual,
         bulkApply: bulkApply,
+        bulkQuick: bulkQuick,
+        bulkToEdit: bulkToEdit,
+        bulkCancel: bulkCancel,
+        readDaysPills: readDaysPills,
+        setDaysPills: setDaysPills,
+        catGridSync: catGridSync,
+        qpriceOpen: qpriceOpen,
+        qpriceSave: qpriceSave,
+        qpPctSet: qpPctSet,
+        qpPriceSet: qpPriceSet,
+        guestCartAdd: guestCartAdd,
+        guestCartOpen: guestCartOpen,
+        guestCartStep: guestCartStep,
+        guestCartDel: guestCartDel,
+        guestOrderSubmit: guestOrderSubmit,
+        guestCartContinue: guestCartContinue,
+        guestSaveFlow: guestSaveFlow,
+        guestAccountOpen: guestAccountOpen,
+        guestAccountSubmit: guestAccountSubmit,
         chargeSync: chargeSync,
         chargeSend: chargeSend,
         promoSwitchToggle: promoSwitchToggle,
@@ -1135,30 +1350,115 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
-       تغییر گروهی قیمت
+       FD-9 — تغییر قیمت‌ها (۳۳): دو نیت + ورودی دوگانه + اعتبار
+       ─────────────────────────────────────────────────────────────
+       حکم مالک:
+       ▸ «آپدیت سریع با همین قیمت‌ها» = تمدید اعتبار با چیپ روزِ انتخابی؛
+         پیام: «به قیمت‌های کاتالوگ تا N روز دیگر اعتبار داده شد».
+       ▸ «تغییر قیمت‌ها» = درصد ⇄ قیمتِ محصولِ مرجع (هم‌گام — قانون
+         دوگانه) + ویرایش دستی ردیف‌ها (قوت طرح قبلی).
+       ▸ مبنای ردیف‌ها از دیتای زنده می‌آید (نه HTML) — آپدیت سریعِ
+         تک‌کالا (۰۵) هم بلافاصله اینجا می‌نشیند.
        ═══════════════════════════════════════════════════════════════ */
-    /* ═══════════════════════════════════════════════════════════════
-   تغییر گروهی و دستی قیمت‌ها
-   ═══════════════════════════════════════════════════════════════ */
-    var BULK_BASE = {}; /* id → قیمت اولیه */
+    var BULK = { mode: 'choice', base: {}, refId: null };
+
+    var DAY_WORDS = { 1: 'یک', 2: 'دو', 3: 'سه', 4: 'چهار', 5: 'پنج' };
+
+    /* چیپ‌های روز — خواندن/نشان‌دادن (کلاس pills سراسری فعال‌سازی را انجام می‌دهد) */
+    function readDaysPills(sel) {
+        var host = $(sel);
+        if (!host) return 3;
+        var act = host.querySelector('.pill.active');
+        return act ? (parseInt(act.dataset.valid, 10) || 3) : 3;
+    }
+
+    function setDaysPills(sel, d) {
+        var host = $(sel);
+        if (!host) return;
+        $$('.pill', host).forEach(function (p) {
+            p.classList.toggle('active', parseInt(p.dataset.valid, 10) === d);
+        });
+    }
 
     function bulkReset() {
-        BULK_BASE = {};
-        var pctInp = $('#bulk-pct');
-        if (pctInp) pctInp.value = '۰';
+        BULK.mode = 'choice';
+        BULK.base = {};
+        BULK.refId = null;
 
-        /* پر کردن مبنای قیمت‌ها از دیتا */
+        /* مبنای زندهٔ قیمت‌ها از دیتا */
+        var firstRow = $('#bulk-grid .bulk-row');
         $$('#bulk-grid .bulk-row').forEach(function (row) {
             var id = row.dataset.bkId;
             var inp = row.querySelector('.bk-price');
-            var base = parseNum(row.dataset.bkBase || '0');
+            var l = _findListing(id);
+            var base = l ? l.price : parseNum(row.dataset.bkBase || '0');
             if (id && inp) {
-                BULK_BASE[id] = base;
+                BULK.base[id] = base;
+                row.dataset.bkBase = String(base);
                 inp.value = faMoney(base);
-                inp.dataset.base = String(base);
+                if (!BULK.refId) BULK.refId = id;
             }
         });
 
+        /* برچسب محصول مرجع (اولین ردیف) */
+        var refL = _findListing(BULK.refId);
+        var refLbl = $('#bulk-ref-lbl');
+        if (refLbl && refL) {
+            var shortName = refL.name.replace(' گلستان', '');
+            refLbl.textContent = '«' + shortName + '» بشود';
+        }
+
+        var pctInp = $('#bulk-pct');
+        if (pctInp) pctInp.value = '۰';
+        var amtInp = $('#bulk-amt');
+        if (amtInp) amtInp.value = faMoney(BULK.base[BULK.refId] || 0);
+
+        bulkModeSync();
+        bulkRefreshDirty();
+    }
+
+    function bulkModeSync() {
+        var choice = $('#bk-choice');
+        if (choice) choice.hidden = (BULK.mode !== 'choice');
+        var edit = $('#bulk-edit');
+        if (edit) edit.hidden = (BULK.mode !== 'edit');
+        var bar = $('#bulk-bar');
+        if (bar) bar.hidden = (BULK.mode !== 'edit');
+    }
+
+    /* ─── نیت ۱: آپدیت سریع با همین قیمت‌ها ─── */
+    function bulkQuick() {
+        var d = readDaysPills('#bulk-valid');
+        core.data.listings.forEach(function (l) {
+            l.priceValidDays = d;
+            l.priceStale = false;
+        });
+        core.toast('به قیمت‌های کاتالوگ تا ' + DAY_WORDS[d] + ' روز دیگر اعتبار داده شد', 'success');
+        setTimeout(function () {
+            core.resetStack();
+            core.show('s-catalog', false);
+        }, 750);
+    }
+
+    /* ─── نیت ۲: حالت تغییر ─── */
+    function bulkToEdit() {
+        BULK.mode = 'edit';
+        bulkModeSync();
+    }
+
+    function bulkCancel() {
+        BULK.mode = 'choice';
+        /* برگرداندن ردیف‌ها به مبنای زنده */
+        $$('#bulk-grid .bulk-row').forEach(function (row) {
+            var inp = row.querySelector('.bk-price');
+            var base = BULK.base[row.dataset.bkId];
+            if (inp && base !== undefined) inp.value = faMoney(base);
+        });
+        var pctInp = $('#bulk-pct');
+        if (pctInp) pctInp.value = '۰';
+        var amtInp = $('#bulk-amt');
+        if (amtInp) amtInp.value = faMoney(BULK.base[BULK.refId] || 0);
+        bulkModeSync();
         bulkRefreshDirty();
     }
 
@@ -1166,36 +1466,44 @@
     function _bulkPct() {
         var inp = $('#bulk-pct');
         if (!inp) return 0;
-        var v = parseFloat(String(inp.value)
-            .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
-            .replace(/[٪%−\s]/g, '').replace('٫', '.'));
-        if (isNaN(v)) v = 0;
+        var v = _pctParseLoose(inp.value);
         if (v > 30) v = 30;
         if (v < -30) v = -30;
         return v;
     }
 
-    function bulkSetPct(v) {
-        var inp = $('#bulk-pct');
-        if (!inp) return;
+    /* اعمال درصد روی همهٔ ردیف‌ها + سینک مبلغ مرجع (قانون دوگانه) */
+    function bulkSetPct(v, fromAmt) {
         v = Math.max(-30, Math.min(30, v));
-        var abs = String(Math.abs(v)).replace('.', '٫').replace(/\d/g, function (d) {
-            return '۰۱۲۳۴۵۶۷۸۹'[+d];
-        });
-        inp.value = (v < 0 ? '−' : '') + abs;
+        var inp = $('#bulk-pct');
+        if (inp) inp.value = faPctSigned(v);
 
-        /* اعمال درصدی روی همه */
-        var pct = v;
+        if (!fromAmt) {
+            var amtIn = $('#bulk-amt');
+            var refBase = BULK.base[BULK.refId] || 0;
+            if (amtIn && refBase > 0) {
+                amtIn.value = faMoney(Math.max(0, Math.round(refBase * (1 + v / 100))));
+            }
+        }
+
         $$('#bulk-grid .bulk-row').forEach(function (row) {
             var inp2 = row.querySelector('.bk-price');
-            var base = parseFloat(row.dataset.bkBase || '0');
+            var base = BULK.base[row.dataset.bkId];
             if (inp2 && base > 0) {
-                var np = Math.max(0, Math.round(base * (1 + pct / 100)));
-                inp2.value = faMoney(np);
+                inp2.value = faMoney(Math.max(0, Math.round(base * (1 + v / 100))));
             }
         });
 
         bulkRefreshDirty();
+    }
+
+    /* مبلغ مرجع عوض شد → درصد خودش حساب می‌شود (قانون دوگانه) */
+    function bulkSetAmt(amtVal) {
+        var refBase = BULK.base[BULK.refId] || 0;
+        var v = refBase > 0 ? ((amtVal - refBase) / refBase) * 100 : 0;
+        bulkSetPct(v, true);
+        var amtIn = $('#bulk-amt');
+        if (amtIn) amtIn.value = faMoney(amtVal);
     }
 
     /* تغییر یک ردیف با دکمه‌های ± */
@@ -1204,7 +1512,7 @@
         var row = document.querySelector('#bulk-grid .bulk-row[data-bk-id="' + id + '"]');
         if (!row) return;
         var inp = row.querySelector('.bk-price');
-        var base = parseFloat(row.dataset.bkBase || '0');
+        var base = BULK.base[id] || parseNum(row.dataset.bkBase || '0');
         if (!inp || base <= 0) return;
         var cur = parseNum(inp.value);
         var step = Math.max(1, Math.round(base * stepPct / 100));
@@ -1228,7 +1536,7 @@
         var dirty = 0;
         $$('#bulk-grid .bulk-row').forEach(function (row) {
             var inp = row.querySelector('.bk-price');
-            var base = parseFloat(row.dataset.bkBase || '0');
+            var base = BULK.base[row.dataset.bkId] || 0;
             if (!inp) return;
             var cur = parseNum(inp.value);
             var changed = cur !== base;
@@ -1238,20 +1546,20 @@
         var save = $('#bulk-save');
         if (save) save.disabled = (dirty === 0);
         var cnt = $('#bulk-count');
-        if (cnt) cnt.textContent = '(' + faNum(dirty) + ')';
+        if (cnt) cnt.textContent = dirty ? '(' + faNum(dirty) + ')' : '';
     }
 
     function bulkApply() {
+        var d = readDaysPills('#bulk-valid');
         var count = 0;
         $$('#bulk-grid .bulk-row').forEach(function (row) {
             var id = row.dataset.bkId;
             var inp = row.querySelector('.bk-price');
             if (!inp) return;
             var cur = parseNum(inp.value);
-            var base = parseFloat(row.dataset.bkBase || '0');
+            var base = BULK.base[id] || 0;
             if (cur === base) return;
 
-            /* به‌روزرسانی listing در دیتا */
             core.data.listings.forEach(function (l) {
                 if (l.id === id) {
                     l.price = cur;
@@ -1261,13 +1569,48 @@
             });
         });
 
-        /* اگر در دیتا نبود، فقط Toast موفقیت */
-        core.toast(count > 0 ? (faNum(count) + ' قیمت به‌روز شد') : 'تغییری ذخیره نشد', 'success');
+        /* اعتبارِ قیمت‌ها همیشه با همین به‌روزرسانی تمدید می‌شود (حکم مالک) */
+        core.data.listings.forEach(function (l) {
+            l.priceValidDays = d;
+            l.priceStale = false;
+        });
+
+        core.toast(count > 0
+            ? faNum(count) + ' قیمت به‌روز شد — تا ' + DAY_WORDS[d] + ' روز دیگر اعتبار داده شد'
+            : 'به قیمت‌های کاتالوگ تا ' + DAY_WORDS[d] + ' روز دیگر اعتبار داده شد', 'success');
         setTimeout(function () {
             core.resetStack();
             core.show('s-catalog', false);
-        }, 500);
+        }, 850);
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FD-9 — کمکی‌های مشترک ورودی دوگانهٔ «درصد ⇄ مبلغ»
+       ═══════════════════════════════════════════════════════════════ */
+    function _pctParseLoose(s) {
+        var v = parseFloat(String(s || '')
+            .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+            .replace(/[٪%−\s]/g, '').replace('٫', '.'));
+        if (isNaN(v)) v = 0;
+        return v;
+    }
+
+    function _pctClampLoose(v, min, max) {
+        if (isNaN(v)) v = 0;
+        return Math.max(min, Math.min(max, v));
+    }
+
+    /* نمایش درصد فارسی — اعشار در صورت نیاز (۷ یا ۷٫۵) */
+    function faPct(v) {
+        var r = Math.round(v * 10) / 10;
+        var neg = r < 0;
+        var s = String(Math.abs(r)).replace('.', '٫').replace(/\d/g, function (d) {
+            return '۰۱۲۳۴۵۶۷۸۹'[+d];
+        });
+        return (neg ? '−' : '') + s;
+    }
+
+    function faPctSigned(v) { return faPct(v); }
 
 
 
@@ -1563,42 +1906,221 @@
         setTimeout(function () { core.back(); }, 550);
     }
 
-    /* ─── تخفیف گروه مشتری روی تک‌محصول (s-sell-edit) ─── */
+    /* ═══════════════════════════════════════════════════════════════
+       FD-9 — تخفیف‌های مخصوص همین محصول (s-sell-edit)
+       ─────────────────────────────────────────────────────────────
+       حکم مالک:
+       ▸ هر دو بلوک (تخفیف حجمی + تخفیف گروه مشتری) زیر «توضیحات».
+       ▸ هر بلوک سوییچ دارد — خاموش = این محصول از آن تخفیف خارج می‌شود.
+       ▸ ورودی دوگانه: [− درصد ٪ +] ⇄ [مبلغ تومان] — قانون همیشگی؛
+         تغییر هر کدام، اونیکی را همان لحظه از روی قیمت محصول می‌سازد.
+       ▸ پیش‌فرض از تنظیمات کاتالوگ ارث می‌برد (اولین رندر کپی می‌کند تا
+         تغییر فقط روی همین محصول بنشیند: listing.volumeTiers / groupDiscounts).
+       ▸ فرم از دیتای زندهٔ listing پر می‌شود (قیمت/موجودی/عکس/عنوان) و
+         «یادآوری آپدیت قیمت» ۱-۵ روز (پیش‌فرض ۳) دارد.
+       ═══════════════════════════════════════════════════════════════ */
     function gdEditRender() {
-        var host = $('#egd-list');
-        if (!host) return;
         var p = core.getSCREENParams()['s-sell-edit'] || {};
         gdEditListing = null;
         core.data.listings.forEach(function (l) { if (l.id === (p.id || 'l1')) gdEditListing = l; });
         if (!gdEditListing) return;
-        if (!gdEditListing.groupDiscounts) gdEditListing.groupDiscounts = {};
+        var L = gdEditListing;
 
-        host.innerHTML = core.data.customerGroups.map(function (g) {
-            var has = gdEditListing.groupDiscounts[g.id] !== undefined;
-            var v = has ? gdEditListing.groupDiscounts[g.id] : g.discount;
-            var sub = has && v !== g.discount
-                ? 'پیش‌فرض گروه ٪' + faNum(g.discount) + ' — برای این محصول تغییر کرده'
-                : 'تخفیف پیش‌فرض گروه';
-            return '<div class="gd-row">' +
-                '<div class="gd-ic"><svg><use href="#i-users"/></svg></div>' +
-                '<div class="gd-tx"><b>' + esc(g.name) + '</b><span>' + sub + '</span></div>' +
-                '<div class="gd-step">' +
-                    '<button class="bk-step" type="button" data-egd-step="-1" data-egd-id="' + g.id + '" aria-label="کاهش">−</button>' +
-                    '<input class="gd-pct" data-egd-val="' + g.id + '" value="' + faNum(v) + '" inputmode="numeric">' +
-                    '<span class="gd-sign">٪</span>' +
-                    '<button class="bk-step" type="button" data-egd-step="1" data-egd-id="' + g.id + '" aria-label="افزایش">+</button>' +
+        /* ارث‌بری پیش‌فرض‌های تخفیف از کاتالوگ — فقط بار اول کپی می‌شود */
+        if (!L.volumeTiers) {
+            L.volumeTiers = core.data.volumeTiers.map(function (t) { return { min: t.min, pct: t.pct }; });
+        }
+        if (L.volumeTiersOn === undefined) L.volumeTiersOn = core.data.volumeTiersOn;
+        if (L.groupDiscOn === undefined) L.groupDiscOn = true;
+        if (!L.groupDiscounts) L.groupDiscounts = {};
+
+        /* فرم از دیتای زنده پر می‌شود (کارت‌های کاتالوگ data-lid دارند) */
+        var ttl = document.querySelector('#s-sell-edit .ttl small');
+        if (ttl) ttl.textContent = L.name + ' · ' + L.pack;
+        var nm = document.querySelector('#s-sell-edit .picked-card .nm');
+        if (nm) nm.textContent = L.name;
+        var sb = document.querySelector('#s-sell-edit .picked-card .sub');
+        if (sb) sb.textContent = (L.brand ? L.brand + ' · ' : '') + L.pack + (L.baseUnit ? ' · ' + L.baseUnit : '');
+        var pcImg = document.querySelector('#s-sell-edit .picked-card .thumb img');
+        if (pcImg) pcImg.src = L.img;
+        var slImg = document.querySelector('#s-sell-edit .img-slot-btn.has-img img');
+        if (slImg) slImg.src = L.img;
+        var priceEl = $('#edit-price');
+        if (priceEl) priceEl.value = faMoney(L.price);
+        var stockIn = $('#edit-stock');
+        if (stockIn) stockIn.value = faNum(L.stock);
+        var minIn = $('#edit-min');
+        if (minIn) minIn.value = faNum(L.min);
+
+        setDaysPills('#ed-valid', L.priceValidDays || 3);
+
+        edSwitchSync();
+        edVolRender();
+        edGrpRender();
+    }
+
+    /* قیمتِ فعلیِ فرم — مبنای همهٔ تبدیل‌های دوگانه */
+    function edBasePrice() {
+        var v = parseNum(($('#edit-price') || {}).value);
+        return v || (gdEditListing ? gdEditListing.price : 0);
+    }
+
+    function edSwitchSync() {
+        var L = gdEditListing;
+        if (!L) return;
+        var vol = $('#ed-vol-on');
+        if (vol) vol.classList.toggle('on', !!L.volumeTiersOn);
+        var grp = $('#ed-grp-on');
+        if (grp) grp.classList.toggle('on', !!L.groupDiscOn);
+        var vb = $('#ed-disc-vol');
+        if (vb) vb.classList.toggle('off', !L.volumeTiersOn);
+        var gb = $('#ed-disc-grp');
+        if (gb) gb.classList.toggle('off', !L.groupDiscOn);
+    }
+
+    /* ─── رندر بلوک تخفیف حجمی این محصول ─── */
+    function edVolRender() {
+        var host = $('#ed-vol-list');
+        if (!host || !gdEditListing) return;
+        var base = edBasePrice();
+        var tiers = gdEditListing.volumeTiers;
+
+        if (!tiers.length) {
+            host.innerHTML = '<div class="empty" style="padding:14px 10px;margin:0">' +
+                '<h3 style="margin-bottom:4px">پله‌ای نساخته‌ای</h3>' +
+                '<p style="margin-bottom:0">مثلاً: از ۱۰ بسته به بالا ٪۲.</p></div>';
+            return;
+        }
+        host.innerHTML = tiers.map(function (t, i) {
+            var amt = Math.round(base * (1 - t.pct / 100));
+            return '<div class="ed-item">' +
+                '<div class="ed-line1">' +
+                    '<div style="flex:1;min-width:0"><b>از <input class="tier-min" data-evol-min="' + i + '" value="' + faNum(t.min) + '" inputmode="numeric"> بسته به بالا</b>' +
+                    '<small>' + esc(gdEditListing.pack || '') + ' — تخفیف پله‌ای همین محصول</small></div>' +
+                    '<button class="ed-del" type="button" data-evol-del="' + i + '" aria-label="حذف پله"><svg><use href="#i-trash"/></svg></button>' +
+                '</div>' +
+                '<div class="bk-gc-row" style="padding:2px 0 0">' +
+                    '<div class="gd-step">' +
+                        '<button class="bk-step" type="button" data-evol-step="-1" data-evol-i="' + i + '" aria-label="کاهش">−</button>' +
+                        '<input class="gd-pct" data-evol-pct="' + i + '" value="' + faPct(t.pct) + '" inputmode="decimal">' +
+                        '<span class="gd-sign">٪</span>' +
+                        '<button class="bk-step" type="button" data-evol-step="1" data-evol-i="' + i + '" aria-label="افزایش">+</button>' +
+                    '</div>' +
+                    '<span class="dual-eq">=</span>' +
+                    '<div class="bk-gc-amt"><input class="bk-amt-in" data-evol-amt="' + i + '" value="' + faMoney(amt) + '" inputmode="numeric"><small>تومان</small></div>' +
                 '</div>' +
             '</div>';
         }).join('');
     }
 
+    /* ─── رندر بلوک تخفیف گروه مشتری این محصول ─── */
+    function edGrpRender() {
+        var host = $('#egd-list');
+        if (!host || !gdEditListing) return;
+        var base = edBasePrice();
+        var L = gdEditListing;
+
+        host.innerHTML = core.data.customerGroups.map(function (g) {
+            var has = L.groupDiscounts[g.id] !== undefined;
+            var v = has ? L.groupDiscounts[g.id] : g.discount;
+            var n = core.data.customers.filter(function (c) { return c.groupId === g.id; }).length;
+            var sub = has && v !== g.discount
+                ? 'مخصوص این محصول — پیش‌فرض گروه ٪' + faPct(g.discount)
+                : 'تخفیف پیش‌فرض گروه';
+            var amt = Math.round(base * (1 - v / 100));
+            return '<div class="ed-item">' +
+                '<div class="ed-line1">' +
+                    '<div style="flex:1;min-width:0"><b>' + esc(g.name) + '</b>' +
+                    '<small>' + sub + ' · ' + faNum(n) + ' مشتری</small></div>' +
+                '</div>' +
+                '<div class="bk-gc-row" style="padding:2px 0 0">' +
+                    '<div class="gd-step">' +
+                        '<button class="bk-step" type="button" data-egd-step="-1" data-egd-id="' + g.id + '" aria-label="کاهش">−</button>' +
+                        '<input class="gd-pct" data-egd-pct="' + g.id + '" value="' + faPct(v) + '" inputmode="decimal">' +
+                        '<span class="gd-sign">٪</span>' +
+                        '<button class="bk-step" type="button" data-egd-step="1" data-egd-id="' + g.id + '" aria-label="افزایش">+</button>' +
+                    '</div>' +
+                    '<span class="dual-eq">=</span>' +
+                    '<div class="bk-gc-amt"><input class="bk-amt-in" data-egd-amt="' + g.id + '" value="' + faMoney(amt) + '" inputmode="numeric"><small>تومان</small></div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    /* ذخیرهٔ مقدار درصد گروه (رد شدن از پیش‌فرض گروه → در groupDiscounts می‌نشیند) */
     function egdSet(gid, val) {
         if (!gdEditListing) return;
         var g = null;
         core.data.customerGroups.forEach(function (x) { if (x.id === gid) g = x; });
-        var v = _pctClamp(val);
+        var v = Math.round(_pctClampLoose(val, 0, 99) * 10) / 10;
         if (g && v === g.discount) delete gdEditListing.groupDiscounts[gid];
         else gdEditListing.groupDiscounts[gid] = v;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FD-9 — شیت آپدیت سریع قیمتِ یک کالا (۰۵) + سینک کارت‌های کاتالوگ
+       ═══════════════════════════════════════════════════════════════ */
+    var QP = { lid: null, base: 0 };
+
+    /* سینک زندهٔ قیمت/منقضی روی کارت‌های کاتالوگ (۰۵) */
+    function catGridSync() {
+        $$('#cat-grid .pcard[data-lid]').forEach(function (card) {
+            var l = _findListing(card.dataset.lid);
+            if (!l) return;
+            var priceEl = card.querySelector('.pprice');
+            if (priceEl) priceEl.innerHTML = faMoney(l.price) + ' <small>تومان</small>';
+            var stale = !!l.priceStale;
+            var badge = card.querySelector('.stale-badge');
+            if (badge) badge.hidden = !stale;
+            card.classList.toggle('stale', stale);
+        });
+    }
+
+    function qpriceOpen(lid) {
+        var l = _findListing(lid);
+        if (!l) return;
+        QP.lid = lid;
+        QP.base = l.price;
+        var sub = $('#qp-sub');
+        if (sub) sub.textContent = l.name + ' · ' + l.pack;
+        var pr = $('#qp-price');
+        if (pr) pr.value = faMoney(l.price);
+        var pc = $('#qp-pct');
+        if (pc) pc.value = '۰';
+        setDaysPills('#qp-valid', l.priceValidDays || 3);
+        core.openSheet('sheet-quickprice');
+    }
+
+    function qpPctSet(v) {
+        v = _pctClampLoose(v, -99, 99);
+        var pc = $('#qp-pct');
+        if (pc) pc.value = faPct(v);
+        var pr = $('#qp-price');
+        if (pr && QP.base > 0) pr.value = faMoney(Math.max(0, Math.round(QP.base * (1 + v / 100))));
+    }
+
+    function qpPriceSet(p) {
+        var pr = $('#qp-price');
+        if (pr) pr.value = faMoney(p);
+        var v = QP.base > 0 ? ((p - QP.base) / QP.base) * 100 : 0;
+        v = _pctClampLoose(Math.round(v * 10) / 10, -99, 99);
+        var pc = $('#qp-pct');
+        if (pc) pc.value = faPct(v);
+    }
+
+    function qpriceSave() {
+        var l = _findListing(QP.lid);
+        if (!l) return;
+        var price = parseNum(($('#qp-price') || {}).value);
+        if (!price) { toast('قیمت را وارد کن', 'error'); return; }
+        var d = readDaysPills('#qp-valid');
+        l.price = price;
+        if (l.packCount) l.pricePerUnit = Math.round(price / l.packCount);
+        l.priceValidDays = d;
+        l.priceStale = false;
+        core.closeSheet('sheet-quickprice');
+        catGridSync();
+        core.toast('قیمت «' + l.name + '» ثبت شد — تا ' + DAY_WORDS[d] + ' روز دیگر اعتبار دارد', 'success');
     }
 
     /* ─── حلقهٔ کلیک شیت‌های کاتالوگ ─── */
@@ -1695,17 +2217,59 @@
         }
         if (t.closest('#cat-edit-save')) { catEditSave(); return; }
 
-        /* تخفیف گروه روی تک‌محصول */
+        /* ═══ FD-9: تخفیف‌های مخصوص همین محصول (s-sell-edit) ═══ */
+        /* سوییچ‌ها — خاموش = این محصول از آن تخفیف خارج می‌شود */
+        if (t.closest('#ed-vol-on') && gdEditListing) {
+            gdEditListing.volumeTiersOn = !gdEditListing.volumeTiersOn;
+            edSwitchSync();
+            toast(gdEditListing.volumeTiersOn ? 'تخفیف حجمی این محصول روشن شد' : 'تخفیف حجمی این محصول خاموش شد', 'success');
+            return;
+        }
+        if (t.closest('#ed-grp-on') && gdEditListing) {
+            gdEditListing.groupDiscOn = !gdEditListing.groupDiscOn;
+            edSwitchSync();
+            toast(gdEditListing.groupDiscOn ? 'تخفیف گروهی این محصول روشن شد' : 'تخفیف گروهی این محصول خاموش شد', 'success');
+            return;
+        }
+
+        /* تخفیف حجمی محصول — استپر ± / حذف پله / پلهٔ جدید */
+        var evstep = t.closest('[data-evol-step]');
+        if (evstep && gdEditListing) {
+            var evi = parseInt(evstep.dataset.evolI, 10);
+            if (gdEditListing.volumeTiers[evi] !== undefined) {
+                var cur = _pctClampLoose(_pctParseLoose((document.querySelector('[data-evol-pct="' + evi + '"]') || {}).value) + (parseFloat(evstep.dataset.evolStep) || 0), 0, 99);
+                gdEditListing.volumeTiers[evi].pct = cur;
+                edVolRender();
+            }
+            return;
+        }
+        var evdel = t.closest('[data-evol-del]');
+        if (evdel && gdEditListing) {
+            gdEditListing.volumeTiers.splice(parseInt(evdel.dataset.evolDel, 10), 1);
+            edVolRender();
+            toast('پله حذف شد', 'success');
+            return;
+        }
+        if (t.closest('#ed-vol-add') && gdEditListing) {
+            var tiers = gdEditListing.volumeTiers;
+            var maxMin = 0, maxPct = 0;
+            tiers.forEach(function (x) { if (x.min > maxMin) maxMin = x.min; if (x.pct > maxPct) maxPct = x.pct; });
+            tiers.push({ min: maxMin ? maxMin + 10 : 5, pct: _pctClampLoose(maxPct + 1 || 2, 0, 99) });
+            tiers.sort(function (a, b) { return a.min - b.min; });
+            edVolRender();
+            return;
+        }
+
+        /* تخفیف گروه روی تک‌محصول — استپر ± (ورودی دوگانه: مبلغ هم تازه می‌شود) */
         var estep = t.closest('[data-egd-step]');
         if (estep) {
             var egid = estep.dataset.egdId;
-            var eEl = document.querySelector('[data-egd-val="' + egid + '"]');
+            var eEl = document.querySelector('[data-egd-pct="' + egid + '"]');
             if (eEl) {
-                var ev = _pctClamp(parseNum(eEl.value) + (parseFloat(estep.dataset.egdStep) || 0));
+                var ev = _pctClampLoose(_pctParseLoose(eEl.value) + (parseFloat(estep.dataset.egdStep) || 0), 0, 99);
                 egdSet(egid, ev);
-                eEl.value = faNum(ev);
-                /* زیرنویس را تازه کن */
-                gdEditRender();
+                /* زیرنویس + مبلغ معادل را تازه کن */
+                edGrpRender();
             }
             return;
         }
@@ -1715,6 +2279,58 @@
     document.addEventListener('input', function (e) {
         var t = e.target;
         if (!t) return;
+
+        /* ═══ FD-9: ورودی دوگانهٔ درصد ⇄ مبلغ (قانون همیشگی) ═══ */
+
+        /* قیمت محصول در ویرایش عوض شد → معادل‌های مبلغ دو بلوک تازه شوند */
+        if (t.id === 'edit-price') {
+            edVolRender();
+            edGrpRender();
+            return;
+        }
+
+        /* تخفیف گروه محصول — درصد یا مبلغ */
+        if (t.dataset && t.dataset.egdPct !== undefined) {
+            var gp = _pctClampLoose(_pctParseLoose(t.value), 0, 99);
+            egdSet(t.dataset.egdPct, gp);
+            var gAmt = document.querySelector('[data-egd-amt="' + t.dataset.egdPct + '"]');
+            if (gAmt) gAmt.value = faMoney(Math.max(0, Math.round(edBasePrice() * (1 - gp / 100))));
+            return;
+        }
+        if (t.dataset && t.dataset.egdAmt !== undefined) {
+            var gA = parseNum(t.value);
+            var base1 = edBasePrice();
+            var gpv = base1 > 0 ? _pctClampLoose(Math.round(((base1 - gA) / base1) * 1000) / 10, 0, 99) : 0;
+            egdSet(t.dataset.egdAmt, gpv);
+            var gPct = document.querySelector('[data-egd-pct="' + t.dataset.egdAmt + '"]');
+            if (gPct) gPct.value = faPct(gpv);
+            return;
+        }
+
+        /* تخفیف حجمی محصول — پله/درصد/مبلغ */
+        if (t.dataset && t.dataset.evolMin !== undefined && gdEditListing) {
+            var emi = parseInt(t.dataset.evolMin, 10);
+            if (gdEditListing.volumeTiers[emi] !== undefined) gdEditListing.volumeTiers[emi].min = Math.max(1, parseNum(t.value));
+            return;
+        }
+        if (t.dataset && t.dataset.evolPct !== undefined && gdEditListing) {
+            var epi = parseInt(t.dataset.evolPct, 10);
+            var epv = _pctClampLoose(_pctParseLoose(t.value), 0, 99);
+            if (gdEditListing.volumeTiers[epi] !== undefined) gdEditListing.volumeTiers[epi].pct = epv;
+            var eAmt = document.querySelector('[data-evol-amt="' + epi + '"]');
+            if (eAmt) eAmt.value = faMoney(Math.max(0, Math.round(edBasePrice() * (1 - epv / 100))));
+            return;
+        }
+        if (t.dataset && t.dataset.evolAmt !== undefined && gdEditListing) {
+            var eai = parseInt(t.dataset.evolAmt, 10);
+            var eAv = parseNum(t.value);
+            var base2 = edBasePrice();
+            var epv2 = base2 > 0 ? _pctClampLoose(Math.round(((base2 - eAv) / base2) * 1000) / 10, 0, 99) : 0;
+            if (gdEditListing.volumeTiers[eai] !== undefined) gdEditListing.volumeTiers[eai].pct = epv2;
+            var ePct = document.querySelector('[data-evol-pct="' + eai + '"]');
+            if (ePct) ePct.value = faPct(epv2);
+            return;
+        }
 
         if (t.id === 'cat-search') {
             CATF.q = t.value;

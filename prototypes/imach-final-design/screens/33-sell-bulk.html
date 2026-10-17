@@ -1,10 +1,15 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۳۳: تغییر گروهی و دستی قیمت‌ها
-     ─────────────────────────────────────────────────────────────
-     دو حالت:
-       • تغیر درصدی گروهی: با دکمه‌های [−] [عدد] [+]
-       • تغییر دستی هر ردیف: با دکمه‌های [−] [عدد] [+] روی هر محصول
-     الهام‌گرفته از دیزاین قدیمی `s-bulk-edit`.
+     اسکرین ۳۳: تغییر قیمت‌ها — بازطراحی FD-9 (حکم مالک)
+
+     ▸ دو نیت در بالا (قوت طرح قبلی، بهترشده):
+         «آپدیت سریع با همین قیمت‌ها» → مهر تازگی با اعتبارِ انتخابی؛
+         پیام: «به قیمت‌های کاتالوگ تا N روز دیگر اعتبار داده شد».
+         «تغییر قیمت‌ها» → تغییر درصدی + عددیِ هم‌گام + ویرایش دستی ردیف‌ها.
+     ▸ ورودی دوگانه (قانون همیشگی): درصد ⇄ قیمتِ محصولِ مرجع —
+         هر کدام را عوض کنی، اونیکی همان لحظه حساب می‌شود؛
+         درصد روی همهٔ ردیف‌ها اعمال می‌شود (از مبنای هر ردیف، نه تجمعی).
+     ▸ یادآوری آپدیت قیمت: ۱ تا ۵ روز — پیش‌فرض ۳؛ برای هر دو نیت.
+     ▸ قوت طرح قبلی که ماند: گرید ردیف‌ها با استپر ± و نشان «ویرایش شد».
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-sell-bulk" data-arm="sell">
@@ -15,107 +20,144 @@
 
     <div class="body">
 
-        <!-- ═══ حالت ۱: درصد گروهی ═══ -->
-        <div class="card" style="background: linear-gradient(135deg, #FFF7EC, #FEFBFA); border-color: #F3DDBA;">
-            <div style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">تغییر گروهی قیمت‌ها</div>
-            <div style="font-size: 11px; color: var(--text-3); line-height: 1.9; margin-bottom: 10px;">
-                درصدی روی کل کاتالوگ اعمال می‌شود. برای تغییر تک‌تک محصولات، جدول زیر را دستی ویرایش کن.
-            </div>
-
-            <div class="pct-stepper">
-                <button class="pct-btn pct-minus" data-bulk-pct-dir="-1" type="button" aria-label="منفی">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </button>
-                <div class="pct-val">
-                    <input id="bulk-pct" class="pct-num" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر">
-                    <span class="pct-sign">٪</span>
-                </div>
-                <button class="pct-btn pct-plus" data-bulk-pct-dir="1" type="button" aria-label="مثبت">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </button>
-            </div>
-            <div class="hint" style="margin-top: 8px;">مثلاً ٪۵ یعنی همهٔ قیمت‌ها ۵ درصد بیشتر. حداکثر ±۳۰٪.</div>
+        <!-- ═══ نیت: آپدیت سریع یا تغییر؟ ═══ -->
+        <div class="bk-choice" id="bk-choice">
+            <button class="bk-btn renew" id="bk-quick" type="button">
+                <svg><use href="#i-check"/></svg>
+                <b>آپدیت سریع با همین قیمت‌ها</b>
+                <small>قیمت‌ها درست‌اند — فقط تمدید اعتبار</small>
+            </button>
+            <button class="bk-btn need" id="bk-change" type="button">
+                <svg><use href="#i-pencil"/></svg>
+                <b>تغییر قیمت‌ها</b>
+                <small>درصدی یا عددی — روی همه یا تک‌تک</small>
+            </button>
         </div>
 
-        <!-- ═══ جدول محصولات — قابل ویرایش دستی ═══ -->
-        <div class="bulk-grid" id="bulk-grid">
-            <div class="bulk-head">
-                <span class="bh-name">محصول</span>
-                <span class="bh-price">قیمت (تومان)</span>
+        <!-- ═══ یادآوری آپدیت قیمت — برای هر دو نیت ═══ -->
+        <div class="field" id="bulk-valid-field">
+            <label>یادآوری آپدیت قیمت</label>
+            <div class="pills days-pills" id="bulk-valid">
+                <button class="pill" type="button" data-valid="1">۱ روز</button>
+                <button class="pill" type="button" data-valid="2">۲ روز</button>
+                <button class="pill active" type="button" data-valid="3">۳ روز</button>
+                <button class="pill" type="button" data-valid="4">۴ روز</button>
+                <button class="pill" type="button" data-valid="5">۵ روز</button>
             </div>
-
-            <div class="bulk-row" data-bk-id="l1" data-bk-base="2850000">
-                <div class="bk-it">
-                    <img class="bk-th" src="png/goods/rice-sack.jpg" alt="">
-                    <span class="bk-nm">
-                        <b>برنج هاشمی</b>
-                        <small>کیسه ۵۰ کیلویی</small>
-                    </span>
-                </div>
-                <div class="bk-price-field">
-                    <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
-                    <input class="bk-price" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت">
-                    <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
-                </div>
-            </div>
-
-            <div class="bulk-row" data-bk-id="l2" data-bk-base="2750000">
-                <div class="bk-it">
-                    <img class="bk-th" src="png/goods/rice-grains.jpg" alt="">
-                    <span class="bk-nm">
-                        <b>برنج طارم</b>
-                        <small>کیسه ۵۰ کیلویی</small>
-                    </span>
-                </div>
-                <div class="bk-price-field">
-                    <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
-                    <input class="bk-price" value="۲٬۷۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت">
-                    <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
-                </div>
-            </div>
-
-            <div class="bulk-row" data-bk-id="l3" data-bk-base="595000">
-                <div class="bk-it">
-                    <img class="bk-th" src="png/goods/hashemi-10.png" alt="">
-                    <span class="bk-nm">
-                        <b>برنج هاشمی</b>
-                        <small>کیسه ۱۰ کیلویی</small>
-                    </span>
-                </div>
-                <div class="bk-price-field">
-                    <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
-                    <input class="bk-price" value="۵۹۵٬۰۰۰" inputmode="numeric" aria-label="قیمت">
-                    <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
-                </div>
-            </div>
-
-            <div class="bulk-row" data-bk-id="l4" data-bk-base="2480000">
-                <div class="bk-it">
-                    <img class="bk-th" src="png/goods/fajar-50.jpg" alt="">
-                    <span class="bk-nm">
-                        <b>برنج فجر</b>
-                        <small>کیسه ۵۰ کیلویی</small>
-                    </span>
-                </div>
-                <div class="bk-price-field">
-                    <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
-                    <input class="bk-price" value="۲٬۴۸۰٬۰۰۰" inputmode="numeric" aria-label="قیمت">
-                    <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
-                </div>
-            </div>
+            <div class="hint">بعد از این روزها قیمت‌ها در کاتالوگ «منقضی» نشان داده می‌شوند و یادآوری می‌گیرید.</div>
         </div>
 
-        <div class="hint-line">
-            <svg><use href="#i-info"/></svg>
-            <span>دکمه‌های ٪ روی همهٔ محصولات اعمال می‌شود؛ دکمه‌های ± روی هر ردیف، فقط همان محصول را تغییر می‌دهد.</span>
+        <!-- ═══ حالت تغییر: کارت تغییر گروهی + گرید دستی ═══ -->
+        <div id="bulk-edit" hidden>
+
+            <!-- تغییر گروهی — درصد ⇄ عدد (هم‌گام) -->
+            <div class="card bk-gc">
+                <div class="bk-gc-ttl">تغییر همهٔ قیمت‌ها</div>
+
+                <div class="bk-gc-row">
+                    <span class="bk-gc-lbl">درصد تغییر</span>
+                    <div class="gd-step">
+                        <button class="bk-step" data-bulk-pct-dir="-1" type="button" aria-label="کاهش درصد">−</button>
+                        <input id="bulk-pct" class="gd-pct" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر">
+                        <span class="gd-sign">٪</span>
+                        <button class="bk-step" data-bulk-pct-dir="1" type="button" aria-label="افزایش درصد">+</button>
+                    </div>
+                </div>
+
+                <div class="bk-gc-row">
+                    <span class="bk-gc-lbl" id="bulk-ref-lbl">«برنج هاشمی» بشود</span>
+                    <div class="bk-gc-amt">
+                        <input id="bulk-amt" class="bk-amt-in" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric" autocomplete="off" aria-label="قیمت جدید محصول مرجع">
+                        <small>تومان</small>
+                    </div>
+                </div>
+
+                <div class="hint" style="margin-top: 8px;">
+                    یکی را عوض کن، اونیکی هم خودش عوض می‌شود — درصد روی همهٔ قیمت‌ها اعمال می‌شود.
+                </div>
+            </div>
+
+            <!-- گرید محصولات — ویرایش دستی (قوت طرح قبلی) -->
+            <div class="bulk-grid" id="bulk-grid">
+                <div class="bulk-head">
+                    <span class="bh-name">محصول</span>
+                    <span class="bh-price">قیمت (تومان)</span>
+                </div>
+
+                <div class="bulk-row" data-bk-id="l1" data-bk-base="2850000">
+                    <div class="bk-it">
+                        <img class="bk-th" src="png/goods/rice-sack.jpg" alt="">
+                        <span class="bk-nm">
+                            <b>برنج هاشمی</b>
+                            <small>کیسه ۵۰ کیلویی</small>
+                        </span>
+                    </div>
+                    <div class="bk-price-field">
+                        <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
+                        <input class="bk-price" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت">
+                        <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
+                    </div>
+                </div>
+
+                <div class="bulk-row" data-bk-id="l2" data-bk-base="2750000">
+                    <div class="bk-it">
+                        <img class="bk-th" src="png/goods/rice-grains.jpg" alt="">
+                        <span class="bk-nm">
+                            <b>برنج طارم</b>
+                            <small>کیسه ۵۰ کیلویی</small>
+                        </span>
+                    </div>
+                    <div class="bk-price-field">
+                        <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
+                        <input class="bk-price" value="۲٬۷۵۰٬۰۰۰" inputmode="numeric" aria-label="قیمت">
+                        <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
+                    </div>
+                </div>
+
+                <div class="bulk-row" data-bk-id="l3" data-bk-base="595000">
+                    <div class="bk-it">
+                        <img class="bk-th" src="png/goods/hashemi-10.png" alt="">
+                        <span class="bk-nm">
+                            <b>برنج هاشمی</b>
+                            <small>کیسه ۱۰ کیلویی</small>
+                        </span>
+                    </div>
+                    <div class="bk-price-field">
+                        <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
+                        <input class="bk-price" value="۵۹۵٬۰۰۰" inputmode="numeric" aria-label="قیمت">
+                        <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
+                    </div>
+                </div>
+
+                <div class="bulk-row" data-bk-id="l4" data-bk-base="2480000">
+                    <div class="bk-it">
+                        <img class="bk-th" src="png/goods/fajar-50.jpg" alt="">
+                        <span class="bk-nm">
+                            <b>برنج فجر</b>
+                            <small>کیسه ۵۰ کیلویی</small>
+                        </span>
+                    </div>
+                    <div class="bk-price-field">
+                        <button class="bk-step" data-bk-step="-1" type="button" aria-label="کاهش">−</button>
+                        <input class="bk-price" value="۲٬۴۸۰٬۰۰۰" inputmode="numeric" aria-label="قیمت">
+                        <button class="bk-step" data-bk-step="1" type="button" aria-label="افزایش">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hint-line">
+                <svg><use href="#i-info"/></svg>
+                <span>درصد روی همهٔ محصولات اعمال می‌شود؛ دکمه‌های ± فقط همان ردیف را تغییر می‌دهند.</span>
+            </div>
         </div>
 
     </div>
 
-    <div class="sticky-bar">
-        <button class="btn btn-outline" style="flex: .65" data-back type="button">انصراف</button>
+    <!-- نوار پایین — فقط در حالت «تغییر قیمت‌ها» -->
+    <div class="sticky-bar" id="bulk-bar" hidden>
+        <button class="btn btn-outline" style="flex: .65" id="bulk-cancel" type="button">انصراف</button>
         <button class="btn btn-primary" style="flex: 1.35" id="bulk-save" type="button" disabled>
-            <svg><use href="#i-check"/></svg> ذخیره تغییرات
+            <svg><use href="#i-check"/></svg> ذخیره تغییرات <span id="bulk-count"></span>
         </button>
     </div>
 </section>

@@ -133,6 +133,19 @@
                 </div>
             </div>
 
+            <!-- ═══ FD-9: یادآوری آپدیت قیمت — اعتبار ۱ تا ۵ روز، پیش‌فرض ۳ ═══ -->
+            <div class="field">
+                <label>یادآوری آپدیت قیمت</label>
+                <div class="pills days-pills" id="add-valid">
+                    <button class="pill" type="button" data-valid="1">۱ روز</button>
+                    <button class="pill" type="button" data-valid="2">۲ روز</button>
+                    <button class="pill active" type="button" data-valid="3">۳ روز</button>
+                    <button class="pill" type="button" data-valid="4">۴ روز</button>
+                    <button class="pill" type="button" data-valid="5">۵ روز</button>
+                </div>
+                <div class="hint">بعد از این روزها، قیمت در کاتالوگ «منقضی» نشان داده می‌شود و یادآوری می‌گیرید.</div>
+            </div>
+
             <div class="field">
                 <label>توضیحات <span class="opt">— اختیاری</span></label>
                 <textarea class="input" id="add-note" placeholder="شرایط فروش، پرداخت، تحویل…"></textarea>
@@ -233,27 +246,30 @@
             <input class="input" type="tel" id="edit-price" value="۲٬۸۵۰٬۰۰۰" inputmode="numeric">
         </div>
 
+        <!-- ═══ FD-9: یادآوری آپدیت قیمت — اعتبار ۱ تا ۵ روز (پیش‌فرض ۳) ═══
+             وقتی یادآوری برسد، کاتالوگ قیمت این محصول را «منقضی» نشان می‌دهد
+             و لمس کارت، شیت آپدیت سریع همان کالا را باز می‌کند (۰۵). -->
+        <div class="field">
+            <label>یادآوری آپدیت قیمت</label>
+            <div class="pills days-pills" id="ed-valid">
+                <button class="pill" type="button" data-valid="1">۱ روز</button>
+                <button class="pill" type="button" data-valid="2">۲ روز</button>
+                <button class="pill active" type="button" data-valid="3">۳ روز</button>
+                <button class="pill" type="button" data-valid="4">۴ روز</button>
+                <button class="pill" type="button" data-valid="5">۵ روز</button>
+            </div>
+            <div class="hint">بعد از این روزها، قیمت در کاتالوگ «منقضی» نشان داده می‌شود و یادآوری می‌گیرید.</div>
+        </div>
+
         <div style="display: flex; gap: 9px;">
             <div class="field" style="flex: 1;">
                 <label>موجودی</label>
-                <input class="input" type="tel" value="۳۵" inputmode="numeric">
+                <input class="input" type="tel" id="edit-stock" value="۳۵" inputmode="numeric">
             </div>
             <div class="field" style="flex: 1;">
                 <label>حداقل سفارش</label>
-                <input class="input" type="tel" value="۵" inputmode="numeric">
+                <input class="input" type="tel" id="edit-min" value="۵" inputmode="numeric">
             </div>
-        </div>
-
-        <!-- ═══ تخفیف گروه مشتری — مخصوص همین محصول ═══ -->
-        <div class="section-title" style="margin-top: 8px;">
-            <h2><svg><use href="#i-users"/></svg> تخفیف گروه مشتری</h2>
-        </div>
-        <div class="card" style="padding: 2px 14px;">
-            <div id="egd-list"></div>
-        </div>
-        <div class="hint-line" style="margin-top: 6px;">
-            <svg><use href="#i-info"/></svg>
-            <span>قیمت مخصوص هر گروه برای همین محصول — پیش‌فرض از «تنظیمات کاتالوگ ← تخفیفات گروه مشتری» می‌آید.</span>
         </div>
 
         <div class="field">
@@ -275,6 +291,46 @@
         <div class="field">
             <label>توضیحات <span class="opt">— اختیاری</span></label>
             <textarea class="input" placeholder="شرایط فروش، پرداخت، تحویل…"></textarea>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             FD-9 — تخفیف‌های این محصول (زیر توضیحات — حکم مالک):
+             ▸ هر دو تخفیف (حجمی + گروه مشتری) با سوییچ روشن/خاموش؛
+               خاموش = این محصول از آن تخفیف خارج می‌شود.
+             ▸ ورودی دوگانه: درصد ⇄ مبلغ — هر کدام را عوض کنی، اونیکی
+               همان لحظه از روی قیمت محصول حساب می‌شود (قانون همیشگی).
+             ▸ پیش‌فرض از تنظیمات کاتالوگ می‌آید؛ تغییر اینجا فقط همین
+               محصول را عوض می‌کند (listing.volumeTiers / groupDiscounts).
+             ═══════════════════════════════════════════════════════ -->
+        <div class="disc-block" id="ed-disc-vol">
+            <div class="disc-head">
+                <div class="disc-ttl">
+                    <span class="disc-ic"><svg><use href="#i-tag"/></svg></span>
+                    <b>تخفیف حجمی<small>هرچه بیشتر بخرد، ارزان‌تر</small></b>
+                </div>
+                <div class="switch" id="ed-vol-on" aria-label="تخفیف حجمی این محصول"></div>
+            </div>
+            <div class="disc-list" id="ed-vol-list"></div>
+            <button class="add-mini" id="ed-vol-add" type="button">
+                <span class="am-ic"><svg><use href="#i-plus"/></svg></span>
+                <b>پلهٔ جدید</b>
+                <small>مثلاً: از ۵۰ بسته به بالا</small>
+            </button>
+        </div>
+
+        <div class="disc-block" id="ed-disc-grp">
+            <div class="disc-head">
+                <div class="disc-ttl">
+                    <span class="disc-ic"><svg><use href="#i-users"/></svg></span>
+                    <b>تخفیف گروه مشتری<small>قیمت مخصوص هر گروه</small></b>
+                </div>
+                <div class="switch" id="ed-grp-on" aria-label="تخفیف گروه مشتری این محصول"></div>
+            </div>
+            <div class="disc-list" id="egd-list"></div>
+            <div class="hint-line" style="margin-top: 4px;">
+                <svg><use href="#i-info"/></svg>
+                <span>پیش‌فرض از «تنظیمات کاتالوگ ← تخفیفات گروه مشتری» می‌آید — این‌جا فقط برای همین محصول عوضش کن.</span>
+            </div>
         </div>
 
         <div class="section-title" style="margin-top: 8px;">

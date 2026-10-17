@@ -190,6 +190,30 @@
         var ocmAct = t.closest('[data-ocm-act]');
         if (ocmAct) { ocmRun(ocmAct.dataset.ocmAct); return; }
 
+        /* ═══════════════════════════════════════════════════════════
+           FD-9 — کاتالوگ (۰۵/۳۱)
+           ▸ کارتِ «قیمت منقضی» با لمس، شیت آپدیت سریع همان کالا را باز
+             می‌کند (نه صفحهٔ ویرایش کامل) — حکم مالک.
+           ▸ کارت سالمِ کاتالوگ من با id محصول به ویرایش می‌رود.
+           ▸ افزودن به سبد خرید مهمان — قبل از شاخهٔ data-guest-card.
+           ═══════════════════════════════════════════════════════════ */
+        var addCart = t.closest('[data-add-cart]');
+        if (addCart) {
+            e.stopPropagation();
+            core.forms.guestCartAdd(addCart.dataset.addCart);
+            return;
+        }
+        var staleCard = t.closest('#cat-grid .pcard[data-lid]');
+        if (staleCard) {
+            e.preventDefault();
+            if (staleCard.classList.contains('stale')) {
+                core.forms.qpriceOpen(staleCard.dataset.lid);
+            } else {
+                go('s-sell-edit', { id: staleCard.dataset.lid });
+            }
+            return;
+        }
+
         /* ─── ناوبری عمومی ─── */
         var goEl = t.closest('[data-go]');
         if (goEl) { e.preventDefault(); go(goEl.dataset.go); return; }
@@ -368,6 +392,45 @@
             return;
         }
 
+        /* ═══════════════════════════════════════════════════════════
+           FD-9 — تغییر قیمت‌ها (۳۳): دو نیت
+           ═══════════════════════════════════════════════════════════ */
+        if (t.closest('#bk-quick')) { core.forms.bulkQuick(); return; }
+        if (t.closest('#bk-change')) { core.forms.bulkToEdit(); return; }
+        if (t.closest('#bulk-cancel')) { core.forms.bulkCancel(); return; }
+
+        /* ═══════════════════════════════════════════════════════════
+           FD-9 — شیت آپدیت سریع قیمتِ یک کالا (۰۵)
+           ═══════════════════════════════════════════════════════════ */
+        var qpDir = t.closest('[data-qp-dir]');
+        if (qpDir) {
+            var qCur = parseFloat(String(($('#qp-pct') || {}).value || '0')
+                .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+                .replace(/[٪%−\s]/g, '').replace('٫', '.')) || 0;
+            core.forms.qpPctSet(qCur + (parseFloat(qpDir.dataset.qpDir) || 0));
+            return;
+        }
+        if (t.closest('#qp-save')) { core.forms.qpriceSave(); return; }
+
+        /* ═══════════════════════════════════════════════════════════
+           FD-9 — کاتالوگ مهمان (۳۱): سبد خرید + جریان ذخیره/حساب
+           ═══════════════════════════════════════════════════════════ */
+        if (t.closest('#guest-cart-btn')) { core.forms.guestCartOpen(); return; }
+        var cStep = t.closest('[data-cart-step]');
+        if (cStep) { core.forms.guestCartStep(cStep.dataset.cartId, parseFloat(cStep.dataset.cartStep) || 0); return; }
+        var cDel = t.closest('[data-cart-del]');
+        if (cDel) { core.forms.guestCartDel(cDel.dataset.cartDel); return; }
+        if (t.closest('#cart-order')) { core.forms.guestOrderSubmit(); return; }
+        if (t.closest('#cart-continue')) { core.forms.guestCartContinue(); return; }
+
+        /* جریان ذخیره: مزایا → حساب → پنل (ساخت حساب، ذخیره را قربانی نمی‌کند) */
+        if (t.closest('[data-save-flow]')) { core.forms.guestSaveFlow(); return; }
+        if (t.closest('#bf-continue')) { core.forms.guestAccountOpen('signup'); return; }
+        if (t.closest('#acc-goto-login')) { core.forms.guestAccountOpen('login'); return; }
+        if (t.closest('#acc-goto-signup')) { core.forms.guestAccountOpen('signup'); return; }
+        if (t.closest('#acc-submit')) { core.forms.guestAccountSubmit('signup'); return; }
+        if (t.closest('#acc-login-submit')) { core.forms.guestAccountSubmit('login'); return; }
+
         /* ─── ذخیرهٔ کاتالوگ تأمین‌کننده ─── */
         var saveCat = t.closest('[data-save-catalog]');
         if (saveCat && !saveCat.classList.contains('done-save')) {
@@ -417,8 +480,23 @@
             return;
         }
 
-        /* ─── ذخیرهٔ ویرایش محصول ─── */
+        /* ─── ذخیرهٔ ویرایش محصول (FD-9: ثبت زنده در دیتا + اعتبار قیمت) ─── */
         if (t.closest('[data-edit-save]')) {
+            var edParams = core.getSCREENParams()['s-sell-edit'] || {};
+            var edL = null;
+            core.data.listings.forEach(function (l) { if (l.id === (edParams.id || 'l1')) edL = l; });
+            if (edL) {
+                var edPrice = parseNum(($('#edit-price') || {}).value);
+                if (edPrice) {
+                    edL.price = edPrice;
+                    if (edL.packCount) edL.pricePerUnit = Math.round(edPrice / edL.packCount);
+                }
+                var edStock = $('#edit-stock'), edMin = $('#edit-min');
+                if (edStock) edL.stock = parseNum(edStock.value);
+                if (edMin) edL.min = parseNum(edMin.value) || 1;
+                edL.priceValidDays = core.forms.readDaysPills('#ed-valid');
+                edL.priceStale = false;
+            }
             toast('تغییرات ذخیره شد', 'success');
             setTimeout(function () { back(); }, 500);
             return;
@@ -687,6 +765,25 @@
         if (t.id === 'add-price') { core.forms.addSyncPrices('package'); return; }
         if (t.id === 'add-unit-price') { core.forms.addSyncPrices('unit'); return; }
         if (t.id === 'add-pack-qty') { core.forms.addRenderPrices(); return; }
+
+        /* ═══ FD-9: ورودی دوگانهٔ «درصد ⇄ مبلغ» ═══ */
+        if (t.id === 'bulk-pct') {
+            core.forms.bulkSetPct(parseFloat(String(t.value)
+                .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+                .replace(/[٪%−\s]/g, '').replace('٫', '.')) || 0);
+            return;
+        }
+        if (t.id === 'bulk-amt') {
+            core.forms.bulkSetAmt(parseNum(t.value));
+            return;
+        }
+        if (t.id === 'qp-price') { core.forms.qpPriceSet(parseNum(t.value)); return; }
+        if (t.id === 'qp-pct') {
+            core.forms.qpPctSet(parseFloat(String(t.value)
+                .replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); })
+                .replace(/[٪%−\s]/g, '').replace('٫', '.')) || 0);
+            return;
+        }
 
         if (t.classList && t.classList.contains('bk-price')) {
             var row2 = t.closest('.bulk-row');

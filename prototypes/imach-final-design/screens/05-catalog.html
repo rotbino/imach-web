@@ -60,10 +60,13 @@
         </div>
 
         <div class="pgrid" id="cat-grid">
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr1">
+            <!-- FD-9: data-lid → سینک زندهٔ قیمت/منقضی از دیتا (catGridSync)
+                 کارتِ منقضی با لمس، شیت آپدیت سریع همان کالا را باز می‌کند (نه صفحهٔ ویرایش) -->
+            <div class="pcard" data-go="s-sell-edit" data-gid="cgr1" data-lid="l1">
                 <div class="ph">
                     <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
                     <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
                 </div>
                 <div class="info">
                     <div class="pname">برنج هاشمی</div>
@@ -73,10 +76,11 @@
                 </div>
             </div>
 
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr2">
+            <div class="pcard" data-go="s-sell-edit" data-gid="cgr2" data-lid="l2">
                 <div class="ph">
                     <img src="png/goods/rice-grains.jpg" alt="برنج طارم">
                     <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
                 </div>
                 <div class="info">
                     <div class="pname">برنج طارم</div>
@@ -86,10 +90,11 @@
                 </div>
             </div>
 
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr1">
+            <div class="pcard" data-go="s-sell-edit" data-gid="cgr1" data-lid="l3">
                 <div class="ph">
                     <img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی">
                     <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
                 </div>
                 <div class="info">
                     <div class="pname">برنج هاشمی</div>
@@ -99,10 +104,11 @@
                 </div>
             </div>
 
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr3">
+            <div class="pcard" data-go="s-sell-edit" data-gid="cgr3" data-lid="l4">
                 <div class="ph">
                     <img src="png/goods/fajar-50.jpg" alt="برنج فجر">
                     <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
+                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
                 </div>
                 <div class="info">
                     <div class="pname">برنج فجر</div>
@@ -340,6 +346,56 @@
 
         <button class="btn btn-outline btn-block" data-copy style="margin-top: 10px;">
             <svg><use href="#i-copy"/></svg> کپی لینک کاتالوگ
+        </button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FD-9 — شیت: آپدیت سریع قیمتِ یک کالا
+         وقتی یادآوری قیمتِ کالایی رسیده باشد (قیمت منقضی)، لمس کارت همان
+         کالا این شیت را باز می‌کند: قیمت ⇄ درصد (هم‌گام) + یادآوری ۱-۵ روز.
+         قانون: همهٔ مدال‌ها از پایین باز می‌شوند.
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-quickprice" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3 id="qp-title">آپدیت سریع قیمت</h3>
+            <button class="mg" data-sheet-close="sheet-quickprice" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub" id="qp-sub">—</div>
+
+        <div class="card qp-card">
+            <div class="bk-gc-row">
+                <span class="bk-gc-lbl">قیمت جدید</span>
+                <div class="bk-gc-amt">
+                    <input id="qp-price" class="bk-amt-in" value="" inputmode="numeric" autocomplete="off" aria-label="قیمت جدید">
+                    <small>تومان</small>
+                </div>
+            </div>
+            <div class="bk-gc-row">
+                <span class="bk-gc-lbl">تغییر</span>
+                <div class="gd-step">
+                    <button class="bk-step" data-qp-dir="-1" type="button" aria-label="کاهش درصد">−</button>
+                    <input id="qp-pct" class="gd-pct" value="۰" inputmode="decimal" autocomplete="off" aria-label="درصد تغییر">
+                    <span class="gd-sign">٪</span>
+                    <button class="bk-step" data-qp-dir="1" type="button" aria-label="افزایش درصد">+</button>
+                </div>
+            </div>
+            <div class="hint" style="margin-top: 6px;">قیمت یا درصد — یکی را عوض کن، اونیکی هم خودش عوض می‌شود.</div>
+        </div>
+
+        <div class="field">
+            <label>یادآوری آپدیت قیمت</label>
+            <div class="pills days-pills" id="qp-valid">
+                <button class="pill" type="button" data-valid="1">۱ روز</button>
+                <button class="pill" type="button" data-valid="2">۲ روز</button>
+                <button class="pill active" type="button" data-valid="3">۳ روز</button>
+                <button class="pill" type="button" data-valid="4">۴ روز</button>
+                <button class="pill" type="button" data-valid="5">۵ روز</button>
+            </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="qp-save" style="margin-top: 6px;">
+            <svg><use href="#i-check"/></svg> ثبت قیمت
         </button>
     </div>
 </section>
