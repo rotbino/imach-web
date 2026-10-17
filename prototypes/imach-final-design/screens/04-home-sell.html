@@ -25,7 +25,16 @@
        فروش = محصولاتِ تو به خریداران بیشتر نشان داده می‌شود؛
        خرید = تأمین‌کننده‌های بیشتری از هر کالا به تو نشان داده می‌شود.
 
-     داده و منطق: deskHomeSync() در app-forms.js + scoreItemsSell در data.js
+     بازبینی مالک (FD-12):
+     • کارت قهرمانِ «گام بعدی فعالیت» حذف شد — گام‌های شروع هم در واقع
+       «اقدام»‌اند، فقط موقتی (راه‌اندازی/تشویق) نه همیشگی و روزانه.
+       جای آن، ردیفی ساده در همان فهرست «نیازمند اقدام» می‌نشیند با
+       نشان کوچک «شروع» (row-start) — کم‌ادعا و هم‌قد با بقیهٔ ردیف‌ها.
+       امتیاز همچنان فقط در چیپ اپ‌بار و صفحهٔ امتیاز می‌ماند.
+     • تب‌های پایین: «میز فروش» و «میز خرید» به‌جای «فروش»/«خرید» —
+       لینک پایین به «جا» می‌رود و نام جا با ناوبری پنل یکدست می‌شود.
+
+    داده و منطق: deskHomeSync() در app-forms.js + scoreItemsSell در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-sell" data-arm="sell">
     <div class="appbar">
@@ -80,10 +89,21 @@
         </div>
 
         <!-- ═══ کارتابل: نیازمند اقدام ═══
-             ۱) ردیف‌های زندهٔ ارتباطی — سفارش/درخواست (اقدام‌های فوری)
-             ۲) کارت «گام بعدی فعالیت» — راهنمای راه‌اندازی، گام‌به‌گام با امتیاز -->
+             ۱) ردیف «شروع» (FD-12) — گامِ راه‌اندازی، به‌عنوان ردیفی
+                ساده و کمی متفاوت (قاب نقطه‌چین + نشان «شروع»)؛ متن و
+                مقصد را deskHomeSync() از scoreItemsSell[].desk می‌گذارد.
+             ۲) ردیف‌های زندهٔ ارتباطی — سفارش/درخواست (اقدام‌های فوری) -->
         <div class="section-title"><h2>نیازمند اقدام</h2></div>
         <div class="rows">
+            <div class="row row-start" id="sell-desk-row" hidden>
+                <div class="thumb thumb-sm" style="background: var(--arm-soft); color: var(--arm-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-rocket"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title"><span id="ds-row-t"></span><span class="st-b">شروع</span></div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
             <div class="row" data-go="s-sell-orders">
                 <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
                     <svg style="width: 20px; height: 20px;"><use href="#i-receipt"/></svg>
@@ -106,39 +126,20 @@
             </div>
         </div>
 
-        <!-- گام بعدی فعالیت (حکم مالک FD-6) — همیشه فقط یک گام.
-             ساختار: عنوان → «۵۵ امتیاز تا شتابدهی» + موشک → جملهٔ گام →
-             نوار پیشرفت «۴۵/۱۰۰» + موشکِ مقصد → دکمهٔ اقدام.
-             متن‌ها و مقصد دکمه را deskHomeSync() از scoreItemsSell[].desk
-             می‌گذارد: افزودن محصول → s-sell-add · دعوت مشتری → مخاطبین (pick).
-             حالت ۱۰۰+ : کارت سبز «موتور شتاب‌دهنده فعال شد» می‌شود. -->
-        <div class="desk-step" id="desk-step" hidden>
-            <span class="ds-badge">گام بعدی فعالیت</span>
-            <div class="ds-goal">
-                <b id="ds-goal">۰ امتیاز تا شتابدهی</b>
-                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
-            </div>
-            <b class="ds-title" id="ds-title"></b>
-            <div class="ds-bar">
-                <div class="track"><i id="ds-bar-fill"></i></div>
-                <span class="num" id="ds-bar-num">۰ / ۱۰۰</span>
-                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
-            </div>
-            <button class="btn btn-arm btn-block ds-btn" id="ds-btn" type="button"></button>
-        </div>
-
         <div class="hint-line">
             <svg><use href="#i-sparkles"/></svg>
             <span>۳ خریدار عمدهٔ جدید با محصولات کاتالوگ شما هم‌خوانی دارند.</span>
         </div>
     </div>
 
+    <!-- FD-12 (حکم مالک): نام میزها در تب‌بار — «جا» است نه «فعالیت»؛
+         یکدست با ناوبری پنل و تقویت مدل ذهنی دو میزی. -->
     <nav class="tabbar">
         <button class="tab active" data-tab-arm="sell" data-tab-home="s-home-sell">
-            <svg><use href="#i-store"/></svg> فروش
+            <svg><use href="#i-store"/></svg> میز فروش
         </button>
         <button class="tab" data-tab-arm="buy" data-tab-home="s-home-buy">
-            <svg><use href="#i-basket"/></svg> خرید
+            <svg><use href="#i-basket"/></svg> میز خرید
         </button>
         <button class="tab" data-tab-home="s-msgs">
             <svg><use href="#i-msg"/></svg> پیام‌ها

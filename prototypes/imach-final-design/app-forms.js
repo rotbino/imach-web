@@ -322,63 +322,32 @@
         if (chip) chip.classList.toggle('on', score >= 100);
     }
 
-    /* کارت «گام بعدی فعالیت» — مشترک فروش/خرید.
-       p = پیشوند id ها (فروش: ds · خرید: bds) */
-    function _deskStepSync(cardId, p, items, score, arm, homeId) {
-        var card = $('#' + cardId);
-        if (!card) return;
+    /* ردیف «گام شروع» (FD-12) — مشترک فروش/خرید.
+       جای کارت قهرمانِ «گام بعدی فعالیت» (حکم مالک FD-12: گام‌های شروع
+       هم اقدام‌اند، فقط موقتی)، ردیفی ساده در همان فهرست «نیازمند
+       اقدام» می‌نشیند. متن از scoreItems*.desk؛ مقصد روی خود ردیف
+       (data-go یا data-contacts-pick). با اتمام گام‌ها یا ۱۰۰+ امتیاز
+       ردیف محو می‌شود — امتیاز در چیپ اپ‌بار و روایت شتابدهی در
+       صفحهٔ امتیاز می‌مانند. */
+    function _deskStepSync(rowId, titleId, items, score, homeId) {
+        var row = $('#' + rowId);
+        if (!row) return;
 
-        /* نوار پیشرفت و فاصله تا شتابدهی — همیشه از امتیاز واقعی */
-        var goal = $('#' + p + '-goal');
-        if (goal) goal.textContent = faNum(Math.max(0, 100 - score)) + ' امتیاز تا شتابدهی';
-        var fill = $('#' + p + '-bar-fill');
-        if (fill) fill.style.width = Math.min(100, score) + '%';
-        var bnum = $('#' + p + '-bar-num');
-        if (bnum) bnum.textContent = faNum(Math.min(100, score)) + ' / ' + faNum(100);
-
-        var title = $('#' + p + '-title');
-        var btn = $('#' + p + '-btn');
-
-        /* حالت ۱۰۰+ — شتابدهی فعال: کارت سبز راهنما می‌شود.
-           FD-8: دکمهٔ «کجا دیده می‌شوم؟» مستقیم شیت توضیح شتابدهی را
-           باز می‌کند (data-open-accel → params.openAccel در handlers) —
-           پاسخ همان لحظه، بدون گردش اضافه در صفحهٔ امتیاز. */
-        if (score >= 100) {
-            card.hidden = false;
-            card.classList.add('on');
-            if (title) title.textContent = 'موتور شتاب‌دهنده فعال شد';
-            if (btn) {
-                btn.textContent = 'کجا دیده می‌شوم؟';
-                btn.removeAttribute('data-contacts-pick');
-                btn.setAttribute('data-score-arm', arm);
-                btn.setAttribute('data-open-accel', '1');
-            }
-            return;
-        }
-        card.classList.remove('on');
-        if (btn) { btn.removeAttribute('data-score-arm'); btn.removeAttribute('data-open-accel'); }
-
-        /* اولین گام ناقصِ قابل‌اقدام — همیشه فقط یک گام */
         var next = null, i;
         for (i = 0; i < (items || []).length; i++) {
             if (items[i].desk && !items[i].done) { next = items[i]; break; }
         }
-        if (!next) { card.hidden = true; return; }
+        if (!next || score >= 100) { row.hidden = true; return; }
 
-        card.hidden = false;
-        if (title) title.textContent = next.desk.t;
-        if (btn) {
-            btn.textContent = next.desk.btn || 'شروع';
-            /* مقصد روی خود دکمه می‌نشند (نه کل کارد — حکم FD-6):
-               گام افزودن محصول → s-sell-add · گام‌های دعوت مستقیماً
-               جریان «ارسال به مخاطبین» را باز می‌کنند */
-            if (next.desk.pick) {
-                btn.removeAttribute('data-go');
-                btn.setAttribute('data-contacts-pick', homeId);
-            } else {
-                btn.removeAttribute('data-contacts-pick');
-                btn.setAttribute('data-go', next.desk.go || 's-catalog');
-            }
+        row.hidden = false;
+        var t = $('#' + titleId);
+        if (t) t.textContent = next.desk.t;
+        if (next.desk.pick) {
+            row.removeAttribute('data-go');
+            row.setAttribute('data-contacts-pick', homeId);
+        } else {
+            row.removeAttribute('data-contacts-pick');
+            row.setAttribute('data-go', next.desk.go || 's-catalog');
         }
     }
 
@@ -399,21 +368,27 @@
         el = $('#desk-cust-sub');
         if (el) el.textContent = newN ? faNum(newN) + ' در انتظار تایید' : 'شبکهٔ مشتریانت';
 
-        /* ۳) کارت «گام بعدی فعالیت» */
-        _deskStepSync('desk-step', 'ds', core.data.scoreItemsSell, sell, 'sell', 's-home-sell');
+        /* ۳) ردیف «گام شروع» در فهرست اقدام (FD-12) */
+        _deskStepSync('sell-desk-row', 'ds-row-t', core.data.scoreItemsSell, sell, 's-home-sell');
     }
 
     /* میز خرید (۱۹) — FD-6: همان کارتابل، قرینهٔ فروش.
        شمارنده‌های کادرهای خرید عمداً ثابت‌اند (صفحات لیست/تأمین‌کنندهٔ
-       دمو هم استاتیک‌اند)؛ فقط امتیاز و کارت گام از دیتا سینک می‌شوند. */
+       دمو هم استاتیک‌اند)؛ فقط امتیاز و ردیف‌های شروع از دیتا سینک
+       می‌شوند. FD-12: ردیف «ساخت رمز» تا وقتی ساخته نشده می‌ماند —
+       show() قالب را بازسازی می‌کند، پس این‌جا دوباره اعمال می‌شود. */
     function buyDeskSync() {
         var buy = scoreCalc(core.data.scoreItemsBuy);
 
         /* ۱) چیپ امتیاز خرید اپ‌بار */
         _chipRingSync(buy, '#buy-chip-ring', '#buy-chip-num', '#buy-chip');
 
-        /* ۲) کارت «گام بعدی فعالیت» — از scoreItemsBuy[].desk */
-        _deskStepSync('buy-desk-step', 'bds', core.data.scoreItemsBuy, buy, 'buy', 's-home-buy');
+        /* ۲) ردیف «ساخت رمز ورود» (FD-12) */
+        var pr = $('#buy-pass-row');
+        if (pr) pr.hidden = PASS_MADE;
+
+        /* ۳) ردیف «گام شروع» — از scoreItemsBuy[].desk */
+        _deskStepSync('buy-desk-row', 'bds-row-t', core.data.scoreItemsBuy, buy, 's-home-buy');
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -1022,8 +997,9 @@
     function guestCartAdd(lid) {
         var l = _findListing(lid);
         if (!l) return;
-        /* FD-10 (حکم مالک): + فقط برای مشتری این فروشنده کار می‌کند؛
-           مهمان پیام می‌گیرد — همان جملهٔ مالک، بدون فرمان اضافه */
+        /* FD-12: دکمه‌های سبد برای مهمان اصلاً دیده نمی‌شوند (cust-only)؛
+           این نگهبانِ دفاعی برای پیاده‌سازی واقعی می‌ماند — سفارش فقط
+           برای مشتریِ (ثبت‌نام‌کرده) فروشنده کار می‌کند */
         if (!GUEST_SAVED) {
             toast('برای خرید از این تأمین‌کننده، اول کاتالوگ او را ذخیره کن تا مشتری‌اش بشوی', 'error');
             return;
@@ -1171,11 +1147,14 @@
     /* اعمال دوبارهٔ وضعیت ذخیره روی دامِ تازه (show() قالب را دوباره می‌سازد)
        FD-10: «ذخیره‌شده» علاوه بر دکمه/کادر، گیت قیمت را هم برمی‌دارد.
        FD-11: «ورود» اپ‌بار فقط برای مهمانِ واردنشده است — بعد از
-       ورود/ذخیره پنهان می‌شود (کاربر دیگر لازمش ندارد). */
+       ورود/ذخیره پنهان می‌شود (کاربر دیگر لازمش ندارد).
+       FD-12: کلاس saved — عناصر سبد (cust-only) فقط برای واردشده
+       ظاهر می‌شوند؛ مهمان هیچ امکان خریدی نمی‌بیند. */
     function guestSavedSync() {
         var section = $('#s-catalog-guest');
         if (section) {
             section.classList.toggle('gated', !GUEST_SAVED && !section.classList.contains('preview-mode'));
+            section.classList.toggle('saved', GUEST_SAVED && !section.classList.contains('preview-mode'));
         }
         var lb = $('#guest-login-btn');
         if (lb) lb.hidden = GUEST_SAVED;
@@ -1205,6 +1184,13 @@
             var role = rc ? rc.dataset.role : 'buy';
             core.assist.sell = (role === 'sell' || role === 'both');
             core.assist.buy = (role === 'buy' || role === 'both');
+        } else {
+            /* FD-12: ورود = شماره + رمز (پنل پیامکی/کد تأیید نداریم؛
+               رمز را کاربر با ردیف «شروع» میز خرید ساخته است) */
+            var lphone = (($('#acc-lphone') || {}).value || '').trim();
+            if (!lphone) { toast('شماره موبایل را وارد کن', 'error'); return; }
+            var lpass = (($('#acc-lpass') || {}).value || '');
+            if (!lpass) { toast('رمز ورود را وارد کن', 'error'); return; }
         }
         core.applyArms();
         core.closeSheet('sheet-account');
@@ -1221,9 +1207,45 @@
             toast('کاتالوگ ذخیره شد — خوش آمدی به آی‌مچ', 'success');
             setTimeout(function () {
                 core.resetStack();
-                core.show(core.assist.sell ? 's-home-sell' : 's-home-buy', false);
+                /* FD-12 (حکم مالک): اولین ثبت‌نام از دلِ کاتالوگ همیشه به
+                   میز خرید می‌رود — حتی اگر نقش «هر دو» را انتخاب کرده
+                   باشد. زمینهٔ ثبت‌نام خرید است و کاتالوگِ تازه‌ذخیره
+                   همان‌جا در «تأمین‌کننده‌های من» دیده می‌شود؛ میز فروشِ
+                   حساب تازه خالی است و راه‌اندازی‌اش بعدا شروع می‌شود. */
+                core.show('s-home-buy', false);
             }, 650);
         }
+    }
+
+    /* ─── FD-12: ساخت رمز ورود ───
+       محدودیت واقعی محصول: پنل پیامکی/کد تأیید نداریم — ثبت‌نام با
+       شماره + سشن است و همین رمز، تنها راه ورود در دفعات بعد یا از
+       دستگاه‌های دیگر. ردیف «شروع» میز خرید (۱۹) شیت را باز می‌کند؛
+       ردیفِ کم‌ادعا تا وقتی رمز ساخته نشده می‌ماند (نه دیوار اجبار). */
+    var PASS_MADE = false;
+
+    function passOpen() {
+        var v = $('#pass-view'), ok = $('#pass-ok');
+        if (v) v.hidden = false;
+        if (ok) ok.hidden = true;
+        var a = $('#pass-a'), b = $('#pass-b');
+        if (a) a.value = '';
+        if (b) b.value = '';
+        core.openSheet('sheet-pass');
+    }
+
+    function passSubmit() {
+        var a = (($('#pass-a') || {}).value || '');
+        var b = (($('#pass-b') || {}).value || '');
+        if (a.length < 6) { toast('رمز باید حداقل ۶ کاراکتر باشد', 'error'); return; }
+        if (a !== b) { toast('دو رمز با هم یکی نیستند', 'error'); return; }
+        PASS_MADE = true;
+        var v = $('#pass-view'), ok = $('#pass-ok');
+        if (v) v.hidden = true;
+        if (ok) ok.hidden = false;
+        var pr = $('#buy-pass-row');
+        if (pr) pr.hidden = true;
+        toast('رمز ورود ساخته شد', 'success');
     }
 
     /* ─── FD-10: جزئیات کالا (۳۷) — دید عمومی کاتالوگ ───
@@ -1439,6 +1461,8 @@
         guestAccountOpen: guestAccountOpen,
         guestAccountSubmit: guestAccountSubmit,
         guestBeneToggle: guestBeneToggle,
+        passOpen: passOpen,
+        passSubmit: passSubmit,
         pvCta: pvCta,
         chargeSync: chargeSync,
         chargeSend: chargeSend,

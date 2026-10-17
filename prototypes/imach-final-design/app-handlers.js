@@ -446,6 +446,11 @@
         /* FD-10: دکمهٔ اصلی اکشن‌بار صفحهٔ جزئیات (۳۷) */
         if (t.closest('#pv-cta')) { core.forms.pvCta(); return; }
 
+        /* FD-12: ساخت رمز ورود — ردیف «شروع» میز خرید → شیت sheet-pass
+           (pv-save-cta با data-save-flow بالاتر هندل می‌شود) */
+        if (t.closest('[data-pass-open]')) { core.forms.passOpen(); return; }
+        if (t.closest('#pass-submit')) { core.forms.passSubmit(); return; }
+
         /* ─── ذخیرهٔ کاتالوگ تأمین‌کننده ─── */
         var saveCat = t.closest('[data-save-catalog]');
         if (saveCat && !saveCat.classList.contains('done-save')) {

@@ -19,7 +19,17 @@
        به‌صرفه‌تر از هر کالا به «تو» نشان داده می‌شوند (نه محصولات تو
        به دیگران) — شیت توضیح هم جدا شد (accelRender در app-forms.js).
 
-     منطق: buyDeskSync() در app-forms.js + scoreItemsBuy در data.js
+     بازبینی مالک (FD-12):
+     • کارت «گام بعدی فعالیت» حذف شد — جای آن ردیف‌های سادهٔ «شروع»
+       در همان فهرست «نیازمند اقدام» (نشان کوچک «شروع»). اولین ثبت‌نام
+       از دلِ کاتالوگ همیشه به همین میز می‌آید (حکم مالک) — پس گام‌های
+       شروعِ این‌جاست که کاربر تازه را راه می‌اندازد.
+     • گام ویژهٔ «ساخت رمز ورود»: پنل پیامکی/کد تأیید نداریم — ثبت‌نام
+       با شماره + سشن است؛ بدون رمز، ورود از دستگاه دیگر ناممکن می‌شود.
+       ردیفی ساده (نه دیوار اجبار) که تا ساخته‌نشدن می‌ماند.
+     • تب‌های پایین: «میز فروش» / «میز خرید».
+
+    منطق: buyDeskSync() در app-forms.js + scoreItemsBuy در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-buy" data-arm="buy">
     <div class="appbar">
@@ -71,11 +81,32 @@
         </div>
 
         <!-- ═══ کارتابل: نیازمند اقدام ═══
-             KPI چهارتایی قدیمی (استعلام باز/سفارش جاری/…) حذف شد —
-             حکم مالک FD-4: اعدادِ ایستا کار اعلام کار نمی‌کنند؛
-             ردیف زنده با مقصد و توضیح همان کار را بهتر می‌کند. -->
+             KPI چهارتایی قدیمی حذف بود (حکم FD-4)؛ FD-12: گام‌های شروع
+             هم اقدام‌اند — ردیف‌های ساده با نشان «شروع»، موقتی و کم‌ادعا:
+             ۱) ساخت رمز ورود (تا وقتی ساخته نشده) → شیت sheet-pass
+             ۲) گام راه‌اندازی از scoreItemsBuy[].desk (buyDeskSync)
+             ۳) ردیف‌های زندهٔ روزمره (پیشنهاد جدید / سفارش جاری) -->
         <div class="section-title"><h2>نیازمند اقدام</h2></div>
         <div class="rows">
+            <div class="row row-start" id="buy-pass-row" data-pass-open>
+                <div class="thumb thumb-sm" style="background: var(--arm-soft); color: var(--arm-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-lock"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title"><span>یک رمز ورود برای حسابت بساز</span><span class="st-b">شروع</span></div>
+                    <div class="row-sub">برای ورود در دفعات بعد یا از دستگاه‌های دیگر</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+            <div class="row row-start" id="buy-desk-row" hidden>
+                <div class="thumb thumb-sm" style="background: var(--arm-soft); color: var(--arm-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-rocket"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title"><span id="bds-row-t"></span><span class="st-b">شروع</span></div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
             <div class="row" data-go="s-buy-offers">
                 <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt="برنج"></div>
                 <div class="row-body">
@@ -94,35 +125,19 @@
             </div>
         </div>
 
-        <!-- گام بعدی فعالیت (FD-6) — قرینهٔ میز فروش؛ متن و مقصد دکمه را
-             buyDeskSync() از scoreItemsBuy[].desk می‌گذارد. -->
-        <div class="desk-step" id="buy-desk-step" hidden>
-            <span class="ds-badge">گام بعدی فعالیت</span>
-            <div class="ds-goal">
-                <b id="bds-goal">۰ امتیاز تا شتابدهی</b>
-                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
-            </div>
-            <b class="ds-title" id="bds-title"></b>
-            <div class="ds-bar">
-                <div class="track"><i id="bds-bar-fill"></i></div>
-                <span class="num" id="bds-bar-num">۰ / ۱۰۰</span>
-                <svg aria-hidden="true"><use href="#i-rocket"/></svg>
-            </div>
-            <button class="btn btn-arm btn-block ds-btn" id="bds-btn" type="button"></button>
-        </div>
-
         <div class="hint-line">
             <svg><use href="#i-sparkles"/></svg>
             <span>۳ تأمین‌کنندهٔ جدید برای کالاهای لیست خریدت پیدا شد.</span>
         </div>
     </div>
 
+    <!-- FD-12 (حکم مالک): نام میزها در تب‌بار — «جا» است نه «فعالیت». -->
     <nav class="tabbar">
         <button class="tab" data-tab-arm="sell" data-tab-home="s-home-sell">
-            <svg><use href="#i-store"/></svg> فروش
+            <svg><use href="#i-store"/></svg> میز فروش
         </button>
         <button class="tab active" data-tab-arm="buy" data-tab-home="s-home-buy">
-            <svg><use href="#i-basket"/></svg> خرید
+            <svg><use href="#i-basket"/></svg> میز خرید
         </button>
         <button class="tab" data-tab-home="s-msgs">
             <svg><use href="#i-msg"/></svg> پیام‌ها

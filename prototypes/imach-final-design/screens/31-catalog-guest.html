@@ -26,6 +26,15 @@
        · آیکون «افزودن به سبد» عوض شد: چرخ‌دستی + بعلاوهٔ پررنگ
          (i-cart-add) — سبد پیچ‌درپیچ قبلی «خوب نبود» (حکم مالک).
        · وضعیت آنلاین همچنان مینیمال: نقطهٔ سبز کنار نام فروشنده.
+     ▸ FD-12 (بازخورد مالک — «مهمان اصلاً خرید نمی‌بیند»):
+       · کسی که اولین بار از واتساپ می‌آید دنبال خرید نیست؛ قیمت‌ها
+         جلب توجه می‌کنند. خرید برای مشتریِ ثبت‌نام‌کرده است.
+       · پس مهمان هیچ امکان خریدی نمی‌بیند: دکمهٔ سبد نوار پایین و
+         دکمه‌های + روی کارت‌ها فقط بعد از ثبت‌نام/ورود ظاهر می‌شوند
+         (کلاس cust-only + کلاس saved روی صفحه). تنها اکشن مهمان =
+         «ذخیره این کاتالوگ» (+ «مشاهده قیمت» و تماس/گفتگو).
+       · ثبت‌نام از دلِ کاتالوگ همیشه به میز خرید می‌رود — حتی با
+         نقش «هر دو» (app-forms.js → guestAccountSubmit).
      ▸ لمس هر محصول → صفحهٔ جزئیات کالا (۳۷) — مثل طراحی قبلی.
      ▸ شیت‌های «ذخیره کاتالوگ» و «ساخت حساب» به index.html منتقل شدند
        تا از صفحهٔ ۳۷ هم باز شوند؛ شیت سبد همین‌جا ماند.
@@ -93,12 +102,13 @@
 
         <!-- FD-10: کارت محصول — لمس کارت → جزئیات (۳۷) · «مشاهده قیمت»
              جای قیمتِ مهمان می‌نشیند (gated با کلاس صفحه کنترل می‌شود) ·
-             + روی عکس: مهمان → پیامِ «اول ذخیره کن» · مشتری → افزودن -->
+             + روی عکس: FD-12 — فقط برای مشتریِ واردشده (cust-only)؛
+             مهمان اصلاً آن را نمی‌بیند -->
         <div class="pgrid" id="guest-grid">
             <div class="pcard" data-guest-card data-lid="l1">
                 <div class="ph">
                     <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
-                    <button class="addcart-btn guest-only" type="button" data-add-cart="l1" aria-label="افزودن به سبد خرید">
+                    <button class="addcart-btn cust-only" type="button" data-add-cart="l1" aria-label="افزودن به سبد خرید">
                         <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
@@ -115,7 +125,7 @@
             <div class="pcard" data-guest-card data-lid="l2">
                 <div class="ph">
                     <img src="png/goods/rice-grains.jpg" alt="برنج طارم">
-                    <button class="addcart-btn guest-only" type="button" data-add-cart="l2" aria-label="افزودن به سبد خرید">
+                    <button class="addcart-btn cust-only" type="button" data-add-cart="l2" aria-label="افزودن به سبد خرید">
                         <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
@@ -132,7 +142,7 @@
             <div class="pcard" data-guest-card data-lid="l3">
                 <div class="ph">
                     <img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی">
-                    <button class="addcart-btn guest-only" type="button" data-add-cart="l3" aria-label="افزودن به سبد خرید">
+                    <button class="addcart-btn cust-only" type="button" data-add-cart="l3" aria-label="افزودن به سبد خرید">
                         <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
@@ -149,7 +159,7 @@
             <div class="pcard" data-guest-card data-lid="l4">
                 <div class="ph">
                     <img src="png/goods/fajar-50.jpg" alt="برنج فجر">
-                    <button class="addcart-btn guest-only" type="button" data-add-cart="l4" aria-label="افزودن به سبد خرید">
+                    <button class="addcart-btn cust-only" type="button" data-add-cart="l4" aria-label="افزودن به سبد خرید">
                         <svg><use href="#i-cart-add"/></svg>
                     </button>
                 </div>
@@ -184,9 +194,9 @@
          که اسکرول می‌شود) پس همیشه جلوی چشم است و با دکمهٔ «ذخیره»
          بالای صفحه نه قاطی می‌شود نه شلوغش می‌کند.
          · تماس / گفتگو — برای همه (در پیش‌نمایش فروشنده هم پیداست).
-         · سبد خرید — فقط مهمان/مشتری (guest-only؛ در پیش‌نمایش فروشنده
-           مخفی، مثل قبلاً). نشان زندهٔ تعداد کنار برچسب.
-         · ترتیب = الگوی اکشن‌بار ۳۷: تماس · گفتگو · سبد (پهناور).
+         · سبد خرید — FD-12 (حکم مالک): فقط مشتریِ واردشده (cust-only؛
+           مهمان اصلاً آن را نمی‌بیند؛ در پیش‌نمایش فروشنده هم مخفی).
+           نشان زندهٔ تعداد کنار برچسب.
          ═══════════════════════════════════════════════════════════ -->
     <div class="gbar">
         <button class="gbar-btn" type="button" data-dial>
@@ -197,7 +207,7 @@
             <span class="gb-ic"><svg><use href="#i-msg"/></svg></span>
             <span class="gb-tx">گفتگو</span>
         </button>
-        <button class="gbar-btn gbar-cart guest-only" id="guest-cart-btn" type="button" aria-label="سبد خرید">
+        <button class="gbar-btn gbar-cart cust-only" id="guest-cart-btn" type="button" aria-label="سبد خرید">
             <span class="gb-ic"><svg><use href="#i-basket"/></svg></span>
             <span class="gb-tx">سبد خرید</span>
             <span class="gb-badge" id="guest-cart-badge" hidden>۰</span>

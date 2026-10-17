@@ -2471,49 +2471,27 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .desk-tile .dt-stat span { font-size: 11px; font-weight: 600; color: var(--text-3); }
 .desk-tile .dt-sub { font-size: 10.5px; color: var(--text-3); line-height: 1.6; }
 
-/* کارت «گام بعدی فعالیت» — FD-6: عنوان + فاصله تا شتابدهی + نوار + دکمه.
-   دکمهٔ اقدام داخل کارت است (بازگشت از تصمیم FD-5 «کارد بدون دکمه»)؛
-   خود کارت دیگر کلیک‌پذیر نیست تا لمس تصادفی صفحات را باز نکند. */
-.desk-step {
-    padding: 13px 14px;
-    background: linear-gradient(180deg, var(--amber-bg), #FFF 72%);
-    border: 1px solid #EFDFB8;
-    border-radius: var(--r-lg);
-    display: flex; flex-direction: column; gap: 9px;
-    text-align: right;
+/* ═══ ۳۳-پ‌ب (FD-12): ردیف «گام شروع» — به‌جای کارت قهرمانِ «گام بعدی» ═══
+   حکم مالک: گام‌های شروع هم «اقدام»‌اند — فقط موقتی (راه‌اندازی/تشویق)،
+   نه همیشگی و روزانه. پس همان ردیفِ فهرست «نیازمند اقدام»، فقط کمی
+   متفاوت: قاب نقطه‌چینِ رنگِ همان میز + نشان کوچک «شروع». هم‌قد و
+   هم‌شکل با ردیف‌های روزمره — کم‌ادعا. با اتمام گام‌ها یا ۱۰۰+ امتیاز
+   ردیف محو می‌شود؛ امتیاز و روایت شتابدهی در چیپ اپ‌بار و صفحهٔ
+   امتیاز می‌مانند (کارت قدیمی FD-6 حذف شد). */
+.row.row-start {
+    border: 1.5px dashed var(--arm);
+    background: linear-gradient(180deg, var(--arm-soft), var(--surface) 85%);
 }
-.desk-step .ds-badge {
-    align-self: flex-start;
-    font-size: 10.5px; font-weight: 700;
-    color: var(--amber);
-    background: var(--amber-soft);
-    padding: 3px 10px;
+.row.row-start:hover { border-color: var(--arm); }
+.row.row-start .st-b {
+    flex-shrink: 0;
+    font-size: 9.5px; font-weight: 800;
+    color: var(--arm-strong);
+    background: var(--surface);
+    padding: 2px 8px;
     border-radius: 999px;
+    white-space: nowrap;
 }
-/* «۵۵ امتیاز تا شتابدهی» + موشک روبه‌رو (سمت چپ در RTL) */
-.desk-step .ds-goal { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.desk-step .ds-goal b { font-size: 12.5px; font-weight: 800; color: var(--amber); }
-.desk-step .ds-goal svg { width: 20px; height: 20px; color: var(--amber); flex-shrink: 0; }
-.desk-step .ds-title { font-size: 14px; font-weight: 700; line-height: 1.75; }
-/* نوار پیشرفت «۴۵/۱۰۰» + موشکِ مقصد در انتها */
-.desk-step .ds-bar { display: flex; align-items: center; gap: 8px; }
-.desk-step .ds-bar .track { flex: 1; height: 8px; border-radius: 99px; background: #F1E4C3; overflow: hidden; }
-.desk-step .ds-bar .track i {
-    display: block; height: 100%; border-radius: 99px; width: 0;
-    background: linear-gradient(90deg, var(--amber), #F59E0B);
-    transition: width .4s;
-}
-.desk-step .ds-bar .num { font-size: 11px; font-weight: 800; color: var(--amber); white-space: nowrap; }
-.desk-step .ds-bar svg { width: 15px; height: 15px; color: var(--amber); flex-shrink: 0; }
-.desk-step .ds-btn { margin-top: 2px; }
-
-/* حالت ۱۰۰+ — شتابدهی فعال: کارت سبز، دکمه → صفحهٔ امتیازها/شیت توضیح */
-.desk-step.on { background: linear-gradient(180deg, #F0FDF4, #FFF 72%); border-color: #B6DFC5; }
-.desk-step.on .ds-goal b, .desk-step.on .ds-bar .num { color: var(--green); }
-.desk-step.on .ds-goal svg, .desk-step.on .ds-bar svg { color: var(--green); }
-.desk-step.on .ds-badge { color: var(--green); background: var(--green-soft); }
-.desk-step.on .ds-bar .track { background: #D3EEDD; }
-.desk-step.on .ds-bar .track i { background: var(--green); }
 
 /* ═══ ۳۳-ت. «شتابدهی یعنی چه؟» — صفحهٔ امتیاز (FD-6) ═══
    لینک زیر قهرمان صفحه + شیت از پایین با عکس‌های واقعی صفحات مقایسه.
@@ -2570,7 +2548,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 /* ایستگاه ۱ انجام‌شده — قاب سبز */
 .sp-row.done { border-color: #B6DFC5; background: linear-gradient(180deg, #F4FCF6, #FFF 72%); }
 .sp-row.done .sp-ic { background: var(--green-soft); color: var(--green); }
-/* ایستگاه ۲ «زنده» — از وقتی کاربر از ۱۰۰ گذشته (امبر، هم‌خانوادهٔ desk-step) */
+/* ایستگاه ۲ «زنده» — از وقتی کاربر از ۱۰۰ گذشته (امبر، هم‌خانوادهٔ ردیف شروع) */
 .sp-row.live { border-color: #EFDFB8; background: linear-gradient(180deg, var(--amber-bg), #FFF 72%); }
 .sp-row.live .sp-ic { background: var(--amber-soft); color: var(--amber); }
 
@@ -2816,6 +2794,23 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .addcart-btn.added { border-color: var(--green); color: var(--green); background: #F4FCF6; }
 /* حالت پیش‌نمایش فروشنده: عناصر مهمان پنهان */
 #s-catalog-guest.preview-mode .guest-only { display: none !important; }
+
+/* ═══ FD-12 (حکم مالک): مهمانِ ثبت‌نام‌نکرده هیچ امکان خریدی نمی‌بیند ═══
+   خرید برای مشتری است؛ بازدید اول فقط قیمت‌ها را می‌کَند و «ذخیره
+   کاتالوگ». عناصر سبد (دکمهٔ نوار پایین + دکمه‌های + روی کارت‌ها)
+   فقط با کلاس saved — که guestSavedSync پس از ثبت‌نام/ورود روی
+   صفحه می‌نشاند — ظاهر می‌شوند (display هر عنصر حفظ می‌شود). */
+.cust-only { display: none; }
+#s-catalog-guest.saved .gbar-btn.cust-only { display: flex; }
+#s-catalog-guest.saved .addcart-btn.cust-only { display: grid; }
+#s-catalog-guest.preview-mode .cust-only { display: none !important; }
+
+/* صفحهٔ جزئیات کالا (۳۷) — FD-12: دکمهٔ اصلی اکشن‌بار دو چهره دارد:
+   مهمان (gated) «ذخیره کاتالوگ» می‌بیند (تنها اکشن او — هم‌قاعدهٔ ۳۱)؛
+   مشتری/پیش‌نمایش «افزودن به سبد خرید». */
+.pv-save-cta { display: none; }
+#s-product-view.gated #pv-save-cta { display: inline-flex; }
+#s-product-view.gated #pv-cta { display: none; }
 
 /* ─── شیت مزایای ذخیره (۳۱) — بلوک‌های نتیجه‌محور ─── */
 .benefit-list { display: flex; flex-direction: column; gap: 4px; }

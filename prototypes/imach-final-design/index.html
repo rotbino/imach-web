@@ -234,9 +234,12 @@
     <!-- ═══ FD-9/FD-10 — شیت: ساخت حساب / ورود + ذخیرهٔ کاتالوگ ═══
          شبیه فرم ۰۲ (شماره/نام/کسب‌وکار/نقش)؛ دکمهٔ «ساخت حساب و ذخیره
          کاتالوگ» هر دو کار را یک‌جا می‌کند؛ «قبلاً ثبت‌نام کرده‌ام» پایین.
-         ورود: شماره + کد تأیید. بعد از هر دو → کاتالوگ ذخیره + مشتری.
-         زمینهٔ باز شدن (ctx) در app-forms.js: «save» → پنل آی‌مچ؛
-         «price» (از «مشاهده قیمت») → همان‌جا می‌مانی و قیمت‌ها باز می‌شود. -->
+         FD-12 (محدودیت واقعی محصول): پنل پیامکی و کد تأیید نداریم —
+         ثبت‌نام = شماره + سشن؛ ورود = شماره + رمزی که کاربر پس از
+         اولین ورود در میز خرید ساخته است (شیت sheet-pass).
+         زمینهٔ باز شدن (ctx) در app-forms.js: «save» (از جریان ذخیره →
+         میز خرید)؛ «price» (از «مشاهده قیمت») → همان‌جا می‌مانی و
+         قیمت‌ها باز می‌شود. -->
     <div class="sheet" id="sheet-account" hidden>
         <div class="grab"></div>
         <div class="sheet-hdr">
@@ -298,24 +301,67 @@
             <button class="linklike" type="button" id="acc-goto-login">قبلاً ثبت‌نام کرده‌ام</button>
         </div>
 
-        <!-- نمای ورود -->
+        <!-- نمای ورود — FD-12: پنل پیامکی نداریم؛ ورود = شماره + رمز
+             (نه کد پیامکی). رمز را کاربر همان اولِ ورود، با ردیف «شروع»
+             میز خرید ساخته است. -->
         <div id="acc-login" hidden>
-            <div class="sub">شماره‌ات را بزن تا کد تأیید پیامک شود.</div>
+            <div class="sub">با شماره و رمزت وارد شو — از هر دستگاهی.</div>
 
             <div class="field">
                 <label>شماره موبایل</label>
                 <input class="input" id="acc-lphone" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" inputmode="tel">
             </div>
             <div class="field">
-                <label>کد تأیید</label>
-                <input class="input" id="acc-lcode" type="tel" placeholder="— — — — —" inputmode="numeric">
-                <div class="hint">کد ۵ رقمی پیامک‌شده به شماره‌ات</div>
+                <label>رمز ورود</label>
+                <input class="input" id="acc-lpass" type="password" placeholder="••••••" autocomplete="current-password">
+                <div class="hint">رمزی که پس از اولین ورود، در میز خرید برای خودت ساخته‌ای</div>
             </div>
 
             <button class="btn btn-primary btn-block" id="acc-login-submit">
                 <svg><use href="#i-check"/></svg> ورود و ذخیره کاتالوگ
             </button>
             <button class="linklike" type="button" id="acc-goto-signup">حساب ندارم — ثبت‌نام می‌کنم</button>
+        </div>
+    </div>
+
+    <!-- ═══ FD-12 — شیت: ساخت رمز ورود ═══
+         محدودیت واقعی محصول: پنل پیامکی/کد تأیید نداریم — ثبت‌نام با
+         شماره + سشن انجام می‌شود و همین رمز، تنها راه ورود در دفعات بعد
+         یا از دستگاه‌های دیگر است. ردیف «شروع» در میز خرید (۱۹) این شیت
+         را باز می‌کند (passOpen در app-forms.js). شیت سراسری است تا با
+         show() بازسازی نشود (درس FD-9). -->
+    <div class="sheet" id="sheet-pass" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>ساخت رمز ورود</h3>
+            <button class="mg" data-sheet-close="sheet-pass" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+
+        <!-- نمای فرم -->
+        <div id="pass-view">
+            <div class="sub">برای ورود در دفعات بعد یا از دستگاه‌های دیگر — با همین شماره و این رمز وارد می‌شوی.</div>
+
+            <div class="field">
+                <label>رمز ورود</label>
+                <input class="input" id="pass-a" type="password" placeholder="••••••" autocomplete="new-password">
+            </div>
+            <div class="field">
+                <label>تکرار رمز</label>
+                <input class="input" id="pass-b" type="password" placeholder="••••••" autocomplete="new-password">
+                <div class="hint">حداقل ۶ کاراکتر — دوبار بنویس تا مطمئن شویم</div>
+            </div>
+
+            <button class="btn btn-primary btn-block" id="pass-submit" type="button" style="margin-top: 4px;">
+                <svg><use href="#i-check"/></svg> ساخت رمز
+            </button>
+        </div>
+
+        <!-- نمای موفقیت -->
+        <div id="pass-ok" hidden>
+            <div class="ok-pill"><svg><use href="#i-check"/></svg></div>
+            <div class="ok-ttl">رمزت ساخته شد</div>
+            <div class="ok-sub">حالا از هر دستگاهی با شماره و همین رمز وارد می‌شوی.</div>
+            <button class="btn btn-primary btn-block" data-sheet-close="sheet-pass" style="margin-top: 10px;" type="button">باشه</button>
         </div>
     </div>
 
