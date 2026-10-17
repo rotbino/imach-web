@@ -5,10 +5,11 @@
 <section class="screen" id="s-buy-list-guest" data-arm="keep">
     <div class="guest-hero">
         <div class="appbar" style="background: transparent; border: 0; padding: 0; height: auto; margin-bottom: 14px;">
-            <div class="brand">
-                <div class="brand-logo">آ</div>
-                <div class="title">آی‌مچ</div>
-            </div>
+            <!-- FD-13: لوگوی رسمی M کج با نقطه — کلیک = ورود به پنل -->
+            <button class="brand brand-link" type="button" data-go="s-login" aria-label="آی‌مچ — ورود به پنل">
+                <span class="brand-logo"><svg><use href="#i-logo"/></svg></span>
+                <span class="title">آی‌مچ</span>
+            </button>
             <!-- FD-11: «ورود» به‌جای «ساخت حساب» — هماهنگ با کاتالوگ عمومی (۳۱)
                  و قاعدهٔ FD-10: فرمان مستقیم ثبت‌نام روی دید عمومی نیست -->
             <button class="login-pill" data-go="s-login" type="button">

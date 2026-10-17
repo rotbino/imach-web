@@ -5,8 +5,11 @@
 <section class="screen" id="s-landing" data-arm="keep">
     <div class="appbar">
         <div class="brand">
-            <div class="brand-logo">آ</div>
-            <div class="title">آی‌مچ</div>
+            <!-- FD-13: لوگوی رسمی M کج با نقطه — کلیک = ورود به پنل -->
+            <button class="brand brand-link" type="button" data-go="s-login" aria-label="آی‌مچ — ورود به پنل">
+                <span class="brand-logo"><svg><use href="#i-logo"/></svg></span>
+                <span class="title">آی‌مچ</span>
+            </button>
         </div>
         <button class="btn btn-ghost btn-sm" data-go="s-login">ورود</button>
     </div>

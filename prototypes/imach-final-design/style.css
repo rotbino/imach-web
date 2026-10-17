@@ -125,6 +125,16 @@ a { color: inherit; text-decoration: none; }
     display: grid; place-items: center;
     color: #FFF; font-weight: 700; font-size: 15px; flex-shrink: 0;
 }
+/* FD-13: لوگوی رسمی آی‌مچ (M کج + نقطه — i-logo) داخل کاشی برند */
+.appbar .brand-logo svg { width: 21px; height: 21px; display: block; }
+/* FD-13: برندِ کلیک‌پذیر — کلیک = ورود به پنل آی‌مچ (s-login) */
+button.brand-link {
+    background: none; border: 0; padding: 4px; margin: -4px;
+    font-family: inherit; cursor: pointer;
+    border-radius: 10px;
+    transition: background .15s, transform .12s;
+}
+button.brand-link:active { transform: scale(.97); background: var(--surface-2); }
 .appbar .title { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .appbar .actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
@@ -1961,15 +1971,15 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     justify-content: flex-end;
 }
 .bk-step {
-    width: 32px; height: 32px;
-    border-radius: 9px;
+    width: 38px; height: 38px;
+    border-radius: 10px;
     border: 1px solid var(--border-2);
     background: var(--surface);
     color: var(--text-2);
     display: grid;
     place-items: center;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     padding: 0;
     flex-shrink: 0;
@@ -2266,7 +2276,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     gap: 6px;
     flex-shrink: 0;
 }
-.gd-step .bk-step { width: 30px; height: 30px; font-size: 15px; }
+.gd-step .bk-step { width: 34px; height: 34px; font-size: 15px; }
 .gd-pct {
     width: 56px;
     height: 34px;
@@ -2775,11 +2785,12 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     line-height: 1;
 }
 .gb-badge[hidden] { display: none; }
-/* دکمهٔ گرد «افزودن به سبد» روی عکس کارت */
+/* دکمهٔ گرد «افزودن به سبد» روی عکس کارت — FD-13: ۳۸px (لمسِ راحت
+   در موبایل؛ قاعدهٔ «به اندازهٔ لازم، نه خیلی بزرگ») */
 .addcart-btn {
     position: absolute;
     top: 7px; left: 7px;
-    width: 34px; height: 34px;
+    width: 38px; height: 38px;
     border-radius: 12px;
     background: rgba(255,255,255,.96);
     border: 1.5px solid var(--border-2);
@@ -2789,21 +2800,26 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     box-shadow: 0 2px 8px rgba(31,29,26,.10);
     transition: transform .12s, border-color .15s, background .15s;
 }
-.addcart-btn svg { width: 18px; height: 18px; }
+.addcart-btn svg { width: 19px; height: 19px; }
 .addcart-btn:active { transform: scale(.92); }
 .addcart-btn.added { border-color: var(--green); color: var(--green); background: #F4FCF6; }
 /* حالت پیش‌نمایش فروشنده: عناصر مهمان پنهان */
 #s-catalog-guest.preview-mode .guest-only { display: none !important; }
 
-/* ═══ FD-12 (حکم مالک): مهمانِ ثبت‌نام‌نکرده هیچ امکان خریدی نمی‌بیند ═══
-   خرید برای مشتری است؛ بازدید اول فقط قیمت‌ها را می‌کَند و «ذخیره
-   کاتالوگ». عناصر سبد (دکمهٔ نوار پایین + دکمه‌های + روی کارت‌ها)
-   فقط با کلاس saved — که guestSavedSync پس از ثبت‌نام/ورود روی
-   صفحه می‌نشاند — ظاهر می‌شوند (display هر عنصر حفظ می‌شود). */
+/* ═══ FD-12→FD-13: سبد برای چه کسی دیده می‌شود؟ ═══
+   · open-market (پیش‌فرض — سوییچ «قیمت فقط برای مشتریان» خاموش):
+     قیمت‌ها برای همه ⇒ سبد هم برای همه؛ مهمان سبدش را پر می‌کند و
+     در «ثبت سفارش» به حساب راهنمایی می‌شود.
+   · saved (واردشده/ذخیره‌کرده): سبد ظاهر (در هر دو حالت).
+   · preview-mode (فروشنده): همیشه مخفی — فروشنده از خودش نمی‌خرد. */
 .cust-only { display: none; }
 #s-catalog-guest.saved .gbar-btn.cust-only { display: flex; }
 #s-catalog-guest.saved .addcart-btn.cust-only { display: grid; }
+#s-catalog-guest.open-market .gbar-btn.cust-only { display: flex; }
+#s-catalog-guest.open-market .addcart-btn.cust-only { display: grid; }
 #s-catalog-guest.preview-mode .cust-only { display: none !important; }
+/* FD-13: کارت مشتری فقط در حالت ذخیره‌شده (نه مهمان، نه پیش‌نمایش) */
+#s-catalog-guest.preview-mode #guest-cust-card { display: none !important; }
 
 /* صفحهٔ جزئیات کالا (۳۷) — FD-12: دکمهٔ اصلی اکشن‌بار دو چهره دارد:
    مهمان (gated) «ذخیره کاتالوگ» می‌بیند (تنها اکشن او — هم‌قاعدهٔ ۳۱)؛
@@ -2842,33 +2858,53 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .linklike:active { opacity: .7; }
 .linklike.linklike-white { color: #FFF; }
 
-/* ─── شیت سبد خرید (۳۱) ─── */
+/* ─── شیت سبد خرید (۳۱) — FD-13: چیدمان دوطبقه ═══
+   حکم مالک: «عنوان کالا و توضیحش بالا، قیمت و اضافه/کم‌کردن تعداد
+   پایین» — مینیمال و بدون درهم‌رفتن. استپر ۴۲px (قاعدهٔ همیشگی
+   جدید: آیکون‌های ± در موبایل راحت لمس شوند — به اندازهٔ لازم). */
 .cart-it {
-    display: flex; align-items: center; gap: 10px;
-    padding: 11px 0;
+    display: flex; flex-direction: column; gap: 9px;
+    padding: 11px 2px;
     border-bottom: 1px solid var(--surface-3);
 }
+.cart-it:last-child { border-bottom: 0; }
+/* طبقهٔ بالا: بندانگشتی + عنوان/توضیح + حذف */
+.cart-it .ci-top { display: flex; align-items: center; gap: 10px; }
 .cart-it .ci-th {
-    width: 46px; height: 46px; border-radius: 10px; overflow: hidden;
+    width: 48px; height: 48px; border-radius: 11px; overflow: hidden;
     flex-shrink: 0; background: var(--surface-2);
 }
 .cart-it .ci-th img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cart-it .ci-tx { flex: 1; min-width: 0; }
 .cart-it .ci-tx b { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.5; }
 .cart-it .ci-tx small { display: block; font-size: 10px; color: var(--text-3); margin-top: 2px; }
-.cart-it .ci-qty {
-    display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+/* طبقهٔ پایین: استپر بزرگ + قیمت (با تخفیف مشتری — FD-13) */
+.cart-it .ci-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    padding-right: 58px; /* هم‌تراز با ستون متن (زیر بندانگشتی) */
 }
-.cart-it .ci-qty .bk-step { width: 28px; height: 28px; font-size: 14px; }
+.cart-it .ci-qty { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+/* FD-13 (قاعدهٔ لمس): استپر سبد ۴۲px — دکمه‌های ± بزرگ‌تر از همه‌جا
+   چون پرتکرارترین کنترل خریدند؛ در موبایل انگشت راحت می‌خوابد */
+.cart-it .ci-qty .bk-step { width: 42px; height: 42px; font-size: 19px; border-radius: 12px; }
 .cart-it .ci-qty .ci-n {
-    min-width: 26px; text-align: center;
-    font-size: 13px; font-weight: 800;
+    min-width: 30px; text-align: center;
+    font-size: 14px; font-weight: 800;
 }
+.cart-it .ci-qty .ci-unit { font-size: 10px; color: var(--text-3); margin-right: 1px; }
 .cart-it .ci-price {
     font-size: 11px; color: var(--text-3); flex-shrink: 0;
-    text-align: left; line-height: 1.5;
+    text-align: left; line-height: 1.6;
 }
-.cart-it .ci-price b { display: block; font-size: 12px; color: var(--text); font-weight: 800; }
+.cart-it .ci-price b { display: block; font-size: 13px; color: var(--text); font-weight: 800; }
+.cart-it .ci-price small { font-size: 9.5px; }
+/* قیمت پایه خط‌خورده وقتی تخفیف مشتری فعال است */
+.cart-it .ci-price .ci-base {
+    display: block; text-decoration: line-through;
+    font-size: 10px; color: var(--text-3); opacity: .8;
+}
+.cart-it .ci-price .badge { margin-top: 2px; }
 .cart-total { padding: 12px 14px; margin-top: 4px; background: var(--surface-2); }
 .cart-total .ct-row {
     display: flex; align-items: center; justify-content: space-between;
@@ -3060,3 +3096,101 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .pv-bar .pv-bar-ic:active { transform: scale(.94); background: var(--surface-3); }
 .pv-bar .pv-bar-ic svg { width: 19px; height: 19px; }
 .pv-bar .btn { height: 42px; font-size: 13px; white-space: nowrap; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ۳۳-ی۳ — FD-13: کاتالوگ عمومیِ «بازارِ باز»
+   ▸ سوییچ «مشاهده قیمت‌ها فقط برای مشتریان» (۳۶) — ردیف تنظیم
+   ▸ کارت مشتری (به‌جای دکمهٔ «کاتالوگ ذخیره شد») — لینک به سبد
+   ▸ «حداقل خرید» روی کارت محصول — حس عمده‌فروشی
+   ▸ ردیف «قیمت برای تو» در جزئیات کالا (۳۷) — تخفیف مشتری
+   ▸ «آی‌مچ» درست‌شده با آی‌مچ — لینک به پنل
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── ردیف تنظیم با سوییچ (ویرایش کاتالوگ ۳۶) ─── */
+.setrow { padding: 12px 13px; }
+.setrow-main { display: flex; align-items: center; gap: 12px; }
+.setrow-tx { flex: 1; min-width: 0; }
+.setrow-tx b { display: block; font-size: 12.5px; font-weight: 800; line-height: 1.6; }
+.setrow-tx small { display: block; font-size: 10.5px; color: var(--text-3); line-height: 1.8; margin-top: 2px; }
+.setrow .switch { margin-top: 1px; }
+
+/* ─── کارت مشتری (۳۱) — به‌جای دکمهٔ «کاتالوگ ذخیره شد» (حکم مالک) ───
+   کارتِ لینک‌شده به سبد خرید: آواتار + «سبد خرید [نام]» + نوع مشتری
+   + خط کمرنگِ تخفیف + شمار قلم سبد. کل کارت کلیک ⇒ شیت سبد. */
+.cust-card {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; margin-top: 10px;
+    padding: 11px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    font-family: inherit; text-align: right;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, transform .12s;
+}
+.cust-card:hover { border-color: var(--border-3); background: var(--surface-2); }
+.cust-card:active { transform: scale(.985); background: var(--surface-2); }
+.cust-card[hidden] { display: none; }
+.cust-card .cc-av {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: #0e7490; color: #FFF;
+    font-size: 15px; font-weight: 800;
+}
+.cust-card .cc-tx { flex: 1; min-width: 0; }
+.cust-card .cc-tx b { display: block; font-size: 13px; font-weight: 800; line-height: 1.6; }
+.cust-card .cc-tx small { display: block; font-size: 10.5px; color: var(--text-2); line-height: 1.7; margin-top: 1px; }
+/* خط تخفیف — فونت کمرنگ‌تر (پیشنهاد متن مالک) */
+.cust-card .cc-tx .cc-disc { color: var(--text-3); }
+.cust-card .cc-disc[hidden] { display: none; }
+.cust-card .cc-side {
+    flex-shrink: 0; text-align: center;
+    padding-left: 10px;
+    border-left: 1px dashed var(--surface-3);
+}
+.cust-card .cc-side b {
+    display: block; font-size: 16px; font-weight: 800;
+    color: var(--primary-strong); line-height: 1.3;
+}
+.cust-card .cc-side small { display: block; font-size: 9px; color: var(--text-3); }
+.cust-card .cc-chev {
+    width: 15px; height: 15px; flex-shrink: 0;
+    color: var(--text-3);
+}
+
+/* ─── «حداقل خرید» روی کارت محصول (۳۱) — حس عمده‌فروشی ─── */
+.pcard .pmin {
+    display: inline-block; align-self: flex-start;
+    margin-top: 4px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    font-size: 9.5px; font-weight: 700;
+    color: var(--text-3);
+}
+
+/* ─── «قیمت برای تو» در جزئیات کالا (۳۷) — تخفیف مشتری ─── */
+.pv-disc {
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 6px; flex-wrap: wrap;
+    margin-top: 4px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: var(--green-soft);
+    font-size: 11px; font-weight: 700;
+    color: var(--green);
+}
+.pv-disc[hidden] { display: none; }
+.pv-disc .pd-t small { font-weight: 600; opacity: .85; }
+.pv-disc .pd-p b { font-size: 12.5px; font-weight: 800; }
+.pv-disc .pd-p small { font-size: 9px; font-weight: 400; opacity: .8; }
+
+/* ─── «ساخته‌شده با آی‌مچ» — لینک به پنل (۳۱) ─── */
+.imach-link {
+    color: var(--primary-strong);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-underline-offset: 3px;
+}
+.imach-link:active { opacity: .7; }

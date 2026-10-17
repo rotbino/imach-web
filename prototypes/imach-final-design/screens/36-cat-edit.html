@@ -84,6 +84,28 @@
             <textarea class="input" id="cate-desc" placeholder="مثلاً: فروش عمده برنج هاشمی و طارم — مستقیم از شالی‌زار گیلان"></textarea>
             <div class="hint">زیر نام کاتالوگ دیده می‌شود — در یک خط بگو چه می‌فروشی</div>
         </div>
+
+        <!-- ═══ FD-13 (حکم مالک): مشاهده قیمت‌ها فقط برای مشتریان ═══
+             پیش‌فرض خاموش = قیمت‌ها برای همه دیده می‌شود (حتی مهمانِ
+             ثبت‌نام‌نکرده — سفارش بدون عضویت هم ممکن است؛ اولین سفارش
+             کاتالوگ را خودکار ذخیره می‌کند و مشتری می‌سازد).
+             روشن = قیمت‌ها فقط برای مشتری‌های ذخیره‌شده (قاعدهٔ FD-12).
+             سوییچ واقعاً کار می‌کند: data.catalogSettings.pricesCustomersOnly
+             عوض می‌شود و کاتالوگ عمومی (۳۱) همان لحظه حالتش را عوض
+             می‌کند (کلاس gated/open-market در applyGuestMode). -->
+        <div class="field">
+            <label>قیمت‌ها</label>
+            <div class="card setrow">
+                <div class="setrow-main">
+                    <div class="setrow-tx">
+                        <b>مشاهده قیمت‌ها فقط برای مشتریان</b>
+                        <small id="cate-prices-hint">خاموش — قیمت‌ها برای همهٔ بازدیدکنندگان دیده می‌شود و بدون عضویت هم می‌توان سفارش داد.</small>
+                    </div>
+                    <div class="switch" id="cate-prices-only" role="switch" aria-checked="false" aria-label="مشاهده قیمت‌ها فقط برای مشتریان"></div>
+                </div>
+            </div>
+            <div class="hint">با روشن‌کردنش، قیمت‌ها فقط برای مشتری‌های ذخیره‌شدهٔ کاتالوگ دیده می‌شود — برای بقیه دکمهٔ «مشاهده قیمت» می‌نشیند.</div>
+        </div>
     </div>
 
     <div class="sticky-bar">

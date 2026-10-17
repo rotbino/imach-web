@@ -953,29 +953,42 @@
     /* ═══════════════════════════════════════════════════════════════
        Guest / contacts
        ═══════════════════════════════════════════════════════════════ */
-    /* ─── FD-9/FD-10: حالت مهمان/دید عمومی کاتالوگ (۳۱) ───
-       سه وضعیت دارد:
+    /* ─── FD-9/FD-10/FD-13: حالت مهمان/دید عمومی کاتالوگ (۳۱) ───
+       چهار وضعیت دارد:
        · preview-mode (فروشندهٔ خود کاتالوگ): قیمت‌ها پیداست، عناصر
          مهمان (سبد/ذخیره) پنهان‌اند — «دید عمومی کاتالوگ».
-       · gated (مهمانِ ثبت‌نام‌نکرده): قیمت‌ها نیست؛ جای قیمت‌ها دکمهٔ
-         «مشاهده قیمت» است (CSS با کلاس .gated روی صفحه).
-       · ذخیره‌شده (مشتری): قیمت‌ها پیداست، سبد کار می‌کند.
+       · open-market (FD-13 — پیش‌فرض): فروشنده سوییچ «مشاهده قیمت‌ها
+         فقط برای مشتریان» (۳۶) را روشن نکرده ⇒ قیمت‌ها و سبد خرید
+         برای «همه» باز است — حتی مهمانِ ثبت‌نام‌نکرده؛ گیتِ حساب
+         در «ثبت سفارش» است (guestOrderSubmit → شیت حساب ctx=order).
+       · gated (فقط وقتی سوییچ روشن باشد — قاعدهٔ FD-12): مهمانِ
+         ثبت‌نام‌نکرده قیمت نمی‌بیند؛ جای قیمت‌ها دکمهٔ «مشاهده قیمت»
+         است (CSS با کلاس .gated روی صفحه)؛ سبد هم فقط برای مشتری.
+       · ذخیره‌شده (مشتری): قیمت‌ها پیداست، سبد کار می‌کند، کارتِ
+         مشتری جای دکمهٔ ذخیره نشسته (FD-13).
        show() دام را از قالب کش می‌سازد → همهٔ وضعیت‌ها در هوک show
        دوباره می‌نشینند (درس FD-9). */
+    function _publicPrices() {
+        return !(core.data.catalogSettings || {}).pricesCustomersOnly;
+    }
+
     function applyGuestMode() {
         var params = core.getSCREENParams()['s-catalog-guest'] || {};
         var section = $('#s-catalog-guest');
         if (!section) return;
         var isPreview = !!params.preview;
         section.classList.toggle('preview-mode', isPreview);
-        /* گیت قیمت: نه در پیش‌نمایش فروشنده، نه بعد از ذخیره (مشتری) */
-        section.classList.toggle('gated', !isPreview && !GUEST_SAVED);
+        /* FD-13: گیت قیمت فقط با سوییچ فروشنده + مهمانِ ذخیره‌نکرده */
+        section.classList.toggle('gated', !isPreview && !GUEST_SAVED && !_publicPrices());
+        section.classList.toggle('open-market', !isPreview && _publicPrices());
         guestCartSync();
         guestSavedSync();
     }
 
     /* ─── FD-9: سبد خرید کاتالوگ مهمان ───
-       lid → تعداد؛ مقدار اولیه = حداقل سفارش همان محصول. */
+       lid → تعداد؛ مقدار اولیه = حداقل سفارش همان محصول.
+       FD-13: قیمت‌های سبد با «تخفیف مشتری» اعمال می‌شود (گروهِ بیننده
+       یا تخفیف مخصوص همان محصول) — برای مهمان قیمت پایه است. */
     var GUEST_CART = {};
 
     function _findListing(id) {
@@ -984,11 +997,33 @@
         return out;
     }
 
+    function _findGroup(id) {
+        var out = null;
+        (core.data.customerGroups || []).forEach(function (g) { if (g.id === id) out = g; });
+        return out;
+    }
+
+    /* FD-13: درصد تخفیف مشتریِ بیننده برای یک محصول — اول تخفیف مخصوصِ
+       همان محصول (listing.groupDiscounts)، بعد پیش‌فرض گروه مشتری */
+    function guestDiscPct(l) {
+        if (!GUEST_SAVED || !GUEST_GROUP) return 0;
+        var gd = (l.groupDiscounts || {})[GUEST_GROUP.id];
+        if (typeof gd === 'number') return gd;
+        return GUEST_GROUP.discount || 0;
+    }
+
+    function _discPrice(price, pct) {
+        return Math.round(price * (100 - pct) / 100 / 1000) * 1000;
+    }
+
     function guestCartSync() {
         var n = 0;
         Object.keys(GUEST_CART).forEach(function (k) { n += GUEST_CART[k]; });
         var badge = $('#guest-cart-badge');
         if (badge) { badge.hidden = n === 0; badge.textContent = faNum(n); }
+        /* FD-13: شمار «قلم» روی کارت مشتری (نشان سبد = مجموع تعداد) */
+        var cc = $('#gcc-count');
+        if (cc) cc.textContent = faNum(Object.keys(GUEST_CART).length);
         $$('#guest-grid .addcart-btn').forEach(function (b) {
             b.classList.toggle('added', !!GUEST_CART[b.dataset.addCart]);
         });
@@ -997,16 +1032,17 @@
     function guestCartAdd(lid) {
         var l = _findListing(lid);
         if (!l) return;
-        /* FD-12: دکمه‌های سبد برای مهمان اصلاً دیده نمی‌شوند (cust-only)؛
-           این نگهبانِ دفاعی برای پیاده‌سازی واقعی می‌ماند — سفارش فقط
-           برای مشتریِ (ثبت‌نام‌کرده) فروشنده کار می‌کند */
-        if (!GUEST_SAVED) {
+        /* FD-12→FD-13: گیت سبد فقط در حالت «قیمت فقط برای مشتریان»؛
+           در بازارِ باز مهمان هم سبدش را پر می‌کند و در «ثبت سفارش»
+           به حساب راهنمایی می‌شود. این نگهبانِ دفاعی برای پیاده‌سازی
+           واقعی می‌ماند — سفارش مهمانِ ناشناس به سرور نمی‌رود */
+        if (!GUEST_SAVED && !_publicPrices()) {
             toast('برای خرید از این تأمین‌کننده، اول کاتالوگ او را ذخیره کن تا مشتری‌اش بشوی', 'error');
             return;
         }
         GUEST_CART[lid] = GUEST_CART[lid] || (l.min || 1);
         guestCartSync();
-        toast('به سبد خرید اضافه شد', 'success');
+        toast('به سبد خرید اضافه شد — حداقل ' + faNum(l.min || 1) + ' ' + _unitWord(l), 'success');
     }
 
     function guestCartRender() {
@@ -1022,20 +1058,38 @@
                 '<h3 style="margin-bottom:4px">سبدت خالی است</h3>' +
                 '<p style="margin-bottom:0">روی عکس هر کالا، دکمهٔ + را بزن تا به سبد بیاید.</p></div>';
         } else {
+            /* FD-13 (حکم مالک): چیدمان کارت سبد — عنوان و توضیح بالا؛
+               قیمت و اضافه/کم‌کردن تعداد پایین، با استپرِ بزرگ (۴۲px)
+               که در موبایل راحت لمس می‌شود (قاعدهٔ همیشگی جدید). */
             host.innerHTML = keys.map(function (lid) {
                 var l = _findListing(lid);
                 if (!l) return '';
                 var qty = GUEST_CART[lid];
+                var unit = _unitWord(l);
+                var pct = guestDiscPct(l);
+                var unitPrice = pct > 0 ? _discPrice(l.price, pct) : l.price;
                 return '<div class="cart-it">' +
-                    '<div class="ci-th"><img src="' + l.img + '" alt=""></div>' +
-                    '<div class="ci-tx"><b>' + esc(l.name) + '</b><small>' + esc(l.pack) + ' · حداقل ' + faNum(l.min || 1) + ' عدد</small></div>' +
-                    '<div class="ci-qty">' +
-                        '<button class="bk-step" type="button" data-cart-step="-1" data-cart-id="' + lid + '" aria-label="کاهش">−</button>' +
-                        '<span class="ci-n">' + faNum(qty) + '</span>' +
-                        '<button class="bk-step" type="button" data-cart-step="1" data-cart-id="' + lid + '" aria-label="افزایش">+</button>' +
+                    '<div class="ci-top">' +
+                        '<div class="ci-th"><img src="' + l.img + '" alt=""></div>' +
+                        '<div class="ci-tx"><b>' + esc(l.name) + '</b><small>' + esc(l.pack) + ' · حداقل ' + faNum(l.min || 1) + ' ' + unit + '</small></div>' +
+                        '<button class="ed-del" type="button" data-cart-del="' + lid + '" aria-label="حذف از سبد"><svg><use href="#i-trash"/></svg></button>' +
                     '</div>' +
-                    '<div class="ci-price"><b>' + faMoney(l.price * qty) + '</b>تومان</div>' +
-                    '<button class="ed-del" type="button" data-cart-del="' + lid + '" aria-label="حذف از سبد"><svg><use href="#i-trash"/></svg></button>' +
+                    '<div class="ci-bottom">' +
+                        '<div class="ci-qty">' +
+                            '<button class="bk-step" type="button" data-cart-step="-1" data-cart-id="' + lid + '" aria-label="کاهش تعداد">−</button>' +
+                            '<span class="ci-n">' + faNum(qty) + '</span>' +
+                            '<button class="bk-step" type="button" data-cart-step="1" data-cart-id="' + lid + '" aria-label="افزایش تعداد">+</button>' +
+                            '<small class="ci-unit">' + unit + '</small>' +
+                        '</div>' +
+                        '<div class="ci-price">' +
+                            (pct > 0
+                                ? '<small class="ci-base">' + faMoney(l.price) + '</small>' +
+                                  '<b>' + faMoney(unitPrice) + '</b>' +
+                                  '<span class="badge b-green">٪' + faNum(pct) + ' ' + esc(GUEST_GROUP.name) + '</span>'
+                                : '<b>' + faMoney(unitPrice) + '</b>') +
+                            ' <small>تومان</small>' +
+                        '</div>' +
+                    '</div>' +
                 '</div>';
             }).join('');
         }
@@ -1043,7 +1097,11 @@
         var total = 0;
         keys.forEach(function (lid) {
             var l = _findListing(lid);
-            if (l) total += l.price * GUEST_CART[lid];
+            if (l) {
+                var pct = guestDiscPct(l);
+                var unitPrice = pct > 0 ? _discPrice(l.price, pct) : l.price;
+                total += unitPrice * GUEST_CART[lid];
+            }
         });
         var tc = $('#cart-total-card'), tb = $('#cart-order');
         if (tc) { tc.hidden = keys.length === 0; }
@@ -1056,7 +1114,14 @@
         var l = _findListing(lid);
         if (!l || !GUEST_CART[lid]) return;
         var min = l.min || 1;
-        GUEST_CART[lid] = Math.max(min, GUEST_CART[lid] + dir);
+        var next = GUEST_CART[lid] + dir;
+        /* FD-13 (حکم مالک): سبد کمتر از حداقل خریدِ همان محصول را
+           قبول نمی‌کند — «حداقل سفارش همین مقدار است» */
+        if (next < min) {
+            if (dir < 0) toast('حداقل سفارش همین مقدار است', 'error');
+            return;
+        }
+        GUEST_CART[lid] = next;
         guestCartRender();
     }
 
@@ -1071,12 +1136,24 @@
         core.openSheet('sheet-cart');
     }
 
-    /* ثبت سفارش آنلاین — نمای موفقیت + دعوت به ذخیرهٔ کاتالوگ.
-       (در پیاده‌سازی عملیاتی، سفارش مهمان هم به گیت حساب/ثبت‌نام نیاز
-       دارد؛ در ماک برای نمایش جریان، مستقیم ثبت می‌شود.) */
+    /* ─── ثبت سفارش آنلاین (FD-13 — حکم مالک) ───
+       مهمانِ لاگین‌نکرده: سبدش پر است؛ در «ثبت سفارش» به ساخت حساب/
+       ورود راهنمایی می‌شود (شیت حساب، زمینهٔ order) و بعد از حساب،
+       سفارش همان‌جا ارسال می‌شود — کاربر از هدفش جابه‌جا نمی‌شود.
+       واردشده: سفارش مستقیم کامل می‌شود. اولین سفارش = ذخیرهٔ خودکار
+       کاتالوگ (= مشتری‌شدن). موفقیت: «پیگیری سفارش در میز خرید». */
     function guestOrderSubmit() {
-        var n = 0;
-        Object.keys(GUEST_CART).forEach(function (k) { n += GUEST_CART[k]; });
+        if (!Object.keys(GUEST_CART).length) return;
+        if (!GUEST_SAVED) {
+            guestAccountOpen('signup', 'order');
+            toast('برای ارسال سفارش، اول حساب بساز یا وارد شو', 'info');
+            return;
+        }
+        guestOrderComplete();
+    }
+
+    function guestOrderComplete() {
+        var items = Object.keys(GUEST_CART).length;
         GUEST_CART = {};
         guestCartSync();
         var view = $('#cart-view'), ok = $('#cart-success');
@@ -1084,7 +1161,18 @@
         if (ok) ok.hidden = false;
         var btn = $('#cart-order');
         if (btn) { btn.disabled = true; btn.innerHTML = '<svg><use href="#i-check"/></svg> ثبت سفارش'; }
-        toast(faNum(n) + ' قلم سفارش برای فروشنده ارسال شد', 'success');
+        /* FD-13: بعد از اولین سفارش، کاتالوگ خودکار ذخیره می‌شود و
+           کاربر در واقع مشتری می‌شود (جریان ذخیره از خرید جدا شد) */
+        if (!GUEST_SAVED) guestMarkSaved();
+        toast('سفارش ' + faNum(items) + ' قلم کالا برای فروشنده ارسال شد', 'success');
+    }
+
+    /* FD-13: دکمهٔ «پیگیری سفارش در میز خرید» — مقصدِ روشنِ بعد از
+       سفارش؛ دیگر نه دعوت به ذخیره، نه پرشِ گیج‌کننده */
+    function guestOrderTrack() {
+        core.closeSheet('sheet-cart');
+        core.resetStack();
+        core.show('s-home-buy', false);
     }
 
     function guestCartContinue() {
@@ -1099,13 +1187,22 @@
         }, 350);
     }
 
-    /* ─── FD-9/FD-10: جریان ذخیرهٔ کاتالوگ مهمان ───
+    /* ─── FD-9/FD-10/FD-13: جریان ذخیرهٔ کاتالوگ مهمان ───
        دکمهٔ ذخیره → شیت «ذخیره کاتالوگ» (کادر مزایای آکاردئونی — حکم
        FD-10: بسته = مینیمال) → دکمهٔ ذخیره → شیت ساخت حساب/ورود →
-       کاتالوگ ذخیره + مشتری. ساخت حساب هیچ‌وقت ذخیره را قربانی نمی‌کند. */
+       کاتالوگ ذخیره + مشتری. ساخت حساب هیچ‌وقت ذخیره را قربانی نمی‌کند.
+       FD-13: ثبت‌نام/ورود برای «سفارش» هم باز می‌شود (ctx=order) —
+       ذخیره و خرید دو جریان جدا شدند ولی حساب یکسان است. */
     var GUEST_SAVED = false;
-    /* زمینهٔ باز شدن شیت حساب: 'save' (از جریان ذخیره → پایان در پنل)
-       یا 'price' (از «مشاهده قیمت» → پایان همان‌جا، قیمت‌ها باز) */
+    /* FD-13: هویت بینندهٔ واردشده — برای کارت مشتری و تخفیف‌های سبد.
+       ثبت‌نام = نام تایپ‌شده + گروه «معمولی» (فروشنده بعداً گروهش را
+       عوض می‌کند) · ورود = سعید محمدی (مشتری قدیمی، همکار ٪۵ — در
+       محصول واقعی این هویت از سشن و رکورد مشتری در دفتر فروشنده). */
+    var GUEST_NAME = '';
+    var GUEST_GROUP = null;
+    /* زمینهٔ باز شدن شیت حساب: 'save' (از جریان ذخیره → پایان در پنل/
+       میز خرید) · 'price' (از «مشاهده قیمت» → پایان همان‌جا) ·
+       'order' (FD-13 — از «ثبت سفارش» → سفارش همان‌جا ارسال می‌شود) */
     var GUEST_ACCT_CTX = 'save';
 
     function guestSaveFlow() {
@@ -1134,8 +1231,23 @@
         var su = $('#acc-signup'), lg = $('#acc-login');
         if (su) su.hidden = mode !== 'signup';
         if (lg) lg.hidden = mode !== 'login';
+        /* FD-13: عنوان و دکمه‌ها با زمینه هم‌خوان — «سفارش» وقتی از
+           ثبت سفارش آمده‌ای، «ذخیره کاتالوگ» وقتی از جریان ذخیره */
+        var isOrder = GUEST_ACCT_CTX === 'order';
         var tt = $('#acc-title');
-        if (tt) tt.textContent = (mode === 'login') ? 'ورود و ذخیره کاتالوگ' : 'ساخت حساب و ذخیره کاتالوگ';
+        if (tt) tt.textContent = (mode === 'login')
+            ? (isOrder ? 'ورود و ثبت سفارش' : 'ورود و ذخیره کاتالوگ')
+            : (isOrder ? 'ساخت حساب و ثبت سفارش' : 'ساخت حساب و ذخیره کاتالوگ');
+        var sb = $('#acc-submit');
+        if (sb) sb.innerHTML = '<svg><use href="#i-check"/></svg> ' +
+            (isOrder ? 'ساخت حساب و ثبت سفارش' : 'ساخت حساب و ذخیره کاتالوگ');
+        var lsb = $('#acc-login-submit');
+        if (lsb) lsb.innerHTML = '<svg><use href="#i-check"/></svg> ' +
+            (isOrder ? 'ورود و ثبت سفارش' : 'ورود و ذخیره کاتالوگ');
+        var sub = $('#acc-signup .sub');
+        if (sub) sub.textContent = isOrder
+            ? 'کمتر از ۲ دقیقه — بعدش سفارش‌ات همین‌جا ارسال می‌شود.'
+            : 'کمتر از ۲ دقیقه — شماره، نام و نوع کارِ تو.';
         core.openSheet('sheet-account');
     }
 
@@ -1148,30 +1260,41 @@
        FD-10: «ذخیره‌شده» علاوه بر دکمه/کادر، گیت قیمت را هم برمی‌دارد.
        FD-11: «ورود» اپ‌بار فقط برای مهمانِ واردنشده است — بعد از
        ورود/ذخیره پنهان می‌شود (کاربر دیگر لازمش ندارد).
-       FD-12: کلاس saved — عناصر سبد (cust-only) فقط برای واردشده
-       ظاهر می‌شوند؛ مهمان هیچ امکان خریدی نمی‌بیند. */
+       FD-12: کلاس saved — عناصر سبد (cust-only) برای واردشده ظاهر
+       می‌شوند (در حالت «قیمت فقط مشتریان»).
+       FD-13: کارت مشتری (سبدِ [نام] + نوع مشتری + تخفیف + شمار سبد)
+       جای دکمهٔ «کاتالوگ ذخیره شد» و کادر پایین را می‌گیرد. */
     function guestSavedSync() {
         var section = $('#s-catalog-guest');
+        var isPreview = section ? section.classList.contains('preview-mode') : false;
         if (section) {
-            section.classList.toggle('gated', !GUEST_SAVED && !section.classList.contains('preview-mode'));
-            section.classList.toggle('saved', GUEST_SAVED && !section.classList.contains('preview-mode'));
+            section.classList.toggle('gated', !GUEST_SAVED && !isPreview && !_publicPrices());
+            section.classList.toggle('saved', GUEST_SAVED && !isPreview);
+            section.classList.toggle('open-market', !isPreview && _publicPrices());
         }
         var lb = $('#guest-login-btn');
         if (lb) lb.hidden = GUEST_SAVED;
-        if (!GUEST_SAVED) return;
-        var btn = $('#guest-save-btn');
-        if (btn && !btn.classList.contains('bk-saved')) {
-            btn.classList.add('bk-saved');
-            /* span می‌ماند تا متن دکمه بعد از re-show دوباره قابل سینک باشد */
-            btn.innerHTML = '<svg><use href="#i-check"/></svg> <span id="guest-save-tx">کاتالوگ ذخیره شد</span>';
-            var cnt = $('#guest-saved-count');
-            if (cnt) cnt.textContent = faNum(parseNum(cnt.textContent) + 1);
+        /* FD-13: دکمه/کادر ذخیره فقط برای مهمان؛ کارت مشتری فقط برای ذخیره‌شده */
+        var btn = $('#guest-save-btn'), box = $('#guest-save-box'), card = $('#guest-cust-card');
+        if (btn) btn.hidden = GUEST_SAVED;
+        if (box) box.hidden = GUEST_SAVED;
+        if (card) card.hidden = !GUEST_SAVED;
+        if (!GUEST_SAVED) { guestCartSync(); return; }
+        if (card) {
+            var nm = GUEST_NAME || 'مشتری';
+            var t = $('#gcc-title'); if (t) t.textContent = 'سبد خرید ' + nm;
+            var av = $('#gcc-av'); if (av) av.textContent = (nm.trim().charAt(0) || 'م');
+            var g = $('#gcc-group'); if (g) g.textContent = (GUEST_GROUP && GUEST_GROUP.name) || 'معمولی';
+            /* خط تخفیف فقط وقتی گروهِ بیننده تخفیف دارد (معمولی = مخفی) */
+            var d = $('#gcc-disc');
+            if (d) d.hidden = !(GUEST_GROUP && (GUEST_GROUP.discount || 0) > 0);
         }
-        var box = $('#guest-save-box');
-        if (box && box.textContent.indexOf('ذخیره شد') === -1) {
-            box.innerHTML = '<div style="font-size:12.5px;font-weight:700;">این کاتالوگ در فهرست تأمین‌کنندگان تو ذخیره شد</div>' +
-                '<div style="font-size:11px;opacity:.9;margin-top:4px;line-height:1.9;">قیمت‌های زندهٔ این فروشنده همیشه دم دستت است.</div>';
+        var cnt = $('#guest-saved-count');
+        if (cnt && !cnt.dataset.bumped) {
+            cnt.dataset.bumped = '1';
+            cnt.textContent = faNum(parseNum(cnt.textContent) + 1);
         }
+        guestCartSync();
     }
 
     function guestAccountSubmit(kind) {
@@ -1184,6 +1307,10 @@
             var role = rc ? rc.dataset.role : 'buy';
             core.assist.sell = (role === 'sell' || role === 'both');
             core.assist.buy = (role === 'buy' || role === 'both');
+            /* FD-13: هویت بیننده — ثبت‌نام تازه = گروه «معمولی»؛
+               فروشنده بعداً در دفتر مشتری گروهش را تعیین می‌کند */
+            GUEST_NAME = name;
+            GUEST_GROUP = _findGroup('cg2');
         } else {
             /* FD-12: ورود = شماره + رمز (پنل پیامکی/کد تأیید نداریم؛
                رمز را کاربر با ردیف «شروع» میز خرید ساخته است) */
@@ -1191,30 +1318,45 @@
             if (!lphone) { toast('شماره موبایل را وارد کن', 'error'); return; }
             var lpass = (($('#acc-lpass') || {}).value || '');
             if (!lpass) { toast('رمز ورود را وارد کن', 'error'); return; }
+            /* FD-13: دموی ورود = سعید محمدی — مشتری قدیمیِ «پخش برنج
+               پارس» (cu6، گروه همکار ٪۵) تا کارت مشتری و تخفیف‌ها
+               واقعی دیده شود؛ در محصول واقعی هویت از سشن می‌آید */
+            GUEST_NAME = 'سعید محمدی';
+            GUEST_GROUP = _findGroup('cg1');
         }
         core.applyArms();
         core.closeSheet('sheet-account');
         guestMarkSaved();
+        var ctx = GUEST_ACCT_CTX;
+        GUEST_ACCT_CTX = 'save';
+        /* FD-13: اگر حساب از «ثبت سفارش» باز شده، سفارش همان‌جا کامل
+           می‌شود و نمای موفقیت (پیگیری در میز خرید) جلوی چشم می‌ماند */
+        if (ctx === 'order') {
+            guestOrderComplete();
+            core.openSheet('sheet-cart');
+            return;
+        }
         /* FD-10: اگر حساب از «مشاهده قیمت» باز شده، کاربر همان‌جا می‌ماند
            و قیمت‌ها پیش چشمش باز می‌شوند — از هدف جابه‌جا نمی‌شود.
            (ثبت‌نام = ذخیرهٔ کاتالوگ = مشتری‌شدن — حکم مالک) */
-        if (GUEST_ACCT_CTX === 'price') {
-            GUEST_ACCT_CTX = 'save';
+        if (ctx === 'price') {
             var cur = core.getCurrentScreen();
             if (cur === 's-product-view') productViewSync();
-            toast('کاتالوگ ذخیره شد — قیمت‌ها باز شد', 'success');
-        } else {
-            toast('کاتالوگ ذخیره شد — خوش آمدی به آی‌مچ', 'success');
-            setTimeout(function () {
-                core.resetStack();
-                /* FD-12 (حکم مالک): اولین ثبت‌نام از دلِ کاتالوگ همیشه به
-                   میز خرید می‌رود — حتی اگر نقش «هر دو» را انتخاب کرده
-                   باشد. زمینهٔ ثبت‌نام خرید است و کاتالوگِ تازه‌ذخیره
-                   همان‌جا در «تأمین‌کننده‌های من» دیده می‌شود؛ میز فروشِ
-                   حساب تازه خالی است و راه‌اندازی‌اش بعدا شروع می‌شود. */
-                core.show('s-home-buy', false);
-            }, 650);
+            toast(_publicPrices()
+                ? 'کاتالوگ ذخیره شد — خوش آمدی'
+                : 'کاتالوگ ذخیره شد — قیمت‌ها باز شد', 'success');
+            return;
         }
+        toast('کاتالوگ ذخیره شد — خوش آمدی به آی‌مچ', 'success');
+        setTimeout(function () {
+            core.resetStack();
+            /* FD-12 (حکم مالک): اولین ثبت‌نام از دلِ کاتالوگ همیشه به
+               میز خرید می‌رود — حتی اگر نقش «هر دو» را انتخاب کرده
+               باشد. زمینهٔ ثبت‌نام خرید است و کاتالوگِ تازه‌ذخیره
+               همان‌جا در «تأمین‌کننده‌های من» دیده می‌شود؛ میز فروشِ
+               حساب تازه خالی است و راه‌اندازی‌اش بعدا شروع می‌شود. */
+            core.show('s-home-buy', false);
+        }, 650);
     }
 
     /* ─── FD-12: ساخت رمز ورود ───
@@ -1248,9 +1390,14 @@
         toast('رمز ورود ساخته شد', 'success');
     }
 
-    /* ─── FD-10: جزئیات کالا (۳۷) — دید عمومی کاتالوگ ───
-       از listings واقعی پر می‌شود؛ گیت قیمت مثل ۳۱: مهمان «مشاهده قیمت»
-       می‌بیند، مشتری/پیش‌نمایش قیمت و پله‌های تخفیف را. */
+    /* ─── FD-10/FD-13: جزئیات کالا (۳۷) — دید عمومی کاتالوگ ───
+       از listings واقعی پر می‌شود؛ گیت قیمت مثل ۳۱ (FD-13): فقط وقتی
+       فروشنده «قیمت فقط برای مشتریان» را روشن کرده باشد مهمان «مشاهده
+       قیمت» می‌بیند؛ در بازارِ باز قیمت برای همه پیداست و «افزودن به
+       سبد» مهمان هم فعال است (گیت حساب در ثبت سفارش).
+       FD-13: ردیف «قیمت برای تو» — تخفیف گروه مشتریِ بیننده (یا تخفیف
+       مخصوص همان محصول)؛ در پیش‌نمایش با گروه نماینده (همکار) نشان
+       می‌دهیم تا فروشنده ببیند مشتری‌ها چه می‌بینند. */
     function _unitWord(l) {
         return (l.pack || '').indexOf('کیسه') > -1 ? 'کیسه' : 'عدد';
     }
@@ -1262,7 +1409,7 @@
         var l = _findListing(params.id) || core.data.listings[0];
         if (!l) return;
         var isPreview = !!params.preview;
-        var gated = !isPreview && !GUEST_SAVED;
+        var gated = !isPreview && !GUEST_SAVED && !_publicPrices();
         section.classList.toggle('gated', gated);
 
         var ttl = core.$('#pv-ttl');
@@ -1273,6 +1420,32 @@
         el = core.$('#pv-sub'); if (el) el.textContent = l.pack;
         el = core.$('#pv-price');
         if (el) el.innerHTML = faMoney(l.price) + ' <small>تومان</small>';
+
+        /* FD-13: «قیمت برای تو» — تخفیف مشتری زیر قیمت اصلی؛ فقط برای
+           مشتری (گروهش/تخفیف مخصوص همین محصول) و پیش‌نمایش (نماینده) */
+        var discEl = core.$('#pv-disc');
+        if (discEl) {
+            var pct = 0, grpName = '';
+            if (!gated && GUEST_SAVED && GUEST_GROUP) {
+                pct = (l.groupDiscounts || {})[GUEST_GROUP.id];
+                if (typeof pct !== 'number') pct = GUEST_GROUP.discount || 0;
+                grpName = GUEST_GROUP.name;
+            } else if (isPreview) {
+                var rep = (core.data.customerGroups || [])[0];
+                if (rep) {
+                    pct = (l.groupDiscounts || {})[rep.id];
+                    if (typeof pct !== 'number') pct = rep.discount || 0;
+                    grpName = rep.name;
+                }
+            }
+            discEl.hidden = !(pct > 0);
+            if (pct > 0) {
+                var dge = core.$('#pv-disc-grp');
+                if (dge) dge.textContent = '(تخفیف ' + grpName + ' ٪' + faNum(pct) + ')';
+                var dpe = core.$('#pv-disc-price');
+                if (dpe) dpe.textContent = faMoney(_discPrice(l.price, pct));
+            }
+        }
 
         /* مشخصات */
         var unit = _unitWord(l);
@@ -1300,8 +1473,9 @@
             if (noteEl && l.note) noteEl.textContent = l.note;
         }
 
-        /* تخفیف حجمی — فقط وقتی قیمت دیده می‌شود (مشتری/پیش‌نمایش)؛
-           پلهٔ اول = حداقل خرید بدون تخفیف؛ آخرین پله «بهترین» */
+        /* تخفیف حجمی — فقط وقتی قیمت دیده می‌شود؛ در بازارِ باز مهمان
+           هم پله‌ها را می‌بیند (قیمت‌ها عمومی‌اند)؛ پلهٔ اول = حداقل
+           خرید بدون تخفیف؛ آخرین پله «بهترین» */
         var tiersCard = core.$('#pv-tiers-card');
         var tiersHost = core.$('#pv-tiers');
         var tiers = (core.data.volumeTiersOn && core.data.volumeTiers) ? core.data.volumeTiers : [];
@@ -1456,6 +1630,7 @@
         guestCartStep: guestCartStep,
         guestCartDel: guestCartDel,
         guestOrderSubmit: guestOrderSubmit,
+        guestOrderTrack: guestOrderTrack,
         guestCartContinue: guestCartContinue,
         guestSaveFlow: guestSaveFlow,
         guestAccountOpen: guestAccountOpen,
@@ -1469,6 +1644,7 @@
         promoSwitchToggle: promoSwitchToggle,
         catSheetsSync: catSheetsSync,
         catEditLoad: catEditLoad,
+        catePricesToggle: catePricesToggle,
         gdEditRender: gdEditRender,
     };
 
@@ -2052,9 +2228,39 @@
         set('#cate-addr', b.addr);
         var tEl = $('#cate-type-val');
         if (tEl) tEl.textContent = b.type || 'عمده‌فروش';
-        cateLogoSync();        set('#cate-desc', b.desc);
         cateLogoSync();
         catLogoColorsRender();
+        /* FD-13: سوییچ «مشاهده قیمت‌ها فقط برای مشتریان» از تنظیمات زنده */
+        catePricesSync();
+    }
+
+    /* ═══ FD-13: «مشاهده قیمت‌ها فقط برای مشتریان» (ویرایش کاتالوگ ۳۶) ═══
+       سوییچ واقعاً کار می‌کند: data.catalogSettings.pricesCustomersOnly
+       عوض می‌شود و کاتالوگ عمومی (۳۱/۳۷) با کلاس gated/open-market
+       همان لحظه حالتش را عوض می‌کند. پیش‌فرض خاموش = بازارِ باز:
+       قیمت‌ها برای همه (حتی مهمانِ ثبت‌نام‌نکرده) و سفارش بدون عضویت
+       ممکن است — اولین سفارش کاتالوگ را خودکار ذخیره می‌کند (مشتری). */
+    function catePricesSync() {
+        var sw = $('#cate-prices-only');
+        var hint = $('#cate-prices-hint');
+        var on = !!(core.data.catalogSettings || {}).pricesCustomersOnly;
+        if (sw) {
+            sw.classList.toggle('on', on);
+            sw.setAttribute('aria-checked', on ? 'true' : 'false');
+        }
+        if (hint) hint.textContent = on
+            ? 'روشن — قیمت‌ها فقط برای مشتری‌های ذخیره‌شده؛ بقیه دکمهٔ «مشاهده قیمت» را می‌بینند.'
+            : 'خاموش — قیمت‌ها برای همهٔ بازدیدکنندگان دیده می‌شود و بدون عضویت هم می‌توان سفارش داد.';
+    }
+
+    function catePricesToggle() {
+        var set = core.data.catalogSettings;
+        if (!set) return;
+        set.pricesCustomersOnly = !set.pricesCustomersOnly;
+        catePricesSync();
+        toast(set.pricesCustomersOnly
+            ? 'قیمت‌ها فقط برای مشتری‌های ذخیره‌شده دیده می‌شود'
+            : 'قیمت‌ها برای همهٔ بازدیدکنندگان دیده می‌شود', 'success');
     }
 
     function catEditSave() {
@@ -2068,7 +2274,6 @@
         b.addr = (($('#cate-addr') || {}).value || '').trim();
         var tEl2 = $('#cate-type-val');
         if (tEl2 && tEl2.textContent.trim()) b.type = tEl2.textContent.trim();
-        toast('کاتالوگ ذخیره شد', 'success');        b.desc = (($('#cate-desc') || {}).value || '').trim();
         toast('کاتالوگ ذخیره شد', 'success');
         setTimeout(function () { core.back(); }, 550);
     }

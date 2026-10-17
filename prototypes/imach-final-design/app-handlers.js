@@ -300,6 +300,12 @@
                 core.forms.promoSwitchToggle();
                 return;
             }
+            /* FD-13: سوییچ «مشاهده قیمت‌ها فقط برای مشتریان» (۳۶) —
+               تنظیم کاتالوگ را عوض می‌کند و ۳۱/۳۷ همان لحظه واکنش نشان می‌دهند */
+            if (sw.id === 'cate-prices-only') {
+                core.forms.catePricesToggle();
+                return;
+            }
             sw.classList.toggle('on');
             return;
         }
@@ -424,6 +430,8 @@
            FD-9 — کاتالوگ مهمان (۳۱): سبد خرید + جریان ذخیره/حساب
            ═══════════════════════════════════════════════════════════ */
         if (t.closest('#guest-cart-btn')) { core.forms.guestCartOpen(); return; }
+        /* FD-13: کارت مشتری (سبد خریدِ [نام]) — کل کارت = ورود به سبد */
+        if (t.closest('#guest-cust-card')) { core.forms.guestCartOpen(); return; }
         /* FD-11: «ورود» اپ‌بار کاتالوگ عمومی — اکشن پلتفرم، جدا از
            دکمه‌های صاحب کاتالوگ (نوار پایین). نمای ورودِ شیت حساب؛
            ctx='price' ⇒ بعد از ورود همان‌جا می‌ماند و قیمت‌ها باز می‌شود */
@@ -433,6 +441,8 @@
         var cDel = t.closest('[data-cart-del]');
         if (cDel) { core.forms.guestCartDel(cDel.dataset.cartDel); return; }
         if (t.closest('#cart-order')) { core.forms.guestOrderSubmit(); return; }
+        /* FD-13: «پیگیری سفارش در میز خرید» — مقصد روشن بعد از سفارش */
+        if (t.closest('#cart-track')) { core.forms.guestOrderTrack(); return; }
         if (t.closest('#cart-continue')) { core.forms.guestCartContinue(); return; }
 
         /* جریان ذخیره: مزایا (آکاردئون FD-10) → حساب → پنل */
