@@ -17,6 +17,14 @@
        «کالا». گروه کالا > کالا > محصول — مثال مالک: برنج / برنج هاشمی /
        برنج هاشمی برند طبیعت ۱۰ کیلویی. لیست خرید خریدار «کالا» دارد.
 
+    بازبینی مالک (FD-8):
+     • «کاتالوگ من» و «مشتریان من» از ردیف‌های «نیازمند اقدام» متمایز شدند:
+       دو کاشی نیمه‌عرض کنار هم با عدد بزرگ (وضعیتِ ویترین/شبکه) —
+       بالا می‌گویند «چه داری»، پایین می‌گویند «چه کاری مانده».
+     • شتابدهی در دو میز دو معنای جدا دارد (حکم مالک FD-8):
+       فروش = محصولاتِ تو به خریداران بیشتر نشان داده می‌شود؛
+       خرید = تأمین‌کننده‌های بیشتری از هر کالا به تو نشان داده می‌شود.
+
      داده و منطق: deskHomeSync() در app-forms.js + scoreItemsSell در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-sell" data-arm="sell">
@@ -45,24 +53,29 @@
 
     <div class="body">
 
-        <!-- دو کادر تمام‌عرض زیر هم (حکم مالک FD-6) — همگن و مینیمال اما گویا.
-             شمارنده‌ها (محصول/مشتری/در انتظار تایید) با deskHomeSync()
-             از دیتای واقعی پر می‌شوند، نه متن ثابت. -->
-        <div class="desk-card" data-go="s-catalog">
-            <div class="dc-ic"><svg><use href="#i-store"/></svg></div>
-            <div class="dc-tx">
-                <div class="dc-t">کاتالوگ من</div>
-                <div class="dc-s" id="desk-cat-s">۰ محصول در ویترین تو</div>
-            </div>
-            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-        </div>
-        <div class="desk-card" data-go="s-customers">
-            <div class="dc-ic"><svg><use href="#i-users"/></svg></div>
-            <div class="dc-tx">
-                <div class="dc-t">مشتریان من</div>
-                <div class="dc-s" id="desk-cust-s">۰ مشتری</div>
-            </div>
-            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+        <!-- FD-8: دو کاشی کنار هم (حکم مالک) — «کاتالوگ من» و «مشتریان من»
+             کاشی وضعیت‌اند نه ردیف اقدام: آیکون + عنوان + عدد بزرگ + واحد.
+             عدد محصول با deskHomeSync() از listings واقعی پر می‌شود؛
+             عدد/زیرمتن مشتری از customers (۵ مشتری · ۱ در انتظار تایید). -->
+        <div class="desk-duo">
+            <button class="desk-tile" data-go="s-catalog" type="button">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-store"/></svg></span>
+                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
+                </span>
+                <b class="dt-t">کاتالوگ من</b>
+                <div class="dt-stat"><b id="desk-cat-num">۰</b><span>محصول</span></div>
+                <div class="dt-sub">در ویترین تو</div>
+            </button>
+            <button class="desk-tile" data-go="s-customers" type="button">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-users"/></svg></span>
+                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
+                </span>
+                <b class="dt-t">مشتریان من</b>
+                <div class="dt-stat"><b id="desk-cust-num">۰</b><span>مشتری</span></div>
+                <div class="dt-sub" id="desk-cust-sub">شبکهٔ مشتریانت</div>
+            </button>
         </div>
 
         <!-- ═══ کارتابل: نیازمند اقدام ═══

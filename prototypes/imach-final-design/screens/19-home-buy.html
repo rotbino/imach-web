@@ -12,6 +12,13 @@
        نوار پیشرفت «۴۵/۱۰۰» + دکمه — از scoreItemsBuy[].desk.
      • واژگان (قانون FD-5): سمت خریدار «کالا» است (نوعِ نیاز) —
        «افزودن کالا» این‌جا درست است؛ سمت فروش «محصول».
+
+     بازبینی مالک (FD-8):
+     • دو کاشی نیمه‌عرض کنار هم (متمایز از ردیف‌های اقدام — قرینهٔ ۰۴).
+     • شتابدهی در خرید معنای خودش را دارد: تأمین‌کننده‌های بیشتر و
+       به‌صرفه‌تر از هر کالا به «تو» نشان داده می‌شوند (نه محصولات تو
+       به دیگران) — شیت توضیح هم جدا شد (accelRender در app-forms.js).
+
      منطق: buyDeskSync() در app-forms.js + scoreItemsBuy در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-buy" data-arm="buy">
@@ -38,22 +45,28 @@
 
     <div class="body">
 
-        <!-- دو کادر تمام‌عرض زیر هم (حکم مالک FD-6) — همگن با میز فروش -->
-        <div class="desk-card" data-go="s-buy-list">
-            <div class="dc-ic"><svg><use href="#i-basket"/></svg></div>
-            <div class="dc-tx">
-                <div class="dc-t">لیست خرید من</div>
-                <div class="dc-s">۴ کالا · برای هر کالا استعلام بگیر</div>
-            </div>
-            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-        </div>
-        <div class="desk-card" data-go="s-buy-suppliers">
-            <div class="dc-ic"><svg><use href="#i-users"/></svg></div>
-            <div class="dc-tx">
-                <div class="dc-t">تأمین‌کننده‌های من</div>
-                <div class="dc-s">۳ تأمین‌کننده · قیمت زندهٔ کاتالوگ‌شان</div>
-            </div>
-            <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+        <!-- FD-8: دو کاشی کنار هم (حکم مالک) — قرینهٔ میز فروش.
+             شمارنده‌ها عمداً ثابت‌اند (صفحات لیست/تأمین‌کنندهٔ دمو هم
+             استاتیک‌اند و همان اعداد را می‌گویند: ۴ کالا · ۳ تأمین‌کننده). -->
+        <div class="desk-duo">
+            <button class="desk-tile" data-go="s-buy-list" type="button">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-basket"/></svg></span>
+                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
+                </span>
+                <b class="dt-t">لیست خرید من</b>
+                <div class="dt-stat"><b>۴</b><span>کالا</span></div>
+                <div class="dt-sub">برای هر کالا استعلام بگیر</div>
+            </button>
+            <button class="desk-tile" data-go="s-buy-suppliers" type="button">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-users"/></svg></span>
+                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
+                </span>
+                <b class="dt-t">تأمین‌کننده‌های من</b>
+                <div class="dt-stat"><b>۳</b><span>تأمین‌کننده</span></div>
+                <div class="dt-sub">قیمت زندهٔ کاتالوگ‌شان</div>
+            </button>
         </div>
 
         <!-- ═══ کارتابل: نیازمند اقدام ═══

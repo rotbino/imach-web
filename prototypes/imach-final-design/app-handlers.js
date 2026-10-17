@@ -131,7 +131,13 @@
         /* ─── دکمهٔ امتیاز در میز فروش / خرید ─── */
         var scoreBtn = t.closest('[data-score-arm]');
         if (scoreBtn) {
-            core.setSCREENParams('s-network-score', { arm: scoreBtn.dataset.scoreArm });
+            /* FD-8: data-open-accel (دکمهٔ «کجا دیده می‌شوم؟» حالت ۱۰۰+ میز)
+               → شیت توضیح شتابدهی همان بازو، بلافاصله بعد از ورود به
+               صفحهٔ امتیاز باز می‌شود (scoreRender: params.openAccel). */
+            core.setSCREENParams('s-network-score', {
+                arm: scoreBtn.dataset.scoreArm,
+                openAccel: !!scoreBtn.dataset.openAccel
+            });
             go('s-network-score');
             return;
         }
