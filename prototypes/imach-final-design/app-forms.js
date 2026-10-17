@@ -389,6 +389,11 @@
 
         /* ۳) ردیف «گام شروع» — از scoreItemsBuy[].desk */
         _deskStepSync('buy-desk-row', 'bds-row-t', core.data.scoreItemsBuy, buy, 's-home-buy');
+
+        /* ۴) FD-14: شمارندهٔ کاشی لیست خرید — زنده از DATA.shoppingList
+           (کالاهای افزوده‌شده از کاتالوگ ۳۱ همین‌جا دیده می‌شوند) */
+        var ln = $('#buy-desk-list-n');
+        if (ln) ln.textContent = faNum((core.data.shoppingList || []).length);
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -1228,6 +1233,9 @@
         /* FD-11: زمینه فقط وقتی صریحاً داده شود عوض می‌شود — تعویض نمای
            ورود/ثبت‌نام داخلِ همان شیت، قصدِ قبلی کاربر را حفظ می‌کند */
         if (ctx) GUEST_ACCT_CTX = ctx;
+        /* FD-14: هر بار باز شدن، نمای «ذخیره انجام شد» ریست می‌شود */
+        var svv = $('#acc-saved');
+        if (svv) svv.hidden = true;
         var su = $('#acc-signup'), lg = $('#acc-login');
         if (su) su.hidden = mode !== 'signup';
         if (lg) lg.hidden = mode !== 'login';
@@ -1279,6 +1287,11 @@
         if (btn) btn.hidden = GUEST_SAVED;
         if (box) box.hidden = GUEST_SAVED;
         if (card) card.hidden = !GUEST_SAVED;
+        /* FD-14: نوار «افزودن کالاهای این کاتالوگ به لیست خرید» — فقط
+           برای مشتریِ ذخیره‌کرده و نه پیش‌نمایش فروشنده (قاعدهٔ_FD-12:
+           مهمان ابزارِ میز خرید ندارد؛ ترس مالک از شلوغی کاتالوگ) */
+        var alStrip = $('#guest-addlist-btn');
+        if (alStrip) alStrip.hidden = !GUEST_SAVED || isPreview;
         if (!GUEST_SAVED) { guestCartSync(); return; }
         if (card) {
             var nm = GUEST_NAME || 'مشتری';
@@ -1325,13 +1338,13 @@
             GUEST_GROUP = _findGroup('cg1');
         }
         core.applyArms();
-        core.closeSheet('sheet-account');
         guestMarkSaved();
         var ctx = GUEST_ACCT_CTX;
         GUEST_ACCT_CTX = 'save';
         /* FD-13: اگر حساب از «ثبت سفارش» باز شده، سفارش همان‌جا کامل
            می‌شود و نمای موفقیت (پیگیری در میز خرید) جلوی چشم می‌ماند */
         if (ctx === 'order') {
+            core.closeSheet('sheet-account');
             guestOrderComplete();
             core.openSheet('sheet-cart');
             return;
@@ -1340,6 +1353,7 @@
            و قیمت‌ها پیش چشمش باز می‌شوند — از هدف جابه‌جا نمی‌شود.
            (ثبت‌نام = ذخیرهٔ کاتالوگ = مشتری‌شدن — حکم مالک) */
         if (ctx === 'price') {
+            core.closeSheet('sheet-account');
             var cur = core.getCurrentScreen();
             if (cur === 's-product-view') productViewSync();
             toast(_publicPrices()
@@ -1347,16 +1361,17 @@
                 : 'کاتالوگ ذخیره شد — قیمت‌ها باز شد', 'success');
             return;
         }
-        toast('کاتالوگ ذخیره شد — خوش آمدی به آی‌مچ', 'success');
-        setTimeout(function () {
-            core.resetStack();
-            /* FD-12 (حکم مالک): اولین ثبت‌نام از دلِ کاتالوگ همیشه به
-               میز خرید می‌رود — حتی اگر نقش «هر دو» را انتخاب کرده
-               باشد. زمینهٔ ثبت‌نام خرید است و کاتالوگِ تازه‌ذخیره
-               همان‌جا در «تأمین‌کننده‌های من» دیده می‌شود؛ میز فروشِ
-               حساب تازه خالی است و راه‌اندازی‌اش بعدا شروع می‌شود. */
-            core.show('s-home-buy', false);
-        }, 650);
+        /* FD-14 (حکم مالک): جریان ذخیره — دیگر بلافاصله به پنل خرید
+           برده نمی‌شود؛ همان شیت حساب باز می‌ماند و نمای «ذخیره انجام
+           شد» پیام می‌دهد (از این به بعد در بخش تأمین‌کنندگان میز خرید
+           خودت در آی‌مچ به این تأمین‌کننده دسترسی داری) + دکمهٔ «رفتن
+           به میز خرید» و لینک آرام «ماندن در همین کاتالوگ» — «این‌طوری
+           کاربر گیج نمی‌شود». مقصد میز خرید (FD-12) سرِ جایش است ولی
+           انتخابی، نه پرش. */
+        var su = $('#acc-signup'), lg = $('#acc-login'), sv = $('#acc-saved');
+        if (su) su.hidden = true;
+        if (lg) lg.hidden = true;
+        if (sv) sv.hidden = false;
     }
 
     /* ─── FD-12: ساخت رمز ورود ───
@@ -1538,6 +1553,626 @@
     /* ═══════════════════════════════════════════════════════════════
        Hooks
        ═══════════════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════
+       FD-14 — جریان استعلام/پیشنهاد (پروندهٔ بسته) + کاتالوگ→لیست خرید
+       ─────────────────────────────────────────────────────────────
+       ▸ ۱۱/۱۲/۲۴/۲۶/۲۷ همه از data.js رندر می‌شوند — با پارامتر rfq/
+         offer؛ «درخواست ۳ قلمی» فرم خودش را می‌گیرد و «رب» پیشنهادهای
+         خودش را (نقطه‌شکسته‌های قدیمی).
+       ▸ عنوان‌ها با پیشوند «درخواست قیمت …» (حکم مالک FD-14).
+       ▸ فرم ۱۲: سوییچ چک (درصد چکی/نقدی هم‌گام + حداکثر روز) و
+         سوییچ ارسال (رادیوی حمل با فروشنده/مشتری) + جمع‌بندی زندهٔ
+         «خریدار این شرایط را می‌بیند: …» (payTx/dlvTx — همان متنِ
+         کارت ۲۶ و جزئیات ۲۷).
+       ▸ حلقهٔ کامل: پذیرش پیشنهاد (۲۷) یا «بستن استعلام» (۲۶) ⇒
+         rfqsOut.status='done' + result (حکم مالک: «استعلام باز را
+         ببندد و تمام»).
+       ▸ ۲۰: رندر پویا از DATA.shoppingList؛ ۳۱: نوار + شیت انتخاب
+         کالاهای کاتالوگ ⇒ افزودن واقعی به لیست خرید.
+       ═══════════════════════════════════════════════════════════════ */
+
+    function _rfqIn(id) {
+        var out = null;
+        (core.data.rfqsIn || []).forEach(function (r) { if (r.id === id) out = r; });
+        return out;
+    }
+    function _rfqOut(id) {
+        var out = null;
+        (core.data.rfqsOut || []).forEach(function (r) { if (r.id === id) out = r; });
+        return out;
+    }
+    function _offer(id) {
+        var out = null;
+        (core.data.offers || []).forEach(function (o) { if (o.id === id) out = o; });
+        return out;
+    }
+
+    /* متن شرایط — یک زبان، سه جا: فرم ۱۲ (پیش‌نمایش فروشنده) +
+       کارت ۲۶ + جزئیات ۲۷ (بازتاب خریدار). ساختار: pay={chk,days} ·
+       dlv={ship,by} — مستند در data.js */
+    function payTx(p) {
+        p = p || {};
+        var chk = p.chk || 0;
+        if (!chk) return 'نقدی';
+        return faNum(100 - chk) + '٪ نقدی + ' + faNum(chk) + '٪ چک (تا ' + faNum(p.days || 30) + ' روز)';
+    }
+    function dlvTx(d) {
+        d = d || {};
+        if (!d.ship) return 'تحویل حضوری';
+        return 'ارسال — حمل با ' + (d.by === 'customer' ? 'مشتری' : 'فروشنده');
+    }
+    function _rfqTitleTx(name) { return 'درخواست قیمت ' + name; }
+    function _perWord(rfq) {
+        var it = ((rfq || {}).items || [])[0] || {};
+        return 'هر ' + (((it.pack || '').split(' ')[0]) || 'واحد');
+    }
+    function _leftTx(daysLeft) {
+        return daysLeft === 0 ? 'امروز آخرین روز' : faNum(daysLeft) + ' روز مانده';
+    }
+
+    /* ─── ۱۱: درخواست‌های قیمت فروشنده ─── */
+    function sellRfqsRender() {
+        var sec = $('#s-sell-rfqs');
+        if (!sec) return;
+        var rows = $('#sell-rfqs-rows'), done = $('#sell-rfqs-done'), sub = $('#sell-rfqs-sub');
+        var inArr = core.data.rfqsIn || [], ans = core.data.rfqsAnswered || [];
+        if (sub) sub.textContent = faNum(inArr.length) + ' مورد در انتظار پاسخ';
+        if (rows) {
+            rows.innerHTML = inArr.map(function (r) {
+                var multi = (r.items || []).length > 1;
+                return '<div class="row" data-rfq-go="' + esc(r.id) + '">' +
+                    '<div class="thumb thumb-sm"><img src="' + esc(r.img) + '" alt=""></div>' +
+                    '<div class="row-body">' +
+                        '<div class="row-title">' + esc(_rfqTitleTx(r.itemName)) +
+                            (multi ? ' <span class="badge b-gray">' + faNum(r.items.length) + ' قلم</span>' : '') + '</div>' +
+                        '<div class="row-sub">' + esc(r.buyer) + ' <span class="dot">·</span> <span style="color: var(--' +
+                            (r.daysLeft === 0 ? 'red' : 'amber') + '); font-weight: 700;">' + _leftTx(r.daysLeft) + '</span></div>' +
+                    '</div>' +
+                    '<div class="row-chev"><svg><use href="#i-chev"/></svg></div>' +
+                '</div>';
+            }).join('');
+        }
+        if (done) {
+            done.innerHTML = ans.map(function (r) {
+                return '<div class="row static" style="opacity: .75;">' +
+                    '<div class="thumb thumb-sm"><img src="' + esc(r.img) + '" alt=""></div>' +
+                    '<div class="row-body">' +
+                        '<div class="row-title">' + esc(_rfqTitleTx(r.itemName)) + ' <span class="badge b-green">پاسخ داده‌شده</span></div>' +
+                        '<div class="row-sub">' + esc(r.buyer) + ' <span class="dot">·</span> ' + esc(r.when) +
+                            ' <span class="dot">·</span> پیشنهاد من: ' + esc(r.myOffer) + '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+    }
+
+    /* ─── ۱۲: فرم پیشنهاد — رندر از استعلام + سوییچ‌های شرایط ─── */
+    var OFR = { rfq: null, chk: false, chkPct: 50, days: 60, ship: false, shipBy: 'seller' };
+
+    function offerFormRender() {
+        var sec = $('#s-sell-offer');
+        if (!sec) return;
+        var params = core.getSCREENParams()['s-sell-offer'] || {};
+        var r = _rfqIn(params.rfq) || (core.data.rfqsIn || [])[0];
+        if (!r) return;
+        OFR.rfq = r;
+
+        var sub = $('#of-sub');
+        if (sub) sub.textContent = _rfqTitleTx(r.itemName);
+
+        /* کارت استعلام + فهرست قلم‌ها (چندقلمی) */
+        var card = $('#of-rfq-card');
+        if (card) {
+            var multi = (r.items || []).length > 1;
+            var html = '<div class="card" style="display: flex; gap: 12px; align-items: center;">' +
+                '<div class="thumb thumb-md"><img src="' + esc(r.img) + '" alt=""></div>' +
+                '<div style="flex: 1; min-width: 0;">' +
+                    '<div style="font-size: 14px; font-weight: 700;">' + esc(_rfqTitleTx(r.itemName)) + '</div>' +
+                    '<div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">' + esc(r.buyer) + ' · ' + esc(r.pack) + '</div>' +
+                    '<div style="margin-top: 6px;"><span class="badge b-' + (r.daysLeft === 0 ? 'red' : 'amber') + '">' +
+                        (r.daysLeft === 0 ? 'امروز آخرین روز' : faNum(r.daysLeft) + ' روز مهلت') + '</span></div>' +
+                '</div></div>';
+            if (multi) {
+                html += '<div class="card" style="margin-top: 8px; padding: 4px 14px;">' +
+                    (r.items || []).map(function (it) {
+                        return '<div class="fact-row"><span class="k">' + esc(it.name) + '</span><span class="v">' +
+                            faNum(it.qty) + ' ' + esc(it.pack) + '</span></div>';
+                    }).join('') + '</div>';
+            }
+            card.innerHTML = html;
+        }
+
+        /* توضیحات خریدار */
+        var note = $('#of-note'), ntx = $('#of-note-tx');
+        if (note) note.hidden = !r.note;
+        if (ntx) ntx.textContent = r.note || '';
+
+        /* قیمت‌ها — هر قلم فیلد خودش */
+        var host = $('#of-prices');
+        if (host) {
+            host.innerHTML = (r.items || []).map(function (it, i) {
+                return '<div class="field">' +
+                    '<label>قیمت هر ' + esc(it.pack) + (multi ? ' — ' + esc(it.name) : '') +
+                        ' <span class="opt">— تومان</span></label>' +
+                    '<input class="input" type="tel" data-of-price="' + i + '" inputmode="numeric" placeholder="۲٬۸۲۰٬۰۰۰">' +
+                    '<div class="unit-hint"><svg><use href="#i-info"/></svg><span class="ofp-hint">قیمت را وارد کن تا معادلش را ببینی</span></div>' +
+                '</div>';
+            }).join('');
+        }
+
+        offerResetTerms();
+    }
+
+    function offerResetTerms() {
+        OFR.chk = false; OFR.chkPct = 50; OFR.days = 60; OFR.ship = false; OFR.shipBy = 'seller';
+        var sw1 = $('#of-chk-on'), sw2 = $('#of-ship-on');
+        if (sw1) { sw1.classList.remove('on'); sw1.setAttribute('aria-checked', 'false'); }
+        if (sw2) { sw2.classList.remove('on'); sw2.setAttribute('aria-checked', 'false'); }
+        var blk1 = $('#of-chk-block'), blk2 = $('#of-ship-block');
+        if (blk1) blk1.hidden = true;
+        if (blk2) blk2.hidden = true;
+        var cp = $('#of-chk-pct'), csp = $('#of-cash-pct'), cd = $('#of-chk-days');
+        if (cp) cp.value = faNum(50);
+        if (csp) csp.value = faNum(50);
+        if (cd) cd.value = faNum(60);
+        var ph = $('#of-pay-hint'), sh = $('#of-ship-hint');
+        if (ph) ph.textContent = 'خاموش — کل مبلغ نقدی گرفته می‌شود';
+        if (sh) sh.textContent = 'خاموش — تحویل حضوری در انبار تو';
+        $$('#of-ship-by .pill').forEach(function (p) {
+            p.classList.toggle('active', p.dataset.ship === 'seller');
+        });
+        var no = $('#of-note-out');
+        if (no) no.value = '';
+        offerSumSync();
+    }
+
+    /* سوییچ «فروش چکی هم داریم» — درصد چکی/نقدی + حداکثر روز چک */
+    function offerChkToggle() {
+        OFR.chk = !OFR.chk;
+        var sw = $('#of-chk-on');
+        if (sw) { sw.classList.toggle('on', OFR.chk); sw.setAttribute('aria-checked', String(OFR.chk)); }
+        var blk = $('#of-chk-block');
+        if (blk) blk.hidden = !OFR.chk;
+        var h = $('#of-pay-hint');
+        if (h) h.textContent = OFR.chk ? 'روشن — درصد چکی/نقدی و روز چک را مشخص کن' : 'خاموش — کل مبلغ نقدی گرفته می‌شود';
+        offerSumSync();
+    }
+
+    /* سوییچ «ارسال کالا هم داریم» — خاموش = تحویل حضوری */
+    function offerShipToggle() {
+        OFR.ship = !OFR.ship;
+        var sw = $('#of-ship-on');
+        if (sw) { sw.classList.toggle('on', OFR.ship); sw.setAttribute('aria-checked', String(OFR.ship)); }
+        var blk = $('#of-ship-block');
+        if (blk) blk.hidden = !OFR.ship;
+        var h = $('#of-ship-hint');
+        if (h) h.textContent = OFR.ship ? 'روشن — هزینهٔ حمل با کیست؟' : 'خاموش — تحویل حضوری در انبار تو';
+        offerSumSync();
+    }
+
+    function offerShipPick(by) { OFR.shipBy = by === 'customer' ? 'customer' : 'seller'; offerSumSync(); }
+
+    /* دو ورودی درصد — هم‌گام (جمع همیشه ۱۰۰) */
+    function offerPctSync(which) {
+        var el = which === 'chk' ? $('#of-chk-pct') : $('#of-cash-pct');
+        if (!el) return;
+        var v = parseNum(el.value);
+        if (v < 0) v = 0;
+        if (v > 100) v = 100;
+        OFR.chkPct = (which === 'chk') ? v : 100 - v;
+        var chk = $('#of-chk-pct'), cash = $('#of-cash-pct');
+        if (chk) chk.value = faNum(OFR.chkPct);
+        if (cash) cash.value = faNum(100 - OFR.chkPct);
+        offerSumSync();
+    }
+
+    function offerDaysSync() {
+        var el = $('#of-chk-days');
+        if (el) OFR.days = parseNum(el.value) || 0;
+        offerSumSync();
+    }
+
+    /* جمع‌بندی زنده — پیش‌نمایشِ همان متنِ سمت خریدار (۲۶/۲۷) */
+    function offerSumSync() {
+        var tx = $('#of-sum-tx');
+        if (!tx) return;
+        var p = OFR.chk ? { chk: OFR.chkPct, days: OFR.days } : { chk: 0, days: 0 };
+        var d = OFR.ship ? { ship: true, by: OFR.shipBy } : { ship: false, by: null };
+        tx.textContent = 'خریدار این شرایط را می‌بیند: ' + payTx(p) + ' · ' + dlvTx(d);
+    }
+
+    /* هینت قیمت هر قلم — معادل واحد + جمع کل (فیکس FD-14: هینت قبلاً
+       به #offer-unit-hint-yx اشاره می‌کرد که وجود نداشت — هیچ‌وقت
+       آپدیت نمی‌شد) */
+    function offerPriceHint(input) {
+        var hint = input.parentElement ? input.parentElement.querySelector('.ofp-hint') : null;
+        if (!hint) return;
+        var idx = parseInt(input.dataset.ofPrice, 10);
+        var it = (OFR.rfq && OFR.rfq.items) ? OFR.rfq.items[idx] : null;
+        var price = parseNum(input.value);
+        if (!price || !it) { hint.textContent = 'قیمت را وارد کن تا معادلش را ببینی'; return; }
+        var parts = [];
+        if (it.packCount && it.packCount > 1) {
+            parts.push('هر ' + (it.baseUnit || 'واحد') + ' ≈ <b>' + faMoney(Math.round(price / it.packCount)) + ' تومان</b>');
+        }
+        parts.push('برای ' + faNum(it.qty || 0) + ' ' + esc(it.pack) + ': <b>' + faMoney(price * (it.qty || 0)) + ' تومان</b>');
+        hint.innerHTML = parts.join(' · ');
+    }
+
+    /* ارسال پیشنهاد — اعتبارسنجی قیمت + انتقال به «پاسخ داده‌شده» */
+    function offerSend() {
+        var params = core.getSCREENParams()['s-sell-offer'] || {};
+        var r = _rfqIn(params.rfq) || (core.data.rfqsIn || [])[0];
+        var inputs = $$('[data-of-price]');
+        for (var i = 0; i < inputs.length; i++) {
+            if (!parseNum(inputs[i].value)) { toast('قیمت پیشنهادی را وارد کن', 'error'); return; }
+        }
+        var first = inputs[0];
+        if (r) {
+            (core.data.rfqsAnswered = core.data.rfqsAnswered || []).unshift({
+                id: 'ra' + Date.now(), buyer: r.buyer, buyerAvatar: r.buyerAvatar, buyerColor: r.buyerColor,
+                itemName: r.itemName, pack: r.pack, img: r.img, when: 'همین حالا',
+                myOffer: first ? faMoney(parseNum(first.value)) + ' تومان' : '—'
+            });
+            core.data.rfqsIn = core.data.rfqsIn.filter(function (x) { return x.id !== r.id; });
+        }
+        toast('پیشنهاد برای ' + (r ? r.buyer : 'مشتری') + ' ارسال شد', 'success');
+        setTimeout(function () { core.back(); }, 700);
+    }
+
+    /* ─── ۲۴: استعلام‌های من (خریدار) ─── */
+    function buyRfqsRender() {
+        var sec = $('#s-buy-rfqs');
+        if (!sec) return;
+        var open = $('#buy-rfqs-open'), done = $('#buy-rfqs-done'), sub = $('#buy-rfqs-sub');
+        var list = core.data.rfqsOut || [];
+        var cur = list.filter(function (r) { return r.status === 'current'; });
+        var fin = list.filter(function (r) { return r.status !== 'current'; });
+        if (sub) sub.textContent = faNum(cur.length) + ' باز · ' + faNum(fin.length) + ' پایان‌یافته';
+        if (open) {
+            open.innerHTML = cur.length ? cur.map(function (r) {
+                var left;
+                if (!r.offersCount) left = '<span style="color: var(--text-3); font-weight: 700;">در انتظار اولین پیشنهاد</span>';
+                else left = faNum(r.offersCount) + ' پیشنهاد <span class="dot">·</span> <span style="color: var(--' +
+                    (r.daysLeft === 0 ? 'red' : 'amber') + '); font-weight: 700;">' + _leftTx(r.daysLeft) + '</span>';
+                return '<div class="row" data-ofr-go="' + esc(r.id) + '">' +
+                    '<div class="thumb thumb-sm"><img src="' + esc(r.img) + '" alt=""></div>' +
+                    '<div class="row-body">' +
+                        '<div class="row-title">' + esc(_rfqTitleTx(r.itemName)) + '</div>' +
+                        '<div class="row-sub">' + left + '</div>' +
+                    '</div>' +
+                    '<div class="row-chev"><svg><use href="#i-chev"/></svg></div>' +
+                '</div>';
+            }).join('') :
+                '<div class="empty"><div class="empty-ic"><svg><use href="#i-inbox"/></svg></div>' +
+                '<h3>هنوز استعلامی نداده‌ای</h3><p>با «استعلام جدید» حجم و شرایطت را بگو تا چند تأمین‌کننده با هم قیمت بدهند.</p></div>';
+        }
+        if (done) {
+            done.innerHTML = fin.map(function (r) {
+                return '<div class="row static" style="opacity: .75;">' +
+                    '<div class="thumb thumb-sm"><img src="' + esc(r.img) + '" alt=""></div>' +
+                    '<div class="row-body">' +
+                        '<div class="row-title">' + esc(_rfqTitleTx(r.itemName)) + '</div>' +
+                        '<div class="row-sub">' + esc(r.result || 'بسته شد') + '</div>' +
+                    '</div>' +
+                    '<span class="badge b-gray">' + esc(r.when || '') + '</span>' +
+                '</div>';
+            }).join('');
+        }
+    }
+
+    /* ─── ۲۶: مقایسهٔ پیشنهادهای یک استعلام ─── */
+    function offersListRender() {
+        var sec = $('#s-buy-offers');
+        if (!sec) return;
+        var params = core.getSCREENParams()['s-buy-offers'] || {};
+        var rfq = _rfqOut(params.rfq) || (core.data.rfqsOut || []).filter(function (r) { return r.status === 'current'; })[0] || (core.data.rfqsOut || [])[0];
+        if (!rfq) return;
+        var list = (core.data.offers || []).filter(function (o) { return o.rfqId === rfq.id; })
+            .sort(function (a, b) { return a.price - b.price; });
+        var sub = $('#offers-sub');
+        if (sub) sub.textContent = _rfqTitleTx(rfq.itemName) + ' · ' + faNum(list.length) + ' پیشنهاد';
+        var closeBtn = $('#offers-close');
+        if (closeBtn) closeBtn.hidden = rfq.status !== 'current';
+        var host = $('#offers-list');
+        if (!host) return;
+
+        if (rfq.status !== 'current') {
+            host.innerHTML = '<div class="empty"><div class="empty-ic"><svg><use href="#i-inbox"/></svg></div>' +
+                '<h3>این استعلام بسته شده</h3><p>' + esc(rfq.result || 'بسته شد') + ' — پیشنهادها برای رکورد همین‌جا می‌مانند.</p></div>';
+            return;
+        }
+        if (!list.length) {
+            host.innerHTML = '<div class="empty"><div class="empty-ic"><svg><use href="#i-clock"/></svg></div>' +
+                '<h3>هنوز پیشنهادی نرسیده</h3><p>به ' + faNum(rfq.sentTo || 0) + ' تأمین‌کننده گفته شد؛ تا پایان مهلت پاسخ می‌آید.</p></div>';
+            return;
+        }
+        var best = list[0];
+        host.innerHTML = list.map(function (o) {
+            var badges = '';
+            if (o === best) badges += '<span class="badge b-green">کمترین قیمت</span>';
+            if (o.isKnown) badges += '<span class="badge b-green">آشنای من</span>';
+            return '<div class="offer-card' + (o === best ? ' best' : '') + '" data-offer-go="' + esc(o.id) + '">' +
+                '<div class="offer-head">' +
+                    '<div class="avatar" style="background: ' + esc(o.color) + ';">' + esc(o.avatar) + '</div>' +
+                    '<div style="flex: 1; min-width: 0;">' +
+                        '<div style="font-size: 13.5px; font-weight: 700;">' + esc(o.seller) +
+                            (o.verified ? ' <svg style="width: 12px; height: 12px; color: var(--blue);"><use href="#i-verified"/></svg>' : '') + '</div>' +
+                        '<div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">' + esc(o.city) + ' · هم‌استان</div>' +
+                        (badges ? '<div style="margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap;">' + badges + '</div>' : '') +
+                    '</div>' +
+                    '<div class="offer-price"><div class="p">' + faMoney(o.price) + '</div><div class="u">' + esc(_perWord(rfq)) + '</div></div>' +
+                '</div>' +
+                '<div class="of-terms">' +
+                    '<div class="ot-chip"><small>پرداخت</small><b>' + esc(payTx(o.pay)) + '</b></div>' +
+                    '<div class="ot-chip"><small>تحویل</small><b>' + esc(dlvTx(o.dlv)) + '</b></div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    /* ─── ۲۷: جزئیات پیشنهاد ─── */
+    function offerViewRender() {
+        var sec = $('#s-buy-offer-view');
+        if (!sec) return;
+        var params = core.getSCREENParams()['s-buy-offer-view'] || {};
+        var o = _offer(params.offer) || (core.data.offers || [])[0];
+        if (!o) return;
+        var rfq = _rfqOut(o.rfqId) || (core.data.rfqsOut || [])[0] || {};
+        var it = (rfq.items || [])[0] || {};
+
+        var sellerSub = $('#ovf-seller');
+        if (sellerSub) sellerSub.textContent = o.seller;
+
+        var head = $('#ovf-head');
+        if (head) {
+            var badges = '';
+            if (o.isKnown) badges += '<span class="badge b-green">آشنای من</span>';
+            if (o.verified) badges += '<span class="badge b-blue">تأییدشده</span>';
+            head.innerHTML =
+                '<div class="avatar avatar-lg" style="background: ' + esc(o.color) + ';">' + esc(o.avatar) + '</div>' +
+                '<div style="flex: 1; min-width: 0;">' +
+                    '<div style="font-size: 15px; font-weight: 700;">' + esc(o.seller) + '</div>' +
+                    '<div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">' + esc(o.city) +
+                        ' · تأمین‌کننده' + (o.isKnown ? ' — در شبکهٔ تو' : '') + '</div>' +
+                    (badges ? '<div style="margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap;">' + badges + '</div>' : '') +
+                '</div>';
+        }
+
+        var lbl = $('#ovf-price-lbl');
+        if (lbl) lbl.textContent = 'قیمت هر ' + (it.pack || 'واحد');
+        var price = $('#ovf-price');
+        if (price) price.innerHTML = faMoney(o.price) + ' <small>تومان</small>';
+        var unit = $('#ovf-unit'), utx = $('#ovf-unit-tx');
+        if (unit) {
+            var showUnit = o.packCount && o.packCount > 1 && o.pricePerUnit;
+            unit.hidden = !showUnit;
+            if (showUnit && utx) {
+                utx.innerHTML = 'هر ' + esc(o.baseUnit || 'واحد') + ' ≈ <b>' + faMoney(o.pricePerUnit) +
+                    ' تومان</b> — قابل‌مقایسه با بسته‌بندی‌های دیگر';
+            }
+        }
+
+        var facts = $('#ovf-facts');
+        if (facts) {
+            var rows = [
+                ['درخواست', esc(_rfqTitleTx(rfq.itemName || ''))],
+                ['مقدار درخواست', faNum(it.qty || 0) + ' ' + esc(it.pack || '') +
+                    ((rfq.items || []).length > 1 ? ' + ' + faNum(rfq.items.length - 1) + ' قلم دیگر' : '')],
+                ['جمع کل', '<span style="color: var(--primary-strong);">' + faMoney(o.price * (it.qty || 0)) + ' تومان</span>'],
+                ['شرایط پرداخت', esc(payTx(o.pay))],
+                ['روش تحویل', esc(dlvTx(o.dlv))]
+            ];
+            if (rfq.status === 'current' && rfq.daysLeft !== undefined) {
+                rows.push(['مهلت استعلام', _leftTx(rfq.daysLeft)]);
+            }
+            facts.innerHTML = rows.map(function (r) {
+                return '<div class="fact-row"><span class="k">' + r[0] + '</span><span class="v">' + r[1] + '</span></div>';
+            }).join('');
+        }
+
+        var note = $('#ovf-note'), ntx = $('#ovf-note-tx');
+        if (note) note.hidden = !o.note;
+        if (ntx) ntx.textContent = o.note || '';
+
+        var acc = $('#ovf-accept');
+        if (acc) acc.hidden = rfq.status !== 'current';
+    }
+
+    /* پذیرش پیشنهاد = پایان استعلام (حکم مالک FD-14) */
+    function offerAccept() {
+        var params = core.getSCREENParams()['s-buy-offer-view'] || {};
+        var o = _offer(params.offer) || (core.data.offers || [])[0];
+        var rfq = o ? _rfqOut(o.rfqId) : null;
+        core.confirm({
+            title: 'پذیرش پیشنهاد',
+            text: 'این پیشنهاد را می‌پذیری؟ فروشنده خبردار می‌شود و برای هماهنگی با تو تماس می‌گیرد. استعلام هم بسته می‌شود.',
+            ok: 'بله، می‌پذیرم', cancel: 'انصراف'
+        }).then(function (ok) {
+            if (!ok) return;
+            if (rfq && rfq.status === 'current') {
+                rfq.status = 'done';
+                rfq.result = 'پذیرفت: ' + o.seller + ' — ' + faMoney(o.price) + ' ت';
+                rfq.when = 'امروز';
+            }
+            toast('پیشنهاد پذیرفته شد — استعلام بسته شد', 'success');
+            setTimeout(function () { core.resetStack(); core.show('s-buy-rfqs', false); }, 700);
+        });
+    }
+
+    /* بستن استعلام بدون انتخاب پیشنهاد (۲۶) */
+    function rfqCloseConfirm() {
+        var params = core.getSCREENParams()['s-buy-offers'] || {};
+        var rfq = _rfqOut(params.rfq) || (core.data.rfqsOut || []).filter(function (r) { return r.status === 'current'; })[0];
+        if (!rfq || rfq.status !== 'current') return;
+        core.confirm({
+            title: 'بستن استعلام',
+            text: 'این استعلام را می‌بندی؟ بعد از بستن، پیشنهاد جدیدی دریافت نمی‌کنی.',
+            ok: 'بله، بسته می‌شود', cancel: 'انصراف'
+        }).then(function (ok) {
+            if (!ok) return;
+            rfq.status = 'done';
+            rfq.result = 'بسته شد — بدون انتخاب پیشنهاد';
+            rfq.when = 'امروز';
+            toast('استعلام بسته شد', 'success');
+            core.resetStack();
+            core.show('s-buy-rfqs', false);
+        });
+    }
+
+    /* ─── ۲۵: گیرندگان زنده + ارسال واقعی استعلام ─── */
+    function rfqRecipSync() {
+        var sec = $('#s-buy-rfq-new');
+        if (!sec) return;
+        var n = $$('#s-buy-rfq-new .checkrow .checkbox.on').length;
+        var btn = $('#rfq-send-btn');
+        if (btn) {
+            btn.textContent = 'ارسال به ' + faNum(n) + ' تأمین‌کننده';
+            btn.disabled = n === 0;
+        }
+    }
+
+    function rfqSendNew() {
+        var sec = $('#s-buy-rfq-new');
+        if (!sec) return false;
+        var n = $$('#s-buy-rfq-new .checkrow .checkbox.on').length;
+        if (!n) { toast('حداقل یک تأمین‌کننده انتخاب کن', 'error'); return true; }
+        var days = 3;
+        var act = $('#rfq-deadline .pill.active');
+        if (act) days = parseInt(act.dataset.deadline, 10) || 3;
+        var qty = parseNum((($('#rfq-qty') || {}).value) || '20') || 20;
+        core.data.rfqsOut.unshift({
+            id: 'rn' + Date.now(), businessId: 'b2',
+            itemName: 'برنج هاشمی گلستان · ' + faNum(qty) + ' کیسه', img: 'png/goods/rice-sack.jpg',
+            sentTo: n, offersCount: 0, newOffers: 0, daysLeft: days, status: 'current'
+        });
+        var btn = $('#rfq-send-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'ارسال شد ✓'; }
+        toast('استعلام قیمت برای ' + faNum(n) + ' تأمین‌کننده ارسال شد', 'success');
+        setTimeout(function () { core.resetStack(); core.show('s-buy-rfqs', false); }, 800);
+        return true;
+    }
+
+    /* ─── ۲۰: رندر پویای لیست خرید ─── */
+    function buyListRender() {
+        var host = $('#buylist-rows');
+        if (!host) return;
+        var items = core.data.shoppingList || [];
+        var cnt = $('#buylist-count');
+        if (cnt) cnt.textContent = faNum(items.length) + ' کالا';
+        if (!items.length) {
+            host.innerHTML = '<div class="empty"><div class="empty-ic"><svg><use href="#i-basket"/></svg></div>' +
+                '<h3>لیست خریدت خالی است</h3><p>کالاهایی که عمده می‌خری را اضافه کن — از کاتالوگ تأمین‌کننده‌هایت یا با «افزودن کالا».</p></div>';
+            return;
+        }
+        host.innerHTML = items.map(function (it) {
+            var chips = '';
+            if (it.added) chips += '<span class="bl-chip hot"><svg><use href="#i-check"/></svg> تازه افزوده</span>';
+            else if (it.fresh) chips += '<span class="bl-chip ' + (it.fresh === 'امروز' ? 'fresh' : 'warn') +
+                '"><svg><use href="#i-clock"/></svg> قیمت ' + esc(it.fresh) + '</span>';
+            if (it.offers) chips += '<span class="bl-chip hot"><svg><use href="#i-sparkles"/></svg> ' + faNum(it.offers) + ' پیشنهاد</span>';
+            if (it.inq) chips += '<span class="bl-chip hot"><svg><use href="#i-inbox"/></svg> استعلام در جریان</span>';
+            if (it.suppliersCount) chips += '<span class="bl-chip"><svg><use href="#i-users"/></svg> ' + faNum(it.suppliersCount) + ' تأمین‌کننده</span>';
+            else chips += '<span class="bl-chip muted"><svg><use href="#i-info"/></svg> تأمین‌کننده‌ای ثبت نشده</span>';
+            return '<div class="bl-card" data-go="s-buy-product-suppliers" data-product="' + esc(it.name) + '">' +
+                '<div class="bl-thumb"><img src="' + esc(it.img) + '" alt=""></div>' +
+                '<div class="bl-body">' +
+                    '<div class="bl-title">' + esc(it.name) + '</div>' +
+                    '<div class="bl-q">' + esc(it.q || it.pack || '') + '</div>' +
+                    '<div class="bl-meta">' + chips + '</div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    /* ─── ۳۱: شیت «افزودن کالاهای کاتالوگ به لیست خرید» ─── */
+    var PICK = { sel: {}, q: '', gid: '' };
+
+    function picklistOpen() {
+        PICK.sel = {}; PICK.q = ''; PICK.gid = '';
+        var s = $('#pl-search');
+        if (s) s.value = '';
+        picklistRender();
+        core.openSheet('sheet-picklist');
+    }
+
+    function picklistRender() {
+        var gHost = $('#pl-groups');
+        if (gHost) {
+            var chips = ['<button class="chip' + (PICK.gid ? '' : ' active') + '" type="button" data-pl-g="">همه</button>'];
+            (core.data.catalogGroups || []).forEach(function (g) {
+                chips.push('<button class="chip' + (PICK.gid === g.id ? ' active' : '') +
+                    '" type="button" data-pl-g="' + esc(g.id) + '">' + esc(g.name) + '</button>');
+            });
+            gHost.innerHTML = chips.join('');
+        }
+        var host = $('#pl-grid');
+        if (!host) return;
+        var items = (core.data.listings || []).filter(function (l) {
+            if (PICK.gid && l.groupId !== PICK.gid) return false;
+            if (PICK.q && l.name.indexOf(PICK.q) === -1) return false;
+            return true;
+        });
+        host.innerHTML = items.length ? items.map(function (l) {
+            var inList = (core.data.shoppingList || []).some(function (s) { return s.listingId === l.id; });
+            return '<div class="pl-item' + (PICK.sel[l.id] ? ' on' : '') + (inList ? ' in-list' : '') + '"' +
+                (inList ? '' : ' data-pl-item="' + esc(l.id) + '"') + '>' +
+                '<span class="pl-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span>' +
+                (inList ? '<span class="pl-inlist"><span class="badge b-green">در لیست هست</span></span>' : '') +
+                '<div class="pl-th"><img src="' + esc(l.img) + '" alt=""></div>' +
+                '<b>' + esc(l.name) + '</b>' +
+                '<small>' + esc(l.pack) + '</small>' +
+            '</div>';
+        }).join('') : '<div class="pl-empty">کالایی با این جستجو پیدا نشد</div>';
+        picklistBtnSync();
+    }
+
+    function picklistBtnSync() {
+        var n = 0;
+        Object.keys(PICK.sel).forEach(function (k) { if (PICK.sel[k]) n++; });
+        var btn = $('#pl-add'), tx = $('#pl-add-tx');
+        if (btn) btn.disabled = n === 0;
+        if (tx) tx.textContent = n ? 'افزودن ' + faNum(n) + ' کالا به لیست خرید' : 'افزودن به لیست خرید';
+    }
+
+    function picklistToggle(lid) {
+        PICK.sel[lid] = !PICK.sel[lid];
+        var el = $('[data-pl-item="' + lid + '"]');
+        if (el) el.classList.toggle('on', !!PICK.sel[lid]);
+        picklistBtnSync();
+    }
+
+    function picklistGroup(gid) {
+        PICK.gid = gid || '';
+        picklistRender();
+    }
+
+    function picklistSearch(q) {
+        PICK.q = (q || '').trim();
+        picklistRender();
+    }
+
+    function picklistAdd() {
+        var ids = Object.keys(PICK.sel).filter(function (k) { return PICK.sel[k]; });
+        if (!ids.length) return;
+        var added = 0;
+        ids.forEach(function (lid) {
+            var l = _findListing(lid);
+            if (!l) return;
+            if ((core.data.shoppingList || []).some(function (s) { return s.listingId === l.id; })) return;
+            core.data.shoppingList.push({
+                id: 'sl-' + Date.now() + '-' + lid,
+                businessId: 'b2', listingId: l.id,
+                name: l.name, pack: l.pack, img: l.img,
+                suppliersCount: 1, added: true
+            });
+            added++;
+        });
+        core.closeSheet('sheet-picklist');
+        if (added) toast(faNum(added) + ' کالا به لیست خرید اضافه شد', 'success');
+        else toast('این کالاها از قبل در لیست خریدت هستند', 'error');
+    }
+
     core.registerShowHook('s-sell-add', addReset);
     core.registerShowHook('s-catalog-guest', applyGuestMode);
     /* FD-10: جزئیات کالا — رندر از دیتا + وضعیت گیت قیمت */
@@ -1564,6 +2199,18 @@
     core.registerShowHook('s-home-sell', deskHomeSync);
     core.registerShowHook('s-home-buy', buyDeskSync);
     core.registerShowHook('s-profile', chargeSync);
+
+    /* ═══ FD-14 — هوک‌های جریان استعلام/پیشنهاد + لیست خرید ═══
+       ترتیب مهم: رندرهای این‌جا قبل از فیلترِ یک‌بارمصرفِ دفتر مشتری
+       (rfqsFilterApply در app-customers.js — بعد از این فایل لود می‌شود)
+       اجرا می‌شوند تا روی ردیف‌های تازه بیفتد. */
+    core.registerShowHook('s-sell-rfqs', sellRfqsRender);
+    core.registerShowHook('s-sell-offer', offerFormRender);
+    core.registerShowHook('s-buy-rfqs', buyRfqsRender);
+    core.registerShowHook('s-buy-offers', offersListRender);
+    core.registerShowHook('s-buy-offer-view', offerViewRender);
+    core.registerShowHook('s-buy-rfq-new', rfqRecipSync);
+    core.registerShowHook('s-buy-list', buyListRender);
 
     /* ═══════════════════════════════════════════════════════════════
        Expose
@@ -1646,6 +2293,25 @@
         catEditLoad: catEditLoad,
         catePricesToggle: catePricesToggle,
         gdEditRender: gdEditRender,
+
+        /* ═══ FD-14 ═══ */
+        offerChkToggle: offerChkToggle,
+        offerShipToggle: offerShipToggle,
+        offerShipPick: offerShipPick,
+        offerPctSync: offerPctSync,
+        offerDaysSync: offerDaysSync,
+        offerPriceHint: offerPriceHint,
+        offerSend: offerSend,
+        offerAccept: offerAccept,
+        rfqCloseConfirm: rfqCloseConfirm,
+        rfqRecipSync: rfqRecipSync,
+        rfqSendNew: rfqSendNew,
+        buyListRender: buyListRender,
+        picklistOpen: picklistOpen,
+        picklistToggle: picklistToggle,
+        picklistGroup: picklistGroup,
+        picklistSearch: picklistSearch,
+        picklistAdd: picklistAdd,
     };
 
     /* ═══════════════════════════════════════════════════════════════

@@ -1,61 +1,41 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۲۷: جزئیات پیشنهاد
-     کارت فروشنده + قیمت با معادل واحد + شرایط + راه‌های ارتباط.
+     اسکرین ۲۷: جزئیات پیشنهاد — FD-14 رندر پویا (offerViewRender)
+     ▸ کارت فروشنده + قیمت با معادل واحد + مشخصات استعلام +
+       شرایط (پرداخت/تحویل — همان ساختار فرم ۱۲: «۶۰٪ نقدی + ۴۰٪
+       چک (تا ۶۰ روز)» / «ارسال — حمل با فروشنده») + راه‌های ارتباط.
+     ▸ «پذیرش پیشنهاد» = پایان استعلام (حکم مالک FD-14): پس از
+       پذیرش، استعلام بسته می‌شود، بقیهٔ تأمین‌کننده‌ها خبردار
+       می‌شوند و ردیف به «پایان‌یافته» می‌رود (rfq.status=done).
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-buy-offer-view" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">جزئیات پیشنهاد<small>شالی‌زار طالب</small></div>
+        <div class="ttl">جزئیات پیشنهاد<small id="ovf-seller">شالی‌زار طالب</small></div>
     </div>
 
     <div class="body">
-        <div class="card" style="display: flex; gap: 12px; align-items: center;">
-            <div class="avatar avatar-lg" style="background: #0d9488;">ش</div>
-            <div style="flex: 1; min-width: 0;">
-                <div style="font-size: 15px; font-weight: 700;">شالی‌زار طالب</div>
-                <div style="font-size: 11px; color: var(--text-3); margin-top: 3px;">شالی‌زار و برداشت برنج · رشت</div>
-                <div style="margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap;">
-                    <span class="badge b-green">کمترین قیمت</span>
-                    <span class="badge b-gray">هم‌شهری</span>
-                </div>
-            </div>
-        </div>
+        <!-- کارت فروشنده -->
+        <div class="card" style="display: flex; gap: 12px; align-items: center;" id="ovf-head"></div>
 
+        <!-- قیمت -->
         <div class="offer-summary">
-            <div style="font-size: 11.5px; color: var(--text-3); margin-bottom: 4px;">قیمت هر کیسهٔ ۵۰ کیلویی</div>
-            <div class="big-price">۲٬۷۸۰٬۰۰۰ <small>تومان</small></div>
-            <div class="unit-price">
+            <div style="font-size: 11.5px; color: var(--text-3); margin-bottom: 4px;" id="ovf-price-lbl">قیمت هر کیسهٔ ۵۰ کیلویی</div>
+            <div class="big-price" id="ovf-price">۲٬۷۸۰٬۰۰۰ <small>تومان</small></div>
+            <div class="unit-price" id="ovf-unit" hidden>
                 <svg><use href="#i-info"/></svg>
-                <span>هر کیلوگرم ≈ ۵۵٬۶۰۰ تومان — قابل‌مقایسه با بسته‌بندی‌های دیگر</span>
+                <span id="ovf-unit-tx"></span>
             </div>
         </div>
 
-        <div class="card" style="padding: 4px 14px;">
-            <div class="fact-row">
-                <span class="k">کالای درخواستی</span><span class="v">برنج هاشمی</span>
-            </div>
-            <div class="fact-row">
-                <span class="k">مقدار درخواست</span><span class="v">۲۰ کیسهٔ ۵۰ کیلویی</span>
-            </div>
-            <div class="fact-row">
-                <span class="k">جمع کل</span><span class="v" style="color: var(--primary-strong);">۵۵٬۶۰۰٬۰۰۰ تومان</span>
-            </div>
-            <div class="fact-row">
-                <span class="k">شرایط پرداخت</span><span class="v">نقدی</span>
-            </div>
-            <div class="fact-row">
-                <span class="k">روش تحویل</span><span class="v">تحویل در محل</span>
-            </div>
-            <div class="fact-row">
-                <span class="k">مهلت پیشنهاد</span><span class="v">۲ روز مانده</span>
-            </div>
-        </div>
+        <!-- مشخصات استعلام + شرایط -->
+        <div class="card" style="padding: 4px 14px;" id="ovf-facts"></div>
 
-        <div class="callout callout-info">
+        <!-- یادداشت فروشنده -->
+        <div class="callout callout-info" id="ovf-note" hidden>
             <svg><use href="#i-msg"/></svg>
             <div>
                 <b>یادداشت فروشنده:</b>
-                <div style="margin-top: 4px;">برنج امسال، پاک‌شده و آمادهٔ ارسال. کیفیت تضمینی.</div>
+                <div style="margin-top: 4px;" id="ovf-note-tx"></div>
             </div>
         </div>
 
@@ -99,7 +79,7 @@
         <button class="btn btn-outline" style="flex: .7;" data-go="s-chat">
             <svg><use href="#i-msg"/></svg> پیام
         </button>
-        <button class="btn btn-primary" style="flex: 1.3;" data-accept-offer>
+        <button class="btn btn-primary" style="flex: 1.3;" data-accept-offer id="ovf-accept">
             <svg><use href="#i-check"/></svg> پذیرش پیشنهاد
         </button>
     </div>

@@ -231,6 +231,15 @@
         if (backEl) { e.preventDefault(); back(); return; }
 
         /* ─── پیل‌ها ─── */
+        /* FD-14: رادیوی دوگانهٔ هزینهٔ حمل (فرم پیشنهاد) — «یکی از دو»؛
+           فعال‌سازی + متن جمع‌بندی زنده */
+        var shipPill = t.closest('#of-ship-by .pill');
+        if (shipPill) {
+            $$('#of-ship-by .pill').forEach(function (p) { p.classList.remove('active'); });
+            shipPill.classList.add('active');
+            if (core.forms.offerShipPick) core.forms.offerShipPick(shipPill.dataset.ship);
+            return;
+        }
         var pill = t.closest('.pills .pill');
         if (pill) {
             $$('.pill', pill.parentElement).forEach(function (p) { p.classList.remove('active'); });
@@ -259,6 +268,12 @@
             core.forms.addPickPack(packChip.dataset.pickPack || 'custom');
             return;
         }
+
+        /* ─── FD-14: چیپ گروه کالا در شیت «افزودن به لیست خرید» (۳۱) —
+           باید قبل از چیپ عمومی باشد تا فیلتر گروه واقعاً اجرا شود
+           (چیپ عمومی فقط کلاس active را جابه‌جا می‌کند و return) ─── */
+        var plG = t.closest('[data-pl-g]');
+        if (plG) { core.forms.picklistGroup(plG.dataset.plG); return; }
 
         /* ─── چیپ عمومی ─── */
         var chip = t.closest('.chips .chip');
@@ -300,6 +315,10 @@
                 core.forms.promoSwitchToggle();
                 return;
             }
+            /* FD-14: سوییچ‌های فرم پیشنهاد — نمایش/نهفتن بلوک چک و ارسال
+               (منطق در app-forms: offerChkToggle / offerShipToggle) */
+            if (sw.id === 'of-chk-on') { core.forms.offerChkToggle(); return; }
+            if (sw.id === 'of-ship-on') { core.forms.offerShipToggle(); return; }
             /* FD-13: سوییچ «مشاهده قیمت‌ها فقط برای مشتریان» (۳۶) —
                تنظیم کاتالوگ را عوض می‌کند و ۳۱/۳۷ همان لحظه واکنش نشان می‌دهند */
             if (sw.id === 'cate-prices-only') {
@@ -315,6 +334,8 @@
         if (cr && !t.closest('#contact-list')) {
             var cb = cr.querySelector('.checkbox');
             if (cb) cb.classList.toggle('on');
+            /* FD-14: فرم استعلام (۲۵) — شمارش گیرندگان زنده */
+            if (core.forms.rfqRecipSync) core.forms.rfqRecipSync();
             return;
         }
 
@@ -445,6 +466,14 @@
         if (t.closest('#cart-track')) { core.forms.guestOrderTrack(); return; }
         if (t.closest('#cart-continue')) { core.forms.guestCartContinue(); return; }
 
+        /* ═══ FD-14 — افزودن کالاهای کاتالوگ به لیست خرید (۳۱) ═══
+           نوار (فقط مشتیِ ذخیره‌کرده) → شیت انتخاب: سرچ + گروه +
+           گرید چک‌باکس + «افزودن n کالا» ⇒ DATA.shoppingList */
+        if (t.closest('#guest-addlist-btn')) { core.forms.picklistOpen(); return; }
+        var plItem = t.closest('[data-pl-item]');
+        if (plItem) { core.forms.picklistToggle(plItem.dataset.plItem); return; }
+        if (t.closest('#pl-add')) { core.forms.picklistAdd(); return; }
+
         /* جریان ذخیره: مزایا (آکاردئون FD-10) → حساب → پنل */
         if (t.closest('#bene-toggle')) { core.forms.guestBeneToggle(); return; }
         if (t.closest('[data-save-flow]')) { core.forms.guestSaveFlow(); return; }
@@ -453,6 +482,23 @@
         if (t.closest('#acc-goto-signup')) { core.forms.guestAccountOpen('signup'); return; }
         if (t.closest('#acc-submit')) { core.forms.guestAccountSubmit('signup'); return; }
         if (t.closest('#acc-login-submit')) { core.forms.guestAccountSubmit('login'); return; }
+        /* FD-14: نمای «ذخیره انجام شد» — مقصد انتخابی، نه پرش:
+           دکمه = میز خرید (قاعدهٔ FD-12 سرِ جایش) · لینک = ماندن.
+           هردو، نمای موفقیت را هم ریست می‌کنند (بازشدن بعدی تمیز). */
+        if (t.closest('#acc-goto-desk')) {
+            var svd = $('#acc-saved');
+            if (svd) svd.hidden = true;
+            core.closeSheet('sheet-account');
+            core.resetStack();
+            show('s-home-buy', false);
+            return;
+        }
+        if (t.closest('#acc-stay')) {
+            var svs = $('#acc-saved');
+            if (svs) svs.hidden = true;
+            core.closeSheet('sheet-account');
+            return;
+        }
         /* FD-10: دکمهٔ اصلی اکشن‌بار صفحهٔ جزئیات (۳۷) */
         if (t.closest('#pv-cta')) { core.forms.pvCta(); return; }
 
@@ -491,24 +537,32 @@
             return;
         }
 
-        /* ─── ارسال پیشنهاد فروشنده ─── */
+        /* ─── ارسال پیشنهاد فروشنده (FD-14: منطق در app-forms —
+           اعتبارسنجی قیمت + انتقال استعلام به «پاسخ داده‌شده») ─── */
         if (t.closest('[data-offer-send]')) {
-            toast('پیشنهاد برای مشتری ارسال شد', 'success');
-            setTimeout(function () { back(); }, 700);
+            if (core.forms.offerSend) core.forms.offerSend();
             return;
         }
 
-        /* ─── پذیرش پیشنهاد خریدار ─── */
+        /* ─── پذیرش پیشنهاد خریدار (FD-14: پذیرش = بستن استعلام) ─── */
         if (t.closest('[data-accept-offer]')) {
-            core.confirm({
-                title: 'پذیرش پیشنهاد',
-                text: 'این پیشنهاد را می‌پذیری؟ فروشنده خبردار می‌شود و برای هماهنگی با تو تماس می‌گیرد.',
-                ok: 'بله، می‌پذیرم', cancel: 'انصراف'
-            }).then(function (ok) {
-                if (ok) { toast('پیشنهاد پذیرفته شد — فروشنده خبردار شد', 'success'); setTimeout(function () { back(); }, 700); }
-            });
+            if (core.forms.offerAccept) core.forms.offerAccept();
             return;
         }
+
+        /* ─── بستن استعلام (۲۶) — پایان کار خریدار بدون انتخاب ─── */
+        if (t.closest('[data-close-rfq]')) {
+            if (core.forms.rfqCloseConfirm) core.forms.rfqCloseConfirm();
+            return;
+        }
+
+        /* ─── FD-14: ناوبری با پارامتر — ردیف استعلام/پیشنهاد ─── */
+        var rfqGo = t.closest('[data-rfq-go]');
+        if (rfqGo) { e.preventDefault(); go('s-sell-offer', { rfq: rfqGo.dataset.rfqGo }); return; }
+        var ofrGo = t.closest('[data-ofr-go]');
+        if (ofrGo) { e.preventDefault(); go('s-buy-offers', { rfq: ofrGo.dataset.ofrGo }); return; }
+        var offerGo = t.closest('[data-offer-go]');
+        if (offerGo) { e.preventDefault(); go('s-buy-offer-view', { offer: offerGo.dataset.offerGo }); return; }
 
         /* ─── ذخیرهٔ ویرایش محصول (FD-9: ثبت زنده در دیتا + اعتبار قیمت) ─── */
         if (t.closest('[data-edit-save]')) {
@@ -554,14 +608,11 @@
             return;
         }
 
-        /* ─── ارسال استعلام ─── */
+        /* ─── ارسال استعلام (FD-14: rfqSendNew در app-forms —
+           استعلام واقعاً به «استعلام‌های من» اضافه می‌شود) ─── */
         var rfqBtn = t.closest('[data-rfq-send]');
         if (rfqBtn && !rfqBtn.disabled) {
-            rfqBtn.disabled = true;
-            rfqBtn.textContent = 'ارسال شد ✓';
-            toast('استعلام قیمت برای ۳ تأمین‌کننده ارسال شد', 'success');
-            setTimeout(function () { core.resetStack(); show('s-buy-rfqs', false); }, 800);
-            return;
+            if (core.forms.rfqSendNew && core.forms.rfqSendNew()) return;
         }
 
         /* ─── پیام سریع در چت ─── */
@@ -830,17 +881,17 @@
         }
 
         if (t.id === 'offer-price') {
-            var price = parseNum(t.value);
-            var hint = $('#offer-unit-hint-yx');
-            if (hint) {
-                if (!price) hint.textContent = 'قیمت را وارد کن تا معادلش را ببینی';
-                else {
-                    var perKg = Math.round(price / 50);
-                    hint.innerHTML = 'هر کیلوگرم ≈ <b>' + faMoney(perKg) + ' تومان</b> · برای ۲۰ کیسه: <b>' + faMoney(price * 20) + ' تومان</b>';
-                }
-            }
+            /* FD-14: مرجع قدیمی (#offer-unit-hint-yx) وجود نداشت — هینت
+               هیچ‌وقت آپدیت نمی‌شد (باگ). حالا هینت عمومیِ هر قلم */
+            if (core.forms.offerPriceHint) core.forms.offerPriceHint(t);
             return;
         }
+
+        /* ═══ FD-14 — ورودی‌های فرم پیشنهاد (۱۲) و شیت انتخاب (۳۱) ═══ */
+        if (t.id === 'of-chk-pct') { core.forms.offerPctSync('chk'); return; }
+        if (t.id === 'of-cash-pct') { core.forms.offerPctSync('cash'); return; }
+        if (t.id === 'of-chk-days') { core.forms.offerDaysSync(); return; }
+        if (t.id === 'pl-search') { core.forms.picklistSearch(t.value); return; }
     });
 
 

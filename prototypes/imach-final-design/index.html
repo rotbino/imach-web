@@ -329,6 +329,23 @@
             </button>
             <button class="linklike" type="button" id="acc-goto-signup">حساب ندارم — ثبت‌نام می‌کنم</button>
         </div>
+
+        <!-- ═══ FD-14 (حکم مالک): نمای «ذخیره انجام شد» ═══
+             بعد از ثبت‌نام/ورود از جریان ذخیره، کاربر بلافاصله به پنل
+             برده نمی‌شود — همان شیت باز می‌ماند و پیام می‌گوید از این
+             به بعد کجا (بخش تأمین‌کنندگان میز خرید) به این فروشنده
+             دسترسی دارد؛ دکمهٔ «رفتن به میز خرید» مقصد را انتخابی
+             می‌کند و لینک آرام «ماندن در همین کاتالوگ» راه ماندن را
+             روشن می‌کند — «این‌طوری کاربر گیج نمی‌شود». -->
+        <div id="acc-saved" hidden>
+            <div class="ok-pill"><svg><use href="#i-check"/></svg></div>
+            <div class="ok-ttl">ذخیره انجام شد</div>
+            <div class="ok-sub">از این به بعد شما در بخش «تأمین‌کنندگان» میز خرید خود در آیمچ، به این تأمین‌کننده دسترسی دارید.</div>
+            <button class="btn btn-primary btn-block" id="acc-goto-desk" type="button" style="margin-top: 10px;">
+                <svg><use href="#i-basket"/></svg> رفتن به میز خرید
+            </button>
+            <button class="linklike" type="button" id="acc-stay">ماندن در همین کاتالوگ</button>
+        </div>
     </div>
 
     <!-- ═══ FD-12 — شیت: ساخت رمز ورود ═══

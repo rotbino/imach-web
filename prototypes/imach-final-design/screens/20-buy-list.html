@@ -5,7 +5,7 @@
 <section class="screen" id="s-buy-list" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">لیست خرید من<small>۴ کالا</small></div>
+        <div class="ttl">لیست خرید من<small id="buylist-count">۴ کالا</small></div>
         <button class="icon-btn" id="buylist-preview" aria-label="پیش‌نمایش"><svg><use href="#i-eye"/></svg></button>
         <button class="icon-btn" data-go="s-buy-list-add" aria-label="افزودن کالا"><svg><use href="#i-plus"/></svg></button>
     </div>
@@ -33,58 +33,11 @@
             <div>کالاهایی که عمده می‌خری را این‌جا نگه دار. روی هر کالا بزن تا قیمت‌های تأمین‌کنندگانت را ببینی.</div>
         </div>
 
-        <div class="rows">
-
-            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="برنج هاشمی گلستان">
-                <div class="bl-thumb"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی گلستان"></div>
-                <div class="bl-body">
-                    <div class="bl-title">برنج هاشمی گلستان</div>
-                    <div class="bl-q">۲۰ کیسهٔ ۵۰ کیلویی · ماهانه</div>
-                    <div class="bl-meta">
-                        <span class="bl-chip fresh"><svg><use href="#i-check"/></svg> قیمت امروز</span>
-                        <span class="bl-chip"><svg><use href="#i-users"/></svg> ۳ تأمین‌کننده</span>
-                        <span class="bl-chip hot"><svg><use href="#i-sparkles"/></svg> ۲ پیشنهاد</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="روغن سرخ‌کردنی">
-                <div class="bl-thumb"><img src="png/goods/oil-bottle.jpg" alt="روغن سرخ‌کردنی"></div>
-                <div class="bl-body">
-                    <div class="bl-title">روغن سرخ‌کردنی</div>
-                    <div class="bl-q">۴۰ عدد ۱۰ لیتری · ماهانه</div>
-                    <div class="bl-meta">
-                        <span class="bl-chip warn"><svg><use href="#i-clock"/></svg> قیمت ۴ روز پیش</span>
-                        <span class="bl-chip"><svg><use href="#i-users"/></svg> ۲ تأمین‌کننده</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="رب گوجه‌فرنگی">
-                <div class="bl-thumb"><img src="png/goods/tomato-paste.jpg" alt="رب گوجه‌فرنگی"></div>
-                <div class="bl-body">
-                    <div class="bl-title">رب گوجه‌فرنگی</div>
-                    <div class="bl-q">۶۰ عدد ۵۰۰ گرمی · هفتگی</div>
-                    <div class="bl-meta">
-                        <span class="bl-chip fresh"><svg><use href="#i-check"/></svg> قیمت دیروز</span>
-                        <span class="bl-chip"><svg><use href="#i-users"/></svg> ۱ تأمین‌کننده</span>
-                        <span class="bl-chip hot"><svg><use href="#i-inbox"/></svg> استعلام در جریان</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bl-card" data-go="s-buy-product-suppliers" data-product="قند">
-                <div class="bl-thumb"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
-                <div class="bl-body">
-                    <div class="bl-title">قند</div>
-                    <div class="bl-q">۱۰ کارتن ۱۰ کیلویی · ماهانه</div>
-                    <div class="bl-meta">
-                        <span class="bl-chip muted"><svg><use href="#i-info"/></svg> تأمین‌کننده‌ای ثبت نشده</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <!-- FD-14: رندر پویا از DATA.shoppingList (buyListRender) —
+             کالاهای افزوده‌شده از کاتالوگ عمومی (۳۱ → شیت انتخاب)
+             همین‌جا ظاهر می‌شوند؛ چیپ‌ها از فیلدهای fresh/offers/inq/
+             added می‌آیند. -->
+        <div class="rows" id="buylist-rows"></div>
 
         <div class="hint-line">
             <svg><use href="#i-sparkles"/></svg>

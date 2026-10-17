@@ -194,7 +194,7 @@ const DATA = {
             goodId: 'g1', refId: 'r3',
             packId: 'r3p2',
             name: 'برنج هاشمی گلستان', brand: 'گلستان',
-            pack: 'کیسه ۵۰ کیلویی', packCount: 50,
+            pack: 'کیسه ۵۰ کیلویی', packCount: 50, groupId: 'cgr1',
             baseUnit: 'کیلوگرم',
             price: 2850000,
             pricePerUnit: 57000,
@@ -213,7 +213,7 @@ const DATA = {
             goodId: 'g1', refId: null,
             packId: 'tar50',
             name: 'برنج طارم', brand: '',
-            pack: 'کیسه ۵۰ کیلویی', packCount: 50,
+            pack: 'کیسه ۵۰ کیلویی', packCount: 50, groupId: 'cgr2',
             baseUnit: 'کیلوگرم',
             price: 2750000, pricePerUnit: 55000,
             stock: 28, min: 5,
@@ -228,7 +228,7 @@ const DATA = {
             goodId: 'g1', refId: 'r3',
             packId: 'r3p1',
             name: 'برنج هاشمی گلستان', brand: 'گلستان',
-            pack: 'کیسه ۱۰ کیلویی', packCount: 10,
+            pack: 'کیسه ۱۰ کیلویی', packCount: 10, groupId: 'cgr1',
             baseUnit: 'کیلوگرم',
             price: 595000, pricePerUnit: 59500,
             stock: 60, min: 10,
@@ -242,7 +242,7 @@ const DATA = {
             goodId: 'g1', refId: null,
             packId: 'faj50',
             name: 'برنج فجر', brand: '',
-            pack: 'کیسه ۵۰ کیلویی', packCount: 50,
+            pack: 'کیسه ۵۰ کیلویی', packCount: 50, groupId: 'cgr3',
             baseUnit: 'کیلوگرم',
             price: 2480000, pricePerUnit: 49600,
             stock: 8, min: 5,
@@ -424,6 +424,16 @@ const DATA = {
     /* ═══════════════════════════════════════════════════════════
        درخواست‌های قیمت دریافتی / ارسالی
        ═══════════════════════════════════════════════════════════ */
+    /* ═══ FD-14 — بازطراحی جریان استعلام/قیمت‌گیری ═══
+       ▸ rfqsIn[].items — قلم‌های استعلام (تک/چندقلمی)؛ فرم پیشنهاد
+         (۱۲) از همین رندر می‌شود: «درخواست ۳ قلمی» هم فرم خودش را
+         می‌گیرد (قبلاً به فرم تک‌قلمی برنج می‌رفت — نقطه‌شکسته).
+       ▸ rfqsOut[].status — 'current' (باز) / 'done' (بسته)؛ result =
+         نتیجهٔ بسته‌شدن. پذیرش پیشنهاد (۲۷) و «بستن استعلام» (۲۶)
+         حلقه را کامل می‌کنند: ایجاد → پیشنهادها → مقایسه → بستن.
+       ▸ عنوان‌ها با پیشوند «درخواست قیمت …» (حکم مالک FD-14):
+         «به جای برنج هاشمی → درخواست قیمت برنج هاشمی؛ لیست گویاتر
+         می‌شود» — در ۱۱/۱۲/۲۴/۲۶ رعایت می‌شود. */
     rfqsIn: [
         {
             id: 'ri1', businessId: 'b1', customerId: 'cu1', buyer: 'رستوران مهر',
@@ -431,16 +441,30 @@ const DATA = {
             itemName: 'برنج هاشمی گلستان', pack: '۲۰ کیسهٔ ۵۰ کیلویی',
             img: 'png/goods/rice-sack.jpg',
             daysLeft: 2, when: 'دیروز',
-            note: 'برنج درجه یک — قیمت ارسال به تهران را هم بنویسید.'
+            note: 'برنج درجه یک — قیمت ارسال به تهران را هم بنویسید.',
+            items: [
+                { name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', packCount: 50, qty: 20, img: 'png/goods/rice-sack.jpg', baseUnit: 'کیلوگرم' }
+            ]
         },
         {
             id: 'ri2', businessId: 'b1', buyer: 'پخش نگین',
             buyerAvatar: 'ن', buyerColor: '#0e7490',
-            itemName: 'درخواست ۳ قلمی', pack: 'روغن، رب، قند',
+            itemName: '۳ قلمی', pack: 'روغن، رب، قند',
             img: 'png/goods/oil-bottle.jpg',
             daysLeft: 0, when: '۲ روز پیش',
-            note: 'روغن حتماً لادن باشد.'
+            note: 'روغن حتماً لادن باشد.',
+            items: [
+                { name: 'روغن سرخ‌کردنی لادن', pack: 'بطری ۱.۸ لیتری', packCount: 1, qty: 60, img: 'png/goods/oil-bottle.jpg', baseUnit: 'بطری' },
+                { name: 'رب گوجه‌فرنگی', pack: 'قوطی ۵۰۰ گرمی', packCount: 1, qty: 60, img: 'png/goods/tomato-paste.jpg', baseUnit: 'قوطی' },
+                { name: 'قند', pack: 'بسته ۱ کیلویی', packCount: 1, qty: 20, img: 'png/goods/sugar-cubes.jpg', baseUnit: 'بسته' }
+            ]
         }
+    ],
+    /* ═══ FD-14 — پاسخ داده‌شده‌ها (بخش دوم صفحهٔ ۱۱) ═══
+       در ماک ثابت؛ در محصول واقعی rfq پس از ارسال پیشنهاد از
+       «در انتظار» به این‌جا می‌آید (myOffer = پیشنهاد ثبت‌شدهٔ من). */
+    rfqsAnswered: [
+        { id: 'ra1', buyer: 'سوپرمارکت سعید', buyerAvatar: 'س', buyerColor: '#65a30d', itemName: 'برنج فجر', pack: '۱۰ کیسه', img: 'png/goods/fajar-50.jpg', when: '۵ روز پیش', myOffer: '۲٬۴۹۰٬۰۰۰ تومان' }
     ],
 
     rfqsOut: [
@@ -457,7 +481,7 @@ const DATA = {
         {
             id: 'ro3', businessId: 'b2',
             itemName: 'قند · ۱۰ کارتن', img: 'png/goods/sugar-cubes.jpg',
-            bestOffer: '۷۶۰٬۰۰۰ ت — کیان غلات', when: '۲ هفته پیش', status: 'done'
+            status: 'done', result: 'پذیرفت: کیان غلات — ۷۶۰٬۰۰۰ ت', when: '۲ هفته پیش'
         }
     ],
 
@@ -465,12 +489,25 @@ const DATA = {
     /* ═══════════════════════════════════════════════════════════
        پیشنهادهای رسیده
        ═══════════════════════════════════════════════════════════ */
+    /* ═══ FD-14 — شرایط ساختاریافتهٔ پیشنهاد ═══
+       ▸ pay = { chk, days } — سهم چک از مبلغ (٪) + حداکثر روز چک؛
+         chk=0 ⇒ تمام‌نقدی. حکم مالک: «معمولاً پرداخت فقط نقدی یا
+         فقط چکی نیست» — فرم ۱۲ پایه را نقدی می‌گذارد و سوییچ
+         «فروش چکی هم داریم» درصد چکی/نقدی + روز چک را باز می‌کند.
+         متن خریدار: «۶۰٪ نقدی + ۴۰٪ چک (تا ۶۰ روز)».
+       ▸ dlv = { ship, by } — ship=false ⇒ تحویل حضوری؛ by=
+         'seller'/'customer' ⇒ «ارسال — حمل با فروشنده/مشتری».
+       ▸ این دو عیناً روی کارت مقایسه (۲۶) و جزئیات (۲۷) دیده
+         می‌شوند — بازتاب سمت خریدار، همان حکم مالک.
+       ▸ پیاده‌سازی واقعی: درصد چکی ۱ تا ۹۹؛ روز چک معمولاً مضرب ۳۰
+         و تا سقف اعتبار فروشنده؛ در ماک بدون اعتبارسنجی سروری است. */
     offers: [
-        { id: 'of1', rfqId: 'ro1', supplierId: 'su1', seller: 'پخش برنج پارس', city: 'رشت', avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', price: 2840000, pricePerUnit: 56800, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: 'نقدی', dlv: 'تحویل در محل', note: 'برنج امسال، پاک‌شده.', isKnown: true },
-        { id: 'of2', rfqId: 'ro1', supplierId: 'su2', seller: 'آریو غلات', city: 'اصفهان', avatar: 'آ', color: '#7c3aed', price: 2895000, pricePerUnit: 57900, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: 'نقدی', dlv: 'ارسال رایگان بالای ۳۰ کیسه', note: '' },
-        { id: 'of3', rfqId: 'ro1', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 2790000, pricePerUnit: 55800, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: 'چک ۳۰ روزه', dlv: 'تحویل حضوری', note: '' },
-        { id: 'of4', rfqId: 'ro1', seller: 'شالی‌زار طالب', city: 'رشت', avatar: 'ش', color: '#0d9488', price: 2780000, pricePerUnit: 55600, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: 'نقدی', dlv: 'تحویل در محل', note: '' },
-        { id: 'of5', rfqId: 'ro1', seller: 'غلات سبزدشت', city: 'مشهد', avatar: 'غ', color: '#65a30d', price: 2960000, pricePerUnit: 59200, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: 'نقدی', dlv: 'ارسال از انبار', note: '' }
+        { id: 'of1', rfqId: 'ro1', supplierId: 'su1', seller: 'پخش برنج پارس', city: 'رشت', avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', price: 2840000, pricePerUnit: 56800, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 50, days: 60 }, dlv: { ship: true, by: 'seller' }, note: 'برنج امسال، پاک‌شده. حمل تا در مغازه.', isKnown: true },
+        { id: 'of2', rfqId: 'ro1', supplierId: 'su2', seller: 'آریو غلات', city: 'اصفهان', avatar: 'آ', color: '#7c3aed', price: 2895000, pricePerUnit: 57900, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'seller' }, note: 'ارسال رایگان بالای ۳۰ کیسه.' },
+        { id: 'of3', rfqId: 'ro1', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 2790000, pricePerUnit: 55800, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 30, days: 30 }, dlv: { ship: true, by: 'customer' }, note: '' },
+        { id: 'of4', rfqId: 'ro1', seller: 'شالی‌زار طالب', city: 'رشت', avatar: 'ش', color: '#0d9488', price: 2780000, pricePerUnit: 55600, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: false, by: null }, note: '' },
+        { id: 'of5', rfqId: 'ro1', seller: 'غلات سبزدشت', city: 'مشهد', avatar: 'غ', color: '#65a30d', price: 2960000, pricePerUnit: 59200, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'customer' }, note: 'ارسال از انبار مشهد.' },
+        { id: 'of6', rfqId: 'ro2', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 58000, pricePerUnit: 58000, baseUnit: 'قوطی', packCount: 1, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'seller' }, note: 'قوطی‌ها کارتن ۲۴تایی بسته‌بندی می‌شود.' }
     ],
 
 
@@ -498,10 +535,18 @@ const DATA = {
         { id: 'n3', type: 'suggest', title: 'پیشنهاد آی‌مچ',          body: '۳ تأمین‌کنندهٔ جدید با کالاهای لیست خریدت هم‌خوانی دارند.', time: 'امروز', isNew: true, link: 's-buy-suppliers' }
     ],
 
+    /* ═══ FD-14 — لیست خرید: رندر پویا از همین دیتا (صفحهٔ ۲۰) ═══
+       q = مقدار/دورهٔ خرید؛ آیتم‌های افزوده‌شده از کاتالوگ (۳۱ → شیت
+       انتخاب) q ندارند — فقط بسته را می‌گویند و چیپ «تازه افزوده»
+       می‌خورند؛ مقدار را خریدار بعداً در استعلام می‌گوید.
+       fresh = آخرین به‌روزشدن قیمت؛ offers/inq = چیپ‌های داغ.
+       added=true ⇒ از کاتالوگ آمده — فروشندهٔ همان کاتالوگ خودکار
+       یکی از تأمین‌کننده‌های این کالاست (suppliersCount>=1). */
     shoppingList: [
-        { id: 'sl1', businessId: 'b2', listingId: 'l1', name: 'برنج هاشمی گلستان', pack: '۲۰ کیسهٔ ۵۰ کیلویی · ماهانه', img: 'png/goods/rice-sack.jpg',    suppliersCount: 3 },
-        { id: 'sl2', businessId: 'b2', name: 'روغن سرخ‌کردنی', pack: '۴۰ بطری ۱۰ لیتری · ماهانه',  img: 'png/goods/oil-bottle.jpg',   suppliersCount: 2 },
-        { id: 'sl3', businessId: 'b2', name: 'رب گوجه‌فرنگی',  pack: '۶۰ قوطی ۵۰۰ گرمی · هفتگی',  img: 'png/goods/tomato-paste.jpg', suppliersCount: 1 }
+        { id: 'sl1', businessId: 'b2', listingId: 'l1', name: 'برنج هاشمی گلستان', q: '۲۰ کیسهٔ ۵۰ کیلویی · ماهانه', pack: 'کیسه ۵۰ کیلویی', img: 'png/goods/rice-sack.jpg',    suppliersCount: 3, fresh: 'امروز', offers: 2 },
+        { id: 'sl2', businessId: 'b2', name: 'روغن سرخ‌کردنی', q: '۴۰ بطری ۱۰ لیتری · ماهانه',  pack: 'بسته ۱۰ لیتری', img: 'png/goods/oil-bottle.jpg',   suppliersCount: 2, fresh: '۴ روز پیش' },
+        { id: 'sl3', businessId: 'b2', name: 'رب گوجه‌فرنگی',  q: '۶۰ قوطی ۵۰۰ گرمی · هفتگی',  pack: 'قوطی ۵۰۰ گرمی', img: 'png/goods/tomato-paste.jpg', suppliersCount: 1, fresh: 'دیروز', inq: true },
+        { id: 'sl4', businessId: 'b2', name: 'قند', q: '۱۰ کارتن ۱۰ کیلویی · ماهانه', pack: 'کارتن ۱۰ کیلویی', img: 'png/goods/sugar-cubes.jpg', suppliersCount: 0 }
     ],
 
     scoreItems: [

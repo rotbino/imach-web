@@ -1,11 +1,18 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۲۴: استعلام‌های من
-     جاری + پایان‌یافته + دکمهٔ استعلام جدید.
+     اسکرین ۲۴: استعلام‌های من (خریدار) — FD-14 رندر پویا
+     ▸ دو بخش: باز (rfqsOut status=current) / پایان‌یافته (done).
+     ▸ عنوان‌ها با پیشوند «درخواست قیمت …» (حکم مالک FD-14).
+     ▸ لمس استعلام باز → مقایسهٔ پیشنهادهای «همان» استعلام (۲۶ با
+       پارامتر rfq) — قبلاً ردیف رب هم به پیشنهادهای برنج می‌رفت
+       (نقطه‌شکسته).
+     ▸ حلقهٔ کامل (حکم مالک FD-14): «خریدار استعلامش را تمام کند —
+       استعلام باز را ببندد و تمام» ⇒ پذیرش پیشنهاد (۲۷) یا «بستن
+       استعلام» (۲۶) ردیف را به «پایان‌یافته» می‌برد.
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-buy-rfqs" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">استعلام‌های من<small>۲ باز · ۱ پایان‌یافته</small></div>
+        <div class="ttl">استعلام‌های من<small id="buy-rfqs-sub">۲ باز · ۱ پایان‌یافته</small></div>
     </div>
 
     <div class="body">
@@ -14,35 +21,9 @@
         </button>
 
         <div class="section-title"><h2>باز</h2></div>
-        <div class="rows">
-            <div class="row" data-go="s-buy-offers">
-                <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt="برنج"></div>
-                <div class="row-body">
-                    <div class="row-title">برنج هاشمی · ۲۰ کیسه</div>
-                    <div class="row-sub">۵ پیشنهاد <span class="dot">·</span> <span style="color: var(--amber); font-weight: 700;">۳ روز مانده</span></div>
-                </div>
-                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-            </div>
-            <div class="row" data-go="s-buy-offers">
-                <div class="thumb thumb-sm"><img src="png/goods/tomato-paste.jpg" alt="رب"></div>
-                <div class="row-body">
-                    <div class="row-title">رب گوجه‌فرنگی · ۶۰ عدد</div>
-                    <div class="row-sub">۱ پیشنهاد <span class="dot">·</span> <span style="color: var(--red); font-weight: 700;">امروز آخرین روز</span></div>
-                </div>
-                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-            </div>
-        </div>
+        <div class="rows" id="buy-rfqs-open"></div>
 
         <div class="section-title" style="margin-top: 8px;"><h2>پایان‌یافته</h2></div>
-        <div class="rows">
-            <div class="row static" style="opacity: .75;">
-                <div class="thumb thumb-sm"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
-                <div class="row-body">
-                    <div class="row-title">قند · ۱۰ کارتن</div>
-                    <div class="row-sub">بهترین: ۷۶۰٬۰۰۰ ت — کیان غلات</div>
-                </div>
-                <span class="badge b-gray">۲ هفته پیش</span>
-            </div>
-        </div>
+        <div class="rows" id="buy-rfqs-done"></div>
     </div>
 </section>

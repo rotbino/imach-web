@@ -57,8 +57,9 @@
 
         <!-- FD-8: دو کاشی کنار هم (حکم مالک) — قرینهٔ میز فروش.
              FD-10 (بازخورد مالک): عنوان جلوی آیکون — همان ساختار میز فروش.
-             شمارنده‌ها عمداً ثابت‌اند (صفحات لیست/تأمین‌کنندهٔ دمو هم
-             استاتیک‌اند و همان اعداد را می‌گویند: ۴ کالا · ۳ تأمین‌کننده). -->
+             FD-14: شمارندهٔ کاشی لیست خرید زنده شد (id=buy-desk-list-n) —
+             صفحهٔ ۲۰ حالا از DATA.shoppingList رندر می‌شود و کالاهای
+             افزوده‌شده از کاتالوگ (۳۱) همین‌جا دیده می‌شوند. -->
         <div class="desk-duo">
             <button class="desk-tile" data-go="s-buy-list" type="button">
                 <span class="dt-head">
@@ -66,7 +67,7 @@
                     <b class="dt-t">لیست خرید من</b>
                     <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
-                <div class="dt-stat"><b>۴</b><span>کالا</span></div>
+                <div class="dt-stat"><b id="buy-desk-list-n">۴</b><span>کالا</span></div>
                 <div class="dt-sub">برای هر کالا استعلام بگیر</div>
             </button>
             <button class="desk-tile" data-go="s-buy-suppliers" type="button">
@@ -104,6 +105,19 @@
                 </div>
                 <div class="row-body">
                     <div class="row-title"><span id="bds-row-t"></span><span class="st-b">شروع</span></div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </div>
+            <!-- FD-14 (ترمیم نقطه‌شکسته): «استعلام‌های من» (۲۴) از هیچ جای
+                 میز خرید قابل دسترس نبود — قرینهٔ ردیف «درخواست قیمت»
+                 میز فروش (۰۴). پرسش طبیعی خریدار: «چند تا استعلام دادم؟» -->
+            <div class="row" data-go="s-buy-rfqs">
+                <div class="thumb thumb-sm" style="background: var(--arm-soft); color: var(--arm-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-inbox"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">۲ استعلام باز</div>
+                    <div class="row-sub">برنج هاشمی · ۵ پیشنهاد <span class="dot">·</span> <span style="color: var(--amber); font-weight: 700;">۳ روز مانده</span></div>
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
