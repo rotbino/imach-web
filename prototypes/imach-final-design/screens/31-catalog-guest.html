@@ -1,17 +1,25 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۳۱: کاتالوگ مهمان — FD-9
+     اسکرین ۳۱: کاتالوگ مهمان — FD-9 → FD-10
 
-     ▸ دکمهٔ «ذخیره این کاتالوگ» بالا آمده (فقط دکمه، نه کل کادر —
-       حکم مالک)؛ کادر پایین به یادآورِ آرام تبدیل شد.
-     ▸ جریان ذخیره (حکم مالک): دکمه → شیت «چه مزایایی داری؟» (کوتاه و
-       نتیجه‌محور، «مقایسه قیمت و شرایط خرید» به‌جای «مناقصه») → دکمهٔ
-       ذخیره → شیت ساخت حساب/ورود (شبیه ۰۲) با «ساخت حساب و ذخیره
-       کاتالوگ» + «قبلاً ثبت‌نام کرده‌ام» → پنل آی‌مچ.
-       ساخت حساب هیچ‌وقت ذخیرهٔ کاتالوگ را قربانی نمی‌کند — همه در یک
-       جریان سادهٔ از-پایین انجام می‌شود.
-     ▸ سبد خرید (FD-9): آیکون سبد در هدر + دکمهٔ «افزودن به سبد» روی
-       هر کالا؛ شیت سبد از پایین + ثبت سفارش آنلاین (مزیت ذخیره).
-     ▸ پیش‌نمایش فروشنده (preview): عناصر مهمان (سبد/ذخیره) پنهان می‌شوند.
+     ▸ FD-10 (بازخورد مالک — «دید عمومی کاتالوگ»):
+       · کادر «قیمت‌ها فقط برای مشتریان این فروشنده» کامل حذف شد —
+         کادر مستقیم روی کاتالوگ شلوغی و زشتی می‌آورد؛ متقاعدسازی
+         نباید با «ثبت‌نام کن» مستقیم باشد، با خودِ یوایکس انجام می‌شود.
+       · «ساخت حساب» از اپ‌بار حذف شد (همان حکم: فرمان مستقیم ثبت‌نام
+         ممنوع). مسیر حساب‌سازی فقط از دلِ نیاز کاربر باز می‌شود:
+         «مشاهده قیمت» یا «ذخیره کاتالوگ».
+       · دو حالت بیشتر نیست (حکم مالک): مهمان → دکمهٔ ذخیره را می‌بیند
+         و ثبت‌نام+ذخیره می‌کند؛ ثبت‌نام‌کرده → ذخیره با یک کلیک.
+       · قیمت‌ها به‌جای تارشدن، در حالت مهمان «مشاهده قیمت» می‌شوند —
+         دکمهٔ جمع‌وجور جای قیمت هر محصول می‌نشیند؛ با ثبت‌نام، همان
+         جا قیمت باز می‌شود (کاربر از هدفش جابه‌جا نمی‌شود).
+       · + (افزودن به سبد) برای مهمان فقط پیام می‌دهد: «اول کاتالوگ را
+         ذخیره کن تا مشتری او بشوی»؛ برای مشتری، به سبد اضافه می‌کند.
+       · تماس و گفتگو و وضعیت آنلاین — مینیمال (حکم مالک): دو آیکون ریز
+         در اپ‌بار + نقطهٔ سبز «آنلاین» کنار نام فروشنده؛ نه بیشتر.
+     ▸ لمس هر محصول → صفحهٔ جزئیات کالا (۳۷) — مثل طراحی قبلی.
+     ▸ شیت‌های «ذخیره کاتالوگ» و «ساخت حساب» به index.html منتقل شدند
+       تا از صفحهٔ ۳۷ هم باز شوند؛ شیت سبد همین‌جا ماند.
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-catalog-guest" data-arm="keep">
@@ -22,12 +30,19 @@
                 <div class="title">آی‌مچ</div>
             </div>
             <div class="actions">
-                <!-- FD-9: سبد خرید مهمان — شمارندهٔ زنده -->
+                <!-- FD-10: تماس و گفتگو — مینیمال، بخشی از دید عمومی
+                     (در پیش‌نمایش فروشنده هم دیده می‌شوند) -->
+                <button class="icon-btn" data-dial aria-label="تماس با فروشنده">
+                    <svg><use href="#i-phone"/></svg>
+                </button>
+                <button class="icon-btn" data-go="s-chat" aria-label="گفتگو با فروشنده">
+                    <svg><use href="#i-msg"/></svg>
+                </button>
+                <!-- سبد خرید (FD-9) — شمارندهٔ زنده؛ فقط برای مهمان/مشتری -->
                 <button class="icon-btn cart-btn guest-only" id="guest-cart-btn" aria-label="سبد خرید">
                     <svg><use href="#i-basket"/></svg>
                     <span class="cart-badge" id="guest-cart-badge" hidden>۰</span>
                 </button>
-                <button class="btn btn-ghost btn-sm" data-go="s-signup">ساخت حساب</button>
             </div>
         </div>
 
@@ -37,6 +52,8 @@
                 <div class="nm">
                     پخش برنج پارس
                     <svg><use href="#i-verified"/></svg>
+                    <!-- FD-10: وضعیت آنلاین — همان زبان مینیمال کاتالوگ عمومی -->
+                    <span class="presence on"><i></i>آنلاین</span>
                 </div>
                 <div class="meta">احمد رضایی · پخش مواد غذایی · رشت · عمده‌فروش</div>
             </div>
@@ -44,15 +61,8 @@
     </div>
 
     <div class="body">
-        <div class="priv-banner" id="guest-priv" hidden>
-            <h3>قیمت‌ها فقط برای مشتریان این فروشنده</h3>
-            <p>این کاتالوگ خصوصی است. با یک ثبت‌نام سریع (شماره و نام)، هم عضو آی‌مچ می‌شوید هم همین حالا قیمت‌ها را می‌بینید.</p>
-            <button class="btn btn-primary btn-block" data-go="s-signup">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
-                ثبت‌نام و دیدن قیمت‌ها
-            </button>
-        </div>
-
+        <!-- FD-10: کادر «قیمت‌ها فقط برای مشتریان…» حذف شد.
+             آمارِ کاتالوگ ماند — کوتاه، بی‌ادعا. -->
         <div class="card" style="padding: 10px 12px; display: flex; gap: 8px;">
             <div style="flex: 1; text-align: center; font-size: 10.5px; color: var(--text-3);">
                 <div style="font-size: 15px; font-weight: 700; color: var(--text);">۱۲</div>
@@ -76,9 +86,11 @@
 
         <div class="section-title"><h2><svg><use href="#i-store"/></svg> محصولات این فروشنده</h2></div>
 
-        <!-- FD-9: data-lid/data-price → سبد خرید؛ دکمهٔ + روی عکس هر کالا -->
+        <!-- FD-10: کارت محصول — لمس کارت → جزئیات (۳۷) · «مشاهده قیمت»
+             جای قیمتِ مهمان می‌نشیند (gated با کلاس صفحه کنترل می‌شود) ·
+             + روی عکس: مهمان → پیامِ «اول ذخیره کن» · مشتری → افزودن -->
         <div class="pgrid" id="guest-grid">
-            <div class="pcard gated" data-guest-card data-lid="l1">
+            <div class="pcard" data-guest-card data-lid="l1">
                 <div class="ph">
                     <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l1" aria-label="افزودن به سبد خرید">
@@ -89,10 +101,13 @@
                     <div class="pname">برنج هاشمی</div>
                     <div class="ppack">کیسه ۵۰ کیلویی</div>
                     <div class="pprice">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+                    <button class="price-cta" type="button" data-view-price="l1">
+                        <svg><use href="#i-eye"/></svg> مشاهده قیمت
+                    </button>
                     <div class="pmeta"><span class="badge b-green">موجود</span></div>
                 </div>
             </div>
-            <div class="pcard gated" data-guest-card data-lid="l2">
+            <div class="pcard" data-guest-card data-lid="l2">
                 <div class="ph">
                     <img src="png/goods/rice-grains.jpg" alt="برنج طارم">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l2" aria-label="افزودن به سبد خرید">
@@ -103,10 +118,13 @@
                     <div class="pname">برنج طارم</div>
                     <div class="ppack">کیسه ۵۰ کیلویی</div>
                     <div class="pprice">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
+                    <button class="price-cta" type="button" data-view-price="l2">
+                        <svg><use href="#i-eye"/></svg> مشاهده قیمت
+                    </button>
                     <div class="pmeta"><span class="badge b-green">موجود</span></div>
                 </div>
             </div>
-            <div class="pcard gated" data-guest-card data-lid="l3">
+            <div class="pcard" data-guest-card data-lid="l3">
                 <div class="ph">
                     <img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l3" aria-label="افزودن به سبد خرید">
@@ -117,10 +135,13 @@
                     <div class="pname">برنج هاشمی</div>
                     <div class="ppack">کیسه ۱۰ کیلویی</div>
                     <div class="pprice">۵۹۵٬۰۰۰ <small>تومان</small></div>
+                    <button class="price-cta" type="button" data-view-price="l3">
+                        <svg><use href="#i-eye"/></svg> مشاهده قیمت
+                    </button>
                     <div class="pmeta"><span class="badge b-green">موجود</span></div>
                 </div>
             </div>
-            <div class="pcard gated" data-guest-card data-lid="l4">
+            <div class="pcard" data-guest-card data-lid="l4">
                 <div class="ph">
                     <img src="png/goods/fajar-50.jpg" alt="برنج فجر">
                     <button class="addcart-btn guest-only" type="button" data-add-cart="l4" aria-label="افزودن به سبد خرید">
@@ -131,14 +152,16 @@
                     <div class="pname">برنج فجر</div>
                     <div class="ppack">کیسه ۵۰ کیلویی</div>
                     <div class="pprice">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
+                    <button class="price-cta" type="button" data-view-price="l4">
+                        <svg><use href="#i-eye"/></svg> مشاهده قیمت
+                    </button>
                     <div class="pmeta"><span class="badge b-amber">موجودی کم</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- ═══ کادر ذخیره — همان‌جا پایین ماند (حکم مالک: «فقط دکمه بره بالا»)؛
-             دکمهٔ درشت حذف شد و به‌جایش لینک آرام است — متقاعدسازی اصلی حالا
-             در شیت «چه مزایایی داری؟» است ═══ -->
+        <!-- ═══ کادر ذخیره — همان‌جا پایین ماند (حکم مالک FD-9: «فقط دکمه
+             بره بالا»)؛ متقاعدسازی اصلی در شیت «ذخیره کاتالوگ» است ═══ -->
         <div class="card guest-only" id="guest-save-box" style="text-align: center; background: linear-gradient(135deg, var(--primary), var(--primary-strong)); color: #FFF; border: 0; padding: 16px 14px;">
             <div style="font-size: 13px; font-weight: 700; margin-bottom: 5px;">قیمت‌های این فروشنده همیشه دستت می‌ماند</div>
             <div style="font-size: 11px; opacity: .9; line-height: 1.9;">هر تغییر قیمت را همان لحظه می‌بینی.</div>
@@ -152,162 +175,14 @@
 
 
     <!-- ═══════════════════════════════════════════════════════════
-         FD-9 — شیت: با ذخیره این کاتالوگ چه مزایایی داری؟
-         متن‌ها کوتاه و نتیجه‌محور (حکم مالک)؛ «مقایسه قیمت و شرایط خرید»
-         به‌جای «مناقصه». عنوانِ پرسشی بالای شیت به‌جای متن طولانی.
-         ═══════════════════════════════════════════════════════════ -->
-    <div class="sheet" id="sheet-save-benefits" hidden>
-        <div class="grab"></div>
-        <div class="sheet-hdr">
-            <h3>با ذخیره این کاتالوگ چه مزایایی داری؟</h3>
-            <button class="mg" data-sheet-close="sheet-save-benefits" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
-        </div>
-
-        <div class="benefit-list">
-            <div class="benefit">
-                <span class="bf-ic"><svg><use href="#i-store"/></svg></span>
-                <div class="bf-tx">
-                    <b>این فروشنده به فهرست تأمین‌کنندگان تو اضافه می‌شود</b>
-                    <span>دسترسی همیشگی به کاتالوگ و قیمت‌های زندهٔ او — کالاها و قیمت‌هایش را راحت‌تر دنبال کن.</span>
-                </div>
-            </div>
-
-            <div class="benefit">
-                <span class="bf-ic"><svg><use href="#i-users"/></svg></span>
-                <div class="bf-tx">
-                    <b>بعد از تأیید فروشنده، به لیست مشتریان او اضافه می‌شوی</b>
-                    <span>از تخفیف‌ها و شرایط ویژه‌ای که برای مشتریانش در نظر می‌گیرد، بهره‌مند می‌شوی.</span>
-                </div>
-            </div>
-
-            <div class="benefit">
-                <span class="bf-ic"><svg><use href="#i-chart"/></svg></span>
-                <div class="bf-tx">
-                    <b>مقایسه قیمت و شرایط خرید</b>
-                    <span>از تأمین‌کنندگان مختلف قیمت بگیر و پیشنهادها را مقایسه کن.</span>
-                </div>
-            </div>
-
-            <div class="benefit">
-                <span class="bf-ic"><svg><use href="#i-globe"/></svg></span>
-                <div class="bf-tx">
-                    <b>گسترش شبکهٔ تأمین</b>
-                    <span>تأمین‌کنندگان بیشتری در فهرست خود داشته باش.</span>
-                </div>
-            </div>
-
-            <div class="benefit">
-                <span class="bf-ic"><svg><use href="#i-basket"/></svg></span>
-                <div class="bf-tx">
-                    <b>سفارش آنلاین</b>
-                    <span>سفارش را همین‌جا و در هر ساعت ثبت کن — بدون تلفن زدن و معطلی.</span>
-                </div>
-            </div>
-        </div>
-
-        <button class="btn btn-primary btn-block" id="bf-continue" style="margin-top: 6px;">
-            <svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ
-        </button>
-        <button class="btn btn-ghost btn-block" data-sheet-close="sheet-save-benefits" style="margin-top: 6px;">فعلاً نه</button>
-    </div>
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         FD-9 — شیت: ساخت حساب / ورود + ذخیرهٔ کاتالوگ
-         شبیه فرم ۰۲ (شماره/نام/کسب‌وکار/نقش)؛ دکمهٔ «ساخت حساب و ذخیره
-         کاتالوگ» هر دو کار را یک‌جا می‌کند؛ «قبلاً ثبت‌نام کرده‌ام» پایین.
-         ورود: شماره + کد تأیید. بعد از هر دو → پنل آی‌مچ + کاتالوگ ذخیره.
-         ═══════════════════════════════════════════════════════════ -->
-    <div class="sheet" id="sheet-account" hidden>
-        <div class="grab"></div>
-        <div class="sheet-hdr">
-            <h3 id="acc-title">ساخت حساب و ذخیره کاتالوگ</h3>
-            <button class="mg" data-sheet-close="sheet-account" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
-        </div>
-
-        <!-- نمای ثبت‌نام -->
-        <div id="acc-signup">
-            <div class="sub">کمتر از ۲ دقیقه — شماره، نام و نوع کارِ تو.</div>
-
-            <div class="field">
-                <label>شماره موبایل</label>
-                <input class="input" id="acc-phone" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" inputmode="tel">
-            </div>
-            <div class="field">
-                <label>نام و نام خانوادگی</label>
-                <input class="input" id="acc-name" type="text" placeholder="مثلاً: مهدی کاظمی">
-            </div>
-            <div class="field">
-                <label>نام کسب‌وکار</label>
-                <input class="input" id="acc-biz" type="text" placeholder="مثلاً: رستوران مهر">
-                <div class="hint">این نام روی پروفایل و درخواست‌های تو دیده می‌شود</div>
-            </div>
-
-            <div class="field">
-                <label>با آی‌مچ می‌خواهی چه کاری انجام بدهی؟</label>
-                <div class="role-cards">
-                    <button class="role-card active" type="button" data-role="buy">
-                        <span class="role-ic"><svg><use href="#i-basket"/></svg></span>
-                        <span class="role-tx">
-                            <b>جنس عمده می‌خرم</b>
-                            <small>رستوران، سوپرمارکت، تعویض روغنی…</small>
-                        </span>
-                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                    </button>
-                    <button class="role-card" type="button" data-role="sell">
-                        <span class="role-ic"><svg><use href="#i-store"/></svg></span>
-                        <span class="role-tx">
-                            <b>جنس عمده می‌فروشم</b>
-                            <small>بازاریاب، ویزیتور، پخش…</small>
-                        </span>
-                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                    </button>
-                    <button class="role-card" type="button" data-role="both">
-                        <span class="role-ic"><svg><use href="#i-home"/></svg></span>
-                        <span class="role-tx">
-                            <b>هر دو را انجام می‌دهم</b>
-                            <small>تولیدکننده، عمده‌فروش بازار…</small>
-                        </span>
-                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                    </button>
-                </div>
-            </div>
-
-            <button class="btn btn-primary btn-block" id="acc-submit" style="margin-top: 4px;">
-                <svg><use href="#i-check"/></svg> ساخت حساب و ذخیره کاتالوگ
-            </button>
-            <button class="linklike" type="button" id="acc-goto-login">قبلاً ثبت‌نام کرده‌ام</button>
-        </div>
-
-        <!-- نمای ورود -->
-        <div id="acc-login" hidden>
-            <div class="sub">شماره‌ات را بزن تا کد تأیید پیامک شود.</div>
-
-            <div class="field">
-                <label>شماره موبایل</label>
-                <input class="input" id="acc-lphone" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" inputmode="tel">
-            </div>
-            <div class="field">
-                <label>کد تأیید</label>
-                <input class="input" id="acc-lcode" type="tel" placeholder="— — — — —" inputmode="numeric">
-                <div class="hint">کد ۵ رقمی پیامک‌شده به شماره‌ات</div>
-            </div>
-
-            <button class="btn btn-primary btn-block" id="acc-login-submit">
-                <svg><use href="#i-check"/></svg> ورود و ذخیره کاتالوگ
-            </button>
-            <button class="linklike" type="button" id="acc-goto-signup">حساب ندارم — ثبت‌نام می‌کنم</button>
-        </div>
-    </div>
-
-
-    <!-- ═══════════════════════════════════════════════════════════
          FD-9 — شیت: سبد خرید کاتالوگ مهمان
          افزودن از روی کارت‌ها (+ روی عکس)؛ مقدار اولیه = حداقل سفارشِ
          همان محصول. ثبت سفارش آنلاین → نمای موفقیت + دعوت به ذخیرهٔ
          کاتالوگ برای پیگیری. (در پیاده‌سازی عملیاتی، ثبت سفارش مهمان
          هم به همان گیتِ حساب نیاز دارد؛ در ماک برای نمایش جریان، مستقیم
          ثبت می‌شود.)
+         شیت‌های «ذخیره کاتالوگ» و «ساخت حساب» به index.html رفتند (FD-10)
+         تا از صفحهٔ جزئیات کالا (۳۷) هم باز شوند.
          ═══════════════════════════════════════════════════════════ -->
     <div class="sheet" id="sheet-cart" hidden>
         <div class="grab"></div>

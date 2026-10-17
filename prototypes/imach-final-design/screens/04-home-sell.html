@@ -54,25 +54,26 @@
     <div class="body">
 
         <!-- FD-8: دو کاشی کنار هم (حکم مالک) — «کاتالوگ من» و «مشتریان من»
-             کاشی وضعیت‌اند نه ردیف اقدام: آیکون + عنوان + عدد بزرگ + واحد.
-             عدد محصول با deskHomeSync() از listings واقعی پر می‌شود؛
-             عدد/زیرمتن مشتری از customers (۵ مشتری · ۱ در انتظار تایید). -->
+             FD-10 (بازخورد مالک): عنوان آمد جلوی آیکون (یک خط کمتر = حس خلوت
+             و گویاتر). ساختار: ردیف [آیکون + عنوان + chevron] → عدد بزرگ +
+             واحد → زیرمتن. عدد محصول با deskHomeSync() از listings واقعی
+             پر می‌شود؛ عدد/زیرمتن مشتری از customers (۵ مشتری · ۱ در انتظار). -->
         <div class="desk-duo">
             <button class="desk-tile" data-go="s-catalog" type="button">
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-store"/></svg></span>
+                    <b class="dt-t">کاتالوگ من</b>
                     <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
-                <b class="dt-t">کاتالوگ من</b>
                 <div class="dt-stat"><b id="desk-cat-num">۰</b><span>محصول</span></div>
                 <div class="dt-sub">در ویترین تو</div>
             </button>
             <button class="desk-tile" data-go="s-customers" type="button">
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-users"/></svg></span>
+                    <b class="dt-t">مشتریان من</b>
                     <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
-                <b class="dt-t">مشتریان من</b>
                 <div class="dt-stat"><b id="desk-cust-num">۰</b><span>مشتری</span></div>
                 <div class="dt-sub" id="desk-cust-sub">شبکهٔ مشتریانت</div>
             </button>

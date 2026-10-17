@@ -978,26 +978,24 @@
     /* ═══════════════════════════════════════════════════════════════
        Guest / contacts
        ═══════════════════════════════════════════════════════════════ */
-    /* ─── FD-9: حالت مهمان/پیش‌نمایش کاتالوگ (۳۱) ───
-       پیش‌نمایش فروشنده: عناصر مهمان (سبد خرید، ذخیره) پنهان می‌شوند. */
+    /* ─── FD-9/FD-10: حالت مهمان/دید عمومی کاتالوگ (۳۱) ───
+       سه وضعیت دارد:
+       · preview-mode (فروشندهٔ خود کاتالوگ): قیمت‌ها پیداست، عناصر
+         مهمان (سبد/ذخیره) پنهان‌اند — «دید عمومی کاتالوگ».
+       · gated (مهمانِ ثبت‌نام‌نکرده): قیمت‌ها نیست؛ جای قیمت‌ها دکمهٔ
+         «مشاهده قیمت» است (CSS با کلاس .gated روی صفحه).
+       · ذخیره‌شده (مشتری): قیمت‌ها پیداست، سبد کار می‌کند.
+       show() دام را از قالب کش می‌سازد → همهٔ وضعیت‌ها در هوک show
+       دوباره می‌نشینند (درس FD-9). */
     function applyGuestMode() {
         var params = core.getSCREENParams()['s-catalog-guest'] || {};
         var section = $('#s-catalog-guest');
         if (!section) return;
         var isPreview = !!params.preview;
         section.classList.toggle('preview-mode', isPreview);
-        var banner = section.querySelector('#guest-priv');
-        var cards = $$('.pcard.gated', section);
-        if (isPreview) {
-            if (banner) banner.hidden = true;
-            cards.forEach(function (c) { c.classList.remove('gated'); });
-        } else {
-            if (banner) banner.hidden = false;
-            cards.forEach(function (c) { c.classList.add('gated'); });
-        }
+        /* گیت قیمت: نه در پیش‌نمایش فروشنده، نه بعد از ذخیره (مشتری) */
+        section.classList.toggle('gated', !isPreview && !GUEST_SAVED);
         guestCartSync();
-        /* وضعیت «ذخیره شده» باید بعد از هر re-show دوباره بنشیند —
-           چون show() دام را از قالب کش‌شده می‌سازد و تغییرات DOM می‌روند */
         guestSavedSync();
     }
 
@@ -1024,6 +1022,12 @@
     function guestCartAdd(lid) {
         var l = _findListing(lid);
         if (!l) return;
+        /* FD-10 (حکم مالک): + فقط برای مشتری این فروشنده کار می‌کند؛
+           مهمان پیام می‌گیرد — همان جملهٔ مالک، بدون فرمان اضافه */
+        if (!GUEST_SAVED) {
+            toast('برای خرید از این تأمین‌کننده، اول کاتالوگ او را ذخیره کن تا مشتری‌اش بشوی', 'error');
+            return;
+        }
         GUEST_CART[lid] = GUEST_CART[lid] || (l.min || 1);
         guestCartSync();
         toast('به سبد خرید اضافه شد', 'success');
@@ -1119,17 +1123,36 @@
         }, 350);
     }
 
-    /* ─── FD-9: جریان ذخیرهٔ کاتالوگ مهمان ───
-       دکمهٔ ذخیره → شیت مزایا → شیت ساخت حساب/ورود → پنل آی‌مچ.
-       ساخت حساب هیچ‌وقت ذخیرهٔ کاتالوگ را قربانی نمی‌کند. */
+    /* ─── FD-9/FD-10: جریان ذخیرهٔ کاتالوگ مهمان ───
+       دکمهٔ ذخیره → شیت «ذخیره کاتالوگ» (کادر مزایای آکاردئونی — حکم
+       FD-10: بسته = مینیمال) → دکمهٔ ذخیره → شیت ساخت حساب/ورود →
+       کاتالوگ ذخیره + مشتری. ساخت حساب هیچ‌وقت ذخیره را قربانی نمی‌کند. */
     var GUEST_SAVED = false;
+    /* زمینهٔ باز شدن شیت حساب: 'save' (از جریان ذخیره → پایان در پنل)
+       یا 'price' (از «مشاهده قیمت» → پایان همان‌جا، قیمت‌ها باز) */
+    var GUEST_ACCT_CTX = 'save';
 
     function guestSaveFlow() {
         if (GUEST_SAVED) { toast('این کاتالوگ ذخیره شده است', 'success'); return; }
+        /* هر بار بسته شروع شود — کادر مزایا آرام و مینیمال بماند */
+        var list = $('#bene-list'), tog = $('#bene-toggle');
+        if (list) list.hidden = true;
+        if (tog) { tog.classList.remove('open'); tog.setAttribute('aria-expanded', 'false'); }
         core.openSheet('sheet-save-benefits');
     }
 
-    function guestAccountOpen(mode) {
+    /* FD-10: کادر «با ذخیره این کاتالوگ چه مزایایی داری؟» — کلیک =
+       باز/بسته شدن فهرست مزایا زیر همان کادر (حکم مالک) */
+    function guestBeneToggle() {
+        var list = $('#bene-list'), tog = $('#bene-toggle');
+        if (!list || !tog) return;
+        list.hidden = !list.hidden;
+        tog.classList.toggle('open', !list.hidden);
+        tog.setAttribute('aria-expanded', list.hidden ? 'false' : 'true');
+    }
+
+    function guestAccountOpen(mode, ctx) {
+        GUEST_ACCT_CTX = ctx || 'save';
         var su = $('#acc-signup'), lg = $('#acc-login');
         if (su) su.hidden = mode !== 'signup';
         if (lg) lg.hidden = mode !== 'login';
@@ -1143,13 +1166,19 @@
         guestSavedSync();
     }
 
-    /* اعمال دوبارهٔ وضعیت ذخیره روی دامِ تازه (show() قالب را دوباره می‌سازد) */
+    /* اعمال دوبارهٔ وضعیت ذخیره روی دامِ تازه (show() قالب را دوباره می‌سازد)
+       FD-10: «ذخیره‌شده» علاوه بر دکمه/کادر، گیت قیمت را هم برمی‌دارد. */
     function guestSavedSync() {
+        var section = $('#s-catalog-guest');
+        if (section) {
+            section.classList.toggle('gated', !GUEST_SAVED && !section.classList.contains('preview-mode'));
+        }
         if (!GUEST_SAVED) return;
         var btn = $('#guest-save-btn');
         if (btn && !btn.classList.contains('bk-saved')) {
             btn.classList.add('bk-saved');
-            btn.innerHTML = '<svg><use href="#i-check"/></svg> کاتالوگ ذخیره شد';
+            /* span می‌ماند تا متن دکمه بعد از re-show دوباره قابل سینک باشد */
+            btn.innerHTML = '<svg><use href="#i-check"/></svg> <span id="guest-save-tx">کاتالوگ ذخیره شد</span>';
             var cnt = $('#guest-saved-count');
             if (cnt) cnt.textContent = faNum(parseNum(cnt.textContent) + 1);
         }
@@ -1174,11 +1203,115 @@
         core.applyArms();
         core.closeSheet('sheet-account');
         guestMarkSaved();
-        toast('کاتالوگ ذخیره شد — خوش آمدی به آی‌مچ', 'success');
-        setTimeout(function () {
-            core.resetStack();
-            core.show(core.assist.sell ? 's-home-sell' : 's-home-buy', false);
-        }, 650);
+        /* FD-10: اگر حساب از «مشاهده قیمت» باز شده، کاربر همان‌جا می‌ماند
+           و قیمت‌ها پیش چشمش باز می‌شوند — از هدف جابه‌جا نمی‌شود.
+           (ثبت‌نام = ذخیرهٔ کاتالوگ = مشتری‌شدن — حکم مالک) */
+        if (GUEST_ACCT_CTX === 'price') {
+            GUEST_ACCT_CTX = 'save';
+            var cur = core.getCurrentScreen();
+            if (cur === 's-product-view') productViewSync();
+            toast('کاتالوگ ذخیره شد — قیمت‌ها باز شد', 'success');
+        } else {
+            toast('کاتالوگ ذخیره شد — خوش آمدی به آی‌مچ', 'success');
+            setTimeout(function () {
+                core.resetStack();
+                core.show(core.assist.sell ? 's-home-sell' : 's-home-buy', false);
+            }, 650);
+        }
+    }
+
+    /* ─── FD-10: جزئیات کالا (۳۷) — دید عمومی کاتالوگ ───
+       از listings واقعی پر می‌شود؛ گیت قیمت مثل ۳۱: مهمان «مشاهده قیمت»
+       می‌بیند، مشتری/پیش‌نمایش قیمت و پله‌های تخفیف را. */
+    function _unitWord(l) {
+        return (l.pack || '').indexOf('کیسه') > -1 ? 'کیسه' : 'عدد';
+    }
+
+    function productViewSync() {
+        var params = core.getSCREENParams()['s-product-view'] || {};
+        var section = $('#s-product-view');
+        if (!section) return;
+        var l = _findListing(params.id) || core.data.listings[0];
+        if (!l) return;
+        var isPreview = !!params.preview;
+        var gated = !isPreview && !GUEST_SAVED;
+        section.classList.toggle('gated', gated);
+
+        var ttl = core.$('#pv-ttl');
+        if (ttl && ttl.childNodes[0]) ttl.childNodes[0].nodeValue = l.name;
+        var img = core.$('#pv-img');
+        if (img) { img.src = l.img; img.alt = l.name; }
+        var el = core.$('#pv-name'); if (el) el.textContent = l.name;
+        el = core.$('#pv-sub'); if (el) el.textContent = l.pack;
+        el = core.$('#pv-price');
+        if (el) el.innerHTML = faMoney(l.price) + ' <small>تومان</small>';
+
+        /* مشخصات */
+        var unit = _unitWord(l);
+        el = core.$('#pv-pack'); if (el) el.textContent = l.pack;
+        var brandRow = core.$('#pv-brand-row');
+        if (brandRow) brandRow.hidden = !l.brand;
+        el = core.$('#pv-brand'); if (el) el.textContent = l.brand || '—';
+        el = core.$('#pv-min'); if (el) el.textContent = faNum(l.min || 1) + ' ' + unit;
+        var stockEl = core.$('#pv-stock');
+        if (stockEl) {
+            if (l.status === 'low') {
+                stockEl.className = 'badge b-amber';
+                stockEl.textContent = faNum(l.stock) + ' ' + unit + ' — موجودی کم';
+            } else {
+                stockEl.className = 'badge b-green';
+                stockEl.textContent = faNum(l.stock) + ' ' + unit + ' موجود';
+            }
+        }
+
+        /* توضیحات فروشنده — خالی = کارت مخفی */
+        var noteCard = core.$('#pv-note-card');
+        if (noteCard) {
+            noteCard.hidden = !l.note;
+            var noteEl = core.$('#pv-note');
+            if (noteEl && l.note) noteEl.textContent = l.note;
+        }
+
+        /* تخفیف حجمی — فقط وقتی قیمت دیده می‌شود (مشتری/پیش‌نمایش)؛
+           پلهٔ اول = حداقل خرید بدون تخفیف؛ آخرین پله «بهترین» */
+        var tiersCard = core.$('#pv-tiers-card');
+        var tiersHost = core.$('#pv-tiers');
+        var tiers = (core.data.volumeTiersOn && core.data.volumeTiers) ? core.data.volumeTiers : [];
+        if (tiersCard) {
+            tiersCard.hidden = gated || !tiers.length;
+            var nEl = core.$('#pv-tiers-n');
+            if (nEl) nEl.textContent = faNum(tiers.length) + ' پله';
+        }
+        if (tiersHost && tiers.length && !gated) {
+            var html = '<div class="pv-tier first">' +
+                '<span class="pt-q">' + faNum(l.min || 1) + ' ' + unit + ' به بالا <span class="badge b-stone">حداقل خرید — بدون تخفیف</span></span>' +
+                '<span class="pt-p"><b>' + faMoney(l.price) + '</b> <small>تومان</small></span>' +
+                '</div>';
+            tiers.forEach(function (t, i) {
+                var p = Math.round(l.price * (100 - t.pct) / 100 / 1000) * 1000;
+                var best = (i === tiers.length - 1);
+                html += '<div class="pv-tier">' +
+                    '<span class="pt-q">' + faNum(t.min) + ' ' + unit + ' به بالا' +
+                    (best ? ' <span class="badge b-green">بهترین</span>' : '') + '</span>' +
+                    '<span class="pt-p">' + (best ? '<b style="color: var(--green);">' + faMoney(p) + '</b>' : '<b>' + faMoney(p) + '</b>') +
+                    ' <small>تومان</small> <span class="badge b-green">٪' + faNum(t.pct) + '</span></span>' +
+                    '</div>';
+            });
+            tiersHost.innerHTML = html;
+        }
+
+        /* دکمهٔ اصلی اکشن‌بار — لیبل ثابت؛ فقط data-pv-add ست می‌شود.
+           رفتار (مهمان=پیام · مشتری=افزودن) در pvCta() */
+        var cta = core.$('#pv-cta');
+        if (cta) cta.setAttribute('data-pv-add', l.id);
+    }
+
+    /* دکمهٔ «افزودن به سبد خرید» صفحهٔ ۳۷ — همان قاعدهٔ + روی کارت‌ها */
+    function pvCta() {
+        var cta = core.$('#pv-cta');
+        if (!cta) return;
+        var lid = cta.getAttribute('data-pv-add');
+        if (lid) guestCartAdd(lid);
     }
 
     function applyContactsMode() { updatePickCount(); }
@@ -1205,6 +1338,8 @@
        ═══════════════════════════════════════════════════════════════ */
     core.registerShowHook('s-sell-add', addReset);
     core.registerShowHook('s-catalog-guest', applyGuestMode);
+    /* FD-10: جزئیات کالا — رندر از دیتا + وضعیت گیت قیمت */
+    core.registerShowHook('s-product-view', productViewSync);
     core.registerShowHook('s-contacts', applyContactsMode);
     core.registerShowHook('s-buy-suppliers', markNewItemsSeen);
     core.registerShowHook('s-profile', profileSync);
@@ -1297,6 +1432,8 @@
         guestSaveFlow: guestSaveFlow,
         guestAccountOpen: guestAccountOpen,
         guestAccountSubmit: guestAccountSubmit,
+        guestBeneToggle: guestBeneToggle,
+        pvCta: pvCta,
         chargeSync: chargeSync,
         chargeSend: chargeSend,
         promoSwitchToggle: promoSwitchToggle,

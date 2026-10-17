@@ -191,16 +191,24 @@
         if (ocmAct) { ocmRun(ocmAct.dataset.ocmAct); return; }
 
         /* ═══════════════════════════════════════════════════════════
-           FD-9 — کاتالوگ (۰۵/۳۱)
+           FD-9/FD-10 — کاتالوگ (۰۵/۳۱/۳۷)
            ▸ کارتِ «قیمت منقضی» با لمس، شیت آپدیت سریع همان کالا را باز
              می‌کند (نه صفحهٔ ویرایش کامل) — حکم مالک.
            ▸ کارت سالمِ کاتالوگ من با id محصول به ویرایش می‌رود.
            ▸ افزودن به سبد خرید مهمان — قبل از شاخهٔ data-guest-card.
+           ▸ FD-10: «مشاهده قیمت» (جای قیمتِ مهمان) → فرم ساخت حساب با
+             زمینهٔ price — بعد از ثبت‌نام، قیمت‌ها همان‌جا باز می‌شوند.
            ═══════════════════════════════════════════════════════════ */
         var addCart = t.closest('[data-add-cart]');
         if (addCart) {
             e.stopPropagation();
             core.forms.guestCartAdd(addCart.dataset.addCart);
+            return;
+        }
+        var viewPrice = t.closest('[data-view-price]');
+        if (viewPrice) {
+            e.stopPropagation(); e.preventDefault();
+            core.forms.guestAccountOpen('signup', 'price');
             return;
         }
         var staleCard = t.closest('#cat-grid .pcard[data-lid]');
@@ -423,13 +431,16 @@
         if (t.closest('#cart-order')) { core.forms.guestOrderSubmit(); return; }
         if (t.closest('#cart-continue')) { core.forms.guestCartContinue(); return; }
 
-        /* جریان ذخیره: مزایا → حساب → پنل (ساخت حساب، ذخیره را قربانی نمی‌کند) */
+        /* جریان ذخیره: مزایا (آکاردئون FD-10) → حساب → پنل */
+        if (t.closest('#bene-toggle')) { core.forms.guestBeneToggle(); return; }
         if (t.closest('[data-save-flow]')) { core.forms.guestSaveFlow(); return; }
         if (t.closest('#bf-continue')) { core.forms.guestAccountOpen('signup'); return; }
         if (t.closest('#acc-goto-login')) { core.forms.guestAccountOpen('login'); return; }
         if (t.closest('#acc-goto-signup')) { core.forms.guestAccountOpen('signup'); return; }
         if (t.closest('#acc-submit')) { core.forms.guestAccountSubmit('signup'); return; }
         if (t.closest('#acc-login-submit')) { core.forms.guestAccountSubmit('login'); return; }
+        /* FD-10: دکمهٔ اصلی اکشن‌بار صفحهٔ جزئیات (۳۷) */
+        if (t.closest('#pv-cta')) { core.forms.pvCta(); return; }
 
         /* ─── ذخیرهٔ کاتالوگ تأمین‌کننده ─── */
         var saveCat = t.closest('[data-save-catalog]');
@@ -569,15 +580,12 @@
             return;
         }
 
-        /* ─── کارت مهمان ─── */
-        if (t.closest('[data-guest-card]')) {
-            var pb = $('#guest-priv');
-            if (pb && !pb.hidden) {
-                pb.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                pb.style.transition = 'box-shadow .25s';
-                pb.style.boxShadow = '0 0 0 4px rgba(249,115,22,.25)';
-                setTimeout(function () { pb.style.boxShadow = ''; }, 900);
-            }
+        /* ─── کارت محصول مهمان (FD-10) — لمس → صفحهٔ جزئیات کالا (۳۷)؛
+             پیش‌نمایش فروشنده هم پارام preview را با خودش می‌برد ─── */
+        var gCard = t.closest('[data-guest-card]');
+        if (gCard) {
+            var pv31 = (core.getSCREENParams()['s-catalog-guest'] || {});
+            go('s-product-view', { id: gCard.dataset.lid, preview: pv31.preview ? 1 : 0 });
             return;
         }
 

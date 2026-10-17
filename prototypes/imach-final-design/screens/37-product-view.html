@@ -1,0 +1,113 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۳۷: جزئیات کالا — دید عمومی کاتالوگ (FD-10)
+
+     ▸ حکم مالک: «قبلاً یه صفحه جزئیات زیبا داشتیم که می‌تونیم اینجا هم
+       داشته باشیم» — این همان صفحه است، با زبان بصری طرح نهایی:
+       گالری بزرگ با نقطه‌ها · نام و قیمت · مشخصات · توضیحات فروشنده ·
+       تخفیف حجمی (فقط مشتری) · کارت فروشنده با وضعیت آنلاین.
+     ▸ گیت قیمت (حکم مالک): مهمان به‌جای قیمت، دکمهٔ «مشاهده قیمت»
+       می‌بیند → فرم ساخت حساب باز می‌شود → ثبت‌نام = ذخیرهٔ کاتالوگ =
+       مشتری‌شدن → قیمت‌ها همان‌جا باز می‌شوند (کاربر از هدف جابه‌جا
+       نمی‌شود — یوایکس خودش راه را نشان می‌دهد، نه متن اضافه).
+     ▸ اکشن‌بار پایین (مانند طراحی قبلی): تماس · گفتگو · افزودن به سبد.
+       «افزودن به سبد» برای مهمان فقط پیامِ «اول کاتالوگ را ذخیره کن»
+       می‌دهد؛ برای مشتری، حداقل سفارش همان محصول را به سبد می‌گذارد.
+     ▸ داده: productViewSync() در app-forms.js — از listings واقعی
+       (قیمت/موجودی/حداقل/یادداشت) + volumeTiers کاتالوگ.
+     ═════════════════════════════════════════════════════════════ -->
+
+<section class="screen" id="s-product-view" data-arm="keep">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl" id="pv-ttl">برنج هاشمی<small>کاتالوگ «پخش برنج پارس»</small></div>
+    </div>
+
+    <div class="body pv-body">
+        <!-- گالری — قاب بزرگ همان صفحهٔ جزئیاتِ قبلی -->
+        <div class="pv-gallery">
+            <img id="pv-img" src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
+            <div class="pv-dots" aria-hidden="true">
+                <span class="on"></span><span></span><span></span>
+            </div>
+        </div>
+
+        <!-- نام و قیمت — مهمان: «مشاهده قیمت» به‌جای قیمت (حکم مالک) -->
+        <div class="pv-head">
+            <div class="pv-name">
+                <div class="pv-t" id="pv-name">برنج هاشمی</div>
+                <div class="pv-s" id="pv-sub">کیسه ۵۰ کیلویی</div>
+            </div>
+            <div class="pv-price-box">
+                <div class="pv-price" id="pv-price">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
+                <button class="price-cta price-cta-lg" id="pv-price-cta" type="button" data-view-price>
+                    <svg><use href="#i-eye"/></svg> مشاهده قیمت
+                </button>
+            </div>
+        </div>
+
+        <!-- مشخصات -->
+        <div class="card pv-specs">
+            <div class="pv-spec-row" id="pv-pack-row">
+                <span>بسته‌بندی</span><b id="pv-pack">کیسه ۵۰ کیلویی</b>
+            </div>
+            <div class="pv-spec-row" id="pv-brand-row">
+                <span>برند</span><b id="pv-brand">—</b>
+            </div>
+            <div class="pv-spec-row">
+                <span>حداقل سفارش</span><b id="pv-min">۵ کیسه</b>
+            </div>
+            <div class="pv-spec-row last">
+                <span>موجودی</span><span class="badge b-green" id="pv-stock">۳۵ کیسه موجود</span>
+            </div>
+        </div>
+
+        <!-- توضیحات فروشنده — همان فیلد توضیحات فرم ثبت؛ خالی = مخفی -->
+        <div class="card pv-note-card" id="pv-note-card" hidden>
+            <div class="pv-note-hdr">
+                <svg><use href="#i-comment"/></svg>
+                توضیحات فروشنده
+            </div>
+            <div class="pv-note" id="pv-note"></div>
+        </div>
+
+        <!-- تخفیف حجمی خرید — فقط برای مشتری/پیش‌نمایش (قیمت دارد).
+             پلهٔ اول = حداقل خرید بدون تخفیف؛ بهترین پله سبز است. -->
+        <div class="card pv-tiers-card" id="pv-tiers-card" hidden>
+            <div class="pv-tiers-hdr">
+                <svg><use href="#i-percent"/></svg>
+                تخفیف حجمی خرید
+                <span class="badge b-orange" id="pv-tiers-n">۲ پله</span>
+            </div>
+            <div id="pv-tiers"></div>
+        </div>
+
+        <!-- فروشنده — کارت اطلاعاتی با وضعیت آنلاین (مینیمال) -->
+        <div class="card pv-seller">
+            <div class="avatar avatar-lg" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+            <div style="flex: 1; min-width: 0;">
+                <div class="nm">
+                    پخش برنج پارس
+                    <svg><use href="#i-verified"/></svg>
+                    <span class="presence on"><i></i>آنلاین</span>
+                </div>
+                <div class="meta">احمد رضایی · پخش مواد غذایی · رشت · عمده‌فروش</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ اکشن‌بار پایین — الگوی صفحهٔ جزئیات قبلی (فروشندهٔ ۰۲ قدیم):
+         تماس · گفتگو · دکمهٔ اصلی. دکمهٔ اصلی همیشه «افزودن به سبد خرید»
+         است — مهمان پیامِ راهنما می‌گیرد، مشتری حداقل سفارش را به سبد
+         می‌گذارد (سازگار با دکمهٔ + روی کارت‌های کاتالوگ). ═══ -->
+    <div class="pv-bar">
+        <button class="pv-bar-ic" type="button" data-dial aria-label="تماس با فروشنده" title="تماس با فروشنده">
+            <svg><use href="#i-phone"/></svg>
+        </button>
+        <button class="pv-bar-ic" type="button" data-go="s-chat" aria-label="گفتگو با فروشنده" title="گفتگو">
+            <svg><use href="#i-msg"/></svg>
+        </button>
+        <button class="btn btn-primary" id="pv-cta" type="button" style="flex: 1;">
+            <svg><use href="#i-cart-plus"/></svg> افزودن به سبد خرید
+        </button>
+    </div>
+</section>

@@ -202,6 +202,9 @@ const DATA = {
             img: 'png/goods/rice-sack.jpg',
             status: 'in-stock',
             priceValidDays: 3,   /* FD-9: اعتبار قیمت — ۳ روز */
+            /* FD-10: توضیحات فروشنده — همان فیلد توضیحات فرم ثبت (۱۳)؛
+               در جزئیات کالا (۳۷) نشان داده می‌شود؛ خالی = کارت مخفی */
+            note: 'ارسال روزانه از انبار رشت · تسویه نقدی یا چک صیادی برای مشتریان ثابت · امکان تحویل حضوری از بنگاه.',
             /* تخفیف گروه مشتری مخصوص همین محصول — پیش‌فرض از گروه */
             groupDiscounts: { cg1: 7, cg3: 10 }
         },
@@ -217,6 +220,7 @@ const DATA = {
             img: 'png/goods/rice-grains.jpg',
             status: 'in-stock',
             priceValidDays: 3,
+            note: 'بوجار تازه هر هفته · برای سفارش‌های بالای ۲۰ کیسه، هماهنگی تحویل انجام می‌شود.',
             priceStale: true    /* FD-9 دمو: یادآوری قیمت رسیده — کاتالوگ «قیمت منقضی» نشان می‌دهد */
         },
         {
@@ -230,7 +234,8 @@ const DATA = {
             stock: 60, min: 10,
             img: 'png/goods/hashemi-10.png',
             status: 'in-stock',
-            priceValidDays: 3
+            priceValidDays: 3,
+            note: 'بسته‌بندی مناسب قفسهٔ سوپرمارکت · کارتوین ۴ عددی هم موجود است.'
         },
         {
             id: 'l4', businessId: 'b1',
@@ -243,7 +248,8 @@ const DATA = {
             stock: 8, min: 5,
             img: 'png/goods/fajar-50.jpg',
             status: 'low',
-            priceValidDays: 3
+            priceValidDays: 3,
+            note: 'موجودی این هفته محدود است؛ اولویت با سفارش‌های ثبت‌شدهٔ امروز.'
         }
     ],
 

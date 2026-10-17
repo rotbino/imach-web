@@ -67,7 +67,8 @@ window.iMach = (function () {
         's-sell-bulk':            '33-sell-bulk',
         's-sell-promo':           '34-sell-promo',
         's-charge':               '35-charge',
-        's-cat-edit':             '36-cat-edit'
+        's-cat-edit':             '36-cat-edit',
+        's-product-view':         '37-product-view'
     };
 
     /* ═══ لود اسکرین ═══ */
@@ -212,7 +213,10 @@ window.iMach = (function () {
         }
     }
 
-    /* ═══ نوار پیش‌نمایش — با دکمهٔ بازگشت ═══ */
+    /* ═══ نوار دید عمومی — با دکمهٔ بازگشت ═══
+       FD-10 (بازخورد مالک): نام مفهوم از «پیش‌نمایش» به «دید عمومی» تغییر
+       کرد؛ لیست خرید (۳۲) چون نمای خاص تأمین‌کننده‌هاست، همان
+       «پیش‌نمایش» می‌ماند. */
     function injectPreviewBar(section, id) {
         var body = section.querySelector('.body');
         if (!body) return;
@@ -220,7 +224,7 @@ window.iMach = (function () {
         bar.className = 'preview-bar';
         var label = (id === 's-buy-list-guest')
             ? 'پیش‌نمایش — تأمین‌کننده‌ها این‌طور می‌بینند'
-            : 'پیش‌نمایش — این‌طور مشتریانت می‌بینند';
+            : 'دید عمومی کاتالوگ — این‌طور مشتریانت می‌بینند';
         bar.innerHTML =
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-eye"/></svg>' +
             '<span>' + label + '</span>' +

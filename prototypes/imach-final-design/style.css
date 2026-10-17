@@ -341,9 +341,34 @@ a { color: inherit; text-decoration: none; }
 .pcard .p-actions { display: flex; gap: 6px; margin-top: 8px; }
 .pcard .p-actions .btn { flex: 1; }
 
-.pcard.gated .pprice { filter: blur(6px); opacity: .55; user-select: none; }
-.pcard.gated { cursor: pointer; }
-.pcard.gated:active { background: var(--surface-2); }
+/* ═══ FD-10: گیت قیمت — «مشاهده قیمت» به‌جای قیمت ═══
+   مهمان (gated) قیمت نمی‌بیند؛ جای قیمت، دکمهٔ جمع‌وجور «مشاهده قیمت»
+   می‌نشیند. پیش‌نمایش فروشنده و مشتریِ ذخیره‌کرده قیمت‌ها را می‌بینند.
+   (تارکردن قیمت حذف شد — قیمت یا هست یا دکمه است؛ سادگی مینیمال) */
+.price-cta {
+    display: none;
+    align-items: center; justify-content: center; gap: 5px;
+    margin-top: 5px;
+    padding: 6px 8px;
+    border-radius: 9px;
+    background: var(--primary-soft);
+    color: var(--primary-strong);
+    font-family: inherit; font-size: 11px; font-weight: 800;
+    cursor: pointer;
+    transition: transform .12s, filter .15s;
+}
+.price-cta:active { transform: scale(.96); filter: brightness(.97); }
+.price-cta svg { width: 14px; height: 14px; flex-shrink: 0; }
+/* نسخهٔ بزرگتر — جای قیمت در صفحهٔ جزئیات (۳۷) */
+.price-cta.price-cta-lg { padding: 8px 12px; font-size: 12px; border-radius: 10px; }
+.price-cta.price-cta-lg svg { width: 15px; height: 15px; }
+
+#s-catalog-guest.gated .pprice,
+#s-product-view.gated .pv-price { display: none; }
+#s-catalog-guest.gated .price-cta,
+#s-product-view.gated .price-cta { display: flex; }
+.pcard[data-guest-card] { cursor: pointer; }
+.pcard[data-guest-card]:active { background: var(--surface-2); }
 
 /* ═══ ۱۲. KPI ═══ */
 .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -1078,13 +1103,22 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .guest-hero .nm svg { width: 16px; height: 16px; color: var(--blue); }
 .guest-hero .meta { font-size: 11px; color: var(--text-3); margin-top: 4px; }
 
-.priv-banner {
-    background: linear-gradient(135deg, #FFF7EC, #FEFBFA);
-    border: 1.5px dashed #F3DDBA;
-    border-radius: var(--r-md); padding: 16px; text-align: center;
+/* FD-10: کادر «قیمت‌ها فقط برای مشتریان…» حذف شد (حکم مالک) —
+   متقاعدسازی حالا در خود یوایکس است: «مشاهده قیمت» + شیت ذخیره.
+   چیدمان قدیمی برای پیش‌نمایش، حالت پیش‌نمایش/گیت (CSS در بخش ۱۲). */
+
+/* FD-10: وضعیت آنلاین — نقطهٔ سبز ریز + واژه؛ مینیمال (حکم مالک) */
+.presence {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 700; color: var(--text-3);
+    line-height: 1;
 }
-.priv-banner h3 { font-size: 13.5px; font-weight: 700; margin-bottom: 6px; color: var(--primary-strong); }
-.priv-banner p { font-size: 11.5px; color: var(--text-3); line-height: 1.9; margin-bottom: 12px; }
+.presence i {
+    width: 7px; height: 7px; border-radius: 99px;
+    background: var(--border-2); display: inline-block;
+}
+.presence.on { color: var(--green); }
+.presence.on i { background: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
 
 /* ═══ ۳۱. جزئیات پیشنهاد ═══ */
 .offer-summary {
@@ -2406,29 +2440,31 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .score-chip.on b { color: var(--green); }
 
 /* FD-8: دو کاشی کنار هم — کاتالوگ من / مشتریان من (و قرینهٔ خرید).
-   کاشی وضعیت است نه ردیف اقدام: عمودی، عدد بزرگ، بدون زیرمتن بلند.
+   FD-10 (بازخورد مالک): عنوان جلوی آیکون نشست — ردیفِ [آیکون + عنوان +
+   chevron] یک خط کمتر می‌گیرد؛ کاشی خلوت‌تر و گویاتر دیده می‌شود.
    عدد در رنگ بازو (فروش: نارنجی · خرید: زغالی) — پیوند بصری با چیپ اپ‌بار. */
 .desk-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .desk-tile {
-    display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
     min-width: 0; text-align: right;
     background: var(--surface);
     border: 1px solid var(--border-2);
     border-radius: var(--r-lg);
-    padding: 13px 13px 12px;
+    padding: 12px 13px 11px;
     cursor: pointer;
     transition: border-color .15s, transform .12s;
 }
 .desk-tile:active { transform: scale(.98); }
-.desk-tile .dt-head { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+/* ردیف سر کاشی: آیکون + عنوان (flex:1) + chevron — حکم FD-10 */
+.desk-tile .dt-head { display: flex; align-items: center; gap: 8px; width: 100%; }
 .desk-tile .dt-ic {
-    width: 40px; height: 40px; border-radius: 12px;
+    width: 34px; height: 34px; border-radius: 10px;
     display: grid; place-items: center; flex-shrink: 0;
     background: var(--arm-soft); color: var(--arm-strong);
 }
-.desk-tile .dt-ic svg { width: 21px; height: 21px; }
-.desk-tile .dt-chev { width: 15px; height: 15px; color: var(--text-4); flex-shrink: 0; }
-.desk-tile .dt-t { font-size: 12.5px; font-weight: 700; color: var(--text-2); line-height: 1.5; }
+.desk-tile .dt-ic svg { width: 18px; height: 18px; }
+.desk-tile .dt-chev { width: 14px; height: 14px; color: var(--text-4); flex-shrink: 0; margin-right: auto; }
+.desk-tile .dt-t { flex: 1; min-width: 0; font-size: 13px; font-weight: 800; color: var(--text); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* عدد بزرگ + واحد — «چه داری» در یک نگاه */
 .desk-tile .dt-stat { display: flex; align-items: baseline; gap: 5px; margin-top: 2px; }
 .desk-tile .dt-stat b { font-size: 22px; font-weight: 800; color: var(--arm-strong); line-height: 1.25; }
@@ -2813,3 +2849,170 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 #sheet-account .role-card { padding: 10px 11px; }
 #sheet-account .role-tx b { font-size: 12.5px; }
 #sheet-account .role-tx small { font-size: 10px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ۳۳-ی۲ — FD-10: کاتالوگ عمومی — شیت ذخیره + جزئیات کالا (۳۷)
+   ▸ شیت «ذخیره کاتالوگ»: کادر سادهٔ آکاردئونی مزایا (حکم مالک —
+     بسته = مینیمال؛ کلیک = باز شدن فهرست زیر همان کادر)
+   ▸ صفحهٔ جزئیات کالا: همان صفحهٔ زیبای طراحی قبلی با زبان طرح نهایی
+   ▸ فیکس: دکمهٔ حذف ردیف سبد خرید (ed-del بیرون از ed-item استایل
+     نمی‌گرفت و SVG بدون عرض، غول می‌شد — حکم مالک: «آیکون حذفش بزرگ شده»)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── کادر آکاردئونی «با ذخیره این کاتالوگ چه مزایایی داری؟» ─── */
+.bene-box {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%;
+    padding: 12px 13px;
+    background: var(--primary-soft);
+    border: 0; border-radius: var(--r-md);
+    font-family: inherit; font-size: 12.5px; font-weight: 800;
+    color: var(--primary-strong);
+    text-align: right;
+    cursor: pointer;
+    transition: background .15s;
+}
+.bene-box:active { filter: brightness(.97); }
+.bene-box .bb-ic {
+    width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: #FFF; color: var(--primary-strong);
+}
+.bene-box .bb-ic svg { width: 16px; height: 16px; }
+.bene-box .bb-tx { flex: 1; min-width: 0; line-height: 1.6; }
+.bene-box .bb-chev {
+    width: 16px; height: 16px; flex-shrink: 0;
+    color: var(--primary-strong);
+    transition: transform .22s;
+}
+.bene-box.open .bb-chev { transform: rotate(180deg); }
+/* فهرست مزایا زیر کادر — با همان بلوک‌های نتیجه‌محور FD-9 */
+.bene-box + .benefit-list { margin-top: 2px; }
+.bene-box + .benefit-list[hidden] { display: none; }
+.bene-box + .benefit-list .benefit:first-child { padding-top: 6px; }
+
+/* ─── فیکس آیکون حذف در شیت سبد (۳۱) ───
+   .ed-del قبلاً فقط زیر .ed-item استایل داشت؛ در ردیف سبد بی‌عرضه
+   می‌ماند و SVG به اندازهٔ پیش‌فرض بزرگ رندر می‌شد. */
+.cart-it .ed-del {
+    width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+    border: 1px solid #F3C1C1; background: #FDF6F6; color: var(--red);
+    display: grid; place-items: center; cursor: pointer; padding: 0;
+}
+.cart-it .ed-del svg { width: 14px; height: 14px; }
+.cart-it .ed-del:active { transform: scale(.94); }
+
+/* ─── جزئیات کالا (۳۷) — چیدمان صفحه ─── */
+.pv-body { padding-bottom: 86px; }
+/* گالری — قاب بزرگِ صفحهٔ جزئیات قبلی */
+.pv-gallery {
+    position: relative;
+    height: 208px;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    background: linear-gradient(135deg, #F3F1EA, #E9E5DB);
+}
+.pv-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pv-dots {
+    position: absolute; bottom: 9px; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 5px;
+}
+.pv-dots span { width: 5px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.65); }
+.pv-dots span.on { width: 16px; background: #FFF; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+
+/* نام و قیمت */
+.pv-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px;
+}
+.pv-name { min-width: 0; }
+.pv-t { font-size: 17px; font-weight: 800; line-height: 1.5; }
+.pv-s { font-size: 11.5px; color: var(--text-3); margin-top: 4px; }
+.pv-price-box { text-align: left; flex-shrink: 0; }
+.pv-price { font-size: 16px; font-weight: 800; color: var(--primary-strong); line-height: 1.4; }
+.pv-price small { font-size: 10px; font-weight: 400; color: var(--text-3); margin-right: 3px; }
+
+/* مشخصات */
+.pv-specs { padding: 4px 14px; }
+.pv-spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--surface-3);
+    font-size: 12.5px;
+}
+.pv-spec-row:last-child, .pv-spec-row.last { border-bottom: 0; }
+.pv-spec-row span { color: var(--text-3); }
+.pv-spec-row b { font-weight: 700; }
+
+/* توضیحات فروشنده */
+.pv-note-card { padding: 12px 14px; }
+.pv-note-hdr {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 700;
+    margin-bottom: 4px;
+}
+.pv-note-hdr svg { width: 14px; height: 14px; color: var(--text-3); }
+.pv-note { font-size: 11px; line-height: 2; color: var(--text-2); }
+
+/* تخفیف حجمی */
+.pv-tiers-card { padding: 13px 14px; }
+.pv-tiers-hdr {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 800;
+    margin-bottom: 4px;
+}
+.pv-tiers-hdr svg { width: 16px; height: 16px; color: var(--primary-strong); }
+.pv-tiers-hdr .badge { margin-right: auto; }
+.pv-tier {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--surface-3);
+}
+.pv-tier.first {
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 9px 10px;
+    margin: 4px 0 2px;
+    border-bottom: 0;
+}
+.pv-tier:last-child { border-bottom: 0; }
+.pv-tier .pt-q { color: var(--text-3); line-height: 1.8; }
+.pv-tier .pt-p { text-align: left; flex-shrink: 0; line-height: 1.8; }
+.pv-tier .pt-p b { font-weight: 800; }
+.pv-tier .pt-p small { color: var(--text-3); font-size: 10px; }
+
+/* کارت فروشنده */
+.pv-seller {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 14px;
+}
+.pv-seller .nm {
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.pv-seller .nm svg { width: 15px; height: 15px; color: var(--blue); }
+.pv-seller .meta { font-size: 10.5px; color: var(--text-3); margin-top: 4px; }
+
+/* اکشن‌بار پایین — الگوی صفحهٔ جزئیات قبلی (تماس · گفتگو · افزودن) */
+.pv-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; z-index: 5;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255,255,255,.94);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+}
+.pv-bar .pv-bar-ic {
+    width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: background .15s, transform .12s;
+}
+.pv-bar .pv-bar-ic:active { transform: scale(.94); background: var(--surface-3); }
+.pv-bar .pv-bar-ic svg { width: 19px; height: 19px; }
+.pv-bar .btn { height: 42px; font-size: 13px; white-space: nowrap; }
