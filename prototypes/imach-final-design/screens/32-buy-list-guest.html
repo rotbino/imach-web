@@ -1,6 +1,10 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۳۲: لیست خرید مهمان (از لینک، بدون ورود)
      قرینهٔ کاتالوگ مهمان — این‌بار خریدار لیستش را به تأمین‌کننده نشان می‌دهد.
+     FD-16 (حکم مالک): دیگر «ذخیره» برای لیست خرید نداریم — اینجا
+     «پیشنهاد تامین» داریم: بیننده (تأمین‌کننده) برای کالاهایی که دارد
+     پیشنهاد می‌دهد؛ خریدار با تاییدش او را به دفتر تأمین‌کننده‌هایش
+     می‌آورد و کاتالوگش را ذخیره می‌کند (خودکار مشتری او می‌شود).
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-buy-list-guest" data-arm="keep">
     <div class="guest-hero">
@@ -34,7 +38,7 @@
         <div class="callout callout-info">
             <svg><use href="#i-basket"/></svg>
             <div>
-                این <b>لیست خرید</b> یک خریدار عمده است. کالاهایی که نیاز دارد در ادامه آمده — اگر تأمین‌کننده هستی، کاتالوگت را برایش بفرست.
+                این <b>لیست خرید</b> یک خریدار عمده است. کالاهایی که نیاز دارد در ادامه آمده — اگر تأمین‌کننده هستی، برای کالاهایی که داری <b>پیشنهاد تامین</b> بده.
             </div>
         </div>
 
@@ -81,16 +85,54 @@
             </div>
         </div>
 
+        <!-- FD-16 (حکم مالک): دیگر «ذخیره» نیست — «پیشنهاد تامین».
+             تأمین‌کننده کالاهایی که دارد را انتخاب و قیمت می‌دهد (شیت
+             پایین)؛ خریدار با تایید، او را به دفتر تأمین‌کننده‌هایش
+             می‌آورد و کاتالوگش را ذخیره می‌کند. -->
         <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--stone), var(--stone-soft)); color: #FFF; border: 0; padding: 18px;">
             <div style="font-size: 14.5px; font-weight: 700; margin-bottom: 6px;">تأمین‌کنندهٔ این کالاها هستی؟</div>
-            <div style="font-size: 11.5px; opacity: .9; margin-bottom: 14px; line-height: 1.9;">لینک کاتالوگت را برای این خریدار بفرست — اگر ذخیره کند، مشتری تو می‌شود.</div>
-            <button class="btn btn-block" style="background: #FFF; color: var(--stone);" data-go="s-signup">
-                <svg><use href="#i-store"/></svg> ساخت حساب و ارسال کاتالوگ
+            <div style="font-size: 11.5px; opacity: .9; margin-bottom: 14px; line-height: 1.9;">برای کالاهایی که داری پیشنهاد تامین بده — خریدار با تاییدش، تو را به تأمین‌کننده‌هایش اضافه می‌کند و کاتالوگت را ذخیره می‌کند.</div>
+            <button class="btn btn-block" style="background: #FFF; color: var(--stone);" id="supply-propose">
+                <svg><use href="#i-send"/></svg> پیشنهاد تامین بده
             </button>
         </div>
 
         <div style="text-align: center; padding: 8px 0 4px; font-size: 10.5px; color: var(--text-3); line-height: 1.9;">
             ساخته‌شده با <b style="color: var(--primary-strong);">آی‌مچ</b> — دفتر خرید و فروش عمدهٔ شما
+        </div>
+    </div>
+
+    <!-- ═══ FD-16 — شیت: پیشنهاد تامین (دید تأمین‌کننده) ═══
+         کالاهای لیست با قیمت پیشنهادی؛ «ارسال پیشنهاد» → نمای موفقیت.
+         در محصول واقعی ارسال پیشنهاد به حساب آی‌مچ نیاز دارد (گیت در
+         submit — همان الگوی سفارش مهمان FD-13)؛ در ماک نمای موفقیت
+         کافی است. قانون: همهٔ مدال‌ها از پایین باز می‌شوند. -->
+    <div class="sheet" id="sheet-supply" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>پیشنهاد تامین</h3>
+            <button class="mg" data-sheet-close="sheet-supply" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">برای کالاهایی که داری، قیمت پیشنهادی‌ات را بنویس — سوپرمارکت آریا همه را یک‌جا می‌بیند و مقایسه می‌کند.</div>
+
+        <!-- نمای فرم -->
+        <div id="supply-form">
+            <div id="supply-goods"></div>
+            <div class="field" style="margin-top: 6px;">
+                <label>یادداشت برای خریدار <span class="opt">— اختیاری</span></label>
+                <textarea class="input" id="supply-note" rows="2" placeholder="مثلاً: برنج امسالم — تحویل همان روز"></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" id="supply-send" style="margin-top: 6px;">
+                <svg><use href="#i-send"/></svg> ارسال پیشنهاد تامین
+            </button>
+        </div>
+
+        <!-- نمای موفقیت -->
+        <div id="supply-ok" hidden>
+            <div class="ok-pill"><svg><use href="#i-check"/></svg></div>
+            <div class="ok-ttl">پیشنهاد تامینت ارسال شد</div>
+            <div class="ok-sub">سوپرمارکت آریا پیشنهادت را می‌بیند؛ با تاییدش، جزو تأمین‌کننده‌هایش می‌شوی و کاتالوگت را ذخیره می‌کند.</div>
+            <button class="btn btn-primary btn-block" data-sheet-close="sheet-supply" style="margin-top: 10px;" type="button">باشه</button>
         </div>
     </div>
 </section>

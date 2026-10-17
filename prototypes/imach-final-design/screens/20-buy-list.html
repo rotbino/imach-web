@@ -1,32 +1,57 @@
 <!-- ═════════════════════════════════════════════════════════════
      فایل ۲۰ — لیست خرید و تأمین‌کنندگان یک کالا
+     ─────────────────────────────────────────────────────────────
+     FD-16 (حکم مالک):
+     • هدر لیست خرید = چیپ دایره‌ای امتیاز + آیکون اشتراک‌گذاری
+       (همین دو تا اون بالا)؛ کارت امتیازِ درون‌صفحه حذف شد.
+     • باکس دکمه‌ها مثل کاتالوگ (۰۵): اضافه کردن کالا (اصلی، تمام‌عرض)
+       + پیش‌نمایش + اشتراک‌گذاری — چهارمی به فرمایش مالک فعلاً نیست.
+     • اشتراک‌گذاری = شیت sheet-share-buylist (سراسری در index.html).
+     • تأمین‌کنندگان هر کالا: لمس کارت → مستقیم کاتالوگ همان
+       تأمین‌کننده (حکم مالک — صفحهٔ واسط s-buy-supplier-view حذف شد؛
+       در ماک همه به کاتالوگ نمونهٔ ۳۱ می‌روند).
+     • دعوت تأمین‌کننده‌های این کالا → شیت اشتراک لیست خرید.
+     • «تأمین‌کنندگان بیشتر» (قفل امتیاز) → صفحهٔ فعالیت‌های خرید
+       (نه توست) — دعوت تأمین‌کنندهٔ جدید یکی از بالاترین امتیازهاست.
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-buy-list" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
         <div class="ttl">لیست خرید من<small id="buylist-count">۴ کالا</small></div>
-        <button class="icon-btn" id="buylist-preview" aria-label="پیش‌نمایش"><svg><use href="#i-eye"/></svg></button>
-        <button class="icon-btn" data-go="s-buy-list-add" aria-label="افزودن کالا"><svg><use href="#i-plus"/></svg></button>
+        <!-- FD-16: چیپ دایره‌ای امتیاز در هدر — کنار آیکون اشتراک؛
+             سینک با buyListScoreSync() (همان الگوی چیپ میزها). -->
+        <button class="score-chip" id="bl-chip" data-score-arm="buy" aria-label="امتیاز فعالیت خرید — دیدن جزئیات" type="button">
+            <svg class="ring" viewBox="0 0 44 44" aria-hidden="true">
+                <circle class="rc-bg" cx="22" cy="22" r="18"></circle>
+                <circle class="rc-fill" id="bl-chip-ring" cx="22" cy="22" r="18"></circle>
+            </svg>
+            <b id="bl-chip-num">۰</b>
+        </button>
+        <button class="icon-btn" data-sheet="sheet-share-buylist" aria-label="اشتراک‌گذاری لیست خرید">
+            <svg><use href="#i-share"/></svg>
+        </button>
     </div>
 
     <div class="body">
 
-        <!-- کارت امتیاز فعالیت خرید -->
-        <button class="score-status" id="buy-score-card" type="button" data-score-arm="buy">
-            <div class="ss-ring">
-                <svg viewBox="0 0 44 44">
-                    <circle cx="22" cy="22" r="18" class="ss-ring-bg"></circle>
-                    <circle cx="22" cy="22" r="18" class="ss-ring-fill" id="buy-score-ring"></circle>
-                </svg>
-                <span class="ss-num" id="buy-score-num">۰</span>
-            </div>
-            <div class="ss-tx">
-                <b id="buy-score-title">امتیاز فعالیت خرید</b>
-                <span id="buy-score-sub">شبکه‌ات را بساز — با ۱۰۰ امتیاز، تأمین‌کنندگان تازه بهت پیشنهاد می‌شود</span>
-            </div>
-            <svg class="ss-chev"><use href="#i-chev"/></svg>
-        </button>
+        <!-- FD-16 (حکم مالک): باکس دکمه‌ها مثل کاتالوگ — «اضافه کردن کالا /
+             پیش‌نمایش / اشتراک‌گذاری»؛ دکمهٔ اصلی تمام‌عرض ردیف اول.
+             (چهارمین دکمه به فرمایش مالک فعلاً به ذهنش نرسیده بود.) -->
+        <div class="cat-actions cat-actions-3">
+            <button class="cat-act primary" data-go="s-buy-list-add">
+                <span class="ca-ic"><svg><use href="#i-plus"/></svg></span>
+                <span class="ca-tx">اضافه کردن کالا</span>
+            </button>
+            <button class="cat-act" id="buylist-preview">
+                <span class="ca-ic"><svg><use href="#i-eye"/></svg></span>
+                <span class="ca-tx">پیش‌نمایش</span>
+            </button>
+            <button class="cat-act" data-sheet="sheet-share-buylist">
+                <span class="ca-ic"><svg><use href="#i-share"/></svg></span>
+                <span class="ca-tx">اشتراک‌گذاری</span>
+            </button>
+        </div>
 
         <div class="callout callout-info">
             <svg><use href="#i-info"/></svg>
@@ -38,11 +63,6 @@
              همین‌جا ظاهر می‌شوند؛ چیپ‌ها از فیلدهای fresh/offers/inq/
              added می‌آیند. -->
         <div class="rows" id="buylist-rows"></div>
-
-        <div class="hint-line">
-            <svg><use href="#i-sparkles"/></svg>
-            <span>می‌خواهی تأمین‌کننده‌های بیشتری داشته باشی؟ لینک لیست خریدت را برایشان بفرست تا کاتالوگشان را ذخیره کنی.</span>
-        </div>
     </div>
 </section>
 
@@ -116,7 +136,10 @@
 
         <div class="rows">
 
-            <div class="sup-p-card" data-go="s-buy-supplier-view">
+            <!-- FD-16 (حکم مالک): لمس کارت تأمین‌کننده → مستقیم کاتالوگِ او
+                 (نه صفحهٔ واسط)؛ در ماک همه به کاتالوگ نمونه (۳۱) می‌روند —
+                 در محصول واقعی هر تأمین‌کننده URL کاتالوگ خودش را دارد. -->
+            <div class="sup-p-card" data-sup-cat>
                 <div class="avatar" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
                 <div class="info">
                     <div class="nm">پخش برنج پارس <svg><use href="#i-verified"/></svg></div>
@@ -132,7 +155,7 @@
                 </div>
             </div>
 
-            <div class="sup-p-card" data-go="s-buy-supplier-view">
+            <div class="sup-p-card" data-sup-cat>
                 <div class="avatar" style="background: #7c3aed;">آ</div>
                 <div class="info">
                     <div class="nm">آریو غلات <svg><use href="#i-verified"/></svg></div>
@@ -148,7 +171,7 @@
                 </div>
             </div>
 
-            <div class="sup-p-card" data-go="s-buy-supplier-view">
+            <div class="sup-p-card" data-sup-cat>
                 <div class="avatar" style="background: #0e7490;">ک</div>
                 <div class="info">
                     <div class="nm">کیان غلات</div>
@@ -166,17 +189,20 @@
 
         </div>
 
-        <!-- تأمین‌کنندگان بیشتر — قفل تا امتیاز خرید ۱۰۰ -->
+        <!-- تأمین‌کنندگان بیشتر — قفل تا امتیاز خرید ۱۰۰
+             FD-16 (حکم مالک): لمس → صفحهٔ فعالیت‌های خرید (نه توست)؛
+             دعوت تأمین‌کنندهٔ جدید = یکی از بالاترین امتیازهای آی‌مچ. -->
         <button class="locked-cta" type="button" data-locked-more>
             <span class="lc-ic"><svg><use href="#i-lock"/></svg></span>
             <span class="lc-tx">
                 <b>تأمین‌کنندگان بیشتر</b>
-                <span>برای دیدن تأمین‌کنندگان فراتر از شبکهٔ خصوصیات، امتیاز فعالیت خریدت را به ۱۰۰ برسان</span>
+                <span>برای دیدن تأمین‌کنندگان فراتر از شبکهٔ خصوصیت، امتیاز فعالیت خریدت را به ۱۰۰ برسان — دعوت کردن تأمین‌کنندهٔ جدید یکی از بالاترین امتیازهای آی‌مچ را دارد.</span>
             </span>
             <svg class="lc-chev"><use href="#i-chev"/></svg>
         </button>
 
-        <!-- پیام تشویق اشتراک لیست (bpsRenderCta پر می‌کند) -->
+        <!-- پیام تشویق اشتراک لیست (bpsRenderCta پر می‌کند — متن‌ها و
+             دکمهٔ «دعوت تأمین‌کننده‌های این کالا» حکم مالک FD-16) -->
         <div id="bps-cta"></div>
 
     </div>

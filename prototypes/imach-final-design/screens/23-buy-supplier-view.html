@@ -1,82 +1,63 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۲۳: کاتالوگ تأمین‌کننده (دید خریدار)
-     هویت + دکمهٔ ذخیره کاتالوگ + گرید محصولات با دکمهٔ استعلام.
+     اسکرین ۲۳: جزئیات تأمین‌کننده (دید خریدار) — s-supplier-view
+     ─────────────────────────────────────────────────────────────
+     FD-16 (حکم مالک): صفحهٔ واسطِ قدیمی (کاتالوگِ خلاصهٔ «s-buy-supplier-view»)
+     حذف شد — لمس تأمین‌کننده مستقیم به کاتالوک او می‌رود. این صفحه
+     حالا «جزئیات تأمین‌کننده» است، قرینهٔ جزئیات مشتری (s-customer-view):
+       • هدر: تماس و پیام
+       • «در انتظار تایید تو» + پیشنهاد تامین او (اگر جدید باشد)
+       • شناسنامه: نام مسئول/صنف/شهر/تلفن/کالاهایش/از کِی
+       • یادداشت شخصی + ذخیره
+       • پیشنهادهایی که داده + استعلام‌هایی که از او شده + سفارش‌هایش
+       • ردیف «کاتالوگ او» → مستقیم کاتالوگ (حکم مالک)
+     منطق: svRender() در app-suppliers.js — از DATA.suppliers/offers/
+     rfqsOut/ordersOut. واژگان سمت خرید: «کالا» (قانون FD-5).
      ═════════════════════════════════════════════════════════════ -->
-<section class="screen" id="s-buy-supplier-view" data-arm="buy">
+<section class="screen" id="s-supplier-view" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">آریو غلات<small>کاتالوگ · اصفهان</small></div>
+        <div class="avatar avatar-sm" id="sv-avatar">پ</div>
+        <div class="ttl"><span id="sv-name">—</span><small id="sv-sub">—</small></div>
+        <button class="icon-btn" data-dial aria-label="تماس"><svg><use href="#i-phone"/></svg></button>
         <button class="icon-btn" data-go="s-chat" aria-label="پیام"><svg><use href="#i-msg"/></svg></button>
     </div>
 
     <div class="body">
-        <div class="card">
-            <div style="display: flex; gap: 12px; align-items: center;">
-                <div class="avatar avatar-lg" style="background: #7c3aed;">آ</div>
-                <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-                        آریو غلات <svg style="width: 16px; height: 16px; color: var(--blue);"><use href="#i-verified"/></svg>
-                    </div>
-                    <div style="font-size: 11.5px; color: var(--text-3); margin-top: 4px;">امیر قاسمی · پخش غلات · اصفهان</div>
+        <!-- در انتظار تایید + پیشنهاد تامین او — فقط برای تأمین‌کنندهٔ جدید (رندر JS) -->
+        <div id="sv-pending" hidden></div>
+
+        <!-- شناسنامهٔ تأمین‌کننده -->
+        <div class="card" style="padding: 2px 14px;" id="sv-identity"></div>
+
+        <!-- کاتالوک او — مستقیم، نه صفحهٔ واسط (حکم مالک FD-16) -->
+        <div class="rows" style="margin-top: 10px;">
+            <div class="row" data-sup-cat>
+                <div class="thumb thumb-sm" style="background: var(--arm-soft); color: var(--arm-strong); display: grid; place-items: center;">
+                    <svg style="width: 18px; height: 18px;"><use href="#i-store"/></svg>
                 </div>
-            </div>
-            <div style="display: flex; gap: 8px; margin-top: 12px;">
-                <button class="btn btn-primary btn-sm" style="flex: 1;" data-save-catalog>
-                    <svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ
-                </button>
-                <button class="btn btn-outline btn-sm" style="flex: 1;" data-go="s-chat">
-                    <svg><use href="#i-msg"/></svg> پیام
-                </button>
+                <div class="row-body">
+                    <div class="row-title">کاتالوک او</div>
+                    <div class="row-sub">قیمت‌های زنده و کالاهایش را ببین</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
         </div>
 
-        <div class="section-title"><h2><svg><use href="#i-store"/></svg> محصولات</h2></div>
-
-        <div class="pgrid">
-            <div class="pcard">
-                <div class="ph"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
-                <div class="info">
-                    <div class="pname">برنج هاشمی</div>
-                    <div class="ppack">کیسه ۵۰ کیلویی</div>
-                    <div class="pprice">۲٬۹۲۰٬۰۰۰ <small>تومان</small></div>
-                    <div class="pmeta" style="padding-top:4px">
-                        <button class="btn btn-primary btn-sm btn-block" data-go="s-buy-rfq-new" style="width:100%">
-                            <svg><use href="#i-send"/></svg> استعلام
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="pcard">
-                <div class="ph"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
-                <div class="info">
-                    <div class="pname">برنج طارم</div>
-                    <div class="ppack">کیسه ۵۰ کیلویی</div>
-                    <div class="pprice">۲٬۸۱۰٬۰۰۰ <small>تومان</small></div>
-                    <div class="pmeta" style="padding-top:4px">
-                        <button class="btn btn-primary btn-sm btn-block" data-go="s-buy-rfq-new" style="width:100%">
-                            <svg><use href="#i-send"/></svg> استعلام
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="pcard">
-                <div class="ph"><img src="png/goods/sugar-cubes.jpg" alt="قند"></div>
-                <div class="info">
-                    <div class="pname">قند</div>
-                    <div class="ppack">کیسه ۱۰ کیلویی</div>
-                    <div class="pprice">۷۶۰٬۰۰۰ <small>تومان</small></div>
-                    <div class="pmeta" style="padding-top:4px">
-                        <button class="btn btn-primary btn-sm btn-block" data-go="s-buy-rfq-new" style="width:100%">
-                            <svg><use href="#i-send"/></svg> استعلام
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <!-- یادداشت -->
+        <div class="section-title" style="margin-top: 14px;">
+            <h2><svg><use href="#i-pencil"/></svg> یادداشت</h2>
+        </div>
+        <div class="card" style="padding: 12px;">
+            <textarea class="input" id="sv-note" placeholder="یادداشت شخصی — مثلاً: تحویل سه‌روزه، چک نمی‌گیرد"></textarea>
+            <button class="btn btn-outline btn-sm btn-block" id="sv-note-save" type="button" style="margin-top: 8px;">
+                <svg><use href="#i-check"/></svg> ذخیرهٔ یادداشت
+            </button>
         </div>
 
-        <div class="hint-line">
-            <svg><use href="#i-info"/></svg>
-            <span>با ذخیره کاتالوگ، قیمت‌های آریو غلات همیشه دستت می‌ماند و هر تغییر قیمت را همان لحظه می‌بینی.</span>
+        <!-- پیشنهادها و استعلام‌های همین تأمین‌کننده -->
+        <div class="section-title" style="margin-top: 14px;">
+            <h2><svg><use href="#i-receipt"/></svg> پیشنهادها و استعلام‌های او</h2>
         </div>
+        <div class="rows" id="sv-activity"></div>
     </div>
 </section>

@@ -849,90 +849,10 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 
 
 
-/* ═══ ۲۵-پ. کارت امتیاز در کاتالوگ / لیست خرید ═══ */
-.score-status {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    cursor: pointer;
-    text-align: right;
-    font-family: inherit;
-    transition: border-color .15s, background .15s;
-}
-.score-status:hover { border-color: var(--border-2); }
-.score-status:active { background: var(--surface-2); }
-.score-status.on {
-    border-color: #B6DFC5;
-    background: linear-gradient(180deg, #F4FCF6, #FFF 60%);
-}
-
-.ss-ring {
-    position: relative;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-}
-.ss-ring svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-    display: block;
-}
-.ss-ring-bg {
-    fill: none;
-    stroke: var(--surface-3);
-    stroke-width: 4;
-}
-.ss-ring-fill {
-    fill: none;
-    stroke: var(--primary);
-    stroke-width: 4;
-    stroke-linecap: round;
-    /* circumference = 2 * π * 18 ≈ 113.1 */
-    stroke-dasharray: 113.1;
-    stroke-dashoffset: 113.1;
-    transition: stroke-dashoffset .5s ease, stroke .3s;
-}
-.phone[data-arm="buy"] .ss-ring-fill { stroke: var(--stone); }
-.score-status.on .ss-ring-fill { stroke: var(--green); }
-
-.ss-num {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--primary-strong);
-}
-.phone[data-arm="buy"] .ss-num { color: var(--stone); }
-.score-status.on .ss-num { color: var(--green); }
-
-.ss-tx { flex: 1; min-width: 0; }
-.ss-tx b {
-    display: block;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1.55;
-}
-.ss-tx span {
-    display: block;
-    font-size: 10.5px;
-    color: var(--text-3);
-    margin-top: 3px;
-    line-height: 1.75;
-}
-.ss-chev {
-    width: 16px;
-    height: 16px;
-    color: var(--text-4);
-    flex-shrink: 0;
-}
+/* ═══ ۲۵-پ. کارت امتیاز در کاتالوگ / لیست خرید ═══
+   (حذف‌شده در FD-16 — آخرین کاربرد: کارت امتیازِ لیست خرید ۲۰ که
+   به چیپ دایره‌ای هدر رفت؛ کاتالوگ ۰۵ هم قبل‌تر چیپ اپ‌بار گرفته
+   بود. الگوی جایگزین: score-chip در بخش ۳۳-پ.) */
 
 /* ═══ ۲۶. گفتگو ═══ */
 .chat-day {
@@ -2472,15 +2392,18 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 /* FD-8: دو کاشی کنار هم — کاتالوگ من / مشتریان من (و قرینهٔ خرید).
    FD-10 (بازخورد مالک): عنوان جلوی آیکون نشست — ردیفِ [آیکون + عنوان +
    chevron] یک خط کمتر می‌گیرد؛ کاشی خلوت‌تر و گویاتر دیده می‌شود.
-   عدد در رنگ بازو (فروش: نارنجی · خرید: زغالی) — پیوند بصری با چیپ اپ‌بار. */
-.desk-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+   عدد در رنگ بازو (فروش: نارنجی · خرید: زغالی) — پیوند بصری با چیپ اپ‌بار.
+   FD-16 (حکم مالک): چهار کاشی جمع‌وجور (هر دو میز) — پدینگ/عدد/
+   فاصله‌ها فشرده‌تر شد و زیرمتن تزیینی حذف شد؛ زیرمتن فقط دادهٔ
+   واقعی است («N در انتظار تایید») یا هیچ. */
+.desk-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .desk-tile {
-    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
     min-width: 0; text-align: right;
     background: var(--surface);
     border: 1px solid var(--border-2);
     border-radius: var(--r-lg);
-    padding: 12px 13px 11px;
+    padding: 10px 12px 9px;
     cursor: pointer;
     transition: border-color .15s, transform .12s;
 }
@@ -2488,18 +2411,18 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 /* ردیف سر کاشی: آیکون + عنوان (flex:1) + chevron — حکم FD-10 */
 .desk-tile .dt-head { display: flex; align-items: center; gap: 8px; width: 100%; }
 .desk-tile .dt-ic {
-    width: 34px; height: 34px; border-radius: 10px;
+    width: 30px; height: 30px; border-radius: 9px;
     display: grid; place-items: center; flex-shrink: 0;
     background: var(--arm-soft); color: var(--arm-strong);
 }
-.desk-tile .dt-ic svg { width: 18px; height: 18px; }
+.desk-tile .dt-ic svg { width: 16px; height: 16px; }
 .desk-tile .dt-chev { width: 14px; height: 14px; color: var(--text-4); flex-shrink: 0; margin-right: auto; }
-.desk-tile .dt-t { flex: 1; min-width: 0; font-size: 13px; font-weight: 800; color: var(--text); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* عدد بزرگ + واحد — «چه داری» در یک نگاه */
-.desk-tile .dt-stat { display: flex; align-items: baseline; gap: 5px; margin-top: 2px; }
-.desk-tile .dt-stat b { font-size: 22px; font-weight: 800; color: var(--arm-strong); line-height: 1.25; }
-.desk-tile .dt-stat span { font-size: 11px; font-weight: 600; color: var(--text-3); }
-.desk-tile .dt-sub { font-size: 10.5px; color: var(--text-3); line-height: 1.6; }
+.desk-tile .dt-t { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 800; color: var(--text); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* عدد بزرگ + واحد — «چه داری» در یک نگاه (FD-16: کمی جمع‌وجورتر) */
+.desk-tile .dt-stat { display: flex; align-items: baseline; gap: 5px; margin-top: 1px; }
+.desk-tile .dt-stat b { font-size: 19px; font-weight: 800; color: var(--arm-strong); line-height: 1.3; }
+.desk-tile .dt-stat span { font-size: 10.5px; font-weight: 600; color: var(--text-3); }
+.desk-tile .dt-sub { font-size: 10px; color: var(--text-3); line-height: 1.6; }
 
 /* ═══ ۳۳-پ‌ب (FD-12): ردیف «گام شروع» — به‌جای کارت قهرمانِ «گام بعدی» ═══
    حکم مالک: گام‌های شروع هم «اقدام»‌اند — فقط موقتی (راه‌اندازی/تشویق)،
@@ -3439,3 +3362,70 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     color: var(--text-4);
 }
 .pcard .ph .cat-noimg svg { width: 30px; height: 30px; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FD-16 — میز خرید / لیست خرید / دفتر تأمین‌کننده
+   ═══════════════════════════════════════════════════════════════ */
+
+/* باکس دکمه‌های لیست خرید (۲۰) — سه دکمه (حکم مالک: چهارمی فعلاً نیست):
+   اصلیِ «اضافه کردن کالا» تمام‌عرض ردیف اول + دو نیمه در ردیف دوم. */
+.cat-actions.cat-actions-3 { grid-template-columns: 1fr 1fr; }
+.cat-actions.cat-actions-3 .cat-act.primary { grid-column: 1 / -1; }
+
+/* ─── کارت پیشنهاد تامین — جزئیات تأمین‌کننده (s-supplier-view) ───
+   داخل بلوک کهربایی «در انتظار تایید تو» می‌نشیند؛ قلم + قیمت +
+   بسته + پیام او (حکم مالک: پیشنهادش را همان‌جا ببین). */
+.sv-prop {
+    margin-top: 10px;
+    background: var(--surface);
+    border: 1px solid #FDE68A;
+    border-radius: var(--r-md);
+    padding: 10px 12px;
+}
+.sv-prop-tx b { display: block; font-size: 13px; font-weight: 800; color: var(--text); line-height: 1.6; }
+.sv-prop-tx span { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.sv-prop-msg {
+    font-size: 11px; color: var(--text-2); line-height: 1.9;
+    margin-top: 6px; padding-top: 6px;
+    border-top: 1px dashed #FDE68A;
+}
+
+/* ─── ردیف کالا در شیت «پیشنهاد تامین» (۳۲ — دید تأمین‌کننده) ───
+   [تیک دایره‌ای] + [عکس + نام/بسته] + [ورودی قیمت]. لمس ردیف = انتخاب؛
+   نوشتن قیمت هم خودش انتخاب می‌کند (لمسِ دوم برای پیرمرد کمتر می‌ماند). */
+.sprow {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1.5px solid var(--border-2);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+.sprow + .sprow { margin-top: 8px; }
+.sprow.on { border-color: var(--primary); background: var(--primary-soft); }
+.sprow-chk {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid var(--border-3); background: var(--surface);
+    display: grid; place-items: center; cursor: pointer; padding: 0;
+    color: transparent; flex-shrink: 0;
+    transition: background .15s, border-color .15s, color .15s;
+}
+.sprow-chk svg { width: 14px; height: 14px; }
+.sprow.on .sprow-chk { background: var(--primary); border-color: var(--primary); color: #FFF; }
+.sprow-body { flex: 1; min-width: 0; text-align: right; }
+.sprow-body b { display: block; font-size: 13px; font-weight: 700; line-height: 1.5; }
+.sprow-body small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.sprow-price {
+    width: 92px; flex-shrink: 0;
+    text-align: center; direction: rtl;
+    font-family: inherit; font-size: 12.5px; font-weight: 700;
+    padding: 9px 8px;
+    border: 1.5px solid var(--border-2); border-radius: 10px;
+    background: var(--surface);
+    outline: none;
+}
+.sprow-price:focus { border-color: var(--primary); }
+.sprow.on .sprow-price { background: #FFF; }

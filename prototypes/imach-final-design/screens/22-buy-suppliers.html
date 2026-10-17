@@ -1,58 +1,41 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۲۲: تأمین‌کنندگان من
-     لیست تأمین‌کنندگان ذخیره‌شده + منوی سه‌نقطه برای حذف.
-     بج «جدید» برای تازه‌ها.
+     اسکرین ۲۲: تأمین‌کنندگان من — دفتر تأمین‌کننده
+     ─────────────────────────────────────────────────────────────
+     FD-16 (حکم مالک): غنی‌سازی به قرینهٔ دفتر مشتریان (۰۸):
+     • جستجو + دکمهٔ «دعوت تأمین‌کننده جدید» (= شیت اشتراک لیست خرید).
+     • رندر دیتامحور از DATA.suppliers (suppliersRender در
+       app-suppliers.js) — تأمین‌کننده‌های پیشنهادی (isNew) اولِ
+       لیست با دکمه‌های «تایید / حذف» (پیشنهاد تامین رسیده).
+     • لمس هر ردیف → صفحهٔ جزئیات تأمین‌کننده (s-supplier-view).
+     • منوی سه‌نقطه = شیت از پایین (گفتگو · کاتالوگ او · حذف).
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-buy-suppliers" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">تأمین‌کنندگان من<small>۳ تأمین‌کننده</small></div>
+        <div class="ttl">تأمین‌کنندگان من<small id="sup-count">۵ تأمین‌کننده</small></div>
+        <button class="icon-btn" id="sup-invite" aria-label="دعوت تأمین‌کننده جدید"><svg><use href="#i-user-plus"/></svg></button>
     </div>
 
     <div class="body">
-        <div class="callout callout-info">
-            <svg><use href="#i-bookmark"/></svg>
-            <div>هر کاتالوگی که ذخیره می‌کنی، یک <b>تأمین‌کننده</b> به فهرست تأمین‌کنندگانت اضافه می‌شود و همیشه قیمت‌های زنده‌اش را داری.</div>
+        <!-- جستجو -->
+        <div class="search-row" style="height: 44px;">
+            <svg><use href="#i-search"/></svg>
+            <input type="text" id="sup-search" placeholder="جستجوی تأمین‌کننده، کسب‌وکار، شهر…" autocomplete="off">
         </div>
 
-        <div class="rows">
-            <div class="row static" data-go="s-buy-supplier-view">
-                <div class="avatar" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
-                <div class="row-body">
-                    <div class="row-title">پخش برنج پارس <svg style="width: 14px; height: 14px; color: var(--blue);"><use href="#i-verified"/></svg></div>
-                    <div class="row-sub">مرتضی رضایی <span class="dot">·</span> رشت</div>
-                </div>
-                <button class="icon-btn plain" data-sup-menu="پخش برنج پارس" aria-label="گزینه‌ها">
-                    <svg><use href="#i-dots"/></svg>
-                </button>
-            </div>
+        <!-- دعوت تأمین‌کننده جدید — از طریق اشتراک لیست خرید
+             (حکم مالک FD-16: دعوت = شیت اشتراک، نه کپیِ فقط لینک) -->
+        <button class="btn btn-arm btn-block" id="sup-invite-2" type="button" style="margin-top: 10px;">
+            <svg><use href="#i-user-plus"/></svg> دعوت تأمین‌کننده جدید
+        </button>
 
-            <div class="row static" data-go="s-buy-supplier-view">
-                <div class="avatar" style="background: #7c3aed;">آ</div>
-                <div class="row-body">
-                    <div class="row-title">آریو غلات <svg style="width: 14px; height: 14px; color: var(--blue);"><use href="#i-verified"/></svg></div>
-                    <div class="row-sub">امیر قاسمی <span class="dot">·</span> اصفهان</div>
-                </div>
-                <button class="icon-btn plain" data-sup-menu="آریو غلات" aria-label="گزینه‌ها">
-                    <svg><use href="#i-dots"/></svg>
-                </button>
-            </div>
+        <!-- لیست تأمین‌کننده‌ها — دیتامحور (app-suppliers.js) -->
+        <div class="rows" id="sup-list" style="margin-top: 12px;"></div>
 
-            <div class="row static" data-go="s-buy-supplier-view">
-                <div class="avatar" style="background: #0e7490;">ک</div>
-                <div class="row-body">
-                    <div class="row-title">کیان غلات <span class="badge b-primary">جدید</span></div>
-                    <div class="row-sub">کیان رستمی <span class="dot">·</span> قزوین</div>
-                </div>
-                <button class="icon-btn plain" data-sup-menu="کیان غلات" aria-label="گزینه‌ها">
-                    <svg><use href="#i-dots"/></svg>
-                </button>
-            </div>
-        </div>
-
+        <!-- تنها جملهٔ توضیح این صفحه -->
         <div class="hint-line">
             <svg><use href="#i-sparkles"/></svg>
-            <span>می‌خواهی تأمین‌کننده‌های بیشتری داشته باشی؟ موتور تطابق آی‌مچ می‌تواند تأمین‌کننده‌های مرتبط با کالاهای لیست خریدت را پیشنهاد بدهد.</span>
+            <span>هر کاتالوگی که ذخیره کنی یک تأمین‌کننده می‌شود؛ هر کس به لیست خریدت پیشنهاد تامین بدهد و تایید کنی هم همین‌طور.</span>
         </div>
     </div>
 

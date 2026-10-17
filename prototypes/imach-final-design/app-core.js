@@ -54,7 +54,7 @@ window.iMach = (function () {
         's-buy-list-add':         '20-buy-list',
         's-buy-product-suppliers':'20-buy-list',
         's-buy-suppliers':        '22-buy-suppliers',
-        's-buy-supplier-view':    '23-buy-supplier-view',
+        's-supplier-view':        '23-buy-supplier-view',
         's-buy-rfqs':             '24-buy-rfqs',
         's-buy-rfq-new':          '25-buy-rfq-new',
         's-buy-offers':           '26-buy-offers',

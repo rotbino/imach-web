@@ -29,6 +29,13 @@
        ردیفی ساده (نه دیوار اجبار) که تا ساخته‌نشدن می‌ماند.
      • تب‌های پایین: «میز فروش» / «میز خرید».
 
+    بازبینی مالک (FD-16):
+    • چهار کاشی جمع‌وجور (حکم: «همهٔ لینکها اون بالا») — لیست خرید /
+      تأمین‌کننده‌ها / سفارشات من / استعلام‌های من؛ زیرمتن‌های تزیینی
+      («برای هر کالا استعلام بگیر» و…) حذف شد، فقط دادهٔ واقعی ماند.
+    • «در انتظار تایید» حتماً در کارتابل اقدام هم هست: پیشنهادهای
+      تامین رسیده (suppliers isNew) → دفتر تأمین‌کننده‌ها (۲۲).
+
     منطق: buyDeskSync() در app-forms.js + scoreItemsBuy در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-buy" data-arm="buy">
@@ -57,11 +64,12 @@
 
     <div class="body">
 
-        <!-- FD-8: دو کاشی کنار هم (حکم مالک) — قرینهٔ میز فروش.
-             FD-10 (بازخورد مالک): عنوان جلوی آیکون — همان ساختار میز فروش.
-             FD-14: شمارندهٔ کاشی لیست خرید زنده شد (id=buy-desk-list-n) —
-             صفحهٔ ۲۰ حالا از DATA.shoppingList رندر می‌شود و کالاهای
-             افزوده‌شده از کاتالوگ (۳۱) همین‌جا دیده می‌شوند. -->
+        <!-- FD-16 (حکم مالک): چهار کاشی جمع‌وجور — «همهٔ لینکها بالا»:
+             لیست خرید / تأمین‌کننده‌ها / سفارشات من / استعلام‌های من.
+             توضیح‌های تزیینی کاشی‌ها حذف شد (مینیمال)؛ زیرمتن فقط
+             دادهٔ واقعی (در انتظار تایید). اعداد زنده از دیتا:
+             buyDeskSync() — لیست از shoppingList، تأمین‌کننده/در انتظار
+             از suppliers، سفارش از ordersOut، استعلام از rfqsOut. -->
         <div class="desk-duo">
             <button class="desk-tile" data-go="s-buy-list" type="button">
                 <span class="dt-head">
@@ -70,7 +78,6 @@
                     <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="buy-desk-list-n">۴</b><span>کالا</span></div>
-                <div class="dt-sub">برای هر کالا استعلام بگیر</div>
             </button>
             <button class="desk-tile" data-go="s-buy-suppliers" type="button">
                 <span class="dt-head">
@@ -78,8 +85,24 @@
                     <b class="dt-t">تأمین‌کننده‌های من</b>
                     <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
-                <div class="dt-stat"><b>۳</b><span>تأمین‌کننده</span></div>
-                <div class="dt-sub">قیمت زندهٔ کاتالوگ‌شان</div>
+                <div class="dt-stat"><b id="buy-desk-sup-n">۳</b><span>تأمین‌کننده</span></div>
+                <div class="dt-sub" id="buy-desk-sup-sub"></div>
+            </button>
+            <button class="desk-tile" data-go="s-buy-orders" type="button">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-receipt"/></svg></span>
+                    <b class="dt-t">سفارشات من</b>
+                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
+                </span>
+                <div class="dt-stat"><b id="buy-desk-ord-n">۱</b><span>سفارش</span></div>
+            </button>
+            <button class="desk-tile" data-go="s-buy-rfqs" type="button">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-inbox"/></svg></span>
+                    <b class="dt-t">استعلام‌های من</b>
+                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
+                </span>
+                <div class="dt-stat"><b id="buy-desk-rfq-n">۲</b><span>باز</span></div>
             </button>
         </div>
 
@@ -88,7 +111,8 @@
              هم اقدام‌اند — ردیف‌های ساده با نشان «شروع»، موقتی و کم‌ادعا:
              ۱) ساخت رمز ورود (تا وقتی ساخته نشده) → شیت sheet-pass
              ۲) گام راه‌اندازی از scoreItemsBuy[].desk (buyDeskSync)
-             ۳) ردیف‌های زندهٔ روزمره (پیشنهاد جدید / سفارش جاری) -->
+             ۳) «در انتظار تایید» (حکم FD-16): پیشنهادهای تامین رسیده
+             ۴) ردیف‌های زندهٔ روزمره (پیشنهاد جدید / سفارش جاری) -->
         <div class="section-title"><h2>نیازمند اقدام</h2></div>
         <div class="rows">
             <div class="row row-start" id="buy-pass-row" data-pass-open>
@@ -110,16 +134,15 @@
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
-            <!-- FD-14 (ترمیم نقطه‌شکسته): «استعلام‌های من» (۲۴) از هیچ جای
-                 میز خرید قابل دسترس نبود — قرینهٔ ردیف «درخواست قیمت»
-                 میز فروش (۰۴). پرسش طبیعی خریدار: «چند تا استعلام دادم؟» -->
-            <div class="row" data-go="s-buy-rfqs">
-                <div class="thumb thumb-sm" style="background: var(--arm-soft); color: var(--arm-strong); display: grid; place-items: center;">
-                    <svg style="width: 20px; height: 20px;"><use href="#i-inbox"/></svg>
+            <!-- FD-16: «در انتظار تایید» حتماً در کارتابل اقدام —
+                 پیشنهاد تامین رسیده (suppliers isNew) → دفتر تأمین‌کننده‌ها -->
+            <div class="row" id="buy-pend-row" data-go="s-buy-suppliers" hidden>
+                <div class="thumb thumb-sm" style="background: var(--amber-soft); color: var(--amber); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-user-plus"/></svg>
                 </div>
                 <div class="row-body">
-                    <div class="row-title">۲ استعلام باز</div>
-                    <div class="row-sub">برنج هاشمی · ۵ پیشنهاد <span class="dot">·</span> <span style="color: var(--amber); font-weight: 700;">۳ روز مانده</span></div>
+                    <div class="row-title"><span id="buy-pend-t">۲ تأمین‌کنندهٔ پیشنهادی</span></div>
+                    <div class="row-sub">در انتظار تایید تو — پیشنهاد تامین داده‌اند</div>
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>

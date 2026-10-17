@@ -231,7 +231,12 @@
 
     /* ═══════════════════════════════════════════════════════════════
        امتیاز در کارت وضعیت کاتالوگ و لیست خرید
-       ═══════════════════════════════════════════════════════════════ */
+       ─────────────────────────────────────────────────────────────
+       FD-16: کارت‌های امتیازِ درون‌صفحه (کاتالوگ ۰۵ — قبل‌تر، لیست خرید
+       ۲۰ — این فاز) حذف شدند؛ امتیاز فقط در چیپ اپ‌بار/هدر می‌ماند.
+       _scoreRingSync نگه داشته شد چون سینک‌های دیگر (FD-9) به آن
+       ارجاع ندارند اما خروجی‌اش بی‌ضرر است؛ catalogScoreSync دیگر
+       عنصری برای سینک ندارد و عملاً no-op است (تمیز‌کاری بعدی). */
     function _scoreRingSync(score, ringSel, numSel) {
         var pct = Math.min(100, score) / 100;
         var ring = $(ringSel);
@@ -243,42 +248,18 @@
         if (num) num.textContent = faNum(score);
     }
 
+    /* FD-16: کارت امتیاز کاتالوگ حذف شده — این سینک فقط برای سازگاری
+       هوک‌های قدیمی مانده؛ عنصری پیدا نمی‌کند و کاری نمی‌کند. */
     function catalogScoreSync() {
-        var sell = scoreCalc(core.data.scoreItemsSell);
-        _scoreRingSync(sell, '#cat-score-ring', '#cat-score-num');
-
-        var card = $('#cat-score-card');
-        var sub = $('#cat-score-sub');
-        var title = $('#cat-score-title');
-
-        if (card) card.classList.toggle('on', sell >= 100);
-
-        if (sell >= 100) {
-            if (title) title.textContent = '🎉 شبکهٔ بازت فعال شد';
-            if (sub) sub.textContent = 'محصولاتت الان به خریداران هدف نشان داده می‌شود';
-        } else {
-            if (title) title.textContent = 'امتیاز فعالیت فروش';
-            if (sub) sub.textContent = 'شبکه‌ات را بساز — ' + faNum(100 - sell) + ' امتیاز تا شتاب گرفتن';
-        }
+        _scoreRingSync(scoreCalc(core.data.scoreItemsSell), '#cat-score-ring', '#cat-score-num');
     }
 
+    /* FD-16: امتیاز لیست خرید — به‌جای کارت درون‌صفحه (حذف شد)، چیپ
+       دایره‌ای در هدر (#bl-chip) — همان الگوی چیپ میزها؛ کلیک → صفحهٔ
+       امتیازها (data-score-arm در app-handlers.js). */
     function buyListScoreSync() {
         var buy = scoreCalc(core.data.scoreItemsBuy);
-        _scoreRingSync(buy, '#buy-score-ring', '#buy-score-num');
-
-        var card = $('#buy-score-card');
-        var sub = $('#buy-score-sub');
-        var title = $('#buy-score-title');
-
-        if (card) card.classList.toggle('on', buy >= 100);
-
-        if (buy >= 100) {
-            if (title) title.textContent = '🎉 شبکهٔ بازت فعال شد';
-            if (sub) sub.textContent = 'تأمین‌کنندگان تازه در لیستت پیشنهاد می‌شوند';
-        } else {
-            if (title) title.textContent = 'امتیاز فعالیت خرید';
-            if (sub) sub.textContent = 'شبکه‌ات را بساز — ' + faNum(100 - buy) + ' امتیاز تا شتاب گرفتن';
-        }
+        _chipRingSync(buy, '#bl-chip-ring', '#bl-chip-num', '#bl-chip');
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -366,7 +347,22 @@
         el = $('#desk-cust-num');
         if (el) el.textContent = faNum(custs.length);
         el = $('#desk-cust-sub');
-        if (el) el.textContent = newN ? faNum(newN) + ' در انتظار تایید' : 'شبکهٔ مشتریانت';
+        if (el) el.textContent = newN ? faNum(newN) + ' در انتظار تایید' : '';
+
+        /* FD-16: دو کاشی تازه — سفارشات رسیده + درخواست‌های قیمت */
+        el = $('#desk-ord-num');
+        if (el) el.textContent = faNum((core.data.ordersIn || []).length);
+        el = $('#desk-rfq-num');
+        if (el) el.textContent = faNum((core.data.rfqsIn || []).length);
+
+        /* FD-16: ردیف «در انتظار تایید» در کارتابل (حکم مالک:
+           حتماً این‌جا باشد) — مشتری جدید رسیده → دفتر مشتریان */
+        var pr = $('#sell-pend-row');
+        if (pr) {
+            pr.hidden = newN === 0;
+            var pt = $('#sell-pend-t');
+            if (pt && newN) pt.textContent = faNum(newN) + ' مشتری جدید';
+        }
 
         /* ۳) ردیف «گام شروع» در فهرست اقدام (FD-12) */
         _deskStepSync('sell-desk-row', 'ds-row-t', core.data.scoreItemsSell, sell, 's-home-sell');
@@ -391,13 +387,42 @@
         _deskStepSync('buy-desk-row', 'bds-row-t', core.data.scoreItemsBuy, buy, 's-home-buy');
 
         /* ۴) FD-14: شمارندهٔ کاشی لیست خرید — زنده از DATA.shoppingList
-           (کالاهای افزوده‌شده از کاتالوگ ۳۱ همین‌جا دیده می‌شوند) */
+           (کالاهای افزوده‌شده از کاتالوگ ۳۱ همین‌جا دیده می‌شوند)
+           FD-16: سه کاشی تازه — تأمین‌کننده‌ها (+در انتظار تایید) /
+           سفارشات من (ordersOut) / استعلام‌های من (rfqsOut باز) */
         var ln = $('#buy-desk-list-n');
         if (ln) ln.textContent = faNum((core.data.shoppingList || []).length);
+        var sups = (core.data.suppliers || []).filter(function (s) { return s.businessId === 'b2'; });
+        var supNew = sups.filter(function (s) { return s.isNew; }).length;
+        var sn = $('#buy-desk-sup-n');
+        if (sn) sn.textContent = faNum(sups.length);
+        var ss = $('#buy-desk-sup-sub');
+        if (ss) ss.textContent = supNew ? faNum(supNew) + ' در انتظار تایید' : '';
+        var on = $('#buy-desk-ord-n');
+        if (on) on.textContent = faNum((core.data.ordersOut || []).length);
+        var rn = $('#buy-desk-rfq-n');
+        if (rn) rn.textContent = faNum((core.data.rfqsOut || []).filter(function (r) { return r.status === 'current'; }).length);
+
+        /* FD-16: ردیف «در انتظار تایید» در کارتابل (حکم مالک) —
+           پیشنهاد تامین رسیده → دفتر تأمین‌کننده‌ها */
+        var bpr = $('#buy-pend-row');
+        if (bpr) {
+            bpr.hidden = supNew === 0;
+            var bpt = $('#buy-pend-t');
+            if (bpt && supNew) bpt.textContent = faNum(supNew) + ' تأمین‌کنندهٔ پیشنهادی';
+        }
     }
 
     /* ═══════════════════════════════════════════════════════════════
        پیام تشویق در صفحهٔ تأمین‌کنندگان یک کالا
+       FD-16 (حکم مالک — متن‌های جدید):
+       «تأمین‌کننده‌های این کالا را می‌شناسی؟ لیست خریدت رو برای تأمین‌کنندگان
+       این کالا بفرست تا قیمت این کالا را از چند تأمین‌کننده ببینی و همزمان
+       بتوانی استعلام قیمت بهتری بگیری. هر کسی که به لیست خرید شما پیشنهاد
+       تامین دهد و شما تایید کنید، جز تأمین‌کنندگان شما خواهد بود و شما هم
+       مشتری او خواهی شد و از مزایای مشتریان او مانند تخفیف و غیره برخوردار
+       می‌شوید.» دکمه: «دعوت تأمین‌کننده‌های این کالا» → شیت اشتراک
+       (data-share-buylist در app-handlers.js — sheet-share-buylist).
        ═══════════════════════════════════════════════════════════════ */
     function bpsRenderCta() {
         var host = $('#bps-cta');
@@ -408,20 +433,20 @@
             host.innerHTML =
                 '<div class="bps-cta">' +
                 '<div class="bps-ic"><svg><use href="#i-share"/></svg></div>' +
-                '<div class="bps-title">هنوز تأمین‌کننده‌ای این کالا را ندارد</div>' +
-                '<div class="bps-tx">لیست خریدت را برای تأمین‌کنندگانت بفرست تا کاتالوگشان را ذخیره کنی و قیمت زنده‌شان همین‌جا بیفتد.</div>' +
+                '<div class="bps-title">تأمین‌کننده‌ای برای این کالا نداری</div>' +
+                '<div class="bps-tx">لیست خریدت را برای تأمین‌کنندگان این کالا بفرست تا پیشنهاد تامین بدهند و قیمت این کالا را از چند نفر ببینی.</div>' +
                 '<button class="btn btn-arm btn-block" data-share-buylist type="button">' +
-                '<svg><use href="#i-share"/></svg> اشتراک لیست خرید' +
+                '<svg><use href="#i-share"/></svg> دعوت تأمین‌کننده‌های این کالا' +
                 '</button>' +
                 '</div>';
         } else {
             host.innerHTML =
                 '<div class="bps-cta">' +
                 '<div class="bps-ic"><svg><use href="#i-users"/></svg></div>' +
-                '<div class="bps-title">تأمین‌کننده‌های بیشتری این کالا را دارند؟</div>' +
-                '<div class="bps-tx">لیست خریدت را برای تأمین‌کنندگان دیگر هم بفرست تا بتونی از چند نفر قیمت سفارشی بگیری و کنار هم مقایسه کنی.</div>' +
+                '<div class="bps-title">تأمین‌کننده‌های این کالا را می‌شناسی؟</div>' +
+                '<div class="bps-tx">لیست خریدت را برای تأمین‌کنندگان این کالا بفرست تا قیمت این کالا را از چند تأمین‌کننده ببینی و همزمان بتوانی استعلام قیمت بهتری بگیری. هر کسی که به لیست خرید شما پیشنهاد تامین دهد و شما تایید کنید، جز تأمین‌کنندگان شما خواهد بود و شما هم مشتری او خواهی شد و از مزایای مشتریان او مانند تخفیف و غیره برخوردار می‌شوید.</div>' +
                 '<button class="btn btn-outline btn-block" data-share-buylist type="button">' +
-                '<svg><use href="#i-share"/></svg> دعوت تأمین‌کننده‌های بیشتر' +
+                '<svg><use href="#i-share"/></svg> دعوت تأمین‌کننده‌های این کالا' +
                 '</button>' +
                 '</div>';
         }
@@ -1621,6 +1646,18 @@
         guestSavedSync();
     }
 
+    /* FD-16 — ورود به کاتالوک تأمین‌کننده به چشمِ «مشتری»:
+       خریدارِ واردشده کاتالوک تأمین‌کننده‌هایش را از قبل ذخیره کرده —
+       یعنی مشتری اوست؛ قیمت‌ها باز و سبد فعال. (ورود از دفتر تأمین‌کننده
+       ۲۲ / کارت‌های تأمین‌کنندهٔ کالا ۲۰ / جزئیات تأمین‌کننده ۲۳ /
+       جزئیات پیشنهاد ۲۷ — openCatalog در app-suppliers.js.) */
+    function guestEnterAsCustomer(name) {
+        GUEST_SAVED = true;
+        GUEST_NAME = name || 'مشتری';
+        GUEST_GROUP = _findGroup('cg2'); /* گروه «معمولی» — مشتری این کاتالوگ */
+        guestSavedSync();
+    }
+
     /* اعمال دوبارهٔ وضعیت ذخیره روی دامِ تازه (show() قالب را دوباره می‌سازد)
        FD-10: «ذخیره‌شده» علاوه بر دکمه/کادر، گیت قیمت را هم برمی‌دارد.
        FD-11: «ورود» اپ‌بار فقط برای مهمانِ واردنشده است — بعد از
@@ -2535,7 +2572,6 @@
     /* FD-10: جزئیات کالا — رندر از دیتا + وضعیت گیت قیمت */
     core.registerShowHook('s-product-view', productViewSync);
     core.registerShowHook('s-contacts', applyContactsMode);
-    core.registerShowHook('s-buy-suppliers', markNewItemsSeen);
     core.registerShowHook('s-profile', profileSync);
     core.registerShowHook('s-network-score', scoreRender);
     core.registerShowHook('s-buy-product-suppliers', bpsRenderCta);
@@ -2641,6 +2677,7 @@
         guestSaveFlow: guestSaveFlow,
         guestAccountOpen: guestAccountOpen,
         guestAccountSubmit: guestAccountSubmit,
+        guestEnterAsCustomer: guestEnterAsCustomer,
         guestBeneToggle: guestBeneToggle,
         passOpen: passOpen,
         passSubmit: passSubmit,

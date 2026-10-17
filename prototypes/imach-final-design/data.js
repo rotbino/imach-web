@@ -389,11 +389,39 @@ const DATA = {
 
     /* ═══════════════════════════════════════════════════════════
        تأمین‌کنندگان خریدار
+       ─────────────────────────────────────────────────────────────
+       FD-16 — دفتر تأمین‌کننده، قرینهٔ دفتر مشتری:
+       ▸ تأمین‌کننده = فروشنده‌ای که کاتالوگش را ذخیره کرده‌ای.
+         ثبت دستی ندارد — از دلِ ذخیرهٔ کاتالوگ یا «پیشنهاد تامین».
+       ▸ isNew + proposal → «پیشنهاد تامین» رسیده (از لینک لیست خرید
+         یا پاسخ به استعلام): بالای لیست با دکمه‌های تایید/حذف.
+         حکم مالک: «هر کسی که به لیست خرید شما پیشنهاد تامین دهد و
+         شما تایید کنید، جز تامین کنندگان شما خواهد بود و شما هم
+         مشتری او خواهی شد و از مزایای مشتریان او مانند تخفیف برخوردار
+         می‌شوید.» → پس تایید = دو رابطهٔ هم‌زمان (او تأمین‌کنندهٔ من،
+         من مشتری او — همان مدل دوطرفهٔ Shopify آی‌مچ).
+       ▸ proposal = { good, pack, price, msg } — قلم و قیمت پیشنهادی؛
+         در محصول واقعی می‌تواند چندقلمی باشد و به‌روزرسانی قیمت زنده
+         از کاتالوک فروشنده می‌آید.
+       ▸ phone/industry/since/note → شناسنامه و یادداشت صفحهٔ جزئیات
+         (۲۳ — s-supplier-view؛ قرینهٔ جزئیات مشتری).
        ═══════════════════════════════════════════════════════════ */
     suppliers: [
-        { id: 'su1', businessId: 'b2', name: 'پخش برنج پارس', person: 'مرتضی رضایی', city: 'رشت',   avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', verified: true,  contactId: 'ct5' },
-        { id: 'su2', businessId: 'b2', name: 'آریو غلات',      person: 'امیر قاسمی',  city: 'اصفهان', avatar: 'آ', color: '#7c3aed', verified: true },
-        { id: 'su3', businessId: 'b2', name: 'کیان غلات',      person: 'کیان رستمی',  city: 'قزوین',  avatar: 'ک', color: '#0e7490', verified: false }
+        { id: 'su1', businessId: 'b2', name: 'پخش برنج پارس', person: 'مرتضی رضایی', city: 'رشت',   avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', verified: true,  contactId: 'ct5',
+          industry: 'پخش مواد غذایی', phone: '۰۹۱۲ ۲۲۰ ۳۳۶۱', since: 'ماه پیش',   note: 'قیمت‌ها صبح به‌روز می‌شود — سفارش تا ۱۰ صبح همان روز می‌رود.', goods: 'برنج هاشمی · برنج طارم' },
+        { id: 'su2', businessId: 'b2', name: 'آریو غلات',      person: 'امیر قاسمی',  city: 'اصفهان', avatar: 'آ', color: '#7c3aed', verified: true,
+          industry: 'پخش غلات',       phone: '۰۹۱۳ ۵۵۲ ۱۱۰۹', since: '۳ هفته پیش', note: '', goods: 'برنج هاشمی · قند' },
+        { id: 'su3', businessId: 'b2', name: 'کیان غلات',      person: 'کیان رستمی',  city: 'قزوین',  avatar: 'ک', color: '#0e7490', verified: false,
+          industry: 'عمده‌فروشی غلات', phone: '۰۹۳۰ ۵۴۲ ۱۱۸۸', since: '۵ روز پیش', note: 'کارتن ۲۴تایی برای رب — چک نمی‌گیرد.', goods: 'برنج · رب گوجه' },
+        /* ▽ پیشنهاد تامین رسیده — در انتظار تایید خریدار (FD-16) */
+        { id: 'su4', businessId: 'b2', name: 'شالی‌زار طالب',   person: 'یوسف طالبی',  city: 'رشت',   avatar: 'ش', color: '#0d9488', verified: false, isNew: true,
+          industry: 'شالی‌کاری',       phone: '۰۹۱۱ ۲۳۴ ۵۶۷۸', since: 'امروز',     note: '',
+          goods: 'برنج هاشمی',
+          proposal: { good: 'برنج هاشمی', pack: 'کیسه ۵۰ کیلویی', price: 2780000, msg: 'برنج درجه‌یک امسالم — از لینک لیست خریدت دیدم؛ هم‌شهری‌ای، تحویل همان روز.' } },
+        { id: 'su5', businessId: 'b2', name: 'غلات سبزدشت',    person: 'مهدی سبزدشتی', city: 'مشهد',  avatar: 'غ', color: '#65a30d', verified: false, isNew: true,
+          industry: 'پخش مواد غذایی', phone: '۰۹۱۵ ۸۸۰ ۴۴۲۱', since: 'امروز',     note: '',
+          goods: 'برنج · روغن',
+          proposal: { good: 'برنج هاشمی', pack: 'کیسه ۵۰ کیلویی', price: 2960000, msg: 'ارسال از انبار مشهد — دو روزه می‌رسد؛ بالای ۳۰ کیسه ارسال رایگان.' } }
     ],
 
 
@@ -487,16 +515,17 @@ const DATA = {
     rfqsOut: [
         {
             id: 'ro1', businessId: 'b2', listingId: 'l1',
+            supplierIds: ['su1', 'su2', 'su3'],
             itemName: 'برنج هاشمی گلستان · ۲۰ کیسه', img: 'png/goods/rice-sack.jpg',
             sentTo: 3, offersCount: 5, newOffers: 2, daysLeft: 3, status: 'current'
         },
         {
-            id: 'ro2', businessId: 'b2',
+            id: 'ro2', businessId: 'b2', supplierIds: ['su3'],
             itemName: 'رب گوجه‌فرنگی · ۶۰ عدد', img: 'png/goods/tomato-paste.jpg',
             sentTo: 2, offersCount: 1, newOffers: 1, daysLeft: 0, status: 'current'
         },
         {
-            id: 'ro3', businessId: 'b2',
+            id: 'ro3', businessId: 'b2', supplierIds: ['su3'],
             itemName: 'قند · ۱۰ کارتن', img: 'png/goods/sugar-cubes.jpg',
             status: 'done', result: 'پذیرفت: کیان غلات — ۷۶۰٬۰۰۰ ت', when: '۲ هفته پیش'
         }
@@ -522,8 +551,8 @@ const DATA = {
         { id: 'of1', rfqId: 'ro1', supplierId: 'su1', seller: 'پخش برنج پارس', city: 'رشت', avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', price: 2840000, pricePerUnit: 56800, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 50, days: 60 }, dlv: { ship: true, by: 'seller' }, note: 'برنج امسال، پاک‌شده. حمل تا در مغازه.', isKnown: true },
         { id: 'of2', rfqId: 'ro1', supplierId: 'su2', seller: 'آریو غلات', city: 'اصفهان', avatar: 'آ', color: '#7c3aed', price: 2895000, pricePerUnit: 57900, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'seller' }, note: 'ارسال رایگان بالای ۳۰ کیسه.' },
         { id: 'of3', rfqId: 'ro1', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 2790000, pricePerUnit: 55800, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 30, days: 30 }, dlv: { ship: true, by: 'customer' }, note: '' },
-        { id: 'of4', rfqId: 'ro1', seller: 'شالی‌زار طالب', city: 'رشت', avatar: 'ش', color: '#0d9488', price: 2780000, pricePerUnit: 55600, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: false, by: null }, note: '' },
-        { id: 'of5', rfqId: 'ro1', seller: 'غلات سبزدشت', city: 'مشهد', avatar: 'غ', color: '#65a30d', price: 2960000, pricePerUnit: 59200, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'customer' }, note: 'ارسال از انبار مشهد.' },
+        { id: 'of4', rfqId: 'ro1', supplierId: 'su4', seller: 'شالی‌زار طالب', city: 'رشت', avatar: 'ش', color: '#0d9488', price: 2780000, pricePerUnit: 55600, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: false, by: null }, note: '' },
+        { id: 'of5', rfqId: 'ro1', supplierId: 'su5', seller: 'غلات سبزدشت', city: 'مشهد', avatar: 'غ', color: '#65a30d', price: 2960000, pricePerUnit: 59200, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'customer' }, note: 'ارسال از انبار مشهد.' },
         { id: 'of6', rfqId: 'ro2', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 58000, pricePerUnit: 58000, baseUnit: 'قوطی', packCount: 1, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'seller' }, note: 'قوطی‌ها کارتن ۲۴تایی بسته‌بندی می‌شود.' }
     ],
 

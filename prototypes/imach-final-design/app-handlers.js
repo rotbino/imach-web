@@ -349,8 +349,13 @@
             }
         }
 
-        /* ─── کپی لینک ─── */
-        if (t.closest('[data-copy]')) { toast('لینک کاتالوگ کپی شد', 'success'); return; }
+        /* ─── کپی لینک ───
+           FD-16: پیام وابسته به شیت/صفحه — کاتالوگ یا لیست خرید. */
+        if (t.closest('[data-copy]')) {
+            var inBuySheet = !!(t.closest('#sheet-share-buylist') || t.closest('#s-buy-list-guest'));
+            toast(inBuySheet ? 'لینک لیست خرید کپی شد — برای تأمین‌کننده‌ها بفرست' : 'لینک کاتالوگ کپی شد', 'success');
+            return;
+        }
 
         /* ─── اشتراک با پیام‌رسان ─── */
         var shareApp = t.closest('[data-share-app]');
@@ -393,11 +398,15 @@
             return;
         }
 
-        /* ─── ارسال گروهی از pick mode ─── */
+        /* ─── ارسال گروهی از pick mode ───
+           FD-16: پیام وابسته به مقصد برگشت — لیست خرید (دعوت تأمین‌کننده)
+           یا کاتالوگ (دعوت مشتری). */
         if (t.closest('#pick-send')) {
             var n = $$('#contact-list .contact-check.on').length;
             if (!n) return;
             var backTo = (core.getSCREENParams()['s-contacts'] || {}).back || 's-catalog-share';
+            var isBuyList = (backTo === 's-buy-list' || backTo === 's-buy-suppliers');
+            var what = isBuyList ? 'لیست خرید' : 'کاتالوگ';
             var names2 = $$('#contact-list .contact-check.on').map(function (c) {
                 var row = c.closest('.contact-row');
                 return row.querySelector('.contact-name').textContent.trim().split(' ')[0];
@@ -407,11 +416,11 @@
             show(backTo, false).then(function () {
                 var banner = $('#share-success');
                 if (banner) {
-                    banner.innerHTML = '<div class="success-banner"><svg><use href="#i-check"/></svg><span>کاتالوگ برای ' + faNum(n) + ' نفر ارسال شد</span></div>';
+                    banner.innerHTML = '<div class="success-banner"><svg><use href="#i-check"/></svg><span>' + what + ' برای ' + faNum(n) + ' نفر ارسال شد</span></div>';
                     banner.hidden = false;
                 } else {
-                    /* صفحه‌ای که بنر موفقیت ندارد (مثل دفتر مشتری) — توست کافی است */
-                    toast('کاتالوگ برای ' + faNum(n) + ' مخاطب ارسال شد', 'success');
+                    /* صفحه‌ای که بنر موفقیت ندارد (مثل دفتر مشتری/لیست خرید) — توست کافی است */
+                    toast(what + ' برای ' + faNum(n) + ' مخاطب ارسال شد', 'success');
                 }
             });
             return;
@@ -673,15 +682,21 @@
             return;
         }
 
-        /* ─── دکمهٔ «تأمین‌کنندگان بیشتر» (قفل) ─── */
+        /* ─── دکمهٔ «تأمین‌کنندگان بیشتر» (قفل) ───
+           FD-16 (حکم مالک): به جای الرت، به صفحهٔ فعالیت‌های خرید برو —
+           آن‌جا می‌بیند با چه کارهایی امتیازش به ۱۰۰ می‌رسد؛ دعوتِ
+           تأمین‌کنندهٔ جدید یکی از بالاترین امتیازهاست (scoreItemsBuy). */
         if (t.closest('[data-locked-more]')) {
-            toast('برای دیدن تأمین‌کنندگان بیشتر، امتیاز فعالیت خریدت را به ۱۰۰ برسان', 'error');
+            core.setSCREENParams('s-network-score', { arm: 'buy' });
+            go('s-network-score');
             return;
         }
 
-        /* ─── اشتراک لیست خرید ─── */
+        /* ─── اشتراک لیست خرید ───
+           FD-16 (حکم مالک): دکمه‌های دعوت، شیت اشتراک را باز می‌کنند
+           (نه فقط کپی لینک) — مخاطبین/پیام‌رسان/لینک، مثل کاتالوگ. */
         if (t.closest('[data-share-buylist]')) {
-            toast('لینک لیست خرید کپی شد — برای تأمین‌کنندگانت بفرست', 'success');
+            core.openSheet('sheet-share-buylist');
             return;
         }
 
@@ -767,7 +782,7 @@
        (قبلاً core.actions دیالوگ معلق بود — طبق حکم مالک تبدیل به شیت شد)
        الگو همان sheet-cust-menu است: ردیف‌های sheet-row با آیکون و زیرمتن.
        ═══════════════════════════════════════════════════════════════ */
-    var SUP = { name: null, row: null };
+    var SUP = { name: null, row: null, id: null };
     var ORD = { name: null, row: null };
 
     /* رندر ردیف‌های شیت منو — مشترک بین هر دو منو */
@@ -784,12 +799,17 @@
     function supMenuOpen(name, row) {
         SUP.name = name;
         SUP.row = row;
+        /* FD-16: ردیف‌ها داینامیک‌اند (app-suppliers.js) — id واقعی
+           تأمین‌کننده روی خود ردیف/دکمه هست؛ حذف از دیتا و رندر مجدد. */
+        SUP.id = (row && row.dataset.suId) || null;
         var ttl = $('#scm-ttl');
         if (ttl) ttl.textContent = 'گزینه‌های ' + (name || 'تأمین‌کننده');
         var host = $('#scm-list');
         if (!host) return;
         var items = [
-            { ic: 'msg',   t: 'گفتگو',                    s: 'پیام در آی‌مچ',                            act: 'chat' },
+            { ic: 'msg',   t: 'گفتگو',                s: 'پیام در آی‌مچ',                            act: 'chat' },
+            /* FD-16 (حکم مالک): مستقیم کاتالوگ او — نه صفحهٔ واسط */
+            { ic: 'store', t: 'کاتالوگ او',            s: 'قیمت‌های زنده و کالاهایش',                 act: 'catalog' },
             { ic: 'trash', t: 'حذف از تأمین‌کنندگان',     s: '«' + (name || '') + '» از فهرست حذف می‌شود', act: 'delete', danger: true }
         ];
         host.innerHTML = items.map(function (it) { return menuSheetRowHtml(it, 'data-scm-act'); }).join('');
@@ -800,16 +820,27 @@
         var name = SUP.name, row = SUP.row;
         core.closeSheet('sheet-sup-menu');
         if (act === 'chat') { go('s-chat'); return; }
+        if (act === 'catalog') {
+            if (core.suppliers && core.suppliers.openCatalog) core.suppliers.openCatalog();
+            else go('s-catalog-guest');
+            return;
+        }
         if (act === 'delete') {
             core.confirm({
                 title: 'حذف از تأمین‌کنندگان',
                 text: '«' + (name || '') + '» از فهرست تأمین‌کنندگانت حذف می‌شود.',
                 ok: 'حذف تأمین‌کننده', cancel: 'انصراف', danger: true
             }).then(function (ok) {
-                if (ok) {
-                    if (row) row.remove();
-                    toast('تأمین‌کننده از فهرست حذف شد', 'success');
+                if (!ok) return;
+                /* FD-16: حذف از دیتا (نه فقط ردیف) — رندر مجدد دفتر */
+                if (SUP.id && core.suppliers) {
+                    core.data.suppliers = (core.data.suppliers || []).filter(function (x) { return x.id !== SUP.id; });
+                    core.suppliers.render();
+                    if (core.getCurrentScreen() === 's-supplier-view') core.back();
+                } else if (row) {
+                    row.remove();
                 }
+                toast('تأمین‌کننده از فهرست حذف شد', 'success');
             });
         }
     }
