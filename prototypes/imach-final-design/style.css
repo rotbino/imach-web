@@ -1001,6 +1001,22 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 }
 .search-row input::placeholder { color: var(--text-4); }
 
+/* ─── FD-15: ابزارهای ثبت سریع ته جستجوی فرم افزودن ───
+   دو دکمهٔ ۳۸px (قانون لمس FD-13) با جداکنندهٔ ظریف از input. */
+.sr-tools {
+    display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+    border-right: 1.5px solid var(--surface-3);
+    padding-right: 10px; margin-right: 2px;
+}
+.sr-tool {
+    width: 38px; height: 38px; border-radius: 11px;
+    border: 0; background: transparent; cursor: pointer;
+    color: var(--text-3); display: grid; place-items: center;
+    transition: background .15s, color .15s;
+}
+.sr-tool svg { width: 20px; height: 20px; }
+.sr-tool:active { background: var(--surface-2); color: var(--arm-strong); }
+
 .pick-group { display: flex; flex-direction: column; gap: 6px; }
 .pick-group-title { font-size: 11px; font-weight: 700; color: var(--text-3); margin: 12px 2px 4px; }
 
@@ -2601,10 +2617,13 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .disc-ic svg { width: 17px; height: 17px; }
 .disc-ttl b { display: block; font-size: 13px; font-weight: 700; line-height: 1.5; }
 .disc-ttl small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
-/* خاموش: لیست مات و غیرقابل‌لمس (الگوی volSync شیت کاتالوگ) */
+/* FD-15 (حکم مالک): خاموش = کادرها غیب — الگوی سوییچ‌های فرم پیشنهاد
+   (FD-14): با خاموش‌شدن سوییچ، فیلدهای زیرش جمع می‌شوند و فقط ردیف
+   سوییچ می‌ماند (برای روشن‌کردن دوباره). داده‌ها حفظ می‌شوند — فقط UI. */
 .disc-block.off .disc-list,
-.disc-block.off .add-mini { opacity: .45; pointer-events: none; }
-.disc-block.off .add-mini { display: none; }
+.disc-block.off .add-mini,
+.disc-block.off .hint-line { display: none; }
+.disc-block.off .disc-head { padding-bottom: 0; border-bottom: 0; }
 .disc-block.off .disc-ic { background: var(--surface-2); color: var(--text-3); }
 
 /* ردیف آیتم تخفیف — دو خط: شناسه + ورودی دوگانه */
@@ -3360,3 +3379,63 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
    از همین فروشنده؛ سنگی = ابزارِ میز خرید خودت) */
 .btn-stone { background: var(--stone); color: #FFF; }
 .btn-stone:active { opacity: .88; }
+
+/* ═══ ۳۳-ک — FD-15: ابزارهای ثبت سریع (اسکنر + متن) ═══ */
+
+/* ─── قاب اسکنر (sheet-scan) — همان دستور طرح قبلی (redesign-base):
+       زمینهٔ تیرهٔ آرام + کادر نقطه‌چین + بارکد بزرگ ─── */
+.scanframe {
+    position: relative; height: 150px; border-radius: 14px;
+    background: linear-gradient(160deg, #403d38, #282622);
+    display: grid; place-items: center; margin-top: 12px; overflow: hidden;
+}
+.scanframe::before {
+    content: ''; position: absolute; inset: 10px;
+    border: 1.5px dashed rgba(255, 255, 255, .4); border-radius: 10px;
+}
+.scanframe svg { width: 58px; height: 36px; opacity: .92; }
+.scanframe span {
+    position: absolute; bottom: 11px; right: 0; left: 0;
+    text-align: center; font-size: 10.5px; color: rgba(255, 255, 255, .85);
+}
+
+/* ─── ردیف‌های مرور «تبدیل متن به کالا» (sheet-textlist) ───
+       ساختار مثل ردیف‌های سبد (دو طبقه) اما جمع‌وجورتر:
+       تیک دایره‌ای سمت راست + نام/برند + بسته/قیمت + وضعیت رنگی. */
+.tx-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 11px 2px; border-bottom: 1px solid var(--surface-3);
+}
+.tx-row:last-child { border-bottom: 0; }
+.tx-chk {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid var(--border-3); background: var(--surface);
+    display: grid; place-items: center; cursor: pointer; padding: 0;
+    color: transparent; margin-top: 2px;
+    transition: background .15s, border-color .15s, color .15s;
+}
+.tx-chk svg { width: 15px; height: 15px; }
+.tx-chk.on { background: var(--arm); border-color: var(--arm); color: #FFF; }
+.tx-chk.locked { opacity: .5; cursor: default; }
+.tx-info { flex: 1; min-width: 0; }
+.tx-info b { display: block; font-size: 13px; font-weight: 700; line-height: 1.55; }
+.tx-info small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.tx-status {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10.5px; font-weight: 700; margin-top: 5px;
+    border-radius: 7px; padding: 3px 8px;
+}
+.tx-status svg { width: 12px; height: 12px; flex-shrink: 0; }
+.tx-status.ok   { background: var(--green-soft);  color: var(--green); }
+.tx-status.warn { background: var(--amber-soft);  color: var(--amber); }
+.tx-status.err  { background: var(--red-soft);    color: var(--red); }
+.tx-status.dup  { background: var(--surface-2);   color: var(--text-3); }
+
+/* ─── FD-15: جای‌نگه‌دارندهٔ عکس کارت کاتالوگ (محصول بدون عکس) ─── */
+.pcard .ph .cat-noimg {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, #F3F1EA, #E9E5DB);
+    color: var(--text-4);
+}
+.pcard .ph .cat-noimg svg { width: 30px; height: 30px; }

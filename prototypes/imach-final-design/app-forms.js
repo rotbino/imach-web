@@ -865,7 +865,8 @@
                 stock: stock || 0, min: min, note: note,
                 img: r.img || null,
                 priceValidDays: validDays,   /* FD-9 */
-                groupDiscounts: {}
+                groupDiscounts: {},
+                justAdded: true   /* FD-15: نشان «تازه افزوده» روی کارت کاتالوگ */
             });
         } else if (ADD.mode === 'new') {
             var title = ($('#add-title') || {}).value || g.name;
@@ -892,7 +893,8 @@
                 stock: stock || 0, min: min, note: note,
                 img: null,
                 priceValidDays: validDays,   /* FD-9 */
-                groupDiscounts: {}
+                groupDiscounts: {},
+                justAdded: true   /* FD-15: نشان «تازه افزوده» روی کارت کاتالوگ */
             });
         } else {
             toast('محصول انتخاب نشده', 'error');
@@ -901,6 +903,361 @@
 
         ADD.lastQuery = '';
         toast('محصول به کاتالوگ اضافه شد', 'success');
+        setTimeout(function () {
+            core.resetStack();
+            core.show('s-catalog', false);
+        }, 600);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FD-15 — ثبت سریع: اسکنر بارکد + افزودن گروهی با متن
+       ─────────────────────────────────────────────────────────────
+       دو ابزار کنار جستجوی گام ۱ فرم افزودن (۱۳):
+         ▸ sheet-scan     — بارکد ⇒ تطبیق کالای مرجع ⇒ گام ۳ آماده
+         ▸ sheet-textlist — متن لیست قیمت ⇒ جدول ⇒ تیک ⇒ افزودن گروهی
+       هر دو فقط از دیتای مرجع (references/goods/brands) کار می‌گیرند؛
+       افزودن‌ها همان ساختار listing فرم اصلی (addSave) را می‌سازند تا
+       کاتالوگِ پویا (catGridRender) همان‌جا نشانشان دهد.
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* ─── اسکنر بارکد ─── */
+    var SCAN = { refId: null };
+
+    function scanOpen() {
+        SCAN.refId = null;
+        var inp = $('#scan-code'); if (inp) inp.value = '';
+        var res = $('#scan-result'); if (res) res.innerHTML = '';
+        core.openSheet('sheet-scan');
+        setTimeout(function () { if (inp) inp.focus(); }, 120);
+    }
+
+    function scanDemo() {
+        var inp = $('#scan-code');
+        if (inp) inp.value = '6260101200010';
+        scanGo();
+    }
+
+    function scanGo() {
+        var inp = $('#scan-code');
+        var code = String(inp ? inp.value : '').trim();
+        var res = $('#scan-result');
+        if (!res) return;
+        if (!code) { res.innerHTML = ''; return; }
+
+        var num = parseNum(code);
+        var r = null;
+        if (num > 0) core.data.references.forEach(function (x) {
+            if (x.barcode && parseNum(x.barcode) === num) r = x;
+        });
+
+        if (!r) {
+            SCAN.refId = null;
+            res.innerHTML =
+                '<div class="hint-line" style="margin-top: 10px;">' +
+                '<svg><use href="#i-info"/></svg>' +
+                '<span>این بارکد در کالاهای مرجع پیدا نشد — با جستجو پیدایش کن یا «محصول من در این لیست نیست» را بزن و دستی ثبتش کن.</span></div>';
+            return;
+        }
+
+        SCAN.refId = r.id;
+        var packHint = (r.packs && r.packs.length) ? r.packs.map(function (p) { return p.label; }).join(' · ') : '';
+        res.innerHTML =
+            '<button class="pick-row" id="scan-continue" type="button" style="margin-top: 12px;">' +
+            '<div class="thumb">' + (r.img ? '<img src="' + r.img + '" alt="">' : '') + '</div>' +
+            '<div class="info"><div class="nm">' + esc(r.name) + '</div>' +
+            '<div class="sub">تطبیق شد — ' + esc(r.brand || 'بدون برند') + (packHint ? ' · ' + esc(packHint) : '') + '</div></div>' +
+            '<div class="chev"><svg><use href="#i-chev"/></svg></div></button>' +
+            '<div class="hint-line"><svg><use href="#i-check"/></svg>' +
+            '<span>ادامه بزن — فقط قیمت و شرایط فروش را وارد می‌کنی.</span></div>';
+    }
+
+    function scanContinue() {
+        if (!SCAN.refId) return;
+        core.closeSheet('sheet-scan');
+        /* همان مسیر لمس محصول مرجع در نتایج جستجو — گام ۳ با دادهٔ کامل */
+        addPickRef(SCAN.refId);
+    }
+
+    /* ─── تبدیل متن به کالا (sheet-textlist) ─── */
+    var TX = { rows: [] };
+
+    /* متن نمونه — قالب واتساپی: ستون‌ها با Tab؛ یک ردیف بدون قیمت و
+       یکی هم کالای ناشناس (چیپس) تا هر سه وضعیت دمو دیده شود. */
+    var TX_SAMPLE = [
+        'نام کالا\tبرند\tبسته‌بندی\tقیمت هر بسته\tحداقل سفارش',
+        'پفک نمکی\tاشی مشی\tکارتن ۵۰ عددی\t۲٬۴۰۰٬۰۰۰\t۲',
+        'برنج هاشمی\tگلستان\tکیسه ۵۰ کیلویی\t۲٬۸۵۰٬۰۰۰\t۵',
+        'روغن سرخ‌کردنی\tلادن\tکارتن ۶ بطری\t۱٬۵۶۰٬۰۰۰\t۴',
+        'رب گوجه\tچین‌چین\tکارتن ۲۴ قوطی\t۱٬۲۰۰٬۰۰۰',
+        'ماکارونی\tزر ماکارون\tکارتن ۲۰ بسته‌ای\t۹۸۰٬۰۰۰\t۱',
+        'چیپس نمکی\tچهارخانه'
+    ].join('\n');
+
+    function txOpen() {
+        TX.rows = [];
+        txView('paste');
+        core.openSheet('sheet-textlist');
+        var inp = $('#tx-input');
+        setTimeout(function () { if (inp) inp.focus(); }, 120);
+    }
+
+    function txView(which) {
+        var a = $('#tx-paste'), b = $('#tx-review');
+        if (a) a.hidden = (which !== 'paste');
+        if (b) b.hidden = (which !== 'review');
+    }
+
+    function txDemo() {
+        var inp = $('#tx-input');
+        if (inp) inp.value = TX_SAMPLE;
+    }
+
+    /* فقط رقم/جداکننده؟ (کار «قیمت/تعداد» می‌شود نه «نام») */
+    function txIsNum(s) {
+        return /^[\s۰-۹0-9٬,،.\-–]+$/.test(s) && parseNum(s) > 0;
+    }
+
+    function txTokens(s) {
+        return String(s || '').split(/[\s\u200c]+/).filter(function (w) {
+            return w.replace(/\u200c/g, '').length >= 2;
+        });
+    }
+
+    /* بهترین تطبیق مرجع: امتیاز = واژه‌های مشترک نام + تطبیق برند */
+    function txMatch(name, brand) {
+        var toks = txTokens(name);
+        var best = null, bestScore = -1;
+        core.data.references.forEach(function (r) {
+            var rn = (r.name + ' ' + (r.brand || '')).toLowerCase();
+            var hit = 0;
+            toks.forEach(function (w) { if (rn.indexOf(w.toLowerCase()) > -1) hit++; });
+            if (!hit) return;
+            var score = hit;
+            if (brand && r.brand && r.brand.toLowerCase().indexOf(brand.toLowerCase()) > -1) score += 2;
+            if (score > bestScore) { bestScore = score; best = r; }
+        });
+        return best;
+    }
+
+    function txGoodMatch(name) {
+        var toks = txTokens(name);
+        var best = null, bestHit = 0;
+        core.data.goods.forEach(function (g) {
+            var gn = g.name.toLowerCase();
+            var hit = 0;
+            toks.forEach(function (w) { if (gn.indexOf(w.toLowerCase()) > -1) hit++; });
+            if (hit > bestHit) { bestHit = hit; best = g; }
+        });
+        return best;
+    }
+
+    function txParse() {
+        var el = $('#tx-input');
+        var text = (el && el.value) || '';
+        var bizId = core.data.user.activeBusinessId;
+        var rows = [];
+
+        text.split(/\n+/).forEach(function (raw) {
+            var line = raw.replace(/\u200f/g, '').trim();
+            if (!line) return;
+            var chunks = line.split(/\t+|\s{2,}/).map(function (c) { return c.trim(); }).filter(Boolean);
+            if (!chunks.length) return;
+
+            /* خط عنوان ستون‌ها؟ نادیده گرفته می‌شود */
+            var low = line.toLowerCase();
+            if (low.indexOf('نام') > -1 && (low.indexOf('قیمت') > -1 || low.indexOf('برند') > -1 ||
+                low.indexOf('حداقل') > -1 || low.indexOf('بسته') > -1)) return;
+
+            var name = chunks[0], brand = '', packRaw = '', nums = [];
+
+            if (chunks.length === 1 && /\s/.test(chunks[0])) {
+                /* فاصلهٔ تکی (متن خام واتساپ): از آخر اعداد را بردار،
+                   برند شناخته‌شده و بسته‌بندی را از دل متن بیرون بکش */
+                var toks = chunks[0].split(/\s+/).filter(Boolean);
+                while (toks.length > 1 && txIsNum(toks[toks.length - 1]) && nums.length < 2) {
+                    nums.unshift(parseNum(toks.pop()));
+                }
+                var restStr = toks.join(' ');
+                var brandHit = null;
+                core.data.brands.forEach(function (b) {
+                    if (!brandHit && b.name && restStr.indexOf(b.name) > -1) brandHit = b;
+                });
+                if (brandHit) {
+                    brand = brandHit.name;
+                    restStr = restStr.replace(brandHit.name, ' ').replace(/\s{2,}/g, ' ').trim();
+                }
+                var pm = restStr.match(/((?:کارتن|کیسه|بسته|قوطی)\s*[\d۰-۹]*\s*(?:عددی|بسته‌ای|بطری|کیلویی)?)/);
+                if (pm) {
+                    packRaw = pm[1].trim();
+                    restStr = restStr.replace(pm[1], ' ').replace(/\s{2,}/g, ' ').trim();
+                }
+                name = restStr.trim() || chunks[0];
+            } else {
+                chunks.slice(1).forEach(function (c) {
+                    if (txIsNum(c)) { nums.push(parseNum(c)); return; }
+                    if (!packRaw && /(کارتن|کیسه|بسته|قوطی|شیشه|گرم|لیتر|کیلو|عددی|بسته‌ای|کارته)/.test(c)) { packRaw = c; return; }
+                    if (!brand) brand = c;
+                });
+            }
+
+            var price = nums.length ? nums[0] : 0;
+            var min = nums.length > 1 ? nums[1] : 1;
+            var packLabel = packRaw || 'بسته';
+            var packCount = packRaw ? (parseNum(packRaw) || 1) : 1;
+
+            var r = txMatch(name, brand);
+            var g = r ? null : txGoodMatch(name);
+
+            /* بسته‌بندی متن با بستهٔ مرجع یکی بود ⇒ همان بستهٔ مرجع؛
+               بسته‌بندی نداشت ⇒ اولین بستهٔ مرجع */
+            var packId = 'custom';
+            if (r && r.packs && packRaw) {
+                r.packs.forEach(function (p) {
+                    if (p.count === packCount || p.label === packRaw) { packId = p.id; packLabel = p.label; packCount = p.count; }
+                });
+            } else if (r && r.packs && r.packs.length && !packRaw) {
+                packId = r.packs[0].id;
+                packLabel = r.packs[0].label;
+                packCount = r.packs[0].count;
+            }
+
+            var dup = false;
+            if (r) {
+                dup = core.data.listings.some(function (l) {
+                    return l.businessId === bizId && l.refId === r.id && l.pack === packLabel;
+                });
+            }
+
+            rows.push({
+                name: name, brand: brand,
+                packLabel: packLabel, packCount: packCount, packId: packId,
+                price: price, min: min,
+                refId: r ? r.id : null,
+                goodId: r ? r.goodId : (g ? g.id : null),
+                goodName: g ? g.name : null,
+                img: r ? r.img : null,
+                dup: dup,
+                on: !!price && !dup
+            });
+        });
+
+        TX.rows = rows;
+        if (!rows.length) {
+            txView('paste');
+            toast('چیزی از متن خوانده نشد — هر خط یک کالا و ستون‌ها با Tab یا چند فاصله', 'error');
+            return;
+        }
+        txRender();
+        txView('review');
+    }
+
+    function txRender() {
+        var host = $('#tx-rows');
+        if (host) {
+            host.innerHTML = TX.rows.map(function (row, i) {
+                var st, stCls, stIc;
+                if (row.dup)      { st = 'از قبل در کاتالوگ داری'; stCls = 'dup'; stIc = 'check'; }
+                else if (!row.price) { st = 'قیمت ندارد — دستی اضافه کن یا متن را اصلاح کن'; stCls = 'err'; stIc = 'info'; }
+                else if (row.refId)  { st = 'تطبیق شد با کالای مرجع'; stCls = 'ok'; stIc = 'check'; }
+                else if (row.goodId) { st = 'کالای «' + row.goodName + '» — محصول جدید ثبت می‌شود'; stCls = 'warn'; stIc = 'sparkles'; }
+                else                 { st = 'در مرجع‌ها نبود — کالای جدید ثبت می‌شود'; stCls = 'warn'; stIc = 'sparkles'; }
+                return '<div class="tx-row">' +
+                    '<button class="tx-chk' + (row.on ? ' on' : '') + (row.dup || !row.price ? ' locked' : '') +
+                        '" type="button" data-tx-chk="' + i + '" aria-label="انتخاب برای افزودن">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg>' +
+                    '</button>' +
+                    '<div class="tx-info">' +
+                        '<b>' + esc(row.name) + (row.brand ? ' · ' + esc(row.brand) : '') + '</b>' +
+                        '<small>' + esc(row.packLabel) + (row.price ? ' — قیمت هر بسته: ' + faMoney(row.price) + ' تومان' : '') +
+                            (row.min > 1 ? ' · حداقل: ' + faNum(row.min) : '') + '</small>' +
+                        '<span class="tx-status ' + stCls + '"><svg><use href="#i-' + stIc + '"/></svg> ' + st + '</span>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+        var sub = $('#tx-review-sub');
+        if (sub) {
+            var n = TX.rows.length;
+            var ready = TX.rows.filter(function (r) { return r.on; }).length;
+            sub.textContent = faNum(n) + ' کالا از متن خوانده شد' + (ready ? ' — ' + faNum(ready) + ' تاییدشده' : '');
+        }
+        txBtnSync();
+    }
+
+    function txBtnSync() {
+        var n = TX.rows.filter(function (r) { return r.on; }).length;
+        var btn = $('#tx-confirm'), tx = $('#tx-confirm-tx');
+        if (btn) btn.disabled = n === 0;
+        if (tx) tx.textContent = n ? 'افزودن ' + faNum(n) + ' کالای تاییدشده به کاتالوگ' : 'افزودن کالاهای تاییدشده';
+    }
+
+    function txToggle(i) {
+        var row = TX.rows[i];
+        if (!row || row.dup || !row.price) return;
+        row.on = !row.on;
+        var el = $('[data-tx-chk="' + i + '"]');
+        if (el) el.classList.toggle('on', row.on);
+        txBtnSync();
+    }
+
+    function txBack() { txView('paste'); }
+
+    function txConfirm() {
+        var added = 0;
+        var bizId = core.data.user.activeBusinessId;
+
+        TX.rows.forEach(function (row) {
+            if (!row.on) return;
+
+            var r = row.refId ? findRef(row.refId) : null;
+            var g = null, brandId = null;
+
+            if (!r) {
+                /* کالای جدید؟ اول خودِ کالا (good) — بعد محصولِ برنددار */
+                if (row.goodId) g = findGood(row.goodId);
+                if (!g) {
+                    g = { id: 'g_' + Date.now(), name: row.name, emoji: '📦', baseUnit: 'واحد', consumerUnit: 'بسته', attrs: [] };
+                    core.data.goods.push(g);
+                }
+                if (row.brand) {
+                    var b = core.data.brands.find(function (x) { return x.name === row.brand; });
+                    if (!b) { b = { id: 'br_' + Date.now(), name: row.brand }; core.data.brands.push(b); }
+                    brandId = b.id;
+                }
+                r = {
+                    id: 'r_' + Date.now(),
+                    goodId: g.id, brandId: brandId,
+                    name: row.name, brand: row.brand || '',
+                    packs: [{ id: 'p_' + Date.now(), label: row.packLabel, count: row.packCount }],
+                    img: null, attrs: {}
+                };
+                core.data.references.push(r);
+            }
+
+            var pack = (r.packs || []).filter(function (p) { return p.label === row.packLabel; })[0];
+            core.data.listings.push({
+                id: 'l_' + Date.now() + '_' + added,
+                businessId: bizId,
+                goodId: r.goodId, refId: r.id,
+                packId: pack ? pack.id : null,
+                name: r.name, brand: r.brand || '',
+                pack: row.packLabel, packCount: row.packCount,
+                price: row.price, pricePerUnit: Math.round(row.price / (row.packCount || 1)),
+                stock: 0, min: row.min || 1, note: '',
+                img: r.img || null,
+                priceValidDays: 3,
+                groupDiscounts: {},
+                justAdded: true   /* FD-15: نشان «تازه افزوده» روی کارت کاتالوگ */
+            });
+            added++;
+        });
+
+        if (!added) { toast('کالایی برای افزودن انتخاب نشده', 'error'); return; }
+
+        TX.rows = [];
+        var inp = $('#tx-input'); if (inp) inp.value = '';
+        core.closeSheet('sheet-textlist');
+        toast(faNum(added) + ' محصول به کاتالوگ اضافه شد', 'success');
         setTimeout(function () {
             core.resetStack();
             core.show('s-catalog', false);
@@ -2192,6 +2549,8 @@
     core.registerShowHook('s-catalog', catSheetsSync);
     /* FD-9: سینک زندهٔ قیمت/منقضی روی کارت‌های کاتالوگ */
     core.registerShowHook('s-catalog', catGridSync);
+    /* FD-15: گرید از listings واقعی ساخته می‌شود — افزودن/حذف دیده می‌شود */
+    core.registerShowHook('s-catalog', catGridRender);
     core.registerShowHook('s-cat-edit', catEditLoad);
     core.registerShowHook('s-sell-edit', gdEditRender);
     core.registerShowHook('s-home-sell', chargeSync);
@@ -2312,6 +2671,19 @@
         picklistGroup: picklistGroup,
         picklistSearch: picklistSearch,
         picklistAdd: picklistAdd,
+
+        /* ═══ FD-15 ═══ */
+        scanOpen: scanOpen,
+        scanGo: scanGo,
+        scanDemo: scanDemo,
+        scanContinue: scanContinue,
+        txOpen: txOpen,
+        txDemo: txDemo,
+        txParse: txParse,
+        txToggle: txToggle,
+        txBack: txBack,
+        txConfirm: txConfirm,
+        catGridRender: catGridRender,
     };
 
     /* ═══════════════════════════════════════════════════════════════
@@ -2989,6 +3361,10 @@
         if (stockIn) stockIn.value = faNum(L.stock);
         var minIn = $('#edit-min');
         if (minIn) minIn.value = faNum(L.min);
+        /* FD-15: توضیحات از دیتا پر می‌شود (قبلاً خالی می‌ماند و با
+           ذخیره، یادداشت فروشنده بی‌صدا دور ریخته می‌شد) */
+        var noteEl = $('#edit-note');
+        if (noteEl) noteEl.value = L.note || '';
 
         setDaysPills('#ed-valid', L.priceValidDays || 3);
 
@@ -3112,6 +3488,49 @@
             if (badge) badge.hidden = !stale;
             card.classList.toggle('stale', stale);
         });
+    }
+
+    /* ─── FD-15: گرید پویای کاتالوگ — از listings واقعی ───
+       قبلاً ۴ کارت استاتیک بود؛ حالا افزودن (۱۳/اسکنر/متن) و حذف
+       (ویرایش) واقعاً دیده می‌شوند — حلقهٔ کاملِ «آمادهٔ پیاده‌سازی».
+       نشان «تازه افزوده» یک‌بارمصرف است: در اولین رندری که دیده
+       می‌شود می‌نشیند و با رندر بعدی برمی‌رود. */
+    function catCardHtml(l) {
+        var img = l.img
+            ? '<img src="' + esc(l.img) + '" alt="' + esc(l.name) + '">'
+            : '<div class="cat-noimg"><svg><use href="#i-image"/></svg></div>';
+        var badges = '';
+        if (!l.stock) badges += '<span class="badge b-red">ناموجود</span>';
+        else if (l.stock <= 10) badges += '<span class="badge b-amber">موجودی کم</span>';
+        else badges += '<span class="badge b-green">موجود</span>';
+        if (l.justAdded) badges = '<span class="badge b-stone">تازه افزوده</span> ' + badges;
+        return '<div class="pcard' + (l.priceStale ? ' stale' : '') + '" data-go="s-sell-edit" data-gid="' + esc(l.groupId || '') + '" data-lid="' + esc(l.id) + '">' +
+            '<div class="ph">' + img +
+                '<span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>' +
+                '<span class="stale-badge"' + (l.priceStale ? '' : ' hidden') + '><svg><use href="#i-clock"/></svg> قیمت منقضی</span>' +
+            '</div>' +
+            '<div class="info">' +
+                '<div class="pname">' + esc(l.name) + '</div>' +
+                '<div class="ppack">' + esc(l.pack || '') + '</div>' +
+                '<div class="pprice">' + faMoney(l.price) + ' <small>تومان</small></div>' +
+                '<div class="pmeta">' + badges + '</div>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function catGridRender() {
+        var host = $('#cat-grid');
+        if (!host) return;
+        var bizId = core.data.user.activeBusinessId;
+        var items = core.data.listings.filter(function (l) { return l.businessId === bizId; });
+        var cnt = $('#cat-count');
+        if (cnt) cnt.textContent = faNum(items.length) + ' محصول';
+        host.innerHTML = items.length ? items.map(catCardHtml).join('')
+            : '<div class="empty" style="grid-column: 1 / -1;"><div class="empty-ic"><svg><use href="#i-store"/></svg></div>' +
+              '<h3>کاتالوگت خالی است</h3><p>با «محصول جدید» اولین محصول را اضافه کن.</p></div>';
+        /* نشان «تازه» فقط در همین رندر زنده بماند */
+        items.forEach(function (l) { if (l.justAdded) l.justAdded = false; });
+        catFilterApply();
     }
 
     function qpriceOpen(lid) {

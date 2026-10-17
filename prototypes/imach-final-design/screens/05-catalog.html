@@ -8,7 +8,7 @@
 <section class="screen" id="s-catalog" data-arm="sell">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">کاتالوگ من<small>۴ محصول</small></div>
+        <div class="ttl">کاتالوگ من<small id="cat-count">۴ محصول</small></div>
         <button class="icon-btn" data-sheet="sheet-cat-settings" aria-label="تنظیمات کاتالوگ">
             <svg><use href="#i-gear"/></svg>
         </button>
@@ -62,63 +62,12 @@
         </div>
 
         <div class="pgrid" id="cat-grid">
-            <!-- FD-9: data-lid → سینک زندهٔ قیمت/منقضی از دیتا (catGridSync)
-                 کارتِ منقضی با لمس، شیت آپدیت سریع همان کالا را باز می‌کند (نه صفحهٔ ویرایش) -->
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr1" data-lid="l1">
-                <div class="ph">
-                    <img src="png/goods/rice-sack.jpg" alt="برنج هاشمی">
-                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
-                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
-                </div>
-                <div class="info">
-                    <div class="pname">برنج هاشمی</div>
-                    <div class="ppack">کیسه ۵۰ کیلویی</div>
-                    <div class="pprice">۲٬۸۵۰٬۰۰۰ <small>تومان</small></div>
-                    <div class="pmeta"><span class="badge b-green">موجود</span></div>
-                </div>
-            </div>
-
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr2" data-lid="l2">
-                <div class="ph">
-                    <img src="png/goods/rice-grains.jpg" alt="برنج طارم">
-                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
-                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
-                </div>
-                <div class="info">
-                    <div class="pname">برنج طارم</div>
-                    <div class="ppack">کیسه ۵۰ کیلویی</div>
-                    <div class="pprice">۲٬۷۵۰٬۰۰۰ <small>تومان</small></div>
-                    <div class="pmeta"><span class="badge b-green">موجود</span></div>
-                </div>
-            </div>
-
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr1" data-lid="l3">
-                <div class="ph">
-                    <img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی">
-                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
-                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
-                </div>
-                <div class="info">
-                    <div class="pname">برنج هاشمی</div>
-                    <div class="ppack">کیسه ۱۰ کیلویی</div>
-                    <div class="pprice">۵۹۵٬۰۰۰ <small>تومان</small></div>
-                    <div class="pmeta"><span class="badge b-green">موجود</span></div>
-                </div>
-            </div>
-
-            <div class="pcard" data-go="s-sell-edit" data-gid="cgr3" data-lid="l4">
-                <div class="ph">
-                    <img src="png/goods/fajar-50.jpg" alt="برنج فجر">
-                    <span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>
-                    <span class="stale-badge" hidden><svg><use href="#i-clock"/></svg> قیمت منقضی</span>
-                </div>
-                <div class="info">
-                    <div class="pname">برنج فجر</div>
-                    <div class="ppack">کیسه ۵۰ کیلویی</div>
-                    <div class="pprice">۲٬۴۸۰٬۰۰۰ <small>تومان</small></div>
-                    <div class="pmeta"><span class="badge b-amber">موجودی کم</span></div>
-                </div>
-            </div>
+            <!-- FD-15: کارت‌ها دیگر استاتیک نیستند — catGridRender() در
+                 app-forms.js آن‌ها را از core.data.listings می‌سازد؛
+                 افزودن (۱۳/اسکنر/متن) و حذف (ویرایش) همان‌جا دیده می‌شود.
+                 data-lid/data-gid و سینک قیمت/منقضی (catGridSync — FD-9)
+                 همان‌ها ماندند؛ کارتِ منقضی با لمس، شیت آپدیت سریع همان
+                 کالا را باز می‌کند (نه صفحهٔ ویرایش). -->
         </div>
 
     </div>
@@ -135,7 +84,7 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
         </div>
-        <div class="sub">پخش برنج پارس · پخش مواد غذایی — رشت</div>
+        <div class="sub">سوپرمارکت آریا · سوپرمارکت — رشت</div>
 
         <button class="sheet-row" data-go="s-cat-edit">
             <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pencil"/></svg></span>

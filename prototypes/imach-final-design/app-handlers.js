@@ -564,7 +564,8 @@
         var offerGo = t.closest('[data-offer-go]');
         if (offerGo) { e.preventDefault(); go('s-buy-offer-view', { offer: offerGo.dataset.offerGo }); return; }
 
-        /* ─── ذخیرهٔ ویرایش محصول (FD-9: ثبت زنده در دیتا + اعتبار قیمت) ─── */
+        /* ─── ذخیرهٔ ویرایش محصول (FD-9: ثبت زنده در دیتا + اعتبار قیمت) ───
+           FD-15: توضیحات هم ذخیره می‌شود (edit-note — قبلاً دور ریخته می‌شد) */
         if (t.closest('[data-edit-save]')) {
             var edParams = core.getSCREENParams()['s-sell-edit'] || {};
             var edL = null;
@@ -578,6 +579,8 @@
                 var edStock = $('#edit-stock'), edMin = $('#edit-min');
                 if (edStock) edL.stock = parseNum(edStock.value);
                 if (edMin) edL.min = parseNum(edMin.value) || 1;
+                var edNote = $('#edit-note');
+                if (edNote) edL.note = edNote.value.trim();
                 edL.priceValidDays = core.forms.readDaysPills('#ed-valid');
                 edL.priceStale = false;
             }
@@ -586,7 +589,9 @@
             return;
         }
 
-        /* ─── حذف محصول از کاتالوگ ─── */
+        /* ─── حذف محصول از کاتالوگ ───
+           FD-15: واقعاً از listings حذف می‌شود — قبلاً فقط پیام می‌آمد
+           و محصول سر جایش می‌ماند (نقطه‌شکسته). */
         if (t.closest('[data-delete-item]')) {
             core.confirm({
                 title: 'حذف محصول',
@@ -594,6 +599,9 @@
                 ok: 'حذف محصول', cancel: 'انصراف', danger: true
             }).then(function (ok) {
                 if (ok) {
+                    var dlParams = core.getSCREENParams()['s-sell-edit'] || {};
+                    var dlId = dlParams.id || 'l1';
+                    core.data.listings = core.data.listings.filter(function (l) { return l.id !== dlId; });
                     toast('محصول حذف شد', 'error');
                     setTimeout(function () { core.resetStack(); show('s-catalog', false); }, 500);
                 }
@@ -706,6 +714,19 @@
         if (t.closest('[data-new-brand]')) { core.forms.addOpenNewBrand(); return; }
         if (t.closest('#new-brand-save')) { core.forms.addSaveNewBrand(); return; }
         if (t.closest('#add-save')) { core.forms.addSave(); return; }
+
+        /* ═══ FD-15 — ابزارهای ثبت سریع (اسکنر + متن) ═══ */
+        if (t.closest('#add-scan-open')) { core.forms.scanOpen(); return; }
+        if (t.closest('#add-text-open')) { core.forms.txOpen(); return; }
+        if (t.closest('#scan-go')) { core.forms.scanGo(); return; }
+        if (t.closest('#scan-demo')) { core.forms.scanDemo(); return; }
+        if (t.closest('#scan-continue')) { core.forms.scanContinue(); return; }
+        if (t.closest('#tx-demo')) { core.forms.txDemo(); return; }
+        if (t.closest('#tx-parse')) { core.forms.txParse(); return; }
+        if (t.closest('#tx-back')) { core.forms.txBack(); return; }
+        if (t.closest('#tx-confirm')) { core.forms.txConfirm(); return; }
+        var txChk = t.closest('[data-tx-chk]');
+        if (txChk) { core.forms.txToggle(parseInt(txChk.dataset.txChk, 10)); return; }
 
         /* ═══════════════════════════════════════════════════════════
            تغییر گروهی و دستی قیمت‌ها
@@ -892,6 +913,15 @@
         if (t.id === 'of-cash-pct') { core.forms.offerPctSync('cash'); return; }
         if (t.id === 'of-chk-days') { core.forms.offerDaysSync(); return; }
         if (t.id === 'pl-search') { core.forms.picklistSearch(t.value); return; }
+    });
+
+    /* ═══ FD-15: Enter در باکس بارکد = «تطبیق» — اسکنر واقعی (دستگاه
+       بلوتوثی/دوربین) بعد از شماره Enter می‌فرستد؛ همین رفتار دمو ✓ */
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && e.target && e.target.id === 'scan-code') {
+            e.preventDefault();
+            if (core.forms && core.forms.scanGo) core.forms.scanGo();
+        }
     });
 
 

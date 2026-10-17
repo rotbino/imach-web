@@ -3,13 +3,22 @@
 
      سه گام:
        ۱) دو لیست موازی — محصولات بالا، کالاها پایین
+          + دو ابزار ثبت سریع ته جستجو (FD-15):
+          ▸ اسکنر بارکد (sheet-scan) — کالا با اسکن انتخاب می‌شود؛
+          ▸ افزودن گروهی با متن (sheet-textlist) — لیست قیمتِ کپی‌شده
+            از واتساپ/هرجای دیگر به جدول کالا تبدیل می‌شود (به‌جای
+            اکسلِ هوش‌مصنوعیِ طرح قدیم — حکم مالک: راه ساده‌تر و
+            برای همه راحت‌تر، «کاربردی‌تر از اکسل»).
        ۲) محصولات یک کالا با فیلتر برند
        ۳) بسته‌بندی (چیپ + سایر) + قیمت بسته + قیمت واحد + موجودی
+          — «سایر»: نام بسته‌بندی و تعداد در بسته کنار هم (FD-15)
 
      شیت‌های همراه:
        sheet-new-good   — ثبت کالای جدید
        sheet-pick-brand — انتخاب برند
        sheet-new-brand  — ثبت برند جدید
+       sheet-scan       — اسکنر بارکد (FD-15)
+       sheet-textlist   — تبدیل متن به کالا (FD-15)
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-sell-add" data-arm="sell">
@@ -26,6 +35,16 @@
                 <div class="search-row">
                     <svg><use href="#i-search"/></svg>
                     <input type="text" id="add-q" placeholder="جستجو — مثلاً پفک، برنج، روغن" autocomplete="off">
+                    <!-- FD-15: دو ابزار ثبت سریع، کنار هم ته سرچ‌باکس.
+                         قانون لمس (FD-13): دکمه ۳۸px. -->
+                    <span class="sr-tools">
+                        <button class="sr-tool" id="add-scan-open" type="button" aria-label="اسکن بارکد" title="اسکن بارکد">
+                            <svg><use href="#i-scan"/></svg>
+                        </button>
+                        <button class="sr-tool" id="add-text-open" type="button" aria-label="افزودن گروهی با متن" title="افزودن گروهی با متن — لیست قیمت را بچسبان">
+                            <svg><use href="#i-textlist"/></svg>
+                        </button>
+                    </span>
                 </div>
             </div>
             <div id="add-results" style="margin-top: 10px;"></div>
@@ -99,13 +118,18 @@
                 <label>بسته‌بندی فروش عمده</label>
                 <div class="chips" id="add-pack-chips"></div>
                 <div id="add-pack-custom" hidden style="margin-top: 10px;">
-                    <div class="field" style="margin-bottom: 10px;">
-                        <label>بسته‌بندی</label>
-                        <input class="input" id="add-pack-label" type="text" placeholder="مثلاً کارتن ۶۰ عددی" autocomplete="off">
-                    </div>
-                    <div class="field">
-                        <label>تعداد در بسته</label>
-                        <input class="input" id="add-pack-qty" type="tel" inputmode="numeric" placeholder="۶۰">
+                    <!-- FD-15 (حکم مالک): با «سایر»، نام بسته‌بندی و تعداد
+                         در بسته کنار هم بیایند نه زیر هم — مثل ردیف
+                         موجودی/حداقل سفارش؛ فرم غیرشلوغ می‌ماند. -->
+                    <div style="display: flex; gap: 9px;">
+                        <div class="field" style="flex: 1.25; margin-bottom: 0;">
+                            <label>بسته‌بندی</label>
+                            <input class="input" id="add-pack-label" type="text" placeholder="مثلاً کارتن ۶۰ عددی" autocomplete="off">
+                        </div>
+                        <div class="field" style="flex: 1; margin-bottom: 0;">
+                            <label>تعداد در بسته</label>
+                            <input class="input" id="add-pack-qty" type="tel" inputmode="numeric" placeholder="۶۰">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -218,6 +242,113 @@
             <svg><use href="#i-check"/></svg> ثبت برند
         </button>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FD-15 — شیت: اسکنر بارکد (ثبت سریع)
+         اسکن بارکد ⇒ تطبیق با کالاهای مرجع ⇒ همان لحظه گام ۳ فرم
+         (قیمت/بسته/شرایط) با محصول پرشده باز می‌شود — «فقط قیمت و
+         شرایط فروش را وارد کن».
+         IMPLEMENTATION NOTE: در دمو بارکد را دستی در input می‌نویسند
+         (یا «درج بارکد نمونه»)؛ در محصول واقعی دوربین/اسکنر بلوتوثی
+         مستقیم همین input را پر می‌کند و تطبیق از GS1/ایران‌کد
+         می‌آید (references[].barcode). بارکد ناشناس = راهنمایی به
+         جستجو/ثبت دستی — ساخت محصول از روی بارکدِ ناشناس در فاز بعد.
+         ═══════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-scan" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>اسکنر بارکد</h3>
+            <button class="mg" data-sheet-close="sheet-scan" aria-label="بستن">
+                <svg><use href="#i-x"/></svg>
+            </button>
+        </div>
+        <div class="sub">بارکد کالا را بگیر — با کالاهای مرجع آیمچ تطبیق داده می‌شود و همان محصول برای فروش آماده می‌شود؛ فقط قیمت و شرایط را وارد کن.</div>
+
+        <div class="scanframe">
+            <svg viewBox="0 0 64 40" fill="none" stroke="#FFF" stroke-width="3" stroke-linecap="round"><path d="M6 2v36M12 2v36M17 2v24M23 2v36M29 2v16M34 2v36M40 2v24M46 2v36M52 2v16M58 2v36"/></svg>
+            <span>بارکد را داخل کادر نگه دارید</span>
+        </div>
+
+        <div class="field" style="margin-top: 12px;">
+            <label>بارکد را دستی وارد کن <span class="opt">— اگر اسکنر نداری</span></label>
+            <div style="display: flex; gap: 8px;">
+                <input class="input" id="scan-code" type="tel" inputmode="numeric" placeholder="مثلاً ۶۲۶۰۱۰۱۲۰۰۰۱۰" autocomplete="off" style="flex: 1; direction: ltr; text-align: left;">
+                <button class="btn btn-primary" id="scan-go" type="button" style="flex-shrink: 0;">
+                    <svg><use href="#i-scan"/></svg> تطبیق
+                </button>
+            </div>
+            <button class="linklike" id="scan-demo" type="button">درج بارکد نمونه برای تست</button>
+        </div>
+
+        <div id="scan-result"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FD-15 — شیت: افزودن گروهی با متن (تبدیل متن به کالا)
+         به‌جای اکسلِ هوش‌مصنوعیِ طرح قدیم (حکم مالک): «کاربر لیست
+         قیمتش را از واتساپ یا هر جا کپی می‌کند، می‌ریزد این‌جا و
+         سیستم خودش تبدیلش می‌کند».
+         دو نما:
+           ▸ چسباندن متن (tx-paste): هر خط = یک کالا؛ ستون‌ها با Tab
+             یا چند فاصله: نام، برند، بسته‌بندی، قیمت هر بسته، حداقل
+             سفارش. خط عنوان ستون تشخیص و نادیده گرفته می‌شود.
+           ▸ مرور و تایید (tx-review): هر ردیف = تطبیق‌شده با کالای
+             مرجع (تیک سبز) / کالای جدید (کهبر) / ناقص مثل قیمت
+             نداشتن (قرمز، بی‌تیک). تایید ⇒ فقط تیک‌خورده‌ها به
+             کاتالوگ اضافه می‌شوند؛ بقیه با پیام «دستی اضافه کن یا
+             متن را اصلاح کن» می‌مانند.
+         IMPLEMENTATION NOTE: در دمو txParse() همین‌جا در مرورگر
+         خطوط را می‌شکافد و با references/goods تطبیق می‌دهد؛ در محصول
+         واقعی همین الگو سمت سرور می‌رود (POST /listings/import-text)
+         با همان اعتبارسنجی‌ها و پیش‌نمایش این‌جا — تصمیم نهایی
+         افزودن فقط با تیک کاربر است، نه خودکار.
+         ═══════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-textlist" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>افزودن گروهی با متن</h3>
+            <button class="mg" data-sheet-close="sheet-textlist" aria-label="بستن">
+                <svg><use href="#i-x"/></svg>
+            </button>
+        </div>
+
+        <!-- نمای ۱: چسباندن متن -->
+        <div id="tx-paste">
+            <div class="sub">لیست قیمت‌هایت را از واتساپ، اکسل یا هر جایی کپی کن و این‌جا بچسبان — آیمچ خودش جدول کالا می‌سازد.</div>
+
+            <div class="field">
+                <label>متن لیست قیمت</label>
+                <textarea class="input" id="tx-input" rows="7" autocomplete="off" placeholder="هر خط یک کالا — ستون‌ها با Tab یا چند فاصله:&#10;نام کالا · برند · بسته‌بندی · قیمت هر بسته · حداقل سفارش"></textarea>
+            </div>
+
+            <div class="hint-line">
+                <svg><use href="#i-info"/></svg>
+                <span>مثال: «پفک نمکی&#9; اشی مشی&#9; کارتن ۵۰ عددی&#9; ۲٬۴۰۰٬۰۰۰&#9; ۲» — خط اول می‌تواند عنوان ستون‌ها باشد؛ قیمت و حداقل سفارش اختیاری‌اند اما بدون قیمت، کالا آمادهٔ افزودن نمی‌شود.</span>
+            </div>
+
+            <button class="linklike" id="tx-demo" type="button">درج متن نمونه (لیست واتساپی)</button>
+
+            <button class="btn btn-primary btn-block" id="tx-parse" type="button" style="margin-top: 8px;">
+                <svg><use href="#i-sparkles"/></svg> تبدیل به جدول کالا
+            </button>
+        </div>
+
+        <!-- نمای ۲: مرور و تایید -->
+        <div id="tx-review" hidden>
+            <div class="sub" id="tx-review-sub">—</div>
+            <div id="tx-rows"></div>
+
+            <div class="hint-line" style="margin-top: 10px;">
+                <svg><use href="#i-info"/></svg>
+                <span>کالاهای بدون تیک اضافه نمی‌شوند — بعداً از جستجو دستی اضافه‌شان کن، یا متن را اصلاح و دوباره تبدیل کن.</span>
+            </div>
+
+            <button class="btn btn-primary btn-block" id="tx-confirm" type="button" style="margin-top: 8px;" disabled>
+                <svg><use href="#i-check"/></svg> <span id="tx-confirm-tx">افزودن کالاهای تاییدشده</span>
+            </button>
+            <button class="btn btn-outline btn-block" id="tx-back" type="button" style="margin-top: 8px;">اصلاح متن</button>
+        </div>
+    </div>
 </section>
 
 
@@ -290,7 +421,9 @@
 
         <div class="field">
             <label>توضیحات <span class="opt">— اختیاری</span></label>
-            <textarea class="input" placeholder="شرایط فروش، پرداخت، تحویل…"></textarea>
+            <!-- FD-15: id — توضیحات حالا واقعاً از دیتا پر می‌شود و با
+                 «ذخیرهٔ تغییرات» برمی‌گردد (قبلاً بی‌صدا دور ریخته می‌شد). -->
+            <textarea class="input" id="edit-note" placeholder="شرایط فروش، پرداخت، تحویل…"></textarea>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════
