@@ -1,0 +1,224 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۳۸: داشبورد نمایندهٔ فروش — FD-17
+     ─────────────────────────────────────────────────────────────
+     فلسفه (خواستهٔ مالک):
+     • فرقش با میز فروش: هر کسب‌وکار یک میز دارد؛ داشبورد = مدیریت
+       یکپارچهٔ فروش «چند میز» از یک جا — برای نماینده‌ای که همزمان
+       برای ده-بیست تأمین‌کننده کار می‌کند.
+     • MVP از امکانات موجود ساخته شده (پیشنهاد خود مالک): آمار و
+       گزارش + لینک به میز فروش/کاتالوگ/سفارش‌های همان کسب‌وکار +
+       گزارش واحد سفارش‌های همهٔ کسب‌وکارها با فیلتر کسب‌وکار.
+     • جدا از فرم‌های اصلی آی‌مچ: تب‌بار ندارد (فضای سوم)، ورودش
+       از پروفایل و لندینگ است — کارکرد اصلی دو میز دست‌نخورده.
+     • نماینده = بازاریاب سنتی (زبان خود مالک): سفارش را خودش می‌گیرد،
+       لیستش را «بیرون از سیستم» برای تأمین‌کننده می‌فرستد و پورسانتِ
+       توافقی‌اش را می‌گیرد. چرخه: ثبت → ارسال → تحویل → تسویه.
+     • رنگ: فیروزه‌ای (accent) — هویت سوم، جدا از نارنجیِ فروش و
+       سنگیِ خرید؛ در همهٔ اجزای داشبورد یکدست.
+
+     داده و منطق: repGroup / repBusinesses / repOrders در data.js
+     + رندر و رفتارها در app-salesrep.js (repRender).
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-salesrep" data-arm="keep">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">داشبورد نمایندهٔ فروش<small id="rep-sub-ttl">مدیریت یکپارچهٔ فروش چند کسب‌وکار</small></div>
+    </div>
+
+    <div class="body">
+
+        <!-- ═══ دارایی اصلی نماینده: گروه مشتریان از یک صنف ═══
+             حکم مالک: «روی یه صنف خاص کار می‌کنن تا خریداران اون صنف
+             جز خریداران خودشون بشن» — اینجا: رستوران‌های رشت. -->
+        <div class="rep-hero">
+            <span class="rh-ic"><svg><use href="#i-users"/></svg></span>
+            <div class="rh-tx">
+                <b id="rh-name">گروه مشتریان من</b>
+                <span id="rh-sub"></span>
+            </div>
+        </div>
+
+        <!-- ═══ چهار کاشی جمع‌وجور — همان زبان میزها (FD-16) ═══
+             عدد و زیرمتن از دیتا محاسبه می‌شود (repRender). -->
+        <div class="desk-duo rep-duo">
+            <div class="desk-tile">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-chart"/></svg></span>
+                    <b class="dt-t">فروش این ماه</b>
+                </span>
+                <div class="dt-stat"><b id="rep-t-sales">۰</b><span>تومان</span></div>
+            </div>
+            <div class="desk-tile">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-percent"/></svg></span>
+                    <b class="dt-t">پورسانت این ماه</b>
+                </span>
+                <div class="dt-stat"><b id="rep-t-comm">۰</b><span>تومان</span></div>
+                <div class="dt-sub" id="rep-t-comm-sub"></div>
+            </div>
+            <div class="desk-tile">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-briefcase"/></svg></span>
+                    <b class="dt-t">کسب‌وکار</b>
+                </span>
+                <div class="dt-stat"><b id="rep-t-biz">۰</b><span>زیر نمایندگی</span></div>
+            </div>
+            <div class="desk-tile">
+                <span class="dt-head">
+                    <span class="dt-ic"><svg><use href="#i-receipt"/></svg></span>
+                    <b class="dt-t">سفارش این ماه</b>
+                </span>
+                <div class="dt-stat"><b id="rep-t-ord">۰</b><span>سفارش</span></div>
+            </div>
+        </div>
+
+        <!-- ═══ کسب‌وکارهای زیر نمایندگی ═══
+             هر کارت: نقش من (نمایندهٔ فروش / بازاریاب / …) + آمار
+             همان کسب‌وکار + پورسانت توافقی و درآمد ماه. لمس = شیت
+             لینک‌ها (میز فروش / کاتالوگ / سفارش‌های همان کسب‌وکار). -->
+        <div class="section-title"><h2>کسب‌وکارهای زیر نمایندگی</h2></div>
+        <div class="rep-biz-list" id="rep-biz-list"></div>
+
+        <!-- ═══ گزارش واحد سفارش‌ها — فیلتر با کسب‌وکار ═══
+             حکم مالک: «سفارشات کسب‌وکارها یه جا میاد و با کسب‌وکار
+             فیلتر میشه». ردیف = سفارشِ گرفته‌شده توسط نماینده. -->
+        <div class="section-title"><h2>سفارش‌های کسب‌وکارها</h2><span class="st-b" id="rep-ord-count"></span></div>
+        <div class="chips rep-chips" id="rep-chips"></div>
+        <div class="rows" id="rep-ord-list"></div>
+
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>پورسانت‌ها با هر کسب‌وکار توافق می‌شود؛ سفارش را تو می‌گیری، لیستش را برای تأمین‌کننده می‌فرستی و پس از تحویل، پورسانتت را همان‌جا می‌گیری.</span>
+        </div>
+    </div>
+
+
+    <!-- ═══ شیت: کسب‌وکار زیر نمایندگی ═══
+         لینک‌های همان کسب‌وکار (خواستهٔ مالک: «لینک به میز فروش اون
+         کسب‌وکار و کاتالوگ و سفارشاتش»). در ماک به صفحات نمونهٔ همان
+         نوع می‌رود؛ در محصول واقعی، میز/کاتالوگِ همان کسب‌وکار با
+         نقشِ کاربر باز می‌شود (نقش‌محور، نه مالک‌محور). -->
+    <div class="sheet" id="sheet-repbiz" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3 id="rbz-title">کسب‌وکار</h3>
+            <button class="mg" data-sheet-close="sheet-repbiz" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub" id="rbz-sub"></div>
+
+        <!-- شرایط نمایندگی — سه عدد کلیدی همین کسب‌وکار -->
+        <div class="rbz-terms">
+            <div class="rbz-term"><b id="rbz-pct">—</b><span>پورسانت توافقی</span></div>
+            <div class="rbz-term"><b id="rbz-earn">—</b><span>پورسانت این ماه</span></div>
+            <div class="rbz-term"><b id="rbz-orders">—</b><span>سفارش این ماه</span></div>
+        </div>
+
+        <div class="rows" style="margin-top: 12px;">
+            <button class="row" type="button" data-rbz="desk">
+                <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-store"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">میز فروش این کسب‌وکار</div>
+                    <div class="row-sub">کارتابل سفارش‌ها و مشتریانِ همین کسب‌وکار</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </button>
+            <button class="row" type="button" data-rbz="catalog">
+                <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-tag"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">کاتالوگ و محصولات</div>
+                    <div class="row-sub">مدیریت محصولات و قیمت‌های همین کسب‌وکار</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </button>
+            <button class="row" type="button" data-rbz="orders">
+                <div class="thumb thumb-sm" style="background: var(--accent-soft); color: var(--accent-strong); display: grid; place-items: center;">
+                    <svg style="width: 20px; height: 20px;"><use href="#i-receipt"/></svg>
+                </div>
+                <div class="row-body">
+                    <div class="row-title">سفارش‌های این کسب‌وکار</div>
+                    <div class="row-sub">فیلتر گزارش سفارش‌ها روی همین کسب‌وکار</div>
+                </div>
+                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
+            </button>
+        </div>
+
+        <div class="sub" style="margin-top: 10px; margin-bottom: 0;">دسترسی‌ها بر اساس نقش تو در این کسب‌وکار است — <span id="rbz-role-hint"></span></div>
+    </div>
+
+
+    <!-- ═══ شیت: سفارش نماینده + چرخهٔ بازاریاب سنتی ═══
+         new: «ارسال لیست سفارش به تأمین‌کننده» با پیام‌رسان/کپی —
+         همان حکم مالک: لیست سفارش بیرون از سیستم فرستاده می‌شود.
+         سپس: تحویل شد ← پورسانت در انتظار ← تسویهٔ پورسانت. -->
+    <div class="sheet" id="sheet-reporder" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3 id="ro-title">سفارش</h3>
+            <button class="mg" data-sheet-close="sheet-reporder" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub" id="ro-sub"></div>
+
+        <!-- قلم سفارش -->
+        <div class="card ro-item">
+            <img id="ro-img" src="png/goods/oil-carton.jpg" alt="">
+            <div class="roi-tx">
+                <b id="ro-item-name"></b>
+                <span id="ro-item-pack"></span>
+            </div>
+            <div class="roi-amt">
+                <b id="ro-total"></b>
+                <span>مبلغ سفارش</span>
+            </div>
+        </div>
+
+        <!-- پورسانت و وضعیت -->
+        <div class="ro-comm">
+            <span class="ro-comm-tx"><svg><use href="#i-percent"/></svg><span id="ro-comm-tx"></span></span>
+            <span class="badge" id="ro-status"></span>
+        </div>
+
+        <!-- گام‌های چرخه — فقط گامِ بعدی نشان داده می‌شود -->
+        <div id="ro-act-new">
+            <div class="sub" style="margin-bottom: 8px;">لیست این سفارش را برای تأمین‌کننده بفرست — بیرون از آی‌مچ، مثل بازاریاب:</div>
+            <div class="share-grid">
+                <button class="share-opt" type="button" data-ro-send="whatsapp">
+                    <span class="messenger-avatar" style="background: #25D366;"><svg><use href="#i-whatsapp"/></svg></span>
+                    <span>واتس‌اپ</span>
+                </button>
+                <button class="share-opt" type="button" data-ro-send="sms">
+                    <span class="messenger-avatar" style="background: #F97316;"><svg><use href="#i-msg"/></svg></span>
+                    <span>پیامک</span>
+                </button>
+                <button class="share-opt" type="button" data-ro-send="copy">
+                    <span class="messenger-avatar" style="background: var(--surface-3); color: var(--text-2);"><svg><use href="#i-copy"/></svg></span>
+                    <span>کپی لیست</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="ro-act-sent" hidden>
+            <div class="sub" style="margin-bottom: 8px;">لیست برای تأمین‌کننده فرستاده شد — تا کالا تحویل مشتری شود، پورسانت در انتظار است.</div>
+            <button class="btn btn-primary btn-block" type="button" data-ro-advance="delivered">
+                <svg><use href="#i-check"/></svg> تحویل شد
+            </button>
+            <button class="linklike" type="button" data-ro-resend>ارسال دوبارهٔ لیست سفارش</button>
+        </div>
+
+        <div id="ro-act-delivered" hidden>
+            <div class="sub" style="margin-bottom: 8px;">کالا تحویل مشتری شد — پورسانت این سفارش را از تأمین‌کننده بگیر و تسویه کن.</div>
+            <button class="btn btn-primary btn-block" type="button" data-ro-advance="settled">
+                <svg><use href="#i-wallet"/></svg> پورسانت دریافت شد — تسویه
+            </button>
+        </div>
+
+        <div id="ro-act-settled" hidden>
+            <div class="ok-pill"><svg><use href="#i-check"/></svg></div>
+            <div class="ok-ttl">تسویه شد</div>
+            <div class="ok-sub">پورسانت این سفارش دریافت شد و در درآمد ماهت حساب شد.</div>
+        </div>
+    </div>
+</section>

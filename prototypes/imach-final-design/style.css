@@ -3429,3 +3429,140 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 }
 .sprow-price:focus { border-color: var(--primary); }
 .sprow.on .sprow-price { background: #FFF; }
+
+
+/* ═════════════════════════════════════════════════════════════════
+   ۳۸-ر — FD-17: داشبورد نمایندهٔ فروش
+   هویت سوم آی‌مچ: فیروزه‌ای (accent) — جدا از نارنجیِ فروش و
+   سنگیِ خرید. داشبورد تب‌بار ندارد (فضای سوم) و از پروفایل/لندینگ
+   باز می‌شود تا کارکرد اصلی دو میز دست‌نخورده بماند.
+   ═════════════════════════════════════════════════════════════════ */
+
+/* دارایی اصلی نماینده: گروه مشتریان از یک صنف */
+.rep-hero {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(13,148,136,.28);
+    border-radius: var(--r-md);
+    color: var(--accent-strong);
+}
+.rep-hero .rh-ic {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    background: rgba(255,255,255,.75);
+    display: grid; place-items: center;
+}
+.rep-hero .rh-ic svg { width: 20px; height: 20px; }
+.rep-hero .rh-tx { flex: 1; min-width: 0; }
+.rep-hero .rh-tx b { display: block; font-size: 12.5px; font-weight: 800; line-height: 1.6; }
+.rep-hero .rh-tx span { display: block; font-size: 10.5px; opacity: .85; }
+
+/* کاشی‌های آماری — همان زبان میزها (FD-16) با رنگ فیروزه‌ای */
+.rep-duo .desk-tile { cursor: default; }
+.rep-duo .desk-tile:active { transform: none; }
+.rep-duo .desk-tile .dt-ic { background: var(--accent-soft); color: var(--accent-strong); }
+.rep-duo .desk-tile .dt-stat b { color: var(--accent-strong); }
+
+/* فهرست کسب‌وکارهای زیر نمایندگی */
+.rep-biz-list { display: flex; flex-direction: column; gap: 10px; }
+.rep-biz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 12px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+.rep-biz:hover { border-color: var(--border-2); }
+.rep-biz:active { background: var(--surface-2); }
+.rep-biz .rb-head { display: flex; align-items: center; gap: 10px; }
+.rep-biz .rb-tx { flex: 1; min-width: 0; }
+.rep-biz .rb-name { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13.5px; font-weight: 800; line-height: 1.6; }
+.rep-biz .rb-sub { font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.rep-biz .rb-stats { display: flex; gap: 6px; margin-top: 10px; }
+.rep-biz .rb-stat {
+    flex: 1; text-align: center;
+    background: var(--surface-2); border-radius: 8px; padding: 6px 4px;
+}
+.rep-biz .rb-stat b { display: block; font-size: 13px; font-weight: 800; line-height: 1.6; }
+.rep-biz .rb-stat span { display: block; font-size: 9.5px; color: var(--text-3); line-height: 1.5; }
+.rep-biz .rb-foot {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px dashed var(--border-2);
+}
+.rep-biz .rb-pct { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--text-3); }
+.rep-biz .rb-pct svg { width: 13px; height: 13px; flex-shrink: 0; }
+.rep-biz .rb-earn { font-size: 11.5px; font-weight: 800; color: var(--accent-strong); white-space: nowrap; }
+
+/* چیپ‌های فیلتر کسب‌وکار — فعال = فیروزه‌ای */
+.rep-chips .chip.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent-strong);
+    font-weight: 700;
+}
+
+/* ستون مبلغ/پورسانت در ردیف سفارش */
+.row-amt { flex-shrink: 0; text-align: left; margin-inline-start: 2px; }
+.row-amt b { display: block; font-size: 12px; font-weight: 800; line-height: 1.7; white-space: nowrap; }
+.row-amt span { display: block; font-size: 9.5px; font-weight: 700; color: var(--accent-strong); white-space: nowrap; }
+
+/* شیت کسب‌وکار — سه عدد کلیدی شرایط نمایندگی */
+.rbz-terms {
+    display: flex; gap: 8px;
+    padding: 10px;
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+}
+.rbz-term { flex: 1; text-align: center; min-width: 0; }
+.rbz-term b { display: block; font-size: 13.5px; font-weight: 800; color: var(--accent-strong); line-height: 1.7; white-space: nowrap; }
+.rbz-term span { display: block; font-size: 9.5px; color: var(--text-3); }
+
+/* شیت سفارش — کارت قلم + نوار پورسانت/وضعیت */
+.ro-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px;
+}
+.ro-item img { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.ro-item .roi-tx { flex: 1; min-width: 0; }
+.ro-item .roi-tx b { display: block; font-size: 13px; font-weight: 700; line-height: 1.6; }
+.ro-item .roi-tx span { display: block; font-size: 10.5px; color: var(--text-3); }
+.ro-item .roi-amt { text-align: left; flex-shrink: 0; }
+.ro-item .roi-amt b { display: block; font-size: 12.5px; font-weight: 800; white-space: nowrap; }
+.ro-item .roi-amt span { display: block; font-size: 9.5px; color: var(--text-3); }
+
+.ro-comm {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-top: 10px; padding: 10px 12px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(13,148,136,.28);
+    border-radius: var(--r-md);
+    color: var(--accent-strong);
+}
+.ro-comm .ro-comm-tx { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; min-width: 0; }
+.ro-comm .ro-comm-tx svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* بنر لندینگ — مخاطب سوم (جملهٔ تبلیغ مالک) */
+.rep-ad {
+    background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+    border: 0; color: #FFF;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+}
+.rep-ad .ra-ic {
+    width: 38px; height: 38px; border-radius: 11px;
+    background: rgba(255,255,255,.18);
+    display: grid; place-items: center;
+}
+.rep-ad .ra-ic svg { width: 20px; height: 20px; }
+.rep-ad .ra-tx { font-size: 12.5px; line-height: 2; opacity: .96; }
+.rep-ad .ra-tx b { font-weight: 800; }
+.rep-ad .ra-btn {
+    width: 100%;
+    background: #FFF; color: var(--accent-strong);
+    font-weight: 700;
+}
+.rep-ad .ra-btn svg { width: 15px; height: 15px; }
+
+/* شمارندهٔ کنار عنوان بخش (گزارش سفارش‌ها) */
+.section-title .st-b { font-size: 11px; color: var(--text-3); font-weight: 600; }
