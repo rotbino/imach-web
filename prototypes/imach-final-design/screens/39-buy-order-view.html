@@ -1,0 +1,41 @@
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۳۹: جزئیات سفارش (خریدار) — جدید FD-18
+     ─────────────────────────────────────────────────────────────
+     قرینهٔ ۱۰ در سمت خریدار — قبلاً خریدار اصلاً نمای جزئیات
+     سفارش خودش را نداشت («فقط نمایشی»):
+     • اقلام + جمع کل + یادداشت + خط زمانی از history[].
+     • new/accepted → «لغو سفارش» (قبل از ارسال فروشنده).
+     • sent → «تأیید تحویل» = بسته‌شدن کامل سفارش → بایگانی
+       (حلقهٔ پایانی که مفقود بود) + «گفتگو با تأمین‌کننده».
+     • delivered → «سفارش دوباره» → کاتالوگ همان تأمین‌کننده.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-buy-order-view" data-arm="buy">
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">جزئیات سفارش<small id="bov-sub">—</small></div>
+    </div>
+
+    <div class="body">
+        <div id="bov-host"></div>
+
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>پرداخت و تحویل مستقیم با تأمین‌کننده هماهنگ می‌شود — آی‌مچ پولی جابه‌جا نمی‌کند.</span>
+        </div>
+    </div>
+
+    <div class="sticky-bar" id="bov-bar" hidden>
+        <button class="btn btn-outline" style="flex: .7;" data-order-cancel id="bov-cancel" hidden>
+            <svg><use href="#i-trash"/></svg> لغو سفارش
+        </button>
+        <button class="btn btn-outline" style="flex: 1;" data-order-chat id="bov-chat" hidden>
+            <svg><use href="#i-msg"/></svg> گفتگو با تأمین‌کننده
+        </button>
+        <button class="btn btn-arm" style="flex: 1.3;" data-order-delivered id="bov-deliver" hidden>
+            <svg><use href="#i-check"/></svg> تأیید تحویل
+        </button>
+        <button class="btn btn-primary" style="flex: 1.3;" data-order-reorder id="bov-reorder" hidden>
+            <svg><use href="#i-cart-add"/></svg> سفارش دوباره
+        </button>
+    </div>
+</section>

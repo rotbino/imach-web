@@ -1,38 +1,20 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۲۸: سفارش‌های من (خریدار)
-     جاری + بایگانی. لمس هر سفارش → شیت جزئیات (در MVP فقط نمایشی).
+     FD-18 — رندر پویا از DATA.ordersOut (ordersBuyRender):
+     • «جاری» (new/accepted/sent) + «بایگانی» (delivered/rejected/
+       cancelled) — شمارندهٔ زیرعنوان زنده.
+     • هر ردیف data-ord-go → نمای خریدارِ همان سفارش (۳۹ — جدید).
+       قبلاً ردیف‌ها «فقط نمایشی» بودند و لمسشان کاری نمی‌کرد.
+     • سفارش‌هایی که از سبد کاتالوگ ثبت می‌شوند همین‌جا می‌آیند.
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-buy-orders" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">سفارش‌های من<small>۱ سفارش جاری</small></div>
+        <div class="ttl">سفارش‌های من<small id="buy-orders-sub">۱ سفارش جاری</small></div>
     </div>
 
     <div class="body">
-        <div class="section-title" style="margin-top: 0;"><h2>جاری</h2></div>
-        <div class="rows">
-            <div class="row static">
-                <div class="thumb thumb-sm"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
-                <div class="row-body">
-                    <div class="row-title">برنج طارم · ۱۰ کیسه <span class="badge b-green">پذیرفته</span></div>
-                    <div class="row-sub">پخش برنج پارس <span class="dot">·</span> ۲ روز پیش <span class="dot">·</span> ۲۷٬۵۰۰٬۰۰۰ ت</div>
-                </div>
-                <button class="icon-btn plain" data-order-cancel="برنج طارم · ۱۰ کیسه" aria-label="گزینه‌ها">
-                    <svg><use href="#i-dots"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="section-title" style="margin-top: 8px;"><h2>بایگانی</h2></div>
-        <div class="rows">
-            <div class="row static" style="opacity: .75;">
-                <div class="thumb thumb-sm"><img src="png/goods/hashemi-10.png" alt="برنج هاشمی ۱۰ کیلویی"></div>
-                <div class="row-body">
-                    <div class="row-title">برنج هاشمی · ۳۰ کیسه <span class="badge b-gray">تحویل شده</span></div>
-                    <div class="row-sub">پخش برنج پارس <span class="dot">·</span> هفتهٔ پیش</div>
-                </div>
-            </div>
-        </div>
+        <div id="buy-orders-host"></div>
 
         <div class="hint-line">
             <svg><use href="#i-info"/></svg>

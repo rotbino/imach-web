@@ -3566,3 +3566,98 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 
 /* شمارندهٔ کنار عنوان بخش (گزارش سفارش‌ها) */
 .section-title .st-b { font-size: 11px; color: var(--text-3); font-weight: 600; }
+
+/* ═════════════════════════════════════════════════════════════
+   FD-18 — اجزای سفارش (۰۹/۱۰/۲۸/۳۹)
+   هدر وضعیت · اقلام (تک/چندقلمی) · جمع کل · خط زمانی
+   ═════════════════════════════════════════════════════════════ */
+
+/* هدر وضعیت سفارش — badge + طرف مقابل + مبلغ */
+.ord-head {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+.ord-head .badge { flex-shrink: 0; }
+.ord-head .oh-tx { flex: 1; min-width: 0; }
+.ord-head .oh-tx b { display: block; font-size: 13px; font-weight: 800; }
+.ord-head .oh-tx small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.ord-head .oh-sum { font-size: 13px; font-weight: 800; color: var(--text); white-space: nowrap; }
+.ord-head .oh-sum small { font-size: 9.5px; color: var(--text-3); font-weight: 400; }
+
+/* قلم سفارش — ردیف فشرده با عکس/نام/مقدار/قیمت (یا فرم اصلاح) */
+.ord-it {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 2px;
+    border-bottom: 1px dashed var(--border);
+}
+.ord-it:last-of-type { border-bottom: 0; }
+.ord-it .oi-th {
+    width: 44px; height: 44px; border-radius: var(--r-sm);
+    overflow: hidden; flex-shrink: 0;
+    background: var(--surface-3);
+}
+.ord-it .oi-th img { width: 100%; height: 100%; object-fit: cover; }
+.ord-it .oi-tx { flex: 1; min-width: 0; }
+.ord-it .oi-tx b { display: block; font-size: 12.5px; font-weight: 700; }
+.ord-it .oi-tx small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.ord-it .oi-num { text-align: center; flex-shrink: 0; min-width: 44px; }
+.ord-it .oi-num b { display: block; font-size: 13px; font-weight: 800; }
+.ord-it .oi-num small { display: block; font-size: 9.5px; color: var(--text-3); }
+.ord-it .oi-price { text-align: left; flex-shrink: 0; }
+.ord-it .oi-price b { display: block; font-size: 12.5px; font-weight: 700; }
+.ord-it .oi-price small { display: block; font-size: 9.5px; color: var(--text-3); }
+
+/* فرم اصلاح مقدار/قیمت — وضعیت new (پذیرش فروشنده) */
+.ord-it .oi-edit { display: flex; gap: 8px; flex: 1.6; min-width: 0; }
+.ord-it .oi-f { flex: 1; min-width: 0; }
+.ord-it .oi-f label { display: block; font-size: 9.5px; color: var(--text-3); margin-bottom: 3px; }
+.ord-it .oi-f .input { font-size: 12px; padding: 8px 10px; }
+
+/* جمع کل */
+.ord-total {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+.ord-total span { font-size: 11px; color: var(--text-3); }
+.ord-total b { font-size: 14px; font-weight: 800; color: var(--text); }
+.ord-total b small { font-size: 10px; color: var(--text-3); font-weight: 400; }
+
+/* خط زمانی سفارش — چهار گام، راست به چپ */
+.otl {
+    display: flex;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 12px 8px 6px;
+}
+.otl-st {
+    flex: 1; text-align: center; position: relative;
+    padding-bottom: 6px;
+}
+.otl-st .otl-dot {
+    display: block; width: 12px; height: 12px; border-radius: 50%;
+    margin: 0 auto 6px;
+    background: var(--surface-3);
+    border: 2.5px solid var(--border);
+    position: relative; z-index: 2;
+}
+.otl-st b { display: block; font-size: 10px; font-weight: 700; color: var(--text-3); }
+.otl-st small { display: block; font-size: 9px; color: var(--text-3); margin-top: 2px; line-height: 1.6; }
+/* خط اتصال بین گام‌ها */
+.otl-st:not(:first-child)::before {
+    content: ''; position: absolute;
+    top: 5px; right: -50%;
+    width: 100%; height: 2px;
+    background: var(--border);
+    z-index: 1;
+}
+.otl-st.done .otl-dot { background: var(--green); border-color: var(--green-soft); }
+.otl-st.done::before { background: var(--green); }
+.otl-st.done b, .otl-st.done small { color: var(--text-2); }
+.otl-st.cur .otl-dot { background: var(--primary-strong); border-color: var(--primary-soft); box-shadow: 0 0 0 3.5px var(--primary-soft); }
+.otl-st.cur b { color: var(--primary-strong); font-weight: 800; }

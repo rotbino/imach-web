@@ -611,30 +611,13 @@
 
     /* ═══ فیلتر «فقط همین مشتری» — دفتر سفارش/درخواست فروشنده ═══ */
     function ordersFilterApply() {
-        var sec = $('#s-sell-orders');
-        if (!sec) return;
         var name = CUSTVIEW.orders;
         CUSTVIEW.orders = null;               /* یک‌بارمصرف */
-        if (!name) return;                    /* ورود عادی — بدون فیلتر */
-
-        var small = $('#sell-orders-sub');
-        if (small) small.textContent = 'فقط ' + name;
-
-        var any = false;
-        $$('.rows .row', sec).forEach(function (row) {
-            var subEl = row.querySelector('.row-sub');
-            var isHis = !!(subEl && subEl.textContent.indexOf(name) > -1);
-            row.hidden = !isHis;
-            if (isHis) any = true;
-        });
-        var empty = $('#sell-orders-empty');
-        if (empty) empty.hidden = any;
-        if (!any) {
-            $$('.body > *', sec).forEach(function (el) {
-                if (el.id !== 'sell-orders-empty') el.hidden = true;
-            });
-            var h3 = empty && empty.querySelector('h3');
-            if (h3) h3.textContent = 'سفارشی از «' + name + '» پیدا نشد';
+        /* FD-18: دفتر سفارش پویا شد — فیلتر همان مسیر رندرِ اصلی را
+           با نام مشتری صدا می‌زند (قبلاً ردیف‌های ثابت را دستی مخفی
+           می‌کرد؛ با رندر پویا دیگر ردیفی برای مخفی‌کردن نیست). */
+        if (core.forms && core.forms.ordersSellRender) {
+            core.forms.ordersSellRender(name || undefined);
         }
     }
 

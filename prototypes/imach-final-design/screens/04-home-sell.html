@@ -143,13 +143,14 @@
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
-            <div class="row" data-go="s-sell-orders">
+            <div class="row" data-go="s-sell-orders" id="sell-desk-orders-row">
                 <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
                     <svg style="width: 20px; height: 20px;"><use href="#i-receipt"/></svg>
                 </div>
                 <div class="row-body">
-                    <div class="row-title">۲ سفارش جدید</div>
-                    <div class="row-sub">رستوران مهر <span class="dot">·</span> سوپرمارکت الماس</div>
+                    <!-- FD-18: شمارندهٔ زنده از ordersIn (deskOrdersSync) -->
+                    <div class="row-title" id="sell-desk-orders-t">۲ سفارش جدید</div>
+                    <div class="row-sub" id="sell-desk-orders-s">رستوران مهر <span class="dot">·</span> سوپرمارکت الماس</div>
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>

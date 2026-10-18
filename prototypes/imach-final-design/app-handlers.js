@@ -180,9 +180,10 @@
         var scmAct = t.closest('[data-scm-act]');
         if (scmAct) { scmRun(scmAct.dataset.scmAct); return; }
 
-        /* ─── منوی سفارش خرید (لغو) — شیت از پایین ─── */
+        /* ─── منوی سفارش خرید (لغو) — شیت از پایین ───
+           FD-18: با شناسهٔ واقعی سفارش (data-order-cancel = id) */
         var ordCancel = t.closest('[data-order-cancel]');
-        if (ordCancel) {
+        if (ordCancel && ordCancel.dataset.orderCancel) {
             e.stopPropagation();
             ordMenuOpen(ordCancel.dataset.orderCancel, ordCancel.closest('.row'));
             return;
@@ -527,22 +528,52 @@
             return;
         }
 
-        /* ─── پذیرش سفارش ─── */
+        /* ─── FD-18: پذیرش سفارش — واقعاً روی دیتا (اصلاح مقدار/قیمت
+           از فرم ۱۰ + اعلان به خریدار + بازآرایی فهرست‌ها) ─── */
         if (t.closest('[data-order-accept]')) {
-            toast('سفارش پذیرفته شد — مشتری خبردار شد', 'success');
-            setTimeout(function () { back(); }, 700);
+            if (core.forms.orderAccept) core.forms.orderAccept();
             return;
         }
 
-        /* ─── رد سفارش ─── */
+        /* ─── FD-18: رد سفارش — گذار وضعیت + اعلان ─── */
         if (t.closest('[data-order-reject]')) {
-            core.confirm({
-                title: 'رد سفارش',
-                text: 'مطمئنی نمی‌خواهی این سفارش را بپذیری؟ به مشتری اطلاع داده می‌شود.',
-                ok: 'رد سفارش', cancel: 'انصراف', danger: true
-            }).then(function (ok) {
-                if (ok) { toast('سفارش رد شد', 'error'); setTimeout(function () { back(); }, 700); }
-            });
+            if (core.forms.orderReject) core.forms.orderReject();
+            return;
+        }
+
+        /* ─── FD-18: «ارسال شد» — فروشنده، پس از پذیرش ─── */
+        if (t.closest('[data-order-sent]')) {
+            if (core.forms.orderMarkSent) core.forms.orderMarkSent();
+            return;
+        }
+
+        /* ─── FD-18: «تأیید تحویل» — خریدار، سفارش را می‌بندد ─── */
+        if (t.closest('[data-order-delivered]')) {
+            if (core.forms.orderConfirmDelivery) core.forms.orderConfirmDelivery();
+            return;
+        }
+
+        /* ─── FD-18: لغو سفارش خریدار (دکمهٔ ۳۹) ─── */
+        if (t.closest('[data-order-cancel]') && !t.closest('[data-order-cancel-menu]')) {
+            if (core.forms.orderCancel) core.forms.orderCancel();
+            return;
+        }
+
+        /* ─── FD-18: گفتگوی مرتبط با سفارش ─── */
+        if (t.closest('[data-order-chat]')) { go('s-chat'); return; }
+
+        /* ─── FD-18: سفارش دوباره (بایگانی) → کاتالوگ تأمین‌کننده ─── */
+        if (t.closest('[data-order-reorder]')) {
+            if (core.forms.orderReorder) core.forms.orderReorder();
+            return;
+        }
+
+        /* ─── FD-18: ناوبری ردیف سفارش با پارامتر — هر سفارش خودش ─── */
+        var ordGo = t.closest('[data-ord-go]');
+        if (ordGo) {
+            e.preventDefault();
+            if (ordGo.dataset.ordSide === 'buy') go('s-buy-order-view', { id: ordGo.dataset.ordGo });
+            else go('s-sell-order-view', { id: ordGo.dataset.ordGo });
             return;
         }
 
@@ -845,36 +876,30 @@
         }
     }
 
-    function ordMenuOpen(name, row) {
-        ORD.name = name;
+    var ORD = { id: null, name: null, row: null };
+
+    function ordMenuOpen(id, row) {
+        ORD.id = id;
         ORD.row = row;
         var ttl = $('#ocm-ttl');
-        if (ttl) ttl.textContent = 'گزینه‌های ' + (name || 'سفارش');
+        if (ttl) ttl.textContent = 'گزینه‌های سفارش';
         var host = $('#ocm-list');
         if (!host) return;
         var items = [
-            { ic: 'msg',   t: 'گفتگو با تأمین‌کننده',     s: 'پیام در آی‌مچ',                                          act: 'chat' },
-            { ic: 'trash', t: 'لغو سفارش',                s: 'سفارش لغو می‌شود و تأمین‌کننده خبردار می‌شود',           act: 'cancel', danger: true }
+            { ic: 'msg',   t: 'گفتگو با تأمین‌کننده',     s: 'پیام در آی‌مچ',                              act: 'chat' },
+            { ic: 'trash', t: 'لغو سفارش',                s: 'سفارش لغو می‌شود و تأمین‌کننده خبردار می‌شود', act: 'cancel', danger: true }
         ];
         host.innerHTML = items.map(function (it) { return menuSheetRowHtml(it, 'data-ocm-act'); }).join('');
         core.openSheet('sheet-ord-menu');
     }
 
     function ocmRun(act) {
-        var name = ORD.name, row = ORD.row;
+        var id = ORD.id;
         core.closeSheet('sheet-ord-menu');
         if (act === 'chat') { go('s-chat'); return; }
         if (act === 'cancel') {
-            core.confirm({
-                title: 'لغو سفارش',
-                text: 'سفارش «' + (name || '') + '» لغو می‌شود و تأمین‌کننده خبردار می‌شود.',
-                ok: 'لغو سفارش', cancel: 'انصراف', danger: true
-            }).then(function (ok) {
-                if (ok) {
-                    if (row) row.remove();
-                    toast('سفارش لغو شد', 'error');
-                }
-            });
+            /* FD-18: لغو واقعی — گذار وضعیت + اعلان + بازآرایی ۲۸ */
+            if (core.forms.orderCancel) core.forms.orderCancel(id);
         }
     }
 

@@ -1541,6 +1541,36 @@
 
     function guestOrderComplete() {
         var items = Object.keys(GUEST_CART).length;
+        /* FD-18 — سفارشِ سبد واقعاً ثبت می‌شود (قبلاً فقط پیام موفقیت
+           بود و «پیگیری سفارش در میز خرید» به سفارشی خالی می‌رسید):
+           سفارش چندقلمی در ordersOut ساخته می‌شود، اعلان به فروشنده
+           می‌رود و دفتر سفارش‌های خریدار (۲۸) همان‌جا نشانش می‌دهد. */
+        var its = [];
+        Object.keys(GUEST_CART).forEach(function (lid) {
+            var l = _findListing(lid);
+            if (!l) return;
+            var pct = guestDiscPct(l);
+            var unitPrice = pct > 0 ? _discPrice(l.price, pct) : l.price;
+            its.push({ listingId: lid, name: l.name, pack: l.pack, qty: GUEST_CART[lid], unitPrice: unitPrice, img: l.img });
+        });
+        if (its.length) {
+            core.data.ordersOut = core.data.ordersOut || [];
+            core.data.ordersOut.unshift({
+                id: 'oo' + (core.data.ordersOut.length + 10),
+                businessId: 'b2', supplierId: 'su1', supplier: 'پخش برنج پارس',
+                supAvatar: 'پ', supColor: 'linear-gradient(135deg,#c2703a,#ea580c)',
+                items: its, when: 'هم‌اکنون', status: 'new', note: '',
+                history: [{ st: 'new', t: 'هم‌اکنون' }]
+            });
+            pushNotify({
+                type: 'order',
+                title: 'سفارش جدید',
+                body: 'سوپرمارکت آریا برای ' + faNum(its.length) + ' قلم کالا از کاتالوگ تو سفارش داد.',
+                link: 's-sell-orders'
+            });
+            ordersBuyRender();
+            deskOrdersSync();
+        }
         GUEST_CART = {};
         guestCartSync();
         var view = $('#cart-view'), ok = $('#cart-success');
@@ -1559,7 +1589,9 @@
     function guestOrderTrack() {
         core.closeSheet('sheet-cart');
         core.resetStack();
-        core.show('s-home-buy', false);
+        /* FD-18: مقصد پیگیری = دفتر سفارش‌های خریدار (۲۸) — سفارشِ
+           تازه‌ثبت‌شدهٔ سبد همین‌جاست (قبلاً به میز خالی می‌رسید) */
+        core.show('s-buy-orders', false);
     }
 
     function guestCartContinue() {
@@ -2608,6 +2640,493 @@
     core.registerShowHook('s-buy-list', buyListRender);
 
     /* ═══════════════════════════════════════════════════════════════
+       FD-18 — موتور سفارش: حلقهٔ کامل تا بسته‌شدن
+       ─────────────────────────────────────────────────────────────
+       بازبینی فرایندها (یافتهٔ اصلی): سفارش وجود داشت (سبد → ثبت →
+       پیگیری) ولی حلقه‌اش ناقص بود — ۰۹/۱۰/۲۸ ثابت بودند، فقط دو
+       وضعیت new/accepted داشتند، پذیرش فقط toast بود و سفارشِ سبد
+       هیچ‌جا ثبت نمی‌شد. این موتور همه را از یک دیتای واحد رندر
+       می‌کند و هر گذار وضعیت واقعاً رخ می‌دهد:
+       new → accepted → sent → delivered (بسته) | rejected/cancelled
+       ═══════════════════════════════════════════════════════════════ */
+
+    var ORDER_ST = {
+        new:       { t: 'ثبت‌شده',   b: 'b-primary' },
+        accepted:  { t: 'پذیرفته',   b: 'b-green' },
+        sent:      { t: 'ارسال‌شده', b: 'b-amber' },
+        delivered: { t: 'تحویل‌شده', b: 'b-gray' },
+        rejected:  { t: 'رد‌شده',    b: 'b-red' },
+        cancelled: { t: 'لغو‌شده',   b: 'b-red' }
+    };
+    var ORDER_FLOW = ['new', 'accepted', 'sent', 'delivered'];
+    var ORDER_FLOW_T = { new: 'ثبت سفارش', accepted: 'پذیرش فروشنده', sent: 'ارسال کالا', delivered: 'تأیید تحویل' };
+
+    function _orderIn(id)  { return (core.data.ordersIn  || []).find(function (o) { return o.id === id; }); }
+    function _orderOut(id) { return (core.data.ordersOut || []).find(function (o) { return o.id === id; }); }
+
+    function orderTotal(o) {
+        var t = 0;
+        (o.items || []).forEach(function (it) { t += (it.qty || 0) * (it.unitPrice || 0); });
+        return t;
+    }
+    function _qtyWord(pack) { return String(pack || '').split(' ')[0] || 'عدد'; }
+    function orderTitlePlain(o) {
+        var its = o.items || [], f = its[0] || {};
+        if (!f.name) return 'سفارش';
+        var t = f.name + ' · ' + faNum(f.qty || 0) + ' ' + _qtyWord(f.pack);
+        if (its.length > 1) t += ' + ' + faNum(its.length - 1) + ' قلم';
+        return t;
+    }
+    function orderTitleHtml(o) {
+        var its = o.items || [], f = its[0] || {};
+        if (!f.name) return 'سفارش';
+        var t = esc(f.name) + ' · ' + faNum(f.qty || 0) + ' ' + esc(_qtyWord(f.pack));
+        if (its.length > 1) t += ' <span class="dot">·</span> ' + faNum(its.length) + ' قلم';
+        return t;
+    }
+    function orderStatusBadge(o) {
+        var m = ORDER_ST[o.status] || ORDER_ST.new;
+        return '<span class="badge ' + m.b + '">' + m.t + '</span>';
+    }
+
+    /* خط زمانی — زبانِ مشترک دو طرف (۱۰ و ۳۹ یک روایت می‌بینند) */
+    function orderTimelineHtml(o) {
+        var cur = ORDER_FLOW.indexOf(o.status);
+        var exc = (o.status === 'rejected' || o.status === 'cancelled');
+        var h = '<div class="otl">';
+        ORDER_FLOW.forEach(function (st, i) {
+            var cls = i < cur ? 'done' : (i === cur && !exc ? 'cur' : '');
+            var ev = (o.history || []).find(function (ev2) { return ev2.st === st; });
+            h += '<div class="otl-st ' + cls + '">' +
+                '<span class="otl-dot"></span>' +
+                '<b>' + ORDER_FLOW_T[st] + '</b>' +
+                '<small>' + (ev ? esc(ev.t) : '—') + '</small>' +
+            '</div>';
+        });
+        h += '</div>';
+        if (exc) {
+            var eh = (o.history || []).find(function (ev2) { return ev2.st === o.status; });
+            h += '<div class="callout callout-warn" style="margin-top: 10px;"><svg><use href="#i-info"/></svg><div><b>' + ORDER_ST[o.status].t + ':</b> ' + (eh ? esc(eh.t) : '') + ' — این سفارش بسته شده است.</div></div>';
+        }
+        return h;
+    }
+
+    /* اقلام سفارش — read-only یا فرمِ قابل‌اصلاح (وضعیت new) */
+    function orderItemsHtml(o, editable) {
+        var h = (o.items || []).map(function (it, i) {
+            var s = '<div class="ord-it">' +
+                '<div class="oi-th"><img src="' + esc(it.img || '') + '" alt=""></div>' +
+                '<div class="oi-tx"><b>' + esc(it.name) + '</b><small>' + esc(it.pack || '') + '</small></div>';
+            if (editable) {
+                s += '<div class="oi-edit">' +
+                    '<div class="oi-f"><label>مقدار (' + esc(_qtyWord(it.pack)) + ')</label><input class="input" inputmode="numeric" data-ov-qty="' + i + '" value="' + (it.qty || 0) + '"></div>' +
+                    '<div class="oi-f"><label>قیمت هر ' + esc(_qtyWord(it.pack)) + ' (تومان)</label><input class="input" inputmode="numeric" data-ov-price="' + i + '" value="' + (it.unitPrice || 0) + '"></div>' +
+                '</div>';
+            } else {
+                s += '<div class="oi-num"><b>' + faNum(it.qty || 0) + '</b><small>' + esc(_qtyWord(it.pack)) + '</small></div>' +
+                    '<div class="oi-price"><b>' + faMoney(it.unitPrice || 0) + '</b><small>تومان</small></div>';
+            }
+            return s + '</div>';
+        }).join('');
+        return h + '<div class="ord-total"><span>جمع کل</span><b>' + faMoney(orderTotal(o)) + ' <small>تومان</small></b></div>';
+    }
+
+    function orderRowHtml(o, side) {
+        var f = (o.items || [])[0] || {};
+        var who = side === 'sell'
+            ? '<div class="row-sub">' + esc(o.buyer || '') + ' <span class="dot">·</span> ' + esc(o.when || '') + '</div>'
+            : '<div class="row-sub">' + esc(o.supplier || '') + ' <span class="dot">·</span> ' + esc(o.when || '') + ' <span class="dot">·</span> ' + faMoney(orderTotal(o)) + ' ت</div>';
+        /* FD-18: منوی سه‌نقطه فقط برای سفارش جاریِ خریدار (لغو/گفتگو) */
+        var menu = (side === 'buy' && ['new', 'accepted'].indexOf(o.status) >= 0)
+            ? '<button class="icon-btn plain" data-order-cancel="' + esc(o.id) + '" aria-label="گزینه‌ها"><svg><use href="#i-dots"/></svg></button>'
+            : '<div class="row-chev"><svg><use href="#i-chev"/></svg></div>';
+        return '<div class="row" data-ord-go="' + esc(o.id) + '" data-ord-side="' + side + '">' +
+            '<div class="thumb thumb-sm"><img src="' + esc(f.img || '') + '" alt=""></div>' +
+            '<div class="row-body">' +
+                '<div class="row-title">' + orderTitleHtml(o) + ' ' + orderStatusBadge(o) + '</div>' +
+                who +
+            '</div>' +
+            menu +
+        '</div>';
+    }
+
+    /* ─── ۰۹ — دفتر سفارش‌های فروشنده (پویا + فیلتر مشتری) ─── */
+    function ordersSellRender(filterName) {
+        var host = $('#sell-orders-host');
+        if (!host) return;
+        var list = (core.data.ordersIn || []).slice();
+        if (filterName) list = list.filter(function (o) { return (o.buyer || '').indexOf(filterName) > -1; });
+        var nw   = list.filter(function (o) { return o.status === 'new'; });
+        var mid  = list.filter(function (o) { return o.status === 'accepted' || o.status === 'sent'; });
+        var arch = list.filter(function (o) { return ['delivered', 'rejected', 'cancelled'].indexOf(o.status) >= 0; });
+        var sub = $('#sell-orders-sub');
+        if (sub) sub.textContent = filterName
+            ? (list.length ? 'فقط ' + filterName : 'سفارشی از «' + filterName + '» پیدا نشد')
+            : (nw.length ? faNum(nw.length) + ' سفارش جدید' : 'سفارش جدیدی نیست');
+        function sec(title, arr, first) {
+            if (!arr.length) return '';
+            return '<div class="section-title"' + (first ? ' style="margin-top: 0;"' : ' style="margin-top: 8px;"') + '><h2>' + title + '</h2></div>' +
+                '<div class="rows">' + arr.map(function (o) { return orderRowHtml(o, 'sell'); }).join('') + '</div>';
+        }
+        host.innerHTML = list.length
+            ? sec('نیازمند پاسخ', nw, true) + sec('در جریان', mid) + sec('بایگانی', arch)
+            : '<div class="empty"><div class="empty-ic"><svg><use href="#i-receipt"/></svg></div>' +
+              '<h3>سفارشی پیدا نشد</h3><p>وقتی مشتری‌ها از تو سفارش بدهند، همین‌جا می‌آید.</p></div>';
+    }
+
+    /* ─── ۱۰ — جزئیات سفارش فروشنده ─── */
+    function orderViewRender() {
+        var host = $('#sov-host');
+        if (!host) return;
+        var params = core.getSCREENParams()['s-sell-order-view'] || {};
+        var o = _orderIn(params.id) || (core.data.ordersIn || [])[0];
+        if (!o) {
+            host.innerHTML = '<div class="empty"><h3>سفارشی نیست</h3></div>';
+            return;
+        }
+        var sub = $('#sov-sub');
+        if (sub) sub.textContent = orderTitlePlain(o);
+        var first = (o.history || [])[0];
+        var m = ORDER_ST[o.status] || ORDER_ST.new;
+        var h = '';
+
+        /* هدر وضعیت */
+        h += '<div class="ord-head">' +
+            '<span class="badge ' + m.b + '">' + m.t + '</span>' +
+            '<div class="oh-tx"><b>' + esc(o.buyer || '') + '</b><small>ثبت: ' + esc(first ? first.t : o.when) + '</small></div>' +
+            '<div class="oh-sum">' + faMoney(orderTotal(o)) + ' <small>تومان</small></div>' +
+        '</div>';
+
+        /* اقلام — فقط در وضعیت new قابل اصلاح (حکم README §۵.۵) */
+        h += '<div class="card" style="padding: 12px;">' + orderItemsHtml(o, o.status === 'new') + '</div>';
+
+        /* مشخصات */
+        h += '<div class="card" style="padding: 4px 14px;">' +
+            '<div class="fact-row"><span class="k">مشتری</span><span class="v">' + esc(o.buyer || '') + '</span></div>' +
+            '<div class="fact-row"><span class="k">شمار اقلام</span><span class="v">' + faNum((o.items || []).length) + ' قلم</span></div>' +
+            '<div class="fact-row"><span class="k">جمع کل</span><span class="v" style="color: var(--primary-strong);">' + faMoney(orderTotal(o)) + ' تومان</span></div>' +
+        '</div>';
+
+        /* یادداشت مشتری */
+        if (o.note) {
+            h += '<div class="callout callout-info"><svg><use href="#i-msg"/></svg><div><b>توضیحات مشتری:</b><div style="margin-top: 4px;">' + esc(o.note) + '</div></div></div>';
+        }
+
+        /* خط زمانی */
+        h += '<div class="section-title"><h2>مسیر سفارش</h2></div>' + orderTimelineHtml(o);
+
+        /* یادداشت برای مشتری — فقط هنگام پذیرش */
+        if (o.status === 'new') {
+            h += '<div class="section-title"><h2>پذیرش سفارش</h2></div>' +
+                '<div class="field"><label>یادداشت برای مشتری <span class="opt">— اختیاری</span></label>' +
+                '<textarea class="input" id="ov-note" placeholder="مثلاً: ارسال فردا صبح، راننده آقای محمدی"></textarea></div>' +
+                '<div class="hint-line"><svg><use href="#i-info"/></svg><span>مقدار و قیمت هر قلم را در صورت توافق متفاوت، همان بالا اصلاح کن.</span></div>';
+        }
+        if (o.status === 'accepted') {
+            h += '<div class="hint-line"><svg><use href="#i-truck"/></svg><span>کالا را که فرستادی، «ارسال شد» را بزن — مشتری بعد از تحویل، سفارش را می‌بندد.</span></div>';
+        }
+        if (o.status === 'sent') {
+            h += '<div class="callout callout-warn"><svg><use href="#i-clock"/></svg><div>در انتظار <b>تأیید تحویلِ مشتری</b> — سفارش با تأیید او بسته می‌شود.</div></div>';
+        }
+        host.innerHTML = h;
+
+        /* نوار اکشن بر اساس وضعیت */
+        var bar = $('#sov-bar');
+        if (bar) {
+            bar.hidden = ['delivered', 'rejected', 'cancelled'].indexOf(o.status) >= 0;
+            var rej = $('#sov-reject'), acc = $('#sov-accept'), snd = $('#sov-send'), cht = $('#sov-chat');
+            if (rej) rej.hidden = o.status !== 'new';
+            if (acc) acc.hidden = o.status !== 'new';
+            if (snd) snd.hidden = o.status !== 'accepted';
+            if (cht) cht.hidden = o.status === 'new';
+        }
+    }
+
+    /* ─── ۲۸ — دفتر سفارش‌های خریدار ─── */
+    function ordersBuyRender() {
+        var host = $('#buy-orders-host');
+        if (!host) return;
+        var list = core.data.ordersOut || [];
+        var cur = list.filter(function (o) { return ['new', 'accepted', 'sent'].indexOf(o.status) >= 0; });
+        var arch = list.filter(function (o) { return ['delivered', 'rejected', 'cancelled'].indexOf(o.status) >= 0; });
+        var sub = $('#buy-orders-sub');
+        if (sub) sub.textContent = cur.length ? faNum(cur.length) + ' سفارش جاری' : 'سفارش جاری نداری';
+        function sec(title, arr, first) {
+            if (!arr.length) return '';
+            return '<div class="section-title"' + (first ? ' style="margin-top: 0;"' : ' style="margin-top: 8px;"') + '><h2>' + title + '</h2></div>' +
+                '<div class="rows">' + arr.map(function (o) { return orderRowHtml(o, 'buy'); }).join('') + '</div>';
+        }
+        host.innerHTML = list.length
+            ? sec('جاری', cur, true) + sec('بایگانی', arch)
+            : '<div class="empty"><div class="empty-ic"><svg><use href="#i-basket"/></svg></div>' +
+              '<h3>هنوز سفارشی نداری</h3><p>از کاتالوگ تأمین‌کننده‌هایت سفارش بده — همه‌شان همین‌جا پیگیری می‌شود.</p></div>';
+    }
+
+    /* ─── ۳۹ — جزئیات سفارش خریدار (نمای جدید) ─── */
+    function buyOrderViewRender() {
+        var host = $('#bov-host');
+        if (!host) return;
+        var params = core.getSCREENParams()['s-buy-order-view'] || {};
+        var o = _orderOut(params.id) || (core.data.ordersOut || [])[0];
+        if (!o) {
+            host.innerHTML = '<div class="empty"><h3>سفارشی نیست</h3></div>';
+            return;
+        }
+        var sub = $('#bov-sub');
+        if (sub) sub.textContent = orderTitlePlain(o);
+        var first = (o.history || [])[0];
+        var m = ORDER_ST[o.status] || ORDER_ST.new;
+        var h = '';
+
+        h += '<div class="ord-head">' +
+            '<span class="badge ' + m.b + '">' + m.t + '</span>' +
+            '<div class="oh-tx"><b>' + esc(o.supplier || '') + '</b><small>ثبت: ' + esc(first ? first.t : o.when) + '</small></div>' +
+            '<div class="oh-sum">' + faMoney(orderTotal(o)) + ' <small>تومان</small></div>' +
+        '</div>';
+
+        h += '<div class="card" style="padding: 12px;">' + orderItemsHtml(o, false) + '</div>';
+
+        h += '<div class="card" style="padding: 4px 14px;">' +
+            '<div class="fact-row"><span class="k">تأمین‌کننده</span><span class="v">' + esc(o.supplier || '') + '</span></div>' +
+            '<div class="fact-row"><span class="k">شمار اقلام</span><span class="v">' + faNum((o.items || []).length) + ' قلم</span></div>' +
+            '<div class="fact-row"><span class="k">جمع کل</span><span class="v" style="color: var(--arm-strong);">' + faMoney(orderTotal(o)) + ' تومان</span></div>' +
+        '</div>';
+
+        if (o.note) {
+            h += '<div class="callout callout-info"><svg><use href="#i-msg"/></svg><div><b>یادداشت تو برای فروشنده:</b><div style="margin-top: 4px;">' + esc(o.note) + '</div></div></div>';
+        }
+
+        h += '<div class="section-title"><h2>مسیر سفارش</h2></div>' + orderTimelineHtml(o);
+
+        if (o.status === 'new') {
+            h += '<div class="hint-line"><svg><use href="#i-clock"/></svg><span>در انتظار پاسخ فروشنده — تا قبل از «ارسال» می‌توانی لغو کنی.</span></div>';
+        }
+        if (o.status === 'sent') {
+            h += '<div class="hint-line"><svg><use href="#i-truck"/></svg><span>کالا در راه است — بعد از گرفتن، «تأیید تحویل» را بزن تا سفارش بسته شود.</span></div>';
+        }
+        if (o.status === 'delivered') {
+            h += '<div class="callout callout-success"><svg><use href="#i-check"/></svg><div>این سفارش تحویل شد و بسته است — با «سفارش دوباره» همان اقلام را می‌توانی سفارش بدهی.</div></div>';
+        }
+        host.innerHTML = h;
+
+        var bar = $('#bov-bar');
+        if (bar) {
+            bar.hidden = ['rejected', 'cancelled'].indexOf(o.status) >= 0;
+            var cnl = $('#bov-cancel'), dlv = $('#bov-deliver'), cht = $('#bov-chat'), ror = $('#bov-reorder');
+            if (cnl) cnl.hidden = ['new', 'accepted'].indexOf(o.status) < 0;
+            if (dlv) dlv.hidden = o.status !== 'sent';
+            if (ror) ror.hidden = o.status !== 'delivered';
+            if (cht) cht.hidden = o.status === 'delivered';
+        }
+    }
+
+    /* ─── اعلان‌ها — پویا (FD-18) ─── */
+    function notifsRender() {
+        var host = $('#notifs-host');
+        if (!host) return;
+        var ns = core.data.notifications || [];
+        var sub = $('#notifs-sub');
+        if (sub) {
+            var fresh = ns.filter(function (n) { return n.isNew; }).length;
+            sub.textContent = fresh ? faNum(fresh) + ' اعلان تازه' : 'همه را دیدی';
+        }
+        var IC = {
+            order:   ['i-receipt',  'var(--primary-soft)', 'var(--primary-strong)'],
+            offer:   ['i-msg',      'var(--green-soft)',   'var(--green)'],
+            suggest: ['i-sparkles', 'var(--amber-soft)',   'var(--amber)'],
+            supply:  ['i-user-plus','var(--stone-tint)',   'var(--stone-soft)']
+        };
+        host.innerHTML = ns.length ? ns.map(function (n) {
+            var ic = IC[n.type] || IC.order;
+            return '<div class="row"' + (n.link ? ' data-go="' + esc(n.link) + '"' : '') + '>' +
+                '<div class="thumb thumb-sm" style="background: ' + ic[1] + '; color: ' + ic[2] + '; display: grid; place-items: center;"><svg style="width: 20px; height: 20px;"><use href="#' + ic[0] + '"/></svg></div>' +
+                '<div class="row-body">' +
+                    '<div class="row-title">' + esc(n.title) + (n.isNew ? ' <span class="badge b-primary">جدید</span>' : '') + '</div>' +
+                    '<div class="row-sub">' + esc(n.body || '') + '</div>' +
+                '</div>' +
+            '</div>';
+        }).join('') : '<div class="empty"><h3>اعلانی نیست</h3><p>رویدادهای مهم همین‌جا خبرت می‌کنند.</p></div>';
+    }
+
+    function pushNotify(n) {
+        core.data.notifications = core.data.notifications || [];
+        core.data.notifications.unshift({
+            id: 'n' + Date.now(),
+            type: n.type || 'order',
+            title: n.title || 'اعلان',
+            body: n.body || '',
+            time: 'هم‌اکنون',
+            isNew: true,
+            link: n.link || ''
+        });
+        notifsRender();
+    }
+
+    /* ─── گذار وضعیت — قلب حلقه ─── */
+    function orderSetStatus(o, st, notif) {
+        if (!o) return;
+        o.status = st;
+        o.history = o.history || [];
+        o.history.push({ st: st, t: 'هم‌اکنون' });
+        if (notif) pushNotify(notif);
+        ordersSellRender();
+        ordersBuyRender();
+        deskOrdersSync();
+    }
+
+    /* ─── اکشن‌های فروشنده (۱۰) ─── */
+    function orderAccept() {
+        var params = core.getSCREENParams()['s-sell-order-view'] || {};
+        var o = _orderIn(params.id) || (core.data.ordersIn || [])[0];
+        if (!o) return;
+        (o.items || []).forEach(function (it, i) {
+            var q = document.querySelector('[data-ov-qty="' + i + '"]');
+            var p = document.querySelector('[data-ov-price="' + i + '"]');
+            if (q) { var vq = parseNum(q.value); if (vq) it.qty = vq; }
+            if (p) { var vp = parseNum(p.value); if (vp) it.unitPrice = vp; }
+        });
+        var nt = $('#ov-note');
+        var note = nt ? nt.value.trim() : '';
+        orderSetStatus(o, 'accepted', {
+            title: 'سفارش پذیرفته شد',
+            body: 'فروشنده سفارش «' + orderTitlePlain(o) + '» را پذیرفت.' + (note ? ' یادداشت فروشنده: ' + note : ''),
+            link: 's-buy-order-view'
+        });
+        toast('سفارش پذیرفته شد — مشتری خبردار شد', 'success');
+        orderViewRender();
+    }
+
+    function orderReject() {
+        var params = core.getSCREENParams()['s-sell-order-view'] || {};
+        var o = _orderIn(params.id) || (core.data.ordersIn || [])[0];
+        if (!o) return;
+        core.confirm({
+            title: 'رد سفارش',
+            text: 'مطمئنی نمی‌خواهی این سفارش را بپذیری؟ به مشتری اطلاع داده می‌شود.',
+            ok: 'رد سفارش', cancel: 'انصراف', danger: true
+        }).then(function (ok) {
+            if (!ok) return;
+            orderSetStatus(o, 'rejected', {
+                title: 'سفارش رد شد',
+                body: 'فروشنده سفارش «' + orderTitlePlain(o) + '» را رد کرد.',
+                link: 's-buy-order-view'
+            });
+            toast('سفارش رد شد', 'error');
+            orderViewRender();
+        });
+    }
+
+    function orderMarkSent() {
+        var params = core.getSCREENParams()['s-sell-order-view'] || {};
+        var o = _orderIn(params.id) || (core.data.ordersIn || [])[0];
+        if (!o) return;
+        core.confirm({
+            title: 'ارسال کالا',
+            text: 'کالا را برای مشتری فرستادی؟ وضعیت «ارسال‌شده» می‌شود و مشتری بعد از تحویل، سفارش را می‌بندد.',
+            ok: 'بله، ارسال شد', cancel: 'انصراف'
+        }).then(function (ok) {
+            if (!ok) return;
+            orderSetStatus(o, 'sent', {
+                title: 'سفارش ارسال شد',
+                body: 'سفارش «' + orderTitlePlain(o) + '» از طرف فروشنده ارسال شد — بعد از تحویل، تأیید کن.',
+                link: 's-buy-order-view'
+            });
+            toast('وضعیت: ارسال‌شده — در انتظار تأیید تحویل مشتری', 'success');
+            orderViewRender();
+        });
+    }
+
+    /* ─── اکشن‌های خریدار (۳۹) ─── */
+    function orderConfirmDelivery() {
+        var params = core.getSCREENParams()['s-buy-order-view'] || {};
+        var o = _orderOut(params.id) || (core.data.ordersOut || [])[0];
+        if (!o) return;
+        core.confirm({
+            title: 'تأیید تحویل',
+            text: 'کالا را گرفتی؟ سفارش بسته می‌شود و به بایگانی می‌رود.',
+            ok: 'بله، تحویل گرفتم', cancel: 'انصراف'
+        }).then(function (ok) {
+            if (!ok) return;
+            orderSetStatus(o, 'delivered', {
+                title: 'سفارش تحویل شد',
+                body: 'سفارش «' + orderTitlePlain(o) + '» بسته شد و به بایگانی رفت.',
+                link: 's-buy-orders'
+            });
+            /* حلقهٔ امتیاز: اولین سفارشِ بستهٔ موفق = امتیاز فروش و خرید */
+            _scoreOrderEvent();
+            toast('سفارش بسته شد — با تشکر از خریدت', 'success');
+            buyOrderViewRender();
+        });
+    }
+
+    function orderCancel(id) {
+        var params = core.getSCREENParams()['s-buy-order-view'] || {};
+        var o = _orderOut(id || params.id) || (core.data.ordersOut || [])[0];
+        if (!o) return;
+        core.confirm({
+            title: 'لغو سفارش',
+            text: 'سفارش «' + orderTitlePlain(o) + '» لغو می‌شود و تأمین‌کننده خبردار می‌شود.',
+            ok: 'لغو سفارش', cancel: 'انصراف', danger: true
+        }).then(function (ok) {
+            if (!ok) return;
+            orderSetStatus(o, 'cancelled', {
+                title: 'سفارش لغو شد',
+                body: 'خریدار سفارش «' + orderTitlePlain(o) + '» را لغو کرد.',
+                link: 's-sell-orders'
+            });
+            toast('سفارش لغو شد', 'error');
+            buyOrderViewRender();
+        });
+    }
+
+    function orderReorder() {
+        core.resetStack();
+        core.show('s-catalog-guest', false);
+        toast('به کاتالوگ تأمین‌کننده برگشتی — اقلام همان سفارش را دوباره سبد کن', 'info');
+    }
+
+    /* ─── شمارنده‌های زندهٔ میزها (۰۴/۱۹) ─── */
+    function deskOrdersSync() {
+        var nw = (core.data.ordersIn || []).filter(function (o) { return o.status === 'new'; });
+        var r = $('#sell-desk-orders-row');
+        if (r) {
+            r.hidden = nw.length === 0;
+            var t = $('#sell-desk-orders-t');
+            if (t) t.textContent = faNum(nw.length) + ' سفارش جدید';
+            var s = $('#sell-desk-orders-s');
+            if (s) s.innerHTML = nw.length
+                ? esc(nw.map(function (o) { return o.buyer; }).slice(0, 2).join(' <span class="dot">·</span> '))
+                : '';
+        }
+        var cur = (core.data.ordersOut || []).filter(function (o) { return ['new', 'accepted', 'sent'].indexOf(o.status) >= 0; });
+        var br = $('#buy-desk-orders-row');
+        if (br) {
+            br.hidden = cur.length === 0;
+            var bt = $('#buy-desk-orders-t');
+            if (bt) bt.textContent = faNum(cur.length) + ' سفارش جاری';
+            var bs = $('#buy-desk-orders-s');
+            if (bs) bs.textContent = cur.length ? orderTitlePlain(cur[0]) + ' — ' + (cur[0].supplier || '') : '';
+        }
+    }
+
+    /* اولین سفارشِ بسته = امتیاز (sc7 فروش / sb7 خرید) */
+    function _scoreOrderEvent() {
+        var closed = (core.data.ordersOut || []).some(function (o) { return o.status === 'delivered'; }) ||
+                     (core.data.ordersIn  || []).some(function (o) { return o.status === 'delivered'; });
+        if (!closed) return;
+        (core.data.scoreItemsSell || []).forEach(function (it) { if (it.id === 'sc7') it.done = true; });
+        (core.data.scoreItemsBuy  || []).forEach(function (it) { if (it.id === 'sb7') it.done = true; });
+    }
+
+    core.registerShowHook('s-sell-orders', function () { ordersSellRender(); });
+    core.registerShowHook('s-sell-order-view', orderViewRender);
+    core.registerShowHook('s-buy-orders', ordersBuyRender);
+    core.registerShowHook('s-buy-order-view', buyOrderViewRender);
+    core.registerShowHook('s-notifs', notifsRender);
+    core.registerShowHook('s-home-sell', deskOrdersSync);
+    core.registerShowHook('s-home-buy', deskOrdersSync);
+
+    /* ═══════════════════════════════════════════════════════════════
        Expose
        ═══════════════════════════════════════════════════════════════ */
     core.forms = {
@@ -2674,6 +3193,21 @@
         guestOrderSubmit: guestOrderSubmit,
         guestOrderTrack: guestOrderTrack,
         guestCartContinue: guestCartContinue,
+
+        /* FD-18 — موتور سفارش */
+        ordersSellRender: ordersSellRender,
+        orderViewRender: orderViewRender,
+        ordersBuyRender: ordersBuyRender,
+        buyOrderViewRender: buyOrderViewRender,
+        notifsRender: notifsRender,
+        pushNotify: pushNotify,
+        orderAccept: orderAccept,
+        orderReject: orderReject,
+        orderMarkSent: orderMarkSent,
+        orderConfirmDelivery: orderConfirmDelivery,
+        orderCancel: orderCancel,
+        orderReorder: orderReorder,
+        deskOrdersSync: deskOrdersSync,
         guestSaveFlow: guestSaveFlow,
         guestAccountOpen: guestAccountOpen,
         guestAccountSubmit: guestAccountSubmit,

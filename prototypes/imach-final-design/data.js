@@ -427,30 +427,85 @@ const DATA = {
 
     /* ═══════════════════════════════════════════════════════════
        سفارش‌های دریافتی / ارسالی
+       ─────────────────────────────────────────────────────────────
+       FD-18 — حلقهٔ کامل سفارش تا بسته‌شدن (بازبینی فرایندها):
+       ▸ ماشین وضعیت — new (ثبت‌شده) → accepted (پذیرفته) → sent
+         (ارسال‌شده) → delivered (تحویل‌شده = بسته). استثناها:
+         rejected (فروشنده رد کرد) / cancelled (خریدار لغو کرد).
+         README §۵.۵: پرداخت و تحویل مستقیم بین طرفین — وضعیتِ
+         «پرداخت‌شده» وجود ندارد؛ بسته‌شدن = تأیید تحویلِ خریدار.
+       ▸ items[] — سفارش چندقلمی (سبدِ کاتالوگ)؛ تک‌قلمی هم همان
+         ساختار با یک قلم است. qty × unitPrice = مبلغ هر قلم.
+       ▸ history[] — رویدادهای زمان‌دار برای خط زمانی (۱۰/۳۹):
+         [{ st, t }]. در محصول واقعی هر گذار وضعیت رکورد می‌سازد
+         (کاربر + زمان سرور + کانال اطلاع: اعلان/پیام).
+       ▸ رندر پویا: ordersSellRender (۰۹) / orderViewRender (۱۰) /
+         ordersBuyRender (۲۸) / buyOrderViewRender (۳۹ — نمای
+         خریدار، جدید) — همه از همین دیتای واحد.
        ═══════════════════════════════════════════════════════════ */
     ordersIn: [
         {
             id: 'oi1', businessId: 'b1', customerId: 'cu1', buyer: 'رستوران مهر',
             buyerAvatar: 'م', buyerColor: '#7c3aed',
-            listingId: 'l1', itemName: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی',
-            img: 'png/goods/rice-sack.jpg',
-            qty: 20, unitPrice: 2850000, when: 'امروز', status: 'new',
-            note: 'تحویل صبح زود — بازار روز. پرداخت نقدی.'
+            items: [
+                { listingId: 'l1', name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', qty: 20, unitPrice: 2850000, img: 'png/goods/rice-sack.jpg' }
+            ],
+            when: 'امروز', status: 'new',
+            note: 'تحویل صبح زود — بازار روز. پرداخت نقدی.',
+            history: [ { st: 'new', t: 'امروز · ۱۱:۴۰' } ]
         },
         {
             id: 'oi2', businessId: 'b1', customerId: 'cu2', buyer: 'سوپرمارکت الماس',
             buyerAvatar: 'س', buyerColor: '#c2703a',
-            listingId: 'l2', itemName: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی',
-            img: 'png/goods/rice-grains.jpg',
-            qty: 6, unitPrice: 2750000, when: 'امروز', status: 'new', note: ''
+            items: [
+                { listingId: 'l2', name: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی', qty: 6, unitPrice: 2750000, img: 'png/goods/rice-grains.jpg' }
+            ],
+            when: 'امروز', status: 'new', note: '',
+            history: [ { st: 'new', t: 'امروز · ۱۰:۰۵' } ]
         },
         {
             id: 'oi3', businessId: 'b1', customerId: 'cu3', buyer: 'سوپرمارکت نیما',
             buyerAvatar: 'ن', buyerColor: '#059669',
-            listingId: 'l2', itemName: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی',
-            img: 'png/goods/rice-grains.jpg',
-            qty: 10, unitPrice: 2750000, when: '۲ روز پیش', status: 'accepted',
-            note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل.'
+            items: [
+                { listingId: 'l2', name: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی', qty: 10, unitPrice: 2750000, img: 'png/goods/rice-grains.jpg' }
+            ],
+            when: '۲ روز پیش', status: 'accepted',
+            note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل.',
+            history: [
+                { st: 'new', t: '۲ روز پیش · ۹:۳۰' },
+                { st: 'accepted', t: '۲ روز پیش · ۱۳:۱۰' }
+            ]
+        },
+        /* oi4 — چندقلمیِ در جریان (پذیرفته + ارسال‌شده) برای نمایش
+           خط زمانی و سفارش سبدرمان در سمت فروشنده */
+        {
+            id: 'oi4', businessId: 'b1', customerId: 'cu2', buyer: 'سوپرمارکت الماس',
+            buyerAvatar: 'س', buyerColor: '#c2703a',
+            items: [
+                { listingId: 'l3', name: 'روغن سرخ‌کردنی', pack: 'بطری ۱.۸ لیتری', qty: 40, unitPrice: 98000, img: 'png/goods/oil-bottle.jpg' },
+                { listingId: 'l4', name: 'رب گوجه‌فرنگی', pack: 'قوطی ۵۰۰ گرمی', qty: 24, unitPrice: 62000, img: 'png/goods/tomato-paste.jpg' }
+            ],
+            when: 'دیروز', status: 'sent', note: '',
+            history: [
+                { st: 'new', t: 'دیروز · ۱۶:۲۰' },
+                { st: 'accepted', t: 'دیروز · ۱۸:۰۰' },
+                { st: 'sent', t: 'امروز · ۸:۳۰' }
+            ]
+        },
+        /* oi5 — بایگانی: تحویل‌شده (بسته) */
+        {
+            id: 'oi5', businessId: 'b1', customerId: 'cu1', buyer: 'رستوران مهر',
+            buyerAvatar: 'م', buyerColor: '#7c3aed',
+            items: [
+                { listingId: 'l1', name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', qty: 30, unitPrice: 2850000, img: 'png/goods/rice-sack.jpg' }
+            ],
+            when: 'هفتهٔ پیش', status: 'delivered', note: '',
+            history: [
+                { st: 'new', t: 'هفتهٔ پیش' },
+                { st: 'accepted', t: 'هفتهٔ پیش' },
+                { st: 'sent', t: '۶ روز پیش' },
+                { st: 'delivered', t: '۵ روز پیش' }
+            ]
         }
     ],
 
@@ -458,10 +513,30 @@ const DATA = {
         {
             id: 'oo1', businessId: 'b2', supplierId: 'su1', supplier: 'پخش برنج پارس',
             supAvatar: 'پ', supColor: 'linear-gradient(135deg,#c2703a,#ea580c)',
-            itemName: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی',
-            img: 'png/goods/rice-grains.jpg',
-            qty: 10, unitPrice: 2750000, when: '۲ روز پیش', status: 'accepted',
-            note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل.'
+            items: [
+                { listingId: 'l2', name: 'برنج طارم', pack: 'کیسه ۵۰ کیلویی', qty: 10, unitPrice: 2750000, img: 'png/goods/rice-grains.jpg' }
+            ],
+            when: '۲ روز پیش', status: 'accepted',
+            note: 'پیش‌پرداخت ۳۰٪، مابقی هنگام تحویل.',
+            history: [
+                { st: 'new', t: '۲ روز پیش · ۹:۳۰' },
+                { st: 'accepted', t: '۲ روز پیش · ۱۳:۱۰' }
+            ]
+        },
+        /* oo2 — بایگانی خریدار: تحویل‌شده (بسته) */
+        {
+            id: 'oo2', businessId: 'b2', supplierId: 'su1', supplier: 'پخش برنج پارس',
+            supAvatar: 'پ', supColor: 'linear-gradient(135deg,#c2703a,#ea580c)',
+            items: [
+                { listingId: 'l1', name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', qty: 30, unitPrice: 2850000, img: 'png/goods/rice-sack.jpg' }
+            ],
+            when: 'هفتهٔ پیش', status: 'delivered', note: '',
+            history: [
+                { st: 'new', t: 'هفتهٔ پیش' },
+                { st: 'accepted', t: 'هفتهٔ پیش' },
+                { st: 'sent', t: '۶ روز پیش' },
+                { st: 'delivered', t: '۵ روز پیش' }
+            ]
         }
     ],
 

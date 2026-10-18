@@ -1,44 +1,17 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۱۷: اعلان‌ها
-     سه اعلان تازه: سفارش، پاسخ به استعلام، پیشنهاد آی‌مچ.
+     FD-18 — رندر پویا از DATA.notifications (notifsRender):
+     رویدادهای واقعی سیستم (پذیرش/رد/ارسال/تحویل سفارش، پیشنهاد
+     تامین، پاسخ استعلام…) با pushNotify به همین دیتا می‌آیند —
+     قبلاً سه اعلان ثابت بود که با هیچ کنشی عوض نمی‌شد.
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-notifs" data-arm="keep">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">اعلان‌ها<small>۳ اعلان تازه</small></div>
+        <div class="ttl">اعلان‌ها<small id="notifs-sub">۳ اعلان تازه</small></div>
     </div>
 
     <div class="body">
-        <div class="rows">
-            <div class="row" data-go="s-sell-orders">
-                <div class="thumb thumb-sm" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
-                    <svg style="width: 20px; height: 20px;"><use href="#i-receipt"/></svg>
-                </div>
-                <div class="row-body">
-                    <div class="row-title">سفارش جدید <span class="badge b-primary">جدید</span></div>
-                    <div class="row-sub">رستوران مهر برای ۲۰ کیسه برنج هاشمی سفارش داد.</div>
-                </div>
-            </div>
-
-            <div class="row" data-go="s-buy-offers">
-                <div class="thumb thumb-sm" style="background: var(--green-soft); color: var(--green); display: grid; place-items: center;">
-                    <svg style="width: 20px; height: 20px;"><use href="#i-msg"/></svg>
-                </div>
-                <div class="row-body">
-                    <div class="row-title">پاسخ به استعلام <span class="badge b-primary">جدید</span></div>
-                    <div class="row-sub">پخش برنج پارس پیشنهاد خود را فرستاد.</div>
-                </div>
-            </div>
-
-            <div class="row" data-go="s-buy-suppliers">
-                <div class="thumb thumb-sm" style="background: var(--accent-soft); color: var(--accent-strong); display: grid; place-items: center;">
-                    <svg style="width: 20px; height: 20px;"><use href="#i-sparkles"/></svg>
-                </div>
-                <div class="row-body">
-                    <div class="row-title">پیشنهاد آی‌مچ <span class="badge b-primary">جدید</span></div>
-                    <div class="row-sub">۳ تأمین‌کنندهٔ جدید با کالاهای لیست خریدت هم‌خوانی دارند.</div>
-                </div>
-            </div>
-        </div>
+        <div class="rows" id="notifs-host"></div>
     </div>
 </section>

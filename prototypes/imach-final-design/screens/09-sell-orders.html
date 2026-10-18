@@ -1,6 +1,11 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۰۹: سفارش‌های دریافتی
-     دو بخش: در انتظار پاسخ + پذیرفته‌شده.
+     FD-18 — رندر پویا از DATA.ordersIn (ordersSellRender):
+     • «نیازمند پاسخ» (new) · «در جریان» (accepted/sent) · «بایگانی»
+       (delivered/rejected/cancelled) — شمارندهٔ زیرعنوان زنده است.
+     • هر ردیف با data-ord-go + id → صفحهٔ ۱۰ با همان سفارش
+       (قبلاً همهٔ ردیف‌ها به نمای ثابتِ «برنج هاشمی» می‌رفتند).
+     • فیلتر مشتری (از دفتر مشتری ۰۸) با پارامتر cust کار می‌کند.
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-sell-orders" data-arm="sell">
     <div class="subheader">
@@ -9,45 +14,7 @@
     </div>
 
     <div class="body">
-        <div class="section-title" style="margin-top: 0;"><h2>در انتظار پاسخ</h2></div>
-        <div class="rows">
-            <div class="row" data-go="s-sell-order-view">
-                <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
-                <div class="row-body">
-                    <div class="row-title">برنج هاشمی · ۲۰ کیسه <span class="badge b-primary">جدید</span></div>
-                    <div class="row-sub">رستوران مهر <span class="dot">·</span> امروز</div>
-                </div>
-                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-            </div>
-            <div class="row" data-go="s-sell-order-view">
-                <div class="thumb thumb-sm"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
-                <div class="row-body">
-                    <div class="row-title">برنج طارم · ۶ کیسه <span class="badge b-primary">جدید</span></div>
-                    <div class="row-sub">سوپرمارکت الماس <span class="dot">·</span> امروز</div>
-                </div>
-                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-            </div>
-        </div>
-
-        <div class="section-title" style="margin-top: 8px;"><h2>پذیرفته‌شده</h2></div>
-        <div class="rows">
-            <div class="row" data-go="s-sell-order-view">
-                <div class="thumb thumb-sm"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
-                <div class="row-body">
-                    <div class="row-title">برنج طارم · ۱۰ کیسه <span class="badge b-green">پذیرفته</span></div>
-                    <div class="row-sub">سوپرمارکت آریا <span class="dot">·</span> ۲ روز پیش</div>
-                </div>
-                <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
-            </div>
-        </div>
-
-        <!-- حالت خالی — وقتی دفتر برحسب یک مشتری فیلتر شده باشد -->
-        <div id="sell-orders-empty" hidden>
-            <div class="empty">
-                <div class="empty-ic"><svg><use href="#i-receipt"/></svg></div>
-                <h3>سفارشی از این مشتری پیدا نشد</h3>
-                <p>وقتی این مشتری از تو سفارش بدهد، همین‌جا می‌آید.</p>
-            </div>
-        </div>
+        <!-- رندر پویا: سه بخش نیازمند پاسخ / در جریان / بایگانی -->
+        <div id="sell-orders-host"></div>
     </div>
 </section>

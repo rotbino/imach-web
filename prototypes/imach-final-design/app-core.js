@@ -69,7 +69,8 @@ window.iMach = (function () {
         's-charge':               '35-charge',
         's-cat-edit':             '36-cat-edit',
         's-product-view':         '37-product-view',
-        's-salesrep':             '38-salesrep'
+        's-salesrep':             '38-salesrep',
+        's-buy-order-view':       '39-buy-order-view'
     };
 
     /* ═══ لود اسکرین ═══ */
