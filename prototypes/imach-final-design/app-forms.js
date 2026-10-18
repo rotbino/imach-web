@@ -1614,7 +1614,7 @@
         /* FD-13: شمار «قلم» روی کارت مشتری (نشان سبد = مجموع تعداد) */
         var cc = $('#gcc-count');
         if (cc) cc.textContent = faNum(Object.keys(GUEST_CART).length);
-        $$('#guest-grid .addcart-btn').forEach(function (b) {
+        $$('#guest-grid .addcart-btn, #guest-needs-grid .addcart-btn').forEach(function (b) {
             b.classList.toggle('added', !!GUEST_CART[b.dataset.addCart]);
         });
     }
@@ -1921,6 +1921,9 @@
            مهمان ابزارِ میز خرید ندارد؛ ترس مالک از شلوغی کاتالوگ) */
         var alStrip = $('#guest-addlist-btn');
         if (alStrip) alStrip.hidden = !GUEST_SAVED || isPreview;
+        /* FD-23 — بخش «کالاهای موردنیاز تو در این کاتالوگ» (هر دو
+           حالت را خودش مدیریت می‌کند: نمایش/ریست) */
+        guestNeedsSync();
         if (!GUEST_SAVED) { guestCartSync(); return; }
         if (card) {
             var nm = GUEST_NAME || 'مشتری';
@@ -1936,6 +1939,97 @@
             cnt.dataset.bumped = '1';
             cnt.textContent = faNum(parseNum(cnt.textContent) + 1);
         }
+        guestCartSync();
+    }
+
+    /* ─── FD-23 — «کالاهای موردنیاز تو در این کاتالوک» (۳۱) ───
+       قرینهٔ نوار تطبیق ۳۲ در سمت کاتالوگ (حکم مالک: «دقیقا این کار
+       رو سمت کاتالوگ هم انجام بدیم»): محصولات این کاتالوک که در
+       لیست خریدِ بیننده هست → بخش بالایی جدا «کالاهای موردنیاز تو
+       در این کاتالوک» + بجِ «در لیست خریدت» روی همان کارت‌ها؛
+       بقیه زیر «سایر محصولات این فروشنده» (حدس مالک: «شاید دو لیست
+       جدا بد نباشه» — ترکیبِ بالاتر‌آوردن + بج، بدون شلوغی).
+       فقط برای مشتریِ ذخیره‌کرده (GUEST_SAVED) — مهمانِ تازه‌ورود
+       لیست خریدی ندارد و کاتالوگ تمیز می‌ماند (قاعدهٔ FD-12 + ترس
+       مالک از شلوغی کاتالوگ)؛ پیش‌نمایش فروشنده هم «دید دیگران»
+       است و نمی‌بیند. خالی = کل بخش مخفی و عنوان همان «محصولات
+       این فروشنده» می‌ماند.
+       نکته‌های پیاده‌سازی واقعی:
+         · تطبیق سمت سرور روی goodId بین کاتالوگِ فروشنده و
+           لیستِ خریدِ بیننده — نه رشتهٔ نام (در ماک نام کافی است).
+         · نتیجه در کشِ نمایشگاهی (per viewer×catalog) و با هر
+           تغییر لیست/کاتالوگ بی‌اعتبار می‌شود.
+         · قابلیت ?hl=needs در URL کاتالوگ عمومی برای لینک مستقیم
+           به همین بخش (در فاز رشد). */
+    function guestNeedsSync() {
+        var sec = $('#guest-needs-sec');
+        if (!sec) return;
+        var grid = $('#guest-needs-grid');
+        var title = $('#guest-all-title');
+        var section = $('#s-catalog-guest');
+        var isPreview = section ? section.classList.contains('preview-mode') : false;
+
+        /* ریست — قالب با هر show() دوباره ساخته می‌شود؛ این ریست
+           برای تغییرِ وضعیتِ درجا (ورود/ذخیره/خروج حالتی) است */
+        $$('#guest-grid .pcard').forEach(function (c) { c.classList.remove('hide-need'); });
+        if (title) title.innerHTML = '<svg><use href="#i-store"/></svg> محصولات این فروشنده';
+        sec.hidden = true;
+        if (grid) grid.innerHTML = '';
+
+        if (!GUEST_SAVED || isPreview) return;
+
+        /* لیست خریدِ بیننده (میز خرید b2) — سطح کالا (نام) */
+        var needNames = (core.data.shoppingList || []).filter(function (s) {
+            return s.businessId === 'b2';
+        }).map(function (s) { return s.name; });
+
+        /* محصولاتِ این کاتالوک که موردنیازِ بیننده‌اند */
+        var matched = [];
+        $$('#guest-grid .pcard').forEach(function (card) {
+            var l = _findListing(card.dataset.lid);
+            if (l && needNames.indexOf(l.name) > -1 && matched.indexOf(l) === -1) matched.push(l);
+        });
+        if (!matched.length) return;
+
+        /* کارت‌های مچ‌شده — همان زبانِ کارت کاتالوگ (کلیک‌ها با
+           همان data-guest-card / data-add-cart / data-view-price
+           به هندلرهای موجود می‌رسند) + بجِ سبز «در لیست خریدت». */
+        if (grid) {
+            grid.innerHTML = matched.map(function (l) {
+                var stBadge = l.status === 'low'
+                    ? '<span class="badge b-amber">موجودی کم</span>'
+                    : '<span class="badge b-green">' + (l.status === 'out' ? 'ناموجود' : 'موجود') + '</span>';
+                return '<div class="pcard pcard-need" data-guest-card data-lid="' + esc(l.id) + '">' +
+                    '<div class="ph">' +
+                        '<img src="' + esc(l.img) + '" alt="' + esc(l.name) + '">' +
+                        '<button class="addcart-btn cust-only" type="button" data-add-cart="' + esc(l.id) + '" aria-label="افزودن به سبد خرید"><svg><use href="#i-cart-add"/></svg></button>' +
+                    '</div>' +
+                    '<div class="info">' +
+                        '<div class="pname">' + esc(l.name) + '</div>' +
+                        '<div class="ppack">' + esc(l.pack) + '</div>' +
+                        '<div class="pmin">حداقل خرید ' + faNum(l.min || 1) + ' ' + _unitWord(l) + '</div>' +
+                        '<div class="pprice">' + faMoney(l.price) + ' <small>تومان</small></div>' +
+                        '<button class="price-cta" type="button" data-view-price="' + esc(l.id) + '"><svg><use href="#i-eye"/></svg> مشاهده قیمت</button>' +
+                        '<div class="pmeta"><span class="badge b-need"><svg><use href="#i-check"/></svg> در لیست خریدت</span>' + stBadge + '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+        var cnt = $('#gn-count');
+        if (cnt) cnt.textContent = faNum(matched.length) + ' کالا';
+
+        /* همان محصولات از گرید اصلی برداشته می‌شوند (دو لیست جدا) */
+        $$('#guest-grid .pcard').forEach(function (card) {
+            var l = _findListing(card.dataset.lid);
+            if (l && needNames.indexOf(l.name) > -1) card.classList.add('hide-need');
+        });
+
+        /* عنوان گرید اصلی → «سایر» + شمار باقی‌مانده */
+        var rest = $$('#guest-grid .pcard').filter(function (c) {
+            return !c.classList.contains('hide-need');
+        }).length;
+        if (title) title.innerHTML = '<svg><use href="#i-store"/></svg> سایر محصولات این فروشنده <span class="st-b">' + faNum(rest) + ' محصول</span>';
+        sec.hidden = false;
         guestCartSync();
     }
 

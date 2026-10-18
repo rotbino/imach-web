@@ -3918,28 +3918,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     border-color: var(--stone); background: var(--stone-tint); color: var(--stone-soft);
 }
 
-/* ─── ۳۲: شیت «افزودن کالاهای این لیست» — دو مقصد ─── */
-.lp-modes {
-    display: flex; gap: 8px; margin-top: 2px;
-}
-.lp-mode {
-    flex: 1;
-    display: flex; align-items: center; justify-content: center; gap: 7px;
-    min-height: 42px;
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    border: 1.5px solid var(--border);
-    color: var(--text-2);
-    font-family: inherit; font-size: 12px; font-weight: 700;
-    cursor: pointer;
-    transition: border-color .15s, background .15s;
-}
-.lp-mode svg { width: 15px; height: 15px; }
-.lp-mode.active {
-    border-color: var(--stone);
-    background: var(--stone-tint);
-    color: var(--stone-soft);
-}
+/* ─── ۳۲: شیت «افزودن کالاهای این لیست» — FD-23: تک‌مقصد (به لیست
+     خرید من)؛ حالت کاتالوگ حذف شد (قلم‌های پیشنهاد تامین خودشان
+     به کاتالوگ می‌نشینند) — .lp-modes حذف شد. ─── */
 .lp-rows { margin-top: 10px; max-height: 46vh; overflow-y: auto; }
 
 /* ─── ۱۳: شیت «کپی از کاتالوگ» — کارت کاتالوگِ پیدا‌شده ─── */
@@ -4019,3 +4000,152 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 
 /* ─── ۲۷: دکمهٔ «ثبت سفارش با همین شرایط» (تصمیم ۲/۹) ─── */
 .ovf-order-wrap { margin-top: 10px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FD-23 — مفهوم کامل «درخواست تامین» + سطوح تطابق دوطرفه
+   ▸ ۳۲: نوار «شما تأمین‌کنندهٔ این کالاهای موردنیاز این خریدار
+     هستید» (ms-strip — چیپ‌های افقی، بالاتر از همه) + سورت ردیف‌های
+     مچ‌شده با نشان «در کاتالوک تو».
+   ▸ شیت پیشنهاد: فیلدهای قیمت/حداقل زیر هر قلم انتخاب‌شده +
+     نشان «از کاتالوک تو» (pre-fill قابل ویرایش).
+   ▸ ۲۰: کارت پیشنهاد چندقلمی (ردیف‌های قیمت/حداقل) + حالت
+     «فقط درخواست» (بدون قلم).
+   ▸ ۳۱: بخش «کالاهای موردنیاز تو در این کاتالوک» + بجِ «در لیست
+     خریدت» روی کارت‌ها + «سایر محصولات» زیرش.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── ۳۲: نوار تطبیق (سبزِ آرام — «تو این‌ها را داری») ─── */
+.ms-strip {
+    margin-top: 10px;
+    padding: 10px 12px 8px;
+    background: var(--green-bg);
+    border: 1.5px solid #BBF7D0;
+    border-radius: var(--r-lg);
+}
+.ms-head {
+    display: flex; align-items: flex-start; gap: 8px;
+}
+.ms-head b {
+    flex: 1; min-width: 0;
+    font-size: 11.5px; font-weight: 800; color: #166534;
+    line-height: 1.7;
+}
+.ms-ic {
+    width: 24px; height: 24px; border-radius: 8px;
+    background: var(--green-soft); color: var(--green);
+    display: grid; place-items: center; flex-shrink: 0;
+}
+.ms-ic svg { width: 14px; height: 14px; }
+/* چیپ‌های افقی — عکس کوچک + نام + قیمت/حداقل من */
+.ms-row {
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    margin-top: 8px; padding: 2px 2px 4px;
+    scrollbar-width: none;
+}
+.ms-row::-webkit-scrollbar { display: none; }
+.ms-chip {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1.5px solid #D3EEDD;
+    border-radius: var(--r-md);
+    padding: 6px 10px 6px 12px;
+    cursor: pointer;
+    font-family: inherit; text-align: right;
+    transition: border-color .15s, transform .12s;
+}
+.ms-chip:active { transform: scale(.97); border-color: var(--green); }
+.ms-th {
+    width: 38px; height: 38px; border-radius: 10px;
+    overflow: hidden; background: var(--surface-2); flex-shrink: 0;
+}
+.ms-th img { width: 100%; height: 100%; object-fit: cover; }
+.ms-tx { min-width: 0; }
+.ms-tx b {
+    display: block; font-size: 11.5px; font-weight: 800;
+    line-height: 1.5; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 128px;
+}
+.ms-tx small {
+    display: block; font-size: 9.5px; font-weight: 600;
+    color: var(--green); margin-top: 1px; white-space: nowrap;
+}
+
+/* ─── ۳۲: ردیف کالای مچ‌شده — حاشیهٔ سبزِ ظریف + بج (سورت بالاتر در JS) ─── */
+.blg-row.blg-matched { border-color: #BBF7D0; }
+.blg-row .row-title .badge { font-size: 9px; padding: 2px 7px; }
+
+/* ─── شیت پیشنهاد تامین: فیلدهای قیمت/حداقل زیر قلم انتخاب‌شده ─── */
+.sprow-w + .sprow-w { margin-top: 8px; }
+.sprow-w .sprow { margin: 0; }
+.sprow-w + .sprow-w .sprow { margin-top: 0; }
+.sprow-flds {
+    display: flex; gap: 8px;
+    margin: 8px 0 2px;
+    padding: 8px 9px;
+    background: var(--primary-soft);
+    border: 1px solid #E7D9F7;
+    border-radius: 0 var(--r-md) var(--r-md) var(--r-md);
+}
+.sprow-f { flex: 1; min-width: 0; }
+.sprow-f label {
+    display: block; font-size: 9.5px; font-weight: 700;
+    color: var(--text-3); margin-bottom: 3px;
+}
+.sprow-f .input { padding: 8px 10px; font-size: 12px; background: #FFF; }
+.sprow-f .input input { padding: 0; border: 0; background: none; font-size: 12.5px; }
+/* نشان تطبیق خودکار با کاتالوگ خودم — «از کاتالوک تو» */
+.sprow-mb {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 4px;
+    padding: 2px 7px;
+    background: var(--green-soft); color: var(--green);
+    border-radius: 7px;
+    font-size: 9.5px; font-weight: 800;
+}
+.sprow-mb svg { width: 10px; height: 10px; }
+
+/* ─── ۲۰: کارت پیشنهاد چندقلمی / فقط‌درخواست ─── */
+.blp-items {
+    margin-top: 8px;
+    background: rgba(251, 191, 36, .07);
+    border: 1px solid #F5DFAE;
+    border-radius: var(--r-md);
+    padding: 2px 10px;
+}
+.blp-it {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 0;
+}
+.blp-it + .blp-it { border-top: 1px dashed #F1E3BC; }
+.blp-it .blp-g { flex: 1; min-width: 0; }
+.blp-it-min {
+    flex-shrink: 0;
+    font-size: 9.5px; font-weight: 700; color: #92400E;
+    background: rgba(251, 191, 36, .16);
+    padding: 2px 7px; border-radius: 7px;
+}
+.blp-bare {
+    margin-top: 8px;
+    font-size: 11px; font-weight: 600; color: #92400E;
+    background: rgba(251, 191, 36, .07);
+    border: 1px solid #F5DFAE;
+    border-radius: var(--r-md);
+    padding: 9px 11px;
+    line-height: 1.9;
+}
+/* ۲۳: چند قلم در کارت در انتظار تایید — فاصلهٔ ردیف‌ها */
+.sv-prop .sv-prop-tx + .sv-prop-tx { margin-top: 7px; padding-top: 7px; border-top: 1px dashed #FDE68A; }
+
+/* ─── ۳۱: «کالاهای موردنیاز تو در این کاتالوک» ─── */
+.gn-title h2 svg { color: var(--green); }
+.pcard.hide-need { display: none; }
+/* بجِ توپرِ سبز — متمایز از بجِ کم‌رنگِ وضعیت (موجود) */
+.badge.b-need {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--green); color: #FFF;
+    font-weight: 800;
+}
+.badge.b-need svg { width: 10px; height: 10px; }

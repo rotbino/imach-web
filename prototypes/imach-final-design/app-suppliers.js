@@ -40,7 +40,7 @@
         q: '',            /* جستجوی دفتر تأمین‌کننده‌ها */
         viewId: null      /* id تأمین‌کنندهٔ صفحهٔ جزئیات */
     };
-    var SUPPLY = { sel: {} };  /* شیت پیشنهاد تامین (۳۲) */
+    var SUPPLY = { sel: {}, vals: {} };  /* شیت پیشنهاد تامین (۳۲) — FD-23: vals = قیمت/حداقلِ زندهٔ هر قلم (رندرها نمی‌ریزند) */
 
     /* ═══ FD-22 — بافت دید عمومی لیست خرید (۳۲) ═══
        صفحه پارامتری شد (الگوی سفارش‌های FD-18):
@@ -52,15 +52,21 @@
          • inq = کالاهای در حال استعلام (نوار افقی)؛ conditions =
            متن شرایط درخواست تامین (لینک مینیمال بالای کالاها). */
     var BLG = {
-        other: false, buyer: null, items: [], inq: [], conditions: ''
+        other: false, buyer: null, items: [], inq: [], conditions: '',
+        /* FD-23 — تطبیق کالاهای موردنیازِ طرف با کاتالوک خودم:
+           match[itemId] = { lid, price, min, pack, exact } — مبنا:
+           نوار «شما تأمین‌کنندهٔ … هستید» + سورت ردیف‌ها + نشان‌ها +
+           pre-fill خودکار شیت پیشنهاد. */
+        match: {}
     };
 
-    /* ═══ FD-22 — شیت «افزودن کالاهای این لیست» (sheet-listpick) ═══
-         دو مقصد (حکم مالک: «چه خریدار چه فروشنده … بتونه به کاتالوگش
-         اضافه کنه البته اینجا تفاوت اینه که باید حداقل سفارش و قیمت
-         رو وارد کنه»)؛ لیست ردیفی + جستجو؛ فیلدها در LP.vals
-         زنده ذخیره می‌شوند تا رندر دوباره آن‌ها را نمی‌ریزد. */
-    var LP = { mode: 'list', sel: {}, q: '', vals: {} };
+    /* ═══ FD-22/FD-23 — شیت «افزودن کالاهای این لیست» (sheet-listpick) ═══
+         حکم مالک: «چه خریدار چه فروشنده بتونه کالاهای لیستِ دیگری را
+         به لیست خرید خودش اضافه کند». FD-23: مقصد کاتالوگ حذف شد —
+         قلم‌های پیشنهاد تامین خودشان به کاتالوگ می‌نشینند (حکم مالک:
+         «دیگه نیاز به اون دکمهٔ اضافی ادد کردن کالاها به کاتالوگم
+         نداریم»)؛ لیست ردیفی + جستجو + ضدتکرار «در لیست هست». */
+    var LP = { sel: {}, q: '' };
 
     /* ═══ Helpers ═══ */
     function esc(s) {
@@ -87,7 +93,46 @@
         return faNum(Number(n || 0).toLocaleString('en-US').replace(/,/g, '٬'));
     }
 
+    /* ═══ FD-23 — کاتالوک خودِ بیننده (میز فروش) — مرجع تطبیق ═══
+       قلم‌های لیستِ خریدِ طرف با این کاتالوگ مچ می‌شوند (سطح کالا؛
+       اول نام+بسته = exact، بعد فقط نام = ضعیف) ⇒ قیمت/حداقل pre-fill
+       و نشان «از کاتالوک تو».
+       پیاده‌سازی واقعی: تطبیق روی goodId رخ می‌دهد (نه رشتهٔ نام) +
+       فازیِ نام سمت سرور برای کالاهای هم‌معنا (نرمال‌سازی ی/ی و
+       نیم‌فاصله)؛ نتایج تطبیق کش می‌شوند و با تغییر کاتالوک
+       بی‌اعتبار می‌شوند. در ماک: تطبیق رشته‌ایِ ساده کافی است. */
+    function myCatalog() {
+        var bid = ((core.data.user || {}).activeBusinessId) || 'b1';
+        return (core.data.listings || []).filter(function (l) {
+            return l.businessId === bid;
+        });
+    }
+    function blgMatchOf(it) {
+        var strong = null, weak = null;
+        myCatalog().forEach(function (l) {
+            if ((l.name || '') !== (it.name || '')) return;
+            if (!weak) weak = l;
+            if (!strong && (l.pack || '') === (it.pack || '')) strong = l;
+        });
+        var l = strong || weak;
+        return l ? { lid: l.id, price: l.price, min: l.min, pack: l.pack, exact: !!strong } : null;
+    }
+
     /* ═══ رندر لیست (۲۲) ═══ */
+    /* FD-23 — زیرمتن پیشنهاد: سه شکل — تک‌قلم قدیمی / چندقلمی
+       (items[]) / «فقط درخواست» (bare). */
+    function propSubHtml(p) {
+        if (p.items && p.items.length) {
+            return '<span style="color: var(--amber); font-weight: 700;">پیشنهاد تامین: ' +
+                faNum(p.items.length) + ' قلم — ' +
+                p.items.map(function (i) { return esc(i.name); }).join(' · ') + '</span>';
+        }
+        if (p.bare || (!p.items && !p.good)) {
+            return '<span style="color: var(--amber); font-weight: 700;">درخواست تامین‌کنندگی — بدون قلم قیمت</span>';
+        }
+        return '<span style="color: var(--amber); font-weight: 700;">پیشنهاد تامین: ' + esc(p.good) +
+            ' — ' + moneyFmt(p.price) + ' تومان</span>';
+    }
     function rowHtml(s) {
         var isNew = !!s.isNew;
         var verified = s.verified
@@ -95,8 +140,7 @@
             : '';
         /* زیرمتن: پیشنهاد تامین او (اگر جدید) یا معرفی معمول */
         var sub = isNew && s.proposal
-            ? '<span style="color: var(--amber); font-weight: 700;">پیشنهاد تامین: ' + esc(s.proposal.good) +
-              ' — ' + moneyFmt(s.proposal.price) + ' تومان</span>'
+            ? propSubHtml(s.proposal)
             : esc(s.person || '—') + ' <span class="dot">·</span> ' + esc(s.city || '—') +
               ' <span class="dot">·</span> ' + esc(s.industry || '');
         var row = '<div class="row static" data-go="s-supplier-view" data-su-id="' + esc(s.id) + '">' +
@@ -169,12 +213,28 @@
         var p = s.proposal || null;
         s.proposal = null;
         suppliersRender();
-        /* FD-19: اگر کالای پیشنهادیِ او در لیست خرید هست، شمار
-           تأمین‌کننده‌های همان کالا زنده می‌شود (حلقهٔ لیست ← شبکه) */
-        if (p && p.good) {
+        /* FD-19/FD-23: اگر کالاهای پیشنهادیِ او در لیست خرید هست،
+           شمار تأمین‌کننده‌های همان کالاها زنده می‌شود (حلقهٔ لیست ←
+           شبکه). سه شکل پیشنهاد را پوشش می‌دهد: تک‌قلم قدیمی،
+           چندقلمی (items[]) و فقط‌درخواست (بدون قلم — چیزی بالا
+           نمی‌رود؛ رابطه با مرور کاتالوگ طرف محقق می‌شود). هر
+           کالای لیست فقط یک‌بار شمارش می‌شود (ضد دوبار‌بودن). */
+        var names = [];
+        if (p) {
+            if (p.items && p.items.length) {
+                p.items.forEach(function (i) { names.push(i.name); });
+            } else if (p.good) {
+                names.push(p.good);
+            }
+        }
+        if (names.length) {
+            var bumped = {};
             (core.data.shoppingList || []).forEach(function (it) {
-                if ((it.name || '').indexOf(p.good) > -1) {
+                if (bumped[it.id]) return;
+                var hit = names.some(function (n) { return (it.name || '').indexOf(n) > -1; });
+                if (hit) {
                     it.suppliersCount = (it.suppliersCount || 0) + 1;
+                    bumped[it.id] = true;
                 }
             });
             if (core.getCurrentScreen() === 's-buy-list' && core.forms && core.forms.buyListRender) {
@@ -266,18 +326,39 @@
         var sub = $('#sv-sub');
         if (sub) sub.textContent = [s.person, s.city].filter(Boolean).join(' · ');
 
-        /* در انتظار تایید + پیشنهاد تامین او — فقط تأمین‌کنندهٔ جدید */
+        /* در انتظار تایید + پیشنهاد تامین او — فقط تأمین‌کنندهٔ جدید
+           FD-23: سه شکل — تک‌قلم قدیمی / چندقلمی (items[]) /
+           فقط‌درخواست (bare — «قلم و قیمتی نفرستاده»). */
         var pend = $('#sv-pending');
         if (pend) {
             if (s.isNew) {
                 var p = s.proposal || {};
-                var pTx = p.good
-                    ? '<div class="sv-prop">' +
+                var pTx = '';
+                if (p.items && p.items.length) {
+                    pTx = '<div class="sv-prop">' +
+                        p.items.map(function (i) {
+                            return '<div class="sv-prop-tx"><b>' + esc(i.name) + ' — ' + moneyFmt(i.price) + ' تومان</b>' +
+                                '<span>' + esc(i.pack || '') + (i.min ? ' · حداقل ' + faNum(i.min) : '') + '</span></div>';
+                        }).join('') +
+                        (p.msg ? '<div class="sv-prop-msg">' + esc(p.msg) + '</div>' : '') +
+                      '</div>';
+                } else if (p.good) {
+                    pTx = '<div class="sv-prop">' +
                         '<div class="sv-prop-tx"><b>' + esc(p.good) + ' — ' + moneyFmt(p.price) + ' تومان</b>' +
                         (p.pack ? '<span>' + esc(p.pack) + '</span>' : '') + '</div>' +
                         (p.msg ? '<div class="sv-prop-msg">' + esc(p.msg) + '</div>' : '') +
-                      '</div>'
-                    : '';
+                      '</div>';
+                } else {
+                    /* فقط‌درخواست — بدون قلم قیمت (حکم مالک FD-23:
+                       قلم‌ها اختیاری‌اند؛ رابطه از راه کاتالوگ محقق
+                       می‌شود: خریدار کاتالوگش را می‌بیند و کالاهایش
+                       را به لیستش اضافه می‌کند). */
+                    pTx = '<div class="sv-prop">' +
+                        '<div class="sv-prop-tx"><b>فقط درخواست تامین‌کنندگی — بدون قلم قیمت</b>' +
+                        '<span>کاتالوک او را ببین؛ کالاهایش را از همین‌جا به لیستت اضافه کن</span></div>' +
+                        (p.msg ? '<div class="sv-prop-msg">' + esc(p.msg) + '</div>' : '') +
+                      '</div>';
+                }
                 pend.hidden = false;
                 pend.innerHTML =
                     '<div class="cv-pending">' +
@@ -412,6 +493,18 @@
             }).length;
         }
 
+        /* ═══ FD-23 — تطبیق کالاهای موردنیازِ طرف با کاتالوک خودم ═══
+           مبنای نوار «شما تأمین‌کنندهٔ … هستید» + سورت ردیف‌ها +
+           نشان‌ها + pre-fill شیت پیشنهاد. در محصول واقعی این تطبیق
+           سمت سرور و روی goodId است و نتیجه‌اش با کاتالوگِ بیننده
+           کش می‌شود (جدول match بین دو کسب‌وکار). */
+        BLG.match = {};
+        BLG.items.forEach(function (it) {
+            var m = blgMatchOf(it);
+            if (m) BLG.match[it.id] = m;
+        });
+        blgMatchRender();
+
         /* hero — هویت صاحب لیست */
         var av = $('#blg-av');
         if (av) { av.textContent = BLG.buyer.avatar; av.style.background = BLG.buyer.color; }
@@ -449,15 +542,28 @@
             }
         }
 
-        /* کالاهای موردنیاز — لیست عمودی پویا + دکمهٔ پیشنهاد هر کالا */
+        /* ═══ FD-23 — نوار «شما تأمین‌کنندهٔ این کالاهای موردنیاز این
+           خریدار هستید» بالاتر از همه رندر شده (blgMatchRender بعد
+           از محاسبهٔ تطبیق — حکم مالک: «بیاریم بالا و بصورت نوار
+           افقی جداگانه»؛ مینیمال اما گویا). چیپ = کالا + قیمت/حداقل
+           من؛ لمس = شیت پیشنهاد با همان کالا پیش‌انتخاب. */
+
+        /* کالاهای موردنیاز — FD-23: ردیف‌های مچ‌شده با کاتالوک من
+           بالاتر سورت می‌شوند + نشان «در کاتالوک تو» (حکم مالک:
+           «اون کالاها بر اساس کالاهای فروشنده سورت بشه بیاد بالا») */
         var gb = $('#blg-goods-b'); if (gb) gb.textContent = faNum(BLG.items.length) + ' کالا';
         var host = $('#blg-rows');
         if (host) {
-            host.innerHTML = BLG.items.length ? BLG.items.map(function (it) {
-                return '<div class="row static blg-row">' +
+            var sorted = BLG.items.slice().sort(function (a, b) {
+                return ((BLG.match[b.id] ? 1 : 0) - (BLG.match[a.id] ? 1 : 0));
+            });
+            host.innerHTML = sorted.length ? sorted.map(function (it) {
+                var m = BLG.match[it.id];
+                return '<div class="row static blg-row' + (m ? ' blg-matched' : '') + '">' +
                     '<div class="thumb thumb-md"><img src="' + esc(it.img) + '" alt=""></div>' +
                     '<div class="row-body">' +
-                        '<div class="row-title">' + esc(it.name) + '</div>' +
+                        '<div class="row-title">' + esc(it.name) +
+                            (m ? ' <span class="badge b-green">در کاتالوک تو</span>' : '') + '</div>' +
                         '<div class="row-sub">' + esc(it.q || it.pack || '') + '</div>' +
                     '</div>' +
                     '<button class="blg-offer" type="button" data-blg-offer="' + esc(it.id) + '">' +
@@ -466,18 +572,49 @@
             }).join('') : '<div class="empty" style="padding: 16px 12px;"><h3>لیست خرید خالی است</h3></div>';
         }
 
-        /* متن‌های شیت پیشنهاد — با نام صاحب لیست */
+        /* متن‌های شیت پیشنهاد — با نام صاحب لیست (FD-23: قلم اختیاری) */
         var ss = $('#supply-sub');
-        if (ss) ss.textContent = 'برای کالاهایی که داری، قیمت پیشنهادی‌ات را بنویس — ' + BLG.buyer.name + ' همه را یک‌جا می‌بیند و مقایسه می‌کند.';
-        var so = $('#supply-ok-sub');
-        if (so) so.textContent = BLG.buyer.name + ' پیشنهادت را می‌بیند؛ با تاییدش، جزو تأمین‌کننده‌هایش می‌شوی و کاتالوگت را ذخیره می‌کند.';
+        if (ss) ss.textContent = 'کالاها را با قیمت و حداقل سفارش انتخاب کن — از کاتالوک خودت خودکار پر می‌شود؛ یا فقط درخواست بده.';
+    }
+
+    /* ═══ FD-23 — نوار تطبیق (ms-strip) ═══ */
+    function blgMatchRender() {
+        var sec = $('#blg-match');
+        if (!sec) return;
+        var matched = BLG.items.filter(function (it) { return BLG.match[it.id]; });
+        if (!matched.length) { sec.hidden = true; return; }
+        sec.hidden = false;
+        var row = $('#blg-match-row');
+        if (row) {
+            row.innerHTML = matched.map(function (it) {
+                var m = BLG.match[it.id];
+                return '<button class="ms-chip" type="button" data-blg-offer="' + esc(it.id) + '">' +
+                    '<span class="ms-th"><img src="' + esc(it.img) + '" alt=""></span>' +
+                    '<span class="ms-tx"><b>' + esc(it.name) + '</b>' +
+                        '<small>' + moneyFmt(m.price) + ' تومان · حداقل ' + faNum(m.min || 1) + '</small></span>' +
+                '</button>';
+            }).join('');
+        }
     }
 
     /* ═══ شیت «پیشنهاد تامین» — دید عمومی لیست (۳۲) ═══
-       FD-22: pre = id کالایی که بیننده روی «پیشنهاد» یا کارتِ استعلام
-       زده — همان کالا پیش‌انتخاب می‌شود (یک لمس کمتر). */
+       FD-22: pre = id کالایی که بیننده روی «پیشنهاد»/چیپِ تطبیق/کارتِ
+       استعلام زده — همان کالا پیش‌انتخاب می‌شود (یک لمس کمتر).
+       FD-23 (حکم مالک — مفهوم کامل «درخواست تامین»):
+         • هر قلمِ انتخابی = قیمت + حداقل سفارش (فیلدها زیر ردیف
+           باز می‌شوند — الگوی شیت‌های LP).
+         • قلم‌هایی که در کاتالوک خودم هستند خودکار مچ: نشان
+           «از کاتالوک تو» + قیمت/حداقل pre-fill «اما همچنان قابل
+           ویرایش» (حکم صریح مالک).
+         • صفر قلم هم مجاز است: «فقط درخواست تامین‌کنندگی» —
+           درخواست به‌عنوان تأمین‌کنندهٔ جدید در دفتر خریدار
+           می‌نشیند؛ بدون قیمت، بدون تحمیل.
+         • قلم‌های تازه همان لحظه به کاتالوگ خودم هم اضافه
+           می‌شوند (اگر good+pack ندارم) — «دیگه نیاز به دکمهٔ
+           اضافیِ افزودن به کاتالوگ نیست». */
     function supplyOpen(pre) {
         SUPPLY.sel = {};
+        SUPPLY.vals = {};
         if (pre) SUPPLY.sel[pre] = true;
         var form = $('#supply-form'), ok = $('#supply-ok');
         if (form) form.hidden = false;
@@ -488,41 +625,102 @@
         core.openSheet('sheet-supply');
     }
 
+    /* مقادیر pre-fill قلم مچ‌شده (از کاتالوک خودم) */
+    function supplyValsOf(id) {
+        /* ادغامِ state زنده با pre-fill کاتالوگ: ویرایشِ «فقط قیمت»
+           حداقلِ کاتالوکی را نمی‌ریزد (و برعکس)؛ پاک‌کردنِ عمدی فیلد
+           ('' خالی) حفظ می‌شود و ناقص می‌ماند — درست همان چیزی که
+           کاربر دیده است. */
+        var v = SUPPLY.vals[id] || {};
+        var m = BLG.match[id];
+        var out = { price: v.price, min: v.min };
+        if (m) {
+            if (out.price == null) out.price = String(m.price || '');
+            if (out.min == null) out.min = String(m.min || '');
+        }
+        return out;
+    }
+
     function supplyRender() {
         var host = $('#supply-goods');
         if (!host) return;
         host.innerHTML = BLG.items.map(function (it) {
-            return '<div class="sprow' + (SUPPLY.sel[it.id] ? ' on' : '') + '" data-spg="' + esc(it.id) + '" type="button">' +
-                '<span class="sprow-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span>' +
-                '<div class="thumb thumb-sm"><img src="' + esc(it.img) + '" alt=""></div>' +
-                '<div class="sprow-body">' +
-                    '<b>' + esc(it.name) + '</b>' +
-                    '<small>' + esc(it.q || it.pack || '') + '</small>' +
-                '</div>' +
-                '<input class="sprow-price" data-spg-price="' + esc(it.id) + '" placeholder="قیمت" inputmode="numeric" autocomplete="off" aria-label="قیمت پیشنهادی ' + esc(it.name) + '">' +
+            var on = !!SUPPLY.sel[it.id];
+            var m = BLG.match[it.id];
+            var v = supplyValsOf(it.id);
+            /* فیلدها فقط برای قلمِ انتخاب‌شده باز می‌شوند (شیت جمع
+               می‌ماند)؛ مقادیر از state زنده می‌آیند تا رندرهای
+               بعدی (باز/بسته‌شدن ردیف‌ها) آن‌ها را نریزند. */
+            var flds = on
+                ? '<div class="sprow-flds">' +
+                    '<div class="sprow-f"><label>قیمت هر بسته (تومان)</label>' +
+                        '<div class="input"><input data-spg-price="' + esc(it.id) + '" inputmode="numeric" autocomplete="off" value="' + esc(v.price || '') + '" placeholder="مثلاً ۲٬۸۵۰٬۰۰۰" aria-label="قیمت ' + esc(it.name) + '"></div></div>' +
+                    '<div class="sprow-f"><label>حداقل سفارش</label>' +
+                        '<div class="input"><input data-spg-min="' + esc(it.id) + '" inputmode="numeric" autocomplete="off" value="' + esc(v.min || '') + '" placeholder="مثلاً ۵" aria-label="حداقل سفارش ' + esc(it.name) + '"></div></div>' +
+                  '</div>'
+                : '';
+            return '<div class="sprow-w' + (on ? ' on' : '') + '">' +
+                '<div class="sprow' + (on ? ' on' : '') + '" data-spg="' + esc(it.id) + '">' +
+                    '<span class="sprow-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span>' +
+                    '<div class="thumb thumb-sm"><img src="' + esc(it.img) + '" alt=""></div>' +
+                    '<div class="sprow-body">' +
+                        '<b>' + esc(it.name) + '</b>' +
+                        '<small>' + esc(it.q || it.pack || '') + '</small>' +
+                        (m ? '<span class="sprow-mb"><svg><use href="#i-check"/></svg> از کاتالوک تو' +
+                            (m.exact ? '' : ' · بستهٔ ' + esc(m.pack || '')) + '</span>' : '') +
+                    '</div>' +
+                '</div>' + flds +
             '</div>';
         }).join('');
+        supplyBtnSync();
+    }
+
+    /* اقلام انتخاب‌شده + مقادیرشان (از state یا تطبیق کاتالوک) */
+    function supplyPicked() {
+        var out = [];
+        Object.keys(SUPPLY.sel).forEach(function (k) {
+            if (!SUPPLY.sel[k]) return;
+            var it = BLG.items.filter(function (x) { return x.id === k; })[0];
+            if (!it) return;
+            var v = supplyValsOf(k);
+            out.push({ id: k, item: it, price: String(v.price || ''), min: String(v.min || '') });
+        });
+        return out;
+    }
+
+    /* دکمهٔ ارسال — سه حالت (قاعدهٔ مینیمال، بدون توست):
+       صفر قلم = «ارسال درخواست تامین‌کنندگی» (روشن) · ناقص =
+       خاموش + «قیمت و حداقل n کالا را وارد کن» · کامل = «ارسال
+       پیشنهاد تامین — n قلم». */
+    function supplyBtnSync() {
+        var picked = supplyPicked();
+        var missing = picked.filter(function (p) {
+            return !core.parseNum(p.price) || !core.parseNum(p.min);
+        }).length;
+        var btn = $('#supply-send'), tx = $('#supply-send-tx');
+        if (btn) btn.disabled = missing > 0;
+        if (tx) {
+            if (!picked.length) tx.textContent = 'ارسال درخواست تامین‌کنندگی';
+            else if (missing) tx.textContent = 'قیمت و حداقل ' + faNum(missing) + ' کالا را وارد کن';
+            else tx.textContent = 'ارسال پیشنهاد تامین — ' + faNum(picked.length) + ' قلم';
+        }
     }
 
     function supplyToggle(id) {
         SUPPLY.sel[id] = !SUPPLY.sel[id];
-        var el = $('[data-spg="' + id + '"]');
-        if (el) el.classList.toggle('on', !!SUPPLY.sel[id]);
+        /* باز/بسته‌شدن فیلدها = رندر دوباره (مقادیر از state زنده
+           برمی‌گردند — SUPPLY.vals) */
+        supplyRender();
     }
 
     function supplySend() {
-        var picked = [];
-        Object.keys(SUPPLY.sel).forEach(function (k) {
-            if (!SUPPLY.sel[k]) return;
-            var rowEl = $('[data-spg="' + k + '"]');
-            var priceEl = rowEl ? rowEl.querySelector('.sprow-price') : null;
-            var price = priceEl ? String(priceEl.value).trim() : '';
-            var item = BLG.items.filter(function (x) { return x.id === k; })[0];
-            if (item) picked.push({ id: k, price: price, name: item.name, pack: item.pack || '' });
-        });
-        if (!picked.length) { toast('حداقل یک کالا را انتخاب کن', 'error'); return; }
-        var noPrice = picked.filter(function (p) { return !p.price; }).length;
-        if (noPrice) { toast('برای ' + faNum(noPrice) + ' کالای انتخابی قیمت ننوشته‌ای', 'error'); return; }
+        var picked = supplyPicked();
+        var missing = picked.filter(function (p) {
+            return !core.parseNum(p.price) || !core.parseNum(p.min);
+        }).length;
+        /* نگهبان دفاعی — دکمه خودش خاموش می‌شود؛ برای پیاده‌سازی
+           واقعی: اعتبارسنجی سمت سرور با همین قاعده. */
+        if (missing) { toast('قیمت و حداقل ' + faNum(missing) + ' کالا را وارد کن', 'error'); return; }
 
         /* تصمیم محصول ۵/۹ (FD-22): ضدفیلتر پیشنهاد — هر تأمین‌کننده
            برای هر لیست فقط یک پیشنهادِ باز در پنجرهٔ ۷ روزه دارد؛
@@ -536,10 +734,53 @@
             return;
         }
 
-        /* FD-19: پیشنهادِ تامین واقعاً ثبت می‌شود — تأمین‌کنندهٔ پیشنهادی
-           با قلم و قیمت ساخته می‌شود، بالای لیست خرید خریدار می‌نشیند
-           (جلوی چشم) و اعلان می‌رود. FD-22: نام خریدار از بافت (خودم/نیما). */
         var note = (($('#supply-note') || {}).value || '').trim();
+        var items = picked.map(function (p) {
+            return {
+                name: p.item.name,
+                pack: p.item.pack || '',
+                price: core.parseNum(p.price) || 0,
+                min: core.parseNum(p.min) || 1,
+                img: p.item.img || '',
+                packCount: p.item.packCount,
+                groupId: p.item.groupId,
+                baseUnit: p.item.baseUnit
+            };
+        });
+
+        /* ═══ FD-23 — قلم‌های تازه به کاتالوک خودم (حکم مالک:
+           «ضمن اینکه اینها رو خریدار می‌بینه به کاتالوگشم اضافه
+           بشه — یعنی اگر وجود نداره اضافه بشه») ═══
+           ضدتکرار روی نام+بسته (همان قاعدهٔ lpInList)؛ مچ‌شده‌ها
+           دست نمی‌خورند (فقط پیشنهاد). در محصول واقعی: ایجاد
+           listing زیر businessId من با good/pack تطبیق‌یافته — قیمت
+           اولیه همین قیمت پیشنهادی، قابل ویرایش از کاتالوگ. */
+        var catAdded = 0;
+        items.forEach(function (it) {
+            var dup = myCatalog().some(function (l) {
+                return (l.name || '') === it.name && (l.pack || '') === it.pack;
+            });
+            if (dup) return;
+            var packCount = it.packCount || 1;
+            core.data.listings.push({
+                id: 'l-' + Date.now() + '-' + (++catAdded),
+                businessId: ((core.data.user || {}).activeBusinessId) || 'b1',
+                name: it.name, brand: '',
+                pack: it.pack, packCount: packCount,
+                groupId: it.groupId || 'cgr1',
+                baseUnit: it.baseUnit || 'واحد',
+                price: it.price,
+                pricePerUnit: Math.round(it.price / (packCount || 1)),
+                stock: 20, min: it.min, img: it.img || 'png/goods/rice-sack.jpg',
+                status: 'in-stock', priceValidDays: 3,
+                justAdded: true
+            });
+        });
+        var catNew = catAdded;
+
+        /* FD-19/FD-23: پیشنهاد واقعاً ثبت می‌شود — تک‌قلم/چندقلمی/
+           فقط‌درخواست (bare)؛ بالای لیست خرید خریدار می‌نشیند و
+           اعلان می‌رود. نام خریدار از بافت (خودم/نیما). */
         core.data.suppliers = core.data.suppliers || [];
         core.data.suppliers.push({
             id: 'su' + (core.data.suppliers.length + 10),
@@ -547,29 +788,38 @@
             name: 'توزیع آفتاب', person: 'فرهاد آفتابی', city: 'رشت',
             avatar: 'ت', color: '#B45309', verified: false, isNew: true,
             industry: 'پخش مواد غذایی', phone: '۰۹۱۱ ۵۵۵ ۲۲۰۰', since: 'هم‌اکنون', note: '',
-            goods: picked.map(function (p) { return p.name; }).join(' · '),
-            proposal: {
-                good: picked[0].name,
-                pack: picked[0].pack,
-                price: core.parseNum(picked[0].price) || 0,
-                msg: (note || 'از لینک لیست خریدت قیمت دادم.') +
-                     (picked.length > 1 ? ' — برای ' + faNum(picked.length) + ' قلم کالا قیمت دارم.' : '')
-            }
+            goods: items.length ? items.map(function (i) { return i.name; }).join(' · ') : '',
+            proposal: items.length
+                ? { items: items, msg: note || 'از لینک لیست خریدت قیمت دادم.' }
+                : { items: [], bare: true, msg: note || '' }
         });
         if (core.forms && core.forms.pushNotify) {
             core.forms.pushNotify({
                 type: 'supply',
-                title: 'پیشنهاد تامین جدید',
-                body: '«توزیع آفتاب» برای «' + picked[0].name + '» قیمت داد — بالای لیست خریدت.',
+                title: items.length ? 'پیشنهاد تامین جدید' : 'درخواست تامین‌کنندگی جدید',
+                body: items.length
+                    ? '«توزیع آفتاب» برای ' + faNum(items.length) + ' قلم کالا قیمت داد — بالای لیست خریدت.'
+                    : '«توزیع آفتاب» درخواست تامین‌کنندگی داد — بدون قلم قیمت؛ کاتالوگش را می‌بینی.',
                 link: 's-buy-list'
             });
         }
         if (core.getCurrentScreen() === 's-buy-list') buyListProposalsRender();
         if (core.getCurrentScreen() === 's-buy-suppliers') suppliersRender();
+        /* شمار کاتالوگ میز فروش (۰۴/۰۵/۱۳) در نمایش بعدی زنده
+           می‌شود — رندرها show-hook هستند و listings را می‌خوانند. */
 
         var form = $('#supply-form'), ok = $('#supply-ok');
         if (form) form.hidden = true;
         if (ok) ok.hidden = false;
+        var ttl = $('#supply-ok-ttl'), sub = $('#supply-ok-sub');
+        if (ttl) ttl.textContent = items.length ? 'پیشنهاد تامینت ارسال شد' : 'درخواست تامین‌کنندگی‌ات ارسال شد';
+        if (sub) {
+            sub.textContent = items.length
+                ? BLG.buyer.name + ' ' + faNum(items.length) + ' قلم قیمتت را یک‌جا می‌بیند' +
+                  (catNew ? ' — ' + faNum(catNew) + ' کالای تازه هم به کاتالوگت اضافه شد' : '') +
+                  '؛ با تاییدش جزو تأمین‌کننده‌هایش می‌شوی.'
+                : BLG.buyer.name + ' درخواستت را می‌بیند؛ با تاییدش جزو تأمین‌کننده‌هایش می‌شوی و کاتالوگت را ذخیره می‌کند.';
+        }
     }
 
     /* ═══ FD-22 — شیت «شرایط درخواست تامین» ═══
@@ -592,37 +842,19 @@
         core.openSheet('sheet-cond');
     }
 
-    /* ═══ FD-22 — شیت «افزودن کالاهای این لیست» (sheet-listpick) ═══ */
+    /* ═══ FD-22/FD-23 — شیت «افزودن به لیست خرید من» (sheet-listpick) ═══
+       FD-23: تک‌مقصد شد — مقصد «به کاتالوگ من» حذف شد چون قلم‌های
+       پیشنهاد تامین خودشان به کاتالوگ می‌نشینند (supplySend). */
     function listpickOpen() {
-        LP.mode = 'list'; LP.sel = {}; LP.q = ''; LP.vals = {};
+        LP.sel = {}; LP.q = '';
         var s = $('#lp-search'); if (s) s.value = '';
-        lpModeSync();
         lpRender();
         core.openSheet('sheet-listpick');
     }
 
-    function lpModeSync() {
-        $$('#sheet-listpick [data-lp-mode]').forEach(function (b) {
-            b.classList.toggle('active', b.dataset.lpMode === LP.mode);
-        });
-    }
-
-    function lpModeSet(mode) {
-        if (LP.mode === mode) return;
-        LP.mode = mode;
-        LP.sel = {}; LP.vals = {};
-        lpModeSync();
-        lpRender();
-    }
-
     function lpInList(it) {
-        if (LP.mode === 'list') {
-            return (core.data.shoppingList || []).some(function (s) {
-                return s.businessId === 'b2' && s.name === it.name && s.pack === it.pack;
-            });
-        }
-        return (core.data.listings || []).some(function (l) {
-            return l.businessId === 'b1' && l.name === it.name && l.pack === it.pack;
+        return (core.data.shoppingList || []).some(function (s) {
+            return s.businessId === 'b2' && s.name === it.name && s.pack === it.pack;
         });
     }
 
@@ -635,21 +867,12 @@
         host.innerHTML = items.length ? items.map(function (it) {
             var sel = !!LP.sel[it.id];
             var inList = lpInList(it);
-            var v = LP.vals[it.id] || {};
-            var flds = (LP.mode === 'catalog' && sel && !inList)
-                ? '<div class="pl-flds">' +
-                    '<div class="pl-f"><label>قیمت هر بسته (تومان)</label>' +
-                    '<div class="input"><input data-lp-price="' + esc(it.id) + '" inputmode="numeric" autocomplete="off" value="' + esc(v.price || '') + '" placeholder="مثلاً ۲٬۸۵۰٬۰۰۰"></div></div>' +
-                    '<div class="pl-f"><label>حداقل سفارش</label>' +
-                    '<div class="input"><input data-lp-min="' + esc(it.id) + '" inputmode="numeric" autocomplete="off" value="' + esc(v.min || '') + '" placeholder="مثلاً ۵"></div></div>' +
-                  '</div>'
-                : '';
             return '<div class="pl-row' + (sel ? ' on' : '') + (inList ? ' in-list' : '') + '"' +
                 (inList ? '' : ' data-lp-item="' + esc(it.id) + '"') + '>' +
                 '<span class="pl-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span>' +
                 '<div class="pl-th"><img src="' + esc(it.img) + '" alt=""></div>' +
-                '<div class="pl-tx"><b>' + esc(it.name) + '</b><small>' + esc(it.q || it.pack || '') + '</small>' + flds + '</div>' +
-                (inList ? '<span class="pl-inlist"><span class="badge b-green">' + (LP.mode === 'list' ? 'در لیست هست' : 'در کاتالوگت هست') + '</span></span>' : '') +
+                '<div class="pl-tx"><b>' + esc(it.name) + '</b><small>' + esc(it.q || it.pack || '') + '</small></div>' +
+                (inList ? '<span class="pl-inlist"><span class="badge b-green">در لیست هست</span></span>' : '') +
             '</div>';
         }).join('') : '<div class="pl-empty">کالایی با این جستجو پیدا نشد</div>';
         lpBtnSync();
@@ -659,31 +882,12 @@
         var n = 0;
         Object.keys(LP.sel).forEach(function (k) { if (LP.sel[k]) n++; });
         var btn = $('#lp-add'), tx = $('#lp-add-tx');
-        var missing = 0;
-        if (LP.mode === 'catalog') {
-            Object.keys(LP.sel).forEach(function (k) {
-                if (!LP.sel[k]) return;
-                var v = LP.vals[k] || {};
-                if (!core.parseNum(v.price) || !core.parseNum(v.min)) missing++;
-            });
-        }
-        if (btn) {
-            btn.disabled = n === 0 || missing > 0;
-        }
-        if (tx) {
-            if (LP.mode === 'list') {
-                tx.textContent = n ? 'افزودن ' + faNum(n) + ' کالا به لیست خرید' : 'افزودن به لیست خرید';
-            } else if (missing) {
-                tx.textContent = 'قیمت و حداقل ' + faNum(missing) + ' کالا را وارد کن';
-            } else {
-                tx.textContent = n ? 'افزودن ' + faNum(n) + ' کالا به کاتالوگ' : 'افزودن به کاتالوگ';
-            }
-        }
+        if (btn) btn.disabled = n === 0;
+        if (tx) tx.textContent = n ? 'افزودن ' + faNum(n) + ' کالا به لیست خرید' : 'افزودن به لیست خرید';
     }
 
     function lpToggle(id) {
         LP.sel[id] = !LP.sel[id];
-        if (!LP.sel[id]) delete LP.vals[id];
         lpRender();
     }
 
@@ -694,41 +898,19 @@
         ids.forEach(function (id) {
             var it = BLG.items.filter(function (x) { return x.id === id; })[0];
             if (!it || lpInList(it)) return;
-            if (LP.mode === 'list') {
-                core.data.shoppingList.push({
-                    id: 'sl-' + Date.now() + '-' + id,
-                    businessId: 'b2', name: it.name, pack: it.pack,
-                    q: it.q || '', img: it.img,
-                    suppliersCount: 0, added: true
-                });
-            } else {
-                var v = LP.vals[id] || {};
-                var price = core.parseNum(v.price);
-                var min = core.parseNum(v.min) || 1;
-                var packCount = it.packCount || 1;
-                core.data.listings.push({
-                    id: 'l-' + Date.now() + '-' + id,
-                    businessId: core.data.user.activeBusinessId,
-                    name: it.name, brand: it.brand || '',
-                    pack: it.pack, packCount: packCount,
-                    groupId: it.groupId || 'cgr1',
-                    baseUnit: it.baseUnit || 'واحد',
-                    price: price,
-                    pricePerUnit: Math.round(price / (packCount || 1)),
-                    stock: it.stock || 20, min: min, img: it.img,
-                    status: 'in-stock', priceValidDays: 3,
-                    justAdded: true
-                });
-            }
+            core.data.shoppingList.push({
+                id: 'sl-' + Date.now() + '-' + id,
+                businessId: 'b2', name: it.name, pack: it.pack,
+                q: it.q || '', img: it.img,
+                suppliersCount: 0, added: true
+            });
             added++;
         });
         core.closeSheet('sheet-listpick');
         if (added) {
-            toast(LP.mode === 'list'
-                ? faNum(added) + ' کالا به لیست خریدت اضافه شد'
-                : faNum(added) + ' کالا به کاتالوگت اضافه شد — قیمت‌ها را بعداً ویرایش کن', 'success');
+            toast(faNum(added) + ' کالا به لیست خریدت اضافه شد', 'success');
         } else {
-            toast('این کالاها از قبل در ' + (LP.mode === 'list' ? 'لیست خریدت' : 'کاتالوگت') + ' هستند', 'error');
+            toast('این کالاها از قبل در لیست خریدت هستند', 'error');
         }
     }
 
@@ -799,11 +981,14 @@
         /* ═══ شیت پیشنهاد تامین (۳۲) — FD-22: همهٔ درها یک جا ═══
            دکمهٔ مینیمال بالا (#supply-propose — همان id از FD-19 برای
            رگرسیون)، دکمهٔ چسبان پایین و دکمهٔ انتهای شیت شرایط —
-           همه data-supply-open. */
+           همه data-supply-open. FD-23: چیپ‌های نوار تطبیق هم با
+           data-blg-offer به همین جا می‌رسند (پیش‌انتخاب). */
         if (t.closest('[data-supply-open]') || t.closest('#supply-propose')) { supplyOpen(); return; }
         if (t.closest('#supply-send')) { supplySend(); return; }
+        /* ردیف قلم — فیلدهای قیمت/حداقل زیر ردیف‌اند (خارج از
+           .sprow) پس کلیک روی آن‌ها به این‌جا نمی‌رسد. */
         var spRow = t.closest('.sprow');
-        if (spRow && !t.closest('.sprow-price')) { supplyToggle(spRow.dataset.spg); return; }
+        if (spRow) { supplyToggle(spRow.dataset.spg); return; }
 
         /* ═══ FD-22 — ۳۲: پیشنهاد برای یک کالا (پیش‌انتخاب) ═══ */
         var blgOff = t.closest('[data-blg-offer]');
@@ -820,12 +1005,10 @@
         /* شیت شرایط درخواست تامین */
         if (t.closest('#blg-cond-link')) { condOpen(); return; }
 
-        /* ═══ FD-22 — شیت افزودن کالاهای این لیست ═══ */
+        /* ═══ FD-22/FD-23 — شیت افزودن کالاهای این لیست (تک‌مقصد) ═══ */
         if (t.closest('#blg-addstrip')) { listpickOpen(); return; }
-        var lpMode = t.closest('[data-lp-mode]');
-        if (lpMode) { lpModeSet(lpMode.dataset.lpMode); return; }
         var lpRow = t.closest('[data-lp-item]');
-        if (lpRow && !t.closest('input')) { lpToggle(lpRow.dataset.lpItem); return; }
+        if (lpRow) { lpToggle(lpRow.dataset.lpItem); return; }
         if (t.closest('#lp-add')) { lpAdd(); return; }
 
         /* ═══ FD-22 — ویرایش شرایط تامین (۲۰) ═══ */
@@ -841,28 +1024,20 @@
             SUP.q = t.value;
             suppliersRender();
         }
-        /* نوشتن قیمت در شیت پیشنهاد = انتخاب همان کالا */
-        if (t.classList && t.classList.contains('sprow-price')) {
-            var id = t.dataset.spgPrice;
-            if (String(t.value).trim() && !SUPPLY.sel[id]) {
-                SUPPLY.sel[id] = true;
-                var rowEl = t.closest('.sprow');
-                if (rowEl) rowEl.classList.add('on');
-            }
+        /* FD-23 — قیمت/حداقل شیت پیشنهاد: در state زنده ذخیره
+           (رندرهای بعدی — باز/بسته‌شدن ردیف‌ها — مقدار را از state
+           می‌خوانند، نمی‌ریزد) + هم‌گام‌سازی دکمهٔ ارسال. */
+        if (t.dataset && (t.dataset.spgPrice || t.dataset.spgMin)) {
+            var sid = t.dataset.spgPrice || t.dataset.spgMin;
+            SUPPLY.vals[sid] = SUPPLY.vals[sid] || {};
+            if (t.dataset.spgPrice) SUPPLY.vals[sid].price = t.value;
+            else SUPPLY.vals[sid].min = t.value;
+            supplyBtnSync();
         }
         /* FD-22 — جستجوی شیت listpick */
         if (t.id === 'lp-search') {
             LP.q = t.value;
             lpRender();
-        }
-        /* FD-22 — قیمت/حداقل شیت listpick: در state زنده ذخیره
-           (رندرهای بعدی مقدار را از state می‌خوانند، نمی‌ریزد) */
-        if (t.dataset && (t.dataset.lpPrice || t.dataset.lpMin)) {
-            var lid = t.dataset.lpPrice || t.dataset.lpMin;
-            LP.vals[lid] = LP.vals[lid] || {};
-            if (t.dataset.lpPrice) LP.vals[lid].price = t.value;
-            else LP.vals[lid].min = t.value;
-            lpBtnSync();
         }
     });
 
@@ -871,7 +1046,10 @@
        جلوی چشم باشه، نه زیر کالاها که دیده نشه» — کارت‌های پیشنهاد
        رسیده (suppliers با isNew+proposal) بالای کالاها رندر می‌شوند؛
        تایید/حذف همان منطق دفتر تأمین‌کنندگان (۲۲) است — دو درِ یکی.
-       خالی = کل بخش مخفی (لیست تمیز می‌ماند). */
+       خالی = کل بخش مخفی (لیست تمیز می‌ماند).
+       FD-23: بدنهٔ کارت سه شکل دارد — تک‌قلم قدیمی (blp-good)،
+       چندقلمی (items[] → ردیف‌های قیمت/حداقل) و فقط‌درخواست
+       (bare — بدون قیمت؛ خریدار با تایید فقط رابطه را می‌سازد). */
     function buyListProposalsRender() {
         var host = $('#bl-proposals');
         if (!host) return;
@@ -880,16 +1058,30 @@
         host.hidden = false;
         var cards = props.map(function (s) {
             var p = s.proposal;
+            var body = '';
+            if (p.items && p.items.length) {
+                body = '<div class="blp-items">' + p.items.map(function (i) {
+                    return '<div class="blp-it">' +
+                        '<span class="blp-g">' + esc(i.name) + ' <small>' + esc(i.pack || '') + '</small></span>' +
+                        '<span class="blp-it-min">حداقل ' + faNum(i.min || 1) + '</span>' +
+                        '<span class="blp-p">' + moneyFmt(i.price) + ' <small>تومان</small></span>' +
+                    '</div>';
+                }).join('') + '</div>';
+            } else if (p.bare || !p.good) {
+                body = '<div class="blp-bare">فقط درخواست تامین‌کنندگی — قلم و قیمتی نفرستاده؛ با تایید، تأمین‌کننده‌ات می‌شود و کاتالوگش را می‌بینی.</div>';
+            } else {
+                body = '<div class="blp-good">' +
+                    '<span class="blp-g">' + esc(p.good) + ' <small>' + esc(p.pack || '') + '</small></span>' +
+                    '<span class="blp-p">' + moneyFmt(p.price) + ' <small>تومان</small></span>' +
+                '</div>';
+            }
             return '<div class="blp-card">' +
                 '<div class="blp-head">' +
                     '<div class="avatar" style="background:' + (s.color || '#7c3aed') + '">' + esc(s.avatar || (s.name || '؟').charAt(0)) + '</div>' +
                     '<div class="blp-tx"><b>' + esc(s.name) + '</b><small>' + esc(s.city || '') + ' <span class="dot">·</span> ' + esc(s.industry || '') + '</small></div>' +
                     '<span class="badge b-amber">پیشنهاد تامین</span>' +
                 '</div>' +
-                '<div class="blp-good">' +
-                    '<span class="blp-g">' + esc(p.good) + ' <small>' + esc(p.pack || '') + '</small></span>' +
-                    '<span class="blp-p">' + moneyFmt(p.price) + ' <small>تومان</small></span>' +
-                '</div>' +
+                body +
                 (p.msg ? '<div class="blp-msg">' + esc(p.msg) + '</div>' : '') +
                 '<div class="blp-act">' +
                     '<button class="btn btn-arm btn-sm" type="button" data-sup-accept="' + esc(s.id) + '">' +
