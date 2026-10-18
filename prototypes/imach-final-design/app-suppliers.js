@@ -146,7 +146,22 @@
         var s = supplierById(id);
         if (!s) return;
         s.isNew = false;
+        var p = s.proposal || null;
+        s.proposal = null;
         suppliersRender();
+        /* FD-19: اگر کالای پیشنهادیِ او در لیست خرید هست، شمار
+           تأمین‌کننده‌های همان کالا زنده می‌شود (حلقهٔ لیست ← شبکه) */
+        if (p && p.good) {
+            (core.data.shoppingList || []).forEach(function (it) {
+                if ((it.name || '').indexOf(p.good) > -1) {
+                    it.suppliersCount = (it.suppliersCount || 0) + 1;
+                }
+            });
+            if (core.getCurrentScreen() === 's-buy-list' && core.forms && core.forms.buyListRender) {
+                core.forms.buyListRender();
+                buyListProposalsRender();
+            }
+        }
         if (core.getCurrentScreen() === 's-supplier-view' && SUP.viewId === id) svRender();
         toast('«' + s.name + '» تایید شد — از تأمین‌کننده‌های توست و تو هم مشتری او (کاتالوگش ذخیره شد)', 'success');
     }
@@ -361,16 +376,48 @@
             var rowEl = $('[data-spg="' + k + '"]');
             var priceEl = rowEl ? rowEl.querySelector('.sprow-price') : null;
             var price = priceEl ? String(priceEl.value).trim() : '';
-            picked.push({ id: k, price: price });
+            var item = (core.data.shoppingList || []).find(function (x) { return x.id === k; });
+            picked.push({ id: k, price: price, name: item ? item.name : '', pack: item ? (item.pack || '') : '' });
         });
         if (!picked.length) { toast('حداقل یک کالا را انتخاب کن', 'error'); return; }
         var noPrice = picked.filter(function (p) { return !p.price; }).length;
         if (noPrice) { toast('برای ' + faNum(noPrice) + ' کالای انتخابی قیمت ننوشته‌ای', 'error'); return; }
 
+        /* FD-19: پیشنهادِ تامین واقعاً ثبت می‌شود (قبلاً فقط نمای موفقیت
+           بود) — تأمین‌کنندهٔ پیشنهادی با قلم و قیمت ساخته می‌شود، بالای
+           لیست خرید خریدار می‌نشیند (جلوی چشم) و اعلان می‌رود. در محصول
+           واقعی: رکورد پیشنهاد + نوتیفیکیشن + گیت حسابِ تأمین‌کننده. */
+        var note = (($('#supply-note') || {}).value || '').trim();
+        core.data.suppliers = core.data.suppliers || [];
+        core.data.suppliers.push({
+            id: 'su' + (core.data.suppliers.length + 10),
+            businessId: 'b2',
+            name: 'توزیع آفتاب', person: 'فرهاد آفتابی', city: 'رشت',
+            avatar: 'ت', color: '#B45309', verified: false, isNew: true,
+            industry: 'پخش مواد غذایی', phone: '۰۹۱۱ ۵۵۵ ۲۲۰۰', since: 'هم‌اکنون', note: '',
+            goods: picked.map(function (p) { return p.name; }).join(' · '),
+            proposal: {
+                good: picked[0].name,
+                pack: picked[0].pack,
+                price: core.parseNum(picked[0].price) || 0,
+                msg: (note || 'از لینک لیست خریدت قیمت دادم.') +
+                     (picked.length > 1 ? ' — برای ' + faNum(picked.length) + ' قلم کالا قیمت دارم.' : '')
+            }
+        });
+        if (core.forms && core.forms.pushNotify) {
+            core.forms.pushNotify({
+                type: 'supply',
+                title: 'پیشنهاد تامین جدید',
+                body: '«توزیع آفتاب» برای «' + picked[0].name + '» قیمت داد — بالای لیست خریدت.',
+                link: 's-buy-list'
+            });
+        }
+        if (core.getCurrentScreen() === 's-buy-list') buyListProposalsRender();
+        if (core.getCurrentScreen() === 's-buy-suppliers') suppliersRender();
+
         var form = $('#supply-form'), ok = $('#supply-ok');
         if (form) form.hidden = true;
         if (ok) ok.hidden = false;
-        /* در محصول واقعی: ثبت پیشنهاد + نوتیفیکیشن خریدار + گیت حساب */
     }
 
     /* ═══ کاتالوک تأمین‌کننده — به چشم مشتری (حکم مالک FD-16:
@@ -446,9 +493,48 @@
         }
     });
 
+    /* ═══ FD-19 — «پیشنهادهای تامین» بالای لیست خرید (صفحهٔ ۲۰) ═══
+       حکم مالک: «پیشنهاد تامین در لیست خرید بهتره اون بالا باشه که
+       جلوی چشم باشه، نه زیر کالاها که دیده نشه» — کارت‌های پیشنهاد
+       رسیده (suppliers با isNew+proposal) بالای کالاها رندر می‌شوند؛
+       تایید/حذف همان منطق دفتر تأمین‌کنندگان (۲۲) است — دو درِ یکی.
+       خالی = کل بخش مخفی (لیست تمیز می‌ماند). */
+    function buyListProposalsRender() {
+        var host = $('#bl-proposals');
+        if (!host) return;
+        var props = (core.data.suppliers || []).filter(function (s) { return s.isNew && s.proposal; });
+        if (!props.length) { host.innerHTML = ''; host.hidden = true; return; }
+        host.hidden = false;
+        var cards = props.map(function (s) {
+            var p = s.proposal;
+            return '<div class="blp-card">' +
+                '<div class="blp-head">' +
+                    '<div class="avatar" style="background:' + (s.color || '#7c3aed') + '">' + esc(s.avatar || (s.name || '؟').charAt(0)) + '</div>' +
+                    '<div class="blp-tx"><b>' + esc(s.name) + '</b><small>' + esc(s.city || '') + ' <span class="dot">·</span> ' + esc(s.industry || '') + '</small></div>' +
+                    '<span class="badge b-amber">پیشنهاد تامین</span>' +
+                '</div>' +
+                '<div class="blp-good">' +
+                    '<span class="blp-g">' + esc(p.good) + ' <small>' + esc(p.pack || '') + '</small></span>' +
+                    '<span class="blp-p">' + moneyFmt(p.price) + ' <small>تومان</small></span>' +
+                '</div>' +
+                (p.msg ? '<div class="blp-msg">' + esc(p.msg) + '</div>' : '') +
+                '<div class="blp-act">' +
+                    '<button class="btn btn-arm btn-sm" type="button" data-sup-accept="' + esc(s.id) + '">' +
+                        '<svg><use href="#i-check"/></svg> تایید و افزودن به تأمین‌کنندگانم</button>' +
+                    '<button class="btn btn-outline btn-sm" type="button" data-sup-reject="' + esc(s.id) + '" style="color: var(--red); border-color: #F3C1C1;">' +
+                        '<svg><use href="#i-x"/></svg> حذف</button>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+        host.innerHTML =
+            '<div class="section-title" style="margin-top: 0;"><h2><svg style="width:14px;height:14px;color:var(--amber)"><use href="#i-sparkles"/></svg> پیشنهادهای تامین <span class="st-b">' + faNum(props.length) + ' پیشنهاد — بالای لیست، جلوی چشم</span></h2></div>' +
+            cards;
+    }
+
     /* ═══ Hooks ═══ */
     core.registerShowHook('s-buy-suppliers', suppliersRender);
     core.registerShowHook('s-supplier-view', svRender);
+    core.registerShowHook('s-buy-list', buyListProposalsRender);
 
     /* ═══ Expose ═══ */
     core.suppliers = {
@@ -458,6 +544,7 @@
         reject: supReject,
         viewRender: svRender,
         supplyOpen: supplyOpen,
-        openCatalog: openCatalog
+        openCatalog: openCatalog,
+        buyListProposalsRender: buyListProposalsRender
     };
 })();

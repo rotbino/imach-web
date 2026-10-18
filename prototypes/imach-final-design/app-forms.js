@@ -2421,6 +2421,17 @@
                 rfq.result = 'پذیرفت: ' + o.seller + ' — ' + faMoney(o.price) + ' ت';
                 rfq.when = 'امروز';
             }
+            /* FD-19: اعلان به فروشندهٔ برنده (نکتهٔ باز FD-14) — «پیشنهادت
+               پذیرفته شد» مهم‌ترین خبرِ اوست؛ بقیهٔ گیرنده‌ها هم استعلامِ
+               بسته‌شده را می‌بینند (در محصول واقعی دو اعلان جدا) */
+            if (core.forms.pushNotify) {
+                pushNotify({
+                    type: 'offer',
+                    title: 'پیشنهاد پذیرفته شد',
+                    body: 'خریدار پیشنهاد «' + o.seller + '» برای «' + (rfq ? rfq.itemName : '') + '» را پذیرفت — برای هماهنگی تماس بگیرید.',
+                    link: 's-sell-rfqs'
+                });
+            }
             toast('پیشنهاد پذیرفته شد — استعلام بسته شد', 'success');
             setTimeout(function () { core.resetStack(); core.show('s-buy-rfqs', false); }, 700);
         });
@@ -2440,6 +2451,16 @@
             rfq.status = 'done';
             rfq.result = 'بسته شد — بدون انتخاب پیشنهاد';
             rfq.when = 'امروز';
+            /* FD-19: اعلان به تأمین‌کنندگان گیرنده (نکتهٔ باز FD-14) —
+               پاسخ‌دهنده‌ها باید بدانند استعلام دیگر باز نیست */
+            if (core.forms.pushNotify) {
+                pushNotify({
+                    type: 'offer',
+                    title: 'استعلام بسته شد',
+                    body: 'خریدار استعلام «' + rfq.itemName + '» را بدون انتخاب پیشنهاد بست.',
+                    link: 's-sell-rfqs'
+                });
+            }
             toast('استعلام بسته شد', 'success');
             core.resetStack();
             core.show('s-buy-rfqs', false);

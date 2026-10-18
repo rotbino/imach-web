@@ -3661,3 +3661,46 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .otl-st.done b, .otl-st.done small { color: var(--text-2); }
 .otl-st.cur .otl-dot { background: var(--primary-strong); border-color: var(--primary-soft); box-shadow: 0 0 0 3.5px var(--primary-soft); }
 .otl-st.cur b { color: var(--primary-strong); font-weight: 800; }
+
+/* ═════════════════════════════════════════════════════════════
+   FD-19 — «پیشنهادهای تامین» بالای لیست خرید (حکم مالک:
+   بالا و جلوی چشم، نه زیر کالاها) — کارت پیشنهاد
+   ═════════════════════════════════════════════════════════════ */
+#bl-proposals { margin-bottom: 4px; }
+#bl-proposals[hidden] { display: none; }
+
+.blp-card {
+    background: var(--surface-1);
+    border: 1px solid #FDE68A;
+    border-right: 3.5px solid var(--amber);
+    border-radius: var(--r-md);
+    padding: 12px;
+    margin-bottom: 10px;
+}
+.blp-head { display: flex; align-items: center; gap: 10px; }
+.blp-head .avatar { width: 38px; height: 38px; font-size: 15px; flex-shrink: 0; }
+.blp-tx { flex: 1; min-width: 0; }
+.blp-tx b { display: block; font-size: 13px; font-weight: 800; }
+.blp-tx small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.blp-head .badge { flex-shrink: 0; }
+
+.blp-good {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+    background: var(--amber-soft);
+    border-radius: var(--r-sm);
+    padding: 8px 12px;
+    margin-top: 10px;
+}
+.blp-g { font-size: 12.5px; font-weight: 700; color: #92400E; }
+.blp-g small { font-weight: 400; font-size: 10px; opacity: .85; margin-inline-start: 4px; }
+.blp-p { font-size: 13.5px; font-weight: 800; color: #92400E; white-space: nowrap; }
+.blp-p small { font-size: 9.5px; font-weight: 400; opacity: .8; }
+
+.blp-msg {
+    font-size: 11px; color: var(--text-3); line-height: 1.9;
+    margin-top: 8px;
+}
+
+.blp-act { display: flex; gap: 8px; margin-top: 10px; }
+.blp-act .btn { flex: 1; }
+.blp-act .btn svg { width: 14px; height: 14px; }
