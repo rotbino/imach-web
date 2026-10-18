@@ -158,6 +158,11 @@ window.iMach = (function () {
 
             closeAllSheets();
             applyArms();
+
+            /* FD-27 — دسکتاپ: پرچم/تبدیل صفحه‌های رسپانسیوِ این مرحله
+               (app-desktop.js؛ مستقیم اینجا، نه monkey-patch — همهٔ
+               ماژول‌ها از همین show عبور می‌کنند). */
+            if (window.iMachDesktop) window.iMachDesktop.apply(id);
         });
     }
 
