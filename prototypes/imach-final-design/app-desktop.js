@@ -1,121 +1,242 @@
 /* ═════════════════════════════════════════════════════════════════
-   iMach — Desktop (FD-26)
+   iMach — Desktop (FD-28)
    ─────────────────────────────────────────────────────────────────
-   رسپانسیو — مرحلهٔ ۱ (حکم مالک): «در دسکتاب طوری که هم گویا باشه
-   و هم همون موبایل بزرگ‌شده نباشه؛ ساده و مینیمال».
+   رسپانسیو دسکتاپ — مرحلهٔ ۲ (بازطراحی کاملِ دستی، صفحه‌به‌صفحه).
 
-   ▸ صفحه‌های این مرحله: لندینگ (۰۱) · ورود (۰۳) · ثبت‌نام (۰۲) ·
-     میز خرید (۱۹). بقیهٔ صفحه‌ها هنوز نمای قابِ گوشی را دارند
-     (تبدیل‌شان مرحلهٔ بعد است — data-dk روی این ۴ صفحه/methods).
-   ▸ موبایل دست‌نخورده: همهٔ تبدیل‌های DOM فقط وقتی اجرا می‌شوند
-     که matchMedia(min-width:1024) برقرار باشد؛ چون show() هر بار
-     HTML خام را دوباره در #screen-host می‌ریزد، تبدیل‌ها بدون
-     «برگرداندن» امن‌اند — در عرض موبایل هیچ‌کدام اعمال نمی‌شود.
-   ▸ چیدمان دسکتاپ در CSS زیر کلید #phone[data-dk="1"] است؛
-     این ماژول فقط: پرچم data-dk + بازچینیِ DOMِ لازم (wrap/move)
-     + بازسازی هنگام عبور از نقطهٔ شکست.
-   ▸ در پیاده‌سازی واقعی (Next.js): همین دو لایه — CSS سفارشی
-     breakpoint + کامپوننت‌های هم‌ارز (Layout با سایدبار،
-     AuthSplit)؛ منطق صفحه یکی است، فقط پوستهٔ چیدمان عوض می‌شود.
+   ▸ حکم مالک (FD-28): «در دسکتاب حرفه‌ای‌تر و مطابق استاندارد بالا —
+     همچنان مینیمال و ساده؛ صفحه‌به‌صفحه با ظرافت، نه یک ایجنت کلی».
+     بازخورد FD-27 که این مرحله ترمیم می‌کند: لندینگ زیرِ بنر،
+     ورود/ثبت‌نام، و تسک‌های میز خرید (زیر هم + استایل مخصوص).
+
+   ▸ معماری: همان دو-لایهٔ FD-27 —
+       · این ماژول: پرچم #phone[data-dk] + بازچینیِ DOM لازم.
+       · style.css بلوک FD-28 زیر @media(min-width:1024).
+     موبایل (زیر ۱۰۲۴) کاملاً دست‌نخورده: show() هر بار HTML خام
+     را می‌ریزد؛ هیچ تبدیلی در عرض موبایل اجرا نمی‌شود.
+
+   ▸ الگوهای چیدمان (کلاس روی <section>):
+       dk-page   صفحهٔ محتوایی عمومی (هدر ۶۴ + ستون ۱۱۲۰ وسچ)
+       dk-list   ردیف‌های پهنِ لیست (دفاتر/سفارش‌ها/استعلام‌ها)
+       dk-form   فرم مرکزی ۶۲۰ (با نوار ارسالِ جابه‌جاشده به جریان)
+       dk-detail دوستونه: کارت شناسهٔ چسبانِ راست + جریانِ چپ
+       dk-narrow ستون باریک ۷۶۰ (اعلان‌ها/امتیاز)
+       + تبدیل‌های اختصاصی: لندینگ · ورود/ثبت‌نام · میزها ·
+         کاتالوگ · کالا · استعلامِ جدید (دوستونه) · پیشنهادها
+         (گرید ۲) · چت (ستون ۹۰۰) · پروفایل.
    ═════════════════════════════════════════════════════════════════ */
 window.iMachDesktop = (function () {
     'use strict';
 
     var MQ = window.matchMedia('(min-width: 1024px)');
 
-    /* صفحه‌های تبدیل‌شدهٔ این مرحله — بقیه = قاب گوشی (مرحلهٔ بعد) */
-    var DK_SCREENS = {
+    /* ═══ نقشهٔ صفحه ← تبدیل ═══
+       تابع = تبدیل اختصاصی؛ رشته = کلاس‌های چیدمان عمومی. */
+    var DK = {
+        /* —— اختصاصی‌ها —— */
         's-landing': dkLanding,
         's-login': dkAuth,
         's-signup': dkAuth,
-        's-home-buy': dkDesk
+        's-home-buy': dkDesk,
+        's-home-sell': dkDesk,
+        's-catalog': dkCatalog,
+        's-catalog-guest': dkCatalog,
+        's-product-view': dkProduct,
+        's-buy-rfq-new': dkRfqNew,
+        's-buy-offers': dkOffers,
+        's-chat': dkChat,
+        's-profile': dkDetail,
+        's-buy-list': dkBuyList,
+        /* —— دفاتر و لیست‌ها —— */
+        's-catalog-share': 'dk-page dk-list',
+        's-contacts': 'dk-page dk-list',
+        's-customers': 'dk-page dk-list',
+        's-customer-view': dkDetail,
+        's-sell-orders': 'dk-page dk-list',
+        /* سفارش‌ها با JS رندر می‌شوند (host خالی هنگام apply) — ستونِ
+           رسیدِ وسچ ۷۶۰، الگوی درستِ صفحهٔ رسید است نه دوستونه */
+        's-sell-order-view': 'dk-page dk-narrow',
+        's-buy-order-view': 'dk-page dk-narrow',
+        's-buy-orders': 'dk-page dk-list',
+        's-sell-rfqs': 'dk-page dk-list',
+        's-sell-offer': 'dk-form dk-form-wide',
+        's-sell-add': 'dk-form',
+        's-sell-edit': 'dk-form',
+        's-network-score': 'dk-page dk-narrow',
+        's-edit-business': 'dk-form',
+        's-notifs': 'dk-page dk-narrow',
+        's-buy-list-add': 'dk-form',
+        's-buy-product-suppliers': 'dk-page dk-list',
+        's-buy-suppliers': 'dk-page dk-list',
+        's-supplier-view': dkDetail,
+        's-buy-rfqs': 'dk-page dk-list',
+        's-buy-offer-view': dkDetail,
+        's-msgs': 'dk-page dk-narrow dk-list',
+        's-buy-list-guest': 'dk-page dk-list',
+        's-sell-bulk': 'dk-form',
+        's-sell-promo': 'dk-form',
+        's-charge': 'dk-form',
+        's-cat-edit': 'dk-form',
+        's-salesrep': 'dk-page dk-narrow dk-rep'
     };
 
     function apply(id) {
         var phone = document.getElementById('phone');
         if (!phone) return;
-        var fn = DK_SCREENS[id];
-        var on = !!(fn && MQ.matches);
+        var cfg = DK[id];
+        var on = !!(cfg && MQ.matches);
         if (on) phone.setAttribute('data-dk', '1');
         else phone.removeAttribute('data-dk');
         if (!on) return;
         var sec = document.getElementById(id);
-        if (sec) fn(sec, id);
+        if (!sec) return;
+        sec.classList.add('dk-screen');
+        if (typeof cfg === 'string') {
+            cfg.split(' ').forEach(function (c) { if (c) sec.classList.add(c); });
+        } else {
+            cfg(sec, id);
+        }
+        /* نوار ارسال چسبان → انتهای جریان صفحه (الگوی دسکتاپ:
+           دکمه با محتوایش می‌ماند، نه چسبیده به کفِ ۱۰۰vw) */
+        if (sec.querySelector('.sticky-bar')) moveSubmit(sec);
+    }
+
+    /* ═══ مشترک: نوار چسبان → درون جریان ═══ */
+    function moveSubmit(sec) {
+        var sb = sec.querySelector('.sticky-bar');
+        var body = sec.querySelector('.body');
+        if (!sb || !body || sb.hidden) return;
+        if (sb.parentNode !== body) body.appendChild(sb);
+        sb.classList.add('dk-inflow');
     }
 
     /* ═══ ۰۱ لندینگ ═══
-       هیرو دوستونه (متن + تصویر) · سه بخش مخاطب کنار‌هم/کشیده ·
-       کپی DOM: تصویر از جریان پایین به خانهٔ دوم هیرو می‌رود و
-       جفت‌های [عنوان + ردیف‌ها] در .dk-sec جمع می‌شوند تا گرید
-       CSS بتواندشان کنار هم بچیند. */
+       ناوبری با CTA · هیرو دوستونه (تصویر → خانهٔ چپ) · دو کارتِ
+       ویژگیِ فروشنده/خریدار کنار‌هم · نوارِ نمایندهٔ تمام‌عرض با
+       سربرگ وسچ و سه کارت · CTA پایانی پهن · فوتر. */
     function dkLanding(sec) {
         var body = sec.querySelector('.body');
-        if (!body || body.getAttribute('data-dk-done')) return;
-        body.setAttribute('data-dk-done', '1');
+        if (!body) return;
+
+        /* ۱) ناوبری بالا: دکمهٔ «شروع رایگان» کنار «ورود» */
+        var bar = sec.querySelector('.appbar');
+        if (bar && !bar.querySelector('.dk-nav-cta')) {
+            var loginBtn = bar.querySelector('.btn');
+            var cta = document.createElement('button');
+            cta.className = 'btn btn-primary btn-sm dk-nav-cta';
+            cta.type = 'button';
+            cta.setAttribute('data-go', 's-signup');
+            cta.textContent = 'شروع رایگان';
+            if (loginBtn && loginBtn.parentNode === bar) bar.insertBefore(cta, loginBtn);
+            else bar.appendChild(cta);
+        }
 
         var hero = body.querySelector('.hero');
         var pad = body.children[1];
         if (!hero || !pad) return;
 
-        /* تصویر محصول → خانهٔ دومِ هیرو */
-        var imgCard = null;
-        Array.prototype.slice.call(pad.children).some(function (el) {
-            if (el.classList.contains('card') && el.querySelector('img')) { imgCard = el; return true; }
-            return false;
-        });
-        if (imgCard) {
-            hero.appendChild(imgCard);
-            imgCard.classList.add('dk-hero-img');
+        /* ۲) تصویر محصول → خانهٔ چپِ هیرو */
+        if (!hero.querySelector('.dk-hero-img')) {
+            var imgCard = null;
+            Array.prototype.slice.call(pad.children).some(function (el) {
+                if (el.classList.contains('card') && el.querySelector('img')) { imgCard = el; return true; }
+                return false;
+            });
+            if (imgCard) {
+                hero.appendChild(imgCard);
+                imgCard.classList.add('dk-hero-img');
+            }
         }
 
-        /* استایلِ inline بدنه (flex ستونی موبایل) کنار می‌رود؛
-           چیدمان دسکتاپ با کلاس dk-pad در CSS. */
+        /* ۳) بدنه: چیدمان گرید دسکتاپ */
         pad.removeAttribute('style');
         pad.classList.add('dk-pad');
 
-        /* گروه‌بندی: هر .section-title با محتوایش تا عنوان بعدی؛
-           کارت CTA گرادیانی (بدون rep-ad) و فوتر بیرون می‌مانند. */
-        var kids = Array.prototype.slice.call(pad.children);
-        var cur = null;
-        kids.forEach(function (el) {
-            var isTitle = el.classList && el.classList.contains('section-title');
-            var isCta = el.classList && el.classList.contains('card') && !el.classList.contains('rep-ad');
-            if (isTitle) {
-                cur = document.createElement('div');
-                cur.className = 'dk-sec';
-                pad.insertBefore(cur, el);
-            } else if (isCta) {
-                cur = null; /* CTA و فوتر در ردیف تمام‌عرض خودشان */
-            }
-            if (cur && cur !== el) cur.appendChild(el);
-        });
+        /* ۴) گروه‌بندی بخش‌ها — عنوان + محتوایش تا عنوان بعدی */
+        if (!pad.getAttribute('data-dk-done')) {
+            pad.setAttribute('data-dk-done', '1');
+            var kids = Array.prototype.slice.call(pad.children);
+            var cur = null, secIdx = 0;
+            kids.forEach(function (el) {
+                var isTitle = el.classList && el.classList.contains('section-title');
+                var isFinalCta = el.classList && el.classList.contains('card') && !el.classList.contains('rep-ad');
+                if (isTitle) {
+                    cur = document.createElement('div');
+                    cur.className = 'dk-sec' + (secIdx === 0 ? ' dk-sec-sell' : secIdx === 1 ? ' dk-sec-buy' : ' dk-sec-rep');
+                    secIdx++;
+                    pad.insertBefore(cur, el);
+                } else if (isFinalCta) {
+                    cur = null;
+                    el.classList.add('dk-final');
+                }
+                if (cur && cur !== el) cur.appendChild(el);
+            });
 
-        /* بخش سوم (نماینده، شامل rep-ad) تمام‌عرض + ردیف‌های ۳ستونه */
-        var secs = pad.querySelectorAll('.dk-sec');
-        Array.prototype.slice.call(secs).forEach(function (s) {
-            if (s.querySelector('.rep-ad')) s.classList.add('dk-sec-wide');
-        });
+            /* ۵) بخش نماینده: کارت rep-ad → سربرگِ بخش (h3 + متن) */
+            var rep = pad.querySelector('.dk-sec-rep');
+            if (rep) {
+                var ad = rep.querySelector('.rep-ad');
+                if (ad) {
+                    var lead = document.createElement('div');
+                    lead.className = 'dk-lead';
+                    var h3 = ad.querySelector('h3'), p = ad.querySelector('.ra-tx') || ad.querySelector('p');
+                    if (h3) lead.appendChild(h3);
+                    if (p) lead.appendChild(p);
+                    ad.parentNode.replaceChild(lead, ad);
+                }
+                /* «یک صنف، چند درآمد» + دکمه → پانوشتِ وسچِ بخش
+                   (گروه‌بندی بالا خودشان را داخل rep آورده) */
+                var tagEl = null, btnEl = null;
+                Array.prototype.slice.call(rep.children).forEach(function (el) {
+                    if (el.tagName === 'DIV' && !el.classList.contains('rep-ad') &&
+                        !el.classList.contains('rows') && !el.classList.contains('dk-lead') &&
+                        el.textContent.indexOf('یک صنف') > -1 && !el.querySelector('button')) tagEl = el;
+                    if (el.classList.contains('ra-btn')) btnEl = el;
+                });
+                if (tagEl) tagEl.classList.add('dk-rep-tag');
+                if (btnEl) rep.appendChild(btnEl);
+
+                /* فوتر © */
+                var foot = null;
+                Array.prototype.slice.call(pad.children).forEach(function (el) {
+                    if (el !== rep && !el.classList.contains('dk-sec') && !el.classList.contains('dk-final') &&
+                        el.textContent.indexOf('©') > -1) foot = el;
+                });
+                if (foot) foot.classList.add('dk-foot');
+            }
+        }
     }
 
     /* ═══ ۰۳ ورود / ۰۲ ثبت‌نام ═══
-       اسپلیت‌اسکرین مینیمال: پنل برند (راست) + ستون فرم (چپ).
-       کپی DOM: فرزندان body در .dk-auth-form جمع می‌شوند، پنل
-       .dk-brand تزریق می‌شود و دکمهٔ ارسال از نوار چسبانِ پایین
-       به انتهای فرم می‌آید (الگوی فرم دسکتاپ — دکمه با فرم می‌ماند). */
+       اسپلیت حرفه‌ای: ستون فرمِ راست (کارت سفید ۴۶۰ وسچ) +
+       پانل برندِ چپِ تمام‌قد (گرادیان نارنجی + سه ویژگی + واترمارک). */
     function dkAuth(sec, id) {
         var body = sec.querySelector('.body');
         if (!body || body.getAttribute('data-dk-done')) return;
         body.setAttribute('data-dk-done', '1');
+        body.classList.add('dk-auth');
+
+        /* ۱) فرم: فرزندان body → کارت فرم + سربرگ فرم */
+        var card = document.createElement('div');
+        card.className = 'dkf-card';
+        while (body.firstChild) card.appendChild(body.firstChild);
+
+        var head = document.createElement('div');
+        head.className = 'dkf-h';
+        head.innerHTML = (id === 's-signup')
+            ? '<div class="dkf-t">ساخت حساب</div><div class="dkf-s">کمتر از ۲ دقیقه — با شمارهٔ موبایل</div>'
+            : '<div class="dkf-t">ورود به آی‌مچ</div><div class="dkf-s">یک قدم تا دفتر کارت</div>';
+        card.insertBefore(head, card.firstChild);
 
         var form = document.createElement('div');
         form.className = 'dk-auth-form';
-        while (body.firstChild) form.appendChild(body.firstChild);
+        form.appendChild(card);
 
+        /* ۲) پانل برند — سمت چپ (DOM بعد از فرم) */
         var brand = document.createElement('div');
         brand.className = 'dk-brand';
         var bullets = (id === 's-signup')
             ? [
-                'ثبت‌نام فقط با شمارهٔ موبایل — کمتر از ۲ دقیقه',
+                'ثبت‌نام فقط با شمارهٔ موبایل — بدون فرم طولانی',
                 'هم خریدار، هم فروشنده — یک حساب برای هر دو میز',
                 'هر وقت خواستی، نقش را از پروفایل عوض کن'
             ]
@@ -130,31 +251,136 @@ window.iMachDesktop = (function () {
             '<div class="dkb-tag">شعبهٔ آنلاین خرید و فروش عمدهٔ شما</div>' +
             '<div class="dkb-list">' +
             bullets.map(function (b) {
-                return '<div class="dkb-li"><svg><use href="#i-check"/></svg><span>' + b + '</span></div>';
+                return '<div class="dkb-li"><span class="dkb-ck"><svg><use href="#i-check"/></svg></span><span>' + b + '</span></div>';
             }).join('') +
-            '</div>';
+            '</div>' +
+            '<div class="dkb-wm" aria-hidden="true"><svg><use href="#i-logo"/></svg></div>';
 
-        body.appendChild(brand);   /* راست — خانهٔ اول گرید RTL */
-        body.appendChild(form);    /* چپ — ستون فرم */
-
-        /* دکمهٔ ارسال: از نوار چسبان به انتهای فرم */
+        /* ۳) دکمهٔ ارسال: از نوار چسبان → انتهای کارت فرم */
         var sb = sec.querySelector('.sticky-bar');
         if (sb) {
             var btn = sb.querySelector('.btn');
-            if (btn) form.appendChild(btn);
+            if (btn) card.appendChild(btn);
             sb.setAttribute('hidden', '');
-            sb.classList.add('dk-sticky-off');
         }
+
+        /* DOM: [فرم (راست) · برند (چپ)] */
+        body.appendChild(form);
+        body.appendChild(brand);
     }
 
-    /* ═══ ۱۹ میز خرید ═══
-       چیدمان کامل در CSS (گرید: سایدبار راست + محتوا؛ تب‌بار →
-       سایدبار عمودی با order/grid-area) — اینجا فقط علامت صفحه. */
-    function dkDesk() { /* CSS-only */ }
+    /* ═══ ۱۹/۰۴ میزها ═══
+       سایدبار راست (واژه‌نشان آی‌مچ با لوگو) + بدنهٔ وسچ +
+       تسک‌های «نیازمند اقدام» تک‌ستونه با شمارهٔ ترتیب. */
+    function dkDesk(sec) {
+        var tabbar = sec.querySelector('.tabbar');
+        if (tabbar && !tabbar.querySelector('.dk-side-brand')) {
+            var brand = document.createElement('div');
+            brand.className = 'dk-side-brand';
+            brand.innerHTML =
+                '<span class="dks-mark"><svg><use href="#i-logo"/></svg></span>' +
+                '<span class="dks-name">آی‌مچ</span>';
+            tabbar.insertBefore(brand, tabbar.firstChild);
+        }
 
-    /* ═══ عبور از نقطهٔ شکست: بازسازی صفحهٔ جاری ═══
-       چون show() از کش HTML خام می‌سازد، بازنمایی = اعمال/لغو
-       تمیز تبدیل‌ها (بدون حالت زندهٔ به‌جامانده). */
+        /* شمارهٔ ترتیب تسک‌ها — زیر هم، ترتیب همیشه پیدا */
+        var rows = sec.querySelectorAll('.rows .row');
+        var n = 0;
+        Array.prototype.forEach.call(rows, function (r) {
+            if (r.querySelector('.dk-ord')) return;
+            n++;
+            var ord = document.createElement('span');
+            ord.className = 'dk-ord';
+            ord.setAttribute('aria-hidden', 'true');
+            ord.textContent = window.iMach.faNum(n);
+            r.insertBefore(ord, r.firstChild);
+        });
+    }
+
+    /* ═══ ۰۵/۳۱ کاتالوگ ═══
+       صفحهٔ محتوایی + نوار ابزار افقی + گرید کالای روان (auto-fill). */
+    function dkCatalog(sec) {
+        sec.classList.add('dk-page', 'dk-catalog');
+    }
+
+    /* ═══ ۳۷ کالا ═══
+       دوستونه: مشخصات/قیمت/فروشنده (راست) + گالری چسبان (چپ). */
+    function dkProduct(sec) {
+        sec.classList.add('dk-page', 'dk-product');
+    }
+
+    /* ═══ ۲۵ استعلام جدید ═══
+       دوستونه: فرمِ کالاها (راست) + گیرندگان (چپ، چسبان). */
+    function dkRfqNew(sec) {
+        sec.classList.add('dk-page', 'dk-rfq');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var titles = body.querySelectorAll(':scope > .section-title');
+        if (titles.length < 2) return;
+        var splitAt = titles[1];
+
+        var main = document.createElement('div');
+        main.className = 'dkrf-main';
+        var side = document.createElement('div');
+        side.className = 'dkrf-side';
+
+        var kids = Array.prototype.slice.call(body.children);
+        var inSide = false;
+        kids.forEach(function (k) {
+            if (k === splitAt) inSide = true;
+            (inSide ? side : main).appendChild(k);
+        });
+        body.appendChild(main);
+        body.appendChild(side);
+    }
+
+    /* ═══ ۲۶ پیشنهادها ═══
+       گرید ۲ستونهٔ کارت‌های مقایسه + دکمهٔ «بستن استعلام» پهن. */
+    function dkOffers(sec) {
+        sec.classList.add('dk-page', 'dk-offers');
+    }
+
+    /* ═══ ۳۰ چت ═══
+       ستون گفتگوی ۹۰۰ وسچ — مثل میز کارِ یک اپ پیام‌رسان دسکتاپ. */
+    function dkChat(sec) {
+        sec.classList.add('dk-page', 'dk-chat');
+    }
+
+    /* ═══ جزئیات (مشتری/تأمین‌کننده/سفارش/پیشنهاد/پروفایل) ═══
+       دوستونه: اولین کارتِ محتوایی → ستون راستِ چسبان؛ بقیه → جریان. */
+    function dkDetail(sec) {
+        sec.classList.add('dk-page', 'dk-detail');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var kids = Array.prototype.slice.call(body.children);
+        var side = null, i, k;
+        for (i = 0; i < kids.length; i++) {
+            k = kids[i];
+            if (k.hidden) continue;
+            if (k.classList.contains('hint-line') || k.classList.contains('section-title')) continue;
+            side = k; break;
+        }
+        if (!side) return;
+
+        var main = document.createElement('div');
+        main.className = 'dkd-main';
+        kids.forEach(function (el) { if (el !== side) main.appendChild(el); });
+        side.classList.add('dkd-side');
+        body.appendChild(side);
+        body.appendChild(main);
+    }
+
+    /* ═══ ۲۰ لیست خرید ═══
+       صفحهٔ پهن + نوار چهار دکمه‌ای افقی + ردیف‌های پهن. */
+    function dkBuyList(sec) {
+        sec.classList.add('dk-page', 'dk-list', 'dk-blist');
+    }
+
+    /* ═══ عبور از نقطهٔ شکست: بازسازی صفحهٔ جاری ═══ */
     function onMq() {
         var core = window.iMach;
         var cur = core && core.getCurrentScreen && core.getCurrentScreen();

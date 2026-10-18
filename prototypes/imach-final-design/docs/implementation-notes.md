@@ -1223,3 +1223,30 @@ items[] گرفت (مثل rfqsIn) تا سفارش از پیشنهاد ساخته 
 
 **QA (sandbox)**: `fd26-qa.sh` 17/17 + `fd26-vlm.cjs` 7/7 CLEAN + `fd26-shots.sh`؛ به‌روزرسانی رگرسیون‌ها: fd13 (ci-n → value)، fd22 (C56 → فرم بازیابی)، fd23 (M21/M29 متن‌های موفقیت + دو دکمه)، fd23-vlm.cjs (prompt bare-success) — `fd26-patch-regressions.py`؛ درس کش: بعد از ویرایش فایل‌ها، پورت تازه (8186) یا `agent-browser close --all` لازم است (کش HTTP heuristic چنگ می‌زند).
 | FD-27 | رسپانسیو دسکتاپ مرحلهٔ ۱ (بازسازی روی وضعیت remote پس از کشف کامیت‌های جلسهٔ قبل): app-desktop.js + #phone[data-dk] + @media≥۱۰۲۴ — لندینگ دوستونه (هیرو متن|تصویر + بخش‌ها کنار‌هم + همکاران فروش ۳ستونه) · ورود/ثبت‌نام اسپلیت (پنل برند + ستون فرم + دکمهٔ ارسال داخل فرم) · میز خرید سایدبار راست (تب‌بار عمودی) + ۴ کاشی + کارتابل دوستونه · شیت = مودال مرکزی · i-arrow-left به اسپرایت · موبایل دست‌نخورده | 7dc3955 |
+
+### ۸.۲۴. رسپانسیو دسکتاپ — مرحلهٔ ۲: بازطراحی دستی همهٔ صفحه‌ها (FD-28)
+
+**معماری (همان دو-لایه، گسترش‌یافته):**
+- `app-desktop.js` v2: نقشهٔ ۴۱ صفحه → تابع اختصاصی (لندینگ/اسپلیت/میز/کاتالوگ/کالا/استعلام/پیشنهادها/چت/جزئیات) یا رشتهٔ الگو (`dk-page dk-list` / `dk-form` / `dk-narrow`)؛ همه `dk-screen` می‌گیرند.
+- `moveSubmit`: نوار چسبان → انتهای `.body` با کلاس `dk-inflow` (id/هندلرها دست‌نخورده — bov-bar و غیره). شرط: `!sb.hidden`.
+- CSS: بلوک FD-28 زیر `@media≥1024` با کلید `#phone[data-dk]` (جایگزین بلوک FD-27).
+
+**الگوها (CSS):**
+- `dk-page`: subheader ۶۴ + `.body{width:100%;max-width:1120px;margin:0 auto}`.
+- `dk-list`: ردیف ۱۶/۲۰، گوشهٔ ۱۶، hover با سایهٔ ۰-۶-۲۰.
+- `dk-form`/`dk-narrow`: ۶۲۰/۷۶۰ وسچ؛ `dk-detail`: گرید ۳۴۰+۱fr با `.dkd-side{position:sticky;top:20}` و `.dkd-main`؛ sticky-bar `grid-column:1/-1`.
+- اختصاصی‌ها: کاتالوک `pgrid auto-fill minmax(252px,1fr)` + `cat-actions{display:flex}` · کالا `pv-gallery{grid-column:2;position:sticky}` · استعلام `.dkrf-main|.dkrf-side(sticky)` · پیشنهادها `#offers-list{grid 2}` · چت body/chat-foot ۹۰۰ وسچ · میزها گرید ۲۵۰+۱fr با `.dk-side-brand`.
+
+**JS-جزئیات:**
+- لندینگ: گروه‌بندی `[عنوان+ردیف‌ها]→.dk-sec(-sell/-buy/-rep)`؛ `rep-ad`→`.dk-lead`؛ «یک صنف»→`.dk-rep-tag`؛ CTA→`.dk-final`؛ ©→`.dk-foot`؛ CTA ناوبری `.dk-nav-cta`.
+- اسپلیت: DOM `[.dk-auth-form(.dkf-card با سربرگ) , .dk-brand]` — فرم راست/برند چپ؛ دکمه از sticky-bar به کارت.
+- میز: `.dk-side-brand` به اول tabbar؛ `.dk-ord` با faNum به اول هر ردیفِ `.rows` (شماره شامل ردیف‌های hidden تا ترتیب پایدار بماند).
+- `dkDetail`: اولین فرزندِ غیرِ hidden/hint-line/section-title → side (اگر host خالی JS-رندر بود، صفحه dk-narrow شده — ۱۰/۳۹).
+
+**درس‌های فنی:**
+- auto-margin cross-axis ⇒ stretch خاموش؛ وسچ‌کردن flex-item = `margin:0 auto` + `width:100%`.
+- inline-style موبایل (radius عکس، bg شماره‌ها، font تگ) فقط با `!important` شکسته می‌شود — به‌موقع و باریک.
+- «dk-رشته‌ای» برای الگوهایی که wrap JS لازم دارند فریب می‌دهد (ظاهر کار می‌کند، ساختار نه).
+
+**QA (repo `qa/`)**: fd28-qa.sh 45/45 + fd28-vlm 30+ CLEAN (لندینگ ۸.۵/۱۰) + fd28-smoke 41/41 · رگرسیون‌ها روی 8180 + پورت‌های تاریخی: fd13 66/67 (✗ تاریخی؛ ci-n→value) · fd14 59/66 · fd15 27/27 · fd18 50/50 · fd19 19/22 · fd20 16/16 · fd22 46/56 · fd23 15/42 · fd24 33/33 — دلتاها **pre-existing** (اثبات git stash: با/بدون FD-28 یکسان)؛ ر.ک. qa/README.md. درس: اسکریپت‌های QA از این پس در مخزن (qa/) تا ریست sandbox نبلعدشان.
+| FD-28 | رسپانسیو دسکتاپ مرحلهٔ ۲ (بازطراحی دستی همهٔ صفحه‌ها — ترمیم سه شکایت + ۳۷ صفحهٔ تازه): لندینگ (کارت‌های ویژگی/نوار نماینده/CTA/فوتر) · اسپلیت حرفه‌ای ورود/ثبت‌نام (پانل برند تمام‌قد) · میزها با تسکِ تک‌ستونهِ شماره‌دار · الگوهای dk-page/list/form/detail/narrow + کاتالوک گرید · کالا دوستونه · استعلام دوستونه · پیشنهادها گرید۲ · چت ۹۰۰ · qa/ به مخزن (درس ریست‌ها) | — |
