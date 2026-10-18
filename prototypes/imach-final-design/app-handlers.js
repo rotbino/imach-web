@@ -509,17 +509,20 @@
         if (t.closest('#cart-track')) { core.forms.guestOrderTrack(); return; }
         if (t.closest('#cart-continue')) { core.forms.guestCartContinue(); return; }
 
-        /* ═══ FD-14/FD-22 — افزودن کالاهای کاتالوگ به لیست خرید (۳۱) ═══
+        /* ═══ FD-14/FD-22/FD-25 — افزودن کالاهای کاتالوگ به لیست خرید (۳۱) ═══
            نوار (فقط مشتیِ ذخیره‌کرده) → شیت انتخاب: سرچ + گروه +
            ردیف‌های تک‌ستونه + مقدار/دورهٔ الزامی + «افزودن n کالا» ⇒
-           DATA.shoppingList. لمس pill دوره/ input مقدار = تیک ردیف
-           نمی‌خورد (فقط خود ردیف) */
+           DATA.shoppingList. لمس فیلدهای مقدار/دوره (FD-25: داخل
+           .pl-flds — input و کمبو) تیک ردیف را نمی‌زند (فقط خود ردیف). */
         if (t.closest('#guest-addlist-btn')) { core.forms.picklistOpen(); return; }
-        var plPer = t.closest('[data-pl-per]');
-        if (plPer) { core.forms.picklistPer(plPer.dataset.plPer, plPer.dataset.val); return; }
+        var plPer = t.closest('select[data-pl-per]');
+        if (plPer) { core.forms.picklistPer(plPer.dataset.plPer, plPer.value); return; }
         var plItem = t.closest('[data-pl-item]');
-        if (plItem && !t.closest('input') && !t.closest('.pill')) { core.forms.picklistToggle(plItem.dataset.plItem); return; }
+        if (plItem && !t.closest('input') && !t.closest('.pl-flds')) { core.forms.picklistToggle(plItem.dataset.plItem); return; }
         if (t.closest('#pl-add')) { core.forms.picklistAdd(); return; }
+        /* FD-25 — دکمه‌های نمای موفقیت: مقصد روشن / ادامه */
+        if (t.closest('#pl-golist')) { core.forms.picklistGoList(); return; }
+        if (t.closest('#pl-continue')) { core.forms.picklistContinue(); return; }
 
         /* جریان ذخیره: مزایا (آکاردئون FD-10) → حساب → پنل */
         if (t.closest('#bene-toggle')) { core.forms.guestBeneToggle(); return; }
@@ -1073,8 +1076,10 @@
         if (t.id === 'of-cash-pct') { core.forms.offerPctSync('cash'); return; }
         if (t.id === 'of-chk-days') { core.forms.offerDaysSync(); return; }
         if (t.id === 'pl-search') { core.forms.picklistSearch(t.value); return; }
-        /* FD-22 — مقدار خرید ردیف‌های شیت ۳۱ (در state ذنده) */
+        /* FD-22 — مقدار خرید ردیف‌های شیت ۳۱ (در state زنده) */
         if (t.dataset && t.dataset.plQty) { core.forms.picklistQty(t.dataset.plQty, t.value); return; }
+        /* FD-25 — کمبوی دورهٔ خرید شیت ۳۱ (روی select رویداد input هم می‌آید) */
+        if (t.dataset && t.dataset.plPer) { core.forms.picklistPer(t.dataset.plPer, t.value); return; }
     });
 
     /* ═══ FD-15: Enter در باکس بارکد = «تطبیق» — اسکنر واقعی (دستگاه

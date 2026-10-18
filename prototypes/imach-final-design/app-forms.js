@@ -1947,13 +1947,15 @@
         guestCartSync();
     }
 
-    /* ─── FD-23 — «کالاهای موردنیاز تو در این کاتالوک» (۳۱) ───
-       قرینهٔ نوار تطبیق ۳۲ در سمت کاتالوگ (حکم مالک: «دقیقا این کار
+    /* ─── FD-23/FD-25 — بخش «در لیست خرید شما» (۳۱) ───
+       قرینهٔ تطبیق ۳۲ در سمت کاتالوگ (حکم مالک FD-23: «دقیقا این کار
        رو سمت کاتالوگ هم انجام بدیم»): محصولات این کاتالوک که در
-       لیست خریدِ بیننده هست → بخش بالایی جدا «کالاهای موردنیاز تو
-       در این کاتالوک» + بجِ «در لیست خریدت» روی همان کارت‌ها؛
-       بقیه زیر «سایر محصولات این فروشنده» (حدس مالک: «شاید دو لیست
-       جدا بد نباشه» — ترکیبِ بالاتر‌آوردن + بج، بدون شلوغی).
+       لیست خریدِ بیننده هست → بخش بالایی جدا؛ بقیه زیر «سایر محصولات
+       این فروشنده» (دو لیست جدا).
+       FD-25 (حکم مالک): عنوان بخش = «در لیست خرید شما» و بج سبز
+       «در لیست خریدت» از کارت‌ها حذف شد — «دیگه اون بچ سبز رنگ در
+       لیست خریدت رو از داخل آیتم‌ها بردار که شلوغ نشه»؛ عنوان و
+       جدا بودن بخش همان پیام را می‌دهد (مینیمال اما گویا).
        فقط برای مشتریِ ذخیره‌کرده (GUEST_SAVED) — مهمانِ تازه‌ورود
        لیست خریدی ندارد و کاتالوگ تمیز می‌ماند (قاعدهٔ FD-12 + ترس
        مالک از شلوغی کاتالوگ)؛ پیش‌نمایش فروشنده هم «دید دیگران»
@@ -1998,7 +2000,9 @@
 
         /* کارت‌های مچ‌شده — همان زبانِ کارت کاتالوگ (کلیک‌ها با
            همان data-guest-card / data-add-cart / data-view-price
-           به هندلرهای موجود می‌رسند) + بجِ سبز «در لیست خریدت». */
+           به هندلرهای موجود می‌رسند). FD-25: بدون بج «در لیست
+           خریدت» — عنوان بخش خودش گویاست (حکم مالک: ضدشلوغی)؛
+           فقط بج موجودی مانده. */
         if (grid) {
             grid.innerHTML = matched.map(function (l) {
                 var stBadge = l.status === 'low'
@@ -2015,7 +2019,7 @@
                         '<div class="pmin">حداقل خرید ' + faNum(l.min || 1) + ' ' + _unitWord(l) + '</div>' +
                         '<div class="pprice">' + faMoney(l.price) + ' <small>تومان</small></div>' +
                         '<button class="price-cta" type="button" data-view-price="' + esc(l.id) + '"><svg><use href="#i-eye"/></svg> مشاهده قیمت</button>' +
-                        '<div class="pmeta"><span class="badge b-need"><svg><use href="#i-check"/></svg> در لیست خریدت</span>' + stBadge + '</div>' +
+                        '<div class="pmeta">' + stBadge + '</div>' +
                     '</div>' +
                 '</div>';
             }).join('');
@@ -3224,7 +3228,21 @@
        است («قبل از اضافه شدن به لیست خرید باید مقدار خرید و دوره خرید
        رو برای هر کالا مشخص کنه»). مقدار پیش‌فرض = حداقل خرید همان
        کالا (پیشنهاد سیستم — کاربر عوضش می‌کند). رندرها مقدارهای
-       تایپ‌شده را از PICK.qty/PICK.per می‌خوانند (نمی‌ریزد). */
+       تایپ‌شده را از PICK.qty/PICK.per می‌خوانند (نمی‌ریزد).
+       FD-25 (حکم مالک — طراحی کارت ردیف بازطراحی شد):
+         · فیلدها تمام‌عرض زیر سربرگ ردیف می‌نشینند (خارج از ستون
+           باریکِ متن) — قبلاً «مقدار خرید و دوره خرید از کادر می‌زد
+           بیرون»: فیلدها داخل .pl-tx (ستون کنار بندانگشتی) گیر
+           می‌کردند و در عرض کم له/سرریز می‌شدند.
+         · «دورهٔ خرید» کمبوی select است (هفتگی/دوهفتگی/ماهانه —
+           واژگان redesign-base)، نه دو دکمهٔ pill؛ در پیاده‌سازی
+           واقعی همین select با دوره‌های آزادِ کسب‌وکار پر می‌شود.
+         · واحد مقدار در لیبل فیلد (الگوی «— تومان» فرم قیمت):
+           «مقدار خرید — کیسه»؛ واحد از بسته‌بندی کالا (کاتالوک
+           فروشنده) می‌آید و مقدار خرید همیشه با واحد ذخیره می‌شود.
+         · پس از افزودن، شیت به نمای موفقیت می‌رود (pl-ok) — حکم
+           مالک: پیام «کالاها به لیست خریدت اضافه شد» + دکمهٔ
+           «مشاهده لیست خرید در پنل آیمچ» زیرش. */
     var PICK = { sel: {}, q: '', gid: '', qty: {}, per: {} };
 
     function picklistOpen() {
@@ -3232,6 +3250,10 @@
         PICK.qty = {}; PICK.per = {};
         var s = $('#pl-search');
         if (s) s.value = '';
+        /* FD-25: ریست نماها — بازشدن بعدی همیشه با فرم تمیز */
+        var v = $('#pl-view'), ok = $('#pl-ok');
+        if (v) v.hidden = false;
+        if (ok) ok.hidden = true;
         picklistRender();
         core.openSheet('sheet-picklist');
     }
@@ -3260,12 +3282,18 @@
             var per = PICK.per[l.id] || '';
             var flds = (sel && !inList)
                 ? '<div class="pl-flds">' +
-                    '<div class="pl-f"><label>مقدار خرید</label>' +
+                    '<div class="pl-f"><label>مقدار خرید <span class="opt">— ' + _unitWord(l) + '</span></label>' +
                     '<div class="input"><input data-pl-qty="' + esc(l.id) + '" inputmode="numeric" autocomplete="off" value="' + esc(qv) + '" placeholder="حداقل ' + faNum(l.min || 1) + '"></div></div>' +
-                    '<div class="pl-f"><label>دورهٔ خرید</label><div class="pl-per">' +
-                        '<button class="pill' + (per === 'هفتگی' ? ' active' : '') + '" type="button" data-pl-per="' + esc(l.id) + '" data-val="هفتگی">هفتگی</button>' +
-                        '<button class="pill' + (per === 'ماهانه' ? ' active' : '') + '" type="button" data-pl-per="' + esc(l.id) + '" data-val="ماهانه">ماهانه</button>' +
-                    '</div></div>' +
+                    '<div class="pl-f"><label>دورهٔ خرید</label>' +
+                        '<div class="input pl-sel">' +
+                            '<select data-pl-per="' + esc(l.id) + '" aria-label="دورهٔ خرید ' + esc(l.name) + '">' +
+                                '<option value=""' + (per ? '' : ' selected') + ' disabled>انتخاب دوره</option>' +
+                                '<option value="هفتگی"' + (per === 'هفتگی' ? ' selected' : '') + '>هفتگی</option>' +
+                                '<option value="دوهفتگی"' + (per === 'دوهفتگی' ? ' selected' : '') + '>دوهفتگی</option>' +
+                                '<option value="ماهانه"' + (per === 'ماهانه' ? ' selected' : '') + '>ماهانه</option>' +
+                            '</select>' +
+                            '<svg><use href="#i-chevd"/></svg>' +
+                        '</div></div>' +
                   '</div>'
                 : '';
             return '<div class="pl-row' + (sel ? ' on' : '') + (inList ? ' in-list' : '') + '"' +
@@ -3273,8 +3301,10 @@
                 '<span class="pl-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span>' +
                 '<div class="pl-th"><img src="' + esc(l.img) + '" alt=""></div>' +
                 '<div class="pl-tx"><b>' + esc(l.name) + '</b>' +
-                    '<small>' + esc(l.pack) + (l.min ? ' · حداقل ' + faNum(l.min) : '') + '</small>' +
-                    flds + '</div>' +
+                    '<small>' + esc(l.pack) + (l.min ? ' · حداقل ' + faNum(l.min) : '') + '</small></div>' +
+                /* FD-25: فیلدها تمام‌عرض زیر سربرگ ردیف — نه داخل .pl-tx
+                   (ستون باریک کنار بندانگشتی) که «از کادر نزنند بیرون» */
+                flds +
                 (inList ? '<span class="pl-inlist"><span class="badge b-green">در لیست هست</span></span>' : '') +
             '</div>';
         }).join('') : '<div class="pl-empty">کالایی با این جستجو پیدا نشد</div>';
@@ -3319,14 +3349,39 @@
         picklistRender();
     }
 
-    /* مقدار/دورهٔ یک کالا — از input ها و pill ها (app-handlers) */
+    /* مقدار/دورهٔ یک کالا — از input مقدار و کمبوی دوره (app-handlers) */
     function picklistQty(lid, val) {
         PICK.qty[lid] = val;
         picklistBtnSync();
     }
+    /* FD-25: دوره از کمبو می‌آید (select data-pl-per) — مقدار خالی
+       (option placeholder) معتبر نیست و دکمهٔ افزودن خاموش می‌ماند */
     function picklistPer(lid, val) {
-        PICK.per[lid] = val;
+        PICK.per[lid] = val || '';
         picklistRender();
+    }
+
+    /* ═══ FD-25 — دکمه‌های نمای موفقیت شیت ۳۱ ═══
+       «مشاهده لیست خرید در پنل آیمچ»: مقصد روشن (۲۰) — همان الگوی
+       guestOrderTrack («پیگیری سفارش در میز خرید»): بستن شیت +
+       ریست پشته + رفتن مستقیم؛ در پیاده‌سازی واقعی همین دکمه
+       deep-link میز خریدِ همان کسب‌وکار خریدار است.
+       «ادامهٔ خرید»: کاربر در همان کاتالوگ می‌ماند — نما ریست می‌شود
+       تا بازشدن بعدی شیت با فرم تمیز باشد. */
+    function picklistGoList() {
+        core.closeSheet('sheet-picklist');
+        picklistOkReset();
+        core.resetStack();
+        core.show('s-buy-list', false);
+    }
+    function picklistContinue() {
+        core.closeSheet('sheet-picklist');
+        picklistOkReset();
+    }
+    function picklistOkReset() {
+        var v = $('#pl-view'), ok = $('#pl-ok');
+        if (v) v.hidden = false;
+        if (ok) ok.hidden = true;
     }
 
     function picklistAdd() {
@@ -3348,9 +3403,21 @@
             });
             added++;
         });
-        core.closeSheet('sheet-picklist');
-        if (added) toast(faNum(added) + ' کالا با مقدار و دورهٔ خرید به لیست اضافه شد', 'success');
-        else toast('این کالاها از قبل در لیست خریدت هستند', 'error');
+        /* FD-25 (حکم مالک): نتیجه در خودِ شیت پیام می‌شود — «کالاها به
+           لیست خریدت اضافه شد» + دکمهٔ «مشاهده لیست خرید در پنل آیمچ»
+           زیرش؛ توستِ رانده‌شده حذف شد (شیت بسته نمی‌شود تا کاربر خودش
+           انتخاب کند: رفتن به لیست یا ادامهٔ خرید). ضدتکرار کامل =
+           پیام خطا همان توست خطاست. */
+        if (added) {
+            var v = $('#pl-view'), ok = $('#pl-ok'), sub = $('#pl-ok-sub');
+            if (v) v.hidden = true;
+            if (ok) ok.hidden = false;
+            if (sub) sub.textContent = faNum(added) + ' کالا با مقدار و دورهٔ خریدی که مشخص کردی — در میز خرید آیمچ آمادهٔ استعلام است.';
+            /* کاشی ۱۹ زنده می‌شود (renderBuyDesk در show-hook) */
+        } else {
+            core.closeSheet('sheet-picklist');
+            toast('این کالاها از قبل در لیست خریدت هستند', 'error');
+        }
     }
 
     core.registerShowHook('s-sell-add', addReset);
@@ -4015,6 +4082,9 @@
         picklistQty: picklistQty,
         picklistPer: picklistPer,
         picklistAdd: picklistAdd,
+        /* FD-25 — دکمه‌های نمای موفقیت شیت ۳۱ */
+        picklistGoList: picklistGoList,
+        picklistContinue: picklistContinue,
 
         /* ═══ FD-22 — کپی از کاتالوگ + تصمیم‌های ۹گانه ═══ */
         ccOpen: ccOpen,
