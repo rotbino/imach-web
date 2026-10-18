@@ -482,8 +482,12 @@
             BLG.inq = (core.data.rfqsOut || []).filter(function (r) {
                 return r.status === 'current' && r.businessId === 'b2';
             }).map(function (r) {
-                var nm = String(r.itemName || '').split(' · ')[0];
-                var it = blgItemByName(nm);
+                /* FD-24: استعلام چندقلمی روی کارت افقی = نام قلم اول +
+                   «+n قلم» (نه «n قلمی» که برای بینندهٔ عمومی بی‌معناست) */
+                var its = r.items || [];
+                var base = its.length ? its[0].name : String(r.itemName || '').split(' · ')[0];
+                var nm = base + (its.length > 1 ? ' +' + faNum(its.length - 1) + ' قلم' : '');
+                var it = blgItemByName(base);
                 return { name: nm, img: r.img, daysLeft: r.daysLeft, offers: r.offersCount, itemId: it ? it.id : '' };
             });
             BLG.conditions = ((core.data.buyListInfo || {}).conditions) || '';
@@ -493,9 +497,12 @@
             }).length;
         }
 
-        /* ═══ FD-23 — تطبیق کالاهای موردنیازِ طرف با کاتالوک خودم ═══
-           مبنای نوار «شما تأمین‌کنندهٔ … هستید» + سورت ردیف‌ها +
-           نشان‌ها + pre-fill شیت پیشنهاد. در محصول واقعی این تطبیق
+        /* ═══ FD-23/FD-25 — تطبیق کالاهای موردنیازِ طرف با کاتالوک خودم ═══
+           مبنای سورت ردیف‌ها + آیکون تطبیق + pre-fill شیت پیشنهاد.
+           FD-25: نوار بالایی (ms-strip) حذف شد — تطبیق فقط در خودِ
+           ردیف‌ها دیده می‌شود (حکم مالک: «در عوض در بخش کالاهای
+           موردنیاز، اونایی رو که فروشنده داره بیار بالاتر نشون بده با
+           یه آیکون تطابق خاص جلوی عنوان»). در محصول واقعی این تطبیق
            سمت سرور و روی goodId است و نتیجه‌اش با کاتالوگِ بیننده
            کش می‌شود (جدول match بین دو کسب‌وکار). */
         BLG.match = {};
@@ -503,7 +510,6 @@
             var m = blgMatchOf(it);
             if (m) BLG.match[it.id] = m;
         });
-        blgMatchRender();
 
         /* hero — هویت صاحب لیست */
         var av = $('#blg-av');
@@ -516,8 +522,9 @@
         var st2 = $('#blg-st-sups'); if (st2) st2.textContent = faNum(BLG.supsCount);
         var st3 = $('#blg-st-views'); if (st3) st3.textContent = faNum(BLG.views);
 
-        /* لینک شرایط — فقط اگر خریدار نوشته باشد (مینیمال: فقط لینک) */
-        var cl = $('#blg-cond-link'); if (cl) cl.hidden = !BLG.conditions;
+        /* آیکون شرایط تامین — FD-25: از کادر حذف‌شدهٔ بالای صفحه به
+           هدر شیت پیشنهاد رفت؛ فقط اگر خریدار نوشته باشد (مینیمال) */
+        var ci = $('#supply-cond-ic'); if (ci) ci.hidden = !BLG.conditions;
 
         /* نوار «افزودن کالاهای این لیست» — فقط لیستِ دیگری (۳۲ از دفتر
            مشتری)؛ لیست خودت را به خودت اضافه نمی‌کنی. */
@@ -542,15 +549,14 @@
             }
         }
 
-        /* ═══ FD-23 — نوار «شما تأمین‌کنندهٔ این کالاهای موردنیاز این
-           خریدار هستید» بالاتر از همه رندر شده (blgMatchRender بعد
-           از محاسبهٔ تطبیق — حکم مالک: «بیاریم بالا و بصورت نوار
-           افقی جداگانه»؛ مینیمال اما گویا). چیپ = کالا + قیمت/حداقل
-           من؛ لمس = شیت پیشنهاد با همان کالا پیش‌انتخاب. */
-
-        /* کالاهای موردنیاز — FD-23: ردیف‌های مچ‌شده با کاتالوک من
-           بالاتر سورت می‌شوند + نشان «در کاتالوک تو» (حکم مالک:
-           «اون کالاها بر اساس کالاهای فروشنده سورت بشه بیاد بالا») */
+        /* ═══ FD-23/FD-25 — کالاهای موردنیاز: ردیف‌های مچ‌شده با کاتالوک
+           من بالاتر سورت می‌شوند (حکم مالک FD-23: «اون کالاها بر اساس
+           کالاهای فروشنده سورت بشه بیاد بالا») + آیکون تطابق سبز جلوی
+           عنوان (حکم مالک FD-25: «با یه آیکون تطابق خاص جلوی عنوان یا
+           جای مناسبتر — این بهتره، باعث شلوغی هم نمیشه»)؛ نشان متنی
+           «در کاتالوک تو» حذف شد — آیکون + tooltip همان پیام را کم‌شلوغ‌تر
+           می‌دهد؛ حاشیهٔ سبزِ ظریف ردیف هم کمک می‌کند. در پیاده‌سازی
+           واقعی آیکون = خوانش سریع «این قلم نزد من هست» بدون اسکن متن. */
         var gb = $('#blg-goods-b'); if (gb) gb.textContent = faNum(BLG.items.length) + ' کالا';
         var host = $('#blg-rows');
         if (host) {
@@ -562,8 +568,9 @@
                 return '<div class="row static blg-row' + (m ? ' blg-matched' : '') + '">' +
                     '<div class="thumb thumb-md"><img src="' + esc(it.img) + '" alt=""></div>' +
                     '<div class="row-body">' +
-                        '<div class="row-title">' + esc(it.name) +
-                            (m ? ' <span class="badge b-green">در کاتالوک تو</span>' : '') + '</div>' +
+                        '<div class="row-title">' +
+                            (m ? '<span class="blg-mic" title="در کاتالوک تو" aria-label="در کاتالوک تو"><svg><use href="#i-verified"/></svg></span>' : '') +
+                            esc(it.name) + '</div>' +
                         '<div class="row-sub">' + esc(it.q || it.pack || '') + '</div>' +
                     '</div>' +
                     '<button class="blg-offer" type="button" data-blg-offer="' + esc(it.id) + '">' +
@@ -577,25 +584,12 @@
         if (ss) ss.textContent = 'کالاها را با قیمت و حداقل سفارش انتخاب کن — از کاتالوک خودت خودکار پر می‌شود؛ یا فقط درخواست بده.';
     }
 
-    /* ═══ FD-23 — نوار تطبیق (ms-strip) ═══ */
-    function blgMatchRender() {
-        var sec = $('#blg-match');
-        if (!sec) return;
-        var matched = BLG.items.filter(function (it) { return BLG.match[it.id]; });
-        if (!matched.length) { sec.hidden = true; return; }
-        sec.hidden = false;
-        var row = $('#blg-match-row');
-        if (row) {
-            row.innerHTML = matched.map(function (it) {
-                var m = BLG.match[it.id];
-                return '<button class="ms-chip" type="button" data-blg-offer="' + esc(it.id) + '">' +
-                    '<span class="ms-th"><img src="' + esc(it.img) + '" alt=""></span>' +
-                    '<span class="ms-tx"><b>' + esc(it.name) + '</b>' +
-                        '<small>' + moneyFmt(m.price) + ' تومان · حداقل ' + faNum(m.min || 1) + '</small></span>' +
-                '</button>';
-            }).join('');
-        }
-    }
+    /* ═══ FD-23/FD-25 — نوار تطبیق (ms-strip) حذف شد ═══
+       حکم مالک FD-25: «این کادر شما تأمین‌کنندهٔ این کالاهای موردنیاز
+       این خریدار هستید رو بردار. در عوض در بخش کالاهای موردنیاز
+       اونایی رو که فروشنده داره بیار بالاتر نشون بده با یه آیکون
+       تطابق خاص جلوی عنوان» — سورت + آیکون در blgRender انجام
+       می‌شود؛ تابع رندر نوار و خود نوار (screens/32) حذف شدند. */
 
     /* ═══ شیت «پیشنهاد تامین» — دید عمومی لیست (۳۲) ═══
        FD-22: pre = id کالایی که بیننده روی «پیشنهاد»/چیپِ تطبیق/کارتِ
@@ -848,8 +842,27 @@
     function listpickOpen() {
         LP.sel = {}; LP.q = '';
         var s = $('#lp-search'); if (s) s.value = '';
+        /* FD-25: ریست نماها — بازشدن بعدی همیشه با فرم تمیز */
+        lpOkReset();
         lpRender();
         core.openSheet('sheet-listpick');
+    }
+
+    /* ═══ FD-25 — نمای موفقیت شیت ۳۲ (همان الگوی ۳۱) ═══ */
+    function lpOkReset() {
+        var v = $('#lp-view'), ok = $('#lp-ok');
+        if (v) v.hidden = false;
+        if (ok) ok.hidden = true;
+    }
+    function lpGoList() {
+        core.closeSheet('sheet-listpick');
+        lpOkReset();
+        core.resetStack();
+        core.show('s-buy-list', false);
+    }
+    function lpContinue() {
+        core.closeSheet('sheet-listpick');
+        lpOkReset();
     }
 
     function lpInList(it) {
@@ -906,10 +919,16 @@
             });
             added++;
         });
-        core.closeSheet('sheet-listpick');
+        /* FD-25 (حکم مالک): نتیجه در خودِ شیت — «کالاها به لیست خریدت
+           اضافه شد» + دکمهٔ «مشاهده لیست خرید در پنل آیمچ» زیرش؛
+           توستِ رانده‌شده حذف شد (همان الگوی ۳۱/pl-ok). */
         if (added) {
-            toast(faNum(added) + ' کالا به لیست خریدت اضافه شد', 'success');
+            var v = $('#lp-view'), ok = $('#lp-ok'), sub = $('#lp-ok-sub');
+            if (v) v.hidden = true;
+            if (ok) ok.hidden = false;
+            if (sub) sub.textContent = faNum(added) + ' کالا از لیست ' + BLG.buyer.name + ' — در میز خرید آیمچ آمادهٔ استعلام است.';
         } else {
+            core.closeSheet('sheet-listpick');
             toast('این کالاها از قبل در لیست خریدت هستند', 'error');
         }
     }
@@ -1002,14 +1021,17 @@
             return;
         }
 
-        /* شیت شرایط درخواست تامین */
-        if (t.closest('#blg-cond-link')) { condOpen(); return; }
+        /* شیت شرایط درخواست تامین — FD-25: آیکون داخل هدر شیت پیشنهاد */
+        if (t.closest('#supply-cond-ic')) { condOpen(); return; }
 
-        /* ═══ FD-22/FD-23 — شیت افزودن کالاهای این لیست (تک‌مقصد) ═══ */
+        /* ═══ FD-22/FD-23/FD-25 — شیت افزودن کالاهای این لیست (تک‌مقصد) ═══ */
         if (t.closest('#blg-addstrip')) { listpickOpen(); return; }
         var lpRow = t.closest('[data-lp-item]');
         if (lpRow) { lpToggle(lpRow.dataset.lpItem); return; }
         if (t.closest('#lp-add')) { lpAdd(); return; }
+        /* FD-25 — دکمه‌های نمای موفقیت: مقصد روشن / بستن */
+        if (t.closest('#lp-golist')) { lpGoList(); return; }
+        if (t.closest('#lp-continue')) { lpContinue(); return; }
 
         /* ═══ FD-22 — ویرایش شرایط تامین (۲۰) ═══ */
         if (t.closest('#buylist-cond')) { buycondOpen(); return; }

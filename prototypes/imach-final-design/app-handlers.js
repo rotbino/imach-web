@@ -330,9 +330,42 @@
             return;
         }
 
+        /* ─── FD-24: تعاملات استعلام چندقلمی (۲۵) ───
+           استپر مقدار قلم · حذف قلم · افزودن کالا (شیت) ·
+           انتخاب از شیت · تأیید شیت */
+        var rfqQ = t.closest('[data-rfq-qty]');
+        if (rfqQ && core.forms.rfqQtyStep) {
+            core.forms.rfqQtyStep(parseInt(rfqQ.dataset.rfqQty, 10), rfqQ.dataset.dir);
+            return;
+        }
+        var rfqR = t.closest('[data-rfq-rm]');
+        if (rfqR && core.forms.rfqItemRemove) {
+            core.forms.rfqItemRemove(parseInt(rfqR.dataset.rfqRm, 10));
+            return;
+        }
+        if (t.closest('#rfq-add-btn') && core.forms.rfqPickOpen) {
+            core.forms.rfqPickOpen();
+            return;
+        }
+        var rfp = t.closest('[data-rfp-item]');
+        if (rfp && core.forms.rfqPickAdd) {
+            core.forms.rfqPickAdd(rfp.dataset.rfpItem);
+            return;
+        }
+        if (t.closest('#rfp-done')) {
+            core.closeSheet('sheet-rfqpick');
+            return;
+        }
+
         /* ─── چک‌رو عمومی ─── */
         var cr = t.closest('.checkrow');
         if (cr && !t.closest('#contact-list')) {
+            /* FD-24: تیک قفلِ استعلام چندقلمی — اجتماع دارندگان قلم‌ها
+               است؛ لمسش فقط دلیل را می‌گوید (الگوی redesign-base) */
+            if (cr.dataset.lock) {
+                toast('استعلام چندقلمی به هر که حداقل یکی از قلم‌ها را دارد می‌رسد', 'info');
+                return;
+            }
             var cb = cr.querySelector('.checkbox');
             if (cb) cb.classList.toggle('on');
             /* FD-14: فرم استعلام (۲۵) — شمارش گیرندگان زنده */
@@ -476,17 +509,20 @@
         if (t.closest('#cart-track')) { core.forms.guestOrderTrack(); return; }
         if (t.closest('#cart-continue')) { core.forms.guestCartContinue(); return; }
 
-        /* ═══ FD-14/FD-22 — افزودن کالاهای کاتالوگ به لیست خرید (۳۱) ═══
+        /* ═══ FD-14/FD-22/FD-25 — افزودن کالاهای کاتالوگ به لیست خرید (۳۱) ═══
            نوار (فقط مشتیِ ذخیره‌کرده) → شیت انتخاب: سرچ + گروه +
            ردیف‌های تک‌ستونه + مقدار/دورهٔ الزامی + «افزودن n کالا» ⇒
-           DATA.shoppingList. لمس pill دوره/ input مقدار = تیک ردیف
-           نمی‌خورد (فقط خود ردیف) */
+           DATA.shoppingList. لمس فیلدهای مقدار/دوره (FD-25: داخل
+           .pl-flds — input و کمبو) تیک ردیف را نمی‌زند (فقط خود ردیف). */
         if (t.closest('#guest-addlist-btn')) { core.forms.picklistOpen(); return; }
-        var plPer = t.closest('[data-pl-per]');
-        if (plPer) { core.forms.picklistPer(plPer.dataset.plPer, plPer.dataset.val); return; }
+        var plPer = t.closest('select[data-pl-per]');
+        if (plPer) { core.forms.picklistPer(plPer.dataset.plPer, plPer.value); return; }
         var plItem = t.closest('[data-pl-item]');
-        if (plItem && !t.closest('input') && !t.closest('.pill')) { core.forms.picklistToggle(plItem.dataset.plItem); return; }
+        if (plItem && !t.closest('input') && !t.closest('.pl-flds')) { core.forms.picklistToggle(plItem.dataset.plItem); return; }
         if (t.closest('#pl-add')) { core.forms.picklistAdd(); return; }
+        /* FD-25 — دکمه‌های نمای موفقیت: مقصد روشن / ادامه */
+        if (t.closest('#pl-golist')) { core.forms.picklistGoList(); return; }
+        if (t.closest('#pl-continue')) { core.forms.picklistContinue(); return; }
 
         /* جریان ذخیره: مزایا (آکاردئون FD-10) → حساب → پنل */
         if (t.closest('#bene-toggle')) { core.forms.guestBeneToggle(); return; }
@@ -1026,9 +1062,11 @@
             return;
         }
 
-        if (t.id === 'offer-price') {
+        if (t.id === 'offer-price' || t.dataset.ofPrice !== undefined) {
             /* FD-14: مرجع قدیمی (#offer-unit-hint-yx) وجود نداشت — هینت
-               هیچ‌وقت آپدیت نمی‌شد (باگ). حالا هینت عمومیِ هر قلم */
+               هیچ‌وقت آپدیت نمی‌شد (باگ). حالا هینت عمومیِ هر قلم.
+               FD-24: ورودی‌های چندقلمی data-of-price دارند (نه id) —
+               بدون این شاخه هینت قلم‌های ۲+ هیچ‌وقت زنده نمی‌شد. */
             if (core.forms.offerPriceHint) core.forms.offerPriceHint(t);
             return;
         }
@@ -1038,8 +1076,10 @@
         if (t.id === 'of-cash-pct') { core.forms.offerPctSync('cash'); return; }
         if (t.id === 'of-chk-days') { core.forms.offerDaysSync(); return; }
         if (t.id === 'pl-search') { core.forms.picklistSearch(t.value); return; }
-        /* FD-22 — مقدار خرید ردیف‌های شیت ۳۱ (در state ذنده) */
+        /* FD-22 — مقدار خرید ردیف‌های شیت ۳۱ (در state زنده) */
         if (t.dataset && t.dataset.plQty) { core.forms.picklistQty(t.dataset.plQty, t.value); return; }
+        /* FD-25 — کمبوی دورهٔ خرید شیت ۳۱ (روی select رویداد input هم می‌آید) */
+        if (t.dataset && t.dataset.plPer) { core.forms.picklistPer(t.dataset.plPer, t.value); return; }
     });
 
     /* ═══ FD-15: Enter در باکس بارکد = «تطبیق» — اسکنر واقعی (دستگاه
