@@ -4304,12 +4304,31 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
    ═════════════════════════════════════════════════════════════════ */
 @media (min-width: 1024px) {
 
-    /* ─── فریم: تمام‌عرض صفحه — نه قاب گوشی ─── */
+    /* ─── فریم FD-29: صفحهٔ واقعی دسکتاپ — اسکرول روی خود مرورگر
+       (حکم مالک: «اسکرول‌بار روی خود مرورگر، نه کانتینر باکس») ─── */
     body { padding: 0; }
     #phone[data-dk="1"] {
-        width: 100%; height: 100vh;
+        width: 100%; height: auto; min-height: 100vh;
         border-radius: 0; box-shadow: none;
+        overflow: visible;
     }
+    #phone[data-dk="1"] .dk-screen {
+        overflow: visible;
+        min-height: 100vh;          /* صفحهٔ کوتاه هم به‌قدر پنجره؛ نوار اقدام می‌رود کفِ پنجره */
+    }
+    #phone[data-dk="1"] .dk-screen .body { overflow: visible; }
+    /* میزبان صفحه‌ها: باز — وگرنه overflow:hidden آن میزبانِ اسکرولِ
+       بی‌حرکتِ sticky می‌شود و سرصفحه‌ها هرگز نمی‌چسبند */
+    #phone[data-dk="1"] #screen-host { overflow: visible; }
+
+    /* سرصفحه‌ها: چسبان به بالای پنجره — مثل اپ‌های دسکتاپ */
+    #phone[data-dk="1"] .dk-screen .appbar,
+    #phone[data-dk="1"] .dk-screen .subheader {
+        position: sticky; top: 0; z-index: 40;
+    }
+
+    /* توست: شناور روی پنجره، نه روی سندِ بلند */
+    #phone[data-dk="1"] .toast-host { position: fixed; top: 18px; }
 
     /* ─── کنترل‌های پایه در مقیاس دسکتاپ ─── */
     #phone[data-dk="1"] .dk-screen .btn { min-height: 44px; font-size: 13.5px; border-radius: 12px; }
@@ -4321,8 +4340,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         padding-inline: calc(24px + max(0px, (100% - 1120px) / 2));
     }
 
-    /* ─── شیت‌ها: مودال مرکزی (کاغذ شناور، نه درِ پایین) ─── */
+    /* ─── شیت‌ها: مودال مرکزیِ شناور روی پنجره (کاغذ وسط صفحه، نه درِ پایین) ─── */
     #phone[data-dk="1"] .sheet {
+        position: fixed;
         left: 50%; right: auto; bottom: auto; top: 50%;
         width: min(520px, calc(100% - 80px));
         max-height: min(760px, calc(100% - 96px));
@@ -4357,17 +4377,57 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-page .section-title h2 { font-size: 16.5px; }
     #phone[data-dk="1"] .dk-page .section-title h2 svg { width: 20px; height: 20px; }
 
-    /* ─── dk-list: ردیف‌های پهن و نفس‌دار ─── */
-    #phone[data-dk="1"] .dk-list .row { padding: 16px 20px; border-radius: 16px; }
-    #phone[data-dk="1"] .dk-list .row:hover {
-        border-color: var(--border-2);
-        box-shadow: 0 6px 20px rgba(31,29,26,.06);
+    /* ─── FD-29: ظرف کارت برای بدنه — محتوا مشخص دیده شود
+       (حکم مالک: «کانتینر کارت‌مانند که محتوا در بدنه کمی مشخص‌تر
+       دیده بشه، نه این‌قدر بی‌روح و گم‌شده») — فهرست‌ها روی یک
+       کاغذ واحد؛ ردیف‌ها مسطح با خط مویی (الگوی جدولِ دسکتاپ). ─── */
+    #phone[data-dk="1"] .dk-list .body > .rows,
+    #phone[data-dk="1"] .dk-page .body > .rows,
+    #phone[data-dk="1"] .dk-desk .body > .rows,
+    #phone[data-dk="1"] .dk-detail .dkd-main > .rows,
+    #phone[data-dk="1"] .dk-profile .dkp-main .rows {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 7px;
+        gap: 0;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
     }
+    #phone[data-dk="1"] .dk-list .body > .rows .row,
+    #phone[data-dk="1"] .dk-page .body > .rows .row,
+    #phone[data-dk="1"] .dk-desk .body > .rows .row,
+    #phone[data-dk="1"] .dk-detail .dkd-main > .rows .row,
+    #phone[data-dk="1"] .dk-profile .dkp-main .rows .row {
+        background: none; border: 0;
+        border-bottom: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 15px 16px;
+        transition: background .15s;
+    }
+    #phone[data-dk="1"] .dk-list .body > .rows .row:last-child,
+    #phone[data-dk="1"] .dk-page .body > .rows .row:last-child,
+    #phone[data-dk="1"] .dk-desk .body > .rows .row:last-child,
+    #phone[data-dk="1"] .dk-detail .dkd-main > .rows .row:last-child,
+    #phone[data-dk="1"] .dk-profile .dkp-main .rows .row:last-child { border-bottom: 0; }
+    #phone[data-dk="1"] .dk-list .body > .rows .row:hover,
+    #phone[data-dk="1"] .dk-page .body > .rows .row:hover,
+    #phone[data-dk="1"] .dk-desk .body > .rows .row:hover,
+    #phone[data-dk="1"] .dk-detail .dkd-main > .rows .row:hover,
+    #phone[data-dk="1"] .dk-profile .dkp-main .rows .row:hover { background: var(--surface-2); }
+    /* ردیف «شروع»: تمایز حفظ — خط‌چین نارنجی + تینت ملایم */
+    #phone[data-dk="1"] .dk-desk .body > .rows .row.row-start,
+    #phone[data-dk="1"] .dk-page .body > .rows .row.row-start,
+    #phone[data-dk="1"] .dk-list .body > .rows .row.row-start {
+        border-bottom: 1.5px dashed var(--arm);
+        background: linear-gradient(180deg, var(--arm-soft), var(--surface) 80%);
+    }
+
+    /* ─── dk-list: تایپوگرافی ردیف‌های پهن ─── */
     #phone[data-dk="1"] .dk-list .row-title { font-size: 14px; }
     #phone[data-dk="1"] .dk-list .row-sub { font-size: 12.5px; margin-top: 4px; }
     #phone[data-dk="1"] .dk-list .avatar { width: 46px; height: 46px; font-size: 16px; }
     #phone[data-dk="1"] .dk-list .thumb-sm { width: 46px; height: 46px; }
-    #phone[data-dk="1"] .dk-list .contact-row { padding: 14px 18px; border-radius: 16px; }
+    #phone[data-dk="1"] .dk-list .contact-row { padding: 14px 16px; border-radius: 13px; }
     #phone[data-dk="1"] .dk-list .empty { padding: 40px 20px; border-radius: 18px; }
 
     /* ─── dk-form: فرم مرکزی ۶۲۰ ─── */
@@ -4385,7 +4445,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         gap: 24px; align-items: start;
         max-width: 1180px; margin: 0 auto; width: 100%;
     }
-    #phone[data-dk="1"] .dk-detail .dkd-side { position: sticky; top: 20px; }
+    #phone[data-dk="1"] .dk-detail .dkd-side { position: sticky; top: 88px; }
     #phone[data-dk="1"] .dk-detail .dkd-main {
         display: flex; flex-direction: column; gap: 20px; min-width: 0;
     }
@@ -4401,7 +4461,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     /* ناوبری: وسچ‌محور با کانتینر + CTA اصلی */
     #phone[data-dk="1"] #s-landing .appbar {
         height: 68px;
-        padding-inline: calc(24px + max(0px, (100% - 1160px) / 2));
+        padding-inline: calc(24px + max(0px, (100% - 1280px) / 2));
         gap: 12px;
     }
     #phone[data-dk="1"] #s-landing .appbar .title { font-size: 17px; font-weight: 800; }
@@ -4413,7 +4473,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         column-gap: 64px;
         align-items: center;
         text-align: right;
-        padding: 84px calc(56px + max(0px, (100% - 1160px) / 2));
+        padding: 88px calc(56px + max(0px, (100% - 1280px) / 2));
         background:
             radial-gradient(60% 90% at 8% 10%, rgba(249,115,22,.07), transparent 60%),
             linear-gradient(120deg, var(--primary-soft) 0%, var(--bg) 62%);
@@ -4436,13 +4496,16 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] #s-landing .hero .hero-cta { justify-content: flex-start; margin-top: 28px; }
     #phone[data-dk="1"] #s-landing .hero .hero-cta .btn { min-width: 176px; height: 50px; font-size: 14.5px; }
 
-    /* بدنه: دو کارت ویژگی کنار‌هم + نوار نماینده + CTA + فوتر */
+    /* بدنه: دو کارت ویژگی کنار‌هم + نوار نماینده + CTA + فوتر
+       FD-29 — رفع باگ عرض: max-width خودش کانتینر را وسچ می‌کند؛
+       پدینگ باید ثابت باشد نه calc(100%…) که نسبت به ۱۴۴۰px حساب می‌شد
+       و ۱۹۶px پدینگ می‌ساخت (محتوا روی ۷۶۸px فشرده می‌شد). */
     #phone[data-dk="1"] .dk-pad {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        column-gap: 28px; row-gap: 36px;
-        max-width: 1160px; margin: 0 auto;
-        padding: 64px calc(56px + max(0px, (100% - 1160px) / 2)) 0;
+        column-gap: 28px; row-gap: 32px;
+        max-width: 1280px; margin: 0 auto;
+        padding: 72px 56px 0;
     }
 
     /* کارت ویژگی: کاغذ سفید + نوار رنگی سربهٔ کارت */
@@ -4529,8 +4592,8 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     /* CTA پایانی: پانل گرادیانی پهن + واترمارک */
     #phone[data-dk="1"] .dk-pad > .dk-final {
         grid-column: 1 / -1;
-        max-width: 800px; margin: 14px auto 0;
-        padding: 46px 48px; border-radius: 24px;
+        width: 100%; max-width: 960px; margin: 24px auto 0;
+        padding: 46px 56px; border-radius: 28px;
         position: relative; overflow: hidden;
         text-align: center;
     }
@@ -4540,14 +4603,14 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         font-size: 130px; font-weight: 800; letter-spacing: -2px;
         color: #FFF; opacity: .06; pointer-events: none;
     }
-    #phone[data-dk="1"] .dk-final > div:first-child { font-size: 21px; font-weight: 800; }
-    #phone[data-dk="1"] .dk-final > div:nth-child(2) { font-size: 13px; line-height: 2.1; }
+    #phone[data-dk="1"] .dk-final > div:first-child { font-size: 23px; font-weight: 800; }
+    #phone[data-dk="1"] .dk-final > div:nth-child(2) { font-size: 13.5px; line-height: 2.1; }
     #phone[data-dk="1"] .dk-final .btn {
         background: #FFF; color: var(--primary-strong);
-        min-width: 232px; height: 50px; font-size: 14.5px; font-weight: 800;
-        margin-top: 6px;
+        min-width: 240px; height: 52px; font-size: 14.5px; font-weight: 800;
+        margin-top: 8px;
     }
-    #phone[data-dk="1"] .dk-final > div:last-child { font-size: 11.5px; margin-top: 12px; }
+    #phone[data-dk="1"] .dk-final > div:last-child { font-size: 11.5px; margin-top: 14px; }
 
     /* فوتر: خط مویی + برند و © دو سرِ کانتینر */
     #phone[data-dk="1"] .dk-foot {
@@ -4564,17 +4627,19 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 
     /* ═══════════════════════════════════════════════════════════
        ۰۳/۰۲ — ورود و ثبت‌نام: اسپلیت حرفه‌ای
+       FD-29 — رفع باگ: flex-direction: row جا افتاده بود و پانل برند
+       زیرِ فرم می‌افتاد («کاملا از باکس لاگین جدا افتاده»).
        ستون فرمِ راست (کارت سفید وسچ) + پانل برندِ نارنجیِ تمام‌قدِ چپ
        ═══════════════════════════════════════════════════════════ */
     #phone[data-dk="1"] .dk-auth {
-        display: flex; align-items: stretch;
+        display: flex; flex-direction: row;
+        align-items: stretch;
         gap: 0; padding: 0;
         background: var(--bg);
     }
+    /* سرصفحهٔ موبایل حذف — پانل برند هویت صفحه است؛ بازگشت از خودِ پانل */
     #phone[data-dk="1"] #s-login .subheader,
-    #phone[data-dk="1"] #s-signup .subheader { border-bottom: 1px solid var(--border); }
-    #phone[data-dk="1"] #s-login .subheader .ttl small,
-    #phone[data-dk="1"] #s-signup .subheader .ttl small { display: none; }
+    #phone[data-dk="1"] #s-signup .subheader { display: none; }
 
     /* ستون فرم: وسچِ افقی و عمودی در ناحیهٔ راست */
     #phone[data-dk="1"] .dk-auth-form {
@@ -4647,32 +4712,45 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
     #phone[data-dk="1"] .dk-brand .dkb-wm svg { width: 100%; height: 100%; }
 
-    /* ═══════════════════════════════════════════════════════════
-       ۱۹/۰۴ — میزها: سایدبار راست + کارتابلِ تک‌ستونه با ترتیب
-       ═══════════════════════════════════════════════════════════ */
-    #phone[data-dk="1"] .dk-screen#s-home-buy,
-    #phone[data-dk="1"] .dk-screen#s-home-sell {
-        display: grid;
-        grid-template-columns: 250px minmax(0, 1fr);
-        grid-template-rows: auto minmax(0, 1fr);
+    /* بازگشت به صفحهٔ اصلی — گوشهٔ بالای پانل برند */
+    #phone[data-dk="1"] .dk-brand .dkb-back {
+        position: absolute; top: 26px; inset-inline-start: 28px;
+        display: inline-flex; align-items: center; gap: 8px;
+        height: 38px; padding: 0 16px;
+        border: 1px solid rgba(255,255,255,.35); border-radius: 12px;
+        background: rgba(255,255,255,.12);
+        color: #FFF; font-size: 12.5px; font-weight: 600;
+        transition: background .18s, border-color .18s;
     }
-    #phone[data-dk="1"] #s-home-buy .appbar,
-    #phone[data-dk="1"] #s-home-sell .appbar { grid-column: 2; grid-row: 1; padding: 0 36px; height: 68px; }
-    #phone[data-dk="1"] #s-home-buy .appbar .title,
-    #phone[data-dk="1"] #s-home-sell .appbar .title { font-size: 15.5px; font-weight: 800; }
-    #phone[data-dk="1"] #s-home-buy .body,
-    #phone[data-dk="1"] #s-home-sell .body { grid-column: 2; grid-row: 2; }
+    #phone[data-dk="1"] .dk-brand .dkb-back:hover { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.55); }
+    #phone[data-dk="1"] .dk-brand .dkb-back svg { width: 15px; height: 15px; }
 
-    /* تب‌بار → سایدبار عمودی راست */
-    #phone[data-dk="1"] #s-home-buy .tabbar,
-    #phone[data-dk="1"] #s-home-sell .tabbar {
-        grid-column: 1; grid-row: 1 / 3;
+    /* ═══════════════════════════════════════════════════════════
+       پوستهٔ اپ FD-29 — سایدبار پایدار + ستون اصلی
+       (حکم مالک: پروفایل و چت هم «صفحهٔ اصلی»اند و نباید از سایدبار
+       بیرون بیفتند؛ پیام‌ها هم همین‌طور — لینکشان در تب‌بار است.)
+       میز خرید · میز فروش · پیام‌ها · چت · پروفایل — یک پوسته.
+       سایدبار چسبانِ تمام‌قد؛ محتوا با اسکرولِ خود مرورگر.
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] .dk-screen.dk-desk {
+        display: grid;
+        grid-template-columns: 256px minmax(0, 1fr);
+    }
+
+    /* ─── سایدبار: راستِ صفحه، تمام‌قد و چسبان ─── */
+    #phone[data-dk="1"] .dk-desk .dk-side {
+        grid-column: 1;
+        position: sticky; top: 0; align-self: start;
+        height: 100vh; overflow-y: auto;
         flex-direction: column; align-items: stretch;
-        height: auto; padding: 16px 14px calc(20px + env(safe-area-inset-bottom, 0px));
+        padding: 16px 14px 14px;
         gap: 4px;
         border-top: 0;
         border-inline-end: 1px solid var(--border);
+        background: var(--surface);
+        scrollbar-width: none;
     }
+    #phone[data-dk="1"] .dk-desk .dk-side::-webkit-scrollbar { display: none; }
     #phone[data-dk="1"] .dk-side-brand {
         display: flex; align-items: center; gap: 11px;
         padding: 6px 12px 18px; margin-bottom: 10px;
@@ -4686,75 +4764,70 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
     #phone[data-dk="1"] .dk-side-brand .dks-mark svg { width: 22px; height: 22px; }
     #phone[data-dk="1"] .dk-side-brand .dks-name { font-size: 16px; font-weight: 800; }
-    #phone[data-dk="1"] #s-home-buy .tab,
-    #phone[data-dk="1"] #s-home-sell .tab {
+    #phone[data-dk="1"] .dk-desk .dk-side .tab {
         flex: 0 0 auto;
         flex-direction: row; justify-content: flex-start;
-        gap: 12px; min-height: 48px; padding: 0 16px;
-        font-size: 13.5px; font-weight: 600;
+        gap: 12px; min-height: 46px; padding: 0 14px;
+        font-size: 13px; font-weight: 600;
         border-radius: 12px;
         transition: background .15s, color .15s;
     }
-    #phone[data-dk="1"] #s-home-buy .tab:hover,
-    #phone[data-dk="1"] #s-home-sell .tab:hover { background: var(--surface-2); color: var(--text-2); }
-    #phone[data-dk="1"] #s-home-buy .tab svg,
-    #phone[data-dk="1"] #s-home-sell .tab svg { width: 21px; height: 21px; }
-    #phone[data-dk="1"] #s-home-buy .tab.active,
-    #phone[data-dk="1"] #s-home-sell .tab.active {
+    #phone[data-dk="1"] .dk-desk .dk-side .tab:hover { background: var(--surface-2); color: var(--text-2); }
+    #phone[data-dk="1"] .dk-desk .dk-side .tab svg { width: 20px; height: 20px; }
+    #phone[data-dk="1"] .dk-desk .dk-side .tab.active {
         background: var(--arm-soft); color: var(--arm-strong); font-weight: 700;
     }
+    #phone[data-dk="1"] .dk-desk .dk-side .tab .badge { position: static; margin-inline-start: auto; }
+
+    /* چیپ کاربر پایین سایدبار → پروفایل */
+    #phone[data-dk="1"] .dk-user {
+        margin-top: auto;
+        display: flex; align-items: center; gap: 11px;
+        padding: 10px 12px; border-radius: 14px;
+        background: none; border: 0; cursor: pointer; text-align: start;
+        transition: background .15s;
+    }
+    #phone[data-dk="1"] .dk-user:hover { background: var(--surface-2); }
+    #phone[data-dk="1"] .dk-user img {
+        width: 36px; height: 36px; border-radius: 50%;
+        object-fit: cover; flex-shrink: 0;
+    }
+    #phone[data-dk="1"] .dk-user .dku-tx { display: flex; flex-direction: column; min-width: 0; }
+    #phone[data-dk="1"] .dk-user .dku-tx b { font-size: 12.5px; font-weight: 700; color: var(--text); }
+    #phone[data-dk="1"] .dk-user .dku-tx small { font-size: 10.5px; color: var(--text-3); }
+
+    /* ─── ستون اصلی: اپ‌بار/ساب‌هدر چسبان + بدنه ─── */
+    #phone[data-dk="1"] .dk-desk .dk-desk-main {
+        grid-column: 2;
+        min-width: 0;
+        display: flex; flex-direction: column;
+        min-height: 100vh;
+    }
+    #phone[data-dk="1"] .dk-desk .dk-desk-main .appbar { padding: 0 36px; height: 68px; }
+    #phone[data-dk="1"] .dk-desk .dk-desk-main .appbar .title { font-size: 15.5px; font-weight: 800; }
+    #phone[data-dk="1"] .dk-desk .dk-desk-main .subheader { padding: 0 24px; height: 64px; }
 
     /* بدنهٔ میز: ستون وسچ ۱۰۶۰ */
-    #phone[data-dk="1"] #s-home-buy .body,
-    #phone[data-dk="1"] #s-home-sell .body {
+    #phone[data-dk="1"] .dk-desk .dk-desk-main .body {
         width: 100%; max-width: 1060px; margin: 0 auto;
-        padding: 30px 36px 48px; gap: 24px;
+        padding: 32px 40px 56px; gap: 22px;
     }
-    #phone[data-dk="1"] #s-home-buy .desk-duo,
-    #phone[data-dk="1"] #s-home-sell .desk-duo {
-        grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
-    }
-    #phone[data-dk="1"] #s-home-buy .desk-tile,
-    #phone[data-dk="1"] #s-home-sell .desk-tile {
-        padding: 20px 18px 16px; border-radius: 18px;
+    #phone[data-dk="1"] .dk-desk .desk-duo { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile {
+        padding: 22px 18px 18px; border-radius: 18px;
         transition: border-color .18s, transform .18s, box-shadow .18s;
     }
-    #phone[data-dk="1"] #s-home-buy .desk-tile:hover,
-    #phone[data-dk="1"] #s-home-sell .desk-tile:hover {
+    #phone[data-dk="1"] .dk-desk .desk-tile:hover {
         border-color: var(--border-2); transform: translateY(-2px);
         box-shadow: 0 12px 28px rgba(31,29,26,.09);
     }
-    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-ic,
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic { width: 38px; height: 38px; border-radius: 11px; }
-    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-ic svg,
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic svg { width: 19px; height: 19px; }
-    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-t,
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-t { font-size: 14px; white-space: normal; }
-    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-stat b,
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat b { font-size: 26px; }
-    #phone[data-dk="1"] #s-home-buy .section-title h2,
-    #phone[data-dk="1"] #s-home-sell .section-title h2 { font-size: 16.5px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-ic { width: 40px; height: 40px; border-radius: 12px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-ic svg { width: 20px; height: 20px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-t { font-size: 14px; white-space: normal; }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat b { font-size: 27px; }
+    #phone[data-dk="1"] .dk-desk .section-title h2 { font-size: 16.5px; }
 
-    /* کارتابل اقدام: تک‌ستونه — ترتیب هرگز از دست نمی‌رود.
-       هر تسک: شمارهٔ ترتیب + آیکون + متن + chev؛ hover ظریف. */
-    #phone[data-dk="1"] #s-home-buy .rows,
-    #phone[data-dk="1"] #s-home-sell .rows {
-        display: flex; flex-direction: column; gap: 10px;
-    }
-    #phone[data-dk="1"] #s-home-buy .rows .row,
-    #phone[data-dk="1"] #s-home-sell .rows .row {
-        padding: 15px 20px; border-radius: 16px;
-        transition: border-color .16s, transform .16s, box-shadow .16s;
-    }
-    #phone[data-dk="1"] #s-home-buy .rows .row:hover,
-    #phone[data-dk="1"] #s-home-sell .rows .row:hover {
-        border-color: var(--border-2); transform: translateY(-1px);
-        box-shadow: 0 8px 22px rgba(31,29,26,.07);
-    }
-    #phone[data-dk="1"] #s-home-buy .rows .row-title,
-    #phone[data-dk="1"] #s-home-sell .rows .row-title { font-size: 14.5px; }
-    #phone[data-dk="1"] #s-home-buy .rows .row-sub,
-    #phone[data-dk="1"] #s-home-sell .rows .row-sub { font-size: 12.5px; margin-top: 4px; }
+    /* کارتابل اقدام: تک‌ستونه در ظرف کارت — ترتیب هرگز از دست نمی‌رود */
     #phone[data-dk="1"] .dk-ord {
         width: 26px; height: 26px; border-radius: 8px;
         background: var(--surface-3); color: var(--text-3);
@@ -4762,8 +4835,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         display: grid; place-items: center; flex-shrink: 0;
     }
     #phone[data-dk="1"] .row.row-start .dk-ord { background: var(--arm-soft); color: var(--arm-strong); }
-    #phone[data-dk="1"] #s-home-buy .hint-line,
-    #phone[data-dk="1"] #s-home-sell .hint-line {
+    #phone[data-dk="1"] .dk-desk .hint-line {
         max-width: 640px; margin: 0 auto; padding: 8px 2px 0;
         justify-content: center; text-align: center;
     }
@@ -4813,7 +4885,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-product .pv-body > *:not(.pv-gallery) { grid-column: 1; }
     #phone[data-dk="1"] .dk-product .pv-gallery {
         grid-column: 2; grid-row: 1 / span 9;
-        position: sticky; top: 20px;
+        position: sticky; top: 88px;
         border-radius: 24px; overflow: hidden;
         border: 1px solid var(--border);
         box-shadow: var(--sh-3);
@@ -4836,9 +4908,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         display: flex; flex-direction: column; gap: 18px; min-width: 0;
     }
     #phone[data-dk="1"] .dk-rfq .dkrf-side {
-        position: sticky; top: 20px;
+        position: sticky; top: 88px;
         display: flex; flex-direction: column; gap: 12px;
-        max-height: calc(100vh - 110px); overflow-y: auto;
+        max-height: calc(100vh - 120px); overflow-y: auto;
         padding: 4px 2px 4px 0;
     }
     #phone[data-dk="1"] .dk-rfq .dkrf-side .rows { gap: 8px; }
@@ -4859,25 +4931,63 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
 
     /* ═══════════════════════════════════════════════════════════
-       ۳۰ — چت: ستون ۹۰۰ وسچ — مثل اپ پیام‌رسانِ دسکتاپ
+       ۳۰ — چت: در پوسته؛ پیام‌رسانِ تمام‌قدِ دسکتاپ
+       ستون اصلی ارتفاعِ ثابت (۱۰۰vh) — ساب‌هدر بالا، پیام‌ها با
+       اسکرول داخلی (الگوی درست پیام‌رسان)، نوار تایپ کفِ ستون.
        ═══════════════════════════════════════════════════════════ */
-    #phone[data-dk="1"] .dk-chat .body { width: 100%; max-width: 900px; margin: 0 auto; padding-top: 26px; }
+    #phone[data-dk="1"] .dk-screen.dk-chat { height: 100vh; min-height: 0; overflow: hidden; }
+    #phone[data-dk="1"] .dk-chat .dk-desk-main { min-height: 0; height: 100vh; }
+    #phone[data-dk="1"] .dk-chat .dk-desk-main .body {
+        overflow-y: auto; overflow-x: hidden;
+        flex: 1 1 0; min-height: 0;
+        width: 100%; max-width: none;
+        /* بوم گفتگو: پس‌زمینهٔ کل عرض + ستونِ محتوای وسچ ۹۰۰ —
+           الگوی Intercom/Zendesk: ناحیهٔ مشخص، نه صفحهٔ خالی */
+        padding: 26px max(56px, calc((100% - 900px) / 2)) 22px;
+        background: var(--surface-2);
+    }
     #phone[data-dk="1"] .dk-chat .chat-ctx {
-        width: 100%; max-width: 900px; margin: 0 auto;
-        border-radius: 0 0 16px 16px;
+        width: 100%; max-width: none;
+        border-radius: 0;
     }
     #phone[data-dk="1"] .dk-chat .subheader .avatar { width: 38px; height: 38px; }
     #phone[data-dk="1"] .dk-chat .subheader .ttl { font-size: 15px; }
     #phone[data-dk="1"] .dk-chat .chat-foot {
-        width: 100%; max-width: 948px; margin: 0 auto;
-        padding: 14px calc(24px + max(0px, (100% - 900px) / 2)) calc(14px + env(safe-area-inset-bottom, 0px));
+        width: 100%; max-width: none;
+        padding: 12px max(56px, calc((100% - 900px) / 2)) calc(12px + env(safe-area-inset-bottom, 0px));
     }
-    #phone[data-dk="1"] .dk-chat .bub { font-size: 13.5px; line-height: 2; max-width: 76%; }
+    #phone[data-dk="1"] .dk-chat .bub { font-size: 13.5px; line-height: 2; max-width: min(560px, 84%); }
+    #phone[data-dk="1"] .dk-chat .msg { margin-bottom: 14px; }
 
     /* ═══════════════════════════════════════════════════════════
-       ۱۸ — پروفایل (dk-detail + ظرافت‌های پروفایل)
+       ۱۸ — پروفایل: دوستونهٔ واقعی + اسکرول مرورگر + در پوسته
+       راستِ چسبان: خوشهٔ هویت (من + کسب‌وکار + نماینده + کیف پول)
+       چپ: دستیارها و تنظیمات در ظرف کارت — دیگر «گم‌شده» نیست.
        ═══════════════════════════════════════════════════════════ */
-    #phone[data-dk="1"] .dk-screen#s-profile .dkd-side .avatar-lg { width: 84px; height: 84px; font-size: 30px; }
+    #phone[data-dk="1"] .dk-profile .dk-desk-main .body {
+        display: grid;
+        grid-template-columns: 380px minmax(0, 1fr);
+        gap: 32px; align-items: start;
+        max-width: 1120px; width: 100%; margin: 0 auto;
+        padding: 32px 40px 64px;
+    }
+    #phone[data-dk="1"] .dk-profile .dkp-side {
+        position: sticky; top: 88px;
+        display: flex; flex-direction: column; gap: 14px;
+    }
+    #phone[data-dk="1"] .dk-profile .dkp-side .avatar-lg { width: 84px; height: 84px; font-size: 30px; }
+    #phone[data-dk="1"] .dk-profile .dkp-main {
+        display: flex; flex-direction: column; gap: 20px; min-width: 0;
+    }
+    #phone[data-dk="1"] .dk-profile .dkp-main .section-title { margin-bottom: -10px; }
+    #phone[data-dk="1"] .dk-profile .dkp-main .section-title h2 { font-size: 17px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       ۲۹ — پیام‌ها: در پوسته؛ فهرست گفتگوها ۹۴۰ وسچ
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] .dk-msgs .dk-desk-main .body {
+        max-width: 940px; padding: 28px 32px 56px;
+    }
 
     /* ═══════════════════════════════════════════════════════════
        ۲۰ — لیست خرید: نوار ابزار ۴دکمه‌ای افقی

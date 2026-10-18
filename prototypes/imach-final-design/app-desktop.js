@@ -44,7 +44,8 @@ window.iMachDesktop = (function () {
         's-buy-rfq-new': dkRfqNew,
         's-buy-offers': dkOffers,
         's-chat': dkChat,
-        's-profile': dkDetail,
+        's-profile': dkProfile,
+        's-msgs': dkMsgs,
         's-buy-list': dkBuyList,
         /* —— دفاتر و لیست‌ها —— */
         's-catalog-share': 'dk-page dk-list',
@@ -70,7 +71,6 @@ window.iMachDesktop = (function () {
         's-supplier-view': dkDetail,
         's-buy-rfqs': 'dk-page dk-list',
         's-buy-offer-view': dkDetail,
-        's-msgs': 'dk-page dk-narrow dk-list',
         's-buy-list-guest': 'dk-page dk-list',
         's-sell-bulk': 'dk-form',
         's-sell-promo': 'dk-form',
@@ -87,6 +87,8 @@ window.iMachDesktop = (function () {
         if (on) phone.setAttribute('data-dk', '1');
         else phone.removeAttribute('data-dk');
         if (!on) return;
+        /* FD-29: اسکرول روی خود مرورگر است — با هر show به بالِ صفحه */
+        window.scrollTo(0, 0);
         var sec = document.getElementById(id);
         if (!sec) return;
         sec.classList.add('dk-screen');
@@ -246,6 +248,8 @@ window.iMachDesktop = (function () {
                 'رایگان — با امکان پیدا کردن طرف‌های تجاری جدید'
             ];
         brand.innerHTML =
+            '<button class="dkb-back" type="button" data-go="s-landing">' +
+            '<svg><use href="#i-back"/></svg><span>صفحهٔ اصلی</span></button>' +
             '<div class="dkb-mark"><svg><use href="#i-logo"/></svg></div>' +
             '<div class="dkb-name">آی‌مچ</div>' +
             '<div class="dkb-tag">شعبهٔ آنلاین خرید و فروش عمدهٔ شما</div>' +
@@ -269,21 +273,90 @@ window.iMachDesktop = (function () {
         body.appendChild(brand);
     }
 
-    /* ═══ ۱۹/۰۴ میزها ═══
-       سایدبار راست (واژه‌نشان آی‌مچ با لوگو) + بدنهٔ وسچ +
-       تسک‌های «نیازمند اقدام» تک‌ستونه با شمارهٔ ترتیب. */
-    function dkDesk(sec) {
-        var tabbar = sec.querySelector('.tabbar');
-        if (tabbar && !tabbar.querySelector('.dk-side-brand')) {
+    /* ═══ پوستهٔ اپ FD-29 — سایدبار پایدار + ستون اصلی ═══
+       (حکم مالک: پروفایل و چت صفحهٔ اصلی‌اند و نباید از سایدبار
+       بیرون بیفتند — لینکشان در تب‌بار است؛ پیام‌ها هم همین‌طور.)
+       میز خرید · میز فروش · پیام‌ها · چت · پروفایل — یک پوسته.
+
+       · سایدبار: تب‌بار خودِ صفحه (میزها) یا تزریقی (بقیه) →
+         .dk-side چسبانِ تمام‌قدِ راست + واژه‌نشان + چیپ کاربر.
+       · ستون اصلی: هر چه بعد از سایدبار است → .dk-desk-main
+         (اپ‌بار/ساب‌هدر چسبان + بدنه با اسکرول مرورگر).
+       · تب فعال بر اساس صفحهٔ جاری؛ چت زیر مجموعهٔ پیام‌ها. */
+    var SIDE_TABS =
+        '<button class="tab" type="button" data-tab-arm="sell" data-tab-home="s-home-sell">' +
+        '<svg><use href="#i-store"/></svg> میز فروش</button>' +
+        '<button class="tab" type="button" data-tab-arm="buy" data-tab-home="s-home-buy">' +
+        '<svg><use href="#i-basket"/></svg> میز خرید</button>' +
+        '<button class="tab" type="button" data-tab-home="s-msgs">' +
+        '<svg><use href="#i-msg"/></svg> پیام‌ها</button>' +
+        '<button class="tab" type="button" data-tab-home="s-profile">' +
+        '<svg><use href="#i-user"/></svg> پروفایل</button>';
+
+    var SIDE_ACTIVE = {
+        's-home-sell': 's-home-sell',
+        's-home-buy': 's-home-buy',
+        's-msgs': 's-msgs',
+        's-chat': 's-msgs',      /* چت زیر مجموعهٔ پیام‌هاست */
+        's-profile': 's-profile'
+    };
+
+    function shellify(sec, id) {
+        sec.classList.add('dk-desk');
+
+        /* ۱) سایدبار: تب‌بار خودِ صفحه، یا یکی تزریقی */
+        var side = sec.querySelector('.tabbar');
+        if (side) {
+            side.classList.add('dk-side');
+            sec.insertBefore(side, sec.firstChild);
+        } else {
+            side = document.createElement('nav');
+            side.className = 'tabbar dk-side';
+            side.innerHTML = SIDE_TABS;
+            sec.insertBefore(side, sec.firstChild);
+        }
+
+        /* ۲) واژه‌نشان بالای سایدبار */
+        if (!side.querySelector('.dk-side-brand')) {
             var brand = document.createElement('div');
             brand.className = 'dk-side-brand';
             brand.innerHTML =
                 '<span class="dks-mark"><svg><use href="#i-logo"/></svg></span>' +
                 '<span class="dks-name">آی‌مچ</span>';
-            tabbar.insertBefore(brand, tabbar.firstChild);
+            side.insertBefore(brand, side.firstChild);
         }
 
-        /* شمارهٔ ترتیب تسک‌ها — زیر هم، ترتیب همیشه پیدا */
+        /* ۳) تبِ فعالِ صفحهٔ جاری */
+        var act = SIDE_ACTIVE[id] || '';
+        Array.prototype.forEach.call(side.querySelectorAll('.tab'), function (t) {
+            t.classList.toggle('active', t.getAttribute('data-tab-home') === act);
+        });
+
+        /* ۴) چیپ کارر پایین سایدبار → پروفایل */
+        if (!side.querySelector('.dk-user')) {
+            side.insertAdjacentHTML('beforeend',
+                '<button class="dk-user" type="button" data-go="s-profile">' +
+                '<img src="png/users/me.jpg" alt="">' +
+                '<span class="dku-tx"><b>احمد رضایی</b><small>سوپرمارکت آریا</small></span>' +
+                '</button>');
+        }
+
+        /* ۵) ستون اصلی: همهٔ فرزندانِ بعد از سایدبار → یک wrapper */
+        if (!sec.querySelector('.dk-desk-main')) {
+            var main = document.createElement('div');
+            main.className = 'dk-desk-main';
+            while (side.nextSibling) main.appendChild(side.nextSibling);
+            sec.appendChild(main);
+        }
+
+        /* ۶) بازوهای خاموش: تب میز مربوط دیده نشود */
+        if (window.iMach && window.iMach.applyArms) window.iMach.applyArms();
+    }
+
+    /* ═══ ۱۹/۰۴ میزها ═══
+       پوسته + شمارهٔ ترتیب تسک‌ها — زیر هم، ترتیب همیشه پیدا. */
+    function dkDesk(sec, id) {
+        shellify(sec, id);
         var rows = sec.querySelectorAll('.rows .row');
         var n = 0;
         Array.prototype.forEach.call(rows, function (r) {
@@ -343,9 +416,47 @@ window.iMachDesktop = (function () {
     }
 
     /* ═══ ۳۰ چت ═══
-       ستون گفتگوی ۹۰۰ وسچ — مثل میز کارِ یک اپ پیام‌رسان دسکتاپ. */
-    function dkChat(sec) {
-        sec.classList.add('dk-page', 'dk-chat');
+       در پوستهٔ اپ؛ ستون اصلی تمام‌قد (۱۰۰vh): ساب‌هدر بالا،
+       پیام‌ها با اسکرول داخلی، نوار تایپ کف — الگوی پیام‌رسان. */
+    function dkChat(sec, id) {
+        shellify(sec, id);
+        sec.classList.add('dk-chat');
+    }
+
+    /* ═══ ۲۹ پیام‌ها ═══
+       در پوستهٔ اپ؛ فهرست گفتگوها در ستون ۹۴۰ وسچ. */
+    function dkMsgs(sec, id) {
+        shellify(sec, id);
+        sec.classList.add('dk-page', 'dk-list', 'dk-msgs');
+    }
+
+    /* ═══ ۱۸ پروفایل ═══
+       در پوستهٔ اپ + دوستونهٔ واقعی:
+       راستِ چسبان: خوشهٔ هویت (من + کسب‌وکار + نماینده + کیف پول)
+       چپ: دستیارها و تنظیمات — در ظرف کارت؛ اسکرول روی مرورگر. */
+    function dkProfile(sec, id) {
+        shellify(sec, id);
+        sec.classList.add('dk-page', 'dk-profile');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var kids = Array.prototype.slice.call(body.children);
+        var sideCount = 0, sideKids = [], mainKids = [];
+        kids.forEach(function (k) {
+            var isIdentity = (k.classList.contains('card') || k.classList.contains('wallet-mini')) && sideCount < 4;
+            if (isIdentity) { sideKids.push(k); sideCount++; }
+            else mainKids.push(k);
+        });
+
+        var side = document.createElement('div');
+        side.className = 'dkp-side';
+        sideKids.forEach(function (k) { side.appendChild(k); });
+        var main = document.createElement('div');
+        main.className = 'dkp-main';
+        mainKids.forEach(function (k) { main.appendChild(k); });
+        body.appendChild(side);
+        body.appendChild(main);
     }
 
     /* ═══ جزئیات (مشتری/تأمین‌کننده/سفارش/پیشنهاد/پروفایل) ═══
