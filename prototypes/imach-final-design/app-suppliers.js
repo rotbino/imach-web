@@ -482,8 +482,12 @@
             BLG.inq = (core.data.rfqsOut || []).filter(function (r) {
                 return r.status === 'current' && r.businessId === 'b2';
             }).map(function (r) {
-                var nm = String(r.itemName || '').split(' · ')[0];
-                var it = blgItemByName(nm);
+                /* FD-24: استعلام چندقلمی روی کارت افقی = نام قلم اول +
+                   «+n قلم» (نه «n قلمی» که برای بینندهٔ عمومی بی‌معناست) */
+                var its = r.items || [];
+                var base = its.length ? its[0].name : String(r.itemName || '').split(' · ')[0];
+                var nm = base + (its.length > 1 ? ' +' + faNum(its.length - 1) + ' قلم' : '');
+                var it = blgItemByName(base);
                 return { name: nm, img: r.img, daysLeft: r.daysLeft, offers: r.offersCount, itemId: it ? it.id : '' };
             });
             BLG.conditions = ((core.data.buyListInfo || {}).conditions) || '';

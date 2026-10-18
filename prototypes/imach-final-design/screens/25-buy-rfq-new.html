@@ -1,37 +1,48 @@
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۲۵: استعلام قیمت سفارشی
+     اسکرین ۲۵: استعلام قیمت سفارشی — FD-24 چندقلمی
      ─────────────────────────────────────────────────────────────
      چرا سفارشی؟ چون قیمت کاتالوگ برای همه شفاف است. این‌جا
      خریدار حجم و شرایط خودش را می‌گوید تا قیمت مخصوص بگیرد.
-     حجم خرید + مهلت + شرایط خاص + گیرندگان.
+     ▸ FD-24 (حکم مالک): «قیمت‌گیری هم باید چندکالایی را ساپورت
+       کند؛ اگر یک کالا پیش‌فرض هم انتخاب شده باشد باید بتواند
+       کالاهای بعدی را هم اضافه کند — خرده‌فروش‌ها معمولاً قیمت
+       چند کالا را در یک استعلام می‌گیرند، نه برای هر کالا یک
+       استعلام جدا.»
+     ▸ ساختار: «کالاهای استعلام» (قلم پیش‌فرض از لیست خرید +
+       «افزودن کالای دیگر» از شیت انتخاب) + مقدار هر قلم با
+       استپر + مهلت + شرایط + گیرندگانِ داده‌محور.
+     ▸ گیرندگان = اجتماع تأمین‌کنندگانی که حداقل یکی از قلم‌ها
+       را دارند (الگوی redesign-base — «تامین‌کنندگانی که چند
+       کالا را داشتند یا بعضی کالاها را داشتند می‌آورد؛ تعداد
+       کالاهایی که فروشنده داشت»):
+       · چندقلمی: تیک‌ها قفلِ روشن + بج پوشش «k از n قلم» +
+         مرتب‌شده بر اساس پوشش (نوت بالای فهرست دلیلش را می‌گوید).
+       · تک‌قلمی: تیک انتخابی — پیش‌فرض شبکهٔ تاییدشده روشن،
+         «در انتظار تایید» خاموش.
+     ▸ پیاده‌سازی واقعی (کامنت مفهومی): پوشش از goodId های
+       کاتالوک واقعی هر تامین‌کننده سمت سرور حساب و کش می‌شود
+       (اینجا: تطبیق نامی با suppliers[].goodsList — rfqCover)؛
+       استعلام چندقلمی یک رکورد است و نمی‌شکند؛ سمت فروشنده فقط
+       اقلامِ موجودِ خودش دیده می‌شود (حریم سبد خریدار).
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-buy-rfq-new" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl">استعلام قیمت سفارشی<small>حجم و شرایطت را بگو</small></div>
+        <div class="ttl">استعلام قیمت<small id="rfq-sub">برنج هاشمی گلستان · ارسال به تأمین‌کننده‌ها</small></div>
     </div>
 
     <div class="body">
 
-        <div class="card" style="display: flex; gap: 10px; align-items: center;">
-            <div class="thumb thumb-sm"><img src="png/goods/rice-sack.jpg" alt=""></div>
-            <div style="flex: 1;">
-                <div style="font-size: 13.5px; font-weight: 700;">برنج هاشمی گلستان</div>
-                <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">کیسه ۵۰ کیلویی</div>
-            </div>
-        </div>
-
-        <!-- حجم خرید -->
-        <div class="field">
-            <label>حجم خرید <span class="opt">— مقدار موردنیازت</span></label>
-            <div class="input" style="display: flex; align-items: center; gap: 8px;">
-                <input id="rfq-qty" type="tel" inputmode="numeric" placeholder="مثلاً ۲۰" value="۲۰"
-                       style="flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 14px; font-weight: 700; text-align: right;">
-                <span style="font-size: 11px; color: var(--text-3); flex-shrink: 0;">کیسه</span>
-            </div>
-            <div class="hint">حجم بزرگ‌تر = شانس گرفتن تخفیف بیشتر.</div>
-        </div>
+        <!-- ═══ کالاهای استعلام — چندقلمی (FD-24) ═══
+             قلم اول از لیست خرید/زمینه پیش‌فرض است؛ با «افزودن
+             کالای دیگر» (شیت انتخاب) قلم‌های بعدی می‌آیند؛ مقدار
+             هر قلم با استپر ± و دکمهٔ ✕ حذف. رندر: rfqRender. -->
+        <div class="section-title"><h2>کالاهای استعلام</h2><span class="more" id="rfq-count">۱ قلم</span></div>
+        <div id="rfq-items"></div>
+        <button class="rfq-add" id="rfq-add-btn" type="button">
+            <svg><use href="#i-plus"/></svg><span id="rfq-add-tx">افزودن کالای دیگر</span>
+        </button>
 
         <!-- مهلت پاسخ -->
         <div class="field">
@@ -51,43 +62,47 @@
             <textarea class="input" id="rfq-note" placeholder="اگر شرایط پرداخت خاصی داری، یا برای حجم بالا تخفیف می‌خواهی، اینجا بنویس…"></textarea>
         </div>
 
-        <!-- گیرندگان -->
-        <div class="section-title"><h2>ارسال به چه کسانی؟</h2></div>
+        <!-- ═══ گیرندگان — داده‌محور بر اساس پوشش کالاهای استعلام ═══ -->
+        <div class="section-title"><h2>ارسال به چه کسانی؟</h2><span class="more" id="rfq-recip-count"></span></div>
 
-        <div class="rows">
-            <div class="checkrow">
-                <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
-                <div style="flex: 1;">
-                    <div style="font-size: 13px; font-weight: 700;">پخش برنج پارس</div>
-                    <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">رشت · آخرین قیمت ۲٬۸۵۰٬۰۰۰</div>
-                </div>
-            </div>
-            <div class="checkrow">
-                <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
-                <div style="flex: 1;">
-                    <div style="font-size: 13px; font-weight: 700;">آریو غلات</div>
-                    <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">اصفهان · آخرین قیمت ۲٬۹۲۰٬۰۰۰</div>
-                </div>
-            </div>
-            <div class="checkrow">
-                <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
-                <div style="flex: 1;">
-                    <div style="font-size: 13px; font-weight: 700;">کیان غلات</div>
-                    <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">قزوین · آخرین قیمت ۳٬۰۰۰٬۰۰۰</div>
-                </div>
-            </div>
+        <!-- نوت قفل — فقط حالت چندقلمی (اجتماع دارندگان قلم‌ها) -->
+        <div class="hint-line" id="rfq-locknote" hidden>
+            <svg><use href="#i-info"/></svg>
+            <span>استعلام چندقلمی به هر تأمین‌کننده‌ای می‌رسد که حداقل یکی از قلم‌ها را دارد — برای همین انتخاب‌ها قفل‌اند و پوششِ هر کدام نوشته شده است.</span>
         </div>
+
+        <div class="rows" id="rfq-recips"></div>
 
         <div class="hint-line">
             <svg><use href="#i-info"/></svg>
-            <span>استعلام به‌خودی‌خود سفارش نیست؛ هر تأمین‌کننده قیمت سفارشی برای حجم و شرایط تو می‌فرستد و تو انتخاب می‌کنی.</span>
+            <span>استعلام به‌خودی‌خود سفارش نیست؛ هر تأمین‌کننده برای قلم‌هایی که دارد قیمت می‌فرستد و تو یک‌جا مقایسه می‌کنی.</span>
         </div>
     </div>
 
-    <!-- FD-14: شمارش گیرندگان زنده است — تیک هر تأمین‌کننده روش/خاموش می‌شود
-         (checkrow عمومی) و متن دکمه همین لحظه عوض می‌شود؛ ارسال، استعلام
-         را واقعاً به «استعلام‌های من» (۲۴) اضافه می‌کند (rfqSend در app-forms). -->
+    <!-- FD-14/FD-24: شمارش زنده — rfqRender متن دکمه را هم‌زمان با
+         قلم‌ها و تیک‌ها عوض می‌کند؛ ارسال، استعلام را واقعاً با
+         items[] به «استعلام‌های من» (۲۴) اضافه می‌کند (rfqSendNew). -->
     <div class="sticky-bar">
         <button class="btn btn-arm btn-block" data-rfq-send id="rfq-send-btn">ارسال به ۳ تأمین‌کننده</button>
+    </div>
+
+    <!-- ═══ FD-24 — شیت: افزودن کالا به استعلام ═══
+         دو گروه (الگوی redesign-base، قانون «استعلام از لیست خرید»):
+         «در لیست خرید من» + «پرتکرار در صنف شما» (سوپرمارکت).
+         لمس ردیف = افزودن همان لحظه (بج «در استعلام» روشن می‌شود)
+         — بسته شدن با «تأیید». ضدتکرار: قلم موجود قابل انتخاب نیست.
+         در محصول واقعی: جستجوی سراسری کالاهای مرجع + افزودن کالای
+         تازه هم‌زمان به لیست خرید (insert idempotent). -->
+    <div class="sheet" id="sheet-rfqpick" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>افزودن کالا به استعلام</h3>
+            <button class="mg" data-sheet-close="sheet-rfqpick" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">قلم‌های استعلام از لیست خریدت انتخاب می‌شوند — قیمت چند کالا را یک‌جا بگیر.</div>
+        <div class="pl-rows" id="rfp-grid"></div>
+        <button class="btn btn-outline btn-block" id="rfp-done" type="button" style="margin-top: 10px;">
+            <svg><use href="#i-check"/></svg> تأیید و بازگشت به استعلام
+        </button>
     </div>
 </section>

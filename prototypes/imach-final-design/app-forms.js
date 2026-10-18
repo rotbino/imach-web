@@ -1426,13 +1426,18 @@
         var rfq = _rfqOut(o.rfqId);
         if (!rfq || rfq.ordered) return;
 
-        var items = (rfq.items || []).map(function (it) {
+        /* FD-24: قیمت هر قلم از prices[] (فریز لحظهٔ پذیرش)؛ قلم
+           بدون قیمت (پیشنهاد ناقص) در سفارش نمی‌آید — سفارش فقط
+           برای قلم‌های توافقی ثبت می‌شود. */
+        var items = (rfq.items || []).map(function (it, i) {
+            var p = (o.prices && o.prices.length) ? o.prices[i] : o.price;
+            if (!p) return null;
             return {
                 name: it.name, pack: it.pack, qty: it.qty,
-                unitPrice: o.price,   /* قیمت هر بستهٔ پیشنهاد (فریز لحظهٔ پذیرش) */
+                unitPrice: p,
                 img: it.img
             };
-        });
+        }).filter(Boolean);
         if (!items.length) {
             /* استعلام‌های ساخته‌شده در همین جلسه (rfqSendNew) items ندارند —
                از itemName می‌خوانیم: «برنج هاشمی گلستان · ۲۰ کیسه» */
@@ -2325,6 +2330,30 @@
         return 'ارسال — حمل با ' + (d.by === 'customer' ? 'مشتری' : 'فروشنده');
     }
     function _rfqTitleTx(name) { return 'درخواست قیمت ' + name; }
+    /* FD-24 — جمع کل پیشنهاد: Σ قیمت قلم × مقدار (prices[] هم‌ترتیب
+       با rfq.items؛ null = ندارد). تک‌قلمی = قیمت × مقدار قلم اول. */
+    function offerTotal(o, rfq) {
+        o = o || {};
+        var items = ((rfq || {}).items || []);
+        if (o.prices && o.prices.length && items.length) {
+            var t = 0;
+            items.forEach(function (it, i) {
+                var p = o.prices[i];
+                if (p) t += p * (it.qty || 0);
+            });
+            return t;
+        }
+        var it0 = items[0] || {};
+        return (o.price || 0) * (it0.qty || 0);
+    }
+    /* FD-24 — پوشش پیشنهاد: شمار قلم‌های قیمت‌خورده (برای بج
+       «k از n قلم» روی کارت مقایسه ۲۶). */
+    function offerCover(o, rfq) {
+        o = o || {};
+        var n = ((rfq || {}).items || []).length;
+        if (!(o.prices && o.prices.length) || !n) return n ? 1 : 0;
+        return o.prices.filter(function (p) { return p; }).length;
+    }
     function _perWord(rfq) {
         var it = ((rfq || {}).items || [])[0] || {};
         return 'هر ' + (((it.pack || '').split(' ')[0]) || 'واحد');
@@ -2410,14 +2439,25 @@
         if (note) note.hidden = !r.note;
         if (ntx) ntx.textContent = r.note || '';
 
-        /* قیمت‌ها — هر قلم فیلد خودش */
+        /* قیمت‌ها — هر قلم فیلد خودش (FD-24: قلم‌های موجود در کاتالوک
+           من جای‌گذاریِ قیمتِ خودم را می‌گیرند — «از روی کاتالوگ یک
+           تامین‌کننده انجام می‌شود»؛ قابل ویرایش؛ بج «در کاتالوک تو»
+           برای قلم مچ‌شده. در محصول واقعی placeholder از قیمت زندهٔ
+           کاتالوگ می‌آید و پس از ارسال هم‌گام می‌ماند.) */
         var host = $('#of-prices');
         if (host) {
+            var myGoods = (core.data.listings || []).filter(function (l) { return l.businessId === 'b1'; });
             host.innerHTML = (r.items || []).map(function (it, i) {
+                var mine = null;
+                myGoods.forEach(function (l) {
+                    if (!mine && (l.name === it.name || it.name.indexOf(l.name) > -1 || l.name.indexOf(it.name.split(' ')[0]) > -1)) mine = l;
+                });
+                var ph = mine ? 'کاتالوک تو: ' + faMoney(mine.price) : '۲٬۸۲۰٬۰۰۰';
                 return '<div class="field">' +
                     '<label>قیمت هر ' + esc(it.pack) + (multi ? ' — ' + esc(it.name) : '') +
+                        (mine ? ' <span class="badge b-green">در کاتالوک تو</span>' : '') +
                         ' <span class="opt">— تومان</span></label>' +
-                    '<input class="input" type="tel" data-of-price="' + i + '" inputmode="numeric" placeholder="۲٬۸۲۰٬۰۰۰">' +
+                    '<input class="input" type="tel" data-of-price="' + i + '" inputmode="numeric" placeholder="' + ph + '">' +
                     '<div class="unit-hint"><svg><use href="#i-info"/></svg><span class="ofp-hint">قیمت را وارد کن تا معادلش را ببینی</span></div>' +
                 '</div>';
             }).join('');
@@ -2522,7 +2562,10 @@
         hint.innerHTML = parts.join(' · ');
     }
 
-    /* ارسال پیشنهاد — اعتبارسنجی قیمت + انتقال به «پاسخ داده‌شده» */
+    /* ارسال پیشنهاد — اعتبارسنجی قیمت + انتقال به «پاسخ داده‌شده».
+       FD-24: چندقلمی ⇒ myOffer به‌صورت «n قلم · جمع X تومان» +
+       prices[] واقعی روی رکورد پاسخ (در ماک فقط رشتهٔ نمایشی می‌ماند؛
+       در محصول واقعی رکورد Offer با آریهٔ قلم‌ها ذخیره می‌شود). */
     function offerSend() {
         var params = core.getSCREENParams()['s-sell-offer'] || {};
         var r = _rfqIn(params.rfq) || (core.data.rfqsIn || [])[0];
@@ -2532,10 +2575,21 @@
         }
         var first = inputs[0];
         if (r) {
+            var m = (r.items || []).length;
+            var myOfferTx;
+            if (m > 1) {
+                var total = 0;
+                (r.items || []).forEach(function (it, ix) {
+                    total += parseNum(inputs[ix] ? inputs[ix].value : '') * (it.qty || 0);
+                });
+                myOfferTx = faNum(m) + ' قلم · جمع ' + faMoney(total) + ' تومان';
+            } else {
+                myOfferTx = first ? faMoney(parseNum(first.value)) + ' تومان' : '—';
+            }
             (core.data.rfqsAnswered = core.data.rfqsAnswered || []).unshift({
                 id: 'ra' + Date.now(), buyer: r.buyer, buyerAvatar: r.buyerAvatar, buyerColor: r.buyerColor,
                 itemName: r.itemName, pack: r.pack, img: r.img, when: 'همین حالا',
-                myOffer: first ? faMoney(parseNum(first.value)) + ' تومان' : '—'
+                myOffer: myOfferTx
             });
             core.data.rfqsIn = core.data.rfqsIn.filter(function (x) { return x.id !== r.id; });
         }
@@ -2554,6 +2608,7 @@
         if (sub) sub.textContent = faNum(cur.length) + ' باز · ' + faNum(fin.length) + ' پایان‌یافته';
         if (open) {
             open.innerHTML = cur.length ? cur.map(function (r) {
+                var multi = (r.items || []).length > 1;   /* FD-24: بج قلم مثل ۱۱ */
                 var left;
                 if (!r.offersCount) left = '<span style="color: var(--text-3); font-weight: 700;">در انتظار اولین پیشنهاد</span>';
                 else left = faNum(r.offersCount) + ' پیشنهاد <span class="dot">·</span> <span style="color: var(--' +
@@ -2561,7 +2616,8 @@
                 return '<div class="row" data-ofr-go="' + esc(r.id) + '">' +
                     '<div class="thumb thumb-sm"><img src="' + esc(r.img) + '" alt=""></div>' +
                     '<div class="row-body">' +
-                        '<div class="row-title">' + esc(_rfqTitleTx(r.itemName)) + '</div>' +
+                        '<div class="row-title">' + esc(_rfqTitleTx(r.itemName)) +
+                            (multi ? ' <span class="badge b-gray">' + faNum(r.items.length) + ' قلم</span>' : '') + '</div>' +
                         '<div class="row-sub">' + left + '</div>' +
                     '</div>' +
                     '<div class="row-chev"><svg><use href="#i-chev"/></svg></div>' +
@@ -2584,15 +2640,32 @@
         }
     }
 
-    /* ─── ۲۶: مقایسهٔ پیشنهادهای یک استعلام ─── */
+    /* ─── ۲۶: مقایسهٔ پیشنهادهای یک استعلام ───
+       FD-24 — چندقلمی: مرتب‌سازی «اول پوشش کامل، بعد جمع کل»
+       (حکم مالک: «تأمین‌کنندگانی که چند کالا را داشتند یا بعضی
+       کالاها را داشتند می‌آمدند؛ تعداد کالاهایی که فروشنده داشت»)؛
+       هر کارت بج پوشش «k از n قلم» + ردیف قیمت هر قلم («ندارد»
+       برای قلم ناقص) + جمع کل در جای قیمت؛ برچسب «کمترین جمع»
+       فقط بین پیشنهادهای کامل (مقایسهٔ سیب با سیب). تک‌قلمی همان
+       مرتب‌سازی قدیمی بر اساس قیمت قلم است. */
     function offersListRender() {
         var sec = $('#s-buy-offers');
         if (!sec) return;
         var params = core.getSCREENParams()['s-buy-offers'] || {};
         var rfq = _rfqOut(params.rfq) || (core.data.rfqsOut || []).filter(function (r) { return r.status === 'current'; })[0] || (core.data.rfqsOut || [])[0];
         if (!rfq) return;
-        var list = (core.data.offers || []).filter(function (o) { return o.rfqId === rfq.id; })
-            .sort(function (a, b) { return a.price - b.price; });
+        var items = rfq.items || [];
+        var multi = items.length > 1;
+        var list = (core.data.offers || []).filter(function (o) { return o.rfqId === rfq.id; });
+        if (multi) {
+            list.sort(function (a, b) {
+                var d = offerCover(b, rfq) - offerCover(a, rfq);
+                if (d) return d;
+                return offerTotal(a, rfq) - offerTotal(b, rfq);
+            });
+        } else {
+            list.sort(function (a, b) { return a.price - b.price; });
+        }
         var sub = $('#offers-sub');
         if (sub) sub.textContent = _rfqTitleTx(rfq.itemName) + ' · ' + faNum(list.length) + ' پیشنهاد';
         var closeBtn = $('#offers-close');
@@ -2610,11 +2683,38 @@
                 '<h3>هنوز پیشنهادی نرسیده</h3><p>به ' + faNum(rfq.sentTo || 0) + ' تأمین‌کننده گفته شد؛ تا پایان مهلت پاسخ می‌آید.</p></div>';
             return;
         }
-        var best = list[0];
+        /* «کمترین جمع» = ارزان‌ترینِ کامل‌ها (چندقلمی) / «کمترین قیمت»
+           = ارزان‌ترین قلم (تک‌قلمی — همان رفتار قدیمی) */
+        var best;
+        if (multi) {
+            var full = list.filter(function (o) { return offerCover(o, rfq) >= items.length; });
+            best = full.length ? full.reduce(function (m, o) { return offerTotal(o, rfq) < offerTotal(m, rfq) ? o : m; }, full[0]) : null;
+        } else best = list[0];
         host.innerHTML = list.map(function (o) {
+            var cov = offerCover(o, rfq);
             var badges = '';
-            if (o === best) badges += '<span class="badge b-green">کمترین قیمت</span>';
+            if (multi) {
+                badges += cov >= items.length
+                    ? '<span class="badge b-green">همهٔ ' + faNum(items.length) + ' قلم</span>'
+                    : '<span class="badge b-gray">' + faNum(cov) + ' از ' + faNum(items.length) + ' قلم</span>';
+            }
+            if (o === best) badges += '<span class="badge b-green">' + (multi ? 'کمترین جمع' : 'کمترین قیمت') + '</span>';
             if (o.isKnown) badges += '<span class="badge b-green">آشنای من</span>';
+
+            /* ردیف قیمت هر قلم — چندقلمی (FD-24) */
+            var itemsHtml = '';
+            if (multi) {
+                itemsHtml = '<div class="of-items">' + items.map(function (it, i) {
+                    var p = o.prices ? o.prices[i] : null;
+                    return '<div class="of-it"><span class="k">' + esc(it.name) +
+                        ' <span class="opt">· ' + faNum(it.qty || 0) + ' ' + esc(it.pack) + '</span></span>' +
+                        (p
+                            ? '<span class="v">' + faMoney(p) + '</span>'
+                            : '<span class="v miss">این قلم را ندارد</span>') +
+                    '</div>';
+                }).join('') + '</div>';
+            }
+
             return '<div class="offer-card' + (o === best ? ' best' : '') + '" data-offer-go="' + esc(o.id) + '">' +
                 '<div class="offer-head">' +
                     '<div class="avatar" style="background: ' + esc(o.color) + ';">' + esc(o.avatar) + '</div>' +
@@ -2624,8 +2724,10 @@
                         '<div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">' + esc(o.city) + ' · هم‌استان</div>' +
                         (badges ? '<div style="margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap;">' + badges + '</div>' : '') +
                     '</div>' +
-                    '<div class="offer-price"><div class="p">' + faMoney(o.price) + '</div><div class="u">' + esc(_perWord(rfq)) + '</div></div>' +
+                    '<div class="offer-price"><div class="p">' + faMoney(multi ? offerTotal(o, rfq) : o.price) + '</div><div class="u">' +
+                        (multi ? 'جمع ' + faNum(cov) + ' قلم' : esc(_perWord(rfq))) + '</div></div>' +
                 '</div>' +
+                itemsHtml +
                 '<div class="of-terms">' +
                     '<div class="ot-chip"><small>پرداخت</small><b>' + esc(payTx(o.pay)) + '</b></div>' +
                     '<div class="ot-chip"><small>تحویل</small><b>' + esc(dlvTx(o.dlv)) + '</b></div>' +
@@ -2663,14 +2765,30 @@
         }
 
         var lbl = $('#ovf-price-lbl');
-        if (lbl) lbl.textContent = 'قیمت هر ' + (it.pack || 'واحد');
         var price = $('#ovf-price');
-        if (price) price.innerHTML = faMoney(o.price) + ' <small>تومان</small>';
         var unit = $('#ovf-unit'), utx = $('#ovf-unit-tx');
-        if (unit) {
-            var showUnit = o.packCount && o.packCount > 1 && o.pricePerUnit;
-            unit.hidden = !showUnit;
+        var multi = (rfq.items || []).length > 1;
+        var cov = offerCover(o, rfq);
+        if (multi) {
+            /* FD-24 — چندقلمی: جای قیمت، جمع کل می‌نشیند؛ ردیف هر
+               قلم (قیمت/ندارد) در کارت مشخصات زیرش؛ معادل واحد فقط
+               برای قلم اول اگر بستهٔ چندیته باشد. */
+            if (lbl) lbl.textContent = 'جمع ' + faNum(cov) + ' قلم از ' + faNum((rfq.items || []).length) + ' قلم استعلام';
+            if (price) price.innerHTML = faMoney(offerTotal(o, rfq)) + ' <small>تومان</small>';
+            var it0 = (rfq.items || [])[0] || {};
+            var p0 = o.prices ? o.prices[0] : o.price;
+            var showUnit = it0.packCount && it0.packCount > 1 && p0;
+            if (unit) unit.hidden = !showUnit;
             if (showUnit && utx) {
+                utx.innerHTML = 'هر ' + esc(it0.baseUnit || 'واحد') + ' ' + esc(it0.name || '') + ' ≈ <b>' +
+                    faMoney(Math.round(p0 / it0.packCount)) + ' تومان</b>';
+            }
+        } else {
+            if (lbl) lbl.textContent = 'قیمت هر ' + (it.pack || 'واحد');
+            if (price) price.innerHTML = faMoney(o.price) + ' <small>تومان</small>';
+            var showUnit2 = o.packCount && o.packCount > 1 && o.pricePerUnit;
+            if (unit) unit.hidden = !showUnit2;
+            if (showUnit2 && utx) {
                 utx.innerHTML = 'هر ' + esc(o.baseUnit || 'واحد') + ' ≈ <b>' + faMoney(o.pricePerUnit) +
                     ' تومان</b> — قابل‌مقایسه با بسته‌بندی‌های دیگر';
             }
@@ -2679,13 +2797,25 @@
         var facts = $('#ovf-facts');
         if (facts) {
             var rows = [
-                ['درخواست', esc(_rfqTitleTx(rfq.itemName || ''))],
-                ['مقدار درخواست', faNum(it.qty || 0) + ' ' + esc(it.pack || '') +
-                    ((rfq.items || []).length > 1 ? ' + ' + faNum(rfq.items.length - 1) + ' قلم دیگر' : '')],
-                ['جمع کل', '<span style="color: var(--primary-strong);">' + faMoney(o.price * (it.qty || 0)) + ' تومان</span>'],
-                ['شرایط پرداخت', esc(payTx(o.pay))],
-                ['روش تحویل', esc(dlvTx(o.dlv))]
+                ['درخواست', esc(_rfqTitleTx(rfq.itemName || ''))]
             ];
+            if (multi) {
+                /* ردیف هر قلم — قیمت یا «ندارد» (FD-24)؛
+                   «قیمت × مقدار = جمع قلم» خواناتر از فلش است */
+                (rfq.items || []).forEach(function (qi, i) {
+                    var p = o.prices ? o.prices[i] : null;
+                    rows.push([esc(qi.name) + ' · ' + faNum(qi.qty || 0) + ' ' + esc(qi.pack || ''),
+                        p
+                            ? faMoney(p) + ' × ' + faNum(qi.qty || 0) + ' = <b>' + faMoney(p * (qi.qty || 0)) + ' تومان</b>'
+                            : '<span style="color: var(--text-3);">این قلم را ندارد</span>']);
+                });
+                rows.push(['جمع کل', '<span style="color: var(--primary-strong);">' + faMoney(offerTotal(o, rfq)) + ' تومان</span>']);
+            } else {
+                rows.push(['مقدار درخواست', faNum(it.qty || 0) + ' ' + esc(it.pack || '')]);
+                rows.push(['جمع کل', '<span style="color: var(--primary-strong);">' + faMoney(o.price * (it.qty || 0)) + ' تومان</span>']);
+            }
+            rows.push(['شرایط پرداخت', esc(payTx(o.pay))]);
+            rows.push(['روش تحویل', esc(dlvTx(o.dlv))]);
             if (rfq.status === 'current' && rfq.daysLeft !== undefined) {
                 rows.push(['مهلت استعلام', _leftTx(rfq.daysLeft)]);
             }
@@ -2727,7 +2857,10 @@
             if (!ok) return;
             if (rfq && rfq.status === 'current') {
                 rfq.status = 'done';
-                rfq.result = 'پذیرفت: ' + o.seller + ' — ' + faMoney(o.price) + ' ت';
+                /* FD-24: نتیجهٔ چندقلمی = جمع کل (offerTotal)؛ تک‌قلمی
+                   همان قیمت قلم */
+                rfq.result = 'پذیرفت: ' + o.seller + ' — ' +
+                    (((rfq.items || []).length > 1) ? 'جمع ' + faMoney(offerTotal(o, rfq)) : faMoney(o.price)) + ' ت';
                 rfq.when = 'امروز';
             }
             /* FD-19: اعلان به فروشندهٔ برنده (نکتهٔ باز FD-14) — «پیشنهادت
@@ -2779,14 +2912,238 @@
         });
     }
 
-    /* ─── ۲۵: گیرندگان زنده + ارسال واقعی استعلام ─── */
+    /* ═══════════════════════════════════════════════════════════════
+       FD-24 — ۲۵: استعلام چندقلمی
+       ─────────────────────────────────────────────────────────────
+       حکم مالک: «قیمت‌گیری هم باید چندکالایی را ساپورت کنه؛ اگر یک
+       کالا پیش‌فرض هم انتخاب شده باشه باید بتونه کالاهای بعدی رو هم
+       اضافه کنه. خیلی کسب‌وکارها مثل خرده‌فروش‌ها معمولاً قیمت چند
+       کالا رو در یه استعلام می‌گیرن و قرار نیست برای هر کالا چند
+       قیمت‌گیری داشته باشیم که کاربردی نباشه.» (الگوی «چند قیمت‌گیری»
+       redesign-base: تأمین‌کنندگانی که چند کالا را داشتند یا بعضی
+       کالاها را داشتند می‌آیند + تعداد کالاهایی که فروشنده داشت.)
+       ▸ RFQ.items — قلم‌های استعلام { key, name, pack, qty, img,
+         packCount?, baseUnit? }؛ قلم اول به‌طور پیش‌فرض از لیست خرید
+         (یا پارامتر item) می‌آید؛ بقیه از شیت sheet-rfqpick.
+       ▸ گیرندگان = اجتماع دارندگان ≥۱ قلم؛ چندقلمی ⇒ تیک قفلِ روشن
+         + بج پوشش «k از n قلم» + سورت نزولی پوشش؛ تک‌قلمی ⇒ تیک
+         انتخابی (شبکهٔ تاییدشده روشن، «در انتظار تایید» خاموش).
+       ▸ پیاده‌سازی واقعی: پوشش روی goodId سمت سرور با کش per-viewer؛
+         قلم تازه هم‌زمان idempotent به لیست خرید می‌نشیند؛ استعلام
+         چندقلمی یک رکورد است (groupId مشترک) و نمی‌شکند.
+       ═══════════════════════════════════════════════════════════════ */
+    var RFQ = { items: [], touched: false, sel: {} };
+
+    /* پرتکرار صنف (دمو — سوپرمارکت) برای شیت انتخاب؛ در محصول واقعی
+       از داده‌های واقعی پرتکراریِ صنف کاربر می‌آید. */
+    var RFQ_FREQ = [
+        { name: 'پفک نمکی',        pack: 'کارتن ۵۰ عددی',  qty: 30, img: 'png/goods/pofak-big.jpg' },
+        { name: 'گوشت چرخ‌کرده',    pack: 'کیلوگرم',         qty: 100, img: 'png/goods/meat-beef.jpg' },
+        { name: 'سبزی خشک مخلوط',  pack: 'کیسه ۵۰۰ گرمی',   qty: 50, img: 'png/goods/sabzi-mix.jpg' },
+        { name: 'برنج فجر',        pack: 'کیسه ۵۰ کیلویی',  qty: 15, img: 'png/goods/fajar-50.jpg' }
+    ];
+
+    /* پوشش تأمین‌کننده نسبت به قلم‌های استعلام — تطبیق نامی ساده
+       (goodsList ∩ items)؛ در محصول واقعی = تطبیق goodId سمت سرور. */
+    function rfqCoverOf(sup, items) {
+        var gl = (sup && sup.goodsList) ? sup.goodsList : [];
+        if (!gl.length) return 0;
+        var n = 0;
+        (items || []).forEach(function (it) {
+            var nm = String(it.name || '');
+            if (gl.some(function (g) { return g && (nm.indexOf(g) > -1 || g.indexOf(nm) > -1); })) n++;
+        });
+        return n;
+    }
+
+    /* قلم پیش‌فرض از لیست خرید (یا پارامتر item — نام/شناسهٔ ردیف) */
+    function rfqDefaultItem() {
+        var params = core.getSCREENParams()['s-buy-rfq-new'] || {};
+        var list = (core.data.shoppingList || []).filter(function (s) { return s.businessId === 'b2'; });
+        var row = null;
+        if (params.item) {
+            list.forEach(function (s) { if (s.id === params.item || s.name === params.item) row = s; });
+        }
+        if (!row) row = list[0] || null;
+        if (!row) return null;
+        return rfqItemFromList(row);
+    }
+    function rfqItemFromList(row) {
+        /* مقدار پیش‌فرض از q («۲۰ کیسهٔ ۵۰ کیلویی · ماهانه» → ۲۰) */
+        var qty = parseNum(String(row.q || '').split(' ')[0]) || 20;
+        var l = row.listingId ? _findListing(row.listingId) : null;
+        return {
+            key: row.id || ('sl-' + Date.now()),
+            name: row.name, pack: row.pack || 'واحد', qty: qty,
+            img: row.img || (l ? l.img : ''),
+            packCount: l ? (l.packCount || 1) : 1,
+            baseUnit: l ? (l.baseUnit || 'واحد') : String(row.pack || 'واحد').split(' ')[0]
+        };
+    }
+    function rfqUnitWord(it) { return String(it.pack || 'واحد').split(' ')[0] || 'واحد'; }
+
+    function rfqNewRender() {
+        var sec = $('#s-buy-rfq-new');
+        if (!sec) return;
+        if (!RFQ.items.length && !RFQ.touched) {
+            var def = rfqDefaultItem();
+            if (def) RFQ.items = [def];
+        }
+        rfqRender();
+    }
+
+    function rfqRender() {
+        var sec = $('#s-buy-rfq-new');
+        if (!sec) return;
+        var n = RFQ.items.length;
+        var multi = n > 1;
+
+        /* قلم‌های استعلام */
+        var host = $('#rfq-items');
+        if (host) {
+            host.innerHTML = n ? RFQ.items.map(function (it, i) {
+                return '<div class="rfq-item">' +
+                    '<div class="thumb thumb-sm"><img src="' + esc(it.img) + '" alt=""></div>' +
+                    '<div class="rfq-tx"><b>' + esc(it.name) + '</b><small>' + esc(it.pack) + '</small></div>' +
+                    '<div class="rfq-steps">' +
+                        '<button class="rfq-st" type="button" data-rfq-qty="' + i + '" data-dir="-1" aria-label="کمتر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg></button>' +
+                        '<div class="rfq-stv">' + faNum(it.qty) + '<small>' + esc(rfqUnitWord(it)) + '</small></div>' +
+                        '<button class="rfq-st" type="button" data-rfq-qty="' + i + '" data-dir="1" aria-label="بیشتر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>' +
+                    '</div>' +
+                    '<button class="rfq-rm" type="button" data-rfq-rm="' + i + '" aria-label="حذف ' + esc(it.name) + '"><svg><use href="#i-x"/></svg></button>' +
+                '</div>';
+            }).join('') :
+                '<div class="empty" style="padding: 14px 12px;"><h3>کالایی انتخاب نشده</h3><p>«افزودن کالا» را بزن و از لیست خریدت انتخاب کن.</p></div>';
+        }
+
+        /* شمارنده‌ها و زیرعنوان */
+        var cnt = $('#rfq-count');
+        if (cnt) cnt.textContent = faNum(n) + ' قلم';
+        var sub = $('#rfq-sub');
+        if (sub) sub.textContent = !n ? 'انتخاب کالاهای استعلام' :
+            (n === 1 ? RFQ.items[0].name + ' · ارسال به تأمین‌کننده‌ها' : 'استعلام چندقلمی · ' + faNum(n) + ' قلم');
+        var addTx = $('#rfq-add-tx');
+        if (addTx) addTx.textContent = n ? 'افزودن کالای دیگر' : 'افزودن کالا';
+
+        /* گیرندگان — اجتماع دارندگان قلم‌ها، سورت پوشش نزولی.
+           قبل از رندر، تیک‌های دستی کاربر (حالت تک‌قلمی) از DOM
+           به RFQ.sel منتقل می‌شود تا با افزودن/حذف قلم یا استپر
+           از بین نرود. */
+        $$('#s-buy-rfq-new .checkrow[data-sid]').forEach(function (r) {
+            RFQ.sel[r.dataset.sid] = !!r.querySelector('.checkbox.on');
+        });
+        var recHost = $('#rfq-recips');
+        var sups = (core.data.suppliers || []).filter(function (s) {
+            return s.businessId === 'b2' && rfqCoverOf(s, RFQ.items) > 0;
+        }).sort(function (a, b) {
+            var d = rfqCoverOf(b, RFQ.items) - rfqCoverOf(a, RFQ.items);
+            if (d) return d;
+            return (a.lastPrice || 0) - (b.lastPrice || 0);
+        });
+        if (recHost) {
+            recHost.innerHTML = sups.length ? sups.map(function (s) {
+                var cov = rfqCoverOf(s, RFQ.items);
+                var on = multi ? true : !!RFQ.sel[s.id];          /* چندقلمی = قفل روشن */
+                if (!multi && RFQ.sel[s.id] === undefined) on = !s.isNew; /* پیش‌فرض: شبکهٔ تاییدشده */
+                var covB = multi
+                    ? (cov >= n
+                        ? '<span class="badge b-green">همهٔ ' + faNum(n) + ' قلم</span>'
+                        : '<span class="badge b-gray">' + faNum(cov) + ' از ' + faNum(n) + ' قلم</span>')
+                    : '';
+                var pend = s.isNew ? '<span class="badge b-amber">در انتظار تایید</span>' : '';
+                var ver = s.verified ? ' <svg style="width: 12px; height: 12px; color: var(--blue);"><use href="#i-verified"/></svg>' : '';
+                return '<div class="checkrow' + (multi ? ' rfq-locked' : '') + '" data-sid="' + esc(s.id) + '"' + (multi ? ' data-lock="1"' : '') + '>' +
+                    '<div class="avatar avatar-sm" style="background: ' + esc(s.color) + ';">' + esc(s.avatar) + '</div>' +
+                    '<div style="flex: 1; min-width: 0;">' +
+                        '<div style="font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">' + esc(s.name) + ver + covB + pend + '</div>' +
+                        '<div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">' + esc(s.city) + ' · آخرین قیمت ' + faMoney(s.lastPrice || 0) + '</div>' +
+                    '</div>' +
+                    '<div class="checkbox' + (on ? ' on' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>' +
+                '</div>';
+            }).join('') : '<div class="empty" style="padding: 14px 12px;"><h3>تأمین‌کننده‌ای با این کالاها نداری</h3><p>کاتالوگ تأمین‌کننده‌ها را ذخیره کن تا در استعلام ببینند.</p></div>';
+        }
+        var locknote = $('#rfq-locknote');
+        if (locknote) locknote.hidden = !multi;
+        var rc = $('#rfq-recip-count');
+        if (rc) rc.textContent = sups.length
+            ? (multi ? 'هر که ' + faNum(n) + ' کالایی که دارد' : faNum(sups.length) + ' تأمین‌کنندهٔ این کالا')
+            : '';
+
+        rfqRecipSync();
+    }
+
+    /* استپر مقدار قلم — گام ۱ (یا packCount>1؟ نه — مقدار خرید است) */
+    function rfqQtyStep(idx, dir) {
+        var it = RFQ.items[idx];
+        if (!it) return;
+        it.qty = Math.max(1, (it.qty || 1) + (dir === '1' ? 1 : -1));
+        rfqRender();
+    }
+    function rfqItemRemove(idx) {
+        if (!RFQ.items.length) return;
+        RFQ.items.splice(idx, 1);
+        RFQ.touched = true;
+        rfqRender();
+    }
+
+    /* ─── شیت انتخاب کالا (sheet-rfqpick) ─── */
+    function rfqPickOpen() {
+        rfqPickRender();
+        core.openSheet('sheet-rfqpick');
+    }
+    function rfqPickRowHtml(row) {
+        var inq = RFQ.items.some(function (x) { return x.name === row.name; });
+        return '<button class="pl-row' + (inq ? ' on in-list' : '') + '" type="button"' +
+            (inq ? '' : ' data-rfp-item="' + esc(row.key) + '"') + '>' +
+            '<span class="pl-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span>' +
+            '<div class="pl-th"><img src="' + esc(row.img) + '" alt=""></div>' +
+            '<div class="pl-tx"><b>' + esc(row.name) + '</b><small>' + esc(row.pack) + ' · مقدار پیش‌فرض ' + faNum(row.qty) + '</small></div>' +
+            (inq ? '<span class="pl-inlist"><span class="badge b-green">در استعلام</span></span>' : '') +
+        '</button>';
+    }
+    function rfqPickRender() {
+        var host = $('#rfp-grid');
+        if (!host) return;
+        var mine = (core.data.shoppingList || []).filter(function (s) { return s.businessId === 'b2'; })
+            .map(rfqItemFromList);
+        host.innerHTML =
+            '<div class="pl-group-t">در لیست خرید من</div>' + (mine.length ? mine.map(rfqPickRowHtml).join('') : '<div class="pl-empty">لیست خریدت خالی است</div>') +
+            '<div class="pl-group-t">پرتکرار در صنف شما — سوپرمارکت</div>' + RFQ_FREQ.map(function (f) {
+                return rfqPickRowHtml({ key: 'fq-' + f.name, name: f.name, pack: f.pack, qty: f.qty, img: f.img });
+            }).join('');
+    }
+    function rfqPickAdd(key) {
+        /* از لیست خرید من — با مقدار واقعی؛ از پرتکرار — با مقدار پیش‌فرض */
+        var row = (core.data.shoppingList || []).filter(function (s) { return s.businessId === 'b2'; })
+            .find(function (s) { return s.id === key; });
+        var it;
+        if (row) it = rfqItemFromList(row);
+        else {
+            var f = RFQ_FREQ.find(function (x) { return 'fq-' + x.name === key; });
+            if (!f) return;
+            it = { key: key, name: f.name, pack: f.pack, qty: f.qty, img: f.img, packCount: 1, baseUnit: rfqUnitWord(f) };
+        }
+        if (RFQ.items.some(function (x) { return x.name === it.name; })) return;
+        RFQ.items.push(it);
+        RFQ.touched = true;
+        rfqRender();
+        rfqPickRender();
+    }
+
+    /* شمارش زندهٔ دکمهٔ ارسال (هم‌زمان با قلم‌ها و تیک‌ها) */
     function rfqRecipSync() {
         var sec = $('#s-buy-rfq-new');
         if (!sec) return;
+        if (!RFQ.items.length) {
+            var b0 = $('#rfq-send-btn');
+            if (b0) { b0.disabled = true; b0.textContent = 'اول کالای استعلام را انتخاب کن'; }
+            return;
+        }
         var n = $$('#s-buy-rfq-new .checkrow .checkbox.on').length;
+        var m = RFQ.items.length;
         var btn = $('#rfq-send-btn');
         if (btn) {
-            btn.textContent = 'ارسال به ' + faNum(n) + ' تأمین‌کننده';
+            btn.textContent = 'ارسال استعلام ' + faNum(m) + ' قلمی به ' + faNum(n) + ' تأمین‌کننده';
             btn.disabled = n === 0;
         }
     }
@@ -2794,20 +3151,37 @@
     function rfqSendNew() {
         var sec = $('#s-buy-rfq-new');
         if (!sec) return false;
+        if (!RFQ.items.length) { toast('حداقل یک کالا به استعلام اضافه کن', 'error'); return true; }
         var n = $$('#s-buy-rfq-new .checkrow .checkbox.on').length;
         if (!n) { toast('حداقل یک تأمین‌کننده انتخاب کن', 'error'); return true; }
         var days = 3;
         var act = $('#rfq-deadline .pill.active');
         if (act) days = parseInt(act.dataset.deadline, 10) || 3;
-        var qty = parseNum((($('#rfq-qty') || {}).value) || '20') || 20;
+        var m = RFQ.items.length;
+        /* عنوان: تک‌قلمی «نام · مقدار» / چندقلمی «n قلمی» + pack جمعی
+           (هم‌قالب ri1/ri2 سمت فروشنده — یک زبان در دو طرف) */
+        var itemName = m === 1
+            ? RFQ.items[0].name + ' · ' + faNum(RFQ.items[0].qty) + ' ' + rfqUnitWord(RFQ.items[0])
+            : faNum(m) + ' قلمی';
+        var packTx = m === 1 ? RFQ.items[0].pack : RFQ.items.map(function (it) { return rfqUnitWord(it); }).join('، ');
         core.data.rfqsOut.unshift({
             id: 'rn' + Date.now(), businessId: 'b2',
-            itemName: 'برنج هاشمی گلستان · ' + faNum(qty) + ' کیسه', img: 'png/goods/rice-sack.jpg',
-            sentTo: n, offersCount: 0, newOffers: 0, daysLeft: days, status: 'current'
+            supplierIds: $$('#s-buy-rfq-new .checkrow').filter(function (r) {
+                return r.querySelector('.checkbox.on');
+            }).map(function (r) { return r.dataset.sid; }),
+            itemName: itemName, pack: packTx, img: RFQ.items[0].img,
+            sentTo: n, offersCount: 0, newOffers: 0, daysLeft: days, status: 'current',
+            /* FD-24: قلم‌های کامل با مقدار — همان ساختار rfqsIn/ro1؛
+               پایپ «ثبت سفارش با همین شرایط» (۲۷) از همین می‌خواند. */
+            items: RFQ.items.map(function (it) {
+                return { name: it.name, pack: it.pack, packCount: it.packCount || 1, qty: it.qty, img: it.img, baseUnit: it.baseUnit || rfqUnitWord(it) };
+            })
         });
         var btn = $('#rfq-send-btn');
         if (btn) { btn.disabled = true; btn.textContent = 'ارسال شد ✓'; }
-        toast('استعلام قیمت برای ' + faNum(n) + ' تأمین‌کننده ارسال شد', 'success');
+        toast('استعلام ' + faNum(m) + ' قلمی برای ' + faNum(n) + ' تأمین‌کننده ارسال شد', 'success');
+        /* فرم برای بار بعد ریست می‌شود (قلم پیش‌فرض دوباره می‌آید) */
+        RFQ.items = []; RFQ.touched = false; RFQ.sel = {};
         setTimeout(function () { core.resetStack(); core.show('s-buy-rfqs', false); }, 800);
         return true;
     }
@@ -3016,7 +3390,8 @@
     core.registerShowHook('s-buy-rfqs', buyRfqsRender);
     core.registerShowHook('s-buy-offers', offersListRender);
     core.registerShowHook('s-buy-offer-view', offerViewRender);
-    core.registerShowHook('s-buy-rfq-new', rfqRecipSync);
+    /* FD-24: رندر کامل فرم چندقلمی (قلم پیش‌فرض + گیرندگان پوششی) */
+    core.registerShowHook('s-buy-rfq-new', rfqNewRender);
     core.registerShowHook('s-buy-list', buyListRender);
 
     /* ═══════════════════════════════════════════════════════════════
@@ -3623,6 +3998,15 @@
         rfqCloseConfirm: rfqCloseConfirm,
         rfqRecipSync: rfqRecipSync,
         rfqSendNew: rfqSendNew,
+        /* ═══ FD-24 — استعلام چندقلمی ═══ */
+        rfqNewRender: rfqNewRender,
+        rfqRender: rfqRender,
+        rfqQtyStep: rfqQtyStep,
+        rfqItemRemove: rfqItemRemove,
+        rfqPickOpen: rfqPickOpen,
+        rfqPickAdd: rfqPickAdd,
+        offerTotal: offerTotal,
+        offerCover: offerCover,
         buyListRender: buyListRender,
         picklistOpen: picklistOpen,
         picklistToggle: picklistToggle,

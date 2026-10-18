@@ -330,9 +330,42 @@
             return;
         }
 
+        /* ─── FD-24: تعاملات استعلام چندقلمی (۲۵) ───
+           استپر مقدار قلم · حذف قلم · افزودن کالا (شیت) ·
+           انتخاب از شیت · تأیید شیت */
+        var rfqQ = t.closest('[data-rfq-qty]');
+        if (rfqQ && core.forms.rfqQtyStep) {
+            core.forms.rfqQtyStep(parseInt(rfqQ.dataset.rfqQty, 10), rfqQ.dataset.dir);
+            return;
+        }
+        var rfqR = t.closest('[data-rfq-rm]');
+        if (rfqR && core.forms.rfqItemRemove) {
+            core.forms.rfqItemRemove(parseInt(rfqR.dataset.rfqRm, 10));
+            return;
+        }
+        if (t.closest('#rfq-add-btn') && core.forms.rfqPickOpen) {
+            core.forms.rfqPickOpen();
+            return;
+        }
+        var rfp = t.closest('[data-rfp-item]');
+        if (rfp && core.forms.rfqPickAdd) {
+            core.forms.rfqPickAdd(rfp.dataset.rfpItem);
+            return;
+        }
+        if (t.closest('#rfp-done')) {
+            core.closeSheet('sheet-rfqpick');
+            return;
+        }
+
         /* ─── چک‌رو عمومی ─── */
         var cr = t.closest('.checkrow');
         if (cr && !t.closest('#contact-list')) {
+            /* FD-24: تیک قفلِ استعلام چندقلمی — اجتماع دارندگان قلم‌ها
+               است؛ لمسش فقط دلیل را می‌گوید (الگوی redesign-base) */
+            if (cr.dataset.lock) {
+                toast('استعلام چندقلمی به هر که حداقل یکی از قلم‌ها را دارد می‌رسد', 'info');
+                return;
+            }
             var cb = cr.querySelector('.checkbox');
             if (cb) cb.classList.toggle('on');
             /* FD-14: فرم استعلام (۲۵) — شمارش گیرندگان زنده */
@@ -1026,9 +1059,11 @@
             return;
         }
 
-        if (t.id === 'offer-price') {
+        if (t.id === 'offer-price' || t.dataset.ofPrice !== undefined) {
             /* FD-14: مرجع قدیمی (#offer-unit-hint-yx) وجود نداشت — هینت
-               هیچ‌وقت آپدیت نمی‌شد (باگ). حالا هینت عمومیِ هر قلم */
+               هیچ‌وقت آپدیت نمی‌شد (باگ). حالا هینت عمومیِ هر قلم.
+               FD-24: ورودی‌های چندقلمی data-of-price دارند (نه id) —
+               بدون این شاخه هینت قلم‌های ۲+ هیچ‌وقت زنده نمی‌شد. */
             if (core.forms.offerPriceHint) core.forms.offerPriceHint(t);
             return;
         }

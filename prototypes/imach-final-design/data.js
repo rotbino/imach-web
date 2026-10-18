@@ -379,7 +379,8 @@ const DATA = {
         { id: 'co3', customerId: 'cu3', title: 'برنج طارم · ۱۰ کیسه',  status: 'accepted', date: '۲ روز پیش', img: 'png/goods/rice-grains.jpg', go: 's-sell-order-view' }
     ],
     customerRfqs: [
-        { id: 'cr1', customerId: 'cu1', title: 'برنج هاشمی · ۲۰ کیسه', left: '۲ روز مانده', leftHot: false, date: 'امروز', img: 'png/goods/rice-sack.jpg', go: 's-sell-offer' }
+        /* FD-24: عنوان با ri1 چندقلمی هم‌گام شد */
+        { id: 'cr1', customerId: 'cu1', title: 'برنج + روغن · ۲ قلم', left: '۲ روز مانده', leftHot: false, date: 'امروز', img: 'png/goods/rice-sack.jpg', go: 's-sell-offer' }
     ],
 
     /* ═══════════════════════════════════════════════════════════
@@ -440,21 +441,32 @@ const DATA = {
        ▸ phone/industry/since/note → شناسنامه و یادداشت صفحهٔ جزئیات
          (۲۳ — s-supplier-view؛ قرینهٔ جزئیات مشتری).
        ═══════════════════════════════════════════════════════════ */
+    /* ═══ FD-24 — goodsList/lastPrice ساختاریافته برای محاسبهٔ پوشش ═══
+       ▸ goodsList — کالاهایی که این تامین‌کننده می‌تواند تأمین کند
+         (مبنای بج پوشش «k از n قلم» در فرم استعلام ۲۵ و مرتب‌سازی
+         گیرندگان). رشتهٔ goods فقط برای نمایش است. در محصول واقعی
+         این از کاتالوگ واقعی او (goodId ها) می‌آید و سمت سرور کش
+         می‌شود — این‌جا تطبیق نامی ساده است (app-forms: rfqCover).
+       ▸ lastPrice — آخرین قیمت ثبت‌شده برای کالای مرجعِ نمایش زیر
+         نام هر گیرنده (فقط نمایشی؛ در محصول واقعی از آخرین
+         listing/پیشنهاد همان تامین‌کننده می‌آید).
+       ▸ su1 «پخش برنج پارس» (صنف پخش مواد غذایی) روغن هم دارد —
+         برای دموی پوشش کامل در استعلام برنج+روغن. */
     suppliers: [
         { id: 'su1', businessId: 'b2', name: 'پخش برنج پارس', person: 'مرتضی رضایی', city: 'رشت',   avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', verified: true,  contactId: 'ct5',
-          industry: 'پخش مواد غذایی', phone: '۰۹۱۲ ۲۲۰ ۳۳۶۱', since: 'ماه پیش',   note: 'قیمت‌ها صبح به‌روز می‌شود — سفارش تا ۱۰ صبح همان روز می‌رود.', goods: 'برنج هاشمی · برنج طارم' },
+          industry: 'پخش مواد غذایی', phone: '۰۹۱۲ ۲۲۰ ۳۳۶۱', since: 'ماه پیش',   note: 'قیمت‌ها صبح به‌روز می‌شود — سفارش تا ۱۰ صبح همان روز می‌رود.', goods: 'برنج هاشمی · برنج طارم · روغن سرخ‌کردنی', goodsList: ['برنج هاشمی', 'برنج طارم', 'روغن سرخ‌کردنی'], lastPrice: 2840000 },
         { id: 'su2', businessId: 'b2', name: 'آریو غلات',      person: 'امیر قاسمی',  city: 'اصفهان', avatar: 'آ', color: '#7c3aed', verified: true,
-          industry: 'پخش غلات',       phone: '۰۹۱۳ ۵۵۲ ۱۱۰۹', since: '۳ هفته پیش', note: '', goods: 'برنج هاشمی · قند' },
+          industry: 'پخش غلات',       phone: '۰۹۱۳ ۵۵۲ ۱۱۰۹', since: '۳ هفته پیش', note: '', goods: 'برنج هاشمی · قند', goodsList: ['برنج هاشمی', 'قند'], lastPrice: 2895000 },
         { id: 'su3', businessId: 'b2', name: 'کیان غلات',      person: 'کیان رستمی',  city: 'قزوین',  avatar: 'ک', color: '#0e7490', verified: false,
-          industry: 'عمده‌فروشی غلات', phone: '۰۹۳۰ ۵۴۲ ۱۱۸۸', since: '۵ روز پیش', note: 'کارتن ۲۴تایی برای رب — چک نمی‌گیرد.', goods: 'برنج · رب گوجه' },
+          industry: 'عمده‌فروشی غلات', phone: '۰۹۳۰ ۵۴۲ ۱۱۸۸', since: '۵ روز پیش', note: 'کارتن ۲۴تایی برای رب — چک نمی‌گیرد.', goods: 'برنج · رب گوجه', goodsList: ['برنج', 'رب گوجه'], lastPrice: 2790000 },
         /* ▽ پیشنهاد تامین رسیده — در انتظار تایید خریدار (FD-16) */
         { id: 'su4', businessId: 'b2', name: 'شالی‌زار طالب',   person: 'یوسف طالبی',  city: 'رشت',   avatar: 'ش', color: '#0d9488', verified: false, isNew: true,
           industry: 'شالی‌کاری',       phone: '۰۹۱۱ ۲۳۴ ۵۶۷۸', since: 'امروز',     note: '',
-          goods: 'برنج هاشمی',
+          goods: 'برنج هاشمی', goodsList: ['برنج هاشمی'], lastPrice: 2780000,
           proposal: { good: 'برنج هاشمی', pack: 'کیسه ۵۰ کیلویی', price: 2780000, msg: 'برنج درجه‌یک امسالم — از لینک لیست خریدت دیدم؛ هم‌شهری‌ای، تحویل همان روز.' } },
         { id: 'su5', businessId: 'b2', name: 'غلات سبزدشت',    person: 'مهدی سبزدشتی', city: 'مشهد',  avatar: 'غ', color: '#65a30d', verified: false, isNew: true,
           industry: 'پخش مواد غذایی', phone: '۰۹۱۵ ۸۸۰ ۴۴۲۱', since: 'امروز',     note: '',
-          goods: 'برنج · روغن',
+          goods: 'برنج · روغن', goodsList: ['برنج', 'روغن'], lastPrice: 2960000,
           /* FD-23: شکل جدید — پیشنهاد چندقلمی (items[])؛ رندرهای
              ۲۰/۲۲/۲۳ هر سه شکل (تک‌قلم قدیمی/چندقلمی/بدون‌قلم)
              را می‌فهمند. */
@@ -596,17 +608,53 @@ const DATA = {
          حلقه را کامل می‌کنند: ایجاد → پیشنهادها → مقایسه → بستن.
        ▸ عنوان‌ها با پیشوند «درخواست قیمت …» (حکم مالک FD-14):
          «به جای برنج هاشمی → درخواست قیمت برنج هاشمی؛ لیست گویاتر
-         می‌شود» — در ۱۱/۱۲/۲۴/۲۶ رعایت می‌شود. */
+         می‌شود» — در ۱۱/۱۲/۲۴/۲۶ رعایت می‌شود.
+
+       ═══ FD-24 — استعلام چندقلمی (حکم مالک) ═══
+       «سفارشاتی که می‌آید سمت فروشنده انگار برای تک‌سفارش طراحی
+       شده؛ حتماً باید برای چند کالا باشد — چون از روی کاتالوگ یک
+       تامین‌کننده انجام می‌شود. قیمت‌گیری هم باید چندکالایی را
+       ساپورت کند؛ اگر یک کالا پیش‌فرض هم انتخاب شده باشد باید
+       بتوان کالاهای بعدی را هم اضافه کرد. خیلی کسب‌وکارها مثل
+       خرده‌فروش‌ها معمولاً قیمت چند کالا را در یک استعلام می‌گیرند —
+       نه اینکه برای هر کالا یک استعلام جدا باشد.»
+       ▸ فرم ۲۵ کاملاً چندقلمی شد: قلم پیش‌فرض (از لیست خرید/زمینه) +
+         «افزودن کالای دیگر» (شیت انتخاب از لیست خرید + پرتکرار صنف)
+         + مقدار هر قلم با استپر.
+       ▸ گیرندگان = «اجتماع» تأمین‌کنندگانی که حداقل یکی از قلم‌ها را
+         دارند (الگوی redesign-base — حکم مالک: «تامین‌کنندگانی که
+         چند کالا را داشتند یا بعضی کالاها را داشتند می‌آورد؛ تعداد
+         کالاهایی که فروشنده داشت»):
+         · چندقلمی → همهٔ دارندگان تیک قفلِ روشن دارند + بج پوشش
+           «k از n قلم» (سبز اگر همه) + مرتب‌شده بر اساس پوشش.
+         · تک‌قلمی → تیک‌ها انتخابی (پیش‌فرض: شبکهٔ تاییدشده روشن).
+       ▸ offers[].prices — قیمت هر قلم هم‌ترتیب با rfq.items (null =
+         این قلم را نمی‌دارد)؛ o.price = قیمت قلم اول (سازگاری
+         رندرهای تک‌قلمی)؛ total = Σ قیمت×مقدار — در ۲۶/۲۷ محاسبه
+         می‌شود (offerTotal در app-forms).
+       ▸ پیاده‌سازی واقعی (برای فاز عملیاتی):
+         · تطبیق پوشش روی goodId سمت سرور (اینجا: تطبیق نامِ کالا با
+           فهرست کالای هر تامین‌کننده — goodsList) و کش per-viewer.
+         · استعلام چندقلمی یک رکورد است و با groupId مشترک نمی‌شکند؛
+           سمت فروشنده فقط اقلامِ موجودِ خودش دیده می‌شود (حریم سبد
+           خریدار) — در ماک همهٔ قلم‌ها نشان داده می‌شوند.
+         · پیشنهاد ناقص (برای بعضی قلم‌ها) مجاز است؛ پذیرش آن ⇒ سفارش
+           فقط برای همان قلم‌های قیمت‌خورده ثبت می‌شود.
+         · مرتب‌سازی مقایسه (۲۶): اول پوشش کامل، بعد جمع کل. */
     rfqsIn: [
         {
             id: 'ri1', businessId: 'b1', customerId: 'cu1', buyer: 'رستوران مهر',
             buyerAvatar: 'م', buyerColor: '#7c3aed',
-            itemName: 'برنج هاشمی گلستان', pack: '۲۰ کیسهٔ ۵۰ کیلویی',
+            /* FD-24: استعلام نمونهٔ اصلی سمت فروشنده چندقلمی شد —
+               «حتماً باید برای چند کالا باشه»؛ جفت برنج+روغن یعنی
+               فرم پیشنهاد (۱۲) به‌طور پیش‌فرض قیمتِ هر قلم را می‌گیرد. */
+            itemName: '۲ قلمی', pack: 'برنج، روغن',
             img: 'png/goods/rice-sack.jpg',
             daysLeft: 2, when: 'دیروز',
             note: 'برنج درجه یک — قیمت ارسال به تهران را هم بنویسید.',
             items: [
-                { name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', packCount: 50, qty: 20, img: 'png/goods/rice-sack.jpg', baseUnit: 'کیلوگرم' }
+                { name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', packCount: 50, qty: 20, img: 'png/goods/rice-sack.jpg', baseUnit: 'کیلوگرم' },
+                { name: 'روغن سرخ‌کردنی لادن', pack: 'بطری ۱۰ لیتری', packCount: 1, qty: 20, img: 'png/goods/oil-bottle.jpg', baseUnit: 'بطری' }
             ]
         },
         {
@@ -632,14 +680,22 @@ const DATA = {
 
     rfqsOut: [
         {
+            /* FD-24: استعلام نمونهٔ اصلی سمت خریدار هم چندقلمی شد —
+               برنج + روغن؛ «خرده‌فروش‌ها معمولاً قیمت چند کالا را در
+               یک استعلام می‌گیرند». sentTo = اجتماع دارندگان قلم‌ها
+               (شامل دو تأمین‌کنندهٔ در انتظار تایید که برای همین
+               کالاها پیشنهاد تامین داده‌اند — در محصول واقعی فقط
+               شبکهٔ تاییدشده + دارندگان پیشنهاد باز). */
             id: 'ro1', businessId: 'b2', listingId: 'l1',
-            supplierIds: ['su1', 'su2', 'su3'],
-            itemName: 'برنج هاشمی گلستان · ۲۰ کیسه', img: 'png/goods/rice-sack.jpg',
-            sentTo: 3, offersCount: 5, newOffers: 2, daysLeft: 3, status: 'current',
+            supplierIds: ['su1', 'su2', 'su3', 'su4', 'su5'],
+            itemName: '۲ قلمی', pack: 'برنج، روغن', img: 'png/goods/rice-sack.jpg',
+            sentTo: 5, offersCount: 5, newOffers: 2, daysLeft: 3, status: 'current',
             /* FD-22 (تصمیم ۲/۹): قلم‌های استعلام از سمت خریدار هم مثل
-               rfqsIn — برای «ثبت سفارش با همین شرایط» (۲۷) لازم است. */
+               rfqsIn — برای «ثبت سفارش با همین شرایط» (۲۷) لازم است.
+               FD-24: prices[] هر پیشنهاد هم‌ترتیب با همین آرایه است. */
             items: [
-                { name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', packCount: 50, qty: 20, img: 'png/goods/rice-sack.jpg', baseUnit: 'کیلوگرم' }
+                { name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', packCount: 50, qty: 20, img: 'png/goods/rice-sack.jpg', baseUnit: 'کیلوگرم' },
+                { name: 'روغن سرخ‌کردنی لادن', pack: 'بطری ۱۰ لیتری', packCount: 1, qty: 20, img: 'png/goods/oil-bottle.jpg', baseUnit: 'بطری' }
             ]
         },
         {
@@ -673,12 +729,24 @@ const DATA = {
          می‌شوند — بازتاب سمت خریدار، همان حکم مالک.
        ▸ پیاده‌سازی واقعی: درصد چکی ۱ تا ۹۹؛ روز چک معمولاً مضرب ۳۰
          و تا سقف اعتبار فروشنده؛ در ماک بدون اعتبارسنجی سروری است. */
+    /* ═══ FD-24 — پیشنهاد چندقلمی (شرایط ساختاریافته + قیمت هر قلم) ═══
+       ▸ prices[] — هم‌ترتیب با rfq.items همان استعلام؛ null ⇒ این
+         قلم را ندارد (پیشنهاد ناقص — «بعضی کالاها رو داشتن میاورد»).
+         o.price = قیمت قلم اول (سازگاری رندرهای قدیمی)؛ جمع کل با
+         offerTotal(o, rfq) در app-forms محاسبه می‌شود.
+       ▸ دمو: su1 هر دو قلم را دارد (۸۴٬۵۰۰٬۰۰۰ = کامل و کمترین جمع)،
+         su5 هر دو را (۸۷٬۱۶۰٬۰۰۰)؛ su2/su3/su4 فقط برنج — پوشش
+         «۱ از ۲ قلم» و مرتب‌سازی ۲۶: اول کامل‌ها بعد ناقص‌ها.
+       ▸ پیاده‌سازی واقعی: هر قلم { goodId, price, pricePerUnit }؛
+         پیشنهاد ناقص فقط برای قلم‌هایِ موجودِ فروشنده صادر می‌شود و
+         در مقایسه با بج پوشش کنار کامل‌ها می‌نشیند (فیلتر نیست —
+         سیگنال رتبه‌بندی، الگوی redesign-base). */
     offers: [
-        { id: 'of1', rfqId: 'ro1', supplierId: 'su1', seller: 'پخش برنج پارس', city: 'رشت', avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', price: 2840000, pricePerUnit: 56800, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 50, days: 60 }, dlv: { ship: true, by: 'seller' }, note: 'برنج امسال، پاک‌شده. حمل تا در مغازه.', isKnown: true },
-        { id: 'of2', rfqId: 'ro1', supplierId: 'su2', seller: 'آریو غلات', city: 'اصفهان', avatar: 'آ', color: '#7c3aed', price: 2895000, pricePerUnit: 57900, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'seller' }, note: 'ارسال رایگان بالای ۳۰ کیسه.' },
-        { id: 'of3', rfqId: 'ro1', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 2790000, pricePerUnit: 55800, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 30, days: 30 }, dlv: { ship: true, by: 'customer' }, note: '' },
-        { id: 'of4', rfqId: 'ro1', supplierId: 'su4', seller: 'شالی‌زار طالب', city: 'رشت', avatar: 'ش', color: '#0d9488', price: 2780000, pricePerUnit: 55600, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: false, by: null }, note: '' },
-        { id: 'of5', rfqId: 'ro1', supplierId: 'su5', seller: 'غلات سبزدشت', city: 'مشهد', avatar: 'غ', color: '#65a30d', price: 2960000, pricePerUnit: 59200, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'customer' }, note: 'ارسال از انبار مشهد.' },
+        { id: 'of1', rfqId: 'ro1', supplierId: 'su1', seller: 'پخش برنج پارس', city: 'رشت', avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', price: 2840000, prices: [2840000, 1385000], pricePerUnit: 56800, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 50, days: 60 }, dlv: { ship: true, by: 'seller' }, note: 'برنج امسال، پاک‌شده. حمل تا در مغازه.', isKnown: true },
+        { id: 'of2', rfqId: 'ro1', supplierId: 'su2', seller: 'آریو غلات', city: 'اصفهان', avatar: 'آ', color: '#7c3aed', price: 2895000, prices: [2895000, null], pricePerUnit: 57900, baseUnit: 'کیلوگرم', packCount: 50, verified: true, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'seller' }, note: 'ارسال رایگان بالای ۳۰ کیسه.' },
+        { id: 'of3', rfqId: 'ro1', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 2790000, prices: [2790000, null], pricePerUnit: 55800, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 30, days: 30 }, dlv: { ship: true, by: 'customer' }, note: '' },
+        { id: 'of4', rfqId: 'ro1', supplierId: 'su4', seller: 'شالی‌زار طالب', city: 'رشت', avatar: 'ش', color: '#0d9488', price: 2780000, prices: [2780000, null], pricePerUnit: 55600, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: false, by: null }, note: '' },
+        { id: 'of5', rfqId: 'ro1', supplierId: 'su5', seller: 'غلات سبزدشت', city: 'مشهد', avatar: 'غ', color: '#65a30d', price: 2960000, prices: [2960000, 1398000], pricePerUnit: 59200, baseUnit: 'کیلوگرم', packCount: 50, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'customer' }, note: 'ارسال از انبار مشهد.' },
         { id: 'of6', rfqId: 'ro2', supplierId: 'su3', seller: 'کیان غلات', city: 'قزوین', avatar: 'ک', color: '#0e7490', price: 58000, pricePerUnit: 58000, baseUnit: 'قوطی', packCount: 1, verified: false, pay: { chk: 0, days: 0 }, dlv: { ship: true, by: 'seller' }, note: 'قوطی‌ها کارتن ۲۴تایی بسته‌بندی می‌شود.' }
     ],
 
