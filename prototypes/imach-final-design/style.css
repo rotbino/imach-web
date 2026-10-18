@@ -2803,11 +2803,25 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 }
 .linklike:active { opacity: .7; }
 .linklike.linklike-white { color: #FFF; }
+/* FD-26 (حکم مالک — ۰۳): «فراموشی رمز عبور رو ببر پایین و رنگش رو هم
+   عادی کن… خیلی نمی‌خوام فراموشی رمز عبور توی چشم باشه» — نسخهٔ
+   خاموش: خاکستریِ ملایم، بدون تأکید؛ فقط آدرسِ راهِ فرعی، نه دعوت. */
+.linklike.linklike-quiet {
+    color: var(--text-3);
+    font-size: 11.5px; font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: #CBD5E1;
+    text-decoration-style: solid;
+    text-underline-offset: 3px;
+}
 
 /* ─── شیت سبد خرید (۳۱) — FD-13: چیدمان دوطبقه ═══
    حکم مالک: «عنوان کالا و توضیحش بالا، قیمت و اضافه/کم‌کردن تعداد
    پایین» — مینیمال و بدون درهم‌رفتن. استپر ۴۲px (قاعدهٔ همیشگی
-   جدید: آیکون‌های ± در موبایل راحت لمس شوند — به اندازهٔ لازم). */
+   جدید: آیکون‌های ± در موبایل راحت لمس شوند — به اندازهٔ لازم).
+   FD-26 (حکم مالک): «امکان ورود عدد بصورت نوشتاری هم باشه. چرا که
+   ممکنه تعداد خیلی بالا باشه» — عدد = input تایپ‌شدنی (۴۲px هم‌قد
+   استپر؛ اعتبارسنجی حداقل در change — app-forms.js). */
 .cart-it {
     display: flex; flex-direction: column; gap: 9px;
     padding: 11px 2px;
@@ -2835,8 +2849,20 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
    چون پرتکرارترین کنترل خریدند؛ در موبایل انگشت راحت می‌خوابد */
 .cart-it .ci-qty .bk-step { width: 42px; height: 42px; font-size: 19px; border-radius: 12px; }
 .cart-it .ci-qty .ci-n {
-    min-width: 30px; text-align: center;
+    width: 64px; height: 42px;
+    padding: 0 4px;
+    text-align: center;
     font-size: 14px; font-weight: 800;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+.cart-it .ci-qty .ci-n:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #FFF;
 }
 .cart-it .ci-qty .ci-unit { font-size: 10px; color: var(--text-3); margin-right: 1px; }
 .cart-it .ci-price {
@@ -3801,14 +3827,18 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .blg-offer svg { width: 13px; height: 13px; }
 .blg-offer:active { background: var(--stone); color: #FFF; }
 
-/* ─── ۳۲: دکمهٔ چسبان «پیشنهاد تامین» در نوار پایین (قرینهٔ سبد ۳۱) ─── */
+/* ─── ۳۲: دکمهٔ چسبان «پیشنهاد تامین» در نوار پایین (قرینهٔ سبد ۳۱) ───
+   FD-26 (حکم مالک): «دکمه پیشنهاد تامین در فوتر رو هم نارنجی کن که
+   بیشتر به چشم بیاد» — نارنجیِ کامل (primary): تنها اکشن primary این
+   صفحه است؛ در ۳۱ نارنجیِ کامل برای «ذخیره» محفوظ می‌ماند. */
 .gbar-supply {
     flex: 1.35;
-    background: var(--stone-tint);
-    border-color: #CBD5E1;
-    color: var(--stone-soft);
+    background: var(--primary);
+    border-color: var(--primary-strong);
+    color: #FFF;
 }
-.gbar-supply:active { background: #E2E8F0; }
+.gbar-supply:active { background: var(--primary-strong); }
+.gbar-supply svg { color: #FFF; }
 
 /* ─── ۳۲: شیت شرایط درخواست تامین — ردیف‌های تیک‌دار ─── */
 .cond-card {
@@ -4011,18 +4041,37 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
    حذف شدند؛ سورت + آیکون در خود ردیف‌ها (.blg-mic) انجام می‌شود. */
 
 /* ─── ۳۲: ردیف کالای مچ‌شده — حاشیهٔ سبزِ ظریف + آیکون تطابق (سورت بالاتر در JS) ───
-   FD-25: بج متنی «در کاتالوک تو» حذف شد؛ آیکون نشان سبز (i-verified)
-   جلوی عنوان همان پیام را بدون شلوغی می‌دهد؛ tooltip/aria-label کامل. */
+   FD-25: بج متنی حذف شد؛ FD-26 (حکم مالک): آیکون بعد از عنوان
+   («بزار جلوی عنوان نه پشت عنوان») + آیکون کاتالوگی i-textlist به‌جای
+   تیک اعتماد i-verified («یعنی در کاتالوگت هست») — همان سبز/tooltip. */
 .blg-row.blg-matched { border-color: #BBF7D0; }
 .blg-row .row-title .badge { font-size: 9px; padding: 2px 7px; }
 .blg-mic {
     display: inline-flex; align-items: center;
-    margin-left: 5px;
+    margin-right: 5px; /* FD-26: بعد از عنوان — فاصله از سمت متن */
     color: var(--green);
     vertical-align: -2px;
     cursor: help;
 }
 .blg-mic svg { width: 14px; height: 14px; }
+
+/* ─── ۳۲: لینک «شرایط تامین» در بدنهٔ شیت پیشنهاد (FD-26) ───
+   حکم مالک: «به جاش یه لینک شرایط تامین بزار. میدونم روی آیکون
+   گذاشتی ولی اینجا هم بزار» — جانشین زیرمتن آموزشی حذف‌شده؛ هم‌درِ
+   آیکون ⓘ هدر؛ فقط وقتی خریدار شرطی نوشته باشد (گیت JS). */
+.supply-cond-link {
+    display: flex; align-items: center; gap: 6px;
+    margin: 2px 0 8px;
+    padding: 0;
+    background: none; border: 0; cursor: pointer;
+    font-family: inherit; font-size: 11.5px; font-weight: 700;
+    color: var(--primary-strong);
+    text-decoration: underline; text-decoration-style: dashed;
+    text-underline-offset: 4px;
+}
+.supply-cond-link:active { opacity: .7; }
+.supply-cond-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+.supply-cond-link .sc-chev { width: 12px; height: 12px; color: var(--text-3); }
 
 /* ─── شیت پیشنهاد تامین: فیلدهای قیمت/حداقل زیر قلم انتخاب‌شده ─── */
 .sprow-w + .sprow-w { margin-top: 8px; }

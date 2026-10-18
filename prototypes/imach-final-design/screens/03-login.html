@@ -4,11 +4,12 @@
      ورود = شماره + رمزی که کاربر پس از اولین ورود، با ردیف «شروع»
      در میز خرید برای خودش ساخته است (sheet-pass). نمایِ کد ۵ رقمیِ
      قدیمی حذف شد چون با محدودیت واقعی محصول تناقض داشت.
-     FD-22 (تصمیم محصول ۶/۹): بازیابی رمز در MVP = پشتیبانی انسانی
-     (همان قید «پیرمرد ۷۰ ساله» — نه جریان پیامکی/ایمیلی پیچیده؛
-     فاز رشد: بازیابی با پیامک). لینک «رمزم را فراموش کردم» ← شیت
-     sheet-forgot: تماس/واتس‌اپ پشتیبانی + قاعدهٔ امنیتی.
-     ═════════════════════════════════════════════════════════════ -->
+     FD-26 (بازطراحی — حکم مالک): فراموشی رمز = درجهٔ دوم اهمیت —
+     پایین‌تر و بی‌رنگ؛ «حساب ندارم — ثبت‌نام می‌کنم» مهمتر است:
+     بالاتر و رنگی. بازیابی هم بدون تماس/واتس‌اپ: فقط شمارهٔ موبایل
+     حساب را وارد می‌کند و به خود آی‌مچ می‌فرستد؛ پاسخ: «به زودی رمز
+     موقت برای شما ارسال می‌شود» (شیت sheet-forgot).
+     ══ -->
 <section class="screen" id="s-login" data-arm="keep">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
@@ -26,41 +27,57 @@
             <div class="hint">رمزی که پس از اولین ورود، در میز خرید برای خودت ساخته‌ای</div>
         </div>
 
-        <!-- FD-22 — تصمیم بازیابی رمز: پشتیبانی انسانی (MVP) -->
-        <button class="linklike" type="button" data-sheet="sheet-forgot">رمزم را فراموش کردم</button>
+        <!-- FD-26 (حکم مالک): «فراموشی رمز عبور رو ببر پایین و رنگش رو
+             هم عادی کن چون در درجهٔ دوم اهمیت هست و حساب ندارم ثبت نام
+             می‌کنم خیلی مهمتره و باید بالاتر باشه و رنگی» — ثبت‌نام اول و
+             نارنجی؛ فراموشی بعدش و خاموش («خیلی نمی‌خوام فراموشی رمز
+             عبور توی چشم باشه»). -->
         <button class="linklike" type="button" data-go="s-signup">حساب ندارم — ثبت‌نام می‌کنم</button>
+        <button class="linklike linklike-quiet" type="button" data-sheet="sheet-forgot">رمزم را فراموش کردم</button>
     </div>
 
     <div class="sticky-bar">
         <button class="btn btn-primary btn-block" data-login>ورود به آی‌مچ</button>
     </div>
 
-    <!-- ═══ FD-22 — شیت: بازیابی رمز (تصمیم ۶/۹ — پشتیبانی انسانی) ═══
-         بدون جریان پیامکی/ایمیلی — پیرمرد ۷۰ ساله با یک تماس حلش
-         می‌کند؛ در فاز رشد بازیابی با پیامک می‌آید (feature flag). -->
+    <!-- ═══ FD-26 — شیت: بازیابی رمز (بازطراحی مالک — شماره به خود آی‌مچ)
+     حذف تماس/واتس‌اپ پشتیبانی (FD-22): «بازیابی رمز عبور رو از تماس
+     یا واتساپ استفاده نکن. بفرسته به خود آیمچ. فقط شماره موبایل رو
+     وارد کنه و بفرسته به آیمچ» — فرم: «شماره موبایل حساب خود را
+     وارد کنید.» + دکمهٔ «ارسال شماره به پشتیبانی برای بازیابی رمز
+     عبور»؛ پس از ارسال: «به زودی رمز موقت برای شما ارسال می‌شود».
+     در محصول واقعی: تیکت پشتیبانی + رمز موقت درون‌برنامه‌ای (فاز
+     رشد: پیامک — همان feature flag FD-22). forgotReset (app-forms.js)
+     بازشدن بعدی را با فرم تمیز برمی‌گرداند. -->
     <div class="sheet" id="sheet-forgot" hidden>
         <div class="grab"></div>
         <div class="sheet-hdr">
             <h3>بازیابی رمز</h3>
             <button class="mg" data-sheet-close="sheet-forgot" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
         </div>
-        <div class="sub">پشتیبانی آی‌مچ رمزت را برایت برمی‌گرداند — با همان شماره‌ای که حسابت را ساخته تماس بگیر.</div>
-        <div class="ccat-card" style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
-            <div class="avatar" style="background: var(--primary);">پ</div>
-            <div style="flex: 1; min-width: 0;">
-                <b style="font-size: 13px;">پشتیبانی آی‌مچ</b>
-                <div style="font-size: 11px; color: var(--text-3); margin-top: 2px;">شنبه تا پنجشنبه · ۹ تا ۱۸</div>
+
+        <!-- نمای فرم -->
+        <div id="forgot-view">
+            <div class="sub">شماره موبایل حساب خود را وارد کنید.</div>
+            <div class="field">
+                <label>شماره موبایل</label>
+                <input class="input" id="forgot-phone" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" inputmode="tel">
+            </div>
+            <button class="btn btn-primary btn-block" id="forgot-send" type="button" style="margin-top: 10px;">
+                <svg><use href="#i-send"/></svg> ارسال شماره به پشتیبانی برای بازیابی رمز عبور
+            </button>
+            <div class="hint-line" style="margin-top: 10px;">
+                <svg><use href="#i-lock"/></svg>
+                <span>برای امنیتت، رمز فقط به شماره‌ای داده می‌شود که حساب با آن ساخته شده است.</span>
             </div>
         </div>
-        <button class="btn btn-primary btn-block" type="button" data-dial style="margin-top: 10px;">
-            <svg><use href="#i-phone"/></svg> تماس با پشتیبانی
-        </button>
-        <button class="btn btn-outline btn-block" type="button" style="margin-top: 6px;">
-            <svg><use href="#i-whatsapp"/></svg> واتس‌اپ پشتیبانی
-        </button>
-        <div class="hint-line" style="margin-top: 10px;">
-            <svg><use href="#i-lock"/></svg>
-            <span>برای امنیتت، رمز فقط به شماره‌ای داده می‌شود که حساب با آن ساخته شده است.</span>
+
+        <!-- نمای ارسال شد — متن مالک: «به زودی رمز موقت برای شما ارسال می شود» -->
+        <div id="forgot-ok" hidden>
+            <div class="ok-pill"><svg><use href="#i-check"/></svg></div>
+            <div class="ok-ttl">به زودی رمز موقت برای شما ارسال می‌شود</div>
+            <div class="ok-sub">پشتیبانی آی‌مچ رمز موقت را برای همین شماره می‌فرستد.</div>
+            <button class="btn btn-primary btn-block" id="forgot-close" type="button" style="margin-top: 10px;">بستن</button>
         </div>
     </div>
-</section>
+    </section>

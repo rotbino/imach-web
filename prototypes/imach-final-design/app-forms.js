@@ -1672,7 +1672,12 @@
                     '<div class="ci-bottom">' +
                         '<div class="ci-qty">' +
                             '<button class="bk-step" type="button" data-cart-step="-1" data-cart-id="' + lid + '" aria-label="کاهش تعداد">−</button>' +
-                            '<span class="ci-n">' + faNum(qty) + '</span>' +
+                            /* FD-26 (حکم مالک): «توی سبد خرید امکان ورود عدد
+                               بصورت نوشتاری هم باشه. چرا که ممکنه تعداد خیلی
+                               بالا باشه» — عدد علاوه بر استپر، مستقیم تایپ
+                               می‌شود (input عددی؛ اعتبارسنجی در change —
+                               همان گیت حداقلِ استپر). */
+                            '<input class="ci-n" type="text" inputmode="numeric" autocomplete="off" data-cart-qty="' + lid + '" value="' + faNum(qty) + '" aria-label="تعداد — قابل تایپ">' +
                             '<button class="bk-step" type="button" data-cart-step="1" data-cart-id="' + lid + '" aria-label="افزایش تعداد">+</button>' +
                             '<small class="ci-unit">' + unit + '</small>' +
                         '</div>' +
@@ -1725,6 +1730,31 @@
         guestCartSync();
         guestCartRender();
     }
+
+    /* ═══ FD-26 — سبد: تایپ مستقیم تعداد (حکم مالک: «امکان ورود عدد
+       بصورت نوشتاری هم باشه. چرا که ممکنه تعداد خیلی بالا باشه») ═══
+       رخداد change (نه input) تا تایپ آزاد باشد و اعتبارسنجی فقط در
+       خروج از فیلد/Enter — رندرِ کامل هم در همان لحظه مشکلی ندارد
+       (فوکوس دیگر روی فیلد نیست). گیت = همان حداقلِ استپر
+       («حداقل سفارش همین مقدار است»؛ parseNum فارسی/لاتین/جداکننده
+       می‌فهمد). ورودی نامعتبر → برگشت به مقدار قبلی + توست. */
+    document.addEventListener('change', function (e) {
+        var t = e.target;
+        if (!t || !t.dataset || !t.dataset.cartQty) return;
+        var lid = t.dataset.cartQty;
+        var l = _findListing(lid);
+        if (!l || !GUEST_CART[lid]) return;
+        var min = l.min || 1;
+        var n = parseNum(t.value);
+        if (!n || n < min) {
+            toast(!n ? 'تعداد را عدد وارد کن' : 'حداقل سفارش همین مقدار است', 'error');
+            t.value = faNum(GUEST_CART[lid]);
+            return;
+        }
+        GUEST_CART[lid] = n;
+        guestCartSync();
+        guestCartRender();
+    });
 
     function guestCartOpen() {
         guestCartRender();
@@ -2135,6 +2165,30 @@
         var pr = $('#buy-pass-row');
         if (pr) pr.hidden = true;
         toast('رمز ورود ساخته شد', 'success');
+    }
+
+    /* ─── FD-26: بازیابی رمز — شمارهٔ حساب به پشتیبانی خودِ آی‌مچ ───
+       حکم مالک: «بازیابی رمز عبور رو از تماس یا واتساپ استفاده نکن.
+       بفرسته به خود آیمچ. فقط شماره موبایل رو وارد کنه و بفرسته به
+       آیمچ» — فرم شماره + دکمهٔ «ارسال شماره به پشتیبانی برای بازیابی
+       رمز عبور»؛ پس از ارسال: «به زودی رمز موقت برای شما ارسال
+       می‌شود». فراموشی درجهٔ دوم است — شیت هم بی‌ادعاست (۰۳:
+       linklike-quiet). در محصول واقعی: تیکت پشتیبانی از همین فرم +
+       رمز موقت درون‌برنامه‌ای/پیامکی (فاز رشد — feature flag FD-22). */
+    function forgotReset() {
+        var v = $('#forgot-view'), ok = $('#forgot-ok');
+        if (v) v.hidden = false;
+        if (ok) ok.hidden = true;
+        var p = $('#forgot-phone');
+        if (p) p.value = '';
+    }
+
+    function forgotSend() {
+        var phone = (($('#forgot-phone') || {}).value || '').trim();
+        if (!phone) { toast('شماره موبایل را وارد کن', 'error'); return; }
+        var v = $('#forgot-view'), ok = $('#forgot-ok');
+        if (v) v.hidden = true;
+        if (ok) ok.hidden = false;
     }
 
     /* ─── FD-10/FD-13: جزئیات کالا (۳۷) — دید عمومی کاتالوگ ───
@@ -4044,6 +4098,8 @@
         guestBeneToggle: guestBeneToggle,
         passOpen: passOpen,
         passSubmit: passSubmit,
+        forgotReset: forgotReset,
+        forgotSend: forgotSend,
         pvCta: pvCta,
         chargeSync: chargeSync,
         chargeSend: chargeSend,

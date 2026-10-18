@@ -523,8 +523,12 @@
         var st3 = $('#blg-st-views'); if (st3) st3.textContent = faNum(BLG.views);
 
         /* آیکون شرایط تامین — FD-25: از کادر حذف‌شدهٔ بالای صفحه به
-           هدر شیت پیشنهاد رفت؛ فقط اگر خریدار نوشته باشد (مینیمال) */
+           هدر شیت پیشنهاد رفت؛ فقط اگر خریدار نوشته باشد (مینیمال).
+           FD-26: لینک «شرایط تامین» در بدنهٔ شیت هم همین گیت را
+           می‌گیرد (حکم مالک: «میدونم روی آیکون گذاشتی ولی اینجا هم
+           بزار»). */
         var ci = $('#supply-cond-ic'); if (ci) ci.hidden = !BLG.conditions;
+        var cl = $('#supply-cond-link'); if (cl) cl.hidden = !BLG.conditions;
 
         /* نوار «افزودن کالاهای این لیست» — فقط لیستِ دیگری (۳۲ از دفتر
            مشتری)؛ لیست خودت را به خودت اضافه نمی‌کنی. */
@@ -565,12 +569,15 @@
             });
             host.innerHTML = sorted.length ? sorted.map(function (it) {
                 var m = BLG.match[it.id];
+                /* FD-26 (حکم مالک): آیکون تطابق بعد از عنوان (پشتِ متن
+                   نه جلویش) + آیکون کاتالوگی به‌جای تیک اعتماد — «یعنی
+                   در کاتالوگت هست»؛ همان سبز/tooltip قبلی. */
                 return '<div class="row static blg-row' + (m ? ' blg-matched' : '') + '">' +
                     '<div class="thumb thumb-md"><img src="' + esc(it.img) + '" alt=""></div>' +
                     '<div class="row-body">' +
                         '<div class="row-title">' +
-                            (m ? '<span class="blg-mic" title="در کاتالوک تو" aria-label="در کاتالوک تو"><svg><use href="#i-verified"/></svg></span>' : '') +
-                            esc(it.name) + '</div>' +
+                            esc(it.name) +
+                            (m ? '<span class="blg-mic" title="در کاتالوک تو" aria-label="در کاتالوک تو"><svg><use href="#i-textlist"/></svg></span>' : '') + '</div>' +
                         '<div class="row-sub">' + esc(it.q || it.pack || '') + '</div>' +
                     '</div>' +
                     '<button class="blg-offer" type="button" data-blg-offer="' + esc(it.id) + '">' +
@@ -579,9 +586,9 @@
             }).join('') : '<div class="empty" style="padding: 16px 12px;"><h3>لیست خرید خالی است</h3></div>';
         }
 
-        /* متن‌های شیت پیشنهاد — با نام صاحب لیست (FD-23: قلم اختیاری) */
-        var ss = $('#supply-sub');
-        if (ss) ss.textContent = 'کالاها را با قیمت و حداقل سفارش انتخاب کن — از کاتالوک خودت خودکار پر می‌شود؛ یا فقط درخواست بده.';
+        /* FD-26: زیرمتن آموزشی شیت پیشنهاد حذف شد (حکم مالک:
+           «اینم پاک کن…») — به‌جایش لینک «شرایط تامین» در بدنهٔ شیت
+           (علاوه بر آیکون هدر)؛ گیت همان شرایط خریدار است. */
     }
 
     /* ═══ FD-23/FD-25 — نوار تطبیق (ms-strip) حذف شد ═══
@@ -805,15 +812,37 @@
         var form = $('#supply-form'), ok = $('#supply-ok');
         if (form) form.hidden = true;
         if (ok) ok.hidden = false;
+        /* FD-26 (حکم مالک — کپی جدید): «بزار پیشنهاد ارسال شد و این
+           کالاها هم به کاتالوکت اضافه شد.» — متن قدیمیِ «خریدار n قلم
+           قیمتت را یک‌جا می‌بیند؛ با تاییدش جزو تأمین‌کننده‌هایش
+           می‌شوی…» حذف؛ بدون‌قلم (bare): همان قالب با پیام درخواست.
+           دکمه‌ها: «مشاهده کاتالوک» (primary → ۰۵) + «بستن». */
         var ttl = $('#supply-ok-ttl'), sub = $('#supply-ok-sub');
-        if (ttl) ttl.textContent = items.length ? 'پیشنهاد تامینت ارسال شد' : 'درخواست تامین‌کنندگی‌ات ارسال شد';
+        if (ttl) ttl.textContent = items.length ? 'پیشنهاد ارسال شد' : 'درخواست تامین‌کنندگی ارسال شد';
         if (sub) {
             sub.textContent = items.length
-                ? BLG.buyer.name + ' ' + faNum(items.length) + ' قلم قیمتت را یک‌جا می‌بیند' +
-                  (catNew ? ' — ' + faNum(catNew) + ' کالای تازه هم به کاتالوگت اضافه شد' : '') +
-                  '؛ با تاییدش جزو تأمین‌کننده‌هایش می‌شوی.'
-                : BLG.buyer.name + ' درخواستت را می‌بیند؛ با تاییدش جزو تأمین‌کننده‌هایش می‌شوی و کاتالوگت را ذخیره می‌کند.';
+                ? 'این کالاها هم به کاتالوگت اضافه شد.'
+                : 'خریدار درخواستت را می‌بیند؛ با تاییدش جزو تأمین‌کننده‌هایش می‌شوی.';
         }
+    }
+
+    /* FD-26 — دکمه‌های نمای موفقیت: مقصد روشن (کاتالوک خودم — قلم‌های
+       تازه همان‌جاست) / بستن؛ هر دو نما را برای بار بعد ریست می‌کنند
+       (الگوی lpContinue — بازشدن بعدی با فرم تمیز از supplyOpen). */
+    function supplyOkReset() {
+        var form = $('#supply-form'), ok = $('#supply-ok');
+        if (form) form.hidden = false;
+        if (ok) ok.hidden = true;
+    }
+    function supplyOkCatalog() {
+        core.closeSheet('sheet-supply');
+        supplyOkReset();
+        core.resetStack();
+        core.show('s-catalog', false);
+    }
+    function supplyOkClose() {
+        core.closeSheet('sheet-supply');
+        supplyOkReset();
     }
 
     /* ═══ FD-22 — شیت «شرایط درخواست تامین» ═══
@@ -1021,8 +1050,15 @@
             return;
         }
 
-        /* شیت شرایط درخواست تامین — FD-25: آیکون داخل هدر شیت پیشنهاد */
+        /* شیت شرایط درخواست تامین — FD-25: آیکون داخل هدر شیت پیشنهاد.
+           FD-26: لینک «شرایط تامین» در بدنهٔ شیت — همان شیت، هم‌درِ دیگری
+           (حکم مالک: «میدونم روی آیکون گذاشتی ولی اینجا هم بزار»). */
         if (t.closest('#supply-cond-ic')) { condOpen(); return; }
+        if (t.closest('#supply-cond-link')) { condOpen(); return; }
+
+        /* FD-26 — دکمه‌های نمای موفقیت پیشنهاد: «مشاهده کاتالوک» / «بستن» */
+        if (t.closest('#supply-ok-catalog')) { supplyOkCatalog(); return; }
+        if (t.closest('#supply-ok-close')) { supplyOkClose(); return; }
 
         /* ═══ FD-22/FD-23/FD-25 — شیت افزودن کالاهای این لیست (تک‌مقصد) ═══ */
         if (t.closest('#blg-addstrip')) { listpickOpen(); return; }

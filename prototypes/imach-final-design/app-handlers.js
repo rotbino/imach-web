@@ -45,6 +45,9 @@
         if (closeBtn) { core.closeSheet(closeBtn.dataset.sheetClose); return; }
 
         /* ─── باز کردن Sheet با data-sheet ─── */
+        /* FD-26: شیت بازیابی رمز — بازشدن همیشه با فرم تمیز (نمای
+           «به زودی رمز موقت…» فقط پس از ارسال دیده می‌شود) */
+        if (t.closest('[data-sheet="sheet-forgot"]') && core.forms.forgotReset) core.forms.forgotReset();
         var sheetOpen = t.closest('[data-sheet]');
         if (sheetOpen) {
             core.openSheet(sheetOpen.dataset.sheet);
@@ -556,6 +559,16 @@
            (pv-save-cta با data-save-flow بالاتر هندل می‌شود) */
         if (t.closest('[data-pass-open]')) { core.forms.passOpen(); return; }
         if (t.closest('#pass-submit')) { core.forms.passSubmit(); return; }
+
+        /* FD-26: بازیابی رمز — شماره به پشتیبانی خودِ آی‌مچ (بدون
+           تماس/واتس‌اپ): ارسال → «به زودی رمز موقت برای شما ارسال
+           می‌شود»؛ بستن → ریست نمای فرم برای بار بعد. */
+        if (t.closest('#forgot-send')) { core.forms.forgotSend(); return; }
+        if (t.closest('#forgot-close')) {
+            core.closeSheet('sheet-forgot');
+            core.forms.forgotReset();
+            return;
+        }
 
         /* ─── FD-20: تنظیمات زبان/ارز — حضور در طرح، بدون عملکرد ───
            انتخاب فارسی/تومان: ثبت در دیتا + نشان انتخاب جابه‌جا می‌شود.
