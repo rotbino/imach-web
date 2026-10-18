@@ -2,11 +2,14 @@
      اسکرین ۰۱: لندینگ
      ورودی عمومی — معرفی کوتاه + دو دکمهٔ شروع.
      ═════════════════════════════════════════════════════════════ -->
+<!-- ═════════════════════════════════════════════════════════════
+     اسکرین ۰۱: لندینگ آی‌مچ
+     ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-landing" data-arm="keep">
     <div class="appbar">
         <div class="brand">
-            <!-- FD-13: لوگوی رسمی M کج با نقطه — کلیک = ورود به پنل -->
-            <button class="brand brand-link" type="button" data-go="s-login" aria-label="آی‌مچ — ورود به پنل">
+            <button class="brand brand-link" type="button" data-go="s-login"
+                    aria-label="آی‌مچ — ورود به پنل">
                 <span class="brand-logo"><svg><use href="#i-logo"/></svg></span>
                 <span class="title">آی‌مچ</span>
             </button>
@@ -17,73 +20,93 @@
     <div class="body flush">
         <div class="hero">
             <h1><em>آی‌مچ</em>، شعبهٔ آنلاین<br>خرید و فروش عمدهٔ شما</h1>
-            <p>فروشنده کاتالوگ قیمت زنده می‌سازد و لینکش را برای مشتری‌های خودش می‌فرستد. خریدار لیست نیازش را می‌سازد و از تأمین‌کننده‌های خودش قیمت می‌گیرد.</p>
-            <p class="strong">رایگان — با امکان پیدا کردن طرف‌های تجاری جدید.</p>
+            <p>
+                کالاهای عمده‌تان را معرفی کنید، با مشتریان و تأمین‌کنندگان خود
+                در ارتباط باشید و سفارش‌ها و استعلام‌های قیمت را یک‌جا مدیریت کنید.
+            </p>
+            <p class="strong">رایگان شروع کنید؛ برای گسترش کسب‌وکارتان آماده باشید.</p>
             <div class="hero-cta">
-                <button class="btn btn-primary" data-go="s-signup">ساخت حساب</button>
-                <button class="btn btn-outline" data-go="s-login">ورود</button>
+                <button class="btn btn-primary" data-go="s-signup">شروع رایگان</button>
+                <button class="btn btn-outline" data-go="s-login">ورود به حساب</button>
             </div>
         </div>
 
         <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
             <div class="card" style="padding: 8px;">
-                <img src="png/d3-desktop-landing.jpg" alt="آی‌مچ روی موبایل" style="border-radius: 8px; width: 100%; display: block;">
+                <img src="png/d3-desktop-landing.jpg"
+                     alt="نمایی از محیط خرید و فروش عمده در آی‌مچ"
+                     style="border-radius: 8px; width: 100%; display: block;">
             </div>
 
+            <!-- فروشنده عمده -->
             <div class="section-title" style="margin-top: 8px;">
-                <h2><svg><use href="#i-store"/></svg> آی‌مچ برای فروشندهٔ عمده</h2>
+                <h2><svg><use href="#i-store"/></svg> برای فروشندگان عمده</h2>
             </div>
             <div class="rows">
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--primary)">۱</div>
                     <div class="row-body">
-                        <div class="row-title">کاتالوگ قیمت زنده</div>
-                        <div class="row-sub">قیمت را هر وقت عوض کنی، همان لحظه دست مشتری‌هایت است.</div>
+                        <div class="row-title">کاتالوگ محصولات و قیمت‌ها</div>
+                        <div class="row-sub">
+                            محصولاتتان را یک‌جا معرفی کنید و با هر تغییر، قیمت‌ها را به‌روز نگه دارید.
+                        </div>
                     </div>
                 </div>
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--primary)">۲</div>
                     <div class="row-body">
-                        <div class="row-title">مشتریان خودت، در یک‌جا</div>
-                        <div class="row-sub">لینک کاتالوگ را به مشتریانت بده — هر کس ذخیره کند، مشتری تو می‌شود.</div>
+                        <div class="row-title">ارتباط مستقیم با مشتریان</div>
+                        <div class="row-sub">
+                            لینک کاتالوگتان را بفرستید و مشتریانی را که آن را ذخیره می‌کنند، در فهرست خود داشته باشید.
+                        </div>
                     </div>
                 </div>
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--primary)">۳</div>
                     <div class="row-body">
-                        <div class="row-title">سفارش و درخواست قیمت، در یک پنل</div>
-                        <div class="row-sub">سفارش‌ها و درخواست‌های خرید مشتریان، مرتب و یک‌جا می‌آید.</div>
+                        <div class="row-title">سفارش‌ها و استعلام‌های قیمت</div>
+                        <div class="row-sub">
+                            سفارش‌های مشتریان را پیگیری کنید و به درخواست‌های قیمت آن‌ها پاسخ دهید.
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- خریدار عمده -->
             <div class="section-title" style="margin-top: 16px;">
-                <h2><svg><use href="#i-basket"/></svg> آی‌مچ برای خریدار عمده</h2>
+                <h2><svg><use href="#i-basket"/></svg> برای خریداران عمده</h2>
             </div>
             <div class="rows">
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--stone)">۱</div>
                     <div class="row-body">
-                        <div class="row-title">تأمین‌کنندگان خودت، در یک‌جا</div>
-                        <div class="row-sub">کاتالوگ هر تأمین‌کننده را ذخیره کن — قیمت زنده‌اش همیشه دستت است.</div>
+                        <div class="row-title">تأمین‌کنندگان شما، یک‌جا</div>
+                        <div class="row-sub">
+                            کاتالوگ تأمین‌کنندگان خود را ذخیره کنید و به محصولات و قیمت‌های آن‌ها دسترسی داشته باشید.
+                        </div>
                     </div>
                 </div>
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--stone)">۲</div>
                     <div class="row-body">
-                        <div class="row-title">لیست خرید برای هر کالا</div>
-                        <div class="row-sub">کالاهای عمده‌ات را یک‌بار لیست کن، از این به بعد فقط قیمت‌ها را نگاه کن.</div>
+                        <div class="row-title">فهرست خرید همیشگی شما</div>
+                        <div class="row-sub">
+                            کالاهایی را که مرتب می‌خرید ثبت کنید و برای خریدهای بعدی، نیازها و قیمت‌ها را پیگیری کنید.
+                        </div>
                     </div>
                 </div>
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--stone)">۳</div>
                     <div class="row-body">
-                        <div class="row-title">قیمت از چند تأمین‌کننده</div>
-                        <div class="row-sub">یک درخواست به چند تأمین‌کننده، پیشنهادها کنار هم، بهترین را انتخاب کن.</div>
+                        <div class="row-title">استعلام قیمت از چند تأمین‌کننده</div>
+                        <div class="row-sub">
+                            برای کالاهای موردنیازتان استعلام بفرستید، پیشنهادها را مقایسه کنید و تأمین‌کنندهٔ مناسب را انتخاب کنید.
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- همکار فروش -->
             <!-- ═══ FD-17: نمایندهٔ فروش — مخاطب سوم لندینگ ═══
                  حکم مالک: لینک داشبورد «جایی باشد که مردم ببینند» —
                  لندینگ برای نیروی تازه (متن تبلیغ عین جملهٔ مالک)،
@@ -93,45 +116,76 @@
             <div class="section-title" style="margin-top: 16px;">
                 <h2><svg><use href="#i-briefcase"/></svg> آی‌مچ برای نمایندهٔ فروش</h2>
             </div>
-            <div class="card rep-ad">
-                <div class="ra-ic"><svg><use href="#i-briefcase"/></svg></div>
-                <p class="ra-tx">حتی اگر خودتان محصولی برای فروش ندارید، <b>نمایندهٔ فروش چندین تأمین‌کننده</b> شوید و با ساخت گروه مشتریان از یک صنف خاص و فروش به آنها، <b>درآمد عالی</b> کسب کنید.</p>
-                <button class="btn ra-btn" data-go="s-salesrep">
-                    <svg><use href="#i-chart"/></svg> دیدن داشبورد نمایندهٔ فروش
+
+            <div class="card rep-ad" style="padding:16px;">
+                <h3 style="margin:0 0 8px;font-size:16px;">
+                    حتی اگر خودتان تامین کننده کالایی نیستید
+                </h3>
+
+                <p class="ra-tx" style="margin:0;line-height:1.9;">
+                    آیمچ برای شما ایده بهتری دارد! فرشنده تامین کنندگان بزرگ شوید. لیست مشتریان خود را از یک صنف مثلا ابزار فروشی های شهر یا کشور بسازید. به جای یک تامین کننده برای 10 تامین کننده بفروشید.
+                    <b> یک صنف، چند درآمد </b>
+                </p>
+
+                <button class="btn ra-btn" data-go="s-salesrep" style="width:100%;margin-top:14px;">
+                    آشنایی با همکاری فروش
+                    <svg style="width:16px;height:16px;flex-shrink:0;">
+                        <use href="#i-arrow-left"/>
+                    </svg>
                 </button>
             </div>
+
             <div class="rows" style="margin-top: 12px;">
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--accent)">۱</div>
                     <div class="row-body">
-                        <div class="row-title">نمایندهٔ چند تأمین‌کننده</div>
-                        <div class="row-sub">کاتالوک چند تولیدکننده را یک‌جا مدیریت کن و برای مشتری‌های خودت بفرست.</div>
+                        <div class="row-title">همکاری با چند تأمین‌کننده</div>
+                        <div class="row-sub">
+                            کاتالوگ چند تولیدکننده را معرفی کنید و محصولات متنوع‌تری به مشتریانتان پیشنهاد دهید.
+                        </div>
                     </div>
                 </div>
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--accent)">۲</div>
                     <div class="row-body">
-                        <div class="row-title">گروه مشتریان از یک صنف</div>
-                        <div class="row-sub">رستوران‌های شهرت را جمع کن و همهٔ نیازشان را از چند تأمین‌کنندهٔ مکمل تأمین کن.</div>
+                        <div class="row-title">تمرکز بر مشتریان یک صنف</div>
+                        <div class="row-sub">
+                            برای مثال، نیازهای رستوران‌های شهر خود را بشناسید و محصولات موردنیازشان را از چند تأمین‌کننده تهیه کنید.
+                        </div>
                     </div>
                 </div>
                 <div class="row static">
                     <div class="avatar avatar-sm" style="background: var(--accent)">۳</div>
                     <div class="row-body">
-                        <div class="row-title">پورسانت توافقی</div>
-                        <div class="row-sub">از هر سفارشی که می‌گیری پورسانتت را از تأمین‌کننده می‌گیری — بدون انبار و سرمایه.</div>
+                        <div class="row-title">درآمد از محل فروش</div>
+                        <div class="row-sub">
+                            دربارهٔ پورسانت با تأمین‌کنندگان توافق کنید و از سفارش‌های موفق درآمد کسب کنید؛ بدون نیاز به انبار کالا.
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card" style="margin-top: 12px; text-align: center; background: linear-gradient(135deg, var(--primary), var(--primary-strong)); color: #FFF; border: 0;">
-                <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">حسابت را بساز — کمتر از ۲ دقیقه</div>
-                <div style="font-size: 11.5px; opacity: .9; margin-bottom: 14px; line-height: 1.9;">ثبت‌نام فقط با شمارهٔ موبایل</div>
-                <button class="btn btn-block" style="background: #FFF; color: var(--primary-strong);" data-go="s-signup">ساخت حساب</button>
+            <!-- دعوت به ثبت‌نام -->
+            <div class="card"
+                 style="margin-top: 12px; text-align: center; background: linear-gradient(135deg, var(--primary), var(--primary-strong)); color: #FFF; border: 0;">
+                <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">
+                    خرید و فروش عمده‌تان را با آی‌مچ شروع کنید
+                </div>
+                <div style="font-size: 12px; opacity: .9; margin-bottom: 14px; line-height: 1.9;">
+                    حساب بسازید، کاتالوگتان را آماده کنید و با مشتریان یا تأمین‌کنندگان خود ارتباط بگیرید.
+                </div>
+                <button class="btn btn-block"
+                        style="background: #FFF; color: var(--primary-strong);"
+                        data-go="s-signup">
+                    ساخت حساب رایگان
+                </button>
+                <div style="font-size: 11px; opacity: .85; margin-top: 10px;">
+                    ثبت‌نام با شمارهٔ موبایل
+                </div>
             </div>
 
             <div style="text-align: center; padding: 16px 0 4px; font-size: 10.5px; color: var(--text-3); line-height: 1.9;">
-                © ۱۴۰۵ آی‌مچ — دفتر خرید و فروش عمدهٔ شما
+                © ۱۴۰۵ آی‌مچ — شعبهٔ آنلاین خرید و فروش عمدهٔ شما
             </div>
         </div>
     </div>
