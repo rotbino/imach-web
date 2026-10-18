@@ -476,12 +476,16 @@
         if (t.closest('#cart-track')) { core.forms.guestOrderTrack(); return; }
         if (t.closest('#cart-continue')) { core.forms.guestCartContinue(); return; }
 
-        /* ═══ FD-14 — افزودن کالاهای کاتالوگ به لیست خرید (۳۱) ═══
+        /* ═══ FD-14/FD-22 — افزودن کالاهای کاتالوگ به لیست خرید (۳۱) ═══
            نوار (فقط مشتیِ ذخیره‌کرده) → شیت انتخاب: سرچ + گروه +
-           گرید چک‌باکس + «افزودن n کالا» ⇒ DATA.shoppingList */
+           ردیف‌های تک‌ستونه + مقدار/دورهٔ الزامی + «افزودن n کالا» ⇒
+           DATA.shoppingList. لمس pill دوره/ input مقدار = تیک ردیف
+           نمی‌خورد (فقط خود ردیف) */
         if (t.closest('#guest-addlist-btn')) { core.forms.picklistOpen(); return; }
+        var plPer = t.closest('[data-pl-per]');
+        if (plPer) { core.forms.picklistPer(plPer.dataset.plPer, plPer.dataset.val); return; }
         var plItem = t.closest('[data-pl-item]');
-        if (plItem) { core.forms.picklistToggle(plItem.dataset.plItem); return; }
+        if (plItem && !t.closest('input') && !t.closest('.pill')) { core.forms.picklistToggle(plItem.dataset.plItem); return; }
         if (t.closest('#pl-add')) { core.forms.picklistAdd(); return; }
 
         /* جریان ذخیره: مزایا (آکاردئون FD-10) → حساب → پنل */
@@ -599,8 +603,16 @@
             return;
         }
 
-        /* ─── FD-18: گفتگوی مرتبط با سفارش ─── */
-        if (t.closest('[data-order-chat]')) { go('s-chat'); return; }
+        /* ─── FD-18/FD-22: گفتگوی مرتبط با سفارش — با زمینهٔ گفتگو
+           (تصمیم ۸/۹: «دربارهٔ: سفارش …» بالای حباب‌ها) ─── */
+        if (t.closest('[data-order-chat]')) {
+            var ordAbout = '';
+            var bovEl = $('#bov-sub'), sovEl = $('#sov-sub');
+            if (bovEl && bovEl.textContent) ordAbout = bovEl.textContent;
+            else if (sovEl && sovEl.textContent) ordAbout = sovEl.textContent;
+            go('s-chat', { about: 'سفارش ' + (ordAbout || 'جاری') });
+            return;
+        }
 
         /* ─── FD-18: سفارش دوباره (بایگانی) → کاتالوگ تأمین‌کننده ─── */
         if (t.closest('[data-order-reorder]')) {
@@ -801,18 +813,35 @@
         if (t.closest('#new-brand-save')) { core.forms.addSaveNewBrand(); return; }
         if (t.closest('#add-save')) { core.forms.addSave(); return; }
 
-        /* ═══ FD-15 — ابزارهای ثبت سریع (اسکنر + متن) ═══ */
+        /* ═══ FD-15 — ابزارهای ثبت سریع (اسکنر + متن) ═══
+           FD-22: سومی رسید — «کپی از کاتالوگ» (sheet-copycat) +
+           تصمیم ۷/۹: بارکد ناشناس ⇒ ساخت کالا با همان کد. */
         if (t.closest('#add-scan-open')) { core.forms.scanOpen(); return; }
         if (t.closest('#add-text-open')) { core.forms.txOpen(); return; }
+        if (t.closest('#add-copy-open')) { core.forms.ccOpen(); return; }
         if (t.closest('#scan-go')) { core.forms.scanGo(); return; }
         if (t.closest('#scan-demo')) { core.forms.scanDemo(); return; }
         if (t.closest('#scan-continue')) { core.forms.scanContinue(); return; }
+        if (t.closest('#scan-newprod')) { core.forms.scanNewProd(); return; }
         if (t.closest('#tx-demo')) { core.forms.txDemo(); return; }
         if (t.closest('#tx-parse')) { core.forms.txParse(); return; }
         if (t.closest('#tx-back')) { core.forms.txBack(); return; }
         if (t.closest('#tx-confirm')) { core.forms.txConfirm(); return; }
         var txChk = t.closest('[data-tx-chk]');
         if (txChk) { core.forms.txToggle(parseInt(txChk.dataset.txChk, 10)); return; }
+
+        /* ═══ FD-22 — کپی از کاتالوگ: پیدا کردن و کپی ═══ */
+        if (t.closest('#cc-find-btn')) { core.forms.ccFind(); return; }
+        if (t.closest('#cc-copy-btn')) { core.forms.ccCopy(); return; }
+        if (t.closest('#cc-go-catalog')) {
+            core.closeSheet('sheet-copycat');
+            core.resetStack();
+            core.show('s-catalog', false);
+            return;
+        }
+
+        /* ═══ FD-22 (تصمیم ۲/۹) — سفارش از پیشنهاد پذیرفته‌شده ═══ */
+        if (t.closest('[data-offer-order]')) { core.forms.offerOrderCreate(); return; }
 
         /* ═══════════════════════════════════════════════════════════
            تغییر گروهی و دستی قیمت‌ها
@@ -1009,6 +1038,8 @@
         if (t.id === 'of-cash-pct') { core.forms.offerPctSync('cash'); return; }
         if (t.id === 'of-chk-days') { core.forms.offerDaysSync(); return; }
         if (t.id === 'pl-search') { core.forms.picklistSearch(t.value); return; }
+        /* FD-22 — مقدار خرید ردیف‌های شیت ۳۱ (در state ذنده) */
+        if (t.dataset && t.dataset.plQty) { core.forms.picklistQty(t.dataset.plQty, t.value); return; }
     });
 
     /* ═══ FD-15: Enter در باکس بارکد = «تطبیق» — اسکنر واقعی (دستگاه

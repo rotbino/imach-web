@@ -589,7 +589,9 @@
         core.closeSheet('sheet-cust-menu');
 
         if (act === 'chat') { core.go('s-chat'); return; }
-        if (act === 'buylist') { core.go('s-buy-list-guest'); return; }
+        /* FD-22: لیست خرید او — با پارامتر خریدار (۳۲ بافت‌محور:
+           لیستِ خودِ آن مشتری، نه لیست خودم) */
+        if (act === 'buylist') { core.go('s-buy-list-guest', { buyer: id }); return; }
         if (act === 'orders') {
             if (c) CUSTVIEW.orders = c.name;
             core.go('s-sell-orders');
@@ -686,8 +688,8 @@
         /* ذخیرهٔ یادداشت مشتری */
         if (t.closest('#cv-note-save')) { cvNoteSave(); return; }
 
-        /* لیست خرید او — از صفحهٔ جزئیات */
-        if (t.closest('[data-cv-buylist]')) { core.go('s-buy-list-guest'); return; }
+        /* لیست خرید او — از صفحهٔ جزئیات (FD-22: پارامتر خریدار) */
+        if (t.closest('[data-cv-buylist]')) { core.go('s-buy-list-guest', { buyer: CUST.viewId }); return; }
 
         /* گروه مشتری — از شناسنامهٔ جزئیات */
         if (t.closest('[data-cv-group]')) {

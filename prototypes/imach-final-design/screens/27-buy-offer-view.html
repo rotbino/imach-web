@@ -74,6 +74,22 @@
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
         </div>
+
+        <!-- ═══ FD-22 (تصمیم ۲/۹) — پیوند پیشنهاد پذیرفته‌شده ← سفارش ═══
+             بعد از پذیرش همین‌جا می‌نشیند: سفارش با قیمت فریز و شرایطِ
+             همین پیشنهاد (پرداخت/تحویل بیرون از سیستم — قید مالک:
+             «پرداخت فعلا بیرون سیستمه»؛ سفارش = تعهد ثبت‌شدهٔ دو طرف).
+             hidden پیش‌فرض — offerViewRender وقتی استعلام با همین
+             فروشنده بسته شده و هنوز سفارش نشده نشانش می‌دهد. -->
+        <div class="ovf-order-wrap" id="ovf-order" hidden>
+            <div class="callout callout-success">
+                <svg><use href="#i-check"/></svg>
+                <div><b>این پیشنهاد را پذیرفتی.</b> حالا با همین قیمت و شرایط، سفارش ثبت کن — فروشنده در دفتر سفارش‌هایش می‌بیند و می‌پذیرد.</div>
+            </div>
+            <button class="btn btn-primary btn-block" type="button" data-offer-order style="margin-top: 8px;">
+                <svg><use href="#i-receipt"/></svg> ثبت سفارش با همین شرایط
+            </button>
+        </div>
     </div>
 
     <div class="sticky-bar">

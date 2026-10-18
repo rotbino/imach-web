@@ -3,12 +3,16 @@
 
      سه گام:
        ۱) دو لیست موازی — محصولات بالا، کالاها پایین
-          + دو ابزار ثبت سریع ته جستجو (FD-15):
+          + سه ابزار ثبت سریع ته جستجو:
           ▸ اسکنر بارکد (sheet-scan) — کالا با اسکن انتخاب می‌شود؛
           ▸ افزودن گروهی با متن (sheet-textlist) — لیست قیمتِ کپی‌شده
             از واتساپ/هرجای دیگر به جدول کالا تبدیل می‌شود (به‌جای
             اکسلِ هوش‌مصنوعیِ طرح قدیم — حکم مالک: راه ساده‌تر و
             برای همه راحت‌تر، «کاربردی‌تر از اکسل»).
+          ▸ کپی از کاتالوگ (sheet-copycat — FD-22) — شمارهٔ همکار/
+            دوستت را وارد کن، کاتالوگش بیاید و همهٔ کالاهایش یک‌جا
+            به کاتالوگ تو بیاید (حکم مالک: بازاریاب شرکت کاتالوگ
+            را می‌سازد، بقیه سریع کپی می‌کنند).
        ۲) محصولات یک کالا با فیلتر برند
        ۳) بسته‌بندی (چیپ + سایر) + قیمت بسته + قیمت واحد + موجودی
           — «سایر»: نام بسته‌بندی و تعداد در بسته کنار هم (FD-15)
@@ -19,6 +23,7 @@
        sheet-new-brand  — ثبت برند جدید
        sheet-scan       — اسکنر بارکد (FD-15)
        sheet-textlist   — تبدیل متن به کالا (FD-15)
+       sheet-copycat    — کپی از کاتالوگ دوست (FD-22)
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-sell-add" data-arm="sell">
@@ -36,6 +41,9 @@
                     <svg><use href="#i-search"/></svg>
                     <input type="text" id="add-q" placeholder="جستجو — مثلاً پفک، برنج، روغن" autocomplete="off">
                     <!-- FD-15: دو ابزار ثبت سریع، کنار هم ته سرچ‌باکس.
+                         FD-22: سومی رسید — «کپی از کاتالوگ» (حکم
+                         مالک: کنار همین آیکون‌ها، همان‌جا که اولین
+                         کالای کاتالوگ را اضافه می‌کند).
                          قانون لمس (FD-13): دکمه ۳۸px. -->
                     <span class="sr-tools">
                         <button class="sr-tool" id="add-scan-open" type="button" aria-label="اسکن بارکد" title="اسکن بارکد">
@@ -43,6 +51,9 @@
                         </button>
                         <button class="sr-tool" id="add-text-open" type="button" aria-label="افزودن گروهی با متن" title="افزودن گروهی با متن — لیست قیمت را بچسبان">
                             <svg><use href="#i-textlist"/></svg>
+                        </button>
+                        <button class="sr-tool" id="add-copy-open" type="button" aria-label="کپی از کاتالوگ" title="کپی از کاتالوگ — شمارهٔ دوستت را وارد کن">
+                            <svg><use href="#i-copy"/></svg>
                         </button>
                     </span>
                 </div>
@@ -194,6 +205,15 @@
             </button>
         </div>
         <div class="sub">نام کالا را وارد کن — مثلاً «پفک». بعد از تأیید، همهٔ فروشنده‌های این کالا کنار هم مقایسه می‌شوند.</div>
+
+        <!-- FD-22 (تصمیم ۷/۹): وقتی از اسکنِ کدِ ناشناس آمده باشد،
+             بارکد همین‌جا دیده و ضمیمه می‌شود (در محصول واقعی به
+             reference تازه می‌رسد). -->
+        <div class="ccat-note" id="ng-barcode-hint" hidden style="margin-top: 8px;">
+            <svg><use href="#i-scan"/></svg>
+            <span>این بارکد به کالای جدید ضمیمه می‌شود: <b dir="ltr" id="ng-barcode-tx">—</b></span>
+        </div>
+
         <div class="field">
             <label>نام کالا</label>
             <input class="input" id="new-good-name" type="text" placeholder="مثلاً پفک" autocomplete="off">
@@ -347,6 +367,61 @@
                 <svg><use href="#i-check"/></svg> <span id="tx-confirm-tx">افزودن کالاهای تاییدشده</span>
             </button>
             <button class="btn btn-outline btn-block" id="tx-back" type="button" style="margin-top: 8px;">اصلاح متن</button>
+        </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         FD-22 — شیت: کپی از کاتالوگ (حکم مالک)
+         «یه ایده خیلی خوبم به ذهنم اومده و اون اینه که وقتی یکی یه
+         کاتالوگ رو ساخت بقیه بتونن از روش کپی بزنن … مثلا یه بازاریاب
+         شرکت کاتالوگ رو ساخته بقیه بتونن از روی اون سریع کاتالوگ
+         خودشون رو کپی کنن … شماره دوستش رو وارد کنه و کاتالوگش بیاد
+         و دکمه کپی کالاها رو بزنه و تم.»
+         ▸ جای امکان (تصمیم): آیکون سوم کنار اسکن/متن در همین فرم —
+           همان لحظهٔ «اولین کالای کاتالوگ». گزینه‌های دیگر (دکمهٔ
+           روی کاتالوگ عمومی ۳۱، منوی تنظیمات کاتالوگ ۳۶) رد شدند:
+           این‌جا جایی است که کاربر دقیقاً دنبال «افزودن کالا» است.
+         ▸ دو نما: پیدا کردن (شماره + دکمه) ← کارت کاتالوگِ پیدا‌شده
+           (نام + مالک + شمار کالا + چند نام کالا برای اطمینان) ←
+           «کپی کالاها» ← نمای موفقیت با «رفتن به کاتالوگ».
+         ▸ ضدتکرار: کالای موجود در کاتالوگِ خودم (هم نام هم بسته)
+           رد می‌شود («در کاتالوگت هست») — عدد کپی‌شده‌ها همان
+           «بقیه» است. قیمت‌ها و حداقل‌ها اولیه‌اند؛ بعداً ویرایش
+           می‌شوند (یادداشت موفقیت).
+         IMPLEMENTATION NOTE: در دیتای واقعی کپی = ایجاد listing های
+         جدید با good/reference/packِ منبع زیر businessId من (نه
+         ارجاع به کاتالوگ دیگر) — پس از آن مستقل از او به‌روز
+         می‌شود؛ کاتالوگِ منبع باید عمومی/فعال باشد.
+         ═════════════════════════════════════════════════════════════════ -->
+    <div class="sheet" id="sheet-copycat" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>کپی از کاتالوگ</h3>
+            <button class="mg" data-sheet-close="sheet-copycat" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+
+        <!-- نمای ۱: پیدا کردن با شماره -->
+        <div id="cc-find">
+            <div class="sub">کاتالوگ همکار یا دوستت را با شمارهٔ موبایلش پیدا کن — همهٔ کالاهایش یک‌جا به کاتالوگ تو می‌آید؛ قیمت‌ها را بعداً عوض می‌کنی.</div>
+            <div class="field">
+                <label>شمارهٔ موبایل صاحب کاتالوگ</label>
+                <input class="input" id="cc-phone" type="tel" inputmode="numeric" dir="ltr" placeholder="۰۹۱۲ …" autocomplete="off">
+            </div>
+            <button class="btn btn-arm btn-block" id="cc-find-btn" type="button">
+                <svg><use href="#i-search"/></svg> پیدا کردن کاتالوگ
+            </button>
+            <div id="cc-result"></div>
+        </div>
+
+        <!-- نمای ۲: کپی شد -->
+        <div id="cc-done" hidden>
+            <div class="ok-pill"><svg><use href="#i-copy"/></svg></div>
+            <div class="ok-ttl" id="cc-done-ttl">کالاها کپی شد</div>
+            <div class="ok-sub" id="cc-done-sub">قیمت‌ها و حداقل سفارش‌ها اولیه‌اند — از خودِ کاتالوگ هر کدام را که خواستی ویرایش کن.</div>
+            <button class="btn btn-primary btn-block" id="cc-go-catalog" type="button" style="margin-top: 10px;">
+                <svg><use href="#i-store"/></svg> رفتن به کاتالوگ من
+            </button>
+            <button class="btn btn-ghost btn-block" data-sheet-close="sheet-copycat" type="button" style="margin-top: 6px;">ادامهٔ افزودن</button>
         </div>
     </div>
 </section>

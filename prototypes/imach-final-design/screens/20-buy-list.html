@@ -37,11 +37,19 @@
 
         <!-- FD-16 (حکم مالک): باکس دکمه‌ها مثل کاتالوگ — «اضافه کردن کالا /
              پیش‌نمایش / اشتراک‌گذاری»؛ دکمهٔ اصلی تمام‌عرض ردیف اول.
-             (چهارمین دکمه به فرمایش مالک فعلاً به ذهنش نرسیده بود.) -->
-        <div class="cat-actions cat-actions-3">
+             (چهارمین دکمه به فرمایش مالک فعلاً به ذهنش نرسیده بود.)
+             FD-22 (حکم مالک — چهارمین دکمه رسید): «شرایط تامین» —
+             خریدار شرایط درخواست تامین‌کنندگی‌اش را می‌نویسد تا هر
+             درخواست‌کننده‌ای پیشنهاد ندهد؛ بینندهٔ عمومی فقط لینکش
+             را می‌بیند (۳۲). اختیاری — خالی = لینک مخفی. -->
+        <div class="cat-actions cat-actions-4">
             <button class="cat-act primary" data-go="s-buy-list-add">
                 <span class="ca-ic"><svg><use href="#i-plus"/></svg></span>
                 <span class="ca-tx">اضافه کردن کالا</span>
+            </button>
+            <button class="cat-act" id="buylist-cond">
+                <span class="ca-ic"><svg><use href="#i-textlist"/></svg></span>
+                <span class="ca-tx">شرایط تامین</span>
             </button>
             <button class="cat-act" id="buylist-preview">
                 <span class="ca-ic"><svg><use href="#i-eye"/></svg></span>
@@ -69,6 +77,31 @@
              همین‌جا ظاهر می‌شوند؛ چیپ‌ها از فیلدهای fresh/offers/inq/
              added می‌آیند. -->
         <div class="rows" id="buylist-rows"></div>
+    </div>
+
+    <!-- ═══ FD-22 — شیت: ویرایش شرایط درخواست تامین (حکم مالک) ═══
+         «سمت خودش در بخش ویرایش لیست خرید می‌تونه این شرایط تامین
+         کننده رو اگر خواست وارد کنه» — یک متن ساده اما کاربردی؛
+         خالی = بینندهٔ عمومی لینک را نمی‌بیند. همان قاعدهٔ متن
+         آزاد دیتا (buyListInfo.conditions). -->
+    <div class="sheet" id="sheet-buycond" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>شرایط درخواست تامین</h3>
+            <button class="mg" data-sheet-close="sheet-buycond" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">هر که از لینک لیستت پیشنهاد می‌دهد، اول این‌ها را می‌خواند — پس مستقیم و کوتاه بنویس. خالی بگذاری، لینک «شرایط» در صفحهٔ لیستت دیده نمی‌شود.</div>
+        <div class="field">
+            <label>شرایط تو برای تأمین‌کننده‌ها</label>
+            <textarea class="input" id="buycond-text" rows="5" placeholder="مثلاً: تأمین‌کننده‌های رشت و حومه · اولین سفارش آزمایشی است · فاکتور رسمی الزامی"></textarea>
+        </div>
+        <div class="hint-line">
+            <svg><use href="#i-info"/></svg>
+            <span>موارد را با «·» جدا کن — برای بیننده ردیف‌به‌ردیف و خوانا نمایش داده می‌شود.</span>
+        </div>
+        <button class="btn btn-arm btn-block" id="buycond-save" type="button" style="margin-top: 6px;">
+            <svg><use href="#i-check"/></svg> ذخیرهٔ شرایط
+        </button>
     </div>
 </section>
 

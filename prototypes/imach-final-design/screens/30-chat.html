@@ -1,6 +1,12 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۳۰: گفتگو
      حباب‌های پیام + پاسخ‌های سریع + نوار تایپ.
+     FD-22 (تصمیم محصول ۸/۹ — اتصال چت به سفارش/پیشنهاد): وقتی از
+     دلِ سفارش یا پیشنهاد وارد شوی، نوار زمینهٔ گفتگو (#chat-ctx)
+     نشان داده می‌شود — «دربارهٔ: سفارش برنج هاشمی · ۲۰ کیسه».
+     دو طرف بدون جست‌وجو می‌دانند در بارهٔ چه چیزی حرف می‌زنند؛
+     در محصول واقعی همین نوار به thread-id سفارش/پیشنهاد گره
+     می‌خورد (تنها وابستگی به بک‌اند چت).
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-chat" data-arm="keep">
     <div class="subheader">
@@ -8,6 +14,12 @@
         <div class="avatar avatar-sm" style="background: linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
         <div class="ttl">پخش برنج پارس<small>رشت</small></div>
         <button class="icon-btn" aria-label="تماس"><svg><use href="#i-phone"/></svg></button>
+    </div>
+
+    <!-- FD-22: نوار زمینهٔ گفتگو — فقط وقتی با پارامتر about آمده باشد -->
+    <div class="chat-ctx" id="chat-ctx" hidden>
+        <svg><use href="#i-receipt"/></svg>
+        <span id="chat-ctx-tx">دربارهٔ: سفارش برنج هاشمی</span>
     </div>
 
     <div class="body" id="chat-body" style="padding-bottom: 8px;">

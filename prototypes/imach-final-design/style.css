@@ -3714,3 +3714,308 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 }
 .sheet-row.selopt.selected .selopt-check { color: var(--green); }
 .sheet-row.selopt .badge { flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FD-22 — دید عمومی لیست خرید (۳۲) + ابزارهای لیست/کاتالوگ
+   ─────────────────────────────────────────────────────────────
+   حکم‌های مالک این فاز:
+   • کادر «درخواست تامین‌کنندگی» = مینیمال و حداقلی، بالای کالاها؛
+     زیبایی لیست را خراب نکند.
+   • «کالاهای در حال استعلام» = نوار افقی؛ «کالاهای موردنیاز» =
+     لیست عمودی.
+   • شیت انتخاب کالا (۳۱ و ۳۲) = لیست ردیفی تک‌ستونه + جستجو.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── ۳۲: کادر مینیمال «درخواست تامین‌کنندگی» ───
+   سنگی (رنگ میز خرید — قاعدهٔ FD-14: ابزار میز خرید در صفحهٔ عمومی)؛
+   همان زبان نوار al-strip: کارت سفید + حاشیهٔ خاکستری روشن. */
+.srq {
+    margin-top: 10px;
+    padding: 12px 12px 11px;
+    background: var(--surface);
+    border: 1.5px solid #D9E0EA;
+    border-radius: var(--r-lg);
+}
+.srq-head {
+    display: flex; align-items: center; gap: 8px;
+}
+.srq-head b { font-size: 13px; font-weight: 800; color: var(--text); }
+.srq-ic {
+    width: 30px; height: 30px; border-radius: 9px;
+    background: var(--stone-tint); color: var(--stone);
+    display: grid; place-items: center; flex-shrink: 0;
+}
+.srq-ic svg { width: 16px; height: 16px; }
+.srq-sub {
+    font-size: 11px; color: var(--text-3);
+    margin: 4px 38px 0 0; line-height: 1.7;
+}
+.srq-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px;
+}
+.srq-row .btn { flex: 1; min-height: 40px; }
+/* لینک شرایط — فقط لینک (حکم مالک)، با فلش */
+.srq-cond {
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0; padding: 6px 4px;
+    background: none; border: 0; cursor: pointer;
+    font-family: inherit; font-size: 11.5px; font-weight: 700;
+    color: var(--stone);
+    text-decoration: underline; text-decoration-color: #CBD5E1;
+    text-underline-offset: 3px;
+}
+.srq-cond svg { width: 12px; height: 12px; transform: scaleX(-1); }
+.srq-cond:active { color: var(--stone-soft); }
+
+/* ─── ۳۲: آمار (همان زبان ۳۱) + فاصلهٔ منفی برای چسبیدن به hero ─── */
+.blg-stats { padding: 10px 12px; display: flex; gap: 8px; }
+
+/* ─── ۳۲: «کالاهای در حال استعلام» — نوار افقی ─── */
+.blinq {
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 6px;
+    scrollbar-width: none;
+}
+.blinq::-webkit-scrollbar { display: none; }
+.blinq-card {
+    flex-shrink: 0; width: 128px;
+    display: block; text-align: right;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 7px;
+    cursor: pointer;
+    transition: border-color .15s, transform .12s;
+    font-family: inherit;
+}
+.blinq-card:active { transform: scale(.97); border-color: var(--stone); }
+.blinq-card .bi-th {
+    position: relative;
+    width: 100%; aspect-ratio: 1 / .68;
+    border-radius: 8px; overflow: hidden;
+    background: var(--surface-2);
+    margin-bottom: 6px;
+}
+.blinq-card .bi-th img { width: 100%; height: 100%; object-fit: cover; }
+/* نشان مهلت — کهربایی روی عکس (فوریتِ قیمت‌گیری جاری) */
+.blinq-card .bi-days {
+    position: absolute; bottom: 5px; right: 5px;
+    padding: 2px 6px; border-radius: 7px;
+    background: rgba(217, 119, 6, .92); color: #FFF;
+    font-size: 9px; font-weight: 800;
+}
+.blinq-card b {
+    display: block; font-size: 11.5px; font-weight: 800;
+    line-height: 1.55; min-height: 2.4em;
+}
+.blinq-card small {
+    display: block; font-size: 9.5px; color: var(--stone-soft);
+    font-weight: 700; margin-top: 2px;
+}
+
+/* ─── ۳۲: ردیف کالای موردنیاز + دکمهٔ «پیشنهاد» ─── */
+.blg-row .blg-offer {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 5px;
+    min-height: 34px; padding: 0 12px;
+    border-radius: 10px;
+    background: var(--stone-tint); color: var(--stone-soft);
+    border: 1px solid #E2E8F0;
+    font-family: inherit; font-size: 11px; font-weight: 800;
+    cursor: pointer;
+    transition: background .15s;
+}
+.blg-offer svg { width: 13px; height: 13px; }
+.blg-offer:active { background: var(--stone); color: #FFF; }
+
+/* ─── ۳۲: دکمهٔ چسبان «پیشنهاد تامین» در نوار پایین (قرینهٔ سبد ۳۱) ─── */
+.gbar-supply {
+    flex: 1.35;
+    background: var(--stone-tint);
+    border-color: #CBD5E1;
+    color: var(--stone-soft);
+}
+.gbar-supply:active { background: #E2E8F0; }
+
+/* ─── ۳۲: شیت شرایط درخواست تامین — ردیف‌های تیک‌دار ─── */
+.cond-card {
+    margin-top: 10px;
+    background: var(--stone-tint);
+    border: 1px solid #E2E8F0;
+    border-radius: var(--r-md);
+    padding: 6px 12px;
+}
+.cond-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 9px 0;
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+    line-height: 1.9;
+}
+.cond-row + .cond-row { border-top: 1px dashed #DDE5EE; }
+.cond-row svg {
+    width: 14px; height: 14px; flex-shrink: 0;
+    color: var(--green); margin-top: 5px;
+}
+
+/* ─── شیت انتخاب ردیفی (الگوی مشترک ۳۱ و ۳۲) ───
+   تک‌ستونه، زیر هم (حکم مالک: «بصورت لیستی و ردیفی»)،
+   تیک دایره‌ای سمت چپ، بسته‌بندی زیر نام. */
+.pl-rows { margin-top: 8px; }
+.pl-row {
+    position: relative;
+    display: flex; align-items: center; gap: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    padding: 9px 10px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+.pl-row + .pl-row { margin-top: 8px; }
+.pl-row.on { border-color: var(--stone); background: var(--stone-tint); }
+.pl-row.in-list { opacity: .55; cursor: default; }
+.pl-chk {
+    width: 22px; height: 22px; border-radius: 7px;
+    border: 1.5px solid var(--border-3);
+    background: rgba(255,255,255,.92);
+    display: grid; place-items: center;
+    color: transparent; flex-shrink: 0;
+}
+.pl-row.on .pl-chk { background: var(--stone); border-color: var(--stone); color: #FFF; }
+.pl-chk svg { width: 13px; height: 13px; }
+.pl-th {
+    width: 46px; height: 46px; border-radius: 10px;
+    overflow: hidden; background: var(--surface-2); flex-shrink: 0;
+}
+.pl-th img { width: 100%; height: 100%; object-fit: cover; }
+.pl-tx { flex: 1; min-width: 0; }
+.pl-tx b { display: block; font-size: 12.5px; font-weight: 800; line-height: 1.5; }
+.pl-tx small { display: block; font-size: 10.5px; color: var(--text-3); margin-top: 1px; }
+.pl-inlist { flex-shrink: 0; }
+/* فیلدهای الزامی بعد از انتخاب (۳۱: مقدار + دوره · ۳۲ کاتالوگ: قیمت + حداقل) */
+.pl-flds {
+    display: flex; gap: 8px;
+    margin-top: 8px;
+}
+.pl-f {
+    flex: 1; min-width: 0;
+}
+.pl-f label {
+    display: block; font-size: 9.5px; font-weight: 700;
+    color: var(--text-3); margin-bottom: 3px;
+}
+.pl-f .input { padding: 8px 10px; font-size: 12px; }
+.pl-f .input input { padding: 0; border: 0; background: none; font-size: 12.5px; }
+/* رادیوی دورهٔ خرید — دو pill کوچک */
+.pl-per { display: flex; gap: 6px; }
+.pl-per .pill {
+    flex: 1; justify-content: center; text-align: center;
+    padding: 8px 6px; font-size: 11px; min-height: 34px;
+}
+.pl-per .pill.active {
+    border-color: var(--stone); background: var(--stone-tint); color: var(--stone-soft);
+}
+
+/* ─── ۳۲: شیت «افزودن کالاهای این لیست» — دو مقصد ─── */
+.lp-modes {
+    display: flex; gap: 8px; margin-top: 2px;
+}
+.lp-mode {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    min-height: 42px;
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    color: var(--text-2);
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+.lp-mode svg { width: 15px; height: 15px; }
+.lp-mode.active {
+    border-color: var(--stone);
+    background: var(--stone-tint);
+    color: var(--stone-soft);
+}
+.lp-rows { margin-top: 10px; max-height: 46vh; overflow-y: auto; }
+
+/* ─── ۱۳: شیت «کپی از کاتالوگ» — کارت کاتالوگِ پیدا‌شده ─── */
+.ccat-card {
+    margin-top: 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 10px 12px;
+}
+.ccat-found {
+    display: flex; align-items: center; gap: 10px;
+}
+.ccat-found .info { flex: 1; min-width: 0; }
+.ccat-found .nm { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
+.ccat-found .sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.ccat-count {
+    text-align: center; flex-shrink: 0;
+    font-size: 10px; color: var(--text-3); font-weight: 700;
+}
+.ccat-count b { display: block; font-size: 15px; color: var(--text); }
+/* چند نام کالا برای اطمینانِ «همان کاتالوگ است» */
+.ccat-chips {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-top: 9px; padding-top: 9px;
+    border-top: 1px dashed var(--border-2);
+}
+.ccat-chips span {
+    padding: 3px 8px; border-radius: 7px;
+    background: var(--surface-2);
+    font-size: 9.5px; color: var(--text-3); font-weight: 700;
+}
+.ccat-note {
+    display: flex; align-items: flex-start; gap: 6px;
+    margin-top: 9px;
+    font-size: 10.5px; color: var(--text-3); line-height: 1.8;
+}
+.ccat-note svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 3px; color: var(--amber); }
+.ccat-copy {
+    margin-top: 10px;
+}
+.notfound-line {
+    margin-top: 10px;
+}
+
+/* ─── ۲۰: باکس دکمه‌های چهارگانهٔ لیست خرید ───
+   اصلی تمام‌عرض + سه دکمه در یک ردیف (فشرده‌تر از الگوی سه‌تایی تا
+   سرریز افقی نگیرد — ca-tx nowrap است). */
+.cat-actions.cat-actions-4 { grid-template-columns: 1fr 1fr 1fr; }
+.cat-actions.cat-actions-4 .cat-act.primary { grid-column: 1 / -1; }
+.cat-actions.cat-actions-4 .cat-act { padding: 10px 6px; gap: 6px; }
+.cat-actions.cat-actions-4 .cat-act .ca-tx { font-size: 11px; }
+.cat-actions.cat-actions-4 .cat-act .ca-ic { width: 24px; height: 24px; border-radius: 7px; }
+
+/* ─── ۳۰: نوار زمینهٔ گفتگو (تصمیم ۸/۹) ─── */
+.chat-ctx {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 14px 4px; padding: 8px 12px;
+    background: var(--primary-soft);
+    border: 1px solid #FBD8BC;
+    border-radius: 11px;
+    font-size: 11px; font-weight: 700; color: var(--primary-strong);
+}
+.chat-ctx svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ─── ۱۰/۳۹: یادآوری مهلت خودکارِ تأیید تحویل (تصمیم ۱/۹) ─── */
+.dl-deadline {
+    display: flex; align-items: flex-start; gap: 7px;
+    margin-top: 8px; padding: 8px 11px;
+    background: var(--amber-soft);
+    border: 1px solid #F5DFAE;
+    border-radius: 10px;
+    font-size: 10.5px; font-weight: 600; color: #92400E;
+    line-height: 1.8;
+}
+.dl-deadline svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 4px; color: var(--amber); }
+
+/* ─── ۲۷: دکمهٔ «ثبت سفارش با همین شرایط» (تصمیم ۲/۹) ─── */
+.ovf-order-wrap { margin-top: 10px; }

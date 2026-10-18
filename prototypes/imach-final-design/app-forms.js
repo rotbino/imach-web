@@ -977,10 +977,14 @@
 
         if (!r) {
             SCAN.refId = null;
+            /* FD-22 (تصمیم ۷/۹): کدِ ناشناس = محصول تازه — «بارکدش را
+               نگه می‌داریم و اسمش را می‌پرسیم»، نه بن‌بست جستجو. */
             res.innerHTML =
                 '<div class="hint-line" style="margin-top: 10px;">' +
                 '<svg><use href="#i-info"/></svg>' +
-                '<span>این بارکد در کالاهای مرجع پیدا نشد — با جستجو پیدایش کن یا «محصول من در این لیست نیست» را بزن و دستی ثبتش کن.</span></div>';
+                '<span>این بارکد در کالاهای مرجع پیدا نشد — می‌توانی همین حالا کالای جدیدش را بسازی یا با جستجو پیدایش کنی.</span></div>' +
+                '<button class="btn btn-arm btn-block" id="scan-newprod" type="button" style="margin-top: 10px;">' +
+                '<svg><use href="#i-plus"/></svg> ساخت کالا با همین بارکد</button>';
             return;
         }
 
@@ -1288,6 +1292,205 @@
             core.show('s-catalog', false);
         }, 600);
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FD-22 — کپی از کاتالوگ (sheet-copycat — حکم مالک)
+       ─────────────────────────────────────────────────────────────
+       «شماره دوستش رو وارد کنه و کاتالوگش بیاد و دکمه کپی کالاها رو
+       بزنه و تم» — شماره ≥ ۱۰ رقم = دیتای نمونه (پخش برنج پارس، ۶
+       کالا)؛ کالاهای تکراری (هم نام هم بسته) رد می‌شوند؛ کپی‌ها
+       listing های مستقل زیر businessId من هستند (justAdded = نشان
+       «تازه افزوده» در کاتالوگ). */
+    var CC = { cat: null };
+
+    function ccOpen() {
+        CC.cat = null;
+        var f = $('#cc-find'), d = $('#cc-done');
+        if (f) f.hidden = false;
+        if (d) d.hidden = true;
+        var ph = $('#cc-phone'); if (ph) ph.value = '';
+        var res = $('#cc-result'); if (res) res.innerHTML = '';
+        core.openSheet('sheet-copycat');
+        setTimeout(function () { if (ph) ph.focus(); }, 120);
+    }
+
+    function ccFind() {
+        var ph = $('#cc-phone');
+        var res = $('#cc-result');
+        if (!res) return;
+        var digits = parseNum(ph ? ph.value : '');
+        if (String(digits).length < 10) {
+            res.innerHTML = '<div class="hint-line notfound-line"><svg><use href="#i-info"/></svg>' +
+                '<span>شماره را کامل وارد کن — ۱۱ رقم، مثل ۰۹۱۲ ۲۲۰ ۳۳۶۱.</span></div>';
+            return;
+        }
+        /* دمو: هر شمارهٔ کامل، کاتالوگ نمونه را پیدا می‌کند (data.copyCatalogs) */
+        CC.cat = (core.data.copyCatalogs || [])[0] || null;
+        if (!CC.cat) {
+            res.innerHTML = '<div class="hint-line notfound-line"><svg><use href="#i-info"/></svg>' +
+                '<span>کاتالوگی با این شماره پیدا نشد.</span></div>';
+            return;
+        }
+        var cat = CC.cat;
+        var bizId = core.data.user.activeBusinessId;
+        var already = cat.items.filter(function (it) {
+            return (core.data.listings || []).some(function (l) {
+                return l.businessId === bizId && l.name === it.name && l.pack === it.pack;
+            });
+        }).length;
+        res.innerHTML =
+            '<div class="ccat-card">' +
+                '<div class="ccat-found">' +
+                    '<div class="avatar" style="background:' + cat.color + '">' + cat.avatar + '</div>' +
+                    '<div class="info"><div class="nm">' + esc(cat.business) +
+                        (cat.verified ? ' <svg style="width:13px;height:13px;color:var(--blue)"><use href="#i-verified"/></svg>' : '') +
+                    '</div>' +
+                    '<div class="sub">' + esc(cat.owner) + ' · ' + esc(cat.city) + ' · عمده‌فروش</div></div>' +
+                    '<div class="ccat-count"><b>' + faNum(cat.items.length) + '</b>کالا</div>' +
+                '</div>' +
+                '<div class="ccat-chips">' + cat.items.slice(0, 4).map(function (it) {
+                    return '<span>' + esc(it.name) + '</span>';
+                }).join('') + (cat.items.length > 4 ? '<span>+' + faNum(cat.items.length - 4) + ' کالای دیگر</span>' : '') + '</div>' +
+                (already ? '<div class="ccat-note"><svg><use href="#i-info"/></svg><span>' + faNum(already) + ' کالای مشابه از قبل در کاتالوگت هست — فقط بقیه کپی می‌شوند.</span></div>' : '') +
+                '<button class="btn btn-arm btn-block ccat-copy" id="cc-copy-btn" type="button">' +
+                    '<svg><use href="#i-copy"/></svg> کپی ' + faNum(cat.items.length - already) + ' کالا به کاتالوگ من</button>' +
+            '</div>';
+    }
+
+    function ccCopy() {
+        if (!CC.cat) return;
+        var cat = CC.cat;
+        var bizId = core.data.user.activeBusinessId;
+        var added = 0;
+        cat.items.forEach(function (it, i) {
+            var dup = (core.data.listings || []).some(function (l) {
+                return l.businessId === bizId && l.name === it.name && l.pack === it.pack;
+            });
+            if (dup) return;
+            core.data.listings.push({
+                id: 'l_cc_' + Date.now() + '_' + i,
+                businessId: bizId,
+                name: it.name, brand: it.brand || '',
+                pack: it.pack, packCount: it.packCount || 1,
+                groupId: it.groupId || 'cgr1',
+                baseUnit: it.baseUnit || 'واحد',
+                price: it.price,
+                pricePerUnit: Math.round(it.price / (it.packCount || 1)),
+                stock: it.stock || 20, min: it.min || 1,
+                img: it.img, status: 'in-stock',
+                priceValidDays: 3, justAdded: true
+            });
+            added++;
+        });
+        var f = $('#cc-find'), d = $('#cc-done');
+        if (f) f.hidden = true;
+        if (d) d.hidden = false;
+        var ttl = $('#cc-done-ttl');
+        if (ttl) ttl.textContent = faNum(added) + ' کالا کپی شد';
+        if (core.getCurrentScreen() === 's-catalog' ) catGridRender();
+    }
+
+    /* ═══ FD-22 — تصمیم ۷/۹: بارکد ناشناس ⇒ ساخت کالا ═══
+       اسکنِ کدِ ناشناس حالا «محصول جدید با این بارکد» را باز می‌کند —
+       اسم کالا را می‌نویسد و بارکد به فرم الصاق می‌شود (در محصول واقعی
+       به reference تازه می‌رسد؛ در ماک: کالای جدید + chip بارکد). */
+    function scanNewProd() {
+        var inp = $('#scan-code');
+        var code = String(inp ? inp.value : '').trim();
+        if (!code) return;
+        SCAN.pendingBarcode = code;
+        core.closeSheet('sheet-scan');
+        var ng = $('#new-good-name');
+        if (ng) ng.value = '';
+        core.openSheet('sheet-new-good');
+        /* chip بارکد — الصاق به فرم (تصمیم ۷/۹: اسکن ناشناس = محصول تازه) */
+        var hint = $('#ng-barcode-hint');
+        if (hint) {
+            hint.hidden = false;
+            var tx = $('#ng-barcode-tx');
+            if (tx) tx.textContent = code;
+        }
+        setTimeout(function () { if (ng) ng.focus(); }, 140);
+    }
+
+    /* ═══ FD-22 — تصمیم ۲/۹: پیوند پیشنهاد پذیرفته‌شده ← سفارش ═══
+       قبلاً پذیرش، استعلام را می‌بست و تمام؛ حالا همان‌جا «ثبت سفارش با
+       همین شرایط» = سفارش واقعی با قیمت فریزِ پیشنهاد (بدون پرداخت
+       درون‌شبکه‌ای — قید مالک: پول بیرون از سیستم؛ سفارش = تعهد ثبت‌شده
+       دو طرف). شرط نمایش: استعلام بسته با نتیجهٔ پذیرش همین فروشنده و
+       هنوز سفارش نساخته‌ایم (rfq.ordered). */
+    function offerOrderCreate() {
+        var params = core.getSCREENParams()['s-buy-offer-view'] || {};
+        var o = _offer(params.offer) || (core.data.offers || [])[0];
+        if (!o) return;
+        var rfq = _rfqOut(o.rfqId);
+        if (!rfq || rfq.ordered) return;
+
+        var items = (rfq.items || []).map(function (it) {
+            return {
+                name: it.name, pack: it.pack, qty: it.qty,
+                unitPrice: o.price,   /* قیمت هر بستهٔ پیشنهاد (فریز لحظهٔ پذیرش) */
+                img: it.img
+            };
+        });
+        if (!items.length) {
+            /* استعلام‌های ساخته‌شده در همین جلسه (rfqSendNew) items ندارند —
+               از itemName می‌خوانیم: «برنج هاشمی گلستان · ۲۰ کیسه» */
+            var parts = String(rfq.itemName || 'کالا').split(' · ');
+            var qtyPart = String(parts[1] || '۱');
+            var qty = parseNum(qtyPart) || 1;
+            items = [{ name: parts[0], pack: qtyPart.replace(/^[\s۰-۹0-9]+/, '').trim() || 'واحد', qty: qty, unitPrice: o.price, img: rfq.img }];
+        }
+
+        var oid = 'oo' + (Date.now() % 100000);
+        core.data.ordersOut = core.data.ordersOut || [];
+        core.data.ordersOut.unshift({
+            id: oid, businessId: 'b2',
+            supplierId: o.supplierId, supplier: o.seller,
+            when: 'هم‌اکنون', status: 'new', note:
+                'از پیشنهاد پذیرفته‌شده — شرایط: ' + payTx(o.pay) + ' · ' + dlvTx(o.dlv),
+            items: items,
+            history: [{ st: 'new', t: 'هم‌اکنون' }]
+        });
+        core.data.ordersIn = core.data.ordersIn || [];
+        core.data.ordersIn.unshift({
+            id: 'oi' + (Date.now() % 100000), businessId: 'b1',
+            buyer: 'سوپرمارکت آریا',
+            when: 'هم‌اکنون', status: 'new',
+            note: 'از پیشنهاد پذیرفته‌شدهٔ استعلام «' + rfq.itemName + '»',
+            items: items.map(function (it) { return { name: it.name, pack: it.pack, qty: it.qty, unitPrice: it.unitPrice, img: it.img }; }),
+            history: [{ st: 'new', t: 'هم‌اکنون' }]
+        });
+        rfq.ordered = true;
+
+        pushNotify({
+            type: 'order',
+            title: 'سفارش از پیشنهاد پذیرفته‌شده',
+            body: 'خریدار برای «' + rfq.itemName + '» سفارش ثبت کرد — با شرایط پیشنهاد خودت.',
+            link: 's-sell-orders'
+        });
+        pushNotify({
+            type: 'order',
+            title: 'سفارش ثبت شد',
+            body: 'سفارش «' + rfq.itemName + '» برای ' + o.seller + ' ثبت شد — پیگیری در دفتر سفارش‌ها.',
+            link: 's-buy-orders'
+        });
+        toast('سفارش با شرایط پیشنهاد ثبت شد', 'success');
+        core.go('s-buy-order-view', { id: oid });
+    }
+
+    /* ═══ FD-22 — تصمیم ۸/۹: نوار زمینهٔ گفتگو ═══
+       از دلِ سفارش/پیشنهاد/لیست که به گفتگو بیایی، «دربارهٔ: …» بالای
+       حباب‌ها می‌نشیند؛ در محصول واقعی = thread tag به بک‌اند چت. */
+    function chatCtxSync() {
+        var el = $('#chat-ctx');
+        if (!el) return;
+        var about = (core.getSCREENParams()['s-chat'] || {}).about || '';
+        el.hidden = !about;
+        var tx = $('#chat-ctx-tx');
+        if (tx && about) tx.textContent = 'دربارهٔ: ' + about;
+    }
+    core.registerShowHook('s-chat', chatCtxSync);
 
     /* ═══════════════════════════════════════════════════════════════
        پروفایل
@@ -2403,6 +2606,18 @@
 
         var acc = $('#ovf-accept');
         if (acc) acc.hidden = rfq.status !== 'current';
+
+        /* ═══ FD-22 (تصمیم ۲/۹): پیوند پیشنهاد ← سفارش ═══
+           استعلام بسته با نتیجهٔ «پذیرفت: همین فروشنده» و هنوز سفارش
+           نشده ⇒ دکمهٔ «ثبت سفارش با همین شرایط» زیر جزئیات — حلقهٔ
+           استعلام تا سفارش واقعی، بدون پرداخت درون‌شبکه‌ای (سفارش =
+           تعهد ثبت‌شده؛ پول و تحویل بیرون از سیستم — قید مالک). */
+        var ordWrap = $('#ovf-order');
+        if (ordWrap) {
+            var acceptedThis = rfq.status === 'done' &&
+                String(rfq.result || '').indexOf(o.seller) > -1 && !rfq.ordered;
+            ordWrap.hidden = !acceptedThis;
+        }
     }
 
     /* پذیرش پیشنهاد = پایان استعلام (حکم مالک FD-14) */
@@ -2433,7 +2648,10 @@
                 });
             }
             toast('پیشنهاد پذیرفته شد — استعلام بسته شد', 'success');
-            setTimeout(function () { core.resetStack(); core.show('s-buy-rfqs', false); }, 700);
+            /* FD-22 (تصمیم ۲/۹): دیگر به فهرست استعلام‌ها پرش نمی‌کنیم —
+               همان‌جا می‌مانیم و «ثبت سفارش با همین شرایط» پیش چشم
+               می‌نشیند (گام بعدی طبیعیِ پذیرش). */
+            offerViewRender();
         });
     }
 
@@ -2532,11 +2750,18 @@
         }).join('');
     }
 
-    /* ─── ۳۱: شیت «افزودن کالاهای کاتالوگ به لیست خرید» ─── */
-    var PICK = { sel: {}, q: '', gid: '' };
+    /* ─── ۳۱: شیت «افزودن کالاهای کاتالوگ به لیست خرید» ───
+       FD-22 (حکم مالک): لیست ردیفیِ تک‌ستونه (نه دو ستونی) + قبل از
+       افزودن، «مقدار خرید» و «دورهٔ خرید» هر کالای انتخاب‌شده الزامی
+       است («قبل از اضافه شدن به لیست خرید باید مقدار خرید و دوره خرید
+       رو برای هر کالا مشخص کنه»). مقدار پیش‌فرض = حداقل خرید همان
+       کالا (پیشنهاد سیستم — کاربر عوضش می‌کند). رندرها مقدارهای
+       تایپ‌شده را از PICK.qty/PICK.per می‌خوانند (نمی‌ریزد). */
+    var PICK = { sel: {}, q: '', gid: '', qty: {}, per: {} };
 
     function picklistOpen() {
         PICK.sel = {}; PICK.q = ''; PICK.gid = '';
+        PICK.qty = {}; PICK.per = {};
         var s = $('#pl-search');
         if (s) s.value = '';
         picklistRender();
@@ -2562,13 +2787,27 @@
         });
         host.innerHTML = items.length ? items.map(function (l) {
             var inList = (core.data.shoppingList || []).some(function (s) { return s.listingId === l.id; });
-            return '<div class="pl-item' + (PICK.sel[l.id] ? ' on' : '') + (inList ? ' in-list' : '') + '"' +
+            var sel = !!PICK.sel[l.id];
+            var qv = PICK.qty[l.id] || '';
+            var per = PICK.per[l.id] || '';
+            var flds = (sel && !inList)
+                ? '<div class="pl-flds">' +
+                    '<div class="pl-f"><label>مقدار خرید</label>' +
+                    '<div class="input"><input data-pl-qty="' + esc(l.id) + '" inputmode="numeric" autocomplete="off" value="' + esc(qv) + '" placeholder="حداقل ' + faNum(l.min || 1) + '"></div></div>' +
+                    '<div class="pl-f"><label>دورهٔ خرید</label><div class="pl-per">' +
+                        '<button class="pill' + (per === 'هفتگی' ? ' active' : '') + '" type="button" data-pl-per="' + esc(l.id) + '" data-val="هفتگی">هفتگی</button>' +
+                        '<button class="pill' + (per === 'ماهانه' ? ' active' : '') + '" type="button" data-pl-per="' + esc(l.id) + '" data-val="ماهانه">ماهانه</button>' +
+                    '</div></div>' +
+                  '</div>'
+                : '';
+            return '<div class="pl-row' + (sel ? ' on' : '') + (inList ? ' in-list' : '') + '"' +
                 (inList ? '' : ' data-pl-item="' + esc(l.id) + '"') + '>' +
                 '<span class="pl-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span>' +
-                (inList ? '<span class="pl-inlist"><span class="badge b-green">در لیست هست</span></span>' : '') +
                 '<div class="pl-th"><img src="' + esc(l.img) + '" alt=""></div>' +
-                '<b>' + esc(l.name) + '</b>' +
-                '<small>' + esc(l.pack) + '</small>' +
+                '<div class="pl-tx"><b>' + esc(l.name) + '</b>' +
+                    '<small>' + esc(l.pack) + (l.min ? ' · حداقل ' + faNum(l.min) : '') + '</small>' +
+                    flds + '</div>' +
+                (inList ? '<span class="pl-inlist"><span class="badge b-green">در لیست هست</span></span>' : '') +
             '</div>';
         }).join('') : '<div class="pl-empty">کالایی با این جستجو پیدا نشد</div>';
         picklistBtnSync();
@@ -2577,16 +2816,29 @@
     function picklistBtnSync() {
         var n = 0;
         Object.keys(PICK.sel).forEach(function (k) { if (PICK.sel[k]) n++; });
+        /* الزام مقدار + دوره (حکم مالک FD-22) — دکمه تا کامل‌شدن همه خاموش */
+        var missing = 0;
+        Object.keys(PICK.sel).forEach(function (k) {
+            if (!PICK.sel[k]) return;
+            if (!parseNum(PICK.qty[k]) || !PICK.per[k]) missing++;
+        });
         var btn = $('#pl-add'), tx = $('#pl-add-tx');
-        if (btn) btn.disabled = n === 0;
-        if (tx) tx.textContent = n ? 'افزودن ' + faNum(n) + ' کالا به لیست خرید' : 'افزودن به لیست خرید';
+        if (btn) btn.disabled = n === 0 || missing > 0;
+        if (tx) {
+            if (missing) tx.textContent = 'مقدار و دورهٔ ' + faNum(missing) + ' کالا را مشخص کن';
+            else tx.textContent = n ? 'افزودن ' + faNum(n) + ' کالا به لیست خرید' : 'افزودن به لیست خرید';
+        }
     }
 
     function picklistToggle(lid) {
         PICK.sel[lid] = !PICK.sel[lid];
-        var el = $('[data-pl-item="' + lid + '"]');
-        if (el) el.classList.toggle('on', !!PICK.sel[lid]);
-        picklistBtnSync();
+        if (!PICK.sel[lid]) { delete PICK.qty[lid]; delete PICK.per[lid]; }
+        else if (!PICK.qty[lid]) {
+            /* پیشنهاد سیستم: مقدار = حداقل خرید همان کالا */
+            var l = _findListing(lid);
+            if (l && l.min) PICK.qty[lid] = String(l.min);
+        }
+        picklistRender();
     }
 
     function picklistGroup(gid) {
@@ -2599,6 +2851,16 @@
         picklistRender();
     }
 
+    /* مقدار/دورهٔ یک کالا — از input ها و pill ها (app-handlers) */
+    function picklistQty(lid, val) {
+        PICK.qty[lid] = val;
+        picklistBtnSync();
+    }
+    function picklistPer(lid, val) {
+        PICK.per[lid] = val;
+        picklistRender();
+    }
+
     function picklistAdd() {
         var ids = Object.keys(PICK.sel).filter(function (k) { return PICK.sel[k]; });
         if (!ids.length) return;
@@ -2607,16 +2869,19 @@
             var l = _findListing(lid);
             if (!l) return;
             if ((core.data.shoppingList || []).some(function (s) { return s.listingId === l.id; })) return;
+            var qty = parseNum(PICK.qty[lid]) || 0;
+            var per = PICK.per[lid] || '';
             core.data.shoppingList.push({
                 id: 'sl-' + Date.now() + '-' + lid,
                 businessId: 'b2', listingId: l.id,
                 name: l.name, pack: l.pack, img: l.img,
+                q: faNum(qty) + ' ' + l.pack + ' · ' + per,
                 suppliersCount: 1, added: true
             });
             added++;
         });
         core.closeSheet('sheet-picklist');
-        if (added) toast(faNum(added) + ' کالا به لیست خرید اضافه شد', 'success');
+        if (added) toast(faNum(added) + ' کالا با مقدار و دورهٔ خرید به لیست اضافه شد', 'success');
         else toast('این کالاها از قبل در لیست خریدت هستند', 'error');
     }
 
@@ -2847,7 +3112,11 @@
             h += '<div class="hint-line"><svg><use href="#i-truck"/></svg><span>کالا را که فرستادی، «ارسال شد» را بزن — مشتری بعد از تحویل، سفارش را می‌بندد.</span></div>';
         }
         if (o.status === 'sent') {
-            h += '<div class="callout callout-warn"><svg><use href="#i-clock"/></svg><div>در انتظار <b>تأیید تحویلِ مشتری</b> — سفارش با تأیید او بسته می‌شود.</div></div>';
+            /* تصمیم ۱/۹ (FD-22): مهلت تأیید تحویل = ۷ روز پس از ارسال —
+               بعد از آن سفارش خودکار بسته می‌شود (اعلان به دو طرف).
+               سفارش بازِ ابدی نداریم؛ خریدار فراموش‌کار هم حل می‌شود. */
+            h += '<div class="callout callout-warn"><svg><use href="#i-clock"/></svg><div>در انتظار <b>تأیید تحویلِ مشتری</b> — سفارش با تأیید او بسته می‌شود.</div></div>' +
+                '<div class="dl-deadline"><svg><use href="#i-clock"/></svg><span>اگر ۷ روز پس از ارسال تأیید نشود، سفارش خودکار بسته می‌شود.</span></div>';
         }
         host.innerHTML = h;
 
@@ -2923,7 +3192,10 @@
             h += '<div class="hint-line"><svg><use href="#i-clock"/></svg><span>در انتظار پاسخ فروشنده — تا قبل از «ارسال» می‌توانی لغو کنی.</span></div>';
         }
         if (o.status === 'sent') {
-            h += '<div class="hint-line"><svg><use href="#i-truck"/></svg><span>کالا در راه است — بعد از گرفتن، «تأیید تحویل» را بزن تا سفارش بسته شود.</span></div>';
+            /* تصمیم ۱/۹ (FD-22): مهلت ۷ روزهٔ خودکار — همان یک جمله،
+               بدون پیچیدگی (قید «پیرمرد ۷۰ ساله»). */
+            h += '<div class="hint-line"><svg><use href="#i-truck"/></svg><span>کالا در راه است — بعد از گرفتن، «تأیید تحویل» را بزن تا سفارش بسته شود.</span></div>' +
+                '<div class="dl-deadline"><svg><use href="#i-clock"/></svg><span>۷ روز پس از ارسال اگر تأیید نکنی، سفارش خودکار بسته می‌شود.</span></div>';
         }
         if (o.status === 'delivered') {
             h += '<div class="callout callout-success"><svg><use href="#i-check"/></svg><div>این سفارش تحویل شد و بسته است — با «سفارش دوباره» همان اقلام را می‌توانی سفارش بدهی.</div></div>';
@@ -3262,7 +3534,17 @@
         picklistToggle: picklistToggle,
         picklistGroup: picklistGroup,
         picklistSearch: picklistSearch,
+        picklistQty: picklistQty,
+        picklistPer: picklistPer,
         picklistAdd: picklistAdd,
+
+        /* ═══ FD-22 — کپی از کاتالوگ + تصمیم‌های ۹گانه ═══ */
+        ccOpen: ccOpen,
+        ccFind: ccFind,
+        ccCopy: ccCopy,
+        scanNewProd: scanNewProd,
+        offerOrderCreate: offerOrderCreate,
+        chatCtxSync: chatCtxSync,
 
         /* ═══ FD-15 ═══ */
         scanOpen: scanOpen,

@@ -604,12 +604,20 @@ const DATA = {
             id: 'ro1', businessId: 'b2', listingId: 'l1',
             supplierIds: ['su1', 'su2', 'su3'],
             itemName: 'برنج هاشمی گلستان · ۲۰ کیسه', img: 'png/goods/rice-sack.jpg',
-            sentTo: 3, offersCount: 5, newOffers: 2, daysLeft: 3, status: 'current'
+            sentTo: 3, offersCount: 5, newOffers: 2, daysLeft: 3, status: 'current',
+            /* FD-22 (تصمیم ۲/۹): قلم‌های استعلام از سمت خریدار هم مثل
+               rfqsIn — برای «ثبت سفارش با همین شرایط» (۲۷) لازم است. */
+            items: [
+                { name: 'برنج هاشمی گلستان', pack: 'کیسه ۵۰ کیلویی', packCount: 50, qty: 20, img: 'png/goods/rice-sack.jpg', baseUnit: 'کیلوگرم' }
+            ]
         },
         {
             id: 'ro2', businessId: 'b2', supplierIds: ['su3'],
             itemName: 'رب گوجه‌فرنگی · ۶۰ عدد', img: 'png/goods/tomato-paste.jpg',
-            sentTo: 2, offersCount: 1, newOffers: 1, daysLeft: 0, status: 'current'
+            sentTo: 2, offersCount: 1, newOffers: 1, daysLeft: 0, status: 'current',
+            items: [
+                { name: 'رب گوجه‌فرنگی', pack: 'قوطی ۵۰۰ گرمی', packCount: 1, qty: 60, img: 'png/goods/tomato-paste.jpg', baseUnit: 'قوطی' }
+            ]
         },
         {
             id: 'ro3', businessId: 'b2', supplierIds: ['su3'],
@@ -732,9 +740,9 @@ const DATA = {
     ],
 
     /* ═══ FD-14 — لیست خرید: رندر پویا از همین دیتا (صفحهٔ ۲۰) ═══
-       q = مقدار/دورهٔ خرید؛ آیتم‌های افزوده‌شده از کاتالوگ (۳۱ → شیت
-       انتخاب) q ندارند — فقط بسته را می‌گویند و چیپ «تازه افزوده»
-       می‌خورند؛ مقدار را خریدار بعداً در استعلام می‌گوید.
+       q = مقدار/دورهٔ خرید؛ FD-22 (حکم مالک): آیتم‌های افزوده‌شده از
+       کاتالوگ (۳۱ → شیت انتخاب) از همان لحظهٔ افزودن «مقدار خرید» و
+       «دورهٔ خرید» می‌گیرند (مقدار پیش‌فرض = حداقل خرید همان کالا).
        fresh = آخرین به‌روزشدن قیمت؛ offers/inq = چیپ‌های داغ.
        added=true ⇒ از کاتالوگ آمده — فروشندهٔ همان کاتالوگ خودکار
        یکی از تأمین‌کننده‌های این کالاست (suppliersCount>=1). */
@@ -743,6 +751,79 @@ const DATA = {
         { id: 'sl2', businessId: 'b2', name: 'روغن سرخ‌کردنی', q: '۴۰ بطری ۱۰ لیتری · ماهانه',  pack: 'بسته ۱۰ لیتری', img: 'png/goods/oil-bottle.jpg',   suppliersCount: 2, fresh: '۴ روز پیش' },
         { id: 'sl3', businessId: 'b2', name: 'رب گوجه‌فرنگی',  q: '۶۰ قوطی ۵۰۰ گرمی · هفتگی',  pack: 'قوطی ۵۰۰ گرمی', img: 'png/goods/tomato-paste.jpg', suppliersCount: 1, fresh: 'دیروز', inq: true },
         { id: 'sl4', businessId: 'b2', name: 'قند', q: '۱۰ کارتن ۱۰ کیلویی · ماهانه', pack: 'کارتن ۱۰ کیلویی', img: 'png/goods/sugar-cubes.jpg', suppliersCount: 0 }
+    ],
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-22 — شرایط درخواست تامین (حکم مالک)
+       ▸ خریدار می‌تواند در «ویرایش لیست خرید» (۲۰ → شیت شرایط)
+         یک متن ساده اما کاربردی بنویسد تا هر درخواست‌کننده‌ای
+         پیشنهاد ندهد — مثلاً: «فقط تأمین‌کننده‌های رشت، اولین
+         سفارش آزمایشی است».
+       ▸ بینندهٔ لیست عمومی (۳۲) فقط «لینکِ» شرایط را در کادر
+         مینیمال بالای کالاها می‌بیند؛ لمس = شیت از پایین (همان
+         قاعدهٔ همهٔ مدال‌ها). خالی = لینک مخفی می‌شود.
+       ▸ پیاده‌سازی واقعی: یک فیلد متن روی رکورد لیست خرید
+         (shoppingListMeta)؛ حداکثر ~۵۰۰ نویسه؛ نسخهٔ ساختاریافته
+         (پرداخت/ارسال/محدوده) فاز بعد — فعلاً متن آزاد، همان
+         حکم مالک: «یه متن ساده اما کاربردی». */
+    buyListInfo: {
+        businessId: 'b2',
+        conditions: 'تأمین‌کننده‌های رشت و حومه · اولین سفارش آزمایشی و کم‌حجم است · پرداخت: نیمی نقدی، نیمی چک ۳۰ روزه · فاکتور رسمی الزامی'
+    },
+
+    /* ═══ FD-22 — لیست خرید عمومیِ یک کسب‌وکار دیگر (نیما — cu3)
+       ▸ دید عمومی لیست خرید (۳۲) پارامتری شد: مسیر پیش‌فرض/پیش‌نمایش
+         = لیستِ خودِ کاربر جاری (b2)؛ مسیر «لیست خرید او» از دفتر
+         مشتری (۰۸) = این لیست. رابطهٔ هر دو یکسان است؛ فقط هویت
+         صاحب لیست و اقلام عوض می‌شود — همان الگوی پارامتری سفارش‌ها.
+       ▸ inq[] = کالاهای در حال استعلام (نوار افقی بالای کالاهای
+         موردنیاز — حکم مالک: «تا پویاتر نشانش بدهد»). */
+    otherBuyLists: [
+        {
+            id: 'nima', customerId: 'cu3',
+            business: 'سوپرمارکت نیما', owner: 'نیما فاضلی',
+            type: 'سوپرمارکت', city: 'رشت', avatar: 'ن', color: '#0e7490',
+            visits: 120, suppliersCount: 6,
+            conditions: 'ارسال فقط با ماشین خودتان تا در مغازه · تسویه هر پنجشنبه · فاکتور رسمی الزامی',
+            items: [
+                { id: 'nl1', name: 'پفک نمکی',        q: '۳۰ کارتن ۵۰ عددی · ماهانه', pack: 'کارتن ۵۰ عددی', img: 'png/goods/pofak-big.jpg',   suppliersCount: 2 },
+                { id: 'nl2', name: 'گوشت چرخ‌کرده',    q: '۱۰۰ کیلوگرم · هفتگی',       pack: 'کیلوگرم',       img: 'png/goods/meat-beef.jpg',   suppliersCount: 3, fresh: 'امروز' },
+                { id: 'nl3', name: 'سبزی خشک مخلوط',  q: '۵۰ کیسه ۵۰۰ گرمی · ماهانه', pack: 'کیسه ۵۰۰ گرمی', img: 'png/goods/sabzi-mix.jpg',   suppliersCount: 1 },
+                { id: 'nl4', name: 'برنج فجر',         q: '۱۵ کیسه ۵۰ کیلویی · ماهانه', pack: 'کیسه ۵۰ کیلویی', img: 'png/goods/fajar-50.jpg',   suppliersCount: 4, fresh: 'دیروز' }
+            ],
+            inq: [
+                { name: 'گوشت چرخ‌کرده', img: 'png/goods/meat-beef.jpg', daysLeft: 2, offers: 3 },
+                { name: 'سبزی خشک مخلوط', img: 'png/goods/sabzi-mix.jpg', daysLeft: 0, offers: 1 }
+            ]
+        }
+    ],
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-22 — کپی از کاتالوگ (حکم مالک)
+       ▸ هدف: فروشنده‌های یک شرکت از کاتالوگِ ساختهٔ بازاریابِ
+         شرکت سریع کاتالوگ خودشان را بسازند — «شمارهٔ دوستش را
+         وارد کنه و کاتالوگش بیاد و دکمهٔ کپی کالاها رو بزنه».
+       ▸ جای امکان: آیکون سوم کنار اسکن و متن در فرم افزودن (۱۳) —
+         همان لحظهٔ «اولین کالای کاتالوگ».
+       ▸ پیاده‌سازی واقعی: کپی = ایجاد listing های جدید زیر
+         businessId من با همان good/reference/pack — قیمت و حداقل
+         سفارش اولیه از مالک اصلی می‌آید و بعداً قابل ویرایش است؛
+         تکراری‌ها (هم good هم pack) رد می‌شوند («در کاتالوگت هست»).
+         در محصول واقعی کاتالوگِ منبع باید عمومی/فعال باشد. */
+    copyCatalogs: [
+        {
+            phone: '09122203361',
+            business: 'پخش برنج پارس', owner: 'مرتضی رضایی', city: 'رشت',
+            avatar: 'پ', color: 'linear-gradient(135deg,#c2703a,#ea580c)', verified: true,
+            items: [
+                { name: 'برنج هاشمی', brand: 'گلستان',   pack: 'کیسه ۵۰ کیلویی',  packCount: 50, groupId: 'cgr1', baseUnit: 'کیلوگرم', price: 2850000, min: 5,  stock: 35, img: 'png/goods/rice-sack.jpg' },
+                { name: 'برنج طارم',  brand: 'ممتاز',    pack: 'کیسه ۵۰ کیلویی',  packCount: 50, groupId: 'cgr2', baseUnit: 'کیلوگرم', price: 2750000, min: 5,  stock: 28, img: 'png/goods/rice-grains.jpg' },
+                { name: 'برنج فجر',   brand: '',          pack: 'کیسه ۵۰ کیلویی',  packCount: 50, groupId: 'cgr3', baseUnit: 'کیلوگرم', price: 2480000, min: 5,  stock: 40, img: 'png/goods/fajar-50.jpg' },
+                { name: 'روغن سرخ‌کردنی', brand: 'لادن',  pack: 'کارتن ۶ بطری',    packCount: 6,  groupId: 'cgr2', baseUnit: 'بطری',    price: 1560000, min: 4,  stock: 60, img: 'png/goods/oil-bottle.jpg' },
+                { name: 'رب گوجه‌فرنگی', brand: 'چین‌چین', pack: 'کارتن ۲۴ قوطی',  packCount: 24, groupId: 'cgr1', baseUnit: 'قوطی',    price: 1200000, min: 2,  stock: 50, img: 'png/goods/tomato-paste.jpg' },
+                { name: 'پفک نمکی',   brand: 'اشی‌مشی',   pack: 'کارتن ۵۰ عددی',   packCount: 50, groupId: 'cgr1', baseUnit: 'عدد',      price: 2400000, min: 2,  stock: 45, img: 'png/goods/pofak-big.jpg' }
+            ]
+        }
     ],
 
     scoreItems: [
