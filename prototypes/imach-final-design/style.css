@@ -3704,3 +3704,13 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .blp-act { display: flex; gap: 8px; margin-top: 10px; }
 .blp-act .btn { flex: 1; }
 .blp-act .btn svg { width: 14px; height: 14px; }
+
+/* ═════════════════════════════════════════════════════════════
+   FD-20 — گزینهٔ انتخاب‌شده در شیت‌های تنظیمات (زبان/ارز)
+   ═════════════════════════════════════════════════════════════ */
+.sheet-row.selopt .selopt-check {
+    width: 20px; height: 20px; flex-shrink: 0;
+    color: var(--surface-3);
+}
+.sheet-row.selopt.selected .selopt-check { color: var(--green); }
+.sheet-row.selopt .badge { flex-shrink: 0; }

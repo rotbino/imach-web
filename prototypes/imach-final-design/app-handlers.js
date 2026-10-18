@@ -517,6 +517,46 @@
         if (t.closest('[data-pass-open]')) { core.forms.passOpen(); return; }
         if (t.closest('#pass-submit')) { core.forms.passSubmit(); return; }
 
+        /* ─── FD-20: تنظیمات زبان/ارز — حضور در طرح، بدون عملکرد ───
+           انتخاب فارسی/تومان: ثبت در دیتا + نشان انتخاب جابه‌جا می‌شود.
+           گزینه‌های «به‌زودی»: انتخاب نمی‌شوند — فقط خبر می‌دهند. */
+        var setLang = t.closest('[data-set-lang]');
+        if (setLang) {
+            var LANG_T = { fa: 'فارسی', en: 'English', ar: 'العربية' };
+            var lv = setLang.dataset.setLang;
+            if (lv === 'fa') {
+                core.data.user.settings = core.data.user.settings || {};
+                core.data.user.settings.lang = 'fa';
+                document.querySelectorAll('[data-set-lang]').forEach(function (b) { b.classList.remove('selected'); });
+                setLang.classList.add('selected');
+                var lvEl = $('#set-lang-val');
+                if (lvEl) lvEl.textContent = LANG_T.fa;
+                core.closeSheet('sheet-lang');
+                toast('زبان: فارسی', 'success');
+            } else {
+                toast('«' + (LANG_T[lv] || lv) + '» به‌زودی فعال می‌شود', 'info');
+            }
+            return;
+        }
+        var setCur = t.closest('[data-set-currency]');
+        if (setCur) {
+            var CUR_T = { IRT: 'تومان (IRT)', USD: 'دلار آمریکا (USD)', AED: 'درهم امارات (AED)' };
+            var cv = setCur.dataset.setCurrency;
+            if (cv === 'IRT') {
+                core.data.user.settings = core.data.user.settings || {};
+                core.data.user.settings.currency = 'IRT';
+                document.querySelectorAll('[data-set-currency]').forEach(function (b) { b.classList.remove('selected'); });
+                setCur.classList.add('selected');
+                var cvEl = $('#set-currency-val');
+                if (cvEl) cvEl.textContent = CUR_T.IRT;
+                core.closeSheet('sheet-currency');
+                toast('ارز نمایش: تومان', 'success');
+            } else {
+                toast('نمایش به ' + (CUR_T[cv] || cv) + ' به‌زودی فعال می‌شود — قیمت‌ها به تومان ذخیره می‌مانند', 'info');
+            }
+            return;
+        }
+
         /* ─── ذخیرهٔ کاتالوگ تأمین‌کننده ─── */
         var saveCat = t.closest('[data-save-catalog]');
         if (saveCat && !saveCat.classList.contains('done-save')) {

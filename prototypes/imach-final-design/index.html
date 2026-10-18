@@ -404,6 +404,59 @@
          نتیجهٔ اشتراک (حکم مالک): «هر کسی که به لیست خرید شما پیشنهاد
          تامین دهد و شما تایید کنید، جز تامین‌کنندگان شما خواهد بود و
          شما هم مشتری او خواهی شد» — دکمهٔ تایید/حذف در دفتر ۲۲. -->
+    <!-- ═══ FD-20 — شیت زبان و ارز (تنظیمات پروفایل) ═══
+         حکم مالک: «چندزبانی و ارز در طراحی باشد اما لازم نیست واقعا
+         کار کند» — گزینه‌های فعال: فارسی/تومان؛ بقیه با «به‌زودی».
+         در فاز پیاده‌سازی: کلیدهای ترجمه (fa/en/ar — سازگار با
+         i18n موجود در اپ) + تبدیل ارز در لایهٔ نمایش (نرخ روز). -->
+    <div class="sheet" id="sheet-lang" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>زبان</h3>
+            <button class="mg" data-sheet-close="sheet-lang" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub" style="padding: 0 18px;">زبان آی‌مچ برای تو — منوها، صفحات و پیام‌ها.</div>
+        <div style="padding: 6px 18px 4px;">
+            <button class="sheet-row selopt selected" type="button" data-set-lang="fa">
+                <span class="tx"><b>فارسی</b><span>زبان پیش‌فرض</span></span>
+                <svg class="selopt-check"><use href="#i-check"/></svg>
+            </button>
+            <button class="sheet-row selopt" type="button" data-set-lang="en">
+                <span class="tx"><b>English</b><span>زبان رابط کاربری</span></span>
+                <span class="badge b-gray">به‌زودی</span>
+            </button>
+            <button class="sheet-row selopt" type="button" data-set-lang="ar">
+                <span class="tx"><b>العربية</b><span>زبان رابط کاربری</span></span>
+                <span class="badge b-gray">به‌زودی</span>
+            </button>
+        </div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-lang" style="margin-top: 10px;">بستن</button>
+    </div>
+
+    <div class="sheet" id="sheet-currency" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>ارز نمایش قیمت‌ها</h3>
+            <button class="mg" data-sheet-close="sheet-currency" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub" style="padding: 0 18px;">قیمت‌ها همیشه به تومان ذخیره می‌شوند — این فقط نمایشِ توست.</div>
+        <div style="padding: 6px 18px 4px;">
+            <button class="sheet-row selopt selected" type="button" data-set-currency="IRT">
+                <span class="tx"><b>تومان (IRT)</b><span>پیش‌فرض — همهٔ قیمت‌ها</span></span>
+                <svg class="selopt-check"><use href="#i-check"/></svg>
+            </button>
+            <button class="sheet-row selopt" type="button" data-set-currency="USD">
+                <span class="tx"><b>دلار آمریکا (USD)</b><span>نمایش با نرخ روز</span></span>
+                <span class="badge b-gray">به‌زودی</span>
+            </button>
+            <button class="sheet-row selopt" type="button" data-set-currency="AED">
+                <span class="tx"><b>درهم امارات (AED)</b><span>نمایش با نرخ روز</span></span>
+                <span class="badge b-gray">به‌زودی</span>
+            </button>
+        </div>
+        <button class="btn btn-outline btn-block" data-sheet-close="sheet-currency" style="margin-top: 10px;">بستن</button>
+    </div>
+
     <div class="sheet" id="sheet-share-buylist" hidden>
         <div class="grab"></div>
         <div class="sheet-hdr">
