@@ -2,7 +2,13 @@
      فایل ۱۳ — جریان «افزودن محصول به کاتالوگ»
 
      سه گام:
-       ۱) دو لیست موازی — محصولات بالا، کالاها پایین
+       ۱) جستجوی کالا — FD-38 (حکم مالک): در گام اول فقط «نوع
+          کالا» جستجو می‌شود؛ محصولات مرجع اصلاً در نتایج
+          نمی‌آیند — محصولاتِ همان کالا در گام دوم می‌آیند.
+          این‌طور جریان همیشه سه‌مرحله‌ای و گویاتر می‌شود
+          (قبلاً محصولات مرجع در همان گام ۱ هم دیده می‌شدند و
+          انتخابشان مستقیم به گام ۳ می‌پرید — «گویاتر و
+          قشنگ‌تر» با انتخاب اول کالا و بعد محصولاتش).
           + سه ابزار ثبت سریع ته جستجو:
           ▸ اسکنر بارکد (sheet-scan) — کالا با اسکن انتخاب می‌شود؛
           ▸ افزودن گروهی با متن (sheet-textlist) — لیست قیمتِ کپی‌شده
@@ -13,9 +19,25 @@
             دوستت را وارد کن، کاتالوگش بیاید و همهٔ کالاهایش یک‌جا
             به کاتالوگ تو بیاید (حکم مالک: بازاریاب شرکت کاتالوگ
             را می‌سازد، بقیه سریع کپی می‌کنند).
-       ۲) محصولات یک کالا با فیلتر برند
+       ۲) محصولات مرجعِ همان کالا با فیلتر برند — اگر هیچ محصولی
+          نیست، کارتِ ادغام‌شدهٔ «هنوز محصولی برای … ثبت نشده /
+          اولین محصول را شما ثبت کنید» همان دکمهٔ ثبت است
+          (FD-38 — دیگر نه کادرِ خالیِ جدا می‌آید و نه دکمهٔ
+          تکراری؛ یکی کافی است). با محصولات موجود، دکمهٔ پایین
+          پرسشی است: «محصول شما در این لیست نیست؟ خودتان
+          ثبتش کنید.»
        ۳) بسته‌بندی (چیپ + سایر) + قیمت بسته + قیمت واحد + موجودی
           — «سایر»: نام بسته‌بندی و تعداد در بسته کنار هم (FD-15)
+
+     FD-38 — نوار پیشرفت گویا (موبایل + دسکتاپ):
+       نشانگر سه‌گامی برمی‌گردد — نه قرص‌های دکمه‌مانندِ FD-30
+       (گمراه‌کننده بود و در FD-36 حذف شد) بلکه یک نوار پیشرفت
+       واقعی: خطِ پیوسته با پرشدگی مرحله‌ای + سه نقطه + برچسب‌های
+       «انتخاب نوع کالا / انتخاب محصول / مشخصات فروش». غیرکلیکی
+       است (pointer-events: none) — فقط پیشرفت را «نشان می‌دهد»؛
+       بازگشت با فلشِ «بازگشت به …» بالای هر گام است (گام ۲:
+       #add-change-type — همان id و رفتار قبلیِ «تغییر»؛ گام ۳:
+       #add-back-2 — جدید).
 
      شیت‌های همراه:
        sheet-new-good   — ثبت کالای جدید
@@ -33,6 +55,21 @@
     </div>
 
     <div class="body">
+
+        <!-- ═══ FD-38 — نوار پیشرفت سه‌مرحله‌ای (غیرکلیکی) ═══
+             حالت‌ها در addProgressSync (app-forms.js): done = پر +
+             تیک · current = حلقهٔ تم + شماره · بعدی = خاکستری.
+             برچسب‌ها حکم مالک: «انتخاب نوع کالا / انتخاب محصول /
+             مشخصات فروش». pointer-events:none — هیچ‌وقت دکمه
+             نیست (درس FD-30/۳۶: نشانگرِ شبیه دکمه = گمراهی). -->
+        <div class="addp" id="add-progress" aria-hidden="true">
+            <div class="addp-track"><div class="addp-fill" id="addp-fill"></div></div>
+            <ol class="addp-steps">
+                <li class="addp-st" data-addp="1"><span class="addp-dot"><span class="addp-num">۱</span><svg class="addp-tick"><use href="#i-check"/></svg></span><span class="addp-lbl">انتخاب نوع کالا</span></li>
+                <li class="addp-st" data-addp="2"><span class="addp-dot"><span class="addp-num">۲</span><svg class="addp-tick"><use href="#i-check"/></svg></span><span class="addp-lbl">انتخاب محصول</span></li>
+                <li class="addp-st" data-addp="3"><span class="addp-dot"><span class="addp-num">۳</span><svg class="addp-tick"><use href="#i-check"/></svg></span><span class="addp-lbl">مشخصات فروش</span></li>
+            </ol>
+        </div>
 
         <!-- ═══ گام ۱ ═══ -->
         <div id="add-step-1">
@@ -63,26 +100,37 @@
 
         <!-- ═══ گام ۲ ═══ -->
         <div id="add-step-2" hidden>
+            <!-- FD-38 — فلش بازگشت به گام ۱: همان #add-change-type
+                 (رفتار قبلی «تغییر» — رفتن به گام ۱) حالا خودِ فلشِ
+                 بازگشت است؛ از کارتِ انتخاب جدا شد تا نقشش روشن باشد. -->
+            <button class="step-back" type="button" id="add-change-type">
+                <svg><use href="#i-back"/></svg> بازگشت به انتخاب نوع کالا
+            </button>
+
             <div class="picked-card">
                 <div class="thumb" id="add-type-thumb"></div>
                 <div class="info">
                     <div class="nm" id="add-type-name">—</div>
                     <div class="sub">کالا</div>
                 </div>
-                <button class="chg" type="button" id="add-change-type">تغییر</button>
             </div>
 
             <div class="chips" id="add-brand-chips" style="margin-top: 14px;"></div>
 
             <div id="add-refs" style="margin-top: 10px;"></div>
 
+            <!-- FD-38 — با محصولات موجود: دکمهٔ پرسشی (حکم مالک:
+                 «در سایر حالتها … عنوان دکمه یه جمله سوالی باشه»).
+                 در حالتِ «هیچ محصولی نیست» این دکمه مخفی می‌شود و
+                 کارتِ ادغام‌شده در #add-refs همان کار را می‌کند — تا
+                 «هم کادر و هم دکمه یک چیز تکراری نگویند». -->
             <button class="pick-row new" id="add-new-product" type="button" style="margin-top: 12px;">
                 <div class="thumb" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">
                     <svg style="width: 20px; height: 20px;"><use href="#i-plus"/></svg>
                 </div>
                 <div class="info">
-                    <div class="nm">محصول من در این لیست نیست</div>
-                    <div class="sub">با عنوان و برند خودت ثبتش کن</div>
+                    <div class="nm">محصول شما در این لیست نیست؟</div>
+                    <div class="sub">خودتان ثبتش کنید.</div>
                 </div>
                 <div class="chev"><svg><use href="#i-chev"/></svg></div>
             </button>
@@ -90,6 +138,12 @@
 
         <!-- ═══ گام ۳ ═══ -->
         <div id="add-step-3" hidden>
+            <!-- FD-38 — فلش بازگشت به گام ۲ (انتخاب محصول):
+                 وضعیت گام ۲ حفظ می‌شود — فقط hidden برمی‌گردد. -->
+            <button class="step-back" type="button" id="add-back-2">
+                <svg><use href="#i-back"/></svg> بازگشت به انتخاب محصول
+            </button>
+
             <div class="picked-card" id="add-final-card"></div>
 
             <div id="add-new-form" hidden>

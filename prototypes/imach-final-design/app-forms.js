@@ -37,6 +37,9 @@
     var PROFILE = { firstName: 'احمد', lastName: 'رضایی', photo: 'png/users/me.jpg' };
 
     var DEFAULT_GOODS = ['g1', 'g3', 'g4', 'g2'];
+    /* FD-38: پیش‌فرض محصولات مرجع دیگر در گام ۱ رندر نمی‌شوند
+       (گام ۱ فقط کالا) — نگه داشته می‌شود برای تاریخچه/بازگشتِ
+       احتمالی و استفادهٔ شیت‌ها. */
     var DEFAULT_REFS  = ['r1', 'r3', 'r6', 'r2'];
 
     /* ═══ Helpers ═══ */
@@ -477,8 +480,27 @@
         if (sub) sub.textContent = (n === 1) ? 'چی می‌فروشی؟'
             : (n === 2) ? 'کدام محصول؟'
                 : 'بسته‌بندی، قیمت و شرایط فروش';
+        /* FD-38 — نوار پیشرفت: هر تغییر گام، همان لحظه سینک */
+        addProgressSync(n);
         var body = document.querySelector('#s-sell-add .body');
         if (body) body.scrollTop = 0;
+    }
+
+    /* ═══ FD-38 — سینک نوار پیشرفت سه‌مرحله‌ای ═══
+       نشانگرِ «نمایشی»: گام‌های گذشته = پر + تیک، گام جاری =
+       حلقهٔ تم، گام‌های بعد = خاکستری؛ پُرشدگی خط = ۳۳/۶۷/۱۰۰٪.
+       برچسب‌ها (انتخاب نوع کالا / انتخاب محصول / مشخصات فروش)
+       در HTML ثابت‌اند — این‌جا فقط کلاس حالت می‌نشیند. */
+    function addProgressSync(n) {
+        var wrap = $('#add-progress');
+        if (!wrap) return;
+        var fill = $('#addp-fill');
+        if (fill) fill.style.width = (n * 100 / 3) + '%';
+        wrap.querySelectorAll('.addp-st').forEach(function (st) {
+            var k = parseInt(st.dataset.addp, 10);
+            st.classList.toggle('done', k < n);
+            st.classList.toggle('cur', k === n);
+        });
     }
 
     function goodRow(g) {
@@ -510,16 +532,15 @@
         var q = (ADD.lastQuery || '').trim();
         var qn = q.toLowerCase();
 
+        /* FD-38 (حکم مالک): گام ۱ فقط «کالا» — محصولات مرجع از
+           نتایج جستجو حذف شدند؛ محصولاتِ کالا در گام دوم می‌آیند.
+           جریان همیشه سه‌مرحله‌ای می‌ماند (قبلاً refRow در همین
+           گام رندر می‌شد و انتخابش به گام ۳ می‌پرید). */
         var goods = q
             ? core.data.goods.filter(function (g) { return g.name.toLowerCase().indexOf(qn) > -1; })
             : DEFAULT_GOODS.map(findGood).filter(Boolean);
-        var refs = q
-            ? core.data.references.filter(function (r) {
-                return (r.name + ' ' + (r.brand || '')).toLowerCase().indexOf(qn) > -1;
-            })
-            : DEFAULT_REFS.map(findRef).filter(Boolean);
 
-        if (q && !goods.length && !refs.length) {
+        if (q && !goods.length) {
             host.innerHTML =
                 '<div class="empty" style="padding:22px 16px">' +
                 '<div class="empty-ic"><svg><use href="#i-search"/></svg></div>' +
@@ -534,10 +555,7 @@
                 '<div class="chev"><svg><use href="#i-chev"/></svg></div></button></div>';
             return;
         }
-        var html = '';
-        if (refs.length)  html += groupHtml('محصولات', refs.map(refRow));
-        if (goods.length) html += groupHtml('کالاها', goods.map(goodRow));
-        host.innerHTML = html || '';
+        host.innerHTML = groupHtml('کالاها', goods.map(goodRow));
     }
 
     function addPickGood(id) {
@@ -577,18 +595,36 @@
             chipHost.innerHTML = h;
         }
         var refHost = $('#add-refs');
+        var firstBtn = $('#add-new-product');
         if (refHost) {
             var refs = refsOfType(ADD.goodId).filter(function (r) {
                 return !ADD.brandFilter || r.brandId === ADD.brandFilter;
             });
-            if (!refs.length) {
+            if (!refs.length && !ADD.brandFilter) {
+                /* FD-38 (حکم مالک): حالت خالیِ ادغام‌شده — به‌جای
+                   «کادرِ خالی + دکمهٔ محصول من در این لیست نیست»
+                   (دو چیز تکراری)، یک کارتِ ثبتِ اولین محصول:
+                   «هنوز محصولی برای … ثبت نشده / اولین محصول را
+                   شما ثبت کنید.» — خودش دکمه است (addNewProduct). */
                 refHost.innerHTML =
-                    '<div class="empty" style="padding:22px 16px;margin-top:8px">' +
-                    '<div class="empty-ic"><svg><use href="#i-store"/></svg></div>' +
-                    '<h3>' + (ADD.brandFilter ? 'با این برند محصولی نیست' : 'هنوز محصولی برای این کالا نیست') + '</h3>' +
-                    '<p>اولین محصول را ثبت کن — بعد از تأیید، همهٔ فروشنده‌های این محصول مقایسه می‌شوند.</p></div>';
+                    '<button class="pick-row new" id="add-empty-first" type="button" style="margin-top:8px">' +
+                    '<div class="thumb" style="background: var(--primary-soft); color: var(--primary-strong); display: grid; place-items: center;">' +
+                    '<svg style="width: 20px; height: 20px;"><use href="#i-store"/></svg></div>' +
+                    '<div class="info"><div class="nm">هنوز محصولی برای ' + esc(g.name) + ' ثبت نشده</div>' +
+                    '<div class="sub">اولین محصول را شما ثبت کنید.</div></div>' +
+                    '<div class="chev"><svg><use href="#i-chev"/></svg></div></button>';
+                if (firstBtn) firstBtn.hidden = true;
+            } else if (!refs.length && ADD.brandFilter) {
+                /* برندِ فیلترشده محصولی ندارد — راهنمایی به «همه»؛
+                   دکمهٔ ثبت می‌ماند چون محصول خودش را می‌خواهد بیاورد */
+                refHost.innerHTML =
+                    '<div class="empty" style="padding:18px 16px;margin-top:8px">' +
+                    '<h3>با این برند محصولی نیست</h3>' +
+                    '<p>«همه» را انتخاب کن تا محصولات دیگر این کالا را ببینی.</p></div>';
+                if (firstBtn) firstBtn.hidden = false;
             } else {
                 refHost.innerHTML = '<div class="pick-group">' + refs.map(refRow).join('') + '</div>';
+                if (firstBtn) firstBtn.hidden = false;
             }
         }
     }
@@ -3685,6 +3721,12 @@
             '<div class="fact-row"><span class="k">جمع کل</span><span class="v" style="color: var(--primary-strong);">' + faMoney(orderTotal(o)) + ' تومان</span></div>' +
         '</div>';
 
+        /* FD-37 — کارت «اسناد سفارش»: بعد از اقلام و مشخصات.
+           رندر وضعیت‌محور: فقط accepted/sent؛ delivered با بج
+           «آرشیو»؛ new/rejected/cancelled = هیچ. برگهٔ ارسال فقط
+           پس از «ارسال شد» فعال. */
+        h += orderDocsCardHtml(o, 'sell');
+
         /* یادداشت مشتری */
         if (o.note) {
             h += '<div class="callout callout-info"><svg><use href="#i-msg"/></svg><div><b>توضیحات مشتری:</b><div style="margin-top: 4px;">' + esc(o.note) + '</div></div></div>';
@@ -3711,6 +3753,15 @@
                 '<div class="dl-deadline"><svg><use href="#i-clock"/></svg><span>اگر ۷ روز پس از ارسال تأیید نشود، سفارش خودکار بسته می‌شود.</span></div>';
         }
         host.innerHTML = h;
+
+        /* FD-37: دکمهٔ هدر «دریافت فاکتور» — فقط وقتی سند معنا
+           دارد (پذیرفته/ارسال‌شده/تحویل‌شده) */
+        var invHdr = $('#sov-inv-hdr');
+        if (invHdr) {
+            invHdr.hidden = ['accepted', 'sent', 'delivered'].indexOf(o.status) < 0;
+            invHdr.setAttribute('data-doc-id', o.id);
+            invHdr.setAttribute('data-doc-side', 'sell');
+        }
 
         /* نوار اکشن بر اساس وضعیت */
         var bar = $('#sov-bar');
@@ -3774,6 +3825,10 @@
             '<div class="fact-row"><span class="k">جمع کل</span><span class="v" style="color: var(--arm-strong);">' + faMoney(orderTotal(o)) + ' تومان</span></div>' +
         '</div>';
 
+        /* FD-37 — کارت «اسناد سفارش» (خریدار): همان ساختار ۱۰؛
+           فاکتور پس از پذیرش فروشنده، برگهٔ ارسال پس از ارسال. */
+        h += orderDocsCardHtml(o, 'buy');
+
         if (o.note) {
             h += '<div class="callout callout-info"><svg><use href="#i-msg"/></svg><div><b>یادداشت تو برای فروشنده:</b><div style="margin-top: 4px;">' + esc(o.note) + '</div></div></div>';
         }
@@ -3793,6 +3848,15 @@
             h += '<div class="callout callout-success"><svg><use href="#i-check"/></svg><div>این سفارش تحویل شد و بسته است — با «سفارش دوباره» همان اقلام را می‌توانی سفارش بدهی.</div></div>';
         }
         host.innerHTML = h;
+
+        /* FD-37: دکمهٔ هدر «دریافت فاکتور» — فقط وقتی سند معنا
+           دارد (پذیرفته/ارسال‌شده/تحویل‌شده) */
+        var invHdr = $('#bov-inv-hdr');
+        if (invHdr) {
+            invHdr.hidden = ['accepted', 'sent', 'delivered'].indexOf(o.status) < 0;
+            invHdr.setAttribute('data-doc-id', o.id);
+            invHdr.setAttribute('data-doc-side', 'buy');
+        }
 
         var bar = $('#bov-bar');
         if (bar) {
@@ -3877,6 +3941,22 @@
             body: 'فروشنده سفارش «' + orderTitlePlain(o) + '» را پذیرفت.' + (note ? ' یادداشت فروشنده: ' + note : ''),
             link: 's-buy-order-view'
         });
+        /* ═══ FD-37 — سند فروش: با پذیرش، فاکتور رسمی خودکار ═══
+           اگر سوییچ «صدور فاکتور رسمی» (۳۶ → business.invoiceEnabled)
+           روشن باشد، فاکتور همین‌جا صادر می‌شود و خریدار اعلان می‌گیرد:
+           «فاکتور سفارش شما صادر شد — از صفحهٔ سفارش دریافت کنید.»
+           IMPLEMENTATION NOTE: صدور واقعی = رکورد در order.invoices[]
+           (نوع invoice · شمارهٔ توالی DB · زمان سرور) + تولید PDF
+           سمت سرور؛ در دمو فقط اعلان صادر می‌شود و قالب ۴۰ از
+           دادهٔ زنده ساخته می‌شود. */
+        if ((activeBusiness() || {}).invoiceEnabled !== false) {
+            pushNotify({
+                type: 'order',
+                title: 'فاکتور صادر شد',
+                body: 'فاکتور رسمی سفارش «' + orderTitlePlain(o) + '» صادر شد — از صفحهٔ سفارش دریافت کنید.',
+                link: 's-buy-order-view'
+            });
+        }
         toast('سفارش پذیرفته شد — مشتری خبردار شد', 'success');
         orderViewRender();
     }
@@ -3916,9 +3996,241 @@
                 body: 'سفارش «' + orderTitlePlain(o) + '» از طرف فروشنده ارسال شد — بعد از تحویل، تأیید کن.',
                 link: 's-buy-order-view'
             });
+            /* ═══ FD-37 — سند فروش: با ارسال، برگهٔ ارسال صادر ═══
+               برگهٔ ارسال همراه بار می‌رود (چک‌باکس تحویل + خط
+               امضای گیرنده — قالب ۴۱) و خریدار اعلان می‌گیرد.
+               IMPLEMENTATION NOTE: مثل فاکتور — رکورد order.invoices[]
+               با نوع slip + PDF سرور؛ دمو: اعلان + قالب زنده. */
+            pushNotify({
+                type: 'order',
+                title: 'برگهٔ ارسال صادر شد',
+                body: 'برگهٔ ارسال سفارش «' + orderTitlePlain(o) + '» صادر شد — همراه بار است؛ از صفحهٔ سفارش هم می‌توانی ببینی.',
+                link: 's-buy-order-view'
+            });
             toast('وضعیت: ارسال‌شده — در انتظار تأیید تحویل مشتری', 'success');
             orderViewRender();
         });
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FD-37 — سند فروش: فاکتور رسمی + برگهٔ ارسال
+       ─────────────────────────────────────────────────────────────
+       حلقهٔ سفارش را کامل می‌کند: پذیرش ⇒ فاکتور خودکار (اگر
+       business.invoiceEnabled)، ارسال ⇒ برگهٔ ارسال. بدون سند،
+       سفارش «تعهد شفاهی» است؛ با سند، قرارداد — و فروشنده برای
+       مالیات/انبار و خریدار برای حسابداری به آی‌مچ می‌چسبد.
+
+       ▸ orderDocsCardHtml(o, side) — کارت «اسناد سفارش» در ۱۰/۳۹؛
+         فقط در accepted/sent (در delivered با بج «آرشیو»؛ در
+         new/rejected/cancelled اصلاً رندر نمی‌شود — قبل از پذیرش
+         فاکتور معنا ندارد).
+       ▸ buildInvoiceHtml(o, biz) / buildSlipHtml(o, biz) — قالب
+         A4 چاپی از دادهٔ سفارش + کسب‌وکار (۳۶: سوییچ/شماره
+         مالیاتی/یادداشت فاکتور).
+       ▸ docOpen(kind, side, id) → صفحهٔ سند (موبایل) = مودال
+         (دسکتاپ — CSS .doc-screen در @media ۱۰۲۴).
+       ▸ docPrint() — window.print() با @media print که فقط
+         .doc-paper را چاپ می‌کند.
+
+       IMPLEMENTATION NOTE (زمان پیاده‌سازی):
+         ▸ MVP طبق بریف: پنجرهٔ جدید + window.print() — بدون
+           کتابخانهٔ PDF؛ در محصول واقعی: Puppeteer/jsPDF سمت
+           سرور روی همین قالب + شماره‌گذاری ترتیبی از DB +
+           تاریخ شمسی سرور (اینجا: عدد دمو از id سفارش + تاریخ
+           ثابت نمونه).
+         ▸ صدور واقعی = رکورد در order.invoices[] (نوع/شماره/
+           زمان) تا دانلود دوباره از آرشیو ممکن باشد.
+         ▸ شرایط پرداخت: از یادداشت سفارش؛ اگر سفارش از استعلام
+           آمده باشد از شرایط پیشنهاد پذیرفته‌شده (در دمو هر دو
+           به o.note می‌رسند).
+         ▸ سمت خریدار (side='buy'): صادرکنندهٔ سند فروشنده است —
+           در دمو از o.supplier ساخته می‌شود؛ در محصول واقعی از
+           رکورد کسب‌وکار فروشنده (join روی order.businessId).
+       ═══════════════════════════════════════════════════════════════ */
+    var DOC_DEMO_DATE = '۱۴۰۵/۰۷/۲۸'; /* تاریخ شمسی نمونه — واقعی: سرور */
+
+    function _docIssuer(side, o) {
+        if (side === 'buy') {
+            /* خریدار: فروشنده صادرکننده است — دمو از نام سفارش */
+            return { name: o.supplier || 'فروشنده', city: 'رشت', addr: '',
+                     phone: '۰۹۱۱ ۲۳۴ ۵۶۷۸', taxId: '', invoiceNote: '' };
+        }
+        var b = activeBusiness() || {};
+        return {
+            name: b.name || 'کسب‌وکار من', city: b.city || '', addr: b.addr || '',
+            phone: core.data.user.phone || '', taxId: b.taxId || '',
+            invoiceNote: b.invoiceNote || ''
+        };
+    }
+    function _docBuyer(side, o) {
+        if (side === 'buy') {
+            var me = core.data.businesses[1] || core.data.businesses[0] || {};
+            return { name: me.name || 'من', city: me.city || '', addr: me.addr || '' };
+        }
+        var cu = null;
+        (core.data.customers || []).forEach(function (c) { if (c.id === o.customerId) cu = c; });
+        return {
+            name: o.buyer || (cu ? cu.name : 'مشتری'),
+            city: cu ? cu.city : '',
+            addr: cu ? (cu.addr || '') : '',
+            phone: cu ? (cu.phone || '') : ''
+        };
+    }
+    /* شمارهٔ سند دمو از id سفارش (oi4 → ۱۰۲۴) — واقعی: توالی DB */
+    function _docNo(o) {
+        var n = parseInt(String(o.id || '0').replace(/[^0-9]/g, ''), 10) || 1;
+        return faNum(1020 + n);
+    }
+
+    function orderDocsCardHtml(o, side) {
+        if (['new', 'rejected', 'cancelled'].indexOf(o.status) >= 0) return '';
+        var archived = o.status === 'delivered';
+        var sentOn = ['sent', 'delivered'].indexOf(o.status) >= 0;
+        var who = side === 'buy' ? 'فروشنده' : 'مشتری';
+        return '<div class="card order-docs" style="padding: 14px;">' +
+            '<div class="od-head">' +
+                '<b><svg><use href="#i-file-invoice"/></svg> اسناد سفارش</b>' +
+                (archived ? '<span class="badge b-gray">آرشیو</span>' : '') +
+            '</div>' +
+            '<div class="od-sub">فاکتور و برگهٔ ارسال این سفارش — ' + who + ' هم همین‌ها را می‌بیند.</div>' +
+            '<div class="od-btns">' +
+                '<button class="btn btn-outline" type="button" data-doc="invoice" data-doc-side="' + side + '" data-doc-id="' + esc(o.id) + '">' +
+                    '<svg><use href="#i-download"/></svg> دریافت فاکتور (PDF)' +
+                '</button>' +
+                '<button class="btn btn-outline" type="button" data-doc="slip" data-doc-side="' + side + '" data-doc-id="' + esc(o.id) + '"' +
+                    (sentOn ? '' : ' disabled title="پس از «ارسال شد» فعال می‌شود"') + '>' +
+                    '<svg><use href="#i-download"/></svg> دریافت برگهٔ ارسال (PDF)' +
+                '</button>' +
+            '</div>' +
+            (sentOn ? '' : '<div class="hint" style="margin-top: 8px;">برگهٔ ارسال همراه بار می‌رود — بعد از «ارسال شد» آماده می‌شود.</div>') +
+        '</div>';
+    }
+
+    function buildInvoiceHtml(o, biz) {
+        var buyer = _docBuyer(biz.side, o);
+        var rows = (o.items || []).map(function (it, i) {
+            var line = (it.qty || 0) * (it.unitPrice || 0);
+            return '<tr>' +
+                '<td class="di-c">' + faNum(i + 1) + '</td>' +
+                '<td class="di-t">' + esc(it.name || '') + '</td>' +
+                '<td>' + esc(it.pack || '—') + '</td>' +
+                '<td class="di-c">' + faNum(it.qty || 0) + '</td>' +
+                '<td class="di-n">' + faMoney(it.unitPrice || 0) + '</td>' +
+                '<td class="di-n">' + faMoney(line) + '</td>' +
+            '</tr>';
+        }).join('');
+        var h = '<div class="doc-head">' +
+            '<div class="dh-biz">' +
+                '<div class="dh-logo">' + esc((biz.name || '؟').charAt(0)) + '</div>' +
+                '<div class="dh-biz-tx"><b>' + esc(biz.name) + '</b>' +
+                    '<small>' + esc(biz.addr || biz.city) + '</small>' +
+                    '<small>تلفن: ' + esc(biz.phone || '—') + '</small>' +
+                    (biz.taxId ? '<small>شمارهٔ مالیاتی: ' + esc(biz.taxId) + '</small>' : '') +
+                '</div>' +
+            '</div>' +
+            '<div class="dh-doc"><b>فاکتور فروش</b>' +
+                '<small>شماره: ' + _docNo(o) + '</small>' +
+                '<small>تاریخ: ' + DOC_DEMO_DATE + '</small>' +
+            '</div>' +
+        '</div>' +
+        '<div class="doc-party">' +
+            '<div><span>خریدار:</span> <b>' + esc(buyer.name) + '</b>' +
+                (buyer.city ? ' · ' + esc(buyer.city) : '') + '</div>' +
+            (buyer.addr ? '<div><span>آدرس:</span> ' + esc(buyer.addr) + '</div>' : '') +
+        '</div>' +
+        '<table class="doc-table">' +
+            '<thead><tr><th>ردیف</th><th>نام کالا</th><th>بسته</th><th>تعداد</th><th>قیمت واحد (تومان)</th><th>جمع (تومان)</th></tr></thead>' +
+            '<tbody>' + rows + '</tbody>' +
+        '</table>' +
+        '<div class="doc-total">جمع کل: <b>' + faMoney(orderTotal(o)) + ' تومان</b></div>' +
+        '<div class="doc-terms"><span>شرایط پرداخت:</span> ' +
+            esc(o.note || 'طبق توافق دو طرف در زمان سفارش') + '</div>' +
+        (biz.invoiceNote ? '<div class="doc-note"><span>یادداشت:</span> ' + esc(biz.invoiceNote) + '</div>' : '') +
+        '<div class="doc-foot">ساخته‌شده با آی‌مچ — دفتر خرید و فروش عمدهٔ شما</div>';
+        return h;
+    }
+
+    function buildSlipHtml(o, biz) {
+        var buyer = _docBuyer(biz.side, o);
+        var rows = (o.items || []).map(function (it, i) {
+            return '<div class="ds-item">' +
+                '<span class="ds-chk" aria-hidden="true"></span>' +
+                '<span class="ds-n">' + esc(it.name || '') + ' · ' + esc(it.pack || '') + '</span>' +
+                '<span class="ds-q">' + faNum(it.qty || 0) + '</span>' +
+            '</div>';
+        }).join('');
+        return '<div class="doc-head">' +
+            '<div class="dh-biz">' +
+                '<div class="dh-logo">' + esc((biz.name || '؟').charAt(0)) + '</div>' +
+                '<div class="dh-biz-tx"><b>' + esc(biz.name) + '</b>' +
+                    '<small>' + esc(biz.addr || biz.city) + '</small>' +
+                    '<small>تلفن: ' + esc(biz.phone || '—') + '</small>' +
+                '</div>' +
+            '</div>' +
+            '<div class="dh-doc"><b>برگهٔ ارسال</b>' +
+                '<small>شمارهٔ سفارش: ' + _docNo(o) + '</small>' +
+                '<small>تاریخ: ' + DOC_DEMO_DATE + '</small>' +
+            '</div>' +
+        '</div>' +
+        '<div class="doc-party ds-parties">' +
+            '<div><span>فرستنده:</span> <b>' + esc(biz.name) + '</b>' +
+                (biz.city ? ' · ' + esc(biz.city) : '') + '</div>' +
+            '<div><span>گیرنده:</span> <b>' + esc(buyer.name) + '</b>' +
+                (buyer.city ? ' · ' + esc(buyer.city) : '') + '</div>' +
+            (buyer.addr ? '<div><span>آدرس گیرنده:</span> ' + esc(buyer.addr) + '</div>' : '') +
+        '</div>' +
+        '<div class="ds-list-head">اقلام بار — هنگام تحویل کنار هر کالا تیک بزن:</div>' +
+        '<div class="ds-list">' + rows + '</div>' +
+        '<div class="ds-signs">' +
+            '<div class="ds-sign"><span>تاریخ تحویل</span><i></i></div>' +
+            '<div class="ds-sign"><span>امضای گیرنده</span><i></i></div>' +
+        '</div>' +
+        '<div class="doc-foot">ساخته‌شده با آی‌مچ — دفتر خرید و فروش عمدهٔ شما</div>';
+    }
+
+    function _docFindOrder(side, id) {
+        var list = side === 'buy' ? (core.data.ordersOut || []) : (core.data.ordersIn || []);
+        var hit = null;
+        list.forEach(function (o) { if (o.id === id) hit = o; });
+        return hit || list[0];
+    }
+
+    function docInvoiceRender() {
+        var host = $('#di-paper'); if (!host) return;
+        var p = core.getSCREENParams()['s-doc-invoice'] || {};
+        var side = p.side === 'buy' ? 'buy' : 'sell';
+        var o = _docFindOrder(side, p.id);
+        if (!o) { host.innerHTML = '<div class="empty"><h3>سفارشی نیست</h3></div>'; return; }
+        var biz = _docIssuer(side, o); biz.side = side;
+        var buyer = _docBuyer(side, o);
+        host.innerHTML = buildInvoiceHtml(o, biz);
+        var sub = $('#di-sub');
+        if (sub) sub.textContent = 'شمارهٔ ' + _docNo(o) + ' — ' + buyer.name;
+    }
+    function docSlipRender() {
+        var host = $('#ds-paper'); if (!host) return;
+        var p = core.getSCREENParams()['s-doc-slip'] || {};
+        var side = p.side === 'buy' ? 'buy' : 'sell';
+        var o = _docFindOrder(side, p.id);
+        if (!o) { host.innerHTML = '<div class="empty"><h3>سفارشی نیست</h3></div>'; return; }
+        var biz = _docIssuer(side, o); biz.side = side;
+        var buyer = _docBuyer(side, o);
+        host.innerHTML = buildSlipHtml(o, biz);
+        var sub = $('#ds-sub');
+        if (sub) sub.textContent = 'سفارش ' + _docNo(o) + ' — ' + buyer.name;
+    }
+
+    function docOpen(kind, side, id) {
+        var screen = kind === 'slip' ? 's-doc-slip' : 's-doc-invoice';
+        core.go(screen, { id: id, side: side });
+    }
+
+    function docPrint() {
+        /* MVP طبق بریف FD-37: چاپ همین صفحه با @media print که
+           فقط .doc-paper را می‌برد (کروم اپ UI حذف می‌شود).
+           محصول واقعی: PDF سمت سرور (Puppeteer/jsPDF) + ذخیرهٔ
+           نسخه در order.invoices[]. */
+        window.print();
     }
 
     /* ─── اکشن‌های خریدار (۳۹) ─── */
@@ -4011,6 +4323,9 @@
     core.registerShowHook('s-sell-order-view', orderViewRender);
     core.registerShowHook('s-buy-orders', ordersBuyRender);
     core.registerShowHook('s-buy-order-view', buyOrderViewRender);
+    /* FD-37 — قالب‌های سند: رندر از سفارشِ پارامتری (id/side) */
+    core.registerShowHook('s-doc-invoice', docInvoiceRender);
+    core.registerShowHook('s-doc-slip', docSlipRender);
     core.registerShowHook('s-notifs', notifsRender);
     core.registerShowHook('s-home-sell', deskOrdersSync);
     core.registerShowHook('s-home-buy', deskOrdersSync);
@@ -4097,6 +4412,15 @@
         orderCancel: orderCancel,
         orderReorder: orderReorder,
         deskOrdersSync: deskOrdersSync,
+
+        /* FD-37 — سند فروش */
+        orderDocsCardHtml: orderDocsCardHtml,
+        buildInvoiceHtml: buildInvoiceHtml,
+        buildSlipHtml: buildSlipHtml,
+        docOpen: docOpen,
+        docPrint: docPrint,
+        cateInvoiceSync: cateInvoiceSync,
+        cateInvoiceToggle: cateInvoiceToggle,
         guestSaveFlow: guestSaveFlow,
         guestAccountOpen: guestAccountOpen,
         guestAccountSubmit: guestAccountSubmit,
@@ -4748,12 +5072,17 @@
         set('#cate-city', b.city);
         set('#cate-desc', b.desc);
         set('#cate-addr', b.addr);
+        /* FD-37 — سند فروش: فیلدهای فاکتور از دادهٔ کسب‌وکار */
+        set('#cate-tax-id', b.taxId);
+        set('#cate-inv-note', b.invoiceNote);
         var tEl = $('#cate-type-val');
         if (tEl) tEl.textContent = b.type || 'عمده‌فروش';
         cateLogoSync();
         catLogoColorsRender();
         /* FD-13: سوییچ «مشاهده قیمت‌ها فقط برای مشتریان» از تنظیمات زنده */
         catePricesSync();
+        /* FD-37: سوییچ «صدور فاکتور رسمی» از تنظیمات زنده */
+        cateInvoiceSync();
     }
 
     /* ═══ FD-13: «مشاهده قیمت‌ها فقط برای مشتریان» (ویرایش کاتالوگ ۳۶) ═══
@@ -4785,6 +5114,33 @@
             : 'قیمت‌ها برای همهٔ بازدیدکنندگان دیده می‌شود', 'success');
     }
 
+    /* ═══ FD-37 — سند فروش (۳۶): سوییچ «صدور فاکتور رسمی» ═══
+       business.invoiceEnabled زنده عوض می‌شود؛ خاموش = پس از
+       پذیرش سفارش، فاکتور صادر/اعلان نمی‌شود (orderAccept).
+       محصول واقعی: PATCH /business همان لحظه + ثبت ممیزی. */
+    function cateInvoiceSync() {
+        var sw = $('#cate-invoice-on');
+        var hint = $('#cate-inv-hint');
+        var on = (activeBusiness() || {}).invoiceEnabled !== false;
+        if (sw) {
+            sw.classList.toggle('on', on);
+            sw.setAttribute('aria-checked', on ? 'true' : 'false');
+        }
+        if (hint) hint.textContent = on
+            ? 'با پذیرش هر سفارش، فاکتور رسمی به‌طور خودکار برای مشتری صادر می‌شود.'
+            : 'خاموش — سفارش‌ها بدون فاکتور رسمی پردازش می‌شوند؛ هر وقت خواستی روشنش کن.';
+    }
+
+    function cateInvoiceToggle() {
+        var b = activeBusiness();
+        if (!b) return;
+        b.invoiceEnabled = b.invoiceEnabled === false ? true : false;
+        cateInvoiceSync();
+        toast(b.invoiceEnabled
+            ? 'با پذیرش هر سفارش، فاکتور رسمی صادر می‌شود'
+            : 'صدور فاکتور رسمی خاموش شد', 'success');
+    }
+
     function catEditSave() {
         var b = activeBusiness();
         if (!b) return;
@@ -4796,6 +5152,11 @@
         b.addr = (($('#cate-addr') || {}).value || '').trim();
         var tEl2 = $('#cate-type-val');
         if (tEl2 && tEl2.textContent.trim()) b.type = tEl2.textContent.trim();
+        /* FD-37 — سند فروش: شمارهٔ مالیاتی + یادداشت فاکتور
+           (سوییچ لحظه‌ای ذخیره می‌شود — cateInvoiceToggle؛
+           این دو فیلد با «ذخیرهٔ تغییرات» می‌مانند چون فرم‌اند) */
+        b.taxId = (($('#cate-tax-id') || {}).value || '').trim();
+        b.invoiceNote = (($('#cate-inv-note') || {}).value || '').trim();
         toast('کاتالوگ ذخیره شد', 'success');
         setTimeout(function () { core.back(); }, 550);
     }

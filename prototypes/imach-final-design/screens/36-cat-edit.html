@@ -106,6 +106,51 @@
             </div>
             <div class="hint">با روشن‌کردنش، قیمت‌ها فقط برای مشتری‌های ذخیره‌شدهٔ کاتالوگ دیده می‌شود — برای بقیه دکمهٔ «مشاهده قیمت» می‌نشیند.</div>
         </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             FD-37 — سند فروش (بخش جدید، بعد از «قیمت‌ها»)
+             حلقهٔ سفارش را کامل می‌کند: سفارش → پذیرش → فاکتور
+             رسمی (خودکار) → ارسال → برگهٔ ارسال. بدون سند، سفارش
+             فقط «تعهد شفاهی» است؛ با سند، قرارداد.
+             ▸ سوییچ «صدور فاکتور رسمی» — پیش‌فرض روشن.
+               رفتار واقعی: business.invoiceEnabled (data.js) —
+               خاموش = پس از پذیرش، فاکتوری صادر/اعلان نمی‌شود.
+             ▸ شمارهٔ مالیاتی (اختیاری) → business.taxId — روی
+               سربرگ فاکتور چاپ می‌شود (اگر خالی باشد، ردیف حذف
+               می‌شود نه «—»؛ قاعدهٔ سند تمیز).
+             ▸ یادداشت روی فاکتور (اختیاری) → business.invoiceNote —
+               پانوشت فاکتور، پایینِ شرایط پرداخت.
+             IMPLEMENTATION NOTE (زمان پیاده‌سازی): هر سه فیلد در
+             پروفایل کسب‌وکار ذخیره شوند (PATCH /business) و در
+             توکن فاکتور سرور (Puppeteer/jsPDF) تزریق شوند؛ در
+             دمو همین مقادیر خام روی قالب ۴۰/۴۱ می‌نشینند.
+             ═══════════════════════════════════════════════════════ -->
+        <div class="section-title"><h2><svg><use href="#i-file-invoice"/></svg> سند فروش</h2></div>
+
+        <div class="field">
+            <label>فاکتور رسمی</label>
+            <div class="card setrow">
+                <div class="setrow-main">
+                    <div class="setrow-tx">
+                        <b>صدور فاکتور رسمی</b>
+                        <small id="cate-inv-hint">با پذیرش هر سفارش، فاکتور رسمی به‌طور خودکار برای مشتری صادر می‌شود.</small>
+                    </div>
+                    <div class="switch on" id="cate-invoice-on" role="switch" aria-checked="true" aria-label="صدور فاکتور رسمی"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>شمارهٔ مالیاتی <span class="opt">— اختیاری</span></label>
+            <input class="input" id="cate-tax-id" type="text" inputmode="numeric" placeholder="مثلاً ۱۲۳۴۵۶۷۸۹۰۱" autocomplete="off">
+            <div class="hint">اگر فاکتور رسمی صادر می‌کنی، این شماره روی فاکتور چاپ می‌شود.</div>
+        </div>
+
+        <div class="field">
+            <label>یادداشت روی فاکتور <span class="opt">— اختیاری</span></label>
+            <textarea class="input" id="cate-inv-note" placeholder="مثلاً: کالای فروخته‌شده قابل بازگشت نیست" autocomplete="off"></textarea>
+            <div class="hint">این یادداشت پایین فاکتور چاپ می‌شود.</div>
+        </div>
     </div>
 
     <div class="sticky-bar">

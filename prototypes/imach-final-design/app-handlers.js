@@ -350,6 +350,13 @@
                 core.forms.catePricesToggle();
                 return;
             }
+            /* FD-37: سوییچ «صدور فاکتور رسمی» (۳۶) —
+               business.invoiceEnabled را زنده عوض می‌کند؛
+               خاموش = پذیرش سفارش فاکتور صادر نمی‌کند (orderAccept) */
+            if (sw.id === 'cate-invoice-on') {
+                core.forms.cateInvoiceToggle();
+                return;
+            }
             sw.classList.toggle('on');
             return;
         }
@@ -667,6 +674,22 @@
             return;
         }
 
+        /* ─── FD-37 — سند فروش: باز کردن فاکتور/برگهٔ ارسال ═══
+           دکمه‌های کارت «اسناد سفارش» (۱۰/۳۹) + دکمهٔ آیکونی هدر —
+           همه با data-doc/invoice|slip + data-doc-side + data-doc-id.
+           دسکتاپ: همان صفحهٔ سند با چیدمان مودال (CSS doc-screen). */
+        var docBtn = t.closest('[data-doc]');
+        if (docBtn && !docBtn.disabled && core.forms.docOpen) {
+            core.forms.docOpen(docBtn.dataset.doc, docBtn.dataset.docSide, docBtn.dataset.docId);
+            return;
+        }
+
+        /* ─── FD-37 — چاپ سند (۴۰/۴۱): @media print فقط کاغذ ─── */
+        if (t.closest('#di-print') || t.closest('#ds-print')) {
+            if (core.forms.docPrint) core.forms.docPrint();
+            return;
+        }
+
         /* ─── FD-18: لغو سفارش خریدار (دکمهٔ ۳۹) ─── */
         if (t.closest('[data-order-cancel]') && !t.closest('[data-order-cancel-menu]')) {
             if (core.forms.orderCancel) core.forms.orderCancel();
@@ -873,7 +896,15 @@
             core.forms.addRenderStep1();
             return;
         }
+        /* FD-38 — فلش بازگشت گام ۳ → گام ۲ (وضعیت گام ۲ حفظ) */
+        if (t.closest('#add-back-2')) {
+            core.forms.addShowStep(2);
+            return;
+        }
         if (t.closest('#add-new-product')) { core.forms.addNewProduct(); return; }
+        /* FD-38 — کارتِ ادغام‌شدهٔ حالت خالی گام ۲: همان ثبت
+           محصول جدید (جای کادرِ خالی + دکمهٔ تکراری) */
+        if (t.closest('#add-empty-first')) { core.forms.addNewProduct(); return; }
         if (t.closest('#add-brand-pick')) { core.forms.addOpenBrandSheet(); return; }
 
         var pickBrandBtn = t.closest('#brand-list [data-pick-brand]');

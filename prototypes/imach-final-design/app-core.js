@@ -70,7 +70,10 @@ window.iMach = (function () {
         's-cat-edit':             '36-cat-edit',
         's-product-view':         '37-product-view',
         's-salesrep':             '38-salesrep',
-        's-buy-order-view':       '39-buy-order-view'
+        's-buy-order-view':       '39-buy-order-view',
+        /* FD-37 — سند فروش: قالب‌های فاکتور و برگهٔ ارسال */
+        's-doc-invoice':          '40-doc-invoice',
+        's-doc-slip':             '41-doc-slip'
     };
 
     /* ═══ لود اسکرین ═══ */

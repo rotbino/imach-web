@@ -55,6 +55,10 @@ window.iMachDesktop = (function () {
         /* FD-30 (الگوی Form+Preview — Vercel Settings/Stripe Webhook):
            فرم راست + پیش‌نمایشِ چسبان چپ */
         's-cat-edit': dkCatEdit,
+        /* FD-37 — سند فروش: قالب فاکتور/برگهٔ ارسال = مودال
+           (قاب تیرهٔ ثابت + کاغذ A4 وسچ — CSS dk-doc) */
+        's-doc-invoice': dkDoc,
+        's-doc-slip': dkDoc,
         /* —— دفاتر و لیست‌ها —— */
         's-catalog-share': 'dk-page dk-list',
         's-contacts': 'dk-page dk-list',
@@ -452,10 +456,65 @@ window.iMachDesktop = (function () {
         if (hint) hint.classList.add('dsk-hint');
     }
 
-    /* ═══ ۰۵/۳۱ کاتالوگ ═══
-       صفحهٔ محتوایی + نوار ابزار افقی + گرید کالای روان (auto-fill). */
+    /* ═══ ۰۵/۳۱ کاتالوگ — FD-39: سایدبار اختصاصی کاتالوگ ═══
+       (حکم مالک: «کاتالوگ سایدبار اختصاصی خودش را داشته باشد —
+       ظاهرش کمی متفاوت از سایدبار اصلی — و آن چهار دکمه از روی
+       کاتالوگ برداشته شود و به‌صورت چهار لینک در سایدبار بنشیند؛
+       هم گویاتر می‌شود هم از زشتیِ کاتالوگ در دسکتاب کم می‌شود.»)
+       ▸ چیدمان: ستونِ اصلیِ کاتالوگ (سرچ + محصول جدید + چیپ‌ها +
+         گرید) راست · سایدبارِ «ابزارهای کاتالوگ» چپ (همان سمتِ
+         پنل‌های FD-30 — dkRfqNew/dkOffer؛ سمتِ راست جای ناوبریِ
+         اصلی اپ است، این یکی مالِ همین صفحه و جدا از آن دیده
+         می‌شود).
+       ▸ چهار دکمهٔ .cat-actions دست‌نخورده جابه‌جا می‌شوند (همهٔ
+         id ها: promo-box/promo-ic/promo-t/catalog-preview —
+         catPromoSync همان‌ها را زنده نگه می‌دارد)؛ فقط CSS در
+         [data-dk] آنها را «لینک» می‌بیند: ردیفِ بی‌قاب با آیکونِ
+         نرم + برچسب — زبانِ ناوبری، نه دکمهٔ عملیاتی.
+       ▸ موبایل دست‌نخورده: این تبدیل فقط ≥۱۰۲۴ اجرا می‌شود و
+         CSS هم زیر #phone[data-dk="1"] است.
+       ▸ کاتالوگِ مهمان (۳۱) بدون .cat-actions است → بدون سایدبار. */
     function dkCatalog(sec) {
         sec.classList.add('dk-page', 'dk-catalog');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var acts = body.querySelector(':scope > .cat-actions');
+        if (!acts) return;   /* مهمان (۳۱): چهار دکمه ندارد */
+
+        /* پرچم: گریدِ دوستونه فقط وقتی سایدبار ساخته شد (مهمان
+           بدون سایدبار = تک‌ستونهٔ قبلی — قواعد CSS زیر همین کلاس) */
+        sec.classList.add('dk-cat-tools');
+
+        /* سایدبار: سربرگِ کوچک + همان .cat-actions (بچه‌کم‌نقص) */
+        var side = document.createElement('aside');
+        side.className = 'cat-side';
+        side.innerHTML =
+            '<div class="cat-side-cap">' +
+                '<svg><use href="#i-store"/></svg>' +
+                '<span>ابزارهای کاتالوگ</span>' +
+            '</div>';
+        side.appendChild(acts);
+
+        /* ستون اصلی: همهٔ بقیه (نوار ابزار/چیپ/گرید + شیت‌ها)
+           ترتیبِ فرزندان حفظ می‌شود — فقط دورشان یک قاب می‌آید.
+           شیت‌ها absolute اند به .phone — جابه‌جایی DOM اثری
+           بر جای‌گیری‌شان ندارد (درس FD-10). */
+        var main = document.createElement('div');
+        main.className = 'cat-main';
+        while (body.firstChild) main.appendChild(body.firstChild);
+        body.appendChild(main);
+        body.appendChild(side);
+    }
+
+    /* ═══ ۴۰/۴۱ سند فروش — FD-37: مودال سند ═══
+       فقط کلاس dk-doc — همهٔ چیدمان (قاب تیرهٔ fixed + کاغذ A4
+       وسچ + نوار بالای شفاف) در style.css بلوک FD-37؛ منطقِ چون
+       مودال: دکمهٔ «بازگشت» ساب‌هدر همان close است (core.back).
+       سند در موبایل صفحهٔ جداگانه است — این تبدیل فقط ≥۱۰۲۴. */
+    function dkDoc(sec) {
+        sec.classList.add('dk-doc');
     }
 
     /* ═══ ۳۷ کالا ═══
@@ -582,7 +641,16 @@ window.iMachDesktop = (function () {
        نوار هیچ‌وقت جابه‌جا نمی‌شد؛ بیرونِ body می‌ماند و لبه‌به‌
        لبهٔ تهِ صفحه می‌چسبید (حکم مالک: «کاملاً به ته صفحه چسبیده —
        بیارش بالاتر و از پایین بهش مارجین بده»). داخل body،
-       padding-bottom خودِ بدنه بالشِ امنِ زیر دکمه را می‌سازد. */
+       padding-bottom خودِ بدنه بالشِ امنِ زیر دکمه را می‌سازد.
+       FD-38 (ادامهٔ تاریخچه — حکم مالک جدید): نشانگر با زبانِ
+       درست برمی‌گردد — «نوار پروگرس گویا و مرحله‌ای… شبیه پروگرس
+       بار که حس پیشرفت بده، نه شبیه سه تا دکمه» + فلش بازگشتِ
+       هر گام. عنصرش در HTML موبایل است (#add-progress)، CSS‌اش
+       در کلاس‌های addp/step-back بیرون @media (موبایل+دسکتاپ)؛
+       دسکتاپ فقط نفس می‌گیرد (بلوک FD-38 در style.css). این
+       تابع همچنان هیچ تزریقِ نشانگری ندارد — همان درس FD-36:
+       نشانگر تزریقیِ JS شکست خورد؛ نشانگرِ داخل HTML و سینکِ
+       کلاسی (addProgressSync) کار می‌کند. */
     function dkAdd(sec) {
         sec.classList.add('dk-page', 'dk-add');
         var body = sec.querySelector('.body');

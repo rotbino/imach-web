@@ -8,11 +8,21 @@
      • sent → «تأیید تحویل» = بسته‌شدن کامل سفارش → بایگانی
        (حلقهٔ پایانی که مفقود بود) + «گفتگو با تأمین‌کننده».
      • delivered → «سفارش دوباره» → کاتالوگ همان تأمین‌کننده.
+     FD-37 — سند فروش (خریدار):
+     • دکمهٔ آیکونی «دریافت فاکتور» در هدر (id: bov-inv-hdr) —
+       فقط در accepted/sent/delivered (buyOrderViewRender).
+     • کارت «اسناد سفارش» همان ساختار ۱۰: فاکتور پس از پذیرشِ
+       فروشنده، برگهٔ ارسال پس از «ارسال شد» — رندر وضعیت‌محور
+       از orderDocsCardHtml با نقش خریدار (دریافت سند از فروشنده).
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-buy-order-view" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
         <div class="ttl">جزئیات سفارش<small id="bov-sub">—</small></div>
+        <!-- FD-37: دریافت سریع فاکتور از هدر — مخفی تا وقتی پذیرش -->
+        <button class="icon-btn" id="bov-inv-hdr" data-doc="invoice" hidden aria-label="دریافت فاکتور" title="دریافت فاکتور">
+            <svg><use href="#i-file-invoice"/></svg>
+        </button>
     </div>
 
     <div class="body">

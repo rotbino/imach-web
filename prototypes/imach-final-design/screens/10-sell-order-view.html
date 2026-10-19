@@ -7,11 +7,25 @@
        accepted: «ارسال شد» (رفتار به سمت sent) + گفتگو با مشتری.
        sent: در انتظار تأیید تحویل مشتری (بسته‌شدن با خریدار).
        بایگانی: فقط روایت پایان (تحویل‌شده/رد/لغو).
+     FD-37 — سند فروش:
+     • دکمهٔ آیکونی «دریافت فاکتور» در هدر (id: sov-inv-hdr) — فقط
+       در وضعیت‌های accepted/sent/delivered دیده می‌شود (در «ثبت‌شده»
+       فاکتور معنا ندارد؛ orderViewRender پنهانش می‌کند).
+     • کارت «اسناد سفارش» بعد از مشخصات، با دو دکمهٔ
+       «دریافت فاکتور (PDF)» و «دریافت برگهٔ ارسال (PDF)» —
+       رندرِ وضعیت‌محور در orderDocsCardHtml (app-forms.js):
+       accepted → فاکتور فعال، برگهٔ ارسال قفل تا «ارسال شد» ·
+       sent → هر دو فعال · delivered → کارت با بج «آرشیو» ·
+       new/rejected/cancelled → کارت اصلاً نیست.
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-sell-order-view" data-arm="sell">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
         <div class="ttl">جزئیات سفارش<small id="sov-sub">—</small></div>
+        <!-- FD-37: دریافت سریع فاکتور از هدر — مخفی تا وقتی پذیرش -->
+        <button class="icon-btn" id="sov-inv-hdr" data-doc="invoice" hidden aria-label="دریافت فاکتور" title="دریافت فاکتور">
+            <svg><use href="#i-file-invoice"/></svg>
+        </button>
     </div>
 
     <div class="body">

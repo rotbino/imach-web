@@ -4436,6 +4436,260 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 
 
 /* ═════════════════════════════════════════════════════════════════
+   FD-37 — سند فروش: کارت اسناد سفارش (۱۰/۳۹) + قالب A4 (۴۰/۴۱)
+   ─────────────────────────────────────────────────────────────────
+   سند در موبایل هم معنا دارد → کلاس‌های تازهٔ doc-*/od-* بیرونِ
+   @media نوشته می‌شوند و در هر دو اندازه کار می‌کنند (قاعدهٔ بریف
+   FD-37). دسکتاپ: صفحهٔ سند = مودال (بلوک dk-doc در @media ۱۰۲۴).
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ── کارت «اسناد سفارش» در جزئیات سفارش ── */
+.order-docs .od-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-bottom: 4px;
+}
+.order-docs .od-head b {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13.5px; font-weight: 800;
+}
+.order-docs .od-head b svg { width: 16px; height: 16px; color: var(--primary-strong); }
+.order-docs .od-sub { font-size: 11px; color: var(--text-3); line-height: 1.8; margin-bottom: 12px; }
+.order-docs .od-btns { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.order-docs .od-btns .btn { width: 100%; }
+.order-docs .od-btns .btn[disabled] { opacity: .55; cursor: not-allowed; }
+
+/* ── کاغذ A4 — زبان سند چاپی: سفید، تخت، فشرده، بی‌کارت‌بندی ── */
+.doc-body { display: flex; flex-direction: column; gap: 12px; }
+.doc-paper {
+    background: #FFF;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px 16px;
+    color: #1F2937;            /* متن سند: خاکستری تیرهٔ چاپی، نه رنگ اپ */
+    font-size: 12px;
+    line-height: 1.9;
+}
+.doc-hint { margin-top: -2px; }
+
+/* سربرگ سند: کسب‌وکار (راست) + نوع سند (چپ) */
+.doc-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 14px; padding-bottom: 12px; border-bottom: 2px solid #1F2937;
+}
+.dh-biz { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.dh-logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--stone); color: #FFF;
+    display: grid; place-items: center;
+    font-size: 18px; font-weight: 800; flex-shrink: 0;
+}
+.dh-biz-tx b { display: block; font-size: 14px; font-weight: 800; line-height: 1.5; }
+.dh-biz-tx small { display: block; font-size: 10.5px; color: #6B7280; line-height: 1.7; }
+.dh-doc { text-align: left; flex-shrink: 0; }
+.dh-doc b { display: block; font-size: 15px; font-weight: 800; }
+.dh-doc small { display: block; font-size: 10.5px; color: #6B7280; line-height: 1.7; }
+
+/* طرفین سند */
+.doc-party {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 10px 2px 0; font-size: 11.5px;
+}
+.doc-party span { color: #6B7280; }
+.doc-party b { font-weight: 700; }
+.ds-parties { padding-bottom: 4px; }
+
+/* جدول اقلام فاکتور — خطوط چاپی نازک، بدون zebra */
+.doc-table {
+    width: 100%; border-collapse: collapse;
+    margin-top: 10px; font-size: 11px;
+}
+.doc-table th {
+    background: #F3F4F6; color: #374151;
+    font-weight: 700; padding: 7px 6px;
+    border: 1px solid #D1D5DB;
+}
+.doc-table td { border: 1px solid #E5E7EB; padding: 7px 6px; vertical-align: middle; }
+.doc-table .di-c { text-align: center; }
+.doc-table .di-t { font-weight: 700; }
+.doc-table .di-n { text-align: left; white-space: nowrap; }
+
+/* جمع کل — نوار تاکیدی تخت */
+.doc-total {
+    margin-top: 10px; padding: 9px 12px;
+    background: #F3F4F6; border: 1px solid #D1D5DB; border-radius: 8px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12.5px; font-weight: 700;
+}
+.doc-total b { font-size: 14px; }
+
+.doc-terms, .doc-note { margin-top: 8px; font-size: 11px; color: #4B5563; }
+.doc-terms span, .doc-note span { color: #6B7280; font-weight: 700; }
+.doc-note { border-top: 1px dashed #D1D5DB; padding-top: 8px; }
+
+/* پانوشت سند */
+.doc-foot {
+    margin-top: 14px; padding-top: 10px;
+    border-top: 1px solid #E5E7EB;
+    text-align: center; font-size: 10px; color: #9CA3AF;
+}
+
+/* ── برگهٔ ارسال: اقلام با چک‌باکس چاپی + خط امضا ── */
+.ds-list-head { margin-top: 10px; font-size: 11px; font-weight: 700; color: #374151; }
+.ds-list { margin-top: 6px; border: 1px solid #D1D5DB; border-radius: 8px; overflow: hidden; }
+.ds-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; font-size: 11.5px;
+    border-bottom: 1px solid #E5E7EB;
+}
+.ds-item:last-child { border-bottom: 0; }
+.ds-chk {
+    width: 16px; height: 16px; border: 1.6px solid #6B7280;
+    border-radius: 4px; flex-shrink: 0;
+}
+.ds-n { flex: 1; min-width: 0; font-weight: 700; }
+.ds-q { color: #6B7280; flex-shrink: 0; }
+
+.ds-signs { display: flex; gap: 14px; margin-top: 16px; }
+.ds-sign { flex: 1; text-align: center; }
+.ds-sign span { display: block; font-size: 10.5px; color: #6B7280; margin-bottom: 26px; }
+.ds-sign i { display: block; border-bottom: 1.6px solid #6B7280; }
+
+/* ── چاپ: فقط کاغذ سند — بقیهٔ اپ مخفی (MVP بریف FD-37) ── */
+@media print {
+    body * { visibility: hidden; }
+    .doc-paper, .doc-paper * { visibility: visible; }
+    .doc-paper {
+        position: absolute; inset: 0;
+        width: 100%; border: 0; border-radius: 0;
+        box-shadow: none; padding: 0;
+    }
+    .doc-foot { position: fixed; bottom: 0; right: 0; left: 0; }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════
+   FD-38 — فرم افزودن محصول (۱۳): نوار پیشرفت گویا + فلش بازگشت
+   ─────────────────────────────────────────────────────────────────
+   حکم مالک: «اون پروگرس بار مربوط به ثبت کالا که حذف کردی برگردون
+   هم در موبایل و هم در دسکتاب؛ منتها نه اون شکلی گمره‌کننده —
+   بصورت یه نوار پروگرس گویا و مرحله‌ای؛ شبیه پروگرس بار که حس
+   پیشرفت بده، نه شبیه سه تا دکمه. هر مرحله هم فلش بازگشت داشته
+   باشه.»
+   ▸ .addp — عنصرِ نمایشیِ خالص: pointer-events:none (هیچ‌وقت
+     دکمه نیست — درس FD-30/۳۶) · خطِ پیوسته که نقطه‌ها «رویِ آن»
+     می‌نشینند (هم‌پوشانی با margin منفی — خط از میان نقطه‌ها
+     می‌گذرد و حسِ نوارِ پیوسته می‌سازد؛ نه سه جزیرهٔ جدا) ·
+     پُرشدگی ۳۳/۶۷/۱۰۰٪ · نقطهٔ گذشته = پر + تیک · جاری =
+     بزرگ‌ترِ توخالی با شمارهٔ تم · بعدی = کوچکِ خاکستری · برچسب:
+     «انتخاب نوع کالا / انتخاب محصول / مشخصات فروش».
+   ▸ درس VLM دور اول: قرص‌های درشتِ قاب‌دار با هاله → «شبیه سه
+     دکمه/تب» خوانده شد. درمان: نقطه‌های تختِ کوچک رویِ خط +
+     بدون هالهٔ کلیک + برچسب‌های کم‌رنگ (فقط جاری پررنگ).
+   ▸ .step-back — فلشِ «بازگشت به …» بالای گام ۲/۳ (لینک‌مانند،
+     نه دکمهٔ سنگین).
+   ▸ کلاس‌های تازه‌اند → بیرون @media کار می‌کنند (موبایل+دسکتاپ)،
+     عنصرِ موجودِ موبایل را تغییر نمی‌دهند.
+   ═════════════════════════════════════════════════════════════════ */
+.addp {
+    pointer-events: none;          /* نشانگر است، نه کنترل */
+    user-select: none;
+    padding: 2px 6px 0;
+}
+.addp-track {
+    position: relative;
+    height: 6px;
+    border-radius: 99px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+.addp-fill {
+    position: absolute;
+    inset-inline-start: 0; top: 0; bottom: 0;
+    width: 33.33%;
+    background: var(--primary);
+    border-radius: 99px;
+    transition: width .38s cubic-bezier(.32,.72,0,1);
+}
+.addp-steps {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: -13px 0 0;             /* نقطه‌ها روی خط بنشینند */
+    padding: 0;
+}
+.addp-st {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding-top: 2px;
+}
+/* نقطه‌ها: تخت، با حلقهٔ به‌رنگِ کاغذ تا از خطِ پشتِ‌شان جدا شوند */
+.addp-dot {
+    width: 20px; height: 20px;
+    border-radius: 99px;
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    font-weight: 800;
+    background: var(--surface-2);
+    color: var(--text-3);
+    border: 1.5px solid var(--border);
+    box-shadow: 0 0 0 3px var(--bg);
+    transition: background .2s, color .2s, border-color .2s, width .2s, height .2s;
+}
+.addp-lbl {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-align: center;
+    line-height: 1.6;
+    max-width: 100%;
+    transition: color .2s;
+}
+/* گامِ جاری: بزرگ‌ترِ توخالی با شمارهٔ تم — بدون هالهٔ کلیک */
+.addp-st.cur .addp-dot {
+    width: 24px; height: 24px;
+    background: #FFF;
+    border-color: var(--primary);
+    border-width: 2px;
+    color: var(--primary-strong);
+    font-size: 11px;
+}
+.addp-st.cur .addp-lbl { color: var(--primary-strong); font-weight: 800; }
+/* گامِ گذشته: پر + تیک (شماره با تیک عوض می‌شود) */
+.addp-st .addp-tick { display: none; }
+.addp-st.done .addp-dot {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #FFF;
+}
+.addp-st.done .addp-num { display: none; }
+.addp-st.done .addp-tick { display: block; width: 11px; height: 11px; }
+.addp-st.done .addp-lbl { color: var(--text-2); }
+
+/* فلش بازگشت گام‌ها — لینک‌مانندِ آرام، کنارِ راستِ جریان */
+.step-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-2);
+    background: none;
+    border: 0;
+    padding: 2px 0;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.step-back svg { width: 15px; height: 15px; color: var(--primary-strong); }
+.step-back:hover { color: var(--primary-strong); }
+
+
+/* ═════════════════════════════════════════════════════════════════
    FD-28 — دسکتاپ (رسپانسیو مرحلهٔ ۲ · بازطراحی دستیِ صفحه‌به‌صفحه)
    ─────────────────────────────────────────────────────────────────
    ▸ حکم مالک: «حرفه‌ای‌تر و مطابق استاندارد بالا — همچنان مینیمال
@@ -5147,6 +5401,80 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-catalog .pcard .pprice { font-size: 15.5px; }
 
     /* ═══════════════════════════════════════════════════════════
+       FD-39 — کاتالوگ دسکتاپ: سایدبار اختصاصی «ابزارهای کاتالوگ»
+       ─────────────────────────────────────────────────────────
+       حکم مالک: «کاتالوگ سایدبار اختصاصی خودش را داشته باشد که
+       ظاهرش متفاوت‌تر از سایدبار اصلی باشد؛ چهار دکمه از روی
+       کاتالوگ بردار و چهار لینک در سایدبار بگذار — گویاتر و از
+       زشتیِ کاتالوگ در دسکتاب کم می‌شود.»
+       ▸ بدنه = گرید دوستونه: ستونِ اصلیِ کاتالوگ (راست) +
+         سایدبارِ چسبانِ ۲۱۶ (چپ — سمتِ پنل‌های FD-30؛ راست جای
+         ناوبریِ اصلی اپ است؛ این سایدبار مالِ همین صفحه است).
+       ▸ تفاوت با سایدبار اصلی: قابِ کاغذِ نرم + سربرگِ کوچکِ
+         «ابزارهای کاتالوگ» + ردیف‌های لینک‌مانندِ بی‌قاب (نه
+         دکمه‌های سنگین) — زبان ناوبری، ظاهرِ جدا از اپ‌بار.
+       ▸ چهار دکمه همان‌اند (id ها حفظ شدند) — فقط CSS شکلشان
+         را عوض می‌کند؛ catPromoSync (ویژه فعال) کار خودش را
+         می‌کند. قواعد بالا (FD-35) برای موبایل‌مانندِ .cat-act
+         با وزنِ کمتر زیرِ سایهٔ این بلوک می‌مانند. */
+    #phone[data-dk="1"] .dk-catalog.dk-cat-tools .body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 216px;
+        gap: 20px;
+        align-items: start;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-main { min-width: 0; }
+    #phone[data-dk="1"] .dk-catalog .cat-side {
+        position: sticky; top: 88px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 12px 8px 10px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-side-cap {
+        display: flex; align-items: center; gap: 7px;
+        padding: 2px 10px 10px;
+        font-size: 11px; font-weight: 800; color: var(--text-3);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 6px;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-side-cap svg {
+        width: 13px; height: 13px; color: var(--primary-strong);
+    }
+    /* چهار «لینک» — ردیفِ آرامِ بی‌قاب با هاورِ نرم */
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-actions {
+        display: flex; flex-direction: column; gap: 2px;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act {
+        flex: none;
+        justify-content: flex-start;
+        min-height: 0;
+        border: 0;
+        background: none;
+        border-radius: 11px;
+        padding: 10px 10px;
+        text-align: right;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act:hover {
+        background: var(--surface-2);
+        border-color: transparent;
+        transform: none;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act:active { transform: none; }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-ic {
+        width: 28px; height: 28px; border-radius: 8px;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-tx {
+        font-size: 12.5px; white-space: normal;
+    }
+    /* «ویژه فعال» در سایدبار — همانِ سبزِ آرام، روی ردیفِ بی‌قاب */
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act.on {
+        background: var(--green-bg);
+        border-color: transparent;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
        ۳۷ — کالا: دوستونه — مشخصات راست · گالری چسبان چپ
        ═══════════════════════════════════════════════════════════ */
     #phone[data-dk="1"] .dk-product .body {
@@ -5628,6 +5956,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
        هم جدا نشود — زیرِ هم مثل موبایل؛ کارت‌ها هم‌عرضِ سرچ‌باکس؛
        کل قابِ (سرچ + کالاها) ۲۰٪ باریک‌تر: ۸۶۰→۶۸۸؛ دکمهٔ افزودن
        به تهِ صفحه نچسبد.»
+       FD-38 (ادامهٔ تاریخچه): نشانگر برمی‌گردد اما با زبانِ درست —
+       نوارِ پیشرفتِ غیرکلیکی (.addp بالا + بلوک FD-38 پایین)؛
+       ستون‌ها همچنان زیرِ هم و قاب ۶۸۸ ماند.
        ═══════════════════════════════════════════════════════════ */
     #phone[data-dk="1"] .dk-add .body { max-width: 688px; }
 
@@ -5680,6 +6011,29 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         background: none; backdrop-filter: none; border-top: 0;
         padding: 2px 0 0;
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-38 — ۱۳ افزودن محصول: نوار پیشرفت برمی‌گردد (دسکتاپ)
+       ─────────────────────────────────────────────────────────
+       همان قانونِ موبایل (کلاس‌های addp بیرون @media) — این‌جا فقط
+       نفسِ دسکتاپی: نقطهٔ ۲۲ (جاری ۲۶)، برچسب ۱۱، خط ۶.
+       درس VLM دور اول: قرص ۲۶px + هاله در قاب ۶۸۸ «شبیه سه
+       دکمه/تب» خوانده شد — نسخهٔ نهایی تخت و چسبیده به خط است
+       (نقطه‌ها روی خط می‌نشینند)؛ همچنان غیرکلیکی
+       (pointer-events:none از پایه). فلش بازگشت درشت‌تر و لطیف. */
+    #phone[data-dk="1"] .dk-add .addp { padding: 4px 10px 0; }
+    #phone[data-dk="1"] .dk-add .addp-dot { width: 22px; height: 22px; }
+    #phone[data-dk="1"] .dk-add .addp-st.cur .addp-dot {
+        width: 26px; height: 26px; font-size: 12px;
+    }
+    #phone[data-dk="1"] .dk-add .addp-lbl { font-size: 11px; }
+    #phone[data-dk="1"] .dk-add .addp-steps { margin-top: -14px; gap: 7px; }
+    #phone[data-dk="1"] .dk-add .step-back {
+        font-size: 12.5px;
+        padding: 4px 0;
+        margin-bottom: 12px;
+    }
+    #phone[data-dk="1"] .dk-add .step-back svg { width: 17px; height: 17px; }
 
     /* ═══════════════════════════════════════════════════════════
        FD-30 فاز ۳ — فهرست‌ها: گرید موجودیت + گرید مقایسه + قهرمان
@@ -5763,4 +6117,69 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         gap: 12px;
     }
     #phone[data-dk="1"] #s-salesrep .rep-biz { padding: 16px 18px; border-radius: 16px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-37 — سند فروش در دسکتاپ: صفحهٔ سند = مودال
+       ─────────────────────────────────────────────────────────
+       حکم بریف: «در پیش‌نمایش دسکتاپ به‌صورت مودال باز شود».
+       کل صفحهٔ سند → قابِ تیرهٔ ثابت روی اپ (fixed inset 0،
+       z-index ۹۰ — بالاتر از هدرهای چسبانِ ۴۰) + کاغذ A4 وسچ.
+       نوار بالا (بازگشت/عنوان/چاپ) شفافِ سفید روی بوم تیره؛
+       hint زیر کاغذ هم سفیدِ ملایم. بازداشتِ FD-35 (body=کاغذ)
+       با !important می‌شکند — الگوی ثابت‌شدهٔ FD-28 برای استثنای
+       صفحهٔ تازه (سند خودش کاغذ است؛ دورش بوم تیرهٔ مودال).
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] .dk-doc {
+        position: fixed; inset: 0; z-index: 90;
+        background: rgba(31,29,26,.52);
+        overflow-y: auto;
+        padding: 24px 24px 60px;
+    }
+    #phone[data-dk="1"] .dk-doc .subheader {
+        position: sticky; top: 0;
+        max-width: 840px; width: 100%;
+        margin: 0 auto 10px;
+        height: 56px;
+        background: none; border-bottom: 0; backdrop-filter: none;
+    }
+    #phone[data-dk="1"] .dk-doc .subheader .ttl { color: #FFF; }
+    #phone[data-dk="1"] .dk-doc .subheader .ttl small { color: rgba(255,255,255,.72); }
+    #phone[data-dk="1"] .dk-doc .subheader .back,
+    #phone[data-dk="1"] .dk-doc .subheader .icon-btn {
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.22);
+        color: #FFF;
+    }
+    #phone[data-dk="1"] .dk-doc .subheader .back:hover,
+    #phone[data-dk="1"] .dk-doc .subheader .icon-btn:hover {
+        background: rgba(255,255,255,.26);
+        border-color: rgba(255,255,255,.34);
+    }
+    #phone[data-dk="1"] .dk-doc .body {
+        background: none !important;
+        border: 0 !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 840px;
+        padding: 0 !important;
+        gap: 14px !important;
+        overflow: visible;
+    }
+    #phone[data-dk="1"] .dk-doc .doc-paper {
+        border-radius: 18px;
+        padding: 32px 36px 26px;
+        box-shadow: 0 32px 80px rgba(15,14,12,.4);
+        font-size: 13px;
+    }
+    #phone[data-dk="1"] .dk-doc .doc-table { font-size: 12px; }
+    #phone[data-dk="1"] .dk-doc .doc-table th,
+    #phone[data-dk="1"] .dk-doc .doc-table td { padding: 9px 10px; }
+    #phone[data-dk="1"] .dk-doc .ds-item { padding: 12px 14px; }
+    #phone[data-dk="1"] .dk-doc .doc-hint {
+        color: rgba(255,255,255,.85);
+        border-color: rgba(255,255,255,.16);
+        background: rgba(255,255,255,.06);
+    }
+    #phone[data-dk="1"] .dk-doc .doc-hint svg { color: rgba(255,255,255,.85); }
+    #phone[data-dk="1"] .dk-doc .doc-hint span { color: rgba(255,255,255,.85); }
 }
