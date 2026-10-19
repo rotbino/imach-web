@@ -1,8 +1,13 @@
 <!-- ═════════════════════════════════════════════════════════════
      اسکرین ۰۵: کاتالوگ من
      هدر: بازگشت + عنوان + ⚙ + اشتراک‌گذاری
-     باکس ۴ دکمه → باکس تبلیغات → سرچ → چیپ → گرید
+     نوار ابزار (جستجو + محصول جدید) → ۴ دکمه → چیپ → گرید
      شیت‌ها: تنظیمات · اشتراک · تخفیف حجمی · تخفیف گروه · گروه‌ها
+     FD-35 (حکم مالک، موبایل+دسکتاپ): «محصول جدید» مهم‌ترین دکمه
+     کنار سرچ‌باکس با بک‌گراند تم؛ «ویژه کردن» رفت کنار بقیهٔ
+     دکمه‌ها (مثل تغییر قیمت) — کادر تبلیغات جدا حذف شد تا ارتفاع
+     کاتالوگ بی‌خودی رشد نکند. id های promo-box/promo-ic/promo-t
+     حفظ شدند → catPromoSync همان‌ها را سینک می‌کند (حالت on سبز).
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-catalog" data-arm="sell">
@@ -19,10 +24,21 @@
 
     <div class="body">
 
-        <div class="cat-actions">
-            <button class="cat-act primary" data-go="s-sell-add">
+        <div class="cat-toolbar">
+            <div class="search-row">
+                <svg><use href="#i-search"/></svg>
+                <input type="text" id="cat-search" placeholder="جستجو در کاتالوگ…" autocomplete="off">
+            </div>
+            <button class="cat-act cat-add" data-go="s-sell-add">
                 <span class="ca-ic"><svg><use href="#i-plus"/></svg></span>
                 <span class="ca-tx">محصول جدید</span>
+            </button>
+        </div>
+
+        <div class="cat-actions">
+            <button class="cat-act" id="promo-box" type="button" data-go="s-sell-promo">
+                <span class="ca-ic" id="promo-ic"><svg><use href="#i-sparkles"/></svg></span>
+                <span class="ca-tx" id="promo-t">ویژه کردن</span>
             </button>
             <button class="cat-act" data-go="s-sell-bulk">
                 <span class="ca-ic"><svg><use href="#i-percent"/></svg></span>
@@ -38,20 +54,6 @@
                 <span class="ca-ic"><svg><use href="#i-share"/></svg></span>
                 <span class="ca-tx">اشتراک‌گذاری</span>
             </button>
-        </div>
-
-        <button class="promo-box" id="promo-box" type="button" data-go="s-sell-promo">
-            <span class="pb-ic" id="promo-ic"><svg><use href="#i-sparkles"/></svg></span>
-            <span class="pb-tx">
-                <b id="promo-t">محصولاتت را ویژه کن</b>
-                <span id="promo-s">در شرایط مشابه، بالاتر دیده می‌شوند</span>
-            </span>
-            <svg class="pb-chev"><use href="#i-chev"/></svg>
-        </button>
-
-        <div class="search-row" style="height: 44px;">
-            <svg><use href="#i-search"/></svg>
-            <input type="text" id="cat-search" placeholder="جستجو در کاتالوگ…" autocomplete="off">
         </div>
 
         <div class="chips" id="cat-groups">

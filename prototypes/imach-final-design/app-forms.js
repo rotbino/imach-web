@@ -4178,22 +4178,22 @@
         var wallet = core.data.user.wallet || 0;
         var on = !!core.data.user.catalogPromo;
 
-        /* باکس کوچک در کاتالوگ */
+        /* دکمهٔ فشردهٔ ویژه‌کردن در نوار دکمه‌ها — FD-35 (حکم مالک):
+           «ویژه کردن» رفت کنار بقیهٔ دکمه‌ها؛ کادر تبلیغات حذف شد.
+           متنِ کوتاه برای دکمه + شرحِ کامل (قفل امتیاز/فعال) به‌عنوان
+           title — هاورِ دسکتاپ و دسترس‌پذیری، بدون شلوغی بصری. */
         var box = $('#promo-box');
         var t = $('#promo-t');
-        var s = $('#promo-s');
         var ic = $('#promo-ic');
-        if (box) box.classList.toggle('on', on);
-        if (t) t.textContent = on ? 'محصولاتت ویژه‌اند' : 'محصولاتت را ویژه کن';
-        if (s) {
-            if (sell < 100) {
-                s.textContent = 'ابتدا به ۱۰۰ امتیاز فعالیت فروش برس';
-            } else if (on) {
-                s.textContent = 'فعال — در شرایط مشابه بالاتر دیده می‌شوند';
-            } else {
-                s.textContent = 'در شرایط مشابه، بالاتر دیده می‌شوند';
-            }
+        if (box) {
+            box.classList.toggle('on', on);
+            box.title = sell < 100
+                ? 'ابتدا به ۱۰۰ امتیاز فعالیت فروش برس'
+                : (on
+                    ? 'محصولات ویژه فعال است — در شرایط مشابه بالاتر دیده می‌شوند'
+                    : 'در شرایط مشابه، بالاتر دیده می‌شوند');
         }
+        if (t) t.textContent = on ? 'ویژه فعال است' : 'ویژه کردن';
         if (ic) ic.classList.toggle('on', on);
 
         /* بج ویژه روی کارت‌های محصول */
@@ -4990,7 +4990,11 @@
         if (l.justAdded) badges = '<span class="badge b-stone">تازه افزوده</span> ' + badges;
         return '<div class="pcard' + (l.priceStale ? ' stale' : '') + '" data-go="s-sell-edit" data-gid="' + esc(l.groupId || '') + '" data-lid="' + esc(l.id) + '">' +
             '<div class="ph">' + img +
-                '<span class="promo-badge" hidden><svg><use href="#i-sparkles"/></svg> ویژه</span>' +
+                /* FD-35: بج ویژه از روی وضعیتِ واقعی می‌نشیند —
+                   catGridRender بعد از catPromoSync اجرا می‌شود و قبلاً
+                   همیشه hidden می‌کاشت (باگ کهنه: بعد از هر show، بجِ
+                   ویژه غیب می‌شد تا سوییچ دوباره لمس شود). */
+                '<span class="promo-badge"' + (core.data.user.catalogPromo ? '' : ' hidden') + '><svg><use href="#i-sparkles"/></svg> ویژه</span>' +
                 '<span class="stale-badge"' + (l.priceStale ? '' : ' hidden') + '><svg><use href="#i-clock"/></svg> قیمت منقضی</span>' +
             '</div>' +
             '<div class="info">' +

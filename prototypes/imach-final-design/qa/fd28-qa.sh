@@ -19,7 +19,7 @@ PORT=8180
 agent-browser set viewport 1440 900 >/dev/null 2>&1
 agent-browser open "http://127.0.0.1:$PORT/index.html" >/dev/null 2>&1
 sleep 1.2
-agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','screens/04-home-sell.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
+agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','screens/04-home-sell.html','screens/05-catalog.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
 sleep 2.2
 agent-browser eval "window.__errs=[];window.addEventListener('error',function(e){window.__errs.push('ERR:'+e.message)});window.addEventListener('unhandledrejection',function(e){window.__errs.push('REJ:'+String(e.reason))});'ok'" >/dev/null 2>&1
 
@@ -163,7 +163,7 @@ ovf "ثبت‌نام: بدون سرریز"
 echo "─── ۴) میز خرید: سایدبار + کانبان سه‌ستونه FD-30 ───"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.9
 D1=$(q "var tb=document.querySelector('#s-home-buy .tabbar'); getComputedStyle(tb).flexDirection + '|' + Math.round(tb.getBoundingClientRect().width) + '|' + (tb.querySelector('.dk-side-brand') ? 'brand' : 'no')")
-chk "سایدبار عمودی ~۲۵۰px با واژه‌نشان" "$D1" "column|250|brand"
+chk "سایدبار عمودی ۲۵۶px با واژه‌نشان (FD-28: گرید ۲۵۶)" "$D1" "column|256|brand"
 D2=$(q "var w=Math.max.apply(null, Array.prototype.map.call(document.querySelectorAll('#s-home-buy .rows .row'), function(r){return Math.round(r.getBoundingClientRect().top)})); var t=[]; document.querySelectorAll('#s-home-buy .rows .row').forEach(function(r){t.push(Math.round(r.getBoundingClientRect().top))}); var uniq=t.filter(function(v,i){return t.indexOf(v)===i}).length; uniq + 'rows-tops'")
 chk "تسک‌ها زیر هم (هر کدام ردیف مستقل)" "$D2" "$(q "var t=[]; document.querySelectorAll('#s-home-buy .rows .row').forEach(function(r){t.push(Math.round(r.getBoundingClientRect().top))}); t.filter(function(v,i){return t.indexOf(v)===i}).length + 'rows-tops'")"
 D3=$(q "(function(){var cols=document.querySelectorAll('#s-home-buy .dsk-col');return cols.length+'cols|'+document.querySelectorAll('#s-home-buy .dsk-col .row').length+'rows'})()")
@@ -189,7 +189,7 @@ chk "نشان قرمز «۱» بالای کاشی مشتریان" "$S4" "false|�
 S5=$(q "(function(){var s=document.getElementById('s-home-sell');var r=s.querySelector('.body > .rows');return s.querySelectorAll('.hint-line').length+'hint|'+(r.classList.contains('dsk-tasks')?'tasks':'other')+'|'+(s.querySelector('.dk-greet')?'greet-BAD':'nogreet')+'|'+(s.querySelector('.dk-quick')?'quick':'noquick')})()")
 chk "hint حذف · خوشامد حذف → «دسترسی سریع» (FD-34) · dsk-tasks" "$S5" "0hint|tasks|nogreet|quick"
 S6=$(q "(function(){var rows=document.querySelectorAll('#s-home-sell .rows.dsk-tasks .row:not([hidden])');var cards=0;var w=Math.round(rows[0].getBoundingClientRect().width);rows.forEach(function(r){var cs=getComputedStyle(r);if(cs.borderLeftWidth!=='0px')cards++});var body=document.querySelector('#s-home-sell .dk-desk-main .body');return rows.length+'rows|cards='+cards+'|w='+w+'|bodyW='+Math.round(body.getBoundingClientRect().width)})()")
-chk "هر تسک یک کارت (FD-34) · ستون یگانه ~۷۳۰ · بدنهٔ ۸۱۰ (۳۰%-)" "$S6" "4rows|cards=4|w=730|bodyW=810"
+chk "هر تسک یک کارت (FD-34) · ستون یگانه ~۷۲۸ · بدنهٔ ۸۱۰ (۳۰%-, FD-35: ۲px قاب کاغذ)" "$S6" "4rows|cards=4|w=728|bodyW=810"
 S6b=$(q "(function(){var hs=Array.prototype.map.call(document.querySelectorAll('#s-home-sell .rows.dsk-tasks .row:not([hidden])'),function(r){return Math.round(r.getBoundingClientRect().height)});var gap=getComputedStyle(document.querySelector('#s-home-sell .rows.dsk-tasks')).rowGap;return hs.join(',')+'|gap='+gap})()")
 chk "ارتفاع همهٔ کارت‌ها یکسان (۸۴) · فاصلهٔ ۱۲ (FD-34)" "$S6b" "84,84,84,84|gap=12px"
 S7=$(q "document.querySelector('#s-home-sell .st-b').textContent + '|' + (function(){var t=document.querySelector('#s-home-sell .rows.dsk-tasks .row:not([hidden]) .thumb');var cs=getComputedStyle(t);return cs.backgroundColor+'|'+cs.width})()")
@@ -199,13 +199,45 @@ S9=$(q "(function(){var s=document.getElementById('s-home-buy');var ic=s.querySe
 chk "میز خرید: دست‌نخورده (FD-30 تا نوبتش)" "$S9" "4chev|boxed|3cols"
 ovf "میز فروش FD-34: بدون سرریز"
 
-echo "─── ۶) کاتالوک: گرید روان + نوار ابزار ───"
+echo "─── ۶) کاتالوک: گرید روان + نوار ابزار FD-35 ───"
 q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 1.2
 C1=$(q "var g=document.querySelector('#s-catalog .pgrid'); getComputedStyle(g).gridTemplateColumns.split(' ').length + 'cols'")
 chk "گرید کالا ≥۳ ستونه (auto-fill)" "$C1" "$(q "var g=document.querySelector('#s-catalog .pgrid'); getComputedStyle(g).gridTemplateColumns.split(' ').length + 'cols'")"
 C2=$(q "var a=document.querySelector('#s-catalog .cat-actions'); getComputedStyle(a).display")
-chk "نوار ابزار افقی" "$C2" "flex"
+chk "ردیف ۴ دکمه افقی" "$C2" "flex"
+C3=$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');var first=document.querySelector('#s-catalog .body').firstElementChild;return (t&&first===t?'toolbar-first':'BAD-pos')+'|'+Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+getComputedStyle(add.querySelector('.ca-tx')).color})()")
+chk "FD-35: جستجو + محصول جدید تم‌پر ۴۸px — بالای بدنه" "$C3" "toolbar-first|48/48|rgb(249, 115, 22)|rgb(255, 255, 255)"
+C4=$(q "(function(){var a=document.querySelectorAll('#s-catalog .cat-actions .cat-act');var pb=document.getElementById('promo-box');return a.length+'btn|promo='+(pb&&pb.classList.contains('cat-act')?'compact':'BAD')+'|'+pb.textContent.trim()+'|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length})()")
+chk "FD-35: ویژه کردن فشرده میان دکمه‌ها — کادر تبلیغات حذف" "$C4" "4btn|promo=compact|ویژه کردن|oldbox=0"
+q "iMach.data.user.catalogPromo=true; 'ok'" >/dev/null; q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 1.1
+C5=$(q "(function(){var pb=document.getElementById('promo-box');var cs=getComputedStyle(pb);var bd=[].map.call(document.querySelectorAll('#s-catalog .promo-badge'),function(b){return b.hidden?'h':'v'}).join('');iMach.data.user.catalogPromo=false;return pb.className+'|'+cs.backgroundColor+'|'+document.getElementById('promo-t').textContent+'|badges='+bd})()")
+chk "FD-35: حالت ویژه — دکمهٔ سبز + بج روی کارت‌ها" "$C5" "cat-act on|rgb(240, 253, 244)|ویژه فعال است|badges=vvvv"
 ovf "کاتالوک: بدون سرریز"
+
+echo "─── ۶ب) FD-35: بوم + کاغذ سراسری (همهٔ صفحه‌ها) ───"
+B1=$(q "(function(){var c=getComputedStyle(document.getElementById('phone')).backgroundColor;return c})()")
+chk "بوم #phone = surface-3" "$B1" "rgb(240, 238, 232)"
+q "iMach.show('s-contacts', false); 'ok'" >/dev/null; sleep 0.9
+B2=$(q "(function(){var b=document.querySelector('#s-contacts .body');var c=getComputedStyle(b);return c.backgroundColor+'|bor='+(c.borderTopWidth!=='0px')+'|rad='+c.borderRadius+'|mt='+c.marginTop+'|w='+Math.round(b.getBoundingClientRect().width)})()")
+chk "کاغذ dk-page (مخاطبین): bg/قاب/۲۲px/مارجین ۱۶" "$B2" "rgb(252, 251, 248)|bor=true|rad=22px|mt=16px|w=1120"
+q "iMach.show('s-home-sell', false); 'ok'" >/dev/null; sleep 0.9
+B3=$(q "(function(){var b=document.querySelector('#s-home-sell .dk-desk-main .body');var c=getComputedStyle(b);return c.backgroundColor+'|bor='+(c.borderTopWidth!=='0px')+'|mt='+c.marginTop+'|w='+Math.round(b.getBoundingClientRect().width)})()")
+chk "کاغذ میز فروش (سایدباردار): قاب + ۸۱۰" "$B3" "rgb(252, 251, 248)|bor=true|mt=16px|w=810"
+q "iMach.show('s-charge', false); 'ok'" >/dev/null; sleep 0.9
+B4=$(q "(function(){var b=document.querySelector('#s-charge .body');var c=getComputedStyle(b);return c.backgroundColor+'|bor='+(c.borderTopWidth!=='0px')+'|pad='+c.paddingTop+'/'+c.paddingLeft+'|w='+Math.round(b.getBoundingClientRect().width)})()")
+chk "کاغذ فرم dk-form (شارژ): ۶۲۰ + پدینگ کف" "$B4" "rgb(252, 251, 248)|bor=true|pad=36px/26px|w=620"
+q "iMach.show('s-notifs', false); 'ok'" >/dev/null; sleep 0.9
+B5=$(q "(function(){var b=document.querySelector('#s-notifs .body');return Math.round(b.getBoundingClientRect().width)+'|'+(getComputedStyle(b).borderTopWidth!=='0px'?'sheet':'flat')})()")
+chk "کاغذ ستون باریک (اعلان‌ها): ۷۶۰" "$B5" "760|sheet"
+q "iMach.show('s-landing', false); 'ok'" >/dev/null; sleep 1.2
+B6=$(q "(function(){var s=document.getElementById('s-landing');var b=s.querySelector('.body');return getComputedStyle(s).backgroundColor+'|body-bor='+getComputedStyle(b).borderTopWidth+'|w='+Math.round(b.getBoundingClientRect().width)})()")
+chk "استثنا — لندینگ: بوم کرم خودش، بدون کاغذ" "$B6" "rgb(252, 251, 248)|body-bor=0px|w=1440"
+q "iMach.show('s-login', false); 'ok'" >/dev/null; sleep 0.8
+B7=$(q "(function(){var b=document.querySelector('#s-login .body');return 'bor='+getComputedStyle(b).borderTopWidth+'|mt='+getComputedStyle(b).marginTop})()")
+chk "استثنا — ورود: بدون کاغذ (اسپلیت dk-auth)" "$B7" "bor=0px|mt=0px"
+q "iMach.show('s-chat', false); 'ok'" >/dev/null; sleep 0.8
+B8=$(q "(function(){var b=document.querySelector('#s-chat .body');return 'bor='+getComputedStyle(b).borderTopWidth+'|bg='+getComputedStyle(b).backgroundColor})()")
+chk "استثنا — چت: بوم surface-2 خودش" "$B8" "bor=0px|bg=rgb(247, 246, 242)"
 
 echo "─── ۷) کالا: گالری چپ چسبان · مشخصات راست ───"
 q "iMach.show('s-product-view', false); 'ok'" >/dev/null; sleep 0.9
@@ -227,8 +259,8 @@ ovf "پیشنهادها: بدون سرریز"
 
 echo "─── ۱۰) چت: ستون ۹۰۰ ───"
 q "iMach.show('s-chat', false); 'ok'" >/dev/null; sleep 0.8
-CH1=$(q "var b=document.querySelector('#s-chat .body'); var w=Math.round(b.getBoundingClientRect().width); (w > 850 && w < 950 ? 'col900' : 'w' + w) + '|' + Math.round(b.getBoundingClientRect().left)")
-chk "بدنهٔ چت ~۹۰۰ وسچ" "$CH1" "col900|$(q "var b=document.querySelector('#s-chat .body'); Math.round(b.getBoundingClientRect().left)")"
+CH1=$(q "var b=document.querySelector('#s-chat .body'); var c=getComputedStyle(b); var w=Math.round(b.clientWidth - parseFloat(c.paddingLeft) - parseFloat(c.paddingRight)); (w > 850 && w < 950 ? 'col900' : 'w' + w) + '|' + Math.round(b.getBoundingClientRect().left)")
+chk "بدنهٔ چت ~۹۰۰ وسچ (FD-35: ستونِ محتوا پس از رفعِ باگ کسکید)" "$CH1" "col900|0"
 ovf "چت: بدون سرریز"
 
 echo "─── ۱۱) جزئیات دوستونه (تأمین‌کننده/پیشنهاد/پروفایل) + رسید سفارش ───"
@@ -242,8 +274,8 @@ q "iMach.show('s-supplier-view', false); 'ok'" >/dev/null; sleep 0.8
 V2=$(q "var s=document.querySelector('#s-supplier-view .dkd-side'); (s && s.id === 'sv-identity' ? 'side-identity' : (s ? 'side-' + s.id : 'no'))")
 chk "تأمین‌کننده: کارت شناسایی در ستون چسبان" "$V2" "side-identity"
 q "iMach.show('s-profile', false); 'ok'" >/dev/null; sleep 0.8
-V3=$(q "var s=document.querySelector('#s-profile .dkd-side'); (s && s.id === 'profile-edit-open' ? 'profile-side' : 'no')")
-chk "پروفایل: کارت پروفایل در ستون راست" "$V3" "profile-side"
+V3=$(q "var s=document.querySelector('#s-profile .dkp-side'); (s && s.querySelector('.card') ? 'profile-side' : 'no')")
+chk "پروفایل: کارت پروفایل در ستون راست (dkp-side FD-30)" "$V3" "profile-side"
 
 echo "─── ۱۲) فرم مرکزی (۱۳ افزودن محصول) ───"
 q "iMach.show('s-sell-add', false); 'ok'" >/dev/null; sleep 0.8
@@ -285,6 +317,9 @@ chk "موبایل ورود: بدون پنل برند · نوار روشن" "$MB3
 q "iMach.show('s-buy-rfq-new', false); 'ok'" >/dev/null; sleep 0.6
 MB4=$(q "(document.querySelector('#s-buy-rfq-new .dkrf-side') ? 'split' : 'no-split')")
 chk "موبایل استعلام: تک‌ستونه (بدون دوستونه)" "$MB4" "no-split"
+q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 0.9
+MB5=$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');var a=document.querySelector('#s-catalog .cat-actions');var b=document.querySelector('#s-catalog .body');var c=getComputedStyle(b);return Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length+'|sheet='+(c.borderTopWidth!=='0px'||c.marginTop!=='0px'?'BAD':'none')+'|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")
+chk "موبایل کاتالوک FD-35: نوار ۴۴/۴۴ تم‌پر · ۴ دکمه ۲ستونی · بدون کادر تبلیغات و کاغذ" "$MB5" "44/44|rgb(249, 115, 22)|4btn/2col|oldbox=0|sheet=none|ovf=ok"
 agent-browser set viewport 1440 900 >/dev/null 2>&1; sleep 1
 
 echo "─── ۱۵) خطای کنسول ───"

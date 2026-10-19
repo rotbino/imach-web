@@ -18,7 +18,7 @@ PORT=8180
 agent-browser set viewport 1440 900 >/dev/null 2>&1
 agent-browser open "http://127.0.0.1:$PORT/index.html" >/dev/null 2>&1
 sleep 1.2
-agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','screens/04-home-sell.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
+agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','screens/04-home-sell.html','screens/05-catalog.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
 sleep 2.2
 agent-browser eval "window.__errs=[];window.addEventListener('error',function(e){window.__errs.push('ERR:'+e.message)});window.addEventListener('unhandledrejection',function(e){window.__errs.push('REJ:'+String(e.reason))});'ok'" >/dev/null 2>&1
 
@@ -213,6 +213,9 @@ q "iMach.show('s-buy-offers', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل پیشنهادها: بدون گرید دسکتاپی" "$(q "(function(){return getComputedStyle(document.querySelector('#offers-list')).display})()")" "block"
 q "iMach.show('s-network-score', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل امتیاز: قهرمان عمودی (همان موبایل)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-network-score .score-hero')).flexDirection})()")" "column"
+q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 0.9
+chk "موبایل کاتالوک FD-35: نوار جستجو+محصول جدید (۴۴/۴۴ تم‌پر)" "$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');return Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+getComputedStyle(add.querySelector('.ca-tx')).color})()")" "44/44|rgb(249, 115, 22)|rgb(255, 255, 255)"
+chk "موبایل کاتالوک FD-35: ۴ دکمه ۲ستونی · کادر تبلیغات حذف · بدون کاغذ" "$(q "(function(){var a=document.querySelector('#s-catalog .cat-actions');var b=document.querySelector('#s-catalog .body');var c=getComputedStyle(b);return a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length+'|sheet='+(c.borderTopWidth!=='0px'||c.marginTop!=='0px'?'BAD':'none')+'|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")" "4btn/2col|oldbox=0|sheet=none|ovf=ok"
 agent-browser set viewport 1440 900 >/dev/null 2>&1; sleep 1.2
 
 echo "─── ۱۳) خطای کنسول ───"

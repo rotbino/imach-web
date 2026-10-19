@@ -1464,70 +1464,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .hidden { display: none !important; }
 
 /* ═══════════════════════════════════════════════════════════════
-   فاز ۳۳ — کاتالوگ: ۴ دکمه + باکس تبلیغات
+   کاتالوگ — نوار ابزار: جستجو + محصول جدید (تم) · ۴ دکمه · ویژه
+   (قواعد .cat-act/.cat-toolbar در بلوک پایین‌تر — ترتیب مهم است)
    ═══════════════════════════════════════════════════════════════ */
-
-/* باکس ۴ دکمه */
-.cat-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-
-
-/* باکس تبلیغات */
-.promo-box {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    cursor: pointer;
-    text-align: right;
-    font-family: inherit;
-    transition: border-color .15s, background .15s;
-}
-.promo-box:hover { border-color: var(--border-2); }
-.promo-box:active { background: var(--surface-2); }
-.promo-box.on {
-    border-color: #B6DFC5;
-    background: linear-gradient(135deg, #F0FDF4, #FFF 60%);
-}
-.promo-box .pb-ic {
-    width: 38px; height: 38px;
-    border-radius: 11px;
-    background: var(--primary-soft);
-    color: var(--primary-strong);
-    display: grid; place-items: center;
-    flex-shrink: 0;
-}
-.promo-box .pb-ic svg { width: 18px; height: 18px; }
-.promo-box.on .pb-ic {
-    background: var(--green-bg);
-    color: var(--green);
-}
-.promo-box .pb-tx { flex: 1; min-width: 0; }
-.promo-box .pb-tx b {
-    display: block;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1.5;
-}
-.promo-box .pb-tx span {
-    display: block;
-    font-size: 10.5px;
-    color: var(--text-3);
-    margin-top: 3px;
-    line-height: 1.7;
-}
-.promo-box .pb-chev {
-    width: 15px; height: 15px;
-    color: var(--text-4);
-    flex-shrink: 0;
-}
 
 /* بج ویژه روی کارت محصول */
 .pcard .promo-badge {
@@ -1988,6 +1927,33 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     background: var(--primary);
     color: #FFF;
 }
+
+/* FD-35 (حکم مالک، موبایل+دسکتاپ): نوار جستجو + «محصول جدید» —
+   مهم‌ترین دکمه با بک‌گراند تم کنار سرچ‌باکس؛ «ویژه کردن» فشرده
+   رفت میان دکمه‌ها (مثل تغییر قیمت) — کادر تبلیغات جدا و ارتفاع
+   اضافهٔ کاتالوک حذف شد. این قواعد باید بعد از .cat-act بیایند
+   تا پس‌زمینهٔ تم روی پس‌زمینهٔ سفیدِ پایه بنشیند. */
+.cat-toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+.cat-toolbar .search-row { flex: 1; min-width: 0; height: 44px; }
+.cat-add {
+    flex-shrink: 0;
+    height: 44px;
+    padding: 0 13px;
+    background: var(--primary);
+    border-color: var(--primary-strong);
+}
+.cat-add .ca-ic { background: rgba(255,255,255,.18); color: #FFF; }
+.cat-add .ca-tx { color: #FFF; }
+.cat-add:hover { background: var(--primary-strong); }
+
+/* دکمهٔ «ویژه کردن» (جانشین کادر تبلیغات) — حالت فعال: سبزِ آرام.
+   catPromoSync کلاس on را روی خود دکمه و آیکونش برمی‌گرداند. */
+.cat-act.on { border-color: #B6DFC5; background: var(--green-bg); }
+.cat-act.on .ca-ic { background: var(--green); color: #FFF; }
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4546,6 +4512,48 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
 
     /* ═══════════════════════════════════════════════════════════
+       FD-35 — بوم + کاغذ: قاب محتوا برای همهٔ صفحه‌های دسکتاپ
+       ─────────────────────────────────────────────────────────
+       حکم مالک: «صفحهٔ دسکتاپ سه قسمت است — هدر، سایدبار، بادی؛
+       دورِ محتوا یه کانتینر باشه که با رنگ زمینه فرق کوچولویی
+       داشته باشه و محتوا با پدینگ مناسب داخلش باشه؛ از بالا از
+       هدر یه مارجین کوچولو؛ بک‌گراند محتوا تقریباً سفید و بوم
+       کمی متفاوت از سفید — اینپوت‌های سفید روی کاغذ مشخص‌اند،
+       نه غرق در کل صفحه».
+       ▸ بوم = var(--surface-3) روی #phone — پشتِ سایدبار سفید و
+         هدر شیشه‌ای دیده می‌شود؛ همهٔ صفحه‌ها یک‌جا پوشش می‌گیرند
+         (میزهای سایدباردار + صفحه‌های فرعی بدون سایدبار).
+       ▸ کاغذ = .body هر صفحه: var(--bg) تقریباً سفید + قاب مویی +
+         شعاع ۲۲ + مارجین ۱۶ از هدر — فلت، بدون سایه (سادگی=زیبایی).
+       ▸ استثناها بومِ کرمِ خودشان را پس می‌گیرند: لندینگ (صفحهٔ
+         عمومی تمام‌عرض) · ورود/ثبت‌نام (اسپلیت dk-auth) · چت
+         (بومِ surface-2 تمام‌قدِ خودش را دارد).
+       ▸ :not(#s-landing) به قاعده وزن ID می‌دهد → برای همین
+         خصوصیات (bg/قاب/مارجین/عرض) بر الگوهای صفحه‌به‌صفحه
+         (dk-page/dk-rfq/dk-desk/…) می‌بَرد؛ عرض = ۱۰۰٪ − ۳۶ تا
+         قابِ کاغذ هرگز به لبهٔ پنجره نچسبد (تا ۱۱۲۰ سقفِ الگو).
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] { background: var(--surface-3); }
+    #phone[data-dk="1"] .dk-screen:not(#s-landing):not(.dk-chat) .body:not(.dk-auth) {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        margin-top: 16px;
+        margin-bottom: 28px;
+        width: calc(100% - 36px);
+    }
+    /* استثناها: بوم کرم خودشان (رویِ #phone را می‌پوشانند) */
+    #phone[data-dk="1"] #s-landing,
+    #phone[data-dk="1"] #s-login,
+    #phone[data-dk="1"] #s-signup { background: var(--bg); }
+
+    /* کاغذِ فرم‌ها: dk-form فقط سرِ ۳۶ را بعداً خودش تعیین می‌کند —
+       کناره‌ها و پایینِ نفسِ دسکتاپی می‌گیرند (بقیهٔ الگوها پدینگ
+       خودشان را دارند: dk-page ۳۰/۲۴/۶۴ · dk-desk ۳۲/۴۰/۵۶) */
+    #phone[data-dk="1"] .dk-form .body,
+    #phone[data-dk="1"] .dk-form-wide .body { padding: 26px 26px 48px; }
+
+    /* ═══════════════════════════════════════════════════════════
        الگوی عمومی — dk-page: هدر ۶۴ + ستونِ ۱۱۲۰ وسچ
        ═══════════════════════════════════════════════════════════ */
     #phone[data-dk="1"] .dk-page .subheader { height: 64px; padding: 0 24px; }
@@ -5066,10 +5074,13 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-desk .dk-desk-main .appbar .title { font-size: 15.5px; font-weight: 800; }
     #phone[data-dk="1"] .dk-desk .dk-desk-main .subheader { padding: 0 24px; height: 64px; }
 
-    /* بدنهٔ میز: ستون وسچ ۱۰۶۰ */
+    /* بدنهٔ میز: ستون وسچ — FD-30: ۱۰۶۰→۱۱۲۰ (نفسِ کانبان). FD-35:
+       این قاعده به بلوک فونداسیون منتقل شد — قبلاً انتهای فایل بود
+       و هم‌وزنِ قواعد بعدیِ چت/پیام‌ها را با ترتیبِ فایل له می‌کرد
+       (باگ کهنه: ستون ۹۰۰ چت و ۹۴۰ پیام‌ها از FD-30 بی‌صدا مرده بودند). */
     #phone[data-dk="1"] .dk-desk .dk-desk-main .body {
-        width: 100%; max-width: 1060px; margin: 0 auto;
-        padding: 32px 40px 56px; gap: 22px;
+        width: 100%; max-width: 1120px; margin: 0 auto;
+        padding: 30px 40px 56px; gap: 22px;
     }
     #phone[data-dk="1"] .dk-desk .desk-duo { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
     #phone[data-dk="1"] .dk-desk .desk-tile {
@@ -5096,9 +5107,18 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 
     /* ═══════════════════════════════════════════════════════════
        ۰۵/۳۱ — کاتالوگ: نوار ابزار افقی + گرید روانِ کالا
+       FD-35: نوار ابزار = جستجو + «محصول جدید» تم‌پر (مهم‌ترین
+       دکمه کنار سرچ) → ۴ دکمهٔ هم‌عرض (ویژه/قیمت/پیشنمایش/اشتراک).
        ═══════════════════════════════════════════════════════════ */
     #phone[data-dk="1"] .dk-catalog .body { max-width: 1180px; }
     #phone[data-dk="1"] .dk-catalog .appbar { height: 64px; padding: 0 24px; }
+    #phone[data-dk="1"] .dk-catalog .cat-toolbar { gap: 12px; }
+    #phone[data-dk="1"] .dk-catalog .cat-toolbar .cat-act {
+        flex: 0 0 auto;
+        min-height: 48px;
+        padding: 0 22px;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-toolbar .cat-act .ca-tx { font-size: 13.5px; }
     #phone[data-dk="1"] .dk-catalog .cat-actions { display: flex; gap: 10px; }
     #phone[data-dk="1"] .dk-catalog .cat-act {
         flex: 1; min-height: 52px; border-radius: 14px;
@@ -5280,11 +5300,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
          (شروع · در انتظار تایید · عملیات) + کارت پیشنهاد.
        ═══════════════════════════════════════════════════════════ */
 
-    /* ۰) بدنهٔ میز: پهن‌تر برای نفسِ کانبان (۱۰۶۰ → ۱۱۲۰) */
-    #phone[data-dk="1"] .dk-desk .dk-desk-main .body {
-        max-width: 1120px;
-        padding: 30px 40px 56px; gap: 22px;
-    }
+    /* ۰) بدنهٔ میز — در بلوک فونداسیون بالا ادغام شد (FD-35) */
 
     /* ۱) سرفصل خوشامد — زیر اپ‌بار چسبان؛ الگوی Notion Home */
     #phone[data-dk="1"] .dk-desk .dk-greet { padding: 2px 4px 0; }
