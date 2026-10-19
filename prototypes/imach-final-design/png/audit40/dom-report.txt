@@ -1,4 +1,4 @@
-FD-40 DOM AUDIT — Mon Oct 19 23:10:02 UTC 2026
+FD-40 DOM AUDIT — Mon Oct 19 23:49:49 UTC 2026
 ══════ 01-landing (s-landing) ══════
 "PAPER_WIDTH=1440\nWIDE_BTNS(2): W400x50 «آشنایی با همکاری فروش» | W848x52 «ساخت حساب رایگان»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=2619"
 
@@ -18,43 +18,43 @@ FD-40 DOM AUDIT — Mon Oct 19 23:10:02 UTC 2026
 "PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(1): W805 جستجو در کاتالوگ…\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=865"
 
 ══════ 07-catalog-guest (s-catalog-guest) ══════
-"PAPER_WIDTH=1180\nWIDE_BTNS(5): W1130x44 «ذخیره این کاتالوگ» | W1102x35 «ذخیره این کاتالوگ» | W324x44 «تماس» | W324x44 «گفتگو» | W431x44 «سبد خرید ۰»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=6\nBODY_HEIGHT=852\nWIDE_FLAT_CARDS(1): card:W1130"
+"PAPER_WIDTH=1180\nWIDE_BTNS(1): W420x44 «ذخیره این کاتالوگ»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=6\nBODY_HEIGHT=852\nWIDE_FLAT_CARDS(1): card:W1130"
 
 ══════ 08-catalog-share (s-catalog-share) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(2): W1070x65 «جستجو و انتخاب مخاطب از ۱۲ م» | W1044x36 «کپی لینک کاتالوگ»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=7\nBODY_HEIGHT=1153\nWIDE_FLAT_CARDS(7): row:W1070 | row:W1070 | row:W1070 | row:W1070 | row:W1070"
+"PAPER_WIDTH=1120\nWIDE_BTNS(1): W640x65 «جستجو و انتخاب مخاطب از ۱۲ م»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=7\nBODY_HEIGHT=792\nWIDE_FLAT_CARDS(1): card:W1070"
 
 ══════ 09-contacts (s-contacts) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(2): W1070 input | W1016 جستجوی نام یا کسب‌وک\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=1234"
+"PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(2): W1070 input | W1016 جستجوی نام یا کسب‌وک\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=792"
 
 ══════ 10-customers (s-customers) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(1): W460x44 «دعوت مشتری جدید»\nWIDE_INPUTS(1): W1010 جستجوی مشتری، کسب‌وک\nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=792"
+"PAPER_WIDTH=1120\nWIDE_BTNS(1): W420x44 «دعوت مشتری جدید»\nWIDE_INPUTS(1): W1010 جستجوی مشتری، کسب‌وک\nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=792"
 
 ══════ 11-customer-view ══════
-"PAPER_WIDTH=1180\nWIDE_BTNS(3): W363x45 «تایید مشتری» | W365x45 «حذف» | W740x36 «ذخیرهٔ یادداشت»\nWIDE_INPUTS(1): W740 یادداشت شخصی — مثلاً\nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=859"
+"PAPER_WIDTH=1180\nWIDE_BTNS(2): W363x45 «تایید مشتری» | W365x45 «حذف»\nWIDE_INPUTS(1): W740 یادداشت شخصی — مثلاً\nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=859"
 
 ══════ 12-sell-orders (s-sell-orders) ══════
 "PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=1\nBODY_HEIGHT=792\nWIDE_FLAT_CARDS(5): row:W1070 | row:W1070 | row:W1070 | row:W1070 | row:W1070"
 
 ══════ 13-sell-order-view (s-sell-order-view) ══════
-"PAPER_WIDTH=760\nWIDE_BTNS(2): W469x45 «رد» | W930x45 «پذیرش سفارش»\nWIDE_INPUTS(1): W710 مثلاً: ارسال فردا صب\nH_SCROLL=none\nBODY_CHILDREN=1\nBODY_HEIGHT=852\nACTION_BAR W=1440 btns=[469,930]"
+"PAPER_WIDTH=760\nWIDE_BTNS(0): \nWIDE_INPUTS(1): W710 مثلاً: ارسال فردا صب\nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=936\nACTION_BAR W=710 btns=[116,142]"
 
 ══════ 14-sell-rfqs (s-sell-rfqs) ══════
 "PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=4\nBODY_HEIGHT=792\nWIDE_FLAT_CARDS(3): row:W1070 | row:W1070 | row:W1070"
 
 ══════ 15-sell-offer (s-sell-offer) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(1): W1070x44 «ارسال پیشنهاد»\nWIDE_INPUTS(2): W592 کاتالوک تو: ۲٬۸۵۰٬۰۰ | W592 ۲٬۸۲۰٬۰۰۰\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=1086\nACTION_BAR W=1070 btns=[1070]"
+"PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(2): W592 کاتالوک تو: ۲٬۸۵۰٬۰۰ | W592 ۲٬۸۲۰٬۰۰۰\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=1086\nACTION_BAR W=1070 btns=[148]"
 
 ══════ 16-sell-add (s-sell-add) ══════
 "PAPER_WIDTH=688\nWIDE_BTNS(4): W638x78 «🌾برنجدیدن محصولات این کالا» | W638x78 «🥨پفکدیدن محصولات این کالا» | W638x78 «🍬قند و شکردیدن محصولات این » | W638x78 «🛢️روغندیدن محصولات این کالا»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=792"
 
 ══════ 17-sell-edit (s-sell-edit) ══════
-"PAPER_WIDTH=620\nWIDE_BTNS(3): W536x48 «پلهٔ جدید مثلاً: از ۵۰ بسته » | W536x45 «حذف این محصول از کاتالوگ» | W566x44 «ذخیرهٔ تغییرات»\nWIDE_INPUTS(2): W566 input | W566 شرایط فروش، پرداخت، \nH_SCROLL=none\nBODY_CHILDREN=11\nBODY_HEIGHT=2007\nACTION_BAR W=566 btns=[566]"
+"PAPER_WIDTH=620\nWIDE_BTNS(1): W536x48 «پلهٔ جدید مثلاً: از ۵۰ بسته »\nWIDE_INPUTS(2): W566 input | W566 شرایط فروش، پرداخت، \nH_SCROLL=none\nBODY_CHILDREN=11\nBODY_HEIGHT=2007\nACTION_BAR W=566 btns=[148]"
 
 ══════ 18-network-score (s-network-score) ══════
-"PAPER_WIDTH=1080\nWIDE_BTNS(1): W1030x42 «شتابدهی در فروش یعنی چه؟»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=6\nBODY_HEIGHT=1343"
+"PAPER_WIDTH=1080\nWIDE_BTNS(1): W560x42 «شتابدهی در فروش یعنی چه؟»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=6\nBODY_HEIGHT=1343"
 
 ══════ 19-edit-business (s-edit-business) ══════
-"PAPER_WIDTH=760\nWIDE_BTNS(0): \nWIDE_INPUTS(2): W702 input | W702 مثلاً: سوپرمارکت عمد\nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=800\nACTION_BAR W=139 btns=[139]"
+"PAPER_WIDTH=760\nWIDE_BTNS(0): \nWIDE_INPUTS(2): W702 input | W702 مثلاً: سوپرمارکت عمد\nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=800\nACTION_BAR W=148 btns=[148]"
 
 ══════ 20-notifs (s-notifs) ══════
 "PAPER_WIDTH=760\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=1\nBODY_HEIGHT=792"
@@ -63,22 +63,22 @@ FD-40 DOM AUDIT — Mon Oct 19 23:10:02 UTC 2026
 "PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=792"
 
 ══════ 22-buy-list (s-buy-list) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(4): W516x36 «تایید و افزودن به تأمین‌کنند» | W518x36 «حذف» | W516x36 «تایید و افزودن به تأمین‌کنند» | W518x36 «حذف»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=4\nBODY_HEIGHT=1242"
+"PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=4\nBODY_HEIGHT=1242"
 
 ══════ 23-buy-list-add (s-buy-list-add) ══════
 "PAPER_WIDTH=620\nWIDE_BTNS(0): \nWIDE_INPUTS(1): W566 input\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=800"
 
 ══════ 24-buy-suppliers (s-buy-suppliers) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(1): W460x44 «دعوت تأمین‌کننده جدید»\nWIDE_INPUTS(1): W1010 جستجوی تأمین‌کننده، \nH_SCROLL=none\nBODY_CHILDREN=4\nBODY_HEIGHT=792"
+"PAPER_WIDTH=1120\nWIDE_BTNS(1): W420x44 «دعوت تأمین‌کننده جدید»\nWIDE_INPUTS(1): W1010 جستجوی تأمین‌کننده، \nH_SCROLL=none\nBODY_CHILDREN=4\nBODY_HEIGHT=792"
 
 ══════ 25-supplier-view ══════
-"PAPER_WIDTH=1180\nWIDE_BTNS(3): W363x45 «تایید تأمین‌کننده» | W365x45 «حذف» | W740x36 «ذخیرهٔ یادداشت»\nWIDE_INPUTS(1): W740 یادداشت شخصی — مثلاً\nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=967"
+"PAPER_WIDTH=1180\nWIDE_BTNS(2): W363x45 «تایید تأمین‌کننده» | W365x45 «حذف»\nWIDE_INPUTS(1): W740 یادداشت شخصی — مثلاً\nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=967"
 
 ══════ 26-buy-rfqs (s-buy-rfqs) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(1): W1070x44 «استعلام جدید»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=792\nWIDE_FLAT_CARDS(3): row:W1070 | row:W1070 | row:W1070"
+"PAPER_WIDTH=1120\nWIDE_BTNS(1): W420x44 «استعلام جدید»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=792\nWIDE_FLAT_CARDS(3): row:W1070 | row:W1070 | row:W1070"
 
 ══════ 27-buy-rfq-new (s-buy-rfq-new) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(2): W654x45 «افزودن کالای دیگر» | W1070x44 «ارسال استعلام ۱ قلمی به ۳ تأ»\nWIDE_INPUTS(1): W654 اگر شرایط پرداخت خاص\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=792\nACTION_BAR W=1070 btns=[1070]"
+"PAPER_WIDTH=1120\nWIDE_BTNS(1): W654x45 «افزودن کالای دیگر»\nWIDE_INPUTS(1): W654 اگر شرایط پرداخت خاص\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=792\nACTION_BAR W=1070 btns=[238]"
 
 ══════ 28-buy-offers (s-buy-offers) ══════
 "PAPER_WIDTH=1180\nWIDE_BTNS(1): W520x30 «بستن این استعلام»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=792"
@@ -90,7 +90,7 @@ FD-40 DOM AUDIT — Mon Oct 19 23:10:02 UTC 2026
 "PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=792\nWIDE_FLAT_CARDS(2): row:W1070 | row:W1070"
 
 ══════ 31-buy-order-view (s-buy-order-view) ══════
-"PAPER_WIDTH=760\nWIDE_BTNS(4): W680x45 «دریافت فاکتور (PDF)» | W680x45 «دریافت برگهٔ ارسال (PDF)» | W583x45 «لغو سفارش» | W816x45 «گفتگو با تأمین‌کننده»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=903\nACTION_BAR W=1440 btns=[583,816]"
+"PAPER_WIDTH=760\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=934\nACTION_BAR W=710 btns=[123,167]"
 
 ══════ 32-msgs (s-msgs) ══════
 "PAPER_WIDTH=940\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=1\nBODY_HEIGHT=792"
@@ -99,7 +99,7 @@ FD-40 DOM AUDIT — Mon Oct 19 23:10:02 UTC 2026
 "PAPER_WIDTH=1184\nWIDE_BTNS(0): \nWIDE_INPUTS(1): W796 پیام…\nH_SCROLL=none\nBODY_CHILDREN=4\nBODY_HEIGHT=724"
 
 ══════ 34-buy-list-guest (s-buy-list-guest) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(3): W324x44 «تماس» | W324x44 «گفتگو» | W431x44 «پیشنهاد تامین»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=934\nWIDE_FLAT_CARDS(4): row:W1070 | row:W1070 | row:W1070 | row:W1070"
+"PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=934\nWIDE_FLAT_CARDS(4): row:W1070 | row:W1070 | row:W1070 | row:W1070"
 
 ══════ 35-sell-bulk (s-sell-bulk) ══════
 "PAPER_WIDTH=620\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=2\nBODY_HEIGHT=800"
@@ -108,13 +108,13 @@ FD-40 DOM AUDIT — Mon Oct 19 23:10:02 UTC 2026
 "PAPER_WIDTH=620\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=5\nBODY_HEIGHT=800"
 
 ══════ 37-charge (s-charge) ══════
-"PAPER_WIDTH=620\nWIDE_BTNS(3): W536x178 «عکس فیش واریزی رسید را انتخا» | W536x44 «ارسال فیش برای تأیید» | W536x36 «اشتراک کاتالوگ»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=6\nBODY_HEIGHT=1051"
+"PAPER_WIDTH=620\nWIDE_BTNS(1): W536x178 «عکس فیش واریزی رسید را انتخا»\nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=6\nBODY_HEIGHT=1051"
 
 ══════ 38-product-view ══════
-"PAPER_WIDTH=620\nWIDE_BTNS(3): W536x48 «پلهٔ جدید مثلاً: از ۵۰ بسته » | W536x45 «حذف این محصول از کاتالوگ» | W566x44 «ذخیرهٔ تغییرات»\nWIDE_INPUTS(2): W566 input | W566 شرایط فروش، پرداخت، \nH_SCROLL=none\nBODY_CHILDREN=11\nBODY_HEIGHT=2007\nACTION_BAR W=566 btns=[566]"
+"PAPER_WIDTH=620\nWIDE_BTNS(1): W536x48 «پلهٔ جدید مثلاً: از ۵۰ بسته »\nWIDE_INPUTS(2): W566 input | W566 شرایط فروش، پرداخت، \nH_SCROLL=none\nBODY_CHILDREN=11\nBODY_HEIGHT=2007\nACTION_BAR W=566 btns=[148]"
 
 ══════ 39-cat-edit (s-cat-edit) ══════
-"PAPER_WIDTH=1120\nWIDE_BTNS(3): W596x46 «تغییر رنگ لوگو» | W596x46 «سوپرمارکت» | W1070x44 «ذخیره تغییرات»\nWIDE_INPUTS(8): W596 input | W596 input sel | W596 input | W596 input | W596 input sel\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=1741\nACTION_BAR W=1070 btns=[1070]"
+"PAPER_WIDTH=1120\nWIDE_BTNS(2): W596x46 «تغییر رنگ لوگو» | W596x46 «سوپرمارکت»\nWIDE_INPUTS(8): W596 input | W596 input sel | W596 input | W596 input | W596 input sel\nH_SCROLL=none\nBODY_CHILDREN=3\nBODY_HEIGHT=1741\nACTION_BAR W=1070 btns=[148]"
 
 ══════ 40-salesrep (s-salesrep) ══════
 "PAPER_WIDTH=1120\nWIDE_BTNS(0): \nWIDE_INPUTS(0): \nH_SCROLL=none\nBODY_CHILDREN=8\nBODY_HEIGHT=1501\nWIDE_FLAT_CARDS(8): row:W1070 | row:W1070 | row:W1070 | row:W1070 | row:W1070"

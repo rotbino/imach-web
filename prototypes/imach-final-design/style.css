@@ -6323,4 +6323,21 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         width: auto !important;
         min-width: 148px;
     }
+
+    /* ═════════════════════════════════════════════════════════════
+       FD-40c — پرداخت نهایی: بنر تبدیلِ مهمان (کاتالوگ عمومی ۳۱)
+       ─────────────────────────────────────────────────────────
+       کارت گرادیانیِ «قیمت‌ها همیشه دستت می‌ماند» با دو خط متن،
+       در عرض ۱۱۳۰ گم و خلوت می‌شد و لینکِ زیرخط‌چینِ linklike با
+       width:100% یک نوارِ کلیک‌شدنی ۱۱۰۲px می‌ساخت → کارت سقف ۶۴۰
+       وسچ + لینک به پهنای محتوا وسچ‌چین.
+       ═════════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] #s-catalog-guest #guest-save-box {
+        max-width: 640px;
+        margin-inline: auto;
+    }
+    #phone[data-dk="1"] #s-catalog-guest #guest-save-box .linklike {
+        display: inline-block;
+        width: auto;
+    }
 }
