@@ -1106,6 +1106,103 @@
 
 
     /* ═══════════════════════════════════════════════════════════════
+       FD-31 — نظرات کاربران (لندینگ ۰۱)
+       نوار افقی از اصناف مختلف + شیت «ثبت نظر شما».
+       ▸ rvRender — show-hook «s-landing»: بعد از هر show بازسازی
+         می‌شود (show() HTML خام را از کش می‌ریزد)؛ نظرات ثبت‌شدهٔ
+         کاربر در userReviews زنده می‌مانند و اولِ نوار می‌نشینند.
+       ▸ kind: 'sell' → «مشاهدهٔ کاتالوگ» (۳۱) · 'buy' → «مشاهدهٔ
+         فهرست خرید» (۳۲) · 'both' → هر دو · '' (کاربر تازه) →
+         نشان «در انتظار بررسی» (پروتوتایپِ جریان بررسی).
+       ▸ esc روی داده (نه قالب) — درس FD-30 p1.
+       ═══════════════════════════════════════════════════════════════ */
+    var userReviews = [];
+    var rvSeq = 0;
+
+    function rvEsc(s) {
+        return String(s || '').replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function rvLink(go, label) {
+        return '<button class="rv-link" type="button" data-go="' + go + '">' + label +
+               '<svg><use href="#i-arrow-left"/></svg></button>';
+    }
+
+    function rvCard(r) {
+        var links = '';
+        if (r.kind === 'sell' || r.kind === 'both') links += rvLink('s-catalog-guest', r.kind === 'both' ? 'کاتالوگ' : 'مشاهدهٔ کاتالوگ');
+        if (r.kind === 'buy'  || r.kind === 'both') links += rvLink('s-buy-list-guest', r.kind === 'both' ? 'فهرست خرید' : 'مشاهدهٔ فهرست خرید');
+        if (!links) links = '<span class="rv-wait">در انتظار بررسی</span>';
+        return '<article class="rv-card' + (r.user ? ' rv-user' : '') + '">' +
+               '<div class="rv-role" data-kind="' + (r.kind || '') + '">' + rvEsc(r.role) + '</div>' +
+               '<p class="rv-text">' + rvEsc(r.text) + '</p>' +
+               '<div class="rv-foot"><b class="rv-name">' + rvEsc(r.name) + '</b>' +
+               '<span class="rv-links">' + links + '</span></div>' +
+               '</article>';
+    }
+
+    function rvRender() {
+        var strip = $('#rv-strip');
+        if (!strip) return;
+        var data = (core.data && core.data.reviews) || [];
+        /* نظرات ثبت‌شدهٔ کاربر اولِ نوار (تازه‌ترین در ابتدا) — بعدِ
+           آن‌ها دیتای نمونه؛ کارت «ثبت نظر» همیشه آخر. */
+        var html = userReviews.map(rvCard).join('') + data.map(rvCard).join('');
+        html += '<div class="rv-add">' +
+                '<span class="rv-add-ic"><svg><use href="#i-comment"/></svg></span>' +
+                '<b>نظر خودتان را اضافه کنید</b>' +
+                '<small>تجربهٔ کارتان با آیمچ را بنویسید</small>' +
+                '<button class="btn btn-outline btn-sm" type="button" data-sheet="sheet-review">ثبت نظر شما</button>' +
+                '</div>';
+        strip.innerHTML = html;
+    }
+    core.registerShowHook('s-landing', rvRender);
+
+    /* فلش‌های نوار (فقط دسکتاپ نمایانند — CSS) + ثبت نظر از شیت.
+       RTL: اسکرولِ «بعدی» به سمت چپ می‌رود (scrollLeft منفی می‌شود). */
+    document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!t.closest) return;
+
+        var arw = t.closest('.rv-arw');
+        if (arw) {
+            var strip = $('#rv-strip');
+            if (!strip) return;
+            var card = strip.querySelector('.rv-card');
+            var step = (card ? card.getBoundingClientRect().width : 300) + 10;
+            strip.scrollBy({ left: (arw.id === 'rv-next' ? -1 : 1) * step * 2, behavior: 'smooth' });
+            return;
+        }
+
+        if (t.closest('#rv-submit')) {
+            var name = $('#rv-name'), role = $('#rv-role'), text = $('#rv-text');
+            if (!name || !text) return;
+            if (!name.value.trim() || !text.value.trim()) {
+                toast('نام و متن نظر را کامل کنید', 'error');
+                return;
+            }
+            userReviews.unshift({
+                id: 'rvu' + (++rvSeq),
+                name: name.value.trim(),
+                role: role.value.trim() || 'کاربر آیمچ',
+                text: text.value.trim(),
+                kind: '',
+                user: true
+            });
+            name.value = ''; role.value = ''; text.value = '';
+            core.closeSheet('sheet-review');
+            rvRender();
+            var strip2 = $('#rv-strip');
+            if (strip2) strip2.scrollTo({ left: 0, behavior: 'smooth' }); /* ابتدای نوار = کارت تازه */
+            toast('نظر شما ثبت شد؛ پس از بررسی نمایش داده می‌شود', 'success');
+            return;
+        }
+    });
+
+
+    /* ═══════════════════════════════════════════════════════════════
        اجرای اولیه
        ═══════════════════════════════════════════════════════════════ */
     var init = (location.hash || '').slice(1);

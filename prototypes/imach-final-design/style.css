@@ -448,6 +448,75 @@ button.brand-link:active { transform: scale(.97); background: var(--surface-2); 
 .hero .strong { font-weight: 700; color: var(--accent-strong); }
 .hero-cta { display: flex; gap: 8px; margin-top: 20px; justify-content: center; }
 
+/* ═══ FD-31: لندینگ — عکس هدر فلت + نظرات کاربران ═══
+   حکم مالک: کارت دور عکس برداشته شد (فلت اما زیبا)؛ نوار افقی
+   نظرات از اصناف مختلف + شیت «ثبت نظر شما» (app-handlers.js). */
+.hero-shot {
+    width: 100%; display: block; border-radius: 14px;
+    /* FD-31: تصویر ماکاپ پس‌زمینهٔ سفید دارد — multiply سفیدی را در
+       زمینهٔ کِرِمی حل می‌کند (فلت واقعی؛ سایه‌های داخل تصویر هم مثل
+       سایهٔ واقعی عمل می‌کنند).
+       ⚠ نیازمند زمینهٔ رنگیِ درونِ گروه: انیمیشن fadeIn (fill both)
+       روی والد .body>* stacking context می‌سازد → والدِ لندینگ
+       (.lp-content) پس‌زمینهٔ var(--bg) دارد تا blend درون‌گروهی
+       کار کند (درس: blend به پشتوانهٔ رنگی در گروه خودش نیاز دارد). */
+    mix-blend-mode: multiply;
+}
+.lp-content { background: var(--bg); }
+
+.rv-sub { font-size: 11px; color: var(--text-3); line-height: 1.9; margin-top: -4px; }
+.rv-nav { display: none; } /* فقط دسکتاپ */
+
+.rv-strip {
+    display: flex; gap: 10px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -ms-overflow-style: none;
+    margin: 0 -16px; padding: 4px 16px 8px;
+}
+.rv-strip::-webkit-scrollbar { display: none; }
+.rv-card {
+    flex: 0 0 296px; min-height: 196px; scroll-snap-align: start;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 14px 16px 12px;
+    display: flex; flex-direction: column;
+}
+.rv-role { font-size: 11.5px; font-weight: 800; color: var(--text-3); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.rv-role::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--text-4); flex-shrink: 0; }
+.rv-role[data-kind="sell"]::before { background: var(--primary); }
+.rv-role[data-kind="buy"]::before  { background: var(--stone); }
+.rv-role[data-kind="both"]::before { background: var(--accent); }
+.rv-text { font-size: 12.5px; line-height: 1.95; color: var(--text-2); margin: 0; flex: 1; }
+.rv-foot {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px;
+}
+.rv-name { font-size: 12px; font-weight: 800; color: var(--text); }
+.rv-links { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.rv-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700; color: var(--primary-strong);
+    background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit;
+}
+.rv-link svg { width: 12px; height: 12px; }
+.rv-wait { font-size: 10.5px; font-weight: 600; color: var(--text-4); }
+.rv-user { border-style: dashed; }
+
+/* کارت «نظر خودتان را اضافه کنید» — انتهای نوار */
+.rv-add {
+    flex: 0 0 232px; min-height: 196px; scroll-snap-align: start;
+    border: 1.5px dashed var(--border-2); border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 7px; padding: 14px;
+}
+.rv-add-ic {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--primary-soft); color: var(--primary-strong);
+    display: flex; align-items: center; justify-content: center;
+}
+.rv-add-ic svg { width: 18px; height: 18px; }
+.rv-add b { font-size: 13px; }
+.rv-add small { font-size: 10.5px; color: var(--text-3); line-height: 1.8; }
+
 /* ═══ ۱۶. عنوان بخش ═══ */
 .section-title {
     display: flex; align-items: center; justify-content: space-between;
@@ -4460,13 +4529,17 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
        ۰۱ — لندینگ (بازطراحی کامل زیر هیرو)
        ═══════════════════════════════════════════════════════════ */
 
-    /* ناوبری: وسچ‌محور با کانتینر + CTA اصلی */
+    /* ناوبری: وسچ‌محور با کانتینر — FD-31: بدون CTA تزریقی
+       (حکم مالک: «شروع رایگان» از هدر برداشته شد)؛ برند لاتین iMach */
     #phone[data-dk="1"] #s-landing .appbar {
         height: 68px;
         padding-inline: calc(24px + max(0px, (100% - 1280px) / 2));
         gap: 12px;
     }
-    #phone[data-dk="1"] #s-landing .appbar .title { font-size: 17px; font-weight: 800; }
+    #phone[data-dk="1"] #s-landing .appbar .title {
+        font-size: 18px; font-weight: 800;
+        direction: ltr; letter-spacing: .3px;
+    }
 
     /* هیرو دوستونه — تنها بخشی که مالک پسندید؛ فقط درشت‌تر و نفس‌دارتر */
     #phone[data-dk="1"] #s-landing .hero {
@@ -4481,16 +4554,15 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
             linear-gradient(120deg, var(--primary-soft) 0%, var(--bg) 62%);
     }
     #phone[data-dk="1"] #s-landing .hero > *:not(.dk-hero-img) { grid-column: 1; }
+    /* FD-31 (حکم مالک): کارت دور عکس هدر برداشته شد — تصویر فلت،
+       فقط گوشهٔ گرد؛ نه قاب، نه سایه. multiply سفیدیِ ماکاپ را در
+       گرادیان کِرِمی حل می‌کند (مثل استرایپ). */
     #phone[data-dk="1"] #s-landing .hero .dk-hero-img {
         grid-column: 2; grid-row: 1 / span 4;
         align-self: center;
-        padding: 0; border: 1px solid var(--border);
-        border-radius: 18px; overflow: hidden;
-        box-shadow: var(--sh-3);
-    }
-    #phone[data-dk="1"] #s-landing .hero .dk-hero-img img {
-        width: 100%; height: auto; max-height: 470px;
-        object-fit: cover; border-radius: 17px !important; background: #FFF;
+        width: 100%; height: auto; max-height: 480px;
+        object-fit: cover; border-radius: 16px;
+        mix-blend-mode: multiply;
     }
     #phone[data-dk="1"] #s-landing .hero h1 { font-size: 40px; line-height: 1.7; letter-spacing: -.2px; }
     #phone[data-dk="1"] #s-landing .hero p { font-size: 15.5px; line-height: 2.1; }
@@ -4521,8 +4593,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         transition: border-color .2s, box-shadow .2s;
     }
     #phone[data-dk="1"] .dk-sec:hover { border-color: var(--border-2); box-shadow: 0 10px 30px rgba(31,29,26,.07); }
-    #phone[data-dk="1"] .dk-sec-sell { border-top: 3px solid var(--primary); }
-    #phone[data-dk="1"] .dk-sec-buy { border-top: 3px solid var(--stone); }
+    /* FD-31 (حکم مالک): خط‌های رنگی سرِ کارت‌ها حذف شد —
+       «این کارها کمکی به زیبایی طراحی نمی‌کند؛ زیبایی در سادگی است».
+       کدگذاری persona فقط با چیپ آیکون سربرگ می‌ماند. */
     #phone[data-dk="1"] .dk-sec .section-title { margin: 0 0 6px; }
     #phone[data-dk="1"] .dk-sec .section-title h2 {
         font-size: 17.5px; font-weight: 800; gap: 12px;
@@ -4551,13 +4624,12 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-sec .row .row-title { font-size: 14.5px; }
     #phone[data-dk="1"] .dk-sec .row .row-sub { font-size: 12.5px; line-height: 2; margin-top: 4px; }
 
-    /* نوار نمایندهٔ فروش: تمام‌عرض، سربرگ وسچ، سه کارت گام */
+    /* نوار نمایندهٔ فروش: تمام‌عرض، سربرگ وسچ، سه گام
+       FD-31 (حکم مالک): خط رنگی سرِ بخش + گرادیان زمینه حذف شد —
+       همان کاغذ سادهٔ بقیهٔ بخش‌ها؛ گام‌ها هم کارت تودرتو نیستند:
+       ستون‌های خط‌مویی (پرهیز از کارت تودرتو). */
     #phone[data-dk="1"] .dk-sec-rep {
         grid-column: 1 / -1;
-        border-top: 3px solid var(--accent);
-        background:
-            radial-gradient(50% 60% at 50% 0%, rgba(20,184,166,.05), transparent 70%),
-            linear-gradient(180deg, #FBFAF5, #FFFFFF);
         padding: 44px 48px 40px;
     }
     #phone[data-dk="1"] .dk-sec-rep .section-title { justify-content: center; margin-bottom: 2px; }
@@ -4567,12 +4639,17 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-lead h3 { font-size: 18px; font-weight: 800; margin: 0 0 8px; }
     #phone[data-dk="1"] .dk-lead p { font-size: 13.5px; color: var(--text-2); line-height: 2.2; margin: 0; }
     #phone[data-dk="1"] .dk-sec-rep .rows {
-        display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px;
+        display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0 30px;
     }
     #phone[data-dk="1"] .dk-sec-rep .row {
-        background: var(--surface); border: 1px solid var(--border);
-        border-radius: 18px; padding: 20px 18px;
+        background: none; border: 0; border-radius: 0;
         flex-direction: column; align-items: flex-start; gap: 10px;
+        padding: 4px 0 0;
+    }
+    /* FD-31: جداکنندهٔ عمودی خط‌مویی بین گام‌ها — نه کارت */
+    #phone[data-dk="1"] .dk-sec-rep .row + .row {
+        border-inline-start: 1px dashed var(--border);
+        padding-inline-start: 30px;
     }
     #phone[data-dk="1"] .dk-sec-rep .row .avatar-sm {
         width: 34px; height: 34px; border-radius: 11px;
@@ -4600,7 +4677,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         text-align: center;
     }
     #phone[data-dk="1"] .dk-final::after {
-        content: 'آی‌مچ';
+        content: 'آیمچ';
         position: absolute; left: 18px; bottom: -34px;
         font-size: 130px; font-weight: 800; letter-spacing: -2px;
         color: #FFF; opacity: .06; pointer-events: none;
@@ -4623,9 +4700,47 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         font-size: 11.5px; color: var(--text-3) !important;
     }
     #phone[data-dk="1"] .dk-foot::before {
-        content: 'آی‌مچ';
+        content: 'آیمچ';
         font-size: 13.5px; font-weight: 800; color: var(--text);
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-31 — نظرات کاربران (لندینگ)
+       بخش فلت روی زمینه — بدون کاغذ بیرونی (ضدِ کارت تودرتو؛
+       خودِ کارت‌های نظر کاغذند). فلش‌های نوار فقط اینجا نمایانند.
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] .dk-pad > .dk-sec:has(.rv-strip) {
+        grid-column: 1 / -1;
+        background: none; border: 0; box-shadow: none; border-radius: 0;
+        padding: 0; margin-top: -6px;
+    }
+    #phone[data-dk="1"] .dk-sec:has(.rv-strip) .section-title { margin: 0 0 2px; }
+    #phone[data-dk="1"] .dk-sec:has(.rv-strip) .section-title h2 svg {
+        background: var(--accent-soft); color: var(--accent-strong);
+    }
+    #phone[data-dk="1"] .dk-sec:has(.rv-strip) .rv-sub { font-size: 12px; margin: 0 0 12px; }
+
+    #phone[data-dk="1"] .rv-nav { display: flex; gap: 8px; }
+    #phone[data-dk="1"] .rv-arw {
+        width: 34px; height: 34px; border-radius: 50%;
+        border: 1px solid var(--border); background: var(--surface);
+        display: inline-flex; align-items: center; justify-content: center;
+        color: var(--text-2); cursor: pointer;
+        transition: border-color .2s, color .2s, box-shadow .2s;
+    }
+    #phone[data-dk="1"] .rv-arw:hover {
+        border-color: var(--border-3); color: var(--text);
+        box-shadow: 0 2px 8px rgba(31,29,26,.06);
+    }
+    #phone[data-dk="1"] .rv-arw svg { width: 15px; height: 15px; }
+
+    #phone[data-dk="1"] .rv-strip { margin: 0; padding: 6px 0 10px; gap: 14px; }
+    #phone[data-dk="1"] .rv-card { flex: 0 0 352px; min-height: 208px; padding: 20px 22px 16px; }
+    #phone[data-dk="1"] .rv-text { font-size: 13px; line-height: 2.05; }
+    #phone[data-dk="1"] .rv-role { font-size: 12px; }
+    #phone[data-dk="1"] .rv-name { font-size: 12.5px; }
+    #phone[data-dk="1"] .rv-link { font-size: 11.5px; }
+    #phone[data-dk="1"] .rv-add { flex: 0 0 264px; min-height: 208px; }
 
     /* ═══════════════════════════════════════════════════════════
        ۰۳/۰۲ — ورود و ثبت‌نام: اسپلیت حرفه‌ای

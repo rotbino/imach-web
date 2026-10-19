@@ -2,11 +2,11 @@
 # FD-28 QA رفتاری — رسپانسیو دسکتاپ مرحلهٔ ۲ (همهٔ صفحه‌ها)
 # FD-30 deltas: میزها → کانبان سه‌ستونه (شماره ترتیب حذف) · فرم ۱۳ →
 #   ویزارد ۸۶۰ (۶۲۰ تنگ بود) — بقیهٔ چک‌ها همان FD-28/29.
+# FD-31 deltas (لندینگ): حذف CTA اپ‌بار + برند iMach/آیمچ + فلت
+#   (بدون خط رنگی/قاب عکس/کارت تودرتو) + دکمهٔ «ساخت حساب» +
+#   بخش نظرات (۲۴ کارت + لینک کاتالوگ/فهرست + فلش + شیت ثبت نظر).
 # ▸ فریم تمام‌عرض برای همهٔ ۴۱ صفحه (data-dk) · بدون سرریز افقی
-# ▸ لندینگ: ناوبری CTA · کارت‌های dk-sec · نوار نماینده · CTA · فوتر
-# ▸ ورود/ثبت‌نام: اسپلیت — پانل برند چپ · کارت فرم راست · دکمه در فرم
-# ▸ میزها: سایدبار + واژه‌نشان · تسک تک‌ستونه با شماره ترتیب
-# ▸ کاتالوک گرید · کالا دوستونه · استعلام دوستونه · پیشنهادها گرید۲ · چت ۹۰۰
+# ▸ لندینگ FD-31 · ورود/ثبت‌نام · میزها · کاتالوک گرید · چت ۹۰۰
 # ▸ جزئیات دوستونه · فرم مرکزی · شیت مودال · موبایل ۳۹۰ دست‌نخورده
 set -u
 cd /home/z/my-project/imach-web/prototypes/imach-final-design
@@ -43,18 +43,56 @@ done
 chk "همهٔ صفحه‌ها data-dk=1" "x${BADDK}x" "xx"
 chk "همهٔ صفحه‌ها بدون سرریز افقی" "x${BADOVF}x" "xx"
 
-echo "─── ۲) لندینگ: ناوبری + کارت‌های بخش + نماینده + CTA + فوتر ───"
+echo "─── ۲) لندینگ FD-31: فلت + برندینگ + نظرات ───"
 q "iMach.show('s-landing', false); 'ok'" >/dev/null; sleep 0.9
-L1=$(q "var b=document.querySelector('#s-landing .appbar'); (b.querySelector('.dk-nav-cta') ? 'cta' : 'no') + '|' + (b.querySelector('.dk-nav-cta').getAttribute('data-go'))")
-chk "ناوبری: دکمهٔ «شروع رایگان» → ثبت‌نام" "$L1" "cta|s-signup"
+L1=$(q "var b=document.querySelector('#s-landing .appbar'); (b.querySelector('.dk-nav-cta') ? 'BAD-cta' : 'no-cta') + '|' + b.querySelector('.brand-link .title').textContent + '|' + b.querySelectorAll('.appbar > .btn, .appbar .brand ~ .btn').length")
+chk "ناوبری: بدون CTA تزریقی · برند iMach · فقط «ورود»" "$L1" "no-cta|iMach|1"
 L2=$(q "document.querySelectorAll('.dk-pad .dk-sec.dk-sec-sell, .dk-pad .dk-sec.dk-sec-buy').length + '|' + document.querySelectorAll('.dk-pad .dk-sec.dk-sec-rep').length + '|' + document.querySelectorAll('.dk-pad .dk-final').length + '|' + document.querySelectorAll('.dk-pad .dk-foot').length")
 chk "دو کارت ویژگی + نوار نماینده + CTA + فوتر" "$L2" "2|1|1|1"
 L3=$(q "var s=document.querySelector('.dk-sec-sell'), b=document.querySelector('.dk-sec-buy'); Math.round(s.getBoundingClientRect().top) + '=' + Math.round(b.getBoundingClientRect().top)")
 chk "کارت فروشنده و خریدار هم‌ردیف" "$L3" "$(q "var s=document.querySelector('.dk-sec-sell'), b=document.querySelector('.dk-sec-buy'); Math.round(s.getBoundingClientRect().top) + '=' + Math.round(b.getBoundingClientRect().top)")"
 L4=$(q "(document.querySelector('.dk-sec-rep .dk-lead') ? 'lead' : 'no') + '|' + (document.querySelector('.dk-sec-rep .dk-rep-tag') ? 'tag' : 'no') + '|' + (document.querySelector('.dk-sec-rep .ra-btn') ? 'btn' : 'no') + '|' + document.querySelectorAll('.dk-sec-rep .row').length")
 chk "نماینده: سربرگ lead + تگ + دکمه + ۳ گام" "$L4" "lead|tag|btn|3"
-L5=$(q "var r=document.querySelector('.dk-sec-rep .row'); getComputedStyle(r).flexDirection")
-chk "گام‌های نماینده: کارت ستونی" "$L5" "column"
+L5=$(q "var r=document.querySelector('.dk-sec-rep .row'); getComputedStyle(r).flexDirection + '|' + getComputedStyle(r).backgroundColor + '|' + getComputedStyle(r).borderTopWidth")
+chk "گام‌های نماینده: ستونی · بدون کارت تودرتو (فلت)" "$L5" "column|rgba(0, 0, 0, 0)|0px"
+L6=$(q "(function(){var o=[]; ['.dk-sec-sell','.dk-sec-buy','.dk-sec-rep'].forEach(function(s){var cs=getComputedStyle(document.querySelector(s)); o.push(cs.borderTopWidth + '=' + cs.borderBottomWidth + '=' + cs.borderLeftWidth)}); var img=document.querySelector('#s-landing .hero .dk-hero-img'); var ic=getComputedStyle(img); o.push(ic.borderTopWidth + '=' + ic.boxShadow); return o.join('|')})()")
+chk "فلت FD-31: قاب یکنواخت کارت‌ها (بدون خط رنگی سرِ بخش) · عکس بدون قاب/سایه" "$L6" "1px=1px=1px|1px=1px=1px|1px=1px=1px|0px=none"
+L7=$(q "document.querySelector('#s-landing .hero-cta .btn-primary').textContent + '|' + (document.querySelector('#s-landing .hero h1').textContent.indexOf('آیمچ') > -1 && document.querySelector('#s-landing .hero h1').textContent.indexOf('آی‌مچ') === -1 ? 'brand-ok' : 'brand-bad') + '|' + (document.querySelector('#s-landing .hero p').textContent.indexOf('موتور تطبیق') > -1 ? 'new-copy' : 'old-copy')")
+chk "هیرو: دکمهٔ «ساخت حساب» · برند «آیمچ» · متن بنر جدید" "$L7" "ساخت حساب|brand-ok|new-copy"
+L8=$(q "(function(){var s=document.querySelector('#rv-strip'); return document.querySelectorAll('.rv-strip .rv-card').length + 'cards|' + (document.querySelector('.rv-strip .rv-add') ? 'add' : 'no') + '|' + document.querySelectorAll('.rv-strip [data-go=\"s-catalog-guest\"]').length + 'cat|' + document.querySelectorAll('.rv-strip [data-go=\"s-buy-list-guest\"]').length + 'list'})()")
+chk "نظرات: ۲۴ کارت + کارت ثبت + ۱۳ لینک کاتالوگ + ۱۲ لینک فهرست" "$L8" "24cards|add|13cat|12list"
+L9=$(q "(function(){var f=document.querySelector('.rv-strip .rv-card'); return f.querySelector('.rv-name').textContent + '|' + f.querySelector('.rv-link').getAttribute('data-go')})()")
+chk "نظر اول (احمد رضایی · خریدار): لینک فهرست خرید" "$L9" "احمد رضایی|s-buy-list-guest"
+L10=$(q "(function(){var c=document.querySelectorAll('.rv-strip .rv-card')[1]; return c.querySelector('.rv-name').textContent + '|' + c.querySelector('.rv-link').getAttribute('data-go') + '|' + (c.textContent.indexOf('رشد') > -1 ? 'growth' : 'no-growth')})()")
+chk "نظر دوم (سعید محمدی · همکار فروش یدکی): کاتالوگ + رشد درآمد" "$L10" "سعید محمدی|s-catalog-guest|growth"
+L11=$(q "(function(){var c=Array.prototype.slice.call(document.querySelectorAll('.rv-strip .rv-card')).filter(function(x){return x.querySelector('.rv-name').textContent==='پرویز اکبری'})[0]; return c.querySelectorAll('.rv-link').length + 'links'})()")
+chk "پرویز اکبری (هر دو persona): دو لینک" "$L11" "2links"
+L12=$(q "getComputedStyle(document.querySelector('.rv-nav')).display + '|' + (function(){var r=document.querySelector('.dk-pad > .dk-sec:has(.rv-strip)'); var cs=getComputedStyle(r); return cs.backgroundColor + '/' + cs.borderTopWidth})()")
+chk "فلش‌های نوار نمایان · بخش نظرات فلت (بدون کاغذ بیرونی)" "$L12" "flex|rgba(0, 0, 0, 0)/0px"
+q "document.getElementById('rv-next').click(); 'ok'" >/dev/null; sleep 1.1
+L13=$(q "(function(){var s=document.getElementById('rv-strip'); window.__rvX=s.scrollLeft; return s.scrollLeft < -50 ? 'moved-left' : 'flat:' + Math.round(s.scrollLeft)})()")
+chk "فلش «بعدی»: اسکرول نوار (RTL · چپ/منفی)" "$L13" "moved-left"
+q "document.getElementById('rv-prev').click(); 'ok'" >/dev/null; sleep 1.1
+L14=$(q "(function(){var s=document.getElementById('rv-strip'); return s.scrollLeft > window.__rvX + 50 ? 'moved-back' : 'no:' + Math.round(s.scrollLeft) + '>' + Math.round(window.__rvX)})()")
+chk "فلش «قبلی»: بازگشت به عقب" "$L14" "moved-back"
+q "document.querySelector('.rv-strip .rv-add .btn').click(); 'ok'" >/dev/null; sleep 0.7
+L15=$(q "(function(){var s=document.getElementById('sheet-review'); return (!s.hidden && s.classList.contains('show') ? 'open' : 'closed')})()")
+chk "شیت «ثبت نظر شما» باز می‌شود" "$L15" "open"
+q "document.getElementById('rv-name').value='شقایق نوری'; document.getElementById('rv-role').value='مدیر کافی‌شاپ'; document.getElementById('rv-text').value='کاتالوگ تأمین‌کننده‌هایم را یک‌جا ذخیره کرده‌ام.'; 'ok'" >/dev/null
+q "document.getElementById('rv-submit').click(); 'ok'" >/dev/null; sleep 0.8
+L16=$(q "(function(){var s=document.getElementById('sheet-review'); var c=document.querySelector('.rv-strip .rv-card'); return (s.hidden ? 'closed' : 'open') + '|' + c.querySelector('.rv-name').textContent + '|' + (c.classList.contains('rv-user') && c.querySelector('.rv-wait') ? 'pending' : 'no-wait')})()")
+chk "ثبت نظر: شیت بسته · کارت جدید اول نوار · «در انتظار بررسی»" "$L16" "closed|شقایق نوری|pending"
+q "document.querySelector('.rv-strip .rv-add .btn').click(); 'ok'" >/dev/null; sleep 0.7
+q "document.getElementById('rv-submit').click(); 'ok'" >/dev/null; sleep 0.4
+L17=$(q "(function(){var s=document.getElementById('sheet-review'); return (!s.hidden ? 'still-open' : 'closed')})()")
+chk "اعتبارسنجی: نام/متن خالی → شیت باز می‌ماند" "$L17" "still-open"
+q "iMach.closeSheet('sheet-review'); 'ok'" >/dev/null
+q "document.querySelector('.rv-strip [data-go=\"s-catalog-guest\"]').click(); 'ok'" >/dev/null; sleep 1
+L18=$(q "document.querySelector('.screen:not([hidden])').id")
+chk "لینک «مشاهدهٔ کاتالوگ» → کاتالوگ عمومی (۳۱)" "$L18" "s-catalog-guest"
+q "iMach.back(); 'ok'" >/dev/null; sleep 1
+L19=$(q "document.querySelector('.screen:not([hidden])').id")
+chk "بازگشت → لندینگ" "$L19" "s-landing"
 ovf "لندینگ: بدون سرریز"
 
 echo "─── ۳) ورود/ثبت‌نام: اسپلیت حرفه‌ای ───"
@@ -157,6 +195,8 @@ agent-browser eval "location.reload(); 'r'" >/dev/null 2>&1; sleep 2.2
 q "iMach.show('s-landing', false); 'ok'" >/dev/null; sleep 0.8
 MB1=$(q "document.getElementById('phone').getAttribute('data-dk') + '|' + Math.round(document.getElementById('phone').getBoundingClientRect().width) + '|' + (document.querySelector('.dk-nav-cta') ? 'cta-injected' : 'no-inject')")
 chk "موبایل لندینگ: بدون dk/CTA، قاب ۳۹۰" "$MB1" "null|390|no-inject"
+MB1b=$(q "document.querySelectorAll('.rv-strip .rv-card').length + 'cards|' + getComputedStyle(document.querySelector('.rv-nav')).display + '|' + (document.querySelector('#s-landing .hero-shot') ? 'flat-img' : 'no-img') + '|' + document.querySelector('#s-landing .hero-cta .btn-primary').textContent")
+chk "موبایل: ۲۴ کارت نظر · بدون فلش · عکس فلت · «ساخت حساب»" "$MB1b" "24cards|none|flat-img|ساخت حساب"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
 MB2=$(q "var tb=document.querySelector('#s-home-buy .tabbar'); getComputedStyle(tb).flexDirection + '|' + (document.querySelector('#s-home-buy .dk-ord') ? 'ord-injected' : 'no-ord') + '|' + Math.round(document.getElementById('phone').getBoundingClientRect().width)")
 chk "موبایل میز: تب‌بار افقی · بدون شماره · ۳۹۰" "$MB2" "row|no-ord|390"

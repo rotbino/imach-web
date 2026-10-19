@@ -3,15 +3,34 @@
      ورودی عمومی — معرفی کوتاه + دو دکمهٔ شروع.
      ═════════════════════════════════════════════════════════════ -->
 <!-- ═════════════════════════════════════════════════════════════
-     اسکرین ۰۱: لندینگ آی‌مچ
+     اسکرین ۰۱: لندینگ آیمچ
+     ═════════════════════════════════════════════════════════════ -->
+<!-- ═════════════════════════════════════════════════════════════
+     FD-31 (حکم مالک — بازطراحی صفحه‌به‌صفحه، شروع از لندینگ):
+     · «تک تک روی فرم‌ها کار کنیم» — رویکرد فازبندی کنار گذاشته شد.
+     · فلت اما زیبا: «خط‌های رنگی سرِ باکس‌ها» (border-top سه‌px
+       فروشنده/خریدار/نماینده — فقط دسکتاپ) حذف شد؛ کارت دور عکسِ
+       هدر حذف شد (عکس فلت با گوشهٔ گرد)؛ از کارت تودرتو پرهیز
+       (گام‌های نوار نماینده در دسکتاپ به ستون‌های خط‌مویی تبدیل شد).
+     · برندینگ: کنار لوگو «iMach» (لاتین) · در متن فارسی «آیمچ»
+       (بدون نیم‌فاصله) — کل صفحه یکدست شد.
+     · CTA: دکمهٔ هیرو «شروع رایگان» → «ساخت حساب»؛ CTA تزریقیِ
+       اپ‌بار دسکتاپ (dk-nav-cta) کاملاً حذف شد.
+     · متن بنر عین جملهٔ مالک جایگزین شد (کاتالوگ/فهرست خرید →
+       اشتراک → شبکهٔ تجاری → موتور تطبیق).
+     · جدید: بخش «نظرات کاربران» — نوار افقی از اصناف مختلف
+       (هر نظر یک persona اصلی: فروشنده/خریدار/همکار فروش) +
+       لینک «مشاهدهٔ کاتالوگ / فهرست خرید» هر کسب‌وکار (→ ۳۱/۳۲)
+       + شیت «ثبت نظر شما». دیتا: DATA.reviews (data.js).
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-landing" data-arm="keep">
     <div class="appbar">
         <div class="brand">
             <button class="brand brand-link" type="button" data-go="s-login"
-                    aria-label="آی‌مچ — ورود به پنل">
+                    aria-label="آیمچ — ورود به پنل">
                 <span class="brand-logo"><svg><use href="#i-logo"/></svg></span>
-                <span class="title">آی‌مچ</span>
+                <!-- FD-31: کنار لوگو «iMach» (حکم مالک) -->
+                <span class="title">iMach</span>
             </button>
         </div>
         <button class="btn btn-ghost btn-sm" data-go="s-login">ورود</button>
@@ -19,24 +38,31 @@
 
     <div class="body flush">
         <div class="hero">
-            <h1><em>آی‌مچ</em>، شعبهٔ آنلاین<br>خرید و فروش عمدهٔ شما</h1>
+            <h1><em>آیمچ</em>، شعبهٔ آنلاین<br>خرید و فروش عمدهٔ شما</h1>
+            <!-- FD-31: متن بنر عین جملهٔ مالک -->
             <p>
-                کالاهای عمده‌تان را معرفی کنید، با مشتریان و تأمین‌کنندگان خود
-                در ارتباط باشید و سفارش‌ها و استعلام‌های قیمت را یک‌جا مدیریت کنید.
+                کاتالوگ محصولات یا فهرست خریدتان را بسازید و با مشتریان و تأمین‌کنندگان خود به اشتراک بگذارید؛ تا لیست مشتریان و تأمین‌کنندگانتان تشکیل شود و ارتباطات تجاری شکل بگیرد. سپس آیمچ با موتور تطبیق خود کمک می‌کند تا شبکهٔ تجاری شما روزبه‌روز بزرگ‌تر شود.
             </p>
             <p class="strong">رایگان شروع کنید؛ برای گسترش کسب‌وکارتان آماده باشید.</p>
             <div class="hero-cta">
-                <button class="btn btn-primary" data-go="s-signup">شروع رایگان</button>
+                <!-- FD-31: «شروع رایگان» → «ساخت حساب» (حکم مالک) -->
+                <button class="btn btn-primary" data-go="s-signup">ساخت حساب</button>
                 <button class="btn btn-outline" data-go="s-login">ورود به حساب</button>
             </div>
         </div>
 
-        <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
-            <div class="card" style="padding: 8px;">
-                <img src="png/d3-desktop-landing.jpg"
-                     alt="نمایی از محیط خرید و فروش عمده در آی‌مچ"
-                     style="border-radius: 8px; width: 100%; display: block;">
-            </div>
+        <!-- FD-31: lp-content — والد محتوای لندینگ. پس‌زمینهٔ کِرِمیِ
+             صریح می‌گیرد چون انیمیشن ورودِ .body > * (fadeIn با fill
+             both) روی این والد stacking context می‌سازد و mix-blend
+             عکس هیرو بدون زمینهٔ درون‌گروهی blend نمی‌شود (سفیدِ
+             ماکاپ می‌ماند). رنگ = var(--bg) → بی‌درز. -->
+        <div class="lp-content" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <!-- FD-31: عکس هدر فلت — بدون کارت (حکم مالک).
+                 نسخهٔ -flat: سفیدی‌های JPG به سفید خالص کلیپ شده‌اند
+                 (scripts/fd31-flatimg.py) تا multiply آن را کاملاً در
+                 زمینهٔ کِرِمی حل کند — بدون مستطیل کم‌رنگ. -->
+            <img class="hero-shot" src="png/d3-desktop-landing-flat.png"
+                 alt="نمایی از محیط خرید و فروش عمده در آیمچ">
 
             <!-- فروشنده عمده -->
             <div class="section-title" style="margin-top: 8px;">
@@ -115,7 +141,7 @@
                  می‌رود. -->
             <!-- همکار فروش -->
             <div class="section-title" style="margin-top:16px;">
-                <h2><svg><use href="#i-briefcase"/></svg> آی‌مچ برای همکاران فروش</h2>
+                <h2><svg><use href="#i-briefcase"/></svg> آیمچ برای همکاران فروش</h2>
             </div>
 
             <div class="card rep-ad" style="padding:16px;">
@@ -123,7 +149,7 @@
                     کالایی برای فروش عمده ندارید؟
                 </h3>
                 <p class="ra-tx" style="margin:0;line-height:1.9;">
-                    آی‌مچ برای شما ایدهٔ بهتری دارد! با همکاری چند تأمین‌کنندهٔ بزرگ، کسب‌وکار فروش عمده خودتان را بسازید.
+                    آیمچ برای شما ایدهٔ بهتری دارد! با همکاری چند تأمین‌کنندهٔ بزرگ، کسب‌وکار فروش عمده خودتان را بسازید.
                 </p>
             </div>
 
@@ -170,11 +196,38 @@
                 </svg>
             </button>
 
+            <!-- ═══ FD-31: نظرات کاربران ═══
+                 حکم مالک: «قبلاً در این صفحه نظرات کاربران داشتیم —
+                 نوار افقی از اصناف مختلف؛ هر نظر یکی از کاربرهای اصلی
+                 آیمچ را توصیف می‌کرد؛ بقیه هم می‌توانستند نظر خودشان را
+                 بگذارند؛ در هر نظر امکان مشاهدهٔ لیست خرید یا کاتالوگ
+                 آن کسب‌وکار هم بود.»
+                 ▸ دیتا: DATA.reviews (data.js) — رندر در app-handlers.js
+                   (rvRender؛ show-hook «s-landing»).
+                 ▸ persona هر نظر با kind مشخص می‌شود:
+                   sell → «مشاهدهٔ کاتالوگ» (→۳۱) · buy → «مشاهدهٔ فهرست
+                   خرید» (→۳۲) · both → هر دو لینک.
+                 ▸ کارت آخر نوار: «نظر خودتان را اضافه کنید» → شیت
+                   sheet-review (پایین همین فایل)؛ نظر ثبت‌شده با
+                   نشان «در انتظار بررسی» اول نوار می‌نشیند.
+                 ▸ فلش‌های .rv-nav فقط دسکتاپ (CSS) — اسکرول نوار.
+                 نکتهٔ مالک دربارهٔ متن‌ها: نمونه‌های پیشنهادی‌اند؛ برای
+                 انتشار واقعی باید تجربهٔ واقعی کاربران باشد. -->
+            <div class="section-title" style="margin-top:16px;">
+                <h2><svg><use href="#i-comment"/></svg> نظرات کاربران</h2>
+                <div class="rv-nav">
+                    <button class="rv-arw" id="rv-prev" type="button" aria-label="نظرات قبلی"><svg><use href="#i-back"/></svg></button>
+                    <button class="rv-arw" id="rv-next" type="button" aria-label="نظرات بعدی"><svg><use href="#i-chev"/></svg></button>
+                </div>
+            </div>
+            <div class="rv-sub">از اصناف مختلف — فروشندگان، خریداران و همکاران فروش</div>
+            <div class="rv-strip" id="rv-strip"></div>
+
             <!-- دعوت به ثبت‌نام -->
             <div class="card"
                  style="margin-top: 12px; text-align: center; background: linear-gradient(135deg, var(--primary), var(--primary-strong)); color: #FFF; border: 0;">
                 <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">
-                    خرید و فروش عمده‌تان را با آی‌مچ شروع کنید
+                    خرید و فروش عمده‌تان را با آیمچ شروع کنید
                 </div>
                 <div style="font-size: 12px; opacity: .9; margin-bottom: 14px; line-height: 1.9;">
                     حساب بسازید، کاتالوگتان را آماده کنید و با مشتریان یا تأمین‌کنندگان خود ارتباط بگیرید.
@@ -190,8 +243,36 @@
             </div>
 
             <div style="text-align: center; padding: 16px 0 4px; font-size: 10.5px; color: var(--text-3); line-height: 1.9;">
-                © ۱۴۰۵ آی‌مچ — شعبهٔ آنلاین خرید و فروش عمدهٔ شما
+                © ۱۴۰۵ آیمچ — شعبهٔ آنلاین خرید و فروش عمدهٔ شما
             </div>
         </div>
     </div>
 </section>
+
+<!-- ═══ FD-31: شیت «ثبت نظر شما» ═══
+     فرم کوچک سه‌فیلدی؛ ثبت → toast + کارت «در انتظار بررسی» اولِ
+     نوار (app-handlers.js · rvSubmit). دیتا فقط در حافظهٔ سشن. -->
+<div class="sheet" id="sheet-review" hidden>
+    <div class="grab"></div>
+    <div class="sheet-hdr">
+        <h3>ثبت نظر شما</h3>
+        <button class="mg" data-sheet-close="sheet-review" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="sub">نظر شما پس از بررسی، کنار نظرات دیگر کاربران نمایش داده می‌شود.</div>
+    <div class="field">
+        <label>نام و نام خانوادگی</label>
+        <input class="input" id="rv-name" type="text" placeholder="مثلاً: سعید محمدی">
+    </div>
+    <div class="field">
+        <label>شغل / صنف</label>
+        <input class="input" id="rv-role" type="text" placeholder="مثلاً: مدیر سوپرمارکت">
+        <div class="hint">مثلاً: بازاریاب مواد غذایی، مدیر رستوران، واردکنندهٔ پارچه…</div>
+    </div>
+    <div class="field">
+        <label>نظر شما</label>
+        <textarea class="input" id="rv-text" rows="4" placeholder="در یک جمله بگویید آیمچ چه کاری از کارهای شما را ساده‌تر کرده است…"></textarea>
+    </div>
+    <button class="btn btn-primary btn-block" id="rv-submit" style="margin-top: 4px;">
+        <svg><use href="#i-check"/></svg> ثبت نظر
+    </button>
+</div>

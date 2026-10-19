@@ -119,58 +119,49 @@ window.iMachDesktop = (function () {
     }
 
     /* ═══ ۰۱ لندینگ ═══
-       ناوبری با CTA · هیرو دوستونه (تصویر → خانهٔ چپ) · دو کارتِ
-       ویژگیِ فروشنده/خریدار کنار‌هم · نوارِ نمایندهٔ تمام‌عرض با
-       سربرگ وسچ و سه کارت · CTA پایانی پهن · فوتر. */
+       FD-31 (حکم مالک — فلت اما زیبا): CTA تزریقیِ اپ‌بار حذف شد
+       («شروع رایگان» از هدر برداشته شد) · عکس هدر فلت شد (بدون
+       کارت — img.hero-shot مستقیم در هیرو) · خط‌های رنگی سرِ کارت‌ها
+       و گرادیان/کارت‌های تودرتوی نوار نماینده در CSS حذف شدند.
+       هیرو دوستونه · دو کارت ویژگی فروشنده/خریدار کنار‌هم · نوار
+       نماینده تمام‌عرض · بخش نظرات (فلت، بدون کارت بیرونی) · CTA
+       پایانی پهن · فوتر. */
     function dkLanding(sec) {
         var body = sec.querySelector('.body');
         if (!body) return;
-
-        /* ۱) ناوبری بالا: دکمهٔ «شروع رایگان» کنار «ورود» */
-        var bar = sec.querySelector('.appbar');
-        if (bar && !bar.querySelector('.dk-nav-cta')) {
-            var loginBtn = bar.querySelector('.btn');
-            var cta = document.createElement('button');
-            cta.className = 'btn btn-primary btn-sm dk-nav-cta';
-            cta.type = 'button';
-            cta.setAttribute('data-go', 's-signup');
-            cta.textContent = 'شروع رایگان';
-            if (loginBtn && loginBtn.parentNode === bar) bar.insertBefore(cta, loginBtn);
-            else bar.appendChild(cta);
-        }
 
         var hero = body.querySelector('.hero');
         var pad = body.children[1];
         if (!hero || !pad) return;
 
-        /* ۲) تصویر محصول → خانهٔ چپِ هیرو */
+        /* ۱) تصویر فلت → خانهٔ چپِ هیرو (FD-31: بدون کارت دور عکس) */
         if (!hero.querySelector('.dk-hero-img')) {
-            var imgCard = null;
-            Array.prototype.slice.call(pad.children).some(function (el) {
-                if (el.classList.contains('card') && el.querySelector('img')) { imgCard = el; return true; }
-                return false;
-            });
-            if (imgCard) {
-                hero.appendChild(imgCard);
-                imgCard.classList.add('dk-hero-img');
+            var img = pad.querySelector('img.hero-shot');
+            if (img) {
+                hero.appendChild(img);
+                img.classList.add('dk-hero-img');
             }
         }
 
-        /* ۳) بدنه: چیدمان گرید دسکتاپ */
+        /* ۲) بدنه: چیدمان گرید دسکتاپ */
         pad.removeAttribute('style');
         pad.classList.add('dk-pad');
 
-        /* ۴) گروه‌بندی بخش‌ها — عنوان + محتوایش تا عنوان بعدی */
+        /* ۳) گروه‌بندی بخش‌ها — عنوان + محتوایش تا عنوان بعدی.
+           FD-31: فقط سه عنوان نخست sell/buy/rep می‌گیرند؛ عنوان‌های
+           بعدی (نظرات کاربران) → dk-sec ساده (استایل‌اش با :has(.rv-strip)
+           در CSS — بخش فلت بدون کاغذ بیرونی، ضدِ کارت تودرتو). */
         if (!pad.getAttribute('data-dk-done')) {
             pad.setAttribute('data-dk-done', '1');
             var kids = Array.prototype.slice.call(pad.children);
             var cur = null, secIdx = 0;
+            var SEC_KINDS = [' dk-sec-sell', ' dk-sec-buy', ' dk-sec-rep'];
             kids.forEach(function (el) {
                 var isTitle = el.classList && el.classList.contains('section-title');
                 var isFinalCta = el.classList && el.classList.contains('card') && !el.classList.contains('rep-ad');
                 if (isTitle) {
                     cur = document.createElement('div');
-                    cur.className = 'dk-sec' + (secIdx === 0 ? ' dk-sec-sell' : secIdx === 1 ? ' dk-sec-buy' : ' dk-sec-rep');
+                    cur.className = 'dk-sec' + (SEC_KINDS[secIdx] || '');
                     secIdx++;
                     pad.insertBefore(cur, el);
                 } else if (isFinalCta) {
@@ -180,7 +171,7 @@ window.iMachDesktop = (function () {
                 if (cur && cur !== el) cur.appendChild(el);
             });
 
-            /* ۵) بخش نماینده: کارت rep-ad → سربرگِ بخش (h3 + متن) */
+            /* ۴) بخش نماینده: کارت rep-ad → سربرگِ بخش (h3 + متن) */
             var rep = pad.querySelector('.dk-sec-rep');
             if (rep) {
                 var ad = rep.querySelector('.rep-ad');
