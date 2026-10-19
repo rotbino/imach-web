@@ -52,6 +52,9 @@ window.iMachDesktop = (function () {
         's-profile': dkProfile,
         's-msgs': dkMsgs,
         's-buy-list': dkBuyList,
+        /* FD-30 (الگوی Form+Preview — Vercel Settings/Stripe Webhook):
+           فرم راست + پیش‌نمایشِ چسبان چپ */
+        's-cat-edit': dkCatEdit,
         /* —— دفاتر و لیست‌ها —— */
         's-catalog-share': 'dk-page dk-list',
         's-contacts': 'dk-page dk-list',
@@ -64,8 +67,8 @@ window.iMachDesktop = (function () {
         's-buy-order-view': 'dk-page dk-narrow',
         's-buy-orders': 'dk-page dk-list',
         's-sell-rfqs': 'dk-page dk-list',
-        's-sell-offer': 'dk-form dk-form-wide',
-        's-sell-add': 'dk-form',
+        's-sell-offer': dkOffer,
+        's-sell-add': dkAdd,
         's-sell-edit': 'dk-form',
         's-network-score': 'dk-page dk-narrow',
         's-edit-business': 'dk-form',
@@ -80,7 +83,6 @@ window.iMachDesktop = (function () {
         's-sell-bulk': 'dk-form',
         's-sell-promo': 'dk-form',
         's-charge': 'dk-form',
-        's-cat-edit': 'dk-form',
         's-salesrep': 'dk-page dk-narrow dk-rep'
     };
 
@@ -551,10 +553,97 @@ window.iMachDesktop = (function () {
         body.appendChild(main);
     }
 
+    /* ═══ ۱۳ افزودن محصول — FD-30: ویزارد ═══
+       (الگوی Linear New Issue / Stripe Onboarding)
+       نشانگر سه‌گامیِ تزریقی (کالا ← محصول ← قیمت و بسته) — زنده با
+       CSS :has (کدام گام نمایان است؛ addShowStep فقط hidden عوض
+       می‌کند، پس نشانگر خودش را به‌روز می‌کند — بدون دخالت JS).
+       گام‌های ۱/۲: گرید کارتیِ انتخاب (auto-fill) · گام ۳: فرم در
+       کاغذ واحد. صفحه پهن‌تر (۸۶۰) — حکم مالک: «۶۲۰ تنگ است». */
+    function dkAdd(sec) {
+        sec.classList.add('dk-page', 'dk-add');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var wiz = document.createElement('div');
+        wiz.className = 'wiz';
+        wiz.setAttribute('aria-hidden', 'true');
+        wiz.innerHTML =
+            '<div class="wiz-step" data-step="1"><b>۱</b><span>کالا</span></div>' +
+            '<div class="wiz-step" data-step="2"><b>۲</b><span>محصول</span></div>' +
+            '<div class="wiz-step" data-step="3"><b>۳</b><span>قیمت و بسته</span></div>';
+        body.insertBefore(wiz, body.firstChild);
+    }
+
+    /* ═══ ۱۲ ارسال پیشنهاد — FD-30: دوستونه ═══
+       قیمت‌ها (راست، کاغذ واحد — اقلامِ استعلام مسطح با خط مویی،
+       الگوی جدول دسکتاپ) + شرایطِ چسبان (چپ، پنل خلاصهٔ استرایپ‌مانند:
+       پرداخت/تحویل/جمع‌بندی زنده/توضیح). شکستن در سرصفحهٔ دوم
+       («شرایط پرداخت و تحویل») — همان الگوی dkRfqNew؛ همهٔ id ها
+       و رفتار سوییچ/رندر پویا دست‌نخورده (offerFormRender بعد از
+       تزریق اجرا می‌شود و داخل همین ستون‌ها می‌نویسد). */
+    function dkOffer(sec) {
+        sec.classList.add('dk-page', 'dk-offer');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var titles = body.querySelectorAll(':scope > .section-title');
+        if (titles.length < 2) return;
+        var splitAt = titles[1];
+
+        var main = document.createElement('div');
+        main.className = 'ofv-main';
+        var side = document.createElement('div');
+        side.className = 'ofv-side';
+
+        var kids = Array.prototype.slice.call(body.children);
+        var inSide = false;
+        kids.forEach(function (k) {
+            if (k === splitAt) inSide = true;
+            (inSide ? side : main).appendChild(k);
+        });
+        body.appendChild(main);
+        body.appendChild(side);
+    }
+
     /* ═══ ۲۰ لیست خرید ═══
        صفحهٔ پهن + نوار چهار دکمه‌ای افقی + ردیف‌های پهن. */
     function dkBuyList(sec) {
         sec.classList.add('dk-page', 'dk-list', 'dk-blist');
+    }
+
+    /* ═══ ۳۶ ویرایش کاتالوگ — FD-30: Form + Preview ═══
+       (الگوی Vercel/Stripe: فرمِ راست در کاغذ + ستونِ پیش‌نمایشِ
+       چسبانِ چپ — کاربر «در حین تایپ» می‌بیند خریدار چه می‌بیند.)
+       پیش‌نمایشِ زندهٔ موجود (اولین کارت بدنه + سینک cateLogoSync)
+       فقط به ستونِ چسبان منتقل می‌شود — همان id ها، همان رفتار؛
+       سربرگِ «خریداران این را می‌بینند» تزریقی است (متن ثابت). */
+    function dkCatEdit(sec) {
+        sec.classList.add('dk-page', 'dk-catedit');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        /* ۱) پیش‌نمایش زنده (اولین کارت) → ستون چپ با سربرگ */
+        var pv = body.querySelector(':scope > .card');
+        var side = document.createElement('div');
+        side.className = 'cev-side';
+        side.innerHTML =
+            '<div class="cev-cap"><svg><use href="#i-eye"/></svg>' +
+            '<span>پیش‌نمایش — خریداران این را می‌بینند</span></div>';
+        if (pv) {
+            pv.classList.add('cev-card');
+            side.appendChild(pv);
+        }
+
+        /* ۲) بقیهٔ بدنه → فرمِ راست (کاغذ واحد) */
+        var main = document.createElement('div');
+        main.className = 'cev-main';
+        while (body.firstChild) main.appendChild(body.firstChild);
+        body.appendChild(main);
+        body.appendChild(side);
     }
 
     /* ═══ عبور از نقطهٔ شکست: بازسازی صفحهٔ جاری ═══ */

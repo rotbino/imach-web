@@ -1,5 +1,7 @@
 #!/bin/bash
 # FD-28 QA رفتاری — رسپانسیو دسکتاپ مرحلهٔ ۲ (همهٔ صفحه‌ها)
+# FD-30 deltas: میزها → کانبان سه‌ستونه (شماره ترتیب حذف) · فرم ۱۳ →
+#   ویزارد ۸۶۰ (۶۲۰ تنگ بود) — بقیهٔ چک‌ها همان FD-28/29.
 # ▸ فریم تمام‌عرض برای همهٔ ۴۱ صفحه (data-dk) · بدون سرریز افقی
 # ▸ لندینگ: ناوبری CTA · کارت‌های dk-sec · نوار نماینده · CTA · فوتر
 # ▸ ورود/ثبت‌نام: اسپلیت — پانل برند چپ · کارت فرم راست · دکمه در فرم
@@ -138,8 +140,8 @@ chk "پروفایل: کارت پروفایل در ستون راست" "$V3" "prof
 
 echo "─── ۱۲) فرم مرکزی (۱۳ افزودن محصول) ───"
 q "iMach.show('s-sell-add', false); 'ok'" >/dev/null; sleep 0.8
-F1=$(q "var b=document.querySelector('#s-sell-add .body'); var w=Math.round(b.getBoundingClientRect().width); (w > 560 && w < 680 ? 'form620' : 'w' + w)")
-chk "فرم ~۶۲۰ وسچ" "$F1" "form620"
+F1=$(q "var b=document.querySelector('#s-sell-add .body'); var w=Math.round(b.getBoundingClientRect().width); (w > 800 && w < 900 ? 'wiz860' : 'w' + w)")
+chk "فرم ویزارد ~۸۶۰ وسچ (FD-30: ۶۲۰ تنگ بود)" "$F1" "wiz860"
 ovf "فرم: بدون سرریز"
 
 echo "─── ۱۳) شیت: مودال مرکزی ───"

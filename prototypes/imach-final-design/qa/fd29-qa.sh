@@ -110,6 +110,29 @@ q "iMach.show('s-home-sell', false); 'ok'" >/dev/null; sleep 0.8
 chk "میز فروش: همان کانبان سه‌ستونه" "$(q "(function(){var r=document.querySelector('#s-home-sell .body > .rows');return getComputedStyle(r).gridTemplateColumns.split(' ').length+'|'+document.querySelectorAll('#s-home-sell .dsk-col-h').length+'|'+(document.querySelector('#s-home-sell .dk-greet')?'greet':'nogreet')})()")" "3|3|greet"
 chk "میزها: شماره ترتیب FD-28 حذف شد" "$(q "(function(){return document.querySelectorAll('#s-home-sell .dk-ord, #s-home-buy .dk-ord').length===0?'ord-gone':'leftover'})()")" "ord-gone"
 
+echo "─── ۷ب) ۳۶ ویرایش کاتالوگ: Form + Preview (FD-30) ───"
+q "iMach.show('s-cat-edit', false); 'ok'" >/dev/null; sleep 0.9
+chk "دوستونه: فرم راست + پیش‌نمایش چپ (RTL)" "$(q "(function(){var m=document.querySelector('#s-cat-edit .cev-main').getBoundingClientRect();var s=document.querySelector('#s-cat-edit .cev-side').getBoundingClientRect();return (s.x<m.x&&Math.abs(s.y-m.y)<40)?'two-col':'stacked'})()")" "two-col"
+chk "پیش‌نمایش چسبان (sticky)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-cat-edit .cev-side')).position})()")" "sticky"
+chk "فرم در کاغذ واحد" "$(q "(function(){var cs=getComputedStyle(document.querySelector('#s-cat-edit .cev-main'));return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'card-ok':'flat'})()")" "card-ok"
+chk "سربرگ «خریداران این را می‌بینند»" "$(q "(function(){var c=document.querySelector('#s-cat-edit .cev-cap');return c&&c.textContent.indexOf('خریداران')>-1?'cap-ok':'none'})()")" "cap-ok"
+chk "پیش‌نمایش زنده سر جایش (cate-pv-name در ستون)" "$(q "(function(){var n=document.getElementById('cate-pv-name');return n&&n.closest('.cev-side')?'in-side':'lost'})()")" "in-side"
+chk "دکمهٔ ذخیره در جریان (dk-inflow)" "$(q "(function(){var sb=document.querySelector('#s-cat-edit .sticky-bar');return sb&&sb.classList.contains('dk-inflow')?'inflow':'sticky'})()")" "inflow"
+
+echo "─── ۷ج) فرم‌های FD-30: ۱۶ دوستونه · ۱۲ پیشنهاد · ۱۳ ویزارد ───"
+q "iMach.show('s-edit-business', false); 'ok'" >/dev/null; sleep 0.8
+chk "۱۶: فرم ۷۶۰ در کاغذ" "$(q "(function(){var b=document.querySelector('#s-edit-business .body');var cs=getComputedStyle(b);return Math.round(b.getBoundingClientRect().width)+'|'+(cs.borderTopWidth!=='0px'?'paper':'flat')})()")" "760|paper"
+chk "۱۶: نام+شهر کنار هم (دو ستون)" "$(q "(function(){var f1=document.querySelector('#s-edit-business .body > .field:nth-child(1)').getBoundingClientRect();var f2=document.querySelector('#s-edit-business .body > .field:nth-child(2)').getBoundingClientRect();return (Math.abs(f1.top-f2.top)<10&&f1.x!==f2.x)?'pair-ok':'stacked'})()")" "pair-ok"
+q "iMach.show('s-sell-offer', false); 'ok'" >/dev/null; sleep 1
+chk "۱۲: قیمت‌ها راست + شرایط چسبان چپ" "$(q "(function(){var m=document.querySelector('#s-sell-offer .ofv-main');var s=document.querySelector('#s-sell-offer .ofv-side');if(!m||!s)return 'missing';var mr=m.getBoundingClientRect(),sr=s.getBoundingClientRect();return (sr.x<mr.x&&getComputedStyle(s).position==='sticky')?'two-col':'broken'})()")" "two-col"
+chk "۱۲: جمع‌بندی زنده در پنل شرایط" "$(q "(function(){var s=document.querySelector('#s-sell-offer .ofv-side');return s&&s.contains(document.getElementById('of-sum-tx'))?'in-side':'lost'})()")" "in-side"
+chk "۱۲: فیلدهای قیمت در ستون اصلی" "$(q "(function(){var m=document.querySelector('#s-sell-offer .ofv-main');return m&&m.contains(document.getElementById('of-prices'))?'in-main':'lost'})()")" "in-main"
+q "iMach.show('s-sell-add', false); 'ok'" >/dev/null; sleep 0.9
+chk "۱۳: ویزارد سه‌گامی حاضر" "$(q "(function(){return document.querySelectorAll('#s-sell-add .wiz-step').length})()")" "3"
+chk "۱۳: گام ۱ فعال (قرص بازوی فروش)" "$(q "(function(){var s=document.querySelector('#s-sell-add .wiz-step[data-step=\"1\"]');return getComputedStyle(s).backgroundColor})()")" "rgb(253, 238, 221)"
+chk "۱۳: نتایج جستجو گرید چندستونه" "$(q "(function(){var r=document.querySelector('#s-sell-add #add-results');return r?getComputedStyle(r).display:'?'})()")" "grid"
+chk "۱۳: گام ۳ در کاغذ" "$(q "(function(){var s=document.querySelector('#s-sell-add #add-step-3');var cs=getComputedStyle(s);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'paper':'flat'})()")" "paper"
+
 echo "─── ۸) پروفایل: دوستونه + هویت در راست ───"
 q "iMach.show('s-profile', false); 'ok'" >/dev/null; sleep 0.8
 chk "۴ کارت هویت در ستون چسبان" "$(q "(function(){var s=document.querySelector('#s-profile .dkp-side');return s?s.children.length+'cards':'missing'})()")" "4cards"
@@ -149,6 +172,9 @@ q "iMach.show('s-profile', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل پروفایل: بدون پوسته/دوستونه" "$(q "(function(){var sc=document.getElementById('s-profile');return (sc.querySelector('.dk-side')||sc.querySelector('.dk-desk-main')||sc.querySelector('.dkp-side'))?'BAD':'ok'})()")" "ok"
 q "iMach.show('s-login', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل ورود: بدون پنل برند تزریقی" "$(q "(function(){return document.querySelector('#s-login .dk-brand')?'BAD':'ok'})()")" "ok"
+q "iMach.show('s-cat-edit', false); 'ok'" >/dev/null; sleep 0.8
+chk "موبایل کاتالوگ-ویرایش: بدون ستون تزریقی" "$(q "(function(){var sc=document.getElementById('s-cat-edit');return (sc.querySelector('.cev-side')||sc.querySelector('.cev-main')||sc.querySelector('.cev-cap'))?'BAD':'ok'})()")" "ok"
+chk "موبایل کاتالوگ-ویرایش: پیش‌نمایش فرزند مستقیم body" "$(q "(function(){var p=document.getElementById('cate-logo');return p&&p.closest('.body')&&p.parentElement.classList.contains('card')&&p.closest('.body').firstElementChild.classList.contains('card')?'first-card-ok':'moved'})()")" "first-card-ok"
 agent-browser set viewport 1440 900 >/dev/null 2>&1; sleep 1.2
 
 echo "─── ۱۳) خطای کنسول ───"

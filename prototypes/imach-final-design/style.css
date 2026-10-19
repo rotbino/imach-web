@@ -5127,4 +5127,223 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         font-size: 13.5px; font-weight: 600; color: var(--text-2);
         line-height: 2;
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-30 — ۳۶ ویرایش کاتالوگ: Form + Preview
+       (الگوی Vercel Settings / Stripe Webhook)
+       فرمِ راست در کاغذ واحد + ستونِ پیش‌نمایشِ چسبانِ چپ —
+       کاربر در حین تایپ می‌بیند خریدار چه می‌بیند.
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] .dk-catedit .body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 388px;
+        gap: 28px; align-items: start;
+        max-width: 1120px; margin: 0 auto; width: 100%;
+    }
+    /* فرم: کاغذ واحد (حکم مالک FD-29: «کانتینر کارت‌مانند») */
+    #phone[data-dk="1"] .dk-catedit .cev-main {
+        min-width: 0;
+        display: flex; flex-direction: column; gap: 4px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 26px 28px 28px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    }
+    #phone[data-dk="1"] .dk-catedit .cev-main .field { margin-bottom: 14px; }
+    /* ستون پیش‌نمایش: چسبان — همیشه جلوی چشم */
+    #phone[data-dk="1"] .dk-catedit .cev-side {
+        position: sticky; top: 88px;
+        display: flex; flex-direction: column; gap: 12px;
+    }
+    #phone[data-dk="1"] .dk-catedit .cev-cap {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 12.5px; font-weight: 700; color: var(--text-2);
+        padding: 0 4px;
+    }
+    #phone[data-dk="1"] .dk-catedit .cev-cap svg {
+        width: 15px; height: 15px; padding: 7px; box-sizing: content-box;
+        background: var(--accent-soft); color: var(--accent-strong);
+        border-radius: 9px; flex-shrink: 0;
+    }
+    /* کارت پیش‌نمایش: همان کارتِ زندهٔ موبایل — فقط نفس‌دارتر */
+    #phone[data-dk="1"] .dk-catedit .cev-card {
+        border-radius: 20px; padding: 22px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    }
+    #phone[data-dk="1"] .dk-catedit .cev-card .avatar-lg { width: 64px; height: 64px; font-size: 24px; }
+    #phone[data-dk="1"] .dk-catedit .cev-card [id="cate-pv-name"] { font-size: 16.5px !important; }
+    /* نوار ذخیره: سراسر عرض، در جریان */
+    #phone[data-dk="1"] .dk-catedit .sticky-bar.dk-inflow { grid-column: 1 / -1; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-30 — ۱۶ ویرایش کسب‌وکار: فرم ۷۶۰ + فیلدهای کنار‌هم
+       (تنها CSS — بدون تزریق JS؛ موبایل دست‌نخورده)
+       نام+شهر کنار هم · صنف و توضیح تمام‌عرض · کاغذ واحد.
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] #s-edit-business .body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 18px;
+        max-width: 760px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 26px 28px 28px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    }
+    #phone[data-dk="1"] #s-edit-business .body > .field:nth-child(3),
+    #phone[data-dk="1"] #s-edit-business .body > .field:nth-child(4) {
+        grid-column: 1 / -1;
+    }
+    #phone[data-dk="1"] #s-edit-business .sticky-bar.dk-inflow {
+        max-width: 760px; margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-30 — ۱۲ ارسال پیشنهاد: دوستونه
+       راست: کارت استعلام + قیمت‌ها (کاغذ واحد؛ اقلام مسطح)
+       چپ: پنل شرایطِ چسبان (پرداخت · تحویل · جمع‌بندی زنده · توضیح)
+       — الگوی Stripe Checkout (فرم + خلاصهٔ سفارش کنار هم).
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] .dk-offer .body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 400px;
+        gap: 28px; align-items: start;
+        max-width: 1120px; margin: 0 auto; width: 100%;
+    }
+    #phone[data-dk="1"] .dk-offer .ofv-main {
+        min-width: 0;
+        display: flex; flex-direction: column; gap: 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 22px 24px 24px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    }
+    /* اقلام استعلام: مسطح با خط مویی روی کاغذ (زبان جدول دسکتاپ) */
+    #phone[data-dk="1"] .dk-offer .ofv-main .rfq-item {
+        background: none; border: 0;
+        border-bottom: 1px solid var(--border);
+        border-radius: 12px; padding: 14px 4px;
+    }
+    #phone[data-dk="1"] .dk-offer .ofv-main .rfq-item:last-child,
+    #phone[data-dk="1"] .dk-offer .ofv-main #of-prices:last-child .rfq-item:last-child { border-bottom: 0; }
+    #phone[data-dk="1"] .dk-offer .ofv-main .callout { border-radius: 14px; }
+    /* پنل شرایط: چسبان — بازشدن سوییچ‌ها جعبه را بزرگ می‌کند؛
+       از ارتفاع پنجره بیشتر نشود، اسکرول داخلی آرام */
+    #phone[data-dk="1"] .dk-offer .ofv-side {
+        position: sticky; top: 88px;
+        display: flex; flex-direction: column; gap: 14px;
+        max-height: calc(100vh - 116px); overflow-y: auto;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 20px 22px 22px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+        scrollbar-width: thin;
+    }
+    #phone[data-dk="1"] .dk-offer .ofv-side .section-title { margin-bottom: -4px; }
+    #phone[data-dk="1"] .dk-offer .ofv-side .setrow { border-radius: 14px; }
+    /* جمع‌بندی زنده: در پنل، نوارِ فیروزه‌ای ملایم */
+    #phone[data-dk="1"] .dk-offer .ofv-side .of-sum {
+        background: var(--accent-soft);
+        border-radius: 12px; padding: 10px 12px;
+    }
+    #phone[data-dk="1"] .dk-offer .ofv-side .of-sum svg { color: var(--accent-strong); }
+    #phone[data-dk="1"] .dk-offer .sticky-bar.dk-inflow { grid-column: 1 / -1; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-30 — ۱۳ افزودن محصول: ویزارد
+       (الگوی Linear New Issue / Stripe Onboarding)
+       نشانگر سه‌گامی زنده (:has — کدام گام نمایان است) · گریدِ
+       کارتیِ انتخاب در گام‌های ۱/۲ · فرم گام ۳ در کاغذ · ۸۶۰px.
+       ═══════════════════════════════════════════════════════════ */
+    #phone[data-dk="1"] .dk-add .body { max-width: 860px; }
+
+    /* نشانگر ویزارد — قرص‌های سه‌گانه؛ حالت با :has زنده می‌شود */
+    #phone[data-dk="1"] .dk-add .wiz {
+        display: flex; gap: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 8px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    }
+    #phone[data-dk="1"] .dk-add .wiz-step {
+        flex: 1; min-width: 0;
+        display: flex; align-items: center; justify-content: center; gap: 9px;
+        padding: 10px 8px;
+        border-radius: 11px;
+        font-size: 13px; font-weight: 700; color: var(--text-3);
+        transition: background .2s, color .2s;
+    }
+    #phone[data-dk="1"] .dk-add .wiz-step b {
+        width: 28px; height: 28px; border-radius: 50%;
+        display: grid; place-items: center; flex-shrink: 0;
+        font-size: 12px; font-weight: 800;
+        background: var(--surface-3); color: var(--text-3);
+        transition: background .2s, color .2s;
+    }
+    /* گامِ نمایان = فعال (بازوی فروش) */
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-1:not([hidden])) .wiz-step[data-step="1"],
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="2"],
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="3"] {
+        background: var(--arm-soft); color: var(--arm-strong);
+    }
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-1:not([hidden])) .wiz-step[data-step="1"] b,
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="2"] b,
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="3"] b {
+        background: var(--arm-strong); color: #FFF;
+    }
+    /* گام‌های گذشته = انجام‌شده (سبز ملایم) */
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="1"],
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="1"],
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="2"] {
+        background: rgba(22,163,74,.10); color: var(--green);
+    }
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="1"] b,
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="1"] b,
+    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="2"] b {
+        background: var(--green); color: #FFF;
+    }
+
+    /* گام‌های ۱/۲ — گرید کارتیِ انتخاب (جستجو بزرگ‌تر) */
+    #phone[data-dk="1"] .dk-add .search-row { height: 52px !important; }
+    #phone[data-dk="1"] .dk-add #add-results,
+    #phone[data-dk="1"] .dk-add #add-refs {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+        gap: 10px;
+    }
+    #phone[data-dk="1"] .dk-add #add-results:empty,
+    #phone[data-dk="1"] .dk-add #add-refs:empty { display: none; }
+    #phone[data-dk="1"] .dk-add .pick-row .info { min-width: 0; }
+    #phone[data-dk="1"] .dk-add .pick-row .nm { white-space: normal; }
+    /* «محصول من در این لیست نیست» — تمام‌عرضِ گرید */
+    #phone[data-dk="1"] .dk-add #add-new-product { grid-column: 1 / -1; }
+
+    /* گام ۳ — فرم در کاغذ واحد + جفت‌شدن منطقی فیلدها:
+       قیمت بسته | قیمت واحد کنار هم (زوجِ هم‌گام)؛ بقیه تمام‌عرض.
+       فرزندان غیر-فیلد (کارت انتخاب، فرمِ محصول جدید، ردیف موجودی/
+       حداقل) خودکار تمام‌عرض می‌شوند. */
+    #phone[data-dk="1"] .dk-add #add-step-3 {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 22px 26px 26px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+        display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px;
+    }
+    #phone[data-dk="1"] .dk-add #add-step-3 > *:not(.field) { grid-column: 1 / -1; }
+    #phone[data-dk="1"] .dk-add #add-step-3 > .field:has(#add-pack-chips),
+    #phone[data-dk="1"] .dk-add #add-step-3 > .field:has(#add-valid),
+    #phone[data-dk="1"] .dk-add #add-step-3 > .field:has(#add-note) { grid-column: 1 / -1; }
+
+    /* نوار افزودن: هم‌عرضِ فرم، در جریان */
+    #phone[data-dk="1"] .dk-add .sticky-bar {
+        width: 100%; max-width: 860px; margin: 4px auto 0;
+        background: none; backdrop-filter: none; border-top: 0;
+        padding: 12px 0 0;
+    }
 }
