@@ -5401,60 +5401,35 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-catalog .pcard .pprice { font-size: 15.5px; }
 
     /* ═══════════════════════════════════════════════════════════
-       FD-39 — کاتالوگ دسکتاپ: سایدبار اختصاصی «ابزارهای کاتالوگ»
+       FD-39v2 — کاتالوگ دسکتاپ: سایدبار اختصاصی «مثل سایدبار اصلی»
        ─────────────────────────────────────────────────────────
-       حکم مالک: «کاتالوگ سایدبار اختصاصی خودش را داشته باشد که
-       ظاهرش متفاوت‌تر از سایدبار اصلی باشد؛ چهار دکمه از روی
-       کاتالوگ بردار و چهار لینک در سایدبار بگذار — گویاتر و از
-       زشتیِ کاتالوگ در دسکتاب کم می‌شود.»
-       ▸ بدنه = گرید دوستونه: ستونِ اصلیِ کاتالوگ (راست) +
-         سایدبارِ چسبانِ ۲۱۶ (چپ — سمتِ پنل‌های FD-30؛ راست جای
-         ناوبریِ اصلی اپ است؛ این سایدبار مالِ همین صفحه است).
-       ▸ تفاوت با سایدبار اصلی: قابِ کاغذِ نرم + سربرگِ کوچکِ
-         «ابزارهای کاتالوگ» + ردیف‌های لینک‌مانندِ بی‌قاب (نه
-         دکمه‌های سنگین) — زبان ناوبری، ظاهرِ جدا از اپ‌بار.
-       ▸ چهار دکمه همان‌اند (id ها حفظ شدند) — فقط CSS شکلشان
-         را عوض می‌کند؛ catPromoSync (ویژه فعال) کار خودش را
-         می‌کند. قواعد بالا (FD-35) برای موبایل‌مانندِ .cat-act
-         با وزنِ کمتر زیرِ سایهٔ این بلوک می‌مانند. */
-    #phone[data-dk="1"] .dk-catalog.dk-cat-tools .body {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 216px;
-        gap: 20px;
-        align-items: start;
-    }
-    #phone[data-dk="1"] .dk-catalog .cat-main { min-width: 0; }
-    #phone[data-dk="1"] .dk-catalog .cat-side {
-        position: sticky; top: 88px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 12px 8px 10px;
-        box-shadow: 0 1px 3px rgba(31,29,26,.03);
-    }
-    #phone[data-dk="1"] .dk-catalog .cat-side-cap {
-        display: flex; align-items: center; gap: 7px;
-        padding: 2px 10px 10px;
-        font-size: 11px; font-weight: 800; color: var(--text-3);
-        border-bottom: 1px solid var(--border);
-        margin-bottom: 6px;
-    }
-    #phone[data-dk="1"] .dk-catalog .cat-side-cap svg {
-        width: 13px; height: 13px; color: var(--primary-strong);
-    }
-    /* چهار «لینک» — ردیفِ آرامِ بی‌قاب با هاورِ نرم */
+       حکم مالک (بازخورد روی پیادهٔ اول FD-39): «سایدبار یعنی شبیه
+       سایدبارِ اصلی سیستم در سمتِ راست صفحه — نه منوی بازِ داخلِ
+       محتوای صفحه.»
+       ▸ پیادهٔ اول مردود شد: کارتِ شناورِ ۲۱۶ در ستونِ چپِ بادی
+         (قاب + شعاع + سایه + سربرگ «ابزارهای کاتالوک») — شبیه
+         منوی باز دیده می‌شد، نه سایدبار.
+       ▸ v۲ = پوستهٔ اپ (dk-desk): aside.cat-side همان هندسهٔ
+         .dk-side اصلی را می‌گیرد (گریدِ ۲۵۶ راستِ صفحه · تمام‌قد
+         ۱۰۰vh · چسبان · تخت با خطِ inline-end) — این بلوک فقط
+         «محتوای اختصاصی» را می‌چیند: چهار لینک به‌قالبِ تب‌های
+         اصلی (ردیفِ تخت ۴۶ + آیکونِ لخت ۲۰ + برچسب ۱۳) + چیپ
+         کارر پایین (dk-user خودِ پوسته).
+       ▸ چهار دکمه همان‌اند (id ها حفظ شدند)؛ قواعد FD-35 برای
+         .cat-act بیرون از سایدبار (نوارِ «محصول جدید» کنار
+         جستجو) دست‌نخورده می‌مانند. موبایل ۲×۲ سالم. */
     #phone[data-dk="1"] .dk-catalog .cat-side .cat-actions {
-        display: flex; flex-direction: column; gap: 2px;
+        display: flex; flex-direction: column; gap: 4px;
     }
+    /* ردیفِ لینک — هم‌قالبِ .tab سایدبار اصلی (تخت، بی‌قاب) */
     #phone[data-dk="1"] .dk-catalog .cat-side .cat-act {
-        flex: none;
-        justify-content: flex-start;
-        min-height: 0;
-        border: 0;
-        background: none;
-        border-radius: 11px;
-        padding: 10px 10px;
-        text-align: right;
+        flex: 0 0 auto;
+        flex-direction: row; justify-content: flex-start;
+        gap: 12px; min-height: 46px; padding: 0 14px;
+        border: 0; background: none;
+        border-radius: 12px;
+        font-size: 13px; font-weight: 600;
+        transition: background .15s, color .15s;
     }
     #phone[data-dk="1"] .dk-catalog .cat-side .cat-act:hover {
         background: var(--surface-2);
@@ -5462,17 +5437,28 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         transform: none;
     }
     #phone[data-dk="1"] .dk-catalog .cat-side .cat-act:active { transform: none; }
+    /* آیکون: لخت مثل تب‌های اصلی — بدون چیپ رنگی */
     #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-ic {
-        width: 28px; height: 28px; border-radius: 8px;
+        width: 20px; height: 20px;
+        background: none; border-radius: 0;
+        color: var(--text-2);
+        display: grid; place-items: center;
+    }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-ic svg {
+        width: 20px; height: 20px; display: block;
     }
     #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-tx {
-        font-size: 12.5px; white-space: normal;
+        font-size: 13px; font-weight: 600; color: var(--text-2);
+        flex: 1; min-width: 0; text-align: right;
+        white-space: normal; line-height: 1.45;
     }
-    /* «ویژه فعال» در سایدبار — همانِ سبزِ آرام، روی ردیفِ بی‌قاب */
+    /* «ویژه فعال» — همان سبزِ آرام، روی ردیفِ ناوبری */
     #phone[data-dk="1"] .dk-catalog .cat-side .cat-act.on {
         background: var(--green-bg);
         border-color: transparent;
     }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act.on .ca-tx { color: var(--text); }
+    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act.on .ca-ic { color: var(--green-strong, var(--green)); }
 
     /* ═══════════════════════════════════════════════════════════
        ۳۷ — کالا: دوستونه — مشخصات راست · گالری چسبان چپ

@@ -203,18 +203,18 @@ echo "─── ۶) کاتالوک: گرید روان + نوار ابزار FD-3
 q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 1.2
 C1=$(q "var g=document.querySelector('#s-catalog .pgrid'); getComputedStyle(g).gridTemplateColumns.split(' ').length + 'cols'")
 chk "گرید کالا ≥۳ ستونه (auto-fill)" "$C1" "$(q "var g=document.querySelector('#s-catalog .pgrid'); getComputedStyle(g).gridTemplateColumns.split(' ').length + 'cols'")"
-# FD-39: چهار اکشن حالا ستونِ عمودیِ سایدبارند (موبایل همچنان گرید)
+# FD-39v2: چهار اکشن حالا ستونِ عمودیِ سایدبارند (موبایل همچنان گرید)
 C2=$(q "var a=document.querySelector('#s-catalog .cat-actions'); getComputedStyle(a).display + '/' + getComputedStyle(a).flexDirection")
 chk "FD-39: چهار اکشن = لیستِ عمودی در سایدبار" "$C2" "flex/column"
-# FD-39: بدنهٔ کاتالوک دوستونه شد (cat-main | cat-side) — نوار ابزار
-# دیگر فرزندِ مستقیم body نیست؛ اولین فرزندِ ستونِ اصلی است.
-C3=$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');var first=document.querySelector('#s-catalog .cat-main').firstElementChild;return (t&&first===t?'toolbar-first':'BAD-pos')+'|'+Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+getComputedStyle(add.querySelector('.ca-tx')).color})()")
+# FD-39v2: بدنه دیگر دوستونه نیست — نوار ابزار اولین فرزندِ خودِ بادی است
+C3=$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');var first=document.querySelector('#s-catalog .dk-desk-main .body').firstElementChild;return (t&&first===t?'toolbar-first':'BAD-pos')+'|'+Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+getComputedStyle(add.querySelector('.ca-tx')).color})()")
 chk "FD-35: جستجو + محصول جدید تم‌پر ۴۸px — بالای ستون اصلی" "$C3" "toolbar-first|48/48|rgb(249, 115, 22)|rgb(255, 255, 255)"
 C4=$(q "(function(){var a=document.querySelectorAll('#s-catalog .cat-actions .cat-act');var pb=document.getElementById('promo-box');return a.length+'btn|promo='+(pb&&pb.classList.contains('cat-act')?'compact':'BAD')+'|'+pb.textContent.trim()+'|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length})()")
 chk "FD-35: ویژه کردن فشرده میان دکمه‌ها — کادر تبلیغات حذف" "$C4" "4btn|promo=compact|ویژه کردن|oldbox=0"
-# FD-39: سایدبار اختصاصی «ابزارهای کاتالوگ» — چهار لینک در ستون چپ
-C4b=$(q "(function(){var side=document.querySelector('#s-catalog .cat-side');if(!side)return 'no-side';var links=side.querySelectorAll('.cat-actions .cat-act');var inMain=document.querySelectorAll('#s-catalog .cat-main .cat-actions .cat-act').length;var grid=getComputedStyle(document.querySelector('#s-catalog .body')).gridTemplateColumns.split(' ').length;var sticky=getComputedStyle(side).position;return links.length+'links|inMain='+inMain+'|cols='+grid+'|'+sticky})()")
-chk "FD-39: سایدبار ابزارها — ۴ لینک، خارج از ستون اصلی، چسبان" "$C4b" "4links|inMain=0|cols=2|sticky"
+# FD-39v2: سایدبار «مثل سایدبار اصلی» — راستِ صفحه، تمام‌قد، تخت،
+# بیرون از کاغذِ محتوا (پوستهٔ dk-desk، نه کارتِ داخل بادی)
+C4b=$(q "(function(){var side=document.querySelector('#s-catalog .cat-side');if(!side)return 'no-side';var links=side.querySelectorAll('.cat-actions .cat-act');var inMain=document.querySelectorAll('#s-catalog .dk-desk-main .cat-actions .cat-act').length;var secCols=getComputedStyle(document.getElementById('s-catalog')).gridTemplateColumns.split(' ').length;var st=getComputedStyle(side);var r=side.getBoundingClientRect();var brand=side.querySelector('.dk-side-brand')?1:0;var usr=side.querySelector('.dk-user')?1:0;return links.length+'links|inMain='+inMain+'|cols='+secCols+'|'+st.position+'/h'+Math.round(r.height)+'|right'+Math.round(r.right)+'|brand='+brand+'|user='+usr+'|frame='+st.borderRadius})()")
+chk "FD-39v2: سایدبار مثل اصلی — ۴ لینک، ستون راست تمام‌قد، بی‌قاب" "$C4b" "4links|inMain=0|cols=2|sticky/h900|right1440|brand=1|user=1|frame=0px"
 q "iMach.data.user.catalogPromo=true; 'ok'" >/dev/null; q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 1.1
 C5=$(q "(function(){var pb=document.getElementById('promo-box');var cs=getComputedStyle(pb);var bd=[].map.call(document.querySelectorAll('#s-catalog .promo-badge'),function(b){return b.hidden?'h':'v'}).join('');iMach.data.user.catalogPromo=false;return pb.className+'|'+cs.backgroundColor+'|'+document.getElementById('promo-t').textContent+'|badges='+bd})()")
 chk "FD-35: حالت ویژه — دکمهٔ سبز + بج روی کارت‌ها" "$C5" "cat-act on|rgb(240, 253, 244)|ویژه فعال است|badges=vvvv"

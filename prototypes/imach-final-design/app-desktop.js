@@ -458,22 +458,25 @@ window.iMachDesktop = (function () {
 
     /* ═══ ۰۵/۳۱ کاتالوگ — FD-39: سایدبار اختصاصی کاتالوگ ═══
        (حکم مالک: «کاتالوگ سایدبار اختصاصی خودش را داشته باشد —
-       ظاهرش کمی متفاوت از سایدبار اصلی — و آن چهار دکمه از روی
-       کاتالوگ برداشته شود و به‌صورت چهار لینک در سایدبار بنشیند؛
-       هم گویاتر می‌شود هم از زشتیِ کاتالوگ در دسکتاب کم می‌شود.»)
-       ▸ چیدمان: ستونِ اصلیِ کاتالوگ (سرچ + محصول جدید + چیپ‌ها +
-         گرید) راست · سایدبارِ «ابزارهای کاتالوگ» چپ (همان سمتِ
-         پنل‌های FD-30 — dkRfqNew/dkOffer؛ سمتِ راست جای ناوبریِ
-         اصلی اپ است، این یکی مالِ همین صفحه و جدا از آن دیده
-         می‌شود).
+       و آن چهار دکمه از روی کاتالوگ برداشته شود و به‌صورت چهار
+       لینک در سایدبار بنشیند.»)
+       FD-39v2 (بازخورد مالک روی پیادهٔ اول): «سایدبار یعنی شبیه
+       سایدبارِ اصلی سیستم در سمتِ راست صفحه — نه منوی بازِ
+       داخلِ محتوای صفحه.» ⟵ پیادهٔ اول یک کارتِ شناور ۲۱۶ در
+       ستونِ چپِ بادی بود (مثل پنل‌های FD-30) — مردود.
+       ▸ ساختار v۲ = همان پوستهٔ اپ (dk-desk): سایدبار ۲۵۶ در
+         «راستِ صفحه»، تمام‌قد (۱۰۰vh) و چسبان و تخت با خطِ
+         لبهٔ inline-end — دقیقاً هم‌هندسهٔ .dk-side اصلی؛
+         «اختصاصی» فقط در محتواست: واژه‌نشانِ دکان + «کاتالوک
+         من» + چهار لینک + چیپ کارر پایین (هم‌ساختارِ اصلی).
        ▸ چهار دکمهٔ .cat-actions دست‌نخورده جابه‌جا می‌شوند (همهٔ
          id ها: promo-box/promo-ic/promo-t/catalog-preview —
-         catPromoSync همان‌ها را زنده نگه می‌دارد)؛ فقط CSS در
-         [data-dk] آنها را «لینک» می‌بیند: ردیفِ بی‌قاب با آیکونِ
-         نرم + برچسب — زبانِ ناوبری، نه دکمهٔ عملیاتی.
+         catPromoSync همان‌ها را زنده نگه می‌دارد)؛ CSS در
+         [data-dk] آنها را ردیفِ ناوبریِ تخت می‌بیند — هم‌قالبِ
+         تب‌های سایدبار اصلی.
        ▸ موبایل دست‌نخورده: این تبدیل فقط ≥۱۰۲۴ اجرا می‌شود و
          CSS هم زیر #phone[data-dk="1"] است.
-       ▸ کاتالوگِ مهمان (۳۱) بدون .cat-actions است → بدون سایدبار. */
+       ▸ کاتالوگِ مهمان (۳۱) بدون .cat-actions است → بدون پوسته. */
     function dkCatalog(sec) {
         sec.classList.add('dk-page', 'dk-catalog');
         var body = sec.querySelector('.body');
@@ -483,29 +486,35 @@ window.iMachDesktop = (function () {
         var acts = body.querySelector(':scope > .cat-actions');
         if (!acts) return;   /* مهمان (۳۱): چهار دکمه ندارد */
 
-        /* پرچم: گریدِ دوستونه فقط وقتی سایدبار ساخته شد (مهمان
-           بدون سایدبار = تک‌ستونهٔ قبلی — قواعد CSS زیر همین کلاس) */
-        sec.classList.add('dk-cat-tools');
+        /* پوستهٔ اپ — همان گریدِ dk-desk: سایدبارِ راست + ستون اصلی */
+        sec.classList.add('dk-desk', 'dk-cat-tools');
 
-        /* سایدبار: سربرگِ کوچک + همان .cat-actions (بچه‌کم‌نقص) */
+        /* ۱) سایدبار اختصاصی — همان هندسه/زبانِ .dk-side اصلی:
+           واژه‌نشان (دکان + «کاتالوک من») · چهار لینک · چیپ کارر.
+           (aside هم tabbar می‌گیرد تا قواعدِ .dk-desk .dk-side
+           مثل میزها/پیام‌ها/پروفایل رویش بنشیند — الگوی shellify.) */
         var side = document.createElement('aside');
-        side.className = 'cat-side';
+        side.className = 'tabbar cat-side dk-side';
         side.innerHTML =
-            '<div class="cat-side-cap">' +
-                '<svg><use href="#i-store"/></svg>' +
-                '<span>ابزارهای کاتالوگ</span>' +
+            '<div class="dk-side-brand">' +
+                '<span class="dks-mark"><svg><use href="#i-store"/></svg></span>' +
+                '<span class="dks-name">کاتالوگ من</span>' +
             '</div>';
         side.appendChild(acts);
+        side.insertAdjacentHTML('beforeend',
+            '<button class="dk-user" type="button" data-go="s-profile">' +
+            '<img src="png/users/me.jpg" alt="">' +
+            '<span class="dku-tx"><b>احمد رضایی</b><small>سوپرمارکت آریا</small></span>' +
+            '</button>');
+        sec.insertBefore(side, sec.firstChild);
 
-        /* ستون اصلی: همهٔ بقیه (نوار ابزار/چیپ/گرید + شیت‌ها)
-           ترتیبِ فرزندان حفظ می‌شود — فقط دورشان یک قاب می‌آید.
-           شیت‌ها absolute اند به .phone — جابه‌جایی DOM اثری
-           بر جای‌گیری‌شان ندارد (درس FD-10). */
+        /* ۲) ستون اصلی: ساب‌هدر + بدنه + شیت‌ها — الگوی shellify.
+           شیت‌ها fixed اند در [data-dk] — جابه‌جایی DOM اثری بر
+           جای‌گیری‌شان ندارد (درس FD-10). */
         var main = document.createElement('div');
-        main.className = 'cat-main';
-        while (body.firstChild) main.appendChild(body.firstChild);
-        body.appendChild(main);
-        body.appendChild(side);
+        main.className = 'dk-desk-main';
+        while (side.nextSibling) main.appendChild(side.nextSibling);
+        sec.appendChild(main);
     }
 
     /* ═══ ۴۰/۴۱ سند فروش — FD-37: مودال سند ═══
