@@ -2179,6 +2179,187 @@ body > div[id^="scr-d"][hidden] { display: none; }
   #scr-13.priv-gate [data-cartopen] { display: none !important; }
   #scr-13.priv-gate .pcard .addcart { display: none; }
 
+  /* ═══ هم‌ترازی imach-final-design — میزها، امتیاز فعالیت، پیشنهاد تامین، نمایندهٔ فروش
+         همهٔ قواعد با توکن‌ها و زبان بصری همین طرح (کاغذ/مویی/گوشهٔ ۱۵) — فقط مفاهیم تازه ═══ */
+  :root { --rep: #0d9488; --rep-tint: #e6f5f3; }
+  .tab[hidden] { display: none; } /* مخفی‌کردن تب بازوی خاموش — display:flex کلاس را می‌بُرد */
+
+  /* هدر میزها — آواتار کسب‌وکار + عنوان دوخطی (الگوی FD) */
+  .appbar .dkb { width: 37px; height: 37px; border-radius: 11px; color: #fff; font-size: 15px; font-weight: 800; display: grid; place-items: center; flex-shrink: 0; }
+  .appbar .dkt { font-size: 14px; font-weight: 800; line-height: 1.35; }
+  .appbar .dkt small { display: block; font-size: 10px; font-weight: 500; color: var(--muted-fg); }
+
+  /* چیپ امتیاز در هدر میزها — حلقهٔ پیشرفت + عدد */
+  .score-chip { position: relative; width: 36px; height: 36px; border: 0; background: none; padding: 0; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  .score-chip svg.ring { position: absolute; inset: 0; width: 36px; height: 36px; transform: rotate(-90deg); }
+  .score-chip .rc-bg { fill: none; stroke: var(--border); stroke-width: 3; }
+  .score-chip .rc-fill { fill: none; stroke: var(--arm); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 100.5; stroke-dashoffset: 100.5; transition: stroke-dashoffset .5s ease; }
+  .score-chip b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 10.5px; font-weight: 800; color: var(--foreground); }
+
+  /* کاشی‌های میز (۲×۲) — همهٔ لینک‌ها بالا */
+  .desk-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .desk-tile { position: relative; display: flex; flex-direction: column; gap: 9px; padding: 13px 14px 12px; background: #fff; border: 1px solid var(--border); border-radius: 16px; cursor: pointer; text-align: right; font-family: inherit; }
+  .desk-tile:active { transform: scale(.985); }
+  .desk-tile .dt-head { display: flex; align-items: center; gap: 7px; }
+  .desk-tile .dt-ic { width: 30px; height: 30px; border-radius: 9px; background: var(--arm-tint); color: var(--arm); display: grid; place-items: center; flex-shrink: 0; }
+  .desk-tile .dt-ic svg { width: 17px; height: 17px; }
+  .desk-tile .dt-t { font-size: 12px; font-weight: 800; color: var(--foreground); line-height: 1.5; }
+  .desk-tile .dt-stat { display: flex; align-items: baseline; gap: 5px; }
+  .desk-tile .dt-stat b { font-size: 21px; font-weight: 800; color: var(--foreground); line-height: 1; }
+  .desk-tile .dt-stat span { font-size: 10.5px; color: var(--muted-fg); }
+  .desk-tile .dt-badge { position: absolute; top: -8px; inset-inline-end: 11px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px; background: var(--red); color: #fff; font-size: 10px; font-weight: 800; display: grid; place-items: center; }
+  .desk-tile .dt-sub { font-size: 10px; color: var(--muted-fg); margin-top: -4px; }
+
+  /* ردیف‌های کارتابل «نیازمند اقدام» */
+  .drow { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 13px; background: #fff; border: 1px solid var(--border); border-radius: 15px; cursor: pointer; text-align: right; font-family: inherit; }
+  .drow + .drow { margin-top: 8px; }
+  .drow .dr-ic { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; flex-shrink: 0; }
+  .drow .dr-ic svg { width: 18px; height: 18px; }
+  .drow .dr-tx { flex: 1; min-width: 0; }
+  .drow .dr-tx b { display: block; font-size: 12.5px; font-weight: 800; color: var(--foreground); line-height: 1.6; }
+  .drow .dr-tx small { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .drow .chev { width: 14px; height: 14px; color: var(--border-strong); flex-shrink: 0; }
+  .drow .st-b { display: inline-block; margin-inline-start: 6px; padding: 1px 7px; border-radius: 7px; background: var(--arm-tint); color: var(--arm); font-size: 9px; font-weight: 800; vertical-align: 1px; }
+
+  /* صفحهٔ امتیاز فعالیت (۶۸) */
+  #scr-68.sc-sell { --arm: var(--primary); --arm-tint: var(--accent); }
+  #scr-68.sc-buy { --arm: var(--stone); --arm-tint: var(--stone-tint); }
+  .sc-armbar { display: flex; gap: 7px; justify-content: center; }
+  .sc-pill { border: 1px solid var(--border); background: #fff; border-radius: 11px; padding: 7px 17px; font-size: 12px; font-weight: 700; color: var(--muted-fg); cursor: pointer; font-family: inherit; }
+  .sc-pill.on { border-color: var(--arm); color: var(--arm); background: var(--arm-tint); }
+  .score-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 16px 8px 2px; }
+  .score-circle { position: relative; width: 104px; height: 104px; border-radius: 50%; background: conic-gradient(var(--arm) calc(var(--sc, 45) * 1%), var(--border) 0); display: grid; place-items: center; }
+  .score-circle::before { content: ''; position: absolute; inset: 7px; border-radius: 50%; background: var(--bg); }
+  .score-circle .num { position: relative; z-index: 1; font-size: 26px; font-weight: 800; color: var(--foreground); line-height: 1.15; }
+  .score-circle .num small { display: block; font-size: 9.5px; color: var(--muted-fg); font-weight: 500; }
+  .sc-hero-t { font-size: 14.5px; font-weight: 800; margin-top: 12px; }
+  .sc-hero-p { font-size: 11px; color: var(--muted-fg); line-height: 2; margin-top: 6px; }
+  .sc-bar { height: 7px; border-radius: 4px; background: var(--border); overflow: hidden; max-width: 250px; width: 100%; margin-top: 13px; }
+  .sc-bar i { display: block; height: 100%; border-radius: 4px; background: var(--arm); transition: width .5s ease; }
+  .sc-path { border: 1px solid var(--border); border-radius: 15px; background: #fff; padding: 4px 13px; }
+  .sp-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+  .sp-row + .sp-row { border-top: 1px solid #f0eee8; }
+  .sp-row .sp-ic { width: 34px; height: 34px; border-radius: 10px; background: var(--arm-tint); color: var(--arm); display: grid; place-items: center; flex-shrink: 0; }
+  .sp-row .sp-ic svg { width: 17px; height: 17px; }
+  .sp-row .sp-tx { flex: 1; min-width: 0; }
+  .sp-row .sp-tx b { display: block; font-size: 12.5px; font-weight: 800; }
+  .sp-row .sp-tx span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; line-height: 1.7; }
+  .sp-row .sp-state { width: 22px; height: 22px; border-radius: 50%; border: 1.5px dashed var(--border-strong); flex-shrink: 0; display: grid; place-items: center; }
+  .sp-row .sp-state svg { width: 12px; height: 12px; display: none; }
+  .sp-row.done .sp-ic { background: var(--green-bg); color: var(--green); }
+  .sp-row.done .sp-state { border: 0; background: var(--green); color: #fff; }
+  .sp-row.done .sp-state svg { display: block; }
+  .sp-row.live .sp-ic { background: var(--green-bg); color: var(--green); }
+  .sc-item { display: flex; align-items: center; gap: 10px; padding: 11px 13px; background: #fff; border: 1px solid var(--border); border-radius: 14px; }
+  .sc-item + .sc-item { margin-top: 8px; }
+  .sc-item .si-ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; flex-shrink: 0; }
+  .sc-item .si-ic svg { width: 15px; height: 15px; }
+  .sc-item.done .si-ic { background: var(--green-bg); color: var(--green); }
+  .sc-item.todo .si-ic { background: var(--arm-tint); color: var(--arm); }
+  .sc-item .si-tx { flex: 1; min-width: 0; }
+  .sc-item .si-tx b { display: block; font-size: 12.5px; font-weight: 800; }
+  .sc-item .si-tx small { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  .sc-item .si-pts { font-size: 11px; font-weight: 800; color: var(--arm); flex-shrink: 0; }
+  .sc-item.done .si-pts { color: var(--green); }
+  .sc-item .chev { width: 14px; height: 14px; color: var(--border-strong); flex-shrink: 0; }
+
+  /* درِ قفل «تأمین‌کنندگان بیشتر» (۰۹) — مرز شبکهٔ خصوصی */
+  .lockdoor { display: flex; align-items: center; gap: 11px; width: 100%; padding: 13px 14px; background: var(--stone-tint); border: 1.5px dashed var(--border-strong); border-radius: 15px; cursor: pointer; text-align: right; font-family: inherit; }
+  .lockdoor .ld-ic { width: 38px; height: 38px; border-radius: 11px; background: #fff; color: var(--stone); display: grid; place-items: center; flex-shrink: 0; }
+  .lockdoor .ld-ic svg { width: 18px; height: 18px; }
+  .lockdoor .ld-tx { flex: 1; min-width: 0; }
+  .lockdoor .ld-tx b { display: block; font-size: 12.5px; font-weight: 800; color: var(--foreground); }
+  .lockdoor .ld-tx small { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 3px; line-height: 1.8; }
+  .lockdoor .chev { width: 14px; height: 14px; color: var(--border-strong); flex-shrink: 0; }
+
+  /* کارت‌های «پیشنهاد تامین» (۰۸/۱۰) */
+  .prop-wrap { position: relative; }
+  .prop-card { position: relative; border: 1.5px solid #f3c99a; background: #fffdf8; border-radius: 15px; padding: 13px 13px 12px; margin-top: 10px; }
+  .prop-tag { position: absolute; top: -10px; inset-inline-start: 12px; display: inline-flex; align-items: center; gap: 4px; background: var(--primary); color: #fff; border-radius: 8px; padding: 2.5px 9px; font-size: 9.5px; font-weight: 800; }
+  .prop-tag svg { width: 10px; height: 10px; }
+  .prop-h { display: flex; align-items: center; gap: 9px; }
+  .prop-h .t { flex: 1; min-width: 0; }
+  .prop-h .t b { display: block; font-size: 13px; font-weight: 800; }
+  .prop-h .t small { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 2px; }
+  .prop-items { margin-top: 9px; border-top: 1px dashed #ead9c0; padding-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+  .prop-it { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; }
+  .prop-it span { color: var(--foreground); font-weight: 600; }
+  .prop-it b { color: var(--primary-strong); font-weight: 800; white-space: nowrap; }
+  .prop-note { font-size: 10px; color: var(--muted-fg); margin-top: 7px; line-height: 1.8; }
+  .prop-acts { display: flex; gap: 7px; margin-top: 10px; }
+
+  /* شیت «پیشنهاد تامین» (۲۳) — اقلام با قیمت/حداقل */
+  .sup-item { display: flex; align-items: flex-end; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f0eee8; }
+  .sup-item:last-child { border-bottom: 0; }
+  .sup-item .si-n { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 700; }
+  .sup-item .si-n small { display: block; font-size: 10.5px; color: var(--muted-fg); font-weight: 400; margin-top: 2px; }
+  .sup-item .input { width: 116px; flex-shrink: 0; height: 38px; font-size: 12px; }
+  .sup-ok { text-align: center; padding: 18px 8px 8px; }
+  .sup-ok .ok-ic { width: 54px; height: 54px; border-radius: 50%; background: var(--green-bg); color: var(--green); display: grid; place-items: center; margin: 0 auto 10px; }
+  .sup-ok .ok-ic svg { width: 26px; height: 26px; }
+
+  /* شیت مزایای ذخیرهٔ کاتالوگ (۱۳) — آکاردئون */
+  .bene-toggle { display: flex; align-items: center; gap: 9px; width: 100%; padding: 11px 13px; background: var(--accent); border: 0; border-radius: 13px; cursor: pointer; font-family: inherit; text-align: right; }
+  .bene-toggle b { flex: 1; font-size: 12.5px; font-weight: 800; color: var(--primary-strong); }
+  .bene-toggle svg { width: 16px; height: 16px; color: var(--primary-strong); flex-shrink: 0; }
+  .bene-toggle .bb-chev { transition: transform .25s ease; }
+  .bene-toggle[aria-expanded="true"] .bb-chev { transform: rotate(180deg); }
+  .bene-list { margin-top: 9px; display: flex; flex-direction: column; gap: 8px; }
+  .bene { display: flex; gap: 10px; padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 13px; }
+  .bene .bf-ic { width: 30px; height: 30px; border-radius: 9px; background: var(--arm-tint); color: var(--arm); display: grid; place-items: center; flex-shrink: 0; }
+  .bene .bf-ic svg { width: 15px; height: 15px; }
+  .bene .bf-tx b { display: block; font-size: 12px; font-weight: 800; }
+  .bene .bf-tx span { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 3px; line-height: 1.8; }
+
+  /* ثبت‌نام دو مرحله‌ای — دکمه‌های «نوع سروکار» بدون پیش‌فرض */
+  .su-mode { display: flex; gap: 7px; }
+  .su-mbtn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px 6px 11px; background: #fff; border: 1.5px solid var(--border); border-radius: 13px; cursor: pointer; font-family: inherit; }
+  .su-mbtn svg { width: 19px; height: 19px; color: var(--muted-fg); }
+  .su-mbtn b { font-size: 11.5px; font-weight: 800; color: var(--foreground); }
+  .su-mbtn.on { border-color: var(--arm); background: var(--arm-tint); }
+  .su-mbtn.on svg { color: var(--arm); }
+  .su-ex { font-size: 10.5px; color: var(--muted-fg); line-height: 1.9; background: var(--bg); border-radius: 10px; padding: 8px 11px; }
+
+  /* نمایندهٔ فروش (۶۹) — فضای سوم فیروزه‌ای */
+  #scr-69 { --arm: var(--rep); --arm-tint: var(--rep-tint); }
+  .rep-hero { display: flex; align-items: center; gap: 11px; padding: 14px 15px; background: linear-gradient(135deg, var(--rep-tint), #fff 70%); border: 1px solid #bfe5e0; border-radius: 16px; }
+  .rep-hero .rh-ic { width: 44px; height: 44px; border-radius: 13px; background: var(--rep); color: #fff; display: grid; place-items: center; flex-shrink: 0; }
+  .rep-hero .rh-ic svg { width: 21px; height: 21px; }
+  .rep-hero b { display: block; font-size: 13.5px; font-weight: 800; }
+  .rep-hero span { display: block; font-size: 11px; color: var(--muted-fg); margin-top: 3px; }
+  .rep-biz { display: flex; align-items: center; gap: 10px; padding: 12px 13px; background: #fff; border: 1px solid var(--border); border-radius: 15px; cursor: pointer; width: 100%; text-align: right; font-family: inherit; }
+  .rep-biz + .rep-biz { margin-top: 8px; }
+  .rep-biz .rb-tx { flex: 1; min-width: 0; }
+  .rep-biz .rb-tx b { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .rep-biz .rb-tx small { display: block; font-size: 10.5px; color: var(--muted-fg); margin-top: 3px; }
+  .rep-pct { font-size: 11px; font-weight: 800; color: var(--rep); background: var(--rep-tint); border-radius: 8px; padding: 4px 9px; flex-shrink: 0; }
+  .rbz-terms { display: flex; gap: 8px; margin-top: 10px; }
+  .rbz-term { flex: 1; text-align: center; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px; }
+  .rbz-term b { display: block; font-size: 14px; font-weight: 800; color: var(--rep); }
+  .rbz-term span { display: block; font-size: 9.5px; color: var(--muted-fg); margin-top: 2px; }
+
+  /* خط زمانی سفارش (شیت‌های ordview/ordmgr) + مهلت ۷ روزهٔ تأیید تحویل */
+  .ord-tl { border: 1px solid var(--border); border-radius: 13px; background: #fff; padding: 11px 13px; }
+  .ord-tl .tl-h { font-size: 11.5px; font-weight: 800; margin-bottom: 9px; }
+  .tl-row { position: relative; display: flex; gap: 10px; padding-bottom: 12px; }
+  .tl-row:last-child { padding-bottom: 2px; }
+  .tl-row::before { content: ''; position: absolute; top: 15px; bottom: -1px; inset-inline-start: 4.5px; width: 1.5px; background: var(--border); }
+  .tl-row:last-child::before { display: none; }
+  .tl-row .tl-dot { width: 11px; height: 11px; border-radius: 50%; border: 2.5px solid var(--border-strong); background: #fff; flex-shrink: 0; margin-top: 3px; }
+  .tl-row.hit .tl-dot { border-color: var(--green); background: var(--green); }
+  .tl-row .tl-tx b { display: block; font-size: 11.5px; font-weight: 700; }
+  .tl-row .tl-tx small { display: block; font-size: 9.5px; color: var(--muted-fg); margin-top: 1px; }
+  .dl-deadline { margin-top: 9px; font-size: 10.5px; color: var(--amber); font-weight: 700; display: flex; align-items: center; gap: 5px; line-height: 1.8; }
+  .dl-deadline svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  /* شیت شتابدهی — عکس‌های جایگاه دیده‌شدن */
+  .accel-shot { width: 100%; border-radius: 13px; border: 1px solid var(--border); display: block; }
+  .accel-cap { font-size: 10.5px; color: var(--muted-fg); line-height: 1.9; margin-top: 6px; }
+
+  /* toast — بازخورد کوتاه یکدست (الگوی FD) */
+  #phone { position: relative; }
+  .toast { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(14px); background: var(--foreground); color: #fff; font-size: 12px; font-weight: 600; padding: 10px 16px; border-radius: 13px; opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease; z-index: 99; max-width: 84vw; text-align: center; line-height: 1.8; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -2271,6 +2452,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
 <symbol id="i-basket-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 10.6l1.5-5.6a1.5 1.5 0 012.8.3L9 8h3.4l.5-1.8a1.5 1.5 0 012.8-.3l1.3 4"/><path d="M3.2 10.6h13.4l-1.1 6.9a1.9 1.9 0 01-1.9 1.6H6.2a1.9 1.9 0 01-1.9-1.6z"/><path d="M19.5 16v5.5M17 18.7h5"/></symbol>
 <!-- فاز ۵۳ — کد QR کاتالوک (چاپ روی فاکتور/پیشخوان/کارت ویزیت) -->
 <symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.2" height="6.2" rx="1.2"/><rect x="14.3" y="3.5" width="6.2" height="6.2" rx="1.2"/><rect x="3.5" y="14.3" width="6.2" height="6.2" rx="1.2"/><path d="M14.3 14.3h2.4v2.4M20.5 14.3v1.2M14.3 20.5v-1.2M17.5 17.5h3M17.5 20.5h.01M20.5 17.6v2.9"/></symbol>
+<!-- هم‌ترازی FD — امتیاز فعالیت / رمز ورود / نمایندهٔ فروش -->
+<symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5c5.5-3 8-7.5 8.5-12.5C15.5 3.5 11 6 8 11.5"/><path d="M12 15.5l-3.5-3.5"/><path d="M8.5 12L4 13.5l2.5 4L11 15"/><path d="M12.5 15.5c-1.5 3-5 3.5-7 3.5.5-2 1.5-5 4.5-6"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/><circle cx="12" cy="15.5" r="1.4"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="13" rx="2.5"/><path d="M9 7.5V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5v2M3 12.5h18M12 11.5v2.5"/></symbol>
 </svg>
 
 <!-- ═══ قاب موبایل مشترک — همان .stage/.phone طرح بیس ═══ -->
@@ -2280,21 +2465,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-01" data-arm="sell" hidden>
 
 
-    <!-- ═══ هدر: لوگو + زنگ + پیش‌نمایش عمومی ═══ -->
-    <header class="appbar">
-      <div class="brand">
-        <img src="assets/logo3.svg" alt="iMach">
-        <button class="arm-pill" aria-label="تعویض دستیار">دستیار فروش عمده
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
-        </button>
-      </div>
-      <div class="actions">
-        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
-          <svg><use href="#i-bell"/></svg>
-          <span class="dot">۳</span>
-        </button>
-        <button class="icon-btn" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ"><svg><use href="#i-user"/></svg></button>
-      </div>
+    <!-- ═══ هم‌ترازی FD — کاتالوگ دیگر خانهٔ فروش نیست؛ صفحهٔ پشته‌ای از میز فروش (۶۶) است.
+         سربرگ: بازگشت به میز + تنظیمات کاتالوگ + اشتراک‌گذاری (الگوی FD-05). ═══ -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">کاتالوگ من<small>پخش برنج پارس · دستیار فروش</small></div>
+      <button class="icon-btn" data-sheet="sheet-cset" aria-label="تنظیمات کاتالوگ" title="تنظیمات کاتالوگ"><svg><use href="#i-gear"/></svg></button>
+      <button class="icon-btn" aria-label="اشتراک‌گذاری کاتالوگ" data-sheet="sheet-share" title="ارسال لینک کاتالوگ به مشتری‌ها"><svg><use href="#i-share"/></svg></button>
     </header>
 
     <main class="screen-body">
@@ -2452,18 +2629,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
 
     </main>
-
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
-      <div class="tabs">
-        <button class="tab active"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
-        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
-             استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
-        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
 
     </section>
 
@@ -2727,20 +2892,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-05" data-arm="sell" hidden>
 
 
-    <header class="appbar">
-      <div class="brand">
-        <img src="assets/logo3.svg" alt="iMach">
-        <button class="arm-pill" aria-label="تعویض دستیار">دستیار فروش عمده
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
-        </button>
-      </div>
-      <div class="actions">
-        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27">
-          <svg><use href="#i-bell"/></svg>
-          <span class="dot">۳</span>
-        </button>
-        <button class="icon-btn" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ"><svg><use href="#i-user"/></svg></button>
-      </div>
+    <!-- هم‌ترازی FD — سربرگ پشته‌ای با بازگشت به میز فروش (۶۶) -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">درخواست‌های قیمت<small>خریدارانی که از شما قیمت خواسته‌اند</small></div>
     </header>
 
     <main class="screen-body">
@@ -2872,18 +3027,11 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <section class="scr" id="scr-07" data-arm="sell" hidden>
 
     <!-- ═══ فاز ۴۴ — تنظیمات دستیار فروش: پروفایل شخصی/کسب‌وکار/شارژ به هاب ۴۲ (آواتار هدر) رفتند؛
-         این صفحه فقط تنظیماتِ همان دستیار است. کمپین/مشتریان من/راهنما حذف شدند. ═══ -->
-    <header class="appbar">
-      <div class="brand">
-        <img src="assets/logo3.svg" alt="iMach">
-        <button class="arm-pill" aria-label="تعویض دستیار">دستیار فروش عمده
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
-        </button>
-      </div>
-      <div class="actions">
-        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
-        <button class="icon-btn" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ"><svg><use href="#i-user"/></svg></button>
-      </div>
+         این صفحه فقط تنظیماتِ همان دستیار است. کمپین/مشتریان من/راهنما حذف شدند.
+         هم‌ترازی FD — صفحهٔ پشته‌ای با بازگشت به میز فروش (۶۶). ═══ -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">تنظیمات<small>دستیار فروش · پخش برنج پارس</small></div>
     </header>
 
     <main class="screen-body">
@@ -2976,18 +3124,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
-      <div class="tabs">
-        <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
-        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
-             استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
-        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
-
     </section>
 
     <section class="scr" id="scr-08" data-arm="buy" hidden>
@@ -2997,19 +3133,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
          کارت مینیمال عکس‌دار (~۱۰۰px): عنوان کامل + مقدار و دورهٔ خرید + فراداده به‌صورت آیکون+عدد.
          نوار گروه‌بندی (جای فیلتر بی‌مفهوم) · اشتراک و تنظیمات کنار نام لیست ·
          افزودن کالا → فرم ۳۴ (حجم و دورهٔ خرید از کاربر گرفته می‌شود).
-         دنبال‌کردن فقط در کاتالوگ دیگران معنی دارد — روی کارت این‌جا نیست. -->
+         دنبال‌کردن فقط در کاتالوگ دیگران معنی دارد — روی کارت این‌جا نیست.
+         هم‌ترازی FD — صفحهٔ پشته‌ای از میز خرید (۶۷)؛ سربرگ با بازگشت. -->
 
-    <header class="appbar">
-      <div class="brand">
-        <img src="assets/logo3.svg" alt="iMach">
-        <button class="arm-pill" aria-label="تعویض دستیار">دستیار خرید عمده
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
-        </button>
-      </div>
-      <div class="actions">
-        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
-        <button class="icon-btn" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ"><svg><use href="#i-user"/></svg></button>
-      </div>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">لیست خرید من<small>سوپرمارکت آریا · دستیار خرید</small></div>
+      <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="تنظیمات لیست خرید" data-sheet="sheet-listset" title="تنظیمات لیست خرید"><svg><use href="#i-gear"/></svg></button>
     </header>
 
     <main class="screen-body">
@@ -3021,6 +3151,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div style="display:flex;align-items:center;gap:7px">
           <button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="تنظیمات لیست خرید" data-sheet="sheet-listset" title="تنظیمات لیست خرید"><svg><use href="#i-gear"/></svg></button>
         </div>
+      </div>
+
+      <!-- ═══ هم‌ترازی FD — «پیشنهادهای تامین» رسیده (از لینک لیست یا پاسخ استعلام)
+           بالای لیست می‌نشینند — جلوی چشم (حکم مالک FD-19)؛ تایید = تأمین‌کنندهٔ تو
+           + تو مشتری او (دو رابطه با یک تایید ساخته می‌شود). رندر JS (suppRender). ═══ -->
+      <div class="prop-wrap" id="bl-props-wrap" hidden>
+        <div class="sec-title" style="margin-top:4px"><h2><svg><use href="#i-inbox"/></svg> پیشنهادهای تامین</h2><span class="more" id="bl-props-n"></span></div>
+        <div id="bl-props"></div>
       </div>
 
       <!-- ═══ فاز ۵۹ (مالک) — دکته‌های اشتراک و پیشنمایش لیست خرید در یک کادر:
@@ -3145,21 +3283,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
     </main>
-
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
-      <!-- فاز ۶۳ (مالک) — «تأمین‌کنندگان» بلافاصله بعد از «لیست خرید»:
-           دو ستون اصلی شبکهٔ خرید خریدار کنار هم؛ استعلام‌ها و پیام‌ها بعدتر. -->
-      <div class="tabs">
-        <button class="tab active"><svg><use href="#i-list"/></svg>لیست خرید</button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
-        <!-- فاز ۶۴ (مالک): تب سوم فوتر خرید = «سفارش‌های من» — سفارش‌های ثبت‌شدهٔ شما به تأمین‌کنندگان.
-             استعلام فرایند فرعی است و از فوتر رفت — ورود: نوار «استعلام‌های جاری» همین صفحه + تنظیمات -->
-        <button class="tab"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <!-- فاز ۶۷ (مالک): «تنظیمات خرید» (۱۴) بازگشت — پنجمین تب، قرینهٔ فوتر فروش -->
-        <button class="tab" data-go="14"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
 
     </section>
 
@@ -3342,6 +3465,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
 
+      <!-- ═══ هم‌ترازی FD — درِ قفل «تأمین‌کنندگان بیشتر»: مرز شبکهٔ خصوصی.
+           فعالیت تجاری محدود به شبکهٔ خصوصی خود کاربر است (ضداسپم)؛ برای دیدن
+           تأمین‌کنندگان فراتر از شبکه، امتیاز فعالیت خرید باید به ۱۰۰ برسد —
+           دعوت تأمین‌کنندهٔ جدید یکی از بالاترین امتیازهاست. با ۱۰۰، همین در باز
+           می‌شود و ردیف‌های شبکهٔ باز زیرش می‌آیند. ═══ -->
+      <button class="lockdoor" id="more-sup-09" type="button" data-go="68" title="امتیاز فعالیت خرید — کارها و امتیاز هر کدام">
+        <span class="ld-ic"><svg><use href="#i-lock"/></svg></span>
+        <span class="ld-tx"><b>تأمین‌کنندگان بیشتر</b><small>برای دیدن تأمین‌کنندگان فراتر از شبکهٔ خصوصیت، امتیاز فعالیت خریدت را به ۱۰۰ برسان — دعوت کردن تأمین‌کنندهٔ جدید یکی از بالاترین امتیازهای آیمچ را دارد</small></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </button>
+
       <!-- شفافیت معرفی‌ها — جدایی کامل از تطبیق
            فاز ۶۳: تابلو خصوصی شد + شرط هوشمندِ دیده‌شدن فروشندهٔ ویژه (متن منفعت‌محور)؛
            مکانیک «رتبهٔ پیشنهادهای دیگر خریدنی نیست» (حکم فاز ۳۳) دست‌نخورده ماند. -->
@@ -3444,6 +3578,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
     </header>
 
     <main class="screen-body">
+
+      <!-- ═══ هم‌ترازی FD — «پیشنهادهای تامین» بالای دفترچهٔ تلفن (الگوی ۲۰/۲۲ FD):
+           فروشنده‌ای که لیست خرید خریدار را دیده و پیشنهاد داده؛ تایید خریدار = دو رابطه
+           با هم ساخته می‌شود (تأمین‌کنندهٔ تو + تو مشتری او). رندر JS (suppRender). ═══ -->
+      <div class="prop-wrap" id="sup-props-wrap" hidden>
+        <div class="sec-title" style="margin-top:0"><h2><svg><use href="#i-inbox"/></svg> پیشنهادهای تامین</h2><span class="more" id="sup-props-n"></span></div>
+        <div id="sup-props"></div>
+      </div>
 
       <!-- جستجوی دفترچهٔ تلفن (فاز ۲۸: مارجین پایین — جدا از کارت اول) -->
       <div class="searchbar" style="margin:6px 0 10px">
@@ -3772,12 +3914,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
           <button class="btn btn-outline btn-sm" style="flex:.58;color:var(--stone)" title="تماس"><svg><use href="#i-phone"/></svg> تماس</button>
         </div>
 
-        <!-- فاز ۲۱ + ۵۱ — آمار کاتالوگ نزد خریداران: «تعداد تماس» جایگزین «تعداد مشتری» شد
-             (مفهوم مشتری در آیمچ حذف شده است — چیزی که واقعاً می‌شماریم تماس‌هایی است که از کاتالوگ گرفته شده) -->
+        <!-- فاز ۲۱ + ۵۱ + هم‌ترازی FD — آمار کاتالوگ نزد خریداران: «سفارش» به‌جای «تماس»
+             (FD-31: محصول / ذخیره‌شده / سفارش — آنچه واقعاً می‌شماریم سفارش‌های رسیده است) -->
         <div class="pub-stats">
           <span><b>۱۲</b> کالا</span>
           <span><b>۴۱</b> ذخیره‌شده</span>
-          <span><b>۱۸</b> تماس</span>
+          <span><b>۱۸</b> سفارش</span>
         </div>
 
         <!-- فاز ۶۷ (مالک) — «گروه خرید من»: مشتری خودش گروهش را با این فروشنده انتخاب
@@ -3875,17 +4017,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
          تنظیمات دستیار خرید — لیست خرید (تنظیمات/گروه‌های کالا) · کسب‌وکار · حساب کاربری.
          ورود: تب پنجم فوتر خرید (قرینهٔ «تنظیمات» فوتر پنج‌تبی فروش). ═══ -->
     <section class="scr" id="scr-14" data-arm="buy" hidden>
-    <header class="appbar">
-      <div class="brand">
-        <img src="assets/logo3.svg" alt="iMach">
-        <button class="arm-pill" aria-label="تعویض دستیار">دستیار خرید عمده
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
-        </button>
-      </div>
-      <div class="actions">
-        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg></button>
-        <button class="icon-btn" data-go="42" aria-label="پروفایل" title="پروفایل — حساب، کسب‌وکارها و شارژ"><svg><use href="#i-user"/></svg></button>
-      </div>
+    <!-- هم‌ترازی FD — تنظیمات خرید: صفحهٔ پشته‌ای با بازگشت به میز خرید (۶۷) -->
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">تنظیمات خرید<small>لیست، کسب‌وکار و حساب کاربری</small></div>
     </header>
 
     <main class="screen-body">
@@ -3935,17 +4070,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
     </main>
-
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
-      <div class="tabs">
-        <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
-        <button class="tab"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <!-- فاز ۶۷ (مالک): «تنظیمات خرید» (۱۴) بازگشت — پنجمین تب فوتر خرید، قرینهٔ فروش -->
-        <button class="tab active"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
 
     </section>
 
@@ -4131,7 +4255,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
               </div>
 
               <h3>شعبه آنلاین کسب‌وکار شما برای خرید و فروش عمده</h3>
-              <p>آیمچ به شما کمک می‌کنه کاتالوگ محصولاتتون رو بسازید، مشتری‌ها و تأمین‌کننده‌هاتون رو دعوت کنید و ارتباط‌های کاری‌تون رو یک‌جا داشته باشید. فروشنده‌ها می‌تونن کاتالوگشون رو با مشتری‌ها به اشتراک بذارن و سفارش بگیرن؛ خریدارها هم می‌تونن کالاهای موردنیازشون و تأمین‌کننده‌هاشون رو مدیریت کنن. هر وقت هم به تأمین‌کننده یا خریدار جدید نیاز داشتید، آیمچ می‌تونه به پیدا کردن گزینه‌های مرتبط کمک کنه.</p>
+              <p>کاتالوگ یا لیست خرید خودت را بساز و لینکش را برای مشتریان و تأمین‌کنندگانت بفرست — شبکهٔ تجاری خودت را همین‌جا شکل بده. آیمچ برای کاربر بدون هیچ شبکهٔ اولیه هم کار می‌کند؛ مثل یک دفتر آنلاین خرید و فروش عمده، با مشتریان و تأمین‌کنندگان دنیای واقعیِ خودت شروع کن. هر وقت شبکه‌ات آماده بود، موتور تطبیق آیمچ آن را برایت بزرگ‌تر می‌کند.</p>
             </div>
 
             <!-- سه مسیر اصلی -->
@@ -4271,6 +4395,23 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
+        <!-- ═══ هم‌ترازی FD — بخش «آیمچ برای همکاران فروش»: فضای سوم نمایندهٔ فروش.
+             روی یک صنف در یک شهر متمرکز شو، آن‌ها را مشتری خودت کن و کالاهای چند
+             تأمین‌کنندهٔ مکمل را به همین گروه بفروش — از هر کسب‌وکار پورسانت توافقی. ═══ -->
+        <div class="land-sec">
+          <div class="intro-sep"><i></i><span>آیمچ برای همکاران فروش</span><i></i></div>
+          <div class="intro-card" style="border-color:#bfe5e0;background:linear-gradient(180deg,var(--rep-tint),#fff 65%)">
+            <div class="match-viz">
+              <span class="mv"><svg><use href="#i-users"/></svg></span>
+              <span class="mv-link" style="color:var(--rep)"><svg><use href="#i-briefcase"/></svg><small>یک صنف، چند درآمد</small></span>
+              <span class="mv"><svg><use href="#i-store"/></svg></span>
+            </div>
+            <h3 style="color:#0f766e">کالایی برای فروش عمده ندارید؟ آیمچ برای شما ایدهٔ بهتری دارد!</h3>
+            <p>به‌عنوان بازاریاب یا نمایندهٔ فروش، روی یک صنف خاص در شهرتان متمرکز شوید — مثلاً رستوران‌های رشت — آن‌ها را مشتری خودتان کنید و کالاهای چند تأمین‌کنندهٔ مکمل (روغن، گوشت، سبزی) را به همین گروه بفروشید. داشبورد نمایندهٔ فروش آیمچ، فروش چند کسب‌وکار را یک‌جا مدیریت می‌کند و پورسانت توافقی هر کدام را ردیابی می‌کند.</p>
+            <button class="btn" data-go="69" type="button" style="width:100%;background:var(--rep);border-color:var(--rep);color:#fff;margin-top:4px">آشنایی با همکاری در فروش</button>
+          </div>
+        </div>
+
         <!-- CTA پایانی -->
         <section style="padding:0 16px">
           <div class="final-cta">
@@ -4304,7 +4445,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- ═══ هدر ساده ═══ -->
     <div class="subheader">
       <button type="button" class="back" aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">ساخت حساب<small>قدم دوم از دو</small></div>
+      <div class="ttl" id="su-ttl">ساخت حساب<small id="su-steps">مرحلهٔ ۱ از ۲ — شما</small></div>
       <div style="width:34px"></div>
     </div>
 
@@ -4313,91 +4454,109 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="auth-logo"><img src="assets/logo3.svg" alt="iMach"></div>
       <div class="auth-title">
         <h1>به ای‌مچ خوش آمدید</h1>
-        <p>چند سؤال ساده — و دستیار خرید و فروشت آماده می‌شود</p>
+        <p>چند سؤال ساده — و میز خرید و فروشت آماده می‌شود</p>
       </div>
 
-      <!-- نوار پیشرفت مینیمال (فاز ۳۴) — به‌جای اندیکاتور بزرگ گام‌ها -->
-      <div class="mini-prog" role="progressbar" aria-label="قدم دوم از دو" aria-valuenow="2" aria-valuemin="1" aria-valuemax="2">
-        <i class="done"></i><i class="now"></i>
+      <!-- نوار پیشرفت مینیمال (فاز ۳۴) — گام جاری با JS هم‌گام می‌شود -->
+      <div class="mini-prog" id="su-prog" role="progressbar" aria-label="مرحلهٔ ۱ از دو" aria-valuenow="1" aria-valuemin="1" aria-valuemax="2">
+        <i class="now"></i><i></i>
       </div>
 
-      <!-- شماره تاییدشده -->
-      <div class="verified-phone">
-        <div class="ck"><svg><use href="#i-check-v2"/></svg></div>
-        <div class="num">۰۹۱۲ ۳۴۵ ۶۷۸۹</div>
-        <span class="badge b-answered">تایید شد</span>
-        <span class="edit">ویرایش</span>
-      </div>
-
-      <!-- فرم اطلاعات کسب‌وکار -->
-      <div class="form-card">
+      <!-- ═══ هم‌ترازی FD — گام ۱: شماره موبایل + نام و نام خانوادگی ═══ -->
+      <div class="form-card" id="su-step1">
+        <div class="field">
+          <label>شماره موبایل</label>
+          <div class="input phone-input">
+            <span class="pre">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>
+              ۹۸+
+            </span>
+            <input id="su-phone" inputmode="tel" autocomplete="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" style="direction:ltr;font-feature-settings:'tnum'" value="۰۹۱۲ ۳۴۵ ۶۷۸۹">
+          </div>
+        </div>
         <div class="field">
           <label>نام و نام خانوادگی</label>
-          <div class="input"><span>احمد رضایی</span></div>
+          <div class="input"><input id="su-name" autocomplete="name" placeholder="مثلاً احمد رضایی" value="احمد رضایی"></div>
+        </div>
+        <div class="su-err" id="su-err1" hidden>شمارهٔ موبایل و نام را کامل وارد کنید</div>
+      </div>
+
+      <!-- ═══ هم‌ترازی FD — گام ۲: کسب‌وکار شما — نام + نقش (شیت ۹گانه) + صنف (جستجویی)
+           + نوع سروکار (۳ دکته، بدون پیش‌فرض) — فرود روی میزِ همان انتخاب. ═══ -->
+      <div id="su-step2" hidden>
+        <!-- شماره تاییدشده -->
+        <div class="verified-phone">
+          <div class="ck"><svg><use href="#i-check-v2"/></svg></div>
+          <div class="num" id="su-phone-chip">۰۹۱۲ ۳۴۵ ۶۷۸۹</div>
+          <span class="badge b-answered">تایید شد</span>
+          <span class="edit" data-suback>ویرایش</span>
         </div>
 
-        <div class="field">
-          <label>نام کسب‌وکار</label>
-          <div class="input focus"><span>پخش برنج پارس</span></div>
-          <div class="hint">این نام روی کاتالوگ عمومی شما دیده می‌شود</div>
-        </div>
-
-        <div class="field">
-          <div class="lbl-row">
-            <label>کدام دستیار برای کسب و کار شما فعال باشد</label>
-            <button type="button" class="info-ic" data-sheet="dlg-suinfo" aria-label="توضیح کوتاه: کدام دستیار را فعال کنم؟" title="کدام دستیار را فعال کنم؟"><svg><use href="#i-info"/></svg></button>
+        <!-- فرم اطلاعات کسب‌وکار -->
+        <div class="form-card">
+          <div class="field">
+            <label>نام کسب‌وکار</label>
+            <div class="input focus"><span>پخش برنج پارس</span></div>
+            <div class="hint">این نام روی کاتالوگ عمومی شما دیده می‌شود — لازم نیست حتماً صاحب کسب‌وکار باشید؛ نقش شما مهم است</div>
           </div>
-          <!-- فاز ۵۶ (مالک) — به‌جای سه پیلِ «فعالیت شما در بازار»: دو سوییچر.
-               حداقل یکی باید فعال بماند (مثل سوییچ‌های «ویرایش کسب‌وکار» ۲۲).
-               توضیح ریز، به‌جای متن زیر فرم، در مودالِ آیکون اینفورمیشن است (متن عیناً از مالک).
-               پس از ثبت‌نام، فرود = خانهٔ همان دستیاری که روشن است و پیل «تعویض دستیار» فقط
-               وقتی دیده می‌شود که هر دو روشن باشند. تغییر بعدی از «ویرایش کسب‌وکار» (۲۲) است. -->
-          <div class="su-as" id="su-assist">
-            <div class="as-row">
-              <span class="ico buy"><svg><use href="#i-basket"/></svg></span>
-              <div class="tx">دستیار خرید عمده</div>
-              <div class="toggle" data-suarm="buy" role="switch" aria-label="دستیار خرید عمده"></div>
+
+          <div class="field">
+            <label>نقش شما در کسب‌وکار</label>
+            <button class="input sel" data-sheet="sheet-surole" type="button">
+              <span style="color:var(--foreground);font-weight:700" id="surole-field-16">انتخاب کنید</span>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
+            </button>
+          </div>
+
+          <div class="field">
+            <label>شهر</label>
+            <div class="input sel-input">
+              <span>رشت</span>
+              <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></span>
             </div>
-            <div class="as-row">
-              <span class="ico sell"><svg><use href="#i-store"/></svg></span>
-              <div class="tx">دستیار فروش عمده</div>
-              <div class="toggle on" data-suarm="sell" role="switch" aria-label="دستیار فروش عمده"></div>
+          </div>
+
+          <div class="field">
+            <label>صنف</label>
+            <!-- فاز ۵۶ (مالک) — انتخاب صنف: مودال از زیر باز می‌شود؛ جستجو + «ایجاد صنف جدید» -->
+            <button class="input sel" data-sheet="sheet-snf" type="button">
+              <span style="color:var(--foreground);font-weight:700" class="snf-chosen" id="snf-field-16">مواد غذایی — پخش برنج</span>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
+            </button>
+            <div class="hint">نوع کسب‌وکار خود را جستجو و انتخاب کنید</div>
+          </div>
+
+          <div class="field">
+            <div class="lbl-row">
+              <label>نوع سروکار</label>
+              <button type="button" class="info-ic" data-sheet="dlg-suinfo" aria-label="توضیح کوتاه: کدام دستیار را فعال کنم؟" title="کدام دستیار را فعال کنم؟"><svg><use href="#i-info"/></svg></button>
             </div>
+            <!-- هم‌ترازی FD — سه دکتهٔ ساده کنار هم با مثال، بدون پیش‌فرض؛
+                 «امکانات رایگان» از فرم رفت (در متن لندینگ هست) -->
+            <div class="su-mode" id="su-mode">
+              <button class="su-mbtn" data-sumode="sell" type="button"><svg><use href="#i-store"/></svg><b>فروش عمده</b></button>
+              <button class="su-mbtn" data-sumode="buy" type="button"><svg><use href="#i-basket"/></svg><b>خرید عمده</b></button>
+              <button class="su-mbtn" data-sumode="both" type="button"><svg><use href="#i-trend"/></svg><b>هر دو</b></button>
+            </div>
+            <div class="su-ex" id="su-ex" hidden></div>
+            <div class="su-err" id="su-err" hidden>نوع سروکار را انتخاب کنید</div>
           </div>
-          <div class="su-err" id="su-err" hidden>حداقل یکی از دستیارها باید فعال باشد</div>
-        </div>
 
-        <div class="field">
-          <label>شهر</label>
-          <div class="input sel-input">
-            <span>رشت</span>
-            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg></span>
+          <div class="checkrow" style="margin-top:2px">
+            <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
+            <span style="font-size:12px;line-height:1.9"><button type="button" class="terms-lnk" data-termsopen>شرایط استفاده</button> از آیمچ را می‌پذیرم</span>
           </div>
-        </div>
-
-        <div class="field">
-          <label>صنف</label>
-          <!-- فاز ۵۶ (مالک) — انتخاب صنف: مودال از زیر باز می‌شود؛ جستجو + «ایجاد صنف جدید» -->
-          <button class="input sel" data-sheet="sheet-snf" type="button">
-            <span style="color:var(--foreground);font-weight:700" class="snf-chosen" id="snf-field-16">مواد غذایی — پخش برنج</span>
-            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>
-          </button>
-          <div class="hint">صنف خود را جستجو و انتخاب کنید</div>
-        </div>
-
-        <div class="checkrow" style="margin-top:2px">
-          <div class="checkbox on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
-          <span style="font-size:12px;line-height:1.9"><button type="button" class="terms-lnk" data-termsopen>شرایط استفاده</button> از آیمچ را می‌پذیرم</span>
         </div>
       </div>
 
-      <div class="swap-link">حساب دارید؟ <b>وارد شوید</b></div>
+      <div class="swap-link" id="su-loginlnk">حساب دارید؟ <b>وارد شوید</b></div>
 
     </main>
 
-    <!-- ═══ اکشن چسبان ═══ -->
+    <!-- ═══ اکشن چسبان — برچسب با JS هم‌گام می‌شود (ادامه / ساخت حساب و ورود) ═══ -->
     <div class="action-bar">
-      <button class="btn btn-primary btn-block" style="height:48px;font-size:15px">ساخت حساب و ورود</button>
+      <button class="btn btn-outline" id="su-back" type="button" style="width:96px" hidden><svg><use href="#i-back"/></svg> بازگشت</button>
+      <button class="btn btn-primary btn-block" id="su-main" style="height:48px;font-size:15px" data-sunext type="button">ادامه</button>
     </div>
 
     </section>
@@ -4408,7 +4567,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- ═══ هدر ساده ═══ -->
     <div class="subheader">
       <button type="button" class="back" aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-      <div class="ttl">ورود<small>یک قدم تا دستیارت</small></div>
+      <div class="ttl">ورود<small>یک قدم تا میز کارت</small></div>
       <div style="width:34px"></div>
     </div>
 
@@ -4418,7 +4577,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="auth-logo"><img src="assets/logo3.svg" alt="iMach"></div>
       <div class="auth-title">
         <h1>خوش آمدید 👋</h1>
-        <p>شماره‌ای که با آن ثبت‌نام کرده‌اید را وارد کنید</p>
+        <p>شماره و رمز ورود حساب خود را وارد کنید</p>
       </div>
 
       <div class="login-card">
@@ -4434,39 +4593,29 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </div>
         </div>
 
+        <!-- ═══ هم‌ترازی FD — ورود با رمز عبور (جایگزین کد یک‌بارمصرف).
+             رمز پس از اولین ورود، در میز خرید ساخته می‌شود (ردیف «شروع»). ═══ -->
         <div class="field">
-          <label>کد تایید ۵ رقمی</label>
-          <div class="hint" style="margin-top:0;margin-bottom:9px">
-            پیامک‌شده به همین شماره — <span style="direction:ltr;display:inline-block">۰۹۱۲***۶۷۸۹</span>
-          </div>
-          <div class="otp-row">
-            <div class="otp filled">۴</div>
-            <div class="otp filled">۷</div>
-            <div class="otp filled">۲</div>
-            <div class="otp filled">۹</div>
-            <div class="otp active"></div>
-          </div>
-          <div class="otp-meta">
-            <span class="timer"><svg><use href="#i-clock"/></svg> ۰۱:۱۲</span>
-            <span class="resend">ارسال مجدد کد تا <b>۱ دقیقه</b> دیگر</span>
-          </div>
+          <label>رمز ورود</label>
+          <div class="input"><span style="letter-spacing:3px">●●●●●●</span></div>
+          <div class="hint">رمزی که پس از اولین ورود، در میز خرید برای خودت ساخته‌ای</div>
         </div>
 
       </div>
 
+      <!-- اولویت لینک‌ها (FD-26): ثبت‌نام رنگی و بالاتر، فراموشی آرام و پایین‌تر -->
+      <div class="swap-link">حساب ندارم — <b>ثبت‌نام می‌کنم</b></div>
       <div class="ghost-center">
-        <button>ورود با رمز عبور</button>
+        <button data-forgot>رمزم را فراموش کردم</button>
       </div>
 
-      <div class="swap-link">حساب ندارید؟ <b>ساخت حساب</b></div>
-
-      <div class="secure-note"><svg><use href="#i-shield"/></svg> ورود شما با کد یک‌بار‌مصرف امن است</div>
+      <div class="secure-note"><svg><use href="#i-shield"/></svg> ورود شما با رمز عبور امن است</div>
 
     </main>
 
     <!-- ═══ اکشن چسبان ═══ -->
     <div class="action-bar">
-      <button class="btn btn-primary btn-block" style="height:48px;font-size:15px">ورود به ای‌مچ</button>
+      <button class="btn btn-primary btn-block" style="height:48px;font-size:15px">ورود به آی‌مچ</button>
     </div>
 
     </section>
@@ -4545,8 +4694,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <!-- ═══ ناوبری پایین — دستیار خرید (در دستیار فروش، خودکار تعویض می‌شود) ═══ -->
-    <nav class="tabbar" data-cols="3" aria-label="ناوبری پیام‌ها"><div class="tabs"></div></nav>
+    <!-- ═══ ناوبری اصلی (FD) — چهار تب میزها؛ تب بازوی خاموش با tabSync مخفی می‌شود ═══ -->
+    <nav class="tabbar" data-cols="4" aria-label="ناوبری اصلی">
+      <div class="tabs">
+        <button class="tab" data-tabarm="sell" data-go="66"><svg><use href="#i-store"/></svg>میز فروش</button>
+        <button class="tab" data-tabarm="buy" data-go="67"><svg><use href="#i-basket"/></svg>میز خرید</button>
+        <button class="tab active" data-go="18"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab" data-go="42"><svg><use href="#i-user"/></svg>پروفایل</button>
+      </div>
+    </nav>
 
     </section>
 
@@ -4775,13 +4931,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
-      <!-- فاز ۲۹ — تماس + پیام + ذخیرهٔ لیست: سه‌تایی در یک ردیف؛ هر کدام رنگ خودش، فشرده‌تر.
-           فاز ۵۸: نقشِ خریدار (sheet-listedit) حالا زیر نام مالک نمایش داده می‌شود؛
-           تماس مثل بقیهٔ فرم‌ها دکمهٔ نمایشی است، پیام → گفتگو (۱۹)، ذخیره → حالت ذخیره‌شده. -->
+      <!-- ═══ هم‌ترازی FD (۳۲) — نوار تماس: تماس / گفتگو / «افزودن کالاهای این لیست به لیست
+           خرید من» (چه خریدار چه فروشنده — شیت انتخاب چندکالایی)؛ «پیشنهاد تامین» به
+           اکشن‌بار چسبانِ پایین رفت (نارنجیِ کامل — FD-26). ═══ -->
       <div class="contact-row">
         <button class="btn btn-outline" data-contactbtn title="تماس با خریدار" aria-label="تماس با خریدار"><svg><use href="#i-phone"/></svg> تماس</button>
-        <button class="btn btn-primary" data-go="19" data-msgbtn title="ارسال پیام به خریدار"><svg><use href="#i-msg"/></svg> پیام</button>
-        <button class="btn btn-save" data-savelist title="ذخیرهٔ لیست خریدار"><svg><use href="#i-bmark-plus"/></svg> ذخیرهٔ لیست</button>
+        <button class="btn btn-primary" data-go="19" data-msgbtn title="ارسال پیام به خریدار"><svg><use href="#i-msg"/></svg> گفتگو</button>
+        <button class="btn btn-save" data-sheet="sheet-pick" title="کالاهای این لیست را به لیست خرید خودت اضافه کن"><svg><use href="#i-basket-plus"/></svg> افزودن کالاها به لیست من</button>
       </div>
 
       <!-- آمار لیست -->
@@ -4860,6 +5016,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
     </main>
+
+    <!-- ═══ هم‌ترازی FD — نوار چسبان «پیشنهاد تامین» (نارنجیِ کامل — حکم مالک FD-26):
+         فروشندهٔ بیننده، قیمت و شرایط خودش را برای این خریدار می‌فرستد؛ خریدار با تایید،
+         دو رابطه را با هم می‌سازد (تأمین‌کنندهٔ تو + تو مشتری او). بدون قلم هم می‌شود:
+         «فقط درخواست تامین‌کنندگی». ═══ -->
+    <div class="action-bar">
+      <button class="btn btn-primary btn-block" data-sheet="sheet-supply" type="button">
+        <svg><use href="#i-send"/></svg>
+        پیشنهاد تامین
+      </button>
+    </div>
 
     </section>
 
@@ -5156,6 +5323,17 @@ body > div[id^="scr-d"][hidden] { display: none; }
         </div>
       </div>
 
+      <!-- ═══ هم‌ترازی FD — کارت پل «امتیاز به شارژ»: بعد از ۱۰۰ امتیاز فعالیت،
+           هر امتیازِ اضافه قابل تبدیل به شارژ است (روش واحد — FD-7). ═══ -->
+      <div class="card" data-go="68" style="display:flex;align-items:center;gap:11px;cursor:pointer">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:var(--primary-strong);flex-shrink:0"><svg style="width:19px;height:19px"><use href="#i-rocket"/></svg></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:800">امتیاز به شارژ</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px;line-height:1.8">با ۱۰۰ امتیاز فعالیت، هر امتیازِ اضافه را می‌توانی به شارژ تبدیل کنی — امتیازت را ببین</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0"><use href="#i-chev"/></svg>
+      </div>
+
     </main>
 
     </section>
@@ -5177,16 +5355,44 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     <main class="screen-body">
 
-      <!-- ۱ — سوییچ: کاتالوگ رو ویژه کن (روی همهٔ کالاها، بدون انتخاب) -->
+      <!-- ۱ — سوییچ: محصولات را ویژه کن (هم‌ترازی FD-34 — مفهوم ویژه‌کردن محصول) -->
       <div class="card" style="border-color:#f3ddba;background:linear-gradient(180deg,#fdf8ef,#fff 45%)">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:42px;height:42px;border-radius:12px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center;flex-shrink:0">
             <svg style="width:21px;height:21px"><use href="#i-spark-v2"/></svg>
           </div>
-          <div style="flex:1;min-width:0;font-size:15.5px;font-weight:800">کاتالوگ رو ویژه کن</div>
-          <div class="toggle on" id="ad-toggle" aria-label="کاتالوگ رو ویژه کن"></div>
+          <div style="flex:1;min-width:0;font-size:15.5px;font-weight:800">محصولات را ویژه کن</div>
+          <div class="toggle on" id="ad-toggle" aria-label="محصولات را ویژه کن"></div>
         </div>
-        <div id="ad-sub" style="font-size:11px;color:var(--stone-soft);line-height:1.9;margin-top:9px">روی همهٔ کالاهای کاتالوگ شما اعمال می‌شود — کالایی که واقعاً نمی‌فروشید را از کاتالوگ بردارید.</div>
+        <div id="ad-sub" style="font-size:11px;color:var(--stone-soft);line-height:1.9;margin-top:9px">محصولات ویژه، در شرایط مشابه بالاتر دیده می‌شوند — کالای تو جلوی چشم همان خریداری است که دنبالش است. فقط وقتی از شارژت نتیجه گرفت، شارژ کم می‌شود.</div>
+      </div>
+
+      <!-- ۱ب — هم‌ترازی FD — مصرف از شارژ، به ازای هر رویداد (PER_EVENT) -->
+      <div class="card" style="padding:2px 14px">
+        <div class="usg-row">
+          <div class="uic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-eye"/></svg></div>
+          <div class="utx">
+            <div class="t">بازدید یونیک در لیست تأمین</div>
+            <div class="s">هر بار یک خریدارِ جدید کالای تو را در تابلوی تأمین دید</div>
+          </div>
+          <span class="cost">− ۱٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-phone"/></svg></div>
+          <div class="utx">
+            <div class="t">تماس از لیست تأمین</div>
+            <div class="s">خریدار از روی کالای تو با تو تماس گرفت</div>
+          </div>
+          <span class="cost">− ۳٬۰۰۰</span>
+        </div>
+        <div class="usg-row">
+          <div class="uic" style="background:var(--green-bg);color:var(--green)"><svg><use href="#i-userplus"/></svg></div>
+          <div class="utx">
+            <div class="t">هدیهٔ ثبت‌نام از لینک شما</div>
+            <div class="s">هر کس با لینک تو عضو آیمچ شود</div>
+          </div>
+          <span class="cost plus">+ ۱۰۰٬۰۰۰</span>
+        </div>
       </div>
 
       <!-- ۲ — کادر راهنما: کاتالوگ ویژه چیست؟ -->
@@ -5462,10 +5668,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <!-- ═══ فاز ۴۴ — پروفایل: هابِ حساب از آواتارِ هدر باز می‌شود.
          فاز ۴۵ (مالک) — صفحهٔ خلوت: کارت شخصی (ویرایش در مودال sheet-ppedit) + کسب‌وکار (دراپ‌داون)
          + شارژ + کاتالوگ‌های ذخیره‌شده + حساب کاربری (تم/زبان/خروج — از تنظیمات دستیارها آمد).
-         هرچه به دستیارها مربوط است در تنظیمات همان دستیار (۰۷) است. ═══ -->
+         هرچه به دستیارها مربوط است در تنظیمات همان دستیار (۰۷) است.
+         هم‌ترازی FD — پروفایل تب اصلی چهارم شد: کارت «همکاری در فروش» (→ ۶۹) + دستیارهای فعال
+         (سوییچ‌ها همین‌جا هم‌گام با ۲۲) + زبان/ارز (به‌زودی) + تب‌بار پایین. ═══ -->
     <header class="subheader">
-      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <img src="assets/logo3.svg" alt="iMach" style="height:26px">
       <div class="ttl">پروفایل<small>حساب، کسب‌وکارها و شارژ</small></div>
+      <div style="width:34px"></div>
     </header>
 
     <main class="screen-body">
@@ -5496,6 +5705,40 @@ body > div[id^="scr-d"][hidden] { display: none; }
           </span>
         </div>
       </div>
+
+      <!-- ═══ هم‌ترازی FD — کارت «همکاری در فروش»: ورود داشبورد نمایندهٔ فروش (۶۹) —
+           فضای سوم فیروزه‌ای؛ بج زندهٔ «۳ کسب‌وکار». ═══ -->
+      <div class="card" data-go="69" style="display:flex;align-items:center;gap:11px;cursor:pointer;border-color:#bfe5e0;background:linear-gradient(180deg,var(--rep-tint),#fff 55%)">
+        <div style="width:38px;height:38px;border-radius:11px;background:var(--rep);display:grid;place-items:center;color:#fff;flex-shrink:0"><svg style="width:19px;height:19px"><use href="#i-briefcase"/></svg></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:800">همکاری در فروش <span class="badge" style="background:var(--rep-tint);color:var(--rep);font-size:9px;padding:1px 7px">۳ کسب‌وکار</span></div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">داشبورد نمایندهٔ فروش — مدیریت فروش چند کسب‌وکار از یک‌جا</div>
+        </div>
+        <svg class="chev" style="width:15px;height:15px;color:var(--border-strong);flex-shrink:0"><use href="#i-chev"/></svg>
+      </div>
+
+      <!-- ═══ هم‌ترازی FD — «دستیارهای فعال»: همان سوییچ‌های ویرایش کسب‌وکار (۲۲) این‌جا هم‌اند؛
+           حداقل یکی روشن می‌ماند و تب میز خاموش از تب‌بار پایین حذف می‌شود. ═══ -->
+      <div class="sec-title" style="margin-top:14px"><h2>دستیارهای فعال</h2></div>
+      <div class="card" style="padding:2px 14px">
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #f0eee8">
+          <span style="width:34px;height:34px;border-radius:10px;background:var(--stone-tint);color:var(--stone);display:grid;place-items:center"><svg style="width:17px;height:17px"><use href="#i-basket"/></svg></span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">دستیار خرید عمده</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">لیست خرید، تأمین‌کنندگان و استعلام</div>
+          </div>
+          <div class="toggle on" data-asst="buy" role="switch" aria-label="دستیار خرید عمده"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 0">
+          <span style="width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--primary-strong);display:grid;place-items:center"><svg style="width:17px;height:17px"><use href="#i-store"/></svg></span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">دستیار فروش عمده</div>
+            <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">کاتالوگ، مشتریان و سفارش‌ها</div>
+          </div>
+          <div class="toggle on" data-asst="sell" role="switch" aria-label="دستیار فروش عمده"></div>
+        </div>
+      </div>
+      <div class="hintnote" style="font-size:10.5px">اگر فقط یکی از این دو را لازم داری، دیگری را خاموش کن — تبِ میزِ خاموش از نوار پایین حذف می‌شود.</div>
 
       <!-- شارژ — فاز ۴۵: آیکون جمع‌وجور، هم‌قدِ بقیهٔ کادرها -->
       <div class="card wallet-card" data-go="29" style="cursor:pointer">
@@ -5568,7 +5811,12 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
           <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-globe"/></svg>
           <span style="flex:1">زبان / Language</span>
-          <span style="color:var(--muted-fg);font-size:11.5px">فارسی</span>
+          <span style="color:var(--muted-fg);font-size:11.5px">فارسی — English / العربية به‌زودی</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #f0eee8;font-size:13px">
+          <svg style="width:16px;height:16px;color:var(--muted-fg)"><use href="#i-percent"/></svg>
+          <span style="flex:1">ارز نمایش قیمت‌ها</span>
+          <span style="color:var(--muted-fg);font-size:11.5px">تومان — دلار / درهم به‌زودی</span>
         </div>
         <div style="display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13px;color:var(--red);cursor:pointer" data-go="15">
           <svg style="width:16px;height:16px"><use href="#i-logout"/></svg>
@@ -5577,6 +5825,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
       </div>
 
     </main>
+
+    <nav class="tabbar" data-cols="4" aria-label="ناوبری اصلی">
+      <div class="tabs">
+        <button class="tab" data-tabarm="sell" data-go="66"><svg><use href="#i-store"/></svg>میز فروش</button>
+        <button class="tab" data-tabarm="buy" data-go="67"><svg><use href="#i-basket"/></svg>میز خرید</button>
+        <button class="tab" data-go="18"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab active" data-go="42"><svg><use href="#i-user"/></svg>پروفایل</button>
+      </div>
+    </nav>
 
     </section>
 
@@ -5898,6 +6155,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <span><b>۱۲۰</b> بازدید ماه</span>
       </div>
 
+      <!-- ═══ هم‌ترازی FD — «دعوت مشتری جدید»: دعوت با لینک کاتالوگ (مخاطبین/پیام‌رسان‌ها)
+           بالای صفحه — دعوتِ هر مشتری جدید بیشترین امتیاز فعالیت را دارد. ═══ -->
+      <button class="add-row" type="button" data-sheet="sheet-cshare" style="background:var(--accent);border-color:#f3ddba"><svg><use href="#i-share"/></svg> دعوت مشتری جدید — ارسال لینک کاتالوگ</button>
+
       <!-- ═══ فاز ۶۸ (مالک) — نوار فیلتر (الگوی دیوار): هر فیلتر یک دکمهٔ خودش را دارد.
            صنف (نوع کسب‌وکار مشتری — از پروفایل خود او) و گروه مشتری (دسته‌بندی خودتان
            برای تخفیف) دو مفهوم جدایند؛ هر کدام دکمه‌ایست که شیت انتخاب باز می‌کند.
@@ -5927,18 +6188,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="hintnote" id="cust-more">۳۵ کسب‌وکار دیگر هم کاتالوگ شما را ذخیره کرده‌اند — با هر به‌روزرسانی قیمت، کاتالوگ شما دوباره جلوی چشم همهٔ مشتری‌ها می‌آید.</div>
 
     </main>
-
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
-      <div class="tabs">
-        <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
-        <button class="tab active"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <!-- فاز ۶۴ (مالک): تب سوم فوتر فروش = «سفارشات» — سفارش‌های ثبت‌شدهٔ مشتریان.
-             استعلام (درخواست‌های خرید) فرایند فرعی شد و از فوتر رفت — ورود: تنظیمات ۰۷ + اعلان‌ها -->
-        <button class="tab"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
 
     </section>
 
@@ -5991,17 +6240,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
 
     </main>
 
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار خرید">
-      <div class="tabs">
-        <button class="tab"><svg><use href="#i-list"/></svg>لیست خرید</button>
-        <button class="tab"><svg><use href="#i-bookmark"/></svg>تأمین‌کنندگان</button>
-        <button class="tab active"><svg><use href="#i-boxes"/></svg>سفارش‌های من</button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <!-- فاز ۶۷ (مالک): «تنظیمات خرید» (۱۴) بازگشت — پنجمین تب، قرینهٔ فوتر فروش -->
-        <button class="tab" data-go="14"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
-
     </section>
 
     <!-- ═══ فاز ۶۴ (مالک) — «سفارشات» (سمت فروشنده): سفارش‌هایی که مشتریان شما ثبت کرده‌اند.
@@ -6043,16 +6281,6 @@ body > div[id^="scr-d"][hidden] { display: none; }
       <div class="hintnote">سفارش مشتری را با مقدار و قیمت نهایی بپذیرید و ارسال را اعلام کنید — هماهنگی پرداخت و تحویل مستقیماً با خودِ مشتری است.</div>
 
     </main>
-
-    <nav class="tabbar" data-cols="5" aria-label="ناوبری دستیار فروش">
-      <div class="tabs">
-        <button class="tab"><svg><use href="#i-store"/></svg>کاتالوگ من</button>
-        <button class="tab"><svg><use href="#i-users"/></svg>مشتریان<span class="badge">۲</span></button>
-        <button class="tab active"><svg><use href="#i-receipt"/></svg>سفارش‌ها<span class="badge">۲</span></button>
-        <button class="tab"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
-        <button class="tab"><svg><use href="#i-gear"/></svg>تنظیمات</button>
-      </div>
-    </nav>
 
     </section>
 
@@ -6209,6 +6437,327 @@ body > div[id^="scr-d"][hidden] { display: none; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
         <div>ساخت کاتالوگ و دریافت درخواست‌های خرید رایگان است — شارژ فقط برای دیده‌شدنِ ویژه و هدفمند مصرف می‌شود و گزارش کاملِ همان رویدادها در اختیارت است.</div>
       </div>
+
+    </main>
+
+    </section>
+
+    <!-- ═══ هم‌ترازی imach-final-design — «میز فروش» (۶۶): کارتابل فروش.
+         چهار کاشی بالا (همهٔ لینک‌ها) + «نیازمند اقدام»؛ امتیاز فعالیت فقط در چیپ هدر
+         (کلیک → ۶۸). کاتالوگ (۰۱) حالا صفحهٔ پشته‌ای از همین میز است. ورود: تب «میز فروش». ═══ -->
+    <section class="scr" id="scr-66" data-arm="sell" hidden>
+    <header class="appbar">
+      <div class="brand">
+        <div class="dkb" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+        <div class="dkt">میز فروش<small>پخش برنج پارس</small></div>
+      </div>
+      <div class="actions">
+        <button class="score-chip" data-scorego="sell" aria-label="امتیاز فعالیت فروش — دیدن جزئیات" title="امتیاز فعالیت فروش" type="button">
+          <svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="rc-bg" cx="22" cy="22" r="16"></circle><circle class="rc-fill" id="chip-ring-sell" cx="22" cy="22" r="16"></circle></svg>
+          <b id="chip-num-sell">۴۵</b>
+        </button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg><span class="dot">۳</span></button>
+      </div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="desk-duo">
+        <button class="desk-tile" data-go="01" type="button" title="کاتالوگ من — کالاها و قیمت‌ها">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-store"/></svg></span><b class="dt-t">کاتالوگ من</b></span>
+          <div class="dt-stat"><b id="dk-cat-n">۱۲</b><span>کالا</span></div>
+        </button>
+        <button class="desk-tile" data-go="62" type="button" title="مشتریان من — کسانی که کاتالوگ شما را ذخیره کرده‌اند">
+          <span class="dt-badge" id="dk-cust-bdg" hidden></span>
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-users"/></svg></span><b class="dt-t">مشتریان من</b></span>
+          <div class="dt-stat"><b id="dk-cust-n">۴۱</b><span>مشتری</span></div>
+        </button>
+        <button class="desk-tile" data-go="65" type="button" title="سفارش‌های ثبت‌شدهٔ مشتریان">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-receipt"/></svg></span><b class="dt-t">سفارش‌های رسیده</b></span>
+          <div class="dt-stat"><b id="dk-ord-n">۴</b><span>سفارش</span></div>
+        </button>
+        <button class="desk-tile" data-go="05" type="button" title="درخواست‌های قیمت خریداران">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-inbox"/></svg></span><b class="dt-t">درخواست‌های قیمت</b></span>
+          <div class="dt-stat"><b>۲</b><span>درخواست</span></div>
+        </button>
+      </div>
+
+      <div class="sec-title" style="margin-top:14px"><h2>نیازمند اقدام</h2></div>
+      <div>
+        <button class="drow" data-go="22" type="button">
+          <span class="dr-ic" style="background:var(--arm-tint);color:var(--arm)"><svg><use href="#i-rocket"/></svg></span>
+          <span class="dr-tx"><b>مشخصات کسب‌وکارت را کامل کن <span class="st-b">تکمیل اطلاعات</span></b><small>نام، شهر و صنف — با هر قدم امتیاز فعالیت می‌گیری</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+        <button class="drow" data-go="62" type="button" id="dk-cust-row">
+          <span class="dr-ic" style="background:var(--amber-bg);color:var(--amber)"><svg><use href="#i-userplus"/></svg></span>
+          <span class="dr-tx"><b><span id="dk-cust-new-n">۲</span> مشتری جدید</b><small>در انتظار تایید تو — کاتالوگت را ذخیره کرده‌اند</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+        <button class="drow" data-go="65" type="button">
+          <span class="dr-ic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-receipt"/></svg></span>
+          <span class="dr-tx"><b>۲ سفارش جدید</b><small>رستوران مهر · سوپرمارکت الماس — هنوز پاسخ نداده‌ای</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+        <button class="drow" data-go="05" type="button">
+          <span class="dr-ic" style="background:var(--amber-bg);color:var(--amber)"><svg><use href="#i-inbox"/></svg></span>
+          <span class="dr-tx"><b>۲ درخواست قیمت</b><small>خریداران منتظر پاسخ تو هستند</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+      </div>
+
+      <div class="hintnote"><svg><use href="#i-sparkles"/></svg>با دعوت از مشتریانت، لیست مشتریانت را بساز — دعوتِ هر مشتری جدید بیشترین امتیاز فعالیت را دارد.</div>
+
+    </main>
+
+    <nav class="tabbar" data-cols="4" aria-label="ناوبری اصلی">
+      <div class="tabs">
+        <button class="tab active" data-tabarm="sell" data-go="66"><svg><use href="#i-store"/></svg>میز فروش</button>
+        <button class="tab" data-tabarm="buy" data-go="67"><svg><use href="#i-basket"/></svg>میز خرید</button>
+        <button class="tab" data-go="18"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab" data-go="42"><svg><use href="#i-user"/></svg>پروفایل</button>
+      </div>
+    </nav>
+
+    </section>
+
+    <!-- ═══ هم‌ترازی imach-final-design — «میز خرید» (۶۷): کارتابل خرید.
+         چهار کاشی + «نیازمند اقدام»؛ ردیف «یک رمز ورود بساز» تا وقتی که رمز ساخته نشده
+         (PASS_MADE) بالای کارتابل است؛ «در انتظار تایید» = پیشنهادهای تامین رسیده. ═══ -->
+    <section class="scr" id="scr-67" data-arm="buy" hidden>
+    <header class="appbar">
+      <div class="brand">
+        <div class="dkb" style="background:#0e7490">آ</div>
+        <div class="dkt">میز خرید<small>سوپرمارکت آریا</small></div>
+      </div>
+      <div class="actions">
+        <button class="score-chip" data-scorego="buy" aria-label="امتیاز فعالیت خرید — دیدن جزئیات" title="امتیاز فعالیت خرید" type="button">
+          <svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="rc-bg" cx="22" cy="22" r="16"></circle><circle class="rc-fill" id="chip-ring-buy" cx="22" cy="22" r="16"></circle></svg>
+          <b id="chip-num-buy">۴۵</b>
+        </button>
+        <button class="icon-btn" aria-label="اعلان‌ها" data-go="27"><svg><use href="#i-bell"/></svg><span class="dot">۳</span></button>
+      </div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="desk-duo">
+        <button class="desk-tile" data-go="08" type="button" title="لیست خرید من — کالاهای موردنیاز">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-basket"/></svg></span><b class="dt-t">لیست خرید من</b></span>
+          <div class="dt-stat"><b>۴</b><span>کالا</span></div>
+        </button>
+        <button class="desk-tile" data-go="10" type="button" title="تأمین‌کنندگان من — کاتالوگ‌های ذخیره‌شده">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-users"/></svg></span><b class="dt-t">تأمین‌کننده‌های من</b></span>
+          <div class="dt-stat"><b id="dk-sup-n">۳</b><span>تأمین‌کننده</span></div>
+          <div class="dt-sub" id="dk-sup-sub"></div>
+        </button>
+        <button class="desk-tile" data-go="64" type="button" title="سفارش‌های من به تأمین‌کنندگان">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-receipt"/></svg></span><b class="dt-t">سفارش‌های من</b></span>
+          <div class="dt-stat"><b>۱</b><span>جاری</span></div>
+        </button>
+        <button class="desk-tile" data-go="45" type="button" title="استعلام‌های قیمت من">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-inbox"/></svg></span><b class="dt-t">استعلام‌های من</b></span>
+          <div class="dt-stat"><b>۲</b><span>باز</span></div>
+        </button>
+      </div>
+
+      <div class="sec-title" style="margin-top:14px"><h2>نیازمند اقدام</h2></div>
+      <div>
+        <button class="drow" id="dk-pass-row" data-passopen type="button">
+          <span class="dr-ic" style="background:var(--arm-tint);color:var(--arm)"><svg><use href="#i-lock"/></svg></span>
+          <span class="dr-tx"><b>یک رمز ورود برای حسابت بساز <span class="st-b">شروع</span></b><small>برای ورود در دفعات بعد یا از دستگاه‌های دیگر</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+        <button class="drow" data-go="22" type="button">
+          <span class="dr-ic" style="background:var(--arm-tint);color:var(--arm)"><svg><use href="#i-rocket"/></svg></span>
+          <span class="dr-tx"><b>مشخصات کسب‌وکارت را کامل کن <span class="st-b">تکمیل اطلاعات</span></b><small>نام، شهر و صنف — با هر قدم امتیاز فعالیت می‌گیری</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+        <button class="drow" data-go="10" type="button" id="dk-prop-row">
+          <span class="dr-ic" style="background:var(--amber-bg);color:var(--amber)"><svg><use href="#i-userplus"/></svg></span>
+          <span class="dr-tx"><b><span id="dk-prop-n">۲</span> تأمین‌کنندهٔ پیشنهادی</b><small>در انتظار تایید تو — پیشنهاد تامین داده‌اند</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+        <button class="drow" data-go="45" type="button">
+          <span class="dr-ic" style="background:var(--accent);color:var(--primary-strong)"><svg><use href="#i-inbox"/></svg></span>
+          <span class="dr-tx"><b>۲ پیشنهاد جدید رسیده</b><small>برنج هاشمی · ۵ پیشنهاد · <span style="color:var(--amber);font-weight:700">۳ روز مانده</span></small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+        <button class="drow" data-go="64" type="button">
+          <span class="dr-ic" style="background:var(--stone-tint);color:var(--stone)"><svg><use href="#i-receipt"/></svg></span>
+          <span class="dr-tx"><b>۱ سفارش جاری</b><small>برنج طارم · ۱۰ کیسه — پخش برنج پارس</small></span>
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+      </div>
+
+      <div class="hintnote"><svg><use href="#i-sparkles"/></svg>۳ تأمین‌کنندهٔ جدید برای کالاهای لیست خریدت پیدا شد.</div>
+
+    </main>
+
+    <nav class="tabbar" data-cols="4" aria-label="ناوبری اصلی">
+      <div class="tabs">
+        <button class="tab" data-tabarm="sell" data-go="66"><svg><use href="#i-store"/></svg>میز فروش</button>
+        <button class="tab active" data-tabarm="buy" data-go="67"><svg><use href="#i-basket"/></svg>میز خرید</button>
+        <button class="tab" data-go="18"><svg><use href="#i-msg"/></svg>پیام‌ها<span class="badge">۱</span></button>
+        <button class="tab" data-go="42"><svg><use href="#i-user"/></svg>پروفایل</button>
+      </div>
+    </nav>
+
+    </section>
+
+    <!-- ═══ هم‌ترازی imach-final-design — «امتیاز فعالیت» (۶۸): قلب مفهوم شبکه.
+         دو امتیاز جدا (فروش/خرید) · قهرمان «۴۵ از ۱۰۰» · دو ایستگاه مسیر (۱۰۰ = ورود به
+         شبکهٔ آی‌مچ · بعد از ۱۰۰ هر امتیاز = شارژ) · کارهای انجام‌شده/مانده با امتیاز هر کدام.
+         روایت مالک: «شبکه‌ات را بساز. با ۱۰۰ امتیاز، ما شتابت می‌دهیم.» ورود: چیپ میزها ·
+         درِ قفل ۰۹ · کارت پل شارژ ۲۹ · شیت شبکهٔ باز. ═══ -->
+    <section class="scr" id="scr-68" data-arm="keep" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl" id="sc-ttl">امتیاز فعالیت<small>شبکه‌ات را بساز</small></div>
+      <div style="width:34px"></div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="sc-armbar" id="sc-armbar">
+        <button class="sc-pill on" data-scarm="sell" type="button">فروش</button>
+        <button class="sc-pill" data-scarm="buy" type="button">خرید</button>
+      </div>
+
+      <div class="score-hero">
+        <div class="score-circle" id="sc-ring"><div class="num"><span id="sc-num">۴۵</span><small>از ۱۰۰</small></div></div>
+        <div class="sc-hero-t" id="sc-hero-t">امتیاز فعالیت فروش</div>
+        <p class="sc-hero-p" id="sc-hero-p"></p>
+        <div class="sc-bar"><i id="sc-bar" style="width:45%"></i></div>
+      </div>
+
+      <div class="sc-path">
+        <div class="sp-row" id="sp-net">
+          <span class="sp-ic"><svg><use href="#i-rocket"/></svg></span>
+          <div class="sp-tx"><b>۱۰۰ امتیاز = ورود به شبکهٔ آی‌مچ</b><span id="sp-net-s">کالاهایت به خریداران سراسر شبکه نشان داده می‌شود</span></div>
+          <span class="sp-state"><svg><use href="#i-check"/></svg></span>
+        </div>
+        <div class="sp-row" id="sp-charge">
+          <span class="sp-ic"><svg><use href="#i-wallet"/></svg></span>
+          <div class="sp-tx"><b>بعد از ۱۰۰ — هر امتیاز = شارژ تبلیغات</b><span id="sp-charge-s">با شارژ، کالاهایت بیشتر و بالاتر دیده می‌شود</span></div>
+          <span class="sp-state"></span>
+        </div>
+      </div>
+
+      <div class="hintnote"><svg><use href="#i-info"/></svg>امتیاز میز فروش و میز خرید جداگانه حساب می‌شوند.</div>
+
+      <button class="drow" data-sheet="sheet-accel" type="button">
+        <span class="dr-ic" style="background:var(--arm-tint);color:var(--arm)"><svg><use href="#i-rocket"/></svg></span>
+        <span class="dr-tx"><b id="sc-accel-tx">شتابدهی در فروش یعنی چه؟</b></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </button>
+
+      <div id="sc-done-wrap">
+        <div class="sec-title" style="margin-top:8px"><h2>کارهایی که انجام داده‌ای</h2></div>
+        <div id="sc-done"></div>
+      </div>
+
+      <div id="sc-todo-wrap">
+        <div class="sec-title" style="margin-top:8px"><h2>کارهایی که مانده</h2></div>
+        <div id="sc-todo"></div>
+      </div>
+
+    </main>
+
+    </section>
+
+    <!-- ═══ هم‌ترازی imach-final-design — «داشبورد نمایندهٔ فروش» (۶۹): فضای سوم.
+         تب‌بار ندارد (از پروفایل و بنر لندینگ باز می‌شود) — جایی برای کاربری که نمایندهٔ فروشِ
+         چند کسب‌وکار است؛ روی یک صنف در یک شهر متمرکز می‌شود، آن‌ها را مشتری خودش می‌کند و
+         کالاهای چند تأمین‌کنندهٔ مکمل را به همین گروه می‌فروشد. پورسانت توافقی؛ تسویه بیرون
+         از سیستم. رنگ فیروزه‌ای — جدا از نارنجی فروش و سنگی خرید. ═══ -->
+    <section class="scr" id="scr-69" data-arm="keep" hidden>
+    <header class="subheader">
+      <button class="back"><svg><use href="#i-back"/></svg></button>
+      <div class="ttl">نمایندهٔ فروش<small>مدیریت فروش چند کسب‌وکار از یک‌جا</small></div>
+      <div style="width:34px"></div>
+    </header>
+
+    <main class="screen-body">
+
+      <div class="rep-hero">
+        <span class="rh-ic"><svg><use href="#i-users"/></svg></span>
+        <div><b>گروه مشتریان من — رستوران‌های رشت</b><span>۱۲ رستوران · سفارش هفتگی</span></div>
+      </div>
+
+      <div class="desk-duo">
+        <div class="desk-tile" style="cursor:default">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-chart"/></svg></span><b class="dt-t">فروش این ماه</b></span>
+          <div class="dt-stat"><b>۴۸٬۵۰۰٬۰۰۰</b><span>تومان</span></div>
+        </div>
+        <div class="desk-tile" style="cursor:default">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-percent"/></svg></span><b class="dt-t">پورسانت این ماه</b></span>
+          <div class="dt-stat"><b>۳٬۷۲۰٬۰۰۰</b><span>تومان</span></div>
+        </div>
+        <div class="desk-tile" style="cursor:default">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-briefcase"/></svg></span><b class="dt-t">کسب‌وکار</b></span>
+          <div class="dt-stat"><b>۳</b><span>زیر نمایندگی</span></div>
+        </div>
+        <div class="desk-tile" style="cursor:default">
+          <span class="dt-head"><span class="dt-ic"><svg><use href="#i-receipt"/></svg></span><b class="dt-t">سفارش این ماه</b></span>
+          <div class="dt-stat"><b>۳۱</b><span>سفارش</span></div>
+        </div>
+      </div>
+
+      <div class="sec-title" style="margin-top:14px"><h2>کسب‌وکارهای زیر نمایندگی</h2></div>
+      <div>
+        <button class="rep-biz" data-repbiz="0" type="button">
+          <div class="avatar-sm" style="background:linear-gradient(135deg,#c2703a,#ea580c)">پ</div>
+          <div class="rb-tx"><b>پخش برنج پارس <span class="badge b-stone" style="font-size:9px;padding:1px 7px">نمایندهٔ فروش</span></b><small>غلات و برنج · رشت · ۱۴ سفارش این ماه</small></div>
+          <span class="rep-pct">٪۸ پورسانت</span>
+        </button>
+        <button class="rep-biz" data-repbiz="1" type="button">
+          <div class="avatar-sm" style="background:#7c3aed">آ</div>
+          <div class="rb-tx"><b>آریو غلات <span class="badge b-stone" style="font-size:9px;padding:1px 7px">بازاریاب</span></b><small>روغن و کنسرو · اصفهان · ۱۰ سفارش این ماه</small></div>
+          <span class="rep-pct">٪۶ پورسانت</span>
+        </button>
+        <button class="rep-biz" data-repbiz="2" type="button">
+          <div class="avatar-sm" style="background:#b45309">ر</div>
+          <div class="rb-tx"><b>روغن نخیر <span class="badge b-stone" style="font-size:9px;padding:1px 7px">نمایندهٔ فروش</span></b><small>روغن مایع · قزوین · ۷ سفارش این ماه</small></div>
+          <span class="rep-pct">٪۱۰ پورسانت</span>
+        </button>
+      </div>
+
+      <div class="sec-title" style="margin-top:14px"><h2>سفارش‌های کسب‌وکارها</h2><span class="more">۳۱ سفارش</span></div>
+      <div class="chips">
+        <button class="chip active" type="button">همه</button>
+        <button class="chip" type="button">پخش برنج پارس</button>
+        <button class="chip" type="button">آریو غلات</button>
+        <button class="chip" type="button">روغن نخیر</button>
+      </div>
+      <div class="rows">
+        <div class="row-card" data-repord="0" style="cursor:pointer">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-sack.jpg" alt="برنج هاشمی"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رستوران مهر — برنج هاشمی · ۲۰ کیسه</div>
+            <div class="s"><span>پخش برنج پارس · امروز</span><span>پورسانت: ۴۵۶٬۰۰۰ تومان</span></div>
+          </div>
+          <span class="badge b-green">تسویه شد</span>
+        </div>
+        <div class="row-card" data-repord="1" style="cursor:pointer">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/oil-bottle.jpg" alt="روغن مایع"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">رستوران خانهٔ سبز — روغن مایع · ۶ کارتن</div>
+            <div class="s"><span>روغن نخیر · ۲ روز پیش</span><span>پورسانت: ۱۹۰٬۰۰۰ تومان</span></div>
+          </div>
+          <span class="badge b-orange">تحویل شد</span>
+        </div>
+        <div class="row-card" data-repord="2" style="cursor:pointer">
+          <div class="thumb" style="width:44px;height:44px"><img src="png/goods/rice-grains.jpg" alt="برنج طارم"></div>
+          <div class="body">
+            <div class="t" style="font-size:13px">کترینگ بهار — برنج طارم · ۱۰ کیسه</div>
+            <div class="s"><span>پخش برنج پارس · دیروز</span><span>پورسانت: ۲۲۰٬۰۰۰ تومان</span></div>
+          </div>
+          <span class="badge b-new">ثبت شده</span>
+        </div>
+      </div>
+
+      <div class="hintnote"><svg><use href="#i-info"/></svg>پورسانت‌ها با هر کسب‌وکار توافق می‌شود؛ سفارش را تو می‌گیری، لیستش را برای تأمین‌کننده می‌فرستی و پس از تحویل، پورسانتت را همان‌جا می‌گیری.</div>
 
     </main>
 
@@ -6431,6 +6980,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <h3 id="ordv-title">برنج طارم · ۱۰ کیسهٔ ۵۰ کیلویی</h3>
   <div class="sub" id="ordv-sub">پخش برنج پارس</div>
   <div class="ord-facts" id="ordv-facts"></div>
+  <!-- ═══ هم‌ترازی FD — خط زمانی مشترک دو طرف + مهلت ۷ روزهٔ تأیید تحویل (FD-22):
+       اگر ۷ روز پس از ارسال تأیید نشود، سفارش خودکار بسته می‌شود — سفارشِ بازِ ابدی نداریم. ═══ -->
+  <div class="ord-tl" id="ordv-tl"></div>
+  <div class="dl-deadline" id="ordv-deadline" hidden><svg><use href="#i-clock"/></svg>اگر ۷ روز پس از ارسال تأیید نکنی، سفارش خودکار بسته می‌شود.</div>
   <button class="btn btn-primary sheet-cta" id="ordv-done" data-orddone type="button" hidden><svg><use href="#i-check"/></svg> تأیید تحویل</button>
   <button class="btn btn-outline" id="ordv-cancel" data-ordcancel type="button" hidden>لغو سفارش</button>
   <div class="hintnote">پرداخت و تحویل مستقیماً با تامین‌کننده‌تان هماهنگ می‌شود — وضعیت‌ها همین‌جا به‌روز می‌شوند.</div>
@@ -6448,6 +7001,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <div class="grp" style="margin-top:2px">مقدار نهایی و قیمت هر قلم <span style="font-weight:400;color:var(--muted-fg);font-size:10px">— قیمت به تومان · اختیاری</span></div>
     <div id="ordm-items"></div>
   </div>
+  <!-- ═══ هم‌ترازی FD — خط زمانی مشترک دو طرف (نمای مشترک خریدار/فروشنده) ═══ -->
+  <div class="ord-tl" id="ordm-tl"></div>
   <button class="btn btn-primary sheet-cta" id="ordm-ok" data-ordok type="button" hidden><svg><use href="#i-check"/></svg> پذیرفتن سفارش</button>
   <button class="btn btn-primary sheet-cta" id="ordm-ship" data-ordship type="button" hidden><svg><use href="#i-send"/></svg> اعلام ارسال</button>
   <button class="btn btn-outline" id="ordm-cancel" data-ordcancel type="button" hidden>رد سفارش</button>
@@ -6733,6 +7288,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
     <button class="btn btn-outline btn-sm" style="flex:1" data-go="13"><svg><use href="#i-store"/></svg> کاتالوگ</button>
     <button class="btn btn-outline btn-sm" style="flex:1" data-go="19"><svg><use href="#i-msg"/></svg> گفتگو</button>
   </div>
+  <!-- ═══ هم‌ترازی FD — «پذیرش پیشنهاد ⇒ ثبت سفارش با همین شرایط» (FD-22):
+       حلقهٔ استعلام تا معامله بسته می‌شود — سفارش با قیمت و شرایطِ همین پیشنهاد. ═══ -->
+  <button class="btn btn-primary btn-block sheet-cta" data-ofaccept type="button" style="margin-top:8px"><svg><use href="#i-check"/></svg> پذیرش پیشنهاد</button>
+  <div class="hintnote" style="font-size:10.5px">با پذیرش، سفارش با همین قیمت و شرایط ثبت می‌شود — گفتگو و پرداخت مستقیم با فروشنده.</div>
 </div>
 
 <!-- ═══ فاز ۴۹ — مودال افزودن کالا به استعلام (۱۲): قانون ۱ بدون پیچیدگی ═══
@@ -7150,6 +7709,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   <h3>شبکه باز و بسته</h3>
   <div class="sub">کالاها و قیمت‌های شما برای چه کسانی دیده می‌شود</div>
   <div class="hintnote" id="net-explain" style="margin-top:8px">شبکهٔ شما بسته است: کالاها و قیمت‌های شما فقط برای مشتریان خودتان دیده می‌شود.</div>
+  <!-- ═══ هم‌ترازی FD — شرایط فعال‌سازی = امتیاز فعالیت ۱۰۰ (جایگزین ۱۰+۱۰+۵):
+       روایت مالک: «شبکه‌ات را بساز. با ۱۰۰ امتیاز، ما شتابت می‌دهیم.» -->
   <div class="net-req" id="net-req"></div>
   <button class="sheet-row" style="cursor:default" id="net-swrow" hidden>
     <span class="ico"><svg><use href="#i-globe"/></svg></span>
@@ -8294,6 +8855,213 @@ body > div[id^="scr-d"][hidden] { display: none; }
   </div>
 </div>
 
+<!-- ═══ هم‌ترازی imach-final-design — شیت «شتابدهی یعنی چه؟»: دو روایت جدا (فروش/خرید).
+     فروش: کالاهای تو به خریداران بیشتر نشان داده می‌شود (مقایسهٔ ۴۸ + قیمت زندهٔ هر کالا ۰۹).
+     خرید: تأمین‌کننده‌های بیشتری از هر کالا به تو نشان داده می‌شوند (درِ قفل ۰۹ + پیشنهادهای
+     بیشتر در مقایسه). متن و عکس‌ها با accelRender(arm) عوض می‌شود. ═══ -->
+<div class="sheet" id="sheet-accel" role="dialog" aria-label="شتابدهی یعنی چه؟">
+  <div class="grab"></div>
+  <h3 id="sa-title">شتابدهی در فروش یعنی چه؟</h3>
+  <p class="sub" id="sa-p1"></p>
+  <p class="sub" id="sa-p2" style="margin-top:-6px"></p>
+  <img class="accel-shot" id="sa-img1" src="png/accel/01-offers-compare.png" alt="">
+  <div class="accel-cap" id="sa-cap1"></div>
+  <img class="accel-shot" id="sa-img2" src="png/accel/02-good-suppliers.png" alt="" style="margin-top:12px">
+  <div class="accel-cap" id="sa-cap2"></div>
+  <div class="sc-path" style="margin-top:12px">
+    <div class="sp-row">
+      <span class="sp-ic"><svg><use href="#i-wallet"/></svg></span>
+      <div class="sp-tx"><b>بعد از ۱۰۰ چه می‌شود؟</b><span id="sa-post100"></span></div>
+      <span class="sp-state"></span>
+    </div>
+  </div>
+  <div class="hintnote" id="sa-hint"></div>
+  <button class="btn btn-outline btn-block" data-close type="button" style="margin-top:6px">باشه، فهمیدم</button>
+</div>
+
+<!-- ═══ هم‌ترازی imach-final-design — شیت «ساخت رمز ورود» (ردیف شروع میز خرید):
+     ورود با رمز (جایگزین OTP) — رمز فقط یک‌بار ساخته می‌شود؛ حداقل ۶ نویسه، دوبار. ═══ -->
+<div class="sheet" id="sheet-pass" role="dialog" aria-label="ساخت رمز ورود">
+  <div class="grab"></div>
+  <h3>یک رمز ورود برای حسابت بساز</h3>
+  <div class="sub">برای ورود در دفعات بعد یا از دستگاه‌های دیگر</div>
+  <div class="field">
+    <label>رمز ورود <span style="font-weight:400;color:var(--muted-fg);font-size:10.5px">— حداقل ۶ نویسه</span></label>
+    <div class="input"><span style="letter-spacing:3px">●●●●●●</span></div>
+  </div>
+  <div class="field">
+    <label>تکرار رمز ورود</label>
+    <div class="input"><span style="letter-spacing:3px">●●●●●●</span></div>
+    <div class="hint" id="pass-err" style="color:var(--red)" hidden>دو رمز مثل هم نیستند یا کوتاه‌تر از ۶ نویسه است</div>
+  </div>
+  <button class="btn btn-primary btn-block sheet-cta" data-passmake type="button"><svg><use href="#i-lock"/></svg> ساخت رمز ورود</button>
+</div>
+
+<!-- ═══ هم‌ترازی imach-final-design — شیت «فراموشی رمز» (ورود ۱۷):
+     مدل تیکت پشتیبانی (بدون تماس/واتس‌اپ) — شماره → ارسال به پشتیبانی → رمز موقت به‌زودی. ═══ -->
+<div class="sheet" id="sheet-forgot" role="dialog" aria-label="بازیابی رمز ورود">
+  <div class="grab"></div>
+  <h3>رمزم را فراموش کردم</h3>
+  <div id="fg-step1">
+    <div class="sub">شماره موبایل حساب خود را وارد کنید.</div>
+    <div class="field">
+      <label>شماره موبایل</label>
+      <div class="input phone-input">
+        <span class="pre"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg> ۹۸+</span>
+        <span style="direction:ltr;font-feature-settings:'tnum'">۰۹۱۲ ۳۴۵ ۶۷۸۹</span>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block sheet-cta" data-forgotsend type="button">ارسال شماره به پشتیبانی برای بازیابی رمز عبور</button>
+  </div>
+  <div id="fg-ok" class="sup-ok" hidden>
+    <div class="ok-ic"><svg><use href="#i-check-v2"/></svg></div>
+    <div style="font-size:14px;font-weight:800">درخواست شما ثبت شد</div>
+    <div style="font-size:11.5px;color:var(--muted-fg);line-height:2;margin-top:6px">به زودی رمز موقت برای شما ارسال می‌شود.</div>
+    <button class="btn btn-outline btn-block" data-close type="button" style="margin-top:10px">بستن</button>
+  </div>
+</div>
+
+<!-- ═══ هم‌ترازی imach-final-design — شیت «نقش شما در کسب‌وکار» (ثبت‌نام گام ۲):
+     ۹ نقش (۶ مالک + مدیر فروش/مدیر خرید/همکار فروش) — الگوی sheet-snf با جستجو. ═══ -->
+<div class="sheet tall" id="sheet-surole" role="dialog" aria-label="نقش شما در کسب‌وکار">
+  <div class="grab"></div>
+  <h3>نقش شما در کسب‌وکار</h3>
+  <div class="sub">لازم نیست حتماً صاحب کسب‌وکار باشید — نقش شما مهم است</div>
+  <div id="surole-rows"></div>
+</div>
+
+<!-- ═══ هم‌ترازی imach-final-design — شیت «پیشنهاد تامین» (۲۳ — دید فروشنده از لیست خریدار):
+     قلم‌ها اختیاری‌اند — با قیمت/حداقل سفارشی برای هر کالای توانایی تأمین، یا «فقط درخواست
+     تامین‌کنندگی» بدون قلم. ضدفیلتر: هر تأمین‌کننده ۱ پیشنهادِ باز در ۷ روز به هر لیست.
+     کالاهایی که قیمت می‌دهی و در کاتالوگ خودت نداری، هم‌زمان به کاتالوگ خودت هم اضافه می‌شوند. ═══ -->
+<div class="sheet tall" id="sheet-supply" role="dialog" aria-label="پیشنهاد تامین">
+  <div class="grab"></div>
+  <div id="sup-form">
+    <h3>پیشنهاد تامین</h3>
+    <div class="sub">برای «سوپرمارکت آریا» — هر کالایی را که می‌توانی تأمین کنی، با قیمت و حداقل سفارش مشخص کن. قیمت ندهی، فقط درخواست تامین‌کنندگی برای او ارسال می‌شود.</div>
+    <div id="sup-items">
+      <div class="sup-item">
+        <div class="si-n">برنج هاشمی<small>نیاز: ۲۰ کیسهٔ ۵۰ کیلویی · هفتگی</small></div>
+        <input class="input" inputmode="numeric" value="۲٬۸۵۰٬۰۰۰" aria-label="قیمت هر کیسه — برنج هاشمی">
+        <input class="input" inputmode="numeric" value="۵" aria-label="حداقل سفارش — برنج هاشمی" style="width:64px">
+      </div>
+      <div class="sup-item">
+        <div class="si-n">برنج طارم<small>نیاز: ۱۰ کیسهٔ ۵۰ کیلویی · دوهفتگی</small></div>
+        <input class="input" inputmode="numeric" placeholder="قیمت" aria-label="قیمت هر کیسه — برنج طارم">
+        <input class="input" inputmode="numeric" placeholder="حداقل" aria-label="حداقل سفارش — برنج طارم" style="width:64px">
+      </div>
+      <div class="sup-item">
+        <div class="si-n">شکر سفید<small>نیاز: ۱۰ کارتن ۱۰ کیلویی · ماهانه</small></div>
+        <input class="input" inputmode="numeric" placeholder="قیمت" aria-label="قیمت هر کارتن — شکر سفید">
+        <input class="input" inputmode="numeric" placeholder="حداقل" aria-label="حداقل سفارش — شکر سفید" style="width:64px">
+      </div>
+      <div class="sup-item">
+        <div class="si-n">روغن مایع<small>نیاز: ۶ کارتن · ماهانه</small></div>
+        <input class="input" inputmode="numeric" placeholder="قیمت" aria-label="قیمت هر کارتن — روغن مایع">
+        <input class="input" inputmode="numeric" placeholder="حداقل" aria-label="حداقل سفارش — روغن مایع" style="width:64px">
+      </div>
+    </div>
+    <div class="field">
+      <label>توضیح برای خریدار <span class="opt">— اختیاری</span></label>
+      <textarea class="input" id="sup-note" rows="3" placeholder="شرایط تامین، ارسال یا پرداخت…"></textarea>
+    </div>
+    <div class="hintnote" id="sup-guard" hidden>پیشنهاد بازِ تو هنوز پیش این خریدار است — نتیجه را صبر کن.</div>
+    <button class="btn btn-primary btn-block sheet-cta" data-supplysend type="button"><svg><use href="#i-send"/></svg> ارسال پیشنهاد تامین</button>
+  </div>
+  <div id="sup-ok" class="sup-ok" hidden>
+    <div class="ok-ic"><svg><use href="#i-check-v2"/></svg></div>
+    <div style="font-size:14px;font-weight:800">پیشنهاد ارسال شد</div>
+    <div style="font-size:11.5px;color:var(--muted-fg);line-height:2;margin-top:6px">سوپرمارکت آریا پیشنهادت را بالای لیست خریدش می‌بیند؛ با تایید او، هم تأمین‌کنندهٔ او می‌شوی هم او مشتری تو. کالاهایی که قیمت دادی و در کاتالوک خودت نداشتی، هم‌زمان به کاتالوگ خودت هم اضافه شدند.</div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-outline" data-close type="button" style="flex:1">بستن</button>
+      <button class="btn btn-primary" data-go="01" type="button" style="flex:1"><svg><use href="#i-store"/></svg> مشاهدهٔ کاتالوگ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ هم‌ترازی imach-final-design — شیت «مزایای ذخیرهٔ کاتالوگ» (۱۳ — دکتهٔ ذخیره):
+     آکاردئون «با ذخیره این کاتالوگ چه مزایایی داری؟» + ۵ مزیت؛ CTA همان ذخیرهٔ قبلی است. ═══ -->
+<div class="sheet" id="sheet-saveben" role="dialog" aria-label="ذخیره کاتالوگ">
+  <div class="grab"></div>
+  <h3>ذخیره کاتالوگ</h3>
+  <button class="bene-toggle" id="bene-toggle" type="button" aria-expanded="false" aria-controls="bene-list">
+    <svg><use href="#i-sparkles"/></svg>
+    <b>با ذخیره این کاتالوگ چه مزایایی داری؟</b>
+    <svg class="bb-chev"><use href="#i-chevd"/></svg>
+  </button>
+  <div class="bene-list" id="bene-list" hidden>
+    <div class="bene">
+      <span class="bf-ic"><svg><use href="#i-store"/></svg></span>
+      <div class="bf-tx"><b>این فروشنده به فهرست تأمین‌کنندگان تو اضافه می‌شود</b><span>دسترسی همیشگی به کاتالوگ و قیمت‌های زندهٔ او — کالاها و قیمت‌هایش را راحت‌تر دنبال کن.</span></div>
+    </div>
+    <div class="bene">
+      <span class="bf-ic"><svg><use href="#i-users"/></svg></span>
+      <div class="bf-tx"><b>به لیست مشتریان او اضافه می‌شوی</b><span>از تخفیف‌ها و شرایط ویژه‌ای که برای مشتریانش در نظر می‌گیرد، بهره‌مند می‌شوی.</span></div>
+    </div>
+    <div class="bene">
+      <span class="bf-ic"><svg><use href="#i-chart"/></svg></span>
+      <div class="bf-tx"><b>مقایسهٔ قیمت و شرایط خرید</b><span>از تأمین‌کنندگان مختلف قیمت بگیر و پیشنهادها را مقایسه کن.</span></div>
+    </div>
+    <div class="bene">
+      <span class="bf-ic"><svg><use href="#i-globe"/></svg></span>
+      <div class="bf-tx"><b>گسترش شبکهٔ تأمین</b><span>تأمین‌کنندگان بیشتری در فهرست خود داشته باش.</span></div>
+    </div>
+    <div class="bene">
+      <span class="bf-ic"><svg><use href="#i-basket"/></svg></span>
+      <div class="bf-tx"><b>سفارش آنلاین</b><span>سفارش را همین‌جا و در هر ساعت ثبت کن — بدون تلفن زدن و معطلی.</span></div>
+    </div>
+  </div>
+  <button class="btn btn-primary btn-block sheet-cta" data-saveok type="button" style="margin-top:10px"><svg><use href="#i-bookmark"/></svg> ذخیره کاتالوگ</button>
+</div>
+
+<!-- ═══ هم‌ترازی imach-final-design — شیت «کسب‌وکار زیر نمایندگی» (۶۹):
+     شرایط سه‌گانه + لینک‌ها (میز فروش/کاتالوگ/سفارش‌های همان کسب‌وکار). ═══ -->
+<div class="sheet" id="sheet-repbiz" role="dialog" aria-label="کسب‌وکار زیر نمایندگی">
+  <div class="grab"></div>
+  <h3 id="rbz-title">پخش برنج پارس</h3>
+  <div class="sub" id="rbz-sub">غلات و برنج · رشت</div>
+  <div class="rbz-terms">
+    <div class="rbz-term"><b id="rbz-pct">٪۸</b><span>پورسانت توافقی</span></div>
+    <div class="rbz-term"><b id="rbz-earn">۱٬۱۲۰٬۰۰۰</b><span>پورسانت این ماه</span></div>
+    <div class="rbz-term"><b id="rbz-orders">۱۴</b><span>سفارش این ماه</span></div>
+  </div>
+  <div style="margin-top:12px">
+    <button class="drow" data-go="66" type="button">
+      <span class="dr-ic" style="background:var(--rep-tint);color:var(--rep)"><svg><use href="#i-store"/></svg></span>
+      <span class="dr-tx"><b>میز فروش این کسب‌وکار</b></span>
+      <svg class="chev"><use href="#i-chev"/></svg>
+    </button>
+    <button class="drow" data-go="01" type="button">
+      <span class="dr-ic" style="background:var(--rep-tint);color:var(--rep)"><svg><use href="#i-tag"/></svg></span>
+      <span class="dr-tx"><b>کاتالوگ و کالاها</b></span>
+      <svg class="chev"><use href="#i-chev"/></svg>
+    </button>
+    <button class="drow" data-go="65" type="button">
+      <span class="dr-ic" style="background:var(--rep-tint);color:var(--rep)"><svg><use href="#i-receipt"/></svg></span>
+      <span class="dr-tx"><b>سفارش‌های این کسب‌وکار</b></span>
+      <svg class="chev"><use href="#i-chev"/></svg>
+    </button>
+  </div>
+  <button class="btn btn-outline btn-block" data-close type="button" style="margin-top:6px">بستن</button>
+</div>
+
+<!-- ═══ هم‌ترازی imach-final-design — شیت «سفارش نمایندگی» (۶۹):
+     چرخهٔ بازاریاب سنتی: ثبت‌شده → ارسال لیست سفارش به تأمین‌کننده (واتس‌اپ/پیامک/کپی — بیرون
+     از سیستم) → تحویل شد → پورسانت دریافت شد → تسویه شد. هر لمسِ دکمهٔ اصلی یک گام جلو. ═══ -->
+<div class="sheet" id="sheet-reporder" role="dialog" aria-label="سفارش نمایندگی">
+  <div class="grab"></div>
+  <h3 id="rpo-title">رستوران مهر — برنج هاشمی · ۲۰ کیسه</h3>
+  <div class="sub" id="rpo-sub">پخش برنج پارس · پورسانت: ۴۵۶٬۰۰۰ تومان</div>
+  <div class="ord-tl" style="margin-top:4px">
+    <div class="tl-h">چرخهٔ سفارش نمایندگی</div>
+    <div class="tl-row hit" id="rpo-s0"><span class="tl-dot"></span><div class="tl-tx"><b>ثبت شد</b><small>سفارش مشتری ثبت شد — دیروز</small></div></div>
+    <div class="tl-row" id="rpo-s1"><span class="tl-dot"></span><div class="tl-tx"><b>ارسال لیست سفارش به تأمین‌کننده</b><small>واتس‌اپ / پیامک / کپی لیست — بیرون از آیمچ</small></div></div>
+    <div class="tl-row" id="rpo-s2"><span class="tl-dot"></span><div class="tl-tx"><b>تحویل شد</b><small>تحویل به مشتری انجام شد</small></div></div>
+    <div class="tl-row" id="rpo-s3"><span class="tl-dot"></span><div class="tl-tx"><b>پورسانت دریافت شد — تسویه</b><small>پورسانت خودت را از کسب‌وکار بگیر</small></div></div>
+  </div>
+  <button class="btn btn-primary btn-block sheet-cta" data-rponext type="button" id="rpo-btn">ارسال لیست سفارش به تأمین‌کننده</button>
+</div>
+
   </div>
 </div>
 
@@ -8339,7 +9107,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
             </div>
             <h1><em>آیمچ</em>،<br>شعبه آنلاین خرید و فروش عمده شما</h1>
             <p class="sub">از مغازه‌ای کوچک تا کارخانه‌ای بزرگ، از کسب‌وکارهای خدماتی تا شرکت‌های بازرگانی، نیاز به خرید عمده کالا از تامین کنندگان مناسب دارند.</p>
-            <p class="sub strong-line"><em>آیمچ، با پیشنهاد دقیق، انتخاب تأمین‌کننده مناسب را آسان می‌کند.</em></p>
+            <p class="sub strong-line"><em>شبکهٔ تجاری خودت را با دعوت مشتریان و تأمین‌کنندگانت بساز — آیمچ با موتور تطبیق، آن را بزرگ‌تر می‌کند.</em></p>
             <div class="ctas">
               <button class="btn btn-primary">ساخت حساب</button>
               <button class="btn btn-outline">ورود</button>
@@ -8459,47 +9227,28 @@ body > div[id^="scr-d"][hidden] { display: none; }
 (function () {
   'use strict';
   /* موتور پروتوتایپ — فقط رفتار؛ هیچ عنصری از دیزاین تغییر نمی‌کند */
-  var ARM_HOME = { sell: '01', buy: '08' };
-  /* فاز ۴۵ (مالک) — فوتر دستیار خرید: «تنظیمات» حذف شد (چیز خاصی نداشت؛ تنظیمات لیست از
-     چرخ‌دندهٔ کنار نام لیست باز می‌شود)؛ به‌جایش «استعلام‌ها» (۴۵) و «کاتالوگ‌ها» (۱۰ — ذخیره‌شده‌ها)
-     آمدند تا جلوی چشم باشند. فوتر فروش بدون تغییر است. */
-  /* فاز ۶۴ (مالک): سفارش = فرایند اصلی — تب سوم هر دو فوتر «سفارش» شد؛ استعلام فرایند
-     فرعی است و از فوتر رفت (ورود ۴۵: نوار ۰۸ + تنظیمات لیست؛ ورود ۰۵: تنظیمات ۰۷ + اعلان). */
-  var TABS = { sell: ['01', '62', '65', '18', '07'], buy: ['08', '10', '64', '18', '14'] }; /* فاز ۶۷: +۱۴ تنظیمات خرید */
-  /* ست کامل تب‌ها برای صفحهٔ مشترک ۱۸ (پیام‌ها) — بر اساس بازوی فعال رندر می‌شود */
-  var TABSET = {
-    sell: [
-      ['01', 'کاتالوگ من', '<svg><use href="#i-store"/></svg>', ''],
-      ['62', 'مشتریان', '<svg><use href="#i-users"/></svg>', '<span class="badge">۲</span>'],
-      ['65', 'سفارش‌ها', '<svg><use href="#i-receipt"/></svg>', '<span class="badge">۲</span>'], /* فاز ۶۴: سفارش‌های مشتریان — فاز ۶۸: املای واحد سفارش‌ها */
-      ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
-      ['07', 'تنظیمات', '<svg><use href="#i-gear"/></svg>', '']
-    ],
-    buy: [
-      ['08', 'لیست خرید', '<svg><use href="#i-list"/></svg>', ''],
-      ['10', 'تأمین‌کنندگان', '<svg><use href="#i-bookmark"/></svg>', ''], /* فاز ۶۳ (مالک): بعد از لیست خرید */
-      ['64', 'سفارش‌های من', '<svg><use href="#i-boxes"/></svg>', ''], /* فاز ۶۴: سفارش‌های من */
-      ['18', 'پیام‌ها', '<svg><use href="#i-msg"/></svg>', '<span class="badge">۱</span>'],
-      ['14', 'تنظیمات', '<svg><use href="#i-gear"/></svg>', ''] /* فاز ۶۷: تنظیمات خرید بازگشت */
-    ]
-  };
+  /* ═══ هم‌ترازی FD — خانهٔ هر بازو = میز همان بازو (نه کاتالوگ/لیست)؛ تب‌بار یکدست
+     چهارگانه (میز فروش / میز خرید / پیام‌ها / پروفایل) — تبِ بازوی خاموش حذف می‌شود. ═══ */
+  var ARM_HOME = { sell: '66', buy: '67' };
+  /* فهرست تخت تب‌ها برای wire(): [هدف، بازو؟] — ترتیب همان چیپ مارک‌آپ تب‌بارها */
+  var TABS = [['66', 'sell'], ['67', 'buy'], ['18', ''], ['42', '']];
   var DEFAULT_BACK = {
     '02': '13', '04': '01', '09': '08',
     '12': '09', '13': '09', '16': '15', '17': '15', '19': '18',
-    '22': '01', '27': '01', '34': '08',
+    '22': '66', '27': '66', '34': '08',
     '29': '42', '30': '01', /* فاز ۴۴: شارژ ← پروفایل (۴۲) · تبلیغات ← کاتالوگ */
     '46': '30', /* فاز ۴۶: گزارش تبلیغ ← فرم تبلیغات */
     '48': '45', /* فاز ۴۷: مقایسهٔ پیشنهادها ← استعلام‌ها (فرم ۴۷ در فاز ۴۹ جذب مودال شد) */
-    '10': '42', /* فاز ۴۴: کاتالوگ‌های ذخیره‌شده ← پروفایل؛ فاز ۴۵: از فوتر خرید هم می‌آید */
+    '10': '67', /* هم‌ترازی FD: تأمین‌کنندگان من ← میز خرید */
     '45': '08', /* فاز ۴۵: استعلام‌ها ← لیست خرید */
     '44': '01', /* فاز ۳۶: به‌روزرسانی گروهی قیمت/موجودی ← کاتالوگ */
     '53': '01', /* فاز ۵۳: دعوت‌شدگان ← کاتالوگ (ورود از نوار آمار/تنظیمات/کیف پول/اعلان) */
     '43': '15', /* فاز ۵۶ (بازگشت فاز ۳۳): سایر نظرات ← لندینگ */
     '23': '08', /* فاز ۵۸ (بازگشت فاز ۲۷): صفحهٔ خرید از دید عمومی ← لیست خرید (ورود با چشم ۰۸) */
-    '62': '01', /* فاز ۶۰: مشتریان من ← کاتالوگ (ورود از فوتر/آمار) */
+    '62': '01', '01': '66', '05': '66', '07': '66', '65': '66', /* فاز ۶۰ + هم‌ترازی FD: صفحات فروش ← میز فروش */
     '60': '42', '61': '42', /* فاز ۵۸: صفحات راهنما ← پروفایل (ورود از تنظیمات ۰۷ و شیت راهنما) */
-    '64': '08', '65': '01', /* فاز ۶۴: سفارش‌های من ← لیست خرید · سفارشات ← کاتالوگ */
-    '14': '08' /* فاز ۶۷: تنظیمات خرید ← لیست خرید */
+    '64': '67', '65': '66', '14': '67', '08': '67', /* فاز ۶۴ + هم‌ترازی FD: صفحات خرید ← میز خرید · سفارش‌ها ← میز فروش */
+    '68': '66', '69': '42' /* هم‌ترازی FD: امتیاز ← میز فروش (پیش‌فرض) · نمایندهٔ فروش ← پروفایل */
   };
   var BTN = {
     '01': [['افزودن کالای جدید', '04']], /* فاز ۵۲: برچسب جدید مالک؛ مقصد همان فرم افزودن/ویرایش کالا */
@@ -8510,15 +9259,15 @@ body > div[id^="scr-d"][hidden] { display: none; }
     '10': [['کاتالوگ', '13'], ['مشاهدهٔ کاتالوگ', '13']],
     '12': [['ارسال به ۳ تأمین‌کننده', '45']], /* فاز ۴۷: پس از ارسال → استعلام‌ها (۴۵)؛ پیشنهادها آن‌جا مقایسه می‌شوند */
     '15': [['ساخت حساب', '16'], ['ورود', '17']],
-    '16': [['ساخت حساب و ورود', '01'], ['وارد شوید', '17']],
-    '17': [['ورود به ای‌مچ', '01'], ['ساخت حساب', '16']],
+    '16': [['وارد شوید', '17']], /* هم‌ترازی FD: سابمیت دو مرحله‌ای با data-sunext خودش هدایت می‌شود */
+    '17': [['ورود به آی‌مچ', '66'], ['ثبت‌نام می‌کنم', '16'], ['ساخت حساب', '16']], /* گارد show() تک‌بازو را به میز درست می‌برد */
     '34': [['افزودن به لیست خرید', '08']],
     'd3': [['ساخت حساب', '16'], ['ورود', '17']]
   };
   /* فاز ۴۴: کارت کاتالوگ (۰۱) ← صفحهٔ کالای واحد (۰۳ در ۰۲ ادغام شد) · کارت لیست خرید (۰۸) ← تابلوی تأمین (۰۹) */
   var CARDS = { '01': '02', '08': '09', '13': '02', '18': '19' };
   /* فاز ۴۶ — ۲۴ صفحهٔ موبایل + لندینگ دسکتاپ */
-  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","14":"۱۴ — تنظیمات خرید · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب","17":"۱۷ — ورود · لاگین","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","64":"۶۴ — سفارش‌های من · دستیار خرید","65":"۶۵ — سفارش‌ها · دستیار فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
+  var TITLES = {"01":"۰۱ — کاتالوگ من · دستیار فروش","02":"۰۲ — جزئیات کالا","04":"۰۴ — فرم افزودن / ویرایش کالا","05":"۰۵ — درخواست‌های خرید · دستیار فروش","07":"۰۷ — تنظیمات · دستیار فروش","08":"۰۸ — لیست خرید · دستیار خرید","09":"۰۹ — تابلوی تأمین · برنج هاشمی","10":"۱۰ — تأمین‌کنندگان من · دستیار خرید","14":"۱۴ — تنظیمات خرید · دستیار خرید","12":"۱۲ — درخواست قیمت · ارسال به تأمین‌کننده‌ها","13":"۱۳ — کاتالوگ عمومی فروشنده · دید خریدار","15":"۱۵ — صفحه اصلی (لندینگ) · قبل از ورود","16":"۱۶ — ثبت‌نام · ساخت حساب دو مرحله‌ای","17":"۱۷ — ورود · لاگین با رمز","18":"۱۸ — پیام‌ها","19":"۱۹ — گفتگو","22":"۲۲ — ویرایش کسب‌وکار · فرم مشترک دو دستیار","23":"۲۳ — لیست خرید عمومی · دید فروشنده","27":"۲۷ — اعلان‌ها","29":"۲۹ — شارژ","30":"۳۰ — تبلیغات و افزایش فروش · دستیار فروش","34":"۳۴ — افزودن کالا به لیست خرید · دستیار خرید","42":"۴۲ — پروفایل · حساب، کسب‌وکارها و شارژ","44":"۴۴ — قیمت و موجودی · به‌روزرسانی گروهی","45":"۴۵ — استعلام‌ها · دستیار خرید","46":"۴۶ — گزارش تبلیغ · فروشندهٔ ویژه","48":"۴۸ — پیشنهادهای استعلام · مقایسه","53":"۵۳ — دعوت‌شدگان · رشد با اشتراک‌گذاری","43":"۴۳ — سایر نظرات خریداران · تجربهٔ کاربران","60":"۶۰ — راهنمای دستیار خرید","61":"۶۱ — راهنمای دستیار فروش","62":"۶۲ — مشتریان من · دستیار فروش","64":"۶۴ — سفارش‌های من · دستیار خرید","65":"۶۵ — سفارش‌ها · دستیار فروش","66":"۶۶ — میز فروش · کارتابل فروش","67":"۶۷ — میز خرید · کارتابل خرید","68":"۶۸ — امتیاز فعالیت · شبکه‌ات را بساز","69":"۶۹ — داشبورد نمایندهٔ فروش","d3":"D3 — صفحه اصلی (لندینگ) · دسکتاپ"};
   var stack = [];
   var current = null;
 
@@ -8566,30 +9315,35 @@ body > div[id^="scr-d"][hidden] { display: none; }
     sh.classList.add('show');
   }
 
-  /* کروم مشترک صفحهٔ ۱۸ (پیام‌ها): تب‌بار و پیل و چشمِ پیش‌نمایش بر اساس بازوی فعال */
+  /* کروم مشترک صفحهٔ ۱۸ (پیام‌ها): پیل و چشمِ پیش‌نمایش بر اساس بازوی فعال.
+     هم‌ترازی FD — تب‌بار حالا ایستاست (چهار تب میزها در مارک‌آپ)؛ tabSync() بازوی
+     خاموش را حذف می‌کند و بج‌های مشتری/سفارش به عناصر میزها می‌روند. */
   function renderKeepChrome(target) {
     if (!target || target.dataset.arm !== 'keep') return;
     var arm = phoneArm();
-    var set = TABSET[arm] || TABSET.buy;
-    var bar = target.querySelector('.tabbar');
-    if (bar) {
-      bar.dataset.cols = String(set.length);
-      var tabs = bar.querySelector('.tabs');
-      if (tabs) {
-        tabs.innerHTML = set.map(function (t) {
-          return '<button class="tab' + (t[0] === '18' ? ' active' : '') + '" data-go="' + t[0] + '">' + t[2] + t[1] + t[3] + '</button>';
-        }).join('');
-      }
-    }
     var pill = target.querySelector('.arm-pill');
     if (pill) {
-      /* فاز ۴۵: پیل چسبیده به لوگو — بدون آیکون داخلی (خود لوگو هست)؛ فقط برچسب + فلش */
       var lb = arm === 'sell' ? 'دستیار فروش عمده' : 'دستیار خرید عمده';
       pill.innerHTML = lb +
         ' <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9.5l6 6 6-6"/></svg>';
     }
     var eye = target.querySelector('.eye-preview');
-    if (eye) eye.dataset.go = '13'; /* فاز ۴۴: پیش‌نمایش عمومی لیست خرید (۲۳) حذف شد */
+    if (eye) eye.dataset.go = '13';
+  }
+
+  /* ═══ هم‌ترازی FD — tabSync: تب میزِ بازوی خاموش از همهٔ تب‌بارها حذف می‌شود
+     (حکم مالک FD) و شمار ستون‌ها هم‌گام می‌شود؛ پس از هر تغییر دستیار صدا زده می‌شود. ═══ */
+  function tabSync() {
+    document.querySelectorAll('.tabbar').forEach(function (bar) {
+      var vis = 0;
+      bar.querySelectorAll('.tabs .tab').forEach(function (t) {
+        var a = t.dataset.tabarm;
+        var off = !!(a && !ASSIST[a]);
+        t.hidden = off;
+        if (!off) vis++;
+      });
+      bar.dataset.cols = String(vis);
+    });
   }
 
   function show(id) {
@@ -8648,6 +9402,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       }
       /* فاز ۶۵ — ۰۹: ردیف‌های شبکهٔ باز؛ ۰۲/۱۳: قیمت گروهی خریدار */
       if (id === '09') netOpenSync();
+      /* هم‌ترازی FD — میزها: اعداد زنده · امتیاز: رندر بازوی انتخابی · ثبت‌نام: از گام ۱ ·
+         درِ قفل ۰۹ فقط تا وقتی امتیاز خرید به ۱۰۰ نرسیده دیده می‌شود */
+      if (id === '66' || id === '67') deskSync();
+      if (id === '68') scoreRender();
+      if (id === '16') suReset();
+      var fdLock09 = document.getElementById('more-sup-09');
+      if (fdLock09) fdLock09.hidden = scoreCalc('buy') >= 100;
       if (id === '02') grpSync();
       /* فاز ۴۴ — صفحهٔ کالای واحد (۰۲): بخش مالک فقط برای فروشندهٔ خودِ کالا؛
          فاز ۴۵ — اکشن‌های خریدار (درخواست قیمت/تماس/افزودن به لیست) برای مالک مخفی است */
@@ -8691,7 +9452,13 @@ body > div[id^="scr-d"][hidden] { display: none; }
       var arm = sec.dataset.arm;
 
       var tabs = sec.querySelectorAll('.tabbar .tabs .tab');
-      (TABS[arm] || []).forEach(function (t, i) { if (tabs[i]) tabs[i].dataset.go = t; });
+      /* هم‌ترازی FD — فهرست تخت: [هدف، بازو؟] به‌ترتیب مارک‌آپ تب‌بارها */
+      TABS.forEach(function (t, i) {
+        if (tabs[i]) {
+          tabs[i].dataset.go = t[0];
+          if (t[1]) tabs[i].setAttribute('data-tabarm', t[1]);
+        }
+      });
 
       sec.querySelectorAll('.subheader .back').forEach(function (b) { b.dataset.back = '1'; });
 
@@ -9947,6 +10714,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
   /* ═══ فاز ۵۱ — شیت «جزئیات پیشنهاد» (خریدار): توضیح/پرداخت/تحویل + تماس/کاتالوگ/گفتگو.
      لیست ۴۸ فقط مقایسه است؛ این شیت حاملِ همهٔ جزئیات و اکشن‌های ارتباطی همان پیشنهاد. ═══ */
   function ofvOpen(ix) {
+    OF.vix = ix; /* هم‌ترازی FD — پذیرش پیشنهاد (data-ofaccept) همین اندیس را سفارش می‌کند */
     var d = OF[OF.cur] || OF.inq1;
     var o = d.offers[ix];
     if (!o) return;
@@ -10546,16 +11314,14 @@ body > div[id^="scr-d"][hidden] { display: none; }
   function custTotal() { return CUST.filter(function (c) { return !c.wait; }).length + CUST_OTHER; }
   function custNewCount() { return CUST.filter(function (c) { return c.nw; }).length; }
   function custBadgeSync() {
+    /* هم‌ترازی FD — بج «جدید» روی کاشی مشتریان میز فروش (۶۶) + شمار ردیف کارتابل */
     var n = custNewCount();
-    document.querySelectorAll('.tabbar .tab[data-go="62"]').forEach(function (tb) {
-      var b = tb.querySelector('.badge');
-      if (n > 0) {
-        if (!b) { b = document.createElement('span'); b.className = 'badge'; tb.appendChild(b); }
-        b.textContent = faNum(n);
-      } else if (b) b.remove();
-    });
-    /* صفحهٔ ۱۸ (keep): ست تب‌ها در هر ورود از TABSET رندر می‌شود — هم‌زمان نگه می‌داریم */
-    if (TABSET.sell[1] && TABSET.sell[1][0] === '62') TABSET.sell[1][3] = n > 0 ? '<span class="badge">' + faNum(n) + '</span>' : '';
+    var bdg = document.getElementById('dk-cust-bdg');
+    if (bdg) { bdg.hidden = !n; if (n) bdg.textContent = faNum(n); }
+    var row = document.getElementById('dk-cust-row');
+    if (row) row.hidden = !n;
+    var nn = document.getElementById('dk-cust-new-n');
+    if (nn) nn.textContent = faNum(n || 1);
   }
   function custCountSync() {
     var total = custTotal();
@@ -10639,16 +11405,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
   var ordSide = null; /* 'buy' | 'sell' — شیت از کدام سمت باز شد */
   function ordNewCount() { return ORD.filter(function (o) { return o.nw; }).length; }
   function ordBadgeSync() {
-    var n = ordNewCount();
-    document.querySelectorAll('.tabbar .tab[data-go="65"]').forEach(function (tb) {
-      var b = tb.querySelector('.badge');
-      if (n > 0) {
-        if (!b) { b = document.createElement('span'); b.className = 'badge'; tb.appendChild(b); }
-        b.textContent = faNum(n);
-      } else if (b) b.remove();
-    });
-    /* صفحهٔ ۱۸ (keep): ست تب‌ها در هر ورود از TABSET رندر می‌شود — هم‌زمان نگه می‌داریم */
-    if (TABSET.sell[2] && TABSET.sell[2][0] === '65') TABSET.sell[2][3] = n > 0 ? '<span class="badge">' + faNum(n) + '</span>' : '';
+    /* هم‌ترازی FD — شمار سفارش‌های جاریٔ رسیده روی کاشی میز فروش (۶۶) */
+    deskSync();
   }
   /* فاز ۶۷ — عنوان سفارش: تک‌قلمی «کالا · تعداد بسته»؛ چندقلمی «N قلم — … و M کالای دیگر» */
   function ordTitle(o) {
@@ -10733,6 +11491,27 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }
     return h;
   }
+  /* ═══ هم‌ترازی FD — خط زمانی مشترک دو طرف: هر گذار در نمای مشترک ثبت می‌شود؛
+     مهلت ۷ روزهٔ تأیید تحویل فقط روی «ارسال شده» دیده می‌شود (سفارشِ بازِ ابدی نداریم). ═══ */
+  function ordTimeline(o) {
+    var steps = [
+      ['sent', 'ثبت شد', 'خریدار سفارش را فرستاد'],
+      ['ok', 'پذیرفته شد', 'فروشنده مقدار و قیمت را تایید کرد'],
+      ['ship', 'ارسال شد', 'فروشنده ارسال را اعلام کرد'],
+      ['done', 'تحویل شد', 'خریدار تحویل را تایید کرد — سفارش بسته شد']
+    ];
+    if (o.st === 'cancel') steps = [['sent', 'ثبت شد', 'خریدار سفارش را فرستاد'], ['cancel', 'لغو شد', 'سفارش بسته شد']];
+    var order = ['sent', 'ok', 'ship', 'done', 'cancel'];
+    var cur = order.indexOf(o.st);
+    var h = '<div class="tl-h">خط زمانی سفارش</div>';
+    steps.forEach(function (s) {
+      var hit = order.indexOf(s[0]) <= cur;
+      h += '<div class="tl-row' + (hit ? ' hit' : '') + '"><span class="tl-dot"></span>' +
+        '<div class="tl-tx"><b>' + s[1] + '</b><small>' + s[2] + '</small></div></div>';
+    });
+    return h;
+  }
+
   /* شیت جزئیات (خریدار) / مدیریت (فروشنده) — محتوا و اقدام‌ها با وضعیت هم‌گام */
   function ordSheetFill(o, i, side) {
     ordRow = i;
@@ -10748,6 +11527,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
       if (vd) vd.hidden = o.st !== 'ship';
       var vc = document.getElementById('ordv-cancel');
       if (vc) vc.hidden = !(o.st === 'sent' || o.st === 'ok');
+      var vtl = document.getElementById('ordv-tl');
+      if (vtl) vtl.innerHTML = ordTimeline(o);
+      var vdl = document.getElementById('ordv-deadline');
+      if (vdl) vdl.hidden = o.st !== 'ship';
       openSheet('sheet-ordview');
     } else {
       var mt = document.getElementById('ordm-title');
@@ -10778,6 +11561,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
         cxlB.hidden = !(o.st === 'sent' || o.st === 'ok');
         cxlB.textContent = o.st === 'sent' ? 'رد سفارش' : 'لغو سفارش';
       }
+      var mtl = document.getElementById('ordm-tl');
+      if (mtl) mtl.innerHTML = ordTimeline(o);
       openSheet('sheet-ordmgr');
     }
   }
@@ -11200,26 +11985,25 @@ body > div[id^="scr-d"][hidden] { display: none; }
     }).length;
     return n + 1; /* + یک استعلام پاسخ‌داده‌شده (rq3 در ۰۵) */
   }
-  function netEligible() { return custTotal() >= 10 && netCatCount() >= 10 && netInterCount() >= 5; }
+  function netEligible() { return scoreCalc('sell') >= 100; } /* هم‌ترازی FD — کلید شبکهٔ باز: امتیاز فعالیت ۱۰۰ (نه ۱۰+۱۰+۵) */
   function netReqRender() {
     var box = document.getElementById('net-req');
     if (!box) return;
-    var cust = custTotal(), cat = netCatCount(), inter = netInterCount();
-    var okC = cust >= 10, okK = cat >= 10, okI = inter >= 5;
-    function row(icon, t, sub, cur, max, ok) {
-      var pct = Math.min(100, Math.round(cur / max * 100));
-      return '<div class="net-r' + (ok ? ' net-ok' : '') + '">' +
-        '<span class="net-ic"><svg><use href="#' + icon + '"/></svg></span>' +
-        '<span class="net-tx"><b>' + t + '</b><small>' + sub + '</small></span>' +
+    var v = scoreCalc('sell');
+    var ok = v >= 100;
+    /* هم‌ترازی FD — روایت مالک: «شبکه‌ات را بساز. با ۱۰۰ امتیاز، ما شتابت می‌دهیم.» */
+    box.innerHTML = '<div class="net-req-h"><svg><use href="#i-target"/></svg>فعال‌سازی شبکهٔ باز با امتیاز فعالیت</div>' +
+      '<div class="net-r' + (ok ? ' net-ok' : '') + '">' +
+        '<span class="net-ic"><svg><use href="#i-rocket"/></svg></span>' +
+        '<span class="net-tx"><b>امتیاز فعالیت فروش: ' + faNum(v) + ' از ۱۰۰</b><small>با ۱۰۰ امتیاز، شبکهٔ باز فعال می‌شود و کالاهایت به خریداران شبکه نشان داده می‌شود</small></span>' +
         (ok ? '<span class="net-done"><svg><use href="#i-check"/></svg></span>'
-            : '<span class="net-bar"><i style="width:' + pct + '%"></i></span>') +
-        '</div>';
-    }
-    box.innerHTML = '<div class="net-req-h"><svg><use href="#i-target"/></svg>شرایط فعال‌سازی شبکهٔ باز</div>' +
-      row('i-users', 'مشتریان واقعی', faNum(cust) + ' مشتری — حداقل ۱۰', Math.min(cust, 10), 10, okC) +
-      row('i-store', 'کاتالوگ کامل', faNum(cat) + ' کالا با قیمت — حداقل ۱۰', Math.min(cat, 10), 10, okK) +
-      row('i-tasks', 'تعاملات', faNum(inter) + ' سفارش و استعلام رسیدگی‌شده — حداقل ۵', Math.min(inter, 5), 5, okI) +
-      '<div class="net-pay"><svg><use href="#i-bolt"/></svg><span class="net-tx"><b>مسیر سریع: فعال‌سازی با پرداخت</b><span>بدون انتظار برای شرایط فعالیت — در نسخهٔ بعد</span></span><span class="badge b-amber">به‌زودی</span></div>';
+            : '<span class="net-bar"><i style="width:' + Math.min(100, v) + '%"></i></span>') +
+      '</div>' +
+      '<button class="drow" data-go="68" type="button" style="width:100%;margin-top:9px">' +
+        '<span class="dr-ic" style="background:var(--arm-tint);color:var(--arm)"><svg><use href="#i-chart"/></svg></span>' +
+        '<span class="dr-tx"><b>مشاهدهٔ امتیاز و کارها</b><small>کارهای مانده و امتیاز هر کدام — دعوتِ هر مشتری جدید بیشترین امتیاز را دارد</small></span>' +
+        '<svg class="chev"><use href="#i-chev"/></svg></button>' +
+      '<div class="net-pay"><svg><use href="#i-bolt"/></svg><span class="net-tx"><b>مسیر سریع: فعال‌سازی با پرداخت</b><span>بدون انتظار برای امتیاز — در نسخهٔ بعد</span></span><span class="badge b-amber">به‌زودی</span></div>';
     box.hidden = !!NETOPEN.on; /* وقتی باز است، شرایط دیگر دیده نمی‌شود */
   }
   function netOpenSync() {
@@ -11229,7 +12013,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var subEl = document.getElementById('netopen-sub');
     if (subEl) subEl.textContent = NETOPEN.on
       ? 'شبکهٔ شما باز است — قیمت‌ها در مقایسهٔ خریداران شبکه دیده می‌شود'
-      : (elig ? 'واجد شرایطید — می‌توانید شبکه را باز کنید' : 'شبکهٔ شما بسته است — فقط مشتریان خودتان');
+      : (elig ? 'واجد شرایطید — می‌توانید شبکه را باز کنید' : 'شبکهٔ شما بسته است — امتیاز فعالیت فروش: ' + faNum(scoreCalc('sell')) + ' از ۱۰۰');
     var swrow = document.getElementById('net-swrow');
     if (swrow) swrow.hidden = !elig && !NETOPEN.on; /* سوییچر فقط بعد از طی شرایط (یا اگر باز است) */
     var ex = document.getElementById('net-explain');
@@ -11239,7 +12023,7 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var pn = document.getElementById('net-privnote');
     if (pn) pn.hidden = !(NETOPEN.on && CATPRIV.on);
     var csub = document.getElementById('netopen-cset-sub');
-    if (csub) csub.textContent = NETOPEN.on ? 'باز — قیمت‌ها در مقایسهٔ شبکهٔ باز دیده می‌شود' : 'بسته — فقط مشتریان خودتان';
+    if (csub) csub.textContent = NETOPEN.on ? 'باز — قیمت‌ها در مقایسهٔ شبکهٔ باز دیده می‌شود' : 'بسته — امتیاز ' + faNum(scoreCalc('sell')) + ' از ۱۰۰';
     var chip = document.getElementById('net-chip');
     if (chip) chip.hidden = !NETOPEN.on;
     /* تابلوی تأمین (۰۹): ردیف‌های شبکهٔ باز فقط برای خریدارِ مشتریِ یک تأمین‌کنندهٔ باز */
@@ -11249,6 +12033,307 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var cnt = document.getElementById('sup-count-09');
     if (cnt) cnt.textContent = show ? 'تابلوی تأمین · ۳ تأمین‌کنندهٔ شما + ۲ شبکهٔ باز' : 'تابلوی تأمین · ۳ تأمین‌کنندهٔ شما';
     netReqRender();
+  }
+
+
+  /* ═══════════ هم‌ترازی imach-final-design — امتیاز فعالیت · پیشنهاد تامین · رمز ورود · میزها ═══════════
+     امتیاز فعالیت (FD-7): دو امتیاز جدا (فروش/خرید)، هر کدام ۱۰۰؛ دعوتِ افراد جدید بیشترین
+     امتیاز را دارد. ۱۰۰ = ورود به شبکهٔ آی‌مچ (شتابدهی: کالا نشان داده می‌شود، نه فروشنده)؛
+     بعد از ۱۰۰ هر امتیاز = شارژ تبلیغات. شبکهٔ باز همین‌جا به امتیاز گره خورد (netEligible). */
+  var SCORE = {
+    sell: [
+      { id: 'sc1', t: 'اطلاعات کسب‌وکار کامل', s: 'نام، شهر و صنف', p: 5, done: true, go: '22' },
+      { id: 'sc2', t: 'کاتالوگ ساخته‌شده', s: 'کاتالوگ با حداقل ۱ کالا', p: 10, done: true, go: '04' },
+      { id: 'sc3', t: 'حداقل ۳ کالا', s: 'کالاهای متنوع', p: 10, done: true, go: '04' },
+      { id: 'sc4', t: 'حداقل ۵ کالا', s: 'شانس دیده‌شدن بیشتر', p: 5, done: false, go: '04' },
+      { id: 'sc5', t: 'دعوت ۳ مشتری جدید', s: 'جذب مشتری — بیشترین امتیاز', p: 20, done: true, pick: true },
+      { id: 'sc6', t: 'دعوت ۵ مشتری جدید', s: 'شبکهٔ گسترده‌تر', p: 15, done: false, pick: true },
+      { id: 'sc7', t: 'اولین سفارش فروش', s: 'اولین فروش در آی‌مچ', p: 15, done: false },
+      { id: 'sc8', t: 'پاسخ به اولین درخواست', s: 'پاسخ به خریداران', p: 10, done: false },
+      { id: 'sc9', t: '۲ هفته فعالیت منظم', s: 'قیمت‌های به‌روز', p: 10, done: false }
+    ],
+    buy: [
+      { id: 'sb1', t: 'اطلاعات کسب‌وکار کامل', s: 'نام، شهر و صنف', p: 5, done: true },
+      { id: 'sb2', t: 'لیست خرید ساخته‌شده', s: 'لیست با حداقل ۱ کالا', p: 10, done: true, go: '34' },
+      { id: 'sb3', t: 'حداقل ۳ کالا در لیست', s: 'نیازهای متنوع', p: 10, done: true, go: '34' },
+      { id: 'sb4', t: 'حداقل ۵ کالا در لیست', s: 'برنامه‌ریزی کامل‌تر', p: 5, done: false, go: '34' },
+      { id: 'sb5', t: 'دعوت ۳ تأمین‌کنندهٔ جدید', s: 'جذب تأمین‌کننده — بیشترین امتیاز', p: 20, done: true },
+      { id: 'sb6', t: 'دعوت ۵ تأمین‌کنندهٔ جدید', s: 'شبکهٔ گسترده‌تر', p: 15, done: false, go: '10' },
+      { id: 'sb7', t: 'اولین سفارش خرید', s: 'اولین خرید در آی‌مچ', p: 15, done: false },
+      { id: 'sb8', t: 'اولین استعلام قیمت', s: 'درخواست از تأمین‌کنندگان', p: 10, done: false, go: '12' },
+      { id: 'sb9', t: '۲ هفته فعالیت منظم', s: 'لیست و قیمت‌ها به‌روز', p: 10, done: false }
+    ]
+  };
+  function scoreCalc(arm) {
+    return (SCORE[arm] || []).reduce(function (a, it) { return a + (it.done ? it.p : 0); }, 0);
+  }
+  var SC_ARM = 'sell'; /* بازوی در حال نمایش صفحهٔ امتیاز (۶۸) */
+
+  /* شتابدهی دو معنای جداست (FD-8): فروش = دیده‌شدن کالاهای تو · خرید = تأمین‌کنندهٔ بیشتر */
+  var ACCEL = {
+    sell: {
+      title: 'شتابدهی در فروش یعنی چه؟',
+      p1: 'وقتی به ۱۰۰ امتیاز می‌رسی، موتور شتاب‌دهندهٔ فروشت فعال می‌شود: کالاهایت را به خریدارهایی نشان می‌دهیم که دنبال همان کالاها هستند — بدون اینکه خودت تبلیغ کنی یا مزاحم کسی شوی.',
+      p2: 'کجا؟ همان صفحه‌هایی که خودت هم هنگام خرید، قیمت بقیهٔ تأمین‌کننده‌ها را کنار هم می‌بینی. عکس‌های پایین، صفحه‌های واقعی آی‌مچ‌اند — ردیف روشن‌شده جای کالاهای توست.',
+      img1: 'png/accel/01-offers-compare.png', cap1: '<b>صفحهٔ مقایسهٔ پیشنهادها —</b> خریدار برای استعلامش، قیمت چند تأمین‌کننده را کنار هم می‌بیند؛ کالاهای تو هم همین‌جا بین رقبا دیده می‌شود.',
+      img2: 'png/accel/02-good-suppliers.png', cap2: '<b>تابلوی تأمین هر کالا —</b> خریداری که کالای تو را در لیست خریدش دارد، قیمت به‌روز تو را همان لحظه می‌بیند و با بقیه مقایسه می‌کند.',
+      post100: 'هر امتیازِ اضافه را هر وقت خواستی به شارژ تبدیل کن — شارژ یعنی همان دیده‌شدنِ بیشترِ کالاهایت، این‌بار به انتخاب خودت.',
+      hint: 'شتابدهی یعنی همین: جلوتر دیده شدن، بدون تبلیغ و مزاحمت.'
+    },
+    buy: {
+      title: 'شتابدهی در خرید یعنی چه؟',
+      p1: 'وقتی به ۱۰۰ امتیاز می‌رسی، موتور شتاب‌دهندهٔ خریدت فعال می‌شود: از هر کالای لیستت، تأمین‌کننده‌های بیشتری به تو نشان داده می‌شوند — تأمین‌کننده‌های بهتر و به‌صرفه‌تر — بدون اینکه دنبالشان بگردی.',
+      p2: 'کجا؟ همان صفحه‌هایی که قیمت چند تأمین‌کننده را کنار هم می‌بینی. عکس‌های پایین، صفحه‌های واقعی آی‌مچ‌اند — جای روشن‌شده، جایی است که تأمین‌کننده‌های تازه را پیدا می‌کنی.',
+      img1: 'png/accel/03-buy-more-suppliers.png', cap1: '<b>تابلوی تأمین هر کالا —</b> الان تأمین‌کننده‌های ذخیره‌شدهٔ خودت را می‌بینی؛ با شتابدهی، تأمین‌کننده‌های تازهٔ همین کالا هم همین‌جا قیمت می‌دهند.',
+      img2: 'png/accel/04-buy-offers-compare.png', cap2: '<b>صفحهٔ مقایسهٔ پیشنهادها —</b> استعلامت به تأمین‌کننده‌های بیشتری می‌رسد؛ چند قیمت کنار هم، خرید به‌صرفه‌تر.',
+      post100: 'هر امتیازِ اضافه را هر وقت خواستی به شارژ تبدیل کن — شارژ یعنی درخواست‌های خریدت به تأمین‌کننده‌های بیشتری می‌رسد، به انتخاب خودت.',
+      hint: 'شتابدهی یعنی همین: تأمین‌کنندهٔ بیشتر، قیمت بهتر — بدون معطلی.'
+    }
+  };
+  function accelRender(arm) {
+    var c = ACCEL[arm === 'buy' ? 'buy' : 'sell'];
+    function put(id, val, isHtml) {
+      var e2 = document.getElementById(id);
+      if (e2) { if (isHtml) e2.innerHTML = val; else e2.textContent = val; }
+    }
+    put('sa-title', c.title);
+    put('sa-p1', c.p1);
+    put('sa-p2', c.p2);
+    put('sa-cap1', c.cap1, true);
+    put('sa-cap2', c.cap2, true);
+    put('sa-post100', c.post100);
+    put('sa-hint', c.hint);
+    var i1 = document.getElementById('sa-img1'); if (i1) i1.src = c.img1;
+    var i2 = document.getElementById('sa-img2'); if (i2) i2.src = c.img2;
+  }
+
+  function scoreRender() {
+    var arm = SC_ARM === 'buy' ? 'buy' : 'sell';
+    var isSell = arm === 'sell';
+    var items = SCORE[arm];
+    var v = scoreCalc(arm);
+    var sec = document.getElementById('scr-68');
+    if (sec) { sec.classList.toggle('sc-sell', isSell); sec.classList.toggle('sc-buy', !isSell); }
+    var ttl = document.getElementById('sc-ttl');
+    if (ttl) ttl.innerHTML = (isSell ? 'امتیاز فعالیت فروش' : 'امتیاز فعالیت خرید') + '<small>' + (isSell ? 'شبکهٔ فروشت را بساز' : 'شبکهٔ تأمینت را بساز') + '</small>';
+    var num = document.getElementById('sc-num'); if (num) num.textContent = faNum(v);
+    var ring = document.getElementById('sc-ring'); if (ring) ring.style.setProperty('--sc', String(v));
+    var ht = document.getElementById('sc-hero-t'); if (ht) ht.textContent = isSell ? 'امتیاز فعالیت فروش' : 'امتیاز فعالیت خرید';
+    var hp = document.getElementById('sc-hero-p');
+    if (hp) hp.textContent = v >= 100
+      ? (isSell
+        ? 'در شبکهٔ آی‌مچ هستی — کالاهایت به خریداران شبکه معرفی می‌شود. هر امتیازِ اضافه از این به بعد قابل تبدیل به شارژ تبلیغات است.'
+        : 'در شبکهٔ آی‌مچ هستی — تأمین‌کننده‌های تازه به تو معرفی می‌شوند. هر امتیازِ اضافه از این به بعد قابل تبدیل به شارژ است.')
+      : (isSell
+        ? 'با فعالیت واقعی امتیاز بگیر — کاتالوگت را کامل کن، مشتریانت را دعوت کن، سفارش بگیر. دعوتِ هر مشتری جدید بیشترین امتیاز را دارد.'
+        : 'با فعالیت واقعی امتیاز بگیر — لیست خریدت را کامل کن، تأمین‌کننده‌هایت را دعوت کن، استعلام بگیر. دعوتِ هر تأمین‌کنندهٔ جدید بیشترین امتیاز را دارد.');
+    var bar = document.getElementById('sc-bar'); if (bar) bar.style.width = Math.min(100, v) + '%';
+    var ns = document.getElementById('sp-net-s');
+    if (ns) ns.textContent = isSell ? 'کالاهایت به خریداران سراسر شبکه نشان داده می‌شود' : 'تأمین‌کننده‌های تازه از سراسر شبکه به تو معرفی می‌شوند';
+    var cs = document.getElementById('sp-charge-s');
+    if (cs) cs.textContent = isSell ? 'با شارژ، کالاهایت بیشتر و بالاتر دیده می‌شود' : 'با شارژ، درخواست‌های خریدت به تأمین‌کننده‌های بیشتری می‌رسد';
+    var netRow = document.getElementById('sp-net'); if (netRow) netRow.classList.toggle('done', v >= 100);
+    var chRow = document.getElementById('sp-charge'); if (chRow) chRow.classList.toggle('live', v >= 100);
+    var al = document.getElementById('sc-accel-tx');
+    if (al) al.textContent = isSell ? 'شتابدهی در فروش یعنی چه؟' : 'شتابدهی در خرید یعنی چه؟';
+    document.querySelectorAll('#sc-armbar .sc-pill').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.scarm === arm);
+    });
+    function rowHtml(it) {
+      var act = it.done ? '' : (it.pick ? ' data-scpick="1"' : (it.go ? ' data-scgo="' + it.go + '"' : ''));
+      return '<button type="button" class="sc-item ' + (it.done ? 'done' : 'todo') + '"' + act + '>' +
+        '<span class="si-ic"><svg><use href="#i-' + (it.done ? 'check' : 'bolt') + '"/></svg></span>' +
+        '<span class="si-tx"><b>' + it.t + '</b><small>' + it.s + '</small></span>' +
+        '<span class="si-pts">' + (it.done ? '+ ' : '') + faNum(it.p) + ' امتیاز</span>' +
+        (it.done ? '' : '<svg class="chev"><use href="#i-chev"/></svg>') + '</button>';
+    }
+    var done = items.filter(function (it) { return it.done; });
+    var todo = items.filter(function (it) { return !it.done; });
+    var dEl = document.getElementById('sc-done'); if (dEl) dEl.innerHTML = done.map(rowHtml).join('');
+    var tEl = document.getElementById('sc-todo'); if (tEl) tEl.innerHTML = todo.map(rowHtml).join('');
+    var dw = document.getElementById('sc-done-wrap'); if (dw) dw.hidden = !done.length;
+    var tw = document.getElementById('sc-todo-wrap'); if (tw) tw.hidden = !todo.length;
+    accelRender(arm);
+    scoreChipSync();
+  }
+
+  /* چیپ امتیاز هدر میزها — حلقهٔ SVG (r=16 → محیط ≈ ۱۰۰٫۵) */
+  function scoreChipSync() {
+    ['sell', 'buy'].forEach(function (a) {
+      var v = scoreCalc(a);
+      var rg = document.getElementById('chip-ring-' + a);
+      if (rg) rg.style.strokeDashoffset = (100.5 * (1 - Math.min(100, v) / 100)).toFixed(1);
+      var nm = document.getElementById('chip-num-' + a);
+      if (nm) nm.textContent = faNum(v);
+    });
+  }
+
+  /* اعداد زندهٔ میزها (۶۶/۶۷) + ردیف‌های «نیازمند اقدام» */
+  function deskSync() {
+    var cn = document.getElementById('dk-cust-n'); if (cn) cn.textContent = faNum(custTotal());
+    var catn = document.getElementById('dk-cat-n'); if (catn) catn.textContent = faNum(netCatCount());
+    var on = document.getElementById('dk-ord-n');
+    if (on) on.textContent = faNum(ORD.filter(function (o) { return o.sup === ORD_SELLER && (o.st === 'sent' || o.st === 'ok' || o.st === 'ship'); }).length);
+    custBadgeSync();
+    var supRows = document.querySelectorAll('#saved-cats > .row-card:not(.sup-wait)').length;
+    var sn = document.getElementById('dk-sup-n'); if (sn) sn.textContent = faNum(supRows);
+    var ss = document.getElementById('dk-sup-sub');
+    if (ss) ss.textContent = SUPPROP.length ? faNum(SUPPROP.length) + ' پیشنهاد در انتظار تایید' : '';
+    var pr = document.getElementById('dk-prop-row'); if (pr) pr.hidden = !SUPPROP.length;
+    var pn = document.getElementById('dk-prop-n'); if (pn) pn.textContent = faNum(SUPPROP.length || 1);
+    var passRow = document.getElementById('dk-pass-row'); if (passRow) passRow.hidden = PASS_MADE;
+    scoreChipSync();
+  }
+
+  /* ═══ پیشنهاد تامین (FD-23) — تایید خریدار = دو رابطه با هم (تأمین‌کنندهٔ تو + تو مشتری او) ═══ */
+  var SUPPROP = [
+    { n: 'غلات سبزدشت', person: 'سبزعلی دشت', city: 'لاهیجان', av: '#65a30d',
+      items: [{ n: 'برنج هاشمی', p: '۲٬۷۶۰٬۰۰۰', m: '۵' }, { n: 'برنج طارم', p: '۲٬۶۶۰٬۰۰۰', m: '۵' }],
+      note: 'ارسال از انبار لاهیجان — پرداخت نقدی' },
+    { n: 'شالی‌زار طالب', person: 'طالب رجبی', city: 'رشت', av: '#0d9488',
+      items: [{ n: 'برنج هاشمی', p: '۲٬۷۸۰٬۰۰۰', m: '۵' }], note: '' }
+  ];
+  var SUPSENT = false; /* ضدفیلتر (FD-22): هر تأمین‌کننده ۱ پیشنهادِ باز در ۷ روز به هر لیست */
+  function suppCard(p, i) {
+    return '<div class="prop-card">' +
+      '<span class="prop-tag"><svg><use href="#i-spark-v2"/></svg> پیشنهاد تامین</span>' +
+      '<div class="prop-h">' +
+        '<div class="avatar-sm" style="background:' + p.av + '">' + p.n.charAt(0) + '</div>' +
+        '<div class="t"><b>' + gfEsc(p.n) + '</b><small>' + gfEsc(p.person) + ' · ' + gfEsc(p.city) + ' · برای لیست خرید شما</small></div>' +
+      '</div>' +
+      '<div class="prop-items">' + p.items.map(function (it) {
+        return '<div class="prop-it"><span>' + gfEsc(it.n) + ' — حداقل ' + it.m + '</span><b>' + gfEsc(it.p) + ' تومان</b></div>';
+      }).join('') + '</div>' +
+      (p.note ? '<div class="prop-note">' + gfEsc(p.note) + '</div>' : '') +
+      '<div class="prop-acts">' +
+        '<button class="btn btn-primary btn-sm" style="flex:1" data-supok="' + i + '" type="button"><svg><use href="#i-check"/></svg> تایید</button>' +
+        '<button class="btn btn-outline btn-sm" style="flex:1" data-supno="' + i + '" type="button">حذف</button>' +
+      '</div></div>';
+  }
+  function suppRender() {
+    var html = SUPPROP.map(suppCard).join('');
+    var box8 = document.getElementById('bl-props'); if (box8) box8.innerHTML = html;
+    var w8 = document.getElementById('bl-props-wrap'); if (w8) w8.hidden = !SUPPROP.length;
+    var n8 = document.getElementById('bl-props-n'); if (n8) n8.textContent = faNum(SUPPROP.length) + ' پیشنهاد';
+    var box10 = document.getElementById('sup-props'); if (box10) box10.innerHTML = html;
+    var w10 = document.getElementById('sup-props-wrap'); if (w10) w10.hidden = !SUPPROP.length;
+    var n10 = document.getElementById('sup-props-n'); if (n10) n10.textContent = faNum(SUPPROP.length) + ' پیشنهاد';
+    deskSync();
+  }
+  function supRowAdd(p) {
+    var box = document.getElementById('saved-cats');
+    if (!box) return;
+    var row = document.createElement('div');
+    row.className = 'row-card';
+    row.style.cssText = 'align-items:center';
+    row.innerHTML = '<div class="avatar-sm" style="background:' + p.av + '">' + p.n.charAt(0) + '</div>' +
+      '<div class="body"><div class="t" style="font-size:13.5px">' + gfEsc(p.n) + '</div>' +
+      '<div class="s"><span>' + gfEsc(p.person) + ' · ' + gfEsc(p.city) + '</span><span>با تایید پیشنهاد تامین اضافه شد</span></div></div>' +
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' +
+      '<button class="icon-btn" style="width:38px;height:38px;border-radius:10px;color:var(--green)" aria-label="تماس" title="تماس"><svg><use href="#i-phone"/></svg></button>' +
+      '<button class="btn btn-outline btn-sm" data-go="13">کاتالوگ</button>' +
+      '<button class="icon-btn" style="width:34px;height:34px;border-radius:10px" aria-label="گزینه‌های بیشتر" data-sheet="sheet-catmenu" title="گزینه‌ها"><svg style="width:16px;height:16px"><use href="#i-dots"/></svg></button></div>';
+    box.insertBefore(row, box.children[1] || null);
+    prqCountSaved();
+  }
+
+  /* ═══ رمز ورود (FD) — ردیف «شروع» میز خرید تا وقتی ساخته نشده؛ ورود ۱۷ با رمز ═══ */
+  var PASS_MADE = false;
+
+  /* ═══ toast — بازخورد کوتاه یکدست ═══ */
+  var toastTimer = null;
+  function toast(msg) {
+    var tt = document.getElementById('imach-toast');
+    if (!tt) {
+      tt = document.createElement('div');
+      tt.id = 'imach-toast';
+      tt.className = 'toast';
+      document.getElementById('phone').appendChild(tt);
+    }
+    tt.textContent = msg;
+    requestAnimationFrame(function () { tt.classList.add('show'); });
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { tt.classList.remove('show'); }, 2400);
+  }
+
+  /* ═══ ثبت‌نام دو مرحله‌ای (FD-32/34) — گام ۱: شماره+نام · گام ۲: کسب‌وکار+نقش+صنف+نوع سروکار ═══ */
+  var SU = { step: 1, mode: '' };
+  var SU_MODE_EX = {
+    sell: 'مناسب برای بازاریاب‌ها، ویزیتورها و نمایندگی‌های فروش — کالایی خودت را نداشته باشی هم می‌توانی بفروشی.',
+    buy: 'مناسب برای خرده‌فروش‌ها، رستوران‌ها و کسب‌وکارهای خدماتی که عمده می‌خرند.',
+    both: 'مناسب عمده‌فروش‌ها، پخش‌کنندگان و تولیدکنندگان — هم می‌خری هم می‌فروشی.'
+  };
+  function suReset() {
+    SU.step = 1; SU.mode = '';
+    var s1 = document.getElementById('su-step1'); if (s1) s1.hidden = false;
+    var s2 = document.getElementById('su-step2'); if (s2) s2.hidden = true;
+    var prog = document.getElementById('su-prog');
+    if (prog) {
+      prog.setAttribute('aria-valuenow', '1');
+      var bars = prog.querySelectorAll('i');
+      if (bars.length === 2) { bars[0].className = 'now'; bars[1].className = ''; }
+    }
+    var st = document.getElementById('su-steps'); if (st) st.textContent = 'مرحلهٔ ۱ از ۲ — شما';
+    var main = document.getElementById('su-main');
+    if (main) { main.textContent = 'ادامه'; main.setAttribute('data-sunext', '1'); main.removeAttribute('data-susubmit'); }
+    var back = document.getElementById('su-back'); if (back) back.hidden = true;
+    var ex = document.getElementById('su-ex'); if (ex) ex.hidden = true;
+    document.querySelectorAll('#su-mode .su-mbtn').forEach(function (b) { b.classList.remove('on'); });
+    var e1 = document.getElementById('su-err1'); if (e1) e1.hidden = true;
+    var e2 = document.getElementById('su-err'); if (e2) e2.hidden = true;
+  }
+  function suStep2() {
+    SU.step = 2;
+    var s1 = document.getElementById('su-step1'); if (s1) s1.hidden = true;
+    var s2 = document.getElementById('su-step2'); if (s2) s2.hidden = false;
+    var prog = document.getElementById('su-prog');
+    if (prog) {
+      prog.setAttribute('aria-valuenow', '2');
+      var bars = prog.querySelectorAll('i');
+      if (bars.length === 2) { bars[0].className = 'done'; bars[1].className = 'now'; }
+    }
+    var st = document.getElementById('su-steps'); if (st) st.textContent = 'مرحلهٔ ۲ از ۲ — کسب‌وکار شما';
+    var chip = document.getElementById('su-phone-chip');
+    var ph = (document.getElementById('su-phone') || {}).value || '';
+    if (chip) chip.textContent = ph.trim() || '۰۹۱۲ ۳۴۵ ۶۷۸۹';
+    var main = document.getElementById('su-main');
+    if (main) { main.textContent = 'ساخت حساب و ورود'; main.setAttribute('data-susubmit', '1'); main.removeAttribute('data-sunext'); }
+    var back = document.getElementById('su-back'); if (back) back.hidden = false;
+  }
+  var SUROLES = ['صاحب کسب‌وکار', 'مدیر عامل', 'مدیر فروش', 'فروشنده', 'بازاریاب', 'ویزیتور', 'همکار فروش', 'مدیر خرید', 'مسئول خرید'];
+  function suRoleRender() {
+    var box = document.getElementById('surole-rows');
+    if (!box) return;
+    var cur = (document.getElementById('surole-field-16') || {}).textContent || '';
+    box.innerHTML = SUROLES.map(function (r) {
+      return '<button type="button" class="pk-row' + (r === cur ? ' on' : '') + '" data-surolepick="' + r + '">' +
+        '<span class="pk-tx"><b>' + r + '</b><small>' + (r === 'بازاریاب' || r === 'ویزیتور' ? 'فروش چند کسب‌وکار — داشبورد نمایندهٔ فروش' : (r.indexOf('خرید') > -1 ? 'سمت خرید عمدهٔ کسب‌وکار' : 'سمت فروش عمدهٔ کسب‌وکار')) + '</small></span>' +
+        '<span class="pk-tick"><svg><use href="#i-check"/></svg></span></button>';
+    }).join('');
+  }
+
+  /* ═══ چرخهٔ سفارش نمایندگی (۶۹) — ثبت‌شده → ارسال لیست → تحویل → تسویه ═══ */
+  var REP_STEPO = 0;
+  var REP_BTNS = ['ارسال لیست سفارش به تأمین‌کننده', 'ثبت تحویل شد', 'پورسانت دریافت شد — تسویه', 'سفارش تسویه شد'];
+  function repOrderSync() {
+    for (var k = 0; k < 4; k++) {
+      var r2 = document.getElementById('rpo-s' + k);
+      if (r2) r2.classList.toggle('hit', k <= REP_STEPO);
+    }
+    var b2 = document.getElementById('rpo-btn');
+    if (b2) {
+      b2.textContent = REP_BTNS[REP_STEPO];
+      b2.disabled = REP_STEPO >= 3;
+      b2.style.opacity = REP_STEPO >= 3 ? '.6' : '1';
+      b2.style.cursor = REP_STEPO >= 3 ? 'default' : 'pointer';
+    }
+  }
+  function repOrderNext() {
+    if (REP_STEPO < 3) {
+      REP_STEPO++;
+      toast(REP_STEPO === 1 ? 'لیست سفارش برای تأمین‌کننده ارسال شد' : (REP_STEPO === 2 ? 'تحویل ثبت شد' : 'پورسانت تسویه شد'));
+    }
+    repOrderSync();
   }
 
   /* ═══ فاز ۲۸ — صفحهٔ ۳۶ «پیشنهادات درخواست»: لیست ۱۱ فقط لیست است؛ جزئیات و پیشنهادها این‌جا ═══
@@ -11419,6 +12504,179 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var t = e.target;
     if (!t.closest) return;
 
+    /* ═══════════ هم‌ترازی FD — میزها / امتیاز / پیشنهاد تامین / رمز / ثبت‌نام دو مرحله‌ای ═══════════ */
+    var fdScoreGo = t.closest('[data-scorego]');
+    if (fdScoreGo) { SC_ARM = fdScoreGo.dataset.scorego === 'buy' ? 'buy' : 'sell'; go('68'); return; }
+    var fdScPill = t.closest('[data-scarm]');
+    if (fdScPill) { SC_ARM = fdScPill.dataset.scarm === 'buy' ? 'buy' : 'sell'; scoreRender(); return; }
+    var fdScGo = t.closest('[data-scgo]');
+    if (fdScGo) { go(fdScGo.dataset.scgo); return; }
+    var fdScPick = t.closest('[data-scpick]');
+    if (fdScPick) { openSheet('sheet-cshare'); return; } /* دعوت با مخاطبین — مهم‌ترین ابزار دعوت */
+    var fdPassOpen = t.closest('[data-passopen]');
+    if (fdPassOpen) { var fdPe = document.getElementById('pass-err'); if (fdPe) fdPe.hidden = true; openSheet('sheet-pass'); return; }
+    var fdPassMake = t.closest('[data-passmake]');
+    if (fdPassMake) {
+      PASS_MADE = true;
+      closeSheet();
+      toast('رمز ورود حسابت ساخته شد — از این پس با شماره و رمز وارد شو');
+      deskSync();
+      return;
+    }
+    var fdForgot = t.closest('[data-forgot]');
+    if (fdForgot) {
+      var fdF1 = document.getElementById('fg-step1'); if (fdF1) fdF1.hidden = false;
+      var fdF2 = document.getElementById('fg-ok'); if (fdF2) fdF2.hidden = true;
+      openSheet('sheet-forgot');
+      return;
+    }
+    var fdForgotSend = t.closest('[data-forgotsend]');
+    if (fdForgotSend) {
+      var fdF1b = document.getElementById('fg-step1'); if (fdF1b) fdF1b.hidden = true;
+      var fdF2b = document.getElementById('fg-ok'); if (fdF2b) fdF2b.hidden = false;
+      return;
+    }
+    /* ثبت‌نام دو مرحله‌ای (۱۶) */
+    var fdSuNext = t.closest('[data-sunext]');
+    if (fdSuNext) {
+      var fdPh = ((document.getElementById('su-phone') || {}).value || '').replace(/[^0-9۰-۹]/g, '');
+      var fdNm = (document.getElementById('su-name') || {}).value || '';
+      var fdBad = fdPh.length < 10 || !fdNm.trim();
+      var fdE1 = document.getElementById('su-err1');
+      if (fdE1) fdE1.hidden = !fdBad;
+      if (!fdBad) suStep2();
+      return;
+    }
+    var fdSuBack = t.closest('[data-suback]');
+    if (fdSuBack) { suReset(); return; }
+    var fdSuMode = t.closest('[data-sumode]');
+    if (fdSuMode) {
+      SU.mode = fdSuMode.dataset.sumode;
+      document.querySelectorAll('#su-mode .su-mbtn').forEach(function (b) { b.classList.toggle('on', b === fdSuMode); });
+      var fdEx = document.getElementById('su-ex');
+      if (fdEx) { fdEx.hidden = false; fdEx.textContent = SU_MODE_EX[SU.mode] || ''; }
+      var fdE2 = document.getElementById('su-err'); if (fdE2) fdE2.hidden = true;
+      return;
+    }
+    var fdSuRoleOpen = t.closest('[data-sheet="sheet-surole"]');
+    if (fdSuRoleOpen) { suRoleRender(); openSheet('sheet-surole'); return; }
+    var fdSuRolePick = t.closest('[data-surolepick]');
+    if (fdSuRolePick) {
+      var fdRl = document.getElementById('surole-field-16');
+      if (fdRl) fdRl.textContent = fdSuRolePick.dataset.surolepick;
+      setTimeout(closeSheet, 180);
+      return;
+    }
+    var fdSuSubmit = t.closest('[data-susubmit]');
+    if (fdSuSubmit) {
+      if (!SU.mode) { var fdE3 = document.getElementById('su-err'); if (fdE3) fdE3.hidden = false; return; }
+      ASSIST = SU.mode === 'both' ? { sell: true, buy: true } : { sell: SU.mode === 'sell', buy: SU.mode === 'buy' };
+      assistSave(); assistChrome(); assistSyncToggles(); tabSync(); deskSync();
+      stack.length = 0;
+      go(SU.mode === 'buy' ? '67' : '66', false);
+      toast('حساب ساخته شد — خوش آمدید به آی‌مچ');
+      return;
+    }
+    /* پیشنهاد تامین — تایید/حذف (۰۸/۱۰) + ارسال (۲۳) */
+    var fdSupOk = t.closest('[data-supok]');
+    if (fdSupOk) {
+      var fdI1 = +fdSupOk.dataset.supok;
+      var fdP1 = SUPPROP[fdI1];
+      if (fdP1) { SUPPROP.splice(fdI1, 1); supRowAdd(fdP1); toast('«' + fdP1.n + '» تایید شد — از تأمین‌کننده‌های توست و تو هم مشتری او'); }
+      suppRender();
+      return;
+    }
+    var fdSupNo = t.closest('[data-supno]');
+    if (fdSupNo) {
+      var fdI2 = +fdSupNo.dataset.supno;
+      var fdP2 = SUPPROP[fdI2];
+      if (fdP2) { SUPPROP.splice(fdI2, 1); toast('پیشنهاد «' + fdP2.n + '» حذف شد'); }
+      suppRender();
+      return;
+    }
+    var fdSupOpen = t.closest('[data-sheet="sheet-supply"]');
+    if (fdSupOpen) {
+      var fdSf = document.getElementById('sup-form'); if (fdSf) fdSf.hidden = false;
+      var fdSo = document.getElementById('sup-ok'); if (fdSo) fdSo.hidden = true;
+      var fdSg = document.getElementById('sup-guard'); if (fdSg) fdSg.hidden = true;
+      openSheet('sheet-supply');
+      return;
+    }
+    var fdSupSend = t.closest('[data-supplysend]');
+    if (fdSupSend) {
+      if (SUPSENT) { var fdG2 = document.getElementById('sup-guard'); if (fdG2) fdG2.hidden = false; return; }
+      SUPSENT = true;
+      var fdSf2 = document.getElementById('sup-form'); if (fdSf2) fdSf2.hidden = true;
+      var fdSo2 = document.getElementById('sup-ok'); if (fdSo2) fdSo2.hidden = false;
+      return;
+    }
+    /* مزایای ذخیرهٔ کاتالوگ — آکاردئون + ذخیره */
+    var fdBeneTg = t.closest('#bene-toggle');
+    if (fdBeneTg) {
+      var fdBl = document.getElementById('bene-list');
+      var fdOpen = fdBeneTg.getAttribute('aria-expanded') === 'true';
+      fdBeneTg.setAttribute('aria-expanded', fdOpen ? 'false' : 'true');
+      if (fdBl) fdBl.hidden = fdOpen;
+      return;
+    }
+    var fdSaveOk = t.closest('[data-saveok]');
+    if (fdSaveOk) {
+      closeSheet();
+      if (!SUPSAVED) {
+        SUPSAVED = true;
+        supRowEnsure();
+        catPrivSync();
+        catPrivOk('کاتالوگ در «<b>تأمین‌کنندگان من</b>» ذخیره شد — قیمت‌های زندهٔ پخش برنج پارس همیشه در دسترس شماست.');
+      }
+      return;
+    }
+    /* پذیرش پیشنهاد استعلام ⇒ ثبت سفارش با همین شرایط (FD-22) */
+    var fdOfAcc = t.closest('[data-ofaccept]');
+    if (fdOfAcc) {
+      var fdD = OF[OF.cur] || OF.inq1;
+      var fdO = fdD.offers[OF.vix != null ? OF.vix : 0];
+      if (fdO) {
+        var fdIts = [];
+        fdD.items.forEach(function (it, ix) {
+          var fdPr = fdD.multi ? fdO.prices[ix] : fdO.price;
+          /* برچسب بسته در OF با خودِ مقدار شروع می‌شود («۲۰ کیسهٔ ۵۰ کیلویی») — مقدار جدا است */
+          var fdPk = it.q.split(' ').slice(1).join(' ') || it.q;
+          if (fdPr != null) fdIts.push({ n: it.n, pack: fdPk, qty: faNum(it.qty), unit: fdPr, price: fdPr });
+        });
+        ORD.unshift({ its: fdIts, sup: fdO.seller, buyer: ORD_BUYER, st: 'sent', when: 'الان', nw: true, img: 'png/goods/rice-sack.jpg', note: 'از پیشنهاد پذیرفته‌شده — شرایط: ' + ofPayTxt(fdO) });
+        closeSheet();
+        ordRender('buy');
+        ordBadgeSync();
+        go('64');
+        toast('پیشنهاد پذیرفته شد — سفارش با همین شرایط ثبت شد');
+      }
+      return;
+    }
+    /* نمایندهٔ فروش (۶۹) */
+    var fdRepBiz = t.closest('[data-repbiz]');
+    if (fdRepBiz) {
+      var fdNames = ['پخش برنج پارس', 'آریو غلات', 'روغن نخیر'];
+      var fdSubs = ['غلات و برنج · رشت', 'روغن و کنسرو · اصفهان', 'روغن مایع · قزوین'];
+      var fdPcts = ['٪۸', '٪۶', '٪۱۰'];
+      var fdI3 = +fdRepBiz.dataset.repbiz || 0;
+      var fdT1 = document.getElementById('rbz-title'); if (fdT1) fdT1.textContent = fdNames[fdI3] || fdNames[0];
+      var fdS1 = document.getElementById('rbz-sub'); if (fdS1) fdS1.textContent = fdSubs[fdI3] || fdSubs[0];
+      var fdPc1 = document.getElementById('rbz-pct'); if (fdPc1) fdPc1.textContent = fdPcts[fdI3] || fdPcts[0];
+      openSheet('sheet-repbiz');
+      return;
+    }
+    var fdRepOrd = t.closest('[data-repord]');
+    if (fdRepOrd) {
+      var fdMap = { '0': 3, '1': 2, '2': 0 }; /* کارت‌های دمو: تسویه‌شده / تحویل‌شده / ثبت‌شده */
+      REP_STEPO = fdMap[fdRepOrd.dataset.repord] || 0;
+      repOrderSync();
+      openSheet('sheet-reporder');
+      return;
+    }
+    var fdRepNext = t.closest('[data-rponext]');
+    if (fdRepNext) { repOrderNext(); return; }
+
+
     /* ── فاز ۲۴: ویرایش کسب‌وکار از کارت پروفایل — قبل از شیتِ انتخاب کسب‌وکار ── */
     var bedit = t.closest('.biz-edit');
     if (bedit) { go('22'); return; }
@@ -11555,6 +12813,9 @@ body > div[id^="scr-d"][hidden] { display: none; }
     /* ذخیره/حذف کاتالوگ (buybar-13 + دکتهٔ بنر درگاه برای عضوِ غیرمشتری): لبهٔ دوطرفه */
     var catSave = t.closest('[data-catsave]');
     if (catSave) {
+      /* هم‌ترازی FD — ذخیرهٔ تازه اول مزایا را نشان می‌دهد (sheet-saveben)؛
+         برداشتن از حالتِ ذخیره‌شده همان حذفِ قبلی است */
+      if (!SUPSAVED) { openSheet('sheet-saveben'); return; }
       SUPSAVED = !SUPSAVED;
       if (SUPSAVED) {
         supRowEnsure();
@@ -11818,6 +13079,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
       }
       assistSave();
       assistChrome();
+      tabSync(); /* هم‌ترازی FD — تب میزِ خاموش از تب‌بارها حذف می‌شود */
+      deskSync();
       if (!ASSIST[phoneArm()]) { go(assistHome(), false); stack.length = 0; }
       return;
     }
@@ -12642,29 +13905,8 @@ body > div[id^="scr-d"][hidden] { display: none; }
     var add34 = t.closest('#scr-34 .action-bar [data-go="08"]');
     if (add34) glReset();
 
-    /* ═══ فاز ۵۰ → ۵۶ — ثبت‌نام تک‌بازو (مالک): دو سوییچرِ «کدام دستیار برای کسب و کار شما
-       فعال باشد» تعیین می‌کنند فقط کدام دستیار روشن شود تا کاربرِ تک‌نیاز گیج نشود.
-       حداقل یکی باید فعال باشد (خواستهٔ مالک) — دکمه هم چک می‌کند.
-       فرود پس از ثبت‌نام = خانهٔ دستیارِ روشن (نه همیشه ۰۱)؛ پیل «تعویض دستیار»
-       خودکار مخفی می‌شود چون assistChrome فقط با هر دو روشن پیل را نشان می‌دهد.
-       روشن‌کردن دوبارهٔ دستیار دوم: همین سوییچ‌ها یا سوییچ‌های فرم ۲۲. ═══ */
-    var suDone = t.closest('#scr-16 [data-go="01"]');
-    if (suDone) {
-      var suSellTg = document.querySelector('#su-assist .toggle[data-suarm="sell"]');
-      var suBuyTg = document.querySelector('#su-assist .toggle[data-suarm="buy"]');
-      ASSIST.sell = !!(suSellTg && suSellTg.classList.contains('on'));
-      ASSIST.buy = !!(suBuyTg && suBuyTg.classList.contains('on'));
-      if (!ASSIST.sell && !ASSIST.buy) {
-        var suErrEl3 = document.getElementById('su-err');
-        if (suErrEl3) suErrEl3.hidden = false;
-        return; /* حداقل یکی از دستیارها باید فعال باشد */
-      }
-      assistSave();
-      assistChrome();
-      go(assistHome(), false);
-      stack.length = 0;
-      return;
-    }
+    /* هم‌ترازی FD — ثبت‌نام تک‌بازوی قدیمی حذف شد: فرم دو مرحله‌ای (data-sunext/susubmit)
+       خودش ASSIST را از «نوع سروکار» می‌سازد و روی میزِ همان انتخاب فرود می‌آورد. */
 
     /* ═══ فاز ۶۱ — کارت‌های ۱۳ در حالت درگاه: لمس کارت به‌جای جزئیات (۰۲) بنر درگاه را نشان
      می‌دهد — مهمان کالا و بسته‌بندی را می‌بیند، اما برای قیمت و جزئیات باید ثبت‌نام کند.
@@ -13055,6 +14297,10 @@ body > div[id^="scr-d"][hidden] { display: none; }
   gfInit(); /* فاز ۴۳ — فرم افزودن کالا (MVP): نتایج اولیهٔ جستجوی واحد */   /* فاز ۳۶ — مبنای قیمت/موجودی ردیف‌های گرید ۴۴ + نشان «ویرایش شد» */
   assistSyncToggles(); /* فاز ۳۱ — سوییچ‌های ۲۲ با وضعیت ذخیره‌شده هم‌گام */
   assistChrome();      /* فاز ۳۱ — اگر دستیاری خاموش است، پیل هدر از همان بارگذاری مخفی است */
+  tabSync();           /* هم‌ترازی FD — تب میزِ بازوی خاموش از تب‌بارها حذف است */
+  deskSync();          /* اعداد زندهٔ میزها (۶۶/۶۷) + چیپ‌های امتیاز */
+  suppRender();        /* پیشنهادهای تامین (۰۸/۱۰/۶۷) */
+  repOrderSync();      /* چرخهٔ سفارش نمایندگی (۶۹) */
   var init = (location.hash || '').slice(1);
   go(el(init) ? init : '15', false);
 })();
