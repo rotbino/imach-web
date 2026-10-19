@@ -1,6 +1,10 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════
 # FD-29 QA — پوستهٔ اپ دسکتاپ + اسکرول مرورگر + ترمیم‌های مالک
+# FD-30 فاز ۳ deltas (بخش ۱۰/۱۰ب): الگوی «کاغذ واحد + ردیف مسطح»
+#   جایگزین شد با کارت‌های مجزا با فاصلهٔ ۱۲ (حکم مالک: ردیف‌های
+#   چسبیده زشت) + گرید موجودیت ۰۸/۲۲ + گرید ۳ستونهٔ ۲۶ + قهرمان
+#   افقی ۱۵ + ۴ کاشی/گرید ۳۸.
 # FD-30 deltas (بخش ۷): میزها از «تسک تک‌ستونه + شماره ترتیب» به
 #   کارتابل سه‌ستونه (Kanban-light) رفتند — سرفصل خوشامد + سه ستون
 #   موضوعی + کارت پیشنهاد؛ .dk-ord حذف (گروه ستون جانشین ترتیب خطی).
@@ -146,10 +150,34 @@ chk "پیام‌ها: اسکرول داخلی" "$(q "(function(){return getCompu
 chk "نوار تایپ کفِ ستون" "$(q "(function(){var f=document.querySelector('#s-chat .chat-foot').getBoundingClientRect();return Math.abs(f.bottom-window.innerHeight)<3?'bottom-ok':'y='+Math.round(f.bottom)})()")" "bottom-ok"
 chk "بوم گفتگو: پس‌زمینهٔ مشخص" "$(q "(function(){var bg=getComputedStyle(document.querySelector('#s-chat .dk-desk-main .body')).backgroundColor;return bg!=='rgba(0, 0, 0, 0)'?'canvas-ok':'clear'})()")" "canvas-ok"
 
-echo "─── ۱۰) ظرف کارت فهرست‌ها ───"
-q "iMach.show('s-customers', false); 'ok'" >/dev/null; sleep 0.8
-chk "دفتر مشتریان: ردیف‌ها در کاغذ واحد" "$(q "(function(){var rows=document.querySelector('#s-customers .body > .rows');if(!rows)return 'norows';var cs=getComputedStyle(rows);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'card-ok':'flat'})()")" "card-ok"
-chk "ردیف‌ها مسطح با خط مویی" "$(q "(function(){var r=document.querySelector('#s-customers .body > .rows .row');var cs=getComputedStyle(r);return (cs.backgroundColor==='rgba(0, 0, 0, 0)'&&cs.borderBottomStyle==='solid')?'flat-ok':'boxed'})()")" "flat-ok"
+echo "─── ۱۰) فهرست‌ها FD-30: ردیف‌های جدا با فاصله + گرید موجودیت ───"
+q "iMach.show('s-customers', false); 'ok'" >/dev/null; sleep 0.9
+chk "مارجین بین ردیف‌ها = ۱۲ (حکم مالک)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-customers .body > .rows')).gap})()")" "12px"
+chk "ردیف = کارت مجزا (قاب + شعاع ۱۶)" "$(q "(function(){var r=document.querySelector('#s-customers .body > .rows .row');var cs=getComputedStyle(r);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)'&&cs.borderRadius==='16px')?'card-ok':'flat'})()")" "card-ok"
+chk "تناسب ارتفاع: مینیمم ۸۸" "$(q "(function(){var r=document.querySelector('#s-customers .body > .rows .row');return (r.getBoundingClientRect().height>=88)?'tall-ok':'h'+Math.round(r.getBoundingClientRect().height)})()")" "tall-ok"
+chk "دفتر مشتریان: گرید موجودیت ۳ستونه" "$(q "(function(){return getComputedStyle(document.querySelector('#s-customers .body > .rows')).gridTemplateColumns.split(' ').length})()")" "3"
+chk "دعوت: قرص جمع (≤۴۶۰) نه ۱۰۸۰" "$(q "(function(){var b=document.getElementById('cust-invite-2');return Math.round(b.getBoundingClientRect().width)<=460?'pill-ok':'w'+Math.round(b.getBoundingClientRect().width)})()")" "pill-ok"
+q "iMach.show('s-buy-suppliers', false); 'ok'" >/dev/null; sleep 0.9
+chk "تأمین‌کنندگان: گرید موجودیت ۳ستونه" "$(q "(function(){return getComputedStyle(document.querySelector('#s-buy-suppliers .body > .rows')).gridTemplateColumns.split(' ').length})()")" "3"
+q "iMach.show('s-sell-orders', false); 'ok'" >/dev/null; sleep 0.9
+chk "سفارش‌ها: ردیف‌های جدا با فاصلهٔ ۱۲ (حتی داخل host)" "$(q "(function(){var r=document.querySelector('#s-sell-orders .body .rows');return r?getComputedStyle(r).gap:'norows'})()")" "12px"
+q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
+chk "کانبان: ردیف‌ها با فاصلهٔ ۸ در ستون" "$(q "(function(){return getComputedStyle(document.querySelector('#s-home-buy .dsk-col')).gap})()")" "8px"
+chk "کانبان: ردیف کارت سفید روی ستونِ تینت" "$(q "(function(){var col=getComputedStyle(document.querySelector('#s-home-buy .dsk-col'));var row=getComputedStyle(document.querySelector('#s-home-buy .dsk-col .row'));return (col.backgroundColor!=='rgba(0, 0, 0, 0)'&&row.backgroundColor!=='rgba(0, 0, 0, 0)'&&row.borderTopWidth!=='0px')?'notion-ok':'flat'})()")" "notion-ok"
+
+echo "─── ۱۰ب) ۲۶/۱۵/۳۸: گرید پیشنهادها + قهرمان افقی + نماینده ───"
+q "iMach.show('s-buy-offers', false); 'ok'" >/dev/null; sleep 1
+chk "پیشنهادها: گرید ≥۳ستونه (نه لولهٔ ۲ستونه)" "$(q "(function(){var n=getComputedStyle(document.querySelector('#offers-list')).gridTemplateColumns.split(' ').length;return n>=3?n+'cols':'only'+n})()")" "3cols"
+chk "پیشنهادها: کارت نفس‌دار (پدینگ ۱۸/۲۰)" "$(q "(function(){var c=document.querySelector('.offer-card');var cs=getComputedStyle(c);return cs.paddingTop+' '+cs.paddingLeft})()")" "18px 20px"
+chk "پیشنهادها: عرض کارت ≤۴۲۰ (تناسب)" "$(q "(function(){var w=Math.round(document.querySelector('.offer-card').getBoundingClientRect().width);return w<=420?'prop-ok':'w'+w})()")" "prop-ok"
+q "iMach.show('s-network-score', false); 'ok'" >/dev/null; sleep 0.9
+chk "امتیاز: قهرمان افقی (دایره کنار متن)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-network-score .score-hero')).flexDirection})()")" "row"
+chk "امتیاز: بدنه دوستونه (مسیر | کارها)" "$(q "(function(){var b=getComputedStyle(document.querySelector('#s-network-score .body'));return b.display+'|'+b.gridTemplateColumns.split(' ').length})()")" "grid|2"
+chk "امتیاز: مسیر چسبان در ستون راست" "$(q "(function(){var p=document.querySelector('#s-network-score .score-path');var w=document.querySelector('#s-network-score #sc-done-wrap');return (p.getBoundingClientRect().x>w.getBoundingClientRect().x&&getComputedStyle(p).position==='sticky')?'right-sticky':'no'})()")" "right-sticky"
+q "iMach.show('s-salesrep', false); 'ok'" >/dev/null; sleep 0.9
+chk "نماینده: ۴ کاشی یک‌ردیف" "$(q "(function(){var ts=[];document.querySelectorAll('#s-salesrep .rep-duo .desk-tile').forEach(function(t){ts.push(Math.round(t.getBoundingClientRect().top))});return ts.filter(function(v,i){return ts.indexOf(v)===i}).length})()")" "1"
+chk "نماینده: گرید کسب‌وکارها ≥۳ستونه" "$(q "(function(){var n=getComputedStyle(document.querySelector('#s-salesrep .rep-biz-list')).gridTemplateColumns.split(' ').length;return n>=3?n+'cols':'only'+n})()")" "3cols"
+chk "نماینده: ردیف سفارش‌ها با فاصلهٔ ۱۲" "$(q "(function(){var r=document.querySelector('#s-salesrep .body > .rows');return r?getComputedStyle(r).gap:'norows'})()")" "12px"
 
 echo "─── ۱۱) شیت: مودال مرکزیِ fixed ───"
 q "iMach.show('s-profile', false); 'ok'" >/dev/null; sleep 0.7
@@ -173,8 +201,15 @@ chk "موبایل پروفایل: بدون پوسته/دوستونه" "$(q "(fun
 q "iMach.show('s-login', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل ورود: بدون پنل برند تزریقی" "$(q "(function(){return document.querySelector('#s-login .dk-brand')?'BAD':'ok'})()")" "ok"
 q "iMach.show('s-cat-edit', false); 'ok'" >/dev/null; sleep 0.8
-chk "موبایل کاتالوگ-ویرایش: بدون ستون تزریقی" "$(q "(function(){var sc=document.getElementById('s-cat-edit');return (sc.querySelector('.cev-side')||sc.querySelector('.cev-main')||sc.querySelector('.cev-cap'))?'BAD':'ok'})()")" "ok"
+chk "موبایل کاتالوک-ویرایش: بدون ستون تزریقی" "$(q "(function(){var sc=document.getElementById('s-cat-edit');return (sc.querySelector('.cev-side')||sc.querySelector('.cev-main')||sc.querySelector('.cev-cap'))?'BAD':'ok'})()")" "ok"
 chk "موبایل کاتالوگ-ویرایش: پیش‌نمایش فرزند مستقیم body" "$(q "(function(){var p=document.getElementById('cate-logo');return p&&p.closest('.body')&&p.parentElement.classList.contains('card')&&p.closest('.body').firstElementChild.classList.contains('card')?'first-card-ok':'moved'})()")" "first-card-ok"
+q "iMach.show('s-customers', false); 'ok'" >/dev/null; sleep 0.8
+chk "موبایل مشتریان: فهرست ستونی (بدون گرید)" "$(q "(function(){var r=document.querySelector('#s-customers .body > .rows');return getComputedStyle(r).display+'|'+getComputedStyle(r).flexDirection})()")" "flex|column"
+chk "موبایل مشتریان: gap ۸ همیشگی موبایل" "$(q "(function(){return getComputedStyle(document.querySelector('#s-customers .body > .rows')).gap})()")" "8px"
+q "iMach.show('s-buy-offers', false); 'ok'" >/dev/null; sleep 0.8
+chk "موبایل پیشنهادها: بدون گرید دسکتاپی" "$(q "(function(){return getComputedStyle(document.querySelector('#offers-list')).display})()")" "block"
+q "iMach.show('s-network-score', false); 'ok'" >/dev/null; sleep 0.8
+chk "موبایل امتیاز: قهرمان عمودی (همان موبایل)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-network-score .score-hero')).flexDirection})()")" "column"
 agent-browser set viewport 1440 900 >/dev/null 2>&1; sleep 1.2
 
 echo "─── ۱۳) خطای کنسول ───"

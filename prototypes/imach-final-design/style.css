@@ -4377,57 +4377,59 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-page .section-title h2 { font-size: 16.5px; }
     #phone[data-dk="1"] .dk-page .section-title h2 svg { width: 20px; height: 20px; }
 
-    /* ─── FD-29: ظرف کارت برای بدنه — محتوا مشخص دیده شود
-       (حکم مالک: «کانتینر کارت‌مانند که محتوا در بدنه کمی مشخص‌تر
-       دیده بشه، نه این‌قدر بی‌روح و گم‌شده») — فهرست‌ها روی یک
-       کاغذ واحد؛ ردیف‌ها مسطح با خط مویی (الگوی جدولِ دسکتاپ). ─── */
-    #phone[data-dk="1"] .dk-list .body > .rows,
-    #phone[data-dk="1"] .dk-page .body > .rows,
-    #phone[data-dk="1"] .dk-desk .body > .rows,
+    /* ─── FD-30 (حکم مالک، بازطراحی لیست‌ها): ردیف‌های چسبیده حذف ───
+       «چرا ردیف‌ها در لیست‌ها به‌هم‌چسبیده و مارجین تاپ نداری؟ زشت
+       شده» + «وقتی عرض بیشتر می‌شود ارتفاع هم کمی بیشتر شود که
+       تناسب بیاید — نه لولهٔ دراز». الگوی FD-29 (کاغذ واحد + ردیفِ
+       مسطح با خط مویی) کنار رفت؛ جانشین: کارت‌های مجزا با فاصلهٔ ۱۲
+       و نفسِ دسکتاپی — پدینگ/تایپ/آواتار درشت‌تر + مینیمم ارتفاع. */
+    #phone[data-dk="1"] .dk-list .body .rows,
+    #phone[data-dk="1"] .dk-page .body .rows,
     #phone[data-dk="1"] .dk-detail .dkd-main > .rows,
     #phone[data-dk="1"] .dk-profile .dkp-main .rows {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 7px;
-        gap: 0;
-        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+        background: none; border: 0; padding: 0; box-shadow: none;
+        gap: 12px;                    /* مارجینِ بین ردیف‌ها — حکم مالک */
     }
-    #phone[data-dk="1"] .dk-list .body > .rows .row,
-    #phone[data-dk="1"] .dk-page .body > .rows .row,
-    #phone[data-dk="1"] .dk-desk .body > .rows .row,
+    /* FD-30: سلکتور عمیق — دفاتر ۰۹/۲۸/۱۱/۲۴ ردیف‌ها را داخل host
+       می‌سازند (.rows فرزند مستقیم body نیست) */
+    #phone[data-dk="1"] .dk-list .body .rows .row,
+    #phone[data-dk="1"] .dk-page .body .rows .row,
     #phone[data-dk="1"] .dk-detail .dkd-main > .rows .row,
     #phone[data-dk="1"] .dk-profile .dkp-main .rows .row {
-        background: none; border: 0;
-        border-bottom: 1px solid var(--border);
-        border-radius: 13px;
-        padding: 15px 16px;
-        transition: background .15s;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 17px 20px;
+        min-height: 88px;             /* تناسب ارتفاع با عرضِ دسکتاپ */
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+        transition: border-color .16s, box-shadow .16s;
     }
-    #phone[data-dk="1"] .dk-list .body > .rows .row:last-child,
-    #phone[data-dk="1"] .dk-page .body > .rows .row:last-child,
-    #phone[data-dk="1"] .dk-desk .body > .rows .row:last-child,
-    #phone[data-dk="1"] .dk-detail .dkd-main > .rows .row:last-child,
-    #phone[data-dk="1"] .dk-profile .dkp-main .rows .row:last-child { border-bottom: 0; }
-    #phone[data-dk="1"] .dk-list .body > .rows .row:hover,
-    #phone[data-dk="1"] .dk-page .body > .rows .row:hover,
-    #phone[data-dk="1"] .dk-desk .body > .rows .row:hover,
+    #phone[data-dk="1"] .dk-list .body .rows .row:hover,
+    #phone[data-dk="1"] .dk-page .body .rows .row:hover,
     #phone[data-dk="1"] .dk-detail .dkd-main > .rows .row:hover,
-    #phone[data-dk="1"] .dk-profile .dkp-main .rows .row:hover { background: var(--surface-2); }
-    /* ردیف «شروع»: تمایز حفظ — خط‌چین نارنجی + تینت ملایم */
-    #phone[data-dk="1"] .dk-desk .body > .rows .row.row-start,
-    #phone[data-dk="1"] .dk-page .body > .rows .row.row-start,
-    #phone[data-dk="1"] .dk-list .body > .rows .row.row-start {
-        border-bottom: 1.5px dashed var(--arm);
-        background: linear-gradient(180deg, var(--arm-soft), var(--surface) 80%);
+    #phone[data-dk="1"] .dk-profile .dkp-main .rows .row:hover {
+        border-color: var(--border-2);
+        box-shadow: 0 10px 26px rgba(31,29,26,.08);
     }
+    /* ردیف «شروع»: قابِ خط‌چینِ کامل + تینت (نه فقط خطِ زیرین) */
+    #phone[data-dk="1"] .dk-page .body .rows .row.row-start,
+    #phone[data-dk="1"] .dk-list .body .rows .row.row-start {
+        border: 1.5px dashed var(--arm);
+        background: linear-gradient(180deg, var(--arm-soft), var(--surface) 85%);
+    }
+    /* خالی/رندر داخل گریدهای فاز ۳: تمام‌عرض */
+    #phone[data-dk="1"] .dk-list .body .rows > .empty,
+    #phone[data-dk="1"] .dk-page .body .rows > .empty { grid-column: 1 / -1; }
+    /* استثنای ۲۵: گیرندگان استعلام در سایدبار چسبان — ردیف فشرده */
+    #phone[data-dk="1"] .dk-rfq .dkrf-side .rows { gap: 8px; }
+    #phone[data-dk="1"] .dk-rfq .dkrf-side .row { padding: 12px 14px; border-radius: 14px; min-height: 0; }
 
-    /* ─── dk-list: تایپوگرافی ردیف‌های پهن ─── */
-    #phone[data-dk="1"] .dk-list .row-title { font-size: 14px; }
-    #phone[data-dk="1"] .dk-list .row-sub { font-size: 12.5px; margin-top: 4px; }
-    #phone[data-dk="1"] .dk-list .avatar { width: 46px; height: 46px; font-size: 16px; }
-    #phone[data-dk="1"] .dk-list .thumb-sm { width: 46px; height: 46px; }
-    #phone[data-dk="1"] .dk-list .contact-row { padding: 14px 16px; border-radius: 13px; }
+    /* ─── dk-list: تایپوگرافی ردیف‌های کارت‌مانند (FD-30: درشت‌تر) ─── */
+    #phone[data-dk="1"] .dk-list .row-title { font-size: 15px; }
+    #phone[data-dk="1"] .dk-list .row-sub { font-size: 13px; margin-top: 4px; }
+    #phone[data-dk="1"] .dk-list .avatar { width: 50px; height: 50px; font-size: 17px; }
+    #phone[data-dk="1"] .dk-list .thumb-sm { width: 50px; height: 50px; }
+    #phone[data-dk="1"] .dk-list .contact-row { padding: 17px 20px; border-radius: 16px; }
     #phone[data-dk="1"] .dk-list .empty { padding: 40px 20px; border-radius: 18px; }
 
     /* ─── dk-form: فرم مرکزی ۶۲۰ ─── */
@@ -5069,11 +5071,13 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
     #phone[data-dk="1"] .dk-desk .dsk-col {
         min-width: 0;
-        display: flex; flex-direction: column;
-        background: var(--surface);
+        display: flex; flex-direction: column; gap: 8px;
+        /* FD-30: پس‌زمینهٔ تینت — ردیف‌ها کارت‌های سفیدِ جدا روی ستون
+           (الگوی Notion database group)؛ قبلاً ردیف‌ها چسبیده بودند */
+        background: var(--surface-2);
         border: 1px solid var(--border);
         border-radius: 20px;
-        padding: 6px;
+        padding: 8px;
         box-shadow: 0 1px 3px rgba(31,29,26,.03);
     }
     #phone[data-dk="1"] .dk-desk .dsk-col-h {
@@ -5095,7 +5099,11 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         background: var(--primary-soft); color: var(--primary-strong);
     }
     #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row {
-        padding: 14px 12px; border-radius: 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 13px 14px;
+        box-shadow: 0 1px 2px rgba(31,29,26,.05);
     }
     #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row .row-title { font-size: 13.5px; }
     #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row .row-sub { font-size: 12px; }
@@ -5346,4 +5354,87 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         background: none; backdrop-filter: none; border-top: 0;
         padding: 12px 0 0;
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-30 فاز ۳ — فهرست‌ها: گرید موجودیت + گرید مقایسه + قهرمان
+       افقی (حکم مالک: ردیفِ تمام‌عرض ۱۰۸۰px = «لولهٔ دراز»؛ عرض زیاد
+       باید تناسب بگیرد — یا ستون‌بندی یا ارتفاعِ بیشتر)
+       ═══════════════════════════════════════════════════════════ */
+
+    /* ۰۸/۲۲: دفتر مشتریان و تأمین‌کنندگان — گرید موجودیت ۳ستونه
+       (الگوی Airbnb/Dribbble — الگوی «و» از بریف طراحی) */
+    #phone[data-dk="1"] #s-customers .body > .rows,
+    #phone[data-dk="1"] #s-buy-suppliers .body > .rows {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+        gap: 12px; align-items: stretch;
+    }
+    /* دعوت: نه دکمهٔ ۱۰۸۰px تمام‌عرض — قرصِ جمع و مشخص */
+    #phone[data-dk="1"] #s-customers #cust-invite-2,
+    #phone[data-dk="1"] #s-buy-suppliers #sup-invite-2 { max-width: 460px; }
+
+    /* ۲۶ پیشنهادها: گرید ۳ستونه + کارت‌های نفس‌دار
+       (کارتِ ۵۶۶px با ارتفاعِ موبایل = لوله؛ ۳×۳۸۰ + پدینگ/تایپِ
+       درشت‌تر — قانون FD-28 گرید۲ با این بلوک جایگزین شد) */
+    #phone[data-dk="1"] .dk-offers #offers-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 16px;
+    }
+    #phone[data-dk="1"] .dk-offers #offers-list > .empty { grid-column: 1 / -1; }
+    #phone[data-dk="1"] .dk-offers .offer-card { padding: 18px 20px; border-radius: 18px; }
+    #phone[data-dk="1"] .dk-offers .offer-card .avatar { width: 46px; height: 46px; font-size: 16px; }
+    #phone[data-dk="1"] .dk-offers .offer-price .p { font-size: 17px; }
+    #phone[data-dk="1"] .dk-offers .offer-price .u { font-size: 10.5px; }
+    #phone[data-dk="1"] .dk-offers .of-items { padding: 4px 2px 8px; }
+    #phone[data-dk="1"] .dk-offers .of-it { padding: 8px 0; font-size: 12.5px; }
+    #phone[data-dk="1"] .dk-offers .of-total { font-size: 13px; padding-top: 9px; }
+    #phone[data-dk="1"] .dk-offers .ot-chip b { font-size: 12px; }
+
+    /* ۱۵ امتیاز: قهرمان افقی + دوستونه (مسیر | کارها) — الگوی «ز»
+       (استایل‌های inline موبایل با !important شکسته می‌شوند —
+       الگوی ثابت‌شدهٔ FD-28؛ صفحه با ID جدا می‌شود تا ۳۸ قاطی نشود) */
+    #phone[data-dk="1"] #s-network-score .body {
+        max-width: 1080px;
+        display: grid;
+        grid-template-columns: 400px minmax(0, 1fr);
+        gap: 16px 28px; align-items: start;
+    }
+    #phone[data-dk="1"] #s-network-score .body > .score-hero,
+    #phone[data-dk="1"] #s-network-score .body > .hint-line,
+    #phone[data-dk="1"] #s-network-score .body > .accel-link { grid-column: 1 / -1; }
+    #phone[data-dk="1"] #s-network-score .score-hero {
+        flex-direction: row !important; text-align: right !important;
+        align-items: center; gap: 30px; padding: 26px 32px;
+    }
+    #phone[data-dk="1"] #s-network-score .score-hero .score-circle {
+        width: 128px !important; height: 128px !important;
+        border-width: 7px !important; flex-shrink: 0;
+    }
+    #phone[data-dk="1"] #s-network-score .score-hero .score-circle .num { font-size: 34px !important; }
+    #phone[data-dk="1"] #s-network-score .score-hero [id="sc-hero-t"] { font-size: 17px !important; }
+    #phone[data-dk="1"] #s-network-score .score-hero p { font-size: 13px !important; }
+    #phone[data-dk="1"] #s-network-score .score-hero .progress-track {
+        max-width: none !important; margin: 14px 0 0 !important;
+    }
+    #phone[data-dk="1"] #s-network-score .body > .score-path {
+        grid-column: 1; position: sticky; top: 88px;
+    }
+    #phone[data-dk="1"] #s-network-score .body > #sc-done-wrap,
+    #phone[data-dk="1"] #s-network-score .body > #sc-todo-wrap { grid-column: 2; min-width: 0; }
+    #phone[data-dk="1"] #s-network-score .body > .score-path .sp-row { padding: 14px 16px; }
+    #phone[data-dk="1"] #s-network-score .body > .score-path .sp-row b { font-size: 13.5px; }
+    #phone[data-dk="1"] #s-network-score .rows .row { padding: 15px 18px; border-radius: 14px; min-height: 0; }
+
+    /* ۳۸ نماینده: ۴ کاشی یک‌ردیف + گرید کسب‌وکارها + بدنهٔ پهن */
+    #phone[data-dk="1"] #s-salesrep .body { max-width: 1120px; }
+    #phone[data-dk="1"] #s-salesrep .rep-duo {
+        grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
+    }
+    #phone[data-dk="1"] #s-salesrep .rep-biz-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+        gap: 12px;
+    }
+    #phone[data-dk="1"] #s-salesrep .rep-biz { padding: 16px 18px; border-radius: 16px; }
 }
