@@ -464,9 +464,29 @@ button.brand-link:active { transform: scale(.97); background: var(--surface-2); 
 }
 .lp-content { background: var(--bg); }
 
+/* ═══ FD-32: نوار زبان لندینگ — زیر هدر، بالای بنر ═══
+   حکم مالک: «چند دکمهٔ ظریف کنار هم؛ فقط نمایشی». */
+.lp-langs {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 14px 16px 0; flex-wrap: wrap;
+}
+.lp-lang {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: inherit; font-size: 11px; font-weight: 600;
+    color: var(--text-2); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 4px 12px; cursor: pointer;
+    transition: border-color .2s, color .2s;
+}
+.lp-lang:hover { border-color: var(--border-3); color: var(--text); }
+.lp-lang.active {
+    background: var(--primary-soft); border-color: var(--primary);
+    color: var(--primary-strong); font-weight: 700;
+}
+.lp-lang-more svg { width: 11px; height: 11px; color: var(--text-3); }
+
 .rv-sub { font-size: 11px; color: var(--text-3); line-height: 1.9; margin-top: -4px; }
 .rv-nav { display: none; } /* فقط دسکتاپ */
-
 .rv-strip {
     display: flex; gap: 10px;
     overflow-x: auto; scroll-snap-type: x mandatory;
@@ -475,23 +495,25 @@ button.brand-link:active { transform: scale(.97); background: var(--surface-2); 
 }
 .rv-strip::-webkit-scrollbar { display: none; }
 .rv-card {
-    flex: 0 0 296px; min-height: 196px; scroll-snap-align: start;
+    flex: 0 0 296px; min-height: 200px; scroll-snap-align: start;
     background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
     padding: 14px 16px 12px;
     display: flex; flex-direction: column;
 }
-.rv-role { font-size: 11.5px; font-weight: 800; color: var(--text-3); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+/* FD-32 (حکم مالک): نام بزرگ و بولد اولِ کارت؛ «نقش + کسب‌وکار»
+   معمولی و کمرنگ‌تر زیرش؛ بعد متن؛ فوتر لینک‌ها. */
+.rv-name { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+.rv-role { font-size: 11.5px; font-weight: 400; color: var(--text-3); display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
 .rv-role::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--text-4); flex-shrink: 0; }
 .rv-role[data-kind="sell"]::before { background: var(--primary); }
 .rv-role[data-kind="buy"]::before  { background: var(--stone); }
 .rv-role[data-kind="both"]::before { background: var(--accent); }
 .rv-text { font-size: 12.5px; line-height: 1.95; color: var(--text-2); margin: 0; flex: 1; }
 .rv-foot {
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    display: flex; align-items: center; gap: 14px;
     border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px;
 }
-.rv-name { font-size: 12px; font-weight: 800; color: var(--text); }
-.rv-links { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.rv-links { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-start; }
 .rv-link {
     display: inline-flex; align-items: center; gap: 5px;
     font-size: 11px; font-weight: 700; color: var(--primary-strong);
@@ -500,6 +522,39 @@ button.brand-link:active { transform: scale(.97); background: var(--surface-2); 
 .rv-link svg { width: 12px; height: 12px; }
 .rv-wait { font-size: 10.5px; font-weight: 600; color: var(--text-4); }
 .rv-user { border-style: dashed; }
+
+/* ═══ FD-32: ثبت‌نام دو مرحله‌ای (۰۲) ═══ */
+.steps-tag {
+    font-size: 10.5px; font-weight: 700; color: var(--text-3);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+}
+.steps-tag::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--border); border-radius: 1px;
+}
+.linklike.su-back {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin: 0 0 14px; padding: 0;
+}
+.linklike.su-back svg { width: 13px; height: 13px; }
+
+/* دکمه‌های انتخاب (نقش/صنف) — ظاهر اینپوت + شِورون */
+.input.pick {
+    display: flex; align-items: center; justify-content: space-between;
+    text-align: right; cursor: pointer; font-family: inherit;
+}
+.input.pick > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.input.pick > span:not(.set) { color: var(--text-4); }
+.input.pick > span.set { color: var(--text); font-weight: 600; }
+.input.pick svg { width: 14px; height: 14px; color: var(--text-3); flex-shrink: 0; }
+
+.su-free {
+    text-align: center; font-size: 10.5px; font-weight: 700;
+    color: var(--text-3); margin-top: 4px;
+}
+
+/* جستجوی صنف داخل شیت */
+.su-srch { height: 44px; margin: 2px 18px 10px; }
 
 /* کارت «نظر خودتان را اضافه کنید» — انتهای نوار */
 .rv-add {
@@ -4720,6 +4775,16 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
     #phone[data-dk="1"] .dk-sec:has(.rv-strip) .rv-sub { font-size: 12px; margin: 0 0 12px; }
 
+    /* FD-32: نوار زبان در دسکتاپ — هم‌تراز با متن هیرو (راست)،
+       پیل‌های کمی بزرگ‌تر؛ «سایر» شیت مودال باز می‌کند (FD-29). */
+    #phone[data-dk="1"] #s-landing .lp-langs {
+        justify-content: flex-start;
+        padding: 22px calc(56px + max(0px, (100% - 1280px) / 2)) 0;
+        gap: 8px;
+    }
+    #phone[data-dk="1"] #s-landing .lp-lang { font-size: 12px; padding: 5px 15px; }
+    #phone[data-dk="1"] #s-landing .lp-lang-more svg { width: 12px; height: 12px; }
+
     #phone[data-dk="1"] .rv-nav { display: flex; gap: 8px; }
     #phone[data-dk="1"] .rv-arw {
         width: 34px; height: 34px; border-radius: 50%;
@@ -4735,12 +4800,12 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .rv-arw svg { width: 15px; height: 15px; }
 
     #phone[data-dk="1"] .rv-strip { margin: 0; padding: 6px 0 10px; gap: 14px; }
-    #phone[data-dk="1"] .rv-card { flex: 0 0 352px; min-height: 208px; padding: 20px 22px 16px; }
-    #phone[data-dk="1"] .rv-text { font-size: 13px; line-height: 2.05; }
+    #phone[data-dk="1"] .rv-card { flex: 0 0 352px; min-height: 212px; padding: 20px 22px 16px; }
+    #phone[data-dk="1"] .rv-name { font-size: 15px; }
     #phone[data-dk="1"] .rv-role { font-size: 12px; }
-    #phone[data-dk="1"] .rv-name { font-size: 12.5px; }
+    #phone[data-dk="1"] .rv-text { font-size: 13px; line-height: 2.05; }
     #phone[data-dk="1"] .rv-link { font-size: 11.5px; }
-    #phone[data-dk="1"] .rv-add { flex: 0 0 264px; min-height: 208px; }
+    #phone[data-dk="1"] .rv-add { flex: 0 0 264px; min-height: 212px; }
 
     /* ═══════════════════════════════════════════════════════════
        ۰۳/۰۲ — ورود و ثبت‌نام: اسپلیت حرفه‌ای
@@ -4777,6 +4842,13 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dkf-s { font-size: 12.5px; color: var(--text-3); margin-top: 7px; }
     #phone[data-dk="1"] .dkf-card .field { margin-bottom: 16px; }
     #phone[data-dk="1"] .dkf-card .btn { height: 50px; font-size: 14.5px; font-weight: 800; }
+    /* FD-32 (حکم مالک): «ساخت حساب در دسکتاپ کمی عرضش بزرگ‌تر» —
+       کارت فرم ثبت‌نام پهن‌تر از ورود + دکمهٔ درشت‌تر. */
+    #phone[data-dk="1"] #s-signup .dkf-card { max-width: 560px; padding: 44px 44px 38px; }
+    #phone[data-dk="1"] #s-signup .dkf-card .btn { height: 54px; font-size: 15px; }
+    #phone[data-dk="1"] #s-signup .dkf-card .steps-tag { font-size: 11px; margin-bottom: 20px; }
+    #phone[data-dk="1"] #s-signup .dkf-card .role-card { padding: 16px 18px; }
+    #phone[data-dk="1"] #s-signup .dkf-card .su-free { font-size: 11.5px; margin-top: 8px; }
     #phone[data-dk="1"] .dkf-card .linklike {
         display: block; width: 100%; text-align: center; margin-top: 14px;
     }

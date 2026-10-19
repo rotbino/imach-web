@@ -87,9 +87,21 @@
         if (phOpt) { core.forms.profilePickPhoto(phOpt.dataset.pphoto); return; }
         if (t.closest('#profile-save')) { core.forms.profileSave(); return; }
 
-        /* ─── ثبت‌نام ─── */
+        /* ─── ثبت‌نام ───
+           FD-32: اعتبارسنجی گام ۲ — کسب‌وکار + نقش + صنف + نوع
+           سروکار (بدون پیش‌فرض) قبل از ورود. */
         if (t.closest('#signup-submit')) {
-            var roleCard = $('.role-card.active');
+            var suBiz = $('#signup-biz');
+            if (suBiz && !suBiz.value.trim()) { toast('نام کسب‌وکار را وارد کنید', 'error'); return; }
+            if (!suRole) { toast('نقش شما در کسب‌وکار را انتخاب کنید', 'error'); return; }
+            if (!suIndustry) { toast('صنف کسب‌وکار را انتخاب کنید', 'error'); return; }
+            /* باگ FD-32 (کهنه، با حذف پیش‌فرضِ both آشکار شد): سلکتور
+               سراسری $('.role-card.active') اول به کارتِ فعالِ شیت مهمان
+               (index.html · #acc-signup · پیش‌فرض buy) می‌خورد، نه کارت
+               ثبت‌نام — انتخاب «فروش عمده» هم به میز خرید می‌رفت!
+               scope به #s-signup. */
+            var roleCard = $('#s-signup .role-card.active');
+            if (!roleCard) { toast('انتخاب کنید در این کسب‌وکار با کدام سرو کار دارید', 'error'); return; }
             var role = roleCard ? roleCard.dataset.role : 'both';
             core.assist.sell = (role === 'sell' || role === 'both');
             core.assist.buy  = (role === 'buy'  || role === 'both');
@@ -1135,11 +1147,14 @@
         if (r.kind === 'sell' || r.kind === 'both') links += rvLink('s-catalog-guest', r.kind === 'both' ? 'کاتالوگ' : 'مشاهدهٔ کاتالوگ');
         if (r.kind === 'buy'  || r.kind === 'both') links += rvLink('s-buy-list-guest', r.kind === 'both' ? 'فهرست خرید' : 'مشاهدهٔ فهرست خرید');
         if (!links) links = '<span class="rv-wait">در انتظار بررسی</span>';
+        /* FD-32 (حکم مالک): نام (بزرگ و بولد) · «نقش + کسب‌وکار»
+           (معمولی و کمرنگ‌تر) · متن نظر · فوتر لینک‌ها */
         return '<article class="rv-card' + (r.user ? ' rv-user' : '') + '">' +
-               '<div class="rv-role" data-kind="' + (r.kind || '') + '">' + rvEsc(r.role) + '</div>' +
+               '<b class="rv-name">' + rvEsc(r.name) + '</b>' +
+               '<div class="rv-role" data-kind="' + (r.kind || '') + '">' +
+               rvEsc(r.role) + (r.biz ? ' ' + rvEsc(r.biz) : '') + '</div>' +
                '<p class="rv-text">' + rvEsc(r.text) + '</p>' +
-               '<div class="rv-foot"><b class="rv-name">' + rvEsc(r.name) + '</b>' +
-               '<span class="rv-links">' + links + '</span></div>' +
+               '<div class="rv-foot"><span class="rv-links">' + links + '</span></div>' +
                '</article>';
     }
 
@@ -1199,6 +1214,166 @@
             toast('نظر شما ثبت شد؛ پس از بررسی نمایش داده می‌شود', 'success');
             return;
         }
+
+        /* ═══ FD-32 — نوار زبان لندینگ (فقط نمایشی) ═══ */
+        var lpLang = t.closest('.lp-lang');
+        if (lpLang && !lpLang.classList.contains('lp-lang-more')) {
+            if (lpLang.dataset.lang !== 'fa') toast('«' + lpLang.textContent.trim() + '» به‌زودی فعال می‌شود', 'info');
+            return;
+        }
+        var lpRow = t.closest('[data-lp-lang]');
+        if (lpRow) {
+            toast('«' + lpRow.dataset.lpLang + '» به‌زودی فعال می‌شود', 'info');
+            return; /* شیت با backdrop/دکمهٔ بستن بسته می‌شود */
+        }
+    });
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       FD-32 — ثبت‌نام دو مرحله‌ای (۰۲)
+       حکم مالک: «بیا ثبت‌نام رو دو مرحله‌ای کنیم — مرحلهٔ ۱: شماره
+       موبایل + نام؛ مرحلهٔ ۲: نام کسب‌وکار + نقش کاربر + صنف
+       (سرچی-انتخابی؛ اگر نبود ثبت کند) + نوع سروکار (بدون پیش‌فرض).»
+       ▸ suReset — show-hook «s-signup»: show() کش را می‌ریزد؛ dkAuth
+         (دسکتاپ) دکمهٔ ارسال را از نوار چسبان به کارت می‌بَرد — هوک
+         بعد از آن اجرا می‌شود (setTimeout 0) پس وضعیت مرحله درست می‌نشیند.
+       ▸ نوار چسبان فقط در موبایل خودمان روشن/خاموش می‌شود؛ در دسکتاپ
+         dkAuth خودش مخفیش می‌کند.
+       ═══════════════════════════════════════════════════════════════ */
+    var suRole = null;        /* نقش انتخاب‌شدهٔ کاربر در کسب‌وکار */
+    var suIndustry = null;    /* صنف انتخاب‌شده */
+    var suExtraIndustries = []; /* صنف‌های ثبت‌شدهٔ کاربر (سشن) */
+
+    function suStep(n) {
+        var s1 = $('#signup-step-1'), s2 = $('#signup-step-2');
+        var submit = $('#signup-submit');
+        var sb = $('#s-signup .sticky-bar');
+        var dk = document.getElementById('phone').getAttribute('data-dk') === '1';
+        if (!s1 || !s2) return;
+        s1.hidden = (n !== 1);
+        s2.hidden = (n !== 2);
+        if (submit) submit.hidden = (n !== 2);
+        if (sb && !dk) sb.hidden = (n !== 2);
+        var body = $('#s-signup .body');
+        if (body) body.scrollTop = 0;
+        if (window.scrollTo) window.scrollTo(0, 0);
+    }
+
+    function suReset() {
+        suStep(1);
+        /* نظم دمو: هر بار ورود، انتخاب‌ها پاک شوند تا جریان دیده شود */
+        suRole = null; suIndustry = null;
+        var roleBtn = $('#signup-role-val'), indBtn = $('#signup-industry-val');
+        if (roleBtn) { roleBtn.textContent = 'انتخاب نقش…'; roleBtn.classList.remove('set'); }
+        if (indBtn) { indBtn.textContent = 'جستجو و انتخاب صنف…'; indBtn.classList.remove('set'); }
+        var addForm = $('#su-ind-addform');
+        if (addForm) addForm.hidden = true;
+        suIndRender(''); /* لیست صنف از ابتدا آماده باشد */
+    }
+    core.registerShowHook('s-signup', suReset);
+
+    /* رندر لیست صنف — با جستجو */
+    function suIndRender(q) {
+        var host = $('#su-ind-list');
+        if (!host) return;
+        var all = suExtraIndustries.concat((core.data && core.data.industries) || []);
+        var term = String(q || '').trim();
+        if (term) {
+            all = all.filter(function (x) { return x.indexOf(term) > -1; });
+        }
+        var html = all.map(function (x) {
+            return '<button class="sheet-row selopt' + (x === suIndustry ? ' selected' : '') +
+                   '" type="button" data-su-ind="' + escQ(x) + '">' +
+                   '<span class="tx"><b>' + escQ(x) + '</b></span>' +
+                   '<svg class="selopt-check"><use href="#i-check"/></svg></button>';
+        }).join('');
+        if (!html) html = '<div class="sub" style="padding:6px 18px;">صنف‌ای با این نام پیدا نشد — همان پایین «صنف جدید» ثبت کن.</div>';
+        host.innerHTML = html;
+    }
+
+    function escQ(s) {
+        return String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/&/g, '&amp;');
+    }
+
+    document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!t.closest) return;
+
+        /* گام ۱ → گام ۲ */
+        if (t.closest('#signup-next')) {
+            var ph = $('#signup-phone'), nm = $('#signup-name');
+            if (!ph || !nm) return;
+            var digits = String(ph.value || '').replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); }).replace(/\D/g, '');
+            if (digits.length < 10) { toast('شمارهٔ موبایل را کامل وارد کنید', 'error'); return; }
+            if (!nm.value.trim()) { toast('نام و نام خانوادگی را وارد کنید', 'error'); return; }
+            suStep(2);
+            return;
+        }
+        /* بازگشت به گام ۱ */
+        if (t.closest('#signup-back')) { suStep(1); return; }
+
+        /* انتخاب نقش از شیت */
+        var suRoleRow = t.closest('[data-su-role]');
+        if (suRoleRow) {
+            suRole = suRoleRow.dataset.suRole;
+            var roleBtn = $('#signup-role-val');
+            if (roleBtn) { roleBtn.textContent = suRole; roleBtn.classList.add('set'); }
+            core.closeSheet('sheet-signup-role');
+            toast('نقش: ' + suRole, 'success');
+            return;
+        }
+
+        /* انتخاب صنف از شیت */
+        var suIndRow = t.closest('[data-su-ind]');
+        if (suIndRow) {
+            suIndustry = suIndRow.dataset.suInd;
+            var indBtn = $('#signup-industry-val');
+            if (indBtn) { indBtn.textContent = suIndustry; indBtn.classList.add('set'); }
+            core.closeSheet('sheet-signup-industry');
+            toast('صنف: ' + suIndustry, 'success');
+            return;
+        }
+
+        /* فرم افزودن صنف جدید */
+        if (t.closest('#su-ind-addopen')) {
+            var af = $('#su-ind-addform');
+            if (af) { af.hidden = false; var ni = $('#su-ind-new'); if (ni) ni.focus(); }
+            return;
+        }
+        if (t.closest('#su-ind-add')) {
+            var ni2 = $('#su-ind-new');
+            if (!ni2 || !ni2.value.trim()) { toast('نام صنف را بنویسید', 'error'); return; }
+            var val = ni2.value.trim();
+            if (suExtraIndustries.indexOf(val) === -1 &&
+                ((core.data && core.data.industries) || []).indexOf(val) === -1) {
+                suExtraIndustries.unshift(val);
+            }
+            suIndustry = val;
+            var indBtn2 = $('#signup-industry-val');
+            if (indBtn2) { indBtn2.textContent = val; indBtn2.classList.add('set'); }
+            ni2.value = '';
+            var af2 = $('#su-ind-addform');
+            if (af2) af2.hidden = true;
+            core.closeSheet('sheet-signup-industry');
+            toast('صنف جدید ثبت شد: ' + val, 'success');
+            return;
+        }
+
+        /* بازکردن شیت صنف → لیست تازه رندر شود */
+        if (t.closest('[data-sheet="sheet-signup-industry"]')) {
+            setTimeout(function () {
+                var si = $('#su-ind-search');
+                if (si) si.value = '';
+                suIndRender('');
+            }, 0);
+            return;
+        }
+    });
+
+    /* جستجوی صنف — زنده */
+    document.addEventListener('input', function (e) {
+        var t = e.target;
+        if (t && t.id === 'su-ind-search') suIndRender(t.value);
     });
 
 

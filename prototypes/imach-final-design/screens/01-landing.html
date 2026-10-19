@@ -37,6 +37,19 @@
     </div>
 
     <div class="body flush">
+        <!-- FD-32: نوار زبان — حکم مالک: «بالای بنر، زیر هدر؛ چند دکمهٔ
+             ظریف کنار هم؛ فقط نمایشی». فارسی فعال؛ English/العربية →
+             توست «به‌زودی»؛ «سایر» → شیت زبان‌های بیشتر (sheet-lp-lang). -->
+        <div class="lp-langs" id="lp-langs" aria-label="انتخاب زبان">
+            <button class="lp-lang active" type="button" data-lang="fa">فارسی</button>
+            <button class="lp-lang" type="button" data-lang="en">English</button>
+            <button class="lp-lang" type="button" data-lang="ar">العربية</button>
+            <button class="lp-lang lp-lang-more" type="button" data-sheet="sheet-lp-lang">
+                سایر
+                <svg><use href="#i-chevd"/></svg>
+            </button>
+        </div>
+
         <div class="hero">
             <h1><em>آیمچ</em>، شعبهٔ آنلاین<br>خرید و فروش عمدهٔ شما</h1>
             <!-- FD-31: متن بنر عین جملهٔ مالک -->
@@ -275,4 +288,26 @@
     <button class="btn btn-primary btn-block" id="rv-submit" style="margin-top: 4px;">
         <svg><use href="#i-check"/></svg> ثبت نظر
     </button>
+</div>
+
+<!-- ═══ FD-32: شیت «زبان‌های دیگر» ═══
+     حکم مالک: دکمهٔ «سایر» نوار زبان → چند زبان معروف؛ فقط نمایشی
+     (الگوی sheet-lang پروفایل: ردیف + نشان «به‌زودی»). -->
+<div class="sheet" id="sheet-lp-lang" hidden>
+    <div class="grab"></div>
+    <div class="sheet-hdr">
+        <h3>زبان‌های دیگر</h3>
+        <button class="mg" data-sheet-close="sheet-lp-lang" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="sub">زبان رابط فعلاً فارسی است؛ بقیه به‌زودی.</div>
+    <div style="padding: 2px 18px 4px;">
+        <button class="sheet-row selopt" type="button" data-lp-lang="Türkçe"><span class="tx"><b>Türkçe</b></span><span class="badge b-gray">به‌زودی</span></button>
+        <button class="sheet-row selopt" type="button" data-lp-lang="اردو"><span class="tx"><b>اردو</b></span><span class="badge b-gray">به‌زودی</span></button>
+        <button class="sheet-row selopt" type="button" data-lp-lang="हिन्दी"><span class="tx"><b>हिन्दी</b></span><span class="badge b-gray">به‌زودی</span></button>
+        <button class="sheet-row selopt" type="button" data-lp-lang="Русский"><span class="tx"><b>Русский</b></span><span class="badge b-gray">به‌زودی</span></button>
+        <button class="sheet-row selopt" type="button" data-lp-lang="中文"><span class="tx"><b>中文</b></span><span class="badge b-gray">به‌زودی</span></button>
+        <button class="sheet-row selopt" type="button" data-lp-lang="Deutsch"><span class="tx"><b>Deutsch</b></span><span class="badge b-gray">به‌زودی</span></button>
+        <button class="sheet-row selopt" type="button" data-lp-lang="Français"><span class="tx"><b>Français</b></span><span class="badge b-gray">به‌زودی</span></button>
+    </div>
+    <button class="btn btn-outline btn-block" data-sheet-close="sheet-lp-lang" style="margin-top: 10px;">بستن</button>
 </div>

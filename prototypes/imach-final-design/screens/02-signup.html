@@ -2,6 +2,22 @@
      اسکرین ۰۲: ثبت‌نام
      سؤال کلیدی: کاربر خودش را در مثال‌ها پیدا کند.
      ═════════════════════════════════════════════════════════════ -->
+<!-- ═════════════════════════════════════════════════════════════
+     FD-32 (حکم مالک) — ثبت‌نام دو مرحله‌ای:
+     ▸ گام ۱: شمارهٔ موبایل + نام و نام خانوادگی → «ادامه»
+       (+ لینک «قبلاً ثبت‌نام کرده‌ام — ورود»).
+     ▸ گام ۲: نام کسب‌وکار (هینت: لازم نیست صاحبش باشید) + نقش شما
+       در کسب‌وکار (شیت انتخاب) + صنف کسب‌وکار (شیت سرچی-انتخابی؛
+       اگر نبود «صنف جدید» ثبت می‌شود) + «در این کسب‌وکار، با کدام
+       مورد زیر سرو کار داری؟» فروش عمده / خرید عمده / هر دو —
+       بدون پیش‌فرض انتخاب.
+     ▸ زیر دکمهٔ ساخت حساب: «امکانات آیمچ همیشه رایگان خواهد بود»
+       + لینک ورود.
+     ▸ منطق: app-handlers.js (suStep/suReset/suIndRender + هندلرهای
+       signup-next/signup-back/شیت‌ها + اعتبارسنجی سابمیت).
+     ▸ FD-31 مالک: کال‌اوت نارنجی موبایل خودش حذف کرد — متن‌های
+       جدید در پانل برند دسکتاپ (app-desktop.js · dkAuth).
+     ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-signup" data-arm="keep">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
@@ -9,56 +25,153 @@
     </div>
 
     <div class="body">
-        <div class="field">
-            <label>شماره موبایل</label>
-            <input class="input" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" value="09123456789" inputmode="tel">
+
+        <!-- ═══ گام ۱: شما ═══ -->
+        <div id="signup-step-1">
+            <div class="steps-tag">مرحلهٔ ۱ از ۲ — شما</div>
+
+            <div class="field">
+                <label>شماره موبایل</label>
+                <input class="input" id="signup-phone" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" value="09123456789" inputmode="tel">
+            </div>
+
+            <div class="field">
+                <label>نام و نام خانوادگی</label>
+                <input class="input" id="signup-name" type="text" placeholder="مثلاً: احمد رضایی" value="احمد رضایی">
+            </div>
+
+            <button class="btn btn-primary btn-block" id="signup-next" style="margin-top: 6px;">ادامه</button>
+            <button class="linklike" type="button" data-go="s-login">قبلاً ثبت‌نام کرده‌ام — ورود</button>
         </div>
 
-        <div class="field">
-            <label>نام و نام خانوادگی</label>
-            <input class="input" placeholder="مثلاً: احمد رضایی" value="احمد رضایی">
-        </div>
+        <!-- ═══ گام ۲: کسب‌وکار شما ═══ -->
+        <div id="signup-step-2" hidden>
+            <div class="steps-tag">مرحلهٔ ۲ از ۲ — کسب‌وکار شما</div>
 
-        <div class="field">
-            <label>نام کسب‌وکار</label>
-            <input class="input" placeholder="مثلاً: پخش برنج پارس" value="پخش برنج پارس">
-            <div class="hint">این نام روی کاتالوگ و پروفایل شما دیده می‌شود</div>
-        </div>
+            <button class="linklike su-back" id="signup-back" type="button">
+                <svg><use href="#i-back"/></svg>
+                بازگشت به مرحلهٔ یک
+            </button>
 
-        <div class="field">
-            <label>با آی‌مچ می‌خواهی چه کاری انجام بدهی؟</label>
-            <div class="role-cards" id="role-cards">
-                <button class="role-card" type="button" data-role="buy">
-                    <span class="role-ic"><svg><use href="#i-basket"/></svg></span>
-                    <span class="role-tx">
-            <b>جنس عمده می‌خرم</b>
-            <small>برای خرده‌فروشی، رستوران، تعویض روغنی، کسب‌وکار خدماتی</small>
-          </span>
-                    <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                </button>
-                <button class="role-card" type="button" data-role="sell">
-                    <span class="role-ic"><svg><use href="#i-store"/></svg></span>
-                    <span class="role-tx">
-            <b>جنس عمده می‌فروشم</b>
-            <small>برای بازاریاب، ویزیتور، پخش، پرسنل فروش شرکت</small>
-          </span>
-                    <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                </button>
-                <button class="role-card active" type="button" data-role="both">
-                    <span class="role-ic"><svg><use href="#i-home"/></svg></span>
-                    <span class="role-tx">
-            <b>هر دو را انجام می‌دهم</b>
-            <small>برای تولیدکننده، عمده‌فروش بازار، کسب‌وکارهای بزرگ</small>
-          </span>
-                    <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <div class="field">
+                <label>نام کسب‌وکار</label>
+                <input class="input" id="signup-biz" type="text" placeholder="مثلاً: پخش برنج پارس" value="پخش برنج پارس">
+                <!-- FD-32: هینت جدید حکم مالک -->
+                <div class="hint">لازم نیست شما صاحب این کسب‌وکار باشید؛ ممکن است نمایندهٔ فروش، ویزیتور یا همکار خرید باشید.</div>
+            </div>
+
+            <div class="field">
+                <label>نقش شما در این کسب‌وکار</label>
+                <button class="input pick" id="signup-role" type="button" data-sheet="sheet-signup-role">
+                    <span id="signup-role-val">انتخاب نقش…</span>
+                    <svg><use href="#i-chevd"/></svg>
                 </button>
             </div>
-        </div>
 
+            <div class="field">
+                <label>صنف کسب‌وکار</label>
+                <button class="input pick" id="signup-industry" type="button" data-sheet="sheet-signup-industry">
+                    <span id="signup-industry-val">جستجو و انتخاب صنف…</span>
+                    <svg><use href="#i-chevd"/></svg>
+                </button>
+            </div>
+
+            <div class="field">
+                <!-- FD-32: عنوان و برچسب‌های جدید حکم مالک — بدون پیش‌فرض -->
+                <label>در این کسب‌وکار، با کدام مورد زیر سرو کار داری؟</label>
+                <div class="role-cards" id="role-cards">
+                    <button class="role-card" type="button" data-role="sell">
+                        <span class="role-ic"><svg><use href="#i-store"/></svg></span>
+                        <span class="role-tx">
+                            <b>فروش عمده</b>
+                            <small>بازاریاب، ویزیتور، پخش، تولیدکننده</small>
+                        </span>
+                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                    </button>
+                    <button class="role-card" type="button" data-role="buy">
+                        <span class="role-ic"><svg><use href="#i-basket"/></svg></span>
+                        <span class="role-tx">
+                            <b>خرید عمده</b>
+                            <small>فروشگاه، رستوران، کارگاه، هتل</small>
+                        </span>
+                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                    </button>
+                    <button class="role-card" type="button" data-role="both">
+                        <span class="role-ic"><svg><use href="#i-home"/></svg></span>
+                        <span class="role-tx">
+                            <b>هر دو</b>
+                            <small>تولیدکننده، عمده‌فروش بازار، کسب‌وکار بزرگ</small>
+                        </span>
+                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="su-free">امکانات آیمچ همیشه رایگان خواهد بود</div>
+            <button class="linklike" type="button" data-go="s-login">قبلاً ثبت‌نام کرده‌ام — ورود</button>
+        </div>
 
     </div>
 
-    <div class="sticky-bar">
+    <div class="sticky-bar" hidden>
         <button class="btn btn-primary btn-block" id="signup-submit">ساخت حساب و ورود</button>
     </div>
 </section>
+
+<!-- ═══ FD-32: شیت نقش شما در کسب‌وکار ═══
+     حکم مالک: صاحب کسب‌وکار، مدیر عامل، فروشنده، بازاریاب،
+     ویزیتور، مسئول خرید + نقش‌های مهم خریدوفروشیِ جا‌مانده:
+     مدیر فروش، مدیر خرید، همکار فروش (پرسونای اصلی خود آیمچ). -->
+<div class="sheet" id="sheet-signup-role" hidden>
+    <div class="grab"></div>
+    <div class="sheet-hdr">
+        <h3>نقش شما در این کسب‌وکار</h3>
+        <button class="mg" data-sheet-close="sheet-signup-role" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="sub">نقش شما در پیام‌ها و درخواست‌ها دیده می‌شود.</div>
+    <div style="padding: 2px 18px 4px;">
+        <button class="sheet-row selopt" type="button" data-su-role="صاحب کسب‌وکار"><span class="tx"><b>صاحب کسب‌وکار</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="مدیر عامل"><span class="tx"><b>مدیر عامل</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="مدیر فروش"><span class="tx"><b>مدیر فروش</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="فروشنده"><span class="tx"><b>فروشنده</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="بازاریاب"><span class="tx"><b>بازاریاب</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="ویزیتور"><span class="tx"><b>ویزیتور</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="همکار فروش"><span class="tx"><b>همکار فروش</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="مدیر خرید"><span class="tx"><b>مدیر خرید</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+        <button class="sheet-row selopt" type="button" data-su-role="مسئول خرید"><span class="tx"><b>مسئول خرید</b></span><svg class="selopt-check"><use href="#i-check"/></svg></button>
+    </div>
+    <button class="btn btn-outline btn-block" data-sheet-close="sheet-signup-role" style="margin-top: 10px;">بستن</button>
+</div>
+
+<!-- ═══ FD-32: شیت صنف کسب‌وکار — سرچی-انتخابی ═══
+     لیست از DATA.industries (data.js) رندر می‌شود (app-handlers.js ·
+     suIndRender)؛ جستجوی زنده؛ اگر صنف نبود «صنف جدید» ثبت می‌شود
+     (فقط در حافظهٔ سشن). -->
+<div class="sheet" id="sheet-signup-industry" hidden>
+    <div class="grab"></div>
+    <div class="sheet-hdr">
+        <h3>صنف کسب‌وکار</h3>
+        <button class="mg" data-sheet-close="sheet-signup-industry" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="search-row su-srch">
+        <svg><use href="#i-search"/></svg>
+        <input type="text" id="su-ind-search" placeholder="جستجوی صنف — مثلاً: مواد غذایی" autocomplete="off">
+    </div>
+    <div id="su-ind-list" style="max-height: 42vh; overflow-y: auto;"></div>
+
+    <div id="su-ind-addwrap" style="border-top: 1px solid var(--border-2); margin-top: 6px; padding-top: 4px;">
+        <button class="sheet-row" id="su-ind-addopen" type="button" style="border-bottom: 0;">
+            <span class="ico"><svg><use href="#i-plus"/></svg></span>
+            <span class="tx">
+                <b>صنف من در لیست نیست</b>
+                <span>صنف جدید ثبت کن</span>
+            </span>
+        </button>
+        <div id="su-ind-addform" hidden style="display: flex; gap: 8px; padding: 6px 18px 8px;">
+            <input class="input" id="su-ind-new" type="text" placeholder="نام صنف جدید…">
+            <button class="btn btn-primary" id="su-ind-add" type="button" style="flex-shrink: 0;">ثبت صنف</button>
+        </div>
+    </div>
+
+    <button class="btn btn-outline btn-block" data-sheet-close="sheet-signup-industry" style="margin-top: 6px;">بستن</button>
+</div>
