@@ -18,7 +18,7 @@ PORT=8180
 agent-browser set viewport 1440 900 >/dev/null 2>&1
 agent-browser open "http://127.0.0.1:$PORT/index.html" >/dev/null 2>&1
 sleep 1.2
-agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
+agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','screens/04-home-sell.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
 sleep 2.2
 agent-browser eval "window.__errs=[];window.addEventListener('error',function(e){window.__errs.push('ERR:'+e.message)});window.addEventListener('unhandledrejection',function(e){window.__errs.push('REJ:'+String(e.reason))});'ok'" >/dev/null 2>&1
 
@@ -111,7 +111,8 @@ chk "ردیف‌ها داخل ستون‌ها (نه فهرست خام)" "$(q "(f
 chk "سرفصل خوشامد (تزریق دسکتاپی)" "$(q "(function(){return document.querySelector('#s-home-buy .dk-greet')?'y':'n'})()")" "y"
 chk "کارت پیشنهاد (hint در کاغذ)" "$(q "(function(){var h=document.querySelector('#s-home-buy .hint-line.dsk-hint');var cs=getComputedStyle(h);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'card-ok':'flat'})()")" "card-ok"
 q "iMach.show('s-home-sell', false); 'ok'" >/dev/null; sleep 0.8
-chk "میز فروش: همان کانبان سه‌ستونه" "$(q "(function(){var r=document.querySelector('#s-home-sell .body > .rows');return getComputedStyle(r).gridTemplateColumns.split(' ').length+'|'+document.querySelectorAll('#s-home-sell .dsk-col-h').length+'|'+(document.querySelector('#s-home-sell .dk-greet')?'greet':'nogreet')})()")" "3|3|greet"
+chk "میز فروش: کارتابل تک‌کاغذی فلت (FD-33)" "$(q "(function(){var r=document.querySelector('#s-home-sell .body > .rows');var cs=getComputedStyle(r);return (r.classList.contains('dsk-flat')?'flat':'kanban')+'|'+document.querySelectorAll('#s-home-sell .dsk-col').length+'cols|'+(document.querySelector('#s-home-sell .dk-greet')?'greet':'nogreet')+'|'+((cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'paper':'noframe')})()")" "flat|0cols|greet|paper"
+chk "میز فروش: ردیف‌ها مسطح + خط مویی بین تسک‌ها" "$(q "(function(){var rows=document.querySelectorAll('#s-home-sell .rows.dsk-flat .row:not([hidden])');var cards=0,div=0;rows.forEach(function(r,i){var cs=getComputedStyle(r);if(cs.backgroundColor!=='rgba(0, 0, 0, 0)'||cs.borderLeftWidth!=='0px'||cs.borderRightWidth!=='0px'||cs.borderBottomWidth!=='0px')cards++;if(i>0&&cs.borderTopWidth!=='0px')div++});return rows.length+'rows|cards='+cards+'|div='+div})()")" "4rows|cards=0|div=3"
 chk "میزها: شماره ترتیب FD-28 حذف شد" "$(q "(function(){return document.querySelectorAll('#s-home-sell .dk-ord, #s-home-buy .dk-ord').length===0?'ord-gone':'leftover'})()")" "ord-gone"
 
 echo "─── ۷ب) ۳۶ ویرایش کاتالوگ: Form + Preview (FD-30) ───"

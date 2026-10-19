@@ -346,8 +346,10 @@
         var newN = custs.filter(function (c) { return c.isNew; }).length;
         el = $('#desk-cust-num');
         if (el) el.textContent = faNum(custs.length);
-        el = $('#desk-cust-sub');
-        if (el) el.textContent = newN ? faNum(newN) + ' در انتظار تایید' : '';
+        /* FD-33 (حکم مالک): زیرمتن «N در انتظار تایید» حذف —
+           نشان قرمزِ بالای کاشی مشتریان (گویاتر و خوشگل‌تر) */
+        var bdg = $('#desk-cust-badge');
+        if (bdg) { bdg.hidden = !newN; bdg.textContent = faNum(newN); }
 
         /* FD-16: دو کاشی تازه — سفارشات رسیده + درخواست‌های قیمت */
         el = $('#desk-ord-num');

@@ -15,7 +15,7 @@ PORT=8180
 agent-browser set viewport 1440 900 >/dev/null 2>&1
 agent-browser open "http://127.0.0.1:$PORT/index.html" >/dev/null 2>&1
 sleep 1.2
-agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
+agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','screens/04-home-sell.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
 sleep 2.2
 agent-browser eval "window.__errs=[];window.addEventListener('error',function(e){window.__errs.push('ERR:'+e.message)});window.addEventListener('unhandledrejection',function(e){window.__errs.push('REJ:'+String(e.reason))});'ok'" >/dev/null 2>&1
 
@@ -172,6 +172,24 @@ S1=$(q "var tb=document.querySelector('#s-home-sell .tabbar'); getComputedStyle(
 chk "میز فروش: سایدبار + واژه‌نشان + $S_ORD" "$S1|$S_ORD" "column|brand|$S_ORD"
 ovf "میز فروش: بدون سرریز"
 
+echo "─── ۵ب) میز فروش FD-33: کاشی فلت + کارتابل تک‌کاغذی ───"
+S2=$(q "(function(){var ic=document.querySelector('#s-home-sell .desk-tile .dt-ic');var cs=getComputedStyle(ic);return document.querySelectorAll('#s-home-sell .dt-chev').length+'chev|bg='+cs.backgroundColor+'|w='+cs.width})()")
+chk "کاشی: بدون chevron · آیکون لخت (بدون قاب نارنجی)" "$S2" "0chev|bg=rgba(0, 0, 0, 0)|w=20px"
+S3=$(q "(function(){var b=document.querySelector('#s-home-sell .dt-stat b');var cs=getComputedStyle(b);var arm=getComputedStyle(document.querySelector('#s-home-sell .score-chip b')).color;return cs.fontSize+'|'+(cs.color!==arm?'gray':'arm-colored')})()")
+chk "کاشی: شمار کوچک و غیررنگی (FD-33)" "$S3" "12px|gray"
+S4=$(q "(function(){var b=document.getElementById('desk-cust-badge');if(!b)return 'nobadge';var cs=getComputedStyle(b);var top=Math.round(b.getBoundingClientRect().top)<Math.round(document.querySelector('#s-home-sell .desk-duo').getBoundingClientRect().top);return b.hidden+'|'+b.textContent+'|'+cs.backgroundColor+'|above='+top})()")
+chk "نشان قرمز «۱» بالای کاشی مشتریان" "$S4" "false|۱|rgb(220, 38, 38)|above=true"
+S5=$(q "(function(){var s=document.getElementById('s-home-sell');var r=s.querySelector('.body > .rows');var cs=getComputedStyle(r);return s.querySelectorAll('.hint-line').length+'hint|'+(r.classList.contains('dsk-flat')?'flat':'cols')+'|'+((cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'paper':'noframe')})()")
+chk "hint «خریدار عمده» حذف · کارتابل تک‌کاغذی" "$S5" "0hint|flat|paper"
+S6=$(q "(function(){var rows=document.querySelectorAll('#s-home-sell .rows.dsk-flat .row:not([hidden])');var cards=0,div=0;rows.forEach(function(r,i){var cs=getComputedStyle(r);if(cs.backgroundColor!=='rgba(0, 0, 0, 0)'||cs.borderLeftWidth!=='0px'||cs.borderRightWidth!=='0px'||cs.borderBottomWidth!=='0px')cards++;if(i>0&&cs.borderTopWidth!=='0px')div++});return rows.length+'rows|cards='+cards+'|div='+div})()")
+chk "ردیف‌ها مسطح · بین تسک‌ها فقط خط مویی" "$S6" "4rows|cards=0|div=3"
+S7=$(q "document.querySelector('#s-home-sell .st-b').textContent + '|' + (function(){var t=document.querySelector('#s-home-sell .rows.dsk-flat .row:not([hidden]) .thumb');var cs=getComputedStyle(t);return cs.backgroundColor+'|'+cs.width})()")
+chk "نشان «تکمیل اطلاعات» · آیکون ردیف‌ها هم لخت" "$S7" "تکمیل اطلاعات|rgba(0, 0, 0, 0)|22px"
+q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
+S9=$(q "(function(){var s=document.getElementById('s-home-buy');var ic=s.querySelector('.desk-tile .dt-ic');var bg=getComputedStyle(ic).backgroundColor;return document.querySelectorAll('#s-home-buy .dt-chev').length+'chev|'+(bg!=='rgba(0, 0, 0, 0)'?'boxed':'bare')+'|'+document.querySelectorAll('#s-home-buy .dsk-col').length+'cols'})()")
+chk "میز خرید: دست‌نخورده (FD-30 تا نوبتش)" "$S9" "4chev|boxed|3cols"
+ovf "میز فروش FD-33: بدون سرریز"
+
 echo "─── ۶) کاتالوک: گرید روان + نوار ابزار ───"
 q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 1.2
 C1=$(q "var g=document.querySelector('#s-catalog .pgrid'); getComputedStyle(g).gridTemplateColumns.split(' ').length + 'cols'")
@@ -242,6 +260,9 @@ chk "موبایل: ۲۵ کارت نظر · بدون فلش · عکس فلت · �
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
 MB2=$(q "var tb=document.querySelector('#s-home-buy .tabbar'); getComputedStyle(tb).flexDirection + '|' + (document.querySelector('#s-home-buy .dk-ord') ? 'ord-injected' : 'no-ord') + '|' + Math.round(document.getElementById('phone').getBoundingClientRect().width)")
 chk "موبایل میز: تب‌بار افقی · بدون شماره · ۳۹۰" "$MB2" "row|no-ord|390"
+q "iMach.show('s-home-sell', false); 'ok'" >/dev/null; sleep 0.8
+MB2b=$(q "(function(){var s=document.getElementById('s-home-sell');var ic=s.querySelector('.desk-tile .dt-ic');var b=document.getElementById('desk-cust-badge');var t=s.querySelector('.desk-tile');var h=Math.round(t.getBoundingClientRect().height);return document.querySelectorAll('#s-home-sell .dt-chev').length+'chev|'+getComputedStyle(ic).backgroundColor+'|badge='+(b&&!b.hidden?b.textContent:'none')+'|'+(h<=68?'compact':'h'+h)+'|hint='+s.querySelectorAll('.hint-line').length})()")
+chk "موبایل میز فروش FD-33: آیکون لخت · بج ۱ · کاشی جمع · حذف hint" "$MB2b" "0chev|rgba(0, 0, 0, 0)|badge=۱|compact|hint=0"
 q "iMach.show('s-login', false); 'ok'" >/dev/null; sleep 0.6
 MB3=$(q "(document.querySelector('#s-login .dk-brand') ? 'brand-injected' : 'no-inject') + '|' + (document.querySelector('#s-login .sticky-bar').hidden ? 'sticky-off' : 'sticky-on')")
 chk "موبایل ورود: بدون پنل برند · نوار روشن" "$MB3" "no-inject|sticky-on"

@@ -41,6 +41,17 @@
      • «در انتظار تایید» حتماً در کارتابل اقدام هم هست: مشتری جدید
        (customers isNew) → دفتر مشتریان (۰۸).
 
+    بازبینی مالک (FD-33 — میز فروش، فلت اما زیبا):
+     • کاشی‌ها جمع‌وجور شدند: آیکون بدون قاب نارنجی (لخت) — موبایل
+       و دسکتاپ؛ chevron حذف؛ شمار کوچک و خاکستری (نه عدد رنگی
+       بزرگ)؛ «N در انتظار تایید» زیرمتن نباشد — نشان قرمزِ
+       بالای کاشی مشتریان (dt-badge) جای آن را می‌گیرد.
+     • کارتابل اقدام: تک‌کاغذِ مسطح (dsk-flat دسکتاپ) — بین
+       تسک‌ها خط مویی، بدون کارت در کارت؛ نشان «شروع» به
+       «تکمیل اطلاعات» تغییر کرد.
+     • hint-line «خریدار عمدهٔ جدید…» حذف شد — حکم مالک:
+       «اصلاً جاش این‌جا نیست».
+
     داده و منطق: deskHomeSync() در app-forms.js + scoreItemsSell در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-sell" data-arm="sell">
@@ -74,32 +85,31 @@
 
         <!-- FD-16 (حکم مالک): چهار کاشی جمع‌وجور — «همهٔ لینکها بالا»:
              کاتالوگ / مشتریان / سفارشات رسیده / درخواست‌های قیمت.
-             زیرمتن تزیینی حذف؛ فقط دادهٔ واقعی (N در انتظار تایید) ماند.
-             عدد محصولات از listings (deskHomeSync)؛ مشتری از customers؛
-             سفارش از ordersIn؛ درخواست از rfqsIn. -->
+             زیرمتن تزیینی حذف؛ دادهٔ واقعی «در انتظار تایید» → نشان قرمز
+             بالای کاشی (FD-33). عدد محصولات از listings (deskHomeSync)؛
+             مشتری از customers؛ سفارش از ordersIn؛ درخواست از rfqsIn. -->
         <div class="desk-duo">
             <button class="desk-tile" data-go="s-catalog" type="button">
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-store"/></svg></span>
                     <b class="dt-t">کاتالوگ من</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="desk-cat-num">۰</b><span>محصول</span></div>
             </button>
+            <!-- FD-33: زیرمتن «N در انتظار تایید» حذف — نشان قرمز
+                 بالای کاشی (deskHomeSync عدد/روشن بودنش را می‌گذارد) -->
             <button class="desk-tile" data-go="s-customers" type="button">
+                <span class="dt-badge" id="desk-cust-badge" hidden></span>
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-users"/></svg></span>
                     <b class="dt-t">مشتریان من</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="desk-cust-num">۰</b><span>مشتری</span></div>
-                <div class="dt-sub" id="desk-cust-sub"></div>
             </button>
             <button class="desk-tile" data-go="s-sell-orders" type="button">
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-receipt"/></svg></span>
                     <b class="dt-t">سفارشات رسیده</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="desk-ord-num">۰</b><span>سفارش</span></div>
             </button>
@@ -107,16 +117,15 @@
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-inbox"/></svg></span>
                     <b class="dt-t">درخواست‌های قیمت</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="desk-rfq-num">۰</b><span>درخواست</span></div>
             </button>
         </div>
 
         <!-- ═══ کارتابل: نیازمند اقدام ═══
-             ۱) ردیف «شروع» (FD-12) — گامِ راه‌اندازی، به‌عنوان ردیفی
-                ساده و کمی متفاوت (قاب نقطه‌چین + نشان «شروع»)؛ متن و
-                مقصد را deskHomeSync() از scoreItemsSell[].desk می‌گذارد.
+             ۱) ردیف گامِ راه‌اندازی (FD-12) — ردیفی ساده با نشان
+                «تکمیل اطلاعات» (FD-33)؛ متن و مقصد را deskHomeSync()
+                از scoreItemsSell[].desk می‌گذارد.
              ۲) «در انتظار تایید» (FD-16 — حکم مالک: حتماً این‌جا باشد):
                 مشتری جدید رسیده → دفتر مشتریان.
              ۳) ردیف‌های زندهٔ ارتباطی — سفارش/درخواست (اقدام‌های فوری) -->
@@ -127,7 +136,7 @@
                     <svg style="width: 20px; height: 20px;"><use href="#i-rocket"/></svg>
                 </div>
                 <div class="row-body">
-                    <div class="row-title"><span id="ds-row-t"></span><span class="st-b">شروع</span></div>
+                    <div class="row-title"><span id="ds-row-t"></span><span class="st-b">تکمیل اطلاعات</span></div>
                 </div>
                 <div class="row-chev"><svg><use href="#i-chev"/></svg></div>
             </div>
@@ -166,10 +175,6 @@
             </div>
         </div>
 
-        <div class="hint-line">
-            <svg><use href="#i-sparkles"/></svg>
-            <span>۳ خریدار عمدهٔ جدید با محصولات کاتالوگ شما هم‌خوانی دارند.</span>
-        </div>
     </div>
 
     <!-- FD-12 (حکم مالک): نام میزها در تب‌بار — «جا» است نه «فعالیت»؛

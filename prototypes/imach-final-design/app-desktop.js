@@ -371,16 +371,11 @@ window.iMachDesktop = (function () {
        FD-28 شماره‌های ترتیب (.dk-ord) حذف شد — در چیدمانِ ستونی،
        شمارهٔ سراسری ترتیب را گمراه می‌کند؛ گروهِ ستون جانشینِ
        ترتیبِ خطی است (تصمیم FD-30؛ حکم FD-12 «هم‌قد بودن گام‌های
-       شروع» حالا در ستونِ خودش برقرار است). */
+       شروع» حالا در ستونِ خودش برقرار است).
+       FD-33 (حکم مالک — میز فروش): کانبان سه‌ستونه فقط برای میز
+       خرید ماند؛ میز فروش تک‌کاغذِ مسطح شد (dsk-flat) — کارت در
+       کارت ممنوع؛ بین تسک‌ها خط مویی. */
     var DESK_COLS = {
-        's-home-sell': [
-            { k: 'start',  t: 'شروع', ic: '#i-rocket',
-              pick: function (r) { return r.classList.contains('row-start'); } },
-            { k: 'pend',   t: 'در انتظار تایید', ic: '#i-user-plus',
-              pick: function (r) { return r.id === 'sell-pend-row'; } },
-            { k: 'orders', t: 'سفارشات و درخواست‌ها', ic: '#i-receipt',
-              pick: function () { return true; } }
-        ],
         's-home-buy': [
             { k: 'start',  t: 'شروع', ic: '#i-rocket',
               pick: function (r) { return r.classList.contains('row-start'); } },
@@ -405,7 +400,9 @@ window.iMachDesktop = (function () {
             '<small>کارهای امروزت را این‌جا ببین</small>';
         body.insertBefore(greet, body.firstChild);
 
-        /* ۲) کارتابل سه‌ستونه — ردیف‌های موجود در ستون‌های موضوعی */
+        /* ۲) کارتابل — FD-33: میز فروش تک‌کاغذِ مسطح؛ میز خرید
+           کانبان سه‌ستونهٔ FD-30. ردیف‌ها در DOM می‌مانند و همان
+           id/hidden/دیتا-رفتار خود را نگه می‌دارند. */
         var rows = body.querySelector(':scope > .rows');
         var spec = DESK_COLS[id];
         if (rows && spec) {
@@ -425,6 +422,12 @@ window.iMachDesktop = (function () {
             });
             cols.forEach(function (c) { rows.appendChild(c); });
             rows.classList.add('dsk-rows');
+        } else if (rows && id === 's-home-sell') {
+            /* FD-33 (حکم مالک): «فقط کارت بیرونی باشه و بین تسک‌ها
+               یه خط کافیه» — کاغذ واحد؛ ردیف‌ها مسطح با خط مویی
+               (CSS .dsk-flat). ترتیب DOM = ترتیب اهمیت: گام
+               راه‌اندازی → در انتظار تایید → سفارش → درخواست. */
+            rows.classList.add('dsk-flat');
         }
 
         /* ۳) hint-line → کارت پیشنهاد آی‌مچ */
