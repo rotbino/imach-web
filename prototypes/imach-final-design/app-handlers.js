@@ -263,11 +263,20 @@
             return;
         }
 
-        /* ─── کارت نقش ─── */
+        /* ─── کارت نقش ───
+           FD-34: در ثبت‌نام، دکمه‌های سادهٔ «سرو کار داری؟» هم
+           .role-card هستند — پس از تاگل، مثالِ همان حالت زیر
+           دکمه‌ها می‌نشیند (SU_MODE_EX). شیت مهمان همان رفتار
+           قدیمی خودش را دارد (بدون مثال). */
         var roleC = t.closest('.role-card');
         if (roleC) {
             $$('.role-card', roleC.parentElement).forEach(function (c) { c.classList.remove('active'); });
             roleC.classList.add('active');
+            var suEx = document.getElementById('su-mode-ex');
+            if (suEx && roleC.closest('#s-signup')) {
+                suEx.textContent = SU_MODE_EX[roleC.dataset.role] || '';
+                suEx.hidden = !suEx.textContent;
+            }
             return;
         }
 
@@ -1244,6 +1253,14 @@
     var suIndustry = null;    /* صنف انتخاب‌شده */
     var suExtraIndustries = []; /* صنف‌های ثبت‌شدهٔ کاربر (سشن) */
 
+    /* FD-34 (حکم مالک): مثالِ هر حالتِ «سرو کار داری؟» — متن‌ها عین
+       جملهٔ مالک؛ زیر دکمه‌ها با انتخاب می‌نشیند (#su-mode-ex). */
+    var SU_MODE_EX = {
+        sell: 'مناسب برای بازاریابان، ویزیتورها، نمایندگی‌های فروش و هر کسب‌وکار یا فردی که فقط وظیفهٔ فروش عمده دارد',
+        buy:  'مناسب برای خرده‌فروش‌ها و خدماتی‌ها، رستوران و هر کسب‌وکاری که فقط خرید عمده دارد ولی فروش عمده ندارد',
+        both: 'مناسب کسب‌وکارهایی مانند عمده‌فروشان و شرکت پخش و تولیدکنندگان و هر کسب‌وکاری که هم فروش عمده دارد و هم خرید عمده'
+    };
+
     function suStep(n) {
         var s1 = $('#signup-step-1'), s2 = $('#signup-step-2');
         var submit = $('#signup-submit');
@@ -1266,6 +1283,10 @@
         var roleBtn = $('#signup-role-val'), indBtn = $('#signup-industry-val');
         if (roleBtn) { roleBtn.textContent = 'انتخاب نقش…'; roleBtn.classList.remove('set'); }
         if (indBtn) { indBtn.textContent = 'جستجو و انتخاب صنف…'; indBtn.classList.remove('set'); }
+        /* FD-34: «سرو کار داری؟» هم بدون پیش‌فرض ریست شود + مثال پنهان */
+        $$('#s-signup .su-modes .role-card').forEach(function (b) { b.classList.remove('active'); });
+        var suEx = document.getElementById('su-mode-ex');
+        if (suEx) { suEx.hidden = true; suEx.textContent = ''; }
         var addForm = $('#su-ind-addform');
         if (addForm) addForm.hidden = true;
         suIndRender(''); /* لیست صنف از ابتدا آماده باشد */

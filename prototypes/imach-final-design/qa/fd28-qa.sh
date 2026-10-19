@@ -5,6 +5,10 @@
 # FD-31 deltas (لندینگ): حذف CTA اپ‌بار + برند iMach/آیمچ + فلت
 #   (بدون خط رنگی/قاب عکس/کارت تودرتو) + دکمهٔ «ساخت حساب» +
 #   بخش نظرات (۲۴ کارت + لینک کاتالوگ/فهرست + فلش + شیت ثبت نظر).
+# FD-34 deltas (مالک): زبان داخل بنر + عکس هیرو بدون برش · ثبت‌نام
+#   (هینت کوتاه · صنف=نوع کسب‌وکار ۴۸تایی · سه دکمهٔ ساده + مثال ·
+#   su-free حذف · کارت ۷۰۰) · میز فروش (خوشامد→«دسترسی سریع» ·
+#   بدنهٔ ۸۱۰ (۳۰%-) · هر تسک یک کارتِ هم‌ارتفاع).
 # ▸ فریم تمام‌عرض برای همهٔ ۴۱ صفحه (data-dk) · بدون سرریز افقی
 # ▸ لندینگ FD-31 · ورود/ثبت‌نام · میزها · کاتالوک گرید · چت ۹۰۰
 # ▸ جزئیات دوستونه · فرم مرکزی · شیت مودال · موبایل ۳۹۰ دست‌نخورده
@@ -69,8 +73,8 @@ L8d=$(q "(function(){var c=document.querySelectorAll('.rv-strip .rv-card')[1]; r
 chk "نظر دوم (مثال مالک): محسن رضایی — بازاریاب شرکت پخش آسمان" "$L8d" "محسن رضایی|بازاریاب شرکت پخش آسمان"
 L8e=$(q "(function(){var c=Array.prototype.slice.call(document.querySelectorAll('.rv-strip .rv-card')).filter(function(x){return x.querySelector('.rv-name').textContent==='سعید محمدی'})[0]; return (c.textContent.indexOf('رشد')>-1?'growth':'no') + '|' + c.querySelector('.rv-link').getAttribute('data-go')})()")
 chk "سعید محمدی (همکار فروش یدکی): کاتالوگ + رشد درآمد" "$L8e" "growth|s-catalog-guest"
-LNG1=$(q "(function(){var lb=document.getElementById('lp-langs'); return lb.querySelectorAll('.lp-lang').length + 'btns|' + lb.querySelector('.lp-lang.active').textContent + '|' + getComputedStyle(lb).justifyContent})()")
-chk "نوار زبان زیر هدر: ۴ دکمه · فارسی فعال · راست‌تراز دسکتاپ" "$LNG1" "4btns|فارسی|flex-start"
+LNG1=$(q "(function(){var lb=document.getElementById('lp-langs'); return lb.querySelectorAll('.lp-lang').length + 'btns|' + lb.querySelector('.lp-lang.active').textContent + '|' + getComputedStyle(lb).justifyContent + '|parent=' + lb.parentElement.className})()")
+chk "نوار زبان داخل بنر (FD-34): ۴ دکمه · فارسی فعال · راست‌تراز" "$LNG1" "4btns|فارسی|flex-start|parent=hero"
 q "document.querySelector('.lp-lang-more').click(); 'ok'" >/dev/null; sleep 0.7
 LNG2=$(q "(function(){var s=document.getElementById('sheet-lp-lang'); return (!s.hidden && s.classList.contains('show') ? 'open' : 'closed') + '|' + s.querySelectorAll('[data-lp-lang]').length + 'rows'})()")
 chk "دکمهٔ «سایر» → شیت زبان‌های دیگر (۷ زبان) باز" "$LNG2" "open|7rows"
@@ -127,11 +131,11 @@ SU3=$(q "(document.querySelector('#s-signup .dkf-card .field label') ? document.
 chk "گام ۱: شماره + نام · لینک «قبلاً ثبت‌نام کرده‌ام — ورود»" "$SU3" "2f|login-link"
 q "document.getElementById('signup-next').click(); 'ok'" >/dev/null; sleep 0.6
 SU0=$(q "(function(){var c=document.querySelector('#s-signup .dkf-card'); var b=document.querySelector('#s-signup .dkf-card #signup-submit'); return Math.round(c.getBoundingClientRect().width) + '|btn' + Math.round(b.getBoundingClientRect().width) + 'x' + Math.round(b.getBoundingClientRect().height)})()")
-chk "کارت ثبت‌نام پهن‌تر ~۵۵۸ (FD-32) · دکمهٔ بزرگ تمام‌عرض ۴۷۰×۵۴" "$SU0" "560|btn470x54"
+chk "کارت ثبت‌نام ۷۰۰ (FD-34: ۲۵٪+) · دکمهٔ تمام‌عرض ~۶۰۲×۵۴" "$SU0" "700|btn602x54"
 SU4=$(q "(function(){var s1=document.getElementById('signup-step-1'), s2=document.getElementById('signup-step-2'), sb=document.getElementById('signup-submit'); return (s2&&!s2.hidden?'step2':'hid2') + '|' + (sb&&!sb.hidden?'sub':'hidsub') + '|' + (s1&&s1.hidden?'back-ok':'no')})()")
 chk "«ادامه» → گام ۲ + دکمهٔ ساخت حساب نمایان" "$SU4" "step2|sub|back-ok"
-SU5=$(q "(document.querySelector('#signup-biz') ? 'biz' : 'x') + '|' + (document.querySelector('#s-signup .hint').textContent.indexOf('صاحب این کسب')>-1?'new-hint':'old') + '|' + document.querySelectorAll('[data-su-role]').length + 'roles|' + document.querySelectorAll('#su-ind-list .sheet-row').length + 'ind0'")
-chk "گام ۲: کسب‌وکار (هینت جدید) · ۹ نقش · صنف‌ها رندر" "$SU5" "biz|new-hint|9roles|35ind0"
+SU5=$(q "(document.querySelector('#signup-biz') ? 'biz' : 'x') + '|' + (document.querySelector('#s-signup .hint').textContent.indexOf('نقش شما مهم است')>-1?'fd34-hint':'old') + '|' + document.querySelectorAll('[data-su-role]').length + 'roles|' + document.querySelectorAll('#su-ind-list .sheet-row').length + 'ind0' + '|' + (document.querySelector('#s-signup .su-free') ? 'free-BAD' : 'free-gone') + '|' + document.querySelectorAll('#s-signup .su-modes .role-card').length + 'modes'")
+chk "گام ۲: هینت FD-34 · ۹ نقش · صنف‌ها (۴۹) · su-free حذف · ۳ دکمهٔ ساده" "$SU5" "biz|fd34-hint|9roles|49ind0|free-gone|3modes"
 q "document.getElementById('signup-role').click(); 'ok'" >/dev/null; sleep 0.7
 SU6=$(q "(function(){var s=document.getElementById('sheet-signup-role'); return (!s.hidden?'open':'closed') + '|centered:' + (Math.abs((s.getBoundingClientRect().left+s.getBoundingClientRect().right)/2-window.innerWidth/2)<80?'yes':'no')})()")
 chk "شیت نقش: مودال مرکزی دسکتاپ · ۹ نقش" "$SU6" "open|centered:yes"
@@ -139,13 +143,16 @@ q "document.querySelectorAll('[data-su-role]')[4].click(); 'ok'" >/dev/null; sle
 SU7=$(q "document.getElementById('signup-role-val').textContent + '|' + document.getElementById('sheet-signup-role').hidden")
 chk "انتخاب نقش (بازاریاب) → مقدار در فرم + شیت بسته" "$SU7" "بازاریاب|true"
 q "document.getElementById('signup-industry').click(); 'ok'" >/dev/null; sleep 0.7
-q "var i=document.getElementById('su-ind-search'); i.value='لبنی'; i.dispatchEvent(new Event('input',{bubbles:true})); 'ok'" >/dev/null; sleep 0.4
+q "var i=document.getElementById('su-ind-search'); i.value='قنادی'; i.dispatchEvent(new Event('input',{bubbles:true})); 'ok'" >/dev/null; sleep 0.4
 SU8=$(q "(function(){var rows=Array.prototype.map.call(document.querySelectorAll('#su-ind-list [data-su-ind] b'),function(x){return x.textContent}); return rows.join(',') + '|' + rows.length})()")
-chk "جستجوی صنف «لبنی» → فقط لبنیات" "$SU8" "لبنیات|1"
+chk "جستجوی صنف «قنادی» → فقط قنادی (صنف=نوع کسب‌وکار FD-34)" "$SU8" "قنادی|1"
 q "document.getElementById('su-ind-addopen').click(); document.getElementById('su-ind-new').value='تجهیزات دریایی'; document.getElementById('su-ind-add').click(); 'ok'" >/dev/null; sleep 0.5
 SU9=$(q "document.getElementById('signup-industry-val').textContent + '|' + document.getElementById('sheet-signup-industry').hidden")
 chk "صنف جدید ثبت می‌شود → مقدار در فرم + شیت بسته" "$SU9" "تجهیزات دریایی|true"
-q "document.querySelectorAll('#s-signup .role-card')[0].click(); document.getElementById('signup-submit').click(); 'ok'" >/dev/null; sleep 1.2
+q "document.querySelectorAll('#s-signup .role-card')[0].click(); 'ok'" >/dev/null; sleep 0.4
+SU9b=$(q "(function(){var ex=document.getElementById('su-mode-ex');var b=document.querySelector('#s-signup .su-modes .role-card.active');return b.textContent.trim()+'|'+(!ex.hidden&&ex.textContent.indexOf('بازاریابان')>-1?'ex-ok':'ex-BAD')})()")
+chk "انتخاب «فروش عمده» → مثالِ همان حالت زیر دکمه‌ها (FD-34)" "$SU9b" "فروش عمده|ex-ok"
+q "document.getElementById('signup-submit').click(); 'ok'" >/dev/null; sleep 1.2
 SU10=$(q "document.querySelector('.screen:not([hidden])').id")
 chk "فروش عمده → میز فروش (باگ اسکوپ role-card رفع شد)" "$SU10" "s-home-sell"
 # ثبت‌نام sell-only بازوی خرید را خاموش می‌کند (رفتار درست محصول) —
@@ -172,23 +179,25 @@ S1=$(q "var tb=document.querySelector('#s-home-sell .tabbar'); getComputedStyle(
 chk "میز فروش: سایدبار + واژه‌نشان + $S_ORD" "$S1|$S_ORD" "column|brand|$S_ORD"
 ovf "میز فروش: بدون سرریز"
 
-echo "─── ۵ب) میز فروش FD-33: کاشی فلت + کارتابل تک‌کاغذی ───"
+echo "─── ۵ب) میز فروش FD-34: کاشی فلت + کارت‌های تسک مجزا ───"
 S2=$(q "(function(){var ic=document.querySelector('#s-home-sell .desk-tile .dt-ic');var cs=getComputedStyle(ic);return document.querySelectorAll('#s-home-sell .dt-chev').length+'chev|bg='+cs.backgroundColor+'|w='+cs.width})()")
-chk "کاشی: بدون chevron · آیکون لخت (بدون قاب نارنجی)" "$S2" "0chev|bg=rgba(0, 0, 0, 0)|w=20px"
+chk "کاشی: بدون chevron · آیکون لخت (بدون قاب نارنجی؛ ۱۹px FD-34)" "$S2" "0chev|bg=rgba(0, 0, 0, 0)|w=19px"
 S3=$(q "(function(){var b=document.querySelector('#s-home-sell .dt-stat b');var cs=getComputedStyle(b);var arm=getComputedStyle(document.querySelector('#s-home-sell .score-chip b')).color;return cs.fontSize+'|'+(cs.color!==arm?'gray':'arm-colored')})()")
-chk "کاشی: شمار کوچک و غیررنگی (FD-33)" "$S3" "12px|gray"
+chk "کاشی: شمار کوچک و غیررنگی (FD-34: ۱۱.۵px)" "$S3" "11.5px|gray"
 S4=$(q "(function(){var b=document.getElementById('desk-cust-badge');if(!b)return 'nobadge';var cs=getComputedStyle(b);var top=Math.round(b.getBoundingClientRect().top)<Math.round(document.querySelector('#s-home-sell .desk-duo').getBoundingClientRect().top);return b.hidden+'|'+b.textContent+'|'+cs.backgroundColor+'|above='+top})()")
 chk "نشان قرمز «۱» بالای کاشی مشتریان" "$S4" "false|۱|rgb(220, 38, 38)|above=true"
-S5=$(q "(function(){var s=document.getElementById('s-home-sell');var r=s.querySelector('.body > .rows');var cs=getComputedStyle(r);return s.querySelectorAll('.hint-line').length+'hint|'+(r.classList.contains('dsk-flat')?'flat':'cols')+'|'+((cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'paper':'noframe')})()")
-chk "hint «خریدار عمده» حذف · کارتابل تک‌کاغذی" "$S5" "0hint|flat|paper"
-S6=$(q "(function(){var rows=document.querySelectorAll('#s-home-sell .rows.dsk-flat .row:not([hidden])');var cards=0,div=0;rows.forEach(function(r,i){var cs=getComputedStyle(r);if(cs.backgroundColor!=='rgba(0, 0, 0, 0)'||cs.borderLeftWidth!=='0px'||cs.borderRightWidth!=='0px'||cs.borderBottomWidth!=='0px')cards++;if(i>0&&cs.borderTopWidth!=='0px')div++});return rows.length+'rows|cards='+cards+'|div='+div})()")
-chk "ردیف‌ها مسطح · بین تسک‌ها فقط خط مویی" "$S6" "4rows|cards=0|div=3"
-S7=$(q "document.querySelector('#s-home-sell .st-b').textContent + '|' + (function(){var t=document.querySelector('#s-home-sell .rows.dsk-flat .row:not([hidden]) .thumb');var cs=getComputedStyle(t);return cs.backgroundColor+'|'+cs.width})()")
+S5=$(q "(function(){var s=document.getElementById('s-home-sell');var r=s.querySelector('.body > .rows');return s.querySelectorAll('.hint-line').length+'hint|'+(r.classList.contains('dsk-tasks')?'tasks':'other')+'|'+(s.querySelector('.dk-greet')?'greet-BAD':'nogreet')+'|'+(s.querySelector('.dk-quick')?'quick':'noquick')})()")
+chk "hint حذف · خوشامد حذف → «دسترسی سریع» (FD-34) · dsk-tasks" "$S5" "0hint|tasks|nogreet|quick"
+S6=$(q "(function(){var rows=document.querySelectorAll('#s-home-sell .rows.dsk-tasks .row:not([hidden])');var cards=0;var w=Math.round(rows[0].getBoundingClientRect().width);rows.forEach(function(r){var cs=getComputedStyle(r);if(cs.borderLeftWidth!=='0px')cards++});var body=document.querySelector('#s-home-sell .dk-desk-main .body');return rows.length+'rows|cards='+cards+'|w='+w+'|bodyW='+Math.round(body.getBoundingClientRect().width)})()")
+chk "هر تسک یک کارت (FD-34) · ستون یگانه ~۷۳۰ · بدنهٔ ۸۱۰ (۳۰%-)" "$S6" "4rows|cards=4|w=730|bodyW=810"
+S6b=$(q "(function(){var hs=Array.prototype.map.call(document.querySelectorAll('#s-home-sell .rows.dsk-tasks .row:not([hidden])'),function(r){return Math.round(r.getBoundingClientRect().height)});var gap=getComputedStyle(document.querySelector('#s-home-sell .rows.dsk-tasks')).rowGap;return hs.join(',')+'|gap='+gap})()")
+chk "ارتفاع همهٔ کارت‌ها یکسان (۸۴) · فاصلهٔ ۱۲ (FD-34)" "$S6b" "84,84,84,84|gap=12px"
+S7=$(q "document.querySelector('#s-home-sell .st-b').textContent + '|' + (function(){var t=document.querySelector('#s-home-sell .rows.dsk-tasks .row:not([hidden]) .thumb');var cs=getComputedStyle(t);return cs.backgroundColor+'|'+cs.width})()")
 chk "نشان «تکمیل اطلاعات» · آیکون ردیف‌ها هم لخت" "$S7" "تکمیل اطلاعات|rgba(0, 0, 0, 0)|22px"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
 S9=$(q "(function(){var s=document.getElementById('s-home-buy');var ic=s.querySelector('.desk-tile .dt-ic');var bg=getComputedStyle(ic).backgroundColor;return document.querySelectorAll('#s-home-buy .dt-chev').length+'chev|'+(bg!=='rgba(0, 0, 0, 0)'?'boxed':'bare')+'|'+document.querySelectorAll('#s-home-buy .dsk-col').length+'cols'})()")
 chk "میز خرید: دست‌نخورده (FD-30 تا نوبتش)" "$S9" "4chev|boxed|3cols"
-ovf "میز فروش FD-33: بدون سرریز"
+ovf "میز فروش FD-34: بدون سرریز"
 
 echo "─── ۶) کاتالوک: گرید روان + نوار ابزار ───"
 q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 1.2
@@ -257,12 +266,19 @@ MB1=$(q "document.getElementById('phone').getAttribute('data-dk') + '|' + Math.r
 chk "موبایل لندینگ: بدون dk/CTA، قاب ۳۹۰" "$MB1" "null|390|no-inject"
 MB1b=$(q "document.querySelectorAll('.rv-strip .rv-card').length + 'cards|' + getComputedStyle(document.querySelector('.rv-nav')).display + '|' + (document.querySelector('#s-landing .hero-shot') ? 'flat-img' : 'no-img') + '|' + document.querySelector('#s-landing .hero-cta .btn-primary').textContent + '|' + document.querySelectorAll('#lp-langs .lp-lang').length + 'lang'")
 chk "موبایل: ۲۵ کارت نظر · بدون فلش · عکس فلت · «ساخت حساب» · نوار زبان" "$MB1b" "25cards|none|flat-img|ساخت حساب|4lang"
+MB1c=$(q "(function(){var l=document.getElementById('lp-langs');return 'lang-in='+l.parentElement.className+'|'+getComputedStyle(l).justifyContent})()")
+chk "موبایل لندینگ FD-34: زبان داخل بنر · وسط‌چین" "$MB1c" "lang-in=hero|center"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
 MB2=$(q "var tb=document.querySelector('#s-home-buy .tabbar'); getComputedStyle(tb).flexDirection + '|' + (document.querySelector('#s-home-buy .dk-ord') ? 'ord-injected' : 'no-ord') + '|' + Math.round(document.getElementById('phone').getBoundingClientRect().width)")
 chk "موبایل میز: تب‌بار افقی · بدون شماره · ۳۹۰" "$MB2" "row|no-ord|390"
 q "iMach.show('s-home-sell', false); 'ok'" >/dev/null; sleep 0.8
 MB2b=$(q "(function(){var s=document.getElementById('s-home-sell');var ic=s.querySelector('.desk-tile .dt-ic');var b=document.getElementById('desk-cust-badge');var t=s.querySelector('.desk-tile');var h=Math.round(t.getBoundingClientRect().height);return document.querySelectorAll('#s-home-sell .dt-chev').length+'chev|'+getComputedStyle(ic).backgroundColor+'|badge='+(b&&!b.hidden?b.textContent:'none')+'|'+(h<=68?'compact':'h'+h)+'|hint='+s.querySelectorAll('.hint-line').length})()")
 chk "موبایل میز فروش FD-33: آیکون لخت · بج ۱ · کاشی جمع · حذف hint" "$MB2b" "0chev|rgba(0, 0, 0, 0)|badge=۱|compact|hint=0"
+MB2c=$(q "(function(){var s=document.getElementById('s-home-sell');return ((s.querySelector('.dk-quick')||s.querySelector('.dsk-tasks'))?'inject-BAD':'clean')+'|'+getComputedStyle(s.querySelector('.body > .rows')).rowGap})()")
+chk "موبایل میز فروش: بدون تزریق دسکتاپی FD-34 · gap ۸" "$MB2c" "clean|8px"
+q "iMach.show('s-signup', false); 'ok'" >/dev/null; sleep 0.8
+MB2d=$(q "(function(){q=document.querySelectorAll('#s-signup .su-modes .role-card'); return q.length+'modes|'+getComputedStyle(document.querySelector('#s-signup .su-modes')).flexDirection+'|'+(document.getElementById('su-mode-ex').hidden?'ex-hidden':'ex-BAD')+'|'+(document.querySelector('#s-signup .su-free')?'free-BAD':'free-gone')})()")
+chk "موبایل ثبت‌نام: ۳ دکمهٔ کنار هم · مثال مخفی · su-free حذف (FD-34)" "$MB2d" "3modes|row|ex-hidden|free-gone"
 q "iMach.show('s-login', false); 'ok'" >/dev/null; sleep 0.6
 MB3=$(q "(document.querySelector('#s-login .dk-brand') ? 'brand-injected' : 'no-inject') + '|' + (document.querySelector('#s-login .sticky-bar').hidden ? 'sticky-off' : 'sticky-on')")
 chk "موبایل ورود: بدون پنل برند · نوار روشن" "$MB3" "no-inject|sticky-on"

@@ -464,11 +464,14 @@ button.brand-link:active { transform: scale(.97); background: var(--surface-2); 
 }
 .lp-content { background: var(--bg); }
 
-/* ═══ FD-32: نوار زبان لندینگ — زیر هدر، بالای بنر ═══
-   حکم مالک: «چند دکمهٔ ظریف کنار هم؛ فقط نمایشی». */
+/* ═══ FD-32 → FD-34: نوار زبان لندینگ — داخل بنر ═══
+   حکم مالک FD-32: «چند دکمهٔ ظریف کنار هم؛ فقط نمایشی».
+   حکم مالک FD-34: «دکمه‌های زبان باید داخل بنر باشند، نه اینکه
+   بالایش و داخل یک نوار جدا باشند — جزئی از خود بنر» →
+   عنصر حالا فرزندِ .hero است (موبایل و دسکتاپ). */
 .lp-langs {
     display: flex; align-items: center; justify-content: center;
-    gap: 6px; padding: 14px 16px 0; flex-wrap: wrap;
+    gap: 6px; padding: 4px 0 16px; flex-wrap: wrap;
 }
 .lp-lang {
     display: inline-flex; align-items: center; gap: 4px;
@@ -548,9 +551,35 @@ button.brand-link:active { transform: scale(.97); background: var(--surface-2); 
 .input.pick > span.set { color: var(--text); font-weight: 600; }
 .input.pick svg { width: 14px; height: 14px; color: var(--text-3); flex-shrink: 0; }
 
-.su-free {
-    text-align: center; font-size: 10.5px; font-weight: 700;
-    color: var(--text-3); margin-top: 4px;
+/* ═══ FD-34 (حکم مالک): «سرو کار داری؟» — سه دکمهٔ سادهٔ کنار هم ═══
+   «گزینه‌ها رو بزار کنار هم و ساده کن… زیر عنوان‌ها رو بردار
+   لازم نیست. بصورت سه دکمه ساده کنار هم… زیرش مثال بزنی.»
+   دکمه‌ها همان .role-card منطقی‌اند (کلیک/سابمیت مشترک)؛ ظاهرِ
+   ساده با اسکوپ #s-signup روی پایه ride می‌کند — شیت مهمان
+   (#sheet-account) با کارت‌های کامل خودش می‌ماند. */
+#s-signup .su-modes {
+    display: flex; gap: 8px;
+}
+#s-signup .su-mode {
+    flex: 1 1 0; min-width: 0;
+    display: block; text-align: center;
+    padding: 11px 6px;
+    font-size: 12.5px; font-weight: 700; color: var(--text-2);
+    background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: var(--r-md);
+    cursor: pointer; font-family: inherit;
+    transition: border-color .15s, color .15s, background .15s;
+}
+#s-signup .su-mode:hover { border-color: var(--border-2); color: var(--text); }
+#s-signup .su-mode.active {
+    border-color: var(--primary); background: var(--primary-soft);
+    color: var(--primary-strong);
+}
+/* مثالِ حالت انتخاب‌شده — متن عین مالک (app-handlers.js · SU_MODE_EX) */
+#s-signup .su-mode-ex {
+    margin-top: 9px;
+    font-size: 11px; font-weight: 500; color: var(--text-3);
+    line-height: 1.9;
 }
 
 /* جستجوی صنف داخل شیت */
@@ -4640,12 +4669,16 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] #s-landing .hero > *:not(.dk-hero-img) { grid-column: 1; }
     /* FD-31 (حکم مالک): کارت دور عکس هدر برداشته شد — تصویر فلت،
        فقط گوشهٔ گرد؛ نه قاب، نه سایه. multiply سفیدیِ ماکاپ را در
-       گرادیان کِرِمی حل می‌کند (مثل استرایپ). */
+       گرادیان کِرِمی حل می‌کند (مثل استرایپ).
+       FD-34 (حکم مالک): «ارتفاع تصویر انگار نصفش قایم شده» —
+       max-height:480 + object-fit:cover تصویرِ تقریباً مربعِ جدید را
+       می‌برید؛ برش حذف شد: ارتفاع طبیعی، تصویر همیشه کامل.
+       span 5: پنج فرزندِ ستون متن (زبان + تیتر + دو پاراگراف + CTA). */
     #phone[data-dk="1"] #s-landing .hero .dk-hero-img {
-        grid-column: 2; grid-row: 1 / span 4;
+        grid-column: 2; grid-row: 1 / span 5;
         align-self: center;
-        width: 100%; height: auto; max-height: 480px;
-        object-fit: cover; border-radius: 16px;
+        width: 100%; height: auto;
+        border-radius: 16px;
         mix-blend-mode: multiply;
     }
     #phone[data-dk="1"] #s-landing .hero h1 { font-size: 40px; line-height: 1.7; letter-spacing: -.2px; }
@@ -4804,14 +4837,14 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
     #phone[data-dk="1"] .dk-sec:has(.rv-strip) .rv-sub { font-size: 12px; margin: 0 0 12px; }
 
-    /* FD-32: نوار زبان در دسکتاپ — هم‌تراز با متن هیرو (راست)،
-       پیل‌های کمی بزرگ‌تر؛ «سایر» شیت مودال باز می‌کند (FD-29). */
-    #phone[data-dk="1"] #s-landing .lp-langs {
+    /* FD-34 (حکم مالک): دکمه‌های زبان داخل بنر — بالای تیتر هیرو،
+       راست‌تراز هم‌راستا با متن؛ «سایر» شیت مودال باز می‌کند (FD-29). */
+    #phone[data-dk="1"] #s-landing .hero .lp-langs {
         justify-content: flex-start;
-        padding: 22px calc(56px + max(0px, (100% - 1280px) / 2)) 0;
+        padding: 0 0 22px;
         gap: 8px;
     }
-    #phone[data-dk="1"] #s-landing .lp-lang { font-size: 12px; padding: 5px 15px; }
+    #phone[data-dk="1"] #s-landing .lp-lang { font-size: 12px; padding: 6px 16px; }
     #phone[data-dk="1"] #s-landing .lp-lang-more svg { width: 12px; height: 12px; }
 
     #phone[data-dk="1"] .rv-nav { display: flex; gap: 8px; }
@@ -4872,12 +4905,20 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dkf-card .field { margin-bottom: 16px; }
     #phone[data-dk="1"] .dkf-card .btn { height: 50px; font-size: 14.5px; font-weight: 800; }
     /* FD-32 (حکم مالک): «ساخت حساب در دسکتاپ کمی عرضش بزرگ‌تر» —
-       کارت فرم ثبت‌نام پهن‌تر از ورود + دکمهٔ درشت‌تر. */
-    #phone[data-dk="1"] #s-signup .dkf-card { max-width: 560px; padding: 44px 44px 38px; }
+       کارت فرم ثبت‌نام پهن‌تر از ورود + دکمهٔ درشت‌تر.
+       FD-34 (حکم مالک): «۲۵ درصد عرض باکس ثبت‌نام را زیاد کن» —
+       ۵۶۰ → ۷۰۰ (به‌علاوهٔ دکمهٔ تمام‌عرض همان کارت). */
+    #phone[data-dk="1"] #s-signup .dkf-card { max-width: 700px; padding: 44px 48px 40px; }
     #phone[data-dk="1"] #s-signup .dkf-card .btn { height: 54px; font-size: 15px; }
     #phone[data-dk="1"] #s-signup .dkf-card .steps-tag { font-size: 11px; margin-bottom: 20px; }
-    #phone[data-dk="1"] #s-signup .dkf-card .role-card { padding: 16px 18px; }
-    #phone[data-dk="1"] #s-signup .dkf-card .su-free { font-size: 11.5px; margin-top: 8px; }
+    /* FD-34: سه دکمهٔ سادهٔ «سرو کار داری؟» — درشت‌تر و نفس‌دارتر؛
+       متن مثال زیر آن (su-mode-ex حذف su-free را جایگزین کرد). */
+    #phone[data-dk="1"] #s-signup .dkf-card .su-mode {
+        padding: 13px 8px; font-size: 14px; border-radius: 12px;
+    }
+    #phone[data-dk="1"] #s-signup .dkf-card .su-mode-ex {
+        font-size: 12.5px; margin-top: 11px;
+    }
     #phone[data-dk="1"] .dkf-card .linklike {
         display: block; width: 100%; text-align: center; margin-top: 14px;
     }
@@ -5275,14 +5316,28 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
     #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat span { font-size: 12.5px; }
 
-    /* ═══ FD-33 (حکم مالک): میز فروش — فلت اما زیبا ═══
-       کاشی‌های جمع‌وجور: آیکون لخت + شمارِ کوچک خاکستری + نشان قرمز؛
-       کارتابل: تک‌کاغذِ مسطح — بین تسک‌ها فقط یک خط مویی، بدون کارت
-       در کارت. این بلوک با #s-home-sell (ID > class) بر بلوک‌های
-       FD-30 بالا می‌بَرد؛ میز خرید تا نوبتش به کانبان می‌ماند. */
-    #phone[data-dk="1"] #s-home-sell .desk-duo { gap: 14px; }
+    /* ═══ FD-33 → FD-34 (حکم مالک): میز فروش — فلت اما زیبا ═══
+       FD-33: کاشی‌های جمع‌وجور (آیکون لخت + شمار کوچک خاکستری +
+       نشان قرمز) ماند؛ کارتابل تک‌کاغذی کنار رفت.
+       FD-34: «عرض کانتنت ۳۰٪ کمتر» (بدنهٔ ۱۱۲۰ → ۸۱۰؛ محتوا
+       ۱۰۴۰ → ۷۳۰) تا «باکس‌های دکمه‌ای سریع مربعی‌تر و خوش‌گل‌تر»
+       دیده شوند؛ کارتابل «همون موبایل — هر تسک در یه کارت، مارجین
+       تاپ مناسب، ارتفاع همه یکسان» → dsk-tasks؛ گرید ممنوع.
+       این بلوک با #s-home-sell (ID > class) بر بلوک‌های FD-30
+       بالا می‌بَرد؛ میز خرید تا نوبتش به کانبان می‌ماند. */
+
+    /* بدنهٔ میز فروش: ۳۰٪ باریک‌تر — کاشی‌ها و کارت‌های تسک جمع‌وجور */
+    #phone[data-dk="1"] #s-home-sell .dk-desk-main .body {
+        max-width: 810px;
+        padding: 26px 40px 56px; gap: 20px;
+    }
+    /* عنوان‌های میز («دسترسی سریع» / «نیازمند اقدام») هم‌قد و هم‌زبان */
+    #phone[data-dk="1"] #s-home-sell .section-title h2 { font-size: 16px; }
+    #phone[data-dk="1"] #s-home-sell .section-title.dk-quick { margin-top: 0; }
+
+    #phone[data-dk="1"] #s-home-sell .desk-duo { gap: 12px; }
     #phone[data-dk="1"] #s-home-sell .desk-tile {
-        padding: 16px 18px 14px; border-radius: 16px;
+        padding: 14px 13px 12px; border-radius: 14px;
         background: var(--surface);
     }
     #phone[data-dk="1"] #s-home-sell .desk-tile:hover {
@@ -5293,56 +5348,60 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         width: auto; height: auto; border-radius: 0;
         background: none;
     }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic svg { width: 20px; height: 20px; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-t { font-size: 14px; font-weight: 700; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat { margin-top: 5px; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat b { font-size: 12px; font-weight: 700; color: var(--text-2); }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat span { font-size: 11.5px; font-weight: 500; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-badge { top: -9px; right: 14px; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic svg { width: 19px; height: 19px; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-t { font-size: 13px; font-weight: 700; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat { margin-top: 4px; gap: 3px; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat b { font-size: 11.5px; font-weight: 700; color: var(--text-2); }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat span { font-size: 11px; font-weight: 500; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-badge { top: -9px; right: 12px; }
 
-    /* کارتابل تک‌کاغذی: ردیف‌های مسطح + خط مویی بین تسک‌ها
-       (overflow:hidden → نوار hover در گوشه‌های گردِ کاغذ بریده می‌شود) */
-    #phone[data-dk="1"] #s-home-sell .body > .rows.dsk-flat {
-        display: flex; flex-direction: column; gap: 0;
+    /* کارتابل: هر تسک یک کارتِ مستقل (الگوی موبایل) — ستون یگانه،
+       فاصلهٔ ۱۲ (مارجین تاپ مناسب)، ارتفاع یکسان (min-height +
+       وسط‌چین عمودی)، هاورِ آرام. نه کاغذ واحد، نه گرید. */
+    #phone[data-dk="1"] #s-home-sell .body > .rows.dsk-tasks {
+        display: flex; flex-direction: column; gap: 12px;
+        background: none; border: 0; padding: 0; box-shadow: none;
+    }
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 6px 0;
+        border-radius: 15px;
         box-shadow: 0 1px 3px rgba(31, 29, 26, .03);
-        overflow: hidden;
+        padding: 15px 20px;
+        min-height: 84px;
+        gap: 15px;
+        transition: border-color .15s, box-shadow .15s, transform .15s;
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row {
-        background: none; border: 0; border-radius: 0;
-        box-shadow: none;
-        padding: 14px 22px; gap: 14px;
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row:hover {
+        border-color: var(--border-2);
+        box-shadow: 0 6px 18px rgba(31, 29, 26, .06);
+        transform: translateY(-1px);
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row:hover {
-        background: var(--surface-2); border-color: var(--border);
-    }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row + .row { border-top: 1px solid var(--border); }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row .row-title { font-size: 14px; }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row .row-sub { font-size: 12.5px; margin-top: 4px; }
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .row-title { font-size: 14px; }
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .row-sub { font-size: 12.5px; margin-top: 4px; }
     /* آیکون ردیف‌ها هم لخت (هم‌زبانِ کاشی‌ها) — استایل اینلاینِ HTMLِ
        موبایل با !important شکسته می‌شود (الگوی FD-28/30)؛ رنگِ آیکون
        از همان اینلاین می‌ماند (نارنجی/کهربایی/زغالی) */
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row .thumb {
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb {
         width: auto; height: auto; border-radius: 0; overflow: visible;
         background: none !important;
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row .thumb svg {
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb svg {
         width: 22px !important; height: 22px !important;
     }
-    /* ردیف راه‌اندازی: مسطح مثل بقیه — نشان «تکمیل اطلاعات» (FD-33) */
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row.row-start {
-        border: 0; background: none;
+    /* ردیف راه‌اندازی: کارتِ نقطه‌چینِ آرام (هم‌الگوی موبایل، بدون
+       کارت در کارت) — نشان «تکمیل اطلاعات» (FD-33) */
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row.row-start {
+        border: 1.5px dashed var(--arm);
+        background: linear-gradient(180deg, var(--arm-soft), var(--surface) 85%);
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat .row.row-start .st-b {
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row.row-start .st-b {
         background: var(--arm-soft); color: var(--arm-strong);
         font-size: 10px; font-weight: 700;
         padding: 3px 10px; border-radius: 999px;
     }
-    /* کاغذِ خالی دیده نشود — عنصرِ بی‌دلیل نداریم (هم‌الگوی dsk-col) */
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-flat:not(:has(.row:not([hidden]))) { display: none; }
+    /* کارتِ خالی دیده نشود — عنصرِ بی‌دلیل نداریم (هم‌الگوی dsk-col) */
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks:not(:has(.row:not([hidden]))) { display: none; }
 
     /* ۳) کارتابل سه‌ستونه — هر ستون یک کاغذ با سربرگ رنگ‌مویه
        (ظرفِ واحد FD-29 کنار می‌رود؛ ردیف‌ها زبانِ مسطح خود را

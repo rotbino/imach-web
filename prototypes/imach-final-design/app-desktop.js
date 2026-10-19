@@ -374,7 +374,10 @@ window.iMachDesktop = (function () {
        شروع» حالا در ستونِ خودش برقرار است).
        FD-33 (حکم مالک — میز فروش): کانبان سه‌ستونه فقط برای میز
        خرید ماند؛ میز فروش تک‌کاغذِ مسطح شد (dsk-flat) — کارت در
-       کارت ممنوع؛ بین تسک‌ها خط مویی. */
+       کارت ممنوع؛ بین تسک‌ها خط مویی.
+       FD-34 (حکم مالک — میز فروش): «هر تسک در یه کارت، همون
+       موبایل» → dsk-tasks (کارت‌های مجزا با فاصله و ارتفاع یکسان)؛
+       خوشامد حذف → عنوان «دسترسی سریع». */
     var DESK_COLS = {
         's-home-buy': [
             { k: 'start',  t: 'شروع', ic: '#i-rocket',
@@ -392,17 +395,30 @@ window.iMachDesktop = (function () {
         if (!body || body.getAttribute('data-dk-done')) return;
         body.setAttribute('data-dk-done', '1');
 
-        /* ۱) سرفصل خوشامد — بالای بدنه، زیر اپ‌بار چسبان */
-        var greet = document.createElement('div');
-        greet.className = 'dk-greet';
-        greet.innerHTML =
-            '<b>سلام احمد <span aria-hidden="true">👋</span></b>' +
-            '<small>کارهای امروزت را این‌جا ببین</small>';
-        body.insertBefore(greet, body.firstChild);
+        /* ۱) سرفصل — FD-34 (حکم مالک، میز فروش): «سلام احمد 👋 /
+           کارهای امروزت را این‌جا ببین» برداشته شد؛ به‌جایش عنوانِ
+           «دسترسی سریع» بالای کاشی‌ها نشست («فقط بزار، دسترسی سریع»).
+           میز خرید هنوز به نوبتِ بازطراحی خودش نرسیده — خوشامد
+           FD-30 می‌ماند. */
+        if (id === 's-home-sell') {
+            var quick = document.createElement('div');
+            quick.className = 'section-title dk-quick';
+            quick.innerHTML = '<h2>دسترسی سریع</h2>';
+            body.insertBefore(quick, body.firstChild);
+        } else {
+            var greet = document.createElement('div');
+            greet.className = 'dk-greet';
+            greet.innerHTML =
+                '<b>سلام احمد <span aria-hidden="true">👋</span></b>' +
+                '<small>کارهای امروزت را این‌جا ببین</small>';
+            body.insertBefore(greet, body.firstChild);
+        }
 
-        /* ۲) کارتابل — FD-33: میز فروش تک‌کاغذِ مسطح؛ میز خرید
-           کانبان سه‌ستونهٔ FD-30. ردیف‌ها در DOM می‌مانند و همان
-           id/hidden/دیتا-رفتار خود را نگه می‌دارند. */
+        /* ۲) کارتابل — FD-33: میز فروش مسطح؛ FD-34 (حکم مالک):
+           «همون موبایل — هر تسک در یه کارت، مارجین تاپ مناسب،
+           ارتفاع همه یکسان؛ گرید شکل نزار» → dsk-tasks (کارت‌های
+           مجزا). میز خرید کانبان سه‌ستونهٔ FD-30. ردیف‌ها در DOM
+           می‌مانند و همان id/hidden/دیتا-رفتار خود را نگه می‌دارند. */
         var rows = body.querySelector(':scope > .rows');
         var spec = DESK_COLS[id];
         if (rows && spec) {
@@ -423,11 +439,12 @@ window.iMachDesktop = (function () {
             cols.forEach(function (c) { rows.appendChild(c); });
             rows.classList.add('dsk-rows');
         } else if (rows && id === 's-home-sell') {
-            /* FD-33 (حکم مالک): «فقط کارت بیرونی باشه و بین تسک‌ها
-               یه خط کافیه» — کاغذ واحد؛ ردیف‌ها مسطح با خط مویی
-               (CSS .dsk-flat). ترتیب DOM = ترتیب اهمیت: گام
-               راه‌اندازی → در انتظار تایید → سفارش → درخواست. */
-            rows.classList.add('dsk-flat');
+            /* FD-34 (حکم مالک): «بصورت همون موبایل هر تسک در یه کارت
+               باشه» — کارت‌های مجزا با فاصله (CSS .dsk-tasks)؛ نه
+               کاغذ واحد با خط مویی (FD-33) و نه گرید. ترتیب DOM =
+               ترتیب اهمیت: گام راه‌اندازی → در انتظار تایید →
+               سفارش → درخواست. */
+            rows.classList.add('dsk-tasks');
         }
 
         /* ۳) hint-line → کارت پیشنهاد آی‌مچ */

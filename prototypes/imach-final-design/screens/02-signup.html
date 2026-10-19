@@ -11,12 +11,18 @@
        اگر نبود «صنف جدید» ثبت می‌شود) + «در این کسب‌وکار، با کدام
        مورد زیر سرو کار داری؟» فروش عمده / خرید عمده / هر دو —
        بدون پیش‌فرض انتخاب.
-     ▸ زیر دکمهٔ ساخت حساب: «امکانات آیمچ همیشه رایگان خواهد بود»
-       + لینک ورود.
      ▸ منطق: app-handlers.js (suStep/suReset/suIndRender + هندلرهای
        signup-next/signup-back/شیت‌ها + اعتبارسنجی سابمیت).
      ▸ FD-31 مالک: کال‌اوت نارنجی موبایل خودش حذف کرد — متن‌های
        جدید در پانل برند دسکتاپ (app-desktop.js · dkAuth).
+     FD-34 (حکم مالک — ساده‌سازی گام ۲):
+     ▸ هینت کسب‌وکار کوتاه شد: «لازم نیست حتما صاحب کسب و کار
+       باشید. نقش شما مهم است.»
+     ▸ «سرو کار داری؟» → سه دکمهٔ سادهٔ هم‌عرض (نه باکس‌های بزرگ)؛
+       زیر انتخاب، مثالِ همان حالت (متن عین مالک — app-handlers.js).
+     ▸ «امکانات آیمچ همیشه رایگان خواهد بود» از فرم حذف شد —
+       همین متن در کادر نارنجی/پانل برند دسکتاپ هست (dkAuth).
+     ▸ صنف‌ها = نوع کسب‌وکار (نه گروه کالا) — data.js · industries.
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-signup" data-arm="keep">
     <div class="subheader">
@@ -56,8 +62,9 @@
             <div class="field">
                 <label>نام کسب‌وکار</label>
                 <input class="input" id="signup-biz" type="text" placeholder="مثلاً: پخش برنج پارس" value="پخش برنج پارس">
-                <!-- FD-32: هینت جدید حکم مالک -->
-                <div class="hint">لازم نیست شما صاحب این کسب‌وکار باشید؛ ممکن است نمایندهٔ فروش، ویزیتور یا همکار خرید باشید.</div>
+                <!-- FD-34 (حکم مالک): کوتاه و کامل — «فقط بنویس: لازم نیست
+                     حتما صاحب کسب و کار باشید. نقش شما مهم است.» -->
+                <div class="hint">لازم نیست حتما صاحب کسب و کار باشید. نقش شما مهم است.</div>
             </div>
 
             <div class="field">
@@ -77,37 +84,23 @@
             </div>
 
             <div class="field">
-                <!-- FD-32: عنوان و برچسب‌های جدید حکم مالک — بدون پیش‌فرض -->
+                <!-- FD-34 (حکم مالک): «گزینه‌ها رو بزار کنار هم و ساده کن.
+                     لازم نیست این باکس‌ها به این گنده‌ای رو بزاری. جمع و
+                     جور باشه. زیر عنوان‌ها رو بردار لازم نیست. به صورت سه
+                     دکمهٔ ساده کنار هم… مثلاً زیرش مثال بزنی.»
+                     کلاس/دیتا-نقش همان role-card قدیمی (منطق مشترک
+                     app-handlers.js دست‌نخورده)؛ ظاهر: سه دکمهٔ هم‌عرض. -->
                 <label>در این کسب‌وکار، با کدام مورد زیر سرو کار داری؟</label>
-                <div class="role-cards" id="role-cards">
-                    <button class="role-card" type="button" data-role="sell">
-                        <span class="role-ic"><svg><use href="#i-store"/></svg></span>
-                        <span class="role-tx">
-                            <b>فروش عمده</b>
-                            <small>بازاریاب، ویزیتور، پخش، تولیدکننده</small>
-                        </span>
-                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                    </button>
-                    <button class="role-card" type="button" data-role="buy">
-                        <span class="role-ic"><svg><use href="#i-basket"/></svg></span>
-                        <span class="role-tx">
-                            <b>خرید عمده</b>
-                            <small>فروشگاه، رستوران، کارگاه، هتل</small>
-                        </span>
-                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                    </button>
-                    <button class="role-card" type="button" data-role="both">
-                        <span class="role-ic"><svg><use href="#i-home"/></svg></span>
-                        <span class="role-tx">
-                            <b>هر دو</b>
-                            <small>تولیدکننده، عمده‌فروش بازار، کسب‌وکار بزرگ</small>
-                        </span>
-                        <span class="role-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-                    </button>
+                <div class="su-modes" id="role-cards">
+                    <button class="role-card su-mode" type="button" data-role="sell">فروش عمده</button>
+                    <button class="role-card su-mode" type="button" data-role="buy">خرید عمده</button>
+                    <button class="role-card su-mode" type="button" data-role="both">هر دو</button>
                 </div>
+                <!-- مثالِ انتخاب — متن‌ها عین حکم مالک (app-handlers.js ·
+                     SU_MODE_EX) -->
+                <div class="su-mode-ex" id="su-mode-ex" hidden></div>
             </div>
 
-            <div class="su-free">امکانات آیمچ همیشه رایگان خواهد بود</div>
             <button class="linklike" type="button" data-go="s-login">قبلاً ثبت‌نام کرده‌ام — ورود</button>
         </div>
 
