@@ -117,7 +117,13 @@ window.iMachDesktop = (function () {
     function moveSubmit(sec) {
         var sb = sec.querySelector('.sticky-bar');
         var body = sec.querySelector('.body');
-        if (!sb || !body || sb.hidden) return;
+        /* FD-40 — نوارِ مخفی هم جابه‌جا می‌شود: صفحات پویا (جزئیات
+           سفارش فروش/خرید) نوارشان را در show-hook — یعنی بعد از
+           apply() — نمایان می‌کنند؛ نوارِ جابه‌جانشده با عرض کامل
+           پنجره (۱۰۰vw) به کف صفحه می‌چسبید و از کاغذ جدا می‌افتاد.
+           جابه‌جاییِ نوارِ مخفی بی‌ضرر است: مخفی می‌ماند و در لحظهٔ
+           نمایان‌شدن، درست درون جریان کاغذ است. */
+        if (!sb || !body) return;
         if (sb.parentNode !== body) body.appendChild(sb);
         sb.classList.add('dk-inflow');
     }

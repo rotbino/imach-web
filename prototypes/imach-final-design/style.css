@@ -6168,4 +6168,72 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
     #phone[data-dk="1"] .dk-doc .doc-hint svg { color: rgba(255,255,255,.85); }
     #phone[data-dk="1"] .dk-doc .doc-hint span { color: rgba(255,255,255,.85); }
+
+    /* ═════════════════════════════════════════════════════════════
+       FD-40 — نظام دکمه‌های دسکتاپ
+       ─────────────────────────────────────────────────────────
+       حکم مالک: «دکمه‌های تمام‌صفحهٔ موبایل در دسکتاپ بیش‌ازحد
+       دراز و زشت شده‌اند — نمونه: فوتر s-sell-order-view؛ همین
+       مشکل در خیلی از فرم‌هاست. تک‌تک فرم‌ها باید طراحی شوند.»
+       ▸ قاعدهٔ کلیدی: در دسکتاپ دکمهٔ اکشن هرگز تمام‌عرضِ کاغذ
+         نمی‌شود — به پهنای محتوا + کفِ پهنا + سقفِ پهنا،
+         راست‌چین (آغازِ طبیعی RTL) مثل اپ‌های حرفه‌ای دسکتاپ.
+       ▸ استثناهای عمدی (طراحیِ تنگ/عمدیِ خودشان سالم می‌ماند):
+         لندینگ و ورود/ثبت‌نام (کارت‌های تنگ — الگوی استاندارد
+         احراز هویت) · افزودنِ محصول dk-add (حکم صریح FD-36:
+         موبایل‌وارِ تمام‌عرض).
+       ═════════════════════════════════════════════════════════════ */
+
+    /* ۱) نوارهای اکشنِ جابه‌جاشده در جریان (dk-inflow):
+          دکمه‌ها کنارِ هم به پهنای محتوا، از راست */
+    #phone[data-dk="1"] .dk-screen .sticky-bar.dk-inflow {
+        justify-content: flex-start;
+        gap: 10px;
+    }
+    #phone[data-dk="1"] .dk-screen .sticky-bar.dk-inflow .btn {
+        flex: 0 0 auto !important;   /* خنثی‌کردن استایل‌های inline:flex موبایل */
+        width: auto !important;      /* خنثی‌کردن btn-block */
+        min-width: 116px;
+        max-width: 420px;
+        white-space: nowrap;
+    }
+    /* استثنای dk-add: دکمهٔ ارسالِ افزودن محصول، موبایل‌وارِ تمام‌عرض
+       (حکم صریح FD-36 — «مثل موبایل») */
+    #phone[data-dk="1"] .dk-add .sticky-bar.dk-inflow .btn {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        max-width: none;
+        min-width: 0;
+        white-space: normal;
+    }
+
+    /* ۲) دکمه‌های تمام‌عرضِ ایستاده داخل کاغذ (ارسال فیش، ذخیرهٔ
+          یادداشت، ذخیرهٔ کاتالوگِ مهمان، کپی لینک، …): سقفِ پهنا */
+    #phone[data-dk="1"] .dk-screen:not(#s-landing):not(#s-login):not(#s-signup):not(.dk-add) .body .btn-block {
+        width: auto;
+        min-width: 148px;
+        max-width: min(420px, 100%);
+    }
+
+    /* ۳) ردیف اقدامِ داخل کارت‌ها (پیشنهادهای تامین در لیست خرید):
+          در موبایل flex:1 دو دکمه را نصف‌نصف می‌کند — در دسکتاپ
+          نصفِ ۱۰۷۰px یعنی دکمهٔ ۵۱۶px؛ به پهنای محتوا از راست */
+    #phone[data-dk="1"] .dk-screen .blp-act { justify-content: flex-start; }
+    #phone[data-dk="1"] .dk-screen .blp-act .btn { flex: 0 0 auto; }
+
+    /* ۳ب) دکمه‌های سند سفارش (فاکتور/برگهٔ ارسال): در موبایل زیرِ هم
+          تمام‌عرض؛ در دسکتاپ کنارِ هم به پهنای محتوا از راست */
+    #phone[data-dk="1"] .dk-screen .order-docs .od-btns {
+        display: flex;
+        grid-template-columns: none;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+    #phone[data-dk="1"] .dk-screen .order-docs .od-btns .btn {
+        width: auto;
+        white-space: nowrap;
+    }
+
+    /* ۴) لینک‌های اکتشافیِ تمام‌عرض (شتابدهی در امتیاز فعالیت) */
+    #phone[data-dk="1"] .dk-screen .accel-link { max-width: 560px; }
 }

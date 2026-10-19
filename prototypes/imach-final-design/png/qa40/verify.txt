@@ -1,0 +1,31 @@
+FD-40a VERIFY — Mon Oct 19 23:18:14 UTC 2026
+════ 13-sell-order-view
+"WIDE_BTNS(0): \nACTION_BAR W=710 inflow=true btns=[116,142]"
+════ 31-buy-order-view
+"WIDE_BTNS(2): W680 «دریافت فاکتور (PDF)» | W680 «دریافت برگهٔ ارسال (PDF)»\nACTION_BAR W=710 inflow=true btns=[123,167]"
+════ 15-sell-offer
+"WIDE_BTNS(0): \nACTION_BAR W=1070 inflow=true btns=[148]"
+════ 27-buy-rfq-new
+"WIDE_BTNS(1): W654 «افزودن کالای دیگر»\nACTION_BAR W=1070 inflow=true btns=[238]"
+════ 39-cat-edit
+"WIDE_BTNS(2): W596 «تغییر رنگ لوگو» | W596 «سوپرمارکت»\nACTION_BAR W=1070 inflow=true btns=[148]"
+════ 17-sell-edit
+"WIDE_BTNS(1): W536 «پلهٔ جدید مثلاً: از ۵۰ بست»\nACTION_BAR W=566 inflow=true btns=[148]"
+════ 07-catalog-guest
+"WIDE_BTNS(5): W420 «ذخیره این کاتالوگ» | W1102 «ذخیره این کاتالوگ» | W324 «تماس» | W324 «گفتگو» | W431 «سبد خرید ۰»"
+════ 08-catalog-share
+"WIDE_BTNS(1): W1070 «جستجو و انتخاب مخاطب از ۱۲»"
+════ 18-network-score
+"WIDE_BTNS(1): W560 «شتابدهی در فروش یعنی چه؟»"
+════ 37-charge
+"WIDE_BTNS(1): W536 «عکس فیش واریزی رسید را انت»"
+════ 22-buy-list
+"WIDE_BTNS(0): "
+════ 11-customer-view
+"WIDE_BTNS(2): W363 «تایید مشتری» | W365 «حذف»"
+════ 16-sell-add-step3 (تمام‌عرضِ عمدی)
+"WIDE_BTNS(2): W638 «بازگشت به انتخاب محصول» | W638 «افزودن به کاتالوگ»\nACTION_BAR W=638 inflow=true btns=[638]"
+════ 02-signup
+"WIDE_BTNS(2): W602 «ادامه» | W602 «قبلاً ثبت‌نام کرده‌ام — ور»"
+════ 03-login
+"WIDE_BTNS(3): W370 «حساب ندارم — ثبت‌نام می‌کن» | W370 «رمزم را فراموش کردم» | W370 «ورود به آی‌مچ»"

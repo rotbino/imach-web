@@ -1,0 +1,125 @@
+══════ 01-landing.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 02-signup.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 03-login.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 04-home-sell.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 05-home-buy.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 06-catalog.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 07-catalog-guest.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 08-catalog-share.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 09-contacts.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 10-customers.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 11-customer-view.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 12-sell-orders.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 13-sell-order-view.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 14-sell-rfqs.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 15-sell-offer.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 16-sell-add.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 17-sell-edit.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 18-network-score.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 19-edit-business.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 20-notifs.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 21-profile.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 22-buy-list.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 23-buy-list-add.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 24-buy-suppliers.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 25-supplier-view.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 26-buy-rfqs.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 27-buy-rfq-new.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 28-buy-offers.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 29-buy-offer-view.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 30-buy-orders.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 31-buy-order-view.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 32-msgs.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 33-chat.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 34-buy-list-guest.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 35-sell-bulk.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 36-sell-promo.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 37-charge.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 38-product-view.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 39-cat-edit.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 40-salesrep.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 41-doc-invoice.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
+
+══════ 42-doc-slip.png ══════
+ERROR: API request failed with status 429: {"error":"Too many requests, please try again later"}
