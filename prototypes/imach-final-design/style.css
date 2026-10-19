@@ -6236,4 +6236,91 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 
     /* ۴) لینک‌های اکتشافیِ تمام‌عرض (شتابدهی در امتیاز فعالیت) */
     #phone[data-dk="1"] .dk-screen .accel-link { max-width: 560px; }
+
+    /* ═════════════════════════════════════════════════════════════
+       FD-40b — ترمیم صفحه‌به‌صفحهٔ نوارهای اقدامِ بیرون از کاغذ
+       ─────────────────────────────────────────────────────────
+       ▸ pv-bar (کالا — تماس/گفتگو/ذخیره/افزودن به سبد): در دسکتاپ
+         هم‌عرض و چسبیده به کاغذِ بالا مثل پاوهٔ آن + دکمه‌های
+         به‌پهنای-محتوا (قبلاً ۱۳۱۶px با flex:1).
+       ▸ gbar (کاتالوگ عمومی/لیست خرید مهمان): دکمه‌های flex:1 در
+         عرض ۱۱۲۰ یعنی دکمه‌های ۴۳۱px — به پهنای محتوا از راست.
+       ▸ اشتراک کاتالوگ: شش پیام‌رسانِ ردیفی → گرید ۳ستونه؛
+         CTA جستجو با سقف ۶۴۰.
+       ▸ مخاطبین: ردیف‌های مویی → گرید دوسطونهٔ کارت‌دار (هم‌زبانِ
+         دفتر مشتریان/تأمین‌کنندگان)؛ نوار انتخابِ چندنفره →
+         شناورِ تهِ پنجره با پهنای ظرف.
+       ═════════════════════════════════════════════════════════════ */
+
+    /* ۱) نوار CTA کالا — نوار اقدامِ شناور (الگوی دسکتاپ مدرن):
+          چون absolute به تهِ بخش چسبیده، پیوندِ بصری با کاغذ تضمین
+          نمی‌شود؛ در عوض: قرصِ شناور با قاب کامل + سایه + ۲۸px فاصله */
+    #phone[data-dk="1"] #s-product-view .pv-bar {
+        left: 50%; right: auto;
+        transform: translateX(-50%);
+        width: calc(100% - 36px);
+        max-width: 1140px;
+        margin-bottom: 28px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: 0 18px 44px rgba(31,29,26,.14);
+        background: var(--bg);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        justify-content: flex-start;
+        padding: 12px 20px 14px;
+        box-sizing: border-box;
+    }
+    #phone[data-dk="1"] #s-product-view .pv-bar .btn {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 148px;
+    }
+
+    /* ۲) نوار مهمان — دکمه‌های به‌پهنای-محتوا از راست */
+    #phone[data-dk="1"] .dk-screen .gbar { justify-content: flex-start; }
+    #phone[data-dk="1"] .dk-screen .gbar .gbar-btn { flex: 0 0 auto; min-width: 116px; }
+
+    /* ۳) اشتراک کاتالوگ — پیام‌رسان‌ها کنارِ هم؛ جستجو با سقف */
+    #phone[data-dk="1"] #s-catalog-share .body > .rows {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+    #phone[data-dk="1"] #s-catalog-share .search-cta { max-width: 640px; }
+
+    /* ۴) مخاطبین — گرید دوسطونهٔ کارت‌دار + نوار pick شناور */
+    #phone[data-dk="1"] #s-contacts .contact-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 12px;
+        align-items: stretch;
+    }
+    #phone[data-dk="1"] #s-contacts .contact-row {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        padding: 12px 14px;
+        transition: border-color .16s, box-shadow .16s;
+    }
+    #phone[data-dk="1"] #s-contacts .contact-row:hover {
+        border-color: var(--border-2);
+        box-shadow: 0 10px 26px rgba(31,29,26,.08);
+    }
+    #phone[data-dk="1"] #s-contacts .pick-bar {
+        position: fixed;
+        left: 50%; right: auto; bottom: 0;
+        transform: translateX(-50%);
+        width: min(760px, calc(100vw - 36px));
+        border: 1px solid var(--border);
+        border-bottom: 0;
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -10px 30px rgba(31,29,26,.10);
+        padding: 12px 20px 16px;
+    }
+    #phone[data-dk="1"] #s-contacts .pick-bar .btn {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 148px;
+    }
 }
