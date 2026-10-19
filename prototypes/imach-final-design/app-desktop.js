@@ -567,27 +567,43 @@ window.iMachDesktop = (function () {
         body.appendChild(main);
     }
 
-    /* ═══ ۱۳ افزودن محصول — FD-30: ویزارد ═══
-       (الگوی Linear New Issue / Stripe Onboarding)
-       نشانگر سه‌گامیِ تزریقی (کالا ← محصول ← قیمت و بسته) — زنده با
-       CSS :has (کدام گام نمایان است؛ addShowStep فقط hidden عوض
-       می‌کند، پس نشانگر خودش را به‌روز می‌کند — بدون دخالت JS).
-       گام‌های ۱/۲: گرید کارتیِ انتخاب (auto-fill) · گام ۳: فرم در
-       کاغذ واحد. صفحه پهن‌تر (۸۶۰) — حکم مالک: «۶۲۰ تنگ است». */
+    /* ═══ ۱۳ افزودن محصول — FD-36: مثل موبایل، بدون نشانگر ═══
+       (حکم مالک: «قرص‌های ویزارد انگار سه دکمه‌اند که کاربر دوست
+       دارد رویشان کلیک کند — گیج‌کننده. برداشتنش گویاتر است؛ طرح
+       مثل موبایل باشد.»)
+       نشانگر سه‌گامیِ FD-30 حذف شد — سرصفحهٔ کوچکِ خودِ صفحه
+       («چی می‌فروشی؟ / کدام محصول؟ / بسته‌بندی، قیمت و شرایط
+       فروش») تنها راهنمای گام است، دقیقاً مثل موبایل. چیدمان و
+       عرض‌ها تماماً CSS اند: ستون‌ها زیرِ هم مثل موبایل + قاب ۶۸۸
+       (۲۰٪ باریک‌تر از ۸۶۰ سابق).
+       تنها کارِ JS: نوار «افزودن به کاتالوگ» به انتهای جریانِ
+       بدنه می‌آید — حتی وقتی hidden است. moveSubmit عمومی از
+       hidden رد می‌شود و چون addReset همیشه به گام ۱ برمی‌گردد،
+       نوار هیچ‌وقت جابه‌جا نمی‌شد؛ بیرونِ body می‌ماند و لبه‌به‌
+       لبهٔ تهِ صفحه می‌چسبید (حکم مالک: «کاملاً به ته صفحه چسبیده —
+       بیارش بالاتر و از پایین بهش مارجین بده»). داخل body،
+       padding-bottom خودِ بدنه بالشِ امنِ زیر دکمه را می‌سازد. */
     function dkAdd(sec) {
         sec.classList.add('dk-page', 'dk-add');
         var body = sec.querySelector('.body');
         if (!body || body.getAttribute('data-dk-done')) return;
         body.setAttribute('data-dk-done', '1');
+        var bar = sec.querySelector('.sticky-bar');
+        if (bar && bar.parentNode !== body) body.appendChild(bar);
 
-        var wiz = document.createElement('div');
-        wiz.className = 'wiz';
-        wiz.setAttribute('aria-hidden', 'true');
-        wiz.innerHTML =
-            '<div class="wiz-step" data-step="1"><b>۱</b><span>کالا</span></div>' +
-            '<div class="wiz-step" data-step="2"><b>۲</b><span>محصول</span></div>' +
-            '<div class="wiz-step" data-step="3"><b>۳</b><span>قیمت و بسته</span></div>';
-        body.insertBefore(wiz, body.firstChild);
+        /* گام عوض می‌شود → اسکرولِ مرورگر به بالا. در موبایل body
+           خودش به بالا می‌رود (addShowStep)؛ در دسکتاپ اسکرول مال
+           مرورگر است — بدون این، بعد از انتخاب از تهِ لیستِ بلند،
+           کاربر وسطِ گام بعدی می‌ایستی. MutationObserver بی‌حالت:
+           هر مسیری را می‌گیرد (کلیک ردیف، شیت ثبت کالا/برند، دکمهٔ
+           «تغییر») — قاعدهٔ تزریق: بدون JSِ وضعیت‌دار. */
+        if (dkAdd._mo) dkAdd._mo.disconnect();
+        var mo = new MutationObserver(function () { window.scrollTo(0, 0); });
+        ['add-step-1', 'add-step-2', 'add-step-3'].forEach(function (sid) {
+            var el = document.getElementById(sid);
+            if (el) mo.observe(el, { attributes: true, attributeFilter: ['hidden'] });
+        });
+        dkAdd._mo = mo;
     }
 
     /* ═══ ۱۲ ارسال پیشنهاد — FD-30: دوستونه ═══

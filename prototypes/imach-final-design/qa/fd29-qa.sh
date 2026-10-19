@@ -8,6 +8,10 @@
 # FD-30 deltas (بخش ۷): میزها از «تسک تک‌ستونه + شماره ترتیب» به
 #   کارتابل سه‌ستونه (Kanban-light) رفتند — سرفصل خوشامد + سه ستون
 #   موضوعی + کارت پیشنهاد؛ .dk-ord حذف (گروه ستون جانشین ترتیب خطی).
+# FD-36 deltas (بخش ۷ج): ۱۳ افزودن محصول — ویزارد سه‌قرصی حذف شد
+#   (حکم مالک: مثل دکمهٔ کلیک‌شدنی بود و گیج می‌کرد؛ طرح مثل موبایل)
+#   + ستون‌ها زیرِ هم مثل موبایل + قاب ۸۶۰→۶۸۸ + دکمهٔ افزودن در
+#   جریانِ body با فاصلهٔ امن از تهِ صفحه (بخش ۱۲: چک موبایل جدید).
 # changed-architecture deltas نسبت به fd28-qa:
 #   · سایدبار ۲۵۰→۲۵۶ · چت: بومِ کل‌عرض با ستونِ ۹۰۰ (نه بدنهٔ ۹۰۰)
 #   · پروفایل: dkp-side/dkp-main (نه dkd-side)
@@ -124,7 +128,7 @@ chk "سربرگ «خریداران این را می‌بینند»" "$(q "(funct
 chk "پیش‌نمایش زنده سر جایش (cate-pv-name در ستون)" "$(q "(function(){var n=document.getElementById('cate-pv-name');return n&&n.closest('.cev-side')?'in-side':'lost'})()")" "in-side"
 chk "دکمهٔ ذخیره در جریان (dk-inflow)" "$(q "(function(){var sb=document.querySelector('#s-cat-edit .sticky-bar');return sb&&sb.classList.contains('dk-inflow')?'inflow':'sticky'})()")" "inflow"
 
-echo "─── ۷ج) فرم‌های FD-30: ۱۶ دوستونه · ۱۲ پیشنهاد · ۱۳ ویزارد ───"
+echo "─── ۷ج) فرم‌های FD-30/۳۱: ۱۶ دوستونه · ۱۲ پیشنهاد · ۱۳ مثل موبایل ───"
 q "iMach.show('s-edit-business', false); 'ok'" >/dev/null; sleep 0.8
 chk "۱۶: فرم ۷۶۰ در کاغذ" "$(q "(function(){var b=document.querySelector('#s-edit-business .body');var cs=getComputedStyle(b);return Math.round(b.getBoundingClientRect().width)+'|'+(cs.borderTopWidth!=='0px'?'paper':'flat')})()")" "760|paper"
 chk "۱۶: نام+شهر کنار هم (دو ستون)" "$(q "(function(){var f1=document.querySelector('#s-edit-business .body > .field:nth-child(1)').getBoundingClientRect();var f2=document.querySelector('#s-edit-business .body > .field:nth-child(2)').getBoundingClientRect();return (Math.abs(f1.top-f2.top)<10&&f1.x!==f2.x)?'pair-ok':'stacked'})()")" "pair-ok"
@@ -133,10 +137,16 @@ chk "۱۲: قیمت‌ها راست + شرایط چسبان چپ" "$(q "(functio
 chk "۱۲: جمع‌بندی زنده در پنل شرایط" "$(q "(function(){var s=document.querySelector('#s-sell-offer .ofv-side');return s&&s.contains(document.getElementById('of-sum-tx'))?'in-side':'lost'})()")" "in-side"
 chk "۱۲: فیلدهای قیمت در ستون اصلی" "$(q "(function(){var m=document.querySelector('#s-sell-offer .ofv-main');return m&&m.contains(document.getElementById('of-prices'))?'in-main':'lost'})()")" "in-main"
 q "iMach.show('s-sell-add', false); 'ok'" >/dev/null; sleep 0.9
-chk "۱۳: ویزارد سه‌گامی حاضر" "$(q "(function(){return document.querySelectorAll('#s-sell-add .wiz-step').length})()")" "3"
-chk "۱۳: گام ۱ فعال (قرص بازوی فروش)" "$(q "(function(){var s=document.querySelector('#s-sell-add .wiz-step[data-step=\"1\"]');return getComputedStyle(s).backgroundColor})()")" "rgb(253, 238, 221)"
-chk "۱۳: نتایج جستجو گرید چندستونه" "$(q "(function(){var r=document.querySelector('#s-sell-add #add-results');return r?getComputedStyle(r).display:'?'})()")" "grid"
-chk "۱۳: گام ۳ در کاغذ" "$(q "(function(){var s=document.querySelector('#s-sell-add #add-step-3');var cs=getComputedStyle(s);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'paper':'flat'})()")" "paper"
+chk "۱۳: بدون نشانگر ویزارد (حکم مالک: مثل سه دکمه بود — گیج‌کننده)" "$(q "(function(){return document.querySelectorAll('#s-sell-add .wiz, #s-sell-add .wiz-step').length})()")" "0"
+chk "۱۳: قاب ۶۸۸ وسچ (۲۰٪ باریک‌تر از ۸۶۰)" "$(q "(function(){var w=Math.round(document.querySelector('#s-sell-add .body').getBoundingClientRect().width);return (w>660&&w<715)?'w688':'w'+w})()")" "w688"
+chk "۱۳: نتایج ستونی مثل موبایل (نه گرید جدا)" "$(q "(function(){var r=document.querySelector('#s-sell-add #add-results');return r?getComputedStyle(r).display:'?'})()")" "block"
+chk "۱۳: کارت کالا هم‌عرض سرچ‌باکس" "$(q "(function(){var s=document.querySelector('#s-sell-add .search-row').getBoundingClientRect().width;var p=document.querySelector('#s-sell-add .pick-row');return p?Math.round(Math.abs(p.getBoundingClientRect().width-s))+'px':'norow'})()")" "0px"
+chk "۱۳: گروه‌های محصولات/کالاها زیرِ هم (نه کنار هم)" "$(q "(function(){var t=document.querySelectorAll('#s-sell-add #add-results > .pick-group-title');if(t.length<2)return 'one-group';var a=t[0].getBoundingClientRect(),b=t[1].getBoundingClientRect();return (Math.abs(a.x-b.x)<2&&b.y>a.y)?'stacked':'split'})()")" "stacked"
+q "document.querySelector('#s-sell-add .pick-row[data-pick-good]').click(); 'ok'" >/dev/null; sleep 0.6
+chk "۱۳: گام ۲ — کالای منتخب + محصولات همان کالا" "$(q "(function(){var c=document.querySelector('#s-sell-add #add-type-name');var r=document.querySelector('#s-sell-add #add-refs .pick-row');return (c&&c.textContent.trim()!=='—'&&r)?'step2-ok':'broken'})()")" "step2-ok"
+q "document.querySelector('#s-sell-add .pick-row[data-pick-ref]').click(); 'ok'" >/dev/null; sleep 0.6
+chk "۱۳: دکمهٔ افزودن در جریانِ بدنه، دور از تهِ صفحه" "$(q "(function(){var b=document.getElementById('add-bar');if(!b)return 'nobar';var inb=b.closest('.body')?'inbody':'out';var gap=Math.round(document.documentElement.scrollHeight-b.getBoundingClientRect().bottom);return inb+'|'+((gap>=40)?'air-ok':'gap'+gap)})()")" "inbody|air-ok"
+chk "۱۳: گام ۳ فلت روی کاغذِ body — بدون کاغذ تودرتو" "$(q "(function(){var s=document.querySelector('#s-sell-add #add-step-3');var cs=getComputedStyle(s);var b=document.querySelector('#s-sell-add .body');var bs=getComputedStyle(b);return ((cs.borderTopWidth==='0px'&&cs.backgroundColor==='rgba(0, 0, 0, 0)')?'flat':'nested')+'|'+((bs.borderTopWidth!=='0px'&&bs.backgroundColor!=='rgba(0, 0, 0, 0)')?'paper':'nopaper')})()")" "flat|paper"
 
 echo "─── ۸) پروفایل: دوستونه + هویت در راست ───"
 q "iMach.show('s-profile', false); 'ok'" >/dev/null; sleep 0.8
@@ -216,6 +226,8 @@ chk "موبایل امتیاز: قهرمان عمودی (همان موبایل)"
 q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 0.9
 chk "موبایل کاتالوک FD-35: نوار جستجو+محصول جدید (۴۴/۴۴ تم‌پر)" "$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');return Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+getComputedStyle(add.querySelector('.ca-tx')).color})()")" "44/44|rgb(249, 115, 22)|rgb(255, 255, 255)"
 chk "موبایل کاتالوک FD-35: ۴ دکمه ۲ستونی · کادر تبلیغات حذف · بدون کاغذ" "$(q "(function(){var a=document.querySelector('#s-catalog .cat-actions');var b=document.querySelector('#s-catalog .body');var c=getComputedStyle(b);return a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length+'|sheet='+(c.borderTopWidth!=='0px'||c.marginTop!=='0px'?'BAD':'none')+'|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")" "4btn/2col|oldbox=0|sheet=none|ovf=ok"
+q "iMach.show('s-sell-add', false); 'ok'" >/dev/null; sleep 0.8
+chk "موبایل افزودن: بدون ویزارد، نوار فرزندِ section" "$(q "(function(){var sc=document.getElementById('s-sell-add');return (sc.querySelector('.wiz')?'BAD-wiz':'ok')+'|bar='+((document.getElementById('add-bar').parentElement===sc)?'section':'moved')})()")" "ok|bar=section"
 agent-browser set viewport 1440 900 >/dev/null 2>&1; sleep 1.2
 
 echo "─── ۱۳) خطای کنسول ───"

@@ -279,8 +279,8 @@ chk "پروفایل: کارت پروفایل در ستون راست (dkp-side FD
 
 echo "─── ۱۲) فرم مرکزی (۱۳ افزودن محصول) ───"
 q "iMach.show('s-sell-add', false); 'ok'" >/dev/null; sleep 0.8
-F1=$(q "var b=document.querySelector('#s-sell-add .body'); var w=Math.round(b.getBoundingClientRect().width); (w > 800 && w < 900 ? 'wiz860' : 'w' + w)")
-chk "فرم ویزارد ~۸۶۰ وسچ (FD-30: ۶۲۰ تنگ بود)" "$F1" "wiz860"
+F1=$(q "var b=document.querySelector('#s-sell-add .body'); var w=Math.round(b.getBoundingClientRect().width); (w > 660 && w < 715 ? 'add688' : 'w' + w)")
+chk "فرم افزودن ~۶۸۸ وسچ (FD-36: مثل موبایل، ۲۰٪ باریک‌تر از ۸۶۰)" "$F1" "add688"
 ovf "فرم: بدون سرریز"
 
 echo "─── ۱۳) شیت: مودال مرکزی ───"

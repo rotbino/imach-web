@@ -5622,85 +5622,47 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-offer .sticky-bar.dk-inflow { grid-column: 1 / -1; }
 
     /* ═══════════════════════════════════════════════════════════
-       FD-30 — ۱۳ افزودن محصول: ویزارد
-       (الگوی Linear New Issue / Stripe Onboarding)
-       نشانگر سه‌گامی زنده (:has — کدام گام نمایان است) · گریدِ
-       کارتیِ انتخاب در گام‌های ۱/۲ · فرم گام ۳ در کاغذ · ۸۶۰px.
+       FD-36 — ۱۳ افزودن محصول: مثل موبایل (حکم مالک)
+       «نشانگر ویزارد مثل سه دکمهٔ کلیک‌شدنی دیده می‌شد و گیج‌کننده
+       بود — برداشته شد؛ طرح مثل موبایل. ستون محصولات و کالاها از
+       هم جدا نشود — زیرِ هم مثل موبایل؛ کارت‌ها هم‌عرضِ سرچ‌باکس؛
+       کل قابِ (سرچ + کالاها) ۲۰٪ باریک‌تر: ۸۶۰→۶۸۸؛ دکمهٔ افزودن
+       به تهِ صفحه نچسبد.»
        ═══════════════════════════════════════════════════════════ */
-    #phone[data-dk="1"] .dk-add .body { max-width: 860px; }
+    #phone[data-dk="1"] .dk-add .body { max-width: 688px; }
 
-    /* نشانگر ویزارد — قرص‌های سه‌گانه؛ حالت با :has زنده می‌شود */
-    #phone[data-dk="1"] .dk-add .wiz {
-        display: flex; gap: 8px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 8px;
-        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    /* گام‌های ۱/۲ — همان زبان موبایل: عنوان گروه + کارت‌های تمام‌عرض
+       زیرِ هم (هیچ گرید چندستونه‌ای — «ستون محصولات و کالاها از هم
+       جدا شده» ممنوع؛ کارت = هم‌عرضِ سرچ‌باکس). فقط نفسِ دسکتاپی:
+       کارتِ هوای‌دار + هاورِ ملایم — هم‌زبانِ ردیف‌های FD-30-p3. */
+    #phone[data-dk="1"] .dk-add .pick-group { gap: 10px; }
+    #phone[data-dk="1"] .dk-add .pick-group-title {
+        font-size: 12px; margin: 22px 2px 6px !important;
     }
-    #phone[data-dk="1"] .dk-add .wiz-step {
-        flex: 1; min-width: 0;
-        display: flex; align-items: center; justify-content: center; gap: 9px;
-        padding: 10px 8px;
-        border-radius: 11px;
-        font-size: 13px; font-weight: 700; color: var(--text-3);
-        transition: background .2s, color .2s;
-    }
-    #phone[data-dk="1"] .dk-add .wiz-step b {
-        width: 28px; height: 28px; border-radius: 50%;
-        display: grid; place-items: center; flex-shrink: 0;
-        font-size: 12px; font-weight: 800;
-        background: var(--surface-3); color: var(--text-3);
-        transition: background .2s, color .2s;
-    }
-    /* گامِ نمایان = فعال (بازوی فروش) */
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-1:not([hidden])) .wiz-step[data-step="1"],
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="2"],
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="3"] {
-        background: var(--arm-soft); color: var(--arm-strong);
-    }
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-1:not([hidden])) .wiz-step[data-step="1"] b,
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="2"] b,
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="3"] b {
-        background: var(--arm-strong); color: #FFF;
-    }
-    /* گام‌های گذشته = انجام‌شده (سبز ملایم) */
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="1"],
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="1"],
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="2"] {
-        background: rgba(22,163,74,.10); color: var(--green);
-    }
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-2:not([hidden])) .wiz-step[data-step="1"] b,
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="1"] b,
-    #phone[data-dk="1"] .dk-add .body:has(> #add-step-3:not([hidden])) .wiz-step[data-step="2"] b {
-        background: var(--green); color: #FFF;
-    }
-
-    /* گام‌های ۱/۲ — گرید کارتیِ انتخاب (جستجو بزرگ‌تر) */
-    #phone[data-dk="1"] .dk-add .search-row { height: 52px !important; }
-    #phone[data-dk="1"] .dk-add #add-results,
-    #phone[data-dk="1"] .dk-add #add-refs {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
-        gap: 10px;
-    }
+    #phone[data-dk="1"] .dk-add #add-results { margin-top: 14px !important; }
+    #phone[data-dk="1"] .dk-add #add-results > .pick-group-title:first-child { margin-top: 4px !important; }
     #phone[data-dk="1"] .dk-add #add-results:empty,
     #phone[data-dk="1"] .dk-add #add-refs:empty { display: none; }
-    #phone[data-dk="1"] .dk-add .pick-row .info { min-width: 0; }
-    #phone[data-dk="1"] .dk-add .pick-row .nm { white-space: normal; }
-    /* «محصول من در این لیست نیست» — تمام‌عرضِ گرید */
-    #phone[data-dk="1"] .dk-add #add-new-product { grid-column: 1 / -1; }
+    #phone[data-dk="1"] .dk-add .pick-row {
+        padding: 13px 16px; border-radius: 16px; min-height: 76px;
+        transition: border-color .16s, box-shadow .16s;
+    }
+    #phone[data-dk="1"] .dk-add .pick-row:hover {
+        border-color: var(--border-2);
+        box-shadow: 0 8px 22px rgba(31,29,26,.07);
+    }
+    #phone[data-dk="1"] .dk-add .pick-row .thumb { width: 50px; height: 50px; }
+    #phone[data-dk="1"] .dk-add .pick-row .nm { font-size: 14.5px; }
+    #phone[data-dk="1"] .dk-add .pick-row .sub { font-size: 12px; }
+    #phone[data-dk="1"] .dk-add .pick-row .chev svg { width: 18px; height: 18px; }
+    #phone[data-dk="1"] .dk-add .picked-card { padding: 14px 16px; }
 
-    /* گام ۳ — فرم در کاغذ واحد + جفت‌شدن منطقی فیلدها:
-       قیمت بسته | قیمت واحد کنار هم (زوجِ هم‌گام)؛ بقیه تمام‌عرض.
-       فرزندان غیر-فیلد (کارت انتخاب، فرمِ محصول جدید، ردیف موجودی/
-       حداقل) خودکار تمام‌عرض می‌شوند. */
+    /* گام ۳ — فلت روی کاغذِ خودِ body (FD-35: body = کاغذ سراسری؛
+       کاغذِ تودرتو ممنوع — «کارت تودرتو ممنوع») + جفت‌شدن منطقی
+       فیلدها: قیمت بسته | قیمت واحد کنار هم (زوجِ هم‌گام)؛ بقیه
+       تمام‌عرض. فرزندان غیر-فیلد (کارت انتخاب، فرمِ محصول جدید،
+       ردیف موجودی/حداقل) خودکار تمام‌عرض می‌شوند. */
     #phone[data-dk="1"] .dk-add #add-step-3 {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 22px 26px 26px;
-        box-shadow: 0 1px 3px rgba(31,29,26,.03);
         display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px;
     }
     #phone[data-dk="1"] .dk-add #add-step-3 > *:not(.field) { grid-column: 1 / -1; }
@@ -5708,11 +5670,15 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-add #add-step-3 > .field:has(#add-valid),
     #phone[data-dk="1"] .dk-add #add-step-3 > .field:has(#add-note) { grid-column: 1 / -1; }
 
-    /* نوار افزودن: هم‌عرضِ فرم، در جریان */
-    #phone[data-dk="1"] .dk-add .sticky-bar {
-        width: 100%; max-width: 860px; margin: 4px auto 0;
+    /* نوار «افزودن به کاتالوگ» — در جریانِ ستون (فرزندِ body، تزریقِ
+       dkAdd در app-desktop)؛ بی‌زمینه و بی‌خط. فاصلهٔ امن از تهِ صفحه
+       را padding-bottom خودِ بدنه (۶۴) می‌سازد — حکم مالک: «کاملاً به
+       ته صفحه چسبیده — بیارش بالاتر و از پایین مارجین بده». */
+    #phone[data-dk="1"] .dk-add .sticky-bar,
+    #phone[data-dk="1"] .dk-add .sticky-bar.dk-inflow {
+        width: 100%; margin: 0;
         background: none; backdrop-filter: none; border-top: 0;
-        padding: 12px 0 0;
+        padding: 2px 0 0;
     }
 
     /* ═══════════════════════════════════════════════════════════
