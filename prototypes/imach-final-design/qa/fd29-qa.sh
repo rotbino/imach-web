@@ -1,6 +1,9 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════
 # FD-29 QA — پوستهٔ اپ دسکتاپ + اسکرول مرورگر + ترمیم‌های مالک
+# FD-30 deltas (بخش ۷): میزها از «تسک تک‌ستونه + شماره ترتیب» به
+#   کارتابل سه‌ستونه (Kanban-light) رفتند — سرفصل خوشامد + سه ستون
+#   موضوعی + کارت پیشنهاد؛ .dk-ord حذف (گروه ستون جانشین ترتیب خطی).
 # changed-architecture deltas نسبت به fd28-qa:
 #   · سایدبار ۲۵۰→۲۵۶ · چت: بومِ کل‌عرض با ستونِ ۹۰۰ (نه بدنهٔ ۹۰۰)
 #   · پروفایل: dkp-side/dkp-main (نه dkd-side)
@@ -95,11 +98,17 @@ chk "بازگشت → لندینگ" "$(q "(function(){return document.querySelec
 q "iMach.show('s-signup', false); 'ok'" >/dev/null; sleep 0.8
 chk "ثبت‌نام: اسپلیت برقرار" "$(q "(function(){var f=document.querySelector('#s-signup .dk-auth-form').getBoundingClientRect();var b=document.querySelector('#s-signup .dk-brand').getBoundingClientRect();return (b.x<f.x&&Math.abs(b.y-f.y)<5)?'split-ok':'broken'})()")" "split-ok"
 
-echo "─── ۷) میزها: تسک تک‌ستونه با شماره ترتیب ───"
+echo "─── ۷) میزها FD-30: کارتابل سه‌ستونه + خوشامد + کارت پیشنهاد ───"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
-chk "ردیف‌های تسک زیر هم (flex column)" "$(q "(function(){var rows=document.querySelector('#s-home-buy .body .rows');return rows?getComputedStyle(rows).flexDirection:'?'})()")" "column"
-chk "تسک‌ها در ظرف کارت (border + bg)" "$(q "(function(){var rows=document.querySelector('#s-home-buy .body .rows');var cs=getComputedStyle(rows);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'card-ok':'flat'})()")" "card-ok"
-chk "شمارهٔ ترتیب روی تسک‌ها" "$(q "(function(){return document.querySelectorAll('#s-home-buy .rows .dk-ord').length>0?'ord-ok':'none'})()")" "ord-ok"
+chk "کارتابل: گرید سه‌ستونه" "$(q "(function(){var r=document.querySelector('#s-home-buy .body > .rows');return getComputedStyle(r).display+'|'+getComputedStyle(r).gridTemplateColumns.split(' ').length})()")" "grid|3"
+chk "سربرگ سه ستون (شروع/در انتظار/عملیات)" "$(q "(function(){return document.querySelectorAll('#s-home-buy .dsk-col-h').length})()")" "3"
+chk "ستون‌ها کاغذند (border+bg)" "$(q "(function(){var c=document.querySelector('#s-home-buy .dsk-col');var cs=getComputedStyle(c);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'card-ok':'flat'})()")" "card-ok"
+chk "ردیف‌ها داخل ستون‌ها (نه فهرست خام)" "$(q "(function(){return document.querySelectorAll('#s-home-buy .dsk-col .row').length>=4?'in-cols':'flat'})()")" "in-cols"
+chk "سرفصل خوشامد (تزریق دسکتاپی)" "$(q "(function(){return document.querySelector('#s-home-buy .dk-greet')?'y':'n'})()")" "y"
+chk "کارت پیشنهاد (hint در کاغذ)" "$(q "(function(){var h=document.querySelector('#s-home-buy .hint-line.dsk-hint');var cs=getComputedStyle(h);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')?'card-ok':'flat'})()")" "card-ok"
+q "iMach.show('s-home-sell', false); 'ok'" >/dev/null; sleep 0.8
+chk "میز فروش: همان کانبان سه‌ستونه" "$(q "(function(){var r=document.querySelector('#s-home-sell .body > .rows');return getComputedStyle(r).gridTemplateColumns.split(' ').length+'|'+document.querySelectorAll('#s-home-sell .dsk-col-h').length+'|'+(document.querySelector('#s-home-sell .dk-greet')?'greet':'nogreet')})()")" "3|3|greet"
+chk "میزها: شماره ترتیب FD-28 حذف شد" "$(q "(function(){return document.querySelectorAll('#s-home-sell .dk-ord, #s-home-buy .dk-ord').length===0?'ord-gone':'leftover'})()")" "ord-gone"
 
 echo "─── ۸) پروفایل: دوستونه + هویت در راست ───"
 q "iMach.show('s-profile', false); 'ok'" >/dev/null; sleep 0.8
@@ -134,6 +143,8 @@ chk "موبایل: اسکرول داخلی body (auto)" "$(q "(function(){return
 chk "موبایل لندینگ: بدون کلاس dk-pad" "$(q "(function(){return document.querySelector('#s-landing .dk-pad')?'BAD-dkpad':'clean'})()")" "clean"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل میز: تب‌بار افقی، بدون سایدبار/شماره" "$(q "(function(){var sc=document.getElementById('s-home-buy');var tb=sc.querySelector('.tabbar');return getComputedStyle(tb).flexDirection+'|side='+(sc.querySelector('.dk-side')?'BAD':'ok')+'|ord='+(sc.querySelectorAll('.dk-ord').length?'BAD':'ok')})()")" "row|side=ok|ord=ok"
+chk "موبایل میز: بدون کانبان/خوشامد/کارتِ تزریقی" "$(q "(function(){var sc=document.getElementById('s-home-buy');return (sc.querySelector('.dsk-col')||sc.querySelector('.dsk-rows')||sc.querySelector('.dk-greet')||sc.querySelector('.dsk-hint'))?'BAD':'ok'})()")" "ok"
+chk "موبایل میز: ردیف‌ها فرزند مستقیم .rows" "$(q "(function(){var rs=document.querySelector('#s-home-buy .body > .rows');return (rs && rs.children.length && rs.children[0].classList.contains('row'))?'flat-ok':'wrapped'})()")" "flat-ok"
 q "iMach.show('s-profile', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل پروفایل: بدون پوسته/دوستونه" "$(q "(function(){var sc=document.getElementById('s-profile');return (sc.querySelector('.dk-side')||sc.querySelector('.dk-desk-main')||sc.querySelector('.dkp-side'))?'BAD':'ok'})()")" "ok"
 q "iMach.show('s-login', false); 'ok'" >/dev/null; sleep 0.8

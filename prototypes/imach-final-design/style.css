@@ -4827,14 +4827,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat b { font-size: 27px; }
     #phone[data-dk="1"] .dk-desk .section-title h2 { font-size: 16.5px; }
 
-    /* کارتابل اقدام: تک‌ستونه در ظرف کارت — ترتیب هرگز از دست نمی‌رود */
-    #phone[data-dk="1"] .dk-ord {
-        width: 26px; height: 26px; border-radius: 8px;
-        background: var(--surface-3); color: var(--text-3);
-        font-size: 12px; font-weight: 800;
-        display: grid; place-items: center; flex-shrink: 0;
-    }
-    #phone[data-dk="1"] .row.row-start .dk-ord { background: var(--arm-soft); color: var(--arm-strong); }
+    /* کارتابل اقدام FD-28 (.dk-ord شماره‌های ترتیب) — FD-30 حذف شد:
+       چیدمان ستونی جانشین ترتیب خطی شد؛ تولیدکننده در app-desktop.js
+       هم حذف شده. کانبان سه‌ستونه در بلوک FD-30 پایین‌تر. */
     #phone[data-dk="1"] .dk-desk .hint-line {
         max-width: 640px; margin: 0 auto; padding: 8px 2px 0;
         justify-content: center; text-align: center;
@@ -5015,4 +5010,121 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     /* ۰۲۲/۰۳۲ — دیدهٔ عمومی: کانتینر وسچ */
     #phone[data-dk="1"] .dk-screen .blg-stats,
     #phone[data-dk="1"] .dk-screen .ms-strip { max-width: 1120px; margin-inline: auto; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FD-30 — میزها (۰۴/۱۹): کارتابل حرفه‌ای سه‌ستونه (Kanban-light)
+       (الگوی Notion Home / Linear My Issues؛ حکم مالک: میزها در
+       دسکتاپ «قشنگ‌تر و پررنگ‌تر/بزرگ‌تر» دیده شوند)
+       ▸ همه با تزریق JS در ≥1024 (app-desktop.js · dkDesk) —
+         HTML موبایل بایت‌به‌بایت دست‌نخورده.
+       ▸ سرفصل خوشامد + کاشی‌های درشت‌تر + سه ستون موضوعی
+         (شروع · در انتظار تایید · عملیات) + کارت پیشنهاد.
+       ═══════════════════════════════════════════════════════════ */
+
+    /* ۰) بدنهٔ میز: پهن‌تر برای نفسِ کانبان (۱۰۶۰ → ۱۱۲۰) */
+    #phone[data-dk="1"] .dk-desk .dk-desk-main .body {
+        max-width: 1120px;
+        padding: 30px 40px 56px; gap: 22px;
+    }
+
+    /* ۱) سرفصل خوشامد — زیر اپ‌بار چسبان؛ الگوی Notion Home */
+    #phone[data-dk="1"] .dk-desk .dk-greet { padding: 2px 4px 0; }
+    #phone[data-dk="1"] .dk-desk .dk-greet b {
+        display: block; font-size: 24px; font-weight: 800;
+        letter-spacing: -.3px; line-height: 1.6; color: var(--text);
+    }
+    #phone[data-dk="1"] .dk-desk .dk-greet small {
+        display: block; margin-top: 5px;
+        font-size: 13px; font-weight: 500; color: var(--text-3);
+    }
+
+    /* ۲) کاشی‌ها: درشت‌تر و پررنگ‌تر — عدد قهرمان + آیکون رنگی */
+    #phone[data-dk="1"] .dk-desk .desk-duo { gap: 16px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile {
+        padding: 24px 22px 20px; border-radius: 20px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0) 72%),
+            var(--surface);
+    }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-ic {
+        width: 46px; height: 46px; border-radius: 14px;
+    }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-ic svg { width: 23px; height: 23px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-t { font-size: 15px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat { margin-top: 14px; }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat b {
+        font-size: 34px; font-weight: 800; letter-spacing: -.5px;
+    }
+    #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat span { font-size: 12.5px; }
+
+    /* ۳) کارتابل سه‌ستونه — هر ستون یک کاغذ با سربرگ رنگ‌مویه
+       (ظرفِ واحد FD-29 کنار می‌رود؛ ردیف‌ها زبانِ مسطح خود را
+       نگه می‌دارند — خط مویی، الگوی جدول دسکتاپ) */
+    #phone[data-dk="1"] .dk-desk .body > .rows.dsk-rows {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        align-items: start;
+        background: none; border: 0; padding: 0; box-shadow: none;
+    }
+    #phone[data-dk="1"] .dk-desk .dsk-col {
+        min-width: 0;
+        display: flex; flex-direction: column;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 6px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+    }
+    #phone[data-dk="1"] .dk-desk .dsk-col-h {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 12px 8px;
+        font-size: 12.5px; font-weight: 700; color: var(--text-2);
+    }
+    #phone[data-dk="1"] .dk-desk .dsk-col-h svg {
+        width: 16px; height: 16px; padding: 8px; box-sizing: content-box;
+        border-radius: 10px; flex-shrink: 0;
+    }
+    #phone[data-dk="1"] .dk-desk .dsk-col[data-col="start"] .dsk-col-h svg {
+        background: var(--arm-soft); color: var(--arm-strong);
+    }
+    #phone[data-dk="1"] .dk-desk .dsk-col[data-col="pend"] .dsk-col-h svg {
+        background: var(--amber-soft); color: var(--amber);
+    }
+    #phone[data-dk="1"] .dk-desk .dsk-col[data-col="orders"] .dsk-col-h svg {
+        background: var(--primary-soft); color: var(--primary-strong);
+    }
+    #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row {
+        padding: 14px 12px; border-radius: 12px;
+    }
+    #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row .row-title { font-size: 13.5px; }
+    #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row .row-sub { font-size: 12px; }
+
+    /* ستونِ خالی پنهان — عنصرِ بی‌دلیل نداریم. ردیف‌ها با
+       deskHomeSync/buyDeskSync (بعد از تزریق، async) زنده hidden
+       می‌شوند؛ :has همان لحظه واکنش نشان می‌دهد. */
+    #phone[data-dk="1"] .dk-desk .dsk-col:not(:has(.row:not([hidden]))) { display: none; }
+
+    /* ۴) hint-line → کارت پیشنهاد آی‌مچ — کاغذ + آیکون فیروزه‌ای
+       (هم‌زبان با کارت‌های صفحه؛ نوارِ اطلاع‌رسانی، نه سطرِ ریز) */
+    #phone[data-dk="1"] .dk-desk .hint-line.dsk-hint {
+        max-width: none; margin: 0;
+        padding: 16px 18px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: 0 1px 3px rgba(31,29,26,.03);
+        justify-content: flex-start; text-align: start;
+        gap: 14px;
+    }
+    #phone[data-dk="1"] .dk-desk .hint-line.dsk-hint svg {
+        width: 17px; height: 17px; margin-top: 0;
+        padding: 9px; box-sizing: content-box;
+        background: var(--accent-soft); color: var(--accent-strong);
+        border-radius: 11px; flex-shrink: 0;
+    }
+    #phone[data-dk="1"] .dk-desk .hint-line.dsk-hint span {
+        font-size: 13.5px; font-weight: 600; color: var(--text-2);
+        line-height: 2;
+    }
 }

@@ -71,14 +71,14 @@ A5=$(q "(document.querySelector('#s-signup .dkf-card #signup-submit') ? 'submit-
 chk "ثبت‌نام: دکمه در کارت + ۳ کارت نقش" "$A5" "submit-ok|3"
 ovf "ثبت‌نام: بدون سرریز"
 
-echo "─── ۴) میز خرید: سایدبار + تسک تک‌ستونه با ترتیب ───"
+echo "─── ۴) میز خرید: سایدبار + کانبان سه‌ستونه FD-30 ───"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.9
 D1=$(q "var tb=document.querySelector('#s-home-buy .tabbar'); getComputedStyle(tb).flexDirection + '|' + Math.round(tb.getBoundingClientRect().width) + '|' + (tb.querySelector('.dk-side-brand') ? 'brand' : 'no')")
 chk "سایدبار عمودی ~۲۵۰px با واژه‌نشان" "$D1" "column|250|brand"
 D2=$(q "var w=Math.max.apply(null, Array.prototype.map.call(document.querySelectorAll('#s-home-buy .rows .row'), function(r){return Math.round(r.getBoundingClientRect().top)})); var t=[]; document.querySelectorAll('#s-home-buy .rows .row').forEach(function(r){t.push(Math.round(r.getBoundingClientRect().top))}); var uniq=t.filter(function(v,i){return t.indexOf(v)===i}).length; uniq + 'rows-tops'")
 chk "تسک‌ها زیر هم (هر کدام ردیف مستقل)" "$D2" "$(q "var t=[]; document.querySelectorAll('#s-home-buy .rows .row').forEach(function(r){t.push(Math.round(r.getBoundingClientRect().top))}); t.filter(function(v,i){return t.indexOf(v)===i}).length + 'rows-tops'")"
-D3=$(q "document.querySelectorAll('#s-home-buy .rows .row .dk-ord').length + '|' + (document.querySelector('#s-home-buy .rows .row .dk-ord') || {}).textContent")
-chk "شمارهٔ ترتیب تسک‌ها (اولین = ۱)" "$D3" "5|۱"
+D3=$(q "(function(){var cols=document.querySelectorAll('#s-home-buy .dsk-col');return cols.length+'cols|'+document.querySelectorAll('#s-home-buy .dsk-col .row').length+'rows'})()")
+chk "کانبان سه‌ستونه با همهٔ ردیف‌ها (FD-30)" "$D3" "3cols|5rows"
 D4=$(q "document.querySelectorAll('#s-home-buy .desk-duo .desk-tile').length + '|' + (function(){var ts=[]; document.querySelectorAll('#s-home-buy .desk-tile').forEach(function(t){ts.push(Math.round(t.getBoundingClientRect().top))}); return ts.filter(function(v,i){return ts.indexOf(v)===i}).length})()")
 chk "چهار کاشی یک‌ردیف" "$D4" "4|1"
 ovf "میز خرید: بدون سرریز"

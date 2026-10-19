@@ -1,12 +1,17 @@
 /* ═════════════════════════════════════════════════════════════════
-   iMach — Desktop (FD-28)
+   iMach — Desktop (FD-28 → FD-30)
    ─────────────────────────────────────────────────────────────────
-   رسپانسیو دسکتاپ — مرحلهٔ ۲ (بازطراحی کاملِ دستی، صفحه‌به‌صفحه).
+   رسپانسیو دسکتاپ — مرحلهٔ ۳ (FD-30: ارتقای کیفیِ میزها و فرم‌ها به
+   سطح اپ حرفه‌ای B2B — الگوهای نام‌دار: Kanban-light · Form+Preview ·
+   Wizard · Master-Detail؛ حکم مالک: «فرانت‌اند چیزی بشه که باید باشه»).
 
    ▸ حکم مالک (FD-28): «در دسکتاب حرفه‌ای‌تر و مطابق استاندارد بالا —
      همچنان مینیمال و ساده؛ صفحه‌به‌صفحه با ظرافت، نه یک ایجنت کلی».
-     بازخورد FD-27 که این مرحله ترمیم می‌کند: لندینگ زیرِ بنر،
+     بازخورد FD-27 که مرحلهٔ قبل ترمیم کرد: لندینگ زیرِ بنر،
      ورود/ثبت‌نام، و تسک‌های میز خرید (زیر هم + استایل مخصوص).
+     بازخورد FD-30 که این مرحله ترمیم می‌کند: میزها «قشنگ‌تر و
+     پررنگ‌تر/بزرگ‌تر»، فرم‌ها با ستون پیش‌نمایش/ویزارد، فهرست‌ها
+     با الگوهای Master-Detail و گرید.
 
    ▸ معماری: همان دو-لایهٔ FD-27 —
        · این ماژول: پرچم #phone[data-dk] + بازچینیِ DOM لازم.
@@ -353,21 +358,82 @@ window.iMachDesktop = (function () {
         if (window.iMach && window.iMach.applyArms) window.iMach.applyArms();
     }
 
-    /* ═══ ۱۹/۰۴ میزها ═══
-       پوسته + شمارهٔ ترتیب تسک‌ها — زیر هم، ترتیب همیشه پیدا. */
+    /* ═══ ۱۹/۰۴ میزها — FD-30: کارتابل سه‌ستونه (Kanban-light) ═══
+       پوستهٔ اپ (FD-29) + سه چیزِ تازه — همه فقط با تزریقِ دسکتاپی؛
+       HTML صفحه‌ها دست‌نخورده می‌ماند تا موبایل بایت‌به‌بایت همان
+       FD-24 قبلی بماند (show() هر بار قالب خام را می‌ریزد):
+         ۱) سرفصل خوشامد — «سلام احمد / کارهای امروزت این‌جاست»
+            (الگوی Notion Home؛ متن ثابت — شمارش زنده لازم نیست؛
+            پیرمرد ۷۰ ساله بدون دیتا هم می‌فهمد).
+         ۲) کارتابل سه‌ستونهٔ موضوعی: شروع · در انتظار تایید ·
+            عملیات روزمره. همهٔ ردیف‌ها در DOM می‌مانند و همان
+            id/hidden رفتار خود را نگه می‌دارند — deskHomeSync/
+            buyDeskSync با id کار می‌کنند، جابه‌جایی والد بی‌ضرر.
+            ستونِ خالی (همهٔ ردیف‌ها hidden) با CSS :has پنهان
+            می‌شود — عنصرِ بی‌دلیل نداریم.
+         ۳) hint-line → کارت پیشنهاد آی‌مچ (کاغذ + آیکون رنگی).
+       FD-28 شماره‌های ترتیب (.dk-ord) حذف شد — در چیدمانِ ستونی،
+       شمارهٔ سراسری ترتیب را گمراه می‌کند؛ گروهِ ستون جانشینِ
+       ترتیبِ خطی است (تصمیم FD-30؛ حکم FD-12 «هم‌قد بودن گام‌های
+       شروع» حالا در ستونِ خودش برقرار است). */
+    var DESK_COLS = {
+        's-home-sell': [
+            { k: 'start',  t: 'شروع', ic: '#i-rocket',
+              pick: function (r) { return r.classList.contains('row-start'); } },
+            { k: 'pend',   t: 'در انتظار تایید', ic: '#i-user-plus',
+              pick: function (r) { return r.id === 'sell-pend-row'; } },
+            { k: 'orders', t: 'سفارشات و درخواست‌ها', ic: '#i-receipt',
+              pick: function () { return true; } }
+        ],
+        's-home-buy': [
+            { k: 'start',  t: 'شروع', ic: '#i-rocket',
+              pick: function (r) { return r.classList.contains('row-start'); } },
+            { k: 'pend',   t: 'در انتظار تایید', ic: '#i-user-plus',
+              pick: function (r) { return r.id === 'buy-pend-row'; } },
+            { k: 'orders', t: 'پیشنهادها و سفارشات', ic: '#i-inbox',
+              pick: function () { return true; } }
+        ]
+    };
+
     function dkDesk(sec, id) {
         shellify(sec, id);
-        var rows = sec.querySelectorAll('.rows .row');
-        var n = 0;
-        Array.prototype.forEach.call(rows, function (r) {
-            if (r.querySelector('.dk-ord')) return;
-            n++;
-            var ord = document.createElement('span');
-            ord.className = 'dk-ord';
-            ord.setAttribute('aria-hidden', 'true');
-            ord.textContent = window.iMach.faNum(n);
-            r.insertBefore(ord, r.firstChild);
-        });
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        /* ۱) سرفصل خوشامد — بالای بدنه، زیر اپ‌بار چسبان */
+        var greet = document.createElement('div');
+        greet.className = 'dk-greet';
+        greet.innerHTML =
+            '<b>سلام احمد <span aria-hidden="true">👋</span></b>' +
+            '<small>کارهای امروزت را این‌جا ببین</small>';
+        body.insertBefore(greet, body.firstChild);
+
+        /* ۲) کارتابل سه‌ستونه — ردیف‌های موجود در ستون‌های موضوعی */
+        var rows = body.querySelector(':scope > .rows');
+        var spec = DESK_COLS[id];
+        if (rows && spec) {
+            var cols = spec.map(function (c) {
+                var col = document.createElement('div');
+                col.className = 'dsk-col';
+                col.setAttribute('data-col', c.k);
+                col.innerHTML =
+                    '<div class="dsk-col-h"><svg><use href="' + c.ic + '"/></svg>' +
+                    '<span>' + c.t + '</span></div>';
+                return col;
+            });
+            Array.prototype.slice.call(rows.children).forEach(function (r) {
+                for (var i = 0; i < spec.length; i++) {
+                    if (spec[i].pick(r)) { cols[i].appendChild(r); return; }
+                }
+            });
+            cols.forEach(function (c) { rows.appendChild(c); });
+            rows.classList.add('dsk-rows');
+        }
+
+        /* ۳) hint-line → کارت پیشنهاد آی‌مچ */
+        var hint = body.querySelector(':scope > .hint-line');
+        if (hint) hint.classList.add('dsk-hint');
     }
 
     /* ═══ ۰۵/۳۱ کاتالوگ ═══

@@ -3977,8 +3977,12 @@
             var t = $('#sell-desk-orders-t');
             if (t) t.textContent = faNum(nw.length) + ' سفارش جدید';
             var s = $('#sell-desk-orders-s');
+            /* FD-30 (باگ قدیمی FD-18، بازبینی چشمی VLM): esc() همهٔ رشتهٔ
+               متصل‌شده را escape می‌کرد — جداکنندهٔ «·» هم به‌شکل متنِ خام
+               «<span …>» دیده می‌شد. درست: فقط نام خریدارها escape شود،
+               نشانهٔ جداکننده HTML بماند. */
             if (s) s.innerHTML = nw.length
-                ? esc(nw.map(function (o) { return o.buyer; }).slice(0, 2).join(' <span class="dot">·</span> '))
+                ? nw.map(function (o) { return esc(o.buyer); }).slice(0, 2).join(' <span class="dot">·</span> ')
                 : '';
         }
         var cur = (core.data.ordersOut || []).filter(function (o) { return ['new', 'accepted', 'sent'].indexOf(o.status) >= 0; });
