@@ -520,6 +520,49 @@
         </div>
     </div>
 
+    <!-- ═══ FD-43 — شیت سراسری: اسکنر بارکد لیست خرید/اتمام موجودی ═══
+         حکم مالک: «توی سرچ باکس آیکون یه اسکنر هم بزار که با اسکن هم
+         بتونه این کارو انجام بده. اسکنر خیلی کمک کننده است بخصوص برای
+         سوپرمارکتها و اجناس بارکددار.»
+         ▸ زمینه‌دار (BLSCAN.ctx در app-forms.js): از جستجوی لیست خرید
+           (۲۰) یا از مدال اتمام موجودی (۲۰ج) باز می‌شود و پس از تطبیقِ
+           کالای مرجع، دکمهٔ درستِ همان زمینه را می‌گذارد:
+           - لیست خرید: در لیست هست ← «نمایش در لیست» (جستجو را پر می‌کند)؛
+             نیست ← «افزودن به لیست خرید».
+           - اتمام موجودی: در لیست خرید هست ← «افزودن به اتمام موجودی»؛
+             نیست ← «افزودن به لیست خرید و اتمام موجودی» (همزمان هر دو).
+         ▸ سراسری است چون از دو صفحهٔ مختلف باز می‌شود (الگوی
+           sheet-share-buylist)؛ شناسه‌ها با پیشوند blscan از شیت
+           اسکن فرم ۱۳ (sheet-scan) جدا هستند.
+         ▸ قاب اسکن = همان scanframe فرم ۱۳؛ ورودی دستی برای دسکتاپ و
+           «درج بارکد نمونه برای تست» برای دموی بدون دوربین. -->
+    <div class="sheet" id="sheet-blscan" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>اسکن بارکد</h3>
+            <button class="mg" data-sheet-close="sheet-blscan" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">بارکد کالا را جلوی دوربین نگه دار — سریع‌تر از جستجوست، بخصوص برای اجناس بسته‌بندی.</div>
+
+        <div class="scanframe">
+            <svg viewBox="0 0 64 40" fill="none" stroke="#FFF" stroke-width="3" stroke-linecap="round"><path d="M6 2v36M12 2v36M17 2v24M23 2v36M29 2v16M34 2v36M40 2v24M46 2v36M52 2v16M58 2v36"/></svg>
+            <span>بارکد را داخل کادر نگه دارید</span>
+        </div>
+
+        <div class="field" style="margin-top: 12px;">
+            <label>بارکد را دستی وارد کن <span class="opt">— اگر اسکنر نداری</span></label>
+            <div style="display: flex; gap: 8px;">
+                <input class="input" id="blscan-code" type="tel" inputmode="numeric" placeholder="مثلاً ۶۲۶۰۱۰۱۲۰۰۰۱۳" autocomplete="off" style="flex: 1; direction: ltr; text-align: left;">
+                <button class="btn btn-primary" id="blscan-go" type="button" style="flex-shrink: 0;">
+                    <svg><use href="#i-scan"/></svg> تطبیق
+                </button>
+            </div>
+            <button class="linklike" id="blscan-demo" type="button">درج بارکد نمونه برای تست</button>
+        </div>
+
+        <div id="blscan-res"></div>
+    </div>
+
     <div id="screen-host">
         <div class="body" style="display: grid; place-items: center; text-align: center; color: var(--text-3);">
             در حال بارگذاری…

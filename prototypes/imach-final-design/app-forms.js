@@ -257,9 +257,10 @@
         _scoreRingSync(scoreCalc(core.data.scoreItemsSell), '#cat-score-ring', '#cat-score-num');
     }
 
-    /* FD-16 → FD-42: امتیاز لیست خرید حذف شد — «دایرهٔ امتیاز روی میز
-       خرید هست و دیگه لازم نیست توی لیست خرید هم باشه» (حکم مالک)؛
-       جایش چرخ‌دندهٔ تنظیمات نشسته (sheet-bl-settings). */
+    /* FD-16 → FD-42 → FD-43: امتیاز لیست خرید حذف شد — «دایرهٔ امتیاز
+       روی میز خرید هست و دیگه لازم نیست توی لیست خرید هم باشه» (حکم
+       مالک)؛ FD-42 چرخ‌دندهٔ تنظیمات را گذاشت و FD-43 آن را هم برداشت
+       (شرایط تامین + اتمام موجودی = دو دکمهٔ باکس کاتالوگی/سایدبار). */
 
     /* ═══════════════════════════════════════════════════════════════
        میز فروش (۰۴) / میز خرید (۱۹) — کارتابل
@@ -414,6 +415,15 @@
             bpr.hidden = supNew === 0;
             var bpt = $('#buy-pend-t');
             if (bpt && supNew) bpt.textContent = faNum(supNew) + ' تأمین‌کنندهٔ پیشنهادی';
+        }
+
+        /* FD-43: ردیف «در حال اتمام موجودی» — زنده از DATA.lowStock
+           (پس از افزودن/حذف در ۲۰ج، همین‌جا به‌روز می‌شود) */
+        var dlow = $('#buy-desk-low-row'), dlowT = $('#buy-desk-low-t');
+        if (dlow) {
+            var lowN = (core.data.lowStock || []).length;
+            dlow.hidden = lowN === 0;
+            if (dlowT) dlowT.textContent = faNum(lowN) + ' کالا در حال اتمام موجودی';
         }
     }
 
@@ -3327,14 +3337,286 @@
         }).join('');
     }
 
-    /* FD-42: وضعیت ردیف «شرایط تامین» در شیت تنظیمات — همیشه تازه */
-    function blSettingsSync() {
-        var sub = $('#blset-cond-sub');
-        if (!sub) return;
-        var has = !!(((core.data.buyListInfo || {}).conditions || '').trim());
-        sub.textContent = has
-            ? 'فعال — تأمین‌کننده‌ها پیش از پیشنهاد دادن می‌خوانندش'
-            : 'خالی — لینک آن در نمای عمومی لیستت دیده نمی‌شود';
+    /* ═══ FD-43 (حکم مالک) — در حال اتمام موجودی (۲۰ج) + اسکنر زمینه‌دار ═══
+       «یه باکس در حال اتمام موجودی بزاریم که کاربر بتونه اجناسی از
+       لیست خرید که در حال اتمام موجودی هست رو اضافه کنه… یه مدال باز
+       می‌کنه که کاربر سریع می‌تونه سرچ بزنه… اگر در لیست خریدش نبود
+       بتونه سریع به لیست خریدش هم اضافه کنه اما بدون پیچیدگی و با
+       سادگی همیشگی برای پیرمرد ۷۰ ساله سنتی — اگر در لیست خرید نبود
+       موقع سرچ از بقیه کالاها بیاره و با انتخابش همزمان به لیست خرید
+       هم اضافه بشه.» + «توی سرچ باکس آیکون یه اسکنر هم بزار که با
+       اسکن هم بتونه این کارو انجام بده… بخصوص برای سوپرمارکتها و
+       اجناس بارکددار.»
+       ▸ lowstockRender — فهرست ۲۰ج + شمار سرصفحه + ردیف کارتابل میز
+         خرید (۱۹ · #buy-desk-low-row) همه از DATA.lowStock زنده‌اند.
+       ▸ lsAdd فقط نام تکراری را رد می‌کند؛ lsPick = انتخاب کالای
+         لیست خودش (فقط اتمام موجودی)؛ lsPickRef = کالای کاتالوگ
+         (references) → اگر در لیست خرید نبود «همزمان» به هر دو فهرست.
+       ▸ lsaRender — مدال افزودن: اول «از لیست خریدت» (تازه‌ها با +
+         و افزوده‌شده‌ها با بج سبز — الگوی ۲۱)؛ با عبارت جستجو «از
+         همهٔ کالاها» هم می‌آید؛ خالی = پیام روشن، نه بن‌بست.
+       ▸ BLSCAN — شیت سراسری sheet-blscan زمینه‌دار است (buylist /
+         lowstock): پس از تطبیق بارکد با کالای مرجع، دکمهٔ همان
+         زمینه را می‌گذارد (نمایش/افزودن/افزودن-به‌هر-دو). */
+    var LSQ = { q: '' };
+    var BLSCAN = { ctx: 'buylist', refId: null, demoIdx: 0 };
+    /* دموی چرخشی: ماکارونی (در لیست نیست ← افزودن)، برنج (هست ←
+       نمایش/اتمام موجودی)، پفک (در لیست نیست) */
+    var BLSCAN_DEMO = ['6260101200013', '6260101200012', '6260101200010'];
+
+    function lsByName(name) {
+        return (core.data.lowStock || []).filter(function (x) { return x.name === name; })[0] || null;
+    }
+
+    function lsAdd(item) {
+        if (!item || !item.name || lsByName(item.name)) return false;
+        core.data.lowStock = core.data.lowStock || [];
+        core.data.lowStock.push({
+            id: 'ls' + (core.data.lowStock.length + 1) + '-' + (Date.now() % 100000),
+            name: item.name,
+            q: item.q || item.pack || '',
+            img: item.img || '',
+            fromList: item.fromList !== false
+        });
+        return true;
+    }
+
+    /* افزودنِ کالای مرجع به لیست خرید (بدون ویزارد — «بدون پیچیدگی»):
+       مقدار پیش‌فرض = بستهٔ اول همان کالا؛ با افزودن‌های بعدی همان
+       مسیر ۳۱ (مقدار/دورهٔ الزامی) قابل ویرایش است. */
+    function blAddToShoppingList(r) {
+        var inList = (core.data.shoppingList || []).some(function (x) { return x.name === r.name; });
+        if (inList) return false;
+        var pack = (r.packs && r.packs[0]) ? r.packs[0].label : '';
+        core.data.shoppingList.push({
+            id: 'sl' + (core.data.shoppingList.length + 1) + '-' + (Date.now() % 100000),
+            businessId: 'b2',
+            name: r.name,
+            q: pack ? '۱ ' + pack + ' · ماهانه' : 'ماهانه',
+            pack: pack,
+            img: r.img || '',
+            suppliersCount: 1,
+            added: true
+        });
+        buyListRender();
+        return true;
+    }
+
+    /* انتخاب کالای لیست خودش → فقط اتمام موجودی */
+    function lsPick(name) {
+        var it = (core.data.shoppingList || []).filter(function (x) { return x.name === name; })[0];
+        if (!it) return;
+        if (!lsAdd(it)) { toast('«' + it.name + '» همین حالا در این فهرست است', 'error'); return; }
+        toast('«' + it.name + '» به اتمام موجودی اضافه شد', 'success');
+        lowstockRender();
+        lsaRender();
+    }
+
+    /* انتخاب کالای کاتالوگ → «با انتخابش همزمان به لیست خرید هم
+       اضافه بشه» (حکم مالک) */
+    function lsPickRef(refId) {
+        var r = (core.data.references || []).filter(function (x) { return x.id === refId; })[0];
+        if (!r) return;
+        if (lsByName(r.name)) { toast('«' + r.name + '» همین حالا در این فهرست است', 'error'); return; }
+        var addedToList = blAddToShoppingList(r);
+        var pack = (r.packs && r.packs[0]) ? r.packs[0].label : '';
+        lsAdd({
+            name: r.name,
+            q: pack ? '۱ ' + pack + ' · ماهانه' : '',
+            img: r.img || '',
+            fromList: !addedToList
+        });
+        toast(addedToList
+            ? '«' + r.name + '» به لیست خرید و اتمام موجودی اضافه شد'
+            : '«' + r.name + '» به اتمام موجودی اضافه شد', 'success');
+        lowstockRender();
+        lsaRender();
+    }
+
+    function lsRemove(id) {
+        core.data.lowStock = (core.data.lowStock || []).filter(function (x) { return x.id !== id; });
+        lowstockRender();
+    }
+
+    /* رندر فهرست ۲۰ج + ردیف کارتابل میز خرید (۱۹) */
+    function lowstockRender() {
+        var host = $('#ls-rows');
+        if (!host) return;
+        var items = core.data.lowStock || [];
+        var cnt = $('#ls-count');
+        if (cnt) cnt.textContent = faNum(items.length) + ' کالا';
+        var drow = $('#buy-desk-low-row'), dt = $('#buy-desk-low-t');
+        if (drow) {
+            drow.hidden = items.length === 0;
+            if (dt) dt.textContent = faNum(items.length) + ' کالا در حال اتمام موجودی';
+        }
+        if (!items.length) {
+            host.innerHTML = '<div class="empty"><div class="empty-ic"><svg><use href="#i-boxes"/></svg></div>' +
+                '<h3>فعلاً چیزی رو به اتمام نیست</h3>' +
+                '<p>هر کالایی که حساس کردی موجودی‌اش رو به پایان است، با دکمهٔ زیر اضافه‌اش کن — با جستجو یا اسکن بارکد.</p></div>';
+            return;
+        }
+        host.innerHTML = items.map(function (it) {
+            return '<div class="row">' +
+                '<div class="thumb thumb-sm">' + (it.img ? '<img src="' + esc(it.img) + '" alt="">' : '') + '</div>' +
+                '<div class="row-body">' +
+                    '<div class="row-title">' + esc(it.name) + '</div>' +
+                    '<div class="row-sub">' + esc(it.q || '') + (it.fromList ? '' : ' · به لیست خرید هم اضافه شد') + '</div>' +
+                '</div>' +
+                '<button class="row-x" data-ls-remove="' + esc(it.id) + '" type="button" aria-label="حذف از فهرست"><svg><use href="#i-x"/></svg></button>' +
+            '</div>';
+        }).join('');
+    }
+
+    /* رندر مدال افزودن (sheet-lowstock-add) */
+    function lsaRender() {
+        var host = $('#lsa-res');
+        if (!host) return;
+        var q = LSQ.q.trim();
+        var lsNames = {};
+        (core.data.lowStock || []).forEach(function (x) { lsNames[x.name] = 1; });
+        var listHits = (core.data.shoppingList || []).filter(function (it) {
+            if (q) {
+                var hay = (it.name || '') + ' ' + (it.pack || '') + ' ' + (it.q || '');
+                return hay.indexOf(q) > -1;
+            }
+            return true;
+        });
+        var refHits = (core.data.references || []).filter(function (r) {
+            if (!q) return false;
+            if (lsNames[r.name]) return false;
+            var inList = (core.data.shoppingList || []).some(function (x) { return x.name === r.name; });
+            if (inList) return false;
+            return ((r.name || '') + ' ' + (r.brand || '')).indexOf(q) > -1;
+        });
+        if (!listHits.length && !refHits.length) {
+            host.innerHTML = '<div class="hint-line" style="margin-top: 10px;"><svg><use href="#i-search"/></svg>' +
+                '<span>' + (q ? 'چیزی پیدا نشد — عبارت دیگری از نام کالا را امتحان کن.' : 'همهٔ کالاهای لیست خریدت همین حالا در این فهرست هستند.') + '</span></div>';
+            return;
+        }
+        var html = '';
+        if (listHits.length) {
+            html += '<div class="section-title" style="margin-top: 12px;"><h2>از لیست خریدت</h2></div>';
+            html += listHits.map(function (it) {
+                var added = !!lsNames[it.name];
+                return added
+                    ? '<div class="row static">' +
+                        '<div class="thumb thumb-sm">' + (it.img ? '<img src="' + esc(it.img) + '" alt="">' : '') + '</div>' +
+                        '<div class="row-body"><div class="row-title">' + esc(it.name) + '</div>' +
+                        '<div class="row-sub">' + esc(it.q || it.pack || '') + '</div></div>' +
+                        '<span class="badge b-green">افزوده شد</span></div>'
+                    : '<div class="row" data-lsa-pick="' + esc(it.name) + '">' +
+                        '<div class="thumb thumb-sm">' + (it.img ? '<img src="' + esc(it.img) + '" alt="">' : '') + '</div>' +
+                        '<div class="row-body"><div class="row-title">' + esc(it.name) + '</div>' +
+                        '<div class="row-sub">در لیست خریدت · ' + esc(it.q || it.pack || '') + '</div></div>' +
+                        '<div class="row-chev"><svg><use href="#i-plus"/></svg></div></div>';
+            }).join('');
+        }
+        if (refHits.length) {
+            html += '<div class="section-title" style="margin-top: 12px;"><h2>از همهٔ کالاها</h2></div>';
+            html += refHits.map(function (r) {
+                var pack = (r.packs && r.packs[0]) ? r.packs[0].label : '';
+                return '<div class="row" data-lsa-ref="' + esc(r.id) + '">' +
+                    '<div class="thumb thumb-sm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="">' : '') + '</div>' +
+                    '<div class="row-body"><div class="row-title">' + esc(r.name) + '</div>' +
+                    '<div class="row-sub">در لیست خریدت نیست · با انتخاب، همزمان به هر دو فهرست اضافه می‌شود' + (pack ? ' · ' + esc(pack) : '') + '</div></div>' +
+                    '<div class="row-chev"><svg><use href="#i-plus"/></svg></div></div>';
+            }).join('');
+        }
+        host.innerHTML = html;
+    }
+
+    /* باز کردن مدال افزودن — همیشه با جستجوی تمیز */
+    function lsaOpen() {
+        LSQ.q = '';
+        var inp = $('#lsa-q');
+        if (inp) inp.value = '';
+        lsaRender();
+        core.openSheet('sheet-lowstock-add');
+        setTimeout(function () { if (inp) inp.focus(); }, 140);
+    }
+
+    /* ─── اسکنر زمینه‌دار (sheet-blscan — سراسری در index.html) ─── */
+    function blScanOpen(ctx) {
+        BLSCAN.ctx = ctx || 'buylist';
+        BLSCAN.refId = null;
+        var inp = $('#blscan-code'); if (inp) inp.value = '';
+        var res = $('#blscan-res'); if (res) res.innerHTML = '';
+        core.openSheet('sheet-blscan');
+        setTimeout(function () { if (inp) inp.focus(); }, 120);
+    }
+
+    function blScanDemo() {
+        var inp = $('#blscan-code');
+        if (inp) inp.value = BLSCAN_DEMO[BLSCAN.demoIdx++ % BLSCAN_DEMO.length];
+        blScanGo();
+    }
+
+    function blScanGo() {
+        var inp = $('#blscan-code');
+        var code = String(inp ? inp.value : '').trim();
+        var res = $('#blscan-res');
+        if (!res) return;
+        if (!code) { res.innerHTML = ''; return; }
+        var num = parseNum(code);
+        var r = null;
+        if (num > 0) (core.data.references || []).forEach(function (x) {
+            if (x.barcode && parseNum(x.barcode) === num) r = x;
+        });
+        BLSCAN.refId = r ? r.id : null;
+        if (!r) {
+            res.innerHTML = '<div class="hint-line" style="margin-top: 10px;"><svg><use href="#i-info"/></svg>' +
+                '<span>این بارکد پیدا نشد — شماره را بازبینی کن یا نام کالا را در جستجو بنویس.</span></div>';
+            return;
+        }
+        var inList = (core.data.shoppingList || []).some(function (x) { return x.name === r.name; });
+        var inLs = !!lsByName(r.name);
+        var pack = (r.packs && r.packs[0]) ? r.packs[0].label : '';
+        var html =
+            '<button class="pick-row" type="button" style="margin-top: 12px;">' +
+            '<div class="thumb">' + (r.img ? '<img src="' + r.img + '" alt="">' : '') + '</div>' +
+            '<div class="info"><div class="nm">' + esc(r.name) + '</div>' +
+            '<div class="sub">تطبیق شد — ' + esc(r.brand || 'بدون برند') + (pack ? ' · ' + esc(pack) : '') + '</div></div></button>';
+        if (inLs) {
+            html += '<div class="hint-line"><svg><use href="#i-check"/></svg>' +
+                '<span>این کالا همین حالا در فهرست اتمام موجودی تو است.</span></div>';
+        } else if (BLSCAN.ctx === 'lowstock') {
+            html += inList
+                ? '<button class="btn btn-arm btn-block" id="blscan-add" type="button" style="margin-top: 10px;"><svg><use href="#i-plus"/></svg> افزودن به اتمام موجودی</button>'
+                : '<button class="btn btn-arm btn-block" id="blscan-add" type="button" style="margin-top: 10px;"><svg><use href="#i-plus"/></svg> افزودن به لیست خرید و اتمام موجودی</button>';
+        } else {
+            html += inList
+                ? '<button class="btn btn-arm btn-block" id="blscan-show" type="button" style="margin-top: 10px;"><svg><use href="#i-eye"/></svg> نمایش در لیست خرید</button>'
+                : '<button class="btn btn-arm btn-block" id="blscan-add" type="button" style="margin-top: 10px;"><svg><use href="#i-plus"/></svg> افزودن به لیست خرید</button>';
+        }
+        res.innerHTML = html;
+    }
+
+    /* دکمهٔ اقدام شیت اسکن — زمینه‌دار */
+    function blScanApply() {
+        if (!BLSCAN.refId) return;
+        var r = (core.data.references || []).filter(function (x) { return x.id === BLSCAN.refId; })[0];
+        if (!r) return;
+        if (BLSCAN.ctx === 'lowstock') {
+            core.closeSheet('sheet-blscan');
+            lsPickRef(r.id);
+            return;
+        }
+        core.closeSheet('sheet-blscan');
+        if (blAddToShoppingList(r)) toast('«' + r.name + '» به لیست خرید اضافه شد', 'success');
+    }
+
+    /* «نمایش در لیست» — جستجوی لیست را با همان کالا پر می‌کند */
+    function blScanShow() {
+        if (!BLSCAN.refId) return;
+        var r = (core.data.references || []).filter(function (x) { return x.id === BLSCAN.refId; })[0];
+        if (!r) return;
+        core.closeSheet('sheet-blscan');
+        var inp = $('#bl-search');
+        if (inp) inp.value = r.name;
+        BLQ.q = r.name;
+        buyListRender();
+        toast('«' + r.name + '» در لیست خریدت هست', 'success');
     }
 
     /* ═══ FD-42 (حکم مالک) — ۲۰ب: تأمین‌کنندگانِ «همان کالا» ═══
@@ -3585,8 +3867,8 @@
     /* FD-42: ۲۰ب گویا و زنده — عنوان «تأمین‌کننده‌های X» از کالای لمس‌شده */
     core.registerShowHook('s-buy-product-suppliers', bpsSync);
     core.registerShowHook('s-catalog', catalogScoreSync);
-    /* FD-42: وضعیت ردیف شرایط در شیت تنظیمات (امتیاز هدر حذف شد) */
-    core.registerShowHook('s-buy-list', blSettingsSync);
+    /* FD-43: ۲۰ج — فهرست اتمام موجودی + ردیف کارتابل میز، از DATA.lowStock زنده */
+    core.registerShowHook('s-buy-lowstock', lowstockRender);
     core.registerShowHook('s-catalog', catPromoSync);
     core.registerShowHook('s-sell-promo', catPromoSync);
     core.registerShowHook('s-sell-bulk', bulkReset);
@@ -4438,7 +4720,18 @@
         applyGuestMode: applyGuestMode, applyContactsMode: applyContactsMode,
         updatePickCount: updatePickCount, markNewItemsSeen: markNewItemsSeen,
         catalogScoreSync: catalogScoreSync,
-        blSettingsSync: blSettingsSync,
+        /* FD-43 — اتمام موجودی (۲۰ج) + اسکنر زمینه‌دار */
+        lowstockRender: lowstockRender,
+        lsaOpen: lsaOpen,
+        lsaRender: lsaRender,
+        lsPick: lsPick,
+        lsPickRef: lsPickRef,
+        lsRemove: lsRemove,
+        blScanOpen: blScanOpen,
+        blScanGo: blScanGo,
+        blScanDemo: blScanDemo,
+        blScanApply: blScanApply,
+        blScanShow: blScanShow,
         catPromoSync: catPromoSync,
         bulkReset: bulkReset,
         bulkSetPct: bulkSetPct,
@@ -5713,6 +6006,13 @@
         if (t.id === 'bl-search') {
             BLQ.q = t.value;
             buyListRender();
+            return;
+        }
+        /* FD-43: جستجوی زندهٔ مدال اتمام موجودی — اول لیست خودش،
+           بعد (با عبارت) کالاهای کاتالوگ */
+        if (t.id === 'lsa-q') {
+            LSQ.q = t.value;
+            lsaRender();
             return;
         }
         if (t.id === 'cate-name' || t.id === 'cate-city') {

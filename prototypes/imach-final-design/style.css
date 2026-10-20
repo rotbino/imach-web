@@ -311,6 +311,20 @@ button.brand-link:active { transform: scale(.97); background: var(--surface-2); 
 .row-chev { color: var(--text-4); flex-shrink: 0; }
 .row-chev svg { width: 16px; height: 16px; }
 
+/* ═══ FD-43 — حذف آرام آیتم (فهرست اتمام موجودی ۲۰ج) ═══
+       دکمهٔ شبح ۳۰px انتهای ردیف؛ فقط هاور قرمز می‌شود — «سادگی
+       همیشگی»: حذف نباید بلندتر از خودِ ردیف حرف بزند. */
+.row-x {
+    flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px;
+    display: grid; place-items: center; color: var(--text-3);
+    background: none; border: 0; padding: 0; cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, color .15s;
+}
+.row-x svg { width: 15px; height: 15px; display: block; }
+.row-x:hover { background: #FEF2F2; color: #DC2626; }
+.row-x:active { transform: translateY(1px); }
+
 /* ═══ ۱۰. آواتار و Thumb ═══ */
 .avatar {
     width: 40px; height: 40px; border-radius: 50%;

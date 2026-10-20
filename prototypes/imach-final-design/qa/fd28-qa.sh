@@ -17,6 +17,12 @@
 #   امتیاز (شیت تنظیمات از پایین) · نوار جستجو+افزودن مثل کاتالوگ ·
 #   ۲ دکمه (پیش‌نمایش/اشتراک) · بج‌های کارت حذف · بدنهٔ ۸۸۰ + سایدبار
 #   اختصاصی (الگوی FD-39v2) · ۲۰ب: عنوانِ «تأمین‌کننده‌های X» زنده.
+# FD-43 deltas (مالک — سایدبار/اتمام موجودی/اسکنر): چرخ‌دندهٔ ⚙ حذف ←
+#   چهار دکمه/لینک (پیش‌نمایش · اشتراک · شرایط تامین · اتمام موجودی —
+#   سایدبار دسکتاپ برچسب کامل «در حال اتمام موجودی») · فرم تازهٔ ۲۰ج
+#   (لیست + کادر توضیح + افزودن) · مدال جستجو (از لیست خودت / از همهٔ
+#   کالاها — انتخاب کاتالوگ = همزمان هر دو فهرست) · اسکنر زمینه‌دار
+#   (sheet-blscan) در جستجوی ۲۰ و مدال · ردیف کارتابل میز خرید (۱۹).
 # ▸ فریم تمام‌عرض برای همهٔ ۴۱ صفحه (data-dk) · بدون سرریز افقی
 # ▸ لندینگ FD-31 · ورود/ثبت‌نام · میزها · کاتالوک گرید · چت ۹۰۰
 # ▸ جزئیات دوستونه · فرم مرکزی · شیت مودال · موبایل ۳۹۰ دست‌نخورده
@@ -27,7 +33,7 @@ PORT=8180
 agent-browser set viewport 1440 900 >/dev/null 2>&1
 agent-browser open "http://127.0.0.1:$PORT/index.html" >/dev/null 2>&1
 sleep 1.2
-agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','screens/04-home-sell.html','screens/05-catalog.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
+agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','index.html','screens/04-home-sell.html','screens/05-catalog.html','screens/19-home-buy.html','screens/20-buy-list.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
 sleep 2.2
 agent-browser eval "window.__errs=[];window.addEventListener('error',function(e){window.__errs.push('ERR:'+e.message)});window.addEventListener('unhandledrejection',function(e){window.__errs.push('REJ:'+String(e.reason))});'ok'" >/dev/null 2>&1
 
@@ -43,7 +49,7 @@ ovf() {
 }
 
 echo "─── ۱) همهٔ ۴۱ صفحه: فریم دسکتاپ + بدون سرریز ───"
-SCREENS="s-landing s-signup s-login s-home-sell s-catalog s-catalog-share s-contacts s-customers s-customer-view s-sell-orders s-sell-order-view s-sell-rfqs s-sell-offer s-sell-add s-sell-edit s-network-score s-edit-business s-notifs s-profile s-home-buy s-buy-list s-buy-list-add s-buy-product-suppliers s-buy-suppliers s-supplier-view s-buy-rfqs s-buy-rfq-new s-buy-offers s-buy-offer-view s-buy-orders s-buy-order-view s-msgs s-chat s-catalog-guest s-product-view s-buy-list-guest s-sell-bulk s-sell-promo s-charge s-cat-edit s-salesrep"
+SCREENS="s-landing s-signup s-login s-home-sell s-catalog s-catalog-share s-contacts s-customers s-customer-view s-sell-orders s-sell-order-view s-sell-rfqs s-sell-offer s-sell-add s-sell-edit s-network-score s-edit-business s-notifs s-profile s-home-buy s-buy-list s-buy-list-add s-buy-product-suppliers s-buy-lowstock s-buy-suppliers s-supplier-view s-buy-rfqs s-buy-rfq-new s-buy-offers s-buy-offer-view s-buy-orders s-buy-order-view s-msgs s-chat s-catalog-guest s-product-view s-buy-list-guest s-sell-bulk s-sell-promo s-charge s-cat-edit s-salesrep"
 BADDK=""; BADOVF=""
 for s in $SCREENS; do
   q "iMach.show('$s', false); 'ok'" >/dev/null; sleep 0.4
@@ -179,6 +185,9 @@ D3=$(q "(function(){var s=document.getElementById('s-home-buy');var r=s.querySel
 chk "FD-41: dsk-tasks · بدون کانبان/خوشامد/hint · «دسترسی سریع»" "$D3" "tasks|0cols|direct|nogreet|quick|0hint"
 D4=$(q "document.querySelectorAll('#s-home-buy .desk-duo .desk-tile').length + '|' + (function(){var ts=[]; document.querySelectorAll('#s-home-buy .desk-tile').forEach(function(t){ts.push(Math.round(t.getBoundingClientRect().top))}); return ts.filter(function(v,i){return ts.indexOf(v)===i}).length})()")
 chk "چهار کاشی یک‌ردیف" "$D4" "4|1"
+# FD-43: ردیف کارتابل «در حال اتمام موجودی» — زنده از DATA.lowStock
+D5=$(q "(function(){var r=document.getElementById('buy-desk-low-row');return (r&&!r.hidden?'vis':'hid')+'|'+document.getElementById('buy-desk-low-t').textContent})()")
+chk "FD-43: ردیف «در حال اتمام موجودی» کارتابل میز خرید — زنده" "$D5" "vis|۲ کالا در حال اتمام موجودی"
 ovf "میز خرید: بدون سرریز"
 
 echo "─── ۵) میز فروش: همان الگو ───"
@@ -207,7 +216,7 @@ q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
 S9=$(q "(function(){var s=document.getElementById('s-home-buy');var ic=s.querySelector('.desk-tile .dt-ic');var bg=getComputedStyle(ic).backgroundColor;var b=document.getElementById('buy-desk-sup-badge');var num=s.querySelector('.desk-tile .dt-stat b');var numCs=getComputedStyle(num);return document.querySelectorAll('#s-home-buy .dt-chev').length+'chev|'+(bg!=='rgba(0, 0, 0, 0)'?'boxed':'bare')+'|'+document.querySelectorAll('#s-home-buy .dsk-col').length+'cols|badge='+(b&&!b.hidden?b.textContent:'none')+'|'+numCs.fontSize+'|'+(numCs.color!==getComputedStyle(s.querySelector('.score-chip b')).color?'gray':'arm-colored')})()")
 chk "میز خرید FD-41: کاشی فلت مثل فروش — بدون chev · آیکون لخت · شمار کوچک خاکستری" "$S9" "0chev|bare|0cols|badge=۲|11.5px|gray"
 S9b=$(q "(function(){var rows=document.querySelectorAll('#s-home-buy .rows.dsk-tasks .row');var cards=0;rows.forEach(function(r){var cs=getComputedStyle(r);if(cs.borderLeftWidth!=='0px')cards++});var vis=document.querySelectorAll('#s-home-buy .rows.dsk-tasks .row:not([hidden])');var hs=Array.prototype.map.call(vis,function(r){return Math.round(r.getBoundingClientRect().height)});var eq=hs.every(function(h){return h===hs[0]})&&hs[0]>=84?'equal84+':'unequal';var body=document.querySelector('#s-home-buy .dk-desk-main .body');return rows.length+'rows|cards='+cards+'|'+eq+'|gap='+getComputedStyle(document.querySelector('#s-home-buy .rows.dsk-tasks')).rowGap+'|bodyW='+Math.round(body.getBoundingClientRect().width)})()")
-chk "میز خرید FD-41: هر تسک یک کارت · هم‌ارتفاع · فاصلهٔ ۱۲ · بدنهٔ ۸۱۰" "$S9b" "5rows|cards=5|equal84+|gap=12px|bodyW=810"
+chk "میز خرید FD-41: هر تسک یک کارت · هم‌ارتفاع · فاصلهٔ ۱۲ · بدنهٔ ۸۱۰" "$S9b" "6rows|cards=6|equal84+|gap=12px|bodyW=810"
 ovf "میز فروش FD-34: بدون سرریز"
 
 echo "─── ۶) کاتالوک: گرید روان + نوار ابزار FD-35 ───"
@@ -231,27 +240,59 @@ C5=$(q "(function(){var pb=document.getElementById('promo-box');var cs=getComput
 chk "FD-35: حالت ویژه — دکمهٔ سبز + بج روی کارت‌ها" "$C5" "cat-act on|rgb(240, 253, 244)|ویژه فعال است|badges=vvvv"
 ovf "کاتالوک: بدون سرریز"
 
-echo "─── ۶پ) FD-42: لیست خرید — هم‌قالب کاتالوگ (سایدبار + ۸۸۰) ───"
+echo "─── ۶پ) FD-43: لیست خرید — ۴ لینک سایدبار + اتمام موجودی (۲۰ج) + اسکنر ───"
 q "iMach.show('s-buy-list', false); 'ok'" >/dev/null; sleep 1
-BL1=$(q "(function(){var s=document.getElementById('s-buy-list');var gear=s.querySelector('[data-sheet=\"sheet-bl-settings\"]');var side=s.querySelector('.cat-side');var links=side?side.querySelectorAll('.cat-actions .cat-act').length:0;var inMain=s.querySelectorAll('.dk-desk-main .cat-actions .cat-act').length;return (gear?'gear':'no-gear')+'|'+(document.getElementById('bl-chip')?'chip-BAD':'chip-gone')+'|'+links+'links|inMain='+inMain+'|brand='+(side&&side.querySelector('.dk-side-brand')?1:0)+'|user='+(side&&side.querySelector('.dk-user')?1:0)})()")
-chk "FD-42: چرخ‌دنده به‌جای دایرهٔ امتیاز · سایدبار ۲ لینکی مثل کاتالوگ" "$BL1" "gear|chip-gone|2links|inMain=0|brand=1|user=1"
-BL2=$(q "(function(){var b=document.querySelector('#s-buy-list .dk-desk-main .body');var t=document.querySelector('#s-buy-list .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');return 'w='+Math.round(b.getBoundingClientRect().width)+'|sr='+Math.round(sr.getBoundingClientRect().height)+'|add='+Math.round(add.getBoundingClientRect().height)})()")
-chk "FD-42: بدنهٔ ۸۸۰ (عرض کمتر — حکم مالک) · جستجو/افزودن ۴۸" "$BL2" "w=880|sr=48|add=48"
+BL1=$(q "(function(){var s=document.getElementById('s-buy-list');var gear=s.querySelector('[data-sheet=\"sheet-bl-settings\"]');var side=s.querySelector('.cat-side');var links=side?side.querySelectorAll('.cat-actions .cat-act').length:0;var inMain=s.querySelectorAll('.dk-desk-main .cat-actions .cat-act').length;var cond=side?side.querySelector('#bl-cond-open'):null;var ls=side?side.querySelector('[data-go=\"s-buy-lowstock\"] .ca-tx'):null;return (gear?'gear-BAD':'no-gear')+'|'+(document.getElementById('bl-chip')?'chip-BAD':'chip-gone')+'|'+links+'links|inMain='+inMain+'|cond='+(cond?'yes':'no')+'|lsLabel='+(ls?ls.textContent:'none')+'|brand='+(side&&side.querySelector('.dk-side-brand')?1:0)+'|user='+(side&&side.querySelector('.dk-user')?1:0)})()")
+chk "FD-43: چرخ‌دنده حذف · سایدبار ۴ لینکی · «شرایط تامین» + «در حال اتمام موجودی»" "$BL1" "no-gear|chip-gone|4links|inMain=0|cond=yes|lsLabel=در حال اتمام موجودی|brand=1|user=1"
+BL2=$(q "(function(){var b=document.querySelector('#s-buy-list .dk-desk-main .body');var t=document.querySelector('#s-buy-list .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');var scan=t.querySelector('#bl-scan-open');return 'w='+Math.round(b.getBoundingClientRect().width)+'|sr='+Math.round(sr.getBoundingClientRect().height)+'|add='+Math.round(add.getBoundingClientRect().height)+'|scan='+(scan?'yes':'no')})()")
+chk "FD-43: بدنهٔ ۸۸۰ · جستجو/افزودن ۴۸ · اسکنر ته جستجو (حکم مالک)" "$BL2" "w=880|sr=48|add=48|scan=yes"
 BL3=$(q "(function(){var s=document.getElementById('s-buy-list');return document.querySelectorAll('#buylist-rows .bl-chip').length+'chips|'+document.querySelectorAll('#buylist-rows .bl-card').length+'cards|'+(s.querySelector('.callout')?'callout-BAD':'callout-gone')})()")
 chk "FD-42: کارت‌ها بدون بج (خلوت) · کال‌آوت حذف" "$BL3" "0chips|4cards|callout-gone"
 BL4=$(q "(function(){var i=document.getElementById('bl-search');i.value='روغن';i.dispatchEvent(new Event('input',{bubbles:true}));var n=document.querySelectorAll('#buylist-rows .bl-card').length;var c=document.getElementById('buylist-count').textContent;i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));return 'hits='+n+'|count='+c+'|back='+document.querySelectorAll('#buylist-rows .bl-card').length})()")
 chk "FD-42: جستجوی زنده (روغن → ۱؛ شمار «۱ از ۴»؛ بازگشت ۴)" "$BL4" "hits=1|count=۱ از ۴ کالا|back=4"
-q "document.querySelector('#s-buy-list [data-sheet=\"sheet-bl-settings\"]').click(); 'ok'" >/dev/null; sleep 0.6
-BL5=$(q "(function(){var sh=document.getElementById('sheet-bl-settings');var row=document.getElementById('blset-cond');return sh.classList.contains('show')+'|'+(row?'row':'no-row')+'|'+document.getElementById('blset-cond-sub').textContent})()")
-chk "FD-42: شیت تنظیمات (مدال از زیر) + ردیف شرایط تازه" "$BL5" "true|row|فعال — تأمین‌کننده‌ها پیش از پیشنهاد دادن می‌خوانندش"
-q "document.getElementById('blset-cond').click(); 'ok'" >/dev/null; sleep 0.6
-BL6=$(q "document.getElementById('sheet-buycond').classList.contains('show') + '|' + (document.getElementById('buycond-text').value.indexOf('رشت') > -1)")
-chk "FD-42: شرایط تامین حالا از تنظیمات — شیت با متن فعلی" "$BL6" "true|true"
+q "document.querySelector('#s-buy-list .cat-side #bl-cond-open').click(); 'ok'" >/dev/null; sleep 0.6
+BL5=$(q "document.getElementById('sheet-buycond').classList.contains('show') + '|' + (document.getElementById('buycond-text').value.indexOf('رشت') > -1)")
+chk "FD-43: «شرایط تامین» از سایدبار — شیت ویرایش با متن فعلی" "$BL5" "true|true"
 q "iMach.closeSheet('sheet-buycond'); 'ok'" >/dev/null
-q "document.querySelectorAll('#buylist-rows .bl-card')[1].click(); 'ok'" >/dev/null; sleep 0.8
-BL7=$(q "(function(){var t=document.querySelector('#s-buy-product-suppliers .ttl');var nm=document.getElementById('bps-name');var sub=document.getElementById('bps-sub');var pc=document.getElementById('bps-pc-nm');var b=document.querySelector('#s-buy-product-suppliers .body');return (t.textContent.indexOf('تأمین‌کننده‌های')>-1?'prefixed':'BAD')+'|'+nm.textContent+'|'+sub.textContent+'|pc='+pc.textContent+'|w='+Math.round(b.getBoundingClientRect().width)})()")
-chk "FD-42: تأمین‌کنندگانِ همان کالا — عنوان گویا · کارت هم‌نام · ۸۸۰" "$BL7" "prefixed|روغن سرخ‌کردنی|۲ تأمین‌کننده · قیمت زنده|pc=روغن سرخ‌کردنی|w=880"
-ovf "لیست خرید FD-42: بدون سرریز"
+q "document.querySelector('#s-buy-list .cat-side [data-go=\"s-buy-lowstock\"]').click(); 'ok'" >/dev/null; sleep 1
+BL6=$(q "(function(){var s=document.getElementById('s-buy-lowstock');var b=s.querySelector('.body');var rows=document.querySelectorAll('#ls-rows .row');var cnt=document.getElementById('ls-count');return document.querySelector('.screen:not([hidden])').id+'|'+(s.querySelector('.callout')?'callout':'no')+'|rows='+rows.length+'|cnt='+cnt.textContent+'|add='+(document.getElementById('ls-add-open')?'yes':'no')+'|w='+Math.round(b.getBoundingClientRect().width)})()")
+chk "FD-43: فرم اتمام موجودی (۲۰ج) — لیست ۲ + کادر توضیح + افزودن · ۸۸۰" "$BL6" "s-buy-lowstock|callout|rows=2|cnt=۲ کالا|add=yes|w=880"
+q "document.getElementById('ls-add-open').click(); 'ok'" >/dev/null; sleep 0.6
+BL7=$(q "(function(){var sh=document.getElementById('sheet-lowstock-add');var h2=sh.querySelector('.section-title h2');var pick=sh.querySelectorAll('[data-lsa-pick]').length;var green=sh.querySelectorAll('.row.static .badge.b-green').length;return sh.classList.contains('show')+'|'+(h2?h2.textContent:'no')+'|pick='+pick+'|green='+green})()")
+chk "FD-43: مدال افزودن — «از لیست خریدت»: ۲ تازه + ۲ افزوده‌شدهٔ سبز" "$BL7" "true|از لیست خریدت|pick=2|green=2"
+q "var i=document.getElementById('lsa-q'); i.value='ماکارونی'; i.dispatchEvent(new Event('input',{bubbles:true})); 'ok'" >/dev/null; sleep 0.4
+BL8=$(q "(function(){var sh=document.getElementById('sheet-lowstock-add');var secs=[].map.call(sh.querySelectorAll('.section-title h2'),function(h){return h.textContent});var ref=sh.querySelector('[data-lsa-ref]');return secs.join(',')+'|ref='+(ref?ref.getAttribute('data-lsa-ref'):'no')})()")
+chk "FD-43: «اگر در لیست خرید نبود… از بقیهٔ کالاها بیاره» (ماکارونی → r4)" "$BL8" "از همهٔ کالاها|ref=r4"
+q "document.getElementById('lsa-scan').click(); 'ok'" >/dev/null; sleep 0.6
+q "document.getElementById('blscan-demo').click(); 'ok'" >/dev/null; sleep 0.4
+BL9=$(q "(function(){var res=document.getElementById('blscan-res');var btn=res?res.querySelector('#blscan-add'):null;return (btn?btn.textContent:'nobtn')})()")
+chk "FD-43: اسکنر مدال (زمینهٔ اتمام موجودی) → «افزودن به لیست خرید و اتمام موجودی»" "$BL9" "افزودن به لیست خرید و اتمام موجودی"
+q "document.getElementById('blscan-add').click(); 'ok'" >/dev/null; sleep 0.5
+BL10=$(q "(function(){var row=document.querySelectorAll('#ls-rows .row')[2];return 'sl='+iMach.data.shoppingList.length+'|ls='+iMach.data.lowStock.length+'|dual='+(row&&row.textContent.indexOf('به لیست خرید هم اضافه شد')>-1)+'|cnt='+document.getElementById('ls-count').textContent})()")
+chk "FD-43: اسکن → «با انتخابش همزمان به لیست خرید هم اضافه بشه» (۵+۳)" "$BL10" "sl=5|ls=3|dual=true|cnt=۳ کالا"
+q "document.querySelectorAll('#ls-rows [data-ls-remove]')[2].click(); 'ok'" >/dev/null; sleep 0.4
+BL11a=$(q "iMach.data.lowStock.length + '|' + document.getElementById('ls-count').textContent")
+chk "FD-43: حذف آرام آیتم (×) — شمار زنده کم می‌شود" "$BL11a" "2|۲ کالا"
+q "document.getElementById('ls-add-open').click(); 'ok'" >/dev/null; sleep 0.5
+q "var i=document.getElementById('lsa-q'); i.value='ماکارونی'; i.dispatchEvent(new Event('input',{bubbles:true})); 'ok'" >/dev/null; sleep 0.4
+BL11=$(q "(function(){var sh=document.getElementById('sheet-lowstock-add');var secs=[].map.call(sh.querySelectorAll('.section-title h2'),function(h){return h.textContent});var pick=sh.querySelector('[data-lsa-pick]');return secs.join(',')+'|pick='+(pick?pick.getAttribute('data-lsa-pick'):'no')})()")
+chk "FD-43: ماکارونی حالا در لیست خودش است — انتخاب = فقط اتمام موجودی" "$BL11" "از لیست خریدت|pick=ماکارونی زر ماکارون ۷۰۰ گرمی"
+q "document.querySelector('#sheet-lowstock-add [data-lsa-pick]').click(); 'ok'" >/dev/null; sleep 0.5
+BL12=$(q "iMach.data.lowStock.length + '|' + iMach.data.shoppingList.length")
+chk "FD-43: انتخاب از لیست خودش → فقط اتمام موجودی (۳ · لیست ثابت ۵)" "$BL12" "3|5"
+q "iMach.closeSheet('sheet-lowstock-add'); 'ok'" >/dev/null
+q "iMach.show('s-buy-list', false); 'ok'" >/dev/null; sleep 0.9
+q "document.getElementById('bl-scan-open').click(); 'ok'" >/dev/null; sleep 0.6
+q "document.getElementById('blscan-demo').click(); 'ok'" >/dev/null; sleep 0.4
+BL13=$(q "(function(){var res=document.getElementById('blscan-res');var btn=res?res.querySelector('#blscan-show'):null;return (btn?btn.textContent:'nobtn')})()")
+chk "FD-43: اسکنر جستجوی لیست (برنج در لیست هست) → «نمایش در لیست خرید»" "$BL13" "نمایش در لیست خرید"
+q "document.getElementById('blscan-show').click(); 'ok'" >/dev/null; sleep 0.5
+BL14=$(q "(function(){var i=document.getElementById('bl-search');var n=document.querySelectorAll('#buylist-rows .bl-card').length;var c=document.getElementById('buylist-count').textContent;return 'q='+i.value+'|cards='+n+'|count='+c})()")
+chk "FD-43: «نمایش در لیست» — جستجو پر شد · ۱ از ۵ کالا" "$BL14" "q=برنج هاشمی گلستان|cards=1|count=۱ از ۵ کالا"
+q "document.querySelectorAll('#buylist-rows .bl-card')[0].click(); 'ok'" >/dev/null; sleep 0.8
+BL15=$(q "(function(){var t=document.querySelector('#s-buy-product-suppliers .ttl');var nm=document.getElementById('bps-name');var sub=document.getElementById('bps-sub');var pc=document.getElementById('bps-pc-nm');var b=document.querySelector('#s-buy-product-suppliers .body');return (t.textContent.indexOf('تأمین‌کننده‌های')>-1?'prefixed':'BAD')+'|'+nm.textContent+'|'+sub.textContent+'|pc='+pc.textContent+'|w='+Math.round(b.getBoundingClientRect().width)})()")
+chk "FD-42: تأمین‌کنندگانِ همان کالا — عنوان گویا · کارت هم‌نام · ۸۸۰" "$BL15" "prefixed|برنج هاشمی گلستان|۳ تأمین‌کننده · قیمت زنده|pc=برنج هاشمی گلستان|w=880"
+ovf "لیست خرید FD-43: بدون سرریز"
 
 echo "─── ۶ب) FD-35: بوم + کاغذ سراسری (همهٔ صفحه‌ها) ───"
 B1=$(q "(function(){var c=getComputedStyle(document.getElementById('phone')).backgroundColor;return c})()")
@@ -365,8 +406,15 @@ q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 0.9
 MB5=$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');var a=document.querySelector('#s-catalog .cat-actions');var b=document.querySelector('#s-catalog .body');var c=getComputedStyle(b);return Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length+'|sheet='+(c.borderTopWidth!=='0px'||c.marginTop!=='0px'?'BAD':'none')+'|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")
 chk "موبایل کاتالوک FD-35: نوار ۴۴/۴۴ تم‌پر · ۴ دکمه ۲ستونی · بدون کادر تبلیغات و کاغذ" "$MB5" "44/44|rgb(249, 115, 22)|4btn/2col|oldbox=0|sheet=none|ovf=ok"
 q "iMach.show('s-buy-list', false); 'ok'" >/dev/null; sleep 0.8
-MB6=$(q "(function(){var s=document.getElementById('s-buy-list');var t=s.querySelector('.cat-toolbar');var a=s.querySelector('.cat-actions');var b=s.querySelector('.body');return (t&&t.querySelector('#bl-search')&&t.querySelector('.cat-add')?'toolbar':'BAD')+'|'+Math.round(t.querySelector('.search-row').getBoundingClientRect().height)+'/'+Math.round(t.querySelector('.cat-add').getBoundingClientRect().height)+'|'+a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|'+(document.getElementById('bl-chip')?'chip-BAD':'chip-gone')+'|'+(s.querySelector('[data-sheet=\"sheet-bl-settings\"]')?'gear':'no-gear')+'|'+document.querySelectorAll('#buylist-rows .bl-chip').length+'chips|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")
-chk "موبایل لیست خرید FD-42: نوار ۴۴/۴۴ · ۲ دکمه ۲ستونی · بدون چیپ امتیاز/بج" "$MB6" "toolbar|44/44|2btn/2col|chip-gone|gear|0chips|ovf=ok"
+MB6=$(q "(function(){var s=document.getElementById('s-buy-list');var t=s.querySelector('.cat-toolbar');var a=s.querySelector('.cat-actions');var b=s.querySelector('.body');return (t&&t.querySelector('#bl-search')&&t.querySelector('.cat-add')?'toolbar':'BAD')+'|'+Math.round(t.querySelector('.search-row').getBoundingClientRect().height)+'/'+Math.round(t.querySelector('.cat-add').getBoundingClientRect().height)+'|'+a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|'+(s.querySelector('[data-sheet="sheet-bl-settings"]')?'gear-BAD':'no-gear')+'|scan='+(t.querySelector('#bl-scan-open')?'yes':'no')+'|'+document.querySelectorAll('#buylist-rows .bl-chip').length+'chips|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")
+chk "موبایل لیست خرید FD-43: نوار ۴۴/۴۴ + اسکنر · ۴ دکمه ۲ستونی · بدون چرخ‌دنده/بج" "$MB6" "toolbar|44/44|4btn/2col|no-gear|scan=yes|0chips|ovf=ok"
+# FD-43: موبایل فرم اتمام موجودی (۲۰ج) و مدال — دسترسی از دکمهٔ چهارم
+q "document.querySelectorAll('#s-buy-list .cat-actions .cat-act')[3].click(); 'ok'" >/dev/null; sleep 0.8
+MB6b=$(q "(function(){var s=document.getElementById('s-buy-lowstock');var rows=document.querySelectorAll('#ls-rows .row');var b=s.querySelector('.body');return document.querySelector('.screen:not([hidden])').id+'|'+(s.querySelector('.callout')?'callout':'no')+'|rows='+rows.length+'|add='+(document.getElementById('ls-add-open')?'yes':'no')+'|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")
+chk "موبایل ۲۰ج: لیست ۲ + کادر توضیح + افزودن — بدون سرریز" "$MB6b" "s-buy-lowstock|callout|rows=2|add=yes|ovf=ok"
+q "document.getElementById('ls-add-open').click(); 'ok'" >/dev/null; sleep 0.6
+MB6c=$(q "(function(){var sh=document.getElementById('sheet-lowstock-add');return sh.classList.contains('show')+'|'+(sh.querySelector('#lsa-scan')?'scan':'no')+'|'+(sh.querySelector('[data-lsa-pick]')?'pick':'no')})()")
+chk "موبایل مدال افزودن: باز از پایین · اسکنر + ردیف‌های لیست" "$MB6c" "true|scan|pick"
 agent-browser set viewport 1440 900 >/dev/null 2>&1; sleep 1
 
 echo "─── ۱۵) خطای کنسول ───"

@@ -159,14 +159,13 @@ q "document.getElementById('cc-go-catalog').click(); 'ok'" >/dev/null; sleep 0.8
 C44=$(q "document.querySelector('.screen:not([hidden])').id + '|' + document.getElementById('cat-count').textContent")
 chk "رفتن به کاتالوگ → ۹ محصول زنده" "$C44" "s-catalog|۹ محصول"
 
-echo "─── ۱۳) ویرایش شرایط (۲۰ — سمت خریدار؛ FD-42: از منوی تنظیمات) ───"
+echo "─── ۱۳) ویرایش شرایط (۲۰ — سمت خریدار؛ FD-43: از دکمهٔ «شرایط تامین») ───"
 q "iMach.show('s-buy-list', false); 'ok'" >/dev/null; sleep 0.7
-C45=$(q "(function(){var s=document.getElementById('s-buy-list');return document.querySelectorAll('#s-buy-list .cat-actions .cat-act').length+'btn|'+(s.querySelector('.cat-toolbar .cat-add')?1:0)+'add|'+(document.getElementById('bl-chip')?1:0)+'chip|'+(s.querySelector('[data-sheet=\"sheet-bl-settings\"]')?'gear':'no')})()")
-chk "FD-42: ۲ دکمه (پیش‌نمایش/اشتراک) + افزودن کنار جستجو · چیپ امتیاز حذف · چرخ‌دنده در هدر" "$C45" "2btn|1add|0chip|gear"
-q "document.querySelector('#s-buy-list [data-sheet=\"sheet-bl-settings\"]').click(); 'ok'" >/dev/null; sleep 0.5
-q "document.getElementById('blset-cond').click(); 'ok'" >/dev/null; sleep 0.5
+C45=$(q "(function(){var s=document.getElementById('s-buy-list');return document.querySelectorAll('#s-buy-list .cat-actions .cat-act').length+'btn|'+(s.querySelector('.cat-toolbar .cat-add')?1:0)+'add|'+(s.querySelector('.cat-toolbar #bl-scan-open')?1:0)+'scan|'+(document.getElementById('bl-chip')?1:0)+'chip|'+(s.querySelector('[data-sheet="sheet-bl-settings"]')?1:0)+'gear'})()")
+chk "FD-43: ۴ دکمه (پیش‌نمایش/اشتراک/شرایط تامین/اتمام موجودی) + افزودن کنار جستجو + اسکنر · چیپ/چرخ‌دنده حذف" "$C45" "4btn|1add|1scan|0chip|0gear"
+q "document.getElementById('bl-cond-open').click(); 'ok'" >/dev/null; sleep 0.5
 C46=$(q "(document.getElementById('sheet-buycond').classList.contains('show')) + '|' + (document.getElementById('buycond-text').value.indexOf('تأمین‌کننده‌های رشت و حومه') > -1)")
-chk "شیت ویرایش شرایط با متن فعلی (از مسیر تنظیمات)" "$C46" "true|true"
+chk "شیت ویرایش شرایط با متن فعلی (از دکمهٔ شرایط تامین)" "$C46" "true|true"
 q "document.getElementById('buycond-text').value='فقط رشت · فاکتور رسمی'; document.getElementById('buycond-save').click(); 'ok'" >/dev/null; sleep 0.5
 C47=$(q "iMach.data.buyListInfo.conditions")
 chk "ذخیرهٔ شرایط در دیتا" "$C47" "فقط رشت · فاکتور رسمی"

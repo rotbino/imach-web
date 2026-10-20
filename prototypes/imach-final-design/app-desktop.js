@@ -52,6 +52,9 @@ window.iMachDesktop = (function () {
         's-profile': dkProfile,
         's-msgs': dkMsgs,
         's-buy-list': dkBuyList,
+        /* FD-43 — ۲۰ج: فرم اتمام موجودی؛ هم‌قالب/هم‌عرضِ ۲۰ و ۲۰ب
+           (dk-blist → ۸۸۰)؛ بدون سایدبار — زیرصفحهٔ لیست خرید است. */
+        's-buy-lowstock': 'dk-page dk-list dk-blist',
         /* FD-30 (الگوی Form+Preview — Vercel Settings/Stripe Webhook):
            فرم راست + پیش‌نمایشِ چسبان چپ */
         's-cat-edit': dkCatEdit,
@@ -694,7 +697,10 @@ window.iMachDesktop = (function () {
         sec.classList.add('dk-desk', 'dk-cat-tools');
 
         /* ۱) سایدبار اختصاصی — همان زبانِ dkCatalog: واژه‌نشان
-           (سبد + «لیست خرید من») · دو لینک · چیپ کارر. */
+           (سبد + «لیست خرید من») · چهار لینک · چیپ کارر.
+           FD-43 (حکم مالک): «شرایط تامین و یه لینک دیگه به اسم در
+           حال اتمام موجودی» — چهارمین لینک در دسکتاپ برچسب کامل
+           «در حال اتمام موجودی» را می‌گیرد (موبایل: «اتمام موجودی»). */
         var side = document.createElement('aside');
         side.className = 'tabbar cat-side dk-side';
         side.innerHTML =
@@ -703,6 +709,8 @@ window.iMachDesktop = (function () {
                 '<span class="dks-name">لیست خرید من</span>' +
             '</div>';
         side.appendChild(acts);
+        var lsTx = acts.querySelector('[data-go="s-buy-lowstock"] .ca-tx');
+        if (lsTx) lsTx.textContent = 'در حال اتمام موجودی';
         side.insertAdjacentHTML('beforeend',
             '<button class="dk-user" type="button" data-go="s-profile">' +
             '<img src="png/users/me.jpg" alt="">' +

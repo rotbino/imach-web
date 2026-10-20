@@ -33,18 +33,36 @@
        تأمین‌کننده‌های برنج فجر ۱۰ کیلوگرمی — بزار فرم گویا باشه» →
        عنوان/کارتِ انتخابی/شمار، از کالای لمس‌شده زنده می‌شوند
        (bpsPick/bpsSync در app-forms.js).
+     FD-43 (حکم مالک — سایدبار/دکمه‌ها + در حال اتمام موجودی + اسکنر):
+     • «دکمه تنظیمات رو برداریم و به جا اون توی ساید بار بزاریم.
+       شرایط تامین و یه لینک دیگه اضافه کنیم به اسم در حال اتمام
+       موجودی» → چرخ‌دندهٔ ⚙ و شیت sheet-bl-settings حذف؛ دو دکمهٔ
+       تازه در همان باکس کاتالوگی: «شرایط تامین» (شیت ویرایش را
+       مستقیم باز می‌کند — buycondOpen) + «اتمام موجودی» (→ ۲۰ج).
+       دسکتاپ: همان ۴ لینک در سایدبار اختصاصی (dkBuyList برچسب
+       دسکتاپِ «در حال اتمام موجودی» را می‌گذارد)؛ موبایل: «زیر اون
+       دو تا دکمهٔ پیش‌نمایش و اشتراک‌گذاری» با نام‌های «شرایط
+       تامین» و «اتمام موجودی».
+     • ۲۰ج (s-buy-lowstock — فرم «در حال اتمام موجودی»): لیست کالاهای
+       رو‌به‌اتمام + «یه کادر توضیح واضح زیر لیست» + دکمهٔ افزودن →
+       مدال جستجو: «اگر در لیست خریدش نبود… موقع سرچ از بقیه کالاها
+       بیاره و با انتخابش همزمان به لیست خرید هم اضافه بشه» —
+       «بدون پیچیدگی و با سادگی همیشگی برای پیرمرد ۷۰ ساله سنتی».
+     • اسکنر: «توی سرچ باکس آیکون یه اسکنر هم بزار که با اسکن هم
+       بتونه این کارو انجام بده… بخصوص برای سوپرمارکت‌ها و اجناس
+       بارکددار» → #bl-scan در نوار جستجوی همین صفحه + #lsa-scan در
+       مدال اتمام موجودی؛ شیت سراسری sheet-blscan (index.html) با
+       توجه به زمینهٔ فراخوان، به لیست درست اضافه می‌کند.
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-buy-list" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
         <div class="ttl">لیست خرید من<small id="buylist-count">۴ کالا</small></div>
-        <!-- FD-42 (حکم مالک): دایرهٔ امتیاز حذف — «روی میز خرید هست و
-             دیگه لازم نیست توی لیست خرید هم باشه»؛ به‌جایش چرخ‌دندهٔ
-             تنظیمات مثل کاتالوگ (۰۵) — شیتِ منو از پایین باز می‌شود. -->
-        <button class="icon-btn" data-sheet="sheet-bl-settings" aria-label="تنظیمات لیست خرید" title="تنظیمات لیست خرید">
-            <svg><use href="#i-gear"/></svg>
-        </button>
+        <!-- FD-43 (حکم مالک): چرخ‌دندهٔ تنظیمات حذف — «دکمه تنظیمات رو
+             برداریم و به جا اون توی ساید بار بزاریم»: شرایط تامین و
+             اتمام موجودی حالا دو دکمهٔ همان باکس کاتالوگی‌اند (زیر
+             پیش‌نمایش/اشتراک در موبایل؛ لینک سایدبار در دسکتاپ). -->
         <button class="icon-btn" data-sheet="sheet-share-buylist" aria-label="اشتراک‌گذاری لیست خرید">
             <svg><use href="#i-share"/></svg>
         </button>
@@ -55,11 +73,19 @@
         <!-- FD-42 (حکم مالک): نوار ابزار مثل کاتالوگ (۰۵) — جستجوی زندهٔ
              لیست + «افزودن کالا» تم‌پر کنارش («دکمهٔ اضافه کردن کالا رو
              بزار کنارش»)؛ جستجو همان‌جا کارت‌ها را صافی می‌کند
-             (#bl-search در app-forms.js). -->
+             (#bl-search در app-forms.js).
+             FD-43 (حکم مالک): «اسکنر رو برای سرج باکس خود لیست خرید هم
+             بزار» — آیکون اسکن ته جستجو (الگوی sr-tools فرم ۱۳) شیت
+             سراسری sheet-blscan را با زمینهٔ «لیست خرید» باز می‌کند. -->
         <div class="cat-toolbar">
             <div class="search-row">
                 <svg><use href="#i-search"/></svg>
                 <input type="text" id="bl-search" placeholder="جستجو در لیست خرید…" autocomplete="off">
+                <span class="sr-tools">
+                    <button class="sr-tool" id="bl-scan-open" type="button" aria-label="اسکن بارکد" title="اسکن بارکد — سریع‌تر از جستجو">
+                        <svg><use href="#i-scan"/></svg>
+                    </button>
+                </span>
             </div>
             <button class="cat-act cat-add" data-go="s-buy-list-add">
                 <span class="ca-ic"><svg><use href="#i-plus"/></svg></span>
@@ -67,9 +93,13 @@
             </button>
         </div>
 
-        <!-- FD-42 (حکم مالک): «شرایط تامین» از میان دکمه‌ها رفت زیر
-             منوی تنظیمات هدر؛ دو دکمهٔ پیش‌نمایش/اشتراک‌گذاری ماندند —
-             همان باکس کاتالوگ (دسکتاپ: سایدبار اختصاصی — dkBuyList). -->
+        <!-- FD-42 → FD-43: چهار دکمهٔ همان باکس کاتالوگ — پیش‌نمایش و
+             اشتراک‌گذاری ماندند؛ «شرایط تامین» از زیر منوی ⚙ (حذف‌شده)
+             به‌عنوان دکمهٔ سوم برگشت و «اتمام موجودی» چهارمی است (حکم
+             مالک: «این دو تا توی موبایل هم زیر اون دو تا دکمهٔ پیش
+             نمایش و اشتراک‌گذاری بیاد»). دسکتاپ: همین‌ها ۴ لینکِ
+             سایدبار اختصاصی‌اند (dkBuyList — برچسب کامل «در حال اتمام
+             موجودی» را آنجا می‌گیرد). -->
         <div class="cat-actions">
             <button class="cat-act" id="buylist-preview">
                 <span class="ca-ic"><svg><use href="#i-eye"/></svg></span>
@@ -78,6 +108,14 @@
             <button class="cat-act" data-sheet="sheet-share-buylist">
                 <span class="ca-ic"><svg><use href="#i-share"/></svg></span>
                 <span class="ca-tx">اشتراک‌گذاری</span>
+            </button>
+            <button class="cat-act" id="bl-cond-open" type="button">
+                <span class="ca-ic"><svg><use href="#i-textlist"/></svg></span>
+                <span class="ca-tx">شرایط تامین</span>
+            </button>
+            <button class="cat-act" data-go="s-buy-lowstock">
+                <span class="ca-ic"><svg><use href="#i-boxes"/></svg></span>
+                <span class="ca-tx">اتمام موجودی</span>
             </button>
         </div>
 
@@ -94,33 +132,9 @@
         <div class="rows" id="buylist-rows"></div>
     </div>
 
-    <!-- ═══ FD-42 — شیت: تنظیمات لیست خرید (منوی ⚙ هدر — حکم مالک) ═══
-         «شرایط تامین اصلا نباید اینجا [میان دکمه‌ها] باشه؛ این باید
-         داخل فرم تنظیمات باشه که دسترسی‌اش از طریق منوی تنظیمات که
-         یه مدال از زیر بازشونده باز می‌کنه باشه — مثل کاتالوگ که
-         منوی اون از طریق هدر باز می‌شه.» — همان الگوی sheet-cat-settings
-         (۰۵)؛ ردیف «شرایط تامین» شیت ویرایش را باز می‌کند (buycondOpen
-         — متن فعلی را هم پیش‌پر می‌کند). زیرمتنِ ردیف وضعیت زنده دارد
-         (blSettingsSync). -->
-    <div class="sheet" id="sheet-bl-settings" hidden>
-        <div class="grab"></div>
-        <div class="sheet-hdr">
-            <h3>تنظیمات لیست خرید</h3>
-            <button class="mg" data-sheet-close="sheet-bl-settings" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
-        </div>
-        <div class="sub">سوپرمارکت آریا · سوپرمارکت — رشت</div>
-
-        <button class="sheet-row" id="blset-cond" type="button">
-            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-textlist"/></svg></span>
-            <span class="tx"><b>شرایط تامین</b><span id="blset-cond-sub">شرایط تو برای تأمین‌کننده‌ها — پیش از پیشنهاد دادن می‌خوانندش</span></span>
-            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
-        </button>
-
-        <button class="btn btn-outline sheet-cta" data-sheet-close="sheet-bl-settings">بستن</button>
-    </div>
-
-    <!-- ═══ FD-22 → FD-42 — شیت: ویرایش شرایط درخواست تامین ═══
-         حالا از منوی تنظیمات (sheet-bl-settings) باز می‌شود؛ خودِ فرم
+    <!-- ═══ FD-22 → FD-43 — شیت: ویرایش شرایط درخواست تامین ═══
+         حالا از دکمهٔ «شرایط تامین» (سومین دکمهٔ باکس کاتالوگی /
+         لینک سوم سایدبار دسکتاپ) مستقیم باز می‌شود؛ خودِ فرم
          دست‌نخورده — «یک متن ساده اما کاربردی؛ خالی = بینندهٔ عمومی
          لینک را نمی‌بیند» (buyListInfo.conditions). -->
     <div class="sheet" id="sheet-buycond" hidden>
@@ -293,5 +307,85 @@
         <button class="btn btn-arm btn-block" data-go="s-buy-rfq-new">
             <svg><use href="#i-send"/></svg> استعلام قیمت سفارشی
         </button>
+    </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════════════════
+     فایل ۲۰ج — در حال اتمام موجودی
+     ─────────────────────────────────────────────────────────────
+     FD-43 (حکم مالک): «یه باکس در حال اتمام موجودی بزاریم که کاربر
+     بتونه اجناسی از لیست خرید که در حال اتمام موجودی هست رو اضافه
+     کنه… این دکمه در واقع یه مدال باز می‌کنه که کاربر سریع می‌تونه
+     سرچ بزنه و از لیست خریدش اجناسی که تمام میشه رو به لیست در حال
+     اتمام موجودی اضافه کنه. اگر در لیست خریدش نبود بتونه سریع به
+     لیست خریدش هم اضافه کنه اما بدون پیچیدگی و با سادگی همیشگی
+     برای پیرمرد ۷۰ ساله سنتی. مثلاً اگر در لیست خرید نبود موقع سرچ
+     از بقیه کالاها بیاره و با انتخابش همزمان به لیست خرید هم اضافه
+     بشه.»
+     • دسترسی: لینک چهارم سایدبار لیست خرید (دسکتاپ) · دکمهٔ چهارم
+       باکس کاتالوگی (موبایل) · ردیف کارتابل میز خرید (۱۹).
+     • ساختار فرم: لیست کالاهای رو‌به‌اتمام + «یه کادر توضیح واضح
+       زیر لیست» (کال‌آوت راهنما) + دکمهٔ افزودن → مدال sheet-lowstock-add.
+     • مدال: جستجوی زنده (اول «از لیست خریدت»، بعد «از همهٔ کالاها»)
+       + آیکون اسکن (شیت سراسری sheet-blscan با زمینهٔ همین فرم).
+       انتخاب کالای فهرست خودش ⇒ فقط اتمام موجودی؛ انتخاب کالای
+       کاتالوگ ⇒ همزمان لیست خرید + اتمام موجودی (lsAdd در app-forms).
+     • حذف آیتم: آیکون × آرام انتهای ردیف — سادگی همیشگی.
+     ═════════════════════════════════════════════════════════════ -->
+<section class="screen" id="s-buy-lowstock" data-arm="buy" hidden>
+    <div class="subheader">
+        <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
+        <div class="ttl">در حال اتمام موجودی<small id="ls-count">۲ کالا</small></div>
+    </div>
+
+    <div class="body">
+        <div class="section-title"><h2>رو به اتمام</h2></div>
+
+        <!-- لیست کالاهای در حال اتمام — رندر پویا از DATA.lowStock
+             (lowstockRender در app-forms.js؛ خالی = empty خودش). -->
+        <div class="rows" id="ls-rows"></div>
+
+        <!-- ═══ «یه کادر توضیح واضح هم زیر لیستش هست» (حکم مالک) —
+             کال‌آوت راهنما زیر لیست: این فهرست چیست، چطور اضافه کنی
+             و اینکه کالای کاتالوگ همزمان به لیست خرید هم می‌آید. ═══ -->
+        <div class="callout callout-info" style="margin-top: 14px;">
+            <svg><use href="#i-info"/></svg>
+            <span>این فهرست یادآور کالاهایی است که موجودی‌شان رو به پایان است. با دکمهٔ زیر، کالای موردنظر را از لیست خریدت انتخاب کن یا بارکدش را اسکن کن؛ کالایی که هنوز در لیست خریدت نیست، همان لحظه به هر دو فهرست اضافه می‌شود تا در سفارش بعدی‌ات جا نماند.</span>
+        </div>
+
+        <button class="btn btn-arm btn-block" id="ls-add-open" type="button" style="margin-top: 10px;">
+            <svg><use href="#i-plus"/></svg> افزودن کالا
+        </button>
+    </div>
+
+    <!-- ═══ مدال افزودن — «یه مدال باز می‌کنه که کاربر سریع می‌تونه
+         سرچ بزنه» (حکم مالک) ═══
+         جستجوی زنده: با کوچک‌ترین حرف، اول کالاهای لیست خریدِ هنوز-
+         نشان‌نشده، بعد (یا با عبارت تازه) کالاهای کاتالوگ — «از
+         بقیه کالاها بیاره و با انتخابش همزمان به لیست خرید هم
+         اضافه بشه». آیکون اسکن ته سرچ = شیت sheet-blscan (زمینهٔ
+         اتمام موجودی). انتخاب هر ردیف ⇒ همان‌جا «افزوده شد». -->
+    <div class="sheet" id="sheet-lowstock-add" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>افزودن به اتمام موجودی</h3>
+            <button class="mg" data-sheet-close="sheet-lowstock-add" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">کالایی که رو به پایان است را انتخاب کن — از لیست خریدت یا، اگر آنجا نبود، از همهٔ کالاها. با اسکن بارکد هم می‌شود.</div>
+
+        <div class="field" style="margin-bottom: 4px;">
+            <div class="search-row">
+                <svg><use href="#i-search"/></svg>
+                <input type="text" id="lsa-q" placeholder="جستجو — مثلاً روغن، ماکارونی…" autocomplete="off">
+                <span class="sr-tools">
+                    <button class="sr-tool" id="lsa-scan" type="button" aria-label="اسکن بارکد" title="اسکن بارکد — سریع‌تر از جستجو">
+                        <svg><use href="#i-scan"/></svg>
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <div id="lsa-res"></div>
     </div>
 </section>

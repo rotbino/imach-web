@@ -1069,12 +1069,32 @@
         if (t.closest('#lp-golist')) { lpGoList(); return; }
         if (t.closest('#lp-continue')) { lpContinue(); return; }
 
-        /* ═══ FD-22 → FD-42 — ویرایش شرایط تامین (۲۰) ═══
-           حالا از شیت تنظیمات لیست خرید باز می‌شود (ردیف #blset-cond —
-           حکم مالک FD-42: «شرایط تامین اصلا نباید بین دکمه‌ها باشه»)؛
-           buycondOpen متن فعلی را هم پیش‌پر می‌کند. */
-        if (t.closest('#blset-cond')) { buycondOpen(); return; }
+        /* ═══ FD-22 → FD-43 — ویرایش شرایط تامین (۲۰) ═══
+           FD-43 (حکم مالک): «دکمه تنظیمات رو برداریم و به جا اون توی
+           ساید بار بزاریم» → دکمهٔ سومِ باکس کاتالوگی / لینک سوم سایدبار
+           شیت ویرایش را مستقیم باز می‌کند (buycondOpen متن فعلی را هم
+           پیش‌پر می‌کند). */
+        if (t.closest('#bl-cond-open')) { buycondOpen(); return; }
         if (t.closest('#buycond-save')) { buycondSave(); return; }
+
+        /* ═══ FD-43 (حکم مالک) — در حال اتمام موجودی + اسکنر زمینه‌دار ═══
+           مدال افزودن (#ls-add-open) · انتخاب ردیف‌ها (data-lsa-pick از
+           لیست خودش / data-lsa-ref از کاتالوگ → همزمان هر دو فهرست) ·
+           حذف آرام آیتم (data-ls-remove) · شیت اسکن (#bl-scan-open از
+           جستجوی لیست، #lsa-scan از مدال) و دکمه‌های آن. */
+        if (t.closest('#ls-add-open')) { core.forms.lsaOpen(); return; }
+        var lsaPick = t.closest('[data-lsa-pick]');
+        if (lsaPick) { core.forms.lsPick(lsaPick.dataset.lsaPick); return; }
+        var lsaRef = t.closest('[data-lsa-ref]');
+        if (lsaRef) { core.forms.lsPickRef(lsaRef.dataset.lsaRef); return; }
+        var lsRm = t.closest('[data-ls-remove]');
+        if (lsRm) { core.forms.lsRemove(lsRm.dataset.lsRemove); return; }
+        if (t.closest('#bl-scan-open')) { core.forms.blScanOpen('buylist'); return; }
+        if (t.closest('#lsa-scan')) { core.forms.blScanOpen('lowstock'); return; }
+        if (t.closest('#blscan-go')) { core.forms.blScanGo(); return; }
+        if (t.closest('#blscan-demo')) { core.forms.blScanDemo(); return; }
+        if (t.closest('#blscan-add')) { core.forms.blScanApply(); return; }
+        if (t.closest('#blscan-show')) { core.forms.blScanShow(); return; }
     });
 
     /* ═══ حلقهٔ input ═══ */

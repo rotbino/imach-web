@@ -53,6 +53,7 @@ window.iMach = (function () {
         's-buy-list':             '20-buy-list',
         's-buy-list-add':         '20-buy-list',
         's-buy-product-suppliers':'20-buy-list',
+        's-buy-lowstock':         '20-buy-list',
         's-buy-suppliers':        '22-buy-suppliers',
         's-supplier-view':        '23-buy-supplier-view',
         's-buy-rfqs':             '24-buy-rfqs',
