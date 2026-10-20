@@ -5993,17 +5993,35 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
        باید تناسب بگیرد — یا ستون‌بندی یا ارتفاعِ بیشتر)
        ═══════════════════════════════════════════════════════════ */
 
-    /* ۰۸/۲۲: دفتر مشتریان و تأمین‌کنندگان — گرید موجودیت ۳ستونه
-       (الگوی Airbnb/Dribbble — الگوی «و» از بریف طراحی) */
-    #phone[data-dk="1"] #s-customers .body > .rows,
-    #phone[data-dk="1"] #s-buy-suppliers .body > .rows {
+    /* ═══ FD-44 — ۰۸/۲۲ دسکتاپ (حکم مالک): لیست زیر هم + دعوت کنار جستجو ═══
+       دفتر مشتریان/تأمین‌کنندگان دیگر کنارِ‌هم (گرید ۳ستونهٔ FD-30) نیست —
+       ردیف‌ها مثل موبایل زیر هم (دفتر خوانا). دکمهٔ دعوت هم از ردیفِ
+       مستقلِ تمام‌عرض می‌رود کنار جستجو — قرص جمع، نه دکمهٔ دراز. */
+    #phone[data-dk="1"] #s-customers .body,
+    #phone[data-dk="1"] #s-buy-suppliers .body {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-        gap: 12px; align-items: stretch;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-content: start;
+        column-gap: 10px;
     }
-    /* دعوت: نه دکمهٔ ۱۰۸۰px تمام‌عرض — قرصِ جمع و مشخص */
+    #phone[data-dk="1"] #s-customers .body > .search-row,
+    #phone[data-dk="1"] #s-buy-suppliers .body > .search-row { grid-column: 1; grid-row: 1; }
+    /* دعوت: قرص جمع کنار جستجو — خنثی‌کردن قاعدهٔ عمومی btn-block
+       (سقف ۴۲۰/کمینهٔ ۱۴۸) و inline margin (الگوی ثابت‌شدهٔ FD-28) */
     #phone[data-dk="1"] #s-customers #cust-invite-2,
-    #phone[data-dk="1"] #s-buy-suppliers #sup-invite-2 { max-width: 460px; }
+    #phone[data-dk="1"] #s-buy-suppliers #sup-invite-2 {
+        grid-column: 2; grid-row: 1; align-self: center;
+        width: auto !important; min-width: 0 !important; max-width: none !important;
+        margin-top: 0 !important;
+        white-space: nowrap;
+    }
+    /* نوار فیلتر ۰۸ و بقیهٔ فرزندان: تمام‌عرض در ردیف‌های بعدی */
+    #phone[data-dk="1"] #s-customers .body > .filter-bar,
+    #phone[data-dk="1"] #s-customers .body > .rows,
+    #phone[data-dk="1"] #s-buy-suppliers .body > .rows,
+    #phone[data-dk="1"] #s-customers .body > #cust-empty,
+    #phone[data-dk="1"] #s-customers .body > .hint-line,
+    #phone[data-dk="1"] #s-buy-suppliers .body > .hint-line { grid-column: 1 / -1; }
 
     /* ۲۶ پیشنهادها: گرید ۳ستونه + کارت‌های نفس‌دار
        (کارتِ ۵۶۶px با ارتفاعِ موبایل = لوله؛ ۳×۳۸۰ + پدینگ/تایپِ
