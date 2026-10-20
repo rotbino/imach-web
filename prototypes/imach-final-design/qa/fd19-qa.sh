@@ -39,8 +39,10 @@ C8=$(q "var it=iMach.data.shoppingList.filter(function(x){return x.id==='sl1'})[
 chk "کالای «برنج هاشمی گلستان» حالا ۴ تأمین‌کننده دارد" "$C8" "4"
 C9=$(q "document.querySelectorAll('#bl-proposals .blp-card').length")
 chk "۱ کارت پیشنهاد ماند" "$C9" "1"
-C10=$(q "var chip=[].slice.call(document.querySelectorAll('#buylist-rows .bl-card')).find(function(c){return c.textContent.indexOf('برنج هاشمی گلستان')>-1}); chip? (chip.textContent.indexOf('۴ تأمین‌کننده')>-1 ? 'live' : 'stale') : 'none'")
-chk "چیپ «۴ تأمین‌کننده» در کارت کالا زنده شد" "$C10" "live"
+q "document.querySelectorAll('#buylist-rows .bl-card')[0].click(); 'ok'" >/dev/null; sleep 0.8
+C10=$(q "(function(){var t=document.querySelector('#s-buy-product-suppliers .ttl');return (t.textContent.indexOf('تأمین‌کننده‌های')>-1?'prefixed':'BAD')+'|'+document.getElementById('bps-sub').textContent})()")
+chk "FD-42: کارت → «تأمین‌کننده‌های برنج هاشمی گلستان · ۴ تأمین‌کننده» (زنده)" "$C10" "prefixed|۴ تأمین‌کننده · قیمت زنده"
+q "iMach.show('s-buy-list', false); 'ok'" >/dev/null; sleep 0.6
 
 echo "─── ۳) حذف پیشنهاد از لیست خرید ───"
 q "document.querySelector('#bl-proposals [data-sup-reject=\"su5\"]').click(); 'ok'" >/dev/null; sleep 0.5

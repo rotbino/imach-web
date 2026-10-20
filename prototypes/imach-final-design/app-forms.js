@@ -257,13 +257,9 @@
         _scoreRingSync(scoreCalc(core.data.scoreItemsSell), '#cat-score-ring', '#cat-score-num');
     }
 
-    /* FD-16: امتیاز لیست خرید — به‌جای کارت درون‌صفحه (حذف شد)، چیپ
-       دایره‌ای در هدر (#bl-chip) — همان الگوی چیپ میزها؛ کلیک → صفحهٔ
-       امتیازها (data-score-arm در app-handlers.js). */
-    function buyListScoreSync() {
-        var buy = scoreCalc(core.data.scoreItemsBuy);
-        _chipRingSync(buy, '#bl-chip-ring', '#bl-chip-num', '#bl-chip');
-    }
+    /* FD-16 → FD-42: امتیاز لیست خرید حذف شد — «دایرهٔ امتیاز روی میز
+       خرید هست و دیگه لازم نیست توی لیست خرید هم باشه» (حکم مالک)؛
+       جایش چرخ‌دندهٔ تنظیمات نشسته (sheet-bl-settings). */
 
     /* ═══════════════════════════════════════════════════════════════
        میز فروش (۰۴) / میز خرید (۱۹) — کارتابل
@@ -432,10 +428,14 @@
        می‌شوید.» دکمه: «دعوت تأمین‌کننده‌های این کالا» → شیت اشتراک
        (data-share-buylist در app-handlers.js — sheet-share-buylist).
        ═══════════════════════════════════════════════════════════════ */
-    function bpsRenderCta() {
+    function bpsRenderCta(count) {
         var host = $('#bps-cta');
         if (!host) return;
-        var count = document.querySelectorAll('#s-buy-product-suppliers .sup-p-card').length;
+        /* FD-42: شمار را bpsSync از آیتم واقعی می‌دهد؛ فراخوانی بی‌پارامتر
+           (سازگاری) خودش از DOM می‌شمارد — کارت‌های مخفی حساب نمی‌شوند. */
+        if (count === undefined) {
+            count = document.querySelectorAll('#s-buy-product-suppliers .sup-p-card:not([hidden])').length;
+        }
 
         if (count === 0) {
             host.innerHTML =
@@ -3285,36 +3285,96 @@
         return true;
     }
 
-    /* ─── ۲۰: رندر پویای لیست خرید ─── */
+    /* ─── ۲۰: رندر پویای لیست خرید ───
+       FD-42 (حکم مالک): ① جستجوی زنده — کارت‌ها همان‌جا صافی می‌شوند
+       (#bl-search → BLQ.q؛ شمار سرصفحه در حین جستجو «N از M کالا»).
+       ② کارت بدون بج — «اون بج‌های روی کارتا رو که باعث شلوغی کارت
+       شدن بردار؛ بزار فرم خلوت بشه»: فقط عکس + نام + مقدار/دوره. */
+    var BLQ = { q: '' };
+    var BPS = { item: null };
+
     function buyListRender() {
         var host = $('#buylist-rows');
         if (!host) return;
         var items = core.data.shoppingList || [];
+        var q = BLQ.q.trim();
+        var shown = q ? items.filter(function (it) {
+            var hay = (it.name || '') + ' ' + (it.pack || '') + ' ' + (it.q || '');
+            return hay.indexOf(q) > -1;
+        }) : items;
         var cnt = $('#buylist-count');
-        if (cnt) cnt.textContent = faNum(items.length) + ' کالا';
+        if (cnt) cnt.textContent = q && shown.length < items.length
+            ? faNum(shown.length) + ' از ' + faNum(items.length) + ' کالا'
+            : faNum(items.length) + ' کالا';
         if (!items.length) {
             host.innerHTML = '<div class="empty"><div class="empty-ic"><svg><use href="#i-basket"/></svg></div>' +
                 '<h3>لیست خریدت خالی است</h3><p>کالاهایی که عمده می‌خری را اضافه کن — از کاتالوگ تأمین‌کننده‌هایت یا با «افزودن کالا».</p></div>';
             return;
         }
-        host.innerHTML = items.map(function (it) {
-            var chips = '';
-            if (it.added) chips += '<span class="bl-chip hot"><svg><use href="#i-check"/></svg> تازه افزوده</span>';
-            else if (it.fresh) chips += '<span class="bl-chip ' + (it.fresh === 'امروز' ? 'fresh' : 'warn') +
-                '"><svg><use href="#i-clock"/></svg> قیمت ' + esc(it.fresh) + '</span>';
-            if (it.offers) chips += '<span class="bl-chip hot"><svg><use href="#i-sparkles"/></svg> ' + faNum(it.offers) + ' پیشنهاد</span>';
-            if (it.inq) chips += '<span class="bl-chip hot"><svg><use href="#i-inbox"/></svg> استعلام در جریان</span>';
-            if (it.suppliersCount) chips += '<span class="bl-chip"><svg><use href="#i-users"/></svg> ' + faNum(it.suppliersCount) + ' تأمین‌کننده</span>';
-            else chips += '<span class="bl-chip muted"><svg><use href="#i-info"/></svg> تأمین‌کننده‌ای ثبت نشده</span>';
+        if (!shown.length) {
+            host.innerHTML = '<div class="empty"><div class="empty-ic"><svg><use href="#i-search"/></svg></div>' +
+                '<h3>کالایی پیدا نشد</h3><p>حرف دیگری از نام کالا را امتحان کن — یا با «افزودن کالا» کالای جدیدی به لیستت اضافه کن.</p></div>';
+            return;
+        }
+        host.innerHTML = shown.map(function (it) {
             return '<div class="bl-card" data-go="s-buy-product-suppliers" data-product="' + esc(it.name) + '">' +
                 '<div class="bl-thumb"><img src="' + esc(it.img) + '" alt=""></div>' +
                 '<div class="bl-body">' +
                     '<div class="bl-title">' + esc(it.name) + '</div>' +
                     '<div class="bl-q">' + esc(it.q || it.pack || '') + '</div>' +
-                    '<div class="bl-meta">' + chips + '</div>' +
                 '</div>' +
             '</div>';
         }).join('');
+    }
+
+    /* FD-42: وضعیت ردیف «شرایط تامین» در شیت تنظیمات — همیشه تازه */
+    function blSettingsSync() {
+        var sub = $('#blset-cond-sub');
+        if (!sub) return;
+        var has = !!(((core.data.buyListInfo || {}).conditions || '').trim());
+        sub.textContent = has
+            ? 'فعال — تأمین‌کننده‌ها پیش از پیشنهاد دادن می‌خوانندش'
+            : 'خالی — لینک آن در نمای عمومی لیستت دیده نمی‌شود';
+    }
+
+    /* ═══ FD-42 (حکم مالک) — ۲۰ب: تأمین‌کنندگانِ «همان کالا» ═══
+       «وقتی روی کارت می‌زنی و میاد روی این فرم s-buy-product-suppliers،
+       در اول عنوانش یه تامین‌کننده هم اضافه کن؛ مثلاً تأمین‌کننده‌های
+       برنج فجر ۱۰ کیلوگرمی — بزار فرم گویا باشه.»
+       ▸ bpsPick: از کلیک روی کارت (data-product → app-handlers.js)
+         صدا می‌شود و آیتم واقعی را برمی‌گزیند.
+       ▸ bpsSync (show-hook): عنوان «تأمین‌کننده‌های X» + کارتِ انتخابی
+         + شارِ زیرعنوان از همان آیتم؛ کارت‌های نمایشیِ ماک هم تا شمار
+         واقعی suppliersCount نشان داده می‌شوند (کم‌نقصی)؛ شمار ۰ =
+         ردیف‌ها/هینت مخفی + CTA خالی (bpsRenderCta). */
+    function bpsPick(name) {
+        BPS.item = (core.data.shoppingList || []).filter(function (it) {
+            return it.name === name;
+        })[0] || null;
+    }
+
+    function bpsSync() {
+        var it = BPS.item || (core.data.shoppingList || [])[0] || null;
+        if (!it) return;
+        BPS.item = it;
+        var n = it.suppliersCount || 0;
+        var nameEl = $('#bps-name');
+        if (nameEl) nameEl.textContent = it.name;
+        var sub = $('#bps-sub');
+        if (sub) sub.textContent = (n ? faNum(n) + ' تأمین‌کننده · ' : '') + 'قیمت زنده';
+        var img = $('#bps-pc-img'), nm = $('#bps-pc-nm'), sb = $('#bps-pc-sub');
+        if (img) img.src = it.img;
+        if (nm) nm.textContent = it.name;
+        if (sb) sb.textContent = it.q || it.pack || '';
+        var rows = $('#bps-rows');
+        if (rows) {
+            var cards = rows.querySelectorAll('.sup-p-card');
+            for (var i = 0; i < cards.length; i++) cards[i].hidden = (i >= n);
+            rows.hidden = n === 0;
+        }
+        var hint = $('#bps-hint');
+        if (hint) hint.hidden = n === 0;
+        bpsRenderCta(n);
     }
 
     /* ─── ۳۱: شیت «افزودن کالاهای کاتالوگ به لیست خرید» ───
@@ -3522,9 +3582,11 @@
     core.registerShowHook('s-contacts', applyContactsMode);
     core.registerShowHook('s-profile', profileSync);
     core.registerShowHook('s-network-score', scoreRender);
-    core.registerShowHook('s-buy-product-suppliers', bpsRenderCta);
+    /* FD-42: ۲۰ب گویا و زنده — عنوان «تأمین‌کننده‌های X» از کالای لمس‌شده */
+    core.registerShowHook('s-buy-product-suppliers', bpsSync);
     core.registerShowHook('s-catalog', catalogScoreSync);
-    core.registerShowHook('s-buy-list', buyListScoreSync);
+    /* FD-42: وضعیت ردیف شرایط در شیت تنظیمات (امتیاز هدر حذف شد) */
+    core.registerShowHook('s-buy-list', blSettingsSync);
     core.registerShowHook('s-catalog', catPromoSync);
     core.registerShowHook('s-sell-promo', catPromoSync);
     core.registerShowHook('s-sell-bulk', bulkReset);
@@ -4371,11 +4433,12 @@
         buyDeskSync: buyDeskSync,
 
         bpsRenderCta: bpsRenderCta,
+        bpsPick: bpsPick,
 
         applyGuestMode: applyGuestMode, applyContactsMode: applyContactsMode,
         updatePickCount: updatePickCount, markNewItemsSeen: markNewItemsSeen,
         catalogScoreSync: catalogScoreSync,
-        buyListScoreSync: buyListScoreSync,
+        blSettingsSync: blSettingsSync,
         catPromoSync: catPromoSync,
         bulkReset: bulkReset,
         bulkSetPct: bulkSetPct,
@@ -5644,6 +5707,12 @@
         if (t.id === 'cat-search') {
             CATF.q = t.value;
             catFilterApply();
+            return;
+        }
+        /* FD-42: جستجوی زندهٔ لیست خرید — صافی همان‌جا روی کارت‌ها */
+        if (t.id === 'bl-search') {
+            BLQ.q = t.value;
+            buyListRender();
             return;
         }
         if (t.id === 'cate-name' || t.id === 'cate-city') {

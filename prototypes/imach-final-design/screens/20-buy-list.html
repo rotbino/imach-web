@@ -13,20 +13,37 @@
      • دعوت تأمین‌کننده‌های این کالا → شیت اشتراک لیست خرید.
      • «تأمین‌کنندگان بیشتر» (قفل امتیاز) → صفحهٔ فعالیت‌های خرید
        (نه توست) — دعوت تأمین‌کنندهٔ جدید یکی از بالاترین امتیازهاست.
+
+     FD-42 (حکم مالک — بازطراحی سراسری فرم):
+     • «شرایط تامین اصلا نباید اینجا باشه؛ این باید داخل فرم تنظیمات
+       باشه که دسترسی‌اش از طریق منوی تنظیمات که یه مدال از زیر
+       بازشونده باز می‌کنه باشه — مثل کاتالوگ که منوی اون از طریق
+       هدر باز می‌شه» → دکمهٔ چهارم حذف؛ چرخ‌دندهٔ ⚙ در هدر شیت
+       sheet-bl-settings (همان الگوی sheet-catettings در ۰۵) را باز
+       می‌کند؛ ردیف «شرایط تامین» همان شیت ویرایش (sheet-buycond) را.
+     • «آیکونی که مدال-منو رو باز می‌کنه به جای اون دایرهٔ امتیاز
+       بزار؛ دایرهٔ امتیاز روی میز خرید هست» → چیپ #bl-chip حذف.
+     • «یه سرچ باکس هم بزار و دکمهٔ اضافه کردن کالا رو بزار کنارش» →
+       نوار ابزار مثل کاتالوگ (cat-toolbar: جستجوی زنده + افزودن).
+     • «اون بج‌های روی کارتا رو که باعث شلوغی کارت شدن بردار؛ بزار
+       فرم خلوت بشه» → کارت = عکس + نام + مقدار؛ چیپ‌ها همه رفتند.
+     • کال‌آوت راهنما هم حذف — فرم خلوت (نقش آموزشی‌اش را عنوان گویای
+       صفحهٔ مقصد بر عهده گرفت).
+     • ۲۰ب: «در اول عنوانش یه تامین کننده هم اضافه کن؛ مثلاً
+       تأمین‌کننده‌های برنج فجر ۱۰ کیلوگرمی — بزار فرم گویا باشه» →
+       عنوان/کارتِ انتخابی/شمار، از کالای لمس‌شده زنده می‌شوند
+       (bpsPick/bpsSync در app-forms.js).
      ═════════════════════════════════════════════════════════════ -->
 
 <section class="screen" id="s-buy-list" data-arm="buy">
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
         <div class="ttl">لیست خرید من<small id="buylist-count">۴ کالا</small></div>
-        <!-- FD-16: چیپ دایره‌ای امتیاز در هدر — کنار آیکون اشتراک؛
-             سینک با buyListScoreSync() (همان الگوی چیپ میزها). -->
-        <button class="score-chip" id="bl-chip" data-score-arm="buy" aria-label="امتیاز فعالیت خرید — دیدن جزئیات" type="button">
-            <svg class="ring" viewBox="0 0 44 44" aria-hidden="true">
-                <circle class="rc-bg" cx="22" cy="22" r="18"></circle>
-                <circle class="rc-fill" id="bl-chip-ring" cx="22" cy="22" r="18"></circle>
-            </svg>
-            <b id="bl-chip-num">۰</b>
+        <!-- FD-42 (حکم مالک): دایرهٔ امتیاز حذف — «روی میز خرید هست و
+             دیگه لازم نیست توی لیست خرید هم باشه»؛ به‌جایش چرخ‌دندهٔ
+             تنظیمات مثل کاتالوگ (۰۵) — شیتِ منو از پایین باز می‌شود. -->
+        <button class="icon-btn" data-sheet="sheet-bl-settings" aria-label="تنظیمات لیست خرید" title="تنظیمات لیست خرید">
+            <svg><use href="#i-gear"/></svg>
         </button>
         <button class="icon-btn" data-sheet="sheet-share-buylist" aria-label="اشتراک‌گذاری لیست خرید">
             <svg><use href="#i-share"/></svg>
@@ -35,22 +52,25 @@
 
     <div class="body">
 
-        <!-- FD-16 (حکم مالک): باکس دکمه‌ها مثل کاتالوگ — «اضافه کردن کالا /
-             پیش‌نمایش / اشتراک‌گذاری»؛ دکمهٔ اصلی تمام‌عرض ردیف اول.
-             (چهارمین دکمه به فرمایش مالک فعلاً به ذهنش نرسیده بود.)
-             FD-22 (حکم مالک — چهارمین دکمه رسید): «شرایط تامین» —
-             خریدار شرایط درخواست تامین‌کنندگی‌اش را می‌نویسد تا هر
-             درخواست‌کننده‌ای پیشنهاد ندهد؛ بینندهٔ عمومی فقط لینکش
-             را می‌بیند (۳۲). اختیاری — خالی = لینک مخفی. -->
-        <div class="cat-actions cat-actions-4">
-            <button class="cat-act primary" data-go="s-buy-list-add">
+        <!-- FD-42 (حکم مالک): نوار ابزار مثل کاتالوگ (۰۵) — جستجوی زندهٔ
+             لیست + «افزودن کالا» تم‌پر کنارش («دکمهٔ اضافه کردن کالا رو
+             بزار کنارش»)؛ جستجو همان‌جا کارت‌ها را صافی می‌کند
+             (#bl-search در app-forms.js). -->
+        <div class="cat-toolbar">
+            <div class="search-row">
+                <svg><use href="#i-search"/></svg>
+                <input type="text" id="bl-search" placeholder="جستجو در لیست خرید…" autocomplete="off">
+            </div>
+            <button class="cat-act cat-add" data-go="s-buy-list-add">
                 <span class="ca-ic"><svg><use href="#i-plus"/></svg></span>
-                <span class="ca-tx">اضافه کردن کالا</span>
+                <span class="ca-tx">افزودن کالا</span>
             </button>
-            <button class="cat-act" id="buylist-cond">
-                <span class="ca-ic"><svg><use href="#i-textlist"/></svg></span>
-                <span class="ca-tx">شرایط تامین</span>
-            </button>
+        </div>
+
+        <!-- FD-42 (حکم مالک): «شرایط تامین» از میان دکمه‌ها رفت زیر
+             منوی تنظیمات هدر؛ دو دکمهٔ پیش‌نمایش/اشتراک‌گذاری ماندند —
+             همان باکس کاتالوگ (دسکتاپ: سایدبار اختصاصی — dkBuyList). -->
+        <div class="cat-actions">
             <button class="cat-act" id="buylist-preview">
                 <span class="ca-ic"><svg><use href="#i-eye"/></svg></span>
                 <span class="ca-tx">پیش‌نمایش</span>
@@ -67,23 +87,42 @@
              (buyListProposalsRender در app-suppliers.js؛ خالی = مخفی) ═══ -->
         <div id="bl-proposals"></div>
 
-        <div class="callout callout-info">
-            <svg><use href="#i-info"/></svg>
-            <div>کالاهایی که عمده می‌خری را این‌جا نگه دار. روی هر کالا بزن تا قیمت‌های تأمین‌کنندگانت را ببینی.</div>
-        </div>
-
-        <!-- FD-14: رندر پویا از DATA.shoppingList (buyListRender) —
+        <!-- FD-14 → FD-42: رندر پویا از DATA.shoppingList (buyListRender) —
              کالاهای افزوده‌شده از کاتالوگ عمومی (۳۱ → شیت انتخاب)
-             همین‌جا ظاهر می‌شوند؛ چیپ‌ها از فیلدهای fresh/offers/inq/
-             added می‌آیند. -->
+             همین‌جا ظاهر می‌شوند؛ کارت = عکس + نام + مقدار (بج‌ها به
+             حکم مالک FD-42 حذف شدند — فرم خلوت). -->
         <div class="rows" id="buylist-rows"></div>
     </div>
 
-    <!-- ═══ FD-22 — شیت: ویرایش شرایط درخواست تامین (حکم مالک) ═══
-         «سمت خودش در بخش ویرایش لیست خرید می‌تونه این شرایط تامین
-         کننده رو اگر خواست وارد کنه» — یک متن ساده اما کاربردی؛
-         خالی = بینندهٔ عمومی لینک را نمی‌بیند. همان قاعدهٔ متن
-         آزاد دیتا (buyListInfo.conditions). -->
+    <!-- ═══ FD-42 — شیت: تنظیمات لیست خرید (منوی ⚙ هدر — حکم مالک) ═══
+         «شرایط تامین اصلا نباید اینجا [میان دکمه‌ها] باشه؛ این باید
+         داخل فرم تنظیمات باشه که دسترسی‌اش از طریق منوی تنظیمات که
+         یه مدال از زیر بازشونده باز می‌کنه باشه — مثل کاتالوگ که
+         منوی اون از طریق هدر باز می‌شه.» — همان الگوی sheet-cat-settings
+         (۰۵)؛ ردیف «شرایط تامین» شیت ویرایش را باز می‌کند (buycondOpen
+         — متن فعلی را هم پیش‌پر می‌کند). زیرمتنِ ردیف وضعیت زنده دارد
+         (blSettingsSync). -->
+    <div class="sheet" id="sheet-bl-settings" hidden>
+        <div class="grab"></div>
+        <div class="sheet-hdr">
+            <h3>تنظیمات لیست خرید</h3>
+            <button class="mg" data-sheet-close="sheet-bl-settings" aria-label="بستن"><svg><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sub">سوپرمارکت آریا · سوپرمارکت — رشت</div>
+
+        <button class="sheet-row" id="blset-cond" type="button">
+            <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-textlist"/></svg></span>
+            <span class="tx"><b>شرایط تامین</b><span id="blset-cond-sub">شرایط تو برای تأمین‌کننده‌ها — پیش از پیشنهاد دادن می‌خوانندش</span></span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
+        </button>
+
+        <button class="btn btn-outline sheet-cta" data-sheet-close="sheet-bl-settings">بستن</button>
+    </div>
+
+    <!-- ═══ FD-22 → FD-42 — شیت: ویرایش شرایط درخواست تامین ═══
+         حالا از منوی تنظیمات (sheet-bl-settings) باز می‌شود؛ خودِ فرم
+         دست‌نخورده — «یک متن ساده اما کاربردی؛ خالی = بینندهٔ عمومی
+         لینک را نمی‌بیند» (buyListInfo.conditions). -->
     <div class="sheet" id="sheet-buycond" hidden>
         <div class="grab"></div>
         <div class="sheet-hdr">
@@ -155,25 +194,29 @@
 <section class="screen" id="s-buy-product-suppliers" data-arm="buy" hidden>
     <div class="subheader">
         <button class="back" data-back aria-label="بازگشت"><svg><use href="#i-back"/></svg></button>
-        <div class="ttl" id="bps-title">برنج هاشمی گلستان<small>۳ تأمین‌کننده · قیمت زنده</small></div>
+        <!-- FD-42 (حکم مالک): «در اول عنوانش یه تامین‌کننده هم اضافه کن؛
+             مثلاً تأمین‌کننده‌های برنج فجر ۱۰ کیلوگرمی — بزار فرم گویا
+             باشه» — عنوان/کارتِ انتخابی/شمار از کالای لمس‌شده زنده
+             می‌شوند (bpsSync؛ انتخاب در bpsPick از data-product). -->
+        <div class="ttl">تأمین‌کننده‌های <span id="bps-name">برنج هاشمی گلستان</span><small id="bps-sub">۳ تأمین‌کننده · قیمت زنده</small></div>
     </div>
 
     <div class="body">
 
         <div class="picked-card">
-            <div class="thumb"><img src="png/goods/rice-sack.jpg" alt=""></div>
+            <div class="thumb"><img id="bps-pc-img" src="png/goods/rice-sack.jpg" alt=""></div>
             <div class="info">
-                <div class="nm">برنج هاشمی گلستان</div>
-                <div class="sub">کیسه ۵۰ کیلویی · خرید ماهانه</div>
+                <div class="nm" id="bps-pc-nm">برنج هاشمی گلستان</div>
+                <div class="sub" id="bps-pc-sub">کیسه ۵۰ کیلویی · خرید ماهانه</div>
             </div>
         </div>
 
-        <div class="hint-line">
+        <div class="hint-line" id="bps-hint">
             <svg><use href="#i-info"/></svg>
             <span>این‌ها تأمین‌کنندگانِ ذخیره‌شدهٔ شما هستند که این کالا را دارند. با هر تغییر قیمتِ آن‌ها، همین‌جا به‌روز می‌شود.</span>
         </div>
 
-        <div class="rows">
+        <div class="rows" id="bps-rows">
 
             <!-- FD-16 (حکم مالک): لمس کارت تأمین‌کننده → مستقیم کاتالوگِ او
                  (نه صفحهٔ واسط)؛ در ماک همه به کاتالوگ نمونه (۳۱) می‌روند —

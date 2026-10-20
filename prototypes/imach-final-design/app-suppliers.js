@@ -1069,8 +1069,11 @@
         if (t.closest('#lp-golist')) { lpGoList(); return; }
         if (t.closest('#lp-continue')) { lpContinue(); return; }
 
-        /* ═══ FD-22 — ویرایش شرایط تامین (۲۰) ═══ */
-        if (t.closest('#buylist-cond')) { buycondOpen(); return; }
+        /* ═══ FD-22 → FD-42 — ویرایش شرایط تامین (۲۰) ═══
+           حالا از شیت تنظیمات لیست خرید باز می‌شود (ردیف #blset-cond —
+           حکم مالک FD-42: «شرایط تامین اصلا نباید بین دکمه‌ها باشه»)؛
+           buycondOpen متن فعلی را هم پیش‌پر می‌کند. */
+        if (t.closest('#blset-cond')) { buycondOpen(); return; }
         if (t.closest('#buycond-save')) { buycondSave(); return; }
     });
 

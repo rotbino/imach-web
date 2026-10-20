@@ -195,8 +195,8 @@ C49=$(q "document.querySelector('#buylist-count').textContent")
 chk "سربرگ = ۶ کالا" "$C49" "۶ کالا"
 C50=$(q "document.querySelectorAll('#buylist-rows .bl-card').length")
 chk "۶ ردیف در لیست" "$C50" "6"
-C51=$(q "document.querySelectorAll('#buylist-rows .bl-card')[4].querySelector('.bl-chip.hot').textContent")
-chk "چیپ «تازه افزوده» روی کالای جدید" "$C51" "تازه افزوده"
+C51=$(q "(function(){var c=document.querySelectorAll('#buylist-rows .bl-card');return document.querySelectorAll('#buylist-rows .bl-chip').length+'|'+(c[0]?c[0].querySelectorAll('.bl-chip').length:'nocard')})()")
+chk "کارت‌ها بدون بج (FD-42 — خلوت)" "$C51" "0|0"
 C52=$(q "document.querySelectorAll('#buylist-rows .bl-card')[4].querySelector('.bl-q').textContent")
 chk "ردیف جدید: مقدار + دوره (الزام FD-22)" "$C52" "۵ کیسه ۵۰ کیلویی · ماهانه"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.5

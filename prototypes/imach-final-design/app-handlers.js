@@ -238,9 +238,18 @@
             return;
         }
 
-        /* ─── ناوبری عمومی ─── */
+        /* ─── ناوبری عمومی ───
+           FD-42: کارت لیست خرید data-product دارد — پیش از رفتن، همان
+           کالا برای صفحهٔ «تأمین‌کننده‌های X» (۲۰ب) برگزیده می‌شود. */
         var goEl = t.closest('[data-go]');
-        if (goEl) { e.preventDefault(); go(goEl.dataset.go); return; }
+        if (goEl) {
+            e.preventDefault();
+            if (goEl.dataset.product && core.forms && core.forms.bpsPick) {
+                core.forms.bpsPick(goEl.dataset.product);
+            }
+            go(goEl.dataset.go);
+            return;
+        }
         var pvBack = t.closest('[data-preview-back]');
         if (pvBack) { e.preventDefault(); back(); return; }
         var backEl = t.closest('[data-back]');

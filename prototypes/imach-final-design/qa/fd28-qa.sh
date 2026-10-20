@@ -13,6 +13,10 @@
 #   (بدون chev · آیکون لخت · شمار خاکستری · بج قرمز تأمین‌کننده‌ها) ·
 #   خوشامد حذف → «دسترسی سریع» · کانبان سه‌ستونه حذف → dsk-tasks ·
 #   hint حذف (موبایل و دسکتاپ) · موبایل بدون تزریق.
+# FD-42 deltas (مالک — بازطراحی لیست خرید ۲۰): چرخ‌دنده به‌جای دایرهٔ
+#   امتیاز (شیت تنظیمات از پایین) · نوار جستجو+افزودن مثل کاتالوگ ·
+#   ۲ دکمه (پیش‌نمایش/اشتراک) · بج‌های کارت حذف · بدنهٔ ۸۸۰ + سایدبار
+#   اختصاصی (الگوی FD-39v2) · ۲۰ب: عنوانِ «تأمین‌کننده‌های X» زنده.
 # ▸ فریم تمام‌عرض برای همهٔ ۴۱ صفحه (data-dk) · بدون سرریز افقی
 # ▸ لندینگ FD-31 · ورود/ثبت‌نام · میزها · کاتالوک گرید · چت ۹۰۰
 # ▸ جزئیات دوستونه · فرم مرکزی · شیت مودال · موبایل ۳۹۰ دست‌نخورده
@@ -227,6 +231,28 @@ C5=$(q "(function(){var pb=document.getElementById('promo-box');var cs=getComput
 chk "FD-35: حالت ویژه — دکمهٔ سبز + بج روی کارت‌ها" "$C5" "cat-act on|rgb(240, 253, 244)|ویژه فعال است|badges=vvvv"
 ovf "کاتالوک: بدون سرریز"
 
+echo "─── ۶پ) FD-42: لیست خرید — هم‌قالب کاتالوگ (سایدبار + ۸۸۰) ───"
+q "iMach.show('s-buy-list', false); 'ok'" >/dev/null; sleep 1
+BL1=$(q "(function(){var s=document.getElementById('s-buy-list');var gear=s.querySelector('[data-sheet=\"sheet-bl-settings\"]');var side=s.querySelector('.cat-side');var links=side?side.querySelectorAll('.cat-actions .cat-act').length:0;var inMain=s.querySelectorAll('.dk-desk-main .cat-actions .cat-act').length;return (gear?'gear':'no-gear')+'|'+(document.getElementById('bl-chip')?'chip-BAD':'chip-gone')+'|'+links+'links|inMain='+inMain+'|brand='+(side&&side.querySelector('.dk-side-brand')?1:0)+'|user='+(side&&side.querySelector('.dk-user')?1:0)})()")
+chk "FD-42: چرخ‌دنده به‌جای دایرهٔ امتیاز · سایدبار ۲ لینکی مثل کاتالوگ" "$BL1" "gear|chip-gone|2links|inMain=0|brand=1|user=1"
+BL2=$(q "(function(){var b=document.querySelector('#s-buy-list .dk-desk-main .body');var t=document.querySelector('#s-buy-list .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');return 'w='+Math.round(b.getBoundingClientRect().width)+'|sr='+Math.round(sr.getBoundingClientRect().height)+'|add='+Math.round(add.getBoundingClientRect().height)})()")
+chk "FD-42: بدنهٔ ۸۸۰ (عرض کمتر — حکم مالک) · جستجو/افزودن ۴۸" "$BL2" "w=880|sr=48|add=48"
+BL3=$(q "(function(){var s=document.getElementById('s-buy-list');return document.querySelectorAll('#buylist-rows .bl-chip').length+'chips|'+document.querySelectorAll('#buylist-rows .bl-card').length+'cards|'+(s.querySelector('.callout')?'callout-BAD':'callout-gone')})()")
+chk "FD-42: کارت‌ها بدون بج (خلوت) · کال‌آوت حذف" "$BL3" "0chips|4cards|callout-gone"
+BL4=$(q "(function(){var i=document.getElementById('bl-search');i.value='روغن';i.dispatchEvent(new Event('input',{bubbles:true}));var n=document.querySelectorAll('#buylist-rows .bl-card').length;var c=document.getElementById('buylist-count').textContent;i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));return 'hits='+n+'|count='+c+'|back='+document.querySelectorAll('#buylist-rows .bl-card').length})()")
+chk "FD-42: جستجوی زنده (روغن → ۱؛ شمار «۱ از ۴»؛ بازگشت ۴)" "$BL4" "hits=1|count=۱ از ۴ کالا|back=4"
+q "document.querySelector('#s-buy-list [data-sheet=\"sheet-bl-settings\"]').click(); 'ok'" >/dev/null; sleep 0.6
+BL5=$(q "(function(){var sh=document.getElementById('sheet-bl-settings');var row=document.getElementById('blset-cond');return sh.classList.contains('show')+'|'+(row?'row':'no-row')+'|'+document.getElementById('blset-cond-sub').textContent})()")
+chk "FD-42: شیت تنظیمات (مدال از زیر) + ردیف شرایط تازه" "$BL5" "true|row|فعال — تأمین‌کننده‌ها پیش از پیشنهاد دادن می‌خوانندش"
+q "document.getElementById('blset-cond').click(); 'ok'" >/dev/null; sleep 0.6
+BL6=$(q "document.getElementById('sheet-buycond').classList.contains('show') + '|' + (document.getElementById('buycond-text').value.indexOf('رشت') > -1)")
+chk "FD-42: شرایط تامین حالا از تنظیمات — شیت با متن فعلی" "$BL6" "true|true"
+q "iMach.closeSheet('sheet-buycond'); 'ok'" >/dev/null
+q "document.querySelectorAll('#buylist-rows .bl-card')[1].click(); 'ok'" >/dev/null; sleep 0.8
+BL7=$(q "(function(){var t=document.querySelector('#s-buy-product-suppliers .ttl');var nm=document.getElementById('bps-name');var sub=document.getElementById('bps-sub');var pc=document.getElementById('bps-pc-nm');var b=document.querySelector('#s-buy-product-suppliers .body');return (t.textContent.indexOf('تأمین‌کننده‌های')>-1?'prefixed':'BAD')+'|'+nm.textContent+'|'+sub.textContent+'|pc='+pc.textContent+'|w='+Math.round(b.getBoundingClientRect().width)})()")
+chk "FD-42: تأمین‌کنندگانِ همان کالا — عنوان گویا · کارت هم‌نام · ۸۸۰" "$BL7" "prefixed|روغن سرخ‌کردنی|۲ تأمین‌کننده · قیمت زنده|pc=روغن سرخ‌کردنی|w=880"
+ovf "لیست خرید FD-42: بدون سرریز"
+
 echo "─── ۶ب) FD-35: بوم + کاغذ سراسری (همهٔ صفحه‌ها) ───"
 B1=$(q "(function(){var c=getComputedStyle(document.getElementById('phone')).backgroundColor;return c})()")
 chk "بوم #phone = surface-3" "$B1" "rgb(240, 238, 232)"
@@ -338,6 +364,9 @@ chk "موبایل استعلام: تک‌ستونه (بدون دوستونه)" "
 q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 0.9
 MB5=$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');var a=document.querySelector('#s-catalog .cat-actions');var b=document.querySelector('#s-catalog .body');var c=getComputedStyle(b);return Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length+'|sheet='+(c.borderTopWidth!=='0px'||c.marginTop!=='0px'?'BAD':'none')+'|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")
 chk "موبایل کاتالوک FD-35: نوار ۴۴/۴۴ تم‌پر · ۴ دکمه ۲ستونی · بدون کادر تبلیغات و کاغذ" "$MB5" "44/44|rgb(249, 115, 22)|4btn/2col|oldbox=0|sheet=none|ovf=ok"
+q "iMach.show('s-buy-list', false); 'ok'" >/dev/null; sleep 0.8
+MB6=$(q "(function(){var s=document.getElementById('s-buy-list');var t=s.querySelector('.cat-toolbar');var a=s.querySelector('.cat-actions');var b=s.querySelector('.body');return (t&&t.querySelector('#bl-search')&&t.querySelector('.cat-add')?'toolbar':'BAD')+'|'+Math.round(t.querySelector('.search-row').getBoundingClientRect().height)+'/'+Math.round(t.querySelector('.cat-add').getBoundingClientRect().height)+'|'+a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|'+(document.getElementById('bl-chip')?'chip-BAD':'chip-gone')+'|'+(s.querySelector('[data-sheet=\"sheet-bl-settings\"]')?'gear':'no-gear')+'|'+document.querySelectorAll('#buylist-rows .bl-chip').length+'chips|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")
+chk "موبایل لیست خرید FD-42: نوار ۴۴/۴۴ · ۲ دکمه ۲ستونی · بدون چیپ امتیاز/بج" "$MB6" "toolbar|44/44|2btn/2col|chip-gone|gear|0chips|ovf=ok"
 agent-browser set viewport 1440 900 >/dev/null 2>&1; sleep 1
 
 echo "─── ۱۵) خطای کنسول ───"

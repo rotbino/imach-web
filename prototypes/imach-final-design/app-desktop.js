@@ -78,7 +78,7 @@ window.iMachDesktop = (function () {
         's-edit-business': 'dk-form',
         's-notifs': 'dk-page dk-narrow',
         's-buy-list-add': 'dk-form',
-        's-buy-product-suppliers': 'dk-page dk-list',
+        's-buy-product-suppliers': 'dk-page dk-list dk-blist',
         's-buy-suppliers': 'dk-page dk-list',
         's-supplier-view': dkDetail,
         's-buy-rfqs': 'dk-page dk-list',
@@ -670,10 +670,51 @@ window.iMachDesktop = (function () {
         body.appendChild(side);
     }
 
-    /* ═══ ۲۰ لیست خرید ═══
-       صفحهٔ پهن + نوار چهار دکمه‌ای افقی + ردیف‌های پهن. */
+    /* ═══ ۲۰ لیست خرید — FD-42: همان پوستهٔ کاتالوگ (FD-39v2) ═══
+       حکم مالک: «عرض کل [لیست] توی دسکتاپم کمتر باشه تا خوشگلتر دیده
+       بشه» + الگوی کاتالوگ: سایدبار اختصاصیِ راست (aside.cat-side —
+       همان هندسهٔ سایدبار اصلی) با دو لینکِ پیش‌نمایش/اشتراک.
+       ▸ خودِ همان دکمه‌ها جابه‌جا می‌شوند (id ها زنده می‌مانند)؛
+         CSS در [data-dk] آنها را ردیفِ ناوبریِ تخت می‌بیند
+         (.dk-cat-tools .cat-side در style.css — قواعد مشترک با ۰۵).
+       ▸ ستون اصلی: ساب‌هدر + بدنهٔ وسچ ۸۸۰ + شیت‌ها — الگوی
+         shellify؛ شیت‌ها fixed اند، جابه‌جایی DOM بی‌اثر (درس FD-10).
+       ▸ موبایل دست‌نخورده — تبدیل فقط ≥۱۰۲۴.
+       ▸ ۲۰ب (s-buy-product-suppliers) پوسته نمی‌گیرد؛ فقط هم‌عرضِ
+         ۸۸۰ (کلاس dk-blist در نقشه). */
     function dkBuyList(sec) {
         sec.classList.add('dk-page', 'dk-list', 'dk-blist');
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var acts = body.querySelector(':scope > .cat-actions');
+        if (!acts) return;
+
+        sec.classList.add('dk-desk', 'dk-cat-tools');
+
+        /* ۱) سایدبار اختصاصی — همان زبانِ dkCatalog: واژه‌نشان
+           (سبد + «لیست خرید من») · دو لینک · چیپ کارر. */
+        var side = document.createElement('aside');
+        side.className = 'tabbar cat-side dk-side';
+        side.innerHTML =
+            '<div class="dk-side-brand">' +
+                '<span class="dks-mark"><svg><use href="#i-basket"/></svg></span>' +
+                '<span class="dks-name">لیست خرید من</span>' +
+            '</div>';
+        side.appendChild(acts);
+        side.insertAdjacentHTML('beforeend',
+            '<button class="dk-user" type="button" data-go="s-profile">' +
+            '<img src="png/users/me.jpg" alt="">' +
+            '<span class="dku-tx"><b>احمد رضایی</b><small>سوپرمارکت آریا</small></span>' +
+            '</button>');
+        sec.insertBefore(side, sec.firstChild);
+
+        /* ۲) ستون اصلی — الگوی shellify (مانند dkCatalog) */
+        var main = document.createElement('div');
+        main.className = 'dk-desk-main';
+        while (side.nextSibling) main.appendChild(side.nextSibling);
+        sec.appendChild(main);
     }
 
     /* ═══ ۳۶ ویرایش کاتالوگ — FD-30: Form + Preview ═══

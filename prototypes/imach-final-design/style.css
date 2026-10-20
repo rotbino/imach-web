@@ -1246,7 +1246,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .fact-row .k { color: var(--text-3); flex-shrink: 0; }
 .fact-row .v { font-weight: 700; text-align: left; }
 
-/* ═══ ۳۲. لیست خرید — کارت بزرگ ═══ */
+/* ═══ ۳۲. لیست خرید — کارت بزرگ (FD-42: بدون بج — خلوت) ═══ */
 .bl-card {
     display: flex;
     align-items: flex-start;
@@ -1288,31 +1288,9 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     margin-top: 4px;
     line-height: 1.7;
 }
-.bl-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-}
-.bl-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 9px;
-    background: var(--surface-2);
-    border-radius: 999px;
-    font-size: 10.5px;
-    font-weight: 700;
-    color: var(--text-2);
-    white-space: nowrap;
-    line-height: 1.4;
-}
-.bl-chip svg { width: 12px; height: 12px; flex-shrink: 0; }
-.bl-chip.fresh { background: var(--green-soft); color: var(--green); }
-.bl-chip.hot   { background: var(--primary-soft); color: var(--primary-strong); }
-.bl-chip.warn  { background: var(--amber-soft); color: var(--amber); }
-.bl-chip.muted { background: var(--surface-3); color: var(--text-3); }
+/* FD-42 (حکم مالک): بج‌های کارت حذف شدند — «اون بج‌های روی کارتا رو
+   که باعث شلوغی کارت شدن بردار؛ بزار فرم خلوت بشه»؛ .bl-meta و
+   .bl-chip مرده و پاک شدند. */
 
 /* ═══ ۳۳. تأمین‌کنندگان یک کالا ═══ */
 .sup-p-card {
@@ -4136,14 +4114,10 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     margin-top: 10px;
 }
 
-/* ─── ۲۰: باکس دکمه‌های چهارگانهٔ لیست خرید ───
-   اصلی تمام‌عرض + سه دکمه در یک ردیف (فشرده‌تر از الگوی سه‌تایی تا
-   سرریز افقی نگیرد — ca-tx nowrap است). */
-.cat-actions.cat-actions-4 { grid-template-columns: 1fr 1fr 1fr; }
-.cat-actions.cat-actions-4 .cat-act.primary { grid-column: 1 / -1; }
-.cat-actions.cat-actions-4 .cat-act { padding: 10px 6px; gap: 6px; }
-.cat-actions.cat-actions-4 .cat-act .ca-tx { font-size: 11px; }
-.cat-actions.cat-actions-4 .cat-act .ca-ic { width: 24px; height: 24px; border-radius: 7px; }
+/* ─── ۲۰: باکس دکمه‌های چهارگانهٔ لیست خرید — FD-42 حذف شد ═══
+   «شرایط تامین» به شیت تنظیمات رفت و «اضافه کردن کالا» کنار جستجو
+   نشست (cat-toolbar)؛ باکس حالا دو دکمهٔ ساده دارد — همان گرید
+   ۱fr ۱fr پایهٔ .cat-actions (کاتالوگ). بلوک cat-actions-4 مرده پاک شد. */
 
 /* ─── ۳۰: نوار زمینهٔ گفتگو (تصمیم ۸/۹) ─── */
 .chat-ctx {
@@ -5410,22 +5384,25 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
        سایدبارِ اصلی سیستم در سمتِ راست صفحه — نه منوی بازِ داخلِ
        محتوای صفحه.»
        ▸ پیادهٔ اول مردود شد: کارتِ شناورِ ۲۱۶ در ستونِ چپِ بادی
-         (قاب + شعاع + سایه + سربرگ «ابزارهای کاتالوک») — شبیه
+         (قاب + شعاع + سایه + سربرگ «ابزارهای کاتالوگ») — شبیه
          منوی باز دیده می‌شد، نه سایدبار.
        ▸ v۲ = پوستهٔ اپ (dk-desk): aside.cat-side همان هندسهٔ
          .dk-side اصلی را می‌گیرد (گریدِ ۲۵۶ راستِ صفحه · تمام‌قد
          ۱۰۰vh · چسبان · تخت با خطِ inline-end) — این بلوک فقط
-         «محتوای اختصاصی» را می‌چیند: چهار لینک به‌قالبِ تب‌های
+         «محتوای اختصاصی» را می‌چیند: لینک‌ها به‌قالبِ تب‌های
          اصلی (ردیفِ تخت ۴۶ + آیکونِ لخت ۲۰ + برچسب ۱۳) + چیپ
          کارر پایین (dk-user خودِ پوسته).
-       ▸ چهار دکمه همان‌اند (id ها حفظ شدند)؛ قواعد FD-35 برای
+       ▸ دکمه‌ها همان‌اند (id ها حفظ شدند)؛ قواعد FD-35 برای
          .cat-act بیرون از سایدبار (نوارِ «محصول جدید» کنار
-         جستجو) دست‌نخورده می‌مانند. موبایل ۲×۲ سالم. */
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-actions {
+         جستجو) دست‌نخورده می‌مانند. موبایل ۲×۲ سالم.
+       ▸ FD-42: قواعد از .dk-catalog به .dk-cat-tools تعمیم شد —
+         لیست خرید (۲۰) هم همان پوسته/سایدبار را گرفت (dkBuyList
+         هم dk-desk + dk-cat-tools می‌دهد؛ حکم مالک: الگوی کاتالوگ). */
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-actions {
         display: flex; flex-direction: column; gap: 4px;
     }
     /* ردیفِ لینک — هم‌قالبِ .tab سایدبار اصلی (تخت، بی‌قاب) */
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act {
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act {
         flex: 0 0 auto;
         flex-direction: row; justify-content: flex-start;
         gap: 12px; min-height: 46px; padding: 0 14px;
@@ -5434,34 +5411,34 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         font-size: 13px; font-weight: 600;
         transition: background .15s, color .15s;
     }
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act:hover {
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act:hover {
         background: var(--surface-2);
         border-color: transparent;
         transform: none;
     }
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act:active { transform: none; }
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act:active { transform: none; }
     /* آیکون: لخت مثل تب‌های اصلی — بدون چیپ رنگی */
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-ic {
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act .ca-ic {
         width: 20px; height: 20px;
         background: none; border-radius: 0;
         color: var(--text-2);
         display: grid; place-items: center;
     }
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-ic svg {
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act .ca-ic svg {
         width: 20px; height: 20px; display: block;
     }
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act .ca-tx {
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act .ca-tx {
         font-size: 13px; font-weight: 600; color: var(--text-2);
         flex: 1; min-width: 0; text-align: right;
         white-space: normal; line-height: 1.45;
     }
     /* «ویژه فعال» — همان سبزِ آرام، روی ردیفِ ناوبری */
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act.on {
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act.on {
         background: var(--green-bg);
         border-color: transparent;
     }
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act.on .ca-tx { color: var(--text); }
-    #phone[data-dk="1"] .dk-catalog .cat-side .cat-act.on .ca-ic { color: var(--green-strong, var(--green)); }
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act.on .ca-tx { color: var(--text); }
+    #phone[data-dk="1"] .dk-cat-tools .cat-side .cat-act.on .ca-ic { color: var(--green-strong, var(--green)); }
 
     /* ═══════════════════════════════════════════════════════════
        ۳۷ — کالا: دوستونه — مشخصات راست · گالری چسبان چپ
@@ -5581,15 +5558,49 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     }
 
     /* ═══════════════════════════════════════════════════════════
-       ۲۰ — لیست خرید: نوار ابزار ۴دکمه‌ای افقی
+       ۲۰ — لیست خرید FD-42: هم‌قالب کاتالوگ، بدنهٔ وسچ ۸۸۰
+       حکم مالک: «عرضش رو هم می‌تونی کمتر کنی… تا خوشگلتر دیده
+       بشه» — لیستِ تک‌ستونه عرضِ کمتر از ۱۱۲۰ می‌خواهد؛ صفحهٔ
+       تأمین‌کنندگانِ کالا (۲۰ب) هم هم‌عرض (dk-blist روی هر دو).
+       ▸ نوار ابزار مثل کاتالوگ: جستجو ۴۸ + «افزودن کالا» تم‌پر.
+       ▸ سایدبار اختصاصی: قواعد .dk-cat-tools .cat-side (بالا).
+       ▸ کارت‌های کالا: هم‌زبانِ ردیف‌های دسکتاپیِ FD-30 (شعاع/
+         هاور) — بدون بج، خلوت.
        ═══════════════════════════════════════════════════════════ */
-    #phone[data-dk="1"] .dk-blist .cat-actions { display: flex; gap: 10px; }
-    #phone[data-dk="1"] .dk-blist .cat-actions .cat-act {
-        flex: 1; min-height: 52px; border-radius: 14px;
-        flex-direction: row; justify-content: center; padding: 0 14px;
+    #phone[data-dk="1"] .dk-blist .body { max-width: 880px; }
+    /* پوستهٔ dk-desk قاعدهٔ ۱۱۲۰ خودش را با وزن بیشتر می‌گذارد —
+       مثل میزها (۸۱۰) با ID می‌بَرد؛ ۲۰ب پوسته ندارد و خط بالا کفایت می‌کند */
+    #phone[data-dk="1"] #s-buy-list .dk-desk-main .body {
+        max-width: 880px;
+        padding: 30px 32px 56px;
     }
-    #phone[data-dk="1"] .dk-blist .cat-actions .cat-act .ca-ic { width: 30px; height: 30px; border-radius: 9px; }
-    #phone[data-dk="1"] .dk-blist .cat-actions .cat-act .ca-tx { font-size: 13px; }
+    #phone[data-dk="1"] .dk-blist .cat-toolbar { gap: 12px; }
+    #phone[data-dk="1"] .dk-blist .cat-toolbar .cat-act {
+        flex: 0 0 auto;
+        min-height: 48px;
+        padding: 0 22px;
+    }
+    #phone[data-dk="1"] .dk-blist .cat-toolbar .cat-act .ca-tx { font-size: 13.5px; }
+    #phone[data-dk="1"] .dk-blist .search-row { height: 48px !important; }
+    #phone[data-dk="1"] .dk-blist .bl-card {
+        padding: 14px 16px;
+        border-radius: 16px;
+        transition: border-color .16s, box-shadow .16s;
+    }
+    #phone[data-dk="1"] .dk-blist .bl-card:hover {
+        border-color: var(--border-2);
+        box-shadow: 0 10px 26px rgba(31,29,26,.08);
+    }
+    /* ۲۰ب — کارت تأمین‌کننده و کارت انتخابی: هم‌زبان ردیف‌های دسکتاپ */
+    #phone[data-dk="1"] .dk-blist .sup-p-card {
+        padding: 15px 17px;
+        border-radius: 16px;
+        transition: border-color .16s, box-shadow .16s;
+    }
+    #phone[data-dk="1"] .dk-blist .sup-p-card:hover {
+        border-color: var(--border-2);
+        box-shadow: 0 10px 26px rgba(31,29,26,.08);
+    }
 
     /* ═══════════════════════════════════════════════════════════
        ۱۵ — امتیاز شبکه: قهرمانِ وسچ‌گر
