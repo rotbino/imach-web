@@ -9,6 +9,10 @@
 #   (هینت کوتاه · صنف=نوع کسب‌وکار ۴۸تایی · سه دکمهٔ ساده + مثال ·
 #   su-free حذف · کارت ۷۰۰) · میز فروش (خوشامد→«دسترسی سریع» ·
 #   بدنهٔ ۸۱۰ (۳۰%-) · هر تسک یک کارتِ هم‌ارتفاع).
+# FD-41 deltas (مالک — هم‌قالب‌سازی میز خرید با میز فروش): کاشی فلت
+#   (بدون chev · آیکون لخت · شمار خاکستری · بج قرمز تأمین‌کننده‌ها) ·
+#   خوشامد حذف → «دسترسی سریع» · کانبان سه‌ستونه حذف → dsk-tasks ·
+#   hint حذف (موبایل و دسکتاپ) · موبایل بدون تزریق.
 # ▸ فریم تمام‌عرض برای همهٔ ۴۱ صفحه (data-dk) · بدون سرریز افقی
 # ▸ لندینگ FD-31 · ورود/ثبت‌نام · میزها · کاتالوک گرید · چت ۹۰۰
 # ▸ جزئیات دوستونه · فرم مرکزی · شیت مودال · موبایل ۳۹۰ دست‌نخورده
@@ -160,14 +164,15 @@ chk "فروش عمده → میز فروش (باگ اسکوپ role-card رفع �
 q "iMach.assist.sell=true; iMach.assist.buy=true; iMach.applyArms(); 'ok'" >/dev/null; sleep 0.3
 ovf "ثبت‌نام: بدون سرریز"
 
-echo "─── ۴) میز خرید: سایدبار + کانبان سه‌ستونه FD-30 ───"
+echo "─── ۴) میز خرید FD-41: سایدبار + ستون یگانهٔ dsk-tasks (هم‌قالب میز فروش) ───"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.9
 D1=$(q "var tb=document.querySelector('#s-home-buy .tabbar'); getComputedStyle(tb).flexDirection + '|' + Math.round(tb.getBoundingClientRect().width) + '|' + (tb.querySelector('.dk-side-brand') ? 'brand' : 'no')")
 chk "سایدبار عمودی ۲۵۶px با واژه‌نشان (FD-28: گرید ۲۵۶)" "$D1" "column|256|brand"
 D2=$(q "var w=Math.max.apply(null, Array.prototype.map.call(document.querySelectorAll('#s-home-buy .rows .row'), function(r){return Math.round(r.getBoundingClientRect().top)})); var t=[]; document.querySelectorAll('#s-home-buy .rows .row').forEach(function(r){t.push(Math.round(r.getBoundingClientRect().top))}); var uniq=t.filter(function(v,i){return t.indexOf(v)===i}).length; uniq + 'rows-tops'")
 chk "تسک‌ها زیر هم (هر کدام ردیف مستقل)" "$D2" "$(q "var t=[]; document.querySelectorAll('#s-home-buy .rows .row').forEach(function(r){t.push(Math.round(r.getBoundingClientRect().top))}); t.filter(function(v,i){return t.indexOf(v)===i}).length + 'rows-tops'")"
-D3=$(q "(function(){var cols=document.querySelectorAll('#s-home-buy .dsk-col');return cols.length+'cols|'+document.querySelectorAll('#s-home-buy .dsk-col .row').length+'rows'})()")
-chk "کانبان سه‌ستونه با همهٔ ردیف‌ها (FD-30)" "$D3" "3cols|5rows"
+# FD-41: کانبان سه‌ستونهٔ FD-30 حذف — dsk-tasksِ میز فروش؛ ردیف‌ها فرزند مستقیم .rows
+D3=$(q "(function(){var s=document.getElementById('s-home-buy');var r=s.querySelector('.body > .rows');var direct=r.children.length&&r.children[0].classList.contains('row')?'direct':'wrapped';return (r.classList.contains('dsk-tasks')?'tasks':'other')+'|'+document.querySelectorAll('#s-home-buy .dsk-col').length+'cols|'+direct+'|'+(s.querySelector('.dk-greet')?'greet-BAD':'nogreet')+'|'+(s.querySelector('.dk-quick')?'quick':'noquick')+'|'+s.querySelectorAll('.hint-line').length+'hint'})()")
+chk "FD-41: dsk-tasks · بدون کانبان/خوشامد/hint · «دسترسی سریع»" "$D3" "tasks|0cols|direct|nogreet|quick|0hint"
 D4=$(q "document.querySelectorAll('#s-home-buy .desk-duo .desk-tile').length + '|' + (function(){var ts=[]; document.querySelectorAll('#s-home-buy .desk-tile').forEach(function(t){ts.push(Math.round(t.getBoundingClientRect().top))}); return ts.filter(function(v,i){return ts.indexOf(v)===i}).length})()")
 chk "چهار کاشی یک‌ردیف" "$D4" "4|1"
 ovf "میز خرید: بدون سرریز"
@@ -195,8 +200,10 @@ chk "ارتفاع همهٔ کارت‌ها یکسان (۸۴) · فاصلهٔ ۱�
 S7=$(q "document.querySelector('#s-home-sell .st-b').textContent + '|' + (function(){var t=document.querySelector('#s-home-sell .rows.dsk-tasks .row:not([hidden]) .thumb');var cs=getComputedStyle(t);return cs.backgroundColor+'|'+cs.width})()")
 chk "نشان «تکمیل اطلاعات» · آیکون ردیف‌ها هم لخت" "$S7" "تکمیل اطلاعات|rgba(0, 0, 0, 0)|22px"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
-S9=$(q "(function(){var s=document.getElementById('s-home-buy');var ic=s.querySelector('.desk-tile .dt-ic');var bg=getComputedStyle(ic).backgroundColor;return document.querySelectorAll('#s-home-buy .dt-chev').length+'chev|'+(bg!=='rgba(0, 0, 0, 0)'?'boxed':'bare')+'|'+document.querySelectorAll('#s-home-buy .dsk-col').length+'cols'})()")
-chk "میز خرید: دست‌نخورده (FD-30 تا نوبتش)" "$S9" "4chev|boxed|3cols"
+S9=$(q "(function(){var s=document.getElementById('s-home-buy');var ic=s.querySelector('.desk-tile .dt-ic');var bg=getComputedStyle(ic).backgroundColor;var b=document.getElementById('buy-desk-sup-badge');var num=s.querySelector('.desk-tile .dt-stat b');var numCs=getComputedStyle(num);return document.querySelectorAll('#s-home-buy .dt-chev').length+'chev|'+(bg!=='rgba(0, 0, 0, 0)'?'boxed':'bare')+'|'+document.querySelectorAll('#s-home-buy .dsk-col').length+'cols|badge='+(b&&!b.hidden?b.textContent:'none')+'|'+numCs.fontSize+'|'+(numCs.color!==getComputedStyle(s.querySelector('.score-chip b')).color?'gray':'arm-colored')})()")
+chk "میز خرید FD-41: کاشی فلت مثل فروش — بدون chev · آیکون لخت · شمار کوچک خاکستری" "$S9" "0chev|bare|0cols|badge=۲|11.5px|gray"
+S9b=$(q "(function(){var rows=document.querySelectorAll('#s-home-buy .rows.dsk-tasks .row');var cards=0;rows.forEach(function(r){var cs=getComputedStyle(r);if(cs.borderLeftWidth!=='0px')cards++});var vis=document.querySelectorAll('#s-home-buy .rows.dsk-tasks .row:not([hidden])');var hs=Array.prototype.map.call(vis,function(r){return Math.round(r.getBoundingClientRect().height)});var eq=hs.every(function(h){return h===hs[0]})&&hs[0]>=84?'equal84+':'unequal';var body=document.querySelector('#s-home-buy .dk-desk-main .body');return rows.length+'rows|cards='+cards+'|'+eq+'|gap='+getComputedStyle(document.querySelector('#s-home-buy .rows.dsk-tasks')).rowGap+'|bodyW='+Math.round(body.getBoundingClientRect().width)})()")
+chk "میز خرید FD-41: هر تسک یک کارت · هم‌ارتفاع · فاصلهٔ ۱۲ · بدنهٔ ۸۱۰" "$S9b" "5rows|cards=5|equal84+|gap=12px|bodyW=810"
 ovf "میز فروش FD-34: بدون سرریز"
 
 echo "─── ۶) کاتالوک: گرید روان + نوار ابزار FD-35 ───"
@@ -309,6 +316,11 @@ chk "موبایل لندینگ FD-34: زبان داخل بنر · وسط‌چی�
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
 MB2=$(q "var tb=document.querySelector('#s-home-buy .tabbar'); getComputedStyle(tb).flexDirection + '|' + (document.querySelector('#s-home-buy .dk-ord') ? 'ord-injected' : 'no-ord') + '|' + Math.round(document.getElementById('phone').getBoundingClientRect().width)")
 chk "موبایل میز: تب‌بار افقی · بدون شماره · ۳۹۰" "$MB2" "row|no-ord|390"
+# FD-41: موبایل میز خرید هم کاشی فلت گرفت (تعمیم FD-33) و hint حذف شد
+MB2a=$(q "(function(){var s=document.getElementById('s-home-buy');var ic=s.querySelector('.desk-tile .dt-ic');var b=document.getElementById('buy-desk-sup-badge');var t=s.querySelector('.desk-tile');var h=Math.round(t.getBoundingClientRect().height);return document.querySelectorAll('#s-home-buy .dt-chev').length+'chev|'+getComputedStyle(ic).backgroundColor+'|badge='+(b&&!b.hidden?b.textContent:'none')+'|'+(h<=68?'compact':'h'+h)+'|hint='+s.querySelectorAll('.hint-line').length})()")
+chk "موبایل میز خرید FD-41: آیکون لخت · بج ۲ · کاشی جمع · حذف hint" "$MB2a" "0chev|rgba(0, 0, 0, 0)|badge=۲|compact|hint=0"
+MB2a2=$(q "(function(){var s=document.getElementById('s-home-buy');return ((s.querySelector('.dk-quick')||s.querySelector('.dsk-tasks'))?'inject-BAD':'clean')+'|'+getComputedStyle(s.querySelector('.body > .rows')).rowGap})()")
+chk "موبایل میز خرید: بدون تزریق دسکتاپی FD-41 · gap ۸" "$MB2a2" "clean|8px"
 q "iMach.show('s-home-sell', false); 'ok'" >/dev/null; sleep 0.8
 MB2b=$(q "(function(){var s=document.getElementById('s-home-sell');var ic=s.querySelector('.desk-tile .dt-ic');var b=document.getElementById('desk-cust-badge');var t=s.querySelector('.desk-tile');var h=Math.round(t.getBoundingClientRect().height);return document.querySelectorAll('#s-home-sell .dt-chev').length+'chev|'+getComputedStyle(ic).backgroundColor+'|badge='+(b&&!b.hidden?b.textContent:'none')+'|'+(h<=68?'compact':'h'+h)+'|hint='+s.querySelectorAll('.hint-line').length})()")
 chk "موبایل میز فروش FD-33: آیکون لخت · بج ۱ · کاشی جمع · حذف hint" "$MB2b" "0chev|rgba(0, 0, 0, 0)|badge=۱|compact|hint=0"

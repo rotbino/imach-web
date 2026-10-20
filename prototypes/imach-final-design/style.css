@@ -2509,12 +2509,12 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
 .score-chip.on b { color: var(--green); }
 
 /* FD-8: دو کاشی کنار هم — کاتالوگ من / مشتریان من (و قرینهٔ خرید).
-   FD-10 (بازخورد مالک): عنوان جلوی آیکون نشست — ردیفِ [آیکون + عنوان +
-   chevron] یک خط کمتر می‌گیرد؛ کاشی خلوت‌تر و گویاتر دیده می‌شود.
-   عدد در رنگ بازو (فروش: نارنجی · خرید: زغالی) — پیوند بصری با چیپ اپ‌بار.
+   FD-10 (بازخورد مالک): عنوان جلوی آیکون نشست — ردیفِ [آیکون + عنوان]
+   یک خط کمتر می‌گیرد؛ کاشی خلوت‌تر و گویاتر دیده می‌شود.
    FD-16 (حکم مالک): چهار کاشی جمع‌وجور (هر دو میز) — پدینگ/عدد/
-   فاصله‌ها فشرده‌تر شد و زیرمتن تزیینی حذف شد؛ زیرمتن فقط دادهٔ
-   واقعی است («N در انتظار تایید») یا هیچ. */
+   فاصله‌ها فشرده‌تر شد و زیرمتن تزیینی حذف شد. FD-33/FD-41: کاشی
+   فلت (هر دو میز) — قواعد این‌جا «پایهٔ جعبه‌ای» برای صفحهٔ نمایندهٔ
+   فروش (۳۸) است؛ میزها در بلوک FD-33 پایین فلت می‌شوند. */
 .desk-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .desk-tile {
     display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
@@ -2527,7 +2527,7 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     transition: border-color .15s, transform .12s;
 }
 .desk-tile:active { transform: scale(.98); }
-/* ردیف سر کاشی: آیکون + عنوان (flex:1) + chevron — حکم FD-10 */
+/* ردیف سر کاشی: آیکون + عنوان — حکم FD-10 (chevron در FD-33 حذف شد) */
 .desk-tile .dt-head { display: flex; align-items: center; gap: 8px; width: 100%; }
 .desk-tile .dt-ic {
     width: 30px; height: 30px; border-radius: 9px;
@@ -2535,33 +2535,36 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     background: var(--arm-soft); color: var(--arm-strong);
 }
 .desk-tile .dt-ic svg { width: 16px; height: 16px; }
-.desk-tile .dt-chev { width: 14px; height: 14px; color: var(--text-4); flex-shrink: 0; margin-right: auto; }
 .desk-tile .dt-t { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 800; color: var(--text); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* عدد بزرگ + واحد — «چه داری» در یک نگاه (FD-16: کمی جمع‌وجورتر) */
 .desk-tile .dt-stat { display: flex; align-items: baseline; gap: 5px; margin-top: 1px; }
 .desk-tile .dt-stat b { font-size: 19px; font-weight: 800; color: var(--arm-strong); line-height: 1.3; }
 .desk-tile .dt-stat span { font-size: 10.5px; font-weight: 600; color: var(--text-3); }
+/* زیرمتن — فقط صفحهٔ نمایندهٔ فروش (۳۸) هنوز استفاده می‌کند
+   (rep-t-comm-sub)؛ میزها در FD-33/FD-41 نشان قرمز گرفتند */
 .desk-tile .dt-sub { font-size: 10px; color: var(--text-3); line-height: 1.6; }
 
-/* ═══ FD-33 (حکم مالک — میز فروش): کاشیِ فلت — «سادگی یعنی زیبایی» ═══
-   آیکون بدون قاب نارنجی (لخت، موبایل و دسکتاپ) · بدون chevron ·
+/* ═══ FD-33 → FD-41 (حکم مالک): کاشیِ فلت در «هر دو میز» — «سادگی یعنی زیبایی» ═══
+   آیکون بدون قاب (لخت، موبایل و دسکتاپ) · بدون chevron ·
    شمار کوچک و خاکستری (نه عددِ رنگی بزرگ) · زیرمتن «N در انتظار
-   تایید» حذف → نشان قرمزِ بالای کاشی مشتریان (dt-badge).
-   فقط #s-home-sell — میز خرید (۱۹) به نوبتِ خودش می‌رسد. */
-#s-home-sell .desk-tile { position: relative; padding: 11px 12px 10px; }
-#s-home-sell .desk-tile .dt-head { gap: 9px; }
-#s-home-sell .desk-tile .dt-ic {
+   تایید» حذف → نشان قرمزِ بالای کاشی (dt-badge — مشتریان در میز
+   فروش، تأمین‌کننده‌ها در میز خرید).
+   FD-33: فقط میز فروش. FD-41 (حکم مالک: «میز خرید و میز فروش از
+   لحاظ دیزاین شبیه هم») — تعمیم به میز خرید. */
+#s-home-sell .desk-tile, #s-home-buy .desk-tile { position: relative; padding: 11px 12px 10px; }
+#s-home-sell .desk-tile .dt-head, #s-home-buy .desk-tile .dt-head { gap: 9px; }
+#s-home-sell .desk-tile .dt-ic, #s-home-buy .desk-tile .dt-ic {
     width: auto; height: auto; border-radius: 0;
     background: none; color: var(--arm-strong);
 }
-#s-home-sell .desk-tile .dt-ic svg { width: 18px; height: 18px; }
-#s-home-sell .desk-tile .dt-t { font-weight: 700; }
-#s-home-sell .desk-tile .dt-stat { gap: 4px; margin-top: 2px; }
-#s-home-sell .desk-tile .dt-stat b { font-size: 11.5px; font-weight: 700; color: var(--text-2); line-height: 1.5; }
-#s-home-sell .desk-tile .dt-stat span { font-size: 11px; font-weight: 500; color: var(--text-3); }
-/* نشان قرمز «در انتظار تایید» — بالای لبهٔ کاشی مشتریان؛ عدد از
-   deskHomeSync؛ هم‌زبانِ dot قرمزِ زنگ اعلان‌ها در اپ‌بار */
-#s-home-sell .desk-tile .dt-badge {
+#s-home-sell .desk-tile .dt-ic svg, #s-home-buy .desk-tile .dt-ic svg { width: 18px; height: 18px; }
+#s-home-sell .desk-tile .dt-t, #s-home-buy .desk-tile .dt-t { font-weight: 700; }
+#s-home-sell .desk-tile .dt-stat, #s-home-buy .desk-tile .dt-stat { gap: 4px; margin-top: 2px; }
+#s-home-sell .desk-tile .dt-stat b, #s-home-buy .desk-tile .dt-stat b { font-size: 11.5px; font-weight: 700; color: var(--text-2); line-height: 1.5; }
+#s-home-sell .desk-tile .dt-stat span, #s-home-buy .desk-tile .dt-stat span { font-size: 11px; font-weight: 500; color: var(--text-3); }
+/* نشان قرمز «در انتظار تایید» — بالای لبهٔ کاشی؛ عدد از
+   deskHomeSync/buyDeskSync؛ هم‌زبانِ dot قرمزِ زنگ اعلان‌ها در اپ‌بار */
+.desk-tile .dt-badge {
     position: absolute; top: -9px; right: 12px;
     min-width: 18px; height: 18px; padding: 0 6px;
     display: inline-flex; align-items: center; justify-content: center;
@@ -5605,94 +5608,85 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-screen .ms-strip { max-width: 1120px; margin-inline: auto; }
 
     /* ═══════════════════════════════════════════════════════════
-       FD-30 — میزها (۰۴/۱۹): کارتابل حرفه‌ای سه‌ستونه (Kanban-light)
-       (الگوی Notion Home / Linear My Issues؛ حکم مالک: میزها در
-       دسکتاپ «قشنگ‌تر و پررنگ‌تر/بزرگ‌تر» دیده شوند)
+       FD-30 → FD-41 — میزها (۰۴/۱۹): هم‌قالب، ستون یگانه
        ▸ همه با تزریق JS در ≥1024 (app-desktop.js · dkDesk) —
          HTML موبایل بایت‌به‌بایت دست‌نخورده.
-       ▸ سرفصل خوشامد + کاشی‌های درشت‌تر + سه ستون موضوعی
-         (شروع · در انتظار تایید · عملیات) + کارت پیشنهاد.
+       ▸ تاریخچه: FD-30 (خوشامد + کاشی‌های درشت + کانبان سه‌ستونه +
+         کارت پیشنهاد) → FD-33/34 (میز فروش: کاشی فلت + «دسترسی
+         سریع» + dsk-tasks) → FD-41 (حکم مالک: «میز خرید و میز فروش
+         از لحاظ دیزاین شبیه هم؛ مینیمال/خلوت/زیبا از میز فروش،
+         گویایی از میز خرید» — میز خرید هم به همان قالب رسید:
+         خوشامد حذف، کانبان حذف، hint حذف؛ ستون یگانه گویاتر و
+         ساده‌تر است و جا برای ایده‌های آینده باز می‌ماند).
        ═══════════════════════════════════════════════════════════ */
 
     /* ۰) بدنهٔ میز — در بلوک فونداسیون بالا ادغام شد (FD-35) */
 
-    /* ۱) سرفصل خوشامد — زیر اپ‌بار چسبان؛ الگوی Notion Home */
-    #phone[data-dk="1"] .dk-desk .dk-greet { padding: 2px 4px 0; }
-    #phone[data-dk="1"] .dk-desk .dk-greet b {
-        display: block; font-size: 24px; font-weight: 800;
-        letter-spacing: -.3px; line-height: 1.6; color: var(--text);
-    }
-    #phone[data-dk="1"] .dk-desk .dk-greet small {
-        display: block; margin-top: 5px;
-        font-size: 13px; font-weight: 500; color: var(--text-3);
-    }
+    /* ۱) کاشی‌های درشت FD-30 حذف شد — FD-34/FD-41: کاشی فلت
+       جمع‌وجور در هر دو میز (بلوک پایین) همهٔ اندازه‌ها را
+       می‌بَرد؛ سرفصل «دسترسی سریع» هم در همان بلوک است. */
 
-    /* ۲) کاشی‌ها: درشت‌تر و پررنگ‌تر — عدد قهرمان + آیکون رنگی */
-    #phone[data-dk="1"] .dk-desk .desk-duo { gap: 16px; }
-    #phone[data-dk="1"] .dk-desk .desk-tile {
-        padding: 24px 22px 20px; border-radius: 20px;
-        background:
-            linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0) 72%),
-            var(--surface);
-    }
-    #phone[data-dk="1"] .dk-desk .desk-tile .dt-ic {
-        width: 46px; height: 46px; border-radius: 14px;
-    }
-    #phone[data-dk="1"] .dk-desk .desk-tile .dt-ic svg { width: 23px; height: 23px; }
-    #phone[data-dk="1"] .dk-desk .desk-tile .dt-t { font-size: 15px; }
-    #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat { margin-top: 14px; }
-    #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat b {
-        font-size: 34px; font-weight: 800; letter-spacing: -.5px;
-    }
-    #phone[data-dk="1"] .dk-desk .desk-tile .dt-stat span { font-size: 12.5px; }
-
-    /* ═══ FD-33 → FD-34 (حکم مالک): میز فروش — فلت اما زیبا ═══
+    /* ═══ FD-33 → FD-34 → FD-41 (حکم مالک): میزها — فلت اما زیبا ═══
        FD-33: کاشی‌های جمع‌وجور (آیکون لخت + شمار کوچک خاکستری +
-       نشان قرمز) ماند؛ کارتابل تک‌کاغذی کنار رفت.
-       FD-34: «عرض کانتنت ۳۰٪ کمتر» (بدنهٔ ۱۱۲۰ → ۸۱۰؛ محتوا
-       ۱۰۴۰ → ۷۳۰) تا «باکس‌های دکمه‌ای سریع مربعی‌تر و خوش‌گل‌تر»
-       دیده شوند؛ کارتابل «همون موبایل — هر تسک در یه کارت، مارجین
-       تاپ مناسب، ارتفاع همه یکسان» → dsk-tasks؛ گرید ممنوع.
-       این بلوک با #s-home-sell (ID > class) بر بلوک‌های FD-30
-       بالا می‌بَرد؛ میز خرید تا نوبتش به کانبان می‌ماند. */
+       نشان قرمز). FD-34: «عرض کانتنت ۳۰٪ کمتر» (بدنهٔ ۸۱۰) تا
+       کاشی‌ها مربعی‌تر و خوش‌گل‌تر دیده شوند؛ کارتابل «همون
+       موبایل — هر تسک در یه کارت، مارجین تاپ مناسب، ارتفاع همه
+       یکسان» → dsk-tasks؛ گرید ممنوع.
+       FD-41: همین قالب در میز خرید هم نشست — دو میز یکدیگر را
+       آینه می‌کنند؛ این بلوک با ID (بالا از بلوک‌های عمومی)
+       می‌بَرد. */
 
-    /* بدنهٔ میز فروش: ۳۰٪ باریک‌تر — کاشی‌ها و کارت‌های تسک جمع‌وجور */
-    #phone[data-dk="1"] #s-home-sell .dk-desk-main .body {
+    /* بدنهٔ هر دو میز: ۳۰٪ باریک‌تر — کاشی‌ها و کارت‌های تسک جمع‌وجور */
+    #phone[data-dk="1"] #s-home-sell .dk-desk-main .body,
+    #phone[data-dk="1"] #s-home-buy .dk-desk-main .body {
         max-width: 810px;
         padding: 26px 40px 56px; gap: 20px;
     }
     /* عنوان‌های میز («دسترسی سریع» / «نیازمند اقدام») هم‌قد و هم‌زبان */
-    #phone[data-dk="1"] #s-home-sell .section-title h2 { font-size: 16px; }
-    #phone[data-dk="1"] #s-home-sell .section-title.dk-quick { margin-top: 0; }
+    #phone[data-dk="1"] #s-home-sell .section-title h2,
+    #phone[data-dk="1"] #s-home-buy .section-title h2 { font-size: 16px; }
+    #phone[data-dk="1"] #s-home-sell .section-title.dk-quick,
+    #phone[data-dk="1"] #s-home-buy .section-title.dk-quick { margin-top: 0; }
 
-    #phone[data-dk="1"] #s-home-sell .desk-duo { gap: 12px; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile {
+    #phone[data-dk="1"] #s-home-sell .desk-duo,
+    #phone[data-dk="1"] #s-home-buy .desk-duo { gap: 12px; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile,
+    #phone[data-dk="1"] #s-home-buy .desk-tile {
         padding: 14px 13px 12px; border-radius: 14px;
         background: var(--surface);
     }
-    #phone[data-dk="1"] #s-home-sell .desk-tile:hover {
+    #phone[data-dk="1"] #s-home-sell .desk-tile:hover,
+    #phone[data-dk="1"] #s-home-buy .desk-tile:hover {
         transform: translateY(-1px);
         box-shadow: 0 6px 18px rgba(31, 29, 26, .07);
     }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic {
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic,
+    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-ic {
         width: auto; height: auto; border-radius: 0;
         background: none;
     }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic svg { width: 19px; height: 19px; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-t { font-size: 13px; font-weight: 700; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat { margin-top: 4px; gap: 3px; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat b { font-size: 11.5px; font-weight: 700; color: var(--text-2); }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat span { font-size: 11px; font-weight: 500; }
-    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-badge { top: -9px; right: 12px; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-ic svg,
+    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-ic svg { width: 19px; height: 19px; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-t,
+    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-t { font-size: 13px; font-weight: 700; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat,
+    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-stat { margin-top: 4px; gap: 3px; }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat b,
+    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-stat b { font-size: 11.5px; font-weight: 700; color: var(--text-2); }
+    #phone[data-dk="1"] #s-home-sell .desk-tile .dt-stat span,
+    #phone[data-dk="1"] #s-home-buy .desk-tile .dt-stat span { font-size: 11px; font-weight: 500; }
 
     /* کارتابل: هر تسک یک کارتِ مستقل (الگوی موبایل) — ستون یگانه،
        فاصلهٔ ۱۲ (مارجین تاپ مناسب)، ارتفاع یکسان (min-height +
-       وسط‌چین عمودی)، هاورِ آرام. نه کاغذ واحد، نه گرید. */
-    #phone[data-dk="1"] #s-home-sell .body > .rows.dsk-tasks {
+       وسط‌چین عمودی)، هاورِ آرام. نه کاغذ واحد، نه گرید.
+       FD-41: هر دو میز — میز خرید همان زبانِ میز فروش را می‌گیرد. */
+    #phone[data-dk="1"] #s-home-sell .body > .rows.dsk-tasks,
+    #phone[data-dk="1"] #s-home-buy .body > .rows.dsk-tasks {
         display: flex; flex-direction: column; gap: 12px;
         background: none; border: 0; padding: 0; box-shadow: none;
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row {
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 15px;
@@ -5702,113 +5696,60 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
         gap: 15px;
         transition: border-color .15s, box-shadow .15s, transform .15s;
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row:hover {
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row:hover,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row:hover {
         border-color: var(--border-2);
         box-shadow: 0 6px 18px rgba(31, 29, 26, .06);
         transform: translateY(-1px);
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .row-title { font-size: 14px; }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .row-sub { font-size: 12.5px; margin-top: 4px; }
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .row-title,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row .row-title { font-size: 14px; }
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .row-sub,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row .row-sub { font-size: 12.5px; margin-top: 4px; }
     /* آیکون ردیف‌ها هم لخت (هم‌زبانِ کاشی‌ها) — استایل اینلاینِ HTMLِ
        موبایل با !important شکسته می‌شود (الگوی FD-28/30)؛ رنگِ آیکون
-       از همان اینلاین می‌ماند (نارنجی/کهربایی/زغالی) */
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb {
+       از همان اینلاین می‌ماند (نارنجی/کهربایی/زغالی). FD-41: بندانگشتیِ
+       عکسیِ میز خرید (کالاهای واقعی: برنج) استثناست — عکس data-driven
+       است نه تزئینی؛ مربعِ جمع‌وجورِ گرد می‌ماند، نه لخت. */
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row .thumb {
         width: auto; height: auto; border-radius: 0; overflow: visible;
+    }
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb:not(:has(img)),
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row .thumb:not(:has(img)) {
         background: none !important;
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb svg {
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb:has(img),
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row .thumb:has(img) {
+        width: 44px; height: 44px; border-radius: 12px; overflow: hidden;
+    }
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row .thumb svg,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row .thumb svg {
         width: 22px !important; height: 22px !important;
     }
     /* ردیف راه‌اندازی: کارتِ نقطه‌چینِ آرام (هم‌الگوی موبایل، بدون
-       کارت در کارت) — نشان «تکمیل اطلاعات» (FD-33) */
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row.row-start {
+       کارت در کارت) — نشان «تکمیل اطلاعات» میز فروش / «شروع» میز خرید */
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row.row-start,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row.row-start {
         border: 1.5px dashed var(--arm);
         background: linear-gradient(180deg, var(--arm-soft), var(--surface) 85%);
     }
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row.row-start .st-b {
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks .row.row-start .st-b,
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks .row.row-start .st-b {
         background: var(--arm-soft); color: var(--arm-strong);
         font-size: 10px; font-weight: 700;
         padding: 3px 10px; border-radius: 999px;
     }
-    /* کارتِ خالی دیده نشود — عنصرِ بی‌دلیل نداریم (هم‌الگوی dsk-col) */
-    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks:not(:has(.row:not([hidden]))) { display: none; }
+    /* کارتِ خالی دیده نشود — عنصرِ بی‌دلیل نداریم */
+    #phone[data-dk="1"] #s-home-sell .rows.dsk-tasks:not(:has(.row:not([hidden]))),
+    #phone[data-dk="1"] #s-home-buy .rows.dsk-tasks:not(:has(.row:not([hidden]))) { display: none; }
 
-    /* ۳) کارتابل سه‌ستونه — هر ستون یک کاغذ با سربرگ رنگ‌مویه
-       (ظرفِ واحد FD-29 کنار می‌رود؛ ردیف‌ها زبانِ مسطح خود را
-       نگه می‌دارند — خط مویی، الگوی جدول دسکتاپ) */
-    #phone[data-dk="1"] .dk-desk .body > .rows.dsk-rows {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-        align-items: start;
-        background: none; border: 0; padding: 0; box-shadow: none;
-    }
-    #phone[data-dk="1"] .dk-desk .dsk-col {
-        min-width: 0;
-        display: flex; flex-direction: column; gap: 8px;
-        /* FD-30: پس‌زمینهٔ تینت — ردیف‌ها کارت‌های سفیدِ جدا روی ستون
-           (الگوی Notion database group)؛ قبلاً ردیف‌ها چسبیده بودند */
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 8px;
-        box-shadow: 0 1px 3px rgba(31,29,26,.03);
-    }
-    #phone[data-dk="1"] .dk-desk .dsk-col-h {
-        display: flex; align-items: center; gap: 10px;
-        padding: 12px 12px 8px;
-        font-size: 12.5px; font-weight: 700; color: var(--text-2);
-    }
-    #phone[data-dk="1"] .dk-desk .dsk-col-h svg {
-        width: 16px; height: 16px; padding: 8px; box-sizing: content-box;
-        border-radius: 10px; flex-shrink: 0;
-    }
-    #phone[data-dk="1"] .dk-desk .dsk-col[data-col="start"] .dsk-col-h svg {
-        background: var(--arm-soft); color: var(--arm-strong);
-    }
-    #phone[data-dk="1"] .dk-desk .dsk-col[data-col="pend"] .dsk-col-h svg {
-        background: var(--amber-soft); color: var(--amber);
-    }
-    #phone[data-dk="1"] .dk-desk .dsk-col[data-col="orders"] .dsk-col-h svg {
-        background: var(--primary-soft); color: var(--primary-strong);
-    }
-    #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 13px;
-        padding: 13px 14px;
-        box-shadow: 0 1px 2px rgba(31,29,26,.05);
-    }
-    #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row .row-title { font-size: 13.5px; }
-    #phone[data-dk="1"] .dk-desk .rows.dsk-rows .row .row-sub { font-size: 12px; }
-
-    /* ستونِ خالی پنهان — عنصرِ بی‌دلیل نداریم. ردیف‌ها با
-       deskHomeSync/buyDeskSync (بعد از تزریق، async) زنده hidden
-       می‌شوند؛ :has همان لحظه واکنش نشان می‌دهد. */
-    #phone[data-dk="1"] .dk-desk .dsk-col:not(:has(.row:not([hidden]))) { display: none; }
-
-    /* ۴) hint-line → کارت پیشنهاد آی‌مچ — کاغذ + آیکون فیروزه‌ای
-       (هم‌زبان با کارت‌های صفحه؛ نوارِ اطلاع‌رسانی، نه سطرِ ریز) */
-    #phone[data-dk="1"] .dk-desk .hint-line.dsk-hint {
-        max-width: none; margin: 0;
-        padding: 16px 18px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        box-shadow: 0 1px 3px rgba(31,29,26,.03);
-        justify-content: flex-start; text-align: start;
-        gap: 14px;
-    }
-    #phone[data-dk="1"] .dk-desk .hint-line.dsk-hint svg {
-        width: 17px; height: 17px; margin-top: 0;
-        padding: 9px; box-sizing: content-box;
-        background: var(--accent-soft); color: var(--accent-strong);
-        border-radius: 11px; flex-shrink: 0;
-    }
-    #phone[data-dk="1"] .dk-desk .hint-line.dsk-hint span {
-        font-size: 13.5px; font-weight: 600; color: var(--text-2);
-        line-height: 2;
-    }
+    /* FD-41: کانبان سه‌ستونهٔ FD-30 (dsk-rows/dsk-col/dsk-col-h) و
+       کارتِ پیشنهاد hint (dsk-hint) حذف شدند — میز خرید هم‌قالبِ
+       میز فروش شد (dsk-tasks) و hint از HTML میزها برداشته شد
+       (حکم مالک: «جاش روی میز خرید نیست»؛ قرینهٔ FD-33 میز فروش).
+       خوشامد dk-greet هم حذف شد — «دسترسی سریع» در هر دو میز
+       (قرینهٔ حکم FD-34). */
 
     /* ═══════════════════════════════════════════════════════════
        FD-30 — ۳۶ ویرایش کاتالوگ: Form + Preview

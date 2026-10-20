@@ -401,8 +401,11 @@
         var supNew = sups.filter(function (s) { return s.isNew; }).length;
         var sn = $('#buy-desk-sup-n');
         if (sn) sn.textContent = faNum(sups.length);
-        var ss = $('#buy-desk-sup-sub');
-        if (ss) ss.textContent = supNew ? faNum(supNew) + ' در انتظار تایید' : '';
+        /* FD-41 (تعمیم حکم FD-33 به میز خرید): زیرمتن «N در انتظار تایید»
+           حذف — نشان قرمزِ بالای کاشی تأمین‌کننده‌ها (قرینهٔ کاشی
+           مشتریان میز فروش — گویاتر و خوشگل‌تر) */
+        var sb = $('#buy-desk-sup-badge');
+        if (sb) { sb.hidden = !supNew; sb.textContent = faNum(supNew); }
         var on = $('#buy-desk-ord-n');
         if (on) on.textContent = faNum((core.data.ordersOut || []).length);
         var rn = $('#buy-desk-rfq-n');

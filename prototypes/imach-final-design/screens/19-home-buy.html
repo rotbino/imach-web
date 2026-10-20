@@ -36,6 +36,19 @@
     • «در انتظار تایید» حتماً در کارتابل اقدام هم هست: پیشنهادهای
       تامین رسیده (suppliers isNew) → دفتر تأمین‌کننده‌ها (۲۲).
 
+    بازبینی مالک (FD-41 — هم‌قالبِ میز فروش):
+    • حکم: «میز خرید و میز فروش از لحاظ دیزاین شبیه هم باشند؛
+      مینیمالی/خلوت‌بودن/زیبایی از میز فروش، گویایی از میز خرید».
+      کاشی‌ها فلت شدند (تعمیم FD-33 به این میز): بدون chevron،
+      آیکون لخت، شمار کوچک خاکستری؛ زیرمتن «N در انتظار تایید» →
+      نشان قرمزِ بالای کاشی تأمین‌کننده‌ها (dt-badge).
+    • hint-line «۳ تأمین‌کنندهٔ جدید…» حذف شد — حکم مالک:
+      «جاش روی میز خرید نیست» (قرینهٔ حکم FD-33 میز فروش).
+    • دسکتاپ: کانبان سه‌ستونهٔ FD-30 کنار رفت → همان dsk-tasksِ
+      میز فروش (هر تسک یک کارت، ستون یگانه) + «دسترسی سریع» به‌جای
+      خوشامد (قرینهٔ FD-34). گویاییِ میز خرید در ردیف‌های کارتابل
+      می‌ماند (زیرمتن‌های داده‌دار مثل «۵ پیشنهاد · ۳ روز مانده»).
+
     منطق: buyDeskSync() در app-forms.js + scoreItemsBuy در data.js
      ═════════════════════════════════════════════════════════════ -->
 <section class="screen" id="s-home-buy" data-arm="buy">
@@ -58,6 +71,9 @@
             </button>
             <button class="icon-btn" data-go="s-notifs" aria-label="اعلان‌ها">
                 <svg><use href="#i-bell"/></svg>
+                <!-- FD-41: نشان اعلان‌های خوانده‌نشده — قرینهٔ میز فروش
+                     (اعلان‌ها سراسری‌اند و در هر دو میز یکسان‌اند) -->
+                <span class="dot">۳</span>
             </button>
         </div>
     </div>
@@ -66,33 +82,35 @@
 
         <!-- FD-16 (حکم مالک): چهار کاشی جمع‌وجور — «همهٔ لینکها بالا»:
              لیست خرید / تأمین‌کننده‌ها / سفارشات من / استعلام‌های من.
-             توضیح‌های تزیینی کاشی‌ها حذف شد (مینیمال)؛ زیرمتن فقط
-             دادهٔ واقعی (در انتظار تایید). اعداد زنده از دیتا:
-             buyDeskSync() — لیست از shoppingList، تأمین‌کننده/در انتظار
-             از suppliers، سفارش از ordersOut، استعلام از rfqsOut. -->
+             FD-41 (تعمیم FD-33): کاشی فلت — بدون chevron، آیکون لخت،
+             شمار کوچک خاکستری؛ «N در انتظار تایید» زیرمتن نیست — نشان
+             قرمز بالای کاشی تأمین‌کننده‌ها (dt-badge، هم‌زبانِ میز فروش).
+             اعداد زنده از buyDeskSync(): لیست از shoppingList،
+             تأمین‌کننده/در انتظار از suppliers، سفارش از ordersOut،
+             استعلام از rfqsOut. -->
         <div class="desk-duo">
             <button class="desk-tile" data-go="s-buy-list" type="button">
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-basket"/></svg></span>
                     <b class="dt-t">لیست خرید من</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="buy-desk-list-n">۴</b><span>کالا</span></div>
             </button>
+            <!-- FD-41: نشان قرمز «در انتظار تایید» — بالای لبهٔ کاشی؛
+                 عدد/روشن بودنش را buyDeskSync() می‌گذارد (قرینهٔ
+                 کاشی مشتریان میز فروش) -->
             <button class="desk-tile" data-go="s-buy-suppliers" type="button">
+                <span class="dt-badge" id="buy-desk-sup-badge" hidden></span>
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-users"/></svg></span>
                     <b class="dt-t">تأمین‌کننده‌های من</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="buy-desk-sup-n">۳</b><span>تأمین‌کننده</span></div>
-                <div class="dt-sub" id="buy-desk-sup-sub"></div>
             </button>
             <button class="desk-tile" data-go="s-buy-orders" type="button">
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-receipt"/></svg></span>
                     <b class="dt-t">سفارشات من</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="buy-desk-ord-n">۱</b><span>سفارش</span></div>
             </button>
@@ -100,7 +118,6 @@
                 <span class="dt-head">
                     <span class="dt-ic"><svg><use href="#i-inbox"/></svg></span>
                     <b class="dt-t">استعلام‌های من</b>
-                    <svg class="dt-chev" aria-hidden="true"><use href="#i-chev"/></svg>
                 </span>
                 <div class="dt-stat"><b id="buy-desk-rfq-n">۲</b><span>باز</span></div>
             </button>
@@ -165,10 +182,8 @@
             </div>
         </div>
 
-        <div class="hint-line">
-            <svg><use href="#i-sparkles"/></svg>
-            <span>۳ تأمین‌کنندهٔ جدید برای کالاهای لیست خریدت پیدا شد.</span>
-        </div>
+        <!-- FD-41: hint-line «۳ تأمین‌کنندهٔ جدید…» حذف شد — حکم مالک:
+             «جاش روی میز خرید نیست» (قرینهٔ حکم FD-33 میز فروش). -->
     </div>
 
     <!-- FD-12 (حکم مالک): نام میزها در تب‌بار — «جا» است نه «فعالیت». -->
