@@ -42,6 +42,8 @@ interface AuthState {
    *  به صفحهٔ اول برمی‌گردد تا همه‌چیز از اول شروع شود. */
   deleteAccount: () => Promise<void>;
   setSession: (session: { accessToken: string; user: UserDto; businesses: BusinessSummaryDto[] }) => void;
+  /** به‌روزرسانی محلی کسب‌وکارها (بعد از editBusiness/تکمیل آنبوردینگ بدون رفرش کامل) */
+  updateBusinesses: (businesses: BusinessSummaryDto[]) => void;
   /** refresh ساکت برای api client — توکن جدید را برمی‌گرداند */
   refresh: () => Promise<string | null>;
   /** به‌روزرسانی محلی فیلد passwordSet (بعد از setPassword بدون رفرش کامل) */
@@ -63,6 +65,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       user: session.user,
       businesses: session.businesses,
     }),
+
+  updateBusinesses: (businesses) => set({ businesses }),
 
   boot: async () => {
     // Single-flight: concurrent callers share ONE boot round-trip —

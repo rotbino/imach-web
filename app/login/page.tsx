@@ -1,127 +1,308 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { authApi, ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
-import { ApiError } from "@/lib/api";
+import { routeAfterAuth } from "@/lib/active-biz";
+import { IntlPhoneField } from "@/components/imach/intl-phone-field";
+import { AuthBrandPanel } from "@/components/imach/auth-brand-panel";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { Sheet } from "@/components/ui/sheet";
 import { useToast } from "@/components/ui/toast";
 import { Icon } from "@/components/ui/icon";
+import { useMessages } from "@/i18n/messages/use-messages";
+import { useLocale } from "@/i18n/locale-context";
+import { guessCountryCode, langOfCountry, normalizeIntlPhone, fmtPhone } from "@/lib/countries";
+import { hasExplicitLocale, isLocale } from "@/i18n/config";
 
 /**
- * `/login` — ورود M0 (چهرهٔ 03-login در M1 کامل می‌شود).
- * جریان واقعی: شماره → checkPhone → رمز → loginUser → میز.
- * بازیابی رمز = تیکت پشتیبانی انسانی (تصمیم FD-22).
+ * `/login` — اسکرین ۰۳: ورود (M1 · 03-login پروتوتایپ نهایی).
+ *
+ * · چهره = پروتوتایپ (شماره + رمز یکجا؛ اولویت لینک‌ها FD-26)؛
+ *   منطق = قرارداد واقعی (checkPhone → رمز | quickRegister | دعوت به /start)
+ * · IntlPhoneField تلگرامی: پرچم/کد داخل باکس؛ کشور → زبان هم‌گام (فاز ۱۰)
+ * · بازیابی رمز = شیت «ارسال شماره به پشتیبانی» → «به‌زودی رمز موقت» (FD-26/22)
+ * · دسکتاپ ≥lg: اسپلیت FD-28/29 — کارت ۴۴۸ + پنل برند تمام‌قد
+ * · ?phone=&cc= از /start می‌آید تا شماره دوباره تایپ نشود
  */
-export default function LoginPage() {
-  const router = useRouter();
-  const login = useAuthStore((s) => s.login);
-  const { show } = useToast();
 
-  const [phone, setPhone] = useState("");
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginView />
+    </Suspense>
+  );
+}
+
+function LoginView() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const login = useAuthStore((s) => s.login);
+  const quickRegister = useAuthStore((s) => s.quickRegister);
+  const { show } = useToast();
+  const m = useMessages();
+  const t = m.auth.login;
+  const { locale, setLocale } = useLocale();
+
+  // ?phone=&cc= — سوییچ خودکار از /start بدون پاک‌شدن شماره
+  const prePhone = searchParams.get("phone") ?? "";
+  const preCountry = searchParams.get("cc") ?? "";
+
+  const [phone, setPhone] = useState(prePhone.replace(/^0+/, "").replace(/\D/g, "").slice(0, 12));
+  const [country, setCountry] = useState(preCountry || "IR");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [helpOpen, setHelpOpen] = useState(false);
+  const [noAccount, setNoAccount] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const pwRef = useRef<HTMLInputElement>(null);
+  const guessed = useRef(false);
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    if (!phone.trim()) return setError("شمارهٔ موبایل را بنویس");
+  // حدس کشور فقط بدون انتخاب صریح زبان (کوکی زبان مقدم است)
+  useEffect(() => {
+    if (guessed.current) return;
+    guessed.current = true;
+    const c = preCountry || guessCountryCode();
+    setCountry(c);
+    if (!hasExplicitLocale()) {
+      const lang = langOfCountry(c);
+      const target = isLocale(lang) ? lang : "en";
+      if (target !== locale) setLocale(target);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- اجرای یک‌باره در mount
+  }, []);
+
+  const phoneIntl = normalizeIntlPhone(phone, country);
+
+  const syncLangWithCountry = (code: string) => {
+    const lang = langOfCountry(code);
+    const target = isLocale(lang) ? lang : "en";
+    if (target !== locale) setLocale(target);
+  };
+
+  /** جریان واقعی: checkPhone → رمز | quickRegister | دعوت به ساخت حساب */
+  const doSubmit = async () => {
+    if (!phoneIntl) {
+      show({ text: m.auth.toast.invalidPhone, kind: "error" });
+      return;
+    }
     setBusy(true);
+    setNoAccount(false);
     try {
-      await login(phone.trim(), password);
-      show({ text: "خوش آمدی 👋", kind: "success" });
-      router.replace("/me");
+      const res = await authApi.checkPhone({ phone: phoneIntl, country });
+      if (res.available) {
+        setNoAccount(true); // حساب نیست → بنر کهربایی + دعوت به /start
+        return;
+      }
+      if (res.hasPassword && !password) {
+        show({ text: t.passwordRequired, kind: "error" });
+        pwRef.current?.focus();
+        return;
+      }
+      if (res.hasPassword) {
+        await login(phoneIntl, password, country);
+      } else {
+        // ثبت‌نام سریعِ قبلی (بدون رمز) — ورود بی‌رمز همان لحظه
+        await quickRegister(phoneIntl, country);
+      }
+      show({ text: m.auth.toast.welcome, kind: "success" });
+      router.replace(routeAfterAuth(useAuthStore.getState().businesses));
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "خطا در ورود — دوباره تلاش کن");
+      show({
+        text: err instanceof ApiError ? err.message : m.auth.toast.generic,
+        kind: "error",
+      });
     } finally {
       setBusy(false);
     }
   };
 
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    void doSubmit();
+  };
+
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
-      {/* برند */}
-      <div className="mb-8 flex flex-col items-center gap-3 text-center">
-        <div className="grid size-16 place-items-center rounded-2xl bg-primary text-[26px] font-black text-white shadow-card">
-          i
+    <div className="flex min-h-dvh flex-col bg-bg lg:flex-row">
+      {/* ═══ ستون فرم (راست در RTL) — موبایل: سرصفحه + بدنه؛ دسکتاپ: کارت ۴۴۸ ═══ */}
+      <div className="flex flex-1 flex-col lg:min-w-0 lg:px-14 lg:pb-16 lg:pt-12">
+        {/* سرصفحهٔ موبایل — دسکتاپ: پنل برند هویت صفحه است */}
+        <div className="sticky top-0 z-[5] flex h-14 items-center gap-2 border-b border-line bg-white/95 px-3 backdrop-blur-md lg:hidden">
+          <Link
+            href="/"
+            aria-label={m.common.backAria}
+            className="grid size-10 place-items-center rounded-xl text-text-2 transition-colors hover:bg-surface-2"
+          >
+            <Icon name="back" size={20} />
+          </Link>
+          <div className="min-w-0">
+            <div className="truncate text-[15px] font-bold text-text">{t.title}</div>
+            <div className="truncate text-[10.5px] text-text-3">{t.subtitle}</div>
+          </div>
         </div>
-        <div>
-          <h1 className="text-[19px] font-black text-text">ورود به آی‌مچ</h1>
-          <p className="mt-1 text-[13px] text-text-3">با شمارهٔ موبایلت وارد شو</p>
+
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-6 lg:max-w-[448px] lg:rounded-3xl lg:border lg:border-line lg:bg-surface lg:px-[38px] lg:py-[38px] lg:shadow-[0_18px_50px_rgba(31,29,26,.07)]">
+          {/* سربرگ کارت — فقط دسکتاپ (dkf-h) */}
+          <div className="mb-6 hidden lg:block">
+            <div className="text-[23px] font-extrabold tracking-[-.2px] text-text">
+              {m.auth.brand.name} — {t.title}
+            </div>
+            <div className="mt-[7px] text-[12.5px] text-text-3">{t.subtitle}</div>
+          </div>
+
+          <form onSubmit={submit} className="flex flex-col gap-4">
+            <Field label={t.phoneLabel}>
+              {() => (
+                <IntlPhoneField
+                  value={phone}
+                  onChange={(v) => {
+                    setPhone(v);
+                    if (noAccount) setNoAccount(false);
+                  }}
+                  country={country}
+                  onCountryChange={(code) => {
+                    setCountry(code);
+                    syncLangWithCountry(code);
+                  }}
+                  ariaLabel={t.phoneLabel}
+                  autoFocus
+                  onEnter={() => void doSubmit()}
+                />
+              )}
+            </Field>
+
+            {/* بنر «حسابی با این شماره نیست» — دعوت به /start با همان شماره */}
+            {noAccount && (
+              <div className="flex items-center gap-2 rounded-xl border border-amber/40 bg-amber-soft px-3 py-2.5 text-[12px] leading-5 text-amber">
+                <Icon name="info" size={18} className="shrink-0" />
+                <span className="min-w-0 flex-1">
+                  <b className="block">{t.noAccountTitle}</b>
+                  <span className="text-[11px]">{t.noAccountSub}</span>
+                </span>
+                <Link
+                  href={`/start?phone=${encodeURIComponent(phone)}&cc=${country}`}
+                  className="inline-flex h-8 shrink-0 items-center rounded-lg bg-white px-3 text-[11.5px] font-bold text-amber"
+                >
+                  {t.noAccountCta}
+                </Link>
+              </div>
+            )}
+
+            <Field label={t.passwordLabel} hint={t.passwordHint}>
+              {(id) => (
+                <Input
+                  id={id}
+                  ref={pwRef}
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              )}
+            </Field>
+
+            <Button type="submit" size="lg" block loading={busy}>
+              {t.submit}
+            </Button>
+          </form>
+
+          {/* FD-26: ثبت‌نام بالا و نارنجی (لینک‌مان)؛ فراموشی پایین و خاموش */}
+          <Link
+            href={`/start${phone ? `?phone=${encodeURIComponent(phone)}&cc=${country}` : ""}`}
+            className="mt-3 block w-full px-2 py-2 text-center text-[12px] font-bold text-primary-strong underline decoration-dashed underline-offset-4 transition-opacity active:opacity-70"
+          >
+            {t.signupLink}
+          </Link>
+          <button
+            type="button"
+            onClick={() => setForgotOpen(true)}
+            className="mt-1 block w-full px-2 py-1.5 text-center text-[11.5px] font-semibold text-text-3 underline decoration-line-2 underline-offset-[3px] transition-colors hover:text-text-2"
+          >
+            {t.forgotLink}
+          </button>
         </div>
       </div>
 
-      {/* ثبت‌نام — لینک اولویت‌دار (FD-26: بالا، نارنجی) */}
-      <Link
-        href="/start"
-        className="mb-5 flex h-[52px] items-center justify-center gap-2 rounded-lg bg-primary text-[15px] font-bold text-white shadow-sm transition-colors hover:bg-primary-strong"
-      >
-        <Icon name="user-plus" size={19} />
-        حساب جدید بساز — سریع و ساده
-      </Link>
+      {/* ═══ پنل برند — تمام‌قد، فقط دسکتاپ ═══ */}
+      <AuthBrandPanel kind="login" />
 
-      <form onSubmit={submit} className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-5">
-        <Field label="شمارهٔ موبایل" required>
-          {(id) => (
-            <Input
-              id={id}
-              inputMode="tel"
-              autoComplete="tel"
-              dir="ltr"
-              placeholder="۰۹۱۲ ـ ـ ـ ـ ـ ـ ـ"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          )}
-        </Field>
-        <Field label="رمز عبور" hint="اگر رمز نداری، از ساخت حساب سریع استفاده کن">
-          {(id) => (
-            <Input
-              id={id}
-              type="password"
-              autoComplete="current-password"
-              placeholder="••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          )}
-        </Field>
-        {error && <p className="text-[12.5px] leading-5 text-red">{error}</p>}
-        <Button type="submit" size="lg" block loading={busy}>
-          ورود
-        </Button>
-      </form>
-
-      {/* بازیابی — پایین، کم‌رنگ (FD-26) */}
-      <button
-        type="button"
-        onClick={() => setHelpOpen(true)}
-        className="mt-5 text-center text-[12.5px] font-bold text-text-3 transition-colors hover:text-text-2"
-      >
-        رمزم را فراموش کرده‌ام
-      </button>
-
-      {/* شیت بازیابی = پشتیبانی انسانی (تصمیم FD-22) */}
-      <Sheet open={helpOpen} onClose={() => setHelpOpen(false)} title="بازیابی رمز عبور">
-        <div className="flex flex-col gap-3 py-1">
-          <p className="text-[13.5px] leading-6 text-text-2">
-            برای بازنشانی رمز، با پشتیبانی آی‌مچ در تماس باش تا هویتت را تأیید کنیم و رمز موقت برایت
-            ارسال شود.
-          </p>
-          <a
-            href="tel:+982160000000"
-            className="flex h-12 items-center justify-center gap-2 rounded-lg bg-surface-2 text-[14px] font-bold text-text transition-colors hover:bg-surface-3"
-          >
-            <Icon name="phone" size={18} />
-            تماس با پشتیبانی
-          </a>
-        </div>
-      </Sheet>
+      {/* ═══ شیت بازیابی رمز (FD-26) ═══ */}
+      <ForgotSheet open={forgotOpen} onClose={() => setForgotOpen(false)} defaultPhone={fmtPhone(phoneIntl)} />
     </div>
+  );
+}
+
+/**
+ * شیت بازیابی رمز — دو نما (فرم → «به‌زودی رمز موقت»).
+ * حکم FD-22: بازیابی از طریق خود آی‌مچ (تیکت پشتیبانی) — نه تماس/واتس‌اپ.
+ * M1: ارسالِ واقعی به صف پشتیبانی در فاز رشد (پیامک درون‌برنامه‌ای) وصل می‌شود؛
+ * نمای موفقیت عین متن مالک است و شیت در خودش ایزوله است.
+ */
+function ForgotSheet({
+  open,
+  onClose,
+  defaultPhone,
+}: {
+  open: boolean;
+  onClose: () => void;
+  defaultPhone: string;
+}) {
+  const m = useMessages();
+  const t = m.auth.forgot;
+  const [phone, setPhone] = useState(defaultPhone);
+  const [sent, setSent] = useState(false);
+  const [prevOpen, setPrevOpen] = useState(open);
+
+  // بازشدن دوباره → فرم تمیز (forgotReset الگوی پروتوتایپ)
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setSent(false);
+      setPhone(defaultPhone);
+    }
+  }
+
+  return (
+    <Sheet open={open} onClose={onClose} title={t.title}>
+      {!sent ? (
+        <div className="flex flex-col gap-3 py-1">
+          <p className="text-[13px] leading-6 text-text-2">{t.sub}</p>
+          <Field label={t.phoneLabel}>
+            {(id) => (
+              <Input
+                id={id}
+                dir="ltr"
+                inputMode="tel"
+                placeholder={t.phonePh}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            )}
+          </Field>
+          <Button variant="arm" block onClick={() => setSent(true)}>
+            <Icon name="send" size={17} />
+            {t.submit}
+          </Button>
+          <p className="mt-1 flex items-start gap-2 text-[11px] leading-[1.9] text-text-4">
+            <Icon name="lock" size={14} className="mt-[3px] shrink-0" />
+            <span>{t.security}</span>
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-2 py-3 text-center">
+          <div className="grid size-14 place-items-center rounded-full bg-green-soft text-green">
+            <Icon name="check" size={26} />
+          </div>
+          <div className="text-[15px] font-extrabold text-text">{t.okTitle}</div>
+          <div className="text-[12px] leading-5 text-text-3">{t.okSub}</div>
+          <Button variant="arm" block className="mt-2" onClick={onClose}>
+            {t.close}
+          </Button>
+        </div>
+      )}
+    </Sheet>
   );
 }

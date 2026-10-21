@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Icon } from "./icon";
+import { useMessages } from "@/i18n/messages/use-messages";
 
 /**
  * Sheet — شیت پایین‌باز (قانون موبایل پروتوتایپ)؛ در دسکتاپ = مودال وسچ‌ِ کاغذی.
@@ -23,6 +24,7 @@ export function Sheet({ open, onClose, title, children, maxHeightClass = "max-h-
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const m = useMessages();
 
   useEffect(() => setMounted(true), []);
 
@@ -50,10 +52,15 @@ export function Sheet({ open, onClose, title, children, maxHeightClass = "max-h-
 
   return createPortal(
     <div
+      // بسته = inert: از درخت دسترسی حذف می‌شود (شیت بسته نباید در snapshot باشد)
+      inert={!visible}
+      aria-hidden={!open}
       className={cn(
         "fixed inset-0 z-50 bg-text/45 backdrop-blur-[2px]",
-        "transition-opacity duration-200",
-        visible ? "opacity-100" : "opacity-0 pointer-events-none"
+        // visibility در transition: هنگام بستن تا پایان انیمیشنِ محو دیده می‌شود،
+        // بعدش از درخت دسترسی هم خارج می‌شود (شیت بسته در a11y tree نمی‌ماند)
+        "transition-[opacity,visibility] duration-200",
+        visible ? "opacity-100" : "opacity-0 invisible pointer-events-none"
       )}
       onClick={onClose}
       role="presentation"
@@ -85,7 +92,7 @@ export function Sheet({ open, onClose, title, children, maxHeightClass = "max-h-
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="بستن"
+                aria-label={m.common.closeAria}
                 className="grid size-8 place-items-center rounded-full text-text-3 hover:bg-surface-2"
               >
                 <Icon name="x" size={18} />
