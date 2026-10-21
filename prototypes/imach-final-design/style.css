@@ -6023,6 +6023,23 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] #s-customers .body > .hint-line,
     #phone[data-dk="1"] #s-buy-suppliers .body > .hint-line { grid-column: 1 / -1; }
 
+    /* ═══ FD-45 — کارت «در انتظار تایید» در دسکتاپ: تایید/حذف ته کارت، روبه‌روی متن‌ها ═══
+       حکم مالک: «این دکمه های تایید و حذف در فرم مشتریان در دسکتاب نباید زیر کارت و
+       اینقدر دراز و زشت باشه. باید بیاد ته کارت روبروی نوشته ها» — دکمه‌ها از ردیفِ
+       زیرِ کارت به تهِ کارت (سمتِ چپ در RTL) می‌روند: قرص جمع به‌پهنای-محتوا، هم‌راستای
+       متن‌ها (۰۸ مشتریان و ۲۲ تأمین‌کنندگان — کلاس مشترک cust-req). منوی سه‌نقطه در
+       کارتِ در انتظار دسکتاپ کنار می‌رود (با تایید/حذفِ روبه‌رو تکراری است). */
+    #phone[data-dk="1"] .cust-req { position: relative; }
+    #phone[data-dk="1"] .cust-req > .row { padding-inline-end: 216px; }
+    #phone[data-dk="1"] .cust-req > .row > .icon-btn { display: none; }
+    #phone[data-dk="1"] .cust-req-act {
+        position: absolute;
+        inset-inline-end: 16px; top: 50%;
+        transform: translateY(-50%);
+        padding: 0; gap: 8px;
+    }
+    #phone[data-dk="1"] .cust-req-act .btn { flex: 0 0 auto; width: auto; }
+
     /* ۲۶ پیشنهادها: گرید ۳ستونه + کارت‌های نفس‌دار
        (کارتِ ۵۶۶px با ارتفاعِ موبایل = لوله؛ ۳×۳۸۰ + پدینگ/تایپِ
        درشت‌تر — قانون FD-28 گرید۲ با این بلوک جایگزین شد) */
