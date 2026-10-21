@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { AuthGate } from "@/components/imach/auth-gate";
-import { AppShell, type SideLink } from "@/components/imach/app-shell";
+import { AppShell } from "@/components/imach/app-shell";
 import { Icon } from "@/components/ui/icon";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -19,14 +19,16 @@ import { cn } from "@/lib/utils";
 import type { GoodItemDto } from "@/lib/api";
 
 /**
- * `/catalog` — اسکرین ۰۵: کاتالوگ من (M2 · FD-35/39/42).
+ * `/catalog` — اسکرین ۰۵: کاتالوگ من (M2 · FD-35/39/42 + حکم مالک فیکس).
  *
- * · نوار ابزار: جستجوی زنده + «محصول جدید» (مهم‌ترین دکمه — تم‌پس‌زمینه)
+ * · صفحهٔ فرعی (back=/sell): بدون سایدبار — فلش بازگشت استاندارد ← در
+ *   اپ‌بار + عنوان؛ ابزارها در نوار ابزار زیر اپ‌بار (همهٔ عرض‌ها) تا
+ *   «صفحهٔ فرعی شبیه صفحات اصلی نشود و کاربر گیج نشود» (حکم مالک).
+ * · نوار ابزار: تغییر قیمت‌ها · پیش‌نمایش · اشتراک · تنظیمات (FD-39/42)
+ * · جستجوی زنده + «محصول جدید» (مهم‌ترین دکمه — تم‌پس‌زمینه) در محتوا
  * · چیپ‌های دستهٔ شخصی (customCategories از کسب‌وکار) + همه + بی‌دسته
  * · گرید auto-fill ۲۵۲: عکس/حرف · نام (title شخصی > نام مرجع) · بسته · قیمت
- * · موبایل: ۴ دکمهٔ ابزار ۲×۲ (تغییر قیمت‌ها/پیش‌نمایش/اشتراک/تنظیمات)
- * · دسکتاپ FD-39: همان ۴ ابزار در سایدبار اختصاصی (هم‌هندسهٔ اصلی)
- * · نوار آمار: کالا / ذخیره‌کننده / دعوت — زنده از دیتا
+ * · نوار آمار: نوع کالا / ذخیره‌کننده / دعوت — زنده از دیتا
  */
 
 export default function CatalogPage() {
@@ -90,15 +92,26 @@ function Catalog() {
   }, [biz]);
 
   // شمارندهٔ نوار آمار — ذخیره‌کننده از getFollowers بعداً؛ فعلاً کالا/دسته زنده
-  const sideLinks: SideLink[] = [
-    { icon: "percent", label: C.bulkEdit, href: "/catalog/bulk" },
-    { icon: "eye", label: C.preview, href: biz ? `/c/${biz.slug}` : "/catalog", onClick: undefined },
-    { icon: "share", label: C.share, onClick: () => setShareOpen(true) },
-    { icon: "gear", label: C.settingsAria, href: "/catalog/settings" },
-  ];
 
   return (
-    <AppShell arm="sell" title={`${C.title}`} wide sidebar={{ brand: C.title, links: sideLinks }}>
+    <AppShell
+      arm="sell"
+      title={C.title}
+      wide
+      back="/sell"
+      toolbar={
+        <>
+          <ToolBtn icon="percent" label={C.bulkEdit} onClick={() => router.push("/catalog/bulk")} />
+          <ToolBtn
+            icon="eye"
+            label={C.preview}
+            onClick={() => router.push(biz ? `/c/${biz.slug}` : "/sell")}
+          />
+          <ToolBtn icon="share" label={C.share} onClick={() => setShareOpen(true)} />
+          <ToolBtn icon="gear" label={C.settings} onClick={() => router.push("/catalog/settings")} />
+        </>
+      }
+    >
       <div className="flex flex-col gap-3">
         {/* ── نوار ابزار: جستجو + محصول جدید (FD-35) ── */}
         <div className="flex gap-2">
@@ -187,6 +200,29 @@ function Catalog() {
       {/* ── شیت اشتراک‌گذاری ── */}
       <ShareSheet open={shareOpen} onClose={() => setShareOpen(false)} link={shareLinks} title={C.shareTitle} hint={C.shareHint} copied={C.shareCopied} />
     </AppShell>
+  );
+}
+
+/** دکمهٔ نوار ابزار (حکم مالک فیکس) — قرصِ فشرده با آیکون؛ همان
+ *  ابزارهای سایدبارِ پیشین، حالا در نوار بالای محتوا؛ در همهٔ عرض‌ها. */
+function ToolBtn({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: Parameters<typeof Icon>[0]["name"];
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-[12.5px] font-bold text-text-2 transition-colors hover:border-arm/45 hover:bg-arm-soft hover:text-arm-strong active:scale-[.97]"
+    >
+      <Icon name={icon} size={15} />
+      {label}
+    </button>
   );
 }
 
@@ -346,7 +382,7 @@ function ShareSheet({
             <Icon name={done ? "check" : "link"} size={16} />
           </Button>
         </div>
-        {done && <p className="text-[12px] font-bold text-green-700">{copied}</p>}
+        {done && <p className="text-[12px] font-bold text-green">{copied}</p>}
       </div>
     </Sheet>
   );

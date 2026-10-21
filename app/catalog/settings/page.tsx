@@ -125,7 +125,7 @@ function Settings() {
   };
 
   return (
-    <AppShell arm="sell" title="ویرایش کاتالوگ" wide>
+    <AppShell arm="sell" title="ویرایش کاتالوگ" wide back="/catalog">
       <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5">
         {/* ═══ پیش‌نمایش زنده ═══ */}
         <div className="flex items-center gap-3.5 rounded-2xl border border-line bg-surface p-4">

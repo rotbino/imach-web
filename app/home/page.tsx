@@ -57,6 +57,9 @@ function BuyDesk() {
   const watched = (watchedQ.data ?? []).filter((w) => !w.archivedAt);
   const suppliers = followsQ.data ?? [];
   const recentOffers = rfqsQ.data?.recentOfferCount ?? 0;
+  // M3 — شمار «در حال اتمام موجودی» برای ردیف کارتابل میز خرید (۲۰ج)؛
+  // صفر = ردیف مخفی (قاعدهٔ کارتابل زنده).
+  const lowStockCount = watched.filter((w) => w.lowStock).length;
 
   const nextStep =
     watched.length === 0
@@ -91,6 +94,16 @@ function BuyDesk() {
       title: D.newOffer.replace("{n}", n(recentOffers)),
       sub: D.newOfferSub,
       href: "/offers",
+    });
+  }
+  // M3 (۲۰ج) — ردیف «در حال اتمام موجودی» با شمار زنده؛ صفر = مخفی
+  if (lowStockCount > 0) {
+    trayRows.push({
+      icon: "boxes",
+      iconCls: "bg-amber-soft text-amber",
+      title: `${n(lowStockCount)} نوع کالا رو به اتمام`,
+      sub: "موجودی‌شان دارد تمام می‌شود — برای سفارش بعدی",
+      href: "/buy-list/low-stock",
     });
   }
 

@@ -105,8 +105,24 @@ export const UNIT_LABELS: Record<string, { fa: string; en: string; ar?: string }
   SERVICE: { fa: "پرس", en: "Service", ar: "طبق" },
 };
 
-/** فاز ۸ — نام‌های چندزبانهٔ واحد از DB (سرور /units/list) — بر‌اساس کلید */
+/** نام‌های چندزبانهٔ واحد از DB (سرور /units/list) — بر اساس کلید.
+ *  پرکردنش وظیفهٔ UnitsBoot در providers است (یک fetch عمومی، همیشه زنده)؛
+ *  تا آن‌گاه برچسب‌های ایستای بالا fallback می‌مانند. رفع باگ مالک:
+ *  واحدهای فقط-DB (مثل CUBIC_METER) کلید انگلیسی نشان داده می‌شدند. */
 export const UNIT_DB_NAMES: Record<string, { fa?: string; en?: string; ar?: string }> = {};
+
+/** پرکردن نقشهٔ واحدها از پاسخ /units/list — idempotent */
+export function hydrateUnits(
+  units: { key: string; nameFa: string; nameEn?: string | null; nameAr?: string | null }[],
+): void {
+  for (const u of units) {
+    UNIT_DB_NAMES[u.key] = {
+      fa: u.nameFa,
+      en: u.nameEn ?? undefined,
+      ar: u.nameAr ?? undefined,
+    };
+  }
+}
 
 export const unitLabel = (u: string, locale?: string): string => {
   const loc = locale ?? readLocaleCookie();
@@ -123,6 +139,8 @@ export const unitLabel = (u: string, locale?: string): string => {
 
 export const FREQUENCY_LABELS: Record<string, { fa: string; en: string; ar?: string }> = {
   WEEKLY: { fa: "هفتگی", en: "Weekly", ar: "أسبوعيًا" },
+  // M3 (FD-25) — دورهٔ دوهفتگی
+  BIWEEKLY: { fa: "دوهفتگی", en: "Every 2 weeks", ar: "كل أسبوعين" },
   MONTHLY: { fa: "ماهانه", en: "Monthly", ar: "شهريًا" },
   OCCASIONAL: { fa: "موردی", en: "Occasional", ar: "عند الحاجة" },
 };

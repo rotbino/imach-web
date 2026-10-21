@@ -83,8 +83,10 @@ function ItemContent({ id }: { id: string }) {
     l.pricePerBaseMinor != null ? fmt(l.pricePerBaseMinor, l.currency) : null;
 
   return (
-    <AppShell arm="sell" title={name}>
-      <div className="flex flex-col gap-4 lg:flex-row-reverse lg:items-start lg:gap-7">
+    <AppShell arm="sell" title={name} wide back="/catalog">
+      {/* lg:flex-row ساده — در RTL ستون شناسه (فرزند اول) سمت راست می‌نشیند
+          (رفع باگ RTL مالک، هم‌الگوی AppShell)؛ در LTR آینه‌ای سمت چپ */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-7">
         {/* ── ستون شناسه (راست/چسبان دسکتاپ — dk-detail) ── */}
         <div className="flex flex-col gap-3 lg:sticky lg:top-20 lg:w-[340px] lg:shrink-0">
           <div className="overflow-hidden rounded-2xl border border-line bg-surface">

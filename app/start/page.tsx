@@ -14,7 +14,7 @@ import { hasExplicitLocale, isLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/locale-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { IntlPhoneField } from "@/components/imach/intl-phone-field";
-import { AuthBrandPanel, LogoMark } from "@/components/imach/auth-brand-panel";
+import { AuthBrandPanel, Logo2 } from "@/components/imach/auth-brand-panel";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { Sheet } from "@/components/ui/sheet";
@@ -429,7 +429,7 @@ function Step2({
         onClick={onBack}
         className="mb-3 inline-flex items-center gap-1.5 p-0 text-[12px] font-bold text-primary-strong transition-opacity active:opacity-70"
       >
-        <Icon name="back" size={13} />
+        <Icon name="back" size={13} className="rtl:-scale-x-100" />
         {t.backToStep1}
       </button>
 
@@ -782,7 +782,7 @@ function AuthShell({
             aria-label={m.common.backAria}
             className="grid size-10 place-items-center rounded-xl text-text-2 transition-colors hover:bg-surface-2"
           >
-            <Icon name="back" size={20} />
+            <Icon name="back" size={20} className="rtl:-scale-x-100" />
           </Link>
           <div className="min-w-0">
             <div className="truncate text-[15px] font-bold text-text">{title}</div>
@@ -800,13 +800,13 @@ function AuthShell({
               : "lg:max-w-[448px] lg:px-[38px] lg:py-[38px]"
           )}
         >
-          {/* نشان آیمچ بالای فرم (حکم مالک M2 — برندینگ در ذهن کاربر):
-              موبایل: وسط‌چین بالای فیلدها · دسکتاپ: بالای عنوان کارت */}
-          <LogoMark size={34} className="mx-auto mb-5 text-primary-strong lg:hidden" />
+          {/* واژه‌نشان کامل آیمچ بالای فرم — وسط‌چین (حکم مالک: logo2 + وسط‌چین لوگو و عنوان):
+              موبایل: وسط‌چین بالای فیلدها · دسکتاپ: سربرگ وسط‌چین کارت */}
+          <Logo2 height={38} className="mx-auto mb-5 lg:hidden" />
 
-          {/* سربرگ کارت — فقط دسکتاپ (dkf-h) */}
-          <div className="mb-6 hidden lg:block">
-            <LogoMark size={42} className="mb-4 text-primary-strong" />
+          {/* سربرگ کارت — دسکتاپ (dkf-h) وسط‌چین */}
+          <div className="mb-6 hidden flex-col items-center text-center lg:flex">
+            <Logo2 height={46} className="mb-4" />
             <div className="text-[23px] font-extrabold tracking-[-.2px] text-text">{title}</div>
             <div className="mt-[7px] text-[12.5px] text-text-3">{subtitle}</div>
           </div>

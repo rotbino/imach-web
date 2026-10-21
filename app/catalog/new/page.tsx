@@ -14,7 +14,8 @@ import { Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useAuthStore } from "@/lib/auth-store";
 import { goodsApi, productsApi, listingsApi, businessesApi, type GoodDto, type ProductRowDto } from "@/lib/api";
-import { num, currencyLabel, majorToMinor } from "@/lib/format";
+import { num, currencyLabel, majorToMinor, unitLabel } from "@/lib/format";
+import { useLocale } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
 
 /**
@@ -52,6 +53,7 @@ function AddWizard() {
   const router = useRouter();
   const qc = useQueryClient();
   const { show } = useToast();
+  const { locale } = useLocale();
   const businesses = useAuthStore((s) => s.businesses);
   const biz = businesses[0];
   const bizId = biz?.id ?? "";
@@ -185,7 +187,8 @@ function AddWizard() {
     if (v && v > 1 && price !== null) setUnitPrice(Math.round(price / v));
   };
 
-  const unit = good?.unit || "";
+  // برچسب واحد بر اساس زبان فعال (رفع باگ مالک: کلید انگلیسی دیده می‌شد)
+  const unit = good?.unit ? unitLabel(good.unit, locale) : "";
   const moneyLabel = currencyLabel(cur);
 
   const save = async () => {
@@ -240,7 +243,12 @@ function AddWizard() {
   ] as const;
 
   return (
-    <AppShell arm="sell" title="افزودن کالا" wide>
+    <AppShell
+      arm="sell"
+      title="افزودن کالا به کاتالوگ"
+      wide
+      back="/catalog"
+    >
       <div className="mx-auto w-full max-w-[760px]">
         {/* ═══ نوار پیشرفت سه‌گامی (FD-38 — غیرکلیکی) ═══ */}
         <div aria-hidden className="mb-6">
@@ -311,8 +319,8 @@ function AddWizard() {
                   key={g.id}
                   onClick={() => pickGood(g)}
                   title={g.nameFa}
-                  sub={`دیدن محصولات این کالا${g.aliases.length ? ` · ${g.aliases.slice(0, 2).join("، ")}` : ""}`}
-                  unit={g.unit}
+                  sub={`دیدن محصولات این نوع کالا${g.aliases.length ? ` · ${g.aliases.slice(0, 2).join("، ")}` : ""}`}
+                  unit={unitLabel(g.unit, locale)}
                 />
               ))}
               {goodsQ.data && goodsQ.data.items.length === 0 && q && (
@@ -320,12 +328,17 @@ function AddWizard() {
                   «{q}» پیدا نشد — می‌توانی همین حالا ثبتش کنی:
                 </p>
               )}
-              <PickRow
-                onClick={() => setNewGoodOpen(true)}
-                title={q ? `«${q}» را به‌عنوان کالای جدید ثبت کن` : "کالای جدید ثبت کن"}
-                sub="نامی که همهٔ فروشنده‌هایش کنار هم مقایسه می‌شوند"
-                plus
-              />
+              {/* حکم مالک فیکس: تا لیست لود نشده این لینک دیده نمی‌شود؛
+                  رنگ برند تا از ردیف‌های نوع کالا جدا بیفتد. */}
+              {!goodsQ.isLoading && goodsQ.data && (
+                <PickRow
+                  onClick={() => setNewGoodOpen(true)}
+                  title={q ? `«${q}» را به‌عنوان نوع کالای جدید ثبت کن` : "نوع کالای جدید ثبت کن"}
+                  sub="قلم کالا — بدون برند و ویژگی؛ مثل گندم، پفک، تیرآهن"
+                  plus
+                  cta
+                />
+              )}
             </div>
           </div>
         )}
@@ -335,7 +348,7 @@ function AddWizard() {
           <div>
             <StepBack onClick={() => goStep(1)}>بازگشت به انتخاب نوع کالا</StepBack>
 
-            <PickedCard title={good.nameFa} sub={`کالا · واحد ${unit || "—"} · ${good.category?.nameFa ?? ""}`} />
+            <PickedCard title={good.nameFa} sub={`نوع کالا · واحد ${unit || "—"} · ${good.category?.nameFa ?? ""}`} />
 
             {/* فیلتر برند — چیپ‌های سروری */}
             {productsQ.data && productsQ.data.brands.length > 0 && (
@@ -609,6 +622,7 @@ function PickRow({
   img,
   unit,
   plus,
+  cta,
 }: {
   onClick: () => void;
   title: string;
@@ -616,15 +630,25 @@ function PickRow({
   img?: string;
   unit?: string;
   plus?: boolean;
+  /** حالت فراخوان (حکم مالک فیکس): قرص برند — از ردیف‌های عادی جدا */
+  cta?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-start transition-colors hover:bg-surface-2"
+      className={cn(
+        "flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-start transition-colors",
+        cta ? "mt-1 border border-primary/30 bg-primary-soft/45 hover:border-primary/60" : "hover:bg-surface-2"
+      )}
     >
       {plus ? (
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary-strong">
+        <span
+          className={cn(
+            "grid size-11 shrink-0 place-items-center rounded-xl",
+            cta ? "bg-primary text-white" : "bg-primary-soft text-primary-strong"
+          )}
+        >
           <Icon name="plus" size={20} />
         </span>
       ) : img ? (
@@ -636,7 +660,7 @@ function PickRow({
         </span>
       )}
       <span className="min-w-0 flex-1">
-        <b className="block truncate text-[14px] font-bold text-text">{title}</b>
+        <b className={cn("block truncate text-[14px] font-bold", cta ? "text-primary-strong" : "text-text")}>{title}</b>
         <span className="block truncate text-[11.5px] text-text-3">{sub}</span>
       </span>
       {unit && <span className="shrink-0 text-[11px] text-text-4">{unit}</span>}
@@ -721,7 +745,12 @@ function NewGoodSheet({
   const save = async () => {
     const v = name.trim();
     if (v.length < 2) {
-      setErr("نام کالا را وارد کن — مثلاً «پفک»");
+      setErr("نام نوع کالا را وارد کن — مثلاً «پفک»");
+      return;
+    }
+    // حکم مالک فیکس: نوع کالا قلم کالا است، نه محصول — سقف ۱۵ کاراکتر
+    if (v.length > 15) {
+      setErr("نام نوع کالا حداکثر ۱۵ کاراکتر است — برند و ویژگی جای دیگر");
       return;
     }
     setBusy(true);
@@ -737,26 +766,29 @@ function NewGoodSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title="ثبت کالای جدید">
+    <Sheet open={open} onClose={onClose} title="ثبت نوع کالای جدید">
+      {/* توضیح خیلی کوتاه (حکم مالک): قلم کالا، نه محصول — تا محصولات
+          به‌اشتباه جای نوع کالا ثبت نشوند */}
       <p className="pb-2 text-[12.5px] leading-5 text-text-3">
-        نام کالا را وارد کن — مثلاً «پفک». بعد از تأیید، همهٔ فروشنده‌های این کالا کنار هم مقایسه می‌شوند.
+        نوع کالا یعنی قلم کالا — مثل گندم، پفک، برنج هاشمی، تیرآهن؛ بدون برند و ویژگی.
+        محصول خودت را بعداً زیر همین نوع ثبت می‌کنی.
       </p>
       <div className="flex flex-col gap-5 py-1">
-        <Field label="نام کالا">
+        <Field label="نام نوع کالا" hint="حداکثر ۱۵ کاراکتر — مثلاً: پفک، تیرآهن">
           {(id) => (
             <Input
               id={id}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value.slice(0, 15))}
               placeholder="مثلاً: پفک"
-              maxLength={60}
+              maxLength={15}
               autoFocus
             />
           )}
         </Field>
         {err && <p className="text-[12px] font-bold leading-5 text-red">{err}</p>}
         <Button variant="arm" size="lg" loading={busy} onClick={() => void save()}>
-          <Icon name="check" size={16} /> ثبت کالا
+          <Icon name="check" size={16} /> ثبت نوع کالا
         </Button>
       </div>
     </Sheet>
@@ -830,9 +862,10 @@ function ScanSheet({
 
       <div className="mt-4 flex flex-col gap-5 py-1">
         <Field label="بارکد را دستی وارد کن" hint="اگر اسکنر نداری">
-          {() => (
+          {(id) => (
             <div className="flex gap-2">
               <Input
+                id={id}
                 dir="ltr"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}

@@ -88,6 +88,13 @@
   --color-arm-soft: var(--arm-soft);
 }
 
+/* ── جهت‌آگاهی (حکم مالک — فیکس دستهٔ باگ‌های RTL) ──
+   Tailwind v4 دگرگونی‌های rtl:/ltr: را در هسته ندارد؛ بدون این
+   تعریف، همهٔ کلاس‌های rtl:-… (مثل rtl:-scale-x-100 روی شِوْرون‌ها
+   و فلش بازگشت) CSS تولید نمی‌کنند و آیکون‌ها در RTL برعکس می‌شوند.
+   قاعدهٔ مالک: RTL → شِوْرون/فلشِ «بیشتر» به چپ، «بازگشت» به راست. */
+@custom-variant rtl (&:where(:dir(rtl), [dir="rtl"] *));
+
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;

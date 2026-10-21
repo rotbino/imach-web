@@ -153,6 +153,8 @@ export interface BusinessSummaryDto {
   priceVisibilityTrades?: string[] | null;
   /** M2 (G7) — اعتبار قیمت به روز (۱..۵)؛ null = هرگز منقضی نمی‌شود */
   priceValidityDays?: number | null;
+  /** M3 مهاجرت — شرایط درخواست تامین خریدار (sheet-buycond)؛ خالی = مخفی در عمومی */
+  supplyTerms?: string | null;
   /** لوکیشن دقیق اختیاری — فقط مبنای تطابق؛ علنی نمی‌شود */
   lat?: number | null;
   lng?: number | null;
@@ -527,7 +529,7 @@ export interface InquiryDto {
   id: string;
   volume: number;
   note: string | null;
-  /** فاز ۴ — تناوب خرید خریدار (WEEKLY | MONTHLY | OCCASIONAL) */
+  /** فاز ۴ — تناوب خرید خریدار (WEEKLY | BIWEEKLY | MONTHLY | OCCASIONAL — M3: دوهفتگی) */
   frequency: string | null;
   /** فاز ۴ — انتظار تحویل خریدار («این ماه»، …) */
   delivery: string | null;
@@ -596,6 +598,8 @@ export interface WatchedRowDto {
   lastNotifiedAt: string | null;
   /** فاز ۱۲ — آرشیو موقت: non-null یعنی ردیف آرشیوست (رصد می‌ماند) */
   archivedAt: string | null;
+  /** M3 مهاجرت — پرچم «در حال اتمام موجودی» (۲۰ج) */
+  lowStock: boolean;
   supplierCount: number;
   cheapest: CheapestSupplierDto | null;
   /** درصد تغییر ارزان‌ترین قیمت در ۷ روز — منفی یعنی ارزان‌تر */
@@ -708,7 +712,7 @@ export interface RequestQuoteBody {
   businessId: string;
   goodId: string;
   volume: number;
-  frequency?: "WEEKLY" | "MONTHLY" | "OCCASIONAL";
+  frequency?: "WEEKLY" | "BIWEEKLY" | "MONTHLY" | "OCCASIONAL";
   delivery?: string;
   /** فاز ۴ مهاجرت (sc-rfq) — محل تحویل (پیش‌فرض شهر خریدار) */
   deliveryCity?: string;
@@ -1206,6 +1210,12 @@ export const businessesApi = {
       `/businesses/catalogSettings/${id}`,
       { method: "PUT", body }
     ),
+  /** M3 مهاجرت (sheet-buycond) — شرایط درخواست تامین خریدار؛ خالی = پاک */
+  setSupplyTerms: (id: string, supplyTerms: string | null) =>
+    api<{ id: string; slug: string; supplyTerms: string | null }>(
+      `/businesses/supplyTerms/${id}`,
+      { method: "PUT", body: { supplyTerms } }
+    ),
   /** فاز ۸ (طرح ۱۴) — تنظیمات اعلان از پروفایل؛ ذخیره‌ی ادغامی: فقط کلیدهای
    *  ارسال‌شده عوض می‌شوند. پاسخ = prefs کامل پس از ذخیره. */
   setNotifPrefs: (id: string, body: Partial<NotifPrefsDto>) =>
@@ -1475,6 +1485,12 @@ export const marketApi = {
     api<{ ok: boolean; archived: boolean }>("/market/archiveWatchedGood", {
       method: "POST",
       body: { businessId, goodId, archived },
+    }),
+  /** M3 مهاجرت (سند ۰۸ §۷ — ۲۰ج): پرچم «در حال اتمام موجودی» — toggle. */
+  setLowStock: (businessId: string, goodId: string, lowStock: boolean) =>
+    api<{ ok: boolean; lowStock: boolean }>("/market/setLowStock", {
+      method: "POST",
+      body: { businessId, goodId, lowStock },
     }),
   /** «درخواست‌های من» — استعلام‌های فرستاده‌ی خریدار + پاسخ‌های دریافتی */
   getMyInquiries: (businessId: string) =>

@@ -13,7 +13,8 @@ import { Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useAuthStore } from "@/lib/auth-store";
 import { listingsApi, businessesApi, type GoodItemDto } from "@/lib/api";
-import { num, currencyLabel, majorToMinor, minorToMajor } from "@/lib/format";
+import { num, currencyLabel, majorToMinor, minorToMajor, unitLabel } from "@/lib/format";
+import { useLocale } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
 
 /**
@@ -40,6 +41,7 @@ export default function BulkPage() {
 
 function Bulk() {
   const router = useRouter();
+  const { locale } = useLocale();
   const qc = useQueryClient();
   const { show } = useToast();
   const businesses = useAuthStore((s) => s.businesses);
@@ -152,7 +154,7 @@ function Bulk() {
 
   if (listingsQ.isLoading) {
     return (
-      <AppShell arm="sell" title="تغییر قیمت‌ها" wide>
+      <AppShell arm="sell" title="تغییر قیمت‌ها" wide back="/catalog">
         <div className="grid place-items-center py-16">
           <Spinner />
         </div>
@@ -161,7 +163,7 @@ function Bulk() {
   }
 
   return (
-    <AppShell arm="sell" title="تغییر قیمت‌ها" wide>
+    <AppShell arm="sell" title="تغییر قیمت‌ها" wide back="/catalog">
       <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5">
         {/* ═══ انتخاب نیت ═══ */}
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -278,7 +280,8 @@ function Bulk() {
                   {rows.map((r) => {
                     const final = priceOf(r);
                     const changed = final !== r.base;
-                    const unit = r.l.good?.unit;
+                    // برچسب واحد بر اساس زبان (رفع باگ کلید انگلیسی)
+                    const unit = r.l.good?.unit ? unitLabel(r.l.good.unit, locale) : "";
                     return (
                       <div
                         key={r.l.id}

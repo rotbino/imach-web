@@ -7,7 +7,7 @@ import { authApi, ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { routeAfterAuth } from "@/lib/active-biz";
 import { IntlPhoneField } from "@/components/imach/intl-phone-field";
-import { AuthBrandPanel, LogoMark } from "@/components/imach/auth-brand-panel";
+import { AuthBrandPanel, Logo2 } from "@/components/imach/auth-brand-panel";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { Sheet } from "@/components/ui/sheet";
@@ -135,7 +135,7 @@ function LoginView() {
             aria-label={m.common.backAria}
             className="grid size-10 place-items-center rounded-xl text-text-2 transition-colors hover:bg-surface-2"
           >
-            <Icon name="back" size={20} />
+            <Icon name="back" size={20} className="rtl:-scale-x-100" />
           </Link>
           <div className="min-w-0">
             <div className="truncate text-[15px] font-bold text-text">{t.title}</div>
@@ -144,12 +144,12 @@ function LoginView() {
         </div>
 
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-6 lg:max-w-[448px] lg:rounded-3xl lg:border lg:border-line lg:bg-surface lg:px-[38px] lg:py-[38px] lg:shadow-[0_18px_50px_rgba(31,29,26,.07)]">
-          {/* نشان آیمچ بالای فرم (حکم مالک M2 — برندینگ در ذهن کاربر) */}
-          <LogoMark size={34} className="mx-auto mb-5 text-primary-strong lg:hidden" />
+          {/* واژه‌نشان کامل آیمچ بالای فرم — وسط‌چین (حکم مالک: logo2 + وسط‌چین لوگو و عنوان) */}
+          <Logo2 height={38} className="mx-auto mb-5 lg:hidden" />
 
-          {/* سربرگ کارت — فقط دسکتاپ (dkf-h)؛ نشان آیمچ برند را می‌دهد */}
-          <div className="mb-6 hidden lg:block">
-            <LogoMark size={42} className="mb-4 text-primary-strong" />
+          {/* سربرگ کارت — دسکتاپ هم‌اکنون وسط‌چین (dkf-h) */}
+          <div className="mb-6 hidden flex-col items-center text-center lg:flex">
+            <Logo2 height={46} className="mb-4" />
             <div className="text-[23px] font-extrabold tracking-[-.2px] text-text">{t.title}</div>
             <div className="mt-[7px] text-[12.5px] text-text-3">{t.subtitle}</div>
           </div>

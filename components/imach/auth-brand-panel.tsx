@@ -5,8 +5,27 @@ import { Icon } from "@/components/ui/icon";
 import { useMessages } from "@/i18n/messages/use-messages";
 
 /**
+ * Logo2 — واژه‌نشان کامل آیمچ (public/logo2.svg — «iMach» با M گرافیکی،
+ * ۱۱۲×۴۴). حکم مالک (فیکس دستهٔ لوگو): هر جا لوگو لازم است همین
+ * واژه‌نشان به‌کار می‌رود — نه نشان کوچک + واژهٔ جدا.
+ */
+export function Logo2({ height = 36, className }: { height?: number; className?: string }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- SVG ایستا عمومی؛ رندر عین فایل (گرادیان+انیمیشن نقطه)
+    <img
+      src="/logo2.svg"
+      alt="iMach"
+      width={Math.round((height * 112) / 44)}
+      height={height}
+      className={className}
+      draggable={false}
+    />
+  );
+}
+
+/**
  * LogoMark — نشان آیمچ (سمبل i-logo پروتوتایپ؛ viewBox 32×33).
- * جدا از <Icon> چون viewBox غیر-۲۴ دارد و در چند‌جا لازم است (پنل برند/لندینگ).
+ * جدا از <Icon> چون viewBox غیر-۲۴ دارد؛ فقط واترمارک/موارد خاص.
  */
 export function LogoMark({ size = 38, className }: { size?: number; className?: string }) {
   return (
@@ -52,19 +71,19 @@ export function AuthBrandPanel({ kind }: { kind: "login" | "signup" }) {
           "radial-gradient(70% 55% at 85% 12%, rgba(255,255,255,.14), transparent 60%), linear-gradient(168deg, #F97316 0%, #EA580C 46%, #C2410C 100%)",
       }}
     >
-      {/* بازگشت به صفحهٔ اصلی — گوشهٔ بالا */}
+      {/* بازگشت به صفحهٔ اصلی — گوشهٔ بالا (فلش استاندارد ←؛ در RTL آینه‌ای به سمت آغاز) */}
       <Link
         href="/"
         className="absolute top-[26px] start-[28px] inline-flex h-[38px] items-center gap-2 rounded-xl border border-white/35 bg-white/12 px-4 text-[12.5px] font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/55 hover:bg-white/20"
       >
-        <Icon name="back" size={15} />
+        <Icon name="back" size={15} className="rtl:-scale-x-100" />
         <span>{b.backHome}</span>
       </Link>
 
-      <div className="mb-[22px] grid size-[66px] place-items-center rounded-[19px] border border-white/30 bg-white/15 backdrop-blur-md">
-        <LogoMark size={38} className="text-white" />
+      {/* واژه‌نشان کامل آیمچ روی کاشی سفید (حکم مالک: logo2 در ورود/ثبت‌نام) */}
+      <div className="mb-[22px] grid h-[66px] w-[148px] place-items-center rounded-[19px] bg-white/95 shadow-[0_10px_30px_rgba(0,0,0,.18)]">
+        <Logo2 height={34} />
       </div>
-      <div className="text-[31px] font-extrabold tracking-tight text-white">{b.name}</div>
       <div className="my-[6px] mb-[30px] text-[13.5px] leading-[2.2] text-white/85">{b.tag}</div>
 
       <ul className="flex flex-col">
@@ -81,12 +100,12 @@ export function AuthBrandPanel({ kind }: { kind: "login" | "signup" }) {
         ))}
       </ul>
 
-      {/* واترمارک لوگو — گوشهٔ پایین، فیزیکی مثل پروتوتایپ (سمت start) */}
+      {/* واترمارک واژه‌نشان — گوشهٔ پایین، فیزیکی مثل پروتوتایپ (سمت start) */}
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-[-56px] start-[-46px] size-[300px] text-white opacity-[.07]"
+        className="pointer-events-none absolute bottom-[-56px] start-[-46px] opacity-[.07]"
       >
-        <LogoMark size={300} className="h-full w-full" />
+        <Logo2 height={160} className="select-none" />
       </div>
     </aside>
   );

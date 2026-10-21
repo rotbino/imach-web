@@ -1,11 +1,13 @@
 "use client";
 
-import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
 import { LocaleProvider, useLocale } from "@/i18n/locale-context";
 import { DisplayPrefsProvider } from "@/components/imach/prefs-context";
+import { unitsApi } from "@/lib/api";
+import { hydrateUnits } from "@/lib/format";
 
 /**
  * Application-level providers:
@@ -61,6 +63,7 @@ export function AppProviders({
         <Directional>
           <DisplayPrefsProvider initialCurrency={initialCurrency}>
             <AuthCacheSync />
+            <UnitsBoot />
             {children}
           </DisplayPrefsProvider>
         </Directional>
@@ -92,6 +95,36 @@ function AuthCacheSync() {
     prev.current = identity;
   }, [identity, qc]);
 
+  return null;
+}
+
+/**
+ * واحد eyeballing — یک fetch عمومی /units/list در طول عمر اپ (staleTime ۲۴س)
+ * و پرکردن نقشهٔ UNIT_DB_NAMES تا unitLabel() برای همهٔ واحدهای DB عنوان
+ * فارسی/محلی برگرداند (رفع باگ مالک: کلید انگلیسی دیده می‌شد).
+ * نسخهٔ (ver) در state نگه داشته می‌شود تا درخت زیرین بعد از آمدن دیتا
+ * دوباره رندر شود و برچسب‌ها تازه شوند.
+ */
+function UnitsBoot() {
+  const qc = useQueryClient();
+  const unitsQ = useQuery({
+    queryKey: ["units", "all"],
+    queryFn: () => unitsApi.list(),
+    staleTime: 24 * 3600_000,
+    retry: 1,
+  });
+  const data = unitsQ.data;
+  const hydrated = useRef(false);
+  useEffect(() => {
+    if (data && !hydrated.current) {
+      hydrated.current = true;
+      hydrateUnits(data);
+      // صفحاتی که پیش از رسیدن واحدها رندر شده‌اند (واحد فقط-DB = کلید
+      // انگلیسی) دوباره داده بگیرند و با برچسب درست رندر شوند؛ یک‌بار در
+      // طول عمر اپ — قبض ارزانِ درست-بودن همیشگی.
+      void qc.invalidateQueries({ predicate: (q) => q.queryKey[0] !== "units" });
+    }
+  }, [data, qc]);
   return null;
 }
 
