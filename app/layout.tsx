@@ -1,21 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 import { AppProviders } from "./providers";
-import { InstallPrompt } from "@/components/install-prompt";
-import { PwaRegister } from "@/components/pwa-register";
-import {
-  LOCALE_COOKIE,
-  detectLocaleFromAcceptLanguage,
-  getDir,
-  getLocale,
-} from "@/i18n/config";
+import { IconSprite } from "@/components/ui/icon";
+import { ToastProvider } from "@/components/ui/toast";
+import { getLocale, LOCALES } from "@/i18n/config";
 
-// فونت ایران‌سنس لوکال (self-hosted) — بدون وابستگی به CDN
-// وزن ۴۰۰ (Regular) + وزن ۷۰۰ (Bold) — عنوان‌ها از این پس بولد واقعی‌اند، نه synthetic
-const iranSans = localFont({
+/** IRANSans سلف‌هاست (الگوی موجود — فونت برند iMach). */
+const iran = localFont({
   src: [
     { path: "../fonts/IRANSansWeb.woff", weight: "400", style: "normal" },
     { path: "../fonts/IRANSansWeb_Bold.woff2", weight: "700", style: "normal" },
@@ -26,57 +19,32 @@ const iranSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "iMach | تطبیق نیازهای خریدار عمده با تامین کنندگان مناسب ",
+  title: {
+    default: "iMach | تطبیق نیازهای خریدار عمده با تامین‌کنندگان مناسب",
+    template: "%s | iMach",
+  },
   description:
-    "کاتالوگ فروش هوشمندت را رایگان بساز؛ مشتری‌هایت دنبالت می‌کنند و همیشه آخرین قیمت‌ها را می‌بینند. لیست خریدت را برای تامین‌کننده‌ها بفرست و پیشنهادها را یک‌جا مقایسه کن.",
-  manifest: "/manifest.webmanifest",
-  icons: {
-    icon: "/logo.svg",
-    apple: "/icons/apple-touch-icon.png",
-  },
-  // iOS: اپِ وب تمام‌صفحه با آیکون خودش روی صفحه‌ی اصلی
-  appleWebApp: {
-    capable: true,
-    title: "iMach",
-    statusBarStyle: "default",
-  },
+    "آی‌مچ — بازار عمدهٔ واقعی: کاتالوگ فروشنده، لیست خرید، استعلام چندقلمی و تطبیق هوشمند.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f97316",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#fcfbf8",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  // ── i18n: THE single place where language & direction are applied ──────
-  // Priority: cookie (visitor's explicit choice) → Accept-Language
-  // (their location/browser language, e.g. fa-IR → fa) → Persian.
-  // Every component inherits direction from here via logical CSS
-  // properties and the Radix DirectionProvider — nothing else sets dir.
-  const cookieStore = await cookies();
-  const headerStore = await headers();
-  const locale = getLocale(
-    cookieStore.get(LOCALE_COOKIE)?.value ?? detectLocaleFromAcceptLanguage(headerStore.get("accept-language"))
-  );
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = getLocale((await cookies()).get("imach_locale")?.value);
+  const dir = LOCALES.find((l) => l.code === locale)?.dir ?? "rtl";
 
   return (
-    <html
-      lang={locale}
-      dir={getDir(locale)}
-      className={`${iranSans.variable} scroll-smooth`}
-      suppressHydrationWarning
-    >
-      <body className="antialiased bg-background text-foreground font-sans">
+    <html lang={locale} dir={dir} className={iran.variable}>
+      <body className="min-h-dvh antialiased">
+        <IconSprite />
         <AppProviders initialLocale={locale}>
-          {children}
-          {/* مدال «نصب برنامه» — فقط موبایل، فقط وقتی نصب نکرده باشد */}
-          <InstallPrompt />
+          <ToastProvider>{children}</ToastProvider>
         </AppProviders>
-        <PwaRegister />
-        <Toaster />
       </body>
     </html>
   );

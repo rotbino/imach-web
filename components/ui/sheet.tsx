@@ -1,139 +1,101 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SheetPrimitive from "@radix-ui/react-dialog"
-import { XIcon } from "lucide-react"
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { cn } from "@/lib/utils";
+import { Icon } from "./icon";
 
-import { cn } from "@/lib/utils"
-
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />
+/**
+ * Sheet — شیت پایین‌باز (قانون موبایل پروتوتایپ)؛ در دسکتاپ = مودال وسچ‌ِ کاغذی.
+ * ترتیب z (سند ۰۸ §۳.۳): backdrop 50 → sheet 61.
+ * بدون وابستگی Radix — Escape/بک‌دراپ می‌بندد؛ اسکرول بدنه قفل می‌شود.
+ */
+export interface SheetProps {
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  children: ReactNode;
+  /** حداکثر ارتفاع محتوا — پیش‌فرض الگوی پروتوتایپ 85dvh */
+  maxHeightClass?: string;
 }
 
-function SheetTrigger({
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
-  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
-}
+export function Sheet({ open, onClose, title, children, maxHeightClass = "max-h-[85dvh]" }: SheetProps) {
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
-function SheetClose({
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Close>) {
-  return <SheetPrimitive.Close data-slot="sheet-close" {...props} />
-}
+  useEffect(() => setMounted(true), []);
 
-function SheetPortal({
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Portal>) {
-  return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
-}
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      document.body.style.overflow = "";
+      setVisible(false);
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
-function SheetOverlay({
-  className,
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
-  return (
-    <SheetPrimitive.Overlay
-      data-slot="sheet-overlay"
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <div
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
-        className
+        "fixed inset-0 z-50 bg-text/45 backdrop-blur-[2px]",
+        "transition-opacity duration-200",
+        visible ? "opacity-100" : "opacity-0 pointer-events-none"
       )}
-      {...props}
-    />
-  )
-}
-
-function SheetContent({
-  className,
-  children,
-  side = "right",
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Content> & {
-  side?: "top" | "right" | "bottom" | "left"
-}) {
-  return (
-    <SheetPortal>
-      <SheetOverlay />
-      <SheetPrimitive.Content
-        data-slot="sheet-content"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        onClick={(e) => e.stopPropagation()}
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
-          side === "right" &&
-            "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
-          side === "left" &&
-            "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm",
-          side === "top" &&
-            "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 h-auto border-b",
-          side === "bottom" &&
-            "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
-          className
+          // موبایل: از پایین، گوشه‌های بالا گرد، دستگیره
+          "absolute inset-x-0 bottom-0 z-[61] mx-auto flex flex-col",
+          "rounded-t-xl bg-surface shadow-pop",
+          "transition-transform duration-250 ease-out",
+          // دسکتاپ: مودال وسچ (قانون FD-29)
+          "lg:bottom-auto lg:top-1/2 lg:left-1/2 lg:right-auto lg:inset-x-auto",
+          "lg:w-[440px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-xl lg:shadow-card",
+          visible ? "translate-y-0 lg:translate-y-[-50%] lg:translate-x-[-50%]" : "translate-y-full lg:translate-y-[calc(-50%+24px)] lg:translate-x-[-50%]",
+          maxHeightClass
         )}
-        {...props}
       >
-        {children}
-        <SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
-          <XIcon className="size-4" />
-          <span className="sr-only">Close</span>
-        </SheetPrimitive.Close>
-      </SheetPrimitive.Content>
-    </SheetPortal>
-  )
-}
-
-function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="sheet-header"
-      className={cn("flex flex-col gap-1.5 p-4", className)}
-      {...props}
-    />
-  )
-}
-
-function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="sheet-footer"
-      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
-      {...props}
-    />
-  )
-}
-
-function SheetTitle({
-  className,
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Title>) {
-  return (
-    <SheetPrimitive.Title
-      data-slot="sheet-title"
-      className={cn("text-foreground font-semibold", className)}
-      {...props}
-    />
-  )
-}
-
-function SheetDescription({
-  className,
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Description>) {
-  return (
-    <SheetPrimitive.Description
-      data-slot="sheet-description"
-      className={cn("text-muted-foreground text-sm", className)}
-      {...props}
-    />
-  )
-}
-
-export {
-  Sheet,
-  SheetTrigger,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetFooter,
-  SheetTitle,
-  SheetDescription,
+        {/* هدر شیت: دستگیرهٔ موبایل + عنوان + بستن */}
+        <div className="relative shrink-0 pt-2.5 pb-1 lg:pt-0">
+          <div className="mx-auto h-1 w-10 rounded-full bg-line-2 lg:hidden" />
+          {title && (
+            <div className="flex items-center justify-between px-5 pt-2 pb-1 lg:px-6 lg:pt-5">
+              <h3 className="text-[15px] font-bold text-text">{title}</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="بستن"
+                className="grid size-8 place-items-center rounded-full text-text-3 hover:bg-surface-2"
+              >
+                <Icon name="x" size={18} />
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="overflow-y-auto overscroll-contain px-5 pb-6 lg:px-6">{children}</div>
+      </div>
+    </div>,
+    document.body
+  );
 }

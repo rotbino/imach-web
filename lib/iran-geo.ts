@@ -1,11 +1,11 @@
 // ─── جغرافیای ایران: شهر ↔ استان ─────────────────────────────────────────────
-// داده از lacal-data/Iran-provice.ts می‌آید؛ این ماژول فقط لایه‌ی خواندنیِ
+// داده از lib/iran-provinces.ts می‌آید؛ این ماژول فقط لایه‌ی خواندنیِ
 // روی آن است. قانون مهم: استان هرگز به کاربر نشان داده نمی‌شود و در هیچ
 // مدلی از دیتابیس نمی‌رود — پشت‌صحنه از روی شهر ست می‌شود و بعداً در فرمول
 // تطابق (اگر در شهر چیزی نبود، جست‌وجو در استان گسترده شود) عامل سورت است.
 // از روی نام شهرِ ذخیره‌شده همیشه می‌شود استان را دوباره ساخت: provinceOfCity.
 
-import { IRAN_PROVINCES } from "../lacal-data/Iran-provice";
+import { IRAN_PROVINCES } from "./iran-provinces";
 import type { SearchSelectItem } from "@/components/search-select";
 
 export interface IranCityRef {

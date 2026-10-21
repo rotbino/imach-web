@@ -1,280 +1,121 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+/* iMach — M0 دیزاین‌سیستم (Tailwind v4)
+   توکن‌ها عیناً از prototypes/imach-final-design/style.css :root — منبع حقیقت بصری.
+   قانون: استایل = فقط کلاس Tailwind؛ این تنها فایل CSS اپ است. */
 
-@custom-variant dark (&:is(.dark *));
+@import "tailwindcss";
+
+@theme {
+  /* برند — بازوی فروش (arm=sell) */
+  --color-primary: #f97316;
+  --color-primary-strong: #ea580c;
+  --color-primary-soft: #fdeedd;
+
+  /* نماینده / keep */
+  --color-accent: #14b8a6;
+  --color-accent-strong: #0d9488;
+  --color-accent-soft: #ccfbf1;
+
+  /* سطوح */
+  --color-bg: #fcfbf8;
+  --color-surface: #ffffff;
+  --color-surface-2: #f7f6f2;
+  --color-surface-3: #f0eee8;
+
+  /* متن */
+  --color-text: #1f1d1a;
+  --color-text-2: #4a4742;
+  --color-text-3: #7d786e;
+  --color-text-4: #a8a29a;
+
+  /* خطوط */
+  --color-line: #e7e4dc;
+  --color-line-2: #d8d4ca;
+  --color-line-3: #b8b4aa;
+
+  /* معنایی */
+  --color-green: #16a34a;
+  --color-green-soft: #dcfce7;
+  --color-green-bg: #f0fdf4;
+  --color-red: #dc2626;
+  --color-red-soft: #fee2e2;
+  --color-red-bg: #fdf1f1;
+  --color-amber: #d97706;
+  --color-amber-soft: #fef3c7;
+  --color-amber-bg: #fdf3e3;
+  --color-blue: #2563eb;
+  --color-blue-soft: #dbeafe;
+
+  /* بازوی خرید — FD-14: سنگی سرد */
+  --color-stone: #64748b;
+  --color-stone-soft: #475569;
+  --color-stone-tint: #f1f5f9;
+
+  /* شعاع‌ها (پروتوتایپ: 8/12/16/20) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* سایهٔ کارت پروتوتایپ */
+  --shadow-card: 0 12px 32px rgba(31, 29, 26, 0.14);
+  --shadow-pop: 0 -8px 24px rgba(31, 29, 26, 0.1);
+
+  /* تایپوگرافی IRANSans (next/font در layout تزریق می‌کند) */
+  --font-sans: var(--font-iran), Tahoma, Arial, sans-serif;
+}
+
+/* ── پوستهٔ بازو (الگوی tokens.css قدیمی + §۳.۳ سند ۰۸) ──
+   data-arm روی ریشهٔ اپ؛ رنگ arm به‌صورت CSS var سوییچ می‌شود. */
+:root {
+  --arm: #f97316;
+  --arm-strong: #ea580c;
+  --arm-soft: #fdeedd;
+}
+[data-arm="buy"] {
+  --arm: #64748b;
+  --arm-strong: #475569;
+  --arm-soft: #f1f5f9;
+}
+[data-arm="keep"] {
+  --arm: #14b8a6;
+  --arm-strong: #0d9488;
+  --arm-soft: #ccfbf1;
+}
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-iran), "Tahoma", "Arial", sans-serif;
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
-
-/*
- * iMach — طرح مرجع ۸ (design-reference-8):
- * پالت گرمِ «کرمِ روشن + نارنجی فروش + فیروزه‌ای خرید» — same tokens,
- * design-8 values (hex). Light theme only; tokens are LTR/RTL-neutral.
- */
-:root {
-  --radius: 1.125rem; /* ۱۸px — طرح ۸ */
-  --background: #faf8f3;   /* کرمِ گرم — خنثیِ طرح ۸ */
-  --foreground: #29241d;
-  --card: #ffffff;
-  --card-foreground: #29241d;
-  --popover: #ffffff;
-  --popover-foreground: #29241d;
-  --primary: #f97316;       /* نارنجی — بازوی فروش */
-  --primary-foreground: #ffffff;
-  --secondary: #f1eee6;     /* bg-deep */
-  --secondary-foreground: #29241d;
-  --muted: #f3f0e9;
-  --muted-foreground: #8f887a;
-  --accent: #ffeeda;        /* تینت نارنجی — همان زبان طرح ۸ */
-  --accent-foreground: #9a3d06;
-  --destructive: #c0392b;
-  --border: #eae5da;
-  --input: #eae5da;
-  --ring: #f97316;
-  --chart-1: #f97316;   /* نارنجی فروش */
-  --chart-2: #14b8a6;   /* فیروزه‌ای خرید */
-  --chart-3: #059669;   /* زمردی رشد */
-  --chart-4: #b45309;   /* کهربایی پرومو */
-  --chart-5: #0d9488;   /* فیروزه‌ای تیره */
-  --sidebar: #ffffff;
-  --sidebar-foreground: #29241d;
-  --sidebar-primary: #f97316;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f3f0e9;
-  --sidebar-accent-foreground: #29241d;
-  --sidebar-border: #eae5da;
-  --sidebar-ring: #f97316;
-  /* طرح ۸ — رنگ‌های بازو و تینت‌ها (برای کامپوننت‌های بازویی) */
-  --arm-sell: #f97316;
-  --arm-sell-strong: #ea580c;
-  --arm-buy: #0d9488;
-  --arm-buy-strong: #0f766e;
-  --teal: #14b8a6;
-  --teal-tint: #e2f4f1;
-  --teal-tint-fg: #0d5d54;
-  --orange-tint: #ffeeda;
-  --orange-tint-fg: #9a3d06;
-  --amber: #b45309;
-  --amber-tint: #fdf0da;
-  --emerald: #059669;
-  --emerald-tint: #d9f2e6;
-}
-
-.dark {
-  --background: oklch(0.16 0.01 60);
-  --foreground: oklch(0.96 0.008 80);
-  --card: oklch(0.21 0.012 60);
-  --card-foreground: oklch(0.96 0.008 80);
-  --popover: oklch(0.21 0.012 60);
-  --popover-foreground: oklch(0.96 0.008 80);
-  --primary: oklch(0.74 0.16 48);
-  --primary-foreground: oklch(0.18 0.02 55);
-  --secondary: oklch(0.27 0.015 65);
-  --secondary-foreground: oklch(0.96 0.008 80);
-  --muted: oklch(0.27 0.012 65);
-  --muted-foreground: oklch(0.68 0.02 70);
-  --accent: oklch(0.3 0.03 55);
-  --accent-foreground: oklch(0.9 0.04 65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.65 0.12 48);
-  --chart-1: oklch(0.7 0.14 48);
-  --chart-2: oklch(0.62 0.1 70);
-  --chart-3: oklch(0.5 0.06 65);
-  --chart-4: oklch(0.8 0.12 70);
-  --chart-5: oklch(0.75 0.14 50);
-  --sidebar: oklch(0.21 0.012 60);
-  --sidebar-foreground: oklch(0.96 0.008 80);
-  --sidebar-primary: oklch(0.7 0.14 48);
-  --sidebar-primary-foreground: oklch(0.18 0.02 55);
-  --sidebar-accent: oklch(0.27 0.015 65);
-  --sidebar-accent-foreground: oklch(0.96 0.008 80);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.65 0.12 48);
+  --color-arm: var(--arm);
+  --color-arm-strong: var(--arm-strong);
+  --color-arm-soft: var(--arm-soft);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  html {
+    -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-iran), "Tahoma", "Segoe UI", sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    /* زنده‌نگه‌داشتن ارتفاع موبایل برای شیت‌های پایین‌باز */
+    overscroll-behavior-y: none;
   }
-}
-
-/* ── اسکرول‌بار سفارشی (طرح ۸) ── */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #d8d2c3;
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #b45309;
-}
-
-/* ── الگوی نقطه‌ای ملایم برای هیرو (طرح ۸ — نارنجی روی کرم) ── */
-.dot-grid {
-  background-image: radial-gradient(#f97316 1px, transparent 1px);
-  background-size: 18px 18px;
-  opacity: 0.12;
-}
-
-/* ── انتخاب متن ── */
-::selection {
-  background: #ffeeda;
-  color: #9a3d06;
-}
-
-/* ── انیمیشن‌ها ── */
-@keyframes pop-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.6);
+  /* فرم‌ها فونت خود صفحه را به ارث می‌برند */
+  input,
+  textarea,
+  select,
+  button {
+    font-family: inherit;
   }
-  70% {
-    transform: scale(1.08);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.animate-pop-in {
-  animation: pop-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
-}
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fade-up {
-  animation: fade-up 0.4s ease-out both;
-}
-
-@keyframes soft-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.45;
-  }
-}
-.animate-soft-pulse {
-  animation: soft-pulse 1.6s ease-in-out infinite;
-}
-
-/* ── چشمک زنگ خطر — برای دکمه‌ی «ثبت رمز عبور» ──
- * قرمز چشمک می‌زند تا کاربر رمزش را عوض کند.
- * ۲ بار در ثانیه (هر ۵۰۰ms) — روی مخ است ولی آزاردهنده نیست.
- */
-@keyframes alarm-blink {
-  0%, 60% {
-    opacity: 1;
-    background-color: rgb(239 68 68); /* red-500 */
-    transform: scale(1);
-  }
-  61%, 100% {
-    opacity: 0.65;
-    background-color: rgb(220 38 38); /* red-600 */
-    transform: scale(1.01);
-  }
-}
-.animate-alarm-blink {
-  animation: alarm-blink 1s ease-in-out infinite;
-}
-
-/* ── گذار افقی مراحل ویزارد — جهت‌آگاه (در RTL مرحله بعد از چپ می‌آید) ── */
-@keyframes step-slide {
-  from {
-    opacity: 0;
-    transform: translateX(var(--step-from, -28px));
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-.animate-step-slide {
-  animation: step-slide 0.35s ease-out both;
-}
-[dir="ltr"] .animate-step-slide {
-  --step-from: 28px;
-}
-
-
-/* برای همه input و textarea ها در کل پروژه */
-::placeholder {
-  color: #b0b0b0; /* یک خاکستری روشن و کمرنگ */
-  opacity: 0.8;   /* شفافیت رو هم می‌تونی کم کنی */
-}
-
-
-/* ── PWA install sheet (components/install-prompt.tsx) ───────────────────── */
-@keyframes imach-sheet-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-@keyframes imach-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+  /* اسکرول‌بار ظریف دسکتاپ */
+  @media (min-width: 1024px) {
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d8d4ca;
+      border-radius: 8px;
+      border: 2px solid #fcfbf8;
+    }
   }
 }

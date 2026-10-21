@@ -1,21 +1,63 @@
-import * as React from "react"
+"use client";
 
-import { cn } from "@/lib/utils"
+import { forwardRef, useId, type InputHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
-  return (
-    <input
-      type={type}
-      data-slot="input"
-      className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        className
-      )}
-      {...props}
-    />
-  )
+/**
+ * Field + Input — فرم M0 (Tailwind-only، RTL-native).
+ * الگوی پروتوتایپ: برچسب بالا · ورودی کاغذی با قاب line · فوکوس = قاب arm.
+ */
+export interface FieldProps {
+  label?: string;
+  hint?: string;
+  error?: string;
+  required?: boolean;
+  children: (id: string) => React.ReactNode;
 }
 
-export { Input }
+export function Field({ label, hint, error, required, children }: FieldProps) {
+  const id = useId();
+  return (
+    <div className="flex w-full flex-col gap-1.5">
+      {label && (
+        <label htmlFor={id} className="text-[13px] font-bold text-text-2">
+          {label}
+          {required && <span className="ms-0.5 text-red">*</span>}
+        </label>
+      )}
+      {children(id)}
+      {error ? (
+        <p className="text-[12px] leading-5 text-red">{error}</p>
+      ) : hint ? (
+        <p className="text-[12px] leading-5 text-text-3">{hint}</p>
+      ) : null}
+    </div>
+  );
+}
+
+const inputBase = [
+  "w-full rounded-lg border bg-surface px-3.5 text-[15px] text-text",
+  "border-line placeholder:text-text-4",
+  "h-12 leading-none",
+  "focus:border-arm focus:outline-none focus:ring-2 focus:ring-arm/20",
+  "disabled:bg-surface-2 disabled:text-text-3",
+  "transition-colors",
+];
+
+export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
+  function Input({ className, ...rest }, ref) {
+    return <input ref={ref} className={cn(inputBase, className)} {...rest} />;
+  }
+);
+
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(
+  function Textarea({ className, ...rest }, ref) {
+    return (
+      <textarea
+        ref={ref}
+        className={cn(inputBase, "h-auto min-h-24 leading-6 py-3", className)}
+        {...rest}
+      />
+    );
+  }
+);

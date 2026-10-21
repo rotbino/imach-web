@@ -1,139 +1,122 @@
 "use client";
 
-import * as React from "react";
-import { Check, ChevronDown } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Icon } from "@/components/ui/icon";
 
-/*
- * SearchSelect — دراپ‌داون حرفه‌ای سرچ‌دار برای لیست‌های طولانی.
- *
- * قانون پروژه: هر لیستی که بلند است (کشور، زبان، شهر، کالا، برند، …)
- * با همین کامپوننت ساخته می‌شود — نه Select ساده.
- *
- * • جست‌وجوی زنده روی برچسب و keywords (مثلا کد کشور، نام انگلیسی)
- * • ناوبری کامل با کیبورد (↑ ↓ Enter Esc) از cmdk
- * • RTL-friendly — عرض پاپ‌اور = عرض تریگر
- * • hint دومинка برای هر سطر (مثلا واحد پول کنار کشور)
+/**
+ * SearchSelect — دراپ‌داون جست‌وجودار (سالواح‌شده از کد قدیمی، بازنویسی M0).
+ * آیتم‌ها: { value, label, hint?, searchValue?, id? } — الگوی شهرهای iran-geo.
  */
-
 export interface SearchSelectItem {
   value: string;
-  /** برچسب اصلی سطر */
   label: string;
-  /** متن کمکی دومینگه (کنار برچسب) */
+  /** زیرمتن ردیف — مثلاً استان برای شهرهای هم‌نام */
   hint?: string;
-  /** توکن‌های اضافی برای جست‌وجو */
-  keywords?: string[];
-  /**
-   * متن جست‌وجوی اختصاصی — پیش‌فرض: label + keywords.
-   * وقتی می‌خواهیم جست‌وجو فقط روی برچسب باشد و hint در جست‌وجو دخالت نکند
-   * (مثلا شهر: تایپِ «همدان» فقط شهرِ همدان، نه همه‌ی شهرهای استان همدان)
-   * از این فیلد استفاده می‌کنیم؛ برای سطرهای هم‌متن باید یکتا باشد
-   * تا ناوبری کیبورد cmdk بین‌شان گم نشود.
-   */
+  /** متن جایگزین جست‌وجو (پیش‌فرض label) */
   searchValue?: string;
-  /** کلید یکتای رندر — وقتی value تکراری است (مثلا شهر هم‌نام در دو استان) */
+  /** شناسهٔ یکتا — پیش‌فرض value */
   id?: string;
 }
 
-interface SearchSelectProps {
+export interface SearchSelectProps {
   items: SearchSelectItem[];
   value: string | null;
-  onChange: (value: string) => void;
+  onPick: (item: SearchSelectItem) => void;
   placeholder?: string;
-  searchPlaceholder?: string;
   emptyText?: string;
-  ariaLabel?: string;
   className?: string;
-  disabled?: boolean;
-  align?: "start" | "center" | "end";
-  /** رندر دلخواه تریگر — پیش‌فرض: label انتخاب‌شده (مثلا برای نمایش فقط «+98») */
-  renderLabel?: (selected: SearchSelectItem | null) => React.ReactNode;
-  /** سطر کاملِ انتخاب‌شده — برای داده‌های پشت‌صحنه (مثلا استان از روی سطر شهر) */
-  onPick?: (item: SearchSelectItem) => void;
 }
 
 export function SearchSelect({
   items,
   value,
-  onChange,
   onPick,
-  placeholder,
-  searchPlaceholder,
-  emptyText,
-  ariaLabel,
+  placeholder = "جست‌وجو…",
+  emptyText = "چیزی پیدا نشد",
   className,
-  disabled,
-  align = "start",
-  renderLabel,
 }: SearchSelectProps) {
-  const [open, setOpen] = React.useState(false);
-  const selected = items.find((i) => i.value === value) ?? null;
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  const selected = useMemo(() => items.find((i) => i.value === value) ?? null, [items, value]);
+
+  const filtered = useMemo(() => {
+    const needle = q.trim();
+    if (!needle) return items.slice(0, 50);
+    return items
+      .filter((i) => (i.searchValue ?? i.label).includes(needle))
+      .slice(0, 50);
+  }, [items, q]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
+    <div ref={rootRef} className={cn("relative", className)}>
+      <button
         type="button"
-        disabled={disabled}
-        aria-label={ariaLabel}
-        aria-expanded={open}
+        onClick={() => {
+          setOpen((o) => !o);
+          setQ("");
+        }}
         className={cn(
-          "flex h-10 w-full items-center justify-between gap-1.5 rounded-xl border border-input bg-white px-3 text-sm transition-colors",
-          "hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
-          "disabled:cursor-not-allowed disabled:opacity-50",
-          !selected && "text-muted-foreground",
-          className
+          "flex h-12 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3.5 text-[15px]",
+          "border-line text-text transition-colors",
+          open && "border-arm ring-2 ring-arm/20"
         )}
       >
-        <span className="min-w-0 truncate">
-          {renderLabel ? renderLabel(selected) : (selected?.label ?? placeholder)}
+        <span className={cn("truncate", !selected && "text-text-4")}>
+          {selected?.label ?? placeholder}
         </span>
-        <ChevronDown className="size-4 shrink-0 opacity-50" aria-hidden />
-      </PopoverTrigger>
-      <PopoverContent
-        align={align}
-        // هم‌عرض تریگر — مثل Select های حرفه‌ای
-        className="w-(--radix-popover-trigger-width) min-w-44 max-w-[calc(100vw-2rem)] p-0"
-      >
-        <Command>
-          <CommandInput placeholder={searchPlaceholder} autoFocus />
-          <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
-              {items.map((item) => (
-                <CommandItem
-                  key={item.id ?? item.value}
-                  // مقدار یکتا برای cmdk — اگر searchValue دادیم فقط همان
-                  // (جست‌وجو فقط روی متن اختصاصی؛ hint/keywords دخالت نمی‌کنند)
-                  value={item.searchValue ?? [item.label, ...(item.keywords ?? [])].join(" ")}
-                  keywords={item.keywords}
-                  onSelect={() => {
-                    onPick?.(item);
-                    onChange(item.value);
-                    setOpen(false);
-                  }}
-                  className="gap-2"
-                >
-                  <span className="min-w-0 grow truncate">
-                    {item.label}
-                    {item.hint && <span className="text-muted-foreground"> · {item.hint}</span>}
-                  </span>
-                  {item.value === value && <Check className="size-4 shrink-0 text-primary" aria-hidden />}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+        <Icon name="chevd" size={18} className="shrink-0 text-text-3" />
+      </button>
+
+      {open && (
+        <div className="absolute inset-x-0 top-full z-40 mt-1.5 overflow-hidden rounded-lg border border-line bg-surface shadow-card">
+          <div className="flex items-center gap-2 border-b border-line px-3.5">
+            <Icon name="search" size={16} className="shrink-0 text-text-4" />
+            <input
+              autoFocus
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={placeholder}
+              className="h-11 w-full bg-transparent text-[14px] text-text outline-none placeholder:text-text-4"
+            />
+          </div>
+          <ul className="max-h-64 overflow-y-auto overscroll-contain">
+            {filtered.length === 0 ? (
+              <li className="px-4 py-6 text-center text-[12.5px] text-text-3">{emptyText}</li>
+            ) : (
+              filtered.map((item) => (
+                <li key={item.id ?? item.value}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onPick(item);
+                      setOpen(false);
+                    }}
+                    className={cn(
+                      "flex w-full items-baseline justify-between gap-2 px-4 py-2.5 text-start transition-colors hover:bg-surface-2",
+                      item.value === value && "bg-arm-soft/60"
+                    )}
+                  >
+                    <span className="text-[14px] font-bold text-text">{item.label}</span>
+                    {item.hint && <span className="text-[11px] text-text-3">{item.hint}</span>}
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }

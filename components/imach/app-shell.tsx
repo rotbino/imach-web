@@ -1,272 +1,119 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Icon, type IconName } from "@/components/ui/icon";
+import { useAuthStore } from "@/lib/auth-store";
+
 /**
- * iMach App Shell — ریشهٔ شل اپ (معادل .phone در Prototype، production-شده).
- *
- *  · `.ia.app` + data-arm(buy|sell) + data-theme(light|dark)
- *  · ArmContext: کامپوننت‌های شل (Appbar/Tabbar/Deskbar) بدون prop-drilling
- *  · شیت «جابه‌جایی دستیار» (sheet-switch) — همان Prototype، زنده
- *  · فاز ۶: تم قابل تعویض در حالت اجرا (setTheme → state + کوکی + setPrefs)
- *    + رنگ دلخواه هر arm (override متغیرهای --arm* روی همین ریشه — معماری
- *    مستند فاز ۱) + sync کراس-دستگاهی prefs با getMe یک‌بار در نشست
- *  · فاز ۶: شیت اعلان‌ها (sheet-notif) سراسری روی زنگ appbar — دادهٔ واقعی
- *    گروه‌بندی‌شده + «همه را خواندم»
- *  · children از Server Components می‌آید (صفحات RSC سالم می‌مانند)
+ * AppShell — پوستهٔ M0: data-arm روی ریشه + اپ‌بار چسبان + تب‌بار موبایل
+ * + سایدبار دسکتاپ ۲۵۶ (قانون FD-29). مسیرهای فازهای بعدی به تب‌ها اضافه می‌شوند.
  */
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { IconSprite } from "./icon-sprite";
-import { Icon } from "./icon";
-import { Sheet } from "./sheet";
-import { Deskbar } from "./deskbar";
-import { useAuthStore } from "@/lib/auth-store";
-import { useMessages } from "@/i18n/messages/use-messages";
-import { useMeOnce, useSetPrefs, useUnits } from "@/lib/queries";
-import { NotifSheet } from "./notif-sheet";
-import { useSheetParam } from "./demo-sheet-param";
-import { CurrencyProvider } from "./currency-context";
+export type Arm = "sell" | "buy" | "keep";
 
-export type Arm = "buy" | "sell";
-export type Theme = "light" | "dark";
-
-/** پیشوندهای مسیر بازوی خرید — این صفحات arm شل را buy می‌کنند (فاز ۴) */
-const BUY_ROUTE_PREFIXES = ["/home", "/item", "/board", "/saved", "/offers", "/rfq", "/add", "/buy", "/msgs"];
-
-/** خانهٔ هر بازو — تعویض بازو (شیت/دسک‌بار) به خانهٔ آن می‌رود (رفتار setMode Prototype) */
-const HOME_OF: Record<Arm, string> = { buy: "/home", sell: "/sell/catalog" };
-
-const THEME_COOKIE = "imach_theme";
-const ARM_COLOR_COOKIE: Record<Arm, string> = { buy: "imach_arm_buy", sell: "imach_arm_sell" };
-
-/** نوشتن کوکی یک‌ساله — same-site lax (همان الگوی i18n) */
-function setCookie(name: string, value: string) {
-  document.cookie = `${name}=${encodeURIComponent(value)};path=/;max-age=31536000;samesite=lax`;
-}
-
-function readArmColorCookie(arm: Arm): string | null {
-  if (typeof document === "undefined") return null;
-  const hit = document.cookie.split("; ").find((c) => c.startsWith(`${ARM_COLOR_COOKIE[arm]}=`));
-  if (!hit) return null;
-  const v = decodeURIComponent(hit.slice(ARM_COLOR_COOKIE[arm].length + 1));
-  return /^#[0-9a-fA-F]{6}$/.test(v) ? v : null;
-}
-
-interface ShellContextValue {
-  arm: Arm;
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  /** رنگ سفارشی arm جاری (null = پالت Prototype) */
-  armColor: string | null;
-  /** رنگ سفارشی هر دو arm — بخش «نما» تنظیمات هر دو را جدا می‌چیند */
-  armColors: { buy: string | null; sell: string | null };
-  /** تنظیم رنگ سفارشی arm — null = پیش‌فرض؛ کوکی + prefs هم به‌روز می‌شوند */
-  setArmColor: (arm: Arm, color: string | null) => void;
-  setArm: (arm: Arm) => void;
-  openSwitch: () => void;
-  /** فاز ۶ — باز کردن شیت اعلان‌ها (زنگ appbar) */
-  openNotif: () => void;
-}
-
-const ShellContext = createContext<ShellContextValue | null>(null);
-
-/** برای کامپوننت‌های شل (Appbar/Tabbar/…) — نه صفحات. */
-export function useShell(): ShellContextValue {
-  const ctx = useContext(ShellContext);
-  if (!ctx) throw new Error("useShell must be used inside <AppShell>");
-  return ctx;
-}
+const TABS: { href: string; icon: IconName; label: string }[] = [
+  { href: "/me", icon: "home", label: "میز کار" },
+  { href: "/me?tab=msgs", icon: "msg", label: "پیام‌ها" },
+  { href: "/me?tab=notifs", icon: "bell", label: "زنگ" },
+  { href: "/me?tab=profile", icon: "user", label: "پروفایل" },
+];
 
 export function AppShell({
-  initialArm = "buy",
-  initialTheme = "light",
-  initialArmColors,
-  initialCurrency,
+  arm = "sell",
+  title,
   children,
 }: {
-  initialArm?: Arm;
-  initialTheme?: Theme;
-  /** از کوکی سرور خوانده شده — SSR بدون فلش رنگ */
-  initialArmColors?: { buy: string | null; sell: string | null };
-  /** فاز ۸ — ارز نمایش از کوکی سرور (SSR بدون فلش ارز) */
-  initialCurrency?: string | null;
+  arm?: Arm;
+  title?: string;
   children: ReactNode;
 }) {
-  const [manualArm, setManualArm] = useState<Arm | null>(null);
-  const [theme, setThemeState] = useState<Theme>(initialTheme);
-  const [armColors, setArmColors] = useState<{ buy: string | null; sell: string | null }>(
-    initialArmColors ?? { buy: null, sell: null }
-  );
-  const [switchOpen, setSwitchOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
-  const m = useMessages();
-  const router = useRouter();
   const pathname = usePathname();
-  const me = useMeOnce();
-  const setPrefs = useSetPrefs();
-  const hasToken = useAuthStore((s) => !!s.accessToken);
-  // فاز ۸ — نام‌های چندزبانهٔ واحد از DB (یک‌بار در نشست → unitLabel)
-  const unitsQ = useUnits();
-  useEffect(() => {
-    const rows = unitsQ.data;
-    if (!rows) return;
-    import("@/lib/format").then(({ UNIT_DB_NAMES }) => {
-      for (const u of rows) {
-        UNIT_DB_NAMES[u.key] = { fa: u.nameFa, en: u.nameEn, ar: u.nameAr ?? undefined };
-      }
-    });
-  }, [unitsQ.data]);
-
-  // ── فاز ۶: sync کراس-دستگاهی prefs (یک‌بار در نشست — الگوی تنظیم حین رندر) ──
-  // کوکی رندر اولیهٔ SSR را می‌گذارد؛ اینجا اگر روی دستگاه دیگری عوض شده باشد،
-  // همان انتخاب اعمال می‌شود (تم/رنگ). فقط یک‌بار — بعد از آن انتخاب محلی مقدم است.
-  const [prefsSynced, setPrefsSynced] = useState(false);
-  const remotePrefs = me.data?.prefs;
-  const [currency, setCurrencyState] = useState<string | null>(initialCurrency ?? null);
-  if (!prefsSynced && remotePrefs) {
-    setPrefsSynced(true);
-    if (remotePrefs.theme !== initialTheme) setThemeState(remotePrefs.theme);
-    if (remotePrefs.armBuyColor || remotePrefs.armSellColor) {
-      setArmColors({ buy: remotePrefs.armBuyColor, sell: remotePrefs.armSellColor });
-    }
-    // فاز ۸ — ارز نمایش از دستگاه دیگر (کوکی محلی هنوز ننشسته باشد)
-    if (remotePrefs.currency && remotePrefs.currency !== (initialCurrency ?? null)) {
-      setCurrencyState(remotePrefs.currency);
-      import("@/lib/imach/currency").then(({ writeCurrencyCookie }) => {
-        writeCurrencyCookie(remotePrefs.currency!);
-      });
-    }
-  }
-
-  // فاز ۴ — بازوی شل از مسیر مشتق می‌شود (همان data-arm per-screen پروتوتایپ):
-  // صفحات فروش → sell · صفحات خرید → buy · مشترک‌ها → آخرین انتخاب صریح
-  const routeArm = useMemo<Arm | null>(() => {
-    if (!pathname) return null;
-    if (pathname === "/sell" || pathname.startsWith("/sell/")) return "sell"; // /sell → ریدایرکت /sell/catalog (فاز ۵)
-    if (BUY_ROUTE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return "buy";
-    return null;
-  }, [pathname]);
-  const arm: Arm = routeArm ?? manualArm ?? initialArm;
-
-  // تعویض بازو = انتخاب + ناوبری به خانهٔ همان بازو (رفتار setMode Prototype)
-  const setArm = useCallback(
-    (next: Arm) => {
-      setManualArm(next);
-      router.push(HOME_OF[next]);
-    },
-    [router]
-  );
-  const openSwitch = useCallback(() => {
-    setSwitchOpen(true);
-  }, []);
-  const openNotif = useCallback(() => {
-    setNotifOpen(true);
-  }, []);
-
-  // ── فاز ۹: بازکردن شیت از پارامتر آدرس (?sheet=switch|notif) — ناوبری Demo Hub ──
-  useSheetParam("switch", openSwitch);
-  useSheetParam("notif", openNotif);
-
-  // ── فاز ۶: تم — state + کوکی + ذخیره روی حساب ──
-  const setTheme = useCallback(
-    (next: Theme) => {
-      setThemeState(next);
-      if (typeof document !== "undefined") setCookie(THEME_COOKIE, next);
-      if (hasToken) void setPrefs.mutateAsync({ theme: next }).catch(() => undefined);
-    },
-    [hasToken, setPrefs]
-  );
-
-  // ── فاز ۶: رنگ دلخواه arm — state + کوکی + prefs ──
-  const setArmColor = useCallback(
-    (which: Arm, color: string | null) => {
-      setArmColors((cur) => ({ ...cur, [which]: color }) as { buy: string | null; sell: string | null });
-      if (typeof document !== "undefined") setCookie(ARM_COLOR_COOKIE[which], color ?? "");
-      if (hasToken) {
-        const body = which === "buy" ? { armBuyColor: color } : { armSellColor: color };
-        void setPrefs.mutateAsync(body).catch(() => undefined);
-      }
-    },
-    [hasToken, setPrefs]
-  );
-
-  // رنگِ armِ جاری — override متغیرهای --arm* روی ریشه (معماری مستند فاز ۱)
-  const armStyle = useMemo<CSSProperties | undefined>(() => {
-    const custom = armColors[arm];
-    if (!custom) return undefined;
-    return {
-      "--arm": custom,
-      "--arm-strong": `color-mix(in srgb, ${custom} 84%, #000)`,
-      "--arm-tint": `color-mix(in srgb, ${custom} 14%, var(--card))`,
-      "--arm-tint-fg": `color-mix(in srgb, ${custom} 78%, #000)`,
-    } as CSSProperties;
-  }, [arm, armColors]);
+  const router = useRouter();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const activeTab = pathname;
 
   return (
-    <ShellContext.Provider value={{ arm, theme, setTheme, armColor: armColors[arm], armColors, setArmColor, setArm, openSwitch, openNotif }}>
-      <CurrencyProvider initialCurrency={currency}>
-      <div className="ia app" data-arm={arm} data-theme={theme} style={armStyle}>
-        <IconSprite />
-        <Deskbar />
-        {children}
-
-        {/* ═══ فاز ۶: شیت اعلان‌ها (sheet-notif — سراسری روی زنگ) ═══ */}
-        <NotifSheet open={notifOpen} onClose={() => setNotifOpen(false)} />
-
-        {/* ═══ شیت: جابه‌جایی بین دستیارها (sheet-switch — عین Prototype) ═══ */}
-        <Sheet open={switchOpen} onClose={() => setSwitchOpen(false)} label={m.app.switch.title}>
-          <div className="grab" />
-          <h3>{m.app.switch.title}</h3>
-          <div className="sub">{m.app.switch.sub}</div>
-          <button
-            className="sheet-row"
-            onClick={() => {
-              setArm("buy");
-              setSwitchOpen(false);
-            }}
-          >
-            <span className="ico" style={{ background: "var(--teal-tint)", color: "var(--teal-deep)" }}>
-              <Icon name="i-basket" />
-            </span>
-            <span className="tx">
-              <b>{m.app.switch.buyTitle}</b>
-              <span>{m.app.switch.buySub}</span>
-            </span>
-            {arm === "buy" ? (
-              <svg className="check">
-                <use href="#i-check" />
-              </svg>
-            ) : null}
-          </button>
-          <button
-            className="sheet-row"
-            onClick={() => {
-              setArm("sell");
-              setSwitchOpen(false);
-            }}
-          >
-            <span className="ico" style={{ background: "var(--orange-tint)", color: "var(--primary-strong)" }}>
-              <Icon name="i-box" />
-            </span>
-            <span className="tx">
-              <b>{m.app.switch.sellTitle}</b>
-              <span>{m.app.switch.sellSub}</span>
-            </span>
-            {arm === "sell" ? (
-              <svg className="check">
-                <use href="#i-check" />
-              </svg>
-            ) : null}
-          </button>
-          <div className="sub" style={{ marginBottom: 8 }}>
-            {m.app.switch.note}
+    <div data-arm={arm} className="flex min-h-dvh flex-col bg-bg lg:flex-row-reverse">
+      {/* ── سایدبار دسکتاپ (راست، ۲۵۶، چسبان — FD-29) ── */}
+      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-s border-line bg-surface lg:flex">
+        <div className="flex items-center gap-2.5 px-5 pt-6 pb-5">
+          <div className="grid size-9 place-items-center rounded-lg bg-primary text-[15px] font-black text-white">i</div>
+          <span className="text-[17px] font-black text-text">آی‌مچ</span>
+        </div>
+        <nav className="flex flex-1 flex-col gap-1 px-3">
+          {TABS.map((t) => (
+            <button
+              key={t.href}
+              type="button"
+              onClick={() => router.push(t.href)}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-[14px] font-bold transition-colors",
+                activeTab === t.href ? "bg-arm-soft text-arm-strong" : "text-text-2 hover:bg-surface-2"
+              )}
+            >
+              <Icon name={t.icon} size={20} />
+              {t.label}
+            </button>
+          ))}
+        </nav>
+        <div className="border-t border-line p-4">
+          <div className="flex items-center gap-3">
+            <div className="grid size-10 place-items-center rounded-full bg-arm-soft text-[15px] font-black text-arm-strong">
+              {(user?.firstName ?? "؟").slice(0, 1)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[13.5px] font-bold text-text">
+                {user ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() : "کاربر"}
+              </p>
+              <p className="truncate text-[11.5px] text-text-3" dir="ltr">
+                {user?.phone ?? ""}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => void logout("/")}
+              aria-label="خروج"
+              title="خروج از حساب"
+              className="grid size-9 place-items-center rounded-full text-text-3 hover:bg-red-bg hover:text-red"
+            >
+              <Icon name="power" size={18} />
+            </button>
           </div>
-          <button className="btn btn-outline btn-block" onClick={() => setSwitchOpen(false)}>
-            {m.app.switch.close}
-          </button>
-        </Sheet>
+        </div>
+      </aside>
+
+      {/* ── ستون اصلی: اپ‌بار چسبان + محتوا + تب‌بار موبایل ── */}
+      <div className="flex min-h-dvh flex-1 flex-col">
+        {title && (
+          <header className="sticky top-0 z-30 flex h-14 items-center justify-center border-b border-line bg-surface/90 backdrop-blur">
+            <h1 className="text-[15.5px] font-black text-text">{title}</h1>
+          </header>
+        )}
+        <main className="mx-auto w-full max-w-[880px] flex-1 px-4 pb-24 pt-4 lg:max-w-[1120px] lg:px-8 lg:pb-10">
+          {children}
+        </main>
+
+        {/* تب‌بار موبایل (الگوی پروتوتایپ) */}
+        <nav className="sticky bottom-0 z-30 grid h-16 grid-cols-4 border-t border-line bg-surface/95 backdrop-blur lg:hidden">
+          {TABS.map((t) => (
+            <button
+              key={t.href}
+              type="button"
+              onClick={() => router.push(t.href)}
+              className={cn(
+                "flex flex-col items-center justify-center gap-1",
+                activeTab === t.href ? "text-arm" : "text-text-3"
+              )}
+            >
+              <Icon name={t.icon} size={22} />
+              <span className="text-[10.5px] font-bold">{t.label}</span>
+            </button>
+          ))}
+        </nav>
       </div>
-      </CurrencyProvider>
-    </ShellContext.Provider>
+    </div>
   );
 }
