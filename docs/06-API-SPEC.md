@@ -6,7 +6,7 @@
 
 ## ۱. قواعد عمومی
 
-- **احراز:** JWT Bearer (انقضای ۷ روز) + Refresh Token چرخشی (TTL ۳۰ روز، فقط hash ذخیره).
+- **احراز:** JWT Bearer **بدون انقضا** (حکم مالک ۲۱ اکتبر: `JWT_EXPIRES_IN="never"` → توکن بدون claim `exp`؛ ابطال فقط با تعویض JWT_SECRET — بک‌اند 046e5cc) + Refresh Token چرخشی (TTL ۳۰ روز، فقط hash ذخیره) برای مدیریت دستگاه.
 - **اعتبارسنجی:** class-validator در DTO — مرزِ enumها (سند 03 §۱.۷).
 - **پول/عدد:** همهٔ مبالغ integer ریال (`*Minor`)؛ نرمال‌سازی ارقام فارسی/عربی در DTO (S13).
 - **صفحه‌بندی:** cursor روی `_id` (monotonic)؛ هیچ list بدون سقف نیست.
