@@ -67,6 +67,20 @@ export const fmtMoney = (
   return `${num(minor / 10 ** c.exp, loc)} ${label}`;
 };
 
+/** فرم‌های ورودی قیمت (M2): کاربر در «واحد اصلی ارز بومی» تایپ می‌کند
+ *  (ایران → تومان) اما ذخیره کوچک‌ترین واحد است (ریال). قانون:
+ *  ورودی فرم عمداً در ارز بومی می‌ماند — تبدیلْ فقط لایهٔ ذخیره/نمایش. */
+export const majorToMinor = (major: number, currency?: string | null): number =>
+  Math.round(major * 10 ** (CURRENCIES[currency ?? "IRR"]?.exp ?? 0));
+
+export const minorToMajor = (
+  minor: number | null | undefined,
+  currency?: string | null
+): number | null =>
+  minor === null || minor === undefined
+    ? null
+    : minor / 10 ** (CURRENCIES[currency ?? "IRR"]?.exp ?? 0);
+
 // ── نام چندزبانه کالا/دسته — نمایش با زبان فعال، fallback فارسی ──
 type BiName = { nameFa: string; nameEn?: string | null; nameAr?: string | null };
 export const goodName = (g: BiName, locale?: string): string => {

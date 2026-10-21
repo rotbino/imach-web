@@ -18,7 +18,9 @@ export interface FieldProps {
 export function Field({ label, hint, error, required, children }: FieldProps) {
   const id = useId();
   return (
-    <div className="flex w-full flex-col gap-1.5">
+    // استاندارد فاصله‌گذاری فرم (حکم مالک M2): برچسب→ورودی ۸px (gap-2)؛
+    // خطای/راهنما همان فاصله. فاصلهٔ «فیلد تا فیلد» را کانتینر فرم با gap-5 می‌دهد.
+    <div className="flex w-full flex-col gap-2">
       {label && (
         <label htmlFor={id} className="text-[13px] font-bold text-text-2">
           {label}

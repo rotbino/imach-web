@@ -76,9 +76,13 @@ export function Sheet({ open, onClose, title, children, maxHeightClass = "max-h-
           "absolute inset-x-0 bottom-0 z-[61] mx-auto flex flex-col",
           "rounded-t-xl bg-surface shadow-pop",
           "transition-transform duration-250 ease-out",
-          // دسکتاپ: مودال وسچ (قانون FD-29)
-          "lg:bottom-auto lg:top-1/2 lg:left-1/2 lg:right-auto lg:inset-x-auto",
-          "lg:w-[440px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-xl lg:shadow-card",
+          // دسکتاپ: مودال وسچ (قانون FD-29).
+          // ⚠ فقط left/right فیزیکی — «lg:inset-x-auto» ممنوع:
+          // tailwind-merge آن را با lg:left-1/2 (هم‌گروهِ conflict) جمع
+          // می‌کند، مرکزچین می‌شکند و مودال در LTR نیمی بیرون صفحه
+          // می‌افتد (باگ گزارشی مالک M2). inset-x فیزیکی نیست → safe.
+          "lg:bottom-auto lg:right-auto lg:left-1/2 lg:top-1/2",
+          "lg:w-[440px] lg:rounded-xl lg:shadow-card",
           visible ? "translate-y-0 lg:translate-y-[-50%] lg:translate-x-[-50%]" : "translate-y-full lg:translate-y-[calc(-50%+24px)] lg:translate-x-[-50%]",
           maxHeightClass
         )}

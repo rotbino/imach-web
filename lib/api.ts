@@ -113,6 +113,10 @@ export interface UserDto {
   /** هویت شخص — از روز اول جدا از نام کسب‌وکار ذخیره می‌شود؛ ردیف‌های قدیمی null */
   firstName: string | null;
   lastName: string | null;
+  /** نقش شخص در کسب‌وکار (FD-32 — «صاحب کسب‌وکار / مدیر فروش / …»)؛
+   *  M2: در ثبت‌نام انتخاب می‌شود و در پیام‌ها/درخواست‌ها دیده خواهد شد.
+   *  ⚠ جای system-role نیست — `role` (MEMBER|ADMIN) سطح دسترسی است. */
+  businessRole: string | null;
   phone: string;
   role: string;
   country: string;
@@ -145,6 +149,10 @@ export interface BusinessSummaryDto {
   bio?: string | null;
   /** فاز ۳ — دسته‌های شخصی ویترین (چیپ‌های بالای کاتالوگ) */
   customCategories?: CatalogCategoryDto[] | null;
+  /** M2 (G7) — کدام اصناف قیمت کاتالوگ را می‌بینند؛ null/[] = همه */
+  priceVisibilityTrades?: string[] | null;
+  /** M2 (G7) — اعتبار قیمت به روز (۱..۵)؛ null = هرگز منقضی نمی‌شود */
+  priceValidityDays?: number | null;
   /** لوکیشن دقیق اختیاری — فقط مبنای تطابق؛ علنی نمی‌شود */
   lat?: number | null;
   lng?: number | null;
@@ -356,6 +364,19 @@ export interface GoodItemDto {
   variantKey?: string;
   /** برچسب خوانای واریانت («۵۰۰ گرمی · کارتن») */
   variantLabel?: string | null;
+  // ── M2 — فیلدهای v2 (قرارداد واحد-قیمت + متن شخصی + اعتبار) ──
+  /** C5 — تعداد واحد پایه در این ردیف («کیسهٔ ۵۰ کیلویی» → 50) */
+  baseQty?: number | null;
+  /** C1 — قیمت هر واحد پایه (سروری: priceMinor ÷ baseQty) */
+  pricePerBaseMinor?: number | null;
+  /** C6 — عنوان شخصی ردیف در ویترین من؛ جدا از نام مرجع Good */
+  title?: string | null;
+  /** C2 — توضیح کوتاه فروشنده زیر ردیف */
+  note?: string | null;
+  /** G7 — مهر آخرین قیمت‌گذاری؛ مبنای بج «قیمت منقضی» */
+  pricedAt?: string | null;
+  /** G7/FD-52 — قیمت منقضی شده (فقط در خروجی‌های عمومی) */
+  priceExpired?: boolean;
   priceMinor: number | null;
   currency: string | null;
   attrs?: Record<string, string> | null;
@@ -1056,7 +1077,7 @@ export const authApi = {
   }) =>
     api<AuthResponseDto>("/auth/registerUser", { method: "POST", body, auth: false }),
   /** ثبت‌نام سریع — فقط موبایل، بدون پسورد/نام. Business خودکار ساخته می‌شود. */
-  quickRegister: (body: { phone: string; country?: string; ref?: string }) =>
+  quickRegister: (body: { phone: string; country?: string; language?: string; ref?: string }) =>
     api<AuthResponseDto>("/auth/quickRegister", { method: "POST", body, auth: false }),
   /** تنظیم پسورد — برای کاربران ثبت‌نام سریع یا تغییر پسورد */
   setPassword: (body: { currentPassword?: string; newPassword: string }) =>
@@ -1067,7 +1088,7 @@ export const authApi = {
   getMe: () =>
     api<{ user: UserDto; businesses: BusinessSummaryDto[]; avatar: { url: string; thumbUrl: string | null } | null; prefs: UserPrefsDto }>("/auth/getMe"),
   /** ویرایش پروفایل — نام و نام خانوادگی مالک (در ویترین کاتالوگ نشان داده می‌شود) */
-  editProfile: (body: { firstName?: string; lastName?: string }) =>
+  editProfile: (body: { firstName?: string; lastName?: string; businessRole?: string }) =>
     api<{ user: UserDto }>("/auth/editProfile", { method: "POST", body }),
   /** فاز ۱۰ — حذف حساب توسط خود کاربر (بازگشت از ثبت‌نام / شروع دوباره) */
   deleteMe: () => api<{ ok: boolean }>("/auth/deleteMe", { method: "POST" }),
@@ -1175,6 +1196,16 @@ export const businessesApi = {
       method: "PUT",
       body: { categories },
     }),
+  /** M2 (اسکرین ۳۶) — تنظیمات کاتالوگ: دید قیمت بر اساس صنف + اعتبار قیمت.
+   *  [] و null هر دو = همه قیمت می‌بینند؛ undefined = بی‌تغییر. */
+  setCatalogSettings: (
+    id: string,
+    body: { priceVisibilityTrades?: string[] | null; priceValidityDays?: number | null }
+  ) =>
+    api<{ id: string; slug: string; priceVisibilityTrades: string[] | null; priceValidityDays: number | null }>(
+      `/businesses/catalogSettings/${id}`,
+      { method: "PUT", body }
+    ),
   /** فاز ۸ (طرح ۱۴) — تنظیمات اعلان از پروفایل؛ ذخیره‌ی ادغامی: فقط کلیدهای
    *  ارسال‌شده عوض می‌شوند. پاسخ = prefs کامل پس از ذخیره. */
   setNotifPrefs: (id: string, body: Partial<NotifPrefsDto>) =>
@@ -1187,6 +1218,12 @@ export const businessesApi = {
   /** کپی از هم‌صنف‌ها — گام ۱: کاتالوگ‌های زنده بر اساس صنف/نام */
   searchCatalogs: (params: { q?: string; cursor?: string; limit?: number; mineId?: string }) =>
     api<PageDto<CatalogSummaryDto>>("/businesses/searchCatalogs", { params }),
+  /** M2 (اسکرین ۱۳ — کپی از کاتالوک): کاتالوک صاحبِ این شماره — 404 = نبود */
+  findCatalogByPhone: (phone: string) =>
+    api<{ id: string; slug: string; name: string; city: string; trade: string | null; catalogCount: number; ownerName: string }>(
+      "/businesses/findCatalogByPhone",
+      { params: { phone } }
+    ),
   /** کپی از هم‌صنف‌ها — گام ۲: قلم‌های فروش یک کاتالوگ، با تامبنیل + نوار برند */
   getCatalogItems: (params: { businessId: string; cursor?: string; limit?: number; brandId?: string; mode?: "SELL" | "BUY" }) =>
     api<CatalogItemsPageDto>("/businesses/getCatalogItems", { params }),
@@ -1258,8 +1295,16 @@ export const listingsApi = {
     attrs?: Record<string, string>;
     /** عنوان نمایشی محصول — کاربر می‌تواند دلخواه وارد کند؛ اگر خالی باشد،
      *  بک‌اند از نوع کالا + برند + ویژگی‌ها می‌سازد. searchText (هویت تطبیق)
-     *  همیشه از برند + ویژگی‌ها می‌آید، نه از این label. */
+     *  همیشه از برند + ویژگی‌ها می‌آید، نه از این label.
+     *  ⚠ M2 (C6): این فیلد دیگر Product.label مرجع را بازنویسی نمی‌کند. */
     productLabel?: string;
+    // ── M2 — فیلدهای v2 (سند ۰۶ §۳) ──
+    /** C6 — عنوان شخصی ردیف در ویترین من؛ null صریح = پاک، undefined = بی‌تغییر */
+    title?: string | null;
+    /** C2 — توضیح کوتاه فروشنده زیر ردیف */
+    note?: string | null;
+    /** C5 — تعداد واحد پایه («کیسهٔ ۵۰ کیلویی» → 50)؛ سرور pricePerBaseMinor را می‌سازد */
+    baseQty?: number;
     sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
     /** فاز ۳ — دسته‌ی شخصی کاتالوگ؛ undefined = بدون تغییر، null = بی‌دسته */
@@ -1284,6 +1329,17 @@ export const listingsApi = {
     { method: "PUT", body }
   ),
   deleteListing: (id: string) => api<{ ok: boolean }>(`/listings/deleteListing/${id}`, { method: "DELETE" }),
+  /** M2 (اسکرین ۳۳) — تغییر گروهی قیمت/موجودی + تمدید سریع اعتبار.
+   *  هر قلم: قیمت مطلق (اولویت) یا درصد ± / موجودی؛ بدون هیچ‌کدام = فقط تمدید. */
+  bulkPriceStock: (body: {
+    businessId: string;
+    items: { listingId: string; priceMinor?: number; stock?: number; pct?: number }[];
+  }) =>
+    api<{
+      updated: number;
+      failed: number;
+      items: { id: string; priceMinor: number | null; stock: number | null }[];
+    }>("/listings/bulkPriceStock", { method: "PUT", body }),
   /** فاز ۲ — شمارش بازدید عمومی (بدون احراز؛ مهمان هم حساب می‌شود) */
   viewListing: (id: string) => api<{ ok: boolean }>(`/listings/view/${id}`, { method: "POST" }),
   /** فاز ۲ — فعال/غیرفعال کردن کالا (بدون حذف؛ «توقف نمایش») */

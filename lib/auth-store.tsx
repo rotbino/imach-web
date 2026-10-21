@@ -35,7 +35,7 @@ interface AuthState {
     ref?: string
   ) => Promise<void>;
   /** ثبت‌نام سریع — فقط موبایل. Business خودکار با نام «کاتالوگ شما» ساخته می‌شود. */
-  quickRegister: (phone: string, country?: string, ref?: string) => Promise<void>;
+  quickRegister: (phone: string, country?: string, ref?: string, language?: string) => Promise<void>;
   logout: (dest?: string) => Promise<void>;
   /** فاز ۱۰ — حذف حساب توسط خود کاربر (بازگشت از ثبت‌نام با شمارهٔ اشتباه)؛
    *  حساب + کسب‌وکارهای placeholder سمت سرور حذف می‌شوند، سپس کلاینت پاک و
@@ -97,8 +97,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     get().setSession(session);
   },
 
-  quickRegister: async (phone, country, ref) => {
-    const session = await authApi.quickRegister({ phone, country, ref });
+  quickRegister: async (phone, country, ref, language) => {
+    const session = await authApi.quickRegister({ phone, country, ref, language });
     get().setSession(session);
   },
 

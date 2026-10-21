@@ -6,6 +6,7 @@ import { AppProviders } from "./providers";
 import { IconSprite } from "@/components/ui/icon";
 import { ToastProvider } from "@/components/ui/toast";
 import { getLocale, LOCALES } from "@/i18n/config";
+import { CURRENCIES } from "@/lib/format";
 
 /** IRANSans سلف‌هاست (الگوی موجود — فونت برند iMach). */
 const iran = localFont({
@@ -35,14 +36,18 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = getLocale((await cookies()).get("imach_locale")?.value);
+  const cookieStore = await cookies();
+  const locale = getLocale(cookieStore.get("imach_locale")?.value);
   const dir = LOCALES.find((l) => l.code === locale)?.dir ?? "rtl";
+  // M2 — ارز نمایش (کوکی صریح کاربر)؛ null = پیش‌فرض کشور (در کلاینت حل می‌شود)
+  const currencyRaw = cookieStore.get("imach_currency")?.value?.toUpperCase();
+  const initialCurrency = currencyRaw && CURRENCIES[currencyRaw] ? currencyRaw : null;
 
   return (
     <html lang={locale} dir={dir} className={iran.variable}>
       <body className="min-h-dvh antialiased">
         <IconSprite />
-        <AppProviders initialLocale={locale}>
+        <AppProviders initialLocale={locale} initialCurrency={initialCurrency}>
           <ToastProvider>{children}</ToastProvider>
         </AppProviders>
       </body>

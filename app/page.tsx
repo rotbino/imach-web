@@ -9,6 +9,7 @@ import {
 } from "@/i18n/config";
 import { Icon } from "@/components/ui/icon";
 import { LogoMark } from "@/components/imach/auth-brand-panel";
+import { LandingSessionChip, LandingHeroCtas, LandingFinalCta } from "@/components/imach/session-cta";
 import { LandingLangButtons } from "./lang-buttons";
 
 /**
@@ -85,12 +86,8 @@ export default async function LandingPage() {
               iMach
             </span>
           </Link>
-          <Link
-            href="/login"
-            className="inline-flex min-h-[34px] items-center rounded-[10px] px-3 text-[12px] font-bold text-text-2 transition-colors hover:bg-surface-2"
-          >
-            {L.appbarLogin}
-          </Link>
+          {/* M2 (حکم مالک): لاگین‌شده → «پنل من» با نام؛ مهمان → «ورود» */}
+          <LandingSessionChip guestLabel={L.appbarLogin} panelLabel={L.myPanel} />
         </div>
       </header>
 
@@ -112,20 +109,12 @@ export default async function LandingPage() {
             </p>
             <p className="mt-1 font-bold text-accent-strong lg:text-[14.5px]">{L.strong}</p>
 
-            <div className="mt-5 flex justify-center gap-2 lg:mt-7 lg:justify-start">
-              <Link
-                href="/start"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-primary px-[18px] text-[13.5px] font-bold text-white transition-[filter] hover:brightness-95 active:translate-y-px lg:min-h-[50px] lg:min-w-[176px] lg:text-[14.5px]"
-              >
-                {L.ctaSignup}
-              </Link>
-              <Link
-                href="/login"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-line-2 bg-surface px-[18px] text-[13.5px] font-bold text-text transition-colors hover:border-line-3 active:translate-y-px lg:min-h-[50px] lg:min-w-[176px] lg:text-[14.5px]"
-              >
-                {L.ctaLogin}
-              </Link>
-            </div>
+            {/* M2 (حکم مالک): لاگین‌شده فقط «ورود به پنل من» را می‌بیند */}
+            <LandingHeroCtas
+              signupLabel={L.ctaSignup}
+              loginLabel={L.ctaLogin}
+              enterLabel={L.enterPanel}
+            />
           </div>
 
           {/* عکس هدر فلت (FD-31) — فقط دسکتاپ داخل هیرو */}
@@ -234,12 +223,8 @@ export default async function LandingPage() {
           <div className="mt-2 text-[12px] leading-[1.9] opacity-90 lg:text-[13.5px] lg:leading-[2.1]">
             {L.finalSub}
           </div>
-          <Link
-            href="/start"
-            className="mt-[14px] inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-white text-[13.5px] font-bold text-primary-strong transition-[filter] hover:brightness-95 active:translate-y-px lg:min-h-[52px] lg:min-w-[240px]"
-          >
-            {L.finalCta}
-          </Link>
+          {/* M2 — لاگین‌شده → «ورود به پنل من» به‌جای «ساخت حساب» */}
+          <LandingFinalCta signupLabel={L.finalCta} enterLabel={L.enterPanel} />
           <div className="mt-[10px] text-[11px] opacity-85 lg:mt-[14px] lg:text-[11.5px]">
             {L.finalNote}
           </div>

@@ -49,6 +49,7 @@ export type IconName =
   | "eye"
   | "scan"
   | "textlist"
+  | "table"
   | "gear"
   | "percent"
   | "tag"
@@ -124,6 +125,7 @@ const SYMBOLS = `
       <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
       <symbol id="i-scan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4v16M8.5 4v16M12.5 4v11M16.5 4v16M20.5 4v16"/></symbol>
       <symbol id="i-textlist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 3.5H8a2.5 2.5 0 00-2.5 2.5v12A2.5 2.5 0 008 20.5h9.5"/><path d="M4.5 6v13.5A1.5 1.5 0 006 21h11.5"/><path d="M10 8.5h4.5M10 12h4.5M10 15.5h2.5"/></symbol>
+      <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M3.5 15h17M9.5 4v16M15 4v16"/></symbol>
       <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 7h16M4 12h16M4 17h16"/>
             <circle cx="9" cy="7" r="1.8" fill="currentColor" stroke="none"/>

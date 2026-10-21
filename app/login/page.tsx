@@ -7,7 +7,7 @@ import { authApi, ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { routeAfterAuth } from "@/lib/active-biz";
 import { IntlPhoneField } from "@/components/imach/intl-phone-field";
-import { AuthBrandPanel } from "@/components/imach/auth-brand-panel";
+import { AuthBrandPanel, LogoMark } from "@/components/imach/auth-brand-panel";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { Sheet } from "@/components/ui/sheet";
@@ -144,15 +144,17 @@ function LoginView() {
         </div>
 
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-6 lg:max-w-[448px] lg:rounded-3xl lg:border lg:border-line lg:bg-surface lg:px-[38px] lg:py-[38px] lg:shadow-[0_18px_50px_rgba(31,29,26,.07)]">
-          {/* سربرگ کارت — فقط دسکتاپ (dkf-h) */}
+          {/* نشان آیمچ بالای فرم (حکم مالک M2 — برندینگ در ذهن کاربر) */}
+          <LogoMark size={34} className="mx-auto mb-5 text-primary-strong lg:hidden" />
+
+          {/* سربرگ کارت — فقط دسکتاپ (dkf-h)؛ نشان آیمچ برند را می‌دهد */}
           <div className="mb-6 hidden lg:block">
-            <div className="text-[23px] font-extrabold tracking-[-.2px] text-text">
-              {m.auth.brand.name} — {t.title}
-            </div>
+            <LogoMark size={42} className="mb-4 text-primary-strong" />
+            <div className="text-[23px] font-extrabold tracking-[-.2px] text-text">{t.title}</div>
             <div className="mt-[7px] text-[12.5px] text-text-3">{t.subtitle}</div>
           </div>
 
-          <form onSubmit={submit} className="flex flex-col gap-4">
+          <form onSubmit={submit} className="flex flex-col gap-5">
             <Field label={t.phoneLabel}>
               {() => (
                 <IntlPhoneField

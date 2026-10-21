@@ -5,6 +5,7 @@ import { DirectionProvider } from "@radix-ui/react-direction";
 import { useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
 import { LocaleProvider, useLocale } from "@/i18n/locale-context";
+import { DisplayPrefsProvider } from "@/components/imach/prefs-context";
 
 /**
  * Application-level providers:
@@ -16,9 +17,11 @@ import { LocaleProvider, useLocale } from "@/i18n/locale-context";
  */
 export function AppProviders({
   initialLocale,
+  initialCurrency,
   children,
 }: {
   initialLocale?: string;
+  initialCurrency?: string | null;
   children: React.ReactNode;
 }) {
   const [client] = useState(
@@ -56,8 +59,10 @@ export function AppProviders({
     <QueryClientProvider client={client}>
       <LocaleProvider initialLocale={initialLocale}>
         <Directional>
-          <AuthCacheSync />
-          {children}
+          <DisplayPrefsProvider initialCurrency={initialCurrency}>
+            <AuthCacheSync />
+            {children}
+          </DisplayPrefsProvider>
         </Directional>
       </LocaleProvider>
     </QueryClientProvider>

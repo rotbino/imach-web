@@ -14,7 +14,7 @@ import { hasExplicitLocale, isLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/locale-context";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { IntlPhoneField } from "@/components/imach/intl-phone-field";
-import { AuthBrandPanel } from "@/components/imach/auth-brand-panel";
+import { AuthBrandPanel, LogoMark } from "@/components/imach/auth-brand-panel";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { Sheet } from "@/components/ui/sheet";
@@ -176,7 +176,9 @@ function Step1({
     }
     setBusy(true);
     try {
-      await quickRegister(phoneIntl, country, refCode);
+      // زبان UI لحظهٔ ثبت‌نام ذخیره می‌شود (حکم مالک: انتخاب زبان کاربر محترم —
+      // کشور پیش‌فرض می‌دهد اما کاربر می‌تواند override کند؛GB→en persisted)
+      await quickRegister(phoneIntl, country, refCode, locale);
       clearReferralCode();
       // authed → ویزارد خودش گام ۲ را نشان می‌دهد
     } catch (err) {
@@ -198,49 +200,52 @@ function Step1({
     <AuthShell title={t.title} subtitle={t.subtitle} wide>
       <StepsTag>{t.step1Tag}</StepsTag>
 
-      <Field label={t.phoneLabel}>
-        {() =>
-          lockedPhone ? (
-            <div className="flex h-12 items-center gap-2.5 rounded-lg border border-line bg-surface-2 px-3.5">
-              <Icon name="phone" size={17} className="shrink-0 text-text-3" />
-              <b dir="ltr" className="flex-1 text-start text-[14px] font-bold text-text">
-                {lockedPhone}
-              </b>
-            </div>
-          ) : (
-            <IntlPhoneField
-              value={phone}
-              onChange={setPhone}
-              country={country}
-              onCountryChange={(code) => {
-                setCountry(code);
-                const lang = langOfCountry(code);
-                const target = isLocale(lang) ? lang : "en";
-                if (target !== locale) setLocale(target);
-              }}
-              ariaLabel={t.phoneLabel}
-              autoFocus
-              onEnter={() => void submit()}
+      {/* استاندارد فاصلهٔ فرم (حکم مالک M2): فیلد↔فیلد ۲۰px (gap-5) */}
+      <div className="flex flex-col gap-5">
+        <Field label={t.phoneLabel}>
+          {() =>
+            lockedPhone ? (
+              <div className="flex h-12 items-center gap-2.5 rounded-lg border border-line bg-surface-2 px-3.5">
+                <Icon name="phone" size={17} className="shrink-0 text-text-3" />
+                <b dir="ltr" className="flex-1 text-start text-[14px] font-bold text-text">
+                  {lockedPhone}
+                </b>
+              </div>
+            ) : (
+              <IntlPhoneField
+                value={phone}
+                onChange={setPhone}
+                country={country}
+                onCountryChange={(code) => {
+                  setCountry(code);
+                  const lang = langOfCountry(code);
+                  const target = isLocale(lang) ? lang : "en";
+                  if (target !== locale) setLocale(target);
+                }}
+                ariaLabel={t.phoneLabel}
+                autoFocus
+                onEnter={() => void submit()}
+              />
+            )
+          }
+        </Field>
+
+        <Field label={t.nameLabel}>
+          {(id) => (
+            <Input
+              id={id}
+              type="text"
+              maxLength={80}
+              placeholder={t.namePh}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
             />
-          )
-        }
-      </Field>
+          )}
+        </Field>
+      </div>
 
-      <Field label={t.nameLabel}>
-        {(id) => (
-          <Input
-            id={id}
-            type="text"
-            maxLength={80}
-            placeholder={t.namePh}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoComplete="name"
-          />
-        )}
-      </Field>
-
-      <Button size="lg" block loading={busy} className="mt-1" onClick={() => void submit()}>
+      <Button size="lg" block loading={busy} className="mt-6" onClick={() => void submit()}>
         {t.continueBtn}
       </Button>
 
@@ -278,11 +283,13 @@ function Step2({
   const [bizName, setBizName] = useState(
     existingBiz && !isPlaceholderBiz(existingBiz) ? existingBiz.name : ""
   );
+  const [role, setRole] = useState("");
   const [trade, setTrade] = useState("");
   const [city, setCity] = useState("");
   const [mode, setMode] = useState<Mode | "">("");
   const [busy, setBusy] = useState(false);
 
+  const [roleSheet, setRoleSheet] = useState(false);
   const [tradeSheet, setTradeSheet] = useState(false);
   const [editSheet, setEditSheet] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -336,6 +343,11 @@ function Step2({
       show({ text: m.auth.toast.bizRequired, kind: "error" });
       return;
     }
+    if (role.trim().length < 2) {
+      show({ text: t.roleRequired, kind: "error" });
+      setRoleSheet(true);
+      return;
+    }
     if (trade.trim().length < 2) {
       show({ text: m.auth.toast.tradeRequired, kind: "error" });
       return;
@@ -352,9 +364,9 @@ function Step2({
 
     setBusy(true);
     try {
-      // ۱) هویت شخص (نام صاحب کسب‌وکار — روی ویترین هم دیده می‌شود)
+      // ۱) هویت شخص (نام + نقش در کسب‌وکار — روی ویترین/پیام‌ها دیده می‌شود)
       const { firstName, lastName } = splitName(name);
-      await authApi.editProfile({ firstName, lastName });
+      await authApi.editProfile({ firstName, lastName, businessRole: role.trim() });
       // ۲) کسب‌وکار placeholder → واقعی (صنف سمت سرور به رجیستری Trade حل می‌شود)
       // activityType عمداً نمی‌رود — نوع کسب‌وکار است نه نقش؛ طبق کامنت مدل
       // «chosen later from the panel» + جدول §۱۰ سند ۰۸
@@ -421,35 +433,51 @@ function Step2({
         {t.backToStep1}
       </button>
 
-      <Field label={t.bizLabel} hint={t.bizHint}>
-        {(id) => (
-          <Input
-            id={id}
-            type="text"
-            maxLength={60}
-            placeholder={t.bizPh}
-            value={bizName}
-            onChange={(e) => setBizName(e.target.value)}
-          />
-        )}
-      </Field>
+      {/* استاندارد فاصلهٔ فرم (حکم مالک M2): فیلد↔فیلد ۲۰px (gap-5) */}
+      <div className="flex flex-col gap-5">
+        <Field label={t.bizLabel} hint={t.bizHint}>
+          {(id) => (
+            <Input
+              id={id}
+              type="text"
+              maxLength={60}
+              placeholder={t.bizPh}
+              value={bizName}
+              onChange={(e) => setBizName(e.target.value)}
+            />
+          )}
+        </Field>
 
-      {/* صنف کسب‌وکار — شیت سرچی-انتخابی از دیتابیس */}
-      <Field label={t.tradeLabel}>
-        {() => (
-          <button
-            type="button"
-            onClick={() => setTradeSheet(true)}
-            className="flex h-12 w-full items-center justify-between gap-2 rounded-lg border border-line-2 bg-surface px-3.5 text-[14px] transition-colors hover:border-line-3"
-          >
-            <span className={cn("truncate", !trade && "text-text-4")}>{trade || t.tradePh}</span>
-            <Icon name="chevd" size={14} className="shrink-0 text-text-3" />
-          </button>
-        )}
-      </Field>
+        {/* نقش شما در کسب‌وکار (حکم مالک M2 — FD-32) — کمبو شیت‌انتخابی */}
+        <Field label={t.roleLabel}>
+          {() => (
+            <button
+              type="button"
+              onClick={() => setRoleSheet(true)}
+              className="flex h-12 w-full items-center justify-between gap-2 rounded-lg border border-line-2 bg-surface px-3.5 text-[14px] transition-colors hover:border-line-3"
+            >
+              <span className={cn("truncate", !role && "text-text-4")}>{role || t.rolePh}</span>
+              <Icon name="chevd" size={14} className="shrink-0 text-text-3" />
+            </button>
+          )}
+        </Field>
+
+        {/* صنف کسب‌وکار — شیت سرچی-انتخابی از دیتابیس */}
+        <Field label={t.tradeLabel}>
+          {() => (
+            <button
+              type="button"
+              onClick={() => setTradeSheet(true)}
+              className="flex h-12 w-full items-center justify-between gap-2 rounded-lg border border-line-2 bg-surface px-3.5 text-[14px] transition-colors hover:border-line-3"
+            >
+              <span className={cn("truncate", !trade && "text-text-4")}>{trade || t.tradePh}</span>
+              <Icon name="chevd" size={14} className="shrink-0 text-text-3" />
+            </button>
+          )}
+        </Field>
 
       {/* شهر — ایران: فهرست جست‌وجودار / غیرایران: متن آزاد (چندکشوری) */}
-      <Field label={t.cityLabel}>
+        <Field label={t.cityLabel}>
         {(id) =>
           isIran ? (
             <SearchSelect
@@ -472,7 +500,7 @@ function Step2({
       </Field>
 
       {/* FD-34: سه دکمهٔ سادهٔ هم‌عرض + مثالِ همان حالت */}
-      <Field label={t.modesLabel}>
+        <Field label={t.modesLabel}>
         {() => (
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
@@ -506,9 +534,10 @@ function Step2({
             )}
           </div>
         )}
-      </Field>
+        </Field>
+      </div>
 
-      <Button size="lg" block loading={busy} className="mt-1" onClick={() => void save()}>
+      <Button size="lg" block loading={busy} className="mt-6" onClick={() => void save()}>
         {t.submit}
       </Button>
 
@@ -518,6 +547,17 @@ function Step2({
       >
         {t.toLogin}
       </Link>
+
+      {/* ═══ شیت نقش — ۹ نقش FD-32 (عین حکم مالک) ═══ */}
+      <RoleSheet
+        open={roleSheet}
+        onClose={() => setRoleSheet(false)}
+        picked={role}
+        onPick={(v) => {
+          setRole(v);
+          setRoleSheet(false);
+        }}
+      />
 
       {/* ═══ شیت صنف — سرچ + لیست دیتابیسی + صنف جدید ═══ */}
       <TradeSheet
@@ -548,6 +588,44 @@ function Step2({
         </div>
       </Sheet>
     </AuthShell>
+  );
+}
+
+/* ═══════════ شیت نقش شما در کسب‌وکار — ۹ نقش FD-32 (بدون سرچ؛ کوتاه) ═══════════ */
+function RoleSheet({
+  open,
+  onClose,
+  picked,
+  onPick,
+}: {
+  open: boolean;
+  onClose: () => void;
+  picked: string;
+  onPick: (v: string) => void;
+}) {
+  const t = useMessages().auth.signup;
+  return (
+    <Sheet open={open} onClose={onClose} title={t.roleSheetTitle}>
+      <p className="pb-2 text-[12.5px] leading-5 text-text-3">{t.roleSheetSub}</p>
+      <div role="listbox" aria-label={t.roleSheetTitle} className="flex flex-col">
+        {t.roleOptions.map((r: string) => (
+          <button
+            key={r}
+            type="button"
+            role="option"
+            aria-selected={r === picked}
+            onClick={() => onPick(r)}
+            className={cn(
+              "flex items-center justify-between gap-2 rounded-lg px-2 py-3 text-start transition-colors",
+              r === picked ? "bg-arm-soft" : "hover:bg-surface-2"
+            )}
+          >
+            <span className="min-w-0 flex-1 truncate text-[14px] font-bold text-text">{r}</span>
+            {r === picked && <Icon name="check" size={16} className="text-arm-strong" />}
+          </button>
+        ))}
+      </div>
+    </Sheet>
   );
 }
 
@@ -722,8 +800,13 @@ function AuthShell({
               : "lg:max-w-[448px] lg:px-[38px] lg:py-[38px]"
           )}
         >
+          {/* نشان آیمچ بالای فرم (حکم مالک M2 — برندینگ در ذهن کاربر):
+              موبایل: وسط‌چین بالای فیلدها · دسکتاپ: بالای عنوان کارت */}
+          <LogoMark size={34} className="mx-auto mb-5 text-primary-strong lg:hidden" />
+
           {/* سربرگ کارت — فقط دسکتاپ (dkf-h) */}
           <div className="mb-6 hidden lg:block">
+            <LogoMark size={42} className="mb-4 text-primary-strong" />
             <div className="text-[23px] font-extrabold tracking-[-.2px] text-text">{title}</div>
             <div className="mt-[7px] text-[12.5px] text-text-3">{subtitle}</div>
           </div>

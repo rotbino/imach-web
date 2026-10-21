@@ -53,9 +53,8 @@ export function isPlaceholderBiz(b: { city: string; name: string } | undefined):
 }
 
 /**
- * مسیر پس از احراز هویت (سالواح فاز ۲/۳ legacy).
- * M1: میزها هنوز ساخته نشده‌اند (M2) → مقصد موقت /me (صفحهٔ نشست واقعی).
- * TODO(M2): با رسیدن اسکرین‌های ۰۴/۰۹، خروجی نهایی = "/home" (خرید) / "/sell/catalog" (فروش).
+ * مسیر پس از احراز هویت (سالواح فاز ۲/۳ legacy — نهایی‌شده در M2).
+ * میزهای فروش/خرید ساخته شده‌اند: خروجی = "/sell" (فروش) یا "/home" (خرید).
  */
 export function routeAfterAuth(
   businesses: Pick<BusinessSummaryDto, "city" | "name" | "enabledArms">[]
@@ -63,7 +62,5 @@ export function routeAfterAuth(
   const biz = businesses[0];
   if (!biz || isPlaceholderBiz(biz)) return "/start";
   const arm: Arm = armEnabled(biz, storedArm()) ? storedArm() : firstEnabledArm(biz);
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- TODO(M2): arm === "buy" ? "/home" : "/sell/catalog"
-  void arm;
-  return "/me";
+  return arm === "buy" ? "/home" : "/sell";
 }
