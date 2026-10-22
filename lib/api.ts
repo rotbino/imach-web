@@ -385,6 +385,8 @@ export interface GoodItemDto {
   note?: string | null;
   /** G7 — مهر آخرین قیمت‌گذاری؛ مبنای بج «قیمت منقضی» */
   pricedAt?: string | null;
+  /** FD-9 — اعتبار قیمتِ همین ردیف (۱..۵ روز از فرم ۱۳/۱۴)؛ null = همان تنظیم کاتالوگ */
+  priceValidDays?: number | null;
   /** G7/FD-52 — قیمت منقضی شده (فقط در خروجی‌های عمومی) */
   priceExpired?: boolean;
   priceMinor: number | null;
@@ -1334,6 +1336,9 @@ export const listingsApi = {
     /** مدل واحد (۱۰۲۶) — نام بستهٔ انتخابی («کارتن ۶۰تایی»)؛ undefined = بی‌تغییر،
      *  null صریح = فله. با baseQty در Listing.packaging ذخیره می‌شود. */
     packLabel?: string | null;
+    /** FD-9 — یادآوری آپدیت قیمت این ردیف (۱..۵؛ فرم پیش‌فرض ۳ می‌فرستد)؛
+     *  null صریح = همان تنظیم کاتالوک؛ undefined = بی‌تغییر. */
+    priceValidDays?: number | null;
     sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
     /** فاز ۳ — دسته‌ی شخصی کاتالوگ؛ undefined = بدون تغییر، null = بی‌دسته */

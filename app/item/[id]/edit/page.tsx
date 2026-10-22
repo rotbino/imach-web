@@ -29,7 +29,7 @@ import {
   resolveConsumerUnit,
   packUnitsFor,
   composePackLabel,
-  parseCountFromLabel,
+  parsePackCount,
   packShort,
 } from "@/lib/units";
 import { useLocale } from "@/i18n/locale-context";
@@ -213,7 +213,8 @@ function EditForm({
   const touchName = (v: string) => {
     setPackDirty(true);
     setPackName(v);
-    const parsed = parseCountFromLabel(v);
+    // «تریلی ۲۴ تنی» → ۲۴ تن = ۲۴٬۰۰۰ کیلو (parsePackCount)
+    const parsed = parsePackCount(v, consumerKey);
     if (parsed && (baseQty == null || baseQty < 1)) setBaseQty(parsed);
   };
 
@@ -226,7 +227,14 @@ function EditForm({
           ? packUnit.nameFa
           : composePackLabel(packUnit.nameFa, baseQty, consumerKey, unit)
         : composePackLabel(packName, baseQty, consumerKey, unit);
+  /* بستهٔ کامل؟ (نام + تعداد) — ناقص = «واحد عمده» (فیکس مالک ۱۰۲۶-۲) */
+  const packComplete = !!packLabel && !!baseQty && baseQty >= 1;
   const stockSuffix = packLabel ? packShort(packLabel) ?? unit : unit || undefined;
+
+  /* FD-9 — یادآوری آپدیت قیمت این ردیف (۱..۵، پیش‌فرض ۳؛ از ردیف پیش‌پر) */
+  const [validDays, setValidDays] = useState<number>(
+    l.priceValidDays != null && l.priceValidDays >= 1 && l.priceValidDays <= 5 ? l.priceValidDays : 3
+  );
 
   /* ── تخفیف مشتری‌ها (٪ برای هر نوع؛ خالی = همان تنظیمات کاتالوک) ── */
   const tri0 = itemRule?.itemTri ?? null;
@@ -324,7 +332,8 @@ function EditForm({
     }
     setBusy(true);
     try {
-      // بستهٔ نو (سایر/متغیر) مثل برند عمومی می‌شود — /units/ensure (best-effort)
+      // بستهٔ نو (سایر/متغیر) مثل برند عمومی می‌شود — /units/ensure (best-effort
+      // اما نه بی‌صدا — فیکس مالک ۱۰۲۶-۲: کاربر باید بفهمد بسته عمومی نشد)
       if (
         packDirty &&
         packLabel &&
@@ -338,9 +347,12 @@ function EditForm({
             baseUnitKey: consumerKey,
             containsQty: Math.round(baseQty),
           });
-          void qc.invalidateQueries({ queryKey: ["units"] });
+          await qc.invalidateQueries({ queryKey: ["units"] });
         } catch {
-          /* best-effort */
+          show({
+            text: `بستهٔ «${packLabel}» در فهرست واحدها ثبت نشد — تغییرات ذخیره می‌شود، بعداً دوباره تلاش کن`,
+            kind: "info",
+          });
         }
       }
 
@@ -354,6 +366,8 @@ function EditForm({
         mode: l.mode,
         ...(packDirty && titleWasPackLabel ? { title: null } : {}),
         ...(packDirty ? { packLabel, baseQty: baseQty ?? null } : {}),
+        // FD-9 — اعتبار قیمت همین ردیف (۱..۵ روز؛ همیشه صریح از فرم)
+        priceValidDays: validDays,
         note: note.trim() || null,
         sell: {
           priceMinor: majorToMinor(price, cur),
@@ -488,16 +502,19 @@ function EditForm({
           )}
         </Field>
 
-        {/* ═══ بسته‌بندی فروش عمده (مدل واحد ۱۰۲۶ — چیپ‌های جدول Unit + فله +
-            سایر؛ مانند فرم ۱۳) ═══ */}
+        {/* ═══ انتخاب واحد فروش (مدل واحد ۱۰۲۶ — حکم مالک ۱۰۲۶-۲: برچسب‌ها
+                «انتخاب واحد فروش» / «نام واحد فروش عمده» / «تعداد در واحد
+                عمده»؛ مانند فرم ۱۳) ═══ */}
         <Field
-          label="بسته‌بندی فروش عمده"
+          label="انتخاب واحد فروش"
           hint={
             packMode === "none"
               ? `فله — قیمت به‌ازای هر ${unit || "واحد"}`
               : packMode === "unit" && packUnit?.containsQty
                 ? `هر ${packUnit.nameFa} شامل ${num(packUnit.containsQty, "fa")} ${unit} است`
-                : `قیمت هر ${unit || "واحد"} خودکار حساب می‌شود — با هر ضریب مقایسه می‌شود`
+                : packComplete
+                  ? `هر ${packLabel} شامل ${num(baseQty, "fa")} ${unit} است — قیمت هر ${unit || "واحد"} خودکار حساب می‌شود`
+                  : "قیمت هر واحد عمده خودکار حساب می‌شود — با هر ضریب مقایسه می‌شود"
           }
         >
           {(id) => (
@@ -521,24 +538,24 @@ function EditForm({
           )}
         </Field>
 
-        {/* «سایر» — نام و تعداد کنار هم (FD-15)؛ عددِ داخل نام خودکار پر می‌شود */}
+        {/* «سایر» — نام واحد فروش عمده و تعداد کنار هم (FD-15 + ۱۰۲۶-۲) */}
         {packMode === "custom" && (
           <div className="flex gap-2.5">
             <div className="min-w-0 flex-[1.4]">
-              <Field label="نام بسته‌بندی" required>
+              <Field label="نام واحد فروش عمده" required>
                 {(id) => (
                   <Input
                     id={id}
                     value={packName}
                     onChange={(e) => touchName(e.target.value)}
-                    placeholder="مثلاً کارتن ۶۰ عددی"
+                    placeholder="مثلاً تریلی ۲۴ تنی"
                     maxLength={80}
                   />
                 )}
               </Field>
             </div>
             <div className="w-[150px] shrink-0">
-              <Field label="تعداد در بسته" required>
+              <Field label="تعداد در واحد عمده" required>
                 {(id) => (
                   <NumberInput
                     id={id}
@@ -556,7 +573,7 @@ function EditForm({
 
         {/* واحد متغیر (کارتن/جامبو/باکس) — تعداد را خودش تعیین می‌کند */}
         {packMode === "unit" && packUnit && packUnit.containsQty == null && (
-          <Field label={`تعداد ${unit || "واحد"} در هر ${packUnit.nameFa}`} required>
+          <Field label="تعداد در واحد عمده" required hint={`${unit || "واحد"} در هر ${packUnit.nameFa}`}>
             {(id) => (
               <NumberInput
                 id={id}
@@ -570,14 +587,16 @@ function EditForm({
           </Field>
         )}
 
-        {/* ═══ قیمت (با هم‌گامی قیمت واحد مصرف‌کننده — الگوی ویزارد) ═══ */}
+        {/* ═══ قیمت (پروتوتایپ ۱۳/۱۴: لیبل کوتاه + ورودی ساده — ارز فقط در
+            لیبل؛ حکم مالک ۱۰۲۶-۲ «باکس قیمت بزرگ نشود») ═══ */}
         <Field
-          label={`قیمت هر ${packLabel ?? `${unit || "واحد"}`}${
-            baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""
+          label={`قیمت هر ${
+            packComplete ? "بسته" : packMode === "none" ? unit || "واحد" : "واحد عمده"
           } — ${moneyLabel}`}
           required
+          hint={packComplete ? `${packLabel} · ${num(baseQty ?? 1, "fa")} ${unit || "واحد"}` : undefined}
         >
-          {(id) => <NumberInput id={id} value={price} onChange={setPackPrice} min={0} suffix={moneyLabel} />}
+          {(id) => <NumberInput id={id} value={price} onChange={setPackPrice} min={0} />}
         </Field>
 
         {baseQty && baseQty > 1 && (
@@ -585,7 +604,7 @@ function EditForm({
             label={`قیمت هر ${unit || "واحد"} — ${moneyLabel}`}
             hint="خودکار حساب می‌شود — هر کدام را عوض کنی، اونیکی هم تازه می‌شود"
           >
-            {(id) => <NumberInput id={id} value={unitPrice} onChange={setUnit} min={0} suffix={moneyLabel} />}
+            {(id) => <NumberInput id={id} value={unitPrice} onChange={setUnit} min={0} />}
           </Field>
         )}
 
@@ -614,6 +633,37 @@ function EditForm({
               maxLength={280}
               placeholder="مثلاً: تحویل از انبار تهران، بستهٔ ۵۰ کیلویی"
             />
+          )}
+        </Field>
+
+        {/* ═══ یادآوری آپدیت قیمت — FD-9 (پروتوتایپ ۱۴: #ed-valid؛ حکم مالک
+            ۱۰۲۶-۲: «باید از ۱ تا ۵ باشه پیش‌فرض ۳») ═══ */}
+        <Field
+          label="یادآوری آپدیت قیمت"
+          hint="بعد از این روزها، قیمت در کاتالوگ «منقضی» نشان داده می‌شود و یادآوری می‌گیری"
+        >
+          {(id) => (
+            <div id={id} className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((d) => {
+                const active = validDays === d;
+                return (
+                  <button
+                    key={d}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setValidDays(d)}
+                    className={cn(
+                      "min-w-0 flex-1 rounded-xl border-[1.5px] px-1 py-2.5 text-[12px] font-bold transition-colors active:scale-[.97]",
+                      active
+                        ? "border-primary bg-primary-soft text-primary-strong"
+                        : "border-line bg-surface text-text-2 hover:border-line-2"
+                    )}
+                  >
+                    {num(d, "fa")} روز
+                  </button>
+                );
+              })}
+            </div>
           )}
         </Field>
 

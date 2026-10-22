@@ -94,6 +94,24 @@ export function parseCountFromLabel(label: string): number | null {
 }
 
 /**
+ * تعدادِ بسته از روی نام — با آگاهی از واحد مصرف‌کننده (فیکس مالک ۱۰۲۶-۲):
+ * «تریلی ۲۴ تنی» یعنی ۲۴ *تن* برنج، نه ۲۴ کیلو — واژهٔ «تن/تنی» در نام و
+ * پایهٔ کیلوگرم → عدد × ۱۰۰۰ می‌شود («گونی ۷۰ کیلویی» دست‌نخورده می‌ماند).
+ */
+export function parsePackCount(label: string, consumerKey: string): number | null {
+  const n = parseCountFromLabel(label);
+  if (n == null) return null;
+  if (consumerKey !== "KILOGRAM" || n >= 1000) return n;
+  const hasTonWord = label
+    .split(/\s+/)
+    .some((w) => {
+      const bare = w.replace(/[\d\u06F0-\u06F9\u0660-\u0669٬،.]/g, "");
+      return bare === "تن" || bare === "تنی";
+    });
+  return hasTonWord ? n * 1000 : n;
+}
+
+/**
  * برچسب کامل بسته از نام + تعداد — «کارتن» + ۶۰ + عدد → «کارتن ۶۰تایی»،
  * «گونی» + ۷۰ + کیلوگرم → «گونی ۷۰ کیلوگرمی» (سبکِ نام‌گذاری سید:
  * کارتن ۲۴تایی / کیسهٔ ۵۰ کیلویی). اگر خودِ نام عدد دارد، دست نمی‌زنیم.

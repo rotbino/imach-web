@@ -7,6 +7,11 @@ import { cn } from "@/lib/utils";
  * Button — دکمهٔ دیزاین‌سیستم M0 (Tailwind-only).
  * واریانت‌ها از زبان پروتوتایپ: btn-arm (پررنگ بازو) · soft (پس‌زمینهٔ arm-soft)
  * · ghost (متن‌محور) · danger (قرمز حذف) · outline (قاب‌دار).
+ *
+ * ⚠ درس فیکس مالک (۱۰۲۶-۲): سایز xl قبلاً «text-16» داشت — کلاس نامعتبر که
+ * tailwind-merge آن را گروه «رنگ متن» می‌پنداشت و text-white را به‌عنوان
+ * متناقض حذف می‌کرد → متن دکمهٔ اصلی نارنجی، تیره می‌افتاد. همیشه
+ * text-[16px] (اندازهٔ صریح) — نه token عددی لخت.
  */
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "arm" | "soft" | "ghost" | "danger" | "outline";
@@ -27,7 +32,7 @@ const SIZES: Record<NonNullable<ButtonProps["size"]>, string> = {
   sm: "h-9 px-3 text-[13px] rounded-md gap-1.5",
   md: "h-11 px-4 text-[14px] rounded-lg gap-2",
   lg: "h-[52px] px-5 text-[15px] rounded-lg gap-2",
-  xl: "h-14 px-6 text-16 rounded-xl gap-2.5",
+  xl: "h-14 px-6 text-[16px] rounded-xl gap-2.5",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(

@@ -118,6 +118,10 @@ function Catalog() {
         </>
       }
     >
+      {/* حکم مالک (۱۰۲۶-۲): «رنگ بگراند محتوای کاتالوک یه مقدار متفاوتر از
+          رنگ زمینه — شبیه کارت» — کل محتوای کاتالوک روی یک کاغذ واحد با
+          قاب و سایهٔ نرم؛ عناصر داخلی با قاب خودشان از کاغذ جدا می‌شوند */}
+      <div className="rounded-[20px] border border-line bg-surface p-4 shadow-[0_2px_10px_rgba(31,29,26,.04)] lg:p-5">
       <div className="flex flex-col gap-3">
         {/* ── نوار ابزار: جستجو + محصول جدید (FD-35) ── */}
         <div className="flex gap-2">
@@ -132,7 +136,7 @@ function Catalog() {
               onChange={(e) => setQ(e.target.value)}
               placeholder={C.searchPh}
               autoComplete="off"
-              className="h-11 w-full rounded-xl border border-line bg-surface ps-10 pe-3 text-[14px] text-text placeholder:text-text-4 focus:border-arm focus:outline-none focus:ring-2 focus:ring-arm/20"
+              className="h-11 w-full rounded-xl border border-line bg-bg ps-10 pe-3 text-[14px] text-text placeholder:text-text-4 focus:border-arm focus:outline-none focus:ring-2 focus:ring-arm/20"
             />
           </div>
           <Button variant="arm" size="lg" className="shrink-0" onClick={() => router.push("/catalog/new")}>
@@ -207,13 +211,14 @@ function Catalog() {
         )}
 
         {/* ── نوار آمار (زنده) ── */}
-        <div className="mt-2 flex items-center justify-between rounded-2xl border border-line bg-surface px-5 py-3.5">
+        <div className="mt-2 flex items-center justify-between rounded-2xl border border-line bg-bg px-5 py-3.5">
           <Stat label={C.statsGoods} value={num(active.length, locale)} />
           <span className="h-6 w-px bg-line" />
           <Stat label={C.statsSavers} value={num(0, locale)} />
           <span className="h-6 w-px bg-line" />
           <Stat label={C.statsInvites} value={num(0, locale)} />
         </div>
+      </div>
       </div>
 
       {/* ── شیت مدیریت دسته‌ها (دستور مالک فیکس‌بچ M3) ── */}

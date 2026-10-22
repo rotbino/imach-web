@@ -15,7 +15,7 @@ import { useToast } from "@/components/ui/toast";
 import { useAuthStore } from "@/lib/auth-store";
 import { goodsApi, productsApi, listingsApi, businessesApi, unitsApi, filesApi, type GoodDto, type ProductRowDto, type BrandDto, type UnitDto } from "@/lib/api";
 import { num, currencyLabel, majorToMinor, unitLabel } from "@/lib/format";
-import { resolveConsumerUnit, packUnitsFor, composePackLabel, parseCountFromLabel, packShort } from "@/lib/units";
+import { resolveConsumerUnit, packUnitsFor, composePackLabel, parsePackCount, packShort } from "@/lib/units";
 import { useLocale } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
 
@@ -113,6 +113,10 @@ function AddWizard() {
   const [newLabel, setNewLabel] = useState("");
   const [busy, setBusy] = useState(false);
 
+  /* FD-9 (حکم مالک ۱۰۲۶-۲: «دکمه‌های یادآوری آپدیت قیمت — ۱ تا ۵، پیش‌فرض ۳»)
+   * اعتبار قیمت همین ردیف — پروتوتایپ ۱۳: pills days-pills #add-valid */
+  const [validDays, setValidDays] = useState(3);
+
   /* ── شیت‌ها ── */
   const [newGoodOpen, setNewGoodOpen] = useState(false);
   const [newBrandOpen, setNewBrandOpen] = useState(false);
@@ -198,6 +202,7 @@ function AddWizard() {
     setPackUnit(null);
     setImages([]);
     setImgPhase(null);
+    setValidDays(3);
   };
 
   const pickProduct = (p: ProductRowDto) => {
@@ -304,6 +309,9 @@ function AddWizard() {
           ? packUnit.nameFa
           : composePackLabel(packUnit.nameFa, baseQty, consumerKey, unit)
         : composePackLabel(title, baseQty, consumerKey, unit);
+  /* بستهٔ کامل؟ (نام + تعداد) — مبنای لیبل قیمت و هینت‌ها؛ ناقص = «واحد عمده»
+   * (فیکس مالک ۱۰۲۶-۲: «قیمت هر — » با واحدِ خالی یا واژهٔ بی‌معنی دیده نشود) */
+  const packComplete = !!packLabel && !!baseQty && baseQty >= 1;
   /* پسوند موجودی/حداقل سفارش — بستهٔ کوتاه («کیسه») یا واحد مصرف‌کننده (فله) */
   const stockSuffix = packLabel ? packShort(packLabel) ?? unit : unit || undefined;
 
@@ -339,7 +347,9 @@ function AddWizard() {
     setBusy(true);
     try {
       // بستهٔ نو (سایر/متغیر) مثل برند عمومی می‌شود — /units/ensure؛
-      // خطایش ردیف را خراب نمی‌کند، ولی بسته برای کاربران بعدی می‌ماند
+      // خطای ensure ردیف را خراب نمی‌کند اما بی‌صدا نمی‌ماند (فیکس مالک
+      // ۱۰۲۶-۲: کاربر باید بفهمد بسته‌اش عمومی نشد — «تریلی ۲۴ تنی» دیگر
+      // گم نمی‌شود) و کش واحدها پیش از خروج از صفحه تازه می‌شود.
       if (
         (packMode === "custom" || (packMode === "unit" && packUnit && packUnit.containsQty == null)) &&
         packLabel &&
@@ -352,9 +362,12 @@ function AddWizard() {
             baseUnitKey: consumerKey,
             containsQty: Math.round(baseQty),
           });
-          void qc.invalidateQueries({ queryKey: ["units"] });
+          await qc.invalidateQueries({ queryKey: ["units"] });
         } catch {
-          /* best-effort — ثبت ردیف مهم‌تر است */
+          show({
+            text: `بستهٔ «${packLabel}» در فهرست واحدها ثبت نشد — کالا ثبت می‌شود، بعداً دوباره تلاش کن`,
+            kind: "info",
+          });
         }
       }
 
@@ -378,6 +391,8 @@ function AddWizard() {
         note: note.trim() || null,
         // همیشه صریح — upsert روی ردیفِ موجود هم فله را درست می‌کند
         baseQty: baseQty ?? null,
+        // FD-9 — اعتبار قیمت همین ردیف (۱..۵ روز)
+        priceValidDays: validDays,
         sell: {
           priceMinor: majorToMinor(price, cur),
           stock: stock ?? 0,
@@ -545,9 +560,9 @@ function AddWizard() {
                 (SACK/CARTON) — resolveConsumerUnit پایهٔ درست را نشان می‌دهد */}
             <PickedCard title={good.nameFa} sub={`نوع کالا · فروش به ${unit || "—"} · ${good.category?.nameFa ?? ""}`} />
 
-            {/* فیلتر برند — چیپ‌های سروری + «ثبت برند جدید» (دستور مالک
-                فیکس‌بچ M3): دکمه‌ای آخر فهرست برندها با رنگ متفاوت → شیتِ
-                نام برند → مسیر ثبت محصول همان برند */}
+            {/* فیلتر برند — چیپ‌های سروری (فیکس مالک ۱۰۲۶-۲: «ثبت برند جدید»
+                از فرم حذف شد — همان CTA داخل مودال انتخاب برند هست؛
+                گام ۳ شیت را باز می‌کند) */}
             {productsQ.data && productsQ.data.brands.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-1.5">
                 <BrandChip active={brandFilter === null} onClick={() => setBrandFilter(null)}>
@@ -562,14 +577,6 @@ function AddWizard() {
                     {b.name} <span className="text-text-4">({num(b.count, "fa")})</span>
                   </BrandChip>
                 ))}
-                <button
-                  type="button"
-                  onClick={() => setNewBrandOpen(true)}
-                  className="inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/45 bg-primary-soft/50 px-3.5 py-1.5 text-[12.5px] font-bold text-primary-strong transition-colors hover:border-primary hover:bg-primary-soft active:scale-[.97]"
-                >
-                  <Icon name="plus" size={13} />
-                  ثبت برند جدید
-                </button>
               </div>
             )}
 
@@ -627,8 +634,29 @@ function AddWizard() {
               img={product?.imageUrl ?? undefined}
             />
 
-            {/* فرم محصول جدید — فقط وقتی از مسیر «خودتان ثبتش کنید» آمده.
-                ترتیب دقیقاً پروتوتایپ ۱۳: عنوان → عکس → برند (بدون قاب — فیلدهای ساده) */}
+            {/* برند — حکم مالک (۱۰۲۶-۲): «انتخاب برند اول فرم بیاد حتی قبل از
+                عنوان؛ ثبت برند جدید از فرم برداشته شد چون توی مودال هست».
+                شیت انتخاب برند (sheet-pick-brand: جستجو + «بدون برند» + CTA
+                ثبت برند جدید) — وفادار به پروتوتایپ ۱۳ */}
+            {isNewProduct && (
+              <Field label="برند" hint="اگر محصولت برند ندارد، در شیت «بدون برند» را انتخاب کن">
+                {(id) => (
+                  <button
+                    id={id}
+                    type="button"
+                    onClick={() => setBrandPickerOpen(true)}
+                    className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-line bg-surface px-3.5 text-start text-[15px] transition-colors hover:border-line-2 focus-visible:border-arm focus-visible:ring-2 focus-visible:ring-arm/20"
+                  >
+                    <span className={cn("min-w-0 truncate", brand || brandNone ? "text-text" : "text-text-4")}>
+                      {brandNone ? "بدون برند" : brand ? brand.name : "انتخاب برند"}
+                    </span>
+                    <Icon name="chev" size={16} className="shrink-0 text-text-3 rtl:-scale-x-100" />
+                  </button>
+                )}
+              </Field>
+            )}
+
+            {/* فرم محصول جدید — حکم مالک ۱۰۲۶-۲: برند اول فرم، بعد عنوان و عکس */}
             {isNewProduct && (
               <Field label="عنوان محصول" hint="همین را خریداران می‌بینند — مثلاً: پفک اشی مشی ۱۰۰ گرمی">
                 {(id) => (
@@ -685,38 +713,20 @@ function AddWizard() {
               onChange={(e) => addImages(e.target.files)}
             />
 
-            {/* برند — وفاداری به پروتوتایپ ۱۳ (بعد از عکس): دکمهٔ انتخاب → شیت
-                جستجوی برند (sheet-pick-brand: «هزاران برند — با جستجو پیدا کن یا برند جدید بساز») */}
-            {isNewProduct && (
-              <Field label="برند" hint="اگر محصولت برند ندارد، در شیت «بدون برند» را انتخاب کن">
-                {(id) => (
-                  <button
-                    id={id}
-                    type="button"
-                    onClick={() => setBrandPickerOpen(true)}
-                    className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-line bg-surface px-3.5 text-start text-[15px] transition-colors hover:border-line-2 focus-visible:border-arm focus-visible:ring-2 focus-visible:ring-arm/20"
-                  >
-                    <span className={cn("min-w-0 truncate", brand || brandNone ? "text-text" : "text-text-4")}>
-                      {brandNone ? "بدون برند" : brand ? brand.name : "انتخاب برند"}
-                    </span>
-                    <Icon name="chev" size={16} className="shrink-0 text-text-3 rtl:-scale-x-100" />
-                  </button>
-                )}
-              </Field>
-            )}
-
-            {/* ═══ بسته‌بندی فروش عمده (مدل واحد ۱۰۲۶ — چیپ‌های جدول Unit روی
-                پایهٔ مصرف‌کننده + فله + سایر؛ پروتوتایپ ۱۳: pack-chips + «سایر») ═══ */}
+            {/* ═══ انتخاب واحد فروش (مدل واحد ۱۰۲۶ — چیپ‌های جدول Unit روی
+                پایهٔ مصرف‌کننده + فله + سایر؛ پروتوتایپ ۱۳: pack-chips + «سایر»).
+                حکم مالک ۱۰۲۶-۲: برچسب‌ها «انتخاب واحد فروش» / «نام واحد فروش
+                عمده» / «تعداد در واحد عمده») ═══ */}
             <Field
-              label="بسته‌بندی فروش عمده"
+              label="انتخاب واحد فروش"
               hint={
                 packMode === "none"
                   ? `فله — قیمت به‌ازای هر ${unit || "واحد"}`
                   : packMode === "unit" && packUnit?.containsQty
                     ? `هر ${packUnit.nameFa} شامل ${num(packUnit.containsQty, "fa")} ${unit} است — قیمت هر ${unit || "واحد"} خودکار حساب می‌شود`
-                    : packMode === "unit" || packMode === "custom"
-                      ? `قیمت هر ${unit || "واحد"} خودکار حساب می‌شود — با هر ضریب مقایسه می‌شود`
-                      : undefined
+                    : packComplete
+                      ? `هر ${packLabel} شامل ${num(baseQty, "fa")} ${unit} است — قیمت هر ${unit || "واحد"} خودکار حساب می‌شود`
+                      : "قیمت هر واحد عمده خودکار حساب می‌شود — با هر ضریب مقایسه می‌شود"
               }
             >
               {(id) => (
@@ -740,12 +750,13 @@ function AddWizard() {
               )}
             </Field>
 
-            {/* «سایر» — نام بسته‌بندی و تعداد کنار هم (FD-15: حکم مالک)؛
-                اگر خودِ نام عدد دارد («گونی ۷۰ کیلویی») تعداد خودکار پر می‌شود */}
+            {/* «سایر» — نام واحد فروش عمده و تعداد کنار هم (FD-15 + ۱۰۲۶-۲:
+                «نام واحد فروش عمده» / «تعداد در واحد عمده»)؛ اگر خودِ نام عدد
+                دارد («گونی ۷۰ کیلویی») تعداد خودکار پر می‌شود */}
             {packMode === "custom" && (
               <div className="flex gap-2.5">
                 <div className="min-w-0 flex-[1.4]">
-                  <Field label="نام بسته‌بندی" required>
+                  <Field label="نام واحد فروش عمده" required>
                     {(id) => (
                       <Input
                         id={id}
@@ -753,17 +764,18 @@ function AddWizard() {
                         onChange={(e) => {
                           const v = e.target.value;
                           setTitle(v);
-                          const parsed = parseCountFromLabel(v);
+                          // «تریلی ۲۴ تنی» → ۲۴ تن = ۲۴٬۰۰۰ کیلو (parsePackCount)
+                          const parsed = parsePackCount(v, consumerKey);
                           if (parsed && (baseQty == null || baseQty < 1)) setBaseQty(parsed);
                         }}
-                        placeholder="مثلاً کارتن ۶۰ عددی"
+                        placeholder="مثلاً تریلی ۲۴ تنی"
                         maxLength={80}
                       />
                     )}
                   </Field>
                 </div>
                 <div className="w-[150px] shrink-0">
-                  <Field label={`تعداد در بسته`} required>
+                  <Field label="تعداد در واحد عمده" required>
                     {(id) => (
                       <NumberInput
                         id={id}
@@ -782,7 +794,7 @@ function AddWizard() {
             {/* واحد متغیر (کارتن/جامبو/باکس) — تعداد را خودش تعیین می‌کند؛
                 از آن پس «کارتن ۶۰تایی» مثل بستهٔ ثابت رفتار می‌شود */}
             {packMode === "unit" && packUnit && packUnit.containsQty == null && (
-              <Field label={`تعداد ${unit || "واحد"} در هر ${packUnit.nameFa}`} required>
+              <Field label="تعداد در واحد عمده" required hint={`${unit || "واحد"} در هر ${packUnit.nameFa}`}>
                 {(id) => (
                   <NumberInput
                     id={id}
@@ -796,20 +808,28 @@ function AddWizard() {
               </Field>
             )}
 
-            {/* قیمت بسته + قیمت واحد (§۱.۷ — هم‌گام دوطرفه؛ لیبل = نام بستهٔ
-                نهایی — پروتوتایپ ۱۳: «قیمت هر بسته» / «قیمت هر {unit}») */}
+            {/* ═══ قیمت (پروتوتایپ ۱۳: لیبل کوتاه + ورودی ساده — ارز فقط در
+                لیبل؛ حکم مالک ۱۰۲۶-۲ «باکس قیمت بزرگ نشود») ═══ */}
             <Field
-              label={`قیمت هر ${packLabel ?? `${unit || "واحد"}`}${
-                baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""
+              label={`قیمت هر ${
+                packComplete ? "بسته" : packMode === "none" ? unit || "واحد" : "واحد عمده"
               } — ${moneyLabel}`}
               required
+              hint={
+                packComplete
+                  ? `${packLabel} · ${num(baseQty ?? 1, "fa")} ${unit || "واحد"}`
+                    : undefined
+              }
             >
-              {(id) => <NumberInput id={id} value={price} onChange={setPackPrice} min={0} suffix={moneyLabel} autoFocus />}
+              {(id) => <NumberInput id={id} value={price} onChange={setPackPrice} min={0} autoFocus />}
             </Field>
 
             {baseQty && baseQty > 1 && (
-              <Field label={`قیمت هر ${unit || "واحد"} — ${moneyLabel}`} hint="خودکار حساب می‌شود — هر کدام را عوض کنی، اونیکی هم تازه می‌شود">
-                {(id) => <NumberInput id={id} value={unitPrice} onChange={setUnit} min={0} suffix={moneyLabel} />}
+              <Field
+                label={`قیمت هر ${unit || "واحد"} — ${moneyLabel}`}
+                hint="خودکار حساب می‌شود — هر کدام را عوض کنی، اونیکی هم تازه می‌شود"
+              >
+                {(id) => <NumberInput id={id} value={unitPrice} onChange={setUnit} min={0} />}
               </Field>
             )}
 
@@ -841,9 +861,36 @@ function AddWizard() {
               )}
             </Field>
 
-            <p className="rounded-xl bg-surface-2 px-4 py-3 text-[11.5px] leading-6 text-text-3">
-              اعتبار قیمت‌ها از «تنظیمات کاتالوگ» می‌آید — بعد از آن روزها قیمت «منقضی» نشان داده می‌شود و یادآوری می‌گیری.
-            </p>
+            {/* ═══ FD-9 — یادآوری آپدیت قیمت (پروتوتایپ ۱۳: days-pills؛ حکم مالک
+                ۱۰۲۶-۲: «باید از ۱ تا ۵ باشه، پیش‌فرض ۳») ═══ */}
+            <Field
+              label="یادآوری آپدیت قیمت"
+              hint="بعد از این روزها، قیمت در کاتالوگ «منقضی» نشان داده می‌شود و یادآوری می‌گیری"
+            >
+              {(id) => (
+                <div id={id} className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((d) => {
+                    const active = validDays === d;
+                    return (
+                      <button
+                        key={d}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => setValidDays(d)}
+                        className={cn(
+                          "min-w-0 flex-1 rounded-xl border-[1.5px] px-1 py-2.5 text-[12px] font-bold transition-colors active:scale-[.97]",
+                          active
+                            ? "border-primary bg-primary-soft text-primary-strong"
+                            : "border-line bg-surface text-text-2 hover:border-line-2"
+                        )}
+                      >
+                        {num(d, "fa")} روز
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </Field>
 
             <Button variant="arm" size="xl" block loading={busy} onClick={() => void save()}>
               {imgPhase ? (
