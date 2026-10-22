@@ -373,10 +373,12 @@ export interface GoodItemDto {
   /** برچسب خوانای واریانت («۵۰۰ گرمی · کارتن») */
   variantLabel?: string | null;
   // ── M2 — فیلدهای v2 (قرارداد واحد-قیمت + متن شخصی + اعتبار) ──
-  /** C5 — تعداد واحد پایه در این ردیف («کیسهٔ ۵۰ کیلویی» → 50) */
+  /** C5 — تعداد واحد پایه در این ردیف («کیسهٔ ۵۰ کیلویی» → 50)؛ null = فله */
   baseQty?: number | null;
-  /** C1 — قیمت هر واحد پایه (سروری: priceMinor ÷ baseQty) */
+  /** C1 — قیمت هر واحد پایه (سروری: priceMinor ÷ baseQty؛ فله = خودِ قیمت) */
   pricePerBaseMinor?: number | null;
+  /** مدل واحد (۱۰۲۶) — بستهٔ انتخابی ردیف: [{label: «کیسهٔ ۵۰ کیلویی», qty: 50}]؛ خالی/ null = فله */
+  packaging?: { label: string; qty: number }[] | null;
   /** C6 — عنوان شخصی ردیف در ویترین من؛ جدا از نام مرجع Good */
   title?: string | null;
   /** C2 — توضیح کوتاه فروشنده زیر ردیف */
@@ -1157,6 +1159,10 @@ export interface UnitDto {
 
 export const unitsApi = {
   list: () => api<UnitDto[]>("/units/list", { auth: false }),
+  /** مدل واحد (۱۰۲۶): بستهٔ شخصی کاربر مثل برند عمومی می‌شود — find-or-create
+   *  روی جدول Unit تا کاربران بعدی از لیست انتخاب کنند (idempotent). */
+  ensure: (body: { nameFa: string; baseUnitKey: string; containsQty: number }) =>
+    api<UnitDto>("/units/ensure", { method: "POST", body }),
   create: (body: {
     key: string;
     nameFa: string;
@@ -1322,8 +1328,12 @@ export const listingsApi = {
     title?: string | null;
     /** C2 — توضیح کوتاه فروشنده زیر ردیف */
     note?: string | null;
-    /** C5 — تعداد واحد پایه («کیسهٔ ۵۰ کیلویی» → 50)؛ سرور pricePerBaseMinor را می‌سازد */
-    baseQty?: number;
+    /** C5 — تعداد واحد پایه («کیسهٔ ۵۰ کیلویی» → 50)؛ سرور pricePerBaseMinor را
+     *  می‌سازد. undefined = بی‌تغییر (ویرایش)؛ null صریح = فله (بدون بسته). */
+    baseQty?: number | null;
+    /** مدل واحد (۱۰۲۶) — نام بستهٔ انتخابی («کارتن ۶۰تایی»)؛ undefined = بی‌تغییر،
+     *  null صریح = فله. با baseQty در Listing.packaging ذخیره می‌شود. */
+    packLabel?: string | null;
     sell?: { priceMinor: number; stock: number; minOrder: number };
     buy?: { volume: number; frequency: string };
     /** فاز ۳ — دسته‌ی شخصی کاتالوگ؛ undefined = بدون تغییر، null = بی‌دسته */

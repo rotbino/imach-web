@@ -24,6 +24,7 @@ interface PublicListing {
   priceExpired?: boolean;
   note: string | null;
   viewCount30: number;
+  packaging?: { label: string; qty: number }[] | null;
   gallery?: { url: string; thumbUrl: string | null }[];
   good: { nameFa: string; nameEn: string | null; unit: string };
 }
@@ -140,6 +141,9 @@ export default async function PublicCatalogPage({
               const img = l.gallery?.[0]?.thumbUrl ?? l.gallery?.[0]?.url ?? null;
               const expired = l.priceExpired ?? listingPriceExpiredServer(l.pricedAt, biz.priceValidityDays ?? null);
               const unit = l.good?.unit ? unitLabel(l.good.unit, locale) : "";
+              /* مدل واحد ۱۰۲۶ — بستهٔ انتخابی کنار واریانت (سبک کارت کاتالوگ مالک) */
+              const packLabel = l.packaging?.[0]?.label ?? null;
+              const sub = [l.variantLabel, packLabel].filter(Boolean).join(" · ");
               return (
                 <article
                   key={l.id}
@@ -162,9 +166,7 @@ export default async function PublicCatalogPage({
                   </div>
                   <div className="flex flex-col gap-1 p-3">
                     <p className="line-clamp-1 text-[13.5px] font-bold text-text">{name}</p>
-                    {l.variantLabel && (
-                      <p className="line-clamp-1 text-[11.5px] text-text-3">{l.variantLabel}</p>
-                    )}
+                    {sub && <p className="line-clamp-1 text-[11.5px] text-text-3">{sub}</p>}
                     {l.priceMinor !== null ? (
                       <p className="mt-1">
                         <b className={`text-[15px] font-black ${expired ? "text-text-3" : "text-text"}`}>
@@ -175,7 +177,8 @@ export default async function PublicCatalogPage({
                       <p className="mt-1 text-[11.5px] font-bold text-amber">برای قیمت وارد شوید</p>
                     )}
                     {l.note && <p className="line-clamp-1 text-[10.5px] text-text-4">{l.note}</p>}
-                    {l.baseQty && l.baseQty > 1 && unit && (
+                    {/* ردیف‌های قدیمیِ بی‌برچسب — همان خط تعداد */}
+                    {!packLabel && l.baseQty && l.baseQty > 1 && unit && (
                       <p className="text-[10.5px] text-text-4">
                         {num(l.baseQty, locale)} {unit} × بسته
                       </p>

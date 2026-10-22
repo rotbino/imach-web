@@ -16,13 +16,22 @@ import {
   listingsApi,
   pricingApi,
   filesApi,
+  unitsApi,
   type GoodItemDto,
   type PricingTier,
   type PricingItemTri,
   type FileDto,
   type UploadPhase,
+  type UnitDto,
 } from "@/lib/api";
 import { goodName, num, unitLabel, currencyLabel, majorToMinor, minorToMajor } from "@/lib/format";
+import {
+  resolveConsumerUnit,
+  packUnitsFor,
+  composePackLabel,
+  parseCountFromLabel,
+  packShort,
+} from "@/lib/units";
 import { useLocale } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
 
@@ -36,8 +45,10 @@ import { cn } from "@/lib/utils";
  * بخش‌ها (بر اساس 14-sell-edit + 37-product-view پروتوتایپ):
  *  · عکس‌های محصول — آپلود چندتایی (files/upload model=Listing key=gallery
  *    replace=false) با درصد زنده + حذف تک‌عکس؛ ذخیرهٔ لحظه‌ای (عکس = عمل فایل)
- *  · قیمت هر بسته ⇄ قیمت هر واحد (هم‌گام) + موجودی + حداقل سفارش
- *  · عنوان ویترین + توضیح + بسته‌بندی (نام + تعداد در بسته)
+ *  · قیمت هر بسته ⇄ قیمت هر واحد مصرف‌کننده (هم‌گام) + موجودی + حداقل سفارش
+ *  · بسته‌بندی فروش عمده — مدل واحد ۱۰۲۶: چیپ‌های جدول Unit (فله/ثابت/متغیر)
+ *    + «سایر»؛ بستهٔ نو با /units/ensure عمومی می‌شود. دست‌نخورده = ارسال
+ *    نمی‌شود تا ردیف‌های قدیمی (بسته در attrs/variantLabel) سالم بمانند.
  *  · تخفیف مشتری‌ها (گذری/همکار/قراردادی — درصد) + تخفیف حجمی پلکانی
  *    (تا ۶ پله: از/تا/درصد) — pricing/item CUSTOM؛ خالی‌کردن همه = ریست CATALOG
  *  · حذف محصول — کارت قرمز + دیالوگ «آخرین سؤال» (soft delete سرور)
@@ -127,17 +138,95 @@ function EditForm({
   const { locale } = useLocale();
   const cur = l.currency ?? "IRR";
   const moneyLabel = currencyLabel(cur);
-  const unit = l.good?.unit ? unitLabel(l.good.unit, locale) : "";
-  const name = l.title || goodName({ nameFa: l.good.nameFa, nameEn: l.good.nameEn }, locale);
+
+  /* ── مدل واحد ۱۰۲۶ — بستهٔ فعلی ردیف از سه مکان ممکن می‌آید:
+   *   ۱) packaging[0] (قرارداد جدید)  ۲) title قدیمیِ فیکس‌بچ M3 (label بسته)
+   *   ۳) فقط baseQty (دادهٔ پیاده‌سازی قدیمی — بسته در attrs/variantLabel) */
+  const unitsQ = useQuery({
+    queryKey: ["units", "all"],
+    queryFn: () => unitsApi.list(),
+    staleTime: 24 * 3600_000,
+  });
+  const consumerKey = resolveConsumerUnit(l.good?.unit, unitsQ.data);
+  const unit = unitLabel(consumerKey, locale);
+  const packUnits = useMemo(() => packUnitsFor(consumerKey, unitsQ.data), [consumerKey, unitsQ.data]);
+
+  const existingPack = l.packaging?.[0] ?? null;
+  const normTitle = (l.title ?? "").replace(/\s+/g, " ").trim();
+  /* عنوانِ M3-قدیمی فقط وقتی «نام بسته» است که دقیقاً با نام واحد از جدول
+   * Unit بخواند — عنوان‌های شخصی (M2/C6) عنوانِ ویترین می‌مانند */
+  const titleWasPackLabel =
+    !existingPack &&
+    !!l.title &&
+    (l.baseQty ?? 0) > 1 &&
+    !!unitsQ.data?.some((u) => u.nameFa.replace(/\s+/g, " ").trim() === normTitle);
+  const initLabel = existingPack?.label ?? (titleWasPackLabel ? l.title! : null);
+  const initQty = existingPack?.qty ?? l.baseQty ?? null;
+  const matchedChip = useMemo(
+    () => packUnits.find((u) => u.nameFa === initLabel) ?? null,
+    [packUnits, initLabel],
+  );
+
+  const name = l.title && !titleWasPackLabel
+    ? l.title
+    : goodName({ nameFa: l.good.nameFa, nameEn: l.good.nameEn }, locale);
 
   /* ── فرم اصلی ── */
-  const [title, setTitle] = useState(l.title ?? "");
   const [note, setNote] = useState(l.note ?? "");
-  const [baseQty, setBaseQty] = useState<number | null>(l.baseQty ?? null);
+  const [baseQty, setBaseQty] = useState<number | null>(initQty);
   const [price, setPrice] = useState<number | null>(minorToMajor(l.priceMinor, cur));
   const [unitPrice, setUnitPrice] = useState<number | null>(null);
   const [stock, setStock] = useState<number | null>(l.stock);
   const [minOrder, setMinOrder] = useState<number | null>(l.minOrder);
+
+  /* ── بسته‌بندی (مدل ۱۰۲۶) — packDirty: کاربر بخش بسته را دست زده؟
+   * دست‌نخورده ⇒ baseQty/packLabel ارسال نمی‌شود و ردیف‌های قدیمی
+   * (بسته در attrs) دست‌نخورده می‌مانند. ── */
+  const [packMode, setPackMode] = useState<"none" | "unit" | "custom">(
+    matchedChip ? "unit" : initLabel || (initQty ?? 0) > 1 ? "custom" : "none",
+  );
+  const [packUnit, setPackUnit] = useState<UnitDto | null>(matchedChip);
+  const [packName, setPackName] = useState<string>(
+    initLabel && !matchedChip ? initLabel.replace(/\s+/g, " ").trim() : "",
+  );
+  const [packDirty, setPackDirty] = useState(false);
+  const pickPackMode = (mode: "none" | "unit" | "custom", u?: UnitDto) => {
+    setPackDirty(true);
+    setPackMode(mode);
+    setPackUnit(u ?? null);
+    if (mode === "none") {
+      setPackName("");
+      setBaseQty(null);
+    } else if (mode === "unit" && u) {
+      setPackName(u.nameFa);
+      setBaseQty(u.containsQty ?? null);
+    } else if (mode === "custom") {
+      setPackName("");
+      setBaseQty(null);
+    }
+  };
+  const touchQty = (v: number | null) => {
+    setPackDirty(true);
+    setBaseQty(v);
+    if (v && v > 1 && price !== null) setUnitPrice(Math.round(price / v));
+  };
+  const touchName = (v: string) => {
+    setPackDirty(true);
+    setPackName(v);
+    const parsed = parseCountFromLabel(v);
+    if (parsed && (baseQty == null || baseQty < 1)) setBaseQty(parsed);
+  };
+
+  /* نام بستهٔ نهایی (برای لیبل قیمت/پسوند موجودی/ذخیره) */
+  const packLabel =
+    packMode === "none"
+      ? null
+      : packMode === "unit" && packUnit
+        ? packUnit.containsQty != null
+          ? packUnit.nameFa
+          : composePackLabel(packUnit.nameFa, baseQty, consumerKey, unit)
+        : composePackLabel(packName, baseQty, consumerKey, unit);
+  const stockSuffix = packLabel ? packShort(packLabel) ?? unit : unit || undefined;
 
   /* ── تخفیف مشتری‌ها (٪ برای هر نوع؛ خالی = همان تنظیمات کاتالوک) ── */
   const tri0 = itemRule?.itemTri ?? null;
@@ -175,10 +264,6 @@ function EditForm({
   const setUnit = (v: number | null) => {
     setUnitPrice(v);
     setPrice(v !== null && baseQty && baseQty > 1 ? Math.round(v * baseQty) : v);
-  };
-  const setPackQty = (v: number | null) => {
-    setBaseQty(v);
-    if (v && v > 1 && price !== null) setUnitPrice(Math.round(price / v));
   };
 
   /* آپلود عکس — ذخیرهٔ لحظه‌ای (عمل فایل، نه بخشی از «ذخیرهٔ تغییرات») */
@@ -222,20 +307,54 @@ function EditForm({
 
   const save = async () => {
     if (price === null || price <= 0) {
-      show({ text: "قیمت هر بسته را وارد کن", kind: "error" });
+      show({
+        text: packMode === "none" ? `قیمت هر ${unit || "واحد"} را وارد کن` : "قیمت هر بسته را وارد کن",
+        kind: "error",
+      });
+      return;
+    }
+    // بستهٔ دست‌کاری‌شده باید کامل باشد — نام و تعداد (مدل ۱۰۲۶)
+    if (packDirty && packMode === "custom" && packName.trim().length < 2) {
+      show({ text: "نام بسته‌بندی را بنویس — یا «فله» را انتخاب کن", kind: "error" });
+      return;
+    }
+    if (packDirty && packMode !== "none" && (!baseQty || baseQty < 1)) {
+      show({ text: "تعداد در بسته را وارد کن", kind: "error" });
       return;
     }
     setBusy(true);
     try {
-      // ۱) مشخصات فروش
+      // بستهٔ نو (سایر/متغیر) مثل برند عمومی می‌شود — /units/ensure (best-effort)
+      if (
+        packDirty &&
+        packLabel &&
+        (packMode === "custom" || (packMode === "unit" && packUnit && packUnit.containsQty == null)) &&
+        baseQty &&
+        baseQty >= 1
+      ) {
+        try {
+          await unitsApi.ensure({
+            nameFa: packLabel,
+            baseUnitKey: consumerKey,
+            containsQty: Math.round(baseQty),
+          });
+          void qc.invalidateQueries({ queryKey: ["units"] });
+        } catch {
+          /* best-effort */
+        }
+      }
+
+      // ۱) مشخصات فروش — بسته فقط وقتی ارسال می‌شود که کاربر دست زده باشد؛
+      // ردیف‌های قدیمی (بسته در attrs/variantLabel) دست‌نخورده می‌مانند.
+      // title فقط برای پاک‌کردن نامِ بستهٔ M3-قدیمی ارسال می‌شود.
       await listingsApi.saveListing({
         businessId: bizId,
         goodId: l.good.id,
         listingId: l.id,
         mode: l.mode,
-        title: title.trim() || null,
+        ...(packDirty && titleWasPackLabel ? { title: null } : {}),
+        ...(packDirty ? { packLabel, baseQty: baseQty ?? null } : {}),
         note: note.trim() || null,
-        baseQty: baseQty ?? undefined,
         sell: {
           priceMinor: majorToMinor(price, cur),
           stock: stock ?? 0,
@@ -310,6 +429,7 @@ function EditForm({
               {l.brand ? `${l.brand.name} · ` : ""}
               {goodName({ nameFa: l.good.nameFa, nameEn: l.good.nameEn }, locale)}
               {l.variantLabel ? ` · ${l.variantLabel}` : ""}
+              {existingPack?.label ? ` · ${existingPack.label}` : ""}
             </span>
           </div>
         </div>
@@ -368,9 +488,93 @@ function EditForm({
           )}
         </Field>
 
-        {/* ═══ قیمت (با هم‌گامی قیمت واحد — الگوی ویزارد) ═══ */}
+        {/* ═══ بسته‌بندی فروش عمده (مدل واحد ۱۰۲۶ — چیپ‌های جدول Unit + فله +
+            سایر؛ مانند فرم ۱۳) ═══ */}
         <Field
-          label={`قیمت هر بسته${baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""} — ${moneyLabel}`}
+          label="بسته‌بندی فروش عمده"
+          hint={
+            packMode === "none"
+              ? `فله — قیمت به‌ازای هر ${unit || "واحد"}`
+              : packMode === "unit" && packUnit?.containsQty
+                ? `هر ${packUnit.nameFa} شامل ${num(packUnit.containsQty, "fa")} ${unit} است`
+                : `قیمت هر ${unit || "واحد"} خودکار حساب می‌شود — با هر ضریب مقایسه می‌شود`
+          }
+        >
+          {(id) => (
+            <div id={id} className="flex flex-wrap gap-1.5">
+              <PackChip active={packMode === "none"} onClick={() => pickPackMode("none")}>
+                فله
+              </PackChip>
+              {packUnits.map((u) => (
+                <PackChip
+                  key={u.key}
+                  active={packMode === "unit" && packUnit?.key === u.key}
+                  onClick={() => pickPackMode("unit", u)}
+                >
+                  {u.nameFa}
+                </PackChip>
+              ))}
+              <PackChip active={packMode === "custom"} onClick={() => pickPackMode("custom")}>
+                سایر
+              </PackChip>
+            </div>
+          )}
+        </Field>
+
+        {/* «سایر» — نام و تعداد کنار هم (FD-15)؛ عددِ داخل نام خودکار پر می‌شود */}
+        {packMode === "custom" && (
+          <div className="flex gap-2.5">
+            <div className="min-w-0 flex-[1.4]">
+              <Field label="نام بسته‌بندی" required>
+                {(id) => (
+                  <Input
+                    id={id}
+                    value={packName}
+                    onChange={(e) => touchName(e.target.value)}
+                    placeholder="مثلاً کارتن ۶۰ عددی"
+                    maxLength={80}
+                  />
+                )}
+              </Field>
+            </div>
+            <div className="w-[150px] shrink-0">
+              <Field label="تعداد در بسته" required>
+                {(id) => (
+                  <NumberInput
+                    id={id}
+                    value={baseQty}
+                    onChange={touchQty}
+                    min={1}
+                    placeholder={num(1, "fa")}
+                    suffix={unit || undefined}
+                  />
+                )}
+              </Field>
+            </div>
+          </div>
+        )}
+
+        {/* واحد متغیر (کارتن/جامبو/باکس) — تعداد را خودش تعیین می‌کند */}
+        {packMode === "unit" && packUnit && packUnit.containsQty == null && (
+          <Field label={`تعداد ${unit || "واحد"} در هر ${packUnit.nameFa}`} required>
+            {(id) => (
+              <NumberInput
+                id={id}
+                value={baseQty}
+                onChange={touchQty}
+                min={1}
+                suffix={unit || undefined}
+                placeholder={num(1, "fa")}
+              />
+            )}
+          </Field>
+        )}
+
+        {/* ═══ قیمت (با هم‌گامی قیمت واحد مصرف‌کننده — الگوی ویزارد) ═══ */}
+        <Field
+          label={`قیمت هر ${packLabel ?? `${unit || "واحد"}`}${
+            baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""
+          } — ${moneyLabel}`}
           required
         >
           {(id) => <NumberInput id={id} value={price} onChange={setPackPrice} min={0} suffix={moneyLabel} />}
@@ -387,45 +591,18 @@ function EditForm({
 
         <div className="flex flex-col gap-5 sm:flex-row">
           <div className="min-w-0 flex-1">
-            <Field label="موجودی">
-              {(id) => <NumberInput id={id} value={stock} onChange={setStock} min={0} suffix={unit || undefined} />}
+            <Field label="موجودی" hint={packLabel ? `به تعداد ${packShort(packLabel) ?? "بسته"}` : undefined}>
+              {(id) => <NumberInput id={id} value={stock} onChange={setStock} min={0} suffix={stockSuffix} />}
             </Field>
           </div>
           <div className="min-w-0 flex-1">
-            <Field label="حداقل سفارش">
+            <Field label="حداقل سفارش" hint={packLabel ? `به تعداد ${packShort(packLabel) ?? "بسته"}` : undefined}>
               {(id) => (
-                <NumberInput id={id} value={minOrder} onChange={setMinOrder} min={0} suffix={unit || undefined} />
+                <NumberInput id={id} value={minOrder} onChange={setMinOrder} min={0} suffix={stockSuffix} />
               )}
             </Field>
           </div>
         </div>
-
-        {/* ═══ بسته‌بندی + توضیح ═══ */}
-        <Field label="بسته‌بندی فروش عمده" hint="خالی بگذاری یعنی تک‌فروشی — مثلاً: کارتن ۶۰ عددی">
-          {(id) => (
-            <div className="flex gap-2.5">
-              <div className="min-w-0 flex-[1.4]">
-                <Input
-                  id={id}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="مثلاً: کارتن ۶۰ عددی"
-                  maxLength={80}
-                />
-              </div>
-              <div className="w-[150px] shrink-0">
-                <NumberInput
-                  value={baseQty}
-                  onChange={setPackQty}
-                  min={1}
-                  placeholder={num(1, "fa")}
-                  suffix={unit || undefined}
-                  aria-label="تعداد در بسته"
-                />
-              </div>
-            </div>
-          )}
-        </Field>
 
         <Field label="توضیحات" hint="اختیاری — شرایط فروش، پرداخت، تحویل…">
           {(id) => (
@@ -503,7 +680,7 @@ function EditForm({
                     aria-label={`پلهٔ ${i + 1} تا`}
                   />
                 </div>
-                <span className="shrink-0 text-[11px] font-bold text-text-4">{unit || "عدد"}</span>
+                <span className="shrink-0 text-[11px] font-bold text-text-4">{packShort(packLabel) ?? unit ?? "عدد"}</span>
                 <div className="min-w-0 flex-1">
                   <NumberInput
                     value={t.pct}
@@ -598,5 +775,32 @@ function EditForm({
         </div>
       )}
     </AppShell>
+  );
+}
+
+/* چیپ بسته‌بندی — همان الگوی فرم ۱۳ (add-pack-chips پروتوتایپ: chip active) */
+function PackChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(
+        "inline-flex h-8 cursor-pointer items-center rounded-full border px-3.5 text-[11.5px] font-bold transition-colors",
+        active
+          ? "border-primary bg-primary-soft text-primary-strong"
+          : "border-line bg-surface text-text-2 hover:border-line-2",
+      )}
+    >
+      {children}
+    </button>
   );
 }

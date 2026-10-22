@@ -12,8 +12,9 @@ import { EmptyState } from "@/components/ui/feedback";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { businessesApi, listingsApi } from "@/lib/api";
+import { businessesApi, listingsApi, unitsApi } from "@/lib/api";
 import { goodName, num, unitLabel } from "@/lib/format";
+import { resolveConsumerUnit, packShort } from "@/lib/units";
 import { useMoney } from "@/components/imach/prefs-context";
 import { cn } from "@/lib/utils";
 import type { GoodItemDto } from "@/lib/api";
@@ -315,7 +316,19 @@ function CatalogCard({
   const name = l.title || goodName({ nameFa: l.good.nameFa, nameEn: l.good.nameEn }, locale);
   const img = l.gallery?.[0]?.thumbUrl ?? l.gallery?.[0]?.url ?? l.product?.imageUrl ?? null;
   const price = parts(l.priceMinor, l.currency);
-  const unit = l.good?.unit ? unitLabel(l.good.unit, locale) : "";
+  /* مدل واحد ۱۰۲۶ — پسوند موجودی: بستهٔ کوتاه، وگرنه واحد مصرف‌کننده
+   * (دادهٔ قدیمی SACK → کیلو، نه «کیسه») */
+  const unitsQ = useQuery({
+    queryKey: ["units", "all"],
+    queryFn: () => unitsApi.list(),
+    staleTime: 24 * 3600_000,
+  });
+  const consumerUnit = unitLabel(resolveConsumerUnit(l.good?.unit, unitsQ.data), locale);
+  const packLabel = l.packaging?.[0]?.label ?? null;
+  const stockUnit = packLabel ? packShort(packLabel) ?? consumerUnit : consumerUnit;
+  /* بستهٔ انتخابی («کیسهٔ ۵۰ کیلویی») کنار واریانت؛ ردیف‌های قدیمیِ بی‌برچسب
+   * همان خط تعداد قدیمی را می‌بینند */
+  const sub = [l.variantLabel, packLabel].filter(Boolean).join(" · ");
 
   return (
     <button
@@ -347,9 +360,7 @@ function CatalogCard({
 
       <div className="flex flex-col gap-1 p-3 lg:p-3.5">
         <p className="line-clamp-1 text-[13.5px] font-bold text-text lg:text-[14.5px]">{name}</p>
-        {l.variantLabel && (
-          <p className="line-clamp-1 text-[11.5px] text-text-3 lg:text-[12px]">{l.variantLabel}</p>
-        )}
+        {sub && <p className="line-clamp-1 text-[11.5px] text-text-3 lg:text-[12px]">{sub}</p>}
         <div className="mt-1 flex items-baseline justify-between gap-1">
           {l.priceMinor !== null ? (
             <span className="flex items-baseline gap-1">
@@ -361,13 +372,14 @@ function CatalogCard({
           )}
           {l.stock !== null && l.stock !== undefined && (
             <span className="text-[10.5px] text-text-3">
-              {num(l.stock, locale)} {unit}
+              {num(l.stock, locale)} {stockUnit}
             </span>
           )}
         </div>
-        {l.baseQty && l.baseQty > 1 && (
+        {/* ردیف‌های قدیمیِ بی‌برچسب بسته — همان خط تعداد؛ برچسب‌دارها بالا آمده‌اند */}
+        {!packLabel && l.baseQty && l.baseQty > 1 && (
           <p className="text-[10.5px] text-text-4">
-            {num(l.baseQty, locale)} {unit} × بسته
+            {num(l.baseQty, locale)} {consumerUnit} × بسته
           </p>
         )}
       </div>

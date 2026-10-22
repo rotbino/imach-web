@@ -15,6 +15,7 @@ import { useToast } from "@/components/ui/toast";
 import { useAuthStore } from "@/lib/auth-store";
 import { goodsApi, productsApi, listingsApi, businessesApi, unitsApi, filesApi, type GoodDto, type ProductRowDto, type BrandDto, type UnitDto } from "@/lib/api";
 import { num, currencyLabel, majorToMinor, unitLabel } from "@/lib/format";
+import { resolveConsumerUnit, packUnitsFor, composePackLabel, parseCountFromLabel, packShort } from "@/lib/units";
 import { useLocale } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
 
@@ -31,8 +32,20 @@ import { cn } from "@/lib/utils";
  * گام ۳ — کامل و وفادار به پروتوتایپ ۱۳ (بازخورد مالک پس از فیکس‌بچ M3:
  * «چرا برند انتخابی نیست، انتخاب تصویر نداره، امکان انتخاب یا ایجاد واحد
  * نیست»): شیت انتخاب برند با جستجو (sheet-pick-brand) + عکس محصول تا ۵ عکس
- * (img-slot-btn + آپلود بعد از ذخیره با درصد زنده) + چیپ‌های واحد بسته‌بندی
- * از جدول واقعی Unit (pack-chips + «سایر») + واحد پایه در شیت نوع کالای جدید.
+ * (img-slot-btn + آپلود بعد از ذخیره با درصد زنده) + واحد پایه در شیت نوع کالای جدید.
+ *
+ * مدل واحد (حکم مالک ۱۰۲۶ — «یک‌بار برای همیشه»):
+ *  · واحد مصرف‌کننده از نوع کالا می‌آید (برنج→کیلو، پفک→عدد؛ دادهٔ قدیمی
+ *    با ظرف SACK/CARTON از جدول Unit استخراج می‌شود — resolveConsumerUnit).
+ *  · چیپ‌های «بسته‌بندی فروش عمده» = گونه‌های ۲/۳ جدول Unit روی همین
+ *    پایه: ثابت (کیسهٔ ۵۰ کیلویی، تن، کارتن ۲۴تایی) + متغیر (کارتن،
+ *    جامبو — تعداد را کاربر می‌گوید) + «فله» (بدون بسته، قیمتِ خودِ واحد)
+ *    + «سایر» (نام و تعداد — مثل «گونی ۷۰ کیلویی»).
+ *  · قیمت هر بسته ⇄ قیمت هر واحد مصرف‌کننده دوطرفه هم‌گام؛ مقایسه و
+ *    تطبیق همیشه روی قیمت واحد (pricePerBaseMinor سروری).
+ *  · بستهٔ نو (سایر/متغیر) با /units/ensure عمومی می‌شود — مثل برندها؛
+ *    کاربر بعدی «گونی ۷۰ کیلویی» را از لیست برمی‌دارد.
+ *  ⚠ «تک‌فروشی» حذف شد — ایمچ عمده‌فروشی است؛ حالتِ بی‌بسته «فله» است.
  *
  * قانون مالک M2: این فرم فارسی است و متن‌ها همین‌جا نوشته می‌شوند
  * (نه در فایل زبان) — چندزبانه‌سازی فرم‌ها بعد از ثبات طراحی.
@@ -84,7 +97,8 @@ function AddWizard() {
   const [imgPhase, setImgPhase] = useState<{ pct: number; label: string } | null>(null);
   const imgInputRef = useRef<HTMLInputElement>(null);
 
-  /* ── بسته‌بندی (پروتوتایپ ۱۳: چیپ + «سایر») — از جدول واقعی Unit ── */
+  /* ── بسته‌بندی (پروتوتایپ ۱۳: pack-chips + «سایر») — مدل واحد ۱۰۲۶:
+   * فله | unit (ثابت/متغیر از جدول Unit) | custom («گونی ۷۰ کیلویی») ── */
   const [packMode, setPackMode] = useState<"none" | "unit" | "custom">("none");
   const [packUnit, setPackUnit] = useState<UnitDto | null>(null);
 
@@ -141,20 +155,23 @@ function AddWizard() {
     staleTime: 60_000,
   });
 
-  /* واحد-بسته‌های همین کالا از جدول واقعی Unit (پروتوتایپ ۱۳: pack-chips از
-   * packs محصول مرجع — در سیستم واقعی، هم‌ارزش آن سلسله‌مراتب Unit است:
-   * بسته‌هایی که baseUnitKey = واحد پایهٔ کالا) — همان کش عمومی UnitsBoot */
+  /* واحد-بسته‌های همین کالا — مدل واحد ۱۰۲۶: پایه = واحد مصرف‌کننده که از
+   * Good.unit استخراج می‌شود (دادهٔ قدیمی SACK/CARTON → KILOGRAM/PIECE).
+   * هم‌ارزش pack-chips پروتوتایپ ۱۳ — هم‌کش عمومی UnitsBoot. */
   const unitsQ = useQuery({
     queryKey: ["units", "all"],
     queryFn: () => unitsApi.list(),
     staleTime: 24 * 3600_000,
   });
-  const packUnits = useMemo(() => {
-    if (!good?.unit || !unitsQ.data) return [];
-    return unitsQ.data
-      .filter((u) => u.baseUnitKey === good.unit && u.isActive)
-      .sort((a, b) => (b.containsQty ?? 0) - (a.containsQty ?? 0));
-  }, [good?.unit, unitsQ.data]);
+  /* واحد مصرف‌کننده (کیف مالک: برنج→کیلو، پفک→عدد) — مبنای قیمت و بسته‌بندی */
+  const consumerKey = useMemo(
+    () => resolveConsumerUnit(good?.unit, unitsQ.data),
+    [good?.unit, unitsQ.data],
+  );
+  const packUnits = useMemo(
+    () => packUnitsFor(consumerKey, unitsQ.data),
+    [consumerKey, unitsQ.data],
+  );
 
   const goStep = (n: 1 | 2 | 3) => {
     setStep(n);
@@ -231,8 +248,8 @@ function AddWizard() {
     if (v && v > 1 && price !== null) setUnitPrice(Math.round(price / v));
   };
 
-  // برچسب واحد بر اساس زبان فعال (رفع باگ مالک: کلید انگلیسی دیده می‌شد)
-  const unit = good?.unit ? unitLabel(good.unit, locale) : "";
+  // برچسب واحد مصرف‌کننده بر اساس زبان فعال (رفع باگ مالک: کلید انگلیسی دیده می‌شد)
+  const unit = unitLabel(consumerKey, locale);
   const moneyLabel = currencyLabel(cur);
 
   /* ── عکس‌ها: افزودن/حذف محلی — آپلود واقعی بعد از ذخیرهٔ ردیف (§ files/upload
@@ -277,6 +294,19 @@ function AddWizard() {
     }
   };
 
+  /* نام بستهٔ نهایی — چیپ ثابت: نام خودش («کیسهٔ ۵۰ کیلویی»)؛ متغیر/سایر:
+   * نام + تعداد («کارتن ۶۰تایی» / «گونی ۷۰ کیلوگرمی»)؛ فله: null */
+  const packLabel =
+    packMode === "none"
+      ? null
+      : packMode === "unit" && packUnit
+        ? packUnit.containsQty != null
+          ? packUnit.nameFa
+          : composePackLabel(packUnit.nameFa, baseQty, consumerKey, unit)
+        : composePackLabel(title, baseQty, consumerKey, unit);
+  /* پسوند موجودی/حداقل سفارش — بستهٔ کوتاه («کیسه») یا واحد مصرف‌کننده (فله) */
+  const stockSuffix = packLabel ? packShort(packLabel) ?? unit : unit || undefined;
+
   const save = async () => {
     if (!good) return;
     if (isNewProduct && newLabel.trim().length < 2) {
@@ -284,13 +314,16 @@ function AddWizard() {
       return;
     }
     if (price === null || price <= 0) {
-      show({ text: "قیمت هر بسته را وارد کن", kind: "error" });
+      show({
+        text: packMode === "none" ? `قیمت هر ${unit || "واحد"} را وارد کن` : "قیمت هر بسته را وارد کن",
+        kind: "error",
+      });
       return;
     }
     // «سایر» = بسته‌بندی شخصی — نام و تعداد هر دو لازم‌اند (پروتوتایپ: toast تعداد)
     if (packMode === "custom") {
       if (title.trim().length < 2) {
-        show({ text: "نام بسته‌بندی را بنویس — یا «تک‌فروشی» را انتخاب کن", kind: "error" });
+        show({ text: "نام بسته‌بندی را بنویس — یا «فله» را انتخاب کن", kind: "error" });
         return;
       }
       if (!baseQty || baseQty < 1) {
@@ -298,13 +331,33 @@ function AddWizard() {
         return;
       }
     }
-    // واحد متغیر (مثل جامبو بگ): تعداد باید خودش بیاید
+    // واحد متغیر (مثل کارتن/جامبو): تعداد باید خودش بیاید
     if (packMode === "unit" && packUnit && packUnit.containsQty == null && (!baseQty || baseQty < 1)) {
       show({ text: `تعداد ${unit || "واحد"} در هر ${packUnit.nameFa} را وارد کن`, kind: "error" });
       return;
     }
     setBusy(true);
     try {
+      // بستهٔ نو (سایر/متغیر) مثل برند عمومی می‌شود — /units/ensure؛
+      // خطایش ردیف را خراب نمی‌کند، ولی بسته برای کاربران بعدی می‌ماند
+      if (
+        (packMode === "custom" || (packMode === "unit" && packUnit && packUnit.containsQty == null)) &&
+        packLabel &&
+        baseQty &&
+        baseQty >= 1
+      ) {
+        try {
+          await unitsApi.ensure({
+            nameFa: packLabel,
+            baseUnitKey: consumerKey,
+            containsQty: Math.round(baseQty),
+          });
+          void qc.invalidateQueries({ queryKey: ["units"] });
+        } catch {
+          /* best-effort — ثبت ردیف مهم‌تر است */
+        }
+      }
+
       const saved = await listingsApi.saveListing({
         businessId: bizId,
         goodId: good.id,
@@ -318,10 +371,13 @@ function AddWizard() {
               brandName: brand?.name.trim() || undefined,
             }
           : {}),
-        // بسته‌بندی: چیپ واحد/سایر → نام بسته؛ تک‌فروشی → null (قیمت به‌ازای واحد پایه)
-        title: packMode === "none" ? null : title.trim() || null,
+        // مدل واحد ۱۰۲۶: بسته در packaging می‌نشیند؛ title آزاد می‌ماند برای
+        // عنوان شخصی ویترین (M2/C6) — کارت نام کالا را نشان می‌دهد نه بسته را
+        title: null,
+        packLabel,
         note: note.trim() || null,
-        baseQty: baseQty ?? undefined,
+        // همیشه صریح — upsert روی ردیفِ موجود هم فله را درست می‌کند
+        baseQty: baseQty ?? null,
         sell: {
           priceMinor: majorToMinor(price, cur),
           stock: stock ?? 0,
@@ -456,7 +512,7 @@ function AddWizard() {
                   onClick={() => pickGood(g)}
                   title={g.nameFa}
                   sub={`دیدن محصولات این نوع کالا${g.aliases.length ? ` · ${g.aliases.slice(0, 2).join("، ")}` : ""}`}
-                  unit={unitLabel(g.unit, locale)}
+                  unit={unitLabel(resolveConsumerUnit(g.unit, unitsQ.data), locale)}
                 />
               ))}
               {/* فیکس باگ مالک (فیکس‌بچ M3): «اگر نوع کالا وجود دارد این لینک اصلاً
@@ -485,7 +541,9 @@ function AddWizard() {
           <div>
             <StepBack onClick={() => goStep(1)}>بازگشت به انتخاب نوع کالا</StepBack>
 
-            <PickedCard title={good.nameFa} sub={`نوع کالا · واحد ${unit || "—"} · ${good.category?.nameFa ?? ""}`} />
+            {/* واحد مصرف‌کننده (مدل ۱۰۲۶): دادهٔ قدیمی ظرف را نگه داشته
+                (SACK/CARTON) — resolveConsumerUnit پایهٔ درست را نشان می‌دهد */}
+            <PickedCard title={good.nameFa} sub={`نوع کالا · فروش به ${unit || "—"} · ${good.category?.nameFa ?? ""}`} />
 
             {/* فیلتر برند — چیپ‌های سروری + «ثبت برند جدید» (دستور مالک
                 فیکس‌بچ M3): دکمه‌ای آخر فهرست برندها با رنگ متفاوت → شیتِ
@@ -647,22 +705,24 @@ function AddWizard() {
               </Field>
             )}
 
-            {/* ═══ بسته‌بندی فروش عمده — چیپ واحد (پروتوتایپ ۱۳: pack-chips + «سایر»؛
-                منبع داده = جدول واقعی Unit: بسته‌هایی با واحد پایهٔ همین کالا) ═══ */}
+            {/* ═══ بسته‌بندی فروش عمده (مدل واحد ۱۰۲۶ — چیپ‌های جدول Unit روی
+                پایهٔ مصرف‌کننده + فله + سایر؛ پروتوتایپ ۱۳: pack-chips + «سایر») ═══ */}
             <Field
               label="بسته‌بندی فروش عمده"
               hint={
                 packMode === "none"
-                  ? `بدون بسته — قیمت به‌ازای هر ${unit || "واحد"}`
-                  : packMode === "unit" && packUnit?.qtyIsFixed && packUnit.containsQty
+                  ? `فله — قیمت به‌ازای هر ${unit || "واحد"}`
+                  : packMode === "unit" && packUnit?.containsQty
                     ? `هر ${packUnit.nameFa} شامل ${num(packUnit.containsQty, "fa")} ${unit} است — قیمت هر ${unit || "واحد"} خودکار حساب می‌شود`
-                    : undefined
+                    : packMode === "unit" || packMode === "custom"
+                      ? `قیمت هر ${unit || "واحد"} خودکار حساب می‌شود — با هر ضریب مقایسه می‌شود`
+                      : undefined
               }
             >
               {(id) => (
                 <div id={id} className="flex flex-wrap gap-1.5">
                   <PackChip active={packMode === "none"} onClick={() => pickPackMode("none")}>
-                    تک‌فروشی
+                    فله
                   </PackChip>
                   {packUnits.map((u) => (
                     <PackChip
@@ -680,7 +740,8 @@ function AddWizard() {
               )}
             </Field>
 
-            {/* «سایر» — نام بسته‌بندی و تعداد کنار هم (FD-15: حکم مالک) */}
+            {/* «سایر» — نام بسته‌بندی و تعداد کنار هم (FD-15: حکم مالک)؛
+                اگر خودِ نام عدد دارد («گونی ۷۰ کیلویی») تعداد خودکار پر می‌شود */}
             {packMode === "custom" && (
               <div className="flex gap-2.5">
                 <div className="min-w-0 flex-[1.4]">
@@ -689,15 +750,20 @@ function AddWizard() {
                       <Input
                         id={id}
                         value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="مثلاً: کارتن ۶۰ عددی"
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setTitle(v);
+                          const parsed = parseCountFromLabel(v);
+                          if (parsed && (baseQty == null || baseQty < 1)) setBaseQty(parsed);
+                        }}
+                        placeholder="مثلاً کارتن ۶۰ عددی"
                         maxLength={80}
                       />
                     )}
                   </Field>
                 </div>
                 <div className="w-[150px] shrink-0">
-                  <Field label="تعداد در بسته" required>
+                  <Field label={`تعداد در بسته`} required>
                     {(id) => (
                       <NumberInput
                         id={id}
@@ -713,7 +779,8 @@ function AddWizard() {
               </div>
             )}
 
-            {/* واحد متغیر (مثل جامبو بگ) — تعداد را خودش تعیین می‌کند */}
+            {/* واحد متغیر (کارتن/جامبو/باکس) — تعداد را خودش تعیین می‌کند؛
+                از آن پس «کارتن ۶۰تایی» مثل بستهٔ ثابت رفتار می‌شود */}
             {packMode === "unit" && packUnit && packUnit.containsQty == null && (
               <Field label={`تعداد ${unit || "واحد"} در هر ${packUnit.nameFa}`} required>
                 {(id) => (
@@ -729,16 +796,12 @@ function AddWizard() {
               </Field>
             )}
 
-            {/* قیمت بسته + قیمت واحد (§۱.۷ — هم‌گام؛ لیبل = نام بستهٔ برگزیده —
-                پروتوتایپ ۱۳: «قیمت هر بسته» / «قیمت هر {unit}») */}
+            {/* قیمت بسته + قیمت واحد (§۱.۷ — هم‌گام دوطرفه؛ لیبل = نام بستهٔ
+                نهایی — پروتوتایپ ۱۳: «قیمت هر بسته» / «قیمت هر {unit}») */}
             <Field
-              label={`قیمت هر ${
-                packMode === "none"
-                  ? `${unit || "واحد"}`
-                  : packMode === "unit" && packUnit
-                    ? packUnit.nameFa
-                    : title.trim() || "بسته"
-              }${baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""} — ${moneyLabel}`}
+              label={`قیمت هر ${packLabel ?? `${unit || "واحد"}`}${
+                baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""
+              } — ${moneyLabel}`}
               required
             >
               {(id) => <NumberInput id={id} value={price} onChange={setPackPrice} min={0} suffix={moneyLabel} autoFocus />}
@@ -752,14 +815,14 @@ function AddWizard() {
 
             <div className="flex flex-col gap-5 sm:flex-row">
               <div className="min-w-0 flex-1">
-                <Field label="موجودی">
-                  {(id) => <NumberInput id={id} value={stock} onChange={setStock} min={0} suffix={unit || undefined} />}
+                <Field label="موجودی" hint={packLabel ? `به تعداد ${packShort(packLabel) ?? "بسته"}` : undefined}>
+                  {(id) => <NumberInput id={id} value={stock} onChange={setStock} min={0} suffix={stockSuffix} />}
                 </Field>
               </div>
               <div className="min-w-0 flex-1">
-                <Field label="حداقل سفارش">
+                <Field label="حداقل سفارش" hint={packLabel ? `به تعداد ${packShort(packLabel) ?? "بسته"}` : undefined}>
                   {(id) => (
-                    <NumberInput id={id} value={minOrder} onChange={setMinOrder} min={0} suffix={unit || undefined} />
+                    <NumberInput id={id} value={minOrder} onChange={setMinOrder} min={0} suffix={stockSuffix} />
                   )}
                 </Field>
               </div>
@@ -1335,7 +1398,7 @@ function NewGoodSheet({
             />
           )}
         </Field>
-        <Field label="واحد شمارش" hint="مبنای قیمت‌گذاری و بسته‌بندی — بعداً از ویرایش هم عوض می‌شود">
+        <Field label="واحد مصرف‌کننده" hint="مبنای قیمت و بسته‌بندی — برنج یعنی کیلو، پفک یعنی عدد؛ بعداً هم عوض می‌شود">
           {(id) => (
             <div id={id} className="flex flex-wrap gap-1.5">
               {baseUnits.map((u) => (

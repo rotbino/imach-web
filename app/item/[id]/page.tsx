@@ -14,8 +14,9 @@ import { Spinner, EmptyState } from "@/components/ui/feedback";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { listingsApi, pricingApi, type GoodItemDto, type PricingTier } from "@/lib/api";
+import { listingsApi, pricingApi, unitsApi, type GoodItemDto, type PricingTier } from "@/lib/api";
 import { goodName, num, unitLabel, currencyLabel, majorToMinor, minorToMajor } from "@/lib/format";
+import { resolveConsumerUnit, packShort } from "@/lib/units";
 import { useMoney } from "@/components/imach/prefs-context";
 
 /**
@@ -62,6 +63,14 @@ function ItemContent({ id }: { id: string }) {
     enabled: !!bizId,
   });
 
+  /* مدل واحد ۱۰۲۶ — واحد مصرف‌کننده از جدول Unit (دادهٔ قدیمی SACK/CARTON
+   * → کیلو/عدد)؛ کش عمومی UnitsBoot */
+  const unitsQ = useQuery({
+    queryKey: ["units", "all"],
+    queryFn: () => unitsApi.list(),
+    staleTime: 24 * 3600_000,
+  });
+
   const l: GoodItemDto | undefined = useMemo(
     () => (listingsQ.data ?? []).find((x) => x.id === id),
     [listingsQ.data, id]
@@ -103,7 +112,12 @@ function ItemContent({ id }: { id: string }) {
   }
 
   const name = l.title || goodName({ nameFa: l.good.nameFa, nameEn: l.good.nameEn }, locale);
-  const unit = l.good?.unit ? unitLabel(l.good.unit, locale) : "";
+  const consumerKey = resolveConsumerUnit(l.good?.unit, unitsQ.data);
+  const unit = unitLabel(consumerKey, locale);
+  /* بستهٔ انتخابی (۱۰۲۶): «کیسهٔ ۵۰ کیلویی» — لیبل قیمت و پسوند موجودی */
+  const packLabel = l.packaging?.[0]?.label ?? null;
+  const packQty = l.packaging?.[0]?.qty ?? l.baseQty ?? null;
+  const stockUnit = packLabel ? packShort(packLabel) ?? unit : unit;
   const imgs = (l.gallery ?? []).map((g) => g.thumbUrl ?? g.url).filter(Boolean) as string[];
   const perBase =
     l.pricePerBaseMinor != null ? fmt(l.pricePerBaseMinor, l.currency) : null;
@@ -144,13 +158,13 @@ function ItemContent({ id }: { id: string }) {
             <div className="flex items-center justify-between">
               <span className="text-[12px] font-bold text-text-3">{m.catalog.stockUnit}</span>
               <b className="text-[14px] font-black text-text">
-                {l.stock !== null ? `${num(l.stock, locale)} ${unit}` : "—"}
+                {l.stock !== null ? `${num(l.stock, locale)} ${stockUnit}` : "—"}
               </b>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[12px] font-bold text-text-3">{m.catalog.minOrderUnit}</span>
               <b className="text-[14px] font-black text-text">
-                {l.minOrder !== null ? `${num(l.minOrder, locale)} ${unit}` : "—"}
+                {l.minOrder !== null ? `${num(l.minOrder, locale)} ${stockUnit}` : "—"}
               </b>
             </div>
           </div>
@@ -182,7 +196,11 @@ function ItemContent({ id }: { id: string }) {
               {l.priceMinor !== null ? (
                 <span className="flex flex-col">
                   <span className="text-[11.5px] font-bold text-text-3">
-                    {l.baseQty && l.baseQty > 1 ? `هر بسته (${num(l.baseQty, locale)} ${unit})` : "قیمت"}
+                    {packLabel
+                      ? `هر ${packLabel}`
+                      : packQty && packQty > 1
+                        ? `هر بسته (${num(packQty, locale)} ${unit})`
+                        : `هر ${unit || "واحد"}`}
                   </span>
                   <b className="text-[24px] font-black leading-tight text-text">{fmt(l.priceMinor, l.currency)}</b>
                 </span>
@@ -191,7 +209,7 @@ function ItemContent({ id }: { id: string }) {
                   {m.catalog.noPrice}
                 </span>
               )}
-              {perBase && l.baseQty && l.baseQty > 1 && (
+              {perBase && packQty && packQty > 1 && (
                 <span className="flex flex-col">
                   <span className="text-[11.5px] font-bold text-text-3">هر {unit}</span>
                   <b className="text-[16px] font-black leading-tight text-arm-strong">{perBase}</b>
@@ -226,8 +244,8 @@ function ItemContent({ id }: { id: string }) {
                   >
                     <span className="text-[13px] font-bold text-text-2">
                       {t.to == null
-                        ? `از ${num(t.from, "fa")} ${unit} به بالا`
-                        : `${num(t.from, "fa")} تا ${num(t.to, "fa")} ${unit}`}
+                        ? `از ${num(t.from, "fa")} ${stockUnit} به بالا`
+                        : `${num(t.from, "fa")} تا ${num(t.to, "fa")} ${stockUnit}`}
                     </span>
                     <b
                       className={`text-[14px] font-black ${
@@ -309,6 +327,9 @@ function QuickPriceSheet({
   const [price, setPrice] = useState<number | null>(minorToMajor(l.priceMinor, cur));
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  /* مدل واحد ۱۰۲۶ — لیبل با نام بستهٔ واقعی */
+  const packLabel = l.packaging?.[0]?.label ?? null;
+  const packQty = l.packaging?.[0]?.qty ?? l.baseQty ?? null;
 
   const save = async () => {
     if (price === null) return;
@@ -335,7 +356,12 @@ function QuickPriceSheet({
   return (
     <Sheet open={open} onClose={onClose} title="قیمت سریع">
       <div className="flex flex-col gap-5 py-1">
-        <Field label={`قیمت هر بسته${l.baseQty && l.baseQty > 1 ? ` (${num(l.baseQty, "fa")} ${unit})` : ""} — ${currencyLabel(cur)}`} required>
+        <Field
+          label={`قیمت هر ${
+            packLabel ?? (packQty && packQty > 1 ? `بسته (${num(packQty, "fa")} ${unit})` : `${unit || "واحد"}`)
+          } — ${currencyLabel(cur)}`}
+          required
+        >
           {(id) => <NumberInput id={id} value={price} onChange={setPrice} min={0} autoFocus />}
         </Field>
         {l.priceMinor !== null && price !== null && price !== minorToMajor(l.priceMinor, cur) && (
