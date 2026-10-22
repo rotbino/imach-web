@@ -539,6 +539,35 @@ export interface InquiryDto {
   id: string;
   volume: number;
   note: string | null;
+  /* ── M4 (FD-24) — چندقلمی ── */
+  /** اقلامِ «این فروشنده» (حریم سبد خریدار) با قیمت/بستهٔ آگهی خودش */
+  items?: Array<{
+    goodId: string;
+    qty: number;
+    listingId: string | null;
+    listing: {
+      id: string;
+      priceMinor: number | null;
+      currency: string | null;
+      variantLabel: string | null;
+      baseQty: number | null;
+      packaging: { label: string; qty: number }[] | null;
+      pricePerBaseMinor: number | null;
+    } | null;
+    good: { id: string; nameFa: string; nameEn: string | null; unit: string } | null;
+  }>;
+  /** n کل قلم‌های استعلام (بج «k از n قلم») */
+  itemsTotal?: number;
+  /** k = قلم‌هایی که این فروشنده دارد */
+  myCover?: number;
+  /** روزهای باقی‌ماندهٔ مهلت (null = بدون مهلت) */
+  daysLeft?: number | null;
+  /** CLOSED | STOPPED | EXPIRED (lazy) | ANSWERED | NEW | ARCHIVED */
+  displayStatus?: string;
+  expiresAt?: string | null;
+  stoppedAt?: string | null;
+  closedAt?: string | null;
+  resultText?: string | null;
   /** فاز ۴ — تناوب خرید خریدار (WEEKLY | BIWEEKLY | MONTHLY | OCCASIONAL — M3: دوهفتگی) */
   frequency: string | null;
   /** فاز ۴ — انتظار تحویل خریدار («این ماه»، …) */
@@ -717,17 +746,24 @@ export interface SupplyBoardDto {
   rows: BoardSupplierDto[];
 }
 
-/** بدنه‌ی POST /market/requestQuote — فرم طرح ۱۲ */
+/** بدنه‌ی POST /market/requestQuote — فرم ۲۵ (M4 چندقلمی · FD-24)
+ *  · items[] = سبد؛ خالی = مسیر تک‌قلمی legacy (goodId+volume از تابلو)
+ *  · چندقلمی ⇒ گیرندگان = اجتماع دارندگان قلم‌ها (تیک قفلِ روشن) */
 export interface RequestQuoteBody {
   businessId: string;
-  goodId: string;
-  volume: number;
+  /** M4 — سبد چندقلمی (۱..۸ قلم) */
+  items?: { goodId: string; qty: number; listingId?: string }[];
+  /** legacy تک‌قلمی */
+  goodId?: string;
+  volume?: number;
   frequency?: "WEEKLY" | "BIWEEKLY" | "MONTHLY" | "OCCASIONAL";
   delivery?: string;
   /** فاز ۴ مهاجرت (sc-rfq) — محل تحویل (پیش‌فرض شهر خریدار) */
   deliveryCity?: string;
   /** فاز ۴ مهاجرت (sc-rfq) — قیمت هدف اختیاری (ریال/Minor) */
   targetPriceMinor?: number;
+  /** M4 — مهلت پاسخ ۱..۵ روز (پیش‌فرض ۳ — pills فرم ۲۵) */
+  expiresDays?: number;
   note?: string;
   supplierIds?: string[];
   includeNetwork?: boolean;
@@ -735,6 +771,8 @@ export interface RequestQuoteBody {
 
 export interface RequestQuoteResultDto {
   created: number;
+  /** M4 — شناسهٔ گروه (کارت «پیشنهادها» ۲۶) */
+  groupId: string | null;
   /** گیرنده‌هایی که از شبکه iMach اضافه شدند (نه انتخاب من) */
   networkAdded: number;
   inquiries: { id: string; sellerId: string; status: string }[];
@@ -742,21 +780,47 @@ export interface RequestQuoteResultDto {
 
 // ═══ فاز ۴ مهاجرت — حلقهٔ RFQ: پیشنهادهای گروهی + وضعیت + زمینهٔ فرم پاسخ ═══
 
-/** پیشنهادِ داخل یک گروه استعلام (sc-offers) */
+/** پیشنهادِ داخل یک گروه استعلام (sc-offers) — M4 چندقلمی (FD-24):
+ *  prices[] هم‌ترتیب با اقلام گروه (null = ندارد) + cover/totalMinor
+ *  محاسبه‌شدهٔ سروری + شرایط ساختاریافتهٔ pay/dlv (بازتاب فرم ۱۲). */
 export interface RfqOfferDto {
   id: string;
   sellerId: string;
   listingId: string;
   seller: SellerDto & { phone?: string | null };
+  /** قیمت قلم اول (legacy) — نمایشِ تک‌قلمی */
   priceMinor: number;
   currency: string;
   minOrder: number;
   payTerm: string | null;
   delivTerm: string | null;
+  /** M4 — {chk: ۰..۹۹, days} · chk=0 یعنی تمام‌نقدی */
+  pay: { chk: number; days: number } | null;
+  /** M4 — {ship, by: "seller"|"customer"} · ship=false حضوری */
+  dlv: { ship: boolean; by: "seller" | "customer" } | null;
+  /** M4 — قیمت هر قلم (null = این قلم را ندارد) */
+  prices: Array<number | null>;
+  /** M4 — شمار قلم‌های قیمت‌خورده (بج «k از n قلم») */
+  cover: number;
+  /** M4 — Σ قیمت×مقدار (مرتب‌سازی ۲۶: اول پوشش، بعد جمع) */
+  totalMinor: number;
   note: string | null;
   /** نشان خصوصی خریدار: INTERESTED | CONTACTED | REVIEWED | null */
   status: string | null;
   createdAt: string;
+}
+
+/** قلم استعلام گروه (سبد خریدار — بدون حریم) */
+export interface RfqItemDto {
+  goodId: string;
+  qty: number;
+  good: {
+    id: string;
+    nameFa: string;
+    nameEn: string | null;
+    unit: string;
+    category?: { slug: string; nameFa: string } | null;
+  } | null;
 }
 
 /** یک استعلام گروهی (کارت «پیشنهادها») — چند Inquiry با rfqGroupId مشترک */
@@ -765,23 +829,32 @@ export interface RfqGroupDto {
   id: string;
   kind: "RFQ" | "COLD";
   createdAt: string;
+  /** M4 — سبد کامل استعلام */
+  items: RfqItemDto[];
   volume: number | null;
   frequency: string | null;
   delivery: string | null;
   deliveryCity: string | null;
   targetPriceMinor: number | null;
   note: string | null;
-  good: {
-    id: string;
-    nameFa: string;
-    nameEn: string | null;
-    unit: string;
-    category?: { slug: string; nameFa: string } | null;
-  } | null;
+  /** M4 — چرخهٔ سرورمبنا */
+  expiresAt: string | null;
+  stoppedAt: string | null;
+  closedAt: string | null;
+  resultText: string | null;
+  /** M4 — OPEN | STOPPED | CLOSED | EXPIRED | COLD (lazy از سرور) */
+  status: string;
+  /** M4 — روزهای باقی‌ماندهٔ مهلت (null = بدون مهلت) */
+  daysLeft: number | null;
+  /** M4 — قلم اول (legacy تک‌قلمی برای سازگاری) */
+  good: RfqItemDto["good"];
   recipients: Array<{
     inquiryId: string;
     sellerId: string;
     status: string;
+    /** M4 — پوشش این گیرنده: «k از n قلم» */
+    coverage: number;
+    answered: boolean;
     seller: SellerDto;
   }>;
   offers: RfqOfferDto[];
@@ -815,6 +888,26 @@ export interface QuoteContextDto {
   deadlineAt: string | null;
   /** INQUIRY: قبلاً پاسخ داده‌ای؟ · BUY_LISTING: null */
   answered: boolean | null;
+  /* ── M4 (FD-24) — فرم ۱۲ چندقلمی ── */
+  /** اقلام استعلام با آگهی/قیمتِ خودم برای هر قلم («کاتالوک تو: X») */
+  items?: Array<{
+    goodId: string;
+    qty: number;
+    /** این قلم در کاتالوک من هست؟ (بج + فیلد فعال) */
+    mine: boolean;
+    listing: {
+      id: string;
+      priceMinor: number | null;
+      currency: string | null;
+      variantLabel: string | null;
+      minOrder: number | null;
+      updatedAt: string;
+    } | null;
+    good: { id: string; nameFa: string; nameEn: string | null; unit: string } | null;
+  }>;
+  itemsTotal?: number;
+  /** استعلام بسته/متوقف است؟ (پاسخ‌دادن ممنوع) */
+  rfqClosed?: boolean;
   /** BUY_LISTING: من خریدار را گوش‌به‌زنگ دارم؟ (گیت معرف) · INQUIRY: null */
   watching: boolean | null;
   /** قیمت زندهٔ کاتالوگ خودم در همین کالا — null یعنی کالا در کاتالوگم نیست */
@@ -1486,6 +1579,42 @@ export const marketApi = {
     api<{ ok: boolean }>(`/market/markInquiryRead/${id}`, { method: "POST" }),
   archiveInquiry: (id: string) =>
     api<{ ok: boolean }>(`/market/archiveInquiry/${id}`, { method: "POST" }),
+  // ═══ M4 (FD-24) — چرخهٔ استعلام چندقلمی + پیشنهاد ساختاریافته ═══
+  /** خریدار استعلام باز را می‌بندد (۲۶ «بستن این استعلام») */
+  stopRfq: (businessId: string, groupId: string) =>
+    api<{ ok: boolean }>(`/market/stopRfq/${groupId}`, { method: "POST", body: { businessId } }),
+  /** بازکردن استعلامِ متوقف‌شده */
+  restartRfq: (businessId: string, groupId: string) =>
+    api<{ ok: boolean }>(`/market/restartRfq/${groupId}`, { method: "POST", body: { businessId } }),
+  /** بایگانی گروه — از فهرست خریدار می‌افتد */
+  archiveRfq: (businessId: string, groupId: string) =>
+    api<{ ok: boolean }>(`/market/archiveRfq/${groupId}`, { method: "POST", body: { businessId } }),
+  /** «تکرار درخواست» — کلون سبد با گیرندگانِ تازه */
+  repeatRfq: (businessId: string, groupId: string) =>
+    api<{ ok: boolean; groupId: string; created: number }>(`/market/repeatRfq/${groupId}`, {
+      method: "POST",
+      body: { businessId },
+    }),
+  /** پذیرش پیشنهاد (۲۷) — استعلام می‌بندد + نتیجه + کال‌اوت سفارش (M5) */
+  acceptOffer: (businessId: string, offerId: string) =>
+    api<{
+      ok: boolean;
+      resultText: string;
+      totalMinor: number;
+      items: { goodId: string; qty: number; priceMinor: number }[];
+      groupId: string | null;
+    }>(`/market/acceptOffer/${offerId}`, { method: "POST", body: { businessId } }),
+  /** فرم ۱۲ چندقلمی — prices[] هم‌ترتیب اقلام (null = ندارد) + شرایط ساختاریافته */
+  sendOfferV2: (body: {
+    inquiryId: string;
+    prices?: Array<number | null>;
+    priceMinor?: number;
+    pay?: { chk: number; days: number };
+    dlv?: { ship: boolean; by: "seller" | "customer" };
+    payTerm?: string;
+    delivTerm?: string;
+    note?: string;
+  }) => api<OfferDto>("/market/sendOffer", { method: "POST", body }),
   // ═══ فاز ۵ — دنبال‌کردن قیمت + لیست خرید (طرح ۰۸) ═══
   getWatchedGoods: (businessId: string, opts?: { archived?: boolean }) =>
     api<WatchedRowDto[]>("/market/getWatchedGoods", {

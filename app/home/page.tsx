@@ -95,7 +95,7 @@ function BuyDesk() {
       iconCls: "bg-amber-soft text-amber",
       title: D.newOffer.replace("{n}", n(recentOffers)),
       sub: D.newOfferSub,
-      href: "/offers",
+      href: "/buy/rfqs",
     });
   }
   // M3 (۲۰ج) — ردیف «در حال اتمام موجودی» با شمار زنده؛ صفر = مخفی
@@ -114,7 +114,7 @@ function BuyDesk() {
     { icon: "basket", title: D.buyList, stat: n(watched.length), href: "/buy-list" },
     { icon: "truck", title: D.mySuppliers, stat: n(suppliers.length), href: "/suppliers" },
     { icon: "receipt", title: D.myOrdersBuy, stat: n(0), href: "/home/orders" },
-    { icon: "inbox", title: D.myOffers, stat: n(recentOffers), href: "/offers" },
+    { icon: "inbox", title: D.myOffers, stat: n(recentOffers), href: "/buy/rfqs" },
   ];
 
   return (
