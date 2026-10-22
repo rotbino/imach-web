@@ -13,12 +13,19 @@ import { num } from "@/lib/format";
 import { isPlaceholderBiz } from "@/lib/active-biz";
 
 /**
- * `/sell` — اسکرین ۰۴: میز فروش (M2 · پروتوتایپ FD-16/33/34/41).
+ * `/sell` — اسکرین ۰۴: میز فروش (M2 · پروتوتایپ FD-16/33/34/41 + فیکس‌بچ مالک M3).
  *
- * · کاشی‌های «همهٔ لینکها بالا»: کاتالوگ من / مشتریان من / درخواست‌های قیمت
- *   (کاشی سفارش با ماژول orders در M5 زنده می‌شود)
+ * · چهار کاشی «همهٔ لینک‌ها بالا» (حکم مالک: کاشی «سفارشات رسیده» هم باشد —
+ *   پروتوتایپ FD-16): کاتالوگ / مشتریان / سفارشات رسیده / درخواست‌های قیمت
+ *   (شمار سفارش با ماژول orders در M5 زنده می‌شود)
+ * · کاشی‌ها شبه‌مربع و مینیمال (دستور مالک): آیکون لختِ بدون قاب نارنجی،
+ *   فقط عددِ هوچک — بدون واژهٔ واحد («۱۱» نه «۱۱ محصول») — تا در موبایل
+ *   هم جای کمتری بگیرند
+ * · عرض محتوای میز ۸۸۰ (−۲۵٪ از ۱۱۲۰ — دستور مالک): کاشی‌ها مربعی‌تر و
+ *   کارت‌های اقدام نه دراز و بی‌ریخت؛ به‌جایش پدینگ عمودی کارت‌ها بیشتر
  * · کارتابل زنده: ردیف صفر = مخفی (FD-33) + گام بعدی فعالیت (تا M7 شمارنده‌ای)
  * · خوشامد حذف (FD-34 حکم مالک) — به‌جایش «دسترسی سریع»
+ * · شورون کارت‌ها به بیرون (فیکس ریشه‌ای آیکون chev) + اشاره‌گر دست (globals)
  */
 
 export default function SellDeskPage() {
@@ -100,35 +107,41 @@ function SellDesk() {
     });
   }
 
-  const tiles = [
-    { icon: "store" as IconName, title: D.myCatalog, stat: n(activeListings.length), unit: D.myCatalogUnit, href: "/catalog" },
-    { icon: "users" as IconName, title: D.myCustomers, stat: n(customers.length), unit: D.myCustomersUnit, href: "/customers" },
-    { icon: "inbox" as IconName, title: D.myRfqs, stat: n(newInquiries.length), unit: D.myRfqsUnit, href: "/sell/rfqs" },
+  // چهار کاشی (دستور مالک: سفارشات رسیده همیشه حاضر — FD-16)؛
+  // شمار سفارش تا M5 (ماژول orders) صفرِ صادق است.
+  const tiles: { icon: IconName; title: string; stat: string; href: string }[] = [
+    { icon: "store", title: D.myCatalog, stat: n(activeListings.length), href: "/catalog" },
+    { icon: "users", title: D.myCustomers, stat: n(customers.length), href: "/customers" },
+    { icon: "receipt", title: D.myOrdersSell, stat: n(0), href: "/sell/orders" },
+    { icon: "inbox", title: D.myRfqs, stat: n(newInquiries.length), href: "/sell/rfqs" },
   ];
 
   return (
-    <AppShell arm="sell" wide>
+    <AppShell arm="sell">
       <div className="flex flex-col gap-5">
         <section className="flex flex-col gap-3">
           <h2 className="text-[15px] font-bold text-text">{D.quickTitle}</h2>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          {/* کاشی‌های شبه‌مربع (دستور مالک): موبایل ۲×۲، دسکتاپ ۴تایی؛
+              آیکون لخت + فقط عدد هوچک — هماهنگ با وزن عنوان */}
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {tiles.map((t) => (
               <button
                 key={t.title}
                 type="button"
                 onClick={() => router.push(t.href)}
-                className="flex flex-col justify-between gap-4 rounded-2xl border border-line bg-surface p-4 text-start shadow-[0_1px_3px_rgba(31,29,26,.04)] transition-[border-color,box-shadow,transform] hover:border-line-2 hover:shadow-[0_10px_30px_rgba(31,29,26,.07)] active:translate-y-px lg:p-5 lg:pb-6"
+                className="group flex min-h-[132px] flex-col justify-between gap-3 rounded-2xl border border-line bg-surface p-4 text-start shadow-[0_1px_3px_rgba(31,29,26,.04)] transition-[border-color,box-shadow,transform] hover:border-line-2 hover:shadow-[0_10px_30px_rgba(31,29,26,.07)] active:translate-y-px lg:min-h-[168px] lg:p-5"
               >
-                <span className="flex items-center gap-2.5">
-                  <span className="grid size-[38px] place-items-center rounded-[11px] bg-primary-soft text-primary-strong">
-                    <Icon name={t.icon} size={20} />
-                  </span>
-                  <b className="text-[14px] font-bold text-text lg:text-[15px]">{t.title}</b>
+                <span className="flex items-center gap-2">
+                  <Icon
+                    name={t.icon}
+                    size={22}
+                    className="shrink-0 text-text-3 transition-colors group-hover:text-arm-strong"
+                  />
+                  <b className="truncate text-[13px] font-bold text-text lg:text-[14px]">{t.title}</b>
                 </span>
-                <span className="flex items-baseline gap-1.5">
-                  <b className="text-[24px] font-black leading-none text-text lg:text-[28px]">{t.stat}</b>
-                  <span className="text-[12px] text-text-3">{t.unit}</span>
-                </span>
+                <b className="text-[26px] font-black leading-none tracking-tight text-text lg:text-[30px]">
+                  {t.stat}
+                </b>
               </button>
             ))}
           </div>
@@ -137,10 +150,12 @@ function SellDesk() {
         <section className="flex flex-col gap-2.5">
           <h2 className="text-[15px] font-bold text-text">{D.trayTitle}</h2>
 
+          {/* کارت‌های اقدام — با کاهش عرض محتوا دیگر «دراز و بی‌ریخت» نیستند؛
+              پدینگ عمودی دسکتاپ بیشتر (دستور مالک) */}
           <button
             type="button"
             onClick={() => router.push(nextStep.href)}
-            className="flex items-center gap-3.5 rounded-2xl border border-line bg-surface p-4 text-start transition-[border-color,box-shadow] hover:border-line-2 hover:shadow-[0_10px_30px_rgba(31,29,26,.06)] lg:px-5"
+            className="flex items-center gap-3.5 rounded-2xl border border-line bg-surface p-4 text-start transition-[border-color,box-shadow] hover:border-line-2 hover:shadow-[0_10px_30px_rgba(31,29,26,.06)] lg:px-5 lg:py-5"
           >
             <span className="grid size-[42px] shrink-0 place-items-center rounded-[12px] bg-arm-soft text-arm-strong">
               <Icon name={nextStep.icon} size={21} />
@@ -162,7 +177,7 @@ function SellDesk() {
               key={r.title}
               type="button"
               onClick={() => router.push(r.href)}
-              className="flex items-center gap-3.5 rounded-2xl border border-line bg-surface p-4 text-start transition-[border-color,box-shadow] hover:border-line-2 hover:shadow-[0_10px_30px_rgba(31,29,26,.06)] lg:px-5"
+              className="flex items-center gap-3.5 rounded-2xl border border-line bg-surface p-4 text-start transition-[border-color,box-shadow] hover:border-line-2 hover:shadow-[0_10px_30px_rgba(31,29,26,.06)] lg:px-5 lg:py-5"
             >
               <span className={`grid size-[42px] shrink-0 place-items-center rounded-[12px] ${r.iconCls}`}>
                 <Icon name={r.icon} size={21} />
@@ -186,7 +201,7 @@ function SellDesk() {
   );
 }
 
-/** مشتری جدید = از مسیر دعوت/کاتالوک آمده (viaRef) — تعریف زنده تا M6 */
+/** مشتری جدید = از مسیر دعوت/کاتالوگ آمده (viaRef) — تعریف زنده تا M6 */
 function newCustomersCount(customers: { viaRef: boolean }[]): number {
   return customers.filter((c) => c.viaRef === true).length;
 }

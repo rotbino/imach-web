@@ -51,6 +51,9 @@ export const en: Messages = {
     myCustomersUnit: "customers",
     myRfqs: "Price requests",
     myRfqsUnit: "requests",
+    // فیکس‌بچ M3 — کاشی چهارم میزها (دستور مالک: «سفارشات رسیده»)
+    myOrdersSell: "Received orders",
+    myOrdersBuy: "My orders",
     buyList: "My purchase list",
     buyListUnit: "good types",
     mySuppliers: "My suppliers",

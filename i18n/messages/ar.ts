@@ -62,6 +62,9 @@ const ar: Messages = {
     myCustomersUnit: "عميل",
     myRfqs: "طلبات السعر",
     myRfqsUnit: "طلب",
+    // فیکس‌بچ M3 — کاشی چهارم میزها (دستور مالک: «سفارشات رسیده»)
+    myOrdersSell: "الطلبات الواردة",
+    myOrdersBuy: "طلباتي",
     buyList: "قائمة شرائي",
     buyListUnit: "نوع سلعة",
     mySuppliers: "موردّاي",

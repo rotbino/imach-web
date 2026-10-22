@@ -284,7 +284,7 @@ export function AppShell({
             {/* اکشن‌های اختصاصی صفحه (۲۳: تماس/پیام/سه‌نقطه) */}
             {headerActions}
             {/* چیپ امتیاز FD-6 — عدد تا M7 صفر است؛ حلقهٔ پیشرفت */}
-            <ScoreChip label={S.scoreAria} />
+            <ScoreChip arm={arm} label={S.scoreAria} />
             <button
               type="button"
               onClick={() => router.push(NOTIFS_HREF)}
@@ -411,18 +411,23 @@ export function ShellToolButton({
   );
 }
 
-/** چیپ امتیاز FD-6 — حلقهٔ SVG با عدد فارسی؛ تا M7 = ۰ */
-function ScoreChip({ label }: { label: string }) {
+/** چیپ امتیاز FD-6 — حلقهٔ SVG با عدد فارسی؛ فیکس‌بچ M3: عدد واقعی از
+ *  Business.scoreSell/scoreBuy (امتیاز ثبت‌نام = ۵؛ موتور کامل در M7)؛
+ *  حلقهٔ پیشرفت = امتیاز / ۱۰۰. */
+function ScoreChip({ arm, label }: { arm: ShellArm; label: string }) {
   const { locale } = useLocale();
-  const num = locale === "en" ? "0" : locale === "ar" ? "٠" : "۰";
-  // ۹ آیتم × ۱۰۰ تا M7 — حلقه خاموش می‌ماند تا عدد واقعی بیاید
+  const businesses = useAuthStore((s) => s.businesses);
+  const biz = businesses[0];
+  const score = Math.max(0, Math.min(100, (arm === "buy" ? biz?.scoreBuy : biz?.scoreSell) ?? 0));
+  const num = score.toLocaleString(locale === "en" ? "en" : locale === "ar" ? "ar-EG" : "fa-IR");
   const R = 15;
   const C = 2 * Math.PI * R;
+  const offset = C * (1 - Math.min(score, 100) / 100);
   return (
     <button
       type="button"
-      aria-label={label}
-      title={label}
+      aria-label={`${label} — ${num}`}
+      title={`${label} — ${num}`}
       className="relative grid size-11 shrink-0 place-items-center rounded-full text-arm-strong transition-colors hover:bg-surface-2"
     >
       <svg viewBox="0 0 44 44" className="absolute inset-0 size-11 -rotate-90" aria-hidden>
@@ -435,8 +440,8 @@ function ScoreChip({ label }: { label: string }) {
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeDasharray={C}
-          strokeDashoffset={C}
-          className="stroke-arm"
+          strokeDashoffset={offset}
+          className="stroke-arm transition-[stroke-dashoffset] duration-500"
         />
       </svg>
       <b className="text-[13px] font-black">{num}</b>

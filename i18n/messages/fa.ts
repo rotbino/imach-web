@@ -55,6 +55,9 @@ export const fa = {
     myCustomersUnit: "مشتری",
     myRfqs: "درخواست‌های قیمت",
     myRfqsUnit: "درخواست",
+    // فیکس‌بچ M3 — کاشی چهارم میزها (دستور مالک: «سفارشات رسیده»)
+    myOrdersSell: "سفارشات رسیده",
+    myOrdersBuy: "سفارش‌های من",
     buyList: "لیست خرید من",
     buyListUnit: "نوع کالا",
     mySuppliers: "تأمین‌کنندگان من",

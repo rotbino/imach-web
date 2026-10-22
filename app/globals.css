@@ -99,6 +99,17 @@
   html {
     -webkit-tap-highlight-color: transparent;
   }
+  /* حکم مالک (فیکس‌بچ M3): «شورت‌کات‌ها و کارت‌ها وقتی موس می‌رود روشون
+     اشاره‌گر به شکل علامت دست دربیاد» — قاعدهٔ سراسری همهٔ صفحات.
+     Tailwind v4 دکمه‌ها را روی cursor:default می‌گذارد؛ برمی‌گردانیم.
+     دکمهٔ خاموش/معلول دست نمی‌شود. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  [role="switch"]:not(:disabled),
+  summary,
+  a[href] {
+    cursor: pointer;
+  }
   body {
     background: var(--color-bg);
     color: var(--color-text);

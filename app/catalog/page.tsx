@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { Icon } from "@/components/ui/icon";
@@ -12,21 +12,24 @@ import { EmptyState } from "@/components/ui/feedback";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { listingsApi } from "@/lib/api";
+import { businessesApi, listingsApi } from "@/lib/api";
 import { goodName, num, unitLabel } from "@/lib/format";
 import { useMoney } from "@/components/imach/prefs-context";
 import { cn } from "@/lib/utils";
 import type { GoodItemDto } from "@/lib/api";
 
 /**
- * `/catalog` — اسکرین ۰۵: کاتالوگ من (M2 · FD-35/39/42 + حکم مالک فیکس).
+ * `/catalog` — اسکرین ۰۵: کاتالوگ من (M2 · FD-35/39/42 + حکم مالک فیکس +
+ * فیکس‌بچ M3: مدیریت دسته‌ها از خود کاتالوگ).
  *
  * · صفحهٔ فرعی (back=/sell): بدون سایدبار — فلش بازگشت استاندارد ← در
  *   اپ‌بار + عنوان؛ ابزارها در نوار ابزار زیر اپ‌بار (همهٔ عرض‌ها) تا
  *   «صفحهٔ فرعی شبیه صفحات اصلی نشود و کاربر گیج نشود» (حکم مالک).
  * · نوار ابزار: تغییر قیمت‌ها · پیش‌نمایش · اشتراک · تنظیمات (FD-39/42)
  * · جستجوی زنده + «محصول جدید» (مهم‌ترین دکمه — تم‌پس‌زمینه) در محتوا
- * · چیپ‌های دستهٔ شخصی (customCategories از کسب‌وکار) + همه + بی‌دسته
+ * · دسته‌ها (دستور مالک فیکس‌بچ M3): به‌جای چیپ «بدون دسته»، آیکون
+ *   مدیریت → شیت ساخت/حذف/تیکِ «دستسه‌بندی‌ها را نشان نده»؛ تغییرات
+ *   همان لحظه ذخیره می‌شوند (setCatalogCategories + editBusiness)
  * · گرید auto-fill ۲۵۲: عکس/حرف · نام (title شخصی > نام مرجع) · بسته · قیمت
  * · نوار آمار: نوع کالا / ذخیره‌کننده / دعوت — زنده از دیتا
  */
@@ -41,11 +44,13 @@ export default function CatalogPage() {
 
 function Catalog() {
   const router = useRouter();
+  const qc = useQueryClient();
   const m = useMessages();
   const C = m.catalog;
   const { locale } = useLocale();
   const { parts } = useMoney();
   const businesses = useAuthStore((s) => s.businesses);
+  const updateBusinesses = useAuthStore((s) => s.updateBusinesses);
   const biz = businesses[0];
   const bizId = biz?.id ?? "";
 
@@ -58,6 +63,8 @@ function Catalog() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | "all">("all");
   const [shareOpen, setShareOpen] = useState(false);
+  // فیکس‌بچ M3 — شیت مدیریت دسته‌ها از خود کاتالوک (دستور مالک)
+  const [catsOpen, setCatsOpen] = useState(false);
 
   const all = listingsQ.data ?? [];
   const active = useMemo(() => all.filter((l) => l.isActive !== false), [all]);
@@ -65,9 +72,7 @@ function Catalog() {
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return active.filter((l) => {
-      if (cat !== "all") {
-        if (cat === "__none" ? l.catalogCategoryId : l.catalogCategoryId !== cat) return false;
-      }
+      if (cat !== "all" && l.catalogCategoryId !== cat) return false;
       if (!needle) return true;
       const hay = [
         l.title,
@@ -136,20 +141,33 @@ function Catalog() {
           </Button>
         </div>
 
-        {/* ── چیپ‌های دستهٔ شخصی ── */}
+        {/* ── چیپ‌های دستهٔ شخصی + آیکون مدیریت (دستور مالک فیکس‌بچ M3:
+            آیکونی که مدال مدیریت دسته‌بندی را باز می‌کند؛ چیپ «بدون دسته» حذف شد) ── */}
         {(cats.length > 0 || active.length > 0) && (
-          <div className="scrollbar-none flex gap-1.5 overflow-x-auto pb-0.5">
-            <CatChip active={cat === "all"} onClick={() => setCat("all")}>
-              {C.catAll}
-            </CatChip>
-            {cats.map((c) => (
-              <CatChip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
-                {c.name}
-              </CatChip>
-            ))}
-            <CatChip active={cat === "__none"} onClick={() => setCat("__none")}>
-              {C.uncategorized}
-            </CatChip>
+          <div className="scrollbar-none flex items-center gap-1.5 overflow-x-auto pb-0.5">
+            {/* تیک عدم نمایش (فیکس‌بچ M3): فروشنده‌ای که دسته نمی‌خواهد ردیف را
+                مخفی می‌کند — آیکون مدیریت می‌ماند تا هر وقت خواست برگرداند */}
+            {!biz?.catalogCategoriesHidden && (
+              <>
+                <CatChip active={cat === "all"} onClick={() => setCat("all")}>
+                  {C.catAll}
+                </CatChip>
+                {cats.map((c) => (
+                  <CatChip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
+                    {c.name}
+                  </CatChip>
+                ))}
+              </>
+            )}
+            <button
+              type="button"
+              onClick={() => setCatsOpen(true)}
+              aria-label="مدیریت دسته‌بندی‌ها"
+              title="مدیریت دسته‌بندی‌ها"
+              className="grid size-8 shrink-0 place-items-center rounded-full border border-line bg-surface text-text-3 transition-colors hover:border-arm/45 hover:bg-arm-soft hover:text-arm-strong active:scale-95"
+            >
+              <Icon name="gear" size={15} />
+            </button>
           </div>
         )}
 
@@ -196,6 +214,26 @@ function Catalog() {
           <Stat label={C.statsInvites} value={num(0, locale)} />
         </div>
       </div>
+
+      {/* ── شیت مدیریت دسته‌ها (دستور مالک فیکس‌بچ M3) ── */}
+      <CategoriesSheet
+        open={catsOpen}
+        onClose={() => setCatsOpen(false)}
+        bizId={bizId}
+        cats={cats}
+        hidden={!!biz?.catalogCategoriesHidden}
+        onChanged={async (nextCats, nextHidden) => {
+          // کش کالا (حذف دسته → آگهی‌هایش بی‌دسته) + کش کسب‌وکار (چیپ‌ها/پرچم)
+          void qc.invalidateQueries({ queryKey: ["listings"] });
+          try {
+            updateBusinesses(await businessesApi.getMyBusinesses());
+          } catch {
+            /* best-effort */
+          }
+          if (nextHidden) setCat("all");
+          if (!nextCats.some((c) => c.id === cat)) setCat("all");
+        }}
+      />
 
       {/* ── شیت اشتراک‌گذاری ── */}
       <ShareSheet open={shareOpen} onClose={() => setShareOpen(false)} link={shareLinks} title={C.shareTitle} hint={C.shareHint} copied={C.shareCopied} />
@@ -334,6 +372,154 @@ function CatalogCard({
         )}
       </div>
     </button>
+  );
+}
+
+/** شیت مدیریت دسته‌های ویترین (دستور مالک فیکس‌بچ M3): «با زدن اون مدال
+ *  مدیریت دسته‌بندی رو باز کنه. کاربر بتونه دسته مورد نظرش رو ایجاد یا مدیریت
+ *  کنه. اگر به دسته‌بندی نیاز نداره تیک عدم نمایش دسته‌بندی رو بزنه».
+ *  ذخیرهٔ زنده: هر ساخت/حذف/تیک همان لحظه سرور می‌رود — نه دکمهٔ ذخیرهٔ انتها. */
+function CategoriesSheet({
+  open,
+  onClose,
+  bizId,
+  cats,
+  hidden,
+  onChanged,
+}: {
+  open: boolean;
+  onClose: () => void;
+  bizId: string;
+  cats: { id: string; name: string }[];
+  hidden: boolean;
+  onChanged: (cats: { id: string; name: string }[], hidden: boolean) => void;
+}) {
+  const [list, setList] = useState(cats);
+  const [hide, setHide] = useState(hidden);
+  const [newCat, setNewCat] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  // باز شدن دوباره → از وضعیت سرور تازه شروع کن
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setList(cats);
+      setHide(hidden);
+      setNewCat("");
+    }
+  }
+
+  const persist = async (nextCats: { id: string; name: string }[], nextHidden: boolean) => {
+    setBusy(true);
+    try {
+      await businessesApi.setCatalogCategories(bizId, nextCats);
+      if (nextHidden !== hide) {
+        await businessesApi.editBusiness(bizId, { catalogCategoriesHidden: nextHidden });
+      }
+      setList(nextCats);
+      setHide(nextHidden);
+      onChanged(nextCats, nextHidden);
+    } catch {
+      /* خطا را caller از طریق کش می‌بیند؛ حالت محلی برمی‌گردد */
+      setList(cats);
+      setHide(hidden);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const addCat = () => {
+    const v = newCat.trim();
+    if (v.length < 2 || list.some((c) => c.name === v)) return;
+    void persist([...list, { id: `c${Date.now().toString(36)}`, name: v }], hide);
+    setNewCat("");
+  };
+
+  const removeCat = (id: string) => void persist(list.filter((c) => c.id !== id), hide);
+
+  return (
+    <Sheet open={open} onClose={onClose} title="مدیریت دسته‌بندی‌ها">
+      <div className="flex flex-col gap-4 py-1">
+        <p className="text-[12.5px] leading-5 text-text-3">
+          دسته‌ها چیپ‌های بالای کاتالوگ‌اند — مثل «هاشمی / طارم / فجر». هر تغییر همان لحظه ذخیره می‌شود.
+        </p>
+
+        {/* فهرست دسته‌ها */}
+        {list.length > 0 ? (
+          <div className="flex flex-col gap-1.5">
+            {list.map((c) => (
+              <div
+                key={c.id}
+                className="flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-3.5"
+              >
+                <Icon name="folder" size={16} className="shrink-0 text-text-3" />
+                <b className="min-w-0 flex-1 truncate text-[13.5px] font-bold text-text">{c.name}</b>
+                <button
+                  type="button"
+                  onClick={() => removeCat(c.id)}
+                  disabled={busy}
+                  aria-label={`حذف ${c.name}`}
+                  className="grid size-8 shrink-0 place-items-center rounded-full text-text-4 transition-colors hover:bg-red/10 hover:text-red disabled:opacity-40"
+                >
+                  <Icon name="trash" size={15} />
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="rounded-xl border border-dashed border-line-2 bg-surface px-4 py-5 text-center text-[12.5px] leading-6 text-text-3">
+            هنوز دسته‌ای نساخته‌ای — اگر کاتالوکت کوچک است بدون دسته هم خوب است.
+          </p>
+        )}
+
+        {/* ساخت دستهٔ جدید */}
+        <div className="flex gap-2">
+          <input
+            value={newCat}
+            onChange={(e) => setNewCat(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && addCat()}
+            placeholder="دستهٔ جدید… مثلاً: نوشیدنی"
+            maxLength={30}
+            aria-label="نام دستهٔ جدید"
+            className="h-11 min-w-0 flex-1 rounded-xl border border-line bg-surface px-3.5 text-[14px] text-text placeholder:text-text-4 focus:border-arm focus:outline-none focus:ring-2 focus:ring-arm/20"
+          />
+          <Button className="shrink-0" onClick={addCat} disabled={busy || newCat.trim().length < 2}>
+            <Icon name="plus" size={15} /> افزودن
+          </Button>
+        </div>
+
+        {/* تیک عدم نمایش (دستور مالک): دسته‌ها می‌مانند، فقط چیپ‌ها مخفی می‌شوند */}
+        <button
+          type="button"
+          role="switch"
+          aria-checked={hide}
+          onClick={() => void persist(list, !hide)}
+          disabled={busy}
+          className="flex items-center gap-3 rounded-xl border border-line bg-surface px-3.5 py-3 text-start transition-colors hover:border-line-2 disabled:opacity-60"
+        >
+          <span
+            className={cn(
+              "relative h-7 w-12 shrink-0 rounded-full transition-colors",
+              hide ? "bg-primary" : "bg-line-2"
+            )}
+          >
+            <span
+              className={cn(
+                "absolute top-1 size-5 rounded-full bg-white shadow-sm transition-all",
+                hide ? "start-6" : "start-1"
+              )}
+            />
+          </span>
+          <span className="min-w-0 flex-1">
+            <b className="block text-[13.5px] font-bold text-text">دسته‌بندی‌ها را نشان نده</b>
+            <span className="mt-0.5 block text-[11.5px] leading-5 text-text-3">
+              چیپ دسته‌ها از بالای کاتالوک برداشته می‌شود — کالاها سر جایشان می‌مانند
+            </span>
+          </span>
+        </button>
+      </div>
+    </Sheet>
   );
 }
 

@@ -8,22 +8,34 @@ import { AppShell } from "@/components/imach/app-shell";
 import { Icon } from "@/components/ui/icon";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Field, Input, Textarea } from "@/components/ui/input";
+import { Field, Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Spinner, EmptyState } from "@/components/ui/feedback";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { listingsApi, type GoodItemDto } from "@/lib/api";
+import { listingsApi, pricingApi, type GoodItemDto, type PricingTier } from "@/lib/api";
 import { goodName, num, unitLabel, currencyLabel, majorToMinor, minorToMajor } from "@/lib/format";
 import { useMoney } from "@/components/imach/prefs-context";
 
 /**
- * `/item/[id]` — اسکرین ۳۷: نمای کالا از دید مالک (M2).
- * گالری چسبان دسکتاپ + قیمت/موجودی/حداقل سفارش + بازدید ۳۰روزه + شیت ویرایش
- * با فیلدهای v2 (title/note/baseQty — C2/C5/C6). تخفیف/کمپین/قیمت سریع پیشرفته
- * در M9؛ این‌جا «قیمت سریع» با NumberInput حکم مالک انجام می‌شود.
+ * `/item/[id]` — اسکرین ۳۷: نمای کالا از دید مالک (M2 + فیکس‌بچ مالک M3:
+ * «هر فرمی که پیاده می‌شود یا پیاده نشود یا کامل پیاده شود»).
+ *
+ * · گالری (همهٔ عکس‌ها؛ اولی قاب اصلی) + قیمت/موجودی/حداقل + بازدید ۳۰روزه
+ * · تخفیف‌های کالا (فیکس‌بچ M3): کارت «تخفیف حجمی خرید» (پله‌ها — بهترین پله
+ *   سبز؛ الگوی pv-tiers پروتوتایپ ۳۷) + کارت تخفیف مشتری‌ها به تفکیک نوع
+ *   (گذری/همکار/قراردادی) — هر دو از /pricing/state زنده
+ * · «قیمت سریع» می‌ماند (پرکاربردترین اقدام — FD-35، فرم تک‌فیلدی = شیت)
+ * · «ویرایش» = صفحهٔ مستقل /item/[id]/edit (قانون مالک: فرم بزرگ = صفحه؛
+ *   شیت کوچک قبلی جایگزین شد) — تصاویر + تخفیف پلکانی/گروهی + حذف کالا
  */
+
+const CUST_LABEL: Record<"p" | "h" | "q", string> = {
+  p: "مشتری گذری",
+  h: "مشتری همکار",
+  q: "مشتری قراردادی",
+};
 
 export default function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -55,7 +67,21 @@ function ItemContent({ id }: { id: string }) {
     [listingsQ.data, id]
   );
 
-  const [editOpen, setEditOpen] = useState(false);
+  // فیکس‌بچ M3 — قاعدهٔ تخفیف اختصاصی همین کالا (پله‌ها + درصد مشتری‌ها)
+  const pricingQ = useQuery({
+    queryKey: ["pricing", "state", bizId],
+    queryFn: () => pricingApi.state(bizId),
+    enabled: !!bizId && !!l,
+    staleTime: 30_000,
+  });
+  const itemRule = useMemo(
+    () => (pricingQ.data?.items ?? []).find((it) => it.listingId === id)?.rule ?? null,
+    [pricingQ.data, id]
+  );
+  const tiers: PricingTier[] = itemRule?.tiers ?? [];
+  const custPct = itemRule?.custPct ?? {};
+  const bestTierIdx = tiers.reduce((best, t, i) => (t.pct > (tiers[best]?.pct ?? -1) ? i : best), 0);
+
   const [quickOpen, setQuickOpen] = useState(false);
 
   if (listingsQ.isLoading) {
@@ -70,7 +96,7 @@ function ItemContent({ id }: { id: string }) {
 
   if (!l) {
     return (
-      <AppShell arm="sell" title="—">
+      <AppShell arm="sell" title="—" wide back="/catalog">
         <EmptyState icon={<Icon name="info" size={30} />} title="کالا یافت نشد" />
       </AppShell>
     );
@@ -144,7 +170,7 @@ function ItemContent({ id }: { id: string }) {
                   <Icon name="tag" size={15} />
                   قیمت سریع
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+                <Button variant="outline" size="sm" onClick={() => router.push(`/item/${l.id}/edit`)}>
                   <Icon name="pencil" size={15} />
                   ویرایش
                 </Button>
@@ -179,21 +205,72 @@ function ItemContent({ id }: { id: string }) {
               </p>
             )}
           </div>
+
+          {/* ── تخفیف حجمی خرید (فیکس‌بچ M3 — الگوی pv-tiers پروتوتایپ ۳۷) ── */}
+          {tiers.length > 0 && (
+            <div className="rounded-2xl border border-line bg-surface p-5">
+              <div className="flex items-center gap-2">
+                <Icon name="percent" size={17} className="text-arm-strong" />
+                <b className="text-[14px] font-bold text-text">تخفیف حجمی خرید</b>
+                <span className="rounded-full bg-arm-soft px-2 py-0.5 text-[10.5px] font-bold text-arm-strong">
+                  {num(tiers.length, "fa")} پله
+                </span>
+              </div>
+              <div className="mt-3 flex flex-col">
+                {tiers.map((t, i) => (
+                  <div
+                    key={`${t.from}-${t.to}`}
+                    className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 ${
+                      i === bestTierIdx ? "bg-green-soft" : "bg-surface-2/60"
+                    }`}
+                  >
+                    <span className="text-[13px] font-bold text-text-2">
+                      {t.to == null
+                        ? `از ${num(t.from, "fa")} ${unit} به بالا`
+                        : `${num(t.from, "fa")} تا ${num(t.to, "fa")} ${unit}`}
+                    </span>
+                    <b
+                      className={`text-[14px] font-black ${
+                        i === bestTierIdx ? "text-green" : "text-arm-strong"
+                      }`}
+                    >
+                      {num(t.pct, "fa")}٪ تخفیف
+                    </b>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2.5 text-[11px] leading-5 text-text-4">
+                تخفیف روی حجمِ همین کالا در سفارش اعمال می‌شود — پلهٔ بهتر سبز است.
+              </p>
+            </div>
+          )}
+
+          {/* ── تخفیف مشتری‌ها (فیکس‌بچ M3 — سطح کالا؛ الگوی «قیمت برای تو» ۳۷) ── */}
+          {Object.keys(custPct).length > 0 && (
+            <div className="rounded-2xl border border-line bg-surface p-5">
+              <div className="flex items-center gap-2">
+                <Icon name="users" size={17} className="text-arm-strong" />
+                <b className="text-[14px] font-bold text-text">تخفیف مشتری‌های این کالا</b>
+              </div>
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                {(["p", "h", "q"] as const)
+                  .filter((k) => custPct[k] != null)
+                  .map((k) => (
+                    <div key={k} className="rounded-xl bg-surface-2/60 px-3.5 py-2.5 text-center">
+                      <p className="text-[11px] font-bold text-text-3">{CUST_LABEL[k]}</p>
+                      <b className="mt-0.5 block text-[16px] font-black text-arm-strong">
+                        {num(custPct[k]!, "fa")}٪
+                      </b>
+                    </div>
+                  ))}
+              </div>
+              <p className="mt-2.5 text-[11px] leading-5 text-text-4">
+                نوع مشتری را در دفتر مشتریان تعیین می‌کنی — این تخفیف مخصوصِ همین کالا است.
+              </p>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* ── شیت ویرایش (فیلدهای v2) ── */}
-      <EditSheet
-        open={editOpen}
-        onClose={() => setEditOpen(false)}
-        l={l}
-        bizId={bizId}
-        unit={unit}
-        onSaved={() => {
-          void qc.invalidateQueries({ queryKey: ["listings"] });
-          setEditOpen(false);
-        }}
-      />
 
       {/* ── شیت قیمت سریع ── */}
       <QuickPriceSheet
@@ -208,112 +285,6 @@ function ItemContent({ id }: { id: string }) {
         }}
       />
     </AppShell>
-  );
-}
-
-/** شیت ویرایش — عنوان/توضیح/بسته/قیمت/موجودی/حداقل (تساوی فیلدهای ورود M1) */
-function EditSheet({
-  open,
-  onClose,
-  l,
-  bizId,
-  unit,
-  onSaved,
-}: {
-  open: boolean;
-  onClose: () => void;
-  l: GoodItemDto;
-  bizId: string;
-  unit: string;
-  onSaved: () => void;
-}) {
-  // ارز بومی آگهی — ورودی فرم در واحد اصلی (ایران: تومان)؛ ذخیره کوچک‌ترین واحد (ریال)
-  const cur = l.currency ?? "IRR";
-  const [title, setTitle] = useState(l.title ?? "");
-  const [note, setNote] = useState(l.note ?? "");
-  const [baseQty, setBaseQty] = useState<number | null>(l.baseQty ?? null);
-  const [price, setPrice] = useState<number | null>(minorToMajor(l.priceMinor, cur));
-  const [stock, setStock] = useState<number | null>(l.stock);
-  const [minOrder, setMinOrder] = useState<number | null>(l.minOrder);
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
-
-  const save = async () => {
-    setBusy(true);
-    setErr(null);
-    try {
-      await listingsApi.saveListing({
-        businessId: bizId,
-        goodId: l.good.id,
-        listingId: l.id,
-        mode: l.mode,
-        title: title.trim() || null,
-        note: note.trim() || null,
-        baseQty: baseQty ?? undefined,
-        sell:
-          l.mode !== "BUY"
-            ? {
-                priceMinor: price === null ? 0 : majorToMinor(price, cur),
-                stock: stock ?? 0,
-                minOrder: minOrder ?? 0,
-              }
-            : undefined,
-        buy:
-          l.mode !== "SELL" && l.volume != null
-            ? { volume: l.volume, frequency: l.frequency ?? "MONTHLY" }
-            : undefined,
-      });
-      onSaved();
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "ذخیره نشد — دوباره تلاش کن");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <Sheet open={open} onClose={onClose} title="ویرایش کالا">
-      <div className="flex flex-col gap-5 py-1">
-        <Field label="عنوان در ویترین من" hint="نام مرجع کالا دست نمی‌خورد — این فقط ویترین خودت است">
-          {(id) => <Input id={id} value={title} onChange={(e) => setTitle(e.target.value)} placeholder={l.good.nameFa} maxLength={120} />}
-        </Field>
-
-        <Field label="توضیح کوتاه" hint="مثلاً: تحویل از انبار تهران، بستهٔ ۵۰ کیلویی">
-          {(id) => <Textarea id={id} value={note} onChange={(e) => setNote(e.target.value)} maxLength={280} rows={2} />}
-        </Field>
-
-        <Field label={`تعداد ${unit || "واحد"} در هر بسته`} hint="قیمتِ هر واحد پایه خودکار محاسبه می‌شود">
-          {(id) => <NumberInput id={id} value={baseQty} onChange={setBaseQty} min={1} suffix={unit || undefined} />}
-        </Field>
-
-        {l.mode !== "BUY" && (
-          <>
-            <Field label={`قیمت هر بسته${baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""} — ${currencyLabel(cur)}`} required>
-              {(id) => <NumberInput id={id} value={price} onChange={setPrice} min={0} />}
-            </Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="موجودی">
-                {(id) => <NumberInput id={id} value={stock} onChange={setStock} min={0} suffix={unit || undefined} />}
-              </Field>
-              <Field label="حداقل سفارش">
-                {(id) => <NumberInput id={id} value={minOrder} onChange={setMinOrder} min={0} suffix={unit || undefined} />}
-              </Field>
-            </div>
-          </>
-        )}
-
-        {err && <p className="text-[12px] font-bold text-red">{err}</p>}
-
-        <div className="flex gap-2">
-          <Button variant="arm" size="lg" loading={busy} onClick={() => void save()} className="flex-1">
-            ذخیره
-          </Button>
-          <Button variant="ghost" size="lg" onClick={onClose}>
-            انصراف
-          </Button>
-        </div>
-      </div>
-    </Sheet>
   );
 }
 

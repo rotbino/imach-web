@@ -171,6 +171,12 @@ export interface BusinessSummaryDto {
   hours?: string | null;
   /** فاز ۶ مهاجرت — شرایط پرداخت پیش‌فرض (sc-settings) */
   defaultPayTerm?: string | null;
+  /** فیکس‌بچ M3 — امتیاز فعالیت هر بازو (ثبت‌نام = ۵؛ موتور کامل M7) —
+ *  چیپ امتیاز اپ‌بار همین را می‌خواند. */
+  scoreSell?: number;
+  scoreBuy?: number;
+  /** فیکس‌بچ M3 — تیک عدم نمایش دسته‌بندی در کاتالوک خود فروشنده */
+  catalogCategoriesHidden?: boolean;
 }
 
 /** فاز ۸ (طرح ۱۴) — چهار toggle اعلان پروفایل خریدار.
@@ -1191,6 +1197,8 @@ export const businessesApi = {
     defaultPayTerm?: string | null;
     /** فاز ۱۳ — معرفی کوتاه فروشنده؛ null = پاک کردن */
     bio?: string | null;
+    /** فیکس‌بچ M3 — تیک عدم نمایش دسته‌بندی چیپ‌های کاتالوک خود */
+    catalogCategoriesHidden?: boolean;
   }) => api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
   /** فاز ۳ (طرح ۰۱) — دسته‌های شخصی کاتالوگ: کل لیست یکجا replace می‌شود

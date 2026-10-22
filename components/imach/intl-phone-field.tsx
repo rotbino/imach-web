@@ -12,8 +12,10 @@ import { cn } from "@/lib/utils";
  * legacy/components/imach/intl-phone-field.tsx روی کیت Tailwind M0).
  *
  * · پرچم SVG واقعی (/flags/*.svg — رندر یکسان در همهٔ سیستم‌عامل‌ها؛ فاز ۱۳)
- * · نرمال‌سازی ارقام فارسی/عربی → لاتین + حذف زندهٔ صفر آغازین
- * · سقف طول: ایران ۱۰ رقم (بدون صفر) · بقیه ۱۲ رقم
+ * · نرمال‌سازی ارقام فارسی/عربی → لاتین
+ * · صفر آغازین مجاز است تا کاربر فکر نکند تایپ قفل است (دستور مالک
+ *   فیکس‌بچ M3)؛ موقع از دست دادن فوکوس، صفر(های) ابتدایی حذف می‌شود.
+ * · سقف طول: ایران ۱۱ رقم (۱۰ رقم + صفر ابتدایی) · بقیه ۱۳ رقم
  * · شیت کشور با سرچ (نام/کد/شماره) — همان الگوی M0 Sheet
  */
 
@@ -42,10 +44,18 @@ function toAsciiDigits(s: string): string {
     .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
 }
 
-/** فقط رقم + حذف زندهٔ صفرهای آغازین؛ سقف طول کشور */
+/** فقط رقم؛ صفر ابتدایی حذف نمی‌شود (کاربر ۰۹۱۲… را طبیعی تایپ می‌کند)؛
+ *  سقف طول کشور = +۱ رقم برای همان صفرِ احتمالی */
 function sanitizePhone(v: string, countryCode: string): string {
   const d = toAsciiDigits(v).replace(/\D/g, "");
-  return d.replace(/^0+/, "").slice(0, countryCode === "IR" ? 10 : 12);
+  return d.slice(0, countryCode === "IR" ? 11 : 13);
+}
+
+/** موقع فوکوس‌ترکشیدن: صفر(های) ابتدایی می‌افتد و طول دوباره سقف می‌خورد
+ *  (دستور مالک: «اگر اول شماره صفر گذاشته بود آن صفر را بردار») */
+function stripLeadingZero(v: string, countryCode: string): string {
+  const d = v.replace(/^0+/, "");
+  return d.slice(0, countryCode === "IR" ? 10 : 12);
 }
 
 export function IntlPhoneField({
@@ -102,6 +112,12 @@ export function IntlPhoneField({
           value={value}
           autoFocus={autoFocus}
           onChange={(e) => onChange(sanitizePhone(e.target.value, country))}
+          onBlur={() => {
+            // دستور مالک (فیکس‌بچ M3): صفر ابتدایی فقط بعد از خروج از فیلد
+            // می‌افتد — حین تایپ کاربر نباید حس «قفل بودن» بگیرد.
+            const stripped = stripLeadingZero(value, country);
+            if (stripped !== value) onChange(stripped);
+          }}
           onKeyDown={(e) => e.key === "Enter" && onEnter?.()}
           className="min-w-0 flex-1 bg-transparent px-3.5 text-start text-[15px] text-text placeholder:text-text-4 focus:outline-none"
         />

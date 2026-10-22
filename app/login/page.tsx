@@ -199,7 +199,7 @@ function LoginView() {
                   ref={pwRef}
                   type="password"
                   autoComplete="current-password"
-                  placeholder="••••••"
+                  placeholder=""
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

@@ -186,9 +186,11 @@ function AddToBuyList() {
               </div>
             )}
 
-            {/* حکم مالک فیکس: تا لیست لود نشده دیده نمی‌شود؛ رنگ برند تا
-                از ردیف‌های نوع کالا جدا بیفتد — PROVISIONAL (M6 سند ۰۷) */}
-            {!goodsQ.isLoading && goodsQ.data && (
+            {/* فیکس باگ مالک (فیکس‌بچ M3 — هم‌قاعدهٔ فرم ثبت کالا): لینک ثبت
+                نوع کالای جدید فقط وقتی دیده می‌شود که کاربر سرچ کرده و لیست
+                خالی آمده — «اگر نوع کالا وجود ندارد اصلاً نباید این لینک دیده
+                شود». قبلاً CTA همیشه زیر نتایج بود. */}
+            {goodsQ.isSuccess && q && (goodsQ.data?.items ?? []).length === 0 && (
               <button
                 type="button"
                 onClick={() => setNewGoodOpen(true)}
@@ -199,7 +201,7 @@ function AddToBuyList() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <b className="block text-[13.5px] font-bold text-primary-strong">
-                    {q ? `«${q}» را به‌عنوان نوع کالای جدید ثبت کن` : "نوع کالای جدید ثبت کن"}
+                    «{q}» را به‌عنوان نوع کالای جدید ثبت کن
                   </b>
                   <span className="block text-[11.5px] text-text-3">
                     قلم کالا — بدون برند و ویژگی؛ مثل گندم، پفک، تیرآهن

@@ -80,6 +80,7 @@ function AddWizard() {
 
   /* ── شیت‌ها ── */
   const [newGoodOpen, setNewGoodOpen] = useState(false);
+  const [newBrandOpen, setNewBrandOpen] = useState(false);
   const [scanOpen, setScanOpen] = useState(false);
   const [textOpen, setTextOpen] = useState(false);
   const [excelOpen, setExcelOpen] = useState(false);
@@ -148,11 +149,11 @@ function AddWizard() {
     goStep(3);
   };
 
-  const startNewProduct = () => {
+  const startNewProduct = (brandName?: string) => {
     setProduct(null);
     setIsNewProduct(true);
     setNewLabel("");
-    setNewBrandName("");
+    setNewBrandName(brandName ?? "");
     resetSpec();
     goStep(3);
   };
@@ -323,21 +324,22 @@ function AddWizard() {
                   unit={unitLabel(g.unit, locale)}
                 />
               ))}
-              {goodsQ.data && goodsQ.data.items.length === 0 && q && (
-                <p className="py-8 text-center text-[13px] leading-6 text-text-3">
-                  «{q}» پیدا نشد — می‌توانی همین حالا ثبتش کنی:
-                </p>
-              )}
-              {/* حکم مالک فیکس: تا لیست لود نشده این لینک دیده نمی‌شود؛
-                  رنگ برند تا از ردیف‌های نوع کالا جدا بیفتد. */}
-              {!goodsQ.isLoading && goodsQ.data && (
-                <PickRow
-                  onClick={() => setNewGoodOpen(true)}
-                  title={q ? `«${q}» را به‌عنوان نوع کالای جدید ثبت کن` : "نوع کالای جدید ثبت کن"}
-                  sub="قلم کالا — بدون برند و ویژگی؛ مثل گندم، پفک، تیرآهن"
-                  plus
-                  cta
-                />
+              {/* فیکس باگ مالک (فیکس‌بچ M3): «اگر نوع کالا وجود دارد این لینک اصلاً
+                  دیده نشود — فقط وقتی کاربر سرچ کرد و لیست خالی آمد». قبلاً
+                  CTA همیشه زیر لیست بود و با وجود «پفک» در نتایج هم دیده می‌شد. */}
+              {goodsQ.isSuccess && q && goodsQ.data.items.length === 0 && (
+                <>
+                  <p className="py-6 text-center text-[13px] leading-6 text-text-3">
+                    «{q}» پیدا نشد — می‌توانی همین حالا ثبتش کنی:
+                  </p>
+                  <PickRow
+                    onClick={() => setNewGoodOpen(true)}
+                    title={`«${q}» را به‌عنوان نوع کالای جدید ثبت کن`}
+                    sub="قلم کالا — بدون برند و ویژگی؛ مثل گندم، پفک، تیرآهن"
+                    plus
+                    cta
+                  />
+                </>
               )}
             </div>
           </div>
@@ -350,7 +352,9 @@ function AddWizard() {
 
             <PickedCard title={good.nameFa} sub={`نوع کالا · واحد ${unit || "—"} · ${good.category?.nameFa ?? ""}`} />
 
-            {/* فیلتر برند — چیپ‌های سروری */}
+            {/* فیلتر برند — چیپ‌های سروری + «ثبت برند جدید» (دستور مالک
+                فیکس‌بچ M3): دکمه‌ای آخر فهرست برندها با رنگ متفاوت → شیتِ
+                نام برند → مسیر ثبت محصول همان برند */}
             {productsQ.data && productsQ.data.brands.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-1.5">
                 <BrandChip active={brandFilter === null} onClick={() => setBrandFilter(null)}>
@@ -365,6 +369,14 @@ function AddWizard() {
                     {b.name} <span className="text-text-4">({num(b.count, "fa")})</span>
                   </BrandChip>
                 ))}
+                <button
+                  type="button"
+                  onClick={() => setNewBrandOpen(true)}
+                  className="inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/45 bg-primary-soft/50 px-3.5 py-1.5 text-[12.5px] font-bold text-primary-strong transition-colors hover:border-primary hover:bg-primary-soft active:scale-[.97]"
+                >
+                  <Icon name="plus" size={13} />
+                  ثبت برند جدید
+                </button>
               </div>
             )}
 
@@ -387,17 +399,20 @@ function AddWizard() {
                 <div className="rounded-2xl border border-line bg-surface px-5 py-8 text-center">
                   <b className="text-[14px] text-text">هنوز محصولی برای «{good.nameFa}» ثبت نشده</b>
                   <p className="mt-1.5 text-[12.5px] leading-6 text-text-3">اولین محصول را شما ثبت کنید — خریداران بقیه را کنار هم می‌بینند.</p>
-                  <Button variant="arm" size="lg" className="mt-4" onClick={startNewProduct}>
+                  <Button variant="arm" size="lg" className="mt-4" onClick={() => startNewProduct()}>
                     <Icon name="plus" size={16} /> ثبت اولین محصول
                   </Button>
                 </div>
               )}
               {productsQ.data && productsQ.data.items.length > 0 && (
+                /* دستور مالک (فیکس‌بچ M3): «محصول شما در این لیست نیست؟ ثبتش
+                   کنید» به رنگ برند تا به چشم بیاید — هم‌قالب CTA نوع کالای جدید */
                 <PickRow
-                  onClick={startNewProduct}
+                  onClick={() => startNewProduct()}
                   title="محصول شما در این لیست نیست؟"
                   sub="خودتان ثبتش کنید."
                   plus
+                  cta
                 />
               )}
             </div>
@@ -535,6 +550,17 @@ function AddWizard() {
         onCreated={(g) => {
           setNewGoodOpen(false);
           pickGood(g);
+        }}
+      />
+      {/* ثبت برند جدید (دستور مالک فیکس‌بچ M3): نام برند → مسیر ثبت محصولِ
+          همان برند — برند هنگام ذخیرهٔ محصول در سرور ساخته می‌شود */}
+      <NewBrandSheet
+        open={newBrandOpen}
+        onClose={() => setNewBrandOpen(false)}
+        goodName={good?.nameFa ?? ""}
+        onConfirm={(brand) => {
+          setNewBrandOpen(false);
+          startNewProduct(brand);
         }}
       />
       <ScanSheet
@@ -717,6 +743,57 @@ function BrandChip({
 /* ═══════════════════════════════════════════════════════════════
    شیت ۱ — ثبت کالای جدید (اگر جستجو چیزی نیاورد)
    ═══════════════════════════════════════════════════════════════ */
+/** شیت ثبت برند جدید (دستور مالک فیکس‌بچ M3): «اگر لیست برند داریم کاربر
+ *  باید بتونه برند جدید ثبت کنه». برند در این سیستم همیشه روی محصول
+ *  می‌نشیند — پس نام برند را می‌گیریم و مستقیم به فرم محصولِ تازه (گام ۳)
+ *  با برندِ پیش‌پر می‌رویم؛ سرور موقع ذخیره برند را می‌سازد. */
+function NewBrandSheet({
+  open,
+  onClose,
+  goodName,
+  onConfirm,
+}: {
+  open: boolean;
+  onClose: () => void;
+  goodName: string;
+  onConfirm: (brand: string) => void;
+}) {
+  const [name, setName] = useState("");
+
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) setName("");
+  }
+
+  const ok = name.trim().length >= 2;
+
+  return (
+    <Sheet open={open} onClose={onClose} title="ثبت برند جدید">
+      <div className="flex flex-col gap-4 py-1">
+        <p className="text-[12.5px] leading-5 text-text-3">
+          برندِ محصولِ «{goodName}» را وارد کن — بعدش فقط عنوان و قیمت محصول را ثبت می‌کنی.
+        </p>
+        <Field label="نام برند" required>
+          {(id) => (
+            <Input
+              id={id}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="مثلاً: اشی مشی"
+              maxLength={60}
+              autoFocus
+            />
+          )}
+        </Field>
+        <Button variant="arm" size="lg" disabled={!ok} onClick={() => onConfirm(name.trim())}>
+          <Icon name="plus" size={16} /> ادامه — ثبت محصول این برند
+        </Button>
+      </div>
+    </Sheet>
+  );
+}
+
 function NewGoodSheet({
   open,
   onClose,
