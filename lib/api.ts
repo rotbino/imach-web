@@ -1110,8 +1110,9 @@ export const goodsApi = {
     api<PageDto<GoodDto>>("/goods/getGoods", { params, auth: false }),
   /** درخت کامل دسته‌بندی‌ها */
   getCategories: () => api<CategoryNodeDto[]>("/goods/getCategories", { auth: false }),
-  /** پیشنهاد برند برای فرم ثبت کالا */
-  getBrands: (q?: string) => api<BrandDto[]>("/goods/getBrands", { params: { q }, auth: false }),
+  /** پیشنهاد برند برای فرم ثبت کالا — M4-prep: limit برای شیت انتخاب برند (پیش‌فرض سرور ۱۰) */
+  getBrands: (q?: string, limit?: number) =>
+    api<BrandDto[]>("/goods/getBrands", { params: { q, limit }, auth: false }),
   /** JSON مرجع کاتالوگ برای پرامپت هوش مصنوعی — گودها + برندها + دسته‌ها */
   getCatalogReference: () => api<CatalogReferenceDto>("/goods/getCatalogReference", { auth: false }),
   /** ثبت کالای مرجع جدید وقتی جستجو نتیجه‌ای نداشت */

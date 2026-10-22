@@ -13,7 +13,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useAuthStore } from "@/lib/auth-store";
-import { goodsApi, productsApi, listingsApi, businessesApi, type GoodDto, type ProductRowDto } from "@/lib/api";
+import { goodsApi, productsApi, listingsApi, businessesApi, unitsApi, filesApi, type GoodDto, type ProductRowDto, type BrandDto, type UnitDto } from "@/lib/api";
 import { num, currencyLabel, majorToMinor, unitLabel } from "@/lib/format";
 import { useLocale } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,12 @@ import { cn } from "@/lib/utils";
  *   ۳) افزودن گروهی با متن — لیست قیمت واتساپی → جدول → تیک → ثبت
  *   ۴) اکسل/CSV — پیش‌نمایش سروری (importPreview/Commit)
  *   ۵) کپی از کاتالوک — شمارهٔ دوست → کاتالوکش → کپی قلم‌ها
+ *
+ * گام ۳ — کامل و وفادار به پروتوتایپ ۱۳ (بازخورد مالک پس از فیکس‌بچ M3:
+ * «چرا برند انتخابی نیست، انتخاب تصویر نداره، امکان انتخاب یا ایجاد واحد
+ * نیست»): شیت انتخاب برند با جستجو (sheet-pick-brand) + عکس محصول تا ۵ عکس
+ * (img-slot-btn + آپلود بعد از ذخیره با درصد زنده) + چیپ‌های واحد بسته‌بندی
+ * از جدول واقعی Unit (pack-chips + «سایر») + واحد پایه در شیت نوع کالای جدید.
  *
  * قانون مالک M2: این فرم فارسی است و متن‌ها همین‌جا نوشته می‌شوند
  * (نه در فایل زبان) — چندزبانه‌سازی فرم‌ها بعد از ثبات طراحی.
@@ -65,6 +71,22 @@ function AddWizard() {
   const [good, setGood] = useState<GoodDto | null>(null);
   const [product, setProduct] = useState<ProductRowDto | null>(null);
   const [isNewProduct, setIsNewProduct] = useState(false);
+  /* برند محصول جدید — وفاداری به پروتوتایپ ۱۳ (sheet-pick-brand):
+   * id="" = نامی که سرور موقع ذخیره می‌سازد؛ اصلِ انتخاب از فهرست ۳,۷۶۹ برند.
+   * brandNone — «بدون برند / فله» صریح: همان null نتیجه می‌دهد اما دکمهٔ فرم
+   * «بدون برند» نشان می‌دهد (بهبود بر نقص پروتوتایپ که با انتخاب‌نشده اشتباه می‌شد) */
+  const [brand, setBrand] = useState<BrandDto | null>(null);
+  const [brandNone, setBrandNone] = useState(false);
+  const [brandPickerOpen, setBrandPickerOpen] = useState(false);
+  /* عکس‌های محصول — تا ۵ عکس (پروتوتایپ ۱۳: img-slot-btn)؛ آپلود بعد از
+   * ذخیرهٔ ردیف (files/upload به Listing نیاز به modelId دارد) */
+  const [images, setImages] = useState<{ file: File; url: string }[]>([]);
+  const [imgPhase, setImgPhase] = useState<{ pct: number; label: string } | null>(null);
+  const imgInputRef = useRef<HTMLInputElement>(null);
+
+  /* ── بسته‌بندی (پروتوتایپ ۱۳: چیپ + «سایر») — از جدول واقعی Unit ── */
+  const [packMode, setPackMode] = useState<"none" | "unit" | "custom">("none");
+  const [packUnit, setPackUnit] = useState<UnitDto | null>(null);
 
   /* ── فرم گام ۳ ── */
   const [title, setTitle] = useState("");
@@ -75,12 +97,12 @@ function AddWizard() {
   const [minOrder, setMinOrder] = useState<number | null>(null);
   const [note, setNote] = useState("");
   const [newLabel, setNewLabel] = useState("");
-  const [newBrandName, setNewBrandName] = useState("");
   const [busy, setBusy] = useState(false);
 
   /* ── شیت‌ها ── */
   const [newGoodOpen, setNewGoodOpen] = useState(false);
   const [newBrandOpen, setNewBrandOpen] = useState(false);
+  const [newBrandDefault, setNewBrandDefault] = useState("");
   const [scanOpen, setScanOpen] = useState(false);
   const [textOpen, setTextOpen] = useState(false);
   const [excelOpen, setExcelOpen] = useState(false);
@@ -119,6 +141,21 @@ function AddWizard() {
     staleTime: 60_000,
   });
 
+  /* واحد-بسته‌های همین کالا از جدول واقعی Unit (پروتوتایپ ۱۳: pack-chips از
+   * packs محصول مرجع — در سیستم واقعی، هم‌ارزش آن سلسله‌مراتب Unit است:
+   * بسته‌هایی که baseUnitKey = واحد پایهٔ کالا) — همان کش عمومی UnitsBoot */
+  const unitsQ = useQuery({
+    queryKey: ["units", "all"],
+    queryFn: () => unitsApi.list(),
+    staleTime: 24 * 3600_000,
+  });
+  const packUnits = useMemo(() => {
+    if (!good?.unit || !unitsQ.data) return [];
+    return unitsQ.data
+      .filter((u) => u.baseUnitKey === good.unit && u.isActive)
+      .sort((a, b) => (b.containsQty ?? 0) - (a.containsQty ?? 0));
+  }, [good?.unit, unitsQ.data]);
+
   const goStep = (n: 1 | 2 | 3) => {
     setStep(n);
     window.scrollTo({ top: 0 });
@@ -140,6 +177,10 @@ function AddWizard() {
     setStock(null);
     setMinOrder(null);
     setNote("");
+    setPackMode("none");
+    setPackUnit(null);
+    setImages([]);
+    setImgPhase(null);
   };
 
   const pickProduct = (p: ProductRowDto) => {
@@ -153,7 +194,9 @@ function AddWizard() {
     setProduct(null);
     setIsNewProduct(true);
     setNewLabel("");
-    setNewBrandName(brandName ?? "");
+    // برند پیش‌پر فقط از مسیر «ثبت برند جدید» (چیپ گام ۲ / شیت انتخاب برند)
+    setBrand(brandName ? { id: "", name: brandName } : null);
+    setBrandNone(false);
     resetSpec();
     goStep(3);
   };
@@ -192,6 +235,48 @@ function AddWizard() {
   const unit = good?.unit ? unitLabel(good.unit, locale) : "";
   const moneyLabel = currencyLabel(cur);
 
+  /* ── عکس‌ها: افزودن/حذف محلی — آپلود واقعی بعد از ذخیرهٔ ردیف (§ files/upload
+   *    مدل Listing + modelId = ردیف تازه؛ مدل‌و-کیسِ همان صفحهٔ ویرایش ۱۴) ── */
+  const addImages = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const room = 5 - images.length;
+    if (room <= 0) {
+      show({ text: "حداکثر ۵ عکس — اول یکی را حذف کن", kind: "error" });
+      return;
+    }
+    const next = Array.from(files)
+      .slice(0, room)
+      .map((file) => ({ file, url: URL.createObjectURL(file) }));
+    if (files.length > room) {
+      show({ text: `فقط ${num(room, "fa")} عکس اضافه شد — سقف ۵ عکس`, kind: "info" });
+    }
+    setImages([...images, ...next]);
+    if (imgInputRef.current) imgInputRef.current.value = "";
+  };
+
+  const removeImage = (idx: number) => {
+    setImages((prev) => {
+      URL.revokeObjectURL(prev[idx].url);
+      return prev.filter((_, i) => i !== idx);
+    });
+  };
+
+  /* ── چیپ بسته‌بندی (پروتوتایپ ۱۳: pack-chips + «سایر») ── */
+  const pickPackMode = (mode: "none" | "unit" | "custom", u?: UnitDto) => {
+    setPackMode(mode);
+    setPackUnit(u ?? null);
+    if (mode === "none") {
+      setTitle("");
+      setBaseQty(null);
+    } else if (mode === "unit" && u) {
+      setTitle(u.nameFa);
+      setBaseQty(u.containsQty ?? null);
+    } else if (mode === "custom") {
+      setTitle("");
+      setBaseQty(null);
+    }
+  };
+
   const save = async () => {
     if (!good) return;
     if (isNewProduct && newLabel.trim().length < 2) {
@@ -202,9 +287,25 @@ function AddWizard() {
       show({ text: "قیمت هر بسته را وارد کن", kind: "error" });
       return;
     }
+    // «سایر» = بسته‌بندی شخصی — نام و تعداد هر دو لازم‌اند (پروتوتایپ: toast تعداد)
+    if (packMode === "custom") {
+      if (title.trim().length < 2) {
+        show({ text: "نام بسته‌بندی را بنویس — یا «تک‌فروشی» را انتخاب کن", kind: "error" });
+        return;
+      }
+      if (!baseQty || baseQty < 1) {
+        show({ text: "تعداد در بسته را وارد کن", kind: "error" });
+        return;
+      }
+    }
+    // واحد متغیر (مثل جامبو بگ): تعداد باید خودش بیاید
+    if (packMode === "unit" && packUnit && packUnit.containsQty == null && (!baseQty || baseQty < 1)) {
+      show({ text: `تعداد ${unit || "واحد"} در هر ${packUnit.nameFa} را وارد کن`, kind: "error" });
+      return;
+    }
     setBusy(true);
     try {
-      await listingsApi.saveListing({
+      const saved = await listingsApi.saveListing({
         businessId: bizId,
         goodId: good.id,
         mode: "SELL",
@@ -212,10 +313,13 @@ function AddWizard() {
         ...(isNewProduct
           ? {
               productLabel: newLabel.trim(),
-              brandName: newBrandName.trim() || undefined,
+              // برند: نامِ برگزیده از فهرست (سرور با نام نرمال‌شده همان برند را
+              // پیدا می‌کند) یا نام تازه که موقع ذخیره ساخته می‌شود
+              brandName: brand?.name.trim() || undefined,
             }
           : {}),
-        title: title.trim() || null,
+        // بسته‌بندی: چیپ واحد/سایر → نام بسته؛ تک‌فروشی → null (قیمت به‌ازای واحد پایه)
+        title: packMode === "none" ? null : title.trim() || null,
         note: note.trim() || null,
         baseQty: baseQty ?? undefined,
         sell: {
@@ -224,10 +328,41 @@ function AddWizard() {
           minOrder: minOrder ?? 0,
         },
       });
+
+      // عکس‌های محصول — بعد از ذخیرهٔ ردیف، با modelId تازه (پروتوتایپ ۱۳:
+      // «تا ۵ عکس»؛ درصد زنده روی دکمه). خطای عکس ردیف را خراب نمی‌کند.
+      let imgErr = 0;
+      for (let i = 0; i < images.length; i++) {
+        const im = images[i];
+        try {
+          await filesApi.upload({
+            file: im.file,
+            model: "Listing",
+            modelId: saved.id,
+            key: "gallery",
+            replace: false,
+            onProgress: (pct, phase) =>
+              setImgPhase({
+                pct,
+                label: `عکس ${num(i + 1, "fa")} از ${num(images.length, "fa")} — ${
+                  phase === "sending" ? "در حال ارسال" : "در حال پردازش"
+                }`,
+              }),
+          });
+        } catch {
+          imgErr++;
+        }
+      }
+      setImgPhase(null);
+      images.forEach((im) => URL.revokeObjectURL(im.url));
+
       void qc.invalidateQueries({ queryKey: ["listings"] });
       show({
-        text: `«${title.trim() || newLabel.trim() || good.nameFa}» به کاتالوگ اضافه شد`,
-        kind: "success",
+        text:
+          imgErr > 0
+            ? `«${title.trim() || newLabel.trim() || good.nameFa}» ذخیره شد — اما ${num(imgErr, "fa")} عکس آپلود نشد (از ویرایش محصول دوباره تلاش کن)`
+            : `«${title.trim() || newLabel.trim() || good.nameFa}» به کاتالوگ اضافه شد`,
+        kind: imgErr > 0 ? "info" : "success",
       });
       router.push("/catalog");
     } catch (e) {
@@ -434,64 +569,176 @@ function AddWizard() {
               img={product?.imageUrl ?? undefined}
             />
 
-            {/* فرم محصول جدید — فقط وقتی از مسیر «خودتان ثبتش کنید» آمده */}
+            {/* فرم محصول جدید — فقط وقتی از مسیر «خودتان ثبتش کنید» آمده.
+                ترتیب دقیقاً پروتوتایپ ۱۳: عنوان → عکس → برند (بدون قاب — فیلدهای ساده) */}
             {isNewProduct && (
-              <div className="flex flex-col gap-5 rounded-2xl border border-line bg-surface-2/50 p-4 lg:p-5">
-                <Field label="عنوان محصول" hint="همین را خریداران می‌بینند — مثلاً: پفک اشی مشی ۱۰۰ گرمی">
-                  {(id) => (
-                    <Input
-                      id={id}
-                      value={newLabel}
-                      onChange={(e) => setNewLabel(e.target.value)}
-                      placeholder={`مثلاً ${good.nameFa} …`}
-                      maxLength={90}
-                    />
-                  )}
-                </Field>
-                <Field label="برند" hint="اگر محصولت برند ندارد، خالی بگذار">
-                  {(id) => (
-                    <Input
-                      id={id}
-                      value={newBrandName}
-                      onChange={(e) => setNewBrandName(e.target.value)}
-                      placeholder="مثلاً: اشی مشی"
-                      maxLength={60}
-                    />
-                  )}
-                </Field>
-              </div>
+              <Field label="عنوان محصول" hint="همین را خریداران می‌بینند — مثلاً: پفک اشی مشی ۱۰۰ گرمی">
+                {(id) => (
+                  <Input
+                    id={id}
+                    value={newLabel}
+                    onChange={(e) => setNewLabel(e.target.value)}
+                    placeholder={`مثلاً ${good.nameFa} …`}
+                    maxLength={90}
+                  />
+                )}
+              </Field>
             )}
 
-            {/* بسته‌بندی فروش عمده (FD-15: نام + تعداد کنار هم) */}
-            <Field label="بسته‌بندی فروش عمده" hint="خالی بگذاری یعنی تک‌فروشی — مثلاً: کارتن ۶۰ عددی">
+            {/* عکس‌های محصول — پروتوتایپ ۱۳ (img-slot-btn ×۳ + «تا ۵ عکس»)؛
+                بهبود بر نقص پروتوتایپ: در مسیر محصول مرجع هم هست، چون گالری
+                ردیف مستقل از عکس مرجع است — آپلود بعد از ذخیره با درصد زنده */}
+            <Field label="عکس محصول" hint="تا ۵ عکس — عکس واضح و از زاویهٔ روبه‌رو، شانس دیده‌شدن محصول را بیشتر می‌کند">
               {(id) => (
-                <div className="flex gap-2.5">
-                  <div className="min-w-0 flex-[1.4]">
-                    <Input
-                      id={id}
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="مثلاً: کارتن ۶۰ عددی"
-                      maxLength={80}
-                    />
-                  </div>
-                  <div className="w-[150px] shrink-0">
-                    <NumberInput
-                      value={baseQty}
-                      onChange={setPackQty}
-                      min={1}
-                      placeholder={num(1, "fa")}
-                      suffix={unit || undefined}
-                      aria-label="تعداد در بسته"
-                    />
-                  </div>
+                <div id={id} className="grid grid-cols-3 gap-2">
+                  {images.map((im, i) => (
+                    <div key={im.url} className="relative aspect-square overflow-hidden rounded-xl border border-line">
+                      {/* eslint-disable-next-line next/next/no-img-element -- پیش‌نمایش محلی objectURL */}
+                      <img src={im.url} alt="" className="size-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        aria-label="حذف عکس"
+                        className="absolute end-1 top-1 grid size-6 place-items-center rounded-full bg-text/70 text-white transition-transform active:scale-90"
+                      >
+                        <Icon name="x" size={12} />
+                      </button>
+                    </div>
+                  ))}
+                  {images.length < 5 && (
+                    <button
+                      type="button"
+                      onClick={() => imgInputRef.current?.click()}
+                      aria-label="افزودن عکس"
+                      className="grid aspect-square place-items-center rounded-xl border-2 border-dashed border-line-2 bg-surface text-text-3 transition-colors hover:border-arm hover:bg-primary-soft/30 hover:text-arm"
+                    >
+                      <Icon name="image" size={22} />
+                    </button>
+                  )}
+                </div>
+              )}
+            </Field>
+            <input
+              ref={imgInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              onChange={(e) => addImages(e.target.files)}
+            />
+
+            {/* برند — وفاداری به پروتوتایپ ۱۳ (بعد از عکس): دکمهٔ انتخاب → شیت
+                جستجوی برند (sheet-pick-brand: «هزاران برند — با جستجو پیدا کن یا برند جدید بساز») */}
+            {isNewProduct && (
+              <Field label="برند" hint="اگر محصولت برند ندارد، در شیت «بدون برند» را انتخاب کن">
+                {(id) => (
+                  <button
+                    id={id}
+                    type="button"
+                    onClick={() => setBrandPickerOpen(true)}
+                    className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-line bg-surface px-3.5 text-start text-[15px] transition-colors hover:border-line-2 focus-visible:border-arm focus-visible:ring-2 focus-visible:ring-arm/20"
+                  >
+                    <span className={cn("min-w-0 truncate", brand || brandNone ? "text-text" : "text-text-4")}>
+                      {brandNone ? "بدون برند" : brand ? brand.name : "انتخاب برند"}
+                    </span>
+                    <Icon name="chev" size={16} className="shrink-0 text-text-3 rtl:-scale-x-100" />
+                  </button>
+                )}
+              </Field>
+            )}
+
+            {/* ═══ بسته‌بندی فروش عمده — چیپ واحد (پروتوتایپ ۱۳: pack-chips + «سایر»؛
+                منبع داده = جدول واقعی Unit: بسته‌هایی با واحد پایهٔ همین کالا) ═══ */}
+            <Field
+              label="بسته‌بندی فروش عمده"
+              hint={
+                packMode === "none"
+                  ? `بدون بسته — قیمت به‌ازای هر ${unit || "واحد"}`
+                  : packMode === "unit" && packUnit?.qtyIsFixed && packUnit.containsQty
+                    ? `هر ${packUnit.nameFa} شامل ${num(packUnit.containsQty, "fa")} ${unit} است — قیمت هر ${unit || "واحد"} خودکار حساب می‌شود`
+                    : undefined
+              }
+            >
+              {(id) => (
+                <div id={id} className="flex flex-wrap gap-1.5">
+                  <PackChip active={packMode === "none"} onClick={() => pickPackMode("none")}>
+                    تک‌فروشی
+                  </PackChip>
+                  {packUnits.map((u) => (
+                    <PackChip
+                      key={u.key}
+                      active={packMode === "unit" && packUnit?.key === u.key}
+                      onClick={() => pickPackMode("unit", u)}
+                    >
+                      {u.nameFa}
+                    </PackChip>
+                  ))}
+                  <PackChip active={packMode === "custom"} onClick={() => pickPackMode("custom")}>
+                    سایر
+                  </PackChip>
                 </div>
               )}
             </Field>
 
-            {/* قیمت بسته + قیمت واحد (§۱.۷ — هم‌گام) */}
+            {/* «سایر» — نام بسته‌بندی و تعداد کنار هم (FD-15: حکم مالک) */}
+            {packMode === "custom" && (
+              <div className="flex gap-2.5">
+                <div className="min-w-0 flex-[1.4]">
+                  <Field label="نام بسته‌بندی" required>
+                    {(id) => (
+                      <Input
+                        id={id}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="مثلاً: کارتن ۶۰ عددی"
+                        maxLength={80}
+                      />
+                    )}
+                  </Field>
+                </div>
+                <div className="w-[150px] shrink-0">
+                  <Field label="تعداد در بسته" required>
+                    {(id) => (
+                      <NumberInput
+                        id={id}
+                        value={baseQty}
+                        onChange={setPackQty}
+                        min={1}
+                        placeholder={num(1, "fa")}
+                        suffix={unit || undefined}
+                      />
+                    )}
+                  </Field>
+                </div>
+              </div>
+            )}
+
+            {/* واحد متغیر (مثل جامبو بگ) — تعداد را خودش تعیین می‌کند */}
+            {packMode === "unit" && packUnit && packUnit.containsQty == null && (
+              <Field label={`تعداد ${unit || "واحد"} در هر ${packUnit.nameFa}`} required>
+                {(id) => (
+                  <NumberInput
+                    id={id}
+                    value={baseQty}
+                    onChange={setPackQty}
+                    min={1}
+                    suffix={unit || undefined}
+                    placeholder={num(1, "fa")}
+                  />
+                )}
+              </Field>
+            )}
+
+            {/* قیمت بسته + قیمت واحد (§۱.۷ — هم‌گام؛ لیبل = نام بستهٔ برگزیده —
+                پروتوتایپ ۱۳: «قیمت هر بسته» / «قیمت هر {unit}») */}
             <Field
-              label={`قیمت هر بسته${baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""} — ${moneyLabel}`}
+              label={`قیمت هر ${
+                packMode === "none"
+                  ? `${unit || "واحد"}`
+                  : packMode === "unit" && packUnit
+                    ? packUnit.nameFa
+                    : title.trim() || "بسته"
+              }${baseQty && baseQty > 1 ? ` (${num(baseQty, "fa")} ${unit})` : ""} — ${moneyLabel}`}
               required
             >
               {(id) => <NumberInput id={id} value={price} onChange={setPackPrice} min={0} suffix={moneyLabel} autoFocus />}
@@ -536,7 +783,16 @@ function AddWizard() {
             </p>
 
             <Button variant="arm" size="xl" block loading={busy} onClick={() => void save()}>
-              <Icon name="check" size={17} /> افزودن به کاتالوگ
+              {imgPhase ? (
+                <>
+                  <b className="text-[15px] font-black">{num(imgPhase.pct, "fa")}٪</b>
+                  <span className="text-[12px] text-arm-strong">{imgPhase.label}</span>
+                </>
+              ) : (
+                <>
+                  <Icon name="check" size={17} /> {images.length > 0 ? `افزودن به کاتالوگ + ${num(images.length, "fa")} عکس` : "افزودن به کاتالوگ"}
+                </>
+              )}
             </Button>
           </div>
         )}
@@ -552,15 +808,41 @@ function AddWizard() {
           pickGood(g);
         }}
       />
+      {/* شیت انتخاب برند (وفاداری به پروتوتایپ ۱۳: sheet-pick-brand) — جستجو +
+          «بدون برند / فله» + فهرست + «ثبت برند جدید» آخر فهرست */}
+      <BrandPickerSheet
+        open={brandPickerOpen}
+        onClose={() => setBrandPickerOpen(false)}
+        picked={brand}
+        brandNone={brandNone}
+        onPick={(b) => {
+          setBrand(b);
+          setBrandNone(b === null);
+          setBrandPickerOpen(false);
+        }}
+        onNewBrand={(name) => {
+          setBrandPickerOpen(false);
+          setNewBrandDefault(name);
+          setNewBrandOpen(true);
+        }}
+      />
       {/* ثبت برند جدید (دستور مالک فیکس‌بچ M3): نام برند → مسیر ثبت محصولِ
-          همان برند — برند هنگام ذخیرهٔ محصول در سرور ساخته می‌شود */}
+          همان برند — برند هنگام ذخیرهٔ محصول در سرور ساخته می‌شود.
+          دو مسیر: از گام ۲ (هنوز محصولی انتخاب نشده) → startNewProduct؛
+          از شیت انتخاب برند در گام ۳ → فقط جایگزینی برند فرم */}
       <NewBrandSheet
         open={newBrandOpen}
         onClose={() => setNewBrandOpen(false)}
         goodName={good?.nameFa ?? ""}
-        onConfirm={(brand) => {
+        defaultName={newBrandDefault}
+        onConfirm={(name) => {
           setNewBrandOpen(false);
-          startNewProduct(brand);
+          if (isNewProduct) {
+            setBrand({ id: "", name });
+            setBrandNone(false);
+          } else {
+            startNewProduct(name);
+          }
         }}
       />
       <ScanSheet
@@ -740,22 +1022,53 @@ function BrandChip({
   );
 }
 
+/** چیپ بسته‌بندی/واحد (پروتوتایپ ۱۳: add-pack-chips — chip active) — همان
+ *  قالب چیپ برند؛ جدا تا مفهومش (واحد فروش) از فیلتر برند گام ۲ جدا بماند */
+function PackChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "inline-flex h-8 items-center rounded-full border px-3.5 text-[12px] font-bold transition-colors active:scale-[.97]",
+        active
+          ? "border-primary bg-primary-soft text-primary-strong"
+          : "border-line bg-surface text-text-2 hover:border-line-2 hover:text-text"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════
    شیت ۱ — ثبت کالای جدید (اگر جستجو چیزی نیاورد)
    ═══════════════════════════════════════════════════════════════ */
 /** شیت ثبت برند جدید (دستور مالک فیکس‌بچ M3): «اگر لیست برند داریم کاربر
  *  باید بتونه برند جدید ثبت کنه». برند در این سیستم همیشه روی محصول
  *  می‌نشیند — پس نام برند را می‌گیریم و مستقیم به فرم محصولِ تازه (گام ۳)
- *  با برندِ پیش‌پر می‌رویم؛ سرور موقع ذخیره برند را می‌سازد. */
+ *  با برندِ پیش‌پر می‌رویم؛ سرور موقع ذخیره برند را می‌سازد.
+ *  defaultName — از جستجوی شیت انتخاب برند (پروتوتایپ ۱۳: addOpenNewBrand(prefill)) */
 function NewBrandSheet({
   open,
   onClose,
   goodName,
+  defaultName,
   onConfirm,
 }: {
   open: boolean;
   onClose: () => void;
   goodName: string;
+  defaultName?: string;
   onConfirm: (brand: string) => void;
 }) {
   const [name, setName] = useState("");
@@ -763,7 +1076,7 @@ function NewBrandSheet({
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
     setPrevOpen(open);
-    if (open) setName("");
+    if (open) setName(defaultName ?? "");
   }
 
   const ok = name.trim().length >= 2;
@@ -794,6 +1107,149 @@ function NewBrandSheet({
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   شیت انتخاب برند — وفاداری کامل به sheet-pick-brand پروتوتایپ ۱۳:
+   «هزاران برند — با جستجو پیدا کن یا برند جدید بساز»
+   · «بدون برند / فله» همیشه اول (پروتوتایپ: data-pick-brand="")
+   · فهرست از /goods/getBrands (limit ۶۰، جستجوی سروری با نرمال‌سازی فارسی)
+   · «ثبت برند جدید» آخر فهرست — همان CTA برند‌رنگِ حکم مالک
+   ═══════════════════════════════════════════════════════════════ */
+function BrandPickerSheet({
+  open,
+  onClose,
+  picked,
+  brandNone,
+  onPick,
+  onNewBrand,
+}: {
+  open: boolean;
+  onClose: () => void;
+  /** برندِ فعلی فرم — id="" یعنی برند تازه (نام تایپ‌شده) */
+  picked: BrandDto | null;
+  /** «بدون برند» صریحاً انتخاب شده (بهبود بر پروتوتایپ: تفکیک از انتخاب‌نشده) */
+  brandNone: boolean;
+  onPick: (b: BrandDto | null) => void;
+  onNewBrand: (name: string) => void;
+}) {
+  const [qInput, setQInput] = useState("");
+  const [q, setQ] = useState("");
+  useEffect(() => {
+    const id = setTimeout(() => setQ(qInput.trim()), 250);
+    return () => clearTimeout(id);
+  }, [qInput]);
+
+  // باز شدن دوباره → جستجوی تازه
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setQInput("");
+      setQ("");
+    }
+  }
+
+  const brandsQ = useQuery({
+    queryKey: ["brands", "picker", q],
+    queryFn: () => goodsApi.getBrands(q || undefined, 60),
+    enabled: open,
+    staleTime: 60_000,
+  });
+
+  return (
+    <Sheet open={open} onClose={onClose} title="انتخاب برند">
+      <p className="pb-2 text-[12.5px] leading-5 text-text-3">
+        هزاران برند — با جستجو پیدا کن یا برند جدید بساز.
+      </p>
+      <div className="flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-3.5 transition-colors focus-within:border-arm focus-within:ring-2 focus-within:ring-arm/20">
+        <Icon name="search" size={17} className="shrink-0 text-text-3" />
+        <input
+          value={qInput}
+          onChange={(e) => setQInput(e.target.value)}
+          placeholder="جستجوی برند…"
+          autoComplete="off"
+          aria-label="جستجوی برند"
+          className="min-w-0 flex-1 bg-transparent text-[15px] text-text placeholder:text-text-4 focus:outline-none"
+        />
+      </div>
+      <div className="mt-3 flex flex-col">
+        {/* «ثبت برند جدید» — همیشه دیدنی، درست زیر جستجو (بهبود بر نقص پروتوتایپ:
+         * در پروتوتایپ آخرِ فهرست بود و با نتایج زیاد زیر تاخورد؛ CTA برند‌رنگ —
+         * حکم مالک فیکس‌بچ M3) */}
+        <button
+          type="button"
+          onClick={() => onNewBrand(q)}
+          className="flex w-full items-center gap-3 rounded-xl border border-primary/30 bg-primary-soft/45 px-2 py-2.5 text-start transition-colors hover:border-primary/60"
+        >
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary text-white">
+            <Icon name="plus" size={20} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <b className="block truncate text-[14px] font-bold text-primary-strong">ثبت برند جدید</b>
+            <span className="block truncate text-[11.5px] text-text-3">اگر برندت در فهرست نبود</span>
+          </span>
+          <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
+        </button>
+
+        {/* «بدون برند / فله» — همیشه اول فهرست (پروتوتایپ) */}
+        <button
+          type="button"
+          onClick={() => onPick(null)}
+          className={cn(
+            "flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-start transition-colors",
+            brandNone ? "bg-primary-soft/45" : "hover:bg-surface-2"
+          )}
+        >
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-surface-2 text-text-3">
+            <Icon name="x" size={18} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <b className="block truncate text-[14px] font-bold text-text">بدون برند / فله</b>
+            <span className="block truncate text-[11.5px] text-text-3">محصول بدون برند مشخص فروخته می‌شود</span>
+          </span>
+          {brandNone && <Icon name="check" size={15} className="shrink-0 text-primary-strong" />}
+        </button>
+
+        {brandsQ.isLoading && (
+          <div className="grid place-items-center py-8">
+            <Spinner />
+          </div>
+        )}
+
+        {/* جستجو بدون نتیجه — پروتوتایپ: ««q» پیدا نشد — این برند در فهرست نیست» */}
+        {brandsQ.data && q && brandsQ.data.length === 0 && (
+          <div className="rounded-2xl border border-line bg-surface px-5 py-6 text-center">
+            <b className="text-[13.5px] text-text">«{q}» پیدا نشد</b>
+            <p className="mt-1 text-[12px] leading-5 text-text-3">این برند در فهرست نیست — می‌توانی همین حالا ثبتش کنی.</p>
+          </div>
+        )}
+
+        {brandsQ.data?.map((b) => {
+          const active = picked?.id === b.id;
+          return (
+            <button
+              key={b.id}
+              type="button"
+              onClick={() => onPick(b)}
+              className={cn(
+                "flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-start transition-colors",
+                active ? "bg-primary-soft/45" : "hover:bg-surface-2"
+              )}
+            >
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-surface-2 text-text-3">
+                <Icon name="tag" size={18} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <b className="block truncate text-[14px] font-bold text-text">{b.name}</b>
+              </span>
+              {active && <Icon name="check" size={15} className="shrink-0 text-primary-strong" />}
+            </button>
+          );
+        })}
+      </div>
+    </Sheet>
+  );
+}
+
 function NewGoodSheet({
   open,
   onClose,
@@ -808,6 +1264,9 @@ function NewGoodSheet({
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  /* واحد پایه — حکم مالک (فرم ثبت کالا کامل شود): «امکان انتخاب یا ایجاد
+   * واحد» از همان لحظهٔ ثبت نوع کالا؛ بک‌اند بدون دستهٔ صریح همین را می‌نشاند */
+  const [unit, setUnit] = useState("PIECE");
 
   // باز شدن دوباره → نام تازه (پیش‌پر با جستجوی کاربر)
   const [prevOpen, setPrevOpen] = useState(open);
@@ -816,8 +1275,21 @@ function NewGoodSheet({
     if (open) {
       setName(defaultName);
       setErr(null);
+      setUnit("PIECE");
     }
   }
+
+  const unitsQ = useQuery({
+    queryKey: ["units", "all"],
+    queryFn: () => unitsApi.list(),
+    staleTime: 24 * 3600_000,
+  });
+  // واحد پایهٔ شایع — به ترتیب کاربردی (همان کش عمومی UnitsBoot)
+  const baseUnits = useMemo(() => {
+    const ORDER = ["PIECE", "KILOGRAM", "GRAM", "TON", "LITER", "MILLILITER", "METER", "SQUARE_METER", "CUBIC_METER", "SERVICE", "SET"];
+    if (!unitsQ.data) return ORDER.map((k) => ({ key: k, nameFa: null as string | null }));
+    return ORDER.map((k) => unitsQ.data.find((u) => u.key === k) ?? { key: k, nameFa: null as string | null });
+  }, [unitsQ.data]);
 
   const save = async () => {
     const v = name.trim();
@@ -833,7 +1305,7 @@ function NewGoodSheet({
     setBusy(true);
     setErr(null);
     try {
-      const g = await goodsApi.createGood({ name: v });
+      const g = await goodsApi.createGood({ name: v, unit });
       onCreated(g);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "ثبت نشد — دوباره تلاش کن");
@@ -861,6 +1333,28 @@ function NewGoodSheet({
               maxLength={15}
               autoFocus
             />
+          )}
+        </Field>
+        <Field label="واحد شمارش" hint="مبنای قیمت‌گذاری و بسته‌بندی — بعداً از ویرایش هم عوض می‌شود">
+          {(id) => (
+            <div id={id} className="flex flex-wrap gap-1.5">
+              {baseUnits.map((u) => (
+                <button
+                  key={u.key}
+                  type="button"
+                  aria-pressed={unit === u.key}
+                  onClick={() => setUnit(u.key)}
+                  className={cn(
+                    "inline-flex h-8 items-center rounded-full border px-3 text-[11.5px] font-bold transition-colors",
+                    unit === u.key
+                      ? "border-primary bg-primary-soft text-primary-strong"
+                      : "border-line bg-surface text-text-2 hover:border-line-2"
+                  )}
+                >
+                  {u.nameFa ?? u.key}
+                </button>
+              ))}
+            </div>
           )}
         </Field>
         {err && <p className="text-[12px] font-bold leading-5 text-red">{err}</p>}
