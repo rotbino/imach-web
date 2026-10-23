@@ -147,6 +147,10 @@ export interface BusinessSummaryDto {
   isVerified: boolean;
   /** فاز ۱۳ — معرفی کوتاه خود نوشته (زیر نام در ویترین عمومی) */
   bio?: string | null;
+  /** M5 (FD-37) — شمارهٔ مالیاتی فروشنده؛ روی فاکتور چاپ می‌شود */
+  invoiceTaxId?: string | null;
+  /** M5 (FD-37) — یادداشت ثابت فاکتور؛ پانوشت چاپی */
+  invoiceNote?: string | null;
   /** فاز ۳ — دسته‌های شخصی ویترین (چیپ‌های بالای کاتالوگ) */
   customCategories?: CatalogCategoryDto[] | null;
   /** M2 (G7) — کدام اصناف قیمت کاتالوگ را می‌بینند؛ null/[] = همه */
@@ -692,6 +696,17 @@ export interface CustomerRowDto {
   source?: "ORGANIC" | "SHARED" | "PROMO";
   /** فاز ۵ مهاجرت — نوع مشتری از دید فروشنده: PASSING | PARTNER | CONTRACT */
   custType?: "PASSING" | "PARTNER" | "CONTRACT";
+  /** M6 — صنف مشتری (فیلتر «صنف» دفتر مشتری ۰۸) */
+  trade?: string | null;
+  /** M6 — یادداشت شخصی فروشنده روی این مشتری */
+  note?: string | null;
+  /** M6 (FD-44/45) — مهر تایید مشتری جدید؛ null = «جدید» بالای دفتر */
+  ackAt?: string | null;
+  /** M6 — مشتری تاییدنشده (برچسب «جدید» + دکمه‌های تایید/حذف) */
+  isNew?: boolean;
+  /** M6 — شمار سفارش/استعلام همین مشتری نزد من (سبک و تجمعی) */
+  orderCount?: number;
+  inquiryCount?: number;
   /** آخرین درخواست خرید فعال (لیستینگ BUY/BOTH با حجم) — null یعنی درخواست فعالی ندارد */
   latestRequest: {
     volume: number;
@@ -699,6 +714,30 @@ export interface CustomerRowDto {
     updatedAt: string;
     good: { nameFa: string; nameEn: string | null; unit: string };
   } | null;
+}
+
+/** M6 — نمای جزئیات مشتری (۰۸ب): شناسنامه + ۲۰ سفارش/استعلام او */
+export interface CustomerViewDto {
+  customer: CustomerRowDto & {
+    ownerName: string | null;
+    source: "ORGANIC" | "SHARED" | "PROMO";
+    custType: "PASSING" | "PARTNER" | "CONTRACT";
+  };
+  orders: {
+    id: string;
+    docNo: number | null;
+    status: string;
+    createdAt: string;
+    itemCount: number;
+    totalMinor: number;
+  }[];
+  inquiries: {
+    id: string;
+    status: string;
+    createdAt: string;
+    itemCount: number;
+    firstName: string | null;
+  }[];
 }
 
 // ═══ فاز ۶ — تابلوی تأمین + فرم درخواست قیمت (طرح ۰۹/۱۲) ═══
@@ -1301,6 +1340,10 @@ export const businessesApi = {
     bio?: string | null;
     /** فیکس‌بچ M3 — تیک عدم نمایش دسته‌بندی چیپ‌های کاتالوک خود */
     catalogCategoriesHidden?: boolean;
+    /** M5 (FD-37) — شمارهٔ مالیاتی فروشنده روی فاکتور چاپ می‌شود */
+    invoiceTaxId?: string | null;
+    /** M5 (FD-37) — یادداشت ثابت فاکتور (پانوشت چاپی) */
+    invoiceNote?: string | null;
   }) => api<BusinessSummaryDto>(`/businesses/editBusiness/${id}`, { method: "PATCH", body }),
   getBusiness: (slug: string) => api<BusinessProfileDto>(`/businesses/getBusiness/${slug}`, { auth: false }),
   /** فاز ۳ (طرح ۰۱) — دسته‌های شخصی کاتالوگ: کل لیست یکجا replace می‌شود
@@ -1335,6 +1378,11 @@ export const businessesApi = {
     api<EnabledArmsDto>(`/businesses/setArms/${id}`, { method: "PUT", body }),
   /** گیت ویروسی تماس: شماره فقط به کاربر واردشده داده می‌شود */
   getContact: (slug: string) => api<{ phone: string | null; name: string }>(`/businesses/getContact/${slug}`),
+  /** M6 — نمای عمومی لیست خرید (۳۲): دو لیست + آمار + شرایط + زمینهٔ بیننده */
+  getBuyList: (slug: string) => api<PublicBuyListDto>(`/businesses/getBuyList/${encodeURIComponent(slug)}`),
+  /** M6 — زمینهٔ بینندهٔ کاتالوک عمومی (۳۱): گیت قیمت + «در لیست خرید شما» */
+  getBusinessContext: (slug: string) =>
+    api<BusinessContextDto>(`/businesses/getBusinessContext/${encodeURIComponent(slug)}`),
   /** کپی از هم‌صنف‌ها — گام ۱: کاتالوگ‌های زنده بر اساس صنف/نام */
   searchCatalogs: (params: { q?: string; cursor?: string; limit?: number; mineId?: string }) =>
     api<PageDto<CatalogSummaryDto>>("/businesses/searchCatalogs", { params }),
@@ -1688,6 +1736,21 @@ export const marketApi = {
       method: "POST",
       body: { businessId, followerBusinessId },
     }),
+  /** M6 (FD-44/45) — تایید مشتری جدید (مهر ackAt؛ ردیف از «جدید» می‌رود) */
+  ackFollower: (businessId: string, buyerId: string) =>
+    api<{ ok: boolean }>("/market/ackFollower", {
+      method: "POST",
+      body: { businessId, buyerId },
+    }),
+  /** M6 (۰۸ب) — یادداشت شخصی فروشنده روی مشتری (≤۵۰۰؛ خالی = پاک‌کردن) */
+  setFollowerNote: (businessId: string, buyerId: string, note: string) =>
+    api<{ ok: boolean; note: string | null }>("/market/setFollowerNote", {
+      method: "POST",
+      body: { businessId, buyerId, note },
+    }),
+  /** M6 (۰۸ب) — نمای جزئیات مشتری: شناسنامه + سفارش‌ها + استعلام‌های او */
+  getCustomer: (businessId: string, buyerId: string) =>
+    api<CustomerViewDto>("/market/getCustomer", { params: { businessId, buyerId } }),
   /** وضعیت گیت رشد برای بازار خریدارها (بازوی فروش) */
   getMarketState: (businessId: string) =>
     api<MarketStateDto>("/market/getMarketState", { params: { businessId } }),
@@ -1919,6 +1982,106 @@ export interface ContactRowDto {
   lastInvitedAt: string | null;
 }
 
+// ═══ M6 — شبکهٔ خصوصی و دید عمومی (۳۱/۳۲ + supply-proposals) ═══
+
+/** کالای موردنیاز خریدار در نمای عمومی لیست خرید */
+export interface BuyListNeededDto {
+  goodId: string;
+  name: string;
+  nameEn: string | null;
+  unit: string;
+  volume: number | null;
+  frequency: string | null;
+  pack: string | null;
+}
+
+/** گروه استعلامِ باز در نمای عمومی (نوار افقی «در حال استعلام») */
+export interface BuyListInquiringDto {
+  groupId: string;
+  title: string;
+  itemNames: string[];
+  daysLeft: number | null;
+  offerCount: number;
+}
+
+/** تطبیق کاتالوک خودم با کالاهای موردنیاز خریدار (goodId — سرورمبنا) */
+export interface BuyListMatchDto {
+  goodId: string;
+  listingId: string;
+  pack: string | null;
+  priceMinor: number | null;
+  minOrder: number | null;
+  currency: string | null;
+  exact: boolean;
+}
+
+/** نمای عمومی لیست خرید (GET /businesses/getBuyList/:slug) */
+export interface PublicBuyListDto {
+  business: {
+    id: string;
+    slug: string;
+    name: string;
+    ownerName: string | null;
+    trade: string | null;
+    city: string;
+    isVerified: boolean;
+  };
+  supplyTerms: string | null;
+  stats: { goods: number; suppliers: number; views: number };
+  inquiring: BuyListInquiringDto[];
+  needed: BuyListNeededDto[];
+  viewer: {
+    kind: "owner" | "member";
+    isOwner: boolean;
+    canPropose: boolean;
+    matched: BuyListMatchDto[];
+    myOpenProposal: { id: string; createdAt: string; itemCount: number } | null;
+    inMyBuyList: string[];
+  } | null;
+}
+
+/** زمینهٔ بینندهٔ کاتالوک عمومی (GET /businesses/getBusinessContext/:slug) */
+export interface BusinessContextDto {
+  kind: "guest" | "member" | "customer" | "owner";
+  isCustomer: boolean;
+  custType: "PASSING" | "PARTNER" | "CONTRACT" | null;
+  canSeePrices: boolean;
+  priceGated: boolean;
+  prices: { listingId: string; priceMinor: number | null; currency: string | null; pricePerBaseMinor: number | null }[];
+  inYourBuyList: { listingId: string; goodId: string }[];
+}
+
+/** ردیف پیشنهاد تامینِ دریافتی (بالای لیست خرید ۲۰) */
+export interface SupplyProposalDto {
+  id: string;
+  note: string | null;
+  items: { goodId: string; name: string; pack: string | null; listingId: string | null; priceMinor: number; minOrder: number; unit: string }[];
+  itemCount: number;
+  createdAt: string;
+  supplier: { id: string; slug: string; name: string; city: string; trade: string | null; isVerified: boolean };
+}
+
+export const supplyProposalsApi = {
+  /** پیشنهادهای بازِ دریافتی — کارت‌های بالای لیست خرید (۲۰) */
+  getMine: (businessId: string) =>
+    api<{ rows: SupplyProposalDto[] }>("/supply-proposals", { params: { businessId } }),
+  /** ارسال پیشنهاد تامین از نمای عمومی لیست خرید (۳۲) — items خالی = درخواست لخت */
+  send: (body: {
+    businessId: string;
+    buyerSlug: string;
+    items?: { goodId: string; priceMinor: number; minOrder: number }[];
+    note?: string;
+  }) =>
+    api<{ id: string; createdAt: string; itemCount: number; catalogAdded: number }>("/supply-proposals", {
+      method: "POST",
+      body,
+    }),
+  /** پذیرش = دو رابطهٔ Follow + اعلان به فروشنده */
+  accept: (id: string) => api<{ ok: boolean; acceptedAt: string }>(`/supply-proposals/${id}/accept`, { method: "POST", body: {} }),
+  /** حذف بی‌صدا از بالای لیست */
+  dismiss: (id: string) => api<{ ok: boolean }>(`/supply-proposals/${id}/dismiss`, { method: "POST", body: {} }),
+};
+
 export const contactsApi = {
   /** همگام‌سازی دسته‌ای از گوشی/ورود دستی — تا ۵۰۰ ردیف در هر فراخوان */
   sync: (contacts: { name: string; phone: string }[]) =>
@@ -1938,9 +2101,11 @@ export type NotificationType =
   | "QUOTE" // استعلام موتور تطبیق به من رسید
   | "CONTACT_JOINED" // شماره‌ای از دفترچه‌ی من عضو شد
   | "PRICE_CHANGE" // فاز ۵ — کالای دنبال‌شده قیمتش عوض شد
-  | "BUYER_NEED"; // طرح ۸ — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد
+  | "BUYER_NEED" // طرح ۸ — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد
+  | "ORDER"; // M5 — رخدادهای چرخهٔ سفارش (ثبت/پذیرش/ارسال/تحویل/لغو/رد)
 
-/** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد */
+/** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد.
+ *  M5: رخدادهای ORDER تیتر و مقصد خودشان را دارند (رخداد-محور). */
 export interface NotificationDto {
   id: string;
   type: NotificationType;
@@ -1948,6 +2113,10 @@ export interface NotificationDto {
   actorName: string | null;
   actorSlug: string | null;
   good: string | null;
+  /** M5 — تیتر رویداد («سفارش پذیرفته شد"); null = مشتق از type (legacy) */
+  title?: string | null;
+  /** M5 — مقصد لمس (لینک عمقی همان رخداد) */
+  url?: string | null;
   read: boolean;
   createdAt: string;
 }
@@ -2160,4 +2329,121 @@ export interface CurrencyConfigDto {
 export const settingsApi = {
   /** پیکربندی عمومی — بدون احرار؛ کش سرور ۵m + client staleTime ۵m */
   getConfig: () => api<CurrencyConfigDto>("/settings/config", { auth: false }),
+};
+
+// ─── M5 (سند ۰۸ §M5 · FD-18/22/26/37) — سفارش‌ها و اسناد ───
+
+/** قلم فریزشدهٔ سفارش — منبع حقیقتِ نمایش/چاپ (۴۰/۴۱) */
+export interface OrderItemDto {
+  listingId: string | null;
+  goodId: string;
+  name: string;
+  pack: string;
+  qty: number;
+  unitPriceMinor: number;
+}
+
+/** رخداد خط زمانی — یک روایت مشترک برای دو طرف (۱۰/۳۹) */
+export interface OrderHistoryDto {
+  st: "NEW" | "ACCEPTED" | "SENT" | "DELIVERED" | "REJECTED" | "CANCELLED";
+  at: string;
+  by: "buyer" | "seller" | "system";
+  note?: string;
+}
+
+export interface OrderBizDto {
+  id: string;
+  slug: string;
+  name: string;
+  city: string;
+  isVerified: boolean;
+  trade: string | null;
+  phone: string | null;
+  address?: string | null;
+  invoiceTaxId?: string | null;
+  invoiceNote?: string | null;
+}
+
+export interface OrderDto {
+  id: string;
+  status: "NEW" | "ACCEPTED" | "SENT" | "DELIVERED" | "REJECTED" | "CANCELLED";
+  originType: "CATALOG_BASKET" | "RFQ_OFFER";
+  originId: string | null;
+  items: OrderItemDto[];
+  totalMinor: number;
+  currency: string;
+  note: string | null;
+  sellerNote: string | null;
+  pay: { chk: number; days: number } | null;
+  dlv: { ship: boolean; by: "seller" | "customer" } | null;
+  docNo: number | null;
+  deliverDeadline: string | null;
+  daysLeft: number | null;
+  history: OrderHistoryDto[];
+  archivedAt: string | null;
+  createdAt: string;
+  buyer: OrderBizDto;
+  seller: OrderBizDto;
+}
+
+export interface OrdersListDto {
+  orders: OrderDto[];
+  /** ۰۹ — «n سفارش جدید» زیرعنوان زنده */
+  newCount?: number;
+  /** ۲۸ — «n سفارش جاری» */
+  currentCount?: number;
+}
+
+export const ordersApi = {
+  /** سبد کاتالوک (۳۱) — قیمت از آگهی زنده فریز می‌شود */
+  createFromBasket: (body: {
+    businessId: string;
+    supplierId: string;
+    items: { listingId: string; qty: number }[];
+    note?: string;
+  }) => api<OrderDto>("/orders", { method: "POST", body: { ...body, originType: "CATALOG_BASKET" } }),
+
+  /** کال‌اوت ۲۷ — سفارش با شرایط پیشنهاد پذیرفته‌شده (قیمت فریز) */
+  createFromOffer: (businessId: string, offerId: string) =>
+    api<OrderDto>("/orders", { method: "POST", body: { businessId, originType: "RFQ_OFFER", offerId } }),
+
+  /** دفتر سفارش‌ها (۰۹ فروشنده / ۲۸ خریدار) — بستنِ تنبل ۷روزه سمت سرور */
+  getOrders: (businessId: string, side: "buy" | "sell", opts?: { archived?: boolean }) =>
+    api<OrdersListDto>("/orders", {
+      params: { businessId, side, ...(opts?.archived ? { archived: "true" } : {}) },
+    }),
+
+  /** جزئیات سفارش (۱۰/۳۹) — هر دو طرف یک روایت می‌بینند */
+  getOrder: (businessId: string, id: string) =>
+    api<OrderDto>(`/orders/${id}`, { params: { businessId } }),
+
+  /** پذیرش با اصلاح اقلام (۱۰) — edits هم‌ترتیب اقلام؛ فقط فیلدهای ارسالی */
+  acceptOrder: (
+    businessId: string,
+    id: string,
+    body: { edits?: { qty?: number; unitPriceMinor?: number }[]; note?: string }
+  ) => api<{ ok: boolean; status: string; docNo: number | null; totalMinor: number }>(`/orders/${id}/accept`, {
+    method: "POST",
+    body: { businessId, ...body },
+  }),
+
+  /** رد — فقط فروشنده، فقط NEW */
+  rejectOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/reject`, { method: "POST", body: { businessId } }),
+
+  /** «ارسال شد» — مهلت ۷روزهٔ تأیید از همین لحظه شروع می‌شود */
+  sendOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/send`, { method: "POST", body: { businessId } }),
+
+  /** «تأیید تحویل» = بسته‌شدن (۳۹) */
+  deliverOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/deliver`, { method: "POST", body: { businessId } }),
+
+  /** لغو — فقط تا قبل از ارسال */
+  cancelOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/cancel`, { method: "POST", body: { businessId } }),
+
+  /** بایگانی خریدار (۲۸) — ردیف از فهرست می‌افتد، تاریخچه می‌ماند */
+  archiveOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean }>(`/orders/${id}/archive`, { method: "POST", body: { businessId } }),
 };

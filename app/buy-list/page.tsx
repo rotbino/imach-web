@@ -11,12 +11,14 @@ import { EmptyState } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { marketApi } from "@/lib/api";
+import { marketApi, supplyProposalsApi, type SupplyProposalDto } from "@/lib/api";
 import { goodName, num } from "@/lib/format";
+import { moneyPartsIn } from "@/lib/currency";
 import {
   BarcodeScanSheet,
   BuyListRow,
   ShareBuyListSheet,
+  SupplyProposals,
   SupplyTermsSheet,
 } from "@/components/imach/buy-list-shared";
 
@@ -28,7 +30,9 @@ import {
  * · نوار محتوا: جستجوی زنده + آیکون اسکن (FD-43) + «افزودن نوع کالا»
  * · کارت‌های خلوت FD-42: عکس/حرف + نام + مقدار (+قیمت ارزان‌ترین)
  * · لمس کارت → تأمین‌کننده‌های همان نوع کالا (۲۰ب → /suppliers?good=)
- * · «پیشنهادهای تامین» بالای لیست ← M6 (جای‌نگه‌دار مخفی)
+ * · M6 — «پیشنهادهای تامین» بالای لیست: کارت‌های زنده از
+ *   supply-proposals (تک/چندقلم/فقط‌درخواست) + تایید = دو رابطه + حذف.
+ * · M6 — «پیش‌نمایش» = نمای عمومی واقعی لیست خرید (/buy/[slug]).
  *
  * قانون مالک M2: فرم فارسی، متن‌ها همین‌جا (فریز i18n).
  */
@@ -53,6 +57,11 @@ function BuyList() {
   const watchedQ = useQuery({
     queryKey: ["market", "watched", bizId],
     queryFn: () => marketApi.getWatchedGoods(bizId),
+    enabled: !!bizId,
+  });
+  const proposalsQ = useQuery({
+    queryKey: ["supply-proposals", bizId],
+    queryFn: () => supplyProposalsApi.getMine(bizId),
     enabled: !!bizId,
   });
 
@@ -110,13 +119,7 @@ function BuyList() {
       back="/home"
       toolbar={
         <>
-          <ToolBtn
-            icon="eye"
-            label="پیش‌نمایش"
-            onClick={() =>
-              show({ text: "نمای عمومی لیست خرید در فاز شبکهٔ خصوصی (M6) فعال می‌شود", kind: "info" })
-            }
-          />
+          <ToolBtn icon="eye" label="پیش‌نمایش" onClick={() => biz && router.push(`/buy/${biz.slug}`)} />
           <ToolBtn icon="share" label="اشتراک‌گذاری" onClick={() => setShareOpen(true)} />
           <ToolBtn icon="textlist" label="شرایط تامین" onClick={() => setCondOpen(true)} />
           <ToolBtn icon="boxes" label="در حال اتمام موجودی" onClick={() => router.push("/buy-list/low-stock")} />
@@ -157,8 +160,31 @@ function BuyList() {
           </Button>
         </div>
 
-        {/* ── «پیشنهادهای تامین» ← M6 (جای‌نگهدار مخفی — FD-19) ── */}
-        {/* <div id="bl-proposals" /> */}
+        {/* ── M6 — پیشنهادهای تامین بالای لیست (FD-19/22) ── */}
+        <SupplyProposals
+          rows={proposalsQ.data?.rows ?? []}
+          loading={proposalsQ.isLoading}
+          locale={locale}
+          onAccept={async (id, name) => {
+            try {
+              await supplyProposalsApi.accept(id);
+              show({ text: `پیشنهاد «${name}» تایید شد — کاتالوکش ذخیره شد و جزو تأمین‌کننده‌هایت است`, kind: "success" });
+              await qc.invalidateQueries({ queryKey: ["supply-proposals", bizId] });
+              void qc.invalidateQueries({ queryKey: ["market", "watched", bizId] });
+            } catch (e) {
+              show({ text: e instanceof Error ? e.message : "تایید نشد", kind: "error" });
+            }
+          }}
+          onDismiss={async (id, name) => {
+            try {
+              await supplyProposalsApi.dismiss(id);
+              show({ text: `پیشنهاد «${name}» حذف شد`, kind: "info" });
+              await qc.invalidateQueries({ queryKey: ["supply-proposals", bizId] });
+            } catch (e) {
+              show({ text: e instanceof Error ? e.message : "حذف نشد", kind: "error" });
+            }
+          }}
+        />
 
         {/* ── شمارنده ── */}
         <p className="text-[12px] font-bold text-text-3">

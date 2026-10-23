@@ -52,6 +52,9 @@ function Settings() {
   const [name, setName] = useState(biz?.name ?? "");
   const [city, setCity] = useState(biz?.city ?? "");
   const [bio, setBio] = useState(biz?.bio ?? "");
+  // M5 (FD-37) — اسناد فروش: شمارهٔ مالیاتی + یادداشت ثابت فاکتور
+  const [taxId, setTaxId] = useState(biz?.invoiceTaxId ?? "");
+  const [invoiceNote, setInvoiceNote] = useState(biz?.invoiceNote ?? "");
   const [cats, setCats] = useState<CatalogCategoryDto[]>((biz?.customCategories ?? []) as CatalogCategoryDto[]);
   const [newCat, setNewCat] = useState("");
   const [visibility, setVisibility] = useState<string[]>(
@@ -95,11 +98,13 @@ function Settings() {
     }
     setBusy(true);
     try {
-      // ۱) شناسنامهٔ ویترین
+      // ۱) شناسنامهٔ ویترین + اسناد فروش (M5)
       await businessesApi.editBusiness(bizId, {
         name: name.trim(),
         city: city.trim(),
         bio: bio.trim() || null,
+        invoiceTaxId: taxId.trim() || null,
+        invoiceNote: invoiceNote.trim() || null,
       });
       // ۲) دسته‌های شخصی — replace یکجا
       await businessesApi.setCatalogCategories(bizId, cats);
@@ -296,6 +301,37 @@ function Settings() {
             </div>
           )}
         </Field>
+
+        {/* ═══ اسناد فروش (M5 · FD-37) ═══ */}
+        <section className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-4">
+          <div className="flex items-center gap-2">
+            <Icon name="file-invoice" size={16} className="text-primary-strong" />
+            <b className="text-[13.5px] font-bold text-text">فاکتور و اسناد فروش</b>
+          </div>
+          <Field label="شمارهٔ مالیاتی" hint="روی فاکتورهای چاپی‌ات زیر نام کسب‌وکار می‌نشیند — خالی = چاپ نمی‌شود">
+            {(id) => (
+              <Input
+                id={id}
+                value={taxId}
+                onChange={(e) => setTaxId(e.target.value)}
+                inputMode="numeric"
+                placeholder="مثلاً ۱۲۳۴۵۶۷۸۹۰۱"
+                maxLength={40}
+              />
+            )}
+          </Field>
+          <Field label="یادداشت ثابت فاکتور" hint="پانوشت همهٔ فاکتورها — مثل شرایط برگشت کالا">
+            {(id) => (
+              <Input
+                id={id}
+                value={invoiceNote}
+                onChange={(e) => setInvoiceNote(e.target.value)}
+                placeholder="مثلاً: کالای فروخته‌شده برگشت ندارد"
+                maxLength={200}
+              />
+            )}
+          </Field>
+        </section>
 
         <Button variant="arm" size="xl" block loading={busy} onClick={() => void save()}>
           <Icon name="check" size={17} /> ذخیره تغییرات

@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { EmptyState } from "@/components/ui/feedback";
@@ -13,7 +14,8 @@ import { timeAgo } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /** `/notifs` — زنگ اعلان‌ها (فید درون‌برنامه‌ای — رندر رویداد-محور ساده M2؛
- * رندر غنی نوع‌دار در M7 با ماژول score/اعلان‌های رویدادی وصل می‌شود). */
+ * رندر غنی نوع‌دار در M7 با ماژول score/اعلان‌های رویدادی وصل می‌شود).
+ * M5: رخدادهای ORDER تیتر و مقصد خودشان را دارند — ۱تپ به همان سفارش. */
 export default function NotifsPage() {
   return (
     <AuthGate>
@@ -57,8 +59,10 @@ function NotifsContent() {
   );
 }
 
-/** متن رویداد از type — ساده و واقعی؛ روایت غنی در M7 */
+/** متن رویداد از type — ساده و واقعی؛ روایت غنی در M7.
+ *  M5 — رخدادهای سفارش: تیتر ذخیره‌شدهٔ خودِ رویداد + ۱تپ به همان سفارش. */
 function NotifRow({ it, locale }: { it: NotificationDto; locale: string }) {
+  const router = useRouter();
   const fa = locale !== "en";
   const who = it.actorName ?? "";
   const good = it.good ?? "";
@@ -85,23 +89,38 @@ function NotifRow({ it, locale }: { it: NotificationDto; locale: string }) {
     case "BUYER_NEED":
       text = fa ? `${who} نیاز خرید جدید ثبت کرد${good ? ` — ${good}` : ""}` : `${who} posted a new buy need`;
       break;
+    case "ORDER":
+      // M5 — تیتر رویداد از سرور («سفارش پذیرفته شد» …)؛ متن قید پایانی
+      text = fa
+        ? `${it.title ?? "رویداد سفارش"}${good ? ` — ${good}` : ""}${who ? ` · ${who}` : ""}`
+        : `${it.title ?? "Order event"}${good ? ` — ${good}` : ""}`;
+      break;
     default:
       text = it.type;
   }
+  const href = it.type === "ORDER" ? (it.url ?? "/orders") : null;
   return (
     <div
+      onClick={() => href && router.push(href)}
       className={cn(
         "flex items-start gap-3 rounded-2xl border p-4",
-        it.read ? "border-line bg-surface" : "border-arm/40 bg-arm-soft/50"
+        it.read ? "border-line bg-surface" : "border-arm/40 bg-arm-soft/50",
+        href && "cursor-pointer transition-[border-color,box-shadow] hover:border-line-2"
       )}
     >
-      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-surface-2 text-text-2">
-        <Icon name="bell" size={17} />
+      <span
+        className={cn(
+          "grid size-9 shrink-0 place-items-center rounded-full",
+          it.type === "ORDER" ? "bg-primary-soft text-primary-strong" : "bg-surface-2 text-text-2"
+        )}
+      >
+        <Icon name={it.type === "ORDER" ? "receipt" : "bell"} size={17} />
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-[13.5px] font-bold leading-6 text-text">{text}</p>
         <p className="mt-0.5 text-[11.5px] text-text-3">{timeAgo(it.createdAt)}</p>
       </div>
+      {href && <Icon name="chev" size={16} className="mt-1.5 shrink-0 text-text-4 rtl:-scale-x-100" />}
       {!it.read && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-arm" aria-hidden />}
     </div>
   );

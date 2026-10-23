@@ -8,7 +8,7 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { listingsApi, marketApi } from "@/lib/api";
+import { listingsApi, marketApi, ordersApi } from "@/lib/api";
 import { num } from "@/lib/format";
 import { isPlaceholderBiz } from "@/lib/active-biz";
 
@@ -62,12 +62,20 @@ function SellDesk() {
     queryFn: () => marketApi.getInquiries(bizId),
     enabled: !!bizId,
   });
+  // M5 — شمار زندهٔ سفارش‌های جدید (کاشی + ردیف کارتابل — الگوی deskOrdersSync)
+  const ordersQ = useQuery({
+    queryKey: ["orders", "sell", bizId],
+    queryFn: () => ordersApi.getOrders(bizId, "sell"),
+    enabled: !!bizId,
+  });
 
   const listings = listingsQ.data ?? [];
   const activeListings = listings.filter((l) => l.isActive !== false);
   const unpriced = activeListings.filter((l) => l.priceMinor === null || l.priceMinor === undefined);
   const customers = followersQ.data?.rows ?? [];
   const newInquiries = (inquiriesQ.data?.items ?? []).filter((i) => i.status === "NEW");
+  const newOrders = ordersQ.data?.newCount ?? 0;
+  const openOrders = (ordersQ.data?.orders ?? []).filter((o) => ["NEW", "ACCEPTED", "SENT"].includes(o.status));
 
   // گام بعدی فعالیت — داده‌محور (تا M7 که score وصل می‌شود)
   const nextStep =
@@ -106,13 +114,23 @@ function SellDesk() {
       href: "/sell/rfqs",
     });
   }
+  // M5 — سفارش جدید رسیده (مهم‌ترین ردیف کارتابل فروشنده)
+  if (newOrders > 0) {
+    const firstBuyers = openOrders.filter((o) => o.status === "NEW").slice(0, 2).map((o) => o.buyer.name);
+    trayRows.push({
+      icon: "receipt",
+      iconCls: "bg-arm-soft text-arm-strong",
+      title: `${n(newOrders)} سفارش جدید`,
+      sub: firstBuyers.join(" · ") || "در انتظار پاسخ تو",
+      href: "/sell/orders",
+    });
+  }
 
-  // چهار کاشی (دستور مالک: سفارشات رسیده همیشه حاضر — FD-16)؛
-  // شمار سفارش تا M5 (ماژول orders) صفرِ صادق است.
+  // چهار کاشی (دستور مالک: سفارشات رسیده همیشه حاضر — FD-16)؛ سفارش از M5 زنده
   const tiles: { icon: IconName; title: string; stat: string; href: string }[] = [
     { icon: "store", title: D.myCatalog, stat: n(activeListings.length), href: "/catalog" },
     { icon: "users", title: D.myCustomers, stat: n(customers.length), href: "/customers" },
-    { icon: "receipt", title: D.myOrdersSell, stat: n(0), href: "/sell/orders" },
+    { icon: "receipt", title: D.myOrdersSell, stat: n(newOrders), href: "/sell/orders" },
     { icon: "inbox", title: D.myRfqs, stat: n(newInquiries.length), href: "/sell/rfqs" },
   ];
 
@@ -201,10 +219,12 @@ function SellDesk() {
   );
 }
 
-/** مشتری جدید = از مسیر دعوت/کاتالوگ آمده (viaRef) — تعریف زنده تا M6 */
-function newCustomersCount(customers: { viaRef: boolean }[]): number {
-  return customers.filter((c) => c.viaRef === true).length;
+/** مشتری جدید = تاییدنشده (M6 · FD-44/45): ackAt نداره → برچسب «جدید»
+ *  تا فروشنده تکلیفش را روشن کند. قبلاً viaRef بود — با آمدن دفتر مشتری
+ *  واقعی، semantics درست همین است. */
+function newCustomersCount(customers: { isNew?: boolean; ackAt?: string | null }[]): number {
+  return customers.filter((c) => c.isNew ?? !c.ackAt).length;
 }
-function newCustomersPlaceholderGuard(customers: { viaRef: boolean }[]): boolean {
+function newCustomersPlaceholderGuard(customers: { isNew?: boolean; ackAt?: string | null }[]): boolean {
   return newCustomersCount(customers) > 0;
 }

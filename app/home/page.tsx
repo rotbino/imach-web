@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { AuthGate } from "@/components/imach/auth-gate";
@@ -8,18 +9,18 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { marketApi } from "@/lib/api";
+import { marketApi, ordersApi } from "@/lib/api";
 import { num } from "@/lib/format";
 import { isPlaceholderBiz } from "@/lib/active-biz";
+import { allBaskets } from "@/lib/basket";
 
 /**
- * `/home` — اسکرین ۱۹: میز خرید (M2 · FD-41: هم‌قالب میز فروش + فیکس‌بچ مالک M3).
+ * `/home` — اسکرین ۱۹: میز خرید (M2 · FD-41 + M5 سفارش‌های زنده).
  *
- * · چهار کاشی (پروتوتایپ 19: لیست خرید / تأمین‌کننده‌ها / سفارش‌های من /
- *   پیشنهادهای قیمت) — شبه‌مربع، آیکون لخت، فقط عدد هوچک (دستور مالک)
- * · عرض محتوای میز ۸۸۰ (−۲۵٪ — دستور مالک) + پدینگ عمودی کارت‌های اقدام
+ * · چهار کاشی (پروتوتایپ 19) — شمار سفارش از M5 زنده است.
  * · کارتابل زنده: پیشنهادهای تازه (۷۲ساعت) + رو به اتمام (M3) + گام بعدی
- * · سفارش‌ها با ماژول orders در M5 زنده می‌شود
+ * · M5: ردیف «سبد پر داری در کاتالوک…» — بازیابی ctx مهمان بعد از ورود +
+ *   ردیف «n سفارش جاری» وقتی سفارش باز هست (الگوی deskOrdersSync).
  */
 
 export default function BuyDeskPage() {
@@ -55,13 +56,26 @@ function BuyDesk() {
     queryFn: () => marketApi.getMyRfqs(bizId),
     enabled: !!bizId,
   });
+  // M5 — شمار زندهٔ سفارش‌های جاری خریدار (کاشی + ردیف کارتابل)
+  const ordersQ = useQuery({
+    queryKey: ["orders", "buy", bizId],
+    queryFn: () => ordersApi.getOrders(bizId, "buy"),
+    enabled: !!bizId,
+  });
 
   const watched = (watchedQ.data ?? []).filter((w) => !w.archivedAt);
   const suppliers = followsQ.data ?? [];
   const recentOffers = rfqsQ.data?.recentOfferCount ?? 0;
+  const currentOrders = ordersQ.data?.currentCount ?? 0;
   // M3 — شمار «در حال اتمام موجودی» برای ردیف کارتابل میز خرید (۲۰ج)؛
   // صفر = ردیف مخفی (قاعدهٔ کارتابل زنده).
   const lowStockCount = watched.filter((w) => w.lowStock).length;
+  // M5 — سبدهای پرشده (بازیابی ctx مهمان بعد از ورود) — بعد از hydration
+  // خوانده می‌شود (localStorage سمت سرور نیست؛ mismatch نمی‌سازد)
+  const [baskets, setBaskets] = useState<Array<{ slug: string; supplierName: string; count: number }>>([]);
+  useEffect(() => {
+    setBaskets(allBaskets());
+  }, []);
 
   const nextStep =
     watched.length === 0
@@ -108,12 +122,32 @@ function BuyDesk() {
       href: "/buy-list/low-stock",
     });
   }
+  // M5 — سفارش جاری داری (الگوی deskOrdersSync پروتوتایپ)
+  if (currentOrders > 0) {
+    trayRows.push({
+      icon: "truck",
+      iconCls: "bg-arm-soft text-arm-strong",
+      title: `${n(currentOrders)} سفارش جاری`,
+      sub: "در انتظار پذیرش/ارسال/تحویل — پیگیری در دفتر سفارش‌ها",
+      href: "/buy/orders",
+    });
+  }
+  // M5 — سبد پرشده در کاتالوکی (بازیابی ctx مهمان)
+  if (baskets.length > 0) {
+    trayRows.push({
+      icon: "basket",
+      iconCls: "bg-green-soft text-green",
+      title: `سبد پر داری در کاتالوک ${baskets[0]!.supplierName}`,
+      sub: `${n(baskets[0]!.count)} قلم منتظر ثبت سفارش`,
+      href: `/c/${baskets[0]!.slug}`,
+    });
+  }
 
-  // چهار کاشی (دستور مالک — الگوی پروتوتایپ 19)؛ سفارش تا M5 صفرِ صادق
+  // چهار کاشی (دستور مالک — الگوی پروتوتایپ 19)؛ سفارش از M5 زنده
   const tiles: { icon: IconName; title: string; stat: string; href: string }[] = [
     { icon: "basket", title: D.buyList, stat: n(watched.length), href: "/buy-list" },
     { icon: "truck", title: D.mySuppliers, stat: n(suppliers.length), href: "/suppliers" },
-    { icon: "receipt", title: D.myOrdersBuy, stat: n(0), href: "/home/orders" },
+    { icon: "receipt", title: D.myOrdersBuy, stat: n(currentOrders), href: "/buy/orders" },
     { icon: "inbox", title: D.myOffers, stat: n(recentOffers), href: "/buy/rfqs" },
   ];
 
