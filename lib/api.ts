@@ -147,6 +147,10 @@ export interface BusinessSummaryDto {
   isVerified: boolean;
   /** فاز ۱۳ — معرفی کوتاه خود نوشته (زیر نام در ویترین عمومی) */
   bio?: string | null;
+  /** M5 (FD-37) — شمارهٔ مالیاتی فروشنده؛ روی فاکتور چاپ می‌شود */
+  invoiceTaxId?: string | null;
+  /** M5 (FD-37) — یادداشت ثابت فاکتور؛ پانوشت چاپی */
+  invoiceNote?: string | null;
   /** فاز ۳ — دسته‌های شخصی ویترین (چیپ‌های بالای کاتالوگ) */
   customCategories?: CatalogCategoryDto[] | null;
   /** M2 (G7) — کدام اصناف قیمت کاتالوگ را می‌بینند؛ null/[] = همه */
@@ -1938,9 +1942,11 @@ export type NotificationType =
   | "QUOTE" // استعلام موتور تطبیق به من رسید
   | "CONTACT_JOINED" // شماره‌ای از دفترچه‌ی من عضو شد
   | "PRICE_CHANGE" // فاز ۵ — کالای دنبال‌شده قیمتش عوض شد
-  | "BUYER_NEED"; // طرح ۸ — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد
+  | "BUYER_NEED" // طرح ۸ — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد
+  | "ORDER"; // M5 — رخدادهای چرخهٔ سفارش (ثبت/پذیرش/ارسال/تحویل/لغو/رد)
 
-/** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد */
+/** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد.
+ *  M5: رخدادهای ORDER تیتر و مقصد خودشان را دارند (رخداد-محور). */
 export interface NotificationDto {
   id: string;
   type: NotificationType;
@@ -1948,6 +1954,10 @@ export interface NotificationDto {
   actorName: string | null;
   actorSlug: string | null;
   good: string | null;
+  /** M5 — تیتر رویداد («سفارش پذیرفته شد"); null = مشتق از type (legacy) */
+  title?: string | null;
+  /** M5 — مقصد لمس (لینک عمقی همان رخداد) */
+  url?: string | null;
   read: boolean;
   createdAt: string;
 }
@@ -2160,4 +2170,121 @@ export interface CurrencyConfigDto {
 export const settingsApi = {
   /** پیکربندی عمومی — بدون احرار؛ کش سرور ۵m + client staleTime ۵m */
   getConfig: () => api<CurrencyConfigDto>("/settings/config", { auth: false }),
+};
+
+// ─── M5 (سند ۰۸ §M5 · FD-18/22/26/37) — سفارش‌ها و اسناد ───
+
+/** قلم فریزشدهٔ سفارش — منبع حقیقتِ نمایش/چاپ (۴۰/۴۱) */
+export interface OrderItemDto {
+  listingId: string | null;
+  goodId: string;
+  name: string;
+  pack: string;
+  qty: number;
+  unitPriceMinor: number;
+}
+
+/** رخداد خط زمانی — یک روایت مشترک برای دو طرف (۱۰/۳۹) */
+export interface OrderHistoryDto {
+  st: "NEW" | "ACCEPTED" | "SENT" | "DELIVERED" | "REJECTED" | "CANCELLED";
+  at: string;
+  by: "buyer" | "seller" | "system";
+  note?: string;
+}
+
+export interface OrderBizDto {
+  id: string;
+  slug: string;
+  name: string;
+  city: string;
+  isVerified: boolean;
+  trade: string | null;
+  phone: string | null;
+  address?: string | null;
+  invoiceTaxId?: string | null;
+  invoiceNote?: string | null;
+}
+
+export interface OrderDto {
+  id: string;
+  status: "NEW" | "ACCEPTED" | "SENT" | "DELIVERED" | "REJECTED" | "CANCELLED";
+  originType: "CATALOG_BASKET" | "RFQ_OFFER";
+  originId: string | null;
+  items: OrderItemDto[];
+  totalMinor: number;
+  currency: string;
+  note: string | null;
+  sellerNote: string | null;
+  pay: { chk: number; days: number } | null;
+  dlv: { ship: boolean; by: "seller" | "customer" } | null;
+  docNo: number | null;
+  deliverDeadline: string | null;
+  daysLeft: number | null;
+  history: OrderHistoryDto[];
+  archivedAt: string | null;
+  createdAt: string;
+  buyer: OrderBizDto;
+  seller: OrderBizDto;
+}
+
+export interface OrdersListDto {
+  orders: OrderDto[];
+  /** ۰۹ — «n سفارش جدید» زیرعنوان زنده */
+  newCount?: number;
+  /** ۲۸ — «n سفارش جاری» */
+  currentCount?: number;
+}
+
+export const ordersApi = {
+  /** سبد کاتالوک (۳۱) — قیمت از آگهی زنده فریز می‌شود */
+  createFromBasket: (body: {
+    businessId: string;
+    supplierId: string;
+    items: { listingId: string; qty: number }[];
+    note?: string;
+  }) => api<OrderDto>("/orders", { method: "POST", body: { ...body, originType: "CATALOG_BASKET" } }),
+
+  /** کال‌اوت ۲۷ — سفارش با شرایط پیشنهاد پذیرفته‌شده (قیمت فریز) */
+  createFromOffer: (businessId: string, offerId: string) =>
+    api<OrderDto>("/orders", { method: "POST", body: { businessId, originType: "RFQ_OFFER", offerId } }),
+
+  /** دفتر سفارش‌ها (۰۹ فروشنده / ۲۸ خریدار) — بستنِ تنبل ۷روزه سمت سرور */
+  getOrders: (businessId: string, side: "buy" | "sell", opts?: { archived?: boolean }) =>
+    api<OrdersListDto>("/orders", {
+      params: { businessId, side, ...(opts?.archived ? { archived: "true" } : {}) },
+    }),
+
+  /** جزئیات سفارش (۱۰/۳۹) — هر دو طرف یک روایت می‌بینند */
+  getOrder: (businessId: string, id: string) =>
+    api<OrderDto>(`/orders/${id}`, { params: { businessId } }),
+
+  /** پذیرش با اصلاح اقلام (۱۰) — edits هم‌ترتیب اقلام؛ فقط فیلدهای ارسالی */
+  acceptOrder: (
+    businessId: string,
+    id: string,
+    body: { edits?: { qty?: number; unitPriceMinor?: number }[]; note?: string }
+  ) => api<{ ok: boolean; status: string; docNo: number | null; totalMinor: number }>(`/orders/${id}/accept`, {
+    method: "POST",
+    body: { businessId, ...body },
+  }),
+
+  /** رد — فقط فروشنده، فقط NEW */
+  rejectOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/reject`, { method: "POST", body: { businessId } }),
+
+  /** «ارسال شد» — مهلت ۷روزهٔ تأیید از همین لحظه شروع می‌شود */
+  sendOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/send`, { method: "POST", body: { businessId } }),
+
+  /** «تأیید تحویل» = بسته‌شدن (۳۹) */
+  deliverOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/deliver`, { method: "POST", body: { businessId } }),
+
+  /** لغو — فقط تا قبل از ارسال */
+  cancelOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean; status: string }>(`/orders/${id}/cancel`, { method: "POST", body: { businessId } }),
+
+  /** بایگانی خریدار (۲۸) — ردیف از فهرست می‌افتد، تاریخچه می‌ماند */
+  archiveOrder: (businessId: string, id: string) =>
+    api<{ ok: boolean }>(`/orders/${id}/archive`, { method: "POST", body: { businessId } }),
 };

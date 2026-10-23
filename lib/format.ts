@@ -190,6 +190,32 @@ export function timeAgo(iso: string): string {
   return new Date(iso).toLocaleDateString("fa-IR");
 }
 
+/** M5 (FD-37) — تاریخ جلالی سند‌مانند: «۱۴۰۵/۰۸/۰۱ — ۱۴:۲۰».
+ *  تقویم فارسی با Intl (بدون کتابخانه)؛ عدد ارقام فارسی. */
+export function faDate(iso: string, withTime = false): string {
+  const d = new Date(iso);
+  const date = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+  if (!withTime) return date;
+  const time = new Intl.DateTimeFormat("fa-IR", { hour: "2-digit", minute: "2-digit" }).format(d);
+  return `${date} — ${time}`;
+}
+
+/** M5 — ساعت کوتاه خط زمانی: «۱۴:۲۰» (امروز) وگرنه تاریخ جلالی */
+export function faDateShort(iso: string): string {
+  const d = new Date(iso);
+  const sameDay = new Date().toDateString() === d.toDateString();
+  if (sameDay) return new Intl.DateTimeFormat("fa-IR", { hour: "2-digit", minute: "2-digit" }).format(d);
+  return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+}
+
 // ── شهرها و استان‌ها — هم‌شهری > هم‌استان > دور (مطابق موتور تطبیق) ──
 export const CITIES = [
   "تهران",

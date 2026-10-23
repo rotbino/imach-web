@@ -5,11 +5,16 @@ import { getServerMessages } from "@/i18n/messages/server";
 import { DEFAULT_LOCALE, detectLocaleFromAcceptLanguage, getLocale } from "@/i18n/config";
 import { goodName, num, unitLabel, CURRENCIES } from "@/lib/format";
 import { listingPriceExpiredServer } from "@/lib/server-catalog";
+import { AddToCartButton, CatalogBasket, type BasketListing } from "@/components/imach/catalog-basket";
 
 /**
- * `/c/[slug]` — ویترین عمومی کاتالوگ (نسخهٔ پایهٔ M2 — «پیش‌نمایش» از پنل
- * فروشنده همین‌جا می‌آید). گیت قیمت/صنف و تطبیق «در لیست خرید شما» در M6
- * سمت سرور اعمال می‌شود؛ این نسخهٔ پایه: SSR + گرید + بج منقضی (FD-52).
+ * `/c/[slug]` — ویترین عمومی کاتالوگ (M2 + M5 سبد خرید).
+ *
+ * · SSR + گرید + بج منقضی (FD-52) — گیت قیمت/صنف و تطبیق «در لیست خرید
+ *   شما» در M6 سمت سرور اعمال می‌شود.
+ * · M5 (FD-9/13/26): دکمهٔ + روی کارت‌های قیمت‌دار + سبد شناور + شیت سبد
+ *   (عدد تایپی + گیت حداقل) + ثبت سفارش ⇒ POST /orders. مهمان = گیت حساب؛
+ *   سبد در localStorage زنده می‌ماند. کاتالوک خودِ فروشنده = بدون سبد.
  */
 
 interface PublicListing {
@@ -19,6 +24,7 @@ interface PublicListing {
   priceMinor: number | null;
   currency: string | null;
   stock: number | null;
+  minOrder: number | null;
   baseQty: number | null;
   pricedAt: string | null;
   priceExpired?: boolean;
@@ -30,6 +36,7 @@ interface PublicListing {
 }
 
 interface PublicBusiness {
+  id: string;
   name: string;
   slug: string;
   bio: string | null;
@@ -92,6 +99,14 @@ export default async function PublicCatalogPage({
   );
 
   const listings = biz.listings.slice(0, 200);
+  const basketListings: BasketListing[] = listings.map((l) => ({
+    id: l.id,
+    name: l.title || goodName({ nameFa: l.good.nameFa, nameEn: l.good.nameEn }, locale),
+    pack: [l.variantLabel, l.packaging?.[0]?.label].filter(Boolean).join(" · "),
+    priceMinor: l.priceMinor,
+    currency: l.currency,
+    minOrder: l.minOrder ?? 1,
+  }));
   const fmtPrice = (l: PublicListing) => {
     if (l.priceMinor === null) return "";
     const cur = CURRENCIES[l.currency ?? "IRR"] ?? { exp: 0, fa: l.currency ?? "", en: "", ar: "" };
@@ -183,6 +198,19 @@ export default async function PublicCatalogPage({
                         {num(l.baseQty, locale)} {unit} × بسته
                       </p>
                     )}
+                    {/* M5 — سبد خرید (۳۱): ردیف قیمت‌دار = دکمهٔ + */}
+                    {l.priceMinor !== null && (
+                      <div className="mt-1.5">
+                        <AddToCartButton
+                          slug={slug}
+                          supplierName={biz.name}
+                          listingId={l.id}
+                          minOrder={l.minOrder ?? 1}
+                          currency={l.currency ?? biz.currency}
+                          priceMinor={l.priceMinor}
+                        />
+                      </div>
+                    )}
                   </div>
                 </article>
               );
@@ -190,6 +218,14 @@ export default async function PublicCatalogPage({
           </div>
         )}
       </main>
+
+      {/* M5 — سبد شناور + شیت + ثبت سفارش (۳۱) */}
+      <CatalogBasket
+        slug={slug}
+        supplierId={biz.id}
+        supplierName={biz.name}
+        listings={basketListings}
+      />
 
       <footer className="mx-auto max-w-[1120px] px-4 py-8 text-center lg:px-8">
         <p className="text-[11px] text-text-4">

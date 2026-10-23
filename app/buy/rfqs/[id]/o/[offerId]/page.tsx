@@ -12,7 +12,7 @@ import { Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useMoney } from "@/components/imach/prefs-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { marketApi } from "@/lib/api";
+import { marketApi, ordersApi } from "@/lib/api";
 import { goodName, num, unitLabel } from "@/lib/format";
 import { itemTitleTx, payTx, dlvTx, rfqTitleTx } from "@/components/imach/rfq-shared";
 
@@ -24,8 +24,8 @@ import { itemTitleTx, payTx, dlvTx, rfqTitleTx } from "@/components/imach/rfq-sh
  * · مشخصات: درخواست/اقلام/شرایط پرداخت/روش تحویل/مهلت — همان زبان فرم ۱۲.
  * · راه‌های ارتباط: پیام در آی‌مچ · تماس · کاتالوک فروشنده (مستقیم — FD-16).
  * · «پذیرش پیشنهاد» = پایان استعلام (حکم مالک FD-14): تأیید ⇒ استعلام بسته
- *   + نتیجه + اعلان فروشنده. سپس کال‌اوت «ثبت سفارش با همین شرایط» — سفارش
- *   در M5 وصل می‌شود؛ فعلاً toast (تصمیم سند ۰۸).
+ *   + نتیجه + اعلان فروشنده. سپس کال‌اوت «ثبت سفارش با همین شرایط» — M5:
+ *   POST /orders با قیمت فریز و قلم‌های قیمت‌خورده (تصمیم ۲ FD-22).
  *
  * قانون مالک M2: فرم فارسی، متن‌ها همین‌جا (فریز i18n).
  */
@@ -65,6 +65,7 @@ function OfferView() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [accepted, setAccepted] = useState<{ resultText: string } | null>(null);
+  const [ordering, setOrdering] = useState(false);
 
   const items = g?.items ?? [];
   const multi = items.length > 1;
@@ -89,8 +90,18 @@ function OfferView() {
     }
   };
 
-  const orderSoon = () => {
-    show({ text: "ثبت سفارش در فاز بعدی (M5) وصل می‌شود — شرایط همین پیشنهاد فریز شده", kind: "info" });
+  const orderSoon = async () => {
+    if (!o || ordering) return;
+    setOrdering(true);
+    try {
+      const ord = await ordersApi.createFromOffer(bizId, o.id);
+      show({ text: "سفارش با شرایط پیشنهاد ثبت شد — فروشنده در دفتر سفارش‌هایش می‌بیند", kind: "success" });
+      router.push(`/buy/orders/${ord.id}`);
+    } catch (e) {
+      show({ text: e instanceof Error ? e.message : "سفارش ثبت نشد", kind: "error" });
+    } finally {
+      setOrdering(false);
+    }
   };
 
   if (rfqsQ.isLoading) {
@@ -262,7 +273,7 @@ function OfferView() {
                 دفتر سفارش‌هایش می‌بیند و می‌پذیرد.
               </p>
             </div>
-            <Button variant="arm" block onClick={orderSoon}>
+            <Button variant="arm" block loading={ordering} onClick={() => void orderSoon()}>
               <Icon name="receipt" size={17} />
               ثبت سفارش با همین شرایط
             </Button>
