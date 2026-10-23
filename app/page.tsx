@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
   );
   if (locale === "en") {
     return {
-      title: "iMach — the online branch of your wholesale trade",
+      title: "iMach — connecting suppliers of every product to its wholesale buyers",
       description:
         "Build your product catalog or purchase list, share it with customers and suppliers, and let iMach's matching engine grow your trade network. Sign-up with just a mobile number.",
       alternates: { canonical: "/" },
@@ -49,14 +49,14 @@ export async function generateMetadata(): Promise<Metadata> {
   }
   if (locale === "ar") {
     return {
-      title: "آي‌ماتش — الفرع الإلكتروني لتجارة الجملة الخاصة بك",
+      title: "آي‌ماتش — يصل مورّدي السلع إلى مشتريي الجملة",
       description:
         "أنشئ كتالوغ منتجاتك أو قائمة مشترياتك وشاركها مع عملائك ومورّديك؛ ودع محرك المطابقة في آي‌ماتش ينمّي شبكتك التجارية. التسجيل برقم الجوّال فقط.",
       alternates: { canonical: "/" },
     };
   }
   return {
-    title: "آیمچ — شعبهٔ آنلاین خرید و فروش عمدهٔ شما",
+    title: "آیمچ — تأمین‌کنندگان هر کالا را به خریداران عمدهٔ آن وصل می‌کند",
     description:
       "کاتالوگ محصولات یا فهرست خریدتان را بسازید و با مشتریان و تأمین‌کنندگان خود به اشتراک بگذارید؛ آیمچ با موتور تطبیق خود شبکهٔ تجاری شما را بزرگ‌تر می‌کند. ثبت‌نام با شمارهٔ موبایل.",
     alternates: { canonical: "/" },

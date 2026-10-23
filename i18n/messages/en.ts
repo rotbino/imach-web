@@ -139,8 +139,8 @@ export const en: Messages = {
     moreList: ["Türkçe", "اردو", "हिन्दी", "Русский", "中文", "Deutsch", "Français"],
     soon: "Soon",
     h1Lead: "iMach",
-    h1Tail: " — the online branch of",
-    h1Line2: "your wholesale trade",
+    h1Tail: " — connecting the suppliers of every product to",
+    h1Line2: "the wholesale buyers of that product",
     banner:
       "Build your product catalog or purchase list and share it with your customers and suppliers; as your customer and supplier lists take shape, real trade relationships emerge. Then iMach's matching engine helps your trade network grow day by day.",
     strong: "Start for free; be ready to grow your business.",
@@ -202,7 +202,7 @@ export const en: Messages = {
       "Create an account, get your catalog ready and connect with your customers or suppliers.",
     finalCta: "Create a free account",
     finalNote: "Sign-up with just a mobile number",
-    copyright: "© 2026 iMach — the online branch of your wholesale trade",
+    copyright: "© 2026 iMach — connecting suppliers to wholesale buyers",
   },
 
   // ═══ M1 — screens 02/03: sign-up & sign-in + intl field + brand panel ═══
@@ -294,7 +294,7 @@ export const en: Messages = {
     brand: {
       backHome: "Home",
       name: "iMach",
-      tag: "The online branch of your wholesale trade",
+      tag: "Connecting the suppliers of every product to its wholesale buyers",
       loginBullets: [
         "Build a catalog with live prices and share its link with your customers",
         "Organize your purchase list and get prices from several suppliers",

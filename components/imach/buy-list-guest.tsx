@@ -394,7 +394,7 @@ export function BuyListGuestView({ slug, initial }: { slug: string; initial: Pub
         </section>
 
         <p className="mt-6 text-center text-[10.5px] leading-5 text-text-4">
-          ساخته‌شده با <b className="text-arm-strong">آی‌مچ</b> — دفتر خرید و فروش عمدهٔ شما
+          ساخته‌شده با <b className="text-arm-strong">آی‌مچ</b> — شبکهٔ خصوصی تجارت عمدهٔ شما
         </p>
       </main>
 

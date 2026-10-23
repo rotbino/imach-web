@@ -116,7 +116,7 @@ function DocHead({ o, title }: { o: OrderDto; title: string }) {
 function DocFoot() {
   return (
     <div className="mt-auto border-t border-text/30 pt-3 text-center">
-      <p className="text-[10.5px] text-text-3">ساخته‌شده با آی‌مچ — دفتر خرید و فروش عمدهٔ شما</p>
+      <p className="text-[10.5px] text-text-3">ساخته‌شده با آی‌مچ — شبکهٔ خصوصی تجارت عمدهٔ شما</p>
     </div>
   );
 }
