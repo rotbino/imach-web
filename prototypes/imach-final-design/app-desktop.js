@@ -4,6 +4,8 @@
    رسپانسیو دسکتاپ — مرحلهٔ ۳ (FD-30: ارتقای کیفیِ میزها و فرم‌ها به
    سطح اپ حرفه‌ای B2B — الگوهای نام‌دار: Kanban-light · Form+Preview ·
    Wizard · Master-Detail؛ حکم مالک: «فرانت‌اند چیزی بشه که باید باشه»).
+   فاز ۴ (p4): پیام‌ها Master-Detail — فهرست گفتگوها + چت در یک صفحه
+   (بازماندهٔ مستندِ فاز ۳؛ الگوی Telegram/Slack).
 
    ▸ حکم مالک (FD-28): «در دسکتاب حرفه‌ای‌تر و مطابق استاندارد بالا —
      همچنان مینیمال و ساده؛ صفحه‌به‌صفحه با ظرافت، نه یک ایجنت کلی».
@@ -129,6 +131,13 @@ window.iMachDesktop = (function () {
         if (!sb || !body) return;
         if (sb.parentNode !== body) body.appendChild(sb);
         sb.classList.add('dk-inflow');
+    }
+
+    /* ═══ مشترک: escape داده (نه قالب) — درس FD-30-p1 ═══ */
+    function esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     /* ═══ ۰۱ لندینگ ═══
@@ -531,11 +540,142 @@ window.iMachDesktop = (function () {
         sec.classList.add('dk-chat');
     }
 
-    /* ═══ ۲۹ پیام‌ها ═══
-       در پوستهٔ اپ؛ فهرست گفتگوها در ستون ۹۴۰ وسچ. */
+    /* ═══ ۲۹ پیام‌ها — FD-30-p4: Master-Detail (الگوی Telegram) ═══
+       در پوستهٔ اپ؛ «فهرست+چت در یک صفحه» — بازماندهٔ مستندِ فاز ۳:
+         · پنل فهرست (راست ۳۲۰): داده‌محور از DATA.conversations —
+           ردیف‌های ایستای صفحه فقط مخفی می‌شوند (موبایل همان HTML).
+         · پنل چت (چپ): قالبِ خودِ صفحهٔ ۳۰ با fetch + کشِ ماژول؛
+           section جدا می‌شود تا id صفحه‌ها تکراری نشود اما همهٔ
+           id های رفتاری (#chat-body/#chat-input/#chat-ctx) سر جا
+           می‌مانند → هندلرهای سراسریِ app-handlers (ارسال/چیپِ
+           سریع) بدون هیچ تغییری داخل پنل کار می‌کنند.
+         · انتخاب ردیف = بارگذاری همان گفتگو در پنل (بدون ناوبری)؛
+           هنگام ورود اولین گفتگوی خوانده‌نشده خودکار انتخاب می‌شود
+           — پیام‌رسان هرگز با «هیچ» شروع نمی‌شود.
+         · ارسال پیام با MutationObserver به پیش‌نمایش ردیفِ فعال
+           برمی‌گردد (قاعدهٔ پیام‌رسان: ردیف = آخرین پیام، همیشه).
+         · چتِ مستقل (ناوبری از سفارش/پیشنهاد با پارامتر about) همچنان
+           پیام‌رسان تمام‌قدِ FD-29 است — dkChat دست‌نخورده. */
+    var CHAT_TPL = null;
+    function chatTpl() {
+        if (CHAT_TPL !== null) return Promise.resolve(CHAT_TPL);
+        return fetch('screens/30-chat.html')
+            .then(function (r) { return r.ok ? r.text() : ''; })
+            .then(function (t) { CHAT_TPL = t; return t; })
+            .catch(function () { CHAT_TPL = ''; return ''; });
+    }
+
+    function mdmRowHtml(cv) {
+        var faNum = (window.iMach && window.iMach.faNum) || String;
+        return '<div class="row mdm-row" data-cv="' + esc(cv.id) + '">' +
+            '<span class="avatar avatar-sm mdm-av" style="background:' + esc(cv.color) + '">' + esc(cv.avatar) + '</span>' +
+            '<span class="row-body">' +
+            '<span class="row-title">' + esc(cv.name) + '</span>' +
+            '<span class="row-sub">' + esc(cv.lastMsg) + '</span>' +
+            '</span>' +
+            '<span class="mdm-meta">' +
+            '<span class="mdm-time">' + esc(cv.time) + '</span>' +
+            (cv.unread > 0 ? '<span class="mdm-badge">' + faNum(cv.unread) + '</span>' : '') +
+            '</span>' +
+            '</div>';
+    }
+
     function dkMsgs(sec, id) {
         shellify(sec, id);
-        sec.classList.add('dk-page', 'dk-list', 'dk-msgs');
+        sec.classList.add('dk-msgs');  /* dk-page/dk-list کنار رفت — چیدمان پیام‌رسان */
+        var body = sec.querySelector('.body');
+        if (!body || body.getAttribute('data-dk-done')) return;
+        body.setAttribute('data-dk-done', '1');
+
+        var DATA = window.iMach && window.iMach.data;
+        var convs = (DATA && DATA.conversations) || [];
+
+        /* ۱) پنل فهرست (راست) */
+        var list = document.createElement('div');
+        list.className = 'mdm-list';
+        list.innerHTML = '<div class="mdm-rows">' + convs.map(mdmRowHtml).join('') + '</div>';
+        var rowsEl = list.firstChild;
+
+        /* ۲) پنل چت (چپ) — تا رسیدن قالب، حالت خالی */
+        var chat = document.createElement('div');
+        chat.className = 'mdm-chat';
+        chat.innerHTML = '<div class="mdm-empty">گفتگو را از فهرست انتخاب کنید</div>';
+
+        /* ۳) ردیف‌های ایستا مخفی؛ دو پنل جای‌گزین */
+        var old = body.querySelector(':scope > .rows');
+        if (old) old.hidden = true;
+        body.appendChild(list);
+        body.appendChild(chat);
+
+        function select(cvId) {
+            var cv = null;
+            convs.some(function (c) { if (c.id === cvId) { cv = c; return true; } return false; });
+            if (!cv) return;
+            Array.prototype.forEach.call(rowsEl.children, function (r) {
+                var on = r.getAttribute('data-cv') === cvId;
+                r.classList.toggle('active', on);
+                if (on) {
+                    var b = r.querySelector('.mdm-badge');
+                    if (b) b.remove();          /* خوانده‌شدن همان لحظه */
+                }
+            });
+            /* هدر پنل چت = مخاطبِ همین گفتگو */
+            var av = chat.querySelector('.subheader .avatar');
+            if (av) { av.style.background = cv.color; av.textContent = cv.avatar; }
+            var ttl = chat.querySelector('.subheader .ttl');
+            if (ttl) ttl.innerHTML = esc(cv.name) + '<small>' + esc(cv.sub || '') + '</small>';
+            var msgs = (DATA.chatMessages || {})[cvId] || [];
+            var html = '<div class="chat-day">' + esc(cv.day || 'امروز') + '</div>';
+            msgs.forEach(function (m) {
+                html += '<div class="msg ' + (m.from === 'out' ? 'out' : 'in') + '">' +
+                    '<div class="bub">' + esc(m.text) + '</div>' +
+                    '<span class="tm">' + esc(m.time) + '</span></div>';
+            });
+            if (!msgs.length) {
+                html += '<div class="mdm-empty">این گفتگو تازه شروع شده — اولین پیام را بفرست.</div>';
+            }
+            var cb = chat.querySelector('#chat-body');
+            if (cb) { cb.innerHTML = html; cb.scrollTop = cb.scrollHeight; }
+        }
+
+        list.addEventListener('click', function (e) {
+            var r = e.target.closest ? e.target.closest('.mdm-row') : null;
+            if (!r) return;
+            select(r.getAttribute('data-cv'));
+        });
+
+        /* ۴) قالب چت را بیاور و اولین گفتگوی خوانده‌نشده را باز کن */
+        chatTpl().then(function (tpl) {
+            if (!tpl || !document.body.contains(chat)) return;
+            var wrap = document.createElement('div');
+            wrap.innerHTML = tpl;
+            var sc = wrap.querySelector('#s-chat');
+            if (!sc) return;
+            chat.innerHTML = '';
+            while (sc.firstChild) chat.appendChild(sc.firstChild);
+            /* نوار زمینهٔ گفتگو در پنل همیشه مخفی — پارامتر about فقط
+               مالِ چتِ مستقل است (ناوبری از سفارش/پیشنهاد) */
+            var ctx = chat.querySelector('#chat-ctx');
+            if (ctx) ctx.hidden = true;
+            /* پیش‌نمایش ردیف فعال = آخرین پیام — زنده، حتی بعد از ارسال */
+            var cb = chat.querySelector('#chat-body');
+            if (cb && window.MutationObserver) {
+                new MutationObserver(function () {
+                    var all = cb.querySelectorAll('.msg');
+                    if (!all.length) return;
+                    var bub = all[all.length - 1].querySelector('.bub');
+                    var tm = all[all.length - 1].querySelector('.tm');
+                    var act = rowsEl.querySelector('.mdm-row.active');
+                    if (!act) return;
+                    var sub = act.querySelector('.row-sub');
+                    var time = act.querySelector('.mdm-time');
+                    if (sub && bub) sub.textContent = bub.textContent;
+                    if (time && tm) time.textContent = tm.textContent;
+                }).observe(cb, { childList: true });
+            }
+            var first = convs.filter(function (c) { return c.unread > 0; })[0] || convs[0];
+            if (first) select(first.id);
+        });
     }
 
     /* ═══ ۱۸ پروفایل ═══

@@ -1,6 +1,10 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════
 # FD-29 QA — پوستهٔ اپ دسکتاپ + اسکرول مرورگر + ترمیم‌های مالک
+# FD-30 فاز ۴ (بخش ۹ب): پیام‌ها Master-Detail — فهرست گفتگوها (راست،
+#   داده‌محور از DATA.conversations) + چتِ همان صفحه (چپ، قالب ۳۰ با
+#   fetch)؛ انتخاب بدون ناوبری، ارسال با هندلر سراسری، پیش‌نمایش ردیف
+#   زنده با MutationObserver؛ موبایل دست‌نخورده (بخش ۱۲).
 # FD-30 فاز ۳ deltas (بخش ۱۰/۱۰ب): الگوی «کاغذ واحد + ردیف مسطح»
 #   جایگزین شد با کارت‌های مجزا با فاصلهٔ ۱۲ (حکم مالک: ردیف‌های
 #   چسبیده زشت) + گرید موجودیت ۰۸/۲۲ + گرید ۳ستونهٔ ۲۶ + قهرمان
@@ -22,7 +26,7 @@ PORT=8180
 agent-browser set viewport 1440 900 >/dev/null 2>&1
 agent-browser open "http://127.0.0.1:$PORT/index.html" >/dev/null 2>&1
 sleep 1.2
-agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','index.html','screens/04-home-sell.html','screens/05-catalog.html','screens/19-home-buy.html','screens/20-buy-list.html'].map(function(u){return fetch(u,{cache:'reload'})})).then(function(){location.reload();'r'})" >/dev/null 2>&1
+agent-browser eval "Promise.all(['app-core.js','app-handlers.js','app-forms.js','app-suppliers.js','app-customers.js','app-salesrep.js','data.js','app-desktop.js','style.css','index.html','screens/01-landing.html','screens/02-signup.html','screens/03-login.html','screens/04-home-sell.html','screens/05-catalog.html','screens/06-catalog-share.html','screens/07-contacts.html','screens/08-customers.html','screens/09-sell-orders.html','screens/10-sell-order-view.html','screens/11-sell-rfqs.html','screens/12-sell-offer.html','screens/13-sell-add.html','screens/14-sell-edit.html','screens/15-network-score.html','screens/16-edit-business.html','screens/17-notifs.html','screens/18-profile.html','screens/19-home-buy.html','screens/20-buy-list.html','screens/21-buy-list-add.html','screens/22-buy-suppliers.html','screens/23-buy-supplier-view.html','screens/24-buy-rfqs.html','screens/25-buy-rfq-new.html','screens/26-buy-offers.html','screens/27-buy-offer-view.html','screens/28-buy-orders.html','screens/29-msgs.html','screens/30-chat.html','screens/31-catalog-guest.html','screens/32-buy-list-guest.html','screens/33-sell-bulk.html','screens/34-sell-promo.html','screens/35-charge.html','screens/36-cat-edit.html','screens/37-product-view.html','screens/38-salesrep.html','screens/39-buy-order-view.html','screens/40-doc-invoice.html','screens/41-doc-slip.html'].map(function(u){return fetch(u,{cache:'reload'})}).then(function(){location.reload();'r'})" >/dev/null 2>&1
 sleep 2.2
 agent-browser eval "window.__errs=[];window.addEventListener('error',function(e){window.__errs.push('ERR:'+e.message)});window.addEventListener('unhandledrejection',function(e){window.__errs.push('REJ:'+String(e.reason))});'ok'" >/dev/null 2>&1
 
@@ -158,15 +162,35 @@ chk "پیام‌ها: اسکرول داخلی" "$(q "(function(){return getCompu
 chk "نوار تایپ کفِ ستون" "$(q "(function(){var f=document.querySelector('#s-chat .chat-foot').getBoundingClientRect();return Math.abs(f.bottom-window.innerHeight)<3?'bottom-ok':'y='+Math.round(f.bottom)})()")" "bottom-ok"
 chk "بوم گفتگو: پس‌زمینهٔ مشخص" "$(q "(function(){var bg=getComputedStyle(document.querySelector('#s-chat .dk-desk-main .body')).backgroundColor;return bg!=='rgba(0, 0, 0, 0)'?'canvas-ok':'clear'})()")" "canvas-ok"
 
+echo "─── ۹ب) پیام‌ها FD-30-p4: Master-Detail — فهرست + چت در یک صفحه ───"
+q "iMach.show('s-msgs', false); 'ok'" >/dev/null; sleep 1.4
+chk "دو پنل: فهرست + چت" "$(q "(function(){var s=document.getElementById('s-msgs');return (s.querySelector('.mdm-list')&&s.querySelector('.mdm-chat'))?'both-ok':'missing'})()")" "both-ok"
+chk "بدنه: گرید دوستونه (۳۲۰ | بقیه)" "$(q "(function(){var b=getComputedStyle(document.querySelector('#s-msgs .dk-desk-main .body'));return b.display+'|'+b.gridTemplateColumns.split(' ').length})()")" "grid|2"
+chk "فهرست راستِ چت (RTL — الگوی تلگرام)" "$(q "(function(){var l=document.querySelector('#s-msgs .mdm-list').getBoundingClientRect();var c=document.querySelector('#s-msgs .mdm-chat').getBoundingClientRect();return l.x>c.x?'right-ok':'wrong'})()")" "right-ok"
+chk "فهرست داده‌محور: ۳ گفتگو از DATA.conversations" "$(q "document.querySelectorAll('#s-msgs .mdm-row').length")" "3"
+chk "ارتفاع ثابت ۱۰۰vh (بدون اسکرول صفحه)" "$(q "(function(){return Math.round(document.getElementById('s-msgs').getBoundingClientRect().height)})()")" "900"
+chk "خودکار: اولین خوانده‌نشده فعال (پخش برنج پارس)" "$(q "(function(){var r=document.querySelector('#s-msgs .mdm-row.active');return r?r.querySelector('.row-title').textContent:'none'})()")" "پخش برنج پارس"
+chk "خودکار: بج خوانده‌نشده همان لحظه پاک شد" "$(q "(function(){return document.querySelector('#s-msgs .mdm-badge')?'BAD-badge':'cleared'})()")" "cleared"
+chk "پنل چت: هدر مخاطبِ همان گفتگو" "$(q "(function(){return document.querySelector('#s-msgs .mdm-chat .subheader .ttl').textContent.slice(0,14)})()")" "پخش برنج پارس"
+chk "پنل چت: پیام‌های cv1 (۳ حباب + جداکنندهٔ امروز)" "$(q "(function(){var cb=document.querySelector('#s-msgs #chat-body');return cb.querySelectorAll('.msg').length+'|'+cb.querySelector('.chat-day').textContent})()")" "3|امروز"
+chk "پیام‌ها: اسکرول داخلی پنل" "$(q "(function(){return getComputedStyle(document.querySelector('#s-msgs .mdm-chat .body')).overflowY})()")" "auto"
+chk "نوار تایپ کفِ پنل" "$(q "(function(){var f=document.querySelector('#s-msgs .mdm-chat .chat-foot').getBoundingClientRect();return Math.abs(f.bottom-window.innerHeight)<3?'bottom-ok':'y='+Math.round(f.bottom)})()")" "bottom-ok"
+chk "نوار زمینهٔ گفتگو در پنل مخفی" "$(q "(function(){var c=document.querySelector('#s-msgs #chat-ctx');return (c&&c.hidden)?'ctx-hidden':'BAD'})()")" "ctx-hidden"
+chk "دکمهٔ بازگشت در هدر پنل نیست (فهرست کنار است)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-msgs .mdm-chat .subheader .back')).display})()")" "none"
+chk "انتخاب cv2 = بدون ناوبری (همان صفحه)" "$(q "(function(){document.querySelector('.mdm-row[data-cv=cv2]').click();return iMach.getCurrentScreen()})()")" "s-msgs"
+chk "پنل چت: مکالمهٔ cv2 (هدر + ۲ پیام)" "$(q "(function(){var h=document.querySelector('#s-msgs .mdm-chat .subheader .ttl').textContent.slice(0,9);var n=document.querySelectorAll('#s-msgs #chat-body .msg').length;return h+'|'+n})()")" "کیان غلات|2"
+q "(function(){var i=document.getElementById('chat-input');i.value='قیمت را تایید می‌کنم';document.querySelector('#s-msgs [data-chat-send]').click();return 's'})()" >/dev/null; sleep 0.6
+chk "ارسال در پنل: حباب تازه + پیش‌نمایش ردیف زنده" "$(q "(function(){var n=document.querySelectorAll('#s-msgs #chat-body .msg').length;var sub=document.querySelector('#s-msgs .mdm-row[data-cv=cv2] .row-sub').textContent;var tm=document.querySelector('#s-msgs .mdm-row[data-cv=cv2] .mdm-time').textContent;return n+'|'+sub+'|'+tm})()")" "3|قیمت را تایید می‌کنم|همین حالا"
+
 echo "─── ۱۰) فهرست‌ها FD-30: ردیف‌های جدا با فاصله + گرید موجودیت ───"
 q "iMach.show('s-customers', false); 'ok'" >/dev/null; sleep 0.9
 chk "مارجین بین ردیف‌ها = ۱۲ (حکم مالک)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-customers .body > .rows')).gap})()")" "12px"
 chk "ردیف = کارت مجزا (قاب + شعاع ۱۶)" "$(q "(function(){var r=document.querySelector('#s-customers .body > .rows .row');var cs=getComputedStyle(r);return (cs.borderTopWidth!=='0px'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)'&&cs.borderRadius==='16px')?'card-ok':'flat'})()")" "card-ok"
 chk "تناسب ارتفاع: مینیمم ۸۸" "$(q "(function(){var r=document.querySelector('#s-customers .body > .rows .row');return (r.getBoundingClientRect().height>=88)?'tall-ok':'h'+Math.round(r.getBoundingClientRect().height)})()")" "tall-ok"
-chk "دفتر مشتریان: گرید موجودیت ۳ستونه" "$(q "(function(){return getComputedStyle(document.querySelector('#s-customers .body > .rows')).gridTemplateColumns.split(' ').length})()")" "3"
+chk "دفتر مشتریان: فهرست عمودی FD-44 (زیر هم + دعوت کنار جستجو)" "$(q "(function(){var cs=getComputedStyle(document.querySelector('#s-customers .body > .rows'));return cs.display+'|'+cs.flexDirection})()")" "flex|column"
 chk "دعوت: قرص جمع (≤۴۶۰) نه ۱۰۸۰" "$(q "(function(){var b=document.getElementById('cust-invite-2');return Math.round(b.getBoundingClientRect().width)<=460?'pill-ok':'w'+Math.round(b.getBoundingClientRect().width)})()")" "pill-ok"
 q "iMach.show('s-buy-suppliers', false); 'ok'" >/dev/null; sleep 0.9
-chk "تأمین‌کنندگان: گرید موجودیت ۳ستونه" "$(q "(function(){return getComputedStyle(document.querySelector('#s-buy-suppliers .body > .rows')).gridTemplateColumns.split(' ').length})()")" "3"
+chk "تأمین‌کنندگان: فهرست عمودی FD-44 (زیر هم + دعوت کنار جستجو)" "$(q "(function(){var cs=getComputedStyle(document.querySelector('#s-buy-suppliers .body > .rows'));return cs.display+'|'+cs.flexDirection})()")" "flex|column"
 q "iMach.show('s-sell-orders', false); 'ok'" >/dev/null; sleep 0.9
 chk "سفارش‌ها: ردیف‌های جدا با فاصلهٔ ۱۲ (حتی داخل host)" "$(q "(function(){var r=document.querySelector('#s-sell-orders .body .rows');return r?getComputedStyle(r).gap:'norows'})()")" "12px"
 q "iMach.show('s-home-buy', false); 'ok'" >/dev/null; sleep 0.8
@@ -220,6 +244,11 @@ q "iMach.show('s-buy-offers', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل پیشنهادها: بدون گرید دسکتاپی" "$(q "(function(){return getComputedStyle(document.querySelector('#offers-list')).display})()")" "block"
 q "iMach.show('s-network-score', false); 'ok'" >/dev/null; sleep 0.8
 chk "موبایل امتیاز: قهرمان عمودی (همان موبایل)" "$(q "(function(){return getComputedStyle(document.querySelector('#s-network-score .score-hero')).flexDirection})()")" "column"
+q "iMach.show('s-msgs', false); 'ok'" >/dev/null; sleep 0.8
+chk "موبایل پیام‌ها: بدون پنل تزریقی Master-Detail" "$(q "(function(){var sc=document.getElementById('s-msgs');return (sc.querySelector('.mdm-list')||sc.querySelector('.mdm-chat'))?'BAD':'ok'})()")" "ok"
+chk "موبایل پیام‌ها: ۳ ردیف ایستا با data-go" "$(q "(function(){return document.querySelectorAll('#s-msgs .rows .row[data-go=s-chat]').length})()")" "3"
+q "(function(){document.querySelector('#s-msgs .rows .row').click();return 'c'})()" >/dev/null; sleep 0.7
+chk "موبایل پیام‌ها: لمس ردیف → ناوبری به چت" "$(q "iMach.getCurrentScreen()")" "s-chat"
 q "iMach.show('s-catalog', false); 'ok'" >/dev/null; sleep 0.9
 chk "موبایل کاتالوک FD-35: نوار جستجو+محصول جدید (۴۴/۴۴ تم‌پر)" "$(q "(function(){var t=document.querySelector('#s-catalog .cat-toolbar');var sr=t.querySelector('.search-row');var add=t.querySelector('.cat-add');return Math.round(sr.getBoundingClientRect().height)+'/'+Math.round(add.getBoundingClientRect().height)+'|'+getComputedStyle(add).backgroundColor+'|'+getComputedStyle(add.querySelector('.ca-tx')).color})()")" "44/44|rgb(249, 115, 22)|rgb(255, 255, 255)"
 chk "موبایل کاتالوک FD-35: ۴ دکمه ۲ستونی · کادر تبلیغات حذف · بدون کاغذ" "$(q "(function(){var a=document.querySelector('#s-catalog .cat-actions');var b=document.querySelector('#s-catalog .body');var c=getComputedStyle(b);return a.querySelectorAll('.cat-act').length+'btn/'+getComputedStyle(a).gridTemplateColumns.split(' ').length+'col|oldbox='+document.querySelectorAll('#s-catalog .promo-box').length+'|sheet='+(c.borderTopWidth!=='0px'||c.marginTop!=='0px'?'BAD':'none')+'|ovf='+((b.scrollWidth-b.clientWidth>2)?'OVF':'ok')})()")" "4btn/2col|oldbox=0|sheet=none|ovf=ok"

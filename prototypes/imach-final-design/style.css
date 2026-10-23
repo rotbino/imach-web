@@ -4772,14 +4772,15 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
          شعاع ۲۲ + مارجین ۱۶ از هدر — فلت، بدون سایه (سادگی=زیبایی).
        ▸ استثناها بومِ کرمِ خودشان را پس می‌گیرند: لندینگ (صفحهٔ
          عمومی تمام‌عرض) · ورود/ثبت‌نام (اسپلیت dk-auth) · چت
-         (بومِ surface-2 تمام‌قدِ خودش را دارد).
+         (بومِ surface-2 تمام‌قدِ خودش را دارد) · پیام‌ها (FD-30-p4:
+         Master-Detailِ پیام‌رسان — همان خانوادهٔ چت، دو پنلِ تمام‌قد).
        ▸ :not(#s-landing) به قاعده وزن ID می‌دهد → برای همین
          خصوصیات (bg/قاب/مارجین/عرض) بر الگوهای صفحه‌به‌صفحه
          (dk-page/dk-rfq/dk-desk/…) می‌بَرد؛ عرض = ۱۰۰٪ − ۳۶ تا
          قابِ کاغذ هرگز به لبهٔ پنجره نچسبد (تا ۱۱۲۰ سقفِ الگو).
        ═══════════════════════════════════════════════════════════ */
     #phone[data-dk="1"] { background: var(--surface-3); }
-    #phone[data-dk="1"] .dk-screen:not(#s-landing):not(.dk-chat) .body:not(.dk-auth) {
+    #phone[data-dk="1"] .dk-screen:not(#s-landing):not(.dk-chat):not(.dk-msgs) .body:not(.dk-auth) {
         background: var(--bg);
         border: 1px solid var(--border);
         border-radius: 22px;
@@ -5565,10 +5566,91 @@ textarea.input { height: auto; min-height: 88px; padding: 11px 13px; display: bl
     #phone[data-dk="1"] .dk-profile .dkp-main .section-title h2 { font-size: 17px; }
 
     /* ═══════════════════════════════════════════════════════════
-       ۲۹ — پیام‌ها: در پوسته؛ فهرست گفتگوها ۹۴۰ وسچ
+       ۲۹ — پیام‌ها: Master-Detail (FD-30-p4 — الگوی Telegram/Slack)
+       فهرستِ گفتگوها راست (۳۲۰، داده‌محور) + چتِ همان صفحه چپ؛
+       ارتفاع ثابت ۱۰۰vh مثل dk-chat — اسکرول داخل هر پنل، نه صفحه.
+       ردیف‌های فهرست = فشردهٔ پیام‌رسانی (نه کارت‌های بزرگِ dk-list؛
+       کلاس dk-list از صفحه کنار رفت تا قواعد فاز ۳ اعمال نشود).
        ═══════════════════════════════════════════════════════════ */
-    #phone[data-dk="1"] .dk-msgs .dk-desk-main .body {
-        max-width: 940px; padding: 28px 32px 56px;
+    #phone[data-dk="1"] .dk-screen.dk-msgs { height: 100vh; min-height: 0; overflow: hidden; }
+    #phone[data-dk="1"] .dk-msgs .dk-desk-main { min-height: 0; height: 100vh; }
+    /* dk-screen در سلکتور = اختصاص بالاتر از قاعدهٔ بدنهٔ میزهای FD-30
+       (padding/max-width/gap میزها) که در انتهای فایل و هم‌اختصاص است —
+       بدون این، پنل‌ها داخل کادر ۱۱۲۰ با پدینگ ۳۰/۵۶ می‌افتند.
+       جداکنندهٔ فرزند (> ) حیاتی است: .body قاعدهٔ بالا گرید است و اگر
+       با نیای فرزندِ مستقیم بنشیند، #chat-body (کلاس body دارد) را هم
+       می‌گیرد — پیام‌ها ستون‌بندیِ گرید می‌شدند و اسکرول می‌مُرد. */
+    #phone[data-dk="1"] .dk-screen.dk-msgs .dk-desk-main > .body {
+        flex: 1 1 0; min-height: 0;
+        display: grid; grid-template-columns: 320px minmax(0, 1fr);
+        overflow: hidden;
+        width: 100%; max-width: none; margin: 0; padding: 0; gap: 0;
+    }
+
+    /* — پنل فهرست (راست): ردیف‌های فشرده + جداکنندهٔ عمودی — */
+    #phone[data-dk="1"] .dk-msgs .mdm-list {
+        min-height: 0; overflow-y: auto;
+        border-inline-end: 1px solid var(--border);
+        padding: 10px; background: var(--surface);
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-rows { display: flex; flex-direction: column; gap: 6px; }
+    #phone[data-dk="1"] .dk-msgs .mdm-row {
+        padding: 10px 12px; border-radius: 12px; min-height: 0;
+        border-color: transparent; background: transparent;
+        gap: 10px;
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-row:hover {
+        background: var(--surface-2); border-color: transparent;
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-row.active {
+        background: var(--primary-soft); border-color: #FBD8BC;
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-av { width: 40px; height: 40px; font-size: 14px; flex-shrink: 0; }
+    #phone[data-dk="1"] .dk-msgs .mdm-row .row-title { font-size: 13px; }
+    #phone[data-dk="1"] .dk-msgs .mdm-row .row-sub {
+        font-size: 11.5px; margin-top: 3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-meta {
+        display: flex; flex-direction: column; align-items: flex-end;
+        gap: 4px; flex-shrink: 0;
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-time { font-size: 10px; color: var(--text-3); }
+    #phone[data-dk="1"] .dk-msgs .mdm-badge {
+        min-width: 18px; height: 18px; padding: 0 5px;
+        background: var(--primary); color: #FFF; border-radius: 9px;
+        font-size: 10px; font-weight: 700; display: grid; place-items: center;
+    }
+
+    /* — پنل چت (چپ): همان زبانِ چتِ مستقل — بوم + ستون وسچ + نوار کف — */
+    #phone[data-dk="1"] .dk-msgs .mdm-chat {
+        min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+        background: var(--surface-2);
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .subheader { height: 56px; padding: 0 20px; }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .subheader .back { display: none; }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .subheader .avatar { width: 38px; height: 38px; }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .subheader .ttl { font-size: 15px; }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .body {
+        overflow-y: auto; overflow-x: hidden;
+        flex: 1 1 0; min-height: 0;
+        width: 100%; max-width: none;
+        /* استایل درون‌خطیِ موبایل (padding-bottom:8px) با !important
+           شکسته می‌شود — الگوی جاافتادهٔ FD-28 */
+        padding: 22px max(40px, calc((100% - 720px) / 2)) 18px !important;
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .chat-ctx {
+        margin: 10px max(40px, calc((100% - 720px) / 2)) 0;
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .chat-foot {
+        width: 100%; max-width: none;
+        padding: 12px max(40px, calc((100% - 720px) / 2)) calc(14px + env(safe-area-inset-bottom, 0px));
+    }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .bub { font-size: 13.5px; line-height: 2; max-width: min(560px, 84%); }
+    #phone[data-dk="1"] .dk-msgs .mdm-chat .msg { margin-bottom: 14px; }
+    #phone[data-dk="1"] .dk-msgs .mdm-empty {
+        margin: auto; padding: 24px;
+        color: var(--text-3); font-size: 12.5px; text-align: center;
     }
 
     /* ═══════════════════════════════════════════════════════════
