@@ -195,7 +195,7 @@ export function BuyListGuestView({ slug, initial }: { slug: string; initial: Pub
     }
     try {
       const r = await chatApi.startThread(biz.id, data.business.id);
-      router.push(`/msgs?thread=${r.id}`);
+      router.push(`/msgs/${r.id}`);
     } catch {
       show({ text: "گفتگو باز نشد — دوباره تلاش کن", kind: "error" });
     }

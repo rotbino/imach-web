@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
@@ -9,6 +10,8 @@ import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/auth-store";
 import { armEnabled, setArmActive, type Arm } from "@/lib/active-biz";
+import { useThreads } from "@/lib/queries";
+import { chatApi } from "@/lib/api";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { LOCALES } from "@/i18n/config";
@@ -34,11 +37,11 @@ import { Logo2 } from "@/components/imach/auth-brand-panel";
  *    پیش‌فرض از کشور کسب‌وکار (ایران → فارسی/RTL/تومان)، انتخاب آزاد (حکم ۳).
  */
 
-export type ShellArm = Arm;
+export type ShellArm = Arm | "keep";
 
 /** دکمهٔ زنگ — تا M7 (ماژول notifs) فقط مقصد دارد */
 const NOTIFS_HREF = "/notifs";
-/** پیام‌ها و پروفایل — placeholder تا M8 */
+/** پیام‌ها و پروفایل — M8: پیام‌رسان کامل (۲۹/۳۰) */
 const MSGS_HREF = "/msgs";
 const PROFILE_HREF = "/profile";
 
@@ -56,13 +59,14 @@ export function AppShell({
   wide,
   sidebar,
   back,
+  chat,
   toolbar,
   headerActions,
   children,
 }: {
   arm?: ShellArm;
-  /** عنوان صفحه (subheader موبایل) — مثلاً «کاتالوگ من» */
-  title?: string;
+  /** عنوان صفحه (subheader موبایل) — مثلاً «کاتالوگ من»؛ M8: نود (سربرگ گفتگو) */
+  title?: ReactNode;
   /** عرض محتوای دسکتاپ — پیش‌فرض ۸۸۰ (لیست‌ها) · wide=۱۱۲۰ (گریدها/میزها) */
   wide?: boolean;
   /** سایدبار اختصاصی دسکتاپ (FD-39) — برند صفحه + لینک‌های ابزار؛
@@ -71,6 +75,9 @@ export function AppShell({
   /** مسیر بازگشت (حکم مالک فیکس): صفحهٔ فرعی — فلش استاندارد ← در اپ‌بار،
    * بدون سایدبار دسکتاپ، عنوان در اپ‌بار. مثلاً "/sell" یا "/catalog". */
   back?: string;
+  /** M8 — حالت گفتگو (۳۰): در پوستهٔ سایدباری می‌ماند اما بوم تمام‌صفحه
+   *  ۱۰۰dvh با اسکرول داخلی (استثنای چت) · تب‌بار موبایل مخفی (نوار تایپ کف است) */
+  chat?: boolean;
   /** نوار ابزار صفحات فرعی (حکم مالک فیکس): دکمه‌های ابزار همان نوارِ
    * عنوان — «نوار ابزار زیبا» جای سایدبار اختصاصی. */
   toolbar?: ReactNode;
@@ -90,17 +97,39 @@ export function AppShell({
 
   const [prefsOpen, setPrefsOpen] = useState(false);
 
+  /** M8 — ضربان حضور: هر باز شدن شل + هر ≤۶۰s — نشان آنلاینِ طرف‌ها زنده می‌ماند */
+  const hasToken = useAuthStore((s) => !!s.accessToken);
+  useEffect(() => {
+    if (!hasToken) return;
+    const beat = () => {
+      void chatApi.heartbeat().catch(() => {
+        /* best-effort — حضور هرگز جریان صفحه را نمی‌شکند */
+      });
+    };
+    beat();
+    const t = setInterval(beat, 60_000);
+    return () => clearInterval(t);
+  }, [hasToken]);
+
+  /** M8 — بج نخواندهٔ تب پیام‌ها (فهرست هر ۲۰s تازه می‌شود) */
+  const threadsQ = useThreads(hasToken);
+  const unread = threadsQ.data?.unreadTotal ?? 0;
+
   /** رفتن به میز دیگر — بازوی فعال ذخیره می‌شود تا ورود بعدی همان‌جا باز شود */
   const goDesk = (target: Arm) => {
     setArmActive(target);
     router.push(target === "sell" ? "/sell" : "/home");
   };
 
-  /** عنوان نوار بالا: «میز فروش/خرید [نام کسب‌وکار]» — FD-15 */
-  const deskTitle =
+  /** عنوان نوار بالا: «میز فروش/خرید [نام کسب‌وکار]» — FD-15؛
+   *  صفحات بی‌بازو (keep) عنوان خودشان (ReactNode) را می‌گیرند */
+  const deskLabel =
     arm === "sell"
       ? `${S.deskSell} ${biz?.name ?? S.bizFallback}`.trim()
-      : `${S.deskBuy} ${biz?.name ?? S.bizFallback}`.trim();
+      : arm === "buy"
+        ? `${S.deskBuy} ${biz?.name ?? S.bizFallback}`.trim()
+        : "";
+  const deskTitle = arm === "keep" ? (title ?? "آی‌مچ") : deskLabel;
 
   const navItems: {
     key: string;
@@ -108,6 +137,7 @@ export function AppShell({
     label: string;
     href: string;
     active: boolean;
+    badge?: number;
     onClick?: () => void;
   }[] = [
     {
@@ -136,6 +166,7 @@ export function AppShell({
       label: S.msgs,
       href: MSGS_HREF,
       active: pathname.startsWith(MSGS_HREF),
+      badge: unread,
     },
     {
       key: "profile",
@@ -150,10 +181,11 @@ export function AppShell({
     <div data-arm={arm} className="flex min-h-dvh flex-col bg-bg lg:flex-row">
       {/* ── سایدبار دسکتاپ (FD-29) — فقط صفحات اصلی؛ صفحات فرعی (back)
           سایدبار ندارند تا با میزها اشتباه نشوند (حکم مالک فیکس).
+          استثنای M8: گفتگو (۳۰) در پوستهٔ سایدباری می‌ماند (سند ۰۸ §M8).
           رفع باگ RTL (مالک): flex-row ساده + پروپرتی‌های منطقی — در RTL
           سایدبار (فرزند اول) سمت راست می‌نشیند و در LTR سمت چپ؛
           flex-row-reverse دقیقاً برعکسش بود (RTL→چپ، LTR→راست). */}
-      {!back && (
+      {(!back || chat) && (
         <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-e border-line bg-surface lg:flex">
           {sidebar ? (
             <>
@@ -198,7 +230,15 @@ export function AppShell({
                     )}
                   >
                     <Icon name={t.icon} size={20} />
-                    {t.label}
+                    <span className="flex-1 text-start">{t.label}</span>
+                    {!!t.badge && (
+                      <span
+                        data-msgs-badge={t.badge}
+                        className="grid min-w-[20px] place-items-center rounded-full bg-arm px-1.5 py-0.5 text-[10.5px] font-black leading-none text-white"
+                      >
+                        {t.badge.toLocaleString("fa-IR")}
+                      </span>
+                    )}
                   </button>
                 ))}
               </nav>
@@ -252,12 +292,12 @@ export function AppShell({
       )}
 
       {/* ── ستون اصلی: اپ‌بار + محتوا + تب‌بار موبایل ── */}
-      <div className="flex min-h-dvh flex-1 flex-col">
+      <div className={cn("flex min-h-dvh flex-1 flex-col", chat && "h-dvh min-h-0 overflow-hidden")}>
         {/* اپ‌بار — FD-15: نام میز کسب‌وکار + FD-6: چیپ امتیاز.
             صفحات فرعی (حکم مالک فیکس): فلش بازگشت استاندارد + عنوان صفحه. */}
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-line bg-surface/95 px-4 backdrop-blur">
           {back ? (
-            <div className="flex min-w-0 items-center gap-1">
+            <div className="flex min-w-0 flex-1 items-center gap-1">
               <button
                 type="button"
                 onClick={() => router.push(back)}
@@ -266,14 +306,22 @@ export function AppShell({
               >
                 <Icon name="back" size={21} className="rtl:-scale-x-100" />
               </button>
-              <span className="truncate text-[15.5px] font-black text-text">{title}</span>
+              <div className="min-w-0 truncate text-[15.5px] font-black text-text">{title}</div>
+            </div>
+          ) : arm === "keep" ? (
+            // صفحات بی‌بازو (پیام‌ها/پروفایل) — سربرگ ثابت، بدون پرش به میز
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="grid size-8 shrink-0 place-items-center rounded-[9px] bg-arm-soft text-arm-strong">
+                <Icon name={pathname.startsWith(MSGS_HREF) ? "msg" : "user"} size={15} />
+              </div>
+              <span className="truncate text-[14.5px] font-bold text-text">{deskTitle}</span>
             </div>
           ) : (
             <button
               type="button"
               onClick={() => router.push(arm === "sell" ? "/sell" : "/home")}
               className="flex min-w-0 items-center gap-2.5 rounded-[10px] transition-transform active:scale-[.97]"
-              aria-label={deskTitle}
+              aria-label={deskLabel}
             >
               <div className="grid size-8 shrink-0 place-items-center rounded-[9px] bg-arm-soft text-[13px] font-black text-arm-strong">
                 {(biz?.name ?? "i").slice(0, 1)}
@@ -314,8 +362,9 @@ export function AppShell({
           </div>
         )}
 
-        {/* عنوان صفحه (subheader) — فقط حالت میز (بدون back که عنوان در اپ‌بار است) */}
-        {!back && title && (
+        {/* عنوان صفحه (subheader) — فقط حالت میز (بدون back که عنوان در اپ‌بار است)؛
+            صفحات بی‌بازو (keep) عنوانشان در خودِ اپ‌بار است — ردیف جداگانه نمی‌سازیم */}
+        {!back && title && arm !== "keep" && (
           <div className="border-b border-line bg-surface px-4 py-2.5">
             <h1 className="text-[15.5px] font-black text-text">{title}</h1>
           </div>
@@ -323,32 +372,47 @@ export function AppShell({
 
         <main
           className={cn(
-            "mx-auto w-full flex-1 px-4 pb-24 pt-4 lg:px-8 lg:pb-10",
-            wide ? "max-w-[1120px]" : "max-w-[880px]"
+            chat
+              ? "flex w-full flex-1 flex-col overflow-hidden"
+              : cn("mx-auto w-full flex-1 px-4 pb-24 pt-4 lg:px-8 lg:pb-10", wide ? "max-w-[1120px]" : "max-w-[880px]")
           )}
         >
           {children}
         </main>
 
-        {/* تب‌بار موبایل — FD-12: میزها «جا»اند؛ تب بازوی خاموش حذف */}
-        <nav className="sticky bottom-0 z-30 grid h-16 border-t border-line bg-surface/95 backdrop-blur lg:hidden"
-          style={{ gridTemplateColumns: `repeat(${navItems.length}, 1fr)` }}
-        >
-          {navItems.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              onClick={t.onClick ?? (() => router.push(t.href))}
-              className={cn(
-                "flex flex-col items-center justify-center gap-1",
-                t.active ? "text-arm" : "text-text-3"
-              )}
-            >
-              <Icon name={t.icon} size={22} />
-              <span className="text-[10.5px] font-bold">{t.label}</span>
-            </button>
-          ))}
-        </nav>
+        {/* تب‌بار موبایل — FD-12: میزها «جا»اند؛ تب بازوی خاموش حذف.
+            M8: در گفتگو مخفی — نوار تایپ کف صفحه است. */}
+        {!chat && (
+          <nav
+            className="sticky bottom-0 z-30 grid h-16 border-t border-line bg-surface/95 backdrop-blur lg:hidden"
+            style={{ gridTemplateColumns: `repeat(${navItems.length}, 1fr)` }}
+          >
+            {navItems.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={t.onClick ?? (() => router.push(t.href))}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1",
+                  t.active ? "text-arm" : "text-text-3"
+                )}
+              >
+                <span className="relative">
+                  <Icon name={t.icon} size={22} />
+                  {!!t.badge && (
+                    <span
+                      data-msgs-badge={t.badge}
+                      className="absolute -top-1.5 -end-2.5 grid min-w-[17px] place-items-center rounded-full bg-arm px-1 py-0.5 text-[10px] font-black leading-none text-white"
+                    >
+                      {t.badge.toLocaleString("fa-IR")}
+                    </span>
+                  )}
+                </span>
+                <span className="text-[10.5px] font-bold">{t.label}</span>
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
 
       {/* ── شیت زبان/ارز (حکم ۳ M2) ── */}

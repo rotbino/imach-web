@@ -9,6 +9,7 @@ import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
+import { useStartChat } from "@/lib/queries";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
 import { marketApi, supplyProposalsApi, type SupplyProposalDto } from "@/lib/api";
@@ -50,6 +51,7 @@ function BuyList() {
   const qc = useQueryClient();
   const { show } = useToast();
   const { locale } = useLocale();
+  const startChat = useStartChat();
   const businesses = useAuthStore((s) => s.businesses);
   const biz = businesses[0];
   const bizId = biz?.id ?? "";
@@ -165,6 +167,12 @@ function BuyList() {
           rows={proposalsQ.data?.rows ?? []}
           loading={proposalsQ.isLoading}
           locale={locale}
+          onChat={(p) =>
+            void startChat({
+              withBusinessId: p.supplier.id,
+              context: { type: "SUPPLY_PROPOSAL", refId: p.id },
+            })
+          }
           onAccept={async (id, name) => {
             try {
               await supplyProposalsApi.accept(id);

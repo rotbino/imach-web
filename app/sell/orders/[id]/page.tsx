@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useMoney } from "@/components/imach/prefs-context";
+import { useStartChat } from "@/lib/queries";
 import { useAuthStore } from "@/lib/auth-store";
 import { ordersApi, type OrderDto } from "@/lib/api";
 import { num, timeAgo } from "@/lib/format";
@@ -51,6 +52,7 @@ function SellOrderView() {
   const qc = useQueryClient();
   const { show } = useToast();
   const { parts } = useMoney();
+  const startChat = useStartChat();
   const businesses = useAuthStore((s) => s.businesses);
   const bizId = businesses[0]?.id ?? "";
 
@@ -370,7 +372,17 @@ function SellOrderView() {
                   <Icon name="trash" size={16} />
                   رد
                 </Button>
-                <Button variant="outline" size="xl" className="flex-[.8]" onClick={() => router.push("/msgs")}>
+                <Button
+                  variant="outline"
+                  size="xl"
+                  className="flex-[.8]"
+                  onClick={() =>
+                    void startChat({
+                      withBusinessId: o.buyer.id,
+                      context: { type: "ORDER", refId: String(id) },
+                    })
+                  }
+                >
                   <Icon name="msg" size={17} />
                   گفتگو
                 </Button>
@@ -381,7 +393,17 @@ function SellOrderView() {
               </>
             ) : (
               <>
-                <Button variant="outline" size="xl" className="flex-1" onClick={() => router.push("/msgs")}>
+                <Button
+                  variant="outline"
+                  size="xl"
+                  className="flex-1"
+                  onClick={() =>
+                    void startChat({
+                      withBusinessId: o.buyer.id,
+                      context: { type: "ORDER", refId: String(id) },
+                    })
+                  }
+                >
                   <Icon name="msg" size={17} />
                   گفتگو با مشتری
                 </Button>

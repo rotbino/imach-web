@@ -10,6 +10,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { EmptyState, Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
+import { useStartChat } from "@/lib/queries";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
 import { businessesApi, marketApi } from "@/lib/api";
@@ -46,6 +47,7 @@ function SupplierView() {
   const { show } = useToast();
   const { locale } = useLocale();
   const { parts } = useMoney();
+  const startChat = useStartChat();
   const businesses = useAuthStore((s) => s.businesses);
   const biz = businesses[0];
   const bizId = biz?.id ?? "";
@@ -161,10 +163,10 @@ function SupplierView() {
           >
             <Icon name="phone" size={19} />
           </button>
-          {/* پیام — M8 */}
+          {/* پیام — M8: گفتگوی واقعی با تأمین‌کننده */}
           <button
             type="button"
-            onClick={() => show({ text: "پیام‌رسان در فاز M8 فعال می‌شود", kind: "info" })}
+            onClick={() => void startChat({ withBusinessId: String(supplierId) })}
             aria-label="پیام"
             title="پیام"
             className="grid size-10 place-items-center rounded-full text-text-2 transition-colors hover:bg-surface-2"

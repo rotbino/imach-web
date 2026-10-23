@@ -11,6 +11,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useMoney } from "@/components/imach/prefs-context";
+import { useStartChat } from "@/lib/queries";
 import { useAuthStore } from "@/lib/auth-store";
 import { ordersApi, type OrderDto } from "@/lib/api";
 import { num, timeAgo } from "@/lib/format";
@@ -52,6 +53,7 @@ function BuyOrderView() {
   const qc = useQueryClient();
   const { show } = useToast();
   const { parts } = useMoney();
+  const startChat = useStartChat();
   const businesses = useAuthStore((s) => s.businesses);
   const bizId = businesses[0]?.id ?? "";
 
@@ -289,7 +291,17 @@ function BuyOrderView() {
                 لغو سفارش
               </Button>
             )}
-            <Button variant="outline" size="xl" className="flex-1" onClick={() => router.push("/msgs")}>
+            <Button
+              variant="outline"
+              size="xl"
+              className="flex-1"
+              onClick={() =>
+                void startChat({
+                  withBusinessId: o.seller.id,
+                  context: { type: "ORDER", refId: String(id) },
+                })
+              }
+            >
               <Icon name="msg" size={17} />
               گفتگو با تأمین‌کننده
             </Button>

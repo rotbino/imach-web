@@ -119,7 +119,7 @@ export function CatalogGuestContext({
     }
     try {
       const r = await chatApi.startThread(biz.id, businessId);
-      router.push(`/msgs?thread=${r.id}`);
+      router.push(`/msgs/${r.id}`);
     } catch {
       show({ text: "گفتگو باز نشد — دوباره تلاش کن", kind: "error" });
     }

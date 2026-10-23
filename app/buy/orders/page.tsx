@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState, Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useMoney } from "@/components/imach/prefs-context";
+import { useStartChat } from "@/lib/queries";
 import { useAuthStore } from "@/lib/auth-store";
 import { ordersApi, type OrderDto } from "@/lib/api";
 import { num, timeAgo } from "@/lib/format";
@@ -42,6 +43,7 @@ function BuyOrders() {
   const qc = useQueryClient();
   const { show } = useToast();
   const { parts } = useMoney();
+  const startChat = useStartChat();
   const businesses = useAuthStore((s) => s.businesses);
   const bizId = businesses[0]?.id ?? "";
 
@@ -134,8 +136,16 @@ function BuyOrders() {
             <button
               type="button"
               onClick={() => {
+                const o = menuFor;
                 setMenuFor(null);
-                router.push("/msgs");
+                if (o?.seller?.id) {
+                  void startChat({
+                    withBusinessId: o.seller.id,
+                    context: { type: "ORDER", refId: String(o.id) },
+                  });
+                } else {
+                  router.push("/msgs");
+                }
               }}
               className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3.5 text-start transition-colors hover:border-line-2"
             >

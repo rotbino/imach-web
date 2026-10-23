@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState, Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { OrderStatusBadge } from "@/components/imach/order-shared";
+import { useStartChat } from "@/lib/queries";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
 import { businessesApi, marketApi } from "@/lib/api";
@@ -48,6 +49,7 @@ function CustomerView() {
   const qc = useQueryClient();
   const { show } = useToast();
   const { locale } = useLocale();
+  const startChat = useStartChat();
   const businesses = useAuthStore((s) => s.businesses);
   const bizId = businesses[0]?.id ?? "";
 
@@ -149,7 +151,11 @@ function CustomerView() {
             <Icon name="phone" size={14} />
             تماس
           </Button>
-          <Button variant="soft" size="sm" onClick={() => router.push("/msgs")}>
+          <Button
+            variant="soft"
+            size="sm"
+            onClick={() => void startChat({ withBusinessId: String(buyerId) })}
+          >
             <Icon name="msg" size={14} />
             پیام
           </Button>

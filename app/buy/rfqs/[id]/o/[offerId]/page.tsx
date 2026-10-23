@@ -11,6 +11,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useMoney } from "@/components/imach/prefs-context";
+import { useStartChat } from "@/lib/queries";
 import { useAuthStore } from "@/lib/auth-store";
 import { marketApi, ordersApi } from "@/lib/api";
 import { goodName, num, unitLabel } from "@/lib/format";
@@ -44,6 +45,7 @@ function OfferView() {
   const qc = useQueryClient();
   const { show } = useToast();
   const { parts } = useMoney();
+  const startChat = useStartChat();
   const businesses = useAuthStore((s) => s.businesses);
   const bizId = businesses[0]?.id ?? "";
 
@@ -217,7 +219,12 @@ function OfferView() {
           <div className="flex flex-col gap-2">
             <button
               type="button"
-              onClick={() => router.push("/msgs")}
+              onClick={() =>
+                void startChat({
+                  withBusinessId: o.seller.id,
+                  context: { type: "OFFER", refId: String(offerId) },
+                })
+              }
               className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3.5 text-start transition-colors hover:border-line-2"
             >
               <span className="grid size-10 place-items-center rounded-full bg-primary-soft text-primary-strong">
@@ -285,7 +292,17 @@ function OfferView() {
       {isOpen && !accepted && !acceptedThis && (
         <div className="sticky inset-x-0 bottom-0 z-20 -mx-4 border-t border-line bg-bg/95 p-4 backdrop-blur-sm">
           <div className="mx-auto flex max-w-3xl gap-2.5">
-            <Button variant="outline" size="xl" className="flex-[.7]" onClick={() => router.push("/msgs")}>
+            <Button
+              variant="outline"
+              size="xl"
+              className="flex-[.7]"
+              onClick={() =>
+                void startChat({
+                  withBusinessId: o.seller.id,
+                  context: { type: "OFFER", refId: String(offerId) },
+                })
+              }
+            >
               <Icon name="msg" size={17} />
               پیام
             </Button>

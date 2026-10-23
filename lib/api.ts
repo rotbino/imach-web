@@ -2317,8 +2317,9 @@ export const pricingApi = {
 };
 
 // ─── فاز ۶ مهاجرت — چت کاری (ChatModule · sc-msgs / sc-chat) ───
+// M8 (§M8 · FD-22 تصمیم ۸): زمینهٔ گفتگو + حضور زنده (presence).
 
-/** طرف مقابل گفتگو — پروجکت‌شدهٔ امن کسب‌وکار */
+/** طرف مقابل گفتگو — پروجکت‌شدهٔ امن کسب‌وکار + نشان آنلاین (M8) */
 export interface ChatOtherDto {
   id: string;
   slug: string;
@@ -2328,6 +2329,8 @@ export interface ChatOtherDto {
   isVerified: boolean;
   catalogCount: number;
   phone: string | null;
+  /** M8 — حضور: مالکِ این کسب‌وکار ≤۹۰s ضربان زده باشد */
+  online?: boolean;
 }
 
 export interface ThreadRowDto {
@@ -2337,6 +2340,14 @@ export interface ThreadRowDto {
   lastText: string | null;
   lastAt: string;
   unread: number;
+}
+
+/** M8 — زمینهٔ گفتگو (FD-22): سندی که گفتگو از دلِ آن شروع شده.
+ *  title فقط در getThread — استنتاج زندهٔ سمت سرور از آیتم‌های سند. */
+export interface ThreadContextDto {
+  type: "ORDER" | "OFFER" | "SUPPLY_PROPOSAL" | "LISTING" | string;
+  refId: string;
+  title?: string | null;
 }
 
 export interface ChatMessageDto {
@@ -2350,20 +2361,31 @@ export interface ChatMessageDto {
 export interface ThreadDetailDto {
   id: string;
   other: ChatOtherDto;
+  /** M8 — نوار زمینهٔ «دربارهٔ:» — null = گفتگوی آزاد */
+  context: ThreadContextDto | null;
   messages: ChatMessageDto[];
 }
 
 export const chatApi = {
-  /** فهرست گفتگوهای من + جمع نخوانده (بج تب چت) */
+  /** فهرست گفتگوهای من + جمع نخوانده (بج تب چت) + نشان آنلاین طرف */
   getThreads: () =>
     api<{ items: ThreadRowDto[]; unreadTotal: number }>("/chat/getThreads"),
-  /** شروع/یافتن گفتگو با یک کسب‌وکار */
-  startThread: (businessId: string, withBusinessId: string) =>
-    api<{ id: string; other: ChatOtherDto; created: boolean }>("/chat/startThread", {
+  /** شروع/یافتن گفتگو با یک کسب‌وکار — با یا بدون زمینهٔ سند (M8) */
+  startThread: (
+    businessId: string,
+    withBusinessId: string,
+    context?: { type: string; refId: string }
+  ) =>
+    api<{ id: string; other: ChatOtherDto; created: boolean; context: ThreadContextDto | null }>("/chat/startThread", {
       method: "POST",
-      body: { businessId, withBusinessId },
+      body: {
+        businessId,
+        withBusinessId,
+        contextType: context?.type,
+        contextRefId: context?.refId,
+      },
     }),
-  /** جزئیات + ۱۰۰ پیام آخر — باز کردن = خواندن */
+  /** جزئیات + ۱۰۰ پیام آخر — باز کردن = خواندن؛ زمینه با عنوان زنده */
   getThread: (id: string) => api<ThreadDetailDto>(`/chat/getThread/${id}`),
   /** ارسال پیام — متن (≤۲۰۰۰) + پیوست اختیاری عکس */
   sendMessage: (threadId: string, text: string, fileId?: string) =>
@@ -2371,6 +2393,8 @@ export const chatApi = {
       method: "POST",
       body: { threadId, text, fileId },
     }),
+  /** M8 — ضربان حضور (شل هر ≤۶۰s؛ آنلاین = ≤۹۰s) */
+  heartbeat: () => api<{ ok: boolean }>("/chat/heartbeat", { method: "POST", body: {} }),
 };
 
 // ─── فاز ۶ مهاجرت — ترجیحات نمایش کاربر (تم/رنگ arm/زبان) ───

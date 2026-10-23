@@ -402,12 +402,15 @@ export function SupplyProposals({
   locale,
   onAccept,
   onDismiss,
+  onChat,
 }: {
   rows: SupplyProposalDto[];
   loading: boolean;
   locale: string;
   onAccept: (id: string, name: string) => void | Promise<void>;
   onDismiss: (id: string, name: string) => void | Promise<void>;
+  /** M8 — گفتگو دربارهٔ همین پیشنهاد (زمینه: SUPPLY_PROPOSAL) */
+  onChat?: (p: SupplyProposalDto) => void;
 }) {
   const [busyId, setBusyId] = useState<string | null>(null);
   if (loading && rows.length === 0) return null;
@@ -471,6 +474,12 @@ export function SupplyProposals({
                 <Icon name="check" size={14} />
                 تایید و افزودن به تأمین‌کنندگانم
               </Button>
+              {onChat && (
+                <Button variant="soft" size="sm" onClick={() => onChat(p)}>
+                  <Icon name="msg" size={14} />
+                  گفتگو
+                </Button>
+              )}
               <Button variant="outline" size="sm" className="flex-1 !text-red !border-red/30" loading={busy} onClick={() => { setBusyId(p.id); void onDismiss(p.id, p.supplier.name); }}>
                 <Icon name="x" size={14} />
                 حذف
