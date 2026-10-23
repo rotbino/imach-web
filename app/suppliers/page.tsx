@@ -13,7 +13,7 @@ import { EmptyState, Spinner } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { marketApi, type FollowedSupplierDto } from "@/lib/api";
+import { marketApi, scoreApi, type FollowedSupplierDto } from "@/lib/api";
 import { goodName, num, unitLabel } from "@/lib/format";
 import { useMoney } from "@/components/imach/prefs-context";
 import { ShareBuyListSheet } from "@/components/imach/buy-list-shared";
@@ -296,6 +296,14 @@ function GoodSuppliers({ goodId }: { goodId: string }) {
     queryFn: () => marketApi.getSupplyBoard(bizId, goodId),
     enabled: !!bizId && !!goodId,
   });
+  // M7 (§۴.۴) — گیتِ شبکهٔ باز برای «تأمین‌کنندگان بیشتر» همان کالا
+  const scoreQ = useQuery({
+    queryKey: ["score", bizId],
+    queryFn: () => scoreApi.getScore(bizId!),
+    enabled: !!bizId,
+  });
+  const buyScore = scoreQ.data?.buy.score ?? null;
+  const buyOpen = scoreQ.data?.buy.open ?? false;
 
   const board = boardQ.data;
   const good = board?.good ?? null;
@@ -389,26 +397,50 @@ function GoodSuppliers({ goodId }: { goodId: string }) {
               </div>
             )}
 
-            {/* قفل «تأمین‌کنندگان بیشتر» — گیت امتیاز ۱۰۰ (M7) */}
-            <button
-              type="button"
-              onClick={() =>
-                show({ text: "برای دیدن تأمین‌کنندگان فراتر از شبکهٔ خصوصیت، امتیاز فعالیت خریدت را به ۱۰۰ برسان (فاز M7)", kind: "info" })
-              }
-              className="mt-1 flex items-center gap-3.5 rounded-2xl border border-dashed border-line-2 bg-surface-2/60 p-4 text-start"
-            >
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-surface text-text-3">
-                <Icon name="lock" size={19} />
-              </span>
-              <span className="min-w-0 flex-1">
-                <b className="block text-[13.5px] font-bold text-text">تأمین‌کنندگان بیشتر</b>
-                <span className="mt-0.5 block text-[11.5px] leading-5 text-text-3">
-                  با امتیاز فعالیت خرید ۱۰۰، تأمین‌کنندگان فراتر از شبکهٔ خصوصیت را هم می‌بینی — دعوت تأمین‌کنندهٔ جدید
-                  یکی از بالاترین امتیازهای آیمچ را دارد.
+            {/* قفل «تأمین‌کنندگان بیشتر» — گیت امتیاز ۱۰۰ (M7 §۴.۴؛ زنده از /score) */}
+            {buyOpen ? (
+              <button
+                type="button"
+                onClick={() => router.push("/home/score?arm=buy")}
+                className="mt-1 flex items-center gap-3.5 rounded-2xl border border-green/40 bg-green-soft/30 p-4 text-start"
+              >
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-green-soft text-green">
+                  <Icon name="rocket" size={19} />
                 </span>
-              </span>
-              <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
-            </button>
+                <span className="min-w-0 flex-1">
+                  <b className="block text-[13.5px] font-bold text-text">موتور تأمین‌کنندگان تازه فعال است</b>
+                  <span className="mt-0.5 block text-[11.5px] leading-5 text-text-3">
+                    تأمین‌کننده‌های فراتر از شبکهٔ خصوصیت، پیشنهادهای موتور تطبیق را برای کالاهای لیستت می‌بینند.
+                  </span>
+                </span>
+                <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => router.push("/home/score?arm=buy")}
+                className="mt-1 flex items-center gap-3.5 rounded-2xl border border-dashed border-line-2 bg-surface-2/60 p-4 text-start"
+              >
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-surface text-text-3">
+                  <Icon name="lock" size={19} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <b className="block text-[13.5px] font-bold text-text">
+                    تأمین‌کنندگان بیشتر
+                    {typeof buyScore === "number" && (
+                      <span className="mr-1.5 rounded-full bg-arm-soft px-2 py-0.5 text-[10.5px] font-bold text-arm-strong">
+                        {Math.max(0, 100 - buyScore).toLocaleString("fa-IR")} امتیاز تا شتابدهی
+                      </span>
+                    )}
+                  </b>
+                  <span className="mt-0.5 block text-[11.5px] leading-5 text-text-3">
+                    با امتیاز فعالیت خرید ۱۰۰، تأمین‌کنندگان فراتر از شبکهٔ خصوصیت را هم می‌بینی — دعوت تأمین‌کنندهٔ جدید
+                    یکی از بالاترین امتیازهای آیمچ را دارد.
+                  </span>
+                </span>
+                <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
+              </button>
+            )}
           </>
         )}
       </div>

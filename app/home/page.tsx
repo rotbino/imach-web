@@ -9,7 +9,7 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { marketApi, ordersApi } from "@/lib/api";
+import { marketApi, ordersApi, scoreApi } from "@/lib/api";
 import { num } from "@/lib/format";
 import { isPlaceholderBiz } from "@/lib/active-biz";
 import { allBaskets } from "@/lib/basket";
@@ -77,8 +77,22 @@ function BuyDesk() {
     setBaskets(allBaskets());
   }, []);
 
-  const nextStep =
-    watched.length === 0
+  // گام بعدی فعالیت — M7: زنده از /score (عدد محاسبه‌شده — درس FD-4)؛
+  // تا وقتی امتیاز نیامده/گامی نداشت، همان آبشار داده‌محور M2 می‌ماند.
+  const scoreQ = useQuery({
+    queryKey: ["score", bizId],
+    queryFn: () => scoreApi.getScore(bizId!),
+    enabled: !!bizId,
+  });
+  const deskNext = scoreQ.data?.buy.deskNext ?? null;
+  const nextStep = deskNext
+    ? {
+        icon: "rocket" as IconName,
+        title: deskNext.t,
+        sub: `${deskNext.remaining.toLocaleString("fa-IR")} امتیاز تا شتابدهی`,
+        href: deskNext.go,
+      }
+    : watched.length === 0
       ? {
           icon: "cart-add" as IconName,
           title: D.nextStepBuyList,

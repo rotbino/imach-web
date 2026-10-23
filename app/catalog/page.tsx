@@ -13,6 +13,8 @@ import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
 import { businessesApi, listingsApi, unitsApi } from "@/lib/api";
+import Link from "next/link";
+import { ShareOpt, shareTo, catalogInviteText } from "@/components/imach/share-parts";
 import { goodName, num, unitLabel } from "@/lib/format";
 import { resolveConsumerUnit, packShort } from "@/lib/units";
 import { useMoney } from "@/components/imach/prefs-context";
@@ -92,9 +94,10 @@ function Catalog() {
 
   const cats = (biz?.customCategories ?? []) as { id: string; name: string }[];
 
+  // M7 — لینک دعوت با ?ref: ثبت‌نامِ گیرنده = «مشتری من» (referredBy + viaRef)
   const shareLinks = useMemo(() => {
     const base = typeof window !== "undefined" ? window.location.origin : "";
-    return biz ? `${base}/c/${biz.slug}` : "";
+    return biz ? `${base}/c/${biz.slug}?ref=${biz.slug}` : "";
   }, [biz]);
 
   // شمارندهٔ نوار آمار — ذخیره‌کننده از getFollowers بعداً؛ فعلاً کالا/دسته زنده
@@ -241,8 +244,14 @@ function Catalog() {
         }}
       />
 
-      {/* ── شیت اشتراک‌گذاری ── */}
-      <ShareSheet open={shareOpen} onClose={() => setShareOpen(false)} link={shareLinks} title={C.shareTitle} hint={C.shareHint} copied={C.shareCopied} />
+      {/* ── شیت اشتراک‌گذاری (M7 — اسکرین ۰۶ بازطراحی: مخاطبین/پیام‌رسان/کپی + دعوت‌شدگان) ── */}
+      <CatalogShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        link={shareLinks}
+        bizName={biz?.name ?? ""}
+        copied={C.shareCopied}
+      />
     </AppShell>
   );
 }
@@ -540,20 +549,21 @@ function CategoriesSheet({
   );
 }
 
-/** شیت اشتراک‌گذاری کاتالوگ — کپی لینک عمومی */
-function ShareSheet({
+/** شیت اشتراک‌گذاری کاتالوک — M7 (اسکرین ۰۶): مخاطبین/پیام‌رسان‌ها/کپی
+ *  + متن دعوت سه‌نشان + ورودی «دعوت‌شدگان و پاداش». QR فقط در تنظیمات چاپی
+ *  می‌آید (سند ۰۸ §M7) — این‌جا عمداً نیست.
+ *  کال‌اوت طرح: «هر کس لینک را بگیرد و کاتالوگ را ذخیره کند، مشتری شما می‌شود…» */
+function CatalogShareSheet({
   open,
   onClose,
   link,
-  title,
-  hint,
+  bizName,
   copied,
 }: {
   open: boolean;
   onClose: () => void;
   link: string;
-  title: string;
-  hint: string;
+  bizName: string;
   copied: string;
 }) {
   const [done, setDone] = useState(false);
@@ -570,22 +580,71 @@ function ShareSheet({
     }
   };
 
+  const invite = catalogInviteText(bizName || "کاتالوک", link);
+
   return (
-    <Sheet open={open} onClose={onClose} title={title}>
-      <div className="flex flex-col gap-3 p-5">
-        <p className="text-[12.5px] leading-6 text-text-3">{hint}</p>
+    <Sheet open={open} onClose={onClose} title="اشتراک کاتالوگ">
+      <div className="flex flex-col gap-4 p-5">
+        {/* کال‌اوت: چرا اشتراک؟ (طرح اسکرین ۰۶) */}
+        <div className="flex items-start gap-2.5 rounded-2xl border border-arm/30 bg-arm-soft/40 p-3.5">
+          <Icon name="sparkles" size={16} className="mt-0.5 shrink-0 text-arm-strong" />
+          <p className="text-[11.5px] leading-[1.9] text-text-2">
+            هر کس لینک را بگیرد و کاتالوک را ذخیره کند، <b>مشتری شما می‌شود</b> و هر تغییر قیمت را همان لحظه می‌بیند.
+          </p>
+        </div>
+
+        {/* مخاطبین — حالت pick دعوت گروهی (M6) */}
+        <Link
+          href="/contacts?pick=1"
+          className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3.5 transition-colors hover:border-line-2"
+        >
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-surface-2 text-text-2">
+            <Icon name="users" size={18} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <b className="block text-[13px] font-bold text-text">اشتراک با مخاطبین</b>
+            <span className="mt-0.5 block text-[11.5px] text-text-3">از دفترچه‌ات انتخاب کن و دعوت بفرست</span>
+          </span>
+          <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
+        </Link>
+
+        {/* پیام‌رسان‌ها — سهماه (FD-26) با متن سه‌نشان */}
+        <div className="grid grid-cols-3 gap-2">
+          <ShareOpt label="واتس‌اپ" bg="#25D366" icon="whatsapp" onClick={() => shareTo("whatsapp", link, invite)} />
+          <ShareOpt label="تلگرام" bg="#229ED9" icon="telegram" onClick={() => shareTo("telegram", link, invite)} />
+          <ShareOpt label="پیامک" bg="#F97316" icon="msg" onClick={() => shareTo("sms", link, invite)} />
+        </div>
+
+        {/* لینک + کپی */}
         <div className="flex gap-2">
           <input
             readOnly
             dir="ltr"
             value={link}
-            className="h-11 flex-1 rounded-xl border border-line bg-surface px-3 text-[12.5px] text-text-2 focus:border-arm focus:outline-none"
+            className="h-11 flex-1 rounded-xl border border-line bg-surface px-3 text-[12px] text-text-2 focus:border-arm focus:outline-none"
           />
           <Button variant="arm" size="lg" onClick={() => void copy()}>
             <Icon name={done ? "check" : "link"} size={16} />
           </Button>
         </div>
         {done && <p className="text-[12px] font-bold text-green">{copied}</p>}
+
+        {/* دعوت‌شدگان و پاداش — صفحهٔ ۰۶ (آمار/هدف/لیست) */}
+        <Link
+          href="/referrals"
+          className="flex items-center gap-3 rounded-2xl border border-dashed border-line-2 bg-surface-2/50 p-3.5 transition-colors hover:border-line-2"
+        >
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-arm-soft text-arm-strong">
+            <Icon name="award" size={18} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <b className="block text-[13px] font-bold text-text">دعوت‌شدگان و پاداش</b>
+            <span className="mt-0.5 block text-[11.5px] text-text-3">
+              هر دعوت که عضو شود ۵٬۰۰۰ تومان پاداش کیف می‌گیری + امتیاز جذب
+            </span>
+          </span>
+          <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
+        </Link>
       </div>
     </Sheet>
   );

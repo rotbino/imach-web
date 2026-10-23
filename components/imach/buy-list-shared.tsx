@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
+import { ShareOpt as ShareOptShared, shareTo, buyListInviteText } from "@/components/imach/share-parts";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/input";
@@ -153,11 +154,12 @@ export function ShareBuyListSheet({ open, onClose }: { open: boolean; onClose: (
   const [done, setDone] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const link = biz ? `${typeof window !== "undefined" ? window.location.origin : ""}/buy/${biz.slug}` : "";
+  // M7 — لینک دعوت با ?ref=buy:{slug}: ثبت‌نامِ گیرنده = «تأمین‌کننده من»
+  const link = biz ? `${typeof window !== "undefined" ? window.location.origin : ""}/buy/${biz.slug}?ref=buy:${biz.slug}` : "";
   const text =
     locale === "en"
       ? `My iMach shopping list — suppliers can send me supply offers:\n${link}`
-      : `لیست خرید من در آیمچ — تأمین‌کننده‌ها می‌توانند پیشنهاد تامین بدهند:\n${link}`;
+      : buyListInviteText(link);
 
   const copy = async (v: string) => {
     try {
@@ -170,17 +172,7 @@ export function ShareBuyListSheet({ open, onClose }: { open: boolean; onClose: (
     }
   };
 
-  const shareTo = (app: "whatsapp" | "telegram" | "sms") => {
-    const url = encodeURIComponent(link);
-    const t = encodeURIComponent(text);
-    const href =
-      app === "whatsapp"
-        ? `https://wa.me/?text=${t}`
-        : app === "telegram"
-          ? `https://t.me/share/url?url=${url}&text=${t}`
-          : `sms:?&body=${t}`;
-    window.open(href, "_blank", "noopener");
-  };
+
 
   return (
     <Sheet open={open} onClose={onClose} title="اشتراک‌گذاری لیست خرید">
@@ -206,39 +198,17 @@ export function ShareBuyListSheet({ open, onClose }: { open: boolean; onClose: (
 
         {/* پیام‌رسان‌ها — سهماه Remote (FD-26) */}
         <div className="grid grid-cols-3 gap-2">
-          <ShareOpt label="واتس‌اپ" bg="#25D366" icon="whatsapp" onClick={() => shareTo("whatsapp")} />
-          <ShareOpt label="تلگرام" bg="#229ED9" icon="telegram" onClick={() => shareTo("telegram")} />
-          <ShareOpt label="پیامک" bg="#F97316" icon="msg" onClick={() => shareTo("sms")} />
+          <ShareOpt label="واتس‌اپ" bg="#25D366" icon="whatsapp" onClick={() => shareTo("whatsapp", link, text)} />
+          <ShareOpt label="تلگرام" bg="#229ED9" icon="telegram" onClick={() => shareTo("telegram", link, text)} />
+          <ShareOpt label="پیامک" bg="#F97316" icon="msg" onClick={() => shareTo("sms", link, text)} />
         </div>
       </div>
     </Sheet>
   );
 }
 
-function ShareOpt({
-  label,
-  bg,
-  icon,
-  onClick,
-}: {
-  label: string;
-  bg: string;
-  icon: "whatsapp" | "telegram" | "msg";
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border border-line bg-surface p-2 text-[11.5px] font-bold text-text-2 transition-colors hover:border-line-2"
-    >
-      <span className="grid size-8 place-items-center rounded-full text-white" style={{ background: bg }}>
-        <Icon name={icon} size={16} />
-      </span>
-      {label}
-    </button>
-  );
-}
+/** M7 — ShareOpt به components/imach/share-parts رفت (زبان مشترک ۰۶/۲۰) */
+const ShareOpt = ShareOptShared;
 
 /* ─────────────── شیت شرایط درخواست تامین (sheet-buycond) ─────────────── */
 

@@ -8,7 +8,7 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { useMessages } from "@/i18n/messages/use-messages";
 import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
-import { listingsApi, marketApi, ordersApi } from "@/lib/api";
+import { listingsApi, marketApi, ordersApi, scoreApi } from "@/lib/api";
 import { num } from "@/lib/format";
 import { isPlaceholderBiz } from "@/lib/active-biz";
 
@@ -77,9 +77,17 @@ function SellDesk() {
   const newOrders = ordersQ.data?.newCount ?? 0;
   const openOrders = (ordersQ.data?.orders ?? []).filter((o) => ["NEW", "ACCEPTED", "SENT"].includes(o.status));
 
-  // گام بعدی فعالیت — داده‌محور (تا M7 که score وصل می‌شود)
-  const nextStep =
-    activeListings.length === 0
+  // گام بعدی فعالیت — M7: زنده از /score (عدد محاسبه‌شده، نه متن ثابت — درس FD-4)؛
+  // تا وقتی امتیاز نیامده/گامی نداشت، همان آبشار داده‌محورِ M2 می‌ماند.
+  const scoreQ = useQuery({
+    queryKey: ["score", bizId],
+    queryFn: () => scoreApi.getScore(bizId!),
+    enabled: !!bizId,
+  });
+  const deskNext = scoreQ.data?.sell.deskNext ?? null;
+  const nextStep = deskNext
+    ? { icon: "rocket" as IconName, title: deskNext.t, sub: `${deskNext.remaining.toLocaleString("fa-IR")} امتیاز تا شتابدهی`, href: deskNext.go }
+    : activeListings.length === 0
       ? { icon: "plus" as IconName, title: D.nextStepAdd, sub: D.nextStepAddSub, href: "/catalog/new" }
       : unpriced.length > 0
         ? { icon: "tag" as IconName, title: D.nextStepPrice, sub: D.nextStepPriceSub, href: "/catalog/bulk" }

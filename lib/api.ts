@@ -1048,18 +1048,28 @@ export interface AlternativeGoodDto {
 }
 
 export interface SuggestionsDto {
+  /** M7 (§۴.۴) — قفلِ شبکهٔ باز: خریدارِ زیر آستانه پاسخ سبک می‌گیرد (خالی) */
+  locked?: boolean;
+  required?: number;
+  score?: number;
   betterPrices: BetterPriceDto[];
   newSuppliers: NewSupplierDto[];
   alternatives: AlternativeGoodDto[];
 }
 
 /**
- * وضعیت گیت رشد برای بازار خریدارها (بازوی فروش) — یک فراخوان:
- * شمارنده معرف (گیت ۱۰تایی)، کالاهای فروشی (گیت کاتالوگ خالی)،
+ * وضعیت گیتِ شبکهٔ باز (M7 §۴.۴) برای بازار خریدارها — یک فراخوان:
+ * امتیاز دو بازو (گیت موتور تطبیق)، کالاهای فروشی (گیت کاتالوگ خالی)،
  * و فالو/پیشنهادهای قبلی من روی خریدارهای بازار.
+ * (گیتِ ۱۰-معرفِ REFERRAL_TARGET بازنشسته شد — سند ۰۸ §M7.)
  */
 export interface MarketStateDto {
-  referral: { count: number; required: number; unlocked: boolean };
+  /** M7 — گیتِ شبکهٔ باز: امتیاز هر بازو + آستانه */
+  open: {
+    required: number;
+    sell: { score: number; unlocked: boolean };
+    buy: { score: number; unlocked: boolean };
+  };
   /** تعداد کالاهای فروشی من — صفر یعنی بازار هنوز برای من باز نمی‌شود */
   sellCount: number;
   /** کالاهایی که واقعا می‌فروشم — پیشنهاد فقط برای این‌ها فعال است */
@@ -2102,7 +2112,9 @@ export type NotificationType =
   | "CONTACT_JOINED" // شماره‌ای از دفترچه‌ی من عضو شد
   | "PRICE_CHANGE" // فاز ۵ — کالای دنبال‌شده قیمتش عوض شد
   | "BUYER_NEED" // طرح ۸ — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد
-  | "ORDER"; // M5 — رخدادهای چرخهٔ سفارش (ثبت/پذیرش/ارسال/تحویل/لغو/رد)
+  | "ORDER" // M5 — رخدادهای چرخهٔ سفارش (ثبت/پذیرش/ارسال/تحویل/لغو/رد)
+  | "SUPPLY_PROPOSAL" // M6 — پیشنهاد تامین (رسید/تایید) — رخداد-محور
+  | "SCORE"; // M7 — عبور از آستانهٔ ۱۰۰ ⇐ «موتور شتاب‌دهنده فعال شد»
 
 /** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد.
  *  M5: رخدادهای ORDER تیتر و مقصد خودشان را دارند (رخداد-محور). */
@@ -2139,6 +2151,73 @@ export const notificationsApi = {
       method: "POST",
       body: JSON.stringify(sub),
     }),
+};
+
+// ─── M7 — امتیاز، رشد و اعلان‌ها (ScoreModule) ───
+
+export type ScoreArm = "sell" | "buy";
+
+export interface ScoreItemDto {
+  id: string;
+  title: string;
+  sub: string;
+  pts: number;
+  done: boolean;
+  doneAt?: string | null;
+}
+
+export interface ScoreDeskNextDto {
+  /** جملهٔ گام بعدی — عین متن طرح FD-6/7 */
+  t: string;
+  /** مقصد دکمه (مسیر وب اپ) */
+  go: string;
+  /** امتیاز مانده تا ۱۰۰ (شتابدهی) */
+  remaining: number;
+}
+
+export interface ScoreArmDto {
+  arm: ScoreArm;
+  score: number;
+  /** موتور شتاب‌دهندهٔ این بازو فعال است؟ (score ≥ آستانهٔ شبکهٔ باز) */
+  open: boolean;
+  items: ScoreItemDto[];
+  deskNext: ScoreDeskNextDto | null;
+}
+
+export interface ScoreDto {
+  /** همان دو شمارهٔ denormalized (چیپ اپ‌بار) — top-level برای راحتی */
+  scoreSell: number;
+  scoreBuy: number;
+  required: number;
+  sell: ScoreArmDto;
+  buy: ScoreArmDto;
+}
+
+export interface ReferralItemDto {
+  name: string;
+  phone: string;
+  joinedAt: string;
+  /** SELL = از لینک کاتالوک آمده (مشتری من) · BUY = از لینک میز خرید (تأمین‌کننده من) */
+  arm: "SELL" | "BUY";
+  rewarded: boolean;
+}
+
+export interface ReferralsDto {
+  count: number;
+  goal: number;
+  rewardMinor: number;
+  earnedMinor: number;
+  links: { catalog: string; buyList: string };
+  items: ReferralItemDto[];
+}
+
+export const scoreApi = {
+  /** صفحهٔ ۱۵ + کارت گام بعدی میزها + موتور فعال */
+  getScore: (businessId: string) =>
+    api<ScoreDto>(`/score?businessId=${encodeURIComponent(businessId)}`),
+  /** صفحهٔ دعوت‌شدگان (۰۶): آمار/هدف/لیست + پاداش کیف */
+  getReferrals: (businessId: string) =>
+    api<ReferralsDto>(`/score/referrals?businessId=${encodeURIComponent(businessId)}`),
 };
 
 // ─── فاز ۵ مهاجرت — قیمت‌گذاری و تخفیف‌ها (PricingModule) ───

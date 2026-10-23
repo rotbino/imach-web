@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BuyListGuestView } from "@/components/imach/buy-list-guest";
+import { RefCapture } from "@/components/imach/ref-capture";
 import type { PublicBuyListDto } from "@/lib/api";
 
 /**
@@ -41,10 +42,19 @@ export async function generateMetadata({
 
 export default async function PublicBuyListPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ ref?: string }>;
 }) {
   const { slug } = await params;
+  // M7 — لینک دعوت (?ref=buy:{slug}) همان لحظه ثبت می‌شود (localStorage)
+  const { ref } = await searchParams;
   const initial = await fetchBuyList(slug);
-  return <BuyListGuestView slug={slug} initial={initial} />;
+  return (
+    <>
+      <RefCapture code={ref} />
+      <BuyListGuestView slug={slug} initial={initial} />
+    </>
+  );
 }

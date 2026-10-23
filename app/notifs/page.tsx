@@ -5,17 +5,22 @@ import { useRouter } from "next/navigation";
 import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { EmptyState } from "@/components/ui/feedback";
-import { Icon } from "@/components/ui/icon";
+import { Icon, type IconName } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { useMessages } from "@/i18n/messages/use-messages";
-import { useLocale } from "@/i18n/locale-context";
-import { notificationsApi, type NotificationDto } from "@/lib/api";
+import { notificationsApi, type NotificationDto, type NotificationType } from "@/lib/api";
 import { timeAgo } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-/** `/notifs` — زنگ اعلان‌ها (فید درون‌برنامه‌ای — رندر رویداد-محور ساده M2؛
- * رندر غنی نوع‌دار در M7 با ماژول score/اعلان‌های رویدادی وصل می‌شود).
- * M5: رخدادهای ORDER تیتر و مقصد خودشان را دارند — ۱تپ به همان سفارش. */
+/** `/notifs` — زنگ اعلان‌ها (اسکرین ۱۷).
+ *
+ * M7 — رندر رویداد-محور کامل (سند ۰۸ §M7):
+ *  · تیترِ ذخیره‌شدهٔ رویداد (title) منبع حقیقت است — ORDER/SUPPLY_PROPOSAL/
+ *    PRICE_CHANGE/SCORE همه جملهٔ خودشان را دارند؛ فقط انواعِ legacyِ بی‌تیتر
+ *    از type مشتق می‌شوند.
+ *  · آیکون/رنگ per-type — هر رویداد چهرهٔ خودش را دارد (خواستهٔ M7).
+ *  · ۱تپ به مقصدِ همان رویداد (url ذخیره‌شده؛ جایگزینِ نوع).
+ */
 export default function NotifsPage() {
   return (
     <AuthGate>
@@ -26,7 +31,6 @@ export default function NotifsPage() {
 
 function NotifsContent() {
   const m = useMessages();
-  const { locale } = useLocale();
   const qc = useQueryClient();
   const notifsQ = useQuery({
     queryKey: ["notifs", "feed"],
@@ -52,53 +56,78 @@ function NotifsContent() {
           <EmptyState icon={<Icon name="bell" size={30} />} title={m.placeholders.notifsEmpty} />
         )}
         {items.map((it) => (
-          <NotifRow key={it.id} it={it} locale={locale} />
+          <NotifRow key={it.id} it={it} />
         ))}
       </div>
     </AppShell>
   );
 }
 
-/** متن رویداد از type — ساده و واقعی؛ روایت غنی در M7.
- *  M5 — رخدادهای سفارش: تیتر ذخیره‌شدهٔ خودِ رویداد + ۱تپ به همان سفارش. */
-function NotifRow({ it, locale }: { it: NotificationDto; locale: string }) {
+/** چهرهٔ هر رویداد — آیکون + رنگ per-type (M7) */
+const TYPE_FACE: Record<NotificationType, { icon: IconName; cls: string }> = {
+  FOLLOW_SUPPLIER: { icon: "user-plus", cls: "bg-arm-soft text-arm-strong" },
+  FOLLOW_BUYER: { icon: "user-plus", cls: "bg-primary-soft text-primary-strong" },
+  OFFER: { icon: "tag", cls: "bg-primary-soft text-primary-strong" },
+  QUOTE: { icon: "textlist", cls: "bg-arm-soft text-arm-strong" },
+  CONTACT_JOINED: { icon: "users", cls: "bg-surface-2 text-text-2" },
+  PRICE_CHANGE: { icon: "chart", cls: "bg-primary-soft text-primary-strong" },
+  BUYER_NEED: { icon: "bell", cls: "bg-arm-soft text-arm-strong" },
+  ORDER: { icon: "receipt", cls: "bg-primary-soft text-primary-strong" },
+  SUPPLY_PROPOSAL: { icon: "boxes", cls: "bg-arm-soft text-arm-strong" },
+  SCORE: { icon: "rocket", cls: "bg-green-soft text-green" },
+};
+
+/** مقصد پیش‌فرض انواع بی-url (legacy) — url ذخیره‌شده همیشه اولویت دارد */
+const TYPE_ROUTE: Partial<Record<NotificationType, string>> = {
+  FOLLOW_SUPPLIER: "/customers",
+  FOLLOW_BUYER: "/suppliers",
+  OFFER: "/buy/rfqs",
+  QUOTE: "/sell/rfqs",
+  CONTACT_JOINED: "/contacts",
+  PRICE_CHANGE: "/suppliers",
+  BUYER_NEED: "/sell/rfqs",
+  SUPPLY_PROPOSAL: "/buy-list",
+  SCORE: "/home/score",
+};
+
+function NotifRow({ it }: { it: NotificationDto }) {
   const router = useRouter();
-  const fa = locale !== "en";
   const who = it.actorName ?? "";
   const good = it.good ?? "";
-  let text = "";
-  switch (it.type) {
-    case "FOLLOW_SUPPLIER":
-      text = fa ? `${who} کاتالوگ شما را ذخیره کرد` : `${who} saved your catalog`;
-      break;
-    case "FOLLOW_BUYER":
-      text = fa ? `${who} لیست خرید شما را دنبال کرد` : `${who} follows your buy list`;
-      break;
-    case "OFFER":
-      text = fa ? `پیشنهاد جدید روی درخواست شما${good ? ` — ${good}` : ""}` : `New offer on your request${good ? ` — ${good}` : ""}`;
-      break;
-    case "QUOTE":
-      text = fa ? `استعلام قیمت رسید${good ? ` — ${good}` : ""}` : `Quote request arrived${good ? ` — ${good}` : ""}`;
-      break;
-    case "CONTACT_JOINED":
-      text = fa ? `${who} عضو آی‌مچ شد — از مخاطبین شما` : `${who} joined iMach`;
-      break;
-    case "PRICE_CHANGE":
-      text = fa ? `قیمت ${good} تغییر کرد` : `${good} changed price`;
-      break;
-    case "BUYER_NEED":
-      text = fa ? `${who} نیاز خرید جدید ثبت کرد${good ? ` — ${good}` : ""}` : `${who} posted a new buy need`;
-      break;
-    case "ORDER":
-      // M5 — تیتر رویداد از سرور («سفارش پذیرفته شد» …)؛ متن قید پایانی
-      text = fa
-        ? `${it.title ?? "رویداد سفارش"}${good ? ` — ${good}` : ""}${who ? ` · ${who}` : ""}`
-        : `${it.title ?? "Order event"}${good ? ` — ${good}` : ""}`;
-      break;
-    default:
-      text = it.type;
-  }
-  const href = it.type === "ORDER" ? (it.url ?? "/orders") : null;
+
+  /* متن رویداد: تیتر ذخیره‌شدهٔ سرور (رخداد-محور — M5/M6/M7) وگرنه مشتق از type */
+  let text: string;
+  if (it.title) {
+    text = it.title;
+  } else
+    switch (it.type) {
+      case "FOLLOW_SUPPLIER":
+        text = `${who} کاتالوک شما را ذخیره کرد`;
+        break;
+      case "FOLLOW_BUYER":
+        text = `${who} لیست خرید شما را دنبال کرد`;
+        break;
+      case "OFFER":
+        text = `پیشنهاد جدید روی درخواست شما${good ? ` — ${good}` : ""}`;
+        break;
+      case "QUOTE":
+        text = `استعلام قیمت رسید${good ? ` — ${good}` : ""}`;
+        break;
+      case "CONTACT_JOINED":
+        text = `${who} عضو آی‌مچ شد — از مخاطبین شما`;
+        break;
+      case "PRICE_CHANGE":
+        text = `قیمت ${good} تغییر کرد`;
+        break;
+      case "BUYER_NEED":
+        text = `${who} نیاز خرید جدید ثبت کرد${good ? ` — ${good}` : ""}`;
+        break;
+      default:
+        text = it.title ?? it.type;
+    }
+
+  const face = TYPE_FACE[it.type] ?? { icon: "bell" as IconName, cls: "bg-surface-2 text-text-2" };
+  const href = it.url ?? TYPE_ROUTE[it.type] ?? null;
   return (
     <div
       onClick={() => href && router.push(href)}
@@ -108,16 +137,19 @@ function NotifRow({ it, locale }: { it: NotificationDto; locale: string }) {
         href && "cursor-pointer transition-[border-color,box-shadow] hover:border-line-2"
       )}
     >
-      <span
-        className={cn(
-          "grid size-9 shrink-0 place-items-center rounded-full",
-          it.type === "ORDER" ? "bg-primary-soft text-primary-strong" : "bg-surface-2 text-text-2"
-        )}
-      >
-        <Icon name={it.type === "ORDER" ? "receipt" : "bell"} size={17} />
+      <span className={cn("grid size-9 shrink-0 place-items-center rounded-full", face.cls)}>
+        <Icon name={face.icon} size={17} />
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-[13.5px] font-bold leading-6 text-text">{text}</p>
+        {/* قید پایانی: کالا/جزئیات رویداد + طرف مقابل */}
+        {(good || who) && it.title && (
+          <p className="mt-0.5 text-[11.5px] leading-5 text-text-3">
+            {good}
+            {good && who ? " · " : ""}
+            {who}
+          </p>
+        )}
         <p className="mt-0.5 text-[11.5px] text-text-3">{timeAgo(it.createdAt)}</p>
       </div>
       {href && <Icon name="chev" size={16} className="mt-1.5 shrink-0 text-text-4 rtl:-scale-x-100" />}

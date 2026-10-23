@@ -7,6 +7,7 @@ import { goodName, num, unitLabel } from "@/lib/format";
 import { listingPriceExpiredServer } from "@/lib/server-catalog";
 import { AddToCartButton, CatalogBasket, type BasketListing } from "@/components/imach/catalog-basket";
 import { CatalogGuestContext, CatalogPriceCell } from "@/components/imach/catalog-guest-context";
+import { RefCapture } from "@/components/imach/ref-capture";
 
 /**
  * `/c/[slug]` — ویترین عمومی کاتالوگ (M2 + M5 سبد + M6 شبکهٔ خصوصی).
@@ -87,10 +88,14 @@ export async function generateMetadata({
 
 export default async function PublicCatalogPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ ref?: string }>;
 }) {
   const { slug } = await params;
+  // M7 — لینک دعوت (?ref) همان لحظه ثبت می‌شود (localStorage) تا ثبت‌نام بعدی منتسب بماند
+  const { ref } = await searchParams;
   const biz = await fetchBusiness(slug);
   if (!biz) notFound();
 
@@ -118,6 +123,8 @@ export default async function PublicCatalogPage({
   }));
 
   return (
+    <>
+    <RefCapture code={ref} />
     <div data-arm="sell" className="min-h-dvh bg-bg">
       {/* هدر ویترین */}
       <header className="sticky top-0 z-10 border-b border-line bg-surface/95 px-4 py-3 backdrop-blur lg:px-8">
@@ -244,5 +251,6 @@ export default async function PublicCatalogPage({
         </p>
       </footer>
     </div>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "@/components/ui/icon";
@@ -412,8 +413,8 @@ export function ShellToolButton({
 }
 
 /** چیپ امتیاز FD-6 — حلقهٔ SVG با عدد فارسی؛ فیکس‌بچ M3: عدد واقعی از
- *  Business.scoreSell/scoreBuy (امتیاز ثبت‌نام = ۵؛ موتور کامل در M7)؛
- *  حلقهٔ پیشرفت = امتیاز / ۱۰۰. */
+ *  Business.scoreSell/scoreBuy — M7: موتور کامل امتیاز دوگانه وصل شد؛
+ *  حلقهٔ پیشرفت = امتیاز / ۱۰۰ و لمس = صفحهٔ امتیاز همان بازو (اسکرین ۱۵). */
 function ScoreChip({ arm, label }: { arm: ShellArm; label: string }) {
   const { locale } = useLocale();
   const businesses = useAuthStore((s) => s.businesses);
@@ -423,9 +424,10 @@ function ScoreChip({ arm, label }: { arm: ShellArm; label: string }) {
   const R = 15;
   const C = 2 * Math.PI * R;
   const offset = C * (1 - Math.min(score, 100) / 100);
+  // M7 — چیپ دیگر فقط عدد نیست: لمس = صفحهٔ امتیاز همان بازو (اسکرین ۱۵)
   return (
-    <button
-      type="button"
+    <Link
+      href={`/home/score?arm=${arm}`}
       aria-label={`${label} — ${num}`}
       title={`${label} — ${num}`}
       className="relative grid size-11 shrink-0 place-items-center rounded-full text-arm-strong transition-colors hover:bg-surface-2"
@@ -445,7 +447,7 @@ function ScoreChip({ arm, label }: { arm: ShellArm; label: string }) {
         />
       </svg>
       <b className="text-[13px] font-black">{num}</b>
-    </button>
+    </Link>
   );
 }
 
