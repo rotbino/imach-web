@@ -322,7 +322,7 @@ function SellOrderView() {
                 <Icon name="trash" size={16} />
                 رد
               </Button>
-              <Button variant="primary" size="xl" className="flex-[1.3]" onClick={beginAccept}>
+              <Button variant="arm" size="xl" className="flex-[1.3]" onClick={beginAccept}>
                 <Icon name="check" size={17} />
                 پذیرش سفارش
               </Button>
@@ -340,7 +340,7 @@ function SellOrderView() {
               <Button variant="outline" size="xl" className="flex-1" onClick={() => setEdits(null)}>
                 بازگشت
               </Button>
-              <Button variant="primary" size="xl" className="flex-1" loading={busy} onClick={() => void accept()}>
+              <Button variant="arm" size="xl" className="flex-1" loading={busy} onClick={() => void accept()}>
                 <Icon name="check" size={17} />
                 تأیید و پذیرش
               </Button>
@@ -374,7 +374,7 @@ function SellOrderView() {
                   <Icon name="msg" size={17} />
                   گفتگو
                 </Button>
-                <Button variant="primary" size="xl" className="flex-[1.35]" onClick={beginAccept}>
+                <Button variant="arm" size="xl" className="flex-[1.35]" onClick={beginAccept}>
                   <Icon name="check" size={18} />
                   پذیرش سفارش
                 </Button>
@@ -385,7 +385,7 @@ function SellOrderView() {
                   <Icon name="msg" size={17} />
                   گفتگو با مشتری
                 </Button>
-                <Button variant="primary" size="xl" className="flex-[1.35]" onClick={() => setSendOpen(true)}>
+                <Button variant="arm" size="xl" className="flex-[1.35]" onClick={() => setSendOpen(true)}>
                   <Icon name="truck" size={18} />
                   ارسال شد
                 </Button>
@@ -405,7 +405,7 @@ function SellOrderView() {
             <Button variant="outline" size="xl" className="flex-1" onClick={() => setRejectOpen(false)}>
               انصراف
             </Button>
-            <Button variant="primary" size="xl" className="flex-1" loading={busy} onClick={() => void reject()}>
+            <Button variant="arm" size="xl" className="flex-1" loading={busy} onClick={() => void reject()}>
               رد سفارش
             </Button>
           </div>
@@ -422,7 +422,7 @@ function SellOrderView() {
             <Button variant="outline" size="xl" className="flex-1" onClick={() => setSendOpen(false)}>
               انصراف
             </Button>
-            <Button variant="primary" size="xl" className="flex-1" loading={busy} onClick={() => void send()}>
+            <Button variant="arm" size="xl" className="flex-1" loading={busy} onClick={() => void send()}>
               بله، ارسال شد
             </Button>
           </div>

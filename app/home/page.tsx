@@ -138,7 +138,7 @@ function BuyDesk() {
       icon: "basket",
       iconCls: "bg-green-soft text-green",
       title: `سبد پر داری در کاتالوک ${baskets[0]!.supplierName}`,
-      sub: `${n(baskets[0]!.count, "fa")} قلم منتظر ثبت سفارش`,
+      sub: `${n(baskets[0]!.count)} قلم منتظر ثبت سفارش`,
       href: `/c/${baskets[0]!.slug}`,
     });
   }

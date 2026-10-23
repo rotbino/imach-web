@@ -219,10 +219,12 @@ function SellDesk() {
   );
 }
 
-/** مشتری جدید = از مسیر دعوت/کاتالوگ آمده (viaRef) — تعریف زنده تا M6 */
-function newCustomersCount(customers: { viaRef: boolean }[]): number {
-  return customers.filter((c) => c.viaRef === true).length;
+/** مشتری جدید = تاییدنشده (M6 · FD-44/45): ackAt نداره → برچسب «جدید»
+ *  تا فروشنده تکلیفش را روشن کند. قبلاً viaRef بود — با آمدن دفتر مشتری
+ *  واقعی، semantics درست همین است. */
+function newCustomersCount(customers: { isNew?: boolean; ackAt?: string | null }[]): number {
+  return customers.filter((c) => c.isNew ?? !c.ackAt).length;
 }
-function newCustomersPlaceholderGuard(customers: { viaRef: boolean }[]): boolean {
+function newCustomersPlaceholderGuard(customers: { isNew?: boolean; ackAt?: string | null }[]): boolean {
   return newCustomersCount(customers) > 0;
 }

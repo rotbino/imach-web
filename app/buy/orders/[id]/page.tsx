@@ -305,7 +305,7 @@ function BuyOrderView() {
       {o.status === "DELIVERED" && (
         <div className="sticky inset-x-0 bottom-0 z-20 -mx-4 border-t border-line bg-bg/95 p-4 backdrop-blur-sm">
           <div className="mx-auto flex max-w-3xl">
-            <Button variant="primary" size="xl" block onClick={reorder}>
+            <Button variant="arm" size="xl" block onClick={reorder}>
               <Icon name="cart-add" size={18} />
               سفارش دوباره
             </Button>
@@ -323,7 +323,7 @@ function BuyOrderView() {
             <Button variant="outline" size="xl" className="flex-1" onClick={() => setCancelOpen(false)}>
               انصراف
             </Button>
-            <Button variant="primary" size="xl" className="flex-1" loading={busy} onClick={() => void cancel()}>
+            <Button variant="arm" size="xl" className="flex-1" loading={busy} onClick={() => void cancel()}>
               لغو سفارش
             </Button>
           </div>

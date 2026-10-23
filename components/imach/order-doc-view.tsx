@@ -65,7 +65,7 @@ export function OrderDocView({ side }: { side: "buy" | "sell" }) {
           </button>
           <h1 className="min-w-0 flex-1 truncate text-[15px] font-black text-text">{title}</h1>
           {allowed && (
-            <Button variant="primary" size="md" onClick={() => window.print()}>
+            <Button variant="arm" size="md" onClick={() => window.print()}>
               <Icon name="print" size={15} />
               چاپ / PDF
             </Button>

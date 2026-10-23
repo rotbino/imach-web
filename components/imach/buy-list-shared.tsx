@@ -12,6 +12,8 @@ import { useLocale } from "@/i18n/locale-context";
 import { useAuthStore } from "@/lib/auth-store";
 import { useMoney } from "@/components/imach/prefs-context";
 import { cn } from "@/lib/utils";
+import type { SupplyProposalDto } from "@/lib/api";
+import { moneyPartsIn } from "@/lib/currency";
 
 /**
  * اجزای مشترک M3 — لیست خرید و دفتر تأمین (اسکرین‌های ۲۰/۲۰ج/۲۱/۲۲/۲۳).
@@ -416,5 +418,97 @@ export function BarcodeScanSheet({
         )}
       </div>
     </Sheet>
+  );
+}
+
+
+/* ═══════════════ M6 — کارت‌های «پیشنهادهای تامین» بالای لیست خرید (۲۰) ═══════════════
+ * سه شکل (FD-22/23): چندقلمی (ردیف قیمت×حداقل) · تک‌قلمی · فقط‌درخواست (bare).
+ * تایید = «تأمین‌کننده‌هایم + کاتالوکش ذخیره» (دو رابطهٔ Follow — سرور).
+ */
+export function SupplyProposals({
+  rows,
+  loading,
+  locale,
+  onAccept,
+  onDismiss,
+}: {
+  rows: SupplyProposalDto[];
+  loading: boolean;
+  locale: string;
+  onAccept: (id: string, name: string) => void | Promise<void>;
+  onDismiss: (id: string, name: string) => void | Promise<void>;
+}) {
+  const [busyId, setBusyId] = useState<string | null>(null);
+  if (loading && rows.length === 0) return null;
+  if (rows.length === 0) return null;
+
+  return (
+    <section className="flex flex-col gap-2.5">
+      <h2 className="flex items-center gap-1.5 text-[13.5px] font-bold text-text">
+        <Icon name="sparkles" size={15} className="text-amber" />
+        پیشنهادهای تامین
+        <span className="rounded-full bg-amber-soft px-2 py-0.5 text-[10px] font-bold text-amber">
+          {num(rows.length, locale)} پیشنهاد — بالای لیست، جلوی چشم
+        </span>
+      </h2>
+      {rows.map((p) => {
+        const busy = busyId === p.id;
+        return (
+          <div key={p.id} className="flex flex-col gap-2.5 rounded-2xl border border-amber/40 bg-surface p-4">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-amber-soft text-[15px] font-black text-amber">
+                {p.supplier.name.slice(0, 1)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <b className="block truncate text-[13.5px] font-bold text-text">{p.supplier.name}</b>
+                <span className="block truncate text-[11px] text-text-3">
+                  {p.supplier.city}
+                  {p.supplier.trade ? ` · ${p.supplier.trade}` : ""}
+                </span>
+              </div>
+              <span className="shrink-0 rounded-full bg-amber-soft px-2 py-0.5 text-[10px] font-bold text-amber">پیشنهاد تامین</span>
+            </div>
+
+            {p.items.length > 0 ? (
+              <div className="flex flex-col gap-1.5 rounded-xl bg-surface-2/60 p-2.5">
+                {p.items.map((it) => (
+                  <div key={it.goodId} className="flex items-center justify-between gap-2 text-[12px]">
+                    <span className="min-w-0 flex-1 truncate font-bold text-text">
+                      {it.name}
+                      {it.pack ? <small className="font-normal text-text-3"> · {it.pack}</small> : null}
+                    </span>
+                    <span className="shrink-0 text-text-3">حداقل {num(it.minOrder, locale)}</span>
+                    <span className="shrink-0 font-black tabular-nums text-text">
+                      {moneyPartsIn(it.priceMinor, "IRR", "IRR", undefined, locale).amount}
+                      <small className="font-normal text-text-3"> تومان</small>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-xl bg-surface-2/60 px-3.5 py-2.5 text-[11.5px] leading-5 text-text-3">
+                فقط درخواست تامین‌کنندگی — قلم و قیمتی نفرستاده؛ با تایید، تأمین‌کننده‌ات می‌شود و کاتالوکش را می‌بینی.
+              </p>
+            )}
+
+            {p.note && (
+              <p className="rounded-xl border border-line px-3.5 py-2 text-[11.5px] leading-5 text-text-2">{p.note}</p>
+            )}
+
+            <div className="flex items-center gap-2">
+              <Button variant="arm" size="sm" className="flex-1" loading={busy} onClick={() => { setBusyId(p.id); void onAccept(p.id, p.supplier.name); }}>
+                <Icon name="check" size={14} />
+                تایید و افزودن به تأمین‌کنندگانم
+              </Button>
+              <Button variant="outline" size="sm" className="flex-1 !text-red !border-red/30" loading={busy} onClick={() => { setBusyId(p.id); void onDismiss(p.id, p.supplier.name); }}>
+                <Icon name="x" size={14} />
+                حذف
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+    </section>
   );
 }
