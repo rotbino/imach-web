@@ -160,12 +160,12 @@ function ProfileContent() {
             <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
           </button>
 
-          {/* داشبورد نمایندهٔ فروش — فضای سوم (M9) */}
+          {/* داشبورد نمایندهٔ فروش — فضای سوم (M9 · FD-17): ورود از پروفایل */}
           <button
             type="button"
             data-go-salesrep
-            onClick={() => show({ text: "داشبورد نمایندهٔ فروش در فاز M9 فعال می‌شود", kind: "info" })}
-            className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 text-start transition-colors hover:border-line-2 active:bg-surface-2"
+            onClick={() => router.push("/rep")}
+            className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 text-start transition-colors hover:border-accent/40 active:bg-surface-2"
           >
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-strong">
               <Icon name="briefcase" size={19} />
@@ -180,11 +180,11 @@ function ProfileContent() {
             <Icon name="chev" size={16} className="shrink-0 text-text-4 rtl:-scale-x-100" />
           </button>
 
-          {/* کیف پول — موجودی شارژ (طرح ۸: فقط در لحظهٔ مصرف) */}
+          {/* کیف پول — موجودی شارژ (طرح ۸: فقط در لحظهٔ مصرف — M9: شارژ ۳۵) */}
           <button
             type="button"
             data-go-wallet
-            onClick={() => show({ text: "شارژ کیف پول در فاز M9 فعال می‌شود", kind: "info" })}
+            onClick={() => router.push("/profile/wallet")}
             className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 text-start transition-colors hover:border-line-2"
           >
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-green-soft text-green">

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Icon } from "@/components/ui/icon";
 import { useAuthStore } from "@/lib/auth-store";
 import { routeAfterAuth } from "@/lib/active-biz";
 import { cn } from "@/lib/utils";
@@ -97,6 +98,23 @@ export function LandingHeroCtas({
         {loginLabel}
       </Link>
     </div>
+  );
+}
+
+/** CTA نوار نمایندهٔ فروش (M9 · FD-17) — ورود داشبورد نماینده:
+ *  مهمان → ثبت‌نام (نیاز به حساب) · واردشده → مستقیم /rep (فضای سوم) */
+export function LandingRepCta({ signupLabel, enterLabel }: { signupLabel: string; enterLabel: string }) {
+  const status = useAuthStore((s) => s.status);
+  const authed = status === "authed";
+  return (
+    <Link
+      href={authed ? "/rep" : "/start"}
+      data-rep-cta={authed ? "rep" : "start"}
+      className="mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-white text-[13.5px] font-bold text-accent-strong shadow-sm transition-[filter] hover:brightness-95 active:translate-y-px lg:mx-auto lg:mt-[14px] lg:max-w-[400px] lg:min-h-[50px] lg:text-[14.5px]"
+    >
+      {authed ? enterLabel : signupLabel}
+      <Icon name="arrow-left" size={15} className="shrink-0 rtl:-scale-x-100" />
+    </Link>
   );
 }
 

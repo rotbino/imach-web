@@ -1919,7 +1919,12 @@ export const walletApi = {
     }),
 };
 
-// ─── طرح ۸ — کمپین «صف اول» (U05..U09) ───
+// ─── طرح ۸ + M9 — تبلیغ نوع‌دار «صف اول» (U05..U09 · سند ۰۳ §۳.۴) ───
+
+/** M9 — نوع تبلیغ: کمپین فروش ویژه (مدت‌دار) | هدفمند (جایگاه‌دار) */
+export type PromoType = "CAMPAIGN" | "TARGETED";
+/** M9 — جایگاه هدفمند: کاتالوک‌های ذخیره‌شده | تابلوی تأمین همان کالا */
+export type PromoPlacement = "SAVED_CATALOGS" | "SUPPLY_BOARD";
 
 export interface PromoMineDto {
   id: string;
@@ -1931,6 +1936,10 @@ export interface PromoMineDto {
   remainingMinor: number;
   isActive: boolean;
   eventCount: number;
+  type: PromoType;
+  placement: PromoPlacement | null;
+  durationDays: number | null;
+  endsAt: string | null;
   createdAt: string;
   stoppedAt: string | null;
 }
@@ -1946,6 +1955,10 @@ export interface PromoReportDto {
     spentMinor: number;
     remainingMinor: number;
     isActive: boolean;
+    type: PromoType;
+    placement: PromoPlacement | null;
+    durationDays: number | null;
+    endsAt: string | null;
     stoppedAt: string | null;
     createdAt: string;
   };
@@ -1964,10 +1977,16 @@ export interface PromoReportDto {
 }
 
 export const promosApi = {
-  create: (businessId: string, listingId: string, budgetToman: number) =>
-    api<{ id: string; budgetMinor: number }>("/promos/create", {
+  /** M9 — ساخت تبلیغ نوع‌دار: کمپین فروش ویژه (مدت ۳/۷/۱۴) یا هدفمند (جایگاه) */
+  create: (
+    businessId: string,
+    listingId: string,
+    budgetToman: number,
+    opts: { type?: PromoType; durationDays?: number; placement?: PromoPlacement } = {}
+  ) =>
+    api<{ id: string; budgetMinor: number; type: PromoType; endsAt: string | null }>("/promos/create", {
       method: "POST",
-      body: { businessId, listingId, budgetToman },
+      body: { businessId, listingId, budgetToman, ...opts },
     }),
   stop: (businessId: string, promoId: string) =>
     api<{ id: string; isActive: boolean }>(`/promos/stop/${promoId}`, {
@@ -1977,6 +1996,93 @@ export const promosApi = {
   report: (businessId: string, promoId: string) =>
     api<PromoReportDto>("/promos/report", { params: { businessId, promoId } }),
   mine: (businessId: string) => api<PromoMineDto[]>("/promos/mine", { params: { businessId } }),
+};
+
+// ═══ M9 — نمایندهٔ فروش (FD-17 · فضای سوم) ═══
+
+/** قلم سفارش نماینده — آزاد: نام/بسته/تعداد/قیمت (بی‌نیاز به Listing) */
+export interface RepItemInput {
+  name: string;
+  pack?: string | null;
+  qty: number;
+  unitPriceMinor: number;
+}
+
+export type RepStatus = "NEW" | "SENT" | "DELIVERED" | "SETTLED";
+export type RepShareVia = "WHATSAPP" | "SMS" | "CLIPBOARD";
+
+export interface RepOrderDto {
+  id: string;
+  businessId: string;
+  business: { id: string; slug: string; name: string; city: string | null; trade: string | null };
+  customerName: string;
+  items: RepItemInput[];
+  itemCount: number;
+  totalMinor: number;
+  commissionPct: number;
+  commissionMinor: number;
+  status: RepStatus;
+  sharedVia: RepShareVia | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RepStatsDto {
+  monthStart: string;
+  tiles: {
+    salesMonthMinor: number;
+    commissionMonthMinor: number;
+    /** پورسانتِ سفارش‌های تحویل‌شده — «در انتظار تسویه» زنده */
+    pendingSettleMinor: number;
+    businesses: number;
+    ordersMonth: number;
+  };
+  businesses: {
+    id: string;
+    slug: string;
+    name: string;
+    city: string | null;
+    trade: string | null;
+    catalogCount: number;
+    scoreSell: number;
+    scoreBuy: number;
+    stats: { ordersMonth: number; salesMonth: number; commissionMonth: number; pct: number | null };
+  }[];
+}
+
+export const repApi = {
+  /** ثبت سفارش نماینده — قلم‌های آزاد + پورسانت توافقی */
+  create: (
+    businessId: string,
+    customerName: string,
+    items: RepItemInput[],
+    commissionPct: number
+  ) =>
+    api<RepOrderDto>("/rep/orders", {
+      method: "POST",
+      body: { businessId, customerName, items, commissionPct },
+    }),
+  /** گزارش واحد — ?businessId فیلتر همان کسب‌وکار (حکم مالک) */
+  list: (businessId?: string) =>
+    api<RepOrderDto[]>("/rep/orders", { params: businessId ? { businessId } : {} }),
+  /** داشبورد — ۴ کاشی ماه + کسب‌وکارهای زیر نمایندگی */
+  stats: () => api<RepStatsDto>("/rep/stats"),
+  /** ارسال لیست سفارش — بیرون از سیستم؛ متنِ لیست برای پیام‌رسان برمی‌گردد */
+  share: (businessId: string, repOrderId: string, via: RepShareVia) =>
+    api<{ order: RepOrderDto; text: string }>(`/rep/orders/${repOrderId}/share`, {
+      method: "POST",
+      body: { businessId, via },
+    }),
+  deliver: (businessId: string, repOrderId: string) =>
+    api<RepOrderDto>(`/rep/orders/${repOrderId}/deliver`, {
+      method: "POST",
+      body: { businessId },
+    }),
+  settle: (businessId: string, repOrderId: string) =>
+    api<RepOrderDto>(`/rep/orders/${repOrderId}/settle`, {
+      method: "POST",
+      body: { businessId },
+    }),
 };
 
 // ─── گیت اشتراک مخاطبین — دفترچه‌ی تلفن کاربر با اجازه‌ی خودش ───
@@ -2114,7 +2220,8 @@ export type NotificationType =
   | "BUYER_NEED" // طرح ۸ — خریدارِ گوش‌به‌زنگ نیاز جدید ثبت کرد
   | "ORDER" // M5 — رخدادهای چرخهٔ سفارش (ثبت/پذیرش/ارسال/تحویل/لغو/رد)
   | "SUPPLY_PROPOSAL" // M6 — پیشنهاد تامین (رسید/تایید) — رخداد-محور
-  | "SCORE"; // M7 — عبور از آستانهٔ ۱۰۰ ⇐ «موتور شتاب‌دهنده فعال شد»
+  | "SCORE" // M7 — عبور از آستانهٔ ۱۰۰ ⇐ «موتور شتاب‌دهنده فعال شد»
+  | "AD_BUDGET_END"; // M9 — تبلیغ تمام شد (بودجه/مدت) + باقیمانده به کیف برگشت
 
 /** متن اعلان سمت کلاینت از روی type ساخته می‌شود — ردیف فقط داده دارد.
  *  M5: رخدادهای ORDER تیتر و مقصد خودشان را دارند (رخداد-محور). */

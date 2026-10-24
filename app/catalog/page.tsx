@@ -117,6 +117,7 @@ function Catalog() {
             onClick={() => router.push(biz ? `/c/${biz.slug}` : "/sell")}
           />
           <ToolBtn icon="share" label={C.share} onClick={() => setShareOpen(true)} />
+          <ToolBtn icon="spark-v2" label="تبلیغ" onClick={() => router.push("/sell/promo")} />
           <ToolBtn icon="gear" label={C.settings} onClick={() => router.push("/catalog/settings")} />
         </>
       }

@@ -9,7 +9,7 @@ import {
 } from "@/i18n/config";
 import { Icon } from "@/components/ui/icon";
 import { LogoMark } from "@/components/imach/auth-brand-panel";
-import { LandingSessionChip, LandingHeroCtas, LandingFinalCta } from "@/components/imach/session-cta";
+import { LandingSessionChip, LandingHeroCtas, LandingFinalCta, LandingRepCta } from "@/components/imach/session-cta";
 import { LandingLangButtons } from "./lang-buttons";
 
 /**
@@ -202,13 +202,7 @@ export default async function LandingPage() {
           <div className="mt-3 text-center text-[14px] font-extrabold text-primary-strong lg:mt-[30px] lg:text-[17px]">
             {L.repTag}
           </div>
-          <Link
-            href="/start"
-            className="mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-white text-[13.5px] font-bold text-accent-strong shadow-sm transition-[filter] hover:brightness-95 active:translate-y-px lg:mx-auto lg:mt-[14px] lg:max-w-[400px] lg:min-h-[50px] lg:text-[14.5px]"
-          >
-            {L.repCta}
-            <Icon name="arrow-left" size={15} className="shrink-0 rtl:-scale-x-100" />
-          </Link>
+          <LandingRepCta signupLabel={L.repCta} enterLabel="دیدن داشبورد نمایندهٔ فروش" />
         </section>
 
         {/* ── CTA پایانی: پانل گرادیانی + واترمارک ── */}

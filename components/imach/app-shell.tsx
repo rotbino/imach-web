@@ -60,6 +60,7 @@ export function AppShell({
   sidebar,
   back,
   chat,
+  hideTabs,
   toolbar,
   headerActions,
   children,
@@ -78,6 +79,9 @@ export function AppShell({
   /** M8 — حالت گفتگو (۳۰): در پوستهٔ سایدباری می‌ماند اما بوم تمام‌صفحه
    *  ۱۰۰dvh با اسکرول داخلی (استثنای چت) · تب‌بار موبایل مخفی (نوار تایپ کف است) */
   chat?: boolean;
+  /** M9 — فضای سوم (۳۸ نماینده): تب‌بار موبایل مخفی (بدون تب‌بار — FD-17)؛
+   *  اسکرول عادی مرورگر، برخلاف chat. رنگ فیروزه‌ای (accent) با کلاس‌های صفحه. */
+  hideTabs?: boolean;
   /** نوار ابزار صفحات فرعی (حکم مالک فیکس): دکمه‌های ابزار همان نوارِ
    * عنوان — «نوار ابزار زیبا» جای سایدبار اختصاصی. */
   toolbar?: ReactNode;
@@ -381,8 +385,9 @@ export function AppShell({
         </main>
 
         {/* تب‌بار موبایل — FD-12: میزها «جا»اند؛ تب بازوی خاموش حذف.
-            M8: در گفتگو مخفی — نوار تایپ کف صفحه است. */}
-        {!chat && (
+            M8: در گفتگو مخفی — نوار تایپ کف صفحه است.
+            M9: فضای سوم (نماینده) هم مخفی — تب‌بار ندارد (FD-17). */}
+        {!chat && !hideTabs && (
           <nav
             className="sticky bottom-0 z-30 grid h-16 border-t border-line bg-surface/95 backdrop-blur lg:hidden"
             style={{ gridTemplateColumns: `repeat(${navItems.length}, 1fr)` }}

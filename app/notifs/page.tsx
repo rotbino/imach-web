@@ -75,6 +75,7 @@ const TYPE_FACE: Record<NotificationType, { icon: IconName; cls: string }> = {
   ORDER: { icon: "receipt", cls: "bg-primary-soft text-primary-strong" },
   SUPPLY_PROPOSAL: { icon: "boxes", cls: "bg-arm-soft text-arm-strong" },
   SCORE: { icon: "rocket", cls: "bg-green-soft text-green" },
+  AD_BUDGET_END: { icon: "sparkles", cls: "bg-amber-bg text-amber" },
 };
 
 /** مقصد پیش‌فرض انواع بی-url (legacy) — url ذخیره‌شده همیشه اولویت دارد */
@@ -88,6 +89,7 @@ const TYPE_ROUTE: Partial<Record<NotificationType, string>> = {
   BUYER_NEED: "/sell/rfqs",
   SUPPLY_PROPOSAL: "/buy-list",
   SCORE: "/home/score",
+  AD_BUDGET_END: "/sell/promo",
 };
 
 function NotifRow({ it }: { it: NotificationDto }) {
