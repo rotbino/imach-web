@@ -40,7 +40,6 @@
   ],
   "exclude": [
     "imach-back",
-    "legacy",
     "node_modules",
     "skills",
     "tool-results"

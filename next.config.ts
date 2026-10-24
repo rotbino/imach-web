@@ -31,9 +31,8 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BUILD_ID: gitShortHash(),
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  /* M11 (سند ۰۸ §۸-۵): ignoreBuildErrors حذف شد — tsc باید صفر خطا بماند
+     و بیلد واقعاً تایپ‌چک کند. صفرخطا از M10 برقرار بود؛ این مهرِ دائمی است. */
   reactStrictMode: false,
   // منابع توسعه (HMR و…) برای 127.0.0.1 هم باز باشد — وگرنه کلاینت هیدریت نمی‌شود
   allowedDevOrigins: ["127.0.0.1"],
