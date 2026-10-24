@@ -44,7 +44,9 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-useless-escape": "off",
   },
 }, {
-  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills", "imach-back/**"]
+  /* M11 §۸-۵ (ESLint تدریجی): lint فقط کد اپ را می‌پوشاند — ابزارهای QA/مهاجرت
+     (qa-app · prototypes · scripts) CommonJS/سندباکسی‌اند و هرگز قرار نیست lint-clean باشند */
+  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills", "imach-back/**", "qa-app/**", "prototypes/**", "scripts/**"]
 }];
 
 export default eslintConfig;

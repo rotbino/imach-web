@@ -680,7 +680,7 @@ function AddWizard() {
                 <div id={id} className="grid grid-cols-3 gap-2">
                   {images.map((im, i) => (
                     <div key={im.url} className="relative aspect-square overflow-hidden rounded-xl border border-line">
-                      {/* eslint-disable-next-line next/next/no-img-element -- پیش‌نمایش محلی objectURL */}
+                      {/* eslint-disable-next-line @next/next/no-img-element -- پیش‌نمایش محلی objectURL (M11: نام قانون اصلاح شد) */}
                       <img src={im.url} alt="" className="size-full object-cover" />
                       <button
                         type="button"
