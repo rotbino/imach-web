@@ -2657,3 +2657,162 @@ export const ordersApi = {
   archiveOrder: (businessId: string, id: string) =>
     api<{ ok: boolean }>(`/orders/${id}/archive`, { method: "POST", body: { businessId } }),
 };
+
+// ═══ M10 — محتوای اجتماعی و SEO عمومی (نظرات · تستايمونی · بازخورد · گوش-به-زنگ) ═══
+
+/** ردیف نظر کاتالوگ — شیت نظرات ۳۱/۳۷ */
+export interface CatalogReviewDto {
+  id: string;
+  rating: number;
+  text: string | null;
+  reply: string | null;
+  repliedAt: string | null;
+  createdAt: string;
+  authorName: string;
+  authorVerified: boolean;
+}
+
+export interface ReviewsDto {
+  avg: number;
+  count: number;
+  mine: { id: string; rating: number; text: string | null; reply: string | null; repliedAt: string | null; createdAt: string } | null;
+  items: CatalogReviewDto[];
+}
+
+export const reviewsApi = {
+  /** خلاصه + ریز نظرات یک کاتالوگ — با توکنِ در دسترس (بینندهٔ واردشده mine می‌گیرد؛ مهمان عمومی) */
+  list: (businessId: string) => api<ReviewsDto>("/reviews", { params: { businessId } }),
+  /** ثبت/به‌روزرسانی نظر خریدار — یک نظر به ازای هر کاتالوگ (upsert) */
+  submit: (businessId: string, rating: number, text: string | null) =>
+    api<{ id: string; rating: number; text: string | null }>("/reviews", {
+      method: "POST",
+      body: { businessId, rating, ...(text ? { text } : {}) },
+    }),
+  /** پاسخ عمومی فروشنده زیر همان نظر */
+  reply: (reviewId: string, reply: string) =>
+    api<{ id: string; reply: string; repliedAt: string }>(`/reviews/${reviewId}/reply`, {
+      method: "POST",
+      body: { reply },
+    }),
+};
+
+/** ردیف ویترین عمومی — نوار «نظر خریداران» لندینگ + صفحهٔ سایر نظرات */
+export interface TestimonialDto {
+  id: string;
+  name: string;
+  business: string;
+  role: string;
+  isBuyer: boolean;
+  feature: string | null;
+  text: string;
+  approved: boolean;
+  sortHint: number;
+  createdAt: string;
+}
+
+/** پست بازخورد/پرسش راهنمای دستیارها */
+export interface FeedbackPostDto {
+  id: string;
+  kind: "FEEDBACK" | "QUESTION";
+  arm: "BUY" | "SELL";
+  text: string;
+  likeCount: number;
+  likedByMe: boolean;
+  replies: { team?: boolean; businessName: string; text: string; createdAt: string }[];
+  createdAt: string;
+  authorName: string;
+}
+
+export interface VideoLessonDto {
+  id: string;
+  arm: "BUY" | "SELL";
+  title: string;
+  durationS: number;
+  posterUrl: string;
+  bullets: string[];
+  sortHint: number;
+}
+
+export const socialApi = {
+  /** نظرات عمومی تأییدشده — عمومی (مهمان) */
+  testimonials: () => api<TestimonialDto[]>("/feedback/testimonials", { auth: false }),
+  /** ثبت نظر عمومی — مهمان هم می‌فرستد؛ نمایش پس از تأیید ادمین */
+  submitTestimonial: (body: { name: string; business: string; role?: string; isBuyer?: boolean; feature?: string; text: string }) =>
+    api<{ id: string }>("/feedback/testimonials", { method: "POST", body, auth: false }),
+  /** بازخورد/پرسش‌های یک دستیار — عمومی؛ likedByMe با businessId بیننده (توکن اگر هست) */
+  feedback: (kind: "FEEDBACK" | "QUESTION", arm: "BUY" | "SELL", businessId?: string) =>
+    api<FeedbackPostDto[]>("/feedback", { params: { kind, arm, businessId } }),
+  createFeedback: (businessId: string, kind: "FEEDBACK" | "QUESTION", arm: "BUY" | "SELL", text: string) =>
+    api<{ id: string }>("/feedback", { method: "POST", body: { businessId, kind, arm, text } }),
+  likeFeedback: (postId: string, businessId: string) =>
+    api<{ id: string; likeCount: number; likedByMe: boolean }>(`/feedback/${postId}/like`, {
+      method: "POST",
+      body: { businessId },
+    }),
+  replyFeedback: (postId: string, businessId: string | null, text: string) =>
+    api<{ id: string; replies: FeedbackPostDto["replies"] }>(`/feedback/${postId}/reply`, {
+      method: "POST",
+      body: { ...(businessId ? { businessId } : {}), text },
+    }),
+  /** فیلم‌های آموزشی راهنما — عمومی */
+  videoLessons: (arm: "BUY" | "SELL") => api<VideoLessonDto[]>("/feedback/video-lessons", { params: { arm }, auth: false }),
+};
+
+/** زنگولهٔ گوش-به-زنگ روی نیاز خریدار (N6) — ردیف‌های لیست خرید عمومی ۲۳ */
+export const needAlertsApi = {
+  /** روشن‌کردن زنگوله (upsert سه‌تایی فروشنده×خریدار×کالا) */
+  set: (businessId: string, buyerBusinessId: string, goodId: string) =>
+    api<{ id: string; on: boolean; goodId: string }>("/market/need-alerts", {
+      method: "POST",
+      body: { businessId, buyerBusinessId, goodId },
+    }),
+  /** خاموش‌کردن زنگوله */
+  unset: (businessId: string, buyerBusinessId: string, goodId: string) =>
+    api<{ ok: boolean; on: boolean; goodId: string }>("/market/need-alerts", {
+      method: "DELETE",
+      params: { businessId, buyerBusinessId, goodId },
+    }),
+  /** وضعیت زنگوله‌های من روی لیست خرید یک خریدار */
+  myForBuyer: (businessId: string, buyerBusinessId: string) =>
+    api<{ goodIds: string[] }>("/market/need-alerts", { params: { businessId, buyerBusinessId } }),
+};
+
+/** استعلام‌های رسیدهٔ خریدارانِ زنگوله‌خورش — بخش نخست تب «گوش به زنگ» (۱۱) */
+export interface WatchedRfqDto {
+  id: string;
+  buyer: { id: string; name: string; slug: string; city: string | null };
+  goods: { id: string; nameFa: string; nameEn: string | null; unit: string }[];
+  itemsTotal: number;
+  watchedCount: number;
+  createdAt: string;
+  expiresAt: string | null;
+  daysLeft: number | null;
+}
+
+export const watchedRfqsApi = {
+  list: (businessId: string) => api<{ items: WatchedRfqDto[] }>("/market/watched-buyer-needs", { params: { businessId } }),
+};
+
+/** شیت «تاریخچهٔ رویدادها» کالا (۰۳-الگو · N5) */
+export interface ListingEventDto {
+  id: string;
+  listingId: string;
+  type: "WATCH_ADD" | "COMPARE_ADD" | "INQUIRY" | "CHAT" | "CAMPAIGN_VIEW";
+  actorBusinessId: string | null;
+  actorName: string | null;
+  createdAt: string;
+}
+
+export interface ListingEventsDto {
+  viewCount30: number;
+  viewCountTotal: number;
+  counts: Record<string, number>;
+  days: number | null;
+  items: ListingEventDto[];
+}
+
+export const listingEventsApi = {
+  /** خط زمانی تعامل با یک آگهی — فقط مالک */
+  list: (listingId: string, days?: 7 | 30) =>
+    api<ListingEventsDto>(`/listings/${listingId}/events`, { params: { days } }),
+};

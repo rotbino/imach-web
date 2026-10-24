@@ -221,6 +221,41 @@ function ProfileContent() {
               on={armEnabled(biz, "buy")}
               onToggle={(next) => void toggleArm("buy", next)}
             />
+            {/* M10 — راهنمای دستیارها (۶۰/۶۱) + بازخورد و پرسش‌وپاسخ */}
+            <div className="mt-0.5 flex flex-col gap-2 sm:flex-row">
+              {armEnabled(biz, "sell") && (
+                <button
+                  type="button"
+                  onClick={() => router.push("/sell/guide")}
+                  className="flex flex-1 items-center gap-2.5 rounded-xl border border-line bg-surface px-3.5 py-2.5 text-start transition-colors hover:border-line-2"
+                >
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary-strong">
+                    <Icon name="textlist" size={15} />
+                  </span>
+                  <span className="text-[11.5px] font-bold leading-5 text-text-2">
+                    راهنمای دستیار فروش
+                    <span className="block text-[10px] font-normal text-text-3">آموزش‌ها · پرسش و پاسخ</span>
+                  </span>
+                  <Icon name="chev" size={13} className="ms-auto shrink-0 text-text-4 rtl:-scale-x-100" />
+                </button>
+              )}
+              {armEnabled(biz, "buy") && (
+                <button
+                  type="button"
+                  onClick={() => router.push("/buy/guide")}
+                  className="flex flex-1 items-center gap-2.5 rounded-xl border border-line bg-surface px-3.5 py-2.5 text-start transition-colors hover:border-line-2"
+                >
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-stone-tint text-stone">
+                    <Icon name="textlist" size={15} />
+                  </span>
+                  <span className="text-[11.5px] font-bold leading-5 text-text-2">
+                    راهنمای دستیار خرید
+                    <span className="block text-[10px] font-normal text-text-3">آموزش‌ها · پرسش و پاسخ</span>
+                  </span>
+                  <Icon name="chev" size={13} className="ms-auto shrink-0 text-text-4 rtl:-scale-x-100" />
+                </button>
+              )}
+            </div>
             <p className="flex items-start gap-1.5 px-1 text-[11px] leading-5 text-text-3">
               <Icon name="info" size={13} className="mt-0.5 shrink-0" />
               اگر فقط یکی از این دو را لازم داری، دیگری را خاموش کن — تب‌های پایین ساده‌تر می‌شوند.

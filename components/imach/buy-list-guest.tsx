@@ -14,6 +14,7 @@ import {
   chatApi,
   listingsApi,
   marketApi,
+  needAlertsApi,
   supplyProposalsApi,
   type PublicBuyListDto,
 } from "@/lib/api";
@@ -88,6 +89,36 @@ export function BuyListGuestView({ slug, initial }: { slug: string; initial: Pub
 
   const viewer = data?.viewer ?? null;
   const isOwner = viewer?.isOwner ?? false;
+
+  /* M10 (N6) — زنگوله‌های گوش-به-زنگ من روی نیازهای این خریدار (۲۳) */
+  const buyerBizId = data?.business?.id ?? "";
+  const bellsQ = useQuery({
+    queryKey: ["need-alerts", biz?.id, buyerBizId],
+    queryFn: () => needAlertsApi.myForBuyer(biz!.id, buyerBizId),
+    enabled: status === "authed" && !!biz && !!buyerBizId && !isOwner,
+    staleTime: 30_000,
+  });
+  const bells = useMemo(() => new Set(bellsQ.data?.goodIds ?? []), [bellsQ.data]);
+  const toggleBell = async (goodId: string, name: string) => {
+    if (!biz || !buyerBizId) return;
+    if (status !== "authed") {
+      show({ text: "برای گوش-به-زنگ، اول حساب بساز یا وارد شو", kind: "info" });
+      router.push("/login");
+      return;
+    }
+    try {
+      if (bells.has(goodId)) {
+        await needAlertsApi.unset(biz.id, buyerBizId, goodId);
+        show({ text: `زنگولهٔ «${name}» خاموش شد`, kind: "info" });
+      } else {
+        await needAlertsApi.set(biz.id, buyerBizId, goodId);
+        show({ text: `گوش به زنگ «${name}» روشن شد — درخواست خرید تازهٔ این خریدار به تو اعلان می‌شود`, kind: "success" });
+      }
+      void qc.invalidateQueries({ queryKey: ["need-alerts", biz.id, buyerBizId] });
+    } catch (e) {
+      show({ text: e instanceof Error ? e.message : "ثبت نشد", kind: "error" });
+    }
+  };
   const matchByGood = useMemo(() => {
     const m = new Map<string, NonNullable<ProposeItem["matched"]>>();
     for (const x of viewer?.matched ?? []) m.set(x.goodId, x);
@@ -380,6 +411,24 @@ export function BuyListGuestView({ slug, initial }: { slug: string; initial: Pub
                         {freqT(n.frequency)}
                       </p>
                     </div>
+                    {/* M10 — زنگولهٔ گوش به زنگ (فروشندهٔ بیننده) */}
+                    {!isOwner && (
+                      <button
+                        type="button"
+                        onClick={() => void toggleBell(n.goodId, name)}
+                        aria-pressed={bells.has(n.goodId)}
+                        aria-label={`گوش به زنگ ${name}`}
+                        title={bells.has(n.goodId) ? "گوش به زنگ روشن است" : "گوش به زنگ"}
+                        className={cn(
+                          "grid size-9 shrink-0 place-items-center rounded-xl border transition-colors",
+                          bells.has(n.goodId)
+                            ? "border-arm bg-arm-soft text-arm-strong"
+                            : "border-line bg-surface text-text-3"
+                        )}
+                      >
+                        <Icon name="bell" size={15} />
+                      </button>
+                    )}
                     {!isOwner && (
                       <Button variant="outline" size="sm" className="shrink-0" onClick={() => openPropose(n.goodId)}>
                         <Icon name="send" size={13} />
@@ -389,6 +438,21 @@ export function BuyListGuestView({ slug, initial }: { slug: string; initial: Pub
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* M10 — کادر راهنمای گوش به زنگ (متن دقیق مالک · فاز ۲۸) */}
+          {!isOwner && (
+            <div className="mt-3 flex items-start gap-2.5 rounded-2xl bg-surface-2/60 p-3.5">
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-surface text-text-3">
+                <Icon name="bell" size={15} />
+              </span>
+              <p className="text-[10.5px] leading-[1.4] text-text-3">
+                اگر تأمین‌کننده عمده هرکدام از کالاهای موردنیاز این خریدار هستید و می‌خواهید از
+                درخواست‌های خرید او باخبر شوید، روی آیکون زنگولهٔ کنار کالا بزنید. در این صورت،
+                درخواست‌های خرید این کالا در بخش درخواست‌های قیمت دستیار فروش آیمچ به شما اطلاع داده
+                می‌شود تا قیمت خود را برای این خریدار ارسال کنید.
+              </p>
             </div>
           )}
         </section>

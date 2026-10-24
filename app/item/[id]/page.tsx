@@ -18,6 +18,7 @@ import { listingsApi, pricingApi, unitsApi, type GoodItemDto, type PricingTier }
 import { goodName, num, unitLabel, currencyLabel, majorToMinor, minorToMajor } from "@/lib/format";
 import { resolveConsumerUnit, packShort } from "@/lib/units";
 import { useMoney } from "@/components/imach/prefs-context";
+import { EventsHistoryButton, ListingEventsSheet } from "@/components/imach/listing-events-sheet";
 
 /**
  * `/item/[id]` — اسکرین ۳۷: نمای کالا از دید مالک (M2 + فیکس‌بچ مالک M3:
@@ -92,6 +93,7 @@ function ItemContent({ id }: { id: string }) {
   const bestTierIdx = tiers.reduce((best, t, i) => (t.pct > (tiers[best]?.pct ?? -1) ? i : best), 0);
 
   const [quickOpen, setQuickOpen] = useState(false);
+  const [eventsOpen, setEventsOpen] = useState(false);
 
   if (listingsQ.isLoading) {
     return (
@@ -167,6 +169,8 @@ function ItemContent({ id }: { id: string }) {
                 {l.minOrder !== null ? `${num(l.minOrder, locale)} ${stockUnit}` : "—"}
               </b>
             </div>
+            {/* M10 (N5) — شیت تاریخچهٔ رویدادها (۰۳-الگو) */}
+            <EventsHistoryButton onClick={() => setEventsOpen(true)} />
           </div>
         </div>
 
@@ -302,6 +306,9 @@ function ItemContent({ id }: { id: string }) {
           setQuickOpen(false);
         }}
       />
+
+      {/* ── M10: شیت تاریخچهٔ رویدادها ── */}
+      <ListingEventsSheet listingId={l.id} open={eventsOpen} onClose={() => setEventsOpen(false)} />
     </AppShell>
   );
 }

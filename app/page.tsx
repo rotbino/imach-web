@@ -10,14 +10,15 @@ import {
 import { Icon } from "@/components/ui/icon";
 import { LogoMark } from "@/components/imach/auth-brand-panel";
 import { LandingSessionChip, LandingHeroCtas, LandingFinalCta, LandingRepCta } from "@/components/imach/session-cta";
+import { LandingTestimonials } from "@/components/imach/testimonials";
 import { LandingLangButtons } from "./lang-buttons";
 
 /**
  * `/` — اسکرین ۰۱: لندینگ (M1 · 01-landing پروتوتایپ نهایی).
  *
  * · هیرو دوستونهٔ دسکتاپ (FD-28/29) + دکمه‌های زبانِ نمایشی داخل بنر (D2/FD-34)
- * · دو کارت ویژگی (فروشنده/خریدار) + نوار نمایندهٔ فروش + CTA پایانی
- * · نظرات کاربران (FD-31) = فاز M10 — این‌جا عمداً نیست
+ * · دو کارت ویژگی (فروشنده/خریدار) + نوار نمایندهٔ فروش + نظرات خریداران (M10)
+ *   + CTA پایانی
  * · عکس هیرو فلت با mix-blend-multiply — موبایل روی کِرِم، دسکتاپ داخل گرادیان هیرو
  * · متادیتای سه‌زبانه از الگوی موجود (کوکی زبان → سه زبان؛ ربات بدون کوکی → فارسی)
  */
@@ -45,6 +46,14 @@ export async function generateMetadata(): Promise<Metadata> {
       description:
         "Build your product catalog or purchase list, share it with customers and suppliers, and let iMach's matching engine grow your trade network. Sign-up with just a mobile number.",
       alternates: { canonical: "/" },
+      openGraph: {
+        title: "iMach — wholesale trade, always fresh prices",
+        description:
+          "Build your catalog or purchase list and share it — iMach's matching engine grows your trade network.",
+        locale: "en_US",
+        type: "website",
+        images: [{ url: "/og.png", width: 1200, height: 630 }],
+      },
     };
   }
   if (locale === "ar") {
@@ -53,6 +62,13 @@ export async function generateMetadata(): Promise<Metadata> {
       description:
         "أنشئ كتالوغ منتجاتك أو قائمة مشترياتك وشاركها مع عملائك ومورّديك؛ ودع محرك المطابقة في آي‌ماتش ينمّي شبكتك التجارية. التسجيل برقم الجوّال فقط.",
       alternates: { canonical: "/" },
+      openGraph: {
+        title: "آي‌ماتش — تجارة الجملة بأسعار دائمًا محدّثة",
+        description: "أنشئ كتالوغك أو قائمة مشترياتك وشاركها — محرك المطابقة ينمّي شبكتك التجارية.",
+        locale: "ar_AR",
+        type: "website",
+        images: [{ url: "/og.png", width: 1200, height: 630 }],
+      },
     };
   }
   return {
@@ -60,6 +76,14 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       "کاتالوگ محصولات یا فهرست خریدتان را بسازید و با مشتریان و تأمین‌کنندگان خود به اشتراک بگذارید؛ آیمچ با موتور تطبیق خود شبکهٔ تجاری شما را بزرگ‌تر می‌کند. ثبت‌نام با شمارهٔ موبایل.",
     alternates: { canonical: "/" },
+    openGraph: {
+      title: "آیمچ — بازار عمدهٔ واقعی",
+      description:
+        "کاتالوک یا فهرست خریدتان را بسازید و به اشتراک بگذارید — موتور تطبیق آیمچ شبکهٔ تجاری شما را بزرگ‌تر می‌کند.",
+      locale: "fa_IR",
+      type: "website",
+      images: [{ url: "/og.png", width: 1200, height: 630 }],
+    },
   };
 }
 
@@ -204,6 +228,9 @@ export default async function LandingPage() {
           </div>
           <LandingRepCta signupLabel={L.repCta} enterLabel="دیدن داشبورد نمایندهٔ فروش" />
         </section>
+
+        {/* ── M10 (N4): نوار «نظر خریداران» — Testimonial‌های تأییدشده ── */}
+        <LandingTestimonials />
 
         {/* ── CTA پایانی: پانل گرادیانی + واترمارک ── */}
         <div className="relative overflow-hidden rounded-[16px] bg-gradient-to-br from-primary to-primary-strong px-4 py-5 text-center text-white lg:col-span-2 lg:mx-auto lg:mt-6 lg:max-w-[960px] lg:rounded-[28px] lg:px-14 lg:py-[46px]">

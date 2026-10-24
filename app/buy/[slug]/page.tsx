@@ -37,6 +37,12 @@ export async function generateMetadata({
     title: `لیست خرید ${B.name} | iMach`,
     description: `کالاهای موردنیاز ${B.name}${B.trade ? ` (${B.trade})` : ""} در ${B.city} — تأمین‌کننده‌ها می‌توانند پیشنهاد تامین بدهند.`,
     alternates: { canonical: `/buy/${slug}` },
+    openGraph: {
+      title: `لیست خرید عمدهٔ ${B.name}`,
+      description: `${data.needed?.length ?? 0} کالای موردنیاز — تأمین‌کننده‌ها می‌توانند قیمت و شرایطشان را بفرستند.`,
+      type: "website",
+      images: [{ url: "/og.png", width: 1200, height: 630 }],
+    },
   };
 }
 
@@ -54,6 +60,30 @@ export default async function PublicBuyListPage({
   return (
     <>
       <RefCapture code={ref} />
+      {/* M10 — SEO: فهرست کالاهای موردنیاز خریدار (ItemList) */}
+      {initial && (
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: `کالاهای موردنیاز ${initial.business.name}`,
+              numberOfItems: initial.needed?.length ?? 0,
+              itemListElement: (initial.needed ?? []).slice(0, 60).map((n, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                item: {
+                  "@type": "Product",
+                  name: n.name,
+                  ...(n.pack ? { category: n.pack } : {}),
+                },
+              })),
+            }),
+          }}
+        />
+      )}
       <BuyListGuestView slug={slug} initial={initial} />
     </>
   );

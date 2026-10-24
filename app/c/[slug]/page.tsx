@@ -7,6 +7,7 @@ import { goodName, num, unitLabel } from "@/lib/format";
 import { listingPriceExpiredServer } from "@/lib/server-catalog";
 import { AddToCartButton, CatalogBasket, type BasketListing } from "@/components/imach/catalog-basket";
 import { CatalogGuestContext, CatalogPriceCell } from "@/components/imach/catalog-guest-context";
+import { CatalogReviewsEntry } from "@/components/imach/catalog-reviews";
 import { RefCapture } from "@/components/imach/ref-capture";
 
 /**
@@ -47,6 +48,9 @@ interface PublicBusiness {
   currency: string;
   isVerified: boolean;
   priceValidityDays?: number | null;
+  /** M10 (N2) — امتیاز کاتالوک در هدر ویترین */
+  ratingAvg?: number;
+  ratingCount?: number;
   owner?: { name: string } | null;
   listings: PublicListing[];
   saverCount: number;
@@ -77,12 +81,20 @@ export async function generateMetadata({
   const { slug } = await params;
   const biz = await fetchBusiness(slug);
   if (!biz) return { title: "iMach" };
+  const ogTitle = `${biz.name} — کاتالوگ عمده${biz.ratingCount ? ` (امتیاز ${biz.ratingAvg ?? 0} از ۵)` : ""}`;
   return {
     title: `${biz.name} — کاتالوگ عمده | iMach`,
     description:
       biz.bio ??
       `کاتالوگ عمدهٔ ${biz.name}${biz.trade ? ` (${biz.trade})` : ""} در ${biz.city} — قیمت‌های به‌روز روی آی‌مچ.`,
     alternates: { canonical: `/c/${slug}` },
+    openGraph: {
+      title: ogTitle,
+      description:
+        biz.bio ?? `کاتالوگ عمدهٔ ${biz.name} در ${biz.city} — ${biz.listings.length} کالا با قیمت زنده.`,
+      type: "website",
+      images: [{ url: "/og.png", width: 1200, height: 630 }],
+    },
   };
 }
 
@@ -125,6 +137,14 @@ export default async function PublicCatalogPage({
   return (
     <>
     <RefCapture code={ref} />
+    {/* M10 — SEO: JSON-LD استور + کاتالوگ پیشنهاد + فهرست کالاها (سند ۰۸ §M10) */}
+    <script
+      type="application/ld+json"
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(catalogJsonLd(biz, slug, listings)),
+      }}
+    />
     <div data-arm="sell" className="min-h-dvh bg-bg">
       {/* هدر ویترین */}
       <header className="sticky top-0 z-10 border-b border-line bg-surface/95 px-4 py-3 backdrop-blur lg:px-8">
@@ -139,6 +159,14 @@ export default async function PublicCatalogPage({
               {biz.city}
             </p>
           </div>
+          {/* M10 — امتیاز و نظرات کاتالوک (N2) */}
+          <CatalogReviewsEntry
+            slug={slug}
+            businessId={biz.id}
+            businessName={biz.name}
+            avg={biz.ratingAvg ?? 0}
+            count={biz.ratingCount ?? 0}
+          />
           <span className="shrink-0 rounded-full bg-surface-2 px-3 py-1.5 text-[11px] font-bold text-text-2">
             {num(biz.listings.length, locale)} کالا
           </span>
@@ -253,4 +281,68 @@ export default async function PublicCatalogPage({
     </div>
     </>
   );
+}
+
+/* ═══ M10 — SEO: JSON-LD استور + کاتالوگ پیشنهاد + فهرست کالاها ═══ */
+
+function catalogJsonLd(biz: PublicBusiness, slug: string, listings: PublicListing[]) {
+  const priceOf = (l: PublicListing): number | null => {
+    if (l.priceMinor === null) return null;
+    const currency = l.currency ?? biz.currency;
+    // ریال (IRR) یا تومان (IRT) → نمایش تومانی برای گوگل
+    return currency === "IRR" ? l.priceMinor / 10 : l.priceMinor;
+  };
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Store",
+        name: biz.name,
+        description:
+          biz.bio ??
+          `کاتالوگ عمدهٔ ${biz.name}${biz.trade ? ` (${biz.trade})` : ""} در ${biz.city} روی آی‌مچ`,
+        url: `/c/${slug}`,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: biz.city,
+          addressCountry: "IR",
+        },
+        ...(biz.ratingCount && biz.ratingCount > 0
+          ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: biz.ratingAvg ?? 0,
+                reviewCount: biz.ratingCount,
+                bestRating: 5,
+                worstRating: 1,
+              },
+            }
+          : {}),
+      },
+      {
+        "@type": "OfferCatalog",
+        name: `کاتالوگ ${biz.name}`,
+        numberOfItems: listings.length,
+        itemListElement: listings.slice(0, 100).map((l, i) => ({
+          "@type": "Offer",
+          position: i + 1,
+          itemOffered: {
+            "@type": "Product",
+            name: l.title || l.good.nameFa,
+            ...(l.variantLabel ? { category: l.variantLabel } : {}),
+          },
+          ...(priceOf(l) !== null
+            ? {
+                price: priceOf(l),
+                priceCurrency: "IRR",
+                availability:
+                  l.stock !== null && l.stock > 0
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+              }
+            : {}),
+        })),
+      },
+    ],
+  };
 }

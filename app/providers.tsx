@@ -51,8 +51,11 @@ export function AppProviders({
 
   // سرویس‌ورکر Web Push — یک‌بار در کل اپ گرم می‌شود؛ فعال‌سازیِ واقعی
   // (اجازه + subscribe) فقط با کلیک کاربر در زنگ اعلان‌ها انجام می‌شود.
+  // M10 درس بزرگ: فقط در production ثبت می‌شود — در dev، کشِ پوستهٔ SW با
+  // ری‌استارت‌های سریع سرور، HTML کهنه سرو می‌کرد و کل QA را مسموم می‌کرد
+  // (networkFirst در لحظهٔ مرگ سرور، shell کهنه را قفل می‌کند).
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
+    if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => {});
     }
   }, []);
