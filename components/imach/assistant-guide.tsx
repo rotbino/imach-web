@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Icon } from "@/components/ui/icon";
+import { SmartImage } from "@/components/imach/smart-image";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/feedback";
@@ -140,8 +141,12 @@ function VideoLessonsBand({ arm }: { arm: "BUY" | "SELL" }) {
             className="flex w-[218px] shrink-0 flex-col overflow-hidden rounded-2xl border border-line bg-surface text-start transition-[border-color,box-shadow] hover:border-line-2 hover:shadow-[0_10px_30px_rgba(31,29,26,.07)]"
           >
             <span className="relative block aspect-video bg-[#101828]">
-              {/* eslint-disable-next-line @next/next/no-img-element -- پوستر استاتیک از اسکرین‌شات‌های خود اپ */}
-              <img src={l.posterUrl} alt={l.title} className="size-full object-cover object-top opacity-90" loading="lazy" />
+              <SmartImage
+                src={l.posterUrl}
+                alt={l.title}
+                sizes="218px"
+                className="size-full object-top opacity-90"
+              />
               <span className="absolute inset-0 grid place-items-center bg-text/25">
                 <span className="grid size-[46px] place-items-center rounded-full bg-white shadow-[0_6px_18px_rgba(15,23,42,.35)]">
                   <Icon name="chev" size={18} className="rotate-[-90deg] text-primary-strong" />

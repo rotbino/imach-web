@@ -202,12 +202,24 @@ export function AppShell({
               <nav className="flex flex-1 flex-col gap-1 px-3">
                 {sidebar.links.map((l) => {
                   const href = l.href;
+                  const cls =
+                    "flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-[14px] font-bold text-text-2 transition-colors hover:bg-surface-2 hover:text-text";
+                  /* M11 §پرفورمنس: مسیرِ خامِ href → Link با prefetchِ viewport
+                     (الگوی App Router) — ورود به صفحه بدون شبِ سفید */
+                  if (!l.onClick && href !== undefined) {
+                    return (
+                      <Link key={l.label} href={href} className={cls}>
+                        <Icon name={l.icon} size={19} />
+                        {l.label}
+                      </Link>
+                    );
+                  }
                   return (
                     <button
                       key={l.label}
                       type="button"
                       onClick={l.onClick ?? (href !== undefined ? () => router.push(href) : undefined)}
-                      className="flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-[14px] font-bold text-text-2 transition-colors hover:bg-surface-2 hover:text-text"
+                      className={cls}
                     >
                       <Icon name={l.icon} size={19} />
                       {l.label}
@@ -224,6 +236,28 @@ export function AppShell({
               </div>
               <nav className="flex flex-1 flex-col gap-1 px-3">
                 {navItems.map((t) => (
+                  /* M11 §پرفورمنس: تب‌های اصلی سایدبار → Link با prefetch */
+                  !t.onClick ? (
+                  <Link
+                    key={t.key}
+                    href={t.href}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-[14px] font-bold transition-colors",
+                      t.active ? "bg-arm-soft text-arm-strong" : "text-text-2 hover:bg-surface-2"
+                    )}
+                  >
+                    <Icon name={t.icon} size={20} />
+                    <span className="flex-1 text-start">{t.label}</span>
+                    {!!t.badge && (
+                      <span
+                        data-msgs-badge={t.badge}
+                        className="grid min-w-[20px] place-items-center rounded-full bg-arm px-1.5 py-0.5 text-[10.5px] font-black leading-none text-white"
+                      >
+                        {t.badge.toLocaleString("fa-IR")}
+                      </span>
+                    )}
+                  </Link>
+                  ) : (
                   <button
                     key={t.key}
                     type="button"
@@ -244,6 +278,7 @@ export function AppShell({
                       </span>
                     )}
                   </button>
+                  )
                 ))}
               </nav>
             </>
@@ -257,24 +292,23 @@ export function AppShell({
             <p className="px-2.5 pb-1 text-[10.5px] font-bold text-text-4">{S.shortcutsTitle}</p>
             <div className="flex flex-col gap-0.5">
               {armEnabled(biz, "sell") && (
-                <SideShortcut icon="store" label={S.shortcutCatalog} onClick={() => router.push("/catalog")} />
+                <SideShortcut icon="store" label={S.shortcutCatalog} href="/catalog" />
               )}
               {armEnabled(biz, "buy") && (
-                <SideShortcut icon="basket" label={S.shortcutBuyList} onClick={() => router.push("/buy-list")} />
+                <SideShortcut icon="basket" label={S.shortcutBuyList} href="/buy-list" />
               )}
             </div>
           </div>
 
           <div className="p-4 pt-2">
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => router.push(PROFILE_HREF)}
+              <Link
+                href={PROFILE_HREF}
                 aria-label={S.userAria}
                 className="grid size-10 shrink-0 place-items-center rounded-full bg-arm-soft text-[15px] font-black text-arm-strong"
               >
                 {(user?.firstName ?? "؟").slice(0, 1)}
-              </button>
+              </Link>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[13.5px] font-bold text-text">
                   {user ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.name : "کاربر"}
@@ -338,14 +372,13 @@ export function AppShell({
             {headerActions}
             {/* چیپ امتیاز FD-6 — عدد تا M7 صفر است؛ حلقهٔ پیشرفت */}
             <ScoreChip arm={arm} label={S.scoreAria} />
-            <button
-              type="button"
-              onClick={() => router.push(NOTIFS_HREF)}
+            <Link
+              href={NOTIFS_HREF}
               aria-label={S.notifsAria}
               className="grid size-10 place-items-center rounded-full text-text-2 transition-colors hover:bg-surface-2"
             >
               <Icon name="bell" size={20} />
-            </button>
+            </Link>
             {/* زبان/ارز — موبایل (دسکتاپ از پروفایل — M8) */}
             <button
               type="button"
@@ -393,6 +426,30 @@ export function AppShell({
             style={{ gridTemplateColumns: `repeat(${navItems.length}, 1fr)` }}
           >
             {navItems.map((t) => (
+              /* M11 §پرفورمنس: تب‌بار → Link با prefetch (مگر اکشن سفارشی) */
+              !t.onClick ? (
+              <Link
+                key={t.key}
+                href={t.href}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1",
+                  t.active ? "text-arm" : "text-text-3"
+                )}
+              >
+                <span className="relative">
+                  <Icon name={t.icon} size={22} />
+                  {!!t.badge && (
+                    <span
+                      data-msgs-badge={t.badge}
+                      className="absolute -top-1.5 -end-2.5 grid min-w-[17px] place-items-center rounded-full bg-arm px-1 py-0.5 text-[10px] font-black leading-none text-white"
+                    >
+                      {t.badge.toLocaleString("fa-IR")}
+                    </span>
+                  )}
+                </span>
+                <span className="text-[10.5px] font-bold">{t.label}</span>
+              </Link>
+              ) : (
               <button
                 key={t.key}
                 type="button"
@@ -415,6 +472,7 @@ export function AppShell({
                 </span>
                 <span className="text-[10.5px] font-bold">{t.label}</span>
               </button>
+              )
             ))}
           </nav>
         )}
@@ -433,12 +491,29 @@ function isDeskPath(pathname: string): boolean {
 
 /** شورت‌کات پای سایدبار (حکم مالک فیکس) — کاتالوگ/لیست خرید؛
  *  هم‌قالب دکمه‌های ناوبری اما فشرده‌تر و بی‌حالت فعال */
-function SideShortcut({ icon, label, onClick }: { icon: IconName; label: string; onClick: () => void }) {
+function SideShortcut({
+  icon,
+  label,
+  onClick,
+  href,
+}: { icon: IconName; label: string; onClick?: () => void; href?: string }) {
+  /* M11 §پرفورمنس: شورت‌کات با href → Link با prefetch viewport */
+  const cls =
+    "flex items-center gap-3 rounded-lg px-3.5 py-2 text-[13px] font-bold text-text-2 transition-colors hover:bg-surface-2 hover:text-text";
+  if (href && !onClick) {
+    return (
+      <Link href={href} className={cls}>
+        <Icon name={icon} size={18} />
+        <span className="truncate">{label}</span>
+        <Icon name="chev" size={14} className="ms-auto shrink-0 text-text-4 rtl:-scale-x-100" />
+      </Link>
+    );
+  }
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-3 rounded-lg px-3.5 py-2 text-[13px] font-bold text-text-2 transition-colors hover:bg-surface-2 hover:text-text"
+      className={cls}
     >
       <Icon name={icon} size={18} />
       <span className="truncate">{label}</span>

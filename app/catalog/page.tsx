@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { Icon } from "@/components/ui/icon";
+import { SmartImage } from "@/components/imach/smart-image";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/feedback";
@@ -354,8 +355,12 @@ function CatalogCard({
       {/* عکس — نسبت ثابت؛ بی‌عکس = حرف اول */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
         {img ? (
-          // eslint-disable-next-line @next/next/no-img-element -- عکس گالری/مرجع با object-cover ساده
-          <img src={img} alt={name} className="size-full object-cover transition-transform group-hover:scale-[1.03]" loading="lazy" />
+          <SmartImage
+            src={img}
+            alt={name}
+            sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 248px"
+            className="size-full transition-transform group-hover:scale-[1.03]"
+          />
         ) : (
           <div className="grid size-full place-items-center text-[34px] font-black text-text-4/70">
             {name.slice(0, 1)}

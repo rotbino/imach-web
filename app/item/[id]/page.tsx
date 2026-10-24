@@ -7,6 +7,7 @@ import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { Icon } from "@/components/ui/icon";
 import { Sheet } from "@/components/ui/sheet";
+import { SmartImage } from "@/components/imach/smart-image";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
@@ -134,8 +135,12 @@ function ItemContent({ id }: { id: string }) {
           <div className="overflow-hidden rounded-2xl border border-line bg-surface">
             <div className="relative aspect-[4/3] bg-surface-2">
               {imgs.length > 0 ? (
-                // eslint-disable-next-line @next/next/no-img-element -- گالری ساده با اسکرول افقی
-                <img src={imgs[0]} alt={name} className="size-full object-cover" />
+                <SmartImage
+                  src={imgs[0]}
+                  alt={name}
+                  sizes="(min-width: 1024px) 340px, 100vw"
+                  className="size-full"
+                />
               ) : (
                 <div className="grid size-full place-items-center text-[56px] font-black text-text-4/70">
                   {name.slice(0, 1)}
@@ -144,8 +149,15 @@ function ItemContent({ id }: { id: string }) {
               {imgs.length > 1 && (
                 <div className="absolute bottom-2 start-1/2 flex -translate-x-1/2 gap-1 rtl:translate-x-1/2">
                   {imgs.slice(0, 6).map((src, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element -- تامبنیل گالری
-                    <img key={src + i} src={src} alt="" className="size-9 rounded-md border-2 border-white object-cover" />
+                    <SmartImage
+                      key={src + i}
+                      src={src}
+                      alt=""
+                      fill={false}
+                      width={36}
+                      height={36}
+                      className="size-9 rounded-md border-2 border-white object-cover"
+                    />
                   ))}
                 </div>
               )}

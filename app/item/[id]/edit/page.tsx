@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { Icon } from "@/components/ui/icon";
+import { SmartImage } from "@/components/imach/smart-image";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
@@ -457,8 +458,7 @@ function EditForm({
                   key={f.id}
                   className="group relative aspect-square overflow-hidden rounded-xl border border-line bg-surface-2"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- تامبنیل گالری */}
-                  <img src={f.thumbUrl ?? f.url} alt="" className="size-full object-cover" />
+                  <SmartImage src={f.thumbUrl ?? f.url} alt="" sizes="132px" className="size-full" />
                   <button
                     type="button"
                     onClick={() => void removeImage(f)}

@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/toast";
 import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { SmartImage } from "@/components/imach/smart-image";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -442,8 +443,11 @@ function ProfilePhoto({ className }: { className?: string }) {
   });
   const url = meQ.data?.avatar?.thumbUrl ?? meQ.data?.avatar?.url ?? null;
   if (url) {
-    // eslint-disable-next-line @next/next/no-img-element -- آواتار از سرور فایل
-    return <img src={url} alt={user?.name ?? ""} className={cn("rounded-full object-cover", className)} />;
+    return (
+      <span className={cn("relative block overflow-hidden rounded-full", className)}>
+        <SmartImage src={url} alt={user?.name ?? ""} sizes="96px" className="size-full object-cover" />
+      </span>
+    );
   }
   return (
     <span

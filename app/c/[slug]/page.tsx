@@ -8,6 +8,7 @@ import { listingPriceExpiredServer } from "@/lib/server-catalog";
 import { AddToCartButton, CatalogBasket, type BasketListing } from "@/components/imach/catalog-basket";
 import { CatalogGuestContext, CatalogPriceCell } from "@/components/imach/catalog-guest-context";
 import { CatalogReviewsEntry } from "@/components/imach/catalog-reviews";
+import Image from "next/image";
 import { RefCapture } from "@/components/imach/ref-capture";
 
 /**
@@ -214,8 +215,14 @@ export default async function PublicCatalogPage({
                 >
                   <div className="relative aspect-[4/3] bg-surface-2">
                     {img ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- عکس عمومی با object-cover
-                      <img src={img} alt={name} className="size-full object-cover" loading="lazy" />
+                      /* M11: next/image در RSC — srcset/webp از CDN آروان */
+                      <Image
+                        src={img}
+                        alt={name}
+                        fill
+                        sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 248px"
+                        className="size-full object-cover"
+                      />
                     ) : (
                       <div className="grid size-full place-items-center text-[32px] font-black text-text-4/70">
                         {name.slice(0, 1)}

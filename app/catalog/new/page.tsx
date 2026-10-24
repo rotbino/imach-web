@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthGate } from "@/components/imach/auth-gate";
 import { AppShell } from "@/components/imach/app-shell";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { SmartImage } from "@/components/imach/smart-image";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/input";
@@ -1070,8 +1071,14 @@ function PickRow({
           <Icon name="plus" size={20} />
         </span>
       ) : img ? (
-        // eslint-disable-next-line next/next/no-img-element -- تصاویر مرجع با عرض صریح
-        <img src={img} alt="" width={44} height={44} className="size-11 shrink-0 rounded-xl border border-line object-cover" />
+        <SmartImage
+          src={img}
+          alt=""
+          fill={false}
+          width={44}
+          height={44}
+          className="size-11 shrink-0 rounded-xl border border-line object-cover"
+        />
       ) : (
         <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-surface-2 text-[16px] font-black text-text-3">
           {title.slice(0, 1)}
@@ -1091,8 +1098,14 @@ function PickedCard({ title, sub, img }: { title: string; sub: string; img?: str
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3.5">
       {img ? (
-        // eslint-disable-next-line next/next/no-img-element -- تصاویر مرجع با عرض صریح
-        <img src={img} alt="" width={48} height={48} className="size-12 rounded-xl border border-line object-cover" />
+        <SmartImage
+          src={img}
+          alt=""
+          fill={false}
+          width={48}
+          height={48}
+          className="size-12 rounded-xl border border-line object-cover"
+        />
       ) : (
         <span className="grid size-12 place-items-center rounded-xl bg-primary-soft text-[18px] font-black text-primary-strong">
           {title.slice(0, 1)}
